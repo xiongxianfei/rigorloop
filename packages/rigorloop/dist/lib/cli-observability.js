@@ -42,6 +42,7 @@ export async function runObservedCli(args, dispatch, options = {}) {
   };
   const write = (event) => {
     if (!config.fileEnabled) return;
+    if (LEVEL[event.severity] < LEVEL[config.fileLevel]) return;
     try { appendDiagnosticEvent(config.directory, encodedEvent(event), options); }
     catch { fallback(); }
   };
@@ -62,8 +63,9 @@ export async function runObservedCli(args, dispatch, options = {}) {
     ...(identity.family === "lifecycle" ? { operation: identity.operation } : {}),
   }, options);
   write(complete);
-  if (LEVEL[severity] >= LEVEL[config.consoleLevel] && severity === "error" && !fallbackWritten) {
-    process.stderr.write(`RL_CLI_INTERNAL: ${identity.command} failed; invocation=${invocationId}\n`);
+  if (LEVEL[severity] >= LEVEL[config.consoleLevel] && !fallbackWritten) {
+    const code = severity === "error" ? "RL_CLI_INTERNAL" : "RL_CLI_EVENT";
+    process.stderr.write(`${code}: ${identity.command} ${complete.status}; invocation=${invocationId}\n`);
   }
   return exitCode;
 }
