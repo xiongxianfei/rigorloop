@@ -1,0 +1,49 @@
+change_id: 2026-08-25-governed-cli-proposal-revision-deadlock
+title: Governed CLI Proposal Revision Deadlock
+classification: lifecycle-integrity-bugfix
+risk: medium
+
+artifacts:
+  spec: specs/governed-lifecycle-cli.md
+  architecture: docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+  plan: docs/plans/2026-08-24-governed-lifecycle-cli.md
+  test_spec: specs/governed-lifecycle-cli.test.md
+  explain_change: docs/changes/2026-08-25-governed-cli-proposal-revision-deadlock/explain-change.md
+  verify_report: docs/changes/2026-08-25-governed-cli-proposal-revision-deadlock/verify-report.md
+
+requirements:
+  - A changes-requested review with open material findings settles its exact artifact to revision-required.
+  - An approved or clean-with-notes review with open material findings remains blocked.
+  - Status exposes record-artifact-revision after revision handback and does not expose it when another fatal blocker exists.
+  - A later review context selects the next durable review round after revision.
+
+tests:
+  - Changes-requested settlement preserves open-finding identity and hands ownership back to the authoring stage.
+  - Positive settlement with open findings remains rejected without changing repository bytes.
+  - Revision-required status exposes only record-artifact-revision unless a fatal workflow blocker is also present.
+  - Review context advances from a durable r1 record to r2.
+
+review:
+  status: clean
+  reviewed_artifact: commit e050956852b3b1913f8f1ca050d14fabc2900608
+  review_log: docs/changes/2026-08-25-governed-cli-proposal-revision-deadlock/review-log.md
+  unresolved_items: 0
+
+validation:
+  - command: node --test test/lifecycle-artifact-revision.test.js test/lifecycle-evidence.test.js test/lifecycle-read.test.js
+    result: pass_12_tests
+  - command: npm test
+    result: pass_162_tests
+  - command: python3 scripts/validate-npm-package.py
+    result: pass
+
+changed_files:
+  - packages/rigorloop/dist/lib/lifecycle-operations.js
+  - packages/rigorloop/dist/lib/lifecycle-read.js
+  - packages/rigorloop/test/lifecycle-evidence.test.js
+  - packages/rigorloop/test/lifecycle-read.test.js
+  - docs/changes/2026-08-25-governed-cli-proposal-revision-deadlock/change.yaml
+  - docs/changes/2026-08-25-governed-cli-proposal-revision-deadlock/review-log.md
+  - docs/changes/2026-08-25-governed-cli-proposal-revision-deadlock/reviews/code-review-final-r1.md
+  - docs/changes/2026-08-25-governed-cli-proposal-revision-deadlock/explain-change.md
+  - docs/changes/2026-08-25-governed-cli-proposal-revision-deadlock/verify-report.md
