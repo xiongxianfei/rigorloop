@@ -100,6 +100,27 @@ test("new artifact registration rejects a path owned by another governed change"
   assert.deepEqual(readFileSync(changePath), before);
 });
 
+test("ownership discovery ignores legacy records without the governed lifecycle contract", async () => {
+  const { root, evidencePath } = await repository();
+  mkdirSync(join(root, "docs", "changes", "legacy"), { recursive: true });
+  writeFileSync(join(root, "docs", "changes", "legacy", "change.yaml"), `change_id: legacy
+validation:
+  - command: bash -c "echo value: other"
+    result: pass
+`, "utf8");
+  const path = request(root, {
+    schema_version: 1, operation: "record-artifact-revision", change_id: "example", expected_lifecycle_revision: revision(root),
+    artifact_id: "architecture", artifact_kind: "architecture", artifact_role: "primary", artifact_path: "docs/architecture/shared.md",
+    evidence_path: evidencePath, stage_authority: "architecture",
+  });
+
+  const execution = executeLifecycleCli(["record-artifact-revision", "--request", path, "--format", "json"], { cwd: root });
+
+  assert.equal(execution.result.errors[0].code, "RL_ARTIFACT_PATH_OWNED");
+  assert.match(execution.result.errors[0].summary, /already owned/);
+  assert.deepEqual(execution.result.errors[0].relevant_identities, ["docs/architecture/shared.md", "canonical"]);
+});
+
 test("ownership discovery fails closed on contradictory or unreadable governed records", async () => {
   const { root, evidencePath } = await repository();
   const canonicalPath = join(root, "docs", "changes", "canonical", "change.yaml");
@@ -113,7 +134,7 @@ test("ownership discovery fails closed on contradictory or unreadable governed r
   assert.equal(contradictory.result.errors[0].code, "RL_ARTIFACT_PATH_OWNED");
   assert.match(contradictory.result.errors[0].summary, /contradictory/);
 
-  writeFileSync(canonicalPath, "change_id: canonical\nchange_id: duplicate\n", "utf8");
+  writeFileSync(canonicalPath, "change_id: canonical\nchange_id: duplicate\nlifecycle_contract: stage-owned-change-local-v1\n", "utf8");
   const unreadable = executeLifecycleCli(["record-artifact-revision", "--request", path, "--format", "json"], { cwd: root });
   assert.equal(unreadable.result.errors[0].code, "RL_ARTIFACT_PATH_OWNED");
   assert.match(unreadable.result.errors[0].summary, /cannot be determined/);

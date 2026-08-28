@@ -252,6 +252,12 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "npm test --prefix packages/rigorloop",
         "rigorloop-cli",
     ),
+    "governed_lifecycle_cli_wrapper.test": CheckCatalogEntry(
+        "governed_lifecycle_cli_wrapper.test",
+        "python scripts/test-governed-lifecycle-cli-validator.py",
+        "governed-lifecycle-cli-wrapper",
+        parallel_safe=True,
+    ),
     "npm_package_publication.test": CheckCatalogEntry(
         "npm_package_publication.test",
         "python scripts/test-npm-package-publication.py",
@@ -1996,6 +2002,19 @@ def _apply_path_selection(
         )
         return
 
+    if category == "governed-lifecycle-cli-wrapper":
+        _add_check(
+            selected,
+            "governed_lifecycle_cli_wrapper.test",
+            "Changed governed lifecycle wrapper requires focused child-result parity tests.",
+        )
+        _add_check(
+            selected,
+            "rigorloop_cli.test",
+            "Changed governed lifecycle wrapper requires public CLI integration tests.",
+        )
+        return
+
     blocking_results.append(
         {
             "code": "manual-routing-required",
@@ -2362,6 +2381,8 @@ def _path_category(path: str) -> str | None:
         "scripts/analyze-codex-jsonl.py",
         "scripts/measure-skill-tokens.py",
         "scripts/run-token-cost-benchmarks.py",
+        "scripts/measure-cli-result-bytes.py",
+        "scripts/test-cli-result-measurement.py",
         "scripts/test-token-cost-measurement.py",
         "scripts/test-token-cost-report-validation.py",
         "scripts/validate-token-cost-report.py",
@@ -2379,6 +2400,11 @@ def _path_category(path: str) -> str | None:
         "scripts/test-npm-package-publication.py",
     }:
         return "rigorloop-cli"
+    if path in {
+        "scripts/validate-governed-lifecycle-cli.py",
+        "scripts/test-governed-lifecycle-cli-validator.py",
+    }:
+        return "governed-lifecycle-cli-wrapper"
     if path.startswith("docs/reports/adapter-artifacts/releases/") and path.endswith(".yaml"):
         return "adapter-artifact-metadata"
     if path.startswith("tests/fixtures/token-cost/"):

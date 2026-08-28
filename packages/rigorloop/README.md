@@ -49,11 +49,21 @@ rigorloop --help
 rigorloop version
 rigorloop init codex|claude|opencode [--write-state] [--from-archive <path>] [--dry-run] [--json]
 rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
-rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json]
-rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json]
+rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json|concise-human|concise-json|detailed-json]
+rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json|concise-human|concise-json|detailed-json]
+rigorloop logs path [--format human|json]
+rigorloop logs show <invocation-id> [--format human|json]
 ```
 
 Governed lifecycle mutations use request files so operation intent and the expected lifecycle revision remain reviewable. Existing version-1 coordination remains readable; run the explicit `migrate` operation before `route-correction`, `return-correction`, or `withdraw-artifact-registration`. Authoring skills continue to use `record-artifact-revision`; workflow alone owns correction routing, return, and safe duplicate-registration withdrawal.
+
+## Local CLI logs and concise results
+
+RigorLoop records privacy-bounded local JSON Lines diagnostics by default and prints console diagnostics at `error` level by default. Routine success is therefore quiet on stderr. Logs rotate at 5 MiB and retain `rigorloop.jsonl` plus four archives in the platform user-state directory; use `rigorloop logs path` to locate it and `rigorloop logs show <invocation-id>` for exact lookup.
+
+Use `--no-file-log` or `RIGORLOOP_FILE_LOG=off` to disable file logging. Set `--file-log-level debug|info|warning|error` and `--console-log-level debug|info|warning|error|off` for one invocation; the matching environment variables are `RIGORLOOP_FILE_LOG_LEVEL` and `RIGORLOOP_CONSOLE_LOG_LEVEL`. `RIGORLOOP_LOG_DIR` accepts only an absolute, non-symlinked safe directory.
+
+Existing v0.4.x output defaults and `--json` remain unchanged. Agents can opt into compact results with `--format concise-json` or `--format concise-human`; complete results remain available with `--format detailed-json`. Local logs are diagnostics only and never authorize lifecycle transitions.
 
 ## Target Init
 

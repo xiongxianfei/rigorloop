@@ -1,0 +1,644 @@
+{
+  "schema_version": 1,
+  "baseline_revision": "fcbbfda44a89945ee06cfa0c1b16dcbd39984036",
+  "normalization": "trim-crlf-and-replace-project-root-v1",
+  "cases": {
+    "version-human-success": {
+      "exit_code": 0,
+      "stdout": "@xiongxianfei/rigorloop 0.4.1",
+      "stderr": ""
+    },
+    "unknown-human-failure": {
+      "exit_code": 4,
+      "stdout": "",
+      "stderr": "Unknown command: future-command\nRun rigorloop --help."
+    },
+    "unknown-json-failure": {
+      "exit_code": 4,
+      "stdout": {
+        "schema_version": 1,
+        "command": "unknown",
+        "package": {
+          "name": "@xiongxianfei/rigorloop",
+          "version": "0.4.1"
+        },
+        "cwd": "<PROJECT>",
+        "status": "error",
+        "summary": "Unknown command: future-command",
+        "actions": [],
+        "artifacts": [],
+        "blockers": [],
+        "warnings": [],
+        "errors": [
+          {
+            "code": "invalid-usage",
+            "message": "Unknown command: future-command",
+            "next_action": "Run rigorloop --help."
+          }
+        ],
+        "diagnostics": {}
+      },
+      "stderr": ""
+    },
+    "init-human-success": {
+      "exit_code": 0,
+      "stdout": "RigorLoop init dry run completed.\nNo files were written.",
+      "stderr": ""
+    },
+    "init-human-blocked": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "Target 'unsupported' is not supported.\nUse one of: codex, claude, opencode."
+    },
+    "init-json-success": {
+      "exit_code": 0,
+      "stdout": {
+        "schema_version": 1,
+        "command": "init",
+        "package": {
+          "name": "@xiongxianfei/rigorloop",
+          "version": "0.4.1"
+        },
+        "cwd": "<PROJECT>",
+        "status": "success",
+        "summary": "RigorLoop init dry run completed. No files were written.",
+        "actions": [
+          {
+            "type": "create-dir",
+            "path": ".agents",
+            "status": "planned",
+            "reason": "Create .agents."
+          },
+          {
+            "type": "create-dir",
+            "path": ".agents/skills",
+            "status": "planned",
+            "reason": "Create .agents/skills."
+          }
+        ],
+        "artifacts": [
+          {
+            "path": ".agents",
+            "kind": "codex-adapter-root",
+            "status": "planned"
+          },
+          {
+            "path": ".agents/skills",
+            "kind": "codex-install-root",
+            "status": "planned"
+          }
+        ],
+        "blockers": [],
+        "warnings": [],
+        "errors": [],
+        "diagnostics": {},
+        "state_files": {
+          "action": "skipped",
+          "reason": "Use --write-state to write rigorloop.yaml and rigorloop.lock."
+        }
+      },
+      "stderr": ""
+    },
+    "init-json-blocked": {
+      "exit_code": 2,
+      "stdout": {
+        "schema_version": 1,
+        "command": "init",
+        "package": {
+          "name": "@xiongxianfei/rigorloop",
+          "version": "0.4.1"
+        },
+        "cwd": "<PROJECT>",
+        "status": "blocked",
+        "summary": "Target 'unsupported' is not supported.",
+        "actions": [],
+        "artifacts": [],
+        "blockers": [
+          {
+            "code": "target-unknown",
+            "message": "Target 'unsupported' is not supported.",
+            "next_action": "Use one of: codex, claude, opencode."
+          }
+        ],
+        "warnings": [],
+        "errors": [],
+        "diagnostics": {}
+      },
+      "stderr": ""
+    },
+    "new-change-human-success": {
+      "exit_code": 0,
+      "stdout": "RigorLoop new-change dry run completed.\ndocs/changes/example-change/change.yaml",
+      "stderr": ""
+    },
+    "new-change-human-failure": {
+      "exit_code": 4,
+      "stdout": "",
+      "stderr": "new-change requires --title <title>.\nRun rigorloop new-change <change-id> --title <title>."
+    },
+    "new-change-json-success": {
+      "exit_code": 0,
+      "stdout": {
+        "schema_version": 1,
+        "command": "new-change",
+        "package": {
+          "name": "@xiongxianfei/rigorloop",
+          "version": "0.4.1"
+        },
+        "cwd": "<PROJECT>",
+        "status": "success",
+        "summary": "RigorLoop new-change dry run completed. No files were written.",
+        "actions": [
+          {
+            "type": "create-dir",
+            "path": "docs",
+            "status": "planned",
+            "reason": "Directory will be created."
+          },
+          {
+            "type": "create-dir",
+            "path": "docs/changes",
+            "status": "planned",
+            "reason": "Directory will be created."
+          },
+          {
+            "type": "create-dir",
+            "path": "docs/changes/example-change",
+            "status": "planned",
+            "reason": "Directory will be created."
+          },
+          {
+            "type": "write",
+            "path": "docs/changes/example-change/change.yaml",
+            "status": "planned",
+            "reason": "Change metadata file will be written."
+          }
+        ],
+        "artifacts": [
+          {
+            "path": "docs/changes/example-change/change.yaml",
+            "kind": "change-metadata",
+            "status": "planned"
+          }
+        ],
+        "blockers": [],
+        "warnings": [],
+        "errors": [],
+        "diagnostics": {},
+        "change": {
+          "change_id": "example-change",
+          "root": "docs/changes/example-change",
+          "metadata_path": "docs/changes/example-change/change.yaml",
+          "profile": "standard"
+        },
+        "planned_change_metadata": {
+          "path": "docs/changes/example-change/change.yaml",
+          "content": "change_id: \"example-change\"\ntitle: \"Example change\"\nclassification: \"default\"\nrisk: \"medium\"\nartifacts: {}\nrequirements: []\ntests: []\nvalidation: []\nchanged_files: []\nreview:\n  status: \"pending\"\n  unresolved_items: 0\n"
+        }
+      },
+      "stderr": ""
+    },
+    "new-change-json-failure": {
+      "exit_code": 4,
+      "stdout": {
+        "schema_version": 1,
+        "command": "new-change",
+        "package": {
+          "name": "@xiongxianfei/rigorloop",
+          "version": "0.4.1"
+        },
+        "cwd": "<PROJECT>",
+        "status": "error",
+        "summary": "new-change requires --title <title>.",
+        "actions": [],
+        "artifacts": [],
+        "blockers": [],
+        "warnings": [],
+        "errors": [
+          {
+            "code": "missing-title",
+            "message": "new-change requires --title <title>.",
+            "next_action": "Run rigorloop new-change <change-id> --title <title>."
+          }
+        ],
+        "diagnostics": {}
+      },
+      "stderr": ""
+    },
+    "lifecycle-status-human-success": {
+      "exit_code": 0,
+      "stdout": "RigorLoop lifecycle status: success\nChange: example\nLifecycle revision: sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone",
+      "stderr": ""
+    },
+    "lifecycle-status-json-success": {
+      "exit_code": 0,
+      "stdout": {
+        "schema_version": 1,
+        "command": "lifecycle",
+        "operation": "status",
+        "status": "success",
+        "change_id": "example",
+        "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+        "effective_state": {
+          "recorded_state": {
+            "spec": "approved"
+          },
+          "evidence_state": {
+            "spec": "current"
+          },
+          "effective_state": "current",
+          "current_stage": "implement",
+          "active_artifact": "plan",
+          "active_milestone": "M1",
+          "active_correction": null,
+          "unresolved_findings": [],
+          "stale_evidence": [],
+          "supporting_paths": [
+            "docs/changes/example/change.yaml",
+            "specs/example.md"
+          ]
+        },
+        "blockers": [],
+        "permitted_operations": [
+          "record-validation",
+          "complete-milestone"
+        ],
+        "artifacts": [
+          {
+            "artifact_id": "spec",
+            "path": "specs/example.md",
+            "sha256": "8ef0b048ad51a9d2ccaf9177716d7c83159a1d8c22fd37aa2b7d03c11b21b40d",
+            "recorded_state": "approved",
+            "evidence_state": "current"
+          }
+        ],
+        "warnings": [],
+        "errors": []
+      },
+      "stderr": ""
+    },
+    "lifecycle-status-human-failure": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "RigorLoop lifecycle status: blocked\nRL_CHANGE_NOT_FOUND: No active governed change was found."
+    },
+    "lifecycle-status-json-failure": {
+      "exit_code": 2,
+      "stdout": {
+        "schema_version": 1,
+        "command": "lifecycle",
+        "operation": "status",
+        "status": "blocked",
+        "change_id": null,
+        "lifecycle_revision": null,
+        "effective_state": null,
+        "blockers": [
+          {
+            "code": "RL_CHANGE_NOT_FOUND",
+            "summary": "No active governed change was found.",
+            "blocking_invariant": "change-selection",
+            "relevant_identities": [],
+            "corrective_operation": null
+          }
+        ],
+        "permitted_operations": [],
+        "artifacts": [],
+        "warnings": [],
+        "errors": [
+          {
+            "code": "RL_CHANGE_NOT_FOUND",
+            "summary": "No active governed change was found.",
+            "blocking_invariant": "change-selection",
+            "relevant_identities": [],
+            "corrective_operation": null
+          }
+        ]
+      },
+      "stderr": ""
+    },
+    "lifecycle-context-human-success": {
+      "exit_code": 0,
+      "stdout": "RigorLoop lifecycle context: success\nChange: example\nLifecycle revision: sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nPermitted operations: record-validation, complete-milestone\nContext operation: code-review\nTarget artifact: none\nSettled upstream inputs: none\nReview round: r1\nAuthorized output path: none\nPermitted registration operation: record-review",
+      "stderr": ""
+    },
+    "lifecycle-context-json-success": {
+      "exit_code": 0,
+      "stdout": {
+        "schema_version": 1,
+        "command": "lifecycle",
+        "operation": "context",
+        "status": "success",
+        "change_id": "example",
+        "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+        "effective_state": {
+          "recorded_state": {
+            "spec": "approved"
+          },
+          "evidence_state": {
+            "spec": "current"
+          },
+          "effective_state": "current",
+          "current_stage": "implement",
+          "active_artifact": "plan",
+          "active_milestone": "M1",
+          "active_correction": null,
+          "unresolved_findings": [],
+          "stale_evidence": [],
+          "supporting_paths": [
+            "docs/changes/example/change.yaml",
+            "specs/example.md"
+          ]
+        },
+        "blockers": [],
+        "permitted_operations": [
+          "record-validation",
+          "complete-milestone"
+        ],
+        "artifacts": [
+          {
+            "artifact_id": "spec",
+            "path": "specs/example.md",
+            "sha256": "8ef0b048ad51a9d2ccaf9177716d7c83159a1d8c22fd37aa2b7d03c11b21b40d",
+            "recorded_state": "approved",
+            "evidence_state": "current"
+          }
+        ],
+        "warnings": [],
+        "errors": [],
+        "context": {
+          "exact_change": "example",
+          "operation": "code-review",
+          "target_artifact": null,
+          "settled_upstream_inputs": [],
+          "review_round": "r1",
+          "authorized_output_path": null,
+          "blockers": [],
+          "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+          "permitted_registration_operation": "record-review"
+        }
+      },
+      "stderr": ""
+    },
+    "lifecycle-context-human-failure": {
+      "exit_code": 0,
+      "stdout": "RigorLoop lifecycle context: success\nChange: example\nLifecycle revision: sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nPermitted operations: record-validation, complete-milestone\nContext operation: unknown-stage\nTarget artifact: none\nSettled upstream inputs: none\nReview round: not-applicable\nAuthorized output path: none\nPermitted registration operation: none",
+      "stderr": ""
+    },
+    "lifecycle-context-json-failure": {
+      "exit_code": 0,
+      "stdout": {
+        "schema_version": 1,
+        "command": "lifecycle",
+        "operation": "context",
+        "status": "success",
+        "change_id": "example",
+        "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+        "effective_state": {
+          "recorded_state": {
+            "spec": "approved"
+          },
+          "evidence_state": {
+            "spec": "current"
+          },
+          "effective_state": "current",
+          "current_stage": "implement",
+          "active_artifact": "plan",
+          "active_milestone": "M1",
+          "active_correction": null,
+          "unresolved_findings": [],
+          "stale_evidence": [],
+          "supporting_paths": [
+            "docs/changes/example/change.yaml",
+            "specs/example.md"
+          ]
+        },
+        "blockers": [],
+        "permitted_operations": [
+          "record-validation",
+          "complete-milestone"
+        ],
+        "artifacts": [
+          {
+            "artifact_id": "spec",
+            "path": "specs/example.md",
+            "sha256": "8ef0b048ad51a9d2ccaf9177716d7c83159a1d8c22fd37aa2b7d03c11b21b40d",
+            "recorded_state": "approved",
+            "evidence_state": "current"
+          }
+        ],
+        "warnings": [],
+        "errors": [],
+        "context": {
+          "exact_change": "example",
+          "operation": "unknown-stage",
+          "target_artifact": null,
+          "settled_upstream_inputs": [],
+          "review_round": null,
+          "authorized_output_path": null,
+          "blockers": [],
+          "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+          "permitted_registration_operation": null
+        }
+      },
+      "stderr": ""
+    },
+    "lifecycle-validate-human-success": {
+      "exit_code": 0,
+      "stdout": "RigorLoop lifecycle validate: success\nChange: example\nLifecycle revision: sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone\nRepository validation: valid",
+      "stderr": ""
+    },
+    "lifecycle-validate-json-success": {
+      "exit_code": 0,
+      "stdout": {
+        "schema_version": 1,
+        "command": "lifecycle",
+        "operation": "validate",
+        "status": "success",
+        "change_id": "example",
+        "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+        "effective_state": {
+          "recorded_state": {
+            "spec": "approved"
+          },
+          "evidence_state": {
+            "spec": "current"
+          },
+          "effective_state": "current",
+          "current_stage": "implement",
+          "active_artifact": "plan",
+          "active_milestone": "M1",
+          "active_correction": null,
+          "unresolved_findings": [],
+          "stale_evidence": [],
+          "supporting_paths": [
+            "docs/changes/example/change.yaml",
+            "specs/example.md"
+          ]
+        },
+        "blockers": [],
+        "permitted_operations": [
+          "record-validation",
+          "complete-milestone"
+        ],
+        "artifacts": [
+          {
+            "artifact_id": "spec",
+            "path": "specs/example.md",
+            "sha256": "8ef0b048ad51a9d2ccaf9177716d7c83159a1d8c22fd37aa2b7d03c11b21b40d",
+            "recorded_state": "approved",
+            "evidence_state": "current"
+          }
+        ],
+        "warnings": [],
+        "errors": [],
+        "validation": {
+          "valid": true,
+          "checks": [
+            "schema",
+            "artifacts",
+            "evidence",
+            "findings",
+            "milestones"
+          ]
+        }
+      },
+      "stderr": ""
+    },
+    "lifecycle-validate-human-failure": {
+      "exit_code": 4,
+      "stdout": "",
+      "stderr": "RigorLoop lifecycle validate: error\nRL_INVALID_REQUEST: The selected change record is malformed."
+    },
+    "lifecycle-validate-json-failure": {
+      "exit_code": 4,
+      "stdout": {
+        "schema_version": 1,
+        "command": "lifecycle",
+        "operation": "validate",
+        "status": "error",
+        "change_id": null,
+        "lifecycle_revision": null,
+        "effective_state": null,
+        "blockers": [
+          {
+            "code": "RL_INVALID_REQUEST",
+            "summary": "The selected change record is malformed.",
+            "blocking_invariant": "yaml-domain",
+            "relevant_identities": [],
+            "corrective_operation": null
+          }
+        ],
+        "permitted_operations": [],
+        "artifacts": [],
+        "warnings": [],
+        "errors": [
+          {
+            "code": "RL_INVALID_REQUEST",
+            "summary": "The selected change record is malformed.",
+            "blocking_invariant": "yaml-domain",
+            "relevant_identities": [],
+            "corrective_operation": null
+          }
+        ]
+      },
+      "stderr": ""
+    },
+    "lifecycle-mutation-human-success": {
+      "exit_code": 0,
+      "stdout": "RigorLoop lifecycle migrate: success\nChange: example\nLifecycle revision: sha256:b47f23cf1a623e78cd8575bad8fdf4cbe88f35c04d05478383e98edb3b645938\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone\nMutation: planned; docs/changes/example/change.yaml",
+      "stderr": ""
+    },
+    "lifecycle-mutation-json-success": {
+      "exit_code": 0,
+      "stdout": {
+        "schema_version": 1,
+        "command": "lifecycle",
+        "operation": "migrate",
+        "status": "success",
+        "change_id": "example",
+        "lifecycle_revision": "sha256:b47f23cf1a623e78cd8575bad8fdf4cbe88f35c04d05478383e98edb3b645938",
+        "effective_state": {
+          "recorded_state": {
+            "spec": "approved"
+          },
+          "evidence_state": {
+            "spec": "current"
+          },
+          "effective_state": "current",
+          "current_stage": "implement",
+          "active_artifact": "plan",
+          "active_milestone": "M1",
+          "active_correction": null,
+          "unresolved_findings": [],
+          "stale_evidence": [],
+          "supporting_paths": [
+            "docs/changes/example/change.yaml",
+            "specs/example.md"
+          ]
+        },
+        "blockers": [],
+        "permitted_operations": [
+          "record-validation",
+          "complete-milestone"
+        ],
+        "artifacts": [
+          {
+            "artifact_id": "spec",
+            "path": "specs/example.md",
+            "sha256": "8ef0b048ad51a9d2ccaf9177716d7c83159a1d8c22fd37aa2b7d03c11b21b40d",
+            "recorded_state": "approved",
+            "evidence_state": "current"
+          }
+        ],
+        "warnings": [],
+        "errors": [],
+        "mutation": {
+          "status": "planned",
+          "changed_path": "docs/changes/example/change.yaml",
+          "prior_lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+          "resulting_lifecycle_revision": "sha256:b47f23cf1a623e78cd8575bad8fdf4cbe88f35c04d05478383e98edb3b645938"
+        }
+      },
+      "stderr": ""
+    },
+    "lifecycle-mutation-human-failure": {
+      "exit_code": 4,
+      "stdout": "",
+      "stderr": "RigorLoop lifecycle record-review: error\nRL_INVALID_REQUEST: request path must be an existing regular file"
+    },
+    "lifecycle-mutation-json-failure": {
+      "exit_code": 4,
+      "stdout": {
+        "schema_version": 1,
+        "command": "lifecycle",
+        "operation": "record-review",
+        "status": "error",
+        "change_id": null,
+        "lifecycle_revision": null,
+        "effective_state": null,
+        "blockers": [
+          {
+            "code": "RL_INVALID_REQUEST",
+            "summary": "request path must be an existing regular file",
+            "blocking_invariant": "lifecycle-operation",
+            "relevant_identities": [],
+            "corrective_operation": null
+          }
+        ],
+        "permitted_operations": [],
+        "artifacts": [],
+        "warnings": [],
+        "errors": [
+          {
+            "code": "RL_INVALID_REQUEST",
+            "summary": "request path must be an existing regular file",
+            "blocking_invariant": "lifecycle-operation",
+            "relevant_identities": [],
+            "corrective_operation": null
+          }
+        ]
+      },
+      "stderr": ""
+    }
+  }
+}

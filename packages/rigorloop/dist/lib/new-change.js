@@ -93,6 +93,7 @@ export function parseNewChangeArgs(args, env = process.env) {
     debug: false,
     noColor: Boolean(env.NO_COLOR),
     dryRun: false,
+    format: undefined,
   };
   for (const arg of args) {
     if (arg === "--json") {
@@ -127,6 +128,15 @@ export function parseNewChangeArgs(args, env = process.env) {
       flags.noColor = true;
     } else if (arg === "--dry-run") {
       flags.dryRun = true;
+    } else if (arg === "--format") {
+      const parsed = parseOptionValue(args, index, "invalid-usage", "--format requires a supported result format.");
+      if (parsed.error) return { flags, error: parsed.error };
+      if (!["human", "json", "concise-human", "concise-json", "detailed-json"].includes(parsed.value)) {
+        return { flags, error: { code: "invalid-usage", message: `Unknown result format: ${parsed.value}` } };
+      }
+      flags.format = parsed.value;
+      flags.json = parsed.value !== "human";
+      index += parsed.consumed;
     } else if (arg === "--title") {
       const parsed = parseOptionValue(args, index, "missing-title", "--title requires a non-empty value.");
       if (parsed.error) {

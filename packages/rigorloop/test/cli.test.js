@@ -39,7 +39,12 @@ const historicalSkillsOnlyMetadataFile = `adapter-artifacts-${historicalSkillsOn
 function runCli(args, options = {}) {
   return spawnSync(process.execPath, [options.cliPath ?? cliPath, ...args], {
     cwd: options.cwd ?? packageRoot,
-    env: { ...process.env, ...(options.env ?? {}) },
+    env: {
+      ...process.env,
+      RIGORLOOP_FILE_LOG: "off",
+      RIGORLOOP_CONSOLE_LOG_LEVEL: "off",
+      ...(options.env ?? {}),
+    },
     encoding: "utf8",
   });
 }
@@ -295,6 +300,9 @@ function fixturePackage(options = {}) {
   copyFileSync(cliPath, join(root, "dist", "bin", "rigorloop.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "adapters.js"), join(root, "dist", "lib", "adapters.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "command-result.js"), join(root, "dist", "lib", "command-result.js"));
+  for (const file of ["cli-observability.js", "diagnostic-event.js", "log-config.js", "log-inspection.js", "log-sink.js", "result-renderer.js"]) {
+    copyFileSync(join(packageRoot, "dist", "lib", file), join(root, "dist", "lib", file));
+  }
   copyFileSync(join(packageRoot, "dist", "lib", "lockfile.js"), join(root, "dist", "lib", "lockfile.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-contract.js"), join(root, "dist", "lib", "lifecycle-contract.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-cli.js"), join(root, "dist", "lib", "lifecycle-cli.js"));
@@ -1264,6 +1272,7 @@ test("T8 quiet mode does not change JSON shape or behavior", () => {
     execFileSync(process.execPath, [cliPath, "init", "codex", "--write-state", "--dry-run", "--json"], {
       cwd,
       encoding: "utf8",
+      env: { ...process.env, RIGORLOOP_FILE_LOG: "off", RIGORLOOP_CONSOLE_LOG_LEVEL: "off" },
     }),
   );
   const quietResult = runCli(["init", "codex", "--write-state", "--dry-run", "--json", "--quiet"], { cwd });

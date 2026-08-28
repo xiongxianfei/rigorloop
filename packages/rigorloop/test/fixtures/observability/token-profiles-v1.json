@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "profile_version": "cli-result-token-v1",
+  "profiles": [
+    {"name": "status", "setup": "governed-active", "args": ["lifecycle", "status", "--change", "example", "--format", "concise-json"], "expected_exit": 0, "required_fields": ["schema_version", "projection", "invocation_id", "command", "operation", "status", "exit_code", "change_id", "lifecycle_revision", "observability"], "follow_ups": []},
+    {"name": "context", "setup": "governed-active", "args": ["lifecycle", "context", "code-review", "--change", "example", "--format", "concise-json"], "expected_exit": 0, "required_fields": ["schema_version", "projection", "invocation_id", "command", "operation", "status", "exit_code", "change_id", "lifecycle_revision", "observability"], "follow_ups": []},
+    {"name": "mutation-success", "setup": "empty", "args": ["init", "codex", "--dry-run", "--format", "concise-json"], "expected_exit": 0, "required_fields": ["schema_version", "projection", "invocation_id", "command", "status", "exit_code", "observability"], "follow_ups": []},
+    {"name": "mutation-blocked", "setup": "empty", "args": ["init", "unsupported", "--format", "concise-json"], "expected_exit": 2, "required_fields": ["schema_version", "projection", "invocation_id", "command", "status", "exit_code", "codes", "observability"], "follow_ups": []},
+    {"name": "validation-failure", "setup": "malformed-change", "args": ["lifecycle", "validate", "--change", "example", "--format", "concise-json"], "expected_exit": 4, "required_fields": ["schema_version", "projection", "invocation_id", "command", "operation", "status", "exit_code", "codes", "observability"], "follow_ups": []},
+    {"name": "unexpected-error", "setup": "invalid-archive", "args": ["init", "codex", "--from-archive", "{archive}", "--dry-run", "--format", "concise-json"], "expected_exit": 3, "required_fields": ["schema_version", "projection", "invocation_id", "command", "status", "exit_code", "codes", "observability"], "follow_ups": []}
+  ]
+}

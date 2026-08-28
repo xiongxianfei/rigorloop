@@ -27,6 +27,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
+| [CLI Observability and Token-Efficient Results](plans/2026-08-25-cli-observability-token-efficient-results.md) | [change.yaml](changes/2026-08-25-cli-observability-token-efficient-results/change.yaml) |
 | [Workflow-Routed Upstream Corrections](plans/2026-08-25-workflow-routed-upstream-corrections.md) | [change.yaml](changes/2026-08-25-workflow-routed-upstream-corrections/change.yaml) |
 | [Governed Lifecycle CLI](plans/2026-08-24-governed-lifecycle-cli.md) | [change.yaml](changes/2026-08-24-governed-lifecycle-cli/change.yaml) |
 | [Bugfix Skill Simplification](plans/2026-08-20-bugfix-skill-simplification.md) | [change.yaml](changes/2026-08-20-bugfix-skill-simplification/change.yaml) |
