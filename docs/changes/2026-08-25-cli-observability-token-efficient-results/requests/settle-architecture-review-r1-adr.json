@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-08-25-cli-observability-token-efficient-results",
+  "expected_lifecycle_revision": "sha256:b66160bfe847d564264563d2431d177b8f9b41c77204e10858aa7a97fc0fe07c",
+  "artifact_id": "adr-cli-observability",
+  "stage_authority": "architecture-review"
+}

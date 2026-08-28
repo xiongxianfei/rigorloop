@@ -1,0 +1,15 @@
+schema_version: 1
+review_id: architecture-review-r2
+review_subject: filesystem threat-model correction
+governing_basis: specs/cli-observability-and-token-efficient-results.md@sha256:7693844003af6bd1b270d6dede9405c64b976afe838aaf4ab6444208710608ba
+review_record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r2.md
+target_order:
+  - adr-cli-observability
+targets:
+  adr-cli-observability:
+    kind: adr
+    path: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+    identity: sha256:5e98900b19ff15a759dd59923c80d6a052281d345eec477d1814d82953a5a19e
+    disposition: approved
+    expected_result: accepted
+    progress: prepared

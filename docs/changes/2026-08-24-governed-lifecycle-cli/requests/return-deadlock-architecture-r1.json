@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "return-correction",
+  "change_id": "2026-08-24-governed-lifecycle-cli",
+  "expected_lifecycle_revision": "sha256:35f4763fece690b4019f7e9cfe3075de00c22c37773b0ba7ec501c3a7be60327",
+  "route_id": "route-b2556e977a7f11c9641d0f9e74b662c5dc5f9cc9a7e27745f6071b90f8162d04",
+  "evidence_path": "docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-return-deadlock-architecture-r1.md",
+  "stage_authority": "workflow"
+}

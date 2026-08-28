@@ -128,6 +128,7 @@ If a formal workflow-managed test spec lacks recorded, approved, current `test-s
 - Confirm expected failure for new behavior or regression coverage when feasible.
 - Implement the minimum scope-complete change, rerun narrow proof, then refactor only within scope.
 - Prefer selector-selected targeted proof before optional broad smoke.
+- Use the project's validation selector, run all selected checks, and preserve stable check IDs such as `skills.validate` when they apply.
 - Preserve authoritative broad-smoke triggers and record stable selected check IDs when useful.
 - Stop on a failing required command until it is fixed or recorded as a blocker.
 

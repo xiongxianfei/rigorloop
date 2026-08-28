@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-08-24-governed-lifecycle-cli",
+  "expected_lifecycle_revision": "sha256:72244da7a4593229e9ad2a3916506597609420ff815e2f61a1e707d1cd059302",
+  "artifact_id": "architecture",
+  "evidence_path": "docs/changes/2026-08-24-governed-lifecycle-cli/reviews/architecture-review-r5.md",
+  "stage_authority": "architecture-review"
+}

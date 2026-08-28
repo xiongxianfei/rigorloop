@@ -1,0 +1,33 @@
+schema_version: 1
+review_id: spec-review-r3
+review_stage: spec-review
+review_target: specs/cli-observability-and-token-efficient-results.md
+base_revision: sha256:7693844003af6bd1b270d6dede9405c64b976afe838aaf4ab6444208710608ba
+head_revision: sha256:7693844003af6bd1b270d6dede9405c64b976afe838aaf4ab6444208710608ba
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-filesystem-correction
+reviewer_context_id: root-spec-review-r3-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - filesystem-containment-contract
+  - concurrent-writer-recovery
+  - cross-platform-pathname-semantics
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-25-cli-observability-token-efficient-results.md
+  - specs/cli-observability-and-token-efficient-results.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - supported filesystem actor boundary
+  - fail-closed observed pathname substitution
+  - stale and unverifiable lock behavior
+  - closed event and sequence mapping

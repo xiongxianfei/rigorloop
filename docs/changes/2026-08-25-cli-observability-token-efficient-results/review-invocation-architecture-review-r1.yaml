@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: architecture-review-r1
+review_stage: architecture-review
+review_surface: canonical-architecture-update
+review_target: docs/architecture/system/architecture.md
+base_revision: sha256:427828a44dd25d63f18e07c99eb4055330a26961f5de8d8297545a7d6455c6e7
+head_revision: sha256:427828a44dd25d63f18e07c99eb4055330a26961f5de8d8297545a7d6455c6e7
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-architecture-authoring-r1
+reviewer_context_id: root-architecture-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - machine-local-diagnostic-persistence
+  - cross-process-rotation
+  - compatibility-sensitive-result-projection
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+  - specs/cli-observability-and-token-efficient-results.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+    sha256: bda70adc597cc43f9799c34db57010c2fb626e1eea4abdeada88ea716d8429ae
+  - path: specs/cli-observability-and-token-efficient-results.md
+    sha256: de9ec40c11d33b4d199e79fea74374199d94133c8eed651546ed04d664bc1029
+  - path: docs/architecture/system/architecture.md
+    sha256: 427828a44dd25d63f18e07c99eb4055330a26961f5de8d8297545a7d6455c6e7
+  - path: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+    sha256: 8df259dc5e97efa06535f785c25d575c366e2864b1fd88abde96fba6075b4fd4
+prompt_template_version: architecture-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - semantic and diagnostic failure isolation
+  - bounded concurrent append and rotation
+  - allowlist privacy and path containment
+  - result projection compatibility and adoption gates

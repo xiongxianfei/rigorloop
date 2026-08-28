@@ -9,6 +9,7 @@ const RESOLUTION_DISPOSITIONS = new Set(["accepted", "rejected", "deferred", "pa
 const ARTIFACT_KINDS = new Set(["proposal", "spec", "architecture", "adr", "plan", "test-spec"]);
 const ARTIFACT_ROLES = new Set(["primary", "supporting"]);
 const CORRECTION_STAGE_ORDER = ["proposal", "proposal-review", "spec", "spec-review", "architecture", "architecture-review", "plan", "plan-review", "test-spec", "test-spec-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"];
+const GOVERNED_LIFECYCLE_CONTRACT = /^lifecycle_contract:\s*(?:stage-owned-change-local-v1|"stage-owned-change-local-v1"|'stage-owned-change-local-v1')\s*(?:#.*)?$/m;
 
 function operationError(code, summary, invariant, identities = [], correctiveOperation = null) {
   const error = new Error(`${code}: ${summary}`);
@@ -84,8 +85,10 @@ function changeFiles(root) {
 function artifactOwners(root, artifactPath) {
   const owners = [];
   for (const entry of changeFiles(root)) {
+    const source = readFileSync(entry.path, "utf8");
+    if (!GOVERNED_LIFECYCLE_CONTRACT.test(source)) continue;
     let candidate;
-    try { candidate = parseLifecycleYaml(readFileSync(entry.path, "utf8")); }
+    try { candidate = parseLifecycleYaml(source); }
     catch { throw operationError("RL_ARTIFACT_PATH_OWNED", "artifact ownership cannot be determined from an unreadable change record", "cross-change-artifact-ownership", [entry.changeId]); }
     if (candidate.lifecycle_contract !== "stage-owned-change-local-v1") continue;
     const registrations = candidate.lifecycle_cli?.artifacts ?? {};
@@ -175,6 +178,173 @@ function findingSet(value) {
   return value.split(",").map((item) => item.trim().replace(/`/g, "")).filter(Boolean).sort();
 }
 
+function tableCells(line) {
+  return line.split("|").slice(1, -1).map((cell) => cell.trim().replace(/^`|`$/g, ""));
+}
+
+function reviewLogFacts(log, reviewId) {
+  if (!log.entry_text.trimStart().startsWith("|")) {
+    return {
+      format: "prose",
+      reviewId: metadata(log.entry_text, "Review ID"),
+      stage: metadata(log.entry_text, "Stage"),
+      round: metadata(log.entry_text, "Round"),
+      record: metadata(log.entry_text, "(?:Detailed record|Record)"),
+      outcome: metadata(log.entry_text, "(?:Review status|Status)"),
+      findings: metadata(log.entry_text, "Material findings"),
+      openFindings: metadata(log.entry_text, "Open findings"),
+      recording: metadata(log.entry_text, "(?:Recording status|Recording)"),
+    };
+  }
+  const lines = log.text.split("\n");
+  const rowIndex = lines.findIndex((line) => line === log.entry_text);
+  let headerIndex = rowIndex - 1;
+  while (headerIndex >= 0 && !/^\s*\|\s*Review ID\s*\|/i.test(lines[headerIndex])) headerIndex -= 1;
+  if (headerIndex < 0) throw operationError("RL_INVALID_REQUEST", "review log table has no canonical header", "review-log-consistency", [reviewId]);
+  const headers = tableCells(lines[headerIndex]).map((value) => value.toLowerCase());
+  const values = tableCells(log.entry_text);
+  const facts = Object.fromEntries(headers.map((header, index) => [header, values[index] ?? null]));
+  return {
+    format: "table",
+    reviewId: facts["review id"],
+    stage: facts.stage,
+    round: facts.round,
+    record: facts.record ?? facts["detailed record"],
+    outcome: facts.status ?? facts["review status"],
+    findings: facts["material findings"],
+    openFindings: facts["open findings"],
+    recording: facts.recording ?? facts["recording status"],
+  };
+}
+
+function noFindings(value) {
+  return value === null || value === undefined || /^(?:0|none)$/i.test(String(value).trim().replace(/`/g, ""));
+}
+
+function resetLatestReview() {
+  return { artifact_id: "none", evidence: [], milestone_id: "none", occurrence: "none", round: "none", stage: "none", status: "not-started" };
+}
+
+function milestoneProof(root, request) {
+  const evidence = safeFile(root, request.evidence_path);
+  if (metadata(evidence.text, "Milestone") !== request.milestone_id || !/^pass(?:ed)?$/i.test(metadata(evidence.text, "Validation result") ?? "")) {
+    throw operationError("RL_INVALID_REQUEST", "milestone evidence must name the milestone and passing validation", "milestone-proof", [request.milestone_id, evidence.path]);
+  }
+  return evidence;
+}
+
+function fingerprintedCompletion(record) {
+  return { ...record, completion_fingerprint: digest(Buffer.from(canonicalJson(record))) };
+}
+
+function projectedCompletion(evidence, review, request) {
+  return fingerprintedCompletion({
+    completion_schema_version: 1,
+    evidence_path: evidence.path,
+    evidence_sha256: evidence.sha256,
+    milestone_id: request.milestone_id,
+    review_mode: "projected",
+    review_round: review.round,
+    review_stage: review.stage,
+    review_status: review.status,
+    stage_authority: request.stage_authority,
+  });
+}
+
+function recordedCompletion(evidence, review, request, reviewMode = "supplied") {
+  return fingerprintedCompletion({
+    completion_schema_version: 1,
+    evidence_path: evidence.path,
+    evidence_sha256: evidence.sha256,
+    milestone_id: request.milestone_id,
+    packet_inventory: review.packetInventory,
+    packet_sha256: review.packetSha256,
+    review_evidence_path: review.evidence.path,
+    review_evidence_sha256: review.evidence.sha256,
+    review_gate_outcome: review.gate,
+    review_id: review.reviewId,
+    review_log_entry_sha256: digest(Buffer.from(review.log.entry_text)),
+    review_log_path: review.log.path,
+    review_material_findings: [],
+    review_open_findings: [],
+    review_outcome: review.outcome,
+    review_record_path: review.evidence.path,
+    review_recording_status: review.recording,
+    review_mode: reviewMode,
+    review_round: review.round,
+    review_stage: review.stage,
+    stage_authority: request.stage_authority,
+  });
+}
+
+function sameCompletion(left, right) {
+  return canonicalJson(left) === canonicalJson(right);
+}
+
+function requireMilestoneProjection(planned) {
+  const expected = Object.entries(planned?.milestones ?? {})
+    .filter(([, milestone]) => milestone.kind === "implementation" && milestone.state !== "closed")
+    .map(([id]) => id);
+  if (!Array.isArray(planned?.remaining_implementation_milestones) || canonicalJson(planned.remaining_implementation_milestones) !== canonicalJson(expected)) {
+    throw operationError("RL_MILESTONE_ORDER", "remaining implementation milestone projection is inconsistent", "milestone-projection", expected);
+  }
+}
+
+function milestoneReview(root, change, request) {
+  const evidence = safeFile(root, request.review_evidence_path);
+  const reviewId = metadata(evidence.text, "Review ID");
+  const rawRound = metadata(evidence.text, "Round");
+  const round = /^\d+$/.test(rawRound ?? "") ? `r${rawRound}` : rawRound;
+  const stage = metadata(evidence.text, "Stage");
+  const milestoneId = metadata(evidence.text, "Reviewed milestone");
+  const outcome = reviewOutcome(evidence.text);
+  const gate = metadata(evidence.text, "Review gate outcome");
+  const recording = metadata(evidence.text, "Recording status");
+  const findings = findingSet(metadata(evidence.text, "Material findings"));
+  if (!reviewId || !/^r\d+$/.test(round ?? "") || stage !== "code-review" || milestoneId !== request.milestone_id || !["approved", "clean-with-notes"].includes(outcome) || gate !== "advance" || recording !== "recorded") {
+    throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone completion requires an exact recorded clean code review", "milestone-review", [request.milestone_id, String(reviewId), String(milestoneId), String(outcome)], "complete-milestone");
+  }
+  if (findings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "milestone review contains material findings", "milestone-review-findings", findings);
+  const log = requireLogEntry(root, change.change_id, reviewId);
+  const logFacts = reviewLogFacts(log, reviewId);
+  const expectedRecord = `docs/changes/${change.change_id}/${logFacts.record}`;
+  if (logFacts.reviewId !== reviewId || logFacts.stage !== stage || logFacts.round !== round || logFacts.outcome !== outcome || (logFacts.record !== evidence.path && expectedRecord !== evidence.path) || logFacts.recording !== recording) {
+    throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone review receipt contradicts its canonical review-log occurrence", "review-log-consistency", [reviewId], "record-review");
+  }
+  const missingFindingState = logFacts.format === "prose"
+    ? logFacts.findings === null || logFacts.openFindings === null
+    : logFacts.findings === null;
+  if (missingFindingState || !noFindings(logFacts.findings) || !noFindings(logFacts.openFindings)) {
+    throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "milestone review log contains open findings", "milestone-review-findings", [reviewId]);
+  }
+  const inventory = metadata(evidence.text, "Initial packet inventory");
+  const declaredInventoryHash = identityValue(metadata(evidence.text, "Initial packet hash"));
+  if (!inventory || !/^[a-f0-9]{64}$/.test(declaredInventoryHash) || digest(Buffer.from(inventory)) !== declaredInventoryHash) {
+    throw operationError("RL_STALE_EVIDENCE", "milestone review packet identity is missing or invalid", "milestone-review-identity", [reviewId]);
+  }
+  const entries = inventory.split("; ");
+  if (!entries.length) throw operationError("RL_STALE_EVIDENCE", "milestone review packet is empty", "milestone-review-identity", [reviewId]);
+  for (const entry of entries) {
+    const match = /^(.+)@working-tree#sha256:([a-f0-9]{64})$/.exec(entry);
+    if (!match) throw operationError("RL_STALE_EVIDENCE", "milestone review packet entry is invalid", "milestone-review-identity", [reviewId]);
+    const current = safeFile(root, match[1]);
+    if (current.sha256 !== match[2]) throw operationError("RL_STALE_EVIDENCE", "milestone review packet is stale", "milestone-review-identity", [reviewId, match[1]]);
+  }
+  return {
+    evidence,
+    gate,
+    log,
+    outcome,
+    packetInventory: inventory,
+    packetSha256: declaredInventoryHash,
+    projection: { artifact_id: "plan", evidence: [evidence.path], milestone_id: request.milestone_id, occurrence: "milestone", round, stage: "code-review", status: "approved" },
+    recording,
+    reviewId,
+    round,
+    stage,
+  };
+}
+
 function expectedReviewAuthority(kind) {
   return kind === "adr" ? "architecture-review" : `${kind}-review`;
 }
@@ -182,17 +352,25 @@ function expectedReviewAuthority(kind) {
 function requireLogEntry(root, changeId, reviewId) {
   const log = safeFile(root, `docs/changes/${changeId}/review-log.md`);
   const marker = `Review ID: ${reviewId}`;
-  const markerIndex = log.text.indexOf(marker);
-  if (markerIndex >= 0) {
+  const findingMarker = `Finding ID: ${reviewId}`;
+  const lines = log.text.split("\n");
+  const reviewLines = lines.filter((line) => line.trim() === marker).length;
+  const findingLines = lines.filter((line) => line.trim() === findingMarker).length;
+  const tableLines = lines.filter((line) => line.trimStart().startsWith("|") && tableCells(line)[0] === reviewId);
+  if (reviewLines + findingLines + tableLines.length !== 1) {
+    throw operationError("RL_INVALID_REQUEST", "review log must contain exactly one canonical review or finding occurrence", "review-log-consistency", [reviewId]);
+  }
+  if (reviewLines === 1) {
+    const markerIndex = log.text.indexOf(marker);
     const nextEntry = log.text.indexOf("\n### Review entry", markerIndex + marker.length);
     return { ...log, entry_text: log.text.slice(markerIndex, nextEntry < 0 ? undefined : nextEntry) };
   }
-  const findingMarker = `Finding ID: ${reviewId}`;
-  const findingIndex = log.text.indexOf(findingMarker);
-  if (findingIndex >= 0) return { ...log, entry_text: log.text.slice(findingIndex, log.text.indexOf("\n### Review entry", findingIndex + findingMarker.length) < 0 ? undefined : log.text.indexOf("\n### Review entry", findingIndex + findingMarker.length)) };
-  const tableLine = log.text.split("\n").find((line) => line.includes(`\`${reviewId}\``));
-  if (tableLine) return { ...log, entry_text: tableLine };
-  throw operationError("RL_INVALID_REQUEST", "review log does not contain the review or finding occurrence", "review-log-consistency", [reviewId]);
+  if (findingLines === 1) {
+    const findingIndex = log.text.indexOf(findingMarker);
+    const nextEntry = log.text.indexOf("\n### Review entry", findingIndex + findingMarker.length);
+    return { ...log, entry_text: log.text.slice(findingIndex, nextEntry < 0 ? undefined : nextEntry) };
+  }
+  return { ...log, entry_text: tableLines[0] };
 }
 
 export function evaluateLifecycleOperation({ root, change, request }) {
@@ -227,7 +405,8 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     if (!["accepted", "approved", "active"].includes(destination.lifecycle_state)) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact is not currently settled", "correction-destination", [request.destination_artifact_id, String(destination.lifecycle_state)]);
     const registration = state.artifacts[request.destination_artifact_id];
     const destinationIdentity = artifactIdentity(root, destination);
-    if (!registration || registration.artifact_sha256 !== destinationIdentity.sha256) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact identity is stale or unregistered", "correction-destination", [request.destination_artifact_id]);
+    if (!registration || registration.artifact_path !== destination.path) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact registration is missing or mismatched", "correction-destination", [request.destination_artifact_id]);
+    if (registration.artifact_sha256 !== destinationIdentity.sha256 && request.finding_ids.length === 0) throw operationError("RL_CORRECTION_ROUTE_INVALID", "a stale destination correction requires an open finding", "correction-findings", [request.destination_artifact_id]);
     const evidence = safeFile(root, request.evidence_path);
     const facts = evidenceMetadata(evidence, ["Change ID", "Source stage", "Destination artifact", "Reason", "Finding IDs", "Return stage", "Lifecycle revision"]);
     const evidenceFindings = findingSet(facts["Finding IDs"]);
@@ -254,7 +433,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       },
       destination_stage: request.destination_stage,
       destination_artifact_id: request.destination_artifact_id,
-      prior_artifact_sha256: destinationIdentity.sha256,
+      prior_artifact_sha256: registration.artifact_sha256,
       reason: request.reason,
       evidence_path: evidence.path,
       evidence_sha256: evidence.sha256,
@@ -454,31 +633,95 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const milestones = planned?.milestones;
     const targetMilestone = milestones?.[request.milestone_id];
     if (!planned || !targetMilestone || planned.current_milestone !== request.milestone_id || targetMilestone.kind !== "implementation") throw operationError("RL_MILESTONE_ORDER", "requested milestone is not the unique current implementation milestone", "milestone-selection", [request.milestone_id]);
-    if (targetMilestone.state === "implementing") return { status: "already-recorded", candidate: change };
+    requireMilestoneProjection(planned);
+    const automation = next.workflow?.automation;
+    const activeAutomation = automation?.status === "active";
+    if (activeAutomation && automation.current_stage !== next.workflow_state.current_stage) {
+      throw operationError("RL_OPERATION_NOT_PERMITTED", "active workflow automation contradicts the governed workflow stage", "workflow-projection", [String(next.workflow_state.current_stage), String(automation.current_stage)]);
+    }
+    if (targetMilestone.state === "implementing") {
+      const routingMatches = next.workflow_state.current_stage === "implement" && next.workflow_state.next_stage === "code-review" && (!activeAutomation || automation.current_stage === "implement");
+      if (routingMatches) return { status: "already-recorded", candidate: change };
+      throw operationError("RL_OPERATION_NOT_PERMITTED", "implementing milestone has contradictory workflow routing", "workflow-projection", [request.milestone_id]);
+    }
     if (targetMilestone.state !== "planned") throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone cannot start from its current state", "milestone-state", [request.milestone_id, String(targetMilestone.state)]);
     const ordered = Object.keys(milestones);
     const predecessors = ordered.slice(0, ordered.indexOf(request.milestone_id));
     const incomplete = predecessors.filter((id) => milestones[id].kind === "implementation" && milestones[id].state !== "closed");
     if (incomplete.length) throw operationError("RL_MILESTONE_ORDER", "required predecessor milestones are incomplete", "milestone-predecessors", incomplete);
     targetMilestone.state = "implementing";
+    next.workflow_state.current_stage = "implement";
+    next.workflow_state.next_stage = "code-review";
+    if (activeAutomation) automation.current_stage = "implement";
     return { status: "started", candidate: next };
   }
 
   if (request.operation === "complete-milestone") {
     const planned = next.workflow_state?.planned_work;
     const targetMilestone = planned?.milestones?.[request.milestone_id];
-    if (!planned || planned.current_milestone !== request.milestone_id || !targetMilestone || targetMilestone.kind !== "implementation") throw operationError("RL_MILESTONE_ORDER", "requested milestone is not the unique current implementation milestone", "milestone-selection", [request.milestone_id]);
-    if (targetMilestone.state === "closed") return { status: "already-recorded", candidate: change };
-    if (targetMilestone.state !== "review-requested" && targetMilestone.state !== "implementing") throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone cannot complete from its current state", "milestone-state", [request.milestone_id, String(targetMilestone.state)]);
+    if (!planned || !targetMilestone || targetMilestone.kind !== "implementation") throw operationError("RL_MILESTONE_ORDER", "requested milestone is not an implementation milestone", "milestone-selection", [request.milestone_id]);
+    requireMilestoneProjection(planned);
+    if (targetMilestone.state === "closed") {
+      const existing = state.milestones[request.milestone_id];
+      if (!existing) throw operationError("RL_STALE_EVIDENCE", "closed milestone has no completion registration", "milestone-completion-evidence", [request.milestone_id]);
+      let replay;
+      try {
+        const evidence = milestoneProof(root, request);
+        if (existing.review_evidence_path) {
+          const reviewMode = existing.review_mode ?? "supplied";
+          if (reviewMode === "supplied" && request.review_evidence_path !== existing.review_evidence_path) throw new Error("review evidence omitted or changed");
+          if (reviewMode === "projected" && request.review_evidence_path !== undefined) throw new Error("projected review replay changed its request facts");
+          const replayRequest = { ...request, review_evidence_path: existing.review_evidence_path };
+          replay = recordedCompletion(evidence, milestoneReview(root, next, replayRequest), request, reviewMode);
+        } else {
+          if (request.review_evidence_path) throw new Error("review evidence conflicts with projected completion");
+          replay = projectedCompletion(evidence, {
+            round: existing.review_round,
+            stage: existing.review_stage ?? "code-review",
+            status: existing.review_status ?? "approved",
+          }, request);
+        }
+      } catch {
+        throw operationError("RL_STALE_EVIDENCE", "milestone completion evidence is missing, stale, or contradictory", "milestone-completion-evidence", [request.milestone_id]);
+      }
+      if (existing.completion_fingerprint) {
+        if (!sameCompletion(existing, replay)) throw operationError("RL_STALE_EVIDENCE", "milestone completion evidence differs from its recorded fingerprint", "milestone-completion-evidence", [request.milestone_id]);
+        return { status: "already-recorded", candidate: change };
+      }
+      const legacyMatches = existing.evidence_path === replay.evidence_path
+        && existing.evidence_sha256 === replay.evidence_sha256
+        && existing.stage_authority === replay.stage_authority
+        && existing.review_round === replay.review_round
+        && (!existing.review_evidence_path || (existing.review_evidence_path === replay.review_evidence_path && existing.review_evidence_sha256 === replay.review_evidence_sha256));
+      if (!legacyMatches) throw operationError("RL_STALE_EVIDENCE", "legacy milestone completion evidence is contradictory", "milestone-completion-evidence", [request.milestone_id]);
+      state.milestones[request.milestone_id] = replay;
+      return { status: "completed", candidate: next, operationResult: { legacy_completion_upgraded: true, milestone_id: request.milestone_id } };
+    }
+    if (planned.current_milestone !== request.milestone_id) throw operationError("RL_MILESTONE_ORDER", "requested milestone is not the unique current implementation milestone", "milestone-selection", [request.milestone_id]);
+    if (targetMilestone.state !== "review-requested") throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone can complete only after review is requested", "milestone-state", [request.milestone_id, String(targetMilestone.state)]);
+    const suppliedReview = request.review_evidence_path ? milestoneReview(root, next, request) : null;
+    if (suppliedReview) planned.latest_review = suppliedReview.projection;
     const review = planned.latest_review;
     if (!review || review.milestone_id !== request.milestone_id || review.status !== "approved") throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone completion requires its approved code review", "milestone-review", [request.milestone_id], "record-review");
-    const evidence = safeFile(root, request.evidence_path);
-    if (metadata(evidence.text, "Milestone") !== request.milestone_id || !/^pass(?:ed)?$/i.test(metadata(evidence.text, "Validation result") ?? "")) throw operationError("RL_INVALID_REQUEST", "milestone evidence must name the milestone and passing validation", "milestone-proof", [request.milestone_id, evidence.path]);
-    state.milestones[request.milestone_id] = { evidence_path: evidence.path, evidence_sha256: evidence.sha256, review_round: review.round, stage_authority: request.stage_authority };
+    const evidence = milestoneProof(root, request);
+    let reviewDetails = suppliedReview;
+    if (!reviewDetails) {
+      if (!Array.isArray(review.evidence) || review.evidence.length !== 1 || typeof review.evidence[0] !== "string") {
+        throw operationError("RL_STALE_EVIDENCE", "projected milestone review must identify one exact review record", "milestone-review-identity", [request.milestone_id]);
+      }
+      reviewDetails = milestoneReview(root, next, { ...request, review_evidence_path: review.evidence[0] });
+      if (canonicalJson(reviewDetails.projection) !== canonicalJson(review)) {
+        throw operationError("RL_STALE_EVIDENCE", "projected milestone review contradicts its current evidence", "milestone-review-identity", [request.milestone_id]);
+      }
+    }
+    state.milestones[request.milestone_id] = recordedCompletion(evidence, reviewDetails, request, suppliedReview ? "supplied" : "projected");
     targetMilestone.state = "closed";
     planned.remaining_implementation_milestones = (planned.remaining_implementation_milestones ?? []).filter((id) => id !== request.milestone_id);
     planned.current_milestone = Object.entries(planned.milestones).find(([, milestone]) => milestone.state !== "closed")?.[0] ?? "none";
-    return { status: "completed", candidate: next };
+    if (planned.current_milestone !== "none") planned.latest_review = resetLatestReview();
+    const nextMilestone = planned.milestones?.[planned.current_milestone];
+    const continuationEligible = nextMilestone?.kind === "implementation" && nextMilestone.state === "planned";
+    return { status: "completed", candidate: next, operationResult: { completed_milestone: request.milestone_id, continuation_eligible: continuationEligible, next_milestone: planned.current_milestone } };
   }
 
   if (request.operation === "migrate") {

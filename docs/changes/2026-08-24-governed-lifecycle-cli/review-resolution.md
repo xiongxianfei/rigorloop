@@ -8,11 +8,18 @@ Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-deadlock-r1
+Review closeout: code-review-deadlock-r3
+Review closeout: code-review-deadlock-r4
 
-- Reviews covered: `spec-review-r1`, `architecture-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`
-- Findings resolved: 9
+- Reviews covered: `spec-review-r1`, `architecture-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-deadlock-r1`, `code-review-deadlock-r3`, `code-review-deadlock-r4`, `code-review-deadlock-r5`, `code-review-deadlock-r6`
+- Findings resolved: 12
 - Unresolved findings: 0
-- Current result: All accepted findings are resolved; M1 received a direct same-context clean review and user-directed continuation.
+- Second review required: yes
+- Second review satisfied: yes
+- Second-review agreement: clean on exact packet `sha256:cbe4dbd0498986725451767552f2d7b198ed2fbc462c13197ee53c2f210126b2`
+- Second-review evidence: `reviews/code-review-deadlock-r5.md`; `reviews/code-review-deadlock-r6.md`
+- Current result: R5 and R6 independently agree that the exact frozen packet resolves CR1, CR2, and CR3. The elevated-risk correction review gate is closed; final verification remains not claimed.
 
 ## Resolution overview
 
@@ -27,6 +34,65 @@ Review closeout: code-review-m1-r2
 | RLCLI-CR-M1-1 | accepted | resolved | Enforced complete operation-specific request contracts and closed values. |
 | RLCLI-CR-M1-2 | accepted | resolved | Added and proved the closed version-one provenance exclusion set. |
 | RLCLI-CR-M1-3 | accepted | resolved | Admitted and validated only the documented request-provenance vocabulary. |
+| RLCLI-DEADLOCK-CR1 | accepted | resolved | Completion and workflow-selected start now preserve routing authority and synchronize active automation atomically. |
+| RLCLI-DEADLOCK-CR2 | accepted | resolved | Supplied and projected replay now share evidence-complete identity, and duplicate canonical table or prose occurrences reject unchanged. |
+| RLCLI-DEADLOCK-CR3 | accepted | resolved | Start and completion now fail closed on inconsistent remaining work and completion accepts only `review-requested`. |
+
+### code-review-deadlock-r1
+
+#### RLCLI-DEADLOCK-CR1
+
+Finding ID: RLCLI-DEADLOCK-CR1
+Disposition: accepted
+Rationale: The approved correction keeps continuation selection in workflow while allowing the CLI to validate and atomically apply only a closed workflow-selected `start-milestone` projection.
+Status: resolved
+Owner: governed-lifecycle CLI spec owner and workflow contract owner
+Owning stage: spec
+Decision owner: governed-lifecycle CLI spec owner and workflow contract owner
+Decision needed: none; the spec owner selected workflow-owned continuation with closed CLI application of `start-milestone`.
+Final action: Revised and approved R16/R31, architecture, and T09; removed routing from `complete-milestone`; added eligibility output; made `start-milestone` synchronize `workflow_state` and active automation routing atomically; added contradiction and no-routing regressions.
+Stop state: resolved by independent L1 review of the exact corrected packet.
+Required outcome: One non-contradictory routing authority model with coherent lifecycle projections and direct proof.
+Follow-up: final verification.
+Validation target: `packages/rigorloop/test/lifecycle-milestone.test.js`; current reviewed spec, test-spec, and architecture identities.
+Validation evidence: `reviews/spec-review-r5.md`; `reviews/test-spec-review-r5.md`; `reviews/architecture-review-r5.md`; `evidence/deadlock-completion-replay-correction-r1.md`; `reviews/code-review-deadlock-r3.md`; `reviews/code-review-deadlock-r4.md`
+
+#### RLCLI-DEADLOCK-CR2
+
+Finding ID: RLCLI-DEADLOCK-CR2
+Disposition: accepted
+Rationale: Exact replay is valid only while all evidence that authorized the original completion remains identity-equal; checking only the milestone proof and receipt permits stale canonical-log or packet facts to pass.
+Status: resolved
+Owner: implement
+Owning stage: implement
+Decision owner: none
+Decision needed: none
+Final action: Replaced projected status-only completion with exact review-record reconstruction and the same normalized fingerprint used by supplied reviews; canonical lookup now requires exactly one prose or table occurrence.
+Stop state: resolved by independent L1 R5 and R6 clean agreement at packet `sha256:cbe4dbd0498986725451767552f2d7b198ed2fbc462c13197ee53c2f210126b2`; elevated-risk second review is satisfied.
+Required outcome: Review-log-only drift and non-proof packet-only drift reject without lifecycle mutation; an identity-equal replay remains `already-recorded`.
+Follow-up: final verification.
+Validation target: `packages/rigorloop/test/lifecycle-milestone.test.js`
+Validation evidence: `evidence/deadlock-completion-replay-correction-r1.md`; `reviews/code-review-deadlock-r4.md`; `reviews/code-review-deadlock-r5.md`; `reviews/code-review-deadlock-r6.md`; both independent reviews passed C05 16/16; R6 selected probes passed 4/4; duplicate table and direct duplicate-prose probes rejected with byte-identical lifecycle state
+
+### code-review-deadlock-r4
+
+#### RLCLI-DEADLOCK-CR3
+
+Finding ID: RLCLI-DEADLOCK-CR3
+Disposition: accepted
+Rationale: R16 and the stage-owned lifecycle contract require exact current-milestone, remaining-work, review-state, and legal-transition enforcement before workflow mutation.
+Status: resolved
+Owner: implement
+Owning stage: implement
+Decision owner: none
+Decision needed: none while enforcing the current approved contract
+Required outcome: `start-milestone` rejects inconsistent remaining implementation IDs, and `complete-milestone` cannot skip the required `review-requested` source state; every rejection preserves lifecycle bytes.
+Safe resolution path: add shared fail-closed milestone-prestate validation plus public-CLI regressions, rerun C05 and lifecycle tests, then submit a new exact packet for independent rereview.
+Final action: Added exact remaining-implementation projection validation before mutation and restricted completion to the legal `review-requested -> closed` transition, with public-CLI byte-unchanged regressions.
+Stop state: resolved by independent L1 R5 and R6 clean agreement at packet `sha256:cbe4dbd0498986725451767552f2d7b198ed2fbc462c13197ee53c2f210126b2`; elevated-risk second review is satisfied.
+Follow-up: final verification
+Validation target: `packages/rigorloop/dist/lib/lifecycle-operations.js`; `packages/rigorloop/test/lifecycle-milestone.test.js`
+Validation evidence: `reviews/code-review-deadlock-r4.md`; `reviews/code-review-deadlock-r5.md`; `reviews/code-review-deadlock-r6.md`; both independent reviews passed C05 16/16, including inconsistent-remaining-work and illegal-source-transition byte-unchanged regressions; R6 selected probes passed 4/4
 
 ### code-review-m1-r2
 

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "profile_version": "cli-result-token-v1",
+  "profile_fingerprint": "sha256:e2962fe7415888747469c3cb81d36cb0cc5c479d7be41ef123f062d849704cf1",
+  "baseline": "v0.4.x-detailed",
+  "source_revision": "bcc7ef14ae45e8df737d8a97e72eff3a3823446b",
+  "source_package_version": "0.4.1",
+  "normalization": "stdout-plus-stderr UTF-8 bytes after CRLF-to-LF normalization",
+  "commands": {
+    "status": ["lifecycle", "status", "--change", "example", "--format", "json"],
+    "context": ["lifecycle", "context", "code-review", "--change", "example", "--format", "json"],
+    "mutation-success": ["init", "codex", "--dry-run", "--json"],
+    "mutation-blocked": ["init", "unsupported", "--json"],
+    "validation-failure": ["lifecycle", "validate", "--change", "example", "--format", "json"],
+    "unexpected-error": ["init", "codex", "--from-archive", "{archive}", "--dry-run", "--json"]
+  },
+  "profiles": [
+    {"name": "status", "complete_interaction_bytes": 1035},
+    {"name": "context", "complete_interaction_bytes": 1422},
+    {"name": "mutation-success", "complete_interaction_bytes": 969},
+    {"name": "mutation-blocked", "complete_interaction_bytes": 511},
+    {"name": "validation-failure", "complete_interaction_bytes": 725},
+    {"name": "unexpected-error", "complete_interaction_bytes": 1045}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-25-cli-observability-token-efficient-results",
+  "expected_lifecycle_revision": "sha256:5d5b92aa3365154463d454f51a855274d966426f35dafa9de669895d7dd6b039",
+  "artifact_id": "spec",
+  "artifact_kind": "spec",
+  "artifact_role": "primary",
+  "artifact_path": "specs/cli-observability-and-token-efficient-results.md",
+  "evidence_path": "docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-revision-r1.md",
+  "prior_artifact_sha256": "60a0fc29fd429e56673d87b32bccd6d2411dbfaba7f2bf5f5d6b02f38e6e612a",
+  "stage_authority": "spec"
+}

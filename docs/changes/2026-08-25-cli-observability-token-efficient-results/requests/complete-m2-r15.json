@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-25-cli-observability-token-efficient-results",
+  "expected_lifecycle_revision": "sha256:2013b3e88fe7af082b12555a0b0a84f5901183c219742853eadce06a5a441442",
+  "milestone_id": "M2",
+  "review_evidence_path": "docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m2-r15.md",
+  "evidence_path": "docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/m2-milestone-settlement-r15.md",
+  "stage_authority": "workflow"
+}

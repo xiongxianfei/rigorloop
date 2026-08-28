@@ -1,0 +1,697 @@
+change_id: 2026-08-25-cli-observability-token-efficient-results
+title: Local CLI Observability and Token-Efficient Results
+classification: feature
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  adr-cli-observability:
+    kind: adr
+    lifecycle_state: accepted
+    path: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+    review:
+      adr_settlement: accepted
+      artifact_id: adr-cli-observability
+      id: architecture-review-r2
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r2.md
+      round: r2
+    role: supporting
+  plan:
+    kind: plan
+    lifecycle_state: active
+    path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+    review:
+      artifact_id: plan
+      id: plan-review-r3
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/plan-review-r3.md
+      round: r3
+    role: primary
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r4
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
+      round: r4
+    role: primary
+  spec:
+    kind: spec
+    lifecycle_state: approved
+    path: specs/cli-observability-and-token-efficient-results.md
+    review:
+      artifact_id: spec
+      id: spec-review-r3
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/spec-review-r3.md
+      round: r3
+    role: primary
+  test-spec:
+    kind: test-spec
+    lifecycle_state: active
+    path: specs/cli-observability-and-token-efficient-results.test.md
+    review:
+      artifact_id: test-spec
+      id: test-spec-review-r4
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r4.md
+      round: r4
+    role: primary
+workflow_state:
+  blocker: null
+  current_stage: implement
+  evidence:
+    - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-settlement-r2.md
+    - specs/cli-observability-and-token-efficient-results.test.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-revision-r1.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-test-spec-review-r2.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-revision-r2.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-test-spec-review-r3.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r3.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-automation-pause-code-review-m1-r1.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r1-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r2.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r2.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-automation-pause-code-review-m1-r2.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r2-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r3.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r3.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/review-independence-and-broad-smoke-blocker.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r4.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r4-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r5.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r5.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r5-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r6.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r6.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r6-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r7.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r7.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r8.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r8-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r9.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r9.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r9.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r9-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r10.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r10.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r10.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r11.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r11.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r11-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r12.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r12.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r12.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r13.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r13.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r13-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r14.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r14.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r14.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r15.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r15.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r15-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r16.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r16.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r16.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r16-correction.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r17.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r17.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r18.md
+  lifecycle_state: active
+  next_stage: code-review
+  planned_work:
+    current_milestone: M3
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+        - milestone-review-pending
+        - explain-change-pending
+        - verify-pending
+        - pr-handoff-pending
+    initialization_basis:
+      review_id: plan-review-r3
+      review_record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/plan-review-r3.md
+      review_round: r3
+      reviewed_artifact_path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+      reviewed_revision: 004a4aceadd1a4dcbb9ab5a4e4a1eca075cad4dd4fd84617d1972d476cb403a2
+    latest_review:
+      artifact_id: none
+      evidence: []
+      milestone_id: none
+      occurrence: none
+      round: none
+      stage: none
+      status: not-started
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: implementing
+      M4:
+        kind: implementation
+        state: planned
+      M5:
+        kind: lifecycle-closeout
+        state: planned
+    plan_artifact_id: plan
+    remaining_implementation_milestones:
+      - M3
+      - M4
+workflow:
+  automation:
+    current_stage: code-review
+    evidence:
+      - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-settlement-r2.md
+      - specs/cli-observability-and-token-efficient-results.test.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-revision-r1.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-test-spec-review-r2.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-revision-r2.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-test-spec-review-r3.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r3.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-automation-pause-code-review-m1-r1.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r1-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r2.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r2.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-automation-pause-code-review-m1-r2.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r2-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r3.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r3.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/review-independence-and-broad-smoke-blocker.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r4.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r4-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r5.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r5.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r5-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r6.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r6.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r6-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r7.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r7.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r8.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r8-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r9.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r9.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r9.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r9-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r10.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r10.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r10.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r11.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r11.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r11-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r12.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r12.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r12.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r13.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r13.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r13-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r14.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r14.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r14.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r15.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r15.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r15-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r16.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-code-review-m1-r16.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r16.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/code-review-m1-r16-correction.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-resume-code-review-m1-r17.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r17.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r18.md
+    mechanism: bounded-review-fix
+    status: active
+    stop_reason: null
+    target:
+      bound_at: 2026-08-25T11:51:54+01:00
+      completion:
+        rule: final verification result is durably recorded
+      occurrence:
+        kind: singleton
+      stage: verify
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r2.md
+  review_log: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-log.md
+  reviewed_artifact: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+  status: clean
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 2
+  artifacts:
+    adr-cli-observability:
+      artifact_kind: adr
+      artifact_path: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+      artifact_role: supporting
+      artifact_sha256: 5e98900b19ff15a759dd59923c80d6a052281d345eec477d1814d82953a5a19e
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-filesystem-threat-model-correction.md
+      authoring_evidence_sha256: f7f3bb2c0a72562716f1a9f945b31deae7a7ed73e1df15067ea6ba30f3a514a9
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+      artifact_role: primary
+      artifact_sha256: 004a4aceadd1a4dcbb9ab5a4e4a1eca075cad4dd4fd84617d1972d476cb403a2
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-proof-command-revision.md
+      authoring_evidence_sha256: 08a48fdfaf98f38099f2e12537c79360bdd7b6ad090b31bfa4476c56690b686a
+      stage_authority: plan
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+      artifact_role: primary
+      artifact_sha256: bda70adc597cc43f9799c34db57010c2fb626e1eea4abdeada88ea716d8429ae
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/proposal-authoring.md
+      authoring_evidence_sha256: 4ace27f262c2118c84af4b41de207942b43eba26e0bc7b80e163391d24e574c0
+      stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/cli-observability-and-token-efficient-results.md
+      artifact_role: primary
+      artifact_sha256: 7693844003af6bd1b270d6dede9405c64b976afe838aaf4ab6444208710608ba
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-filesystem-threat-model-correction.md
+      authoring_evidence_sha256: 13082764e3a0c15bf675dc0b862a1a45225fcbf86d98403e3c734aece01b4686
+      stage_authority: spec
+    test-spec:
+      artifact_kind: test-spec
+      artifact_path: specs/cli-observability-and-token-efficient-results.test.md
+      artifact_role: primary
+      artifact_sha256: 8c509aeb9adf3f0b329f235fa729934210919fdbb93b24bb5d29e57d2af80e8a
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-proof-command-revision.md
+      authoring_evidence_sha256: e55861255e58ef215ef8f9d46735b72fc3dbb30ec09be71fc78be110039c59b8
+      stage_authority: test-spec
+  correction_history:
+    route-0a699238af631e8b105a45f3bd98621f9cc61444cfdc18a8aaab28ec65e40bad:
+      destination_artifact_id: plan
+      destination_stage: plan
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-proof-command-correction-route.md
+      evidence_sha256: f06b98fd8127a0fcfc2607229920042ee174695fe45bdc663a6b5d5740701f63
+      prior_artifact_sha256: fef931d84d84a7ba3b16a164f2dd16cdd37180b428098803d6eddc8cbc01fe0a
+      prior_lifecycle_revision: sha256:6bd9d4c8e40e196e1ba1465bf9929ae1a7f023be6b82bfe13936630a1d8cabf3
+      reason: upstream-planning-gap
+      return_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-proof-command-correction-return.md
+      return_evidence_sha256: 03d0542653bb626be07c99330661610b63f335c2ab25b6672b2f800911380860
+      return_stage: review-resolution
+      route_id: route-0a699238af631e8b105a45f3bd98621f9cc61444cfdc18a8aaab28ec65e40bad
+      source_snapshot:
+        blocker:
+          code: review-findings-open
+          evidence:
+            - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-automation-pause-code-review-m1-r1.md
+        current_stage: review-resolution
+        finding_ids:
+          - CLIOBS-M1-CR6
+        lifecycle_state: paused
+        milestone_id: M1
+        milestone_state: resolution-needed
+        next_stage: implement
+      status: returned
+    route-afc3a544ee90d2e9cd0c148e9f239cb1e6be70e112f5b4ef7be2540afc151171:
+      destination_artifact_id: test-spec
+      destination_stage: test-spec
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-proof-command-correction-route.md
+      evidence_sha256: 15aa48f1242eaeba8b94f2f3589eb861578c2be4f85fd3f227fe1199434e750c
+      prior_artifact_sha256: 4af3e383ffc9cc13522e0a71b953b3d3b3272ced34a9758a8335bd591e170622
+      prior_lifecycle_revision: sha256:447c1ddcf57156b4f60d0e1746a00d78dcce2385f665a5df7103de262adeb090
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-proof-command-correction-return.md
+      return_evidence_sha256: 26a274b1a74c315df89035d6367011334c567832b5600817ebfee17f6ef0e917
+      return_stage: review-resolution
+      route_id: route-afc3a544ee90d2e9cd0c148e9f239cb1e6be70e112f5b4ef7be2540afc151171
+      source_snapshot:
+        blocker:
+          code: review-findings-open
+          evidence:
+            - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/workflow-automation-pause-code-review-m1-r1.md
+        current_stage: review-resolution
+        finding_ids:
+          - CLIOBS-M1-CR6
+        lifecycle_state: paused
+        milestone_id: M1
+        milestone_state: resolution-needed
+        next_stage: implement
+      status: returned
+    route-dbe026cfcb081b95ea0240415bb94d6588d72c8c47b2b1176f8cf06e273fd9c2:
+      destination_artifact_id: adr-cli-observability
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/m2-filesystem-architecture-correction-route.md
+      evidence_sha256: 2fdfd3776cd4173c54511e1eaa5bc5be3d14eccf5d145d22db9defbe730afe7e
+      prior_artifact_sha256: 8df259dc5e97efa06535f785c25d575c366e2864b1fd88abde96fba6075b4fd4
+      prior_lifecycle_revision: sha256:32022c5c177ca2f06f426c5915440d2f94d6f71446728a64db5b17ff54c7fa93
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-filesystem-threat-model-correction-return.md
+      return_evidence_sha256: ae26a37670307185001e6863ef90ad07658938973728739fd193c4f9821e7ee8
+      return_stage: code-review
+      route_id: route-dbe026cfcb081b95ea0240415bb94d6588d72c8c47b2b1176f8cf06e273fd9c2
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - CLIOBS-M2-R4-F1
+          - M2-L1B-F2
+        lifecycle_state: active
+        milestone_id: M2
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-ebd32e9307d29643855e893be081143d1a5b68d2cd28379c0a02638ecf077e46:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/m2-filesystem-contract-correction-route.md
+      evidence_sha256: 1b6c397f5baf1436604ef7dda36503b51b342be0db387342bdd00ea964fe25dd
+      prior_artifact_sha256: de9ec40c11d33b4d199e79fea74374199d94133c8eed651546ed04d664bc1029
+      prior_lifecycle_revision: sha256:0478e6a286b6ed75c1c2b372a3e010f9195c4b947c6d8bd0a3c15d28bc3cc505
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-filesystem-threat-model-correction-return.md
+      return_evidence_sha256: 9368df883e641db991921717bed1ed39bdee41caab01cc82976982eb7d933b6b
+      return_stage: code-review
+      route_id: route-ebd32e9307d29643855e893be081143d1a5b68d2cd28379c0a02638ecf077e46
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - CLIOBS-M2-R4-F1
+          - M2-L1B-F2
+        lifecycle_state: active
+        milestone_id: M2
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+  milestones:
+    M1:
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m1-r18.md
+      evidence_sha256: 3a1f4e584508f7f974fb87d8ad891d2292e72f159404ce5c02ec9d135c94a20c
+      review_round: r18
+      stage_authority: workflow
+    M2:
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/m2-milestone-settlement-r15.md
+      evidence_sha256: 95c3eb9aee9ea1128a2c9894dd98b133c1d8df1a0cd92925590493314c953910
+      review_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/code-review-m2-r15.md
+      review_evidence_sha256: 744741ea1457ef889b1d054f4e12721c9824261200326c5bf16a59bf9458de25
+      review_round: r15
+      stage_authority: workflow
+  resolutions:
+    CLIOBS-M1-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 0d61c6708a0ce36eed2dd5e30d477f01fbf2f347beeaed661a608953ec8f5028
+      finding_id: CLIOBS-M1-CR1
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-CR2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 0d61c6708a0ce36eed2dd5e30d477f01fbf2f347beeaed661a608953ec8f5028
+      finding_id: CLIOBS-M1-CR2
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-CR3:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 0d61c6708a0ce36eed2dd5e30d477f01fbf2f347beeaed661a608953ec8f5028
+      finding_id: CLIOBS-M1-CR3
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-CR4:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 0d61c6708a0ce36eed2dd5e30d477f01fbf2f347beeaed661a608953ec8f5028
+      finding_id: CLIOBS-M1-CR4
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-CR5:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 0d61c6708a0ce36eed2dd5e30d477f01fbf2f347beeaed661a608953ec8f5028
+      finding_id: CLIOBS-M1-CR5
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-CR6:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 0d61c6708a0ce36eed2dd5e30d477f01fbf2f347beeaed661a608953ec8f5028
+      finding_id: CLIOBS-M1-CR6
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-CR7:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: e54970c528fd7ff5feb9fbe14c8683c0d7d7c88334ea3317cc4b8f0e4e228819
+      finding_id: CLIOBS-M1-CR7
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-CR8:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: e54970c528fd7ff5feb9fbe14c8683c0d7d7c88334ea3317cc4b8f0e4e228819
+      finding_id: CLIOBS-M1-CR8
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-CR9:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: e54970c528fd7ff5feb9fbe14c8683c0d7d7c88334ea3317cc4b8f0e4e228819
+      finding_id: CLIOBS-M1-CR9
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: ae47e1fc4dce6256be4d7d43734e545408e98e01c79464f21291d1421e987c70
+      finding_id: CLIOBS-M1-L1-F1
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F10:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 1be9671a393d0a3954f5bdf2bd1a1d7d8c997c6a70f684fb7fe3ec385089756b
+      finding_id: CLIOBS-M1-L1-F10
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F11:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 8df41f726bdaae676859e4ac8eb9315d50b8da3210a12d6aec8a021928675c57
+      finding_id: CLIOBS-M1-L1-F11
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F12:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 01eb78c189e73807010c18887766a87fecbf2887b0888bfd63da91020ea06a24
+      finding_id: CLIOBS-M1-L1-F12
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: ae47e1fc4dce6256be4d7d43734e545408e98e01c79464f21291d1421e987c70
+      finding_id: CLIOBS-M1-L1-F2
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F3:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: ae47e1fc4dce6256be4d7d43734e545408e98e01c79464f21291d1421e987c70
+      finding_id: CLIOBS-M1-L1-F3
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F4:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: ae47e1fc4dce6256be4d7d43734e545408e98e01c79464f21291d1421e987c70
+      finding_id: CLIOBS-M1-L1-F4
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F5:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 09a4048f58b62c893413e7fcde3e39e497695bafe710875d0fd2572b0428efdf
+      finding_id: CLIOBS-M1-L1-F5
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F6:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: e8d79912a6e55fca6937bc8c0fd909c2b5a2f14a583892d21780604d6294bc96
+      finding_id: CLIOBS-M1-L1-F6
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F7:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: ed6cd94ab258cfd2efbc1feffc34738c48ed26ba35cf76663eae2c86bb592e47
+      finding_id: CLIOBS-M1-L1-F7
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F8:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: 139c9eeb4e56753e065270d88b78c74b392da3d1cc7727c30eb6a924107bc02f
+      finding_id: CLIOBS-M1-L1-F8
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M1-L1-F9:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: a3e60a1b6f51dfe25ce0820813e16a1e0e319c21a1efffcfa35a2ab9e5065346
+      finding_id: CLIOBS-M1-L1-F9
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M3-R1-F1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: fb91620424ededcf78ef2ba94d259195a51e60d5d5d0aa89bc8d281b62e6c804
+      finding_id: CLIOBS-M3-R1-F1
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M3-R1-F2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: fb91620424ededcf78ef2ba94d259195a51e60d5d5d0aa89bc8d281b62e6c804
+      finding_id: CLIOBS-M3-R1-F2
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M3-R1-F3:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: fb91620424ededcf78ef2ba94d259195a51e60d5d5d0aa89bc8d281b62e6c804
+      finding_id: CLIOBS-M3-R1-F3
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M3-R1-F4:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: fb91620424ededcf78ef2ba94d259195a51e60d5d5d0aa89bc8d281b62e6c804
+      finding_id: CLIOBS-M3-R1-F4
+      owner: implementation author
+      stage_authority: review-resolution
+    CLIOBS-M3-R2-F1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      evidence_sha256: fb91620424ededcf78ef2ba94d259195a51e60d5d5d0aa89bc8d281b62e6c804
+      finding_id: CLIOBS-M3-R2-F1
+      owner: implementation author
+      stage_authority: review-resolution
+  reviews:
+    adr-cli-observability:
+      artifact_path: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+      artifact_sha256: 5e98900b19ff15a759dd59923c80d6a052281d345eec477d1814d82953a5a19e
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r2.md
+      evidence_sha256: 3e08604c5318989797db8882ee34d55c02cfbc858fe43853ea92c7e2400567f5
+      findings: []
+      outcome: approved
+      review_id: architecture-review-r2
+      review_log_sha256: ac0a9b19c14969b9f08f84a50e3c2172f62378fcbe534c43801425d6c01e7211
+      round: r2
+      stage_authority: architecture-review
+    plan:
+      artifact_path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+      artifact_sha256: 004a4aceadd1a4dcbb9ab5a4e4a1eca075cad4dd4fd84617d1972d476cb403a2
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/plan-review-r3.md
+      evidence_sha256: 26cccaa6b712bf7578bacc3e812c1186c95ed66f1bbdabcb9dd67c88e36a796c
+      findings: []
+      outcome: approved
+      review_id: plan-review-r3
+      review_log_sha256: 96a70c86f7a16542a864d2fa63a266c37294ce212e2091491f7f28c87239044d
+      round: r3
+      stage_authority: plan-review
+    proposal:
+      artifact_path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+      artifact_sha256: bda70adc597cc43f9799c34db57010c2fb626e1eea4abdeada88ea716d8429ae
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
+      evidence_sha256: 8140d5a5c0d4904665717f5dbbeb6e1b023509c751bbeb092c61d9a930236458
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r4
+      review_log_sha256: f6660ae1638bd5a6c58009f012c2d3e4d766b4f48085dbe7d51cd45e454f9247
+      round: r4
+      stage_authority: proposal-review
+    spec:
+      artifact_path: specs/cli-observability-and-token-efficient-results.md
+      artifact_sha256: 7693844003af6bd1b270d6dede9405c64b976afe838aaf4ab6444208710608ba
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/spec-review-r3.md
+      evidence_sha256: bea9b7c578fb0dfe0e0803d99768af56f4cc81409dba6065bed23061650a5502
+      findings: []
+      outcome: approved
+      review_id: spec-review-r3
+      review_log_sha256: 42070edb6276940e24bb571400d8118f5acca063bb072696d10a0ea1c4e6b738
+      round: r3
+      stage_authority: spec-review
+    test-spec:
+      artifact_path: specs/cli-observability-and-token-efficient-results.test.md
+      artifact_sha256: 8c509aeb9adf3f0b329f235fa729934210919fdbb93b24bb5d29e57d2af80e8a
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r4.md
+      evidence_sha256: f1d54a8a468a648efb8cd3c48f9a6b5fbd808c80497c385443015ed156dec4cb
+      findings: []
+      outcome: approved
+      review_id: test-spec-review-r4
+      review_log_sha256: e264e5202adb9143cfbfcbd9beefc1becd64eadfa9f22eefa9b5f59a4687ae90
+      round: r4
+      stage_authority: test-spec-review
+  validations: {}
+  withdrawals:
+    withdrawal-5338df1de09010252b26897d8e9e7ad44c0504e3a52ed88ae67e12a62b8892fe:
+      artifact_id: architecture
+      artifact_kind: architecture
+      artifact_path: docs/architecture/system/architecture.md
+      artifact_sha256: 427828a44dd25d63f18e07c99eb4055330a26961f5de8d8297545a7d6455c6e7
+      canonical_owner_change_id: 2026-08-24-governed-lifecycle-cli
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-registration-withdrawal.md
+      evidence_sha256: a39de156e2a8ff811159c3bef69d98be43315be04a9dab38280f58755dacc957
+      prior_lifecycle_revision: sha256:17c5fb698361e3b4c3ae1e8d5b5c1566029c3d5d05cfb27397b2a549895752de
+      reason: duplicate-registration
+      status: withdrawn
+      withdrawal_id: withdrawal-5338df1de09010252b26897d8e9e7ad44c0504e3a52ed88ae67e12a62b8892fe

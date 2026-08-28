@@ -319,7 +319,8 @@ The goals are:
   without live planned work; after clean review evidence, `plan` initializes
   missing planned-work state exactly once from the reviewed revision, and the
   same review occurrence retries settlement. `workflow` coordinates those
-  calls and writes routing and every later planned-work transition only. Downstream
+  calls and selects routing and every later planned-work operation; the
+  lifecycle CLI validates and persists each closed selected operation. Downstream
   skills write their own evidence and route upstream defects to the owner.
 - `bounded-review-fix` remains the only writable workflow-automation
   mechanism. One structured target is the complete public consent boundary
@@ -520,11 +521,23 @@ The package pins the maintained `yaml` parser dependency. Parsing admits only th
 
 Lifecycle revision uses a versioned canonical serialization of mutation-relevant state plus sorted repository-relative identities for every referenced artifact or evidence item that can affect the result. The versioned identity schema explicitly excludes provenance-only fields. The transient lock and recovery bundle coordinate one worktree but are not Git-tracked truth and are unnecessary for fresh-checkout reconstruction.
 
-Skills retain semantic criteria, artifact authoring, findings, authority limits, stop behavior, and portable use. Governed skills ask the CLI for exact context, author their semantic file, then request registration or settlement. The closed `record-artifact-revision` operation verifies an already-written artifact and authoring evidence, binds creation or revision to the exact entry and optional prior identity, invalidates registrations for the replaced identity, and derives `review-required`; it never writes semantic content or routing state. The CLI validates the stage-bound operation but never authors semantic content, chooses the next stage, invokes an agent, or infers approval. Workflow remains the only routing and continuation owner.
+Skills retain semantic criteria, artifact authoring, findings, authority limits, stop behavior, and portable use. Governed skills ask the CLI for exact context, author their semantic file, then request registration or settlement. The closed `record-artifact-revision` operation verifies an already-written artifact and authoring evidence, binds creation or revision to the exact entry and optional prior identity, invalidates registrations for the replaced identity, and derives `review-required`; it never writes semantic content or routing state. The CLI validates stage-bound operations but never authors semantic content, selects whether or where workflow continues, invokes an agent, or infers approval. Workflow remains the only routing and continuation decision owner; after workflow selects a closed route-bearing operation such as `start-milestone`, the CLI may validate and atomically apply only that operation's deterministic routing projection.
+
+Milestone completion and continuation are separate engine operations. `complete-milestone` closes only the reviewed milestone, advances the planned-work cursor to the next still-planned milestone, resets `latest_review`, and returns structural eligibility without changing workflow-stage projections. A later workflow-selected `start-milestone` marks the exact current implementation milestone `implementing` and synchronizes `workflow_state.current_stage`, `workflow_state.next_stage`, and an active `workflow.automation.current_stage` in the same candidate. A contradictory active automation projection rejects the candidate before persistence.
+
+When completion consumes a review receipt directly, `lifecycle_cli.milestones.<milestone-id>` stores one normalized completion-evidence record. Its identity covers milestone proof path and digest, review receipt path and digest, the exact canonical review-log occurrence digest rather than the whole log file, the complete packet inventory and digest, normalized review facts, milestone identity, and stage authority. A derived fingerprint covers that normalized record. Current-revision completion replay reconstructs every constituent from repository bytes and compares the normalized record before returning `already-recorded`; omission or drift returns `RL_STALE_EVIDENCE` without mutation. Hashing the canonical occurrence permits unrelated review-log appends while preventing a changed authorizing occurrence from being reused.
 
 Stage authority in a request is a structurally checked claim, not an authenticated identity. The engine matches it to the closed operation, current lifecycle state, exact artifact, and durable evidence. Filesystem authority, trusted CI, and branch protection remain the adversarial enforcement boundary.
 
 During migration, existing Python validators consume the same versioned conformance fixtures and may run behind or beside `rigorloop lifecycle validate`. The Node engine is the mutation-time authority. A mismatch between implementations blocks enforcement; validator retirement follows the ledger-backed proof rule in ADR-20260810 rather than a big-bang rewrite.
+
+### Level 2 White-Box: CLI Observability and Result Projection
+
+One invocation controller surrounds every public command family after safe logging configuration and before dispatch. It owns invocation correlation, timing, diagnostic emission, single semantic-result rendering, and final exit mapping without acquiring semantic or lifecycle authority.
+
+The component separates five package-local responsibilities: strict log configuration; allowlist-only event construction; a synchronous bounded JSON Lines sink; a shared internal command-result representation with compatibility, concise, and detailed renderers; and read-only path or exact-ID log inspection. Semantic handlers return normalized results and do not write diagnostic files or duplicate successful stdout.
+
+The sink owns only `rigorloop.jsonl`, four numbered archives, and `.rigorloop-log.lock` beneath one validated user-state root. A fixed exclusive-create lock serializes each complete append and any rotation for at most 10 attempts and 1,000 milliseconds. Logging failures become `recorded`, `degraded`, or `disabled` diagnostic state and never change repository bytes, lifecycle evidence, semantic status, or exit behavior.
 
 ### Level 2 White-Box: Validation and Generation Scripts
 
@@ -633,8 +646,10 @@ The component has five responsibilities:
   from current settled artifact state and stage-owned evidence;
 - artifact-state transitions: each authoring or review peer changes only one
   matching `artifact_states` entry through the closed transition vocabulary;
-- workflow-state transitions: `workflow` alone updates current stage,
-  milestone binding, blocker, next stage, and final-closeout readiness;
+- workflow-state selection: `workflow` alone selects current stage,
+  milestone continuation, blocker disposition, next stage, and final-closeout
+  intent; after lifecycle CLI activation, the CLI validates and atomically
+  persists only the selected closed operation's derived fields;
 - evidence linking: `change.yaml` points to authoring, review, resolution,
   validation, verification, and learn evidence without copying their bodies;
   and
@@ -1068,8 +1083,20 @@ Legal temporary states are limited to authoring/revision/blocked without `planne
 5. An accepted mutation produces a deterministic candidate and operation fingerprint. The transaction adapter validates the candidate before replacement.
 6. The adapter atomically creates `.rigorloop-lifecycle.lock` beside the change record, then creates and syncs `.rigorloop-lifecycle-recovery.json` in `prepared` phase before replacing `change.yaml`; both transient files use mode `0600`.
 7. After replacement, the adapter records `replaced` and verifies the persisted state. Verification failure restores and verifies prior bytes. Failed restoration leaves recovery blocked; only `validate` and named `reconcile-interrupted-replace` repair are admitted. Cleanup removes recovery before lock.
-8. A stale original request always fails. An equivalent request against the current revision returns `already-recorded` only when all requested durable facts are identical.
-9. Workflow reads the structural outcome and independently owns routing. No lifecycle command schedules another stage or crosses the PR, push, release, deploy, or merge boundary.
+8. For milestone completion, the engine stores a normalized completion-evidence record and fingerprint under the milestone's lifecycle registration. Completion closes and reports successor eligibility but leaves every workflow-stage projection unchanged.
+9. Workflow independently decides whether to continue. If it selects the successor, it submits a separate `start-milestone`; the engine validates the exact current planned milestone and atomically synchronizes every present authoritative routing projection without scheduling or invoking the stage.
+10. A stale original request always fails. An equivalent completion request against the current revision returns `already-recorded` only after the engine rereads and revalidates the stored proof, receipt, canonical review-log occurrence, packet inventory, review facts, milestone, and authority. Omitted or drifted evidence fails unchanged.
+11. No lifecycle command chooses a route, schedules another stage, or crosses the PR, push, release, deploy, or merge boundary.
+
+### CLI observable invocation flow
+
+1. The entrypoint resolves strict logging options and a random invocation ID without persisting raw argv or arbitrary environment values.
+2. The invocation controller classifies one closed command family, records monotonic start state, and attempts one schema-v1 start event through the file and console thresholds.
+3. The selected semantic handler runs independently and returns one normalized internal result. Logging availability cannot change its mutation, status, or exit class.
+4. One selected renderer writes exactly one semantic stdout projection. Existing v0.4.x renderers preserve their compatibility contracts; new concise and detailed formats project the same result.
+5. The controller derives an allowlisted completion event, attempts one terminal append, and returns the semantic exit code. Interruption may leave only the start event.
+6. The sink acquires its fixed lock, revalidates owned paths, rotates within five files when required, writes one complete JSON line synchronously, and releases the lock. Failure or bound exhaustion degrades diagnostics without retrying the semantic command.
+7. `logs show` scans the same five files for an exact validated invocation ID, ignores its own different invocation ID, returns only validated matching events, and never reconstructs or reruns the original operation.
 
 ## Deployment View
 
@@ -1111,6 +1138,7 @@ The main execution and publication boundaries are:
 - legacy automation evidence: retired `workflow.autoprogression` records remain read-only compatibility inputs and historical audit evidence during migration;
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
 - local validation execution cache: untracked branch-local, worktree-local, and change-local state that can speed eligible repeated local validation but is not portable and is not lifecycle evidence;
+- local CLI diagnostic logs: user-scoped JSON Lines under the platform state/log directory or an explicit safe override, bounded to one active file and four archives; they are disposable observability state and never repository, review, lifecycle, CI, or release evidence;
 - local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use;
 - public adapter packages: tracked `dist/adapters/` output during the compatibility window through `v0.1.2`, then generated temporary or release-output packages and release archives for `v0.1.3` and later;
 - mapped skill-local resource parity: canonical `skills/<skill>/` resources, generated adapter output, locally packed release candidates, and adapter archives preserve skill-root relative paths and raw-byte SHA-256 unless an explicit transformation contract applies; installed-tree inspection remains only for additional materialization behavior not proved by package parity;
@@ -1224,7 +1252,7 @@ Review stages remain distinct peers.
 They write durable formal evidence before settling only the matching artifact
 entry.
 Direct review-only requests remain isolated.
-Workflow reads settlement and updates routing but cannot create a verdict.
+Workflow reads settlement and selects routing but cannot create a verdict. The lifecycle CLI applies only the selected closed routing operation after validating the current state.
 
 Resume is evidence-first and transition-scoped.
 An identical interrupted review settlement may reconcile idempotently;
@@ -1494,7 +1522,8 @@ Authority is structural rather than selector-driven:
   matching authoring transition;
 - review peers write review evidence and one matching settlement transition;
 - plan initializes missing planned-work state once for a new primary plan;
-- workflow writes routing and every later planned-work transition;
+- workflow selects routing and every later planned-work transition, and the
+  lifecycle CLI validates and persists the selected closed operation;
 - downstream stages write only their code or stage evidence; and
 - every actor treats other governed artifacts and state entries as read-only.
 
@@ -1512,7 +1541,9 @@ path restores retired plan, artifact, or profile writers.
 
 ### Governed lifecycle CLI boundary
 
-`change.yaml` remains the sole Git-tracked mutable lifecycle snapshot. Semantic Markdown remains stage-owned. The lifecycle engine owns mechanical interpretation and transition calculation; the CLI transaction adapter owns local guarded replacement; workflow owns routing; Git owns durable history and branch integration.
+`change.yaml` remains the sole Git-tracked mutable lifecycle snapshot. Semantic Markdown remains stage-owned. The lifecycle engine owns mechanical interpretation and transition calculation; the CLI transaction adapter owns local guarded replacement; workflow owns routing selection and continuation decisions; Git owns durable history and branch integration. The CLI may apply a route only as the deterministic result of a closed workflow-selected operation, never by choosing the operation or successor itself.
+
+Completion and start therefore form a two-step protocol. Completion persists proof-bound settlement and reports eligibility while leaving routing unchanged. Start consumes workflow's explicit selection, validates the current planned implementation milestone and every present routing projection, then commits milestone and routing fields together or none of them. Completion replay is evidence-bound rather than status-bound: the stored normalized completion record and fingerprint are rederived from current repository bytes before idempotent success.
 
 The lifecycle revision and artifact digests establish freshness, not actor attribution or cryptographic authorization. Exclusive local writing and optimistic revision checks cover ordinary same-worktree concurrency. Branch divergence remains visible as Git conflicts and requires normal integration policy.
 
@@ -1521,6 +1552,14 @@ Same-worktree serialization uses fixed transient siblings in the selected change
 Compatibility is gated in order: read-only interpretation, guarded mutation, canonical skill and adapter migration, CI parity, then mandatory enforcement. Until enforcement is activated, current validated direct mutation remains a compatibility path. After activation, rollback requires a coordinated compatible CLI, schema, skills, adapters, and CI release; repair never becomes an arbitrary setter.
 
 This boundary amends ADR-20260729's no-hash and direct state-write mechanics for supported operations. It preserves one change-local state owner and the stage authority model: stages still own the semantic operation they may request, while the CLI alone derives and writes the lifecycle fields.
+
+### Local CLI observability boundary
+
+CLI diagnostics are machine-local, user-scoped, bounded, and non-authoritative. The invocation controller may observe only allowlisted normalized command and result facts. It cannot receive raw requests, arbitrary environment values, artifact contents, credentials, private network data, or absolute repository paths for event serialization.
+
+The file sink validates one containment root and uses non-following inspection for its five log names and lock. New POSIX paths use restrictive modes; existing unsafe permissions or symlinks are refused without implicit repair. Rotation, corruption, contention, unavailable storage, and console configuration affect only diagnostic state. Explicit console level `off` suppresses even the guarded emergency diagnostic.
+
+Result projection is downstream of semantic execution. Compatibility, concise, and detailed renderers consume one internal result and must agree on shared facts. The versioned benchmark corpus measures complete agent-facing interactions, including any follow-up lookup; it cannot become a substitute for semantic field-preservation tests.
 
 ### Independent adversarial review gate boundary
 
@@ -1602,6 +1641,8 @@ Architecture artifacts and diagrams must not include secrets, credentials, priva
 The legacy normalization follow-on inventoried every current `docs/architecture/` file, merged accepted current content into this package, and archived the eight top-level legacy Markdown records. Those legacy records remain historical evidence only; downstream architecture work uses this canonical package.
 
 ## Architecture Decisions
+- [ADR-20260825: Local CLI Observability and Result Projection Boundary](../../adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md) establishes one invocation controller, allowlist event model, bounded synchronous local sink, shared result projection, and compatibility-gated concise-default decision.
+
 - [ADR-20260824: Governed Lifecycle CLI Transaction Boundary](../../adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) establishes one lifecycle interpreter, versioned identity and operation contracts, guarded single-record replacement and recovery, validator convergence, skill-mechanics migration, and phased enforcement.
 
 - [ADR-20260818: Ordered Final-Review Stage-Evidence Tail](../../adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md) defines the exact `S -> R -> E` pre-verify revision protocol, path-and-field ownership, Git-derived identities, and interrupted-tail recovery.
@@ -1654,6 +1695,8 @@ No additional ADR is required for project-map skill simplification because it ap
 
 No additional ADR is required for workflow skill simplification because it applies the existing mapped-resource skill-package model to the current workflow component without changing the durable package model, `change.yaml` persistence, lifecycle ownership, runtime boundary, or deployment topology. The approved behavior is carried by `specs/workflow-skill-simplification.md` and this canonical package update.
 
+No additional ADR is required for the milestone completion/start correction because ADR-20260824 already establishes workflow routing ownership, closed semantic CLI operations, exact evidence identities, deterministic replay, and single-record atomic mutation. This canonical update makes that existing decision operationally precise by separating completion from workflow-selected start and by defining the normalized milestone completion-evidence record; it introduces no new service, persistence owner, external authority, or deployment boundary.
+
 ADR `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md` is
 required because this change replaces plan-owned live state and capability-
 driven automation with one change-local lifecycle model and fixed peer-stage
@@ -1699,6 +1742,9 @@ decisions from ADR-20260728 and ADR-20260729.
 | Managed state opt-in | A user runs `rigorloop init codex --write-state`. | The CLI writes target-oriented `rigorloop.yaml` schema v2 and `rigorloop.lock` schema v3 only after verified install; new user-visible schema keys do not use `adapter` or `adapters`, and historical archive filename values may remain unchanged. |
 | Release smoke fidelity | A maintainer prepares the target-native `0.3.0` release. | Packed-package pre-publish smoke and live registry/download post-publish smoke run real non-dry-run init for `codex`, `claude`, and `opencode`; dry-run output alone is not accepted as install proof. |
 | Routine release transaction safety | A maintainer prepares a routine release. | `docs/releases/profiles/<tag>.yaml` owns release state; `prepare-release` generates only profile-owned surfaces, preflight catches cheap deterministic drift, `release-verify.sh <tag>` remains the full gate, closeout writes validator-compatible public evidence, and timing evidence is recorded without weakening release checks. |
+| CLI diagnostic isolation | The log directory is unavailable, unsafe, full, corrupt, or contended while a semantic command completes. | Repository bytes, semantic stdout, and exit status match logging-disabled execution; the invocation records diagnostics when possible or reports bounded degraded state without recursive failure. |
+| CLI diagnostic privacy | A command contains a synthetic credential, private path, request body, control character, or environment secret. | The value is absent from stdout, stderr, active logs, archives, and lookup output; only closed normalized fields appear. |
+| Concise-result compatibility | A v0.4.x caller and an opt-in concise caller execute the same fixture. | Existing defaults retain their contract, concise and detailed projections agree on shared facts, and a default switch remains blocked unless all six complete-interaction profiles pass the adoption gates. |
 | Skill resource self-containment | A published skill maps a skill-local resource. | The resource exists in canonical source, generated output, locally packed release candidates, and clean installed target skill roots with matching relative path and raw-byte SHA-256 unless a transformation contract applies. |
 | Boundary-resource proportionality | A governed stage makes a decision after the compact scan. | Non-behavior work loads no formal family resource; feature-contract stages map only compact and feature-authoring resources; proof-map stages map only compact and proof resources; other stages begin with cited approved rows and expand only when the slice is insufficient. |
 | Boundary-resource parity | A maintainer changes a boundary resource or governed skill. | One declarative manifest projects exactly the owner-approved resources; canonical, skill-local, generated, packed, and installed Codex, Claude Code, and opencode trees retain the expected mapped path and raw-byte SHA-256 with no missing or additional layer. |
@@ -1718,9 +1764,11 @@ decisions from ADR-20260728 and ADR-20260729.
 | Cache-hit safety | A repeated explicit-path lifecycle validation command is requested after an unrelated edit. | Cache hit occurs only when previous result was `pass` and normalized command, input-surface hash, implementation hash, and policy/config hash all match; otherwise the validator runs. |
 | Inner-loop helper adoption | A contributor repeats lifecycle validation after change-local evidence edits. | `--mode explicit-paths-inner-loop` supplies cache context by default, normalizes to canonical direct `--mode explicit-paths` cache identity, and records displayed helper argv separately from canonical cache argv in formal evidence. |
 | Lifecycle-state consistency | A stage updates one artifact or workflow transition while its linked review, milestone, blocker, or closeout evidence is absent, stale, or contradictory. | Validation reports the exact entry and evidence mismatch and blocks downstream reliance; plans and governed artifacts remain unchanged. |
+| Milestone continuation authority | A reviewed milestone completes while another implementation milestone is planned. | Completion closes and reports eligibility without changing routing; only a later workflow-selected `start-milestone` marks the successor implementing and atomically synchronizes every present authoritative routing projection. |
+| Completion replay freshness | A caller retries completed milestone settlement after review evidence is omitted or an authorizing receipt, canonical review-log occurrence, milestone proof, or packet constituent changes. | Replay reconstructs the normalized completion record and returns `RL_STALE_EVIDENCE` without mutation; identity-equal facts return `already-recorded`, and unrelated review-log appends do not invalidate the canonical occurrence. |
 | Unified automation single-write safety | A user starts or resumes workflow automation through a current or legacy command. | The command resolves to one structured target, writes routing only through `workflow_state`, and leaves retired artifact, plan, and profile state unchanged. |
 | Published stage-ownership completeness | A maintainer adds or changes an automatable stage. | The canonical skill defines one fixed content, evidence, and lifecycle-state write boundary; workflow routing cannot widen it; generated adapters preserve it byte-for-byte or semantically as required by the adapter contract. |
-| Artifact-state write isolation | Multiple peers participate in one lifecycle transition. | The author or review peer writes only the matching artifact entry; plan may initialize missing planned work once only from current clean review evidence; workflow coordinates the owning calls and writes routing and later planned-work transitions; any other cross-owner mutation blocks reliance. |
+| Artifact-state write isolation | Multiple peers participate in one lifecycle transition. | The author or review peer writes only the matching artifact entry; plan may initialize missing planned work once only from current clean review evidence; workflow coordinates and selects routing and later planned-work operations; the CLI validates and persists only those closed selected operations; any other cross-owner mutation blocks reliance. |
 | Settlement-stable resume | Review evidence is durable but its matching settlement write is interrupted. | The same review identity reconciles idempotently; conflicting identity or evidence fails closed, and workflow never substitutes its own verdict. |
 | Final-review tail integrity | Final review is recorded after reviewed subject `S`, followed by explanation and workflow handback. | Verify accepts only exact non-merge direct-child ancestry `S -> R -> E`; each revision matches its closed path-and-field set, and any broader or reordered state requires fresh final review. |
 | Final-review tail recovery | Execution stops after exact final-review recording revision `R`. | Resume may create only the exact explanation-and-handback child `E`; changed basis, intervening commits, merges, or unowned fields stop without adoption or rewrite. |
@@ -1760,6 +1808,8 @@ decisions from ADR-20260728 and ADR-20260729.
 | A retired check may protect an undocumented failure | Retirement pauses on unknown fixtures or contradictory behavior and requires old-versus-replacement proof plus rollback before removal. |
 | Review-owned semantic quality may vary by reviewer | Published-skill review uses one concise checklist for trigger clarity, ownership, prerequisites, procedure, resources, stops, claims, output, and handoff; material concerns use formal findings. |
 | Shared `change.yaml` path allowance could conceal unrelated lifecycle mutation | Ordered-tail validation inspects the changed fields for `R` and `E`; path-only allowlisting is explicitly insufficient. |
+| Completion could silently acquire workflow routing authority | Completion and start are separate operations; completion cannot change stage projections, while start requires workflow's explicit selection and validates all present projections before one atomic candidate is persisted. |
+| Closed milestone replay could trust status while authorizing evidence drifted | The milestone registration stores a normalized complete evidence identity and fingerprint; every current-revision replay rereads proof, receipt, canonical log occurrence, packet inventory, review facts, milestone, and authority before idempotent success. |
 | Evidence recording can become self-referential or self-stale | Git derives recording identities after commit, the explanation records content and reviewed-basis identities rather than its own commit hash, and verify keeps later evidence outside the pre-verify tail. |
 | Target runtimes may interpret structurally valid skill text unexpectedly | Treat reported runtime behavior as a product defect to investigate without making routine LLM execution a repository acceptance oracle. |
 | Archived legacy architecture documents can be mistaken for current architecture truth | Each archived record points to this canonical package, and final closeout validation covers every changed legacy document. |
@@ -1770,6 +1820,9 @@ decisions from ADR-20260728 and ADR-20260729.
 | Architecture-review finding format could be mistaken for a replacement of material-finding closeout | The focused spec and this package keep the simple finding fields separate from the repository-wide material-finding contract. |
 | Token-cost reports could expose excessive transcript or command-output content | Measurement reports summarize cost drivers and avoid embedding unnecessary raw transcript content. |
 | Raw Codex JSONL could expose sensitive local paths or output | Release metadata supports sanitized summaries, and analyzer summaries do not require private raw JSONL paths when raw evidence is intentionally omitted. |
+| Local CLI diagnostic logs could expose private inputs or be mistaken for lifecycle evidence | Event construction is allowlist-only and cannot access raw requests or arbitrary environment data; logs remain outside the repository and are explicitly excluded from lifecycle, review, verification, and CI authority. |
+| Synchronous diagnostic writes could delay routine commands under contention | Each event uses at most 10 lock attempts and 1,000 milliseconds total; exhaustion degrades diagnostics and preserves the semantic result. |
+| Concise output could hide an actionable fact or shift cost into a second lookup | A closed field-applicability matrix and six versioned complete-interaction profiles gate adoption; detailed output remains available through the declared compatibility window. |
 | Benchmark runners could accidentally measure the repository-local Codex mirror instead of public adapter output | The release benchmark installs public Codex skills from tracked public adapter output while available, generated temporary adapter output, or release artifact output, and rejects `.codex/skills/` as the public benchmark source. |
 | Release metadata can become prose-only or unreproducible | Structured YAML records runner invocation, fixture source, public skill source, run evidence, waiver state, and comparison data; release validation reads YAML rather than Markdown prose. |
 | Users rely on copying public adapter skills from the repository tree | Public adapter skill copies remain tracked for at least one stable public release after downloadable adapter artifacts and install docs are available; release notes announce the repository-tree install transition. |
@@ -1962,7 +2015,8 @@ decisions from ADR-20260728 and ADR-20260729.
 - structured target: a requested public stage plus occurrence identity and completion predicate, bound before persistence.
 - artifact-state entry: change-local lifecycle record for one stable governed
   artifact ID, changed only by its matching authoring or review transition.
-- workflow state: the sole change-local current routing and planned-work snapshot; `plan` initializes missing primary-plan state once from current clean review evidence, `plan-review` retries settlement, and `workflow` writes every later transition from settled artifacts and stage evidence.
+- workflow state: the sole change-local current routing and planned-work snapshot; `plan` initializes missing primary-plan state once from current clean review evidence, `plan-review` retries settlement, and workflow selects every later transition from settled artifacts and stage evidence while the activated CLI validates and atomically persists closed selected operations.
+- completion-evidence fingerprint: SHA-256 over the versioned canonical normalized milestone-completion record covering proof, review receipt, canonical review-log occurrence, full packet inventory, normalized review facts, milestone identity, and operation authority; replay must reconstruct every constituent before idempotent success.
 - stable plan identity: artifact ID, kind, role, and normalized path; it names the durable plan artifact without hashing its content.
 - reviewed revision identity: review ID, round, record path, reviewed artifact path, and reviewed repository revision or commit used to prove which plan revision was judged.
 - fixed stage write boundary: the published-skill rule that defines the

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-08-24-governed-lifecycle-cli",
+  "expected_lifecycle_revision": "sha256:4f78f1c158f4db192aa3cc74d92b37c0c572e5dcff1adb389163d75a69ace7bc",
+  "artifact_id": "spec",
+  "evidence_path": "docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r5.md",
+  "stage_authority": "spec-review"
+}

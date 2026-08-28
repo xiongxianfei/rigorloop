@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-08-24-governed-lifecycle-cli",
+  "expected_lifecycle_revision": "sha256:012ff7d69fb2731ef45dc50b39495be403e0f2db2a5078d58992ff5c0b3aacca",
+  "source_stage": "verify",
+  "destination_stage": "test-spec",
+  "destination_artifact_id": "test-spec",
+  "reason": "upstream-proof-gap",
+  "evidence_path": "docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-route-deadlock-test-spec-r1.md",
+  "finding_ids": [
+    "RLCLI-DEADLOCK-CR2"
+  ],
+  "return_stage": "verify",
+  "stage_authority": "workflow"
+}

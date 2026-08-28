@@ -171,15 +171,18 @@ function permittedOperations(change, blockers) {
     }
   }
   const sourceIndex = CORRECTION_STAGE_ORDER.indexOf(stage);
-  const eligibleDestination = Object.entries(change.artifact_states ?? {}).some(([artifactId, entry]) => {
+  const eligibleDestinationIds = Object.entries(change.artifact_states ?? {}).filter(([artifactId, entry]) => {
     const destinationStage = entry?.kind === "adr" ? "architecture" : entry?.kind;
     return ["proposal", "spec", "architecture", "plan", "test-spec"].includes(destinationStage)
       && CORRECTION_STAGE_ORDER.indexOf(destinationStage) < sourceIndex
       && ["accepted", "approved", "active"].includes(entry?.lifecycle_state)
       && coordination?.artifacts?.[artifactId]?.artifact_path === entry?.path;
-  });
-  const routeCompatibleBlockers = blockers.every((blocker) => ["RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING"].includes(blocker.code));
-  if (coordination?.schema_version === 2 && !coordination.active_correction && eligibleDestination && routeCompatibleBlockers && (["review-resolution", "code-review", "verify"].includes(stage) || blockers.length)) operations.push("route-correction");
+  }).map(([artifactId]) => artifactId);
+  const staleIdentities = blockers.filter((blocker) => blocker.code === "RL_STALE_EVIDENCE").flatMap((blocker) => blocker.relevant_identities ?? []);
+  const staleCorrectionIsRoutable = staleIdentities.length === 0
+    || (blockerCodes.has("RL_UNRESOLVED_MATERIAL_FINDING") && staleIdentities.every((artifactId) => eligibleDestinationIds.includes(artifactId)));
+  const routeCompatibleBlockers = staleCorrectionIsRoutable && blockers.every((blocker) => ["RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_STALE_EVIDENCE"].includes(blocker.code));
+  if (coordination?.schema_version === 2 && !coordination.active_correction && eligibleDestinationIds.length && routeCompatibleBlockers && (["review-resolution", "code-review", "verify"].includes(stage) || blockers.length)) operations.push("route-correction");
 
   if (blockers.some((blocker) => blocker.code !== "RL_UNRESOLVED_MATERIAL_FINDING")) return operations;
   if (target?.lifecycle_state === "revision-required") return ["record-artifact-revision"];
@@ -193,6 +196,7 @@ function permittedOperations(change, blockers) {
   const milestoneState = milestone && change.workflow_state?.planned_work?.milestones?.[milestone]?.state;
   if (stage === "implement" && milestoneState === "planned") operations.push("start-milestone");
   if (stage === "implement" && milestoneState === "implementing") operations.push("complete-milestone");
+  if (stage === "code-review" && milestoneState === "review-requested") operations.push("complete-milestone");
   return operations;
 }
 
@@ -289,11 +293,11 @@ export function contextForStage(interpreted, stage) {
   const routeAvailable = interpreted.change.lifecycle_cli?.schema_version === 2
     && !interpreted.change.lifecycle_cli?.active_correction
     && interpreted.errors.length === 0
+    && interpreted.permitted_operations.includes("route-correction")
     && CORRECTION_STAGE_ORDER.indexOf(stage) >= 0
     && CORRECTION_STAGE_ORDER.indexOf(currentStage) > CORRECTION_STAGE_ORDER.indexOf(stage)
     && ["proposal", "spec", "architecture", "plan", "test-spec"].includes(stage)
     && target
-    && target.evidence_state === "current"
     && ["accepted", "approved", "active"].includes(target.recorded_state);
   return {
     exact_change: interpreted.change_id,

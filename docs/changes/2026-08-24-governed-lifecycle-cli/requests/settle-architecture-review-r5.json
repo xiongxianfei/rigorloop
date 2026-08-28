@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-08-24-governed-lifecycle-cli",
+  "expected_lifecycle_revision": "sha256:0f3726cd13b58c77a415be3e636c410600287a6b541621f578b0d1e118143ebd",
+  "artifact_id": "architecture",
+  "stage_authority": "architecture-review"
+}

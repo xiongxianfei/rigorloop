@@ -1,0 +1,33 @@
+schema_version: 1
+review_id: spec-review-r2
+review_stage: spec-review
+review_target: specs/cli-observability-and-token-efficient-results.md
+base_revision: sha256:de9ec40c11d33b4d199e79fea74374199d94133c8eed651546ed04d664bc1029
+head_revision: sha256:de9ec40c11d33b4d199e79fea74374199d94133c8eed651546ed04d664bc1029
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-revision-r1
+reviewer_context_id: root-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - local-diagnostic-persistence
+  - compatibility-sensitive-output
+  - concurrency-and-privacy-boundaries
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+  - specs/cli-observability-and-token-efficient-results.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - closure of CLIOBS-SR1 through CLIOBS-SR3
+  - complete retained-state and degraded-observability partitions
+  - deterministic concise and adoption proof contracts
+  - proposal alignment and downstream architecture readiness

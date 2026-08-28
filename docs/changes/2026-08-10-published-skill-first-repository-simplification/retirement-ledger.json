@@ -184,7 +184,8 @@
         "workflow_automation.engine_regression",
         "workflow_automation.policy_regression",
         "workflow_automation.state_regression",
-        "workflow_automation.validator_regression"
+        "workflow_automation.validator_regression",
+        "governed_lifecycle_cli_wrapper.test"
       ],
       "scripts": [
         "scripts/validate-artifact-lifecycle.py",
@@ -501,6 +502,7 @@
         "token_cost.report_validate"
       ],
       "scripts": [
+        "scripts/test-cli-result-measurement.py",
         "scripts/test-token-cost-measurement.py",
         "scripts/test-token-cost-report-validation.py",
         "scripts/validate-token-cost-report.py"

@@ -1,0 +1,31 @@
+schema_version: 1
+review_id: code-review-m1-r11
+review_stage: code-review
+review_target: locked M1 implementation identities from R10
+base_revision: fcbbfda44a89945ee06cfa0c1b16dcbd39984036
+head_revision: working-tree:0c29c86389d3ea3af72b4ca3d824f91fd7673bdbacf4b086470f8ed62be18fd3
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: root-m1-r9-correction
+reviewer_context_id: m1-second-independent-review-agent-r11
+context_separation_mechanism: separate-agent-blind-implementation-pass
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-mutation-fidelity
+  - recovery-semantics
+  - result-projection-authority
+  - compatibility-proof
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/cli-observability-and-token-efficient-results.md
+  - specs/cli-observability-and-token-efficient-results.test.md
+  - docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+  - docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+formal_criteria:
+  - code-review-second-review-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false

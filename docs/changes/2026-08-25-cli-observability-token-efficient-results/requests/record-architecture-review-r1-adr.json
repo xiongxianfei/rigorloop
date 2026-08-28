@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-08-25-cli-observability-token-efficient-results",
+  "expected_lifecycle_revision": "sha256:d48d4b139fc3cf3798fa1b119f35c0ffc7d524bdcb978e9f2bbb5cb66be29fd6",
+  "artifact_id": "adr-cli-observability",
+  "evidence_path": "docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r1.md",
+  "stage_authority": "architecture-review"
+}
