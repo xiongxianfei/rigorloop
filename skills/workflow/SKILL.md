@@ -166,6 +166,8 @@ Stop and surface the smallest concrete blocker when:
 
 Do not treat a missing resource as permission to use remembered procedure. Do not repair another stage's evidence while routing.
 
+Use targeted proof first. Run broad smoke only when an authoritative `broad_smoke.sources` trigger applies, and keep required manual proof in `verify-report.md`.
+
 ## Handoff
 
 - Normal next stage: the next valid specialized skill or stop condition for the standard workflow state.

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-08-24-governed-lifecycle-cli",
+  "expected_lifecycle_revision": "sha256:5d03d26cd5c2acfea49e00baca1ab117f5780abc3f301e39d17df9df1b04c0ac",
+  "artifact_id": "spec",
+  "stage_authority": "spec-review"
+}

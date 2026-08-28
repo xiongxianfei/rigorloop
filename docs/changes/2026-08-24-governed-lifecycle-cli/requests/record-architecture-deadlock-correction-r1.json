@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-24-governed-lifecycle-cli",
+  "expected_lifecycle_revision": "sha256:952b4d3276670b3abba69632aea2cd8b60024bac4ab73014534f584832c63c7c",
+  "artifact_id": "architecture",
+  "artifact_kind": "architecture",
+  "artifact_role": "primary",
+  "artifact_path": "docs/architecture/system/architecture.md",
+  "evidence_path": "docs/changes/2026-08-24-governed-lifecycle-cli/evidence/architecture-deadlock-correction-r1.md",
+  "prior_artifact_sha256": "427828a44dd25d63f18e07c99eb4055330a26961f5de8d8297545a7d6455c6e7",
+  "stage_authority": "architecture"
+}

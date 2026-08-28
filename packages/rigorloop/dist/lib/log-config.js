@@ -12,9 +12,13 @@ export function defaultLogDirectory(options = {}) {
   const platform = options.platform ?? process.platform;
   const env = options.env ?? process.env;
   const home = options.home ?? homedir();
-  if (platform === "win32") return win32.join(env.LOCALAPPDATA || win32.join(home, "AppData", "Local"), "RigorLoop", "Logs");
+  if (platform === "win32") {
+    const localState = env.LOCALAPPDATA && win32.isAbsolute(env.LOCALAPPDATA) ? env.LOCALAPPDATA : win32.join(home, "AppData", "Local");
+    return win32.join(localState, "RigorLoop", "Logs");
+  }
   if (platform === "darwin") return join(home, "Library", "Logs", "RigorLoop");
-  return join(env.XDG_STATE_HOME || join(home, ".local", "state"), "rigorloop", "logs");
+  const stateHome = env.XDG_STATE_HOME && isAbsolute(env.XDG_STATE_HOME) ? env.XDG_STATE_HOME : join(home, ".local", "state");
+  return join(stateHome, "rigorloop", "logs");
 }
 
 export function resolveLogConfig(args = [], options = {}) {
@@ -38,6 +42,11 @@ export function resolveLogConfig(args = [], options = {}) {
   if (!CONSOLE_LOG_LEVELS.includes(consoleLevel)) throw invalidLevel("console");
   const rawDirectory = env.RIGORLOOP_LOG_DIR || defaultLogDirectory(options);
   const windowsAbsolute = (options.platform ?? process.platform) === "win32" && win32.isAbsolute(rawDirectory);
-  if (env.RIGORLOOP_LOG_DIR && !isAbsolute(rawDirectory) && !windowsAbsolute) throw Object.assign(new Error("Log directory override must be absolute."), { code: "RL_LOG_UNSAFE_PATH" });
-  return { fileLevel, consoleLevel, fileEnabled, directory: windowsAbsolute ? win32.normalize(rawDirectory) : resolve(rawDirectory), args: remaining };
+  if (env.RIGORLOOP_LOG_DIR && !isAbsolute(rawDirectory) && !windowsAbsolute) {
+    if (!fileEnabled && remaining[0] !== "logs") {
+      return { fileLevel, consoleLevel, fileEnabled, directory: null, args: remaining, issue: null };
+    }
+    return { fileLevel, consoleLevel, fileEnabled: false, directory: null, args: remaining, issue: { code: "RL_LOG_UNSAFE_PATH" } };
+  }
+  return { fileLevel, consoleLevel, fileEnabled, directory: windowsAbsolute ? win32.normalize(rawDirectory) : resolve(rawDirectory), args: remaining, issue: null };
 }

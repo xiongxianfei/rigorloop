@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-24-governed-lifecycle-cli",
+  "expected_lifecycle_revision": "sha256:e08803948b590aa95e8e5414f065d1ab375838fde97be951eb16b3ba6774856b",
+  "artifact_id": "test-spec",
+  "artifact_kind": "test-spec",
+  "artifact_role": "primary",
+  "artifact_path": "specs/governed-lifecycle-cli.test.md",
+  "evidence_path": "docs/changes/2026-08-24-governed-lifecycle-cli/evidence/test-spec-deadlock-correction-r1.md",
+  "prior_artifact_sha256": "b007a6554fc8a851a145c1773800fa95feb6a8e1372a81205b476a50209b7bc4",
+  "stage_authority": "test-spec"
+}

@@ -30,8 +30,41 @@ This ledger records formal lifecycle reviews for the governed lifecycle CLI chan
 | `test-spec-review-r4` | `test-spec-review` | `r4` | test spec at `sha256:b007a6554fc8a851a145c1773800fa95feb6a8e1372a81205b476a50209b7bc4` | `reviews/test-spec-review-r4.md` | `approved` | `0` | `recorded` |
 | `code-review-m7-r1` | `code-review` | `r1` | implementation milestone M7 at commit `77fe9f11` | `reviews/code-review-m7-r1.md` | `clean-with-notes` | `0` | `recorded` |
 | `code-review-final-r1` | `code-review` | `r1` | complete branch diff ending at commit `96defb9f` | `reviews/code-review-final-r1.md` | `clean-with-notes` | `0` | `recorded` |
+| `code-review-deadlock-r2` | `code-review` | `r2` | stale pre-authored upstream correction routing bugfix at recorded working-tree identities | `reviews/code-review-deadlock-r2.md` | `clean-with-notes` | `0` | `recorded` |
+| `spec-review-r5` | `spec-review` | `r5` | `specs/governed-lifecycle-cli.md` at `sha256:06e8856209816c1692cc3baab4a41b3936b8118f6be4c668de7a80665f0c1b82` | `reviews/spec-review-r5.md` | `approved` | `0` | `recorded` |
+| `test-spec-review-r5` | `test-spec-review` | `r5` | `specs/governed-lifecycle-cli.test.md` at `sha256:84e93b72a2416d8ede18c83916b6a9e93f90798602e02ecd482f8c4e9bcae0ba` | `reviews/test-spec-review-r5.md` | `approved` | `0` | `recorded` |
+| `architecture-review-r5` | `architecture-review` | `r5` | `docs/architecture/system/architecture.md` at `sha256:78e708c76b5f787e4f54e55d16d7abc827dd16f90ea578b4dec11f06cf93ff67` | `reviews/architecture-review-r5.md` | `approved` | `0` | `recorded` |
+| `code-review-deadlock-r3` | `code-review` | `r3` | milestone completion and replay correction at recorded working-tree identities | `reviews/code-review-deadlock-r3.md` | `inconclusive` | `0` | `recorded` |
+| `code-review-deadlock-r5` | `code-review` | `r5` | milestone completion and replay correction at `sha256:cbe4dbd0498986725451767552f2d7b198ed2fbc462c13197ee53c2f210126b2` | `reviews/code-review-deadlock-r5.md` | `clean-with-notes` | `0` | `recorded` |
+| `code-review-deadlock-r6` | `code-review` | `r6` | second-clean milestone completion and replay correction at `sha256:cbe4dbd0498986725451767552f2d7b198ed2fbc462c13197ee53c2f210126b2` | `reviews/code-review-deadlock-r6.md` | `clean-with-notes` | `0` | `recorded` |
 
 ## Review Entries
+
+### Review entry
+
+Review ID: code-review-deadlock-r4
+Stage: code-review
+Round: r4
+Reviewed artifact: milestone completion and replay correction at packet `sha256:192af5cf09d0cee0ffce0fa16cb0eb821c4eac0683b8e9436691b0ea5a8d6b28`
+Status: changes-requested
+Detailed record: reviews/code-review-deadlock-r4.md
+Resolution: review-resolution.md#code-review-deadlock-r4
+Material findings: RLCLI-DEADLOCK-CR3
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-deadlock-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: uncommitted governed-lifecycle milestone completion correction
+Status: blocked
+Detailed record: reviews/code-review-deadlock-r1.md
+Resolution: review-resolution.md#code-review-deadlock-r1
+Material findings: RLCLI-DEADLOCK-CR1, RLCLI-DEADLOCK-CR2
+Open findings: none
+Recording status: recorded
 
 ### Review entry
 

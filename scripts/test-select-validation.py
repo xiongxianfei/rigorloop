@@ -100,6 +100,7 @@ EXPECTED_CATALOG = {
     "token_cost.report_validate": "python scripts/validate-token-cost-report.py <report-yaml>...",
     "broad_smoke.repo": "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
     "rigorloop_cli.test": "npm test --prefix packages/rigorloop",
+    "governed_lifecycle_cli_wrapper.test": "python scripts/test-governed-lifecycle-cli-validator.py",
     "npm_package_publication.test": "python scripts/test-npm-package-publication.py",
 }
 
@@ -1672,6 +1673,7 @@ raise SystemExit({exit_code})
             "change_metadata.regression",
             "documentation_prose.regression",
             "guide_system.regression",
+            "governed_lifecycle_cli_wrapper.test",
             "markdown_readability.regression",
             "release_transaction.regression",
             "requirement_fidelity.spec_reads",
@@ -2994,6 +2996,24 @@ raise SystemExit({exit_code})
                 "category": "rigorloop-cli",
                 "status": "ok",
                 "checks": {"rigorloop_cli.test", "npm_package_publication.test"},
+            },
+            {
+                "path": "scripts/validate-governed-lifecycle-cli.py",
+                "category": "governed-lifecycle-cli-wrapper",
+                "status": "ok",
+                "checks": {"rigorloop_cli.test", "governed_lifecycle_cli_wrapper.test"},
+            },
+            {
+                "path": "scripts/test-governed-lifecycle-cli-validator.py",
+                "category": "governed-lifecycle-cli-wrapper",
+                "status": "ok",
+                "checks": {"rigorloop_cli.test", "governed_lifecycle_cli_wrapper.test"},
+            },
+            {
+                "path": "scripts/measure-cli-result-bytes.py",
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression"},
             },
             {
                 "path": "tests/fixtures/token-cost/sample-codex-session.jsonl",

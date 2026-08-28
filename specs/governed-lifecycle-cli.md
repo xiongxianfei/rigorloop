@@ -14,7 +14,7 @@ boundary_contract: boundary-first-v1
 
 The first release makes the existing local `rigorloop` executable the canonical interpreter and guarded mutation boundary for supported governed lifecycle state. Callers request closed semantic operations; the CLI validates current repository evidence and derives the permitted `change.yaml` result. Stage and review skills retain semantic judgment and artifact authoring but stop encoding lifecycle field-editing procedure.
 
-The repository remains the durable source of truth. The CLI neither stores required state outside the repository nor routes or executes lifecycle stages.
+The repository remains the durable source of truth. The CLI neither stores required state outside the repository nor selects or executes lifecycle stages. Workflow selects whether an eligible transition should occur; a workflow-authorized CLI operation validates and atomically records that selected transition.
 
 ## Glossary
 
@@ -25,6 +25,8 @@ The repository remains the durable source of truth. The CLI neither stores requi
 - **Registration**: validating an existing semantic artifact or evidence file and recording its identity or reference in the governed change record.
 - **Settlement**: the lifecycle transition derived from a recorded review outcome for the matching artifact.
 - **Lifecycle revision**: a deterministic identity of the exact governed state used as the optimistic-concurrency basis for an operation.
+- **Workflow-selected operation**: a semantic lifecycle operation explicitly requested with workflow authority; the CLI validates and applies it but does not decide whether it should be requested.
+- **Completion evidence fingerprint**: the deterministic digest of the normalized milestone proof, review receipt, canonical review-log occurrence, complete reviewed packet inventory, review facts, milestone identity, and operation authority that authorized one milestone completion.
 
 ## Examples first
 
@@ -53,6 +55,18 @@ Given an authorized governed spec skill has written a revised specification and 
 When it requests `record-artifact-revision` with the exact artifact, evidence, prior identity, and current lifecycle revision
 Then the CLI verifies those bytes, invalidates evidence for the replaced identity, derives `review-required`, changes only the matching artifact entry, and leaves workflow routing unchanged.
 
+Example E6: milestone completion and continuation remain separate
+Given milestone `M2` has current passing proof and an exact clean recorded review, and `M3` is the next planned implementation milestone
+When workflow requests `complete-milestone` for `M2`
+Then the CLI closes `M2`, selects `M3` as the planned current milestone, resets the prior milestone review projection, reports `M3` as eligible, and does not start `M3` or route to `implement`.
+When workflow later requests `start-milestone` for `M3`
+Then the CLI validates that selection and atomically marks `M3` implementing while synchronizing the governed workflow routing projections.
+
+Example E7: completion replay revalidates every authorizing identity
+Given a completed milestone whose stored completion fingerprint covers its proof, review receipt, canonical review-log occurrence, and packet inventory
+When a caller refreshes lifecycle context and retries the completion after only the canonical review-log occurrence or a non-proof packet constituent changed
+Then the CLI reports `RL_STALE_EVIDENCE`, leaves lifecycle bytes unchanged, and does not treat the request as `already-recorded`.
+
 ## Requirements
 
 | ID | Requirement |
@@ -73,7 +87,7 @@ Then the CLI verifies those bytes, invalidates evidence for the replaced identit
 | R13 | `record-validation` MUST validate an existing evidence artifact and exact subject identity before registration; command success or test exit status alone MUST NOT imply approval, settlement, or readiness. |
 | R14 | `record-finding-resolution` MUST validate an existing resolution entry, allowed disposition, finding identity, owner, required evidence, and review-log consistency before registration. |
 | R15 | `settle-artifact` MUST derive the target lifecycle state from the matching current review outcome and MUST reject missing, stale, contradictory, unresolved, wrong-round, wrong-artifact, or unauthorized evidence. |
-| R16 | `start-milestone` and `complete-milestone` MUST enforce the active plan identity, unique current milestone, predecessor ordering, milestone kind, required proof, review state, and remaining-milestone projection. |
+| R16 | `start-milestone` and `complete-milestone` MUST enforce the active plan identity, unique current milestone, predecessor ordering, milestone kind, required proof, review state, and remaining-milestone projection. `complete-milestone` MUST close only the reviewed milestone, select the next planned milestone, reset the completed milestone's `latest_review` projection, and report structural continuation eligibility without starting the next milestone or changing the current workflow stage to `implement`. When the matching approved milestone review is not yet projected into `planned_work.latest_review`, `complete-milestone` MUST require `review_evidence_path`, validate its exact current packet inventory, milestone identity, clean outcome, advance gate, absence of material findings, and exact canonical review-log occurrence, then persist a normalized completion-evidence record and fingerprint covering the milestone proof, review receipt, canonical review-log occurrence, complete packet inventory, review facts, milestone identity, and operation authority. A current-revision replay MUST reconstruct and revalidate every stored constituent before returning `already-recorded`; omission, mismatch, review-log-only drift, or non-proof packet drift MUST fail with `RL_STALE_EVIDENCE` without mutation. When another planned implementation milestone remains, only a later workflow-selected `start-milestone` request MAY mark it implementing and atomically synchronize `workflow_state.current_stage`, `workflow_state.next_stage`, and `workflow.automation.current_stage` when an active automation projection is present; a contradictory active automation projection MUST fail closed rather than leave partial routing state. |
 | R17 | A material change to an artifact or governed input MUST apply the first-release evidence-invalidation matrix in this spec; architecture MAY define the mechanism but MUST NOT change the matrix outcomes. Stale evidence MUST remain inspectable but MUST NOT authorize settlement. |
 | R18 | Every mutating request MUST include the lifecycle revision returned by prior status or context, and a mismatch MUST fail with `RL_STALE_OPERATION` before mutation. |
 | R19 | First-release semantic recording and transition operations MUST mutate only the exact governed `change.yaml`; referenced semantic artifacts MUST already exist and remain owned by their stage skills. |
@@ -88,14 +102,14 @@ Then the CLI verifies those bytes, invalidates evidence for the replaced identit
 | R28 | Governed canonical skills and supported workflow automation MUST use CLI status, context, registration, and settlement operations rather than directly mutating lifecycle fields after enforcement is activated. |
 | R29 | Skills MUST retain semantic criteria, artifact responsibilities, authority boundaries, stop behavior, and portable-mode guidance; migration MUST NOT remove semantic review or engineering guidance merely to reduce size. |
 | R30 | Mandatory enforcement MUST remain disabled until supported skills and adapters are migrated, conformance and recovery proof passes, version compatibility is documented, and CI can invoke `rigorloop lifecycle validate` non-interactively. |
-| R31 | The first release MUST NOT perform workflow routing, invoke agents, author semantic artifacts, infer semantic approval, open or modify pull requests, push, merge, deploy, or access hosted control planes. |
+| R31 | The first release MUST NOT select workflow routes, decide whether continuation should occur, invoke agents, author semantic artifacts, infer semantic approval, open or modify pull requests, push, merge, deploy, or access hosted control planes. The CLI MAY validate and atomically persist a route implied by a closed workflow-selected operation such as `start-milestone`; this mechanical application does not grant the CLI workflow-selection or continuation authority. |
 | R32 | The CLI MUST avoid printing secrets, raw environment values, credentials, private request payloads, or machine-local absolute paths in human or JSON diagnostics. |
 | R33 | A fresh checkout at the same supported commit MUST reproduce the same effective state and permitted operations without a prior process, conversation, daemon, or uncommitted cache. |
 | R34 | Representative governed skill profiles MUST demonstrate the measured token objective or record an owner-approved revised threshold before mandatory enforcement; measurement MUST separate mechanical instructions, semantic guidance, and returned CLI context. |
 
 ## Inputs and outputs
 
-Common command inputs are repository root discovery, optional `--change`, `--format human|json`, and optional `--dry-run` for mutating commands. Mutation requests contain `schema_version`, `operation`, `change_id`, `expected_lifecycle_revision`, operation-specific artifact IDs and repository-relative evidence paths, and optional documented provenance. `record-artifact-revision` additionally contains `artifact_kind`, `artifact_role`, `artifact_path`, `stage_authority`, and optional `prior_artifact_sha256`; omission of the prior identity means creation and is valid only when the entry and path are non-conflicting.
+Common command inputs are repository root discovery, optional `--change`, `--format human|json`, and optional `--dry-run` for mutating commands. Mutation requests contain `schema_version`, `operation`, `change_id`, `expected_lifecycle_revision`, operation-specific artifact IDs and repository-relative evidence paths, and optional documented provenance. `record-artifact-revision` additionally contains `artifact_kind`, `artifact_role`, `artifact_path`, `stage_authority`, and optional `prior_artifact_sha256`; omission of the prior identity means creation and is valid only when the entry and path are non-conflicting. `complete-milestone` accepts `review_evidence_path` for an already-recorded code-review receipt when the matching milestone review has not yet been projected; the CLI consumes that evidence as part of the same atomic milestone transaction rather than requiring a separate status mutation. Once that receipt contributes to completion, equivalent replay requires the same receipt path and revalidates its current bytes, canonical review-log occurrence, and packet constituents against the stored normalized completion-evidence record. `start-milestone` remains a workflow-authorized request without a caller-selected target stage: the milestone kind and current governed state deterministically derive the permitted routing projection.
 
 Repository-relative paths must be normalized, remain inside the repository, identify regular files, and reject symlink traversal. Request files are inputs only and are not durable evidence unless separately registered by an allowed operation.
 
@@ -108,7 +122,7 @@ Exit codes extend the existing CLI contract: `0` success or idempotent already-r
 - A review or evidence identity always names exact bytes using the configured supported digest algorithm.
 - One lifecycle revision represents the complete mutation-relevant governed snapshot and referenced identity set.
 - Recording does not imply settlement; settlement does not imply workflow continuation; structural permission does not imply semantic truth.
-- Workflow routing fields change only through workflow-owned operations, even when another CLI operation proves a transition structurally eligible.
+- Workflow routing fields change only through workflow-owned operations. `complete-milestone` reports continuation eligibility without routing; `start-milestone` applies the workflow-selected transition and synchronizes every present authoritative routing projection atomically.
 - Unknown closed-vocabulary values fail before consistency checks.
 
 ### First-release evidence-invalidation matrix
@@ -174,12 +188,12 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | --- | --- | --- | --- | --- | --- | --- |
 | BND-INPUT-001 | input-domain | R2, R3, R4, R5, R6, R7, R8, R11, R24, R25, R26 | valid, missing, unknown, malformed, ambiguous, unsupported | Unknown values never fall through to consistency logic. | Valid input is interpreted; every other partition fails before mutation with a stable code. | R4 |
 | BND-STATE-001 | state-lifecycle | R9, R15, R16, R17, R18, R22, R23, R24, R25, R30 | recorded-current, recorded-stale, blocked, unsettled, settled, invalid | Effective state derives from current evidence rather than raw status alone. | Current state permits closed operations; stale or invalid state blocks with evidence. | R9 |
-| BND-STATE-002 | state-lifecycle | R9, R15, R16, R17, R18, R22, R23, R24, R25, R30 | predecessor-incomplete, eligible, active, proof-incomplete, review-incomplete, complete | A later milestone never starts before its required predecessor and proof close. | Eligible transitions succeed once; invalid ordering blocks; repeat is idempotent. | R16 |
+| BND-STATE-002 | state-lifecycle | R9, R15, R16, R17, R18, R22, R23, R24, R25, R30 | predecessor-incomplete, completion-eligible, completed-awaiting-workflow, start-eligible, active, proof-incomplete, review-incomplete, complete | Completion never starts its successor; a later milestone starts only through a separate workflow-selected operation after predecessor proof and review close. | Completion closes and reports eligibility; workflow-selected start synchronizes routing once; invalid ordering blocks. | R16 |
 | BND-AUTH-001 | identity-authority | R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R28, R29, R30, R31 | exact subject, wrong subject, stale subject, wrong round, unresolved finding | Evidence can authorize only the exact subject revision and review occurrence it records. | Exact current evidence may register or settle; mismatches block. | R15 |
-| BND-AUTH-002 | identity-authority | R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R28, R29, R30, R31 | stage artifact authoring, lifecycle registration, settlement, routing | Each operation mutates only its owned surface; CLI never acquires semantic or routing authority implicitly. | Boundary-respecting operations proceed; authority crossings fail. | R19 |
+| BND-AUTH-002 | identity-authority | R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R28, R29, R30, R31 | stage artifact authoring, lifecycle registration, settlement, workflow selection, guarded route application | Each operation mutates only its owned surface; workflow selects continuation and the CLI only validates and applies a closed workflow-authorized operation. | Boundary-respecting operations proceed; autonomous selection, partial projection, and other authority crossings fail. | R19 |
 | BND-COMPOSE-001 | composition-path | R6, R10, R19, R23, R28, R29, R30, R31 | human, JSON, local, CI | Every path uses one interpreter and stable result model. | Equivalent facts and exit status are observed across representations. | R6 |
 | BND-COMPOSE-002 | composition-path | R6, R10, R19, R23, R28, R29, R30, R31 | governed skill, workflow, human, portable skill | Governed mutation uses the CLI; portable semantic work remains independent. | Governed callers share enforcement; portable callers are not forced into lifecycle state. | R28 |
-| BND-TEMPORAL-001 | temporal-retry | R17, R18, R20, R21, R22, R27 | current request, stale request, interrupted pre-replace, completed replay, conflicting replay | Revision comparison precedes mutation and completed evidence is never duplicated. | Current request commits; stale/conflicting requests block; identical replay is idempotent. | R18 |
+| BND-TEMPORAL-001 | temporal-retry | R17, R18, R20, R21, R22, R27 | current request, stale request, interrupted pre-replace, completed replay, review-log drift, packet-constituent drift, conflicting replay | Revision comparison precedes mutation and replay revalidates every identity-bearing fact that authorized completion. | Current request commits; only identity-equal replay is idempotent; stale, omitted, drifted, or conflicting evidence blocks unchanged. | R18 |
 | BND-RECOVERY-001 | failure-recovery | R20, R21, R22, R23, R24, R25 | validation failure, write failure, interruption, post-validation failure | No rejected pre-replacement operation changes committed state. | Safe failure leaves bytes unchanged; detectable recovery condition produces explicit diagnostics. | R20 |
 | BND-RECOVERY-002 | failure-recovery | R20, R21, R22, R23, R24, R25 | named recoverable condition, unknown corruption, unsafe repair | Repair vocabulary is closed and has no arbitrary setter. | Named repair produces deterministic plan/result; unknown state refuses. | R25 |
 | BND-COMPAT-001 | compatibility-migration | R24, R26, R27, R28, R29, R30, R33, R34 | supported current, supported legacy, unsupported newer, unsupported older, mixed versions | Mutation occurs only for declared compatible combinations. | Supported state runs or migrates; unsupported or mixed state blocks with guidance. | R26 |
@@ -193,6 +207,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | INT-002 | R19, R20, R21 | BND-AUTH-002, BND-RECOVERY-001, BND-ENV-001 | A mutating operation is interrupted or cannot safely replace the state file. | Semantic artifacts remain untouched, committed state is unchanged, and recovery diagnostics name the safe next action. |
 | INT-003 | R24, R25, R26, R27, R28, R29, R30 | BND-COMPAT-001, BND-COMPOSE-002, BND-RECOVERY-002 | Skills migrate before a compatible CLI or repair path exists. | Mandatory enforcement remains disabled and CI reports compatibility blockers rather than encouraging direct edits. |
 | INT-004 | R6, R7, R8, R9, R10, R32 | BND-INPUT-001, BND-COMPOSE-001, BND-ENV-001 | Human and JSON diagnostics diverge or expose environment-sensitive data. | Both formats report equivalent bounded facts and suppress secrets and absolute local paths. |
+| INT-005 | R16, R19, R22, R31 | BND-STATE-002, BND-AUTH-002, BND-TEMPORAL-001 | Milestone completion implicitly starts its successor, leaves routing projections inconsistent, or later replay relies on drifted authorizing evidence. | Completion only reports eligibility; a separate workflow-selected start synchronizes routing atomically; replay revalidates the complete stored evidence identity before idempotent success. |
 
 ## Example ownership
 
@@ -202,6 +217,9 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | E2 | illustration | R17, R18 | BND-AUTH-001, BND-TEMPORAL-001 | - | - |
 | E3 | illustration | R10, R28, R29 | BND-AUTH-002, BND-COMPOSE-002 | - | - |
 | E4 | illustration | R28, R29, R30, R31 | BND-COMPOSE-002 | - | - |
+| E5 | illustration | R19 | BND-AUTH-002 | - | - |
+| E6 | regression | R16 | BND-STATE-002, BND-AUTH-002 | RLCLI-DEADLOCK-CR1 | - |
+| E7 | regression | R17, R18 | BND-AUTH-001, BND-TEMPORAL-001 | RLCLI-DEADLOCK-CR2 | - |
 
 ## Compatibility and migration
 
@@ -247,6 +265,10 @@ EC9. A workflow asks the CLI to continue after settlement: the CLI may report st
 
 EC10. A portable skill runs in a repository containing unrelated governed changes: it remains isolated unless an exact governed mutation is requested.
 
+EC11. Milestone completion selects another planned implementation milestone: completion leaves it planned and reports eligibility; only a later workflow-selected `start-milestone` may mark it implementing and route to `implement`.
+
+EC12. A current-revision completion replay omits previously used review evidence, changes only the canonical review-log occurrence, or changes only a non-proof packet constituent: return `RL_STALE_EVIDENCE` and leave lifecycle-owned bytes unchanged.
+
 ## Non-goals
 
 - Semantic review, code generation, agent invocation, workflow orchestration, or automatic lifecycle progression.
@@ -270,6 +292,8 @@ EC10. A portable skill runs in a repository containing unrelated governed change
 | AC8 | CI invokes non-interactive lifecycle validation and rejects inconsistent or unsupported governed state. |
 | AC9 | Token reports separately measure removed mechanics, retained semantic guidance, returned CLI context, and total representative profile cost. |
 | AC10 | Mandatory enforcement remains off until migration, compatibility, conformance, recovery, adapter, CI, and measurement gates are recorded as passed or explicitly owner-resolved. |
+| AC11 | Milestone completion and start are directly proved as separate operations: completion does not route, and workflow-selected start atomically synchronizes every present governed routing projection. |
+| AC12 | Completion replay fixtures prove identity-equal idempotence and unchanged rejection for omitted review evidence, canonical review-log drift, milestone-proof drift, and non-proof packet drift. |
 
 ## Open questions
 

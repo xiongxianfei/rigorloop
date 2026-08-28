@@ -1,0 +1,25 @@
+schema_version: 1
+review_id: architecture-review-r2
+review_stage: architecture-review
+review_target: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+base_revision: sha256:5e98900b19ff15a759dd59923c80d6a052281d345eec477d1814d82953a5a19e
+head_revision: sha256:5e98900b19ff15a759dd59923c80d6a052281d345eec477d1814d82953a5a19e
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-architecture-filesystem-correction
+reviewer_context_id: root-architecture-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - filesystem-containment
+  - concurrent-writer-recovery
+  - native-portability-boundary
+governing_artifacts:
+  - specs/cli-observability-and-token-efficient-results.md
+  - docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+formal_criteria:
+  - architecture-review-v1
+  - architecture-package-review
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true

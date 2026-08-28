@@ -206,6 +206,101 @@ Review evidence identity: sha256:${review.evidence_sha256}
   assert.equal(returnReplay.result.status, "already-recorded", JSON.stringify(returnReplay.result));
 });
 
+test("workflow can route and register an already-authored stale upstream correction", async () => {
+  const { root, changeRoot } = await fixture();
+  const original = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
+  const priorIdentity = original.lifecycle_cli.artifacts.spec.artifact_sha256;
+  const revisedSpec = "# Example spec\n\nAlready-authored correction.\n";
+  writeFileSync(join(root, "specs", "example.md"), revisedSpec, "utf8");
+
+  const beforeRoute = status(root);
+  assert.deepEqual(beforeRoute.effective_state.stale_evidence, ["spec"]);
+  assert.equal(beforeRoute.permitted_operations.includes("route-correction"), true);
+  const context = executeLifecycleCli(["context", "spec", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(context.result.errors.at(-1).code, "RL_WORKFLOW_ROUTE_REQUIRED");
+  assert.equal(context.result.context.permitted_registration_operation, null);
+  assert.equal(context.result.context.available_after_workflow_route, "record-artifact-revision");
+
+  const beforeRejectedRoute = readFileSync(join(changeRoot, "change.yaml"));
+  const emptyFindingEvidence = "docs/changes/example/evidence/stale-correction-without-finding.md";
+  writeFileSync(join(root, emptyFindingEvidence), `Change ID: example
+Source stage: verify
+Destination artifact: spec
+Reason: upstream-stale-input
+Finding IDs: none
+Return stage: verify
+Lifecycle revision: ${beforeRoute.lifecycle_revision}
+`, "utf8");
+  const rejected = execute(root, "route-correction", {
+    schema_version: 1,
+    operation: "route-correction",
+    change_id: "example",
+    expected_lifecycle_revision: beforeRoute.lifecycle_revision,
+    source_stage: "verify",
+    destination_stage: "spec",
+    destination_artifact_id: "spec",
+    reason: "upstream-stale-input",
+    evidence_path: emptyFindingEvidence,
+    finding_ids: [],
+    return_stage: "verify",
+    milestone_id: "M2",
+    stage_authority: "workflow",
+  });
+  assert.equal(rejected.result.errors[0].code, "RL_CORRECTION_ROUTE_INVALID");
+  assert.deepEqual(readFileSync(join(changeRoot, "change.yaml")), beforeRejectedRoute);
+
+  const routeEvidence = "docs/changes/example/evidence/stale-correction-route.md";
+  writeFileSync(join(root, routeEvidence), `Change ID: example
+Source stage: verify
+Destination artifact: spec
+Reason: upstream-stale-input
+Finding IDs: F-CODE
+Return stage: verify
+Lifecycle revision: ${beforeRoute.lifecycle_revision}
+`, "utf8");
+  const routed = execute(root, "route-correction", {
+    schema_version: 1,
+    operation: "route-correction",
+    change_id: "example",
+    expected_lifecycle_revision: beforeRoute.lifecycle_revision,
+    source_stage: "verify",
+    destination_stage: "spec",
+    destination_artifact_id: "spec",
+    reason: "upstream-stale-input",
+    evidence_path: routeEvidence,
+    finding_ids: ["F-CODE"],
+    return_stage: "verify",
+    milestone_id: "M2",
+    stage_authority: "workflow",
+  });
+  assert.equal(routed.exitCode, 0, JSON.stringify(routed.result));
+  let change = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
+  assert.equal(change.lifecycle_cli.active_correction.prior_artifact_sha256, priorIdentity);
+
+  const authoringEvidence = "docs/changes/example/evidence/stale-spec-revision.md";
+  writeFileSync(join(root, authoringEvidence), `Artifact path: specs/example.md
+Artifact identity: sha256:${sha(revisedSpec)}
+Authoring result: complete
+`, "utf8");
+  const revised = execute(root, "record-artifact-revision", {
+    schema_version: 1,
+    operation: "record-artifact-revision",
+    change_id: "example",
+    expected_lifecycle_revision: status(root).lifecycle_revision,
+    artifact_id: "spec",
+    artifact_kind: "spec",
+    artifact_role: "primary",
+    artifact_path: "specs/example.md",
+    evidence_path: authoringEvidence,
+    prior_artifact_sha256: priorIdentity,
+    stage_authority: "spec",
+  });
+  assert.equal(revised.exitCode, 0, JSON.stringify(revised.result));
+  change = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
+  assert.equal(change.lifecycle_cli.artifacts.spec.artifact_sha256, sha(revisedSpec));
+  assert.equal(change.artifact_states.spec.lifecycle_state, "review-required");
+});
+
 test("route rejects lateral, missing-milestone, conflicting, and stale requests without mutation", async () => {
   for (const scenario of ["lateral", "missing-milestone", "conflicting", "stale"]) {
     const { root, changeRoot } = await fixture();
