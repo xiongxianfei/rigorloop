@@ -1,5 +1,6 @@
-import { existsSync, lstatSync, readFileSync } from "node:fs";
-import { relative, resolve, sep } from "node:path";
+import { createHash } from "node:crypto";
+import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
+import { basename, dirname, join, relative, resolve, sep } from "node:path";
 
 import { parseLifecycleYaml, serializeLifecycleYaml, validateLifecycleRequest } from "./lifecycle-contract.js";
 import { evaluateLifecycleOperation, operationDiagnostic } from "./lifecycle-operations.js";
@@ -9,6 +10,36 @@ import { renderResult, RESULT_FORMATS } from "./result-renderer.js";
 
 const RESULT_FIELDS = ["schema_version", "command", "operation", "status", "change_id", "lifecycle_revision", "effective_state", "blockers", "permitted_operations", "artifacts", "warnings", "errors"];
 const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "start-milestone", "complete-milestone", "route-correction", "return-correction", "withdraw-artifact-registration", "migrate", "repair"]);
+const REPAIR_CHANGED_STATUSES = new Set(["cleared-orphaned-lock", "restored-prior", "committed-candidate", "abandoned-prepared"]);
+const REPAIR_UNCHANGED_STATUSES = new Set(["already-clear", "nothing-to-reconcile"]);
+
+export function repairStateChanged(status) {
+  if (REPAIR_CHANGED_STATUSES.has(status)) return true;
+  if (REPAIR_UNCHANGED_STATUSES.has(status)) return false;
+  throw Object.assign(new Error(`Unknown repair result status: ${String(status)}`), { code: "RL_POST_VALIDATION_FAILED" });
+}
+
+function lifecycleOwnedSnapshot(changePath) {
+  const directory = dirname(changePath);
+  const changeName = basename(changePath);
+  let names;
+  try {
+    names = readdirSync(directory).filter((name) => name === changeName || name.startsWith(".rigorloop-lifecycle-")).sort();
+  } catch (error) {
+    return `directory-error:${error.code ?? error.name}`;
+  }
+  return names.map((name) => {
+    const path = join(directory, name);
+    try {
+      const stat = lstatSync(path);
+      if (!stat.isFile()) return `${name}:non-file:${stat.mode & 0o170000}`;
+      const digest = createHash("sha256").update(readFileSync(path)).digest("hex");
+      return `${name}:file:${digest}`;
+    } catch (error) {
+      return `${name}:read-error:${error.code ?? error.name}`;
+    }
+  }).join("\n");
+}
 
 function parseArgs(args) {
   const [operation, maybeStage, ...rest] = args;
@@ -49,6 +80,11 @@ function baseResult(operation, overrides = {}) {
     errors: [],
     ...overrides,
   };
+}
+
+function withStateChanged(result, stateChanged) {
+  Object.defineProperty(result, "state_changed", { value: stateChanged, enumerable: false });
+  return result;
 }
 
 function errorResult(operation, error, status = "error") {
@@ -133,6 +169,8 @@ export function executeLifecycleCli(args, options = {}) {
   }
   const interpreted = interpretGovernedChange(root, selected);
   if (MUTATING_OPERATIONS.has(parsed.operation)) {
+    let transitionEvaluated = false;
+    let lifecycleBytesBefore;
     try {
       const request = readRequestFile(root, parsed.request);
       const requestValidation = validateLifecycleRequest(request);
@@ -152,10 +190,12 @@ export function executeLifecycleCli(args, options = {}) {
         return { result, exitCode: resultExitCode(result), format: parsed.format, human: human(result) };
       }
       if (request.operation === "repair") {
+        transitionEvaluated = true;
+        lifecycleBytesBefore = lifecycleOwnedSnapshot(selected.path);
         const condition = request.condition;
         const inspection = condition === "clear-orphaned-lock" ? inspectLifecycleLock(selected.path) : inspectLifecycleRecovery(selected.path);
         if (parsed.dryRun) {
-          const result = baseResult(parsed.operation, { status: "success", change_id: interpreted.change_id, lifecycle_revision: interpreted.lifecycle_revision, effective_state: interpreted.effective_state, blockers: interpreted.blockers, permitted_operations: interpreted.permitted_operations, artifacts: interpreted.artifacts, warnings: [], errors: [], mutation: { status: "planned", changed_path: `docs/changes/${interpreted.change_id}/${condition === "clear-orphaned-lock" ? ".rigorloop-lifecycle.lock" : ".rigorloop-lifecycle-recovery.json"}`, condition, observed_state: inspection.state } });
+          const result = withStateChanged(baseResult(parsed.operation, { status: "success", change_id: interpreted.change_id, lifecycle_revision: interpreted.lifecycle_revision, effective_state: interpreted.effective_state, blockers: interpreted.blockers, permitted_operations: interpreted.permitted_operations, artifacts: interpreted.artifacts, warnings: [], errors: [], mutation: { status: "planned", changed_path: `docs/changes/${interpreted.change_id}/${condition === "clear-orphaned-lock" ? ".rigorloop-lifecycle.lock" : ".rigorloop-lifecycle-recovery.json"}`, condition, observed_state: inspection.state } }), false);
           return { result, exitCode: 0, format: parsed.format, human: human(result) };
         }
         const repair = condition === "clear-orphaned-lock"
@@ -165,21 +205,25 @@ export function executeLifecycleCli(args, options = {}) {
             } });
         const persisted = readFileSync(selected.path, "utf8");
         const after = interpretGovernedChange(root, { ...selected, bytes: persisted, change: parseLifecycleYaml(persisted) });
-        const result = baseResult(parsed.operation, { status: "success", change_id: after.change_id, lifecycle_revision: after.lifecycle_revision, effective_state: after.effective_state, blockers: after.blockers, permitted_operations: after.permitted_operations, artifacts: after.artifacts, warnings: [], errors: [], mutation: { status: repair.status, changed_path: `docs/changes/${after.change_id}/${condition === "clear-orphaned-lock" ? ".rigorloop-lifecycle.lock" : ".rigorloop-lifecycle-recovery.json"}`, condition } });
+        const repairChanged = repairStateChanged(repair.status);
+        const result = withStateChanged(baseResult(parsed.operation, { status: "success", change_id: after.change_id, lifecycle_revision: after.lifecycle_revision, effective_state: after.effective_state, blockers: after.blockers, permitted_operations: after.permitted_operations, artifacts: after.artifacts, warnings: [], errors: [], mutation: { status: repair.status, changed_path: `docs/changes/${after.change_id}/${condition === "clear-orphaned-lock" ? ".rigorloop-lifecycle.lock" : ".rigorloop-lifecycle-recovery.json"}`, condition } }), repairChanged);
         return { result, exitCode: 0, format: parsed.format, human: human(result) };
       }
+      transitionEvaluated = true;
+      lifecycleBytesBefore = lifecycleOwnedSnapshot(selected.path);
       const transition = evaluateLifecycleOperation({ root, change: interpreted.change, request });
       if (transition.status === "already-recorded") {
-        const result = baseResult(parsed.operation, { status: "already-recorded", change_id: interpreted.change_id, lifecycle_revision: interpreted.lifecycle_revision, effective_state: interpreted.effective_state, blockers: interpreted.blockers, permitted_operations: interpreted.permitted_operations, artifacts: interpreted.artifacts, warnings: [], errors: [], mutation: { status: "already-recorded", changed_path: `docs/changes/${interpreted.change_id}/change.yaml` } });
+        const result = withStateChanged(baseResult(parsed.operation, { status: "already-recorded", change_id: interpreted.change_id, lifecycle_revision: interpreted.lifecycle_revision, effective_state: interpreted.effective_state, blockers: interpreted.blockers, permitted_operations: interpreted.permitted_operations, artifacts: interpreted.artifacts, warnings: [], errors: [], mutation: { status: "already-recorded", changed_path: `docs/changes/${interpreted.change_id}/change.yaml` } }), false);
         return { result, exitCode: 0, format: parsed.format, human: human(result) };
       }
       const candidateBytes = Buffer.from(serializeLifecycleYaml(transition.candidate), "utf8");
       const candidateSelected = { ...selected, bytes: candidateBytes.toString("utf8"), change: transition.candidate };
       const candidateInterpretation = interpretGovernedChange(root, candidateSelected);
       if (candidateInterpretation.errors.length) throw Object.assign(new Error("candidate lifecycle state is invalid"), { code: "RL_POST_VALIDATION_FAILED" });
+      const stateChanged = !parsed.dryRun && candidateInterpretation.lifecycle_revision !== interpreted.lifecycle_revision;
       const mutation = { status: parsed.dryRun ? "planned" : transition.status, changed_path: `docs/changes/${interpreted.change_id}/change.yaml`, prior_lifecycle_revision: interpreted.lifecycle_revision, resulting_lifecycle_revision: candidateInterpretation.lifecycle_revision };
       if (!parsed.dryRun) {
-        runLifecycleTransaction({
+        (options.runLifecycleTransaction ?? runLifecycleTransaction)({
           changePath: selected.path,
           changeId: interpreted.change_id,
           expectedRevision: request.expected_lifecycle_revision,
@@ -194,11 +238,12 @@ export function executeLifecycleCli(args, options = {}) {
           },
         });
       }
-      const result = baseResult(parsed.operation, { status: "success", change_id: interpreted.change_id, lifecycle_revision: candidateInterpretation.lifecycle_revision, effective_state: candidateInterpretation.effective_state, blockers: candidateInterpretation.blockers, permitted_operations: candidateInterpretation.permitted_operations, artifacts: candidateInterpretation.artifacts, warnings: [], errors: [], mutation, ...(transition.operationResult ? { operation_result: transition.operationResult } : {}) });
+      const result = withStateChanged(baseResult(parsed.operation, { status: "success", change_id: interpreted.change_id, lifecycle_revision: candidateInterpretation.lifecycle_revision, effective_state: candidateInterpretation.effective_state, blockers: candidateInterpretation.blockers, permitted_operations: candidateInterpretation.permitted_operations, artifacts: candidateInterpretation.artifacts, warnings: [], errors: [], mutation, ...(transition.operationResult ? { operation_result: transition.operationResult } : {}) }), stateChanged);
       return { result, exitCode: 0, format: parsed.format, human: human(result) };
     } catch (error) {
       const issue = operationDiagnostic(error);
       const result = errorResult(parsed.operation, issue, ["RL_STALE_OPERATION", "RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_AUTHORITY_BOUNDARY", "RL_OPERATION_BUSY", "RL_RECOVERY_REQUIRED", "RL_WORKFLOW_ROUTE_REQUIRED", "RL_CORRECTION_ROUTE_INVALID", "RL_ARTIFACT_PATH_OWNED", "RL_WITHDRAWAL_UNSAFE"].includes(issue.code) ? "blocked" : "error");
+      if (transitionEvaluated) withStateChanged(result, lifecycleOwnedSnapshot(selected.path) !== lifecycleBytesBefore);
       return { result, exitCode: resultExitCode(result), format: parsed.format, human: human(result) };
     }
   }

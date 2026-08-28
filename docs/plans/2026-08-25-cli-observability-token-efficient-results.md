@@ -185,7 +185,7 @@ The implementation must keep existing handlers semantically stable while moving 
   - `npm test --prefix packages/rigorloop`
   - `python scripts/select-validation.py --mode explicit --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/lib/command-result.js --path packages/rigorloop/dist/lib/result-renderer.js --path packages/rigorloop/dist/lib/log-config.js --path packages/rigorloop/dist/lib/diagnostic-event.js --path packages/rigorloop/dist/lib/log-sink.js --path packages/rigorloop/dist/lib/cli-observability.js --path packages/rigorloop/dist/lib/log-inspection.js --path packages/rigorloop/dist/lib/lifecycle-cli.js --path packages/rigorloop/test/cli-observability.test.js --path packages/rigorloop/test/result-renderer.test.js --path scripts/validate-governed-lifecycle-cli.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/reports/token-cost/cli/v0.4.x-detailed-baseline.json --path packages/rigorloop/test/fixtures/observability/token-profiles-v1.json`
   - the exact measurement command defined by the approved test specification
-  - `bash scripts/release-verify.sh v0.4.1`
+  - `python scripts/test-npm-package-publication.py NpmPackagePublicationTests.test_packed_package_observability_surface_matches_documentation`
 - Expected observable result: A reproducible report states whether concise defaults qualify for v0.5.0, while the shipped v0.4.x defaults remain unchanged and users can operate the new logging surface from package documentation.
 - Completion criteria: Profile and package validation pass; measurement includes all follow-ups; the exact selector command returns no `manual-routing-required` blocker and selects the focused wrapper and CLI checks; no unauthorized default switch or release mutation occurs.
 - Required evidence: `docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/m4-token-and-package-proof.md`
@@ -230,7 +230,8 @@ The implementation must keep existing handlers semantically stable while moving 
 - `python scripts/test-governed-lifecycle-cli-validator.py`: production wrapper behavior and structured child-result consumption.
 - `python scripts/validate-governed-lifecycle-cli.py`: repository-wide governed lifecycle compatibility.
 - `python scripts/select-validation.py --mode explicit ...`: existing changed-path ownership and exact required-check selection.
-- `bash scripts/release-verify.sh v0.4.1`: packed package and release-surface compatibility without publication.
+- `python scripts/test-npm-package-publication.py NpmPackagePublicationTests.test_packed_package_observability_surface_matches_documentation`: packed-package observability commands and documentation examples without applying immutable historical release checks to a feature branch.
+- `bash scripts/ci.sh --mode broad-smoke --jobs 2`: broad repository compatibility at final verification; tag-specific `release-verify.sh` remains a release-preparation gate.
 - Test-spec-owned measurement command: exact six-profile byte and continuation gate.
 
 ## Risks and recovery

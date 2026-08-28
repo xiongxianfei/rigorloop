@@ -15,7 +15,7 @@
 
 | Input | Path | Artifact ID | Review evidence |
 | --- | --- | --- | --- |
-| Feature spec | `specs/governed-lifecycle-cli.md` | `spec` | `spec-review-r2`; `docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r2.md` |
+| Feature spec | `specs/governed-lifecycle-cli.md` | `spec` | `spec-review-r5`; `docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r5.md` |
 | Architecture | `docs/architecture/system/architecture.md` | `architecture` | `architecture-review-r2`; `docs/changes/2026-08-24-governed-lifecycle-cli/reviews/architecture-review-r2.md` |
 | ADR | `docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md` | `adr-lifecycle-cli` | `architecture-review-r2`; accepted |
 | Execution plan | `docs/plans/2026-08-24-governed-lifecycle-cli.md` | `plan` | `plan-review-r1`; `docs/changes/2026-08-24-governed-lifecycle-cli/reviews/plan-review-r1.md` |
@@ -46,13 +46,13 @@ Tests are introduced with their owning milestone and must fail for the intended 
 | R13 | T07 | integration | Validation registration cannot imply approval. |
 | R14 | T07 | integration | Resolution registration and closed dispositions. |
 | R15 | T08 | integration | Settlement derives state and blocks bad evidence. |
-| R16 | T09 | integration | Milestone ordering, proof, review, and projection. |
+| R16 | T09 | integration | Milestone ordering, proof, exact receipt-to-log binding, atomic review consumption, separate completion/start authority, synchronized workflow-selected start, and evidence-complete replay. |
 | R17 | T08, T09 | contract, integration | Every invalidation-matrix row is direct proof. |
 | R18 | T10 | integration | Revision comparison precedes mutation. |
 | R19 | T17 | integration | Only `change.yaml` changes; semantic artifacts stay owned. |
 | R20 | T11, T12 | integration | Full durable transaction and recovery bundle. |
 | R21 | T11, T12 | integration | Pre-replace immutability and post-replace restore/block. |
-| R22 | T10 | integration | Old revision is stale; current equivalent request is idempotent. |
+| R22 | T09, T10 | integration | Old revision is stale; a current equivalent completion is idempotent only after every stored authorizing constituent is revalidated. |
 | R23 | T13 | integration | Full validation dimensions and manual-corruption detection. |
 | R24 | T14 | integration | Enumerated deterministic migration only. |
 | R25 | T15 | integration | Closed named repairs, dry run, revision, and refusal. |
@@ -61,7 +61,7 @@ Tests are introduced with their owning milestone and must fail for the intended 
 | R28 | T18, T19, T21 | contract, integration | Governed callers use CLI only after activation. |
 | R29 | T18 | contract | Semantic and portable clauses are retained. |
 | R30 | T21 | integration | Enforcement is gated on all required evidence. |
-| R31 | T17 | integration | No routing, agents, semantic authoring, PR, network, or deployment. |
+| R31 | T09, T17 | integration | The CLI never selects continuation; only a closed workflow-selected operation may apply its derived routing projection. No agents, semantic authoring, PR, network, or deployment. |
 | R32 | T05, T23 | integration | Diagnostics suppress sensitive and machine-local values. |
 | R33 | T16, T24 | integration, smoke | Same commit reconstructs same effective result. |
 | R34 | T20, T21 | integration | Split token report and threshold gate. |
@@ -74,6 +74,9 @@ Tests are introduced with their owning milestone and must fail for the intended 
 | E2 | T08 | Review for identity A cannot settle identity B. |
 | E3 | T05, T18 | Governed spec review receives bounded context and no field-edit procedure. |
 | E4 | T18 | Portable invocation requires no governed record. |
+| E5 | T06a | Artifact revision registration changes only the owned lifecycle entry and never routing. |
+| E6 | T09 | Completion closes and reports eligibility; a separate workflow-selected start performs the synchronized route application. |
+| E7 | T09 | Omitted review evidence, canonical review-log drift, milestone-proof drift, and non-proof packet drift block replay unchanged. |
 
 ## Edge case coverage
 
@@ -89,6 +92,8 @@ Tests are introduced with their owning milestone and must fail for the intended 
 | EC8 | T15, T16 | Unknown repair or newer schema fails closed. |
 | EC9 | T17 | Eligibility is reported without routing. |
 | EC10 | T18 | Portable use remains isolated from unrelated changes. |
+| EC11 | T09 | Completion leaves the successor planned; only later `start-milestone` marks it implementing and synchronizes present routing projections. |
+| EC12 | T09 | Completion replay with omitted or drifted authorizing evidence returns `RL_STALE_EVIDENCE` without lifecycle mutation. |
 
 ## Proof map
 
@@ -104,7 +109,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | PRF-005 | covered | R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R28, R29, R30, R31 | BND-AUTH-002 | T17, T18 | integration | automated | C04, C07 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m6-skill-migration.md` | M6 | - | - |
 | PRF-006 | covered | R6, R10, R19, R23, R28, R29, R30, R31 | BND-COMPOSE-001 | T03, T13, T19 | integration | automated | C02, C08 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m6-adapter-parity.md` | M6 | - | - |
 | PRF-007 | covered | R6, R10, R19, R23, R28, R29, R30, R31 | BND-COMPOSE-002 | T18, T19, T21 | contract | automated | C07, C08, C11 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m7-enforcement.md` | M7 | - | - |
-| PRF-008 | covered | R17, R18, R20, R21, R22, R27 | BND-TEMPORAL-001 | T10, T11, T12 | integration | automated | C03 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m3-fault-matrix.md` | M3 | - | - |
+| PRF-008 | covered | R17, R18, R20, R21, R22, R27 | BND-TEMPORAL-001 | T09, T10, T11, T12 | integration | automated | C03, C05 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m3-fault-matrix.md`, `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m5-milestone-migration-repair.md` | M5 | - | - |
 | PRF-009 | covered | R20, R21, R22, R23, R24, R25 | BND-RECOVERY-001 | T11, T12 | integration | automated | C03 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m3-fault-matrix.md` | M3 | - | - |
 | PRF-010 | covered | R20, R21, R22, R23, R24, R25 | BND-RECOVERY-002 | T12, T15 | integration | automated | C03, C05 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m5-milestone-migration-repair.md` | M5 | - | - |
 | PRF-011 | covered | R24, R26, R27, R28, R29, R30, R33, R34 | BND-COMPAT-001 | T14, T16, T19, T21 | integration | automated | C05, C08, C11 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m7-enforcement.md` | M7 | - | - |
@@ -113,6 +118,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | PRF-014 | covered | R19, R20, R21 | INT-002 | T11, T12, T17 | integration | automated | C03 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m3-fault-matrix.md` | M3 | - | - |
 | PRF-015 | covered | R24, R25, R26, R27, R28, R29, R30 | INT-003 | T15, T16, T18, T19, T21 | end-to-end | automated | C07, C08, C11 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m7-enforcement.md` | M7 | - | - |
 | PRF-016 | covered | R6, R7, R8, R9, R10, R32 | INT-004 | T03, T04, T05, T23 | integration | automated | C02 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m2-output-parity.md` | M2 | - | - |
+| PRF-017 | covered | R16, R19, R22, R31 | INT-005 | T09, T17 | integration | automated | C05 | `docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m5-milestone-migration-repair.md` | M5 | - | - |
 
 ## Validation commands
 
@@ -264,15 +270,15 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Automation location: `packages/rigorloop/test/lifecycle-evidence.test.js`
 - Required by milestone: M4
 
-### T09. Milestone transitions and plan invalidation
+### T09. Milestone completion, workflow-selected start, evidence replay, and plan invalidation
 
-- Covers: R16, R17, AC2, BND-STATE-002
+- Covers: R16-R19, R22, R31, AC2, AC11, AC12, E6, E7, EC11, EC12, BND-STATE-002, BND-AUTH-001, BND-AUTH-002, BND-TEMPORAL-001, INT-005
 - Level: integration
 - Command IDs: C05
-- Fixture/setup: eligible, predecessor-incomplete, wrong kind, proof-incomplete, review-incomplete, complete, repeated, and changed-plan fixtures
-- Steps: start and complete milestones in each state
-- Expected result: only the unique eligible milestone changes; projections are exact; plan changes invalidate affected evidence and later starts
-- Failure proves: milestones can skip ordering, proof, review, or plan identity
+- Fixture/setup: eligible, predecessor-incomplete, wrong kind, proof-incomplete, pre-projected review, unprojected clean review, wrong-milestone review, non-clean review, open-finding review, stale review packet, contradictory table-log fields, complete, repeated, conflicting replay, absent and active automation projections, contradictory active automation, unrelated review-log append, omitted replay evidence, canonical-entry drift, proof drift, non-proof packet drift, legacy completion records, and changed-plan fixtures
+- Steps: start and complete milestones in each state; complete one request from an already-projected review and one request supplying exact `review_evidence_path`; vary canonical log stage, round, outcome, record path, finding count, and recording status; assert the completion diff before requesting successor start; invoke a separate workflow-selected `start-milestone`; refresh and replay the completion with identical facts, without its original review evidence, after an unrelated log append, after canonical-entry-only drift, after milestone-proof drift, after non-proof packet-constituent drift, and with conflicting durable facts; exercise the documented legacy completion-record path; change the active plan and retry
+- Expected result: only the unique eligible milestone changes; an exact current clean review is consumed atomically and bound to the exact canonical log occurrence; completion persists a normalized fingerprint covering proof, receipt, canonical occurrence, complete packet inventory, review facts, milestone, and authority, closes only the reviewed milestone, selects its successor as planned, resets `latest_review`, reports successor eligibility, and leaves every routing projection unchanged; a later valid `start-milestone` marks that successor implementing and atomically synchronizes `workflow_state.current_stage`, `workflow_state.next_stage`, and any active `workflow.automation.current_stage`; absent automation is valid, but contradictory active automation fails unchanged; exact replay reconstructs every stored constituent and returns `already-recorded`; an unrelated log append remains valid because only the canonical occurrence is identity-bearing; omission, canonical-entry drift, proof drift, non-proof packet drift, conflicts, wrong review facts, and stale plan identity return `RL_STALE_EVIDENCE` or their narrower stable error with byte-identical lifecycle-owned state; the documented legacy path is deterministic and cannot perform implicit routing
+- Failure proves: completion can acquire workflow-selection authority, routing projections can diverge, or replay can claim idempotence without the evidence that authorized the original transition
 - Evidence artifact: M5 milestone matrix
 - Automation location: `packages/rigorloop/test/lifecycle-milestone.test.js`
 - Required by milestone: M5
@@ -375,8 +381,8 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Command IDs: C04, C05
 - Fixture/setup: watched repository with semantic artifacts, routing, PR metadata, network trap, and unauthorized requested targets
 - Steps: execute every mutation operation and compare all paths and external effects
-- Expected result: only exact `change.yaml` changes plus documented transient siblings; routing and semantic artifacts remain unchanged; no network or agent action occurs
-- Failure proves: CLI authority expands beyond lifecycle registration/settlement
+- Expected result: only exact `change.yaml` changes plus documented transient siblings; semantic artifacts remain unchanged; non-routing operations and completion leave routing unchanged; `start-milestone` applies only the deterministic route selected by workflow and synchronizes every present authoritative projection atomically; no CLI operation selects a stage, invokes an agent, or performs network work
+- Failure proves: CLI authority expands beyond guarded lifecycle application or workflow selection leaks into the CLI
 - Evidence artifact: operation write-set report
 - Automation location: lifecycle operation tests
 - Required by milestone: M4 and M5
@@ -474,12 +480,12 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 ### T25. Full governed lifecycle conformance
 
-- Covers: AC1-AC10
+- Covers: AC1-AC12
 - Level: end-to-end
 - Command IDs: C06, C07, C08, C09, C11, C12, C13
 - Fixture/setup: representative change from authored proposal through milestones, including stale review, interruption, migration, skill invocation, and enforcement states
-- Steps: execute supported operations in order and inject one protected failure from every milestone
-- Expected result: valid transitions produce deterministic repository state; every invalid path fails before unauthorized mutation; semantic and routing decisions remain outside the CLI
+- Steps: execute supported operations in order, including separate milestone completion and workflow-selected successor start plus evidence-complete replay, and inject one protected failure from every milestone
+- Expected result: valid transitions produce deterministic repository state; every invalid path fails before unauthorized mutation; semantic decisions and routing selection remain outside the CLI while closed workflow-selected routing application remains atomic
 - Failure proves: focused suites do not compose into the approved product boundary
 - Evidence artifact: M7 full conformance report
 - Automation location: repository CI
@@ -519,7 +525,7 @@ Not applicable. Human-output readability, no-color behavior, corrective guidance
 ## What not to test and why
 
 - Semantic correctness of proposals, specs, reviews, code, or owner decisions: the CLI records but does not make those judgments.
-- Workflow routing, agent invocation, PR, push, merge, release, deployment, or hosted-service behavior: explicitly outside R31.
+- Workflow route selection, agent invocation, PR, push, merge, release, deployment, or hosted-service behavior: explicitly outside R31; deterministic application of a closed workflow-selected route remains in scope.
 - Cross-repository or distributed transactions, malicious-maintainer resistance, cryptographic identity, or event sourcing: outside first-release scope.
 - Generated adapter body edits: canonical `skills/` and repository-owned build/validation paths are the supported source surface.
 

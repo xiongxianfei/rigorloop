@@ -13,6 +13,7 @@ import { buildNewChangeDraft, parseNewChangeArgs } from "../lib/new-change.js";
 import { runNewChangePlan } from "../lib/new-change-filesystem.js";
 import { validateOfficialArchiveUrl } from "../lib/official-archive-url.js";
 import { runObservedCli } from "../lib/cli-observability.js";
+import { isInvocationId } from "../lib/diagnostic-event.js";
 import { findInvocationEvents } from "../lib/log-inspection.js";
 import { renderResult, RESULT_FORMATS } from "../lib/result-renderer.js";
 
@@ -115,19 +116,30 @@ function envelope(command, flags, overrides = {}) {
 
 function writeJson(result) {
   if (["concise-json", "concise-human", "detailed-json"].includes(activeOutput.format)) {
-    process.stdout.write(renderResult(result, {
-      format: activeOutput.format,
-      invocationId: activeOutput.invocationId,
-      observability: activeOutput.getObservability?.(),
-      exitCode: exitCodeForResult(result),
-    }));
-  } else process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    activeOutput.deferredRender = ({ invocationId, observability, exitCode }) => ({
+      stdout: renderResult(result, {
+        format: activeOutput.format,
+        invocationId,
+        observability,
+        exitCode,
+      }),
+      stderr: "",
+    });
+  } else writeStdout(`${JSON.stringify(result, null, 2)}\n`);
 }
 
 function writeHuman(message, flags) {
   if (!flags.quiet) {
-    process.stdout.write(message);
+    writeStdout(message);
   }
+}
+
+function writeStdout(message) {
+  activeOutput.stdout += message;
+}
+
+function writeStderr(message) {
+  activeOutput.stderr += message;
 }
 
 function usage() {
@@ -162,25 +174,50 @@ function logCommandFormat(args) {
 function handleLogs(args, invocation) {
   const [operation, identity] = args;
   const format = logCommandFormat(args);
-  if (!["human", "json", "detailed-json"].includes(format)) {
-    process.stderr.write("RL_INVALID_REQUEST: unknown log output format\n");
+  if (!["human", "json"].includes(format)) {
+    activeOutput.terminalClass = "expected-rejection";
+    writeStderr("RL_INVALID_REQUEST: unknown log output format\n");
     return 4;
   }
+  if (operation === "show" && identity && !isInvocationId(identity)) {
+    activeOutput.terminalClass = "expected-rejection";
+    const result = { schema_version: 1, command: "logs", operation: "show", status: "error", code: "RL_INVALID_INVOCATION_ID", events: [], warnings: [] };
+    if (format === "human") writeStderr("RL_INVALID_INVOCATION_ID: invalid invocation identity\n");
+    else writeStdout(`${JSON.stringify(result, null, 2)}\n`);
+    return 4;
+  }
+  if (invocation.loggingIssue) {
+    activeOutput.terminalClass = "logging-failure";
+    const code = invocation.loggingIssue.code ?? "RL_LOG_UNAVAILABLE";
+    const result = { schema_version: 1, command: "logs", operation, status: "error", errors: [{ code }] };
+    if (format === "human") writeStderr(`${code}: local log storage is unavailable\n`);
+    else writeStdout(`${JSON.stringify(result, null, 2)}\n`);
+    return 3;
+  }
   if (operation === "path") {
+    activeOutput.terminalClass = "success";
     const result = { schema_version: 1, command: "logs", operation: "path", status: "success", path: invocation.logDirectory };
-    process.stdout.write(format === "human" ? `${result.path}\n` : `${JSON.stringify(result, null, 2)}\n`);
+    writeStdout(format === "human" ? `${result.path}\n` : `${JSON.stringify(result, null, 2)}\n`);
     return 0;
   }
   if (operation === "show" && identity) {
     const lookup = findInvocationEvents(invocation.logDirectory, identity);
     const result = { schema_version: 1, command: "logs", operation: "show", invocation_id: identity, ...lookup };
     if (format === "human") {
-      if (lookup.status === "error") process.stderr.write(`${lookup.code}: invocation ${identity} was not available\n`);
-      else process.stdout.write(`${lookup.events.map((event) => JSON.stringify(event)).join("\n")}\n`);
-    } else process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+      if (lookup.status === "error") writeStderr(`${lookup.code}: invocation ${identity} was not available\n`);
+      else writeStdout(`${lookup.events.map((event) => JSON.stringify(event)).join("\n")}\n`);
+    } else writeStdout(`${JSON.stringify(result, null, 2)}\n`);
+    activeOutput.terminalClass = lookup.status === "success"
+      ? "success"
+      : lookup.status === "warning"
+        ? "diagnostic-warning"
+        : lookup.code === "RL_LOG_NOT_FOUND"
+          ? "expected-rejection"
+          : "logging-failure";
     return lookup.status === "error" ? (lookup.code === "RL_INVALID_INVOCATION_ID" ? 4 : 3) : 0;
   }
-  process.stderr.write("RL_INVALID_REQUEST: logs requires path or show <invocation-id>\n");
+  activeOutput.terminalClass = "expected-rejection";
+  writeStderr("RL_INVALID_REQUEST: logs requires path or show <invocation-id>\n");
   return 4;
 }
 
@@ -1611,7 +1648,7 @@ function commandError(command, message, flags, error) {
       }),
     );
   } else {
-    process.stderr.write(`${message}\n${error.next_action ?? "Run rigorloop --help."}\n`);
+    writeStderr(`${message}\n${error.next_action ?? "Run rigorloop --help."}\n`);
   }
   return exitCodeForResult({ status: "error", exit_class: "invalid_usage" });
 }
@@ -1652,9 +1689,9 @@ function handleNewChange(rawArgs) {
   if (parsed.flags.json) {
     writeJson(result);
   } else if (result.status === "blocked") {
-    process.stderr.write(`${result.summary}\n${result.blockers[0].message}\n`);
+    writeStderr(`${result.summary}\n${result.blockers[0].message}\n`);
   } else if (result.status === "error") {
-    process.stderr.write(`${result.summary}\n${result.errors[0].message}\n`);
+    writeStderr(`${result.summary}\n${result.errors[0].message}\n`);
   } else if (parsed.flags.dryRun) {
     writeHuman(`RigorLoop new-change dry run completed.\n${draft.planned_change_metadata.path}\n`, parsed.flags);
   } else {
@@ -1692,7 +1729,7 @@ function unsupportedAdapter(adapter, flags) {
   if (flags.json) {
     writeJson(result);
   } else {
-    process.stderr.write(`${result.summary}\nUse one of: ${supportedAdapterNames().join(", ")}.\n`);
+    writeStderr(`${result.summary}\nUse one of: ${supportedAdapterNames().join(", ")}.\n`);
   }
   return exitCodeForResult({ ...result, exit_class: "blocked" });
 }
@@ -1713,7 +1750,7 @@ function removedAdapterSyntax(flags) {
   if (flags.json) {
     writeJson(result);
   } else {
-    process.stderr.write(`${result.summary}\n${result.errors[0].next_action}\n`);
+    writeStderr(`${result.summary}\n${result.errors[0].next_action}\n`);
   }
   return exitCodeForResult({ ...result, exit_class: "invalid_usage" });
 }
@@ -1753,7 +1790,7 @@ function writeBlockedResult(flags, plan, summary, blockers, exitClass = "blocked
   if (flags.json) {
     writeJson(result);
   } else {
-    process.stderr.write(`${result.summary}\n${blockers[0]?.next_action ?? "Resolve the blocker before running init."}\n`);
+    writeStderr(`${result.summary}\n${blockers[0]?.next_action ?? "Resolve the blocker before running init."}\n`);
   }
   return exitCodeForResult({ ...result, exit_class: exitClass });
 }
@@ -1794,7 +1831,7 @@ function writeValidationErrorResult(flags, plan, error) {
   if (flags.json) {
     writeJson(result);
   } else {
-    process.stderr.write(`${result.summary}\n`);
+    writeStderr(`${result.summary}\n`);
   }
   return exitCodeForResult({ ...result, exit_class: "validation_failed" });
 }
@@ -1929,7 +1966,7 @@ async function handleInit(flags, initArgs = []) {
     if (flags.json) {
       writeJson(result);
     } else {
-      process.stderr.write(`${result.summary}\n${plan.errors[0].next_action}\n`);
+      writeStderr(`${result.summary}\n${plan.errors[0].next_action}\n`);
     }
     return exitCodeForResult({ ...result, exit_class: "invalid_usage" });
   }
@@ -2042,7 +2079,7 @@ async function handleInit(flags, initArgs = []) {
         if (flags.json) {
           writeJson(result);
         } else {
-          process.stderr.write(`${result.summary}\n${error.message}\n`);
+          writeStderr(`${result.summary}\n${error.message}\n`);
         }
         return exitCodeForResult({ ...result, exit_class: "internal" });
       }
@@ -2121,16 +2158,30 @@ async function handleInit(flags, initArgs = []) {
   return exitCodeForResult({ ...result, exit_class: "success" });
 }
 
-async function main(rawArgs = process.argv.slice(2), invocation = {}) {
+async function dispatchMain(rawArgs, invocation) {
   try {
-    activeOutput = invocation;
     if (rawArgs[0] === "logs") return handleLogs(rawArgs.slice(1), invocation);
-    if (rawArgs[0] === "new-change") {
-      return handleNewChange(rawArgs.slice(1));
-    }
     if (rawArgs[0] === "lifecycle") {
-      const { runLifecycleCli } = await import("../lib/lifecycle-cli.js");
-      return runLifecycleCli(rawArgs.slice(1), { invocationId: invocation.invocationId, observability: invocation.getObservability?.() });
+      const { executeLifecycleCli } = await import("../lib/lifecycle-cli.js");
+      const execution = executeLifecycleCli(rawArgs.slice(1));
+      activeOutput.terminalClass = execution.exitCode === 0
+        ? "success"
+        : [2, 4, 5].includes(execution.exitCode)
+          ? "expected-rejection"
+          : "internal-error";
+      activeOutput.deferredRender = ({ invocationId, observability }) => {
+        const rendered = renderResult(execution.result, {
+          format: execution.format,
+          exitCode: execution.exitCode,
+          invocationId,
+          observability,
+          human: () => execution.human,
+        });
+        return execution.format === "human" && execution.exitCode !== 0
+          ? { stdout: "", stderr: rendered }
+          : { stdout: rendered, stderr: "" };
+      };
+      return execution.exitCode;
     }
 
     const { flags, positional } = parseFlags(rawArgs);
@@ -2153,9 +2204,22 @@ async function main(rawArgs = process.argv.slice(2), invocation = {}) {
 
     return invalidUsage(`Unknown command: ${command}`, flags);
   } catch (error) {
-    process.stderr.write(`Unexpected error: ${error.message}\n`);
+    activeOutput.terminalClass = "internal-error";
+    writeStderr("Unexpected internal error.\n");
     return exitCodeForResult({ status: "error", exit_class: "internal" });
   }
+}
+
+async function main(rawArgs = process.argv.slice(2), invocation = {}) {
+  activeOutput = { ...invocation, stdout: "", stderr: "", deferredRender: null, terminalClass: null };
+  const exitCode = await dispatchMain(rawArgs, invocation);
+  return {
+    exitCode,
+    terminalClass: activeOutput.terminalClass,
+    render: (context) => activeOutput.deferredRender
+      ? activeOutput.deferredRender(context)
+      : { stdout: activeOutput.stdout, stderr: activeOutput.stderr },
+  };
 }
 
 process.exitCode = await runObservedCli(process.argv.slice(2), main, { cliVersion: packageInfo().version });

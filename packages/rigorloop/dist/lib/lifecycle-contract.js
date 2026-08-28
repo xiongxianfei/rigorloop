@@ -76,7 +76,7 @@ const OPERATION_FIELDS = Object.freeze({
   "record-finding-resolution": ["artifact_id", "evidence_path", "finding_id", "stage_authority"],
   "settle-artifact": ["artifact_id", "stage_authority"],
   "start-milestone": ["milestone_id", "stage_authority"],
-  "complete-milestone": ["milestone_id", "evidence_path", "stage_authority"],
+  "complete-milestone": ["milestone_id", "evidence_path", "review_evidence_path", "stage_authority"],
   "route-correction": ["source_stage", "destination_stage", "destination_artifact_id", "reason", "evidence_path", "finding_ids", "return_stage", "milestone_id", "stage_authority"],
   "return-correction": ["route_id", "evidence_path", "stage_authority"],
   "withdraw-artifact-registration": ["artifact_id", "artifact_path", "canonical_owner_change_id", "reason", "evidence_path", "stage_authority"],
@@ -272,7 +272,7 @@ export function validateLifecycleRequest(request) {
   for (const field of ["source_stage", "return_stage"]) {
     if (request[field] !== undefined && (typeof request[field] !== "string" || !/^[a-z][a-z0-9-]*$/.test(request[field]))) return { ok: false, errors: [requestError(`${field} must be one normalized stage`)] };
   }
-  for (const field of ["artifact_path", "evidence_path", "subject_path"]) {
+  for (const field of ["artifact_path", "evidence_path", "review_evidence_path", "subject_path"]) {
     if (request[field] !== undefined && !isRepositoryRelativePath(request[field])) {
       return { ok: false, errors: [requestError(`${field} must be a normalized repository-relative path`)] };
     }

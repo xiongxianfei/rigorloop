@@ -39,7 +39,12 @@ const historicalSkillsOnlyMetadataFile = `adapter-artifacts-${historicalSkillsOn
 function runCli(args, options = {}) {
   return spawnSync(process.execPath, [options.cliPath ?? cliPath, ...args], {
     cwd: options.cwd ?? packageRoot,
-    env: { ...process.env, ...(options.env ?? {}) },
+    env: {
+      ...process.env,
+      RIGORLOOP_FILE_LOG: "off",
+      RIGORLOOP_CONSOLE_LOG_LEVEL: "off",
+      ...(options.env ?? {}),
+    },
     encoding: "utf8",
   });
 }
@@ -1267,6 +1272,7 @@ test("T8 quiet mode does not change JSON shape or behavior", () => {
     execFileSync(process.execPath, [cliPath, "init", "codex", "--write-state", "--dry-run", "--json"], {
       cwd,
       encoding: "utf8",
+      env: { ...process.env, RIGORLOOP_FILE_LOG: "off", RIGORLOOP_CONSOLE_LOG_LEVEL: "off" },
     }),
   );
   const quietResult = runCli(["init", "codex", "--write-state", "--dry-run", "--json", "--quiet"], { cwd });

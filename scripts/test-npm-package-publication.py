@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import tarfile
@@ -35,8 +36,13 @@ TARGET_SKILL_ROOTS = {
 }
 
 
-def run_command(args: list[str], *, cwd: Path = ROOT) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(args, cwd=cwd, capture_output=True, text=True, check=False)
+def run_command(
+    args: list[str],
+    *,
+    cwd: Path = ROOT,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(args, cwd=cwd, capture_output=True, text=True, check=False, env=env)
 
 
 def pack_package(destination: Path) -> Path:
@@ -236,6 +242,113 @@ class NpmPackagePublicationTests(unittest.TestCase):
             self.assertEqual(new_change_result.stderr, "")
             new_change_payload = json.loads(new_change_result.stdout)
             self.assertEqual(new_change_payload["command"], "new-change")
+
+    def test_packed_package_observability_surface_matches_documentation(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="rigorloop-npm-pack-") as pack_temp, tempfile.TemporaryDirectory(
+            prefix="rigorloop-npm-install-"
+        ) as install_temp, tempfile.TemporaryDirectory(prefix="rigorloop-npm-observability-") as project_temp, tempfile.TemporaryDirectory(
+            prefix="rigorloop-npm-release-output-"
+        ) as release_temp:
+            tarball = pack_package(Path(pack_temp))
+            release_output = Path(release_temp)
+            build_result = run_command(
+                ["python", "scripts/build-adapters.py", "--version", RELEASE_TAG, "--output-dir", str(release_output)]
+            )
+            self.assertEqual(build_result.returncode, 0, build_result.stderr)
+
+            install_root = Path(install_temp)
+            install = run_command(["npm", "install", "--prefix", str(install_root), str(tarball)])
+            self.assertEqual(install.returncode, 0, install.stderr)
+            bin_path = install_root / "node_modules" / ".bin" / "rigorloop"
+            package_root = install_root / "node_modules" / "@xiongxianfei" / "rigorloop"
+            project_root = Path(project_temp)
+            log_root = project_root / "logs"
+            archive = release_output / f"rigorloop-adapter-codex-{RELEASE_TAG}.zip"
+            command_env = {**os.environ, "RIGORLOOP_LOG_DIR": str(log_root)}
+
+            concise = run_command(
+                [str(bin_path), "init", "codex", "--from-archive", str(archive), "--dry-run", "--format", "concise-json"],
+                cwd=project_root,
+                env=command_env,
+            )
+            self.assertEqual(concise.returncode, 0, concise.stderr or concise.stdout)
+            self.assertEqual(concise.stderr, "")
+            concise_payload = json.loads(concise.stdout)
+            self.assertEqual(concise_payload["projection"], "concise")
+            self.assertEqual(concise_payload["observability"], "recorded")
+            invocation_id = concise_payload["invocation_id"]
+
+            path_result = run_command([str(bin_path), "logs", "path"], cwd=project_root, env=command_env)
+            self.assertEqual(path_result.returncode, 0, path_result.stderr)
+            self.assertEqual(Path(path_result.stdout.strip()), log_root)
+
+            show_result = run_command(
+                [str(bin_path), "logs", "show", invocation_id, "--format", "json"], cwd=project_root, env=command_env
+            )
+            self.assertEqual(show_result.returncode, 0, show_result.stderr or show_result.stdout)
+            show_payload = json.loads(show_result.stdout)
+            self.assertEqual(show_payload["status"], "success")
+            self.assertEqual({event["event"] for event in show_payload["events"]}, {"invocation-start", "invocation-complete"})
+
+            concise_human = run_command(
+                [
+                    str(bin_path),
+                    "init",
+                    "codex",
+                    "--from-archive",
+                    str(archive),
+                    "--dry-run",
+                    "--format",
+                    "concise-human",
+                    "--no-file-log",
+                    "--console-log-level",
+                    "off",
+                ],
+                cwd=project_root,
+                env=command_env,
+            )
+            self.assertEqual(concise_human.returncode, 0, concise_human.stderr or concise_human.stdout)
+            self.assertEqual(concise_human.stderr, "")
+            self.assertLessEqual(len([line for line in concise_human.stdout.splitlines() if line.strip()]), 2)
+
+            detailed = run_command(
+                [
+                    str(bin_path),
+                    "init",
+                    "codex",
+                    "--from-archive",
+                    str(archive),
+                    "--dry-run",
+                    "--format",
+                    "detailed-json",
+                    "--no-file-log",
+                ],
+                cwd=project_root,
+                env=command_env,
+            )
+            self.assertEqual(detailed.returncode, 0, detailed.stderr or detailed.stdout)
+            self.assertEqual(json.loads(detailed.stdout)["command"], "init")
+
+            legacy = run_command(
+                [str(bin_path), "init", "codex", "--from-archive", str(archive), "--dry-run", "--json", "--no-file-log"],
+                cwd=project_root,
+                env=command_env,
+            )
+            self.assertEqual(legacy.returncode, 0, legacy.stderr or legacy.stdout)
+            self.assertEqual(json.loads(legacy.stdout)["command"], "init")
+
+            readme = (package_root / "README.md").read_text(encoding="utf-8")
+            for documented_surface in (
+                "rigorloop logs path",
+                "rigorloop logs show <invocation-id>",
+                "--no-file-log",
+                "--console-log-level debug|info|warning|error|off",
+                "--format concise-json",
+                "--format concise-human",
+                "--format detailed-json",
+            ):
+                with self.subTest(documented_surface=documented_surface):
+                    self.assertIn(documented_surface, readme)
 
 
 if __name__ == "__main__":
