@@ -38,21 +38,25 @@ Review closeout: code-review-m2-r14
 Review closeout: code-review-m2-r15
 Review closeout: code-review-m2-r6
 Review closeout: code-review-m2-r7
+Review closeout: code-review-m3-r1
+Review closeout: code-review-m3-r2
+Review closeout: code-review-m3-r3
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
-- Findings resolved: 51
-- Unresolved findings: 4
-- Current result: Isolated code-review M3 R1 returned `changes-requested` on bundle `sha256:b2ef0a7fb4d2cf548d06e636145d361d58c4ca8455ded0d1862b97834df28303`. `CLIOBS-M3-R1-F1` through `CLIOBS-M3-R1-F4` require implementation correction and fresh M3 rereview; no lifecycle state or routing changed.
-- Validation evidence: Package C01 passed 256/256, the wrapper helper tests passed 3/3, selector tests passed 154/154, and repository lifecycle validation passed for 29 records with one declared baseline warning. Direct public/controller probes nevertheless returned an unapproved retained private field, reflected an invalid identity in JSON and human output, and downgraded lifecycle exit 3 to warning; inspection also proved the wrapper tests and selector do not execute T13.
+- Findings resolved: 56
+- Unresolved findings: 0
+- Current result: Independent code-review M3 R3 returned `clean-with-notes` on bundle `sha256:c6de101cc1bf6c0a6f94d648bd20339ff08c689108c08e1f2c0c9a7c13ec2fb7`. The four M3 R1 findings and the R2 mixed-diagnostic precedence finding are resolved; workflow still owns milestone closure and routing.
+- Validation evidence: focused observability tests passed 71/71, the governed wrapper matrix passed 5/5, selector tests passed 154/154, and the package suite passed 262/262. Public child processes proved expected stale evidence is warning/quiet and unsafe orphan-lock recovery is error/visible without changing semantic exits.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| CLIOBS-M3-R1-F1 | accepted | unresolved | Validate retained events against the closed read-side schema before lookup returns them. |
-| CLIOBS-M3-R1-F2 | accepted | unresolved | Reject invalid invocation identities without echoing the raw value. |
-| CLIOBS-M3-R1-F3 | accepted | unresolved | Derive terminal severity from semantic failure class rather than numeric exit code alone. |
-| CLIOBS-M3-R1-F4 | accepted | unresolved | Execute and select the complete production-wrapper T13 matrix. |
+| CLIOBS-M3-R2-F1 | accepted | resolved | Classify every lifecycle diagnostic with fail-closed internal, unsafe-recovery, and expected-rejection precedence. |
+| CLIOBS-M3-R1-F1 | accepted | resolved | Validate retained events against the closed read-side schema before lookup returns them. |
+| CLIOBS-M3-R1-F2 | accepted | resolved | Reject invalid invocation identities without echoing the raw value. |
+| CLIOBS-M3-R1-F3 | accepted | resolved | Derive terminal severity from all semantic lifecycle diagnostics rather than numeric exit code alone. |
+| CLIOBS-M3-R1-F4 | accepted | resolved | Execute and select the complete production-wrapper T13 matrix. |
 | CLIOBS-M2-R13-F1 | accepted | resolved | Capture trusted acquisition identity before injected inspection, preserve same-number replacements, and prove the corrected frozen M2 bundle. |
 | CLIOBS-PR6 | accepted | resolved | Remove request fingerprints from the first release and use invocation IDs plus allowlisted semantic identities. |
 | CLIOBS-PR7 | accepted | resolved | Add an `invalid-input` family and define the minimum logger-initialization boundary. |
@@ -106,13 +110,31 @@ Review closeout: code-review-m2-r7
 
 ## Finding Details
 
+### code-review-m3-r2
+
+#### CLIOBS-M3-R2-F1
+
+Finding ID: CLIOBS-M3-R2-F1
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: implement M3
+Decision owner: none
+Decision needed: none
+Chosen action: classify the complete lifecycle diagnostic set with explicit fail-closed precedence.
+Rationale: first-error-only classification can downgrade a later unsafe or internal diagnostic.
+Required outcome: internal or unknown errors outrank unsafe recovery, and unsafe recovery outranks expected rejection.
+Validation target: R4, T06, mixed diagnostic sequences, public lifecycle stale and recovery paths.
+Final action: derived the expected set from `LIFECYCLE_ERROR_CODES`, scanned every diagnostic, and added mixed and public child-process regressions.
+Validation evidence: independent M3 R3 rereview; focused 71/71; wrapper 5/5; selector 154/154; package 262/262.
+
 ### code-review-m3-r1
 
 #### CLIOBS-M3-R1-F1
 
 Finding ID: CLIOBS-M3-R1-F1
 Disposition: accepted
-Status: unresolved
+Status: resolved
 Owner: implementation author
 Owning stage: implement M3
 Decision owner: none
@@ -121,14 +143,14 @@ Chosen action: add closed read-side diagnostic-event validation and public looku
 Rationale: matching `schema_version` and `invocation_id` do not prove that a retained object is a valid allowlisted event.
 Required outcome: lookup returns only complete closed-schema events and never returns unknown, malformed, wrong-type, or private fields.
 Validation target: R5-R9, R19-R20, E5, T08, T09, public JSON/human lookup, and the M3 package suite.
-Final action: pending implementation correction.
-Validation evidence: code-review-m3-r1 direct public probe returned `M3_LOOKUP_PRIVATE_SENTINEL` from an unvalidated schema-1 object.
+Final action: added closed read-side event validation before lookup returns retained events and covered every non-canonical partition.
+Validation evidence: `CLIOBS-M3-R1-F1` lookup regressions passed in focused 71/71 and package 262/262; independent M3 R3 rereview found no remaining exposure.
 
 #### CLIOBS-M3-R1-F2
 
 Finding ID: CLIOBS-M3-R1-F2
 Disposition: accepted
-Status: unresolved
+Status: resolved
 Owner: implementation author
 Owning stage: implement M3
 Decision owner: none
@@ -137,14 +159,14 @@ Chosen action: validate the lookup identity before result construction and use c
 Rationale: rejected caller text is not a validated invocation identity and has no diagnostic value in the stable error.
 Required outcome: invalid identities return `RL_INVALID_INVOCATION_ID` without echoing or persisting the rejected value in JSON, human output, or logs.
 Validation target: R8, R19, BND-INPUT-001, T08, T09, and both public lookup formats.
-Final action: pending implementation correction.
-Validation evidence: code-review-m3-r1 JSON and human probes each returned `M3_INVALID_PRIVATE_SENTINEL` with exit 4.
+Final action: reject invalid lookup identities before result construction and emit only the stable rejection code.
+Validation evidence: public JSON and human invalid-identity regressions passed in focused 71/71 and package 262/262; independent M3 R3 rereview confirmed the rejected value is absent.
 
 #### CLIOBS-M3-R1-F3
 
 Finding ID: CLIOBS-M3-R1-F3
 Disposition: accepted
-Status: unresolved
+Status: resolved
 Owner: implementation author
 Owning stage: implement M3
 Decision owner: none
@@ -153,14 +175,14 @@ Chosen action: propagate normalized semantic failure classification into the inv
 Rationale: one numeric exit code can represent outcomes with different required diagnostic severity, so exit-code-only mapping loses the R4 distinction.
 Required outcome: internal, unsafe-recovery, and logging failures are error; expected policy/input failures are warning; semantic exits remain unchanged.
 Validation target: R4, R15, T06, T07, lifecycle exit 3, logging failure, unsafe recovery, validation, usage, stale, and blocked partitions.
-Final action: pending implementation correction.
-Validation evidence: code-review-m3-r1 direct controller probe recorded lifecycle exit 3 as `severity: warning`, `status: error`, with no default-console error diagnostic.
+Final action: lifecycle semantic codes now drive terminal class with all-diagnostic precedence; public stale evidence is warning/quiet and unsafe recovery is error/visible.
+Validation evidence: mixed-diagnostic and public child-process regressions passed in focused 71/71 and package 262/262; independent M3 R3 rereview was clean-with-notes.
 
 #### CLIOBS-M3-R1-F4
 
 Finding ID: CLIOBS-M3-R1-F4
 Disposition: accepted
-Status: unresolved
+Status: resolved
 Owner: implementation author
 Owning stage: implement M3
 Decision owner: none
@@ -169,8 +191,8 @@ Chosen action: implement the executable T13 child-result matrix and add a dedica
 Rationale: pure baseline-matching tests and generic package checks cannot prove production-wrapper structured-output consumption or exit-class parity.
 Required outcome: wrapper changes deterministically select a focused check that executes success, blocked, usage, invalid-repository, stale, and internal detailed/concise child results, prevents duplicate success output, and preserves classifications.
 Validation target: R31, T13, C03, C04, CLIOBS-PLR2, wrapper script/test, selector catalog, selector regressions, and exact changed-path selection.
-Final action: pending implementation correction.
-Validation evidence: code-review-m3-r1 inspection found only three in-process `baseline_matches()` tests and selector routing to package/publication checks; no selected command executes T13.
+Final action: added the executable T13 child-result matrix and dedicated governed-wrapper selector coverage.
+Validation evidence: wrapper tests passed 5/5, selector tests passed 154/154, and independent M3 R3 rereview confirmed the production-wrapper path is selected.
 
 ### code-review-m1-r1
 

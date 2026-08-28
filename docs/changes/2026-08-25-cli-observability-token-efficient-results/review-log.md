@@ -17,6 +17,7 @@ This ledger records formal review evidence for the governed local CLI observabil
 | `test-spec-review-r2` | `test-spec-review` | `r2` | `specs/cli-observability-and-token-efficient-results.test.md` at `sha256:2c407aeff91b44a7ee39b8eaed162f46755483f75b4cb54379abaec86b319c73` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
 | `test-spec-review-r3` | `test-spec-review` | `r3` | `specs/cli-observability-and-token-efficient-results.test.md` at `sha256:4af3e383ffc9cc13522e0a71b953b3d3b3272ced34a9758a8335bd591e170622` | `reviews/test-spec-review-r3.md` | `approved` | 0 | `recorded` |
 | `test-spec-review-r4` | `test-spec-review` | `r4` | `specs/cli-observability-and-token-efficient-results.test.md` at `sha256:8c509aeb9adf3f0b329f235fa729934210919fdbb93b24bb5d29e57d2af80e8a` | `reviews/test-spec-review-r4.md` | `approved` | 0 | `recorded` |
+| `code-review-m3-r3` | `code-review` | `r3` | M3 implementation/test/evidence bundle at `sha256:c6de101cc1bf6c0a6f94d648bd20339ff08c689108c08e1f2c0c9a7c13ec2fb7` | `reviews/code-review-m3-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m1-r7` | `code-review` | `r7` | branch diff at `sha256:76ec33a33888a7dabbd44c958646d82a47797d320a18cc6bb007ca45515109a5` | `reviews/code-review-m1-r7.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m1-r10` | `code-review` | `r10` | branch diff at `sha256:cd54b37898a02b431a55a54151b5492c192d3f97d871e0e3d5b9d21bbe78216c` | `reviews/code-review-m1-r10.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m1-r12` | `code-review` | `r12` | branch diff at `sha256:76280fae6c040fe3b5a2e8e7b9fa83ffee58e1c403cbf599446973afaf451998` | `reviews/code-review-m1-r12.md` | `clean-with-notes` | 0 | `recorded` |
@@ -34,6 +35,21 @@ This ledger records formal review evidence for the governed local CLI observabil
 
 ### Review entry
 
+Review ID: code-review-m3-r2
+Stage: code-review
+Round: r2
+Reviewed artifact path: M3 implementation/test/evidence bundle
+Reviewed artifact identity: sha256:66b038f848fa1ae0b0912ee8a50d142da5530ee526309ae98a9cc1f40418282e
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r2.md
+Resolution: review-resolution.md#code-review-m3-r2
+Material findings: CLIOBS-M3-R2-F1
+Finding ID: CLIOBS-M3-R2-F1
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m3-r1
 Stage: code-review
 Round: r1
@@ -47,7 +63,7 @@ Finding ID: CLIOBS-M3-R1-F1
 Finding ID: CLIOBS-M3-R1-F2
 Finding ID: CLIOBS-M3-R1-F3
 Finding ID: CLIOBS-M3-R1-F4
-Open findings: CLIOBS-M3-R1-F1, CLIOBS-M3-R1-F2, CLIOBS-M3-R1-F3, CLIOBS-M3-R1-F4
+Open findings: none
 Recording status: recorded
 
 ### Review entry

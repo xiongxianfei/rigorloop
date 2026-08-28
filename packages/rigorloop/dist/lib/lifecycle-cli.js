@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 
-import { parseLifecycleYaml, serializeLifecycleYaml, validateLifecycleRequest } from "./lifecycle-contract.js";
+import { LIFECYCLE_ERROR_CODES, parseLifecycleYaml, serializeLifecycleYaml, validateLifecycleRequest } from "./lifecycle-contract.js";
 import { evaluateLifecycleOperation, operationDiagnostic } from "./lifecycle-operations.js";
 import { contextForStage, findRepositoryRoot, interpretGovernedChange, lifecycleDiagnostic, selectGovernedChange } from "./lifecycle-read.js";
 import { clearOrphanedLifecycleLock, inspectLifecycleLock, inspectLifecycleRecovery, reconcileInterruptedTransaction, runLifecycleTransaction } from "./lifecycle-transaction.js";
@@ -12,6 +12,18 @@ const RESULT_FIELDS = ["schema_version", "command", "operation", "status", "chan
 const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "start-milestone", "complete-milestone", "route-correction", "return-correction", "withdraw-artifact-registration", "migrate", "repair"]);
 const REPAIR_CHANGED_STATUSES = new Set(["cleared-orphaned-lock", "restored-prior", "committed-candidate", "abandoned-prepared"]);
 const REPAIR_UNCHANGED_STATUSES = new Set(["already-clear", "nothing-to-reconcile"]);
+const UNSAFE_RECOVERY_CODES = new Set(["RL_RECOVERY_REQUIRED", "RL_REPAIR_UNSAFE"]);
+const INTERNAL_ERROR_CODES = new Set(["RL_POST_VALIDATION_FAILED"]);
+const EXPECTED_REJECTION_CODES = new Set(LIFECYCLE_ERROR_CODES.filter((code) => !UNSAFE_RECOVERY_CODES.has(code) && !INTERNAL_ERROR_CODES.has(code)));
+
+export function lifecycleTerminalClass(result) {
+  const codes = Array.isArray(result?.errors) ? result.errors.map((error) => error?.code) : [];
+  if ((result?.status === "success" || result?.status === "already-recorded") && codes.length === 0) return "success";
+  if (codes.some((code) => !LIFECYCLE_ERROR_CODES.includes(code) || INTERNAL_ERROR_CODES.has(code))) return "internal-error";
+  if (codes.some((code) => UNSAFE_RECOVERY_CODES.has(code))) return "unsafe-recovery";
+  if ((codes.length > 0 && codes.every((code) => EXPECTED_REJECTION_CODES.has(code))) || (result?.status === "blocked" && codes.length === 0)) return "expected-rejection";
+  return "internal-error";
+}
 
 export function repairStateChanged(status) {
   if (REPAIR_CHANGED_STATUSES.has(status)) return true;

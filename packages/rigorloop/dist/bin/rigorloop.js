@@ -2162,13 +2162,9 @@ async function dispatchMain(rawArgs, invocation) {
   try {
     if (rawArgs[0] === "logs") return handleLogs(rawArgs.slice(1), invocation);
     if (rawArgs[0] === "lifecycle") {
-      const { executeLifecycleCli } = await import("../lib/lifecycle-cli.js");
+      const { executeLifecycleCli, lifecycleTerminalClass } = await import("../lib/lifecycle-cli.js");
       const execution = executeLifecycleCli(rawArgs.slice(1));
-      activeOutput.terminalClass = execution.exitCode === 0
-        ? "success"
-        : [2, 4, 5].includes(execution.exitCode)
-          ? "expected-rejection"
-          : "internal-error";
+      activeOutput.terminalClass = lifecycleTerminalClass(execution.result);
       activeOutput.deferredRender = ({ invocationId, observability }) => {
         const rendered = renderResult(execution.result, {
           format: execution.format,
