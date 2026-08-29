@@ -10,11 +10,12 @@ Review closeout: spec-review-r3
 Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-cli-fix-r1
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`
-- Findings resolved: 8
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`
+- Findings resolved: 10
 - Unresolved findings: 0
-- Current result: Both Code Review M1 R1 findings are resolved through the owner-approved single-cutover correction. M1 requires fresh code review; resolution does not substitute for rereview.
+- Current result: The owner rejected both Code Review CLI Fix R1 findings and explicitly authorized M2 continuation without changing the CLI fix.
 
 ## Resolution Overview
 
@@ -28,6 +29,8 @@ Review closeout: code-review-m1-r1
 | CRG-TSR1-1 | accepted | resolved | The registered revision maps every approved-plan validation command through exact command IDs, proof obligations, test cases, and M1-M7 milestone proof. |
 | CRG-M1-CR1 | accepted | resolved | Removed the activation manifest, baseline, topology marker, interpreter, and inferred authority entirely. |
 | CRG-M1-CR2 | accepted | resolved | Explicitly allowed later approved lifecycle features to supersede obsolete frozen fields; no legacy renderer or output-version mechanism was added. |
+| CRG-CLI-CR1 | rejected | resolved | The owner rejected a mandatory commit or packet identity for direct clean-review settlement; the existing exact milestone evidence, review evidence, and review-log binding are sufficient for this workflow. |
+| CRG-CLI-CR2 | rejected | resolved | The owner accepted the concise two-phase `complete-milestone` behavior and rejected adding another operation or documentation gate before M2. |
 
 ## Finding Details
 
@@ -188,3 +191,39 @@ Validation evidence: `node --test packages/rigorloop/test/result-renderer.test.j
 ### code-review-m1-r2
 
 No new material finding was created. The corrected local packet resolves the behavior described by `CRG-M1-CR1` and `CRG-M1-CR2`, but the rereview is inconclusive because the governing M1 artifacts remain untracked and the dirty runtime files contain unrelated lifecycle CLI work. This administrative entry supplies the review-log anchor required for the detailed inconclusive record; it creates no finding disposition, does not reopen review-resolution, and does not settle M1. A fresh review requires an identity-stable tracked M1 packet.
+
+### code-review-cli-fix-r1
+
+#### CRG-CLI-CR1
+
+Finding ID: CRG-CLI-CR1
+Disposition: rejected
+Status: resolved
+Owner: CLI specification owner
+Owning stage: spec
+Decision owner: CLI specification owner
+Decision needed: none; the owner supplied the final disposition.
+Chosen action: retain the implemented direct-review settlement contract unchanged.
+Rationale: the owner rejected the proposed additional identity as unnecessary complexity. Direct settlement already binds the milestone implementation evidence, exact review evidence, and canonical review-log occurrence; automated review continues to require its packet identity.
+Required outcome: none beyond preserving the implemented direct-versus-automated evidence distinction.
+Safe resolution path: no implementation change required.
+Follow-up: none.
+Validation target: `specs/governed-lifecycle-cli.md` R16/E7, direct review settlement, completion fingerprint, and stale replay.
+Validation evidence: owner rejection recorded 2026-08-29; targeted lifecycle suite passed 53 tests in Code Review CLI Fix R1.
+
+#### CRG-CLI-CR2
+
+Finding ID: CRG-CLI-CR2
+Disposition: rejected
+Status: resolved
+Owner: CLI specification owner
+Owning stage: spec
+Decision owner: CLI specification owner
+Decision needed: none; the owner supplied the final disposition.
+Chosen action: retain the concise two-phase `complete-milestone` operation unchanged.
+Rationale: the owner rejected an additional lifecycle operation and review cycle. The existing operation is state-specific: `implementing` requests review, while `review-requested` plus clean review evidence closes the milestone.
+Required outcome: none beyond preserving the tested state-specific behavior.
+Safe resolution path: no implementation change required.
+Follow-up: none.
+Validation target: `specs/governed-lifecycle-cli.md` E6/R3/R16/state invariants and `specs/rigorloop-workflow.md` R7x/R7xa.
+Validation evidence: owner rejection recorded 2026-08-29; targeted lifecycle suite passed 53 tests in Code Review CLI Fix R1.

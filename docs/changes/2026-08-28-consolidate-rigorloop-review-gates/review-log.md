@@ -19,6 +19,22 @@
 
 ### Review entry
 
+Review ID: code-review-cli-fix-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: CLI fix commit `f354dd1aa20394f7ee197d0ce3dd905dc292cb3f`
+Status: blocked
+Detailed record: reviews/code-review-cli-fix-r1.md
+Resolution: review-resolution.md#code-review-cli-fix-r1
+Material findings: CRG-CLI-CR1, CRG-CLI-CR2
+Open findings: none
+Finding ID: CRG-CLI-CR1
+Finding ID: CRG-CLI-CR2
+Recording status: recorded
+Blocker: none; the owner rejected both findings and authorized M2 continuation
+
+### Review entry
+
 Review ID: code-review-m1-r2
 Stage: code-review
 Round: r2
