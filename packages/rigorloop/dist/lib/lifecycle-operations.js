@@ -3,6 +3,7 @@ import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 
 import { allowedNextStages, canonicalJson, parseLifecycleYaml } from "./lifecycle-contract.js";
+import { packageProjection, readPackageReview, reviewPackageContext } from "./lifecycle-packages.js";
 
 const REVIEW_OUTCOMES = new Set(["approved", "changes-requested", "blocked", "inconclusive", "clean-with-notes"]);
 const RESOLUTION_DISPOSITIONS = new Set(["accepted", "rejected", "deferred", "partially-accepted", "needs-decision"]);
@@ -63,9 +64,9 @@ function authoredTarget(text, path) {
 
 function coordination(change) {
   const current = change.lifecycle_cli;
-  if (current === undefined) return { schema_version: 1, artifacts: {}, reviews: {}, validations: {}, resolutions: {}, milestones: {} };
+  if (current === undefined) return { schema_version: 1, artifacts: {}, reviews: {}, package_reviews: {}, validations: {}, resolutions: {}, milestones: {} };
   if (!current || typeof current !== "object" || ![1, 2].includes(current.schema_version)) throw operationError("RL_UNSUPPORTED_SCHEMA", "unsupported lifecycle_cli coordination schema", "coordination-schema", [String(current?.schema_version)], "migrate");
-  return { artifacts: {}, reviews: {}, validations: {}, resolutions: {}, milestones: {}, correction_history: {}, withdrawals: {}, ...structuredClone(current) };
+  return { artifacts: {}, reviews: {}, package_reviews: {}, validations: {}, resolutions: {}, milestones: {}, correction_history: {}, withdrawals: {}, ...structuredClone(current) };
 }
 
 function requireSchema2(state) {
@@ -720,6 +721,46 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     return { status: "settled", candidate: next };
   }
 
+  if (request.operation === "record-package-review") {
+    requireSchema2(state);
+    const expectedAuthority = `${request.package_kind}-review`;
+    if (request.stage_authority !== expectedAuthority) throw operationError("RL_AUTHORITY_BOUNDARY", "Package review authority does not own the package kind.", "review-package-authority", [request.stage_authority, expectedAuthority]);
+    const context = reviewPackageContext(root, next, request.package_kind);
+    if (context.errors.length) throw Object.assign(new Error(context.errors[0].summary), { code: context.errors[0].code, diagnostic: context.errors[0] });
+    if (request.package_revision !== context.aggregate_revision || request.upstream_binding !== context.upstream_binding || canonicalJson(request.member_artifact_ids) !== canonicalJson(context.member_artifact_ids)) throw operationError("RL_STALE_EVIDENCE", "Package review request does not bind the exact current package.", "review-package-request-identity", [request.package_kind, request.package_revision, String(context.aggregate_revision)]);
+    if (next.workflow_state?.current_stage !== expectedAuthority) throw operationError("RL_OPERATION_NOT_PERMITTED", "Package review recording is not current for its reviewing stage.", "review-package-stage", [String(next.workflow_state?.current_stage), expectedAuthority]);
+    const registration = readPackageReview(root, next, request, context);
+    if (alreadyRecorded(state.package_reviews[request.package_kind], registration)) return { status: "already-recorded", candidate: change };
+    state.package_reviews[request.package_kind] = registration;
+    return { status: "recorded", candidate: next, operationResult: { package_kind: request.package_kind, package_revision: context.aggregate_revision, review_id: registration.review_id, outcome: registration.outcome } };
+  }
+
+  if (request.operation === "settle-review-package") {
+    requireSchema2(state);
+    const expectedAuthority = `${request.package_kind}-review`;
+    if (request.stage_authority !== expectedAuthority) throw operationError("RL_AUTHORITY_BOUNDARY", "Package settlement authority does not own the package kind.", "review-package-authority", [request.stage_authority, expectedAuthority]);
+    const registered = state.package_reviews[request.package_kind];
+    if (!registered) throw operationError("RL_OPERATION_NOT_PERMITTED", "Review package has no registered review.", "review-package-registration", [request.package_kind], "record-package-review");
+    const desiredProjection = packageProjection(registered);
+    const existingProjection = next.review_packages?.[request.package_kind];
+    if (request.package_revision === registered.aggregate_revision && existingProjection && canonicalJson(existingProjection) === canonicalJson(desiredProjection)) return { status: "already-recorded", candidate: change };
+    const context = reviewPackageContext(root, next, request.package_kind);
+    if (context.errors.length) throw Object.assign(new Error(context.errors[0].summary), { code: context.errors[0].code, diagnostic: context.errors[0] });
+    if (request.package_revision !== context.aggregate_revision || registered.aggregate_revision !== context.aggregate_revision || registered.upstream_binding !== context.upstream_binding || canonicalJson(registered.member_artifact_ids) !== canonicalJson(context.member_artifact_ids)) throw operationError("RL_STALE_EVIDENCE", "Registered package review or settlement request is stale.", "review-package-freshness", [request.package_kind, request.package_revision, String(context.aggregate_revision)], "record-package-review");
+    if (registered.stage_authority !== request.stage_authority || next.workflow_state?.current_stage !== expectedAuthority) throw operationError("RL_OPERATION_NOT_PERMITTED", "Package settlement is not current for its registered review authority.", "review-package-stage", [String(next.workflow_state?.current_stage), request.stage_authority]);
+    const currentReview = readPackageReview(root, next, { ...request, evidence_path: registered.evidence_path, member_artifact_ids: registered.member_artifact_ids, upstream_binding: registered.upstream_binding }, context);
+    if (canonicalJson(currentReview) !== canonicalJson(registered)) throw operationError("RL_STALE_EVIDENCE", "Registered package review evidence changed before settlement.", "review-package-review-freshness", [registered.review_id], "record-package-review");
+    next.review_packages ??= {};
+    next.review_packages[request.package_kind] = desiredProjection;
+    if (!next.review || typeof next.review !== "object" || Array.isArray(next.review)) next.review = {};
+    next.review.latest_review = registered.evidence_path;
+    next.review.review_log = registered.review_log_path;
+    next.review.reviewed_artifact = `review-package:${request.package_kind}`;
+    next.review.status = registered.outcome === "approved" ? "clean" : registered.outcome;
+    next.review.unresolved_items = registered.findings.length;
+    return { status: "settled", candidate: next, operationResult: { package_kind: request.package_kind, package_revision: context.aggregate_revision, review_id: registered.review_id, outcome: registered.outcome, authority: desiredProjection.authority } };
+  }
+
   if (request.operation === "start-milestone") {
     const planned = next.workflow_state?.planned_work;
     const milestones = planned?.milestones;
@@ -832,8 +873,8 @@ export function evaluateLifecycleOperation({ root, change, request }) {
   if (request.operation === "migrate") {
     if (request.source_schema_version !== 1) throw operationError("RL_UNSUPPORTED_SCHEMA", "only legacy coordination schema 1 is supported for migration", "migration-source", [String(request.source_schema_version)]);
     if (change.lifecycle_cli?.schema_version === 2) return { status: "already-recorded", candidate: change };
-    const prior = change.lifecycle_cli?.schema_version === 1 ? coordination(change) : { artifacts: migrateArtifactRegistrations(root, change), reviews: {}, validations: {}, resolutions: {}, milestones: {} };
-    next.lifecycle_cli = { ...prior, schema_version: 2, correction_history: prior.correction_history ?? {}, withdrawals: prior.withdrawals ?? {} };
+    const prior = change.lifecycle_cli?.schema_version === 1 ? coordination(change) : { artifacts: migrateArtifactRegistrations(root, change), reviews: {}, package_reviews: {}, validations: {}, resolutions: {}, milestones: {} };
+    next.lifecycle_cli = { ...prior, schema_version: 2, package_reviews: prior.package_reviews ?? {}, correction_history: prior.correction_history ?? {}, withdrawals: prior.withdrawals ?? {} };
     return { status: "migrated", candidate: next };
   }
 

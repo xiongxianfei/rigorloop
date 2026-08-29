@@ -185,6 +185,49 @@ def test_spec_review_text(
     """
 
 
+def package_review_text(*, stage: str = "design-review", status: str = "approved", scope: str | None = None) -> str:
+    kind = stage.removesuffix("-review")
+    members = "architecture, spec" if kind == "design" else "plan, test-spec"
+    finding = ""
+    material = "none"
+    correction = "none"
+    if scope is not None:
+        material = "PKG-1"
+        correction = "architecture, spec"
+        finding = f"""
+        ## Findings
+
+        Finding ID: PKG-1
+        Finding scope: {scope}
+        Affected artifact IDs: architecture, spec
+        Owning stages: architecture, spec
+        Evidence: The package inputs contradict.
+        Required outcome: Reconcile the package.
+        Safe resolution path: Route to both owners.
+        """
+    return f"""
+    # Package Review R1
+
+    Review ID: {stage}-r1
+    Stage: {stage}
+    Round: 1
+    Reviewer: Codex package review test
+    Reviewer authority: {stage}
+    Target: review-package:{kind}
+    Reviewed artifact: review-package:{kind}
+    Review date: 2026-08-29
+    Status: {status}
+    Package kind: {kind}
+    Package member artifact IDs: {members}
+    Upstream binding: proposal-review-r1
+    Aggregate package revision: sha256:{'a' * 64}
+    Material findings: {material}
+    Correction targets: {correction}
+    Recording status: recorded
+    {finding}
+    """
+
+
 def valid_automated_review_text(extra_fields: str = "") -> str:
     extra = f"\n{extra_fields.strip()}\n" if extra_fields.strip() else ""
     return f"""
@@ -2020,6 +2063,8 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             "architecture-review",
             "plan-review",
             "test-spec-review",
+            "design-review",
+            "delivery-review",
             "code-review",
         ]:
             with self.subTest(stage=stage):
@@ -2031,6 +2076,8 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                     root / review_path,
                     test_spec_review_text()
                     if stage == "test-spec-review"
+                    else package_review_text(stage=stage)
+                    if stage in {"design-review", "delivery-review"}
                     else review_text(review_id=review_id, stage=stage, status="approved"),
                 )
                 write_text(
@@ -2060,6 +2107,29 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             ),
         )
         self.assertFails(root, "unknown review stage 'pr-review'")
+
+    def test_package_review_closed_vocabularies_and_attribution_fail_closed(self) -> None:
+        cases = [
+            ("unknown outcome", package_review_text(status="accepted"), "unknown package review outcome"),
+            ("unknown scope", package_review_text(status="changes-requested", scope="mixed"), "unknown package finding scope"),
+        ]
+        for name, review_source, expected in cases:
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-package-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "design-review-r1.md", review_source)
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id="design-review-r1",
+                        stage="design-review",
+                        status="accepted" if name == "unknown outcome" else "changes-requested",
+                        detailed_record="reviews/design-review-r1.md",
+                        material_findings="none" if name == "unknown outcome" else "PKG-1",
+                        open_findings="none" if name == "unknown outcome" else "PKG-1",
+                    ),
+                )
+                self.assertFails(root, expected)
 
     def test_test_spec_review_result_fields_validate_status_handoff_and_next_stage(self) -> None:
         valid_cases = [

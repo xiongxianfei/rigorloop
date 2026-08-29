@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 
 export const COMMAND_FAMILIES = Object.freeze(["lifecycle", "repository-setup", "introspection", "log-inspection", "invalid-input"]);
 export const EVENT_SEVERITIES = Object.freeze(["debug", "info", "warning", "error"]);
-export const LIFECYCLE_OPERATIONS = Object.freeze(["status", "context", "validate", "record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "advance-stage", "initialize-approved-plan", "start-milestone", "complete-milestone", "route-correction", "return-correction", "withdraw-artifact-registration", "migrate", "repair", "unknown"]);
+export const LIFECYCLE_OPERATIONS = Object.freeze(["status", "context", "validate", "record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "record-package-review", "settle-review-package", "advance-stage", "initialize-approved-plan", "start-milestone", "complete-milestone", "route-correction", "return-correction", "withdraw-artifact-registration", "migrate", "repair", "unknown"]);
 const EVENT_KINDS = Object.freeze(["invocation-start", "invocation-complete"]);
 const EVENT_SEQUENCES = Object.freeze({ "invocation-start": 1, "invocation-complete": 2 });
 const COMPLETION_STATUSES = Object.freeze(["success", "blocked", "error"]);

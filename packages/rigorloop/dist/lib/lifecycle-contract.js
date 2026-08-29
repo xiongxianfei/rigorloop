@@ -8,6 +8,8 @@ export const LIFECYCLE_OPERATIONS = Object.freeze([
   "record-validation",
   "record-finding-resolution",
   "settle-artifact",
+  "record-package-review",
+  "settle-review-package",
   "advance-stage",
   "initialize-approved-plan",
   "start-milestone",
@@ -60,6 +62,7 @@ const TOP_LEVEL_ORDER = [
   "risk",
   "lifecycle_contract",
   "artifact_states",
+  "review_packages",
   "workflow_state",
   "workflow",
   "artifacts",
@@ -77,6 +80,8 @@ const OPERATION_FIELDS = Object.freeze({
   "record-validation": ["artifact_id", "evidence_path", "subject_path", "stage_authority"],
   "record-finding-resolution": ["artifact_id", "evidence_path", "finding_id", "stage_authority"],
   "settle-artifact": ["artifact_id", "stage_authority"],
+  "record-package-review": ["package_kind", "package_revision", "upstream_binding", "member_artifact_ids", "evidence_path", "stage_authority"],
+  "settle-review-package": ["package_kind", "package_revision", "stage_authority"],
   "advance-stage": ["source_stage", "destination_stage", "stage_authority"],
   "initialize-approved-plan": ["artifact_id", "stage_authority"],
   "start-milestone": ["milestone_id", "stage_authority"],
@@ -103,6 +108,8 @@ const OPERATION_CONTRACTS = Object.freeze({
   "record-validation": { required: ["artifact_id", "evidence_path", "subject_path", "stage_authority"], authorities: ["implement", "verify", "ci-maintenance"] },
   "record-finding-resolution": { required: ["artifact_id", "evidence_path", "finding_id", "stage_authority"], authorities: ["review-resolution"] },
   "settle-artifact": { required: ["artifact_id", "stage_authority"], authorities: REVIEW_AUTHORITIES },
+  "record-package-review": { required: ["package_kind", "package_revision", "upstream_binding", "member_artifact_ids", "evidence_path", "stage_authority"], authorities: ["design-review", "delivery-review"] },
+  "settle-review-package": { required: ["package_kind", "package_revision", "stage_authority"], authorities: ["design-review", "delivery-review"] },
   "advance-stage": { required: ["source_stage", "destination_stage", "stage_authority"], authorities: ["workflow"] },
   "initialize-approved-plan": { required: ["artifact_id", "stage_authority"], authorities: ["plan"] },
   "start-milestone": { required: ["milestone_id", "stage_authority"], authorities: ["workflow"] },
@@ -284,6 +291,18 @@ export function validateLifecycleRequest(request) {
   }
   if (request.finding_ids !== undefined && (!Array.isArray(request.finding_ids) || request.finding_ids.some((value) => typeof value !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value)) || new Set(request.finding_ids).size !== request.finding_ids.length)) {
     return { ok: false, errors: [requestError("finding_ids must be a unique array of safe identifiers")] };
+  }
+  if (request.member_artifact_ids !== undefined && (!Array.isArray(request.member_artifact_ids) || request.member_artifact_ids.length === 0 || request.member_artifact_ids.some((value) => typeof value !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value)) || new Set(request.member_artifact_ids).size !== request.member_artifact_ids.length)) {
+    return { ok: false, errors: [requestError("member_artifact_ids must be a non-empty unique array of safe identifiers")] };
+  }
+  if (request.package_kind !== undefined && !["design", "delivery"].includes(request.package_kind)) {
+    return { ok: false, errors: [requestError(`unknown package_kind ${String(request.package_kind)}`)] };
+  }
+  if (request.package_revision !== undefined && !/^sha256:[a-f0-9]{64}$/.test(request.package_revision)) {
+    return { ok: false, errors: [requestError("package_revision must be one sha256 aggregate revision")] };
+  }
+  if (request.upstream_binding !== undefined && (typeof request.upstream_binding !== "string" || request.upstream_binding.length === 0 || request.upstream_binding.includes("\n"))) {
+    return { ok: false, errors: [requestError("upstream_binding must be one non-empty identity")] };
   }
   if (request.reason !== undefined) {
     const allowedReasons = request.operation === "withdraw-artifact-registration" ? new Set(["duplicate-registration"]) : CORRECTION_REASONS;
