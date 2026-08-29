@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:bcb3c37e48bc1246f32e27b184592b60220a2f35f534a042872915c82c54f656",
+  "milestone_id": "M2",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/m2-aggregate-review-packages-implementation.md",
+  "stage_authority": "workflow"
+}
