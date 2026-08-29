@@ -272,11 +272,8 @@ function recordedCompletion(evidence, review, request, reviewMode = "supplied") 
     evidence_path: evidence.path,
     evidence_sha256: evidence.sha256,
     milestone_id: request.milestone_id,
-    packet_inventory: review.packetInventory,
-    packet_sha256: review.packetSha256,
     review_evidence_path: review.evidence.path,
     review_evidence_sha256: review.evidence.sha256,
-    review_gate_outcome: review.gate,
     review_id: review.reviewId,
     review_log_entry_sha256: digest(Buffer.from(review.log.entry_text)),
     review_log_path: review.log.path,
@@ -289,6 +286,7 @@ function recordedCompletion(evidence, review, request, reviewMode = "supplied") 
     review_round: review.round,
     review_stage: review.stage,
     stage_authority: request.stage_authority,
+    ...(review.gate ? { review_gate_outcome: review.gate, packet_inventory: review.packetInventory, packet_sha256: review.packetSha256 } : {}),
   });
 }
 
@@ -316,7 +314,7 @@ function milestoneReview(root, change, request) {
   const gate = metadata(evidence.text, "Review gate outcome");
   const recording = metadata(evidence.text, "Recording status");
   const findings = findingSet(metadata(evidence.text, "Material findings"));
-  if (!reviewId || !/^r\d+$/.test(round ?? "") || stage !== "code-review" || milestoneId !== request.milestone_id || !["approved", "clean-with-notes"].includes(outcome) || gate !== "advance" || recording !== "recorded") {
+  if (!reviewId || !/^r\d+$/.test(round ?? "") || stage !== "code-review" || milestoneId !== request.milestone_id || !["approved", "clean-with-notes"].includes(outcome) || recording !== "recorded") {
     throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone completion requires an exact recorded clean code review", "milestone-review", [request.milestone_id, String(reviewId), String(milestoneId), String(outcome)], "complete-milestone");
   }
   if (findings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "milestone review contains material findings", "milestone-review-findings", findings);
@@ -333,25 +331,29 @@ function milestoneReview(root, change, request) {
     throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "milestone review log contains open findings", "milestone-review-findings", [reviewId]);
   }
   const inventory = metadata(evidence.text, "Initial packet inventory");
-  const declaredInventoryHash = identityValue(metadata(evidence.text, "Initial packet hash"));
-  if (!inventory || !/^[a-f0-9]{64}$/.test(declaredInventoryHash) || digest(Buffer.from(inventory)) !== declaredInventoryHash) {
-    throw operationError("RL_STALE_EVIDENCE", "milestone review packet identity is missing or invalid", "milestone-review-identity", [reviewId]);
-  }
-  const entries = inventory.split("; ");
-  if (!entries.length) throw operationError("RL_STALE_EVIDENCE", "milestone review packet is empty", "milestone-review-identity", [reviewId]);
-  for (const entry of entries) {
-    const match = /^(.+)@working-tree#sha256:([a-f0-9]{64})$/.exec(entry);
-    if (!match) throw operationError("RL_STALE_EVIDENCE", "milestone review packet entry is invalid", "milestone-review-identity", [reviewId]);
-    const current = safeFile(root, match[1]);
-    if (current.sha256 !== match[2]) throw operationError("RL_STALE_EVIDENCE", "milestone review packet is stale", "milestone-review-identity", [reviewId, match[1]]);
+  const rawInventoryHash = metadata(evidence.text, "Initial packet hash");
+  const declaredInventoryHash = rawInventoryHash === null ? undefined : identityValue(rawInventoryHash);
+  const automated = gate !== null || inventory !== null || rawInventoryHash !== null;
+  if (automated) {
+    if (gate !== "advance" || !inventory || !/^[a-f0-9]{64}$/.test(declaredInventoryHash) || digest(Buffer.from(inventory)) !== declaredInventoryHash) {
+      throw operationError("RL_STALE_EVIDENCE", "automated milestone review gate or packet identity is missing or invalid", "milestone-review-identity", [reviewId]);
+    }
+    const entries = inventory.split("; ");
+    if (!entries.length) throw operationError("RL_STALE_EVIDENCE", "milestone review packet is empty", "milestone-review-identity", [reviewId]);
+    for (const entry of entries) {
+      const match = /^(.+)@working-tree#sha256:([a-f0-9]{64})$/.exec(entry);
+      if (!match) throw operationError("RL_STALE_EVIDENCE", "milestone review packet entry is invalid", "milestone-review-identity", [reviewId]);
+      const current = safeFile(root, match[1]);
+      if (current.sha256 !== match[2]) throw operationError("RL_STALE_EVIDENCE", "milestone review packet is stale", "milestone-review-identity", [reviewId, match[1]]);
+    }
   }
   return {
     evidence,
     gate,
     log,
     outcome,
-    packetInventory: inventory,
-    packetSha256: declaredInventoryHash,
+    packetInventory: automated ? inventory : undefined,
+    packetSha256: automated ? declaredInventoryHash : undefined,
     projection: { artifact_id: "plan", evidence: [evidence.path], milestone_id: request.milestone_id, occurrence: "milestone", round, stage: "code-review", status: "approved" },
     recording,
     reviewId,
@@ -788,6 +790,19 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       return { status: "completed", candidate: next, operationResult: { legacy_completion_upgraded: true, milestone_id: request.milestone_id } };
     }
     if (planned.current_milestone !== request.milestone_id) throw operationError("RL_MILESTONE_ORDER", "requested milestone is not the unique current implementation milestone", "milestone-selection", [request.milestone_id]);
+    if (targetMilestone.state === "implementing") {
+      if (request.review_evidence_path !== undefined) throw operationError("RL_OPERATION_NOT_PERMITTED", "implementation must be handed to code review before review evidence can settle the milestone", "milestone-state", [request.milestone_id, targetMilestone.state]);
+      milestoneProof(root, request);
+      const workflow = next.workflow_state;
+      if (workflow.current_stage !== "implement" || workflow.next_stage !== "code-review") throw operationError("RL_OPERATION_NOT_PERMITTED", "implementing milestone has contradictory workflow routing", "workflow-projection", [request.milestone_id, String(workflow.current_stage), String(workflow.next_stage)]);
+      const automation = next.workflow?.automation;
+      if (automation?.status === "active" && automation.current_stage !== "implement") throw operationError("RL_OPERATION_NOT_PERMITTED", "active workflow automation contradicts the governed workflow stage", "workflow-projection", [String(workflow.current_stage), String(automation.current_stage)]);
+      targetMilestone.state = "review-requested";
+      workflow.current_stage = "code-review";
+      workflow.next_stage = "code-review";
+      if (automation?.status === "active") automation.current_stage = "code-review";
+      return { status: "review-requested", candidate: next, operationResult: { milestone_id: request.milestone_id, next_stage: "code-review" } };
+    }
     if (targetMilestone.state !== "review-requested") throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone can complete only after review is requested", "milestone-state", [request.milestone_id, String(targetMilestone.state)]);
     const suppliedReview = request.review_evidence_path ? milestoneReview(root, next, request) : null;
     if (suppliedReview) planned.latest_review = suppliedReview.projection;

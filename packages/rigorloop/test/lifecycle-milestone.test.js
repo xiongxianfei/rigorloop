@@ -76,11 +76,9 @@ Stage: code-review
 Round: r2
 Reviewed milestone: ${overrides.milestone ?? "M2"}
 Review status: ${overrides.outcome ?? "clean-with-notes"}
-Review gate outcome: ${overrides.gate ?? "advance"}
 Recording status: recorded
 Material findings: ${overrides.findings ?? "none"}
-Initial packet inventory: ${inventory}
-Initial packet hash: sha256:${inventoryHash}
+${overrides.direct ? "" : `Review gate outcome: ${overrides.gate ?? "advance"}\nInitial packet inventory: ${inventory}\nInitial packet hash: sha256:${inventoryHash}\n`}
 `, "utf8");
   const tableLog = `| Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
@@ -130,6 +128,22 @@ test("start milestone enforces current selection and predecessor order", async (
   assert.equal(executeLifecycleCli(["start-milestone", "--request", wrong], { cwd: root }).result.errors[0].code, "RL_MILESTONE_ORDER");
 });
 
+test("complete milestone hands validated implementation to code review before settlement", async () => {
+  const { root, changeRoot } = await fixture("implementing", "not-started", "implement");
+  const path = request(root, "request-review", { schema_version: 1, operation: "complete-milestone", change_id: "example", expected_lifecycle_revision: revision(root), milestone_id: "M2", evidence_path: "docs/changes/example/evidence/m2.md", stage_authority: "workflow" });
+
+  const execution = executeLifecycleCli(["complete-milestone", "--request", path], { cwd: root });
+
+  assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
+  assert.equal(execution.result.mutation.status, "review-requested");
+  const changed = readFileSync(join(changeRoot, "change.yaml"), "utf8");
+  assert.match(changed, /M2:\n\s+kind: implementation\n\s+state: review-requested/);
+  assert.match(changed, /current_stage: code-review/);
+  assert.match(changed, /next_stage: code-review/);
+  assert.match(changed, /current_milestone: M2/);
+  assert.match(changed, /remaining_implementation_milestones:\n\s+- M2\n\s+- M3/);
+});
+
 test("complete milestone requires matching review and proof", async () => {
   const { root, changeRoot } = await fixture("review-requested", "approved", "code-review");
   const { reviewPath } = writeReview(root, changeRoot);
@@ -141,6 +155,17 @@ test("complete milestone requires matching review and proof", async () => {
   assert.doesNotMatch(changed, /remaining_implementation_milestones:\n\s+- M2/);
   assert.match(changed, /current_milestone: M3/);
   assert.match(changed, /current_stage: code-review/);
+});
+
+test("complete milestone accepts a canonical direct clean review without automation gate fields", async () => {
+  const { root, changeRoot } = await fixture("review-requested", "not-started", "code-review");
+  const { reviewPath, source } = writeReview(root, changeRoot, { direct: true });
+  const operation = { schema_version: 1, operation: "complete-milestone", change_id: "example", expected_lifecycle_revision: revision(root), milestone_id: "M2", review_evidence_path: reviewPath, evidence_path: source, stage_authority: "workflow" };
+
+  const execution = executeLifecycleCli(["complete-milestone", "--request", request(root, "direct-clean", operation)], { cwd: root });
+
+  assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
+  assert.match(readFileSync(join(changeRoot, "change.yaml"), "utf8"), /M2:\n\s+kind: implementation\n\s+state: closed/);
 });
 
 test("pre-projected completion revalidates its review evidence on replay", async () => {
