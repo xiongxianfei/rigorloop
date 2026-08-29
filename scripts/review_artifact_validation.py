@@ -38,9 +38,14 @@ FORMAL_REVIEW_STAGES = frozenset(
         "architecture-review",
         "plan-review",
         "test-spec-review",
+        "design-review",
+        "delivery-review",
         "code-review",
     }
 )
+PACKAGE_REVIEW_KINDS = frozenset({"design", "delivery"})
+PACKAGE_REVIEW_OUTCOMES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
+PACKAGE_FINDING_SCOPES = frozenset({"artifact-local", "cross-artifact", "upstream-direction"})
 TEST_SPEC_REVIEW_STATUSES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
 TEST_SPEC_REVIEW_IMMEDIATE_NEXT_STAGES = frozenset(
     {
@@ -814,6 +819,8 @@ def _parse_review_file(
     _validate_calibration_record_fields(path, review_id, fields, mode, findings)
     if stage is not None and stage.value == "test-spec-review":
         _validate_test_spec_review_result_fields(path, review_id, fields, mode, findings)
+    if stage is not None and stage.value in {"design-review", "delivery-review"}:
+        _validate_package_review_fields(path, review_id, stage.value, fields, finding_records, mode, findings)
     _validate_implementation_profile_finding_fields(path, review_id, fields, finding_records, mode, findings)
 
     if record_mode == "reconstructed":
@@ -847,6 +854,72 @@ def _parse_review_file(
         finding_records,
         findings,
     )
+
+
+def _package_list(value: FieldValue | None) -> list[str]:
+    if value is None or value.value.strip().lower() == "none":
+        return []
+    return [item.strip().strip("`") for item in value.value.split(",") if item.strip()]
+
+
+def _validate_package_review_fields(
+    path: Path,
+    review_id: str,
+    stage: str,
+    fields: dict[str, list[FieldValue]],
+    finding_records: list[FindingRecord],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    required = (
+        "Reviewer authority", "Package kind", "Package member artifact IDs",
+        "Upstream binding", "Aggregate package revision", "Material findings",
+        "Correction targets", "Recording status",
+    )
+    values = {label: _first_nonempty(fields, label) for label in required}
+    for label, value in values.items():
+        if value is None:
+            findings.append(ValidationFinding(path=path, line=None, mode=mode, message=f"package review missing required field {label}", review_id=review_id))
+    expected_kind = stage.removesuffix("-review")
+    package_kind = values["Package kind"]
+    if package_kind is not None and package_kind.value not in PACKAGE_REVIEW_KINDS:
+        findings.append(ValidationFinding(path=path, line=package_kind.line, mode=mode, message=f"unknown package kind '{package_kind.value}'", review_id=review_id))
+    elif package_kind is not None and package_kind.value != expected_kind:
+        findings.append(ValidationFinding(path=path, line=package_kind.line, mode=mode, message="package kind does not match review stage", review_id=review_id))
+    authority = values["Reviewer authority"]
+    if authority is not None and authority.value != stage:
+        findings.append(ValidationFinding(path=path, line=authority.line, mode=mode, message="package reviewer authority does not match review stage", review_id=review_id))
+    status = _first_nonempty(fields, "Status")
+    if status is not None and status.value not in PACKAGE_REVIEW_OUTCOMES:
+        findings.append(ValidationFinding(path=path, line=status.line, mode=mode, message=f"unknown package review outcome '{status.value}'", review_id=review_id))
+    revision = values["Aggregate package revision"]
+    if revision is not None and re.fullmatch(r"sha256:[a-f0-9]{64}", revision.value) is None:
+        findings.append(ValidationFinding(path=path, line=revision.line, mode=mode, message="invalid aggregate package revision", review_id=review_id))
+    members = _package_list(values["Package member artifact IDs"])
+    if not members or len(members) != len(set(members)):
+        findings.append(ValidationFinding(path=path, line=values["Package member artifact IDs"].line if values["Package member artifact IDs"] else None, mode=mode, message="package members must be a non-empty unique list", review_id=review_id))
+    correction_targets = _package_list(values["Correction targets"])
+    if len(correction_targets) != len(set(correction_targets)):
+        findings.append(ValidationFinding(path=path, line=values["Correction targets"].line if values["Correction targets"] else None, mode=mode, message="package correction targets must be unique", review_id=review_id))
+    declared_findings = _package_list(values["Material findings"])
+    if sorted(declared_findings) != sorted(record.finding_id for record in finding_records):
+        findings.append(ValidationFinding(path=path, line=values["Material findings"].line if values["Material findings"] else None, mode=mode, message="package Material findings do not match finding blocks", review_id=review_id))
+    for record in finding_records:
+        scope = _finding_field(record, "Finding scope")
+        affected = _package_list(_finding_field(record, "Affected artifact IDs"))
+        owners = _package_list(_finding_field(record, "Owning stages"))
+        if scope is None or scope.value not in PACKAGE_FINDING_SCOPES:
+            findings.append(ValidationFinding(path=path, line=scope.line if scope else record.line, mode=mode, message=f"unknown package finding scope '{scope.value if scope else ''}'", review_id=review_id, finding_id=record.finding_id))
+            continue
+        if scope.value == "artifact-local" and (len(affected) != 1 or affected[0] not in members):
+            findings.append(ValidationFinding(path=path, line=record.line, mode=mode, message="artifact-local package finding must identify one member", review_id=review_id, finding_id=record.finding_id))
+        if scope.value == "cross-artifact" and (len(affected) < 2 or any(item not in members for item in affected)):
+            findings.append(ValidationFinding(path=path, line=record.line, mode=mode, message="cross-artifact package finding must identify at least two members", review_id=review_id, finding_id=record.finding_id))
+        expected_upstream = "proposal" if expected_kind == "design" else "design"
+        if scope.value == "upstream-direction" and affected != [expected_upstream]:
+            findings.append(ValidationFinding(path=path, line=record.line, mode=mode, message=f"upstream-direction package finding must identify {expected_upstream}", review_id=review_id, finding_id=record.finding_id))
+        if not owners:
+            findings.append(ValidationFinding(path=path, line=record.line, mode=mode, message="package finding missing owning stages", review_id=review_id, finding_id=record.finding_id))
 
 
 def _parse_finding_records(

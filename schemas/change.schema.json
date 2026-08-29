@@ -26,6 +26,175 @@
     "artifact_states": {
       "type": "object"
     },
+    "review_packages": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "design",
+          "delivery"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "aggregate_revision",
+          "authority",
+          "correction_targets",
+          "findings",
+          "latest_review",
+          "member_artifact_ids",
+          "package_kind",
+          "state",
+          "upstream_binding"
+        ],
+        "properties": {
+          "aggregate_revision": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "authority": {
+            "enum": [
+              "granted",
+              "withheld"
+            ]
+          },
+          "correction_targets": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "affected_artifact_ids",
+                "evidence",
+                "finding_id",
+                "owning_stages",
+                "required_outcome",
+                "safe_resolution_path",
+                "scope"
+              ],
+              "properties": {
+                "affected_artifact_ids": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "finding_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "owning_stages": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required_outcome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "safe_resolution_path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "scope": {
+                  "enum": [
+                    "artifact-local",
+                    "cross-artifact",
+                    "upstream-direction"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "latest_review": {
+            "type": "object",
+            "required": [
+              "evidence_path",
+              "outcome",
+              "review_id",
+              "reviewer_authority",
+              "round"
+            ],
+            "properties": {
+              "evidence_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "outcome": {
+                "enum": [
+                  "approved",
+                  "changes-requested",
+                  "blocked",
+                  "inconclusive"
+                ]
+              },
+              "review_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reviewer_authority": {
+                "enum": [
+                  "design-review",
+                  "delivery-review"
+                ]
+              },
+              "round": {
+                "type": "string",
+                "pattern": "^r[1-9][0-9]*$"
+              }
+            },
+            "additionalProperties": false
+          },
+          "member_artifact_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "package_kind": {
+            "enum": [
+              "design",
+              "delivery"
+            ]
+          },
+          "state": {
+            "enum": [
+              "approved",
+              "changes-requested",
+              "blocked",
+              "inconclusive"
+            ]
+          },
+          "upstream_binding": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "workflow_state": {
       "type": "object"
     },

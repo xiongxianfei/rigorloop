@@ -3,9 +3,10 @@ import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 
 import { allowedNextStages, lifecycleRevision, parseLifecycleYaml } from "./lifecycle-contract.js";
+import { reviewPackageContext, validateStoredReviewPackages } from "./lifecycle-packages.js";
 
 const SUPPORTED_CONTRACT = "stage-owned-change-local-v1";
-const REVIEW_STAGES = new Set(["proposal-review", "spec-review", "architecture-review", "plan-review", "test-spec-review", "code-review"]);
+const REVIEW_STAGES = new Set(["proposal-review", "spec-review", "architecture-review", "plan-review", "test-spec-review", "design-review", "delivery-review", "code-review"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
 const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "plan", "test-spec"]);
 const CORRECTION_STAGE_ORDER = ["proposal", "proposal-review", "spec", "spec-review", "architecture", "architecture-review", "plan", "plan-review", "test-spec", "test-spec-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"];
@@ -149,6 +150,7 @@ function coordinationErrors(root, change) {
   for (const field of objectMaps) {
     if (!state[field] || Array.isArray(state[field]) || typeof state[field] !== "object") errors.push(diagnostic("RL_INVALID_REQUEST", `Lifecycle coordination ${field} must be a mapping.`, "coordination-schema", null, [field]));
   }
+  if (state.package_reviews !== undefined && (!state.package_reviews || Array.isArray(state.package_reviews) || typeof state.package_reviews !== "object")) errors.push(diagnostic("RL_INVALID_REQUEST", "Lifecycle coordination package_reviews must be a mapping.", "coordination-schema", null, ["package_reviews"]));
   for (const [routeId, receipt] of Object.entries(state.correction_history ?? {})) {
     if (receipt?.route_id !== routeId || receipt?.status !== "returned") errors.push(diagnostic("RL_INVALID_REQUEST", "Correction history contains an unknown or contradictory route receipt.", "correction-history", null, [routeId, String(receipt?.status)]));
     for (const [pathField, hashField] of [["evidence_path", "evidence_sha256"], ["return_evidence_path", "return_evidence_sha256"]]) {
@@ -180,10 +182,11 @@ function coordinationErrors(root, change) {
     if (!snapshot || snapshot.current_stage !== route.return_stage || !Object.hasOwn(snapshot, "blocker") || !Array.isArray(snapshot.finding_ids)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction source snapshot is incomplete or contradictory.", "active-correction-snapshot", null, [String(route.route_id)]));
     if (!allowedCurrentStages.has(change.workflow_state?.current_stage) || change.workflow_state?.blocker !== null) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Workflow routing contradicts the active correction.", "active-correction-routing", null, [String(change.workflow_state?.current_stage), String(change.workflow_state?.blocker)]));
   }
+  errors.push(...validateStoredReviewPackages(change));
   return errors;
 }
 
-function permittedOperations(change, blockers) {
+function permittedOperations(change, blockers, packageContexts = {}) {
   const stage = change.workflow_state?.current_stage;
   const operations = [];
   const targetId = artifactForStage(stage);
@@ -218,6 +221,11 @@ function permittedOperations(change, blockers) {
   if (coordination?.schema_version === 2 && !coordination.active_correction && eligibleDestinationIds.length && routeCompatibleBlockers && (["review-resolution", "code-review", "verify"].includes(stage) || blockers.length)) operations.push("route-correction");
 
   if (blockers.some((blocker) => blocker.code !== "RL_UNRESOLVED_MATERIAL_FINDING")) return operations;
+  if (["design-review", "delivery-review"].includes(stage)) {
+    const packageKind = stage.replace(/-review$/, "");
+    const nextOperation = packageContexts[packageKind]?.next_permitted_operation;
+    return nextOperation ? [nextOperation] : [];
+  }
   if (target?.lifecycle_state === "revision-required") return ["record-artifact-revision"];
   if (REVIEW_STAGES.has(stage) && registeredReview?.outcome === "changes-requested" && onlyOpenFindings) return ["settle-artifact"];
   if (blockers.length > 0) return [...operations, ...(onlyOpenFindings ? ["record-finding-resolution"] : [])];
@@ -262,6 +270,8 @@ export function interpretGovernedChange(root, selected) {
   if (change.workflow_state?.blocker) blockers.push({ code: "RL_OPERATION_NOT_PERMITTED", summary: String(change.workflow_state.blocker), blocking_invariant: "workflow-blocker" });
   if (unresolvedFindings.length) blockers.push({ code: "RL_UNRESOLVED_MATERIAL_FINDING", summary: "Material review findings remain open.", blocking_invariant: "finding-closeout", relevant_identities: unresolvedFindings });
   if (staleEvidence.length) blockers.push({ code: "RL_STALE_EVIDENCE", summary: "Registered evidence is stale.", blocking_invariant: "evidence-freshness", relevant_identities: staleEvidence });
+  const packageContexts = Object.fromEntries(["design", "delivery"].map((kind) => [kind, reviewPackageContext(root, change, kind)]));
+  for (const packageContext of Object.values(packageContexts)) if (change.review_packages?.[packageContext.package_kind]) blockers.push(...packageContext.blockers);
   blockers.push(...errors);
   const referenced = collected.artifacts.filter((artifact) => artifact.sha256).map((artifact) => ({ path: artifact.path, sha256: artifact.sha256 }));
   const revision = lifecycleRevision(change, referenced);
@@ -292,14 +302,26 @@ export function interpretGovernedChange(root, selected) {
       } : null,
       unresolved_findings: unresolvedFindings,
       stale_evidence: staleEvidence,
+      review_packages: Object.fromEntries(Object.entries(packageContexts).map(([kind, packageContext]) => [kind, {
+        member_artifact_ids: packageContext.member_artifact_ids,
+        upstream_binding: packageContext.upstream_binding,
+        aggregate_revision: packageContext.aggregate_revision,
+        state: packageContext.state,
+        authority: packageContext.authority,
+        stale: packageContext.stale,
+        blockers: packageContext.blockers,
+        errors: packageContext.errors,
+        next_permitted_operation: packageContext.next_permitted_operation,
+      }])),
       supporting_paths: [relative(root, selected.path), ...collected.artifacts.map((artifact) => artifact.path)].sort(),
     },
     blockers,
-    permitted_operations: permittedOperations(change, blockers),
+    permitted_operations: permittedOperations(change, blockers, packageContexts),
     artifacts: collected.artifacts,
     next_review_rounds: Object.fromEntries([...REVIEW_STAGES].map((stage) => [stage, nextDurableReviewRound(root, selected.id, stage)])),
     warnings: [],
     errors,
+    review_packages: packageContexts,
   };
 }
 
@@ -311,6 +333,22 @@ function artifactForStage(stage) {
 }
 
 export function contextForStage(interpreted, stage) {
+  if (["design-review", "delivery-review"].includes(stage)) {
+    const packageKind = stage.replace(/-review$/, "");
+    const reviewPackage = interpreted.review_packages[packageKind];
+    return {
+      exact_change: interpreted.change_id,
+      operation: stage,
+      target_artifact: null,
+      settled_upstream_inputs: reviewPackage.member_artifact_ids.map((artifactId) => interpreted.artifacts.find((artifact) => artifact.artifact_id === artifactId)).filter(Boolean).map(({ artifact_id, path, sha256 }) => ({ artifact_id, path, sha256 })),
+      review_round: reviewPackage.latest_review?.round ?? interpreted.next_review_rounds?.[stage] ?? "r1",
+      authorized_output_path: `docs/changes/${interpreted.change_id}/reviews/${stage}-${reviewPackage.latest_review?.round ?? interpreted.next_review_rounds?.[stage] ?? "r1"}.md`,
+      blockers: [...interpreted.blockers, ...reviewPackage.blockers],
+      lifecycle_revision: interpreted.lifecycle_revision,
+      permitted_registration_operation: reviewPackage.next_permitted_operation,
+      review_package: reviewPackage,
+    };
+  }
   const targetId = artifactForStage(stage);
   const target = targetId ? interpreted.artifacts.find((artifact) => artifact.artifact_id === targetId) : null;
   const registeredReview = targetId ? interpreted.change.lifecycle_cli?.reviews?.[targetId] : null;

@@ -26,6 +26,8 @@ test("closed lifecycle operation vocabulary rejects an unknown operation", () =>
     "record-validation",
     "record-finding-resolution",
     "settle-artifact",
+    "record-package-review",
+    "settle-review-package",
     "advance-stage",
     "initialize-approved-plan",
     "start-milestone",
@@ -66,6 +68,8 @@ const operationRequests = {
   "record-validation": { artifact_id: "spec", evidence_path: "evidence/validation.md", subject_path: "specs/example.md", stage_authority: "verify" },
   "record-finding-resolution": { artifact_id: "spec", evidence_path: "review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" },
   "settle-artifact": { artifact_id: "spec", stage_authority: "spec-review" },
+  "record-package-review": { package_kind: "design", package_revision: `sha256:${"b".repeat(64)}`, upstream_binding: "proposal-review-r1", member_artifact_ids: ["architecture", "spec"], evidence_path: "reviews/design-review-r1.md", stage_authority: "design-review" },
+  "settle-review-package": { package_kind: "design", package_revision: `sha256:${"b".repeat(64)}`, stage_authority: "design-review" },
   "advance-stage": { source_stage: "spec-review", destination_stage: "architecture", stage_authority: "workflow" },
   "initialize-approved-plan": { artifact_id: "plan", stage_authority: "plan" },
   "start-milestone": { milestone_id: "M1", stage_authority: "workflow" },
@@ -111,6 +115,20 @@ test("operation authority and repair condition vocabularies fail closed", () => 
   const authority = validateLifecycleRequest({ ...base, condition: "clear-orphaned-lock" });
   assert.equal(authority.ok, false);
   assert.match(authority.errors[0].summary, /stage_authority/);
+});
+
+test("package request vocabularies fail closed before consistency", () => {
+  const base = {
+    schema_version: 1,
+    operation: "record-package-review",
+    change_id: "example",
+    expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+    ...operationRequests["record-package-review"],
+  };
+  assert.match(validateLifecycleRequest({ ...base, package_kind: "combined" }).errors[0].summary, /package_kind/);
+  assert.match(validateLifecycleRequest({ ...base, stage_authority: "spec-review" }).errors[0].summary, /stage_authority/);
+  assert.match(validateLifecycleRequest({ ...base, member_artifact_ids: ["spec", "spec"] }).errors[0].summary, /member_artifact_ids/);
+  assert.match(validateLifecycleRequest({ ...base, package_revision: "manual" }).errors[0].summary, /package_revision/);
 });
 
 test("correction and withdrawal vocabularies fail closed before consistency", () => {

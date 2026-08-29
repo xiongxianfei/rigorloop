@@ -7,6 +7,8 @@ import { tmpdir } from "node:os";
 import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
+import { parseLifecycleYaml, serializeLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
+import { packageContext, packageRepository } from "./helpers/lifecycle-package-fixture.js";
 
 async function repository(changeIds = ["example"], overrides = {}) {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-lifecycle-read-"));
@@ -214,4 +216,67 @@ test("upstream context does not advertise a route against stale registered ident
   assert.equal(execution.result.context.available_after_workflow_route, undefined);
   assert.equal(execution.result.permitted_operations.includes("route-correction"), false);
   assert.deepEqual(execution.result.effective_state.stale_evidence, ["spec"]);
+});
+
+test("design review context exposes deterministic compact package identity", async () => {
+  const { root } = await packageRepository();
+  const execution = packageContext(root);
+  assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
+  assert.deepEqual(execution.result.context.review_package.member_artifact_ids, ["architecture", "spec", "adr-cache"]);
+  assert.equal(execution.result.context.review_package.upstream_binding, "proposal-review-r1");
+  assert.equal(execution.result.context.review_package.aggregate_revision, "sha256:77973cd683195f8c9b468ebff64e0cf1055fe0a093309ab4469507d033afda46");
+  assert.equal(execution.result.context.review_package.stale, false);
+  assert.equal(execution.result.context.permitted_registration_operation, "record-package-review");
+  assert.equal(JSON.stringify(execution.result.context.review_package).includes("artifact_sha256"), false);
+});
+
+test("design package identity changes with ordered membership and upstream binding", async () => {
+  const membership = await packageRepository();
+  const beforeMembership = packageContext(membership.root).result.context.review_package.aggregate_revision;
+  const changePath = join(membership.root, "docs", "changes", "example", "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  const extraPath = "docs/adr/ADR-extra.md";
+  const extraBytes = "# ADR extra\n";
+  writeFileSync(join(membership.root, extraPath), extraBytes, "utf8");
+  change.artifact_states["adr-extra"] = { kind: "adr", path: extraPath, role: "supporting", lifecycle_state: "review-required" };
+  change.lifecycle_cli.artifacts["adr-extra"] = {
+    artifact_kind: "adr", artifact_role: "supporting", artifact_path: extraPath,
+    artifact_sha256: createHash("sha256").update(extraBytes).digest("hex"), stage_authority: "architecture",
+  };
+  writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+  const membershipContext = packageContext(membership.root).result.context.review_package;
+  assert.deepEqual(membershipContext.member_artifact_ids, ["architecture", "spec", "adr-cache", "adr-extra"]);
+  assert.notEqual(membershipContext.aggregate_revision, beforeMembership);
+
+  const binding = await packageRepository();
+  const beforeBinding = packageContext(binding.root).result.context.review_package.aggregate_revision;
+  const bindingPath = join(binding.root, "docs", "changes", "example", "change.yaml");
+  writeFileSync(bindingPath, readFileSync(bindingPath, "utf8").replaceAll("proposal-review-r1", "proposal-review-r2"), "utf8");
+  const bindingContext = packageContext(binding.root).result.context.review_package;
+  assert.equal(bindingContext.upstream_binding, "proposal-review-r2");
+  assert.notEqual(bindingContext.aggregate_revision, beforeBinding);
+});
+
+test("package context fails closed for missing required membership and changes on member bytes", async () => {
+  const missing = await packageRepository({ includeArchitecture: false });
+  const rejected = packageContext(missing.root);
+  assert.equal(rejected.exitCode, 2);
+  assert.equal(rejected.result.context.review_package.errors[0].code, "RL_OPERATION_NOT_PERMITTED");
+  assert.match(rejected.result.context.review_package.errors[0].summary, /primary architecture/);
+
+  const complete = await packageRepository();
+  const before = packageContext(complete.root).result.context.review_package.aggregate_revision;
+  writeFileSync(join(complete.root, complete.sources.spec[0]), "# Specification changed\n", "utf8");
+  const after = packageContext(complete.root).result.context.review_package.aggregate_revision;
+  assert.notEqual(after, before);
+});
+
+test("stored package review vocabularies reject an unknown outcome before consistency", async () => {
+  const { root } = await packageRepository();
+  const path = join(root, "docs", "changes", "example", "change.yaml");
+  const source = readFileSync(path, "utf8").replace("package_reviews: {}", `package_reviews:\n    design:\n      package_kind: design\n      outcome: accepted\n      stage_authority: design-review\n      reviewer_authority: design-review\n      member_artifact_ids: [architecture, spec]\n      aggregate_revision: sha256:${"a".repeat(64)}`);
+  writeFileSync(path, source, "utf8");
+  const execution = executeLifecycleCli(["validate", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(execution.exitCode, 4);
+  assert.equal(execution.result.errors.some((error) => /outcome accepted is unknown/.test(error.summary)), true);
 });

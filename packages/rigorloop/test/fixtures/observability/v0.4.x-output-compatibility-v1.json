@@ -253,6 +253,62 @@
           "active_correction": null,
           "unresolved_findings": [],
           "stale_evidence": [],
+          "review_packages": {
+            "design": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires exactly one primary architecture artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            },
+            "delivery": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires exactly one primary plan artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires one current approved design package revision.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [
+                    "none"
+                  ],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            }
+          },
           "supporting_paths": [
             "docs/changes/example/change.yaml",
             "specs/example.md"
@@ -344,6 +400,62 @@
           "active_correction": null,
           "unresolved_findings": [],
           "stale_evidence": [],
+          "review_packages": {
+            "design": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires exactly one primary architecture artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            },
+            "delivery": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires exactly one primary plan artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires one current approved design package revision.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [
+                    "none"
+                  ],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            }
+          },
           "supporting_paths": [
             "docs/changes/example/change.yaml",
             "specs/example.md"
@@ -407,6 +519,62 @@
           "active_correction": null,
           "unresolved_findings": [],
           "stale_evidence": [],
+          "review_packages": {
+            "design": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires exactly one primary architecture artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            },
+            "delivery": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires exactly one primary plan artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires one current approved design package revision.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [
+                    "none"
+                  ],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            }
+          },
           "supporting_paths": [
             "docs/changes/example/change.yaml",
             "specs/example.md"
@@ -470,6 +638,62 @@
           "active_correction": null,
           "unresolved_findings": [],
           "stale_evidence": [],
+          "review_packages": {
+            "design": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires exactly one primary architecture artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            },
+            "delivery": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires exactly one primary plan artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires one current approved design package revision.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [
+                    "none"
+                  ],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            }
+          },
           "supporting_paths": [
             "docs/changes/example/change.yaml",
             "specs/example.md"
@@ -545,7 +769,7 @@
     },
     "lifecycle-mutation-human-success": {
       "exit_code": 0,
-      "stdout": "RigorLoop lifecycle migrate: success\nChange: example\nLifecycle revision: sha256:b47f23cf1a623e78cd8575bad8fdf4cbe88f35c04d05478383e98edb3b645938\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone\nMutation: planned; docs/changes/example/change.yaml",
+      "stdout": "RigorLoop lifecycle migrate: success\nChange: example\nLifecycle revision: sha256:040b48dacdf90c1a6b7b0571c28ae9a3f3cefe828afebb630ae8b2f0ad458c82\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone\nMutation: planned; docs/changes/example/change.yaml",
       "stderr": ""
     },
     "lifecycle-mutation-json-success": {
@@ -556,7 +780,7 @@
         "operation": "migrate",
         "status": "success",
         "change_id": "example",
-        "lifecycle_revision": "sha256:b47f23cf1a623e78cd8575bad8fdf4cbe88f35c04d05478383e98edb3b645938",
+        "lifecycle_revision": "sha256:040b48dacdf90c1a6b7b0571c28ae9a3f3cefe828afebb630ae8b2f0ad458c82",
         "effective_state": {
           "recorded_state": {
             "spec": "approved"
@@ -571,6 +795,62 @@
           "active_correction": null,
           "unresolved_findings": [],
           "stale_evidence": [],
+          "review_packages": {
+            "design": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires exactly one primary architecture artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            },
+            "delivery": {
+              "member_artifact_ids": [],
+              "upstream_binding": null,
+              "aggregate_revision": null,
+              "state": "incomplete",
+              "authority": "withheld",
+              "stale": false,
+              "blockers": [],
+              "errors": [
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires exactly one primary plan artifact.",
+                  "blocking_invariant": "review-package-membership",
+                  "relevant_identities": [],
+                  "corrective_operation": null
+                },
+                {
+                  "code": "RL_OPERATION_NOT_PERMITTED",
+                  "summary": "Delivery package requires one current approved design package revision.",
+                  "blocking_invariant": "review-package-upstream",
+                  "relevant_identities": [
+                    "none"
+                  ],
+                  "corrective_operation": null
+                }
+              ],
+              "next_permitted_operation": null
+            }
+          },
           "supporting_paths": [
             "docs/changes/example/change.yaml",
             "specs/example.md"
@@ -596,7 +876,7 @@
           "status": "planned",
           "changed_path": "docs/changes/example/change.yaml",
           "prior_lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
-          "resulting_lifecycle_revision": "sha256:b47f23cf1a623e78cd8575bad8fdf4cbe88f35c04d05478383e98edb3b645938"
+          "resulting_lifecycle_revision": "sha256:040b48dacdf90c1a6b7b0571c28ae9a3f3cefe828afebb630ae8b2f0ad458c82"
         }
       },
       "stderr": ""
