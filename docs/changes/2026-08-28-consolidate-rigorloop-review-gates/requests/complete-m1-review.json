@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:449b11b07be46322470b68ab0fcfb3cd6b2d7c3f14acb22f71e19805bfd787e1",
+  "milestone_id": "M1",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/m1-topology-foundation-implementation.md",
+  "review_evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m1-r3.md",
+  "stage_authority": "workflow"
+}

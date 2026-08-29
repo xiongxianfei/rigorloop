@@ -4,6 +4,7 @@
 
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
+| `code-review-m1-r3` | `code-review` | `r3` | M1 committed packet at `sha256:d0722221c781cd81bf508596d65e40c5128164dfd9b171b2db0fce73ae1ad759` | `reviews/code-review-m1-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `plan-review-r4` | `plan-review` | `r4` | plan at `sha256:e4de52bb785e50e85631cc417f227ff903842979c05cc5118c403f73f6b5b5c1` | `reviews/plan-review-r4.md` | `approved` | 0 | `recorded` |
 | `proposal-review-r3` | `proposal-review` | `r3` | proposal at `sha256:e0f4a9ff9f25f2a885b5ca1e8092b97c06f8e91e1811a4592dd6c58d4399cac7` | `reviews/proposal-review-r3.md` | `approved` | 0 | `recorded` |
 | `proposal-review-r4` | `proposal-review` | `r4` | proposal at `sha256:e0f4a9ff9f25f2a885b5ca1e8092b97c06f8e91e1811a4592dd6c58d4399cac7` | `reviews/proposal-review-r4.md` | `approved` | 0 | `recorded` |
