@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:f6d9b8853b665d4cc7e1eb28ec8f2eaedf218710cd97797b47c24474d3e970d6",
+  "artifact_id": "adr-consolidated-review-package-topology",
+  "artifact_kind": "adr",
+  "artifact_role": "supporting",
+  "artifact_path": "docs/adr/ADR-20260828-consolidated-review-package-topology.md",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/architecture-adr-revision-r2.md",
+  "prior_artifact_sha256": "629eabd60d821fbca9dea2fa0fddaf8dc1cbb2fc4d8a4b82dbf131584ed86279",
+  "stage_authority": "architecture"
+}

@@ -8,6 +8,8 @@ export const LIFECYCLE_OPERATIONS = Object.freeze([
   "record-validation",
   "record-finding-resolution",
   "settle-artifact",
+  "advance-stage",
+  "initialize-approved-plan",
   "start-milestone",
   "complete-milestone",
   "route-correction",
@@ -75,6 +77,8 @@ const OPERATION_FIELDS = Object.freeze({
   "record-validation": ["artifact_id", "evidence_path", "subject_path", "stage_authority"],
   "record-finding-resolution": ["artifact_id", "evidence_path", "finding_id", "stage_authority"],
   "settle-artifact": ["artifact_id", "stage_authority"],
+  "advance-stage": ["source_stage", "destination_stage", "stage_authority"],
+  "initialize-approved-plan": ["artifact_id", "stage_authority"],
   "start-milestone": ["milestone_id", "stage_authority"],
   "complete-milestone": ["milestone_id", "evidence_path", "review_evidence_path", "stage_authority"],
   "route-correction": ["source_stage", "destination_stage", "destination_artifact_id", "reason", "evidence_path", "finding_ids", "return_stage", "milestone_id", "stage_authority"],
@@ -99,6 +103,8 @@ const OPERATION_CONTRACTS = Object.freeze({
   "record-validation": { required: ["artifact_id", "evidence_path", "subject_path", "stage_authority"], authorities: ["implement", "verify", "ci-maintenance"] },
   "record-finding-resolution": { required: ["artifact_id", "evidence_path", "finding_id", "stage_authority"], authorities: ["review-resolution"] },
   "settle-artifact": { required: ["artifact_id", "stage_authority"], authorities: REVIEW_AUTHORITIES },
+  "advance-stage": { required: ["source_stage", "destination_stage", "stage_authority"], authorities: ["workflow"] },
+  "initialize-approved-plan": { required: ["artifact_id", "stage_authority"], authorities: ["plan"] },
   "start-milestone": { required: ["milestone_id", "stage_authority"], authorities: ["workflow"] },
   "complete-milestone": { required: ["milestone_id", "evidence_path", "stage_authority"], authorities: ["workflow"] },
   "route-correction": { required: ["source_stage", "destination_stage", "destination_artifact_id", "reason", "evidence_path", "finding_ids", "return_stage", "stage_authority"], authorities: ["workflow"] },
@@ -111,6 +117,23 @@ const OPERATION_CONTRACTS = Object.freeze({
 const REPAIR_CONDITIONS = new Set(["reconcile-interrupted-replace", "clear-orphaned-lock"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
 const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "plan", "test-spec"]);
+
+const STAGE_TRANSITIONS = Object.freeze({
+  proposal: ["proposal-review"],
+  "proposal-review": ["spec"],
+  spec: ["spec-review"],
+  "spec-review": ["architecture"],
+  architecture: ["architecture-review"],
+  "architecture-review": ["plan"],
+  plan: ["plan-review"],
+  "plan-review": ["test-spec"],
+  "test-spec": ["test-spec-review"],
+  "test-spec-review": ["implement"],
+});
+
+export function allowedNextStages(_change, sourceStage) {
+  return STAGE_TRANSITIONS[sourceStage] ?? [];
+}
 
 function invalid(message) {
   const error = new Error(`RL_INVALID_REQUEST: ${message}`);
@@ -266,10 +289,10 @@ export function validateLifecycleRequest(request) {
     const allowedReasons = request.operation === "withdraw-artifact-registration" ? new Set(["duplicate-registration"]) : CORRECTION_REASONS;
     if (!allowedReasons.has(request.reason)) return { ok: false, errors: [requestError(`unknown reason ${String(request.reason)}`, request.operation === "withdraw-artifact-registration" ? "RL_WITHDRAWAL_UNSAFE" : "RL_INVALID_REQUEST")] };
   }
-  if (request.destination_stage !== undefined && !CORRECTION_DESTINATIONS.has(request.destination_stage)) {
+  if (request.operation === "route-correction" && request.destination_stage !== undefined && !CORRECTION_DESTINATIONS.has(request.destination_stage)) {
     return { ok: false, errors: [requestError(`unknown destination_stage ${String(request.destination_stage)}`)] };
   }
-  for (const field of ["source_stage", "return_stage"]) {
+  for (const field of ["source_stage", "destination_stage", "return_stage"]) {
     if (request[field] !== undefined && (typeof request[field] !== "string" || !/^[a-z][a-z0-9-]*$/.test(request[field]))) return { ok: false, errors: [requestError(`${field} must be one normalized stage`)] };
   }
   for (const field of ["artifact_path", "evidence_path", "review_evidence_path", "subject_path"]) {

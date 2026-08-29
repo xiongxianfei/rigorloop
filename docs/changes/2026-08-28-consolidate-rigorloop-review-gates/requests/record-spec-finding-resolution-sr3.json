@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-finding-resolution",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:f052a0826f58578def0bf8464e331aa6bebd38bf993fd01aa21746442a0ab016",
+  "artifact_id": "spec",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md",
+  "finding_id": "CRG-SR3",
+  "stage_authority": "review-resolution"
+}

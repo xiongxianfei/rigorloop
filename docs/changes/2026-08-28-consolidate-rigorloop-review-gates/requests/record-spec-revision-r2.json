@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:83ed606a53bb82a3134d949fd7d5988ee42ee7a4e3c4f76b15e84fdfbc14d854",
+  "artifact_id": "spec",
+  "artifact_kind": "spec",
+  "artifact_role": "primary",
+  "artifact_path": "specs/consolidated-review-gates.md",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/spec-revision-r2.md",
+  "prior_artifact_sha256": "64fbc97dc179d86b24c9aa04434521f3fe73349b643e9bf7845ed227ebee2a62",
+  "stage_authority": "spec"
+}

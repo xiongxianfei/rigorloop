@@ -131,10 +131,7 @@ def is_declared_clean_receipt_root(data: Any) -> bool:
     review = data.get("review")
     if not isinstance(review, dict):
         return False
-    return (
-        review.get("status") == "clean"
-        or ("reviewed_artifact" in review and "review_log" in review)
-    )
+    return review.get("status") == "clean"
 
 
 def validate_clean_receipt_root_review_metadata(

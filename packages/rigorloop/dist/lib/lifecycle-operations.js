@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 
-import { canonicalJson, parseLifecycleYaml } from "./lifecycle-contract.js";
+import { allowedNextStages, canonicalJson, parseLifecycleYaml } from "./lifecycle-contract.js";
 
 const REVIEW_OUTCOMES = new Set(["approved", "changes-requested", "blocked", "inconclusive", "clean-with-notes"]);
 const RESOLUTION_DISPOSITIONS = new Set(["accepted", "rejected", "deferred", "partially-accepted", "needs-decision"]);
@@ -225,6 +225,21 @@ function resetLatestReview() {
   return { artifact_id: "none", evidence: [], milestone_id: "none", occurrence: "none", round: "none", stage: "none", status: "not-started" };
 }
 
+function reviewedPlanMilestones(plan) {
+  const headings = [...plan.text.matchAll(/^###\s+(M[1-9][0-9]*)\.\s+.+$/gm)];
+  if (!headings.length) throw operationError("RL_INVALID_REQUEST", "approved plan has no milestone definitions", "plan-milestone-shape", [plan.path]);
+  const milestones = {};
+  for (let index = 0; index < headings.length; index += 1) {
+    const milestoneId = headings[index][1];
+    if (milestones[milestoneId]) throw operationError("RL_INVALID_REQUEST", "approved plan contains a duplicate milestone ID", "plan-milestone-shape", [plan.path, milestoneId]);
+    const section = plan.text.slice(headings[index].index, headings[index + 1]?.index ?? plan.text.length);
+    const kinds = [...section.matchAll(/^\s*-\s*Milestone kind:\s*`?(implementation|lifecycle-closeout)`?\s*$/gm)].map((match) => match[1]);
+    if (kinds.length !== 1) throw operationError("RL_INVALID_REQUEST", "each approved plan milestone requires exactly one supported kind", "plan-milestone-shape", [plan.path, milestoneId]);
+    milestones[milestoneId] = { kind: kinds[0], state: "planned" };
+  }
+  return milestones;
+}
+
 function milestoneProof(root, request) {
   const evidence = safeFile(root, request.evidence_path);
   if (metadata(evidence.text, "Milestone") !== request.milestone_id || !/^pass(?:ed)?$/i.test(metadata(evidence.text, "Validation result") ?? "")) {
@@ -349,6 +364,32 @@ function expectedReviewAuthority(kind) {
   return kind === "adr" ? "architecture-review" : `${kind}-review`;
 }
 
+function stageIsComplete(change, state, stage) {
+  const entries = Object.entries(change.artifact_states ?? {}).filter(([, entry]) => {
+    if (!entry) return false;
+    return stage.endsWith("-review")
+      ? expectedReviewAuthority(entry.kind) === stage
+      : expectedAuthorAuthority(entry.kind) === stage;
+  });
+  if (!entries.length) return false;
+  if (stage.endsWith("-review")) {
+    return entries.every(([artifactId, entry]) => {
+      const settled = ["accepted", "approved", "active"].includes(entry.lifecycle_state);
+      const projectedReview = entry.review;
+      const registeredReview = state.reviews?.[artifactId];
+      return settled
+        && projectedReview?.outcome === "approved"
+        && (!registeredReview || registeredReview.review_id === projectedReview.id);
+    });
+  }
+  return entries.every(([artifactId, entry]) => {
+    if (entry.lifecycle_state !== "review-required") return false;
+    const registration = state.artifacts?.[artifactId];
+    if (!registration) return Boolean(entry.authoring_evidence);
+    return registration.artifact_path === entry.path && registration.stage_authority === stage;
+  });
+}
+
 function requireLogEntry(root, changeId, reviewId) {
   const log = safeFile(root, `docs/changes/${changeId}/review-log.md`);
   const marker = `Review ID: ${reviewId}`;
@@ -379,6 +420,55 @@ export function evaluateLifecycleOperation({ root, change, request }) {
   next.lifecycle_cli = state;
   const target = request.artifact_id && !["record-artifact-revision", "withdraw-artifact-registration"].includes(request.operation) ? artifact(next, request.artifact_id) : request.artifact_id ? next.artifact_states?.[request.artifact_id] ?? null : null;
   const targetIdentity = target ? artifactIdentity(root, target) : null;
+
+  if (request.operation === "advance-stage") {
+    const workflow = next.workflow_state ?? {};
+    const allowed = allowedNextStages(next, request.source_stage);
+    if (!allowed.includes(request.destination_stage)) throw operationError("RL_OPERATION_NOT_PERMITTED", "requested stage transition is not allowed", "workflow-stage-edge", [request.source_stage, request.destination_stage]);
+    if (workflow.current_stage === request.destination_stage && workflow.next_stage === request.destination_stage) return { status: "already-recorded", candidate: change };
+    if (workflow.current_stage !== request.source_stage) throw operationError("RL_OPERATION_NOT_PERMITTED", "source stage is not current", "workflow-stage-source", [String(workflow.current_stage), request.source_stage]);
+    if (workflow.lifecycle_state !== "active" || workflow.blocker !== null || state.active_correction) throw operationError("RL_OPERATION_NOT_PERMITTED", "workflow is not eligible for normal advancement", "workflow-stage-readiness", [String(workflow.lifecycle_state), String(workflow.blocker)]);
+    if (!stageIsComplete(next, state, request.source_stage)) throw operationError("RL_OPERATION_NOT_PERMITTED", "source stage lacks exact completion authority", "workflow-stage-completion", [request.source_stage]);
+    const automation = next.workflow?.automation;
+    if (automation?.status === "active" && automation.current_stage !== request.source_stage) throw operationError("RL_OPERATION_NOT_PERMITTED", "active automation stage contradicts workflow state", "workflow-projection", [String(automation.current_stage), request.source_stage]);
+    workflow.current_stage = request.destination_stage;
+    workflow.next_stage = request.destination_stage;
+    if (automation?.status === "active") automation.current_stage = request.destination_stage;
+    return { status: "advanced", candidate: next, operationResult: { source_stage: request.source_stage, destination_stage: request.destination_stage } };
+  }
+
+  if (request.operation === "initialize-approved-plan") {
+    const review = state.reviews[request.artifact_id];
+    if (target?.kind !== "plan" || target.role !== "primary" || target.lifecycle_state !== "review-required") throw operationError("RL_OPERATION_NOT_PERMITTED", "initialization requires the review-required primary plan", "approved-plan-initialization", [request.artifact_id, String(target?.kind), String(target?.role), String(target?.lifecycle_state)]);
+    if (next.workflow_state?.current_stage !== "plan-review") throw operationError("RL_OPERATION_NOT_PERMITTED", "approved plan initialization is not current", "approved-plan-initialization", [String(next.workflow_state?.current_stage)]);
+    if (!review || !["approved", "clean-with-notes"].includes(review.outcome) || review.stage_authority !== "plan-review") throw operationError("RL_OPERATION_NOT_PERMITTED", "initialization requires one registered clean plan review", "approved-plan-review", [request.artifact_id], "record-review");
+    const registration = state.artifacts[request.artifact_id];
+    const plan = targetIdentity;
+    const evidence = safeFile(root, review.evidence_path);
+    const log = requireLogEntry(root, change.change_id, review.review_id);
+    if (!registration || registration.artifact_kind !== "plan" || registration.artifact_role !== "primary" || registration.stage_authority !== "plan" || registration.artifact_path !== target.path || registration.artifact_sha256 !== plan.sha256) throw operationError("RL_STALE_EVIDENCE", "primary plan registration is missing or stale", "approved-plan-identity", [request.artifact_id, target.path], "record-artifact-revision");
+    if (review.artifact_path !== target.path || review.artifact_sha256 !== plan.sha256 || review.evidence_sha256 !== evidence.sha256 || review.review_log_sha256 !== log.sha256) throw operationError("RL_STALE_EVIDENCE", "clean plan review is stale", "approved-plan-review", [review.review_id, target.path], "record-review");
+    const openFindings = review.findings.filter((findingId) => state.resolutions[findingId]?.artifact_id !== request.artifact_id);
+    if (openFindings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "plan review findings remain open", "approved-plan-review", openFindings, "record-finding-resolution");
+    const milestones = reviewedPlanMilestones(plan);
+    const ordered = Object.keys(milestones);
+    const expected = {
+      plan_artifact_id: request.artifact_id,
+      current_milestone: ordered[0],
+      milestones,
+      remaining_implementation_milestones: ordered.filter((milestoneId) => milestones[milestoneId].kind === "implementation"),
+      latest_review: resetLatestReview(),
+      final_closeout: { readiness: "not-ready", reasons: [ordered.some((milestoneId) => milestones[milestoneId].kind === "implementation") ? "implementation-milestones-open" : "lifecycle-gates-open"], evidence: [] },
+      initialization_basis: { review_id: review.review_id, review_round: review.round, review_record: review.evidence_path, reviewed_artifact_path: target.path, reviewed_revision: plan.sha256 },
+    };
+    const existing = next.workflow_state?.planned_work;
+    if (existing) {
+      if (canonicalJson(existing) === canonicalJson(expected)) return { status: "already-recorded", candidate: change };
+      throw operationError("RL_OPERATION_NOT_PERMITTED", "existing planned work cannot be replaced", "approved-plan-initialization", [request.artifact_id]);
+    }
+    next.workflow_state.planned_work = expected;
+    return { status: "initialized", candidate: next, operationResult: { artifact_id: request.artifact_id, current_milestone: expected.current_milestone, next_operation: "settle-artifact" } };
+  }
 
   if (request.operation === "route-correction") {
     requireSchema2(state);

@@ -1667,6 +1667,30 @@ review:
             )
             self.assertPathPasses(target)
 
+    def test_changes_requested_review_pointers_do_not_declare_clean_receipt_root(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-changes-requested-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            target.write_text(
+                """change_id: "changes-requested-review"
+title: "Changes requested review"
+classification: "test"
+risk: "low"
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/changes-requested-review/reviews/spec-review-r1.md
+  review_log: docs/changes/changes-requested-review/review-log.md
+  reviewed_artifact: specs/example.md
+  status: "changes-requested"
+  unresolved_items: 1
+""",
+                encoding="utf-8",
+            )
+            self.assertPathPasses(target)
+
     def test_noncanonical_artifact_key_fails(self) -> None:
         self.assertPathFails(
             FIXTURES / "bad-artifact-key" / "change.yaml",
@@ -1714,16 +1738,6 @@ review:
                 "  status: clean\n",
                 "",
                 "review.status: missing required field",
-            ),
-            (
-                "  status: clean\n",
-                "  status: approved\n",
-                "review.status must be 'clean' for clean receipt roots",
-            ),
-            (
-                "  status: clean\n",
-                "  status: changes-requested\n",
-                "review.status must be 'clean' for clean receipt roots",
             ),
             (
                 "  unresolved_items: 0\n",

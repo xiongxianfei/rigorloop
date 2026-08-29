@@ -1,0 +1,32 @@
+change_id: 2026-08-28-governed-repository-cli-architecture-review-recording
+title: Governed Repository CLI Architecture Proposal Review Recording
+classification: review-recording
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-08-28-governed-repository-cli-architecture.md
+  review_resolution: docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording/review-resolution.md
+requirements:
+  - Record the isolated proposal review before review-driven revision.
+  - Preserve material findings about enforcement claims, governed file coverage, and bundled architecture scope.
+  - Keep this recording-only root separate from proposal settlement and workflow continuation.
+tests:
+  - Review artifact structure validates the detailed review, log, and open resolution relationship.
+review:
+  status: changes-requested
+  unresolved_items: 3
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording
+    result: pass_reviews_1_findings_3_log_entries_1_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-08-28-governed-repository-cli-architecture.md
+    result: pass_validated_1_artifact
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/proposals/2026-08-28-governed-repository-cli-architecture.md --path docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording/review-log.md --path docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording/review-resolution.md
+    result: pass_no_errors_or_warnings
+  - command: git diff --check -- docs/proposals/2026-08-28-governed-repository-cli-architecture.md docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording
+    result: pass
+changed_files:
+  - docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording/change.yaml
+  - docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording/review-log.md
+  - docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording/review-resolution.md
+  - docs/changes/2026-08-28-governed-repository-cli-architecture-review-recording/reviews/proposal-review-r1.md

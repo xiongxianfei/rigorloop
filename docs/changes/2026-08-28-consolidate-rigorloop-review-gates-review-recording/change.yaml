@@ -1,0 +1,29 @@
+change_id: 2026-08-28-consolidate-rigorloop-review-gates-review-recording
+title: Consolidate RigorLoop Review Gates Proposal Review Recording
+classification: review-recording
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-08-28-consolidate-rigorloop-review-gates.md
+  review_resolution: docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/review-resolution.md
+requirements:
+  - Record the isolated proposal review before any review-driven revision.
+  - Preserve the feasibility scope-preservation and proposal-status findings.
+  - Keep this recording-only root separate from proposal settlement and workflow continuation.
+tests:
+  - Review artifact structure validates the detailed R1 review, clean R2 receipt, log, and open resolution relationship.
+review:
+  status: changes-requested
+  unresolved_items: 2
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording
+    result: pass_reviews_2_findings_2_log_entries_2_resolution_entries_2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/change.yaml
+    result: pass
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/proposals/2026-08-28-consolidate-rigorloop-review-gates.md --path docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/review-log.md --path docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/review-resolution.md
+    result: pass_no_errors_or_warnings
+changed_files:
+  - docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/change.yaml
+  - docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/review-log.md
+  - docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/review-resolution.md
+  - docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-28-consolidate-rigorloop-review-gates-review-recording/reviews/proposal-review-r2.md
