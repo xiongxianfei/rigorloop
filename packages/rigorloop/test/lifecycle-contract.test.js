@@ -12,6 +12,7 @@ import {
   serializeLifecycleYaml,
   validateLifecycleRequest,
 } from "../dist/lib/lifecycle-contract.js";
+import { LIFECYCLE_OPERATIONS as OBSERVABLE_LIFECYCLE_OPERATIONS } from "../dist/lib/diagnostic-event.js";
 
 const fixture = JSON.parse(
   readFileSync(join(import.meta.dirname, "fixtures", "lifecycle", "conformance-v1.json"), "utf8"),
@@ -25,6 +26,8 @@ test("closed lifecycle operation vocabulary rejects an unknown operation", () =>
     "record-validation",
     "record-finding-resolution",
     "settle-artifact",
+    "advance-stage",
+    "initialize-approved-plan",
     "start-milestone",
     "complete-milestone",
     "route-correction",
@@ -41,6 +44,7 @@ test("closed lifecycle operation vocabulary rejects an unknown operation", () =>
   });
   assert.equal(result.ok, false);
   assert.equal(result.errors[0].code, "RL_INVALID_REQUEST");
+  assert.equal(OBSERVABLE_LIFECYCLE_OPERATIONS.includes("initialize-approved-plan"), true);
 });
 
 test("request schema rejects unknown fields before operation consistency", () => {
@@ -62,6 +66,8 @@ const operationRequests = {
   "record-validation": { artifact_id: "spec", evidence_path: "evidence/validation.md", subject_path: "specs/example.md", stage_authority: "verify" },
   "record-finding-resolution": { artifact_id: "spec", evidence_path: "review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" },
   "settle-artifact": { artifact_id: "spec", stage_authority: "spec-review" },
+  "advance-stage": { source_stage: "spec-review", destination_stage: "architecture", stage_authority: "workflow" },
+  "initialize-approved-plan": { artifact_id: "plan", stage_authority: "plan" },
   "start-milestone": { milestone_id: "M1", stage_authority: "workflow" },
   "complete-milestone": { milestone_id: "M1", evidence_path: "evidence/m1.md", stage_authority: "workflow" },
   "route-correction": { source_stage: "verify", destination_stage: "test-spec", destination_artifact_id: "test-spec", reason: "upstream-proof-gap", evidence_path: "evidence/correction-route.md", finding_ids: ["F-1"], return_stage: "verify", stage_authority: "workflow" },
