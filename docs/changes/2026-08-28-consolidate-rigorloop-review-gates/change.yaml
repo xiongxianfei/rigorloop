@@ -62,7 +62,7 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: implement
+  current_stage: code-review
   evidence:
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-to-review.md
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-to-spec.md
@@ -110,7 +110,7 @@ workflow_state:
         state: closed
       M6:
         kind: implementation
-        state: implementing
+        state: review-requested
       M7:
         kind: lifecycle-closeout
         state: planned
