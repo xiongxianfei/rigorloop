@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:0c5ea6dcefea425a3f361adcadf18edb1f05663da672d2bee84007f89f0894ce",
+  "milestone_id": "M5",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/m5-lifecycle-and-adapter-parity-implementation.md",
+  "review_evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m5-r1.md",
+  "stage_authority": "workflow"
+}
