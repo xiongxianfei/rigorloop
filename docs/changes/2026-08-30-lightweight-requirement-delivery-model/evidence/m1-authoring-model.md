@@ -32,3 +32,7 @@ This milestone does not update review or verification skills, add canonical-copy
 ## Handoff
 
 The exact M1 implementation is ready for independent Code Review before M2 begins.
+
+## RTD-M1-CR1 correction
+
+Code Review R1 identified that the reference stated the many-to-many relationship without demonstrating it. The accepted correction adds one compact example in both directions: `SR-01 → M1 and M2` and `SR-01 + SR-02 → M2`. The focused regression failed twice before the example was added and now requires both mappings. The canonical source and four M1 packaged references remain byte-identical, and the full M1 validation set passes unchanged.

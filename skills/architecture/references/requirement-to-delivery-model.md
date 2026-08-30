@@ -23,6 +23,15 @@ Epic → Feature → Story → Task
 
 The two views are not equivalent hierarchies. Requirement refinement explains what is needed and where responsibility is allocated. Work decomposition explains how delivery effort is divided. Their relationship may be many-to-many.
 
+For example:
+
+```text
+SR-01 → M1 and M2
+SR-01 + SR-02 → M2
+```
+
+Here one requirement needs two work items, while one work item realizes two requirements. These mappings use existing SR and milestone identities; they create no new allocation entity.
+
 Use only the work levels that improve the current change. Add a work level only when it materially improves ownership, sequencing, reviewability, traceability, or coordination. A modest change may use one milestone and a few tasks without Epic, Feature, or Story records.
 
 ## Traceability
