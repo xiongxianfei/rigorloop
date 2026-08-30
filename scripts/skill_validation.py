@@ -86,12 +86,14 @@ def validate_requirement_delivery_model_copy(
     skill_path: Path,
     skill_name: str | None,
     *,
-    canonical_path: Path = REQUIREMENT_DELIVERY_MODEL_SOURCE,
+    canonical_path: Path | None = None,
 ) -> list[str]:
     """Require every selected canonical consumer to carry the shared bytes."""
 
     if skill_name not in REQUIREMENT_DELIVERY_MODEL_CONSUMERS:
         return []
+    if canonical_path is None:
+        canonical_path = REQUIREMENT_DELIVERY_MODEL_SOURCE
     local_path = skill_path.parent / REQUIREMENT_DELIVERY_MODEL_TARGET
     if not canonical_path.is_file():
         return [f"{canonical_path}: requirement-to-delivery canonical reference is missing"]

@@ -8897,6 +8897,24 @@ class RequirementDeliveryModelM3Tests(unittest.TestCase):
             )
             self.assertIn("differs from canonical", drifted[0])
 
+    def test_m3_public_validator_rejects_missing_mapped_copy(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            skills_root = root / "skills"
+            shutil.copytree(ROOT / "skills" / "proposal", skills_root / "proposal")
+            missing = skills_root / "proposal" / "references" / "requirement-to-delivery-model.md"
+            missing.unlink()
+            with mock.patch.object(skill_validation, "CANONICAL_SKILLS_DIR", skills_root), mock.patch.object(
+                skill_validation,
+                "REQUIREMENT_DELIVERY_MODEL_SOURCE",
+                ROOT / "templates" / "shared" / "requirement-to-delivery-model.md",
+            ):
+                result = skill_validation.validate_skill_tree(skills_root / "proposal")
+            self.assertTrue(
+                any("mapped requirement-to-delivery reference is missing" in error for error in result.errors),
+                result.errors,
+            )
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
