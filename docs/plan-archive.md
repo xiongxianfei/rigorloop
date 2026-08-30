@@ -4,10 +4,41 @@ Completed plan history moved out of the common-read plan index.
 
 ## Done (archive)
 
+- [2026-08-16 PR Skill Simplification](plans/2026-08-16-pr-skill-simplification.md)
+- [2026-08-16 Architecture-Review Skill Simplification](plans/2026-08-16-architecture-review-skill-simplification.md)
+- [2026-08-15 Architecture Skill Simplification](plans/2026-08-15-architecture-skill-simplification.md)
+- [2026-08-15 Spec Skill Simplification](plans/2026-08-15-spec-skill-simplification.md)
+- [2026-08-14 Proposal Skill Simplification](plans/2026-08-14-proposal-skill-simplification.md)
+- [2026-08-14 Project-Map Skill Simplification](plans/2026-08-14-project-map-skill-simplification.md)
+- [2026-08-13 Test-Spec Skill Simplification](plans/2026-08-13-test-spec-skill-simplification.md)
+- [2026-08-13 Plan-Review Skill Simplification](plans/2026-08-13-plan-review-skill-simplification.md)
+- [2026-08-12 Plan Skill Simplification](plans/2026-08-12-plan-skill-simplification.md)
+- [2026-08-12 Spec-Review Skill Simplification](plans/2026-08-12-spec-review-skill-simplification.md)
+- [2026-08-11 Proposal-Review Skill Simplification](plans/2026-08-11-proposal-review-skill-simplification.md)
+- [2026-08-11 Test-Spec-Review Skill Simplification](plans/2026-08-11-test-spec-review-skill-simplification.md)
+- [2026-08-11 Verify Skill Simplification](plans/2026-08-11-verify-skill-simplification.md)
+- [2026-08-11 Workflow Skill Simplification](plans/2026-08-11-workflow-skill-simplification.md)
+- [2026-08-11 Implement Skill Simplification](plans/2026-08-11-implement-skill-simplification.md)
+- [2026-08-10 Code-Review Skill Simplification](plans/2026-08-10-code-review-skill-simplification.md)
+- [2026-08-10 Published-Skill-First Repository Simplification](plans/2026-08-10-published-skill-first-repository-simplification.md)
+- [2026-08-06 Usability-First Boundary-First v0.4.0 Release](plans/2026-08-06-usability-first-boundary-release.md)
+- [2026-07-29 Progressive Boundary-First Skill Guidance](plans/2026-07-29-progressive-boundary-first-skill-guidance.md)
+- [2026-07-29 Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](plans/2026-07-29-stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md)
+- [2026-07-28 Portable Boundary-First Capability for Published Skills](plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md) - done; terminal state: closed; PR #126 opened for review.
+- [2026-07-25 Single Bounded Review-Fix Workflow Automation](plans/2026-07-21-single-bounded-review-fix-workflow-automation.md) - done; terminal state: closed; PR #124 opened for review.
+- [2026-07-05 Workflow Guide Skeleton Asset](plans/2026-07-05-workflow-guide-skeleton-asset.md) - done; terminal state: closed; PR #122 opened for review.
+- [2026-07-04 Markdown Readability Contract](plans/2026-07-04-markdown-readability-contract.md) - done; terminal state: closed; PR #120 opened for review.
+- [2026-07-04 Test-Spec Proof-Contract Upgrade](plans/2026-07-04-test-spec-proof-contract-upgrade.md) - done; terminal state: closed; PR #119 merged.
+- [2026-06-30 Bounded Review-Fix Autoprogression in Chat](plans/2026-06-30-bounded-review-fix-autoprogression-in-chat.md) - done; terminal state: closed; PR #118 merged.
+- [2026-06-29 Release Transaction Automation](plans/2026-06-29-release-transaction-automation.md) - done; terminal state: closed; PR #117 opened for review.
+- [2026-06-27 Broad-Smoke Safe Parallelism](plans/2026-06-27-broad-smoke-safe-parallelism.md) - done; terminal state: closed; PR #116 opened for review.
+- [2026-06-27 Selector-Regression Runtime Reduction](plans/2026-06-27-selector-regression-runtime-reduction.md) - done; terminal state: done; PR #115 opened for review.
+- [2026-06-26 Preflight-First Validation Runtime Optimization](plans/2026-06-26-preflight-first-validation-runtime-optimization.md) - done; terminal state: done; PR #114 opened for review.
 - [2026-06-26 Requirement-Fidelity Gate for Spec-Canonical Reviews](plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md) - done; terminal state: done; PR #113 merged.
 - [2026-06-26 Independent Test-Spec-Review Gate](plans/2026-06-25-independent-test-spec-review-gate.md) - done; terminal state: done; PR #111 merged.
 - [2026-06-25 Independent Adversarial Review Gates](plans/2026-06-25-independent-adversarial-review-gates.md) - done; terminal state: done; PR #110 merged.
 - [2026-07-04 Dated Change-Root Convention](plans/2026-07-04-dated-change-root-convention.md) - done; terminal state: closed; PR #121 merged.
+- [2026-06-24 Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md)
 - [2026-06-24 Semantic Source-Line Contract](plans/2026-06-24-semantic-source-line-contract.md) - done; terminal state: done; PR #107 opened for review.
 - [2026-06-24 Implementation Autoprogression Through Verify](plans/2026-06-24-implementation-autoprogression-through-verify.md) - done; terminal state: done; PR #108 merged.
 - [2026-06-24 Proposal-Gated Authoring Autoprogression Through Plan Review](plans/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md) - done; terminal state: done; PR #106 opened for review.
