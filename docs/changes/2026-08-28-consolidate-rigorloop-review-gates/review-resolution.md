@@ -2,7 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
+
+Review closeout: code-review-m6-r1
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -18,10 +20,10 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m6-r1`
 - Findings resolved: 24
-- Unresolved findings: 0
-- Current result: Both M4 findings are resolved with cutover-scoped authority, an explicit post-cutover target inventory, and focused regression proof; M4 is ready for rereview.
+- Unresolved findings: 3
+- Current result: M6 Code Review requests correction of three cutover gaps before rereview.
 
 ## Resolution Overview
 
@@ -50,8 +52,64 @@ Review closeout: code-review-m4-r1
 | CRG-M3-CR4 | accepted | resolved | Every explicit package member must resolve as a safe current regular file before completion. |
 | CRG-M4-CR1 | accepted | resolved | Consolidated review authority now takes effect only at atomic cutover; legacy-dependent work retains the pre-cutover sequence. |
 | CRG-M4-CR2 | accepted | resolved | The guide and regression now publish and prove the exact post-cutover target inventory. |
+| CRG-M6-CR1 | needs-decision | open | Retired artifact-review mutation authority and runtime branches remain executable. |
+| CRG-M6-CR2 | needs-decision | open | Required executable pre-adoption revert proof is absent. |
+| CRG-M6-CR3 | needs-decision | open | Canonical routing still permits obsolete architecture-assessment skip outcomes. |
 
 ## Finding Details
+
+### code-review-m6-r1
+
+#### CRG-M6-CR1
+
+Finding ID: CRG-M6-CR1
+Disposition: needs-decision
+Status: open
+Owner: M6 implementation owner
+Owning stage: implement M6
+Decision owner: M6 implementation owner
+Decision needed: accept the safe removal of obsolete mutation paths or provide another contract-complete retirement mechanism.
+Chosen action: pending implementation-owner disposition.
+Rationale: deleted public skills do not retire a mechanism while current request validation and runtime operations still admit its authorities.
+Required outcome: retired artifact-review stages are read-only historical evidence and cannot mutate or authorize current progression.
+Safe resolution path: remove retired authorities and legacy branches, preserve historical parsing, and add rejection plus current-path regressions.
+Follow-up: resolve, correct, validate, and rerun M6 Code Review.
+Validation target: CRG-R1, CRG-R21, CRG-R35 through CRG-R40, CRG-T01, CRG-T11, CRG-T16.
+Validation evidence: pending correction.
+
+#### CRG-M6-CR2
+
+Finding ID: CRG-M6-CR2
+Disposition: needs-decision
+Status: open
+Owner: M6 implementation owner
+Owning stage: implement M6
+Decision owner: M6 implementation owner
+Decision needed: accept the focused executable revert fixture or revise the approved proof contract through its owning stage.
+Chosen action: pending implementation-owner disposition.
+Rationale: prose reasoning does not satisfy the approved test specification's required deterministic rollback fixture.
+Required outcome: executable proof restores the pre-cutover public surface and preserves historical record bytes.
+Safe resolution path: add one filesystem-level fixture to an existing test owner and include it in broad smoke without runtime topology machinery.
+Follow-up: resolve, correct, validate, and rerun M6 Code Review.
+Validation target: CRG-R38, CRG-R39, CRG-T10, CRG-T16, BND-RECOVERY-001.
+Validation evidence: pending correction.
+
+#### CRG-M6-CR3
+
+Finding ID: CRG-M6-CR3
+Disposition: needs-decision
+Status: open
+Owner: M6 implementation owner
+Owning stage: implement M6
+Decision owner: M6 implementation owner
+Decision needed: accept deletion of the obsolete architecture-assessment bullets.
+Chosen action: pending implementation-owner disposition.
+Rationale: canonical guidance cannot simultaneously require architecture and permit skipping it when the runtime requires one architecture member.
+Required outcome: one mandatory architecture-to-specification-to-Design-Review route.
+Safe resolution path: remove the three assessment outcomes and retain the current route and applicable generic stop rule.
+Follow-up: resolve, correct, validate, and rerun M6 Code Review.
+Validation target: CRG-R12, CRG-R14, CRG-R16, CRG-T13.
+Validation evidence: pending correction.
 
 ### code-review-m4-r1
 

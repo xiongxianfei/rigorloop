@@ -27,6 +27,23 @@
 
 ### Review entry
 
+Review ID: code-review-m6-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: M6 implementation in commit `d48995e5`
+Status: changes-requested
+Detailed record: reviews/code-review-m6-r1.md
+Resolution: review-resolution.md#code-review-m6-r1
+Material findings: CRG-M6-CR1, CRG-M6-CR2, CRG-M6-CR3
+Open findings: CRG-M6-CR1, CRG-M6-CR2, CRG-M6-CR3
+Finding ID: CRG-M6-CR1
+Finding ID: CRG-M6-CR2
+Finding ID: CRG-M6-CR3
+Recording status: recorded
+Blocker: M6 requires review-resolution, correction, direct regression proof, and fresh rereview
+
+### Review entry
+
 Review ID: code-review-m4-r1
 Stage: code-review
 Round: r1
