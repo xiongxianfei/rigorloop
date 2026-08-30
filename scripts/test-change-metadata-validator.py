@@ -1667,6 +1667,36 @@ review:
             )
             self.assertPathPasses(target)
 
+    def test_inline_mapping_item_accepts_nested_sequence_for_first_key(self) -> None:
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory(prefix="change-metadata-inline-nested-sequence-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            target.write_text(
+                """review_packages:
+  delivery:
+    findings:
+      - affected_artifact_ids:
+          - plan
+        finding_id: SPC-DR1
+""",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                validator.load_yaml(target),
+                {
+                    "review_packages": {
+                        "delivery": {
+                            "findings": [
+                                {
+                                    "affected_artifact_ids": ["plan"],
+                                    "finding_id": "SPC-DR1",
+                                }
+                            ]
+                        }
+                    }
+                },
+            )
+
     def test_changes_requested_review_pointers_do_not_declare_clean_receipt_root(self) -> None:
         with tempfile.TemporaryDirectory(prefix="change-metadata-changes-requested-") as temp_dir:
             target = Path(temp_dir) / "change.yaml"
@@ -2022,6 +2052,99 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
             "workflow_state.planned_work.initialization_basis: must match current clean plan review",
             errors,
         )
+
+    def test_delivery_review_initialization_accepts_current_package_basis(self) -> None:
+        record = self.valid_record()
+        record["artifact_states"]["plan"] = {
+            "kind": "plan",
+            "path": "docs/plans/example.md",
+            "role": "primary",
+            "lifecycle_state": "review-required",
+            "authoring_evidence": "docs/changes/example/evidence/plan-authoring.md",
+        }
+        record["artifact_states"]["test-spec"] = {
+            "kind": "test-spec",
+            "path": "specs/example.test.md",
+            "role": "primary",
+            "lifecycle_state": "review-required",
+            "authoring_evidence": "docs/changes/example/evidence/test-spec-authoring.md",
+        }
+        record["review_packages"] = {
+            "delivery": {
+                "authority": "granted",
+                "correction_targets": [],
+                "findings": [],
+                "members": {
+                    "plan": "docs/plans/example.md",
+                    "test-spec": "specs/example.test.md",
+                },
+                "outcome": "approved",
+                "package_kind": "delivery",
+                "review_id": "delivery-review-r1",
+                "review_round": "r1",
+                "status": "approved",
+                "upstream_review_id": "design-review-r1",
+            }
+        }
+        record["lifecycle_cli"] = {
+            "package_reviews": {
+                "delivery": {
+                    "evidence_path": "docs/changes/example/reviews/delivery-review-r1.md",
+                    "members": {
+                        "plan": "docs/plans/example.md",
+                        "test-spec": "specs/example.test.md",
+                    },
+                    "outcome": "approved",
+                    "review_id": "delivery-review-r1",
+                    "round": "r1",
+                    "stage_authority": "delivery-review",
+                }
+            }
+        }
+        record["workflow_state"]["planned_work"] = {
+            "plan_artifact_id": "plan",
+            "initialization_basis": {
+                "review_id": "delivery-review-r1",
+                "review_round": "r1",
+                "review_record": "docs/changes/example/reviews/delivery-review-r1.md",
+                "reviewed_artifact_path": "docs/plans/example.md",
+            },
+            "current_milestone": "M1",
+            "milestones": {"M1": {"kind": "implementation", "state": "planned"}},
+            "remaining_implementation_milestones": ["M1"],
+            "latest_review": {
+                "status": "not-started", "stage": "none", "round": "none",
+                "artifact_id": "none", "occurrence": "none", "milestone_id": "none", "evidence": [],
+            },
+            "final_closeout": {
+                "readiness": "not-ready", "reasons": ["implementation-milestones-open"], "evidence": [],
+            },
+        }
+
+        self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
+
+        mismatches = (
+            (("workflow_state", "planned_work", "initialization_basis", "review_id"), "delivery-review-r2"),
+            (("workflow_state", "planned_work", "initialization_basis", "review_round"), "r2"),
+            (("workflow_state", "planned_work", "initialization_basis", "review_record"), "docs/changes/example/reviews/wrong-review.md"),
+            (("workflow_state", "planned_work", "initialization_basis", "reviewed_artifact_path"), "docs/plans/wrong.md"),
+            (("review_packages", "delivery", "authority"), "withheld"),
+            (("review_packages", "delivery", "status"), "review-required"),
+            (("review_packages", "delivery", "outcome"), "changes-requested"),
+            (("review_packages", "delivery", "members", "plan"), "docs/plans/wrong.md"),
+        )
+        for keys, value in mismatches:
+            with self.subTest(keys=keys):
+                candidate = copy.deepcopy(record)
+                target = candidate
+                for key in keys[:-1]:
+                    target = target[key]
+                target[keys[-1]] = value
+                errors = validate_stage_owned_lifecycle_metadata(candidate)
+                self.assertTrue(
+                    any("initialization_basis" in error for error in errors),
+                    errors,
+                )
 
     def test_review_required_plan_rejects_planned_work_without_clean_review(self) -> None:
         record = self.valid_record()

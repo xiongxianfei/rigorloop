@@ -27,6 +27,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
+| [Simplified RigorLoop Proposal Contract](plans/2026-08-30-simplify-rigorloop-proposal-contract.md) | [change.yaml](changes/2026-08-30-simplify-rigorloop-proposal-contract/change.yaml) |
 | [Consolidated RigorLoop Review Gates](plans/2026-08-29-consolidate-rigorloop-review-gates.md) | [change.yaml](changes/2026-08-28-consolidate-rigorloop-review-gates/change.yaml) |
 | [CLI Observability and Token-Efficient Results](plans/2026-08-25-cli-observability-token-efficient-results.md) | [change.yaml](changes/2026-08-25-cli-observability-token-efficient-results/change.yaml) |
 | [Workflow-Routed Upstream Corrections](plans/2026-08-25-workflow-routed-upstream-corrections.md) | [change.yaml](changes/2026-08-25-workflow-routed-upstream-corrections/change.yaml) |

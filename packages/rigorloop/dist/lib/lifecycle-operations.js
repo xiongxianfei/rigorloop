@@ -765,7 +765,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     if (existing && canonicalJson(existing) === canonicalJson(registration)) return { status: "already-recorded", candidate: change };
     const activePackageRereview = state.active_correction?.destination_artifact_id === request.package_kind
       && state.active_correction?.destination_stage === expectedAuthority;
-    if (existing && !["review-required", "inconclusive"].includes(context.status) && !activePackageRereview) throw operationError("RL_OPERATION_NOT_PERMITTED", "conflicting durable facts are already registered", "idempotent-registration");
+    if (existing && !["review-required", "blocked", "inconclusive"].includes(context.status) && !activePackageRereview) throw operationError("RL_OPERATION_NOT_PERMITTED", "conflicting durable facts are already registered", "idempotent-registration");
     state.package_reviews[request.package_kind] = registration;
     return { status: "recorded", candidate: next, operationResult: { package_kind: request.package_kind, members: context.members, upstream_review_id: context.upstream_review_id, review_id: registration.review_id, outcome: registration.outcome } };
   }
