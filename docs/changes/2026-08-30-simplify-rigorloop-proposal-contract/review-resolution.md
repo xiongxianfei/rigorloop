@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
-Review closeout: code-review-m2-r4
+Review closeout: code-review-m2-r5
 
-- Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m2-r4`
+- Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m2-r4`, `code-review-m2-r5`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: all seven findings are resolved. M2 correction commit `e757b2a3` is ready for independent rereview.
+- Current result: all seven findings are resolved, and independent Code Review R5 found no material issue in the aggregate M2 implementation through `e757b2a3`. Workflow may consume the clean receipt to close M2.
 
 ## Resolution Overview
 

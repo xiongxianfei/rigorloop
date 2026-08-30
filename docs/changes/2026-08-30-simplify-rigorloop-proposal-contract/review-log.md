@@ -9,6 +9,7 @@
 | `design-review-r2` | `design-review` | `r2` | design package `architecture`, `spec` | `reviews/design-review-r2.md` | `approved` | 0 | `recorded` |
 | `delivery-review-r2` | `delivery-review` | `r2` | delivery package `plan`, `test-spec` | `reviews/delivery-review-r2.md` | `approved` | 0 | `recorded` |
 | `code-review-m1-r1` | `code-review` | `r1` | M1 commit `de04957b32144ae5e1da0222300b1afce100773a` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m2-r5` | `code-review` | `r5` | M2 aggregate through `e757b2a310aa3360511c8e33e00267c58050861e` | `reviews/code-review-m2-r5.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Package review occurrence
 

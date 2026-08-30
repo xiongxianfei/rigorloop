@@ -89,12 +89,12 @@ workflow_state:
     latest_review:
       artifact_id: plan
       evidence:
-        - docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m2-r4.md
+        - docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m2-r5.md
       milestone_id: M2
       occurrence: milestone
-      round: r4
+      round: r5
       stage: code-review
-      status: changes-requested
+      status: approved
     milestones:
       M1:
         kind: implementation
@@ -119,10 +119,10 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m2-r4.md
+  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m2-r5.md
   review_log: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
-  reviewed_artifact: implementation-milestone:M2@a1b57bbf05e28f1e4362d49ffb520066a1aff479+f3fd200c+b98e9926+f395ab51
-  status: changes-requested
+  reviewed_artifact: implementation-milestone:M2@e757b2a310aa3360511c8e33e00267c58050861e
+  status: clean-with-notes
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
