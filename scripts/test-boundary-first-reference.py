@@ -36,11 +36,10 @@ resources:
     consumers:
       - workflow
       - spec
-      - spec-review
+      - design-review
       - plan
-      - plan-review
       - test-spec
-      - test-spec-review
+      - delivery-review
       - implement
       - code-review
       - verify
@@ -49,13 +48,13 @@ resources:
     target: references/boundary-first-feature-authoring-v1.md
     consumers:
       - spec
-      - spec-review
+      - design-review
   - id: proof
     source: specs/references/boundary-first-proof-v1.md
     target: references/boundary-first-proof-v1.md
     consumers:
       - test-spec
-      - test-spec-review
+      - delivery-review
 """
 
 
@@ -101,11 +100,10 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             (
                 "workflow",
                 "spec",
-                "spec-review",
+                "design-review",
                 "plan",
-                "plan-review",
                 "test-spec",
-                "test-spec-review",
+                "delivery-review",
                 "implement",
                 "code-review",
                 "verify",
@@ -145,7 +143,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                     "boundary-first-feature-authoring-v1.md"
                 ),
                 Path(
-                    "skills/spec-review/references/"
+                    "skills/design-review/references/"
                     "boundary-first-feature-authoring-v1.md"
                 ),
                 Path(
@@ -153,7 +151,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                     "boundary-first-proof-v1.md"
                 ),
                 Path(
-                    "skills/test-spec-review/references/"
+                    "skills/delivery-review/references/"
                     "boundary-first-proof-v1.md"
                 ),
             ),
@@ -246,8 +244,8 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             ),
             "unowned-feature-consumer": (
                 MANIFEST_BYTES.replace(
-                    b"      - spec-review\n  - id: proof",
-                    b"      - spec-review\n      - plan\n  - id: proof",
+                    b"      - design-review\n  - id: proof",
+                    b"      - design-review\n      - plan\n  - id: proof",
                 ),
                 "feature-authoring",
             ),
@@ -483,7 +481,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
 
         from boundary_first_reference import _write_target_bytes
 
-        for failure_index in (1, 7, 14):
+        for failure_index in (1, 7, 13):
             calls = 0
             failed = False
 
@@ -582,7 +580,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             Path("specs/references/boundary-first-proof-v1.md"),
         )
         for relative_input in inputs:
-            for mutation_index in (1, 7, 14):
+            for mutation_index in (1, 7, 13):
                 with self.subTest(
                     input=relative_input,
                     mutation_index=mutation_index,

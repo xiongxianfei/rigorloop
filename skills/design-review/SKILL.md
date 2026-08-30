@@ -108,6 +108,8 @@ Do not claim that architecture or specification is independently approved, that 
 
 ## Resource map
 
+- READ `references/boundary-first-method-v1.md` initially for every `design-review` invocation.
+- READ `references/boundary-first-feature-authoring-v1.md` after the method reference when judging specification boundary completeness and example ownership.
 - READ `references/design-review-recording-and-settlement.md` for every durable or formal review before recording or settlement.
 - COPY `assets/review-result-skeleton.md` when producing every result. Omit inapplicable groups and unfilled placeholders.
 - COPY `assets/material-finding.md` when a material finding exists, once per finding.
