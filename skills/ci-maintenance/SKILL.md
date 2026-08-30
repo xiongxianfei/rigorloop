@@ -9,16 +9,16 @@ argument-hint: [operation, exact target path, concern, and command evidence]
 
 # CI maintenance
 
-Maintain CI infrastructure from project-owned commands and risk evidence. It does not run validation, does not design tests, does not specify validation commands, and does not wait for existing CI checks; validation execution stays under `verify`.
+Maintain CI infrastructure from project-owned commands and risk evidence. Ordinary authoring does not run validation, does not design tests, does not specify validation commands, or wait for checks; validation stays under `verify`. A bounded PR CI repair may run already-authoritative validation commands and observe the replacement hosted check under the rules below.
 
 ## Workflow role
 
 - role_name: ci-maintenance
 - stage: support
 - upstream: user request, exact repository target, project-owned commands, risk evidence, and approved privileged design when applicable
-- downstream: `explain-change` only in workflow-managed execution
+- downstream: `explain-change` for ordinary workflow-managed authoring; none for an eligible bounded PR CI repair
 - summary: Review or conditionally author repository-owned CI automation without inventing commands, policy, or external state.
-- must_not_claim: validation execution, hosted-CI status, verification, branch, PR, release, deployment, or lifecycle readiness
+- must_not_claim: unexecuted validation, unobserved hosted-CI status, verification, branch, PR, release, deployment, or lifecycle readiness
 
 ## Classification
 
@@ -30,10 +30,19 @@ Resolve independently:
 - Provider: `github-actions`, `project-native-other-provider`, `invalid-or-ambiguous-provider`.
 - Privilege: `ordinary-workflow-context`, `privileged-approved-design`, `privileged-design-required`, `invalid-or-ambiguous-privilege-context`.
 - Structure: `none`, `compose-from-skeleton`, `preserve-existing-structure`.
+- Repair mode: `ordinary-infrastructure` or `bounded-pr-ci-repair`.
 
 Unknown values fail before consistency checks. Ambiguous, escaped, conflicting, stale, or unsupported identities stop without changing operation or provider.
 
 GitHub procedure applies only to repository-file GitHub workflows. Other files require an exact project-native contract for path, format, content/commands, validation, and authority. External state is review-or-route only.
+
+## Bounded PR CI repair
+
+Use `bounded-pr-ci-repair` only for an already-open PR with an exact failing run and head, current review and verification evidence, no open material finding, already-authoritative commands, and existing authority for each push or other external mutation.
+
+The correction must only restore already-approved behavior. Reject this mode if it introduces or revises requirements, architecture, runtime implementation, dependencies, lifecycle schema, stage routing, review outcomes, or another decision-bearing contract. Ambiguity routes to the earliest affected owning stage.
+
+For an eligible repair: inspect the failure, make the smallest correction, run the focused command and exact PR command already owned by the repository, prefer one coherent repair commit, push only under existing authority, and observe the replacement hosted check. Preserve current review, explanation, verification, and lifecycle evidence when their decision basis is unchanged. Do not create a new review round, explanation artifact, verify report, change record, or lifecycle-only commit solely because CI failed.
 
 ## Command, risk, and security boundaries
 
@@ -69,9 +78,9 @@ Classify batches as `independent`, `ordered-dependent`, or `atomic-group-require
 
 ## Results and handoff
 
-Report requested and actual operation, target kind, provider, privilege, concerns, structure, assembly, target identity, mutation outcome, validation evidence, blockers, and `hosted CI observation: not-performed-by-ci-maintenance`.
+Report requested and actual operation, repair mode, target kind, provider, privilege, concerns, structure, assembly, target identity, mutation outcome, validation evidence, blockers, and hosted CI observation. Use `not-observed`, `pending`, `passed`, or `failed`; when observed, include the exact run and head.
 
-Do not claim test or hosted-CI success, verification readiness, branch readiness, PR readiness, deployment readiness, release readiness, or lifecycle completion. Workflow-managed success hands off to `explain-change`; direct invocation stays isolated.
+Do not claim tests or hosted CI succeeded unless executed or observed. A bounded repair does not claim branch readiness, PR readiness, deployment readiness, release readiness, or lifecycle completion. Ordinary workflow-managed success hands off to `explain-change`; an eligible repair and other direct invocations stay isolated.
 
 ## Evidence collection efficiency
 
@@ -95,7 +104,7 @@ Result
 - Mutation outcome: <result>
 - Validation evidence: <evidence>
 - Blockers: <none or exact blockers>
-- Hosted CI observation: not-performed-by-ci-maintenance
+- Hosted CI observation: <not-observed | pending | passed | failed; exact run and head when observed>
 - Next stage: <explain-change | none | blocked>
 ```
 

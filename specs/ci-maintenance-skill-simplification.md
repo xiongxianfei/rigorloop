@@ -32,7 +32,7 @@ This specification is a focused amendment to the approved `specs/ci-maintenance-
 Example E1: narrow read-only review
 Given one exact existing GitHub workflow and no coverage-sensitive judgment
 When `ci-maintenance` reviews a timeout or cache detail
-Then it loads only `SKILL.md`, performs no mutation, and reports hosted CI as `not-performed-by-ci-maintenance`.
+Then it loads only `SKILL.md`, performs no mutation, and reports hosted CI as `not-observed`.
 
 Example E2: coverage-sensitive GitHub creation
 Given an absent exact workflow target, authoritative project commands, and a complete current risk mapping
@@ -68,6 +68,11 @@ Example E8: risk-placement conflict
 Given the risk map requires a release-boundary check but requested GitHub composition places it only on pull requests
 When authoring is evaluated
 Then the authoring reference does not choose a new placement and the operation stops with the exact conflict.
+
+Example E9: bounded repair of an open PR
+Given an exact hosted failure on an already-open PR with current review and verification evidence
+When the smallest correction only restores already-approved CI behavior
+Then `ci-maintenance` runs the already-authoritative focused and PR commands, pushes only under existing authority, observes the replacement check, and preserves current lifecycle evidence.
 
 ## Requirements
 
@@ -155,7 +160,7 @@ R41. Batch retry MUST re-resolve the entire target/dependency graph and all iden
 
 R42. Every operation result MUST report requested operation, actual operation, target kind, provider, privilege class, concerns, structure mode, selected assembly, target identity, mutation outcome, validation evidence, blockers, and hosted CI observation.
 
-R43. Hosted CI observation MUST use the fixed value `not-performed-by-ci-maintenance`; static inspection, local validation, configured commands, or file read-back MUST NOT be reported as hosted CI passed, failed, or pending.
+R43. Ordinary infrastructure work MUST report hosted CI as `not-observed`. Only an eligible bounded PR CI repair MAY report `pending`, `passed`, or `failed`, bound to the exact run and head; static inspection, configured commands, or local validation MUST NOT become hosted execution evidence.
 
 R44. `ci-maintenance` MUST NOT claim test success it did not execute, hosted-CI success, verification readiness, branch readiness, PR readiness, deployment readiness, release readiness, or lifecycle completion.
 
@@ -178,6 +183,20 @@ R52. Acceptance MUST use deterministic contract scenarios, syntax checks, valida
 R53. The bounded architecture assessment MUST return `architecture-required` if safe implementation needs a persistent mutation receipt, managed locking service, multi-file transaction surface, managed YAML parser, provider-neutral abstraction, external platform-state integration, new persistent authority owner, or equivalent cross-process coordination.
 
 R54. Where this focused specification lists an amended legacy clause, the replacement requirements in its compatibility table MUST govern the overlapping behavior and every coupled validator, fixture, reference, asset, and consumer MUST migrate atomically; unlisted requirements in `specs/ci-maintenance-skill.md` MUST remain in force.
+
+R55. The skill MUST classify an invocation independently as `ordinary-infrastructure` or `bounded-pr-ci-repair`.
+
+R56. `bounded-pr-ci-repair` MUST require an already-open PR, exact failing hosted run and head, current review and verification evidence, no open material finding, already-authoritative commands, and explicit or previously granted authority for every external mutation.
+
+R57. The repair MUST only restore already-approved behavior and MUST reject a new or revised requirement, architecture decision, runtime implementation, dependency, lifecycle schema, stage route, review outcome, or other decision-bearing contract. Ambiguity MUST reject bounded repair.
+
+R58. An eligible repair MAY inspect failure logs, make the smallest correction, execute the existing focused and exact PR commands, push under existing authority, and observe the replacement hosted run.
+
+R59. An eligible repair MUST preserve current review, explanation, verification, and lifecycle evidence when their decision basis is unchanged. It MUST NOT create a new review round, explanation artifact, verify report, change record, or lifecycle-only commit solely because CI failed.
+
+R60. A repair that changes or stales decision-bearing evidence MUST route to the earliest affected owning stage and normal downstream gates.
+
+R61. Hosted observation MUST report `not-observed`, `pending`, `passed`, or `failed` and MUST include the exact run and head when observed. Observation MUST NOT imply branch, PR, release, deployment, or lifecycle readiness.
 
 ## Inputs and outputs
 
@@ -203,7 +222,7 @@ Unknown vocabulary, target/operation mismatch, ambiguous target or provider, mis
 ## Boundary model
 
 Boundary model version: boundary-first-v1
-Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R49, R50, R51, R52, R53, R54
+Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R49, R50, R51, R52, R53, R54, R55, R56, R57, R58, R59, R60, R61
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
@@ -214,7 +233,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | temporal-retry | applicable | R29, R30, R31, R32, R33, R34, R36, R37, R38, R40, R41 | BND-TEMPORAL-001 | - |
 | failure-recovery | applicable | R20, R27, R30, R31, R33, R34, R39, R40, R41, R53 | BND-RECOVERY-001 | - |
 | compatibility-migration | applicable | R21, R22, R23, R24, R25, R45, R46, R47, R48, R49, R50, R51, R54 | BND-COMPAT-001 | - |
-| external-environment | applicable | R8, R9, R10, R13, R29, R30, R31, R32, R33, R43, R44, R50, R52, R53 | BND-ENV-001 | - |
+| external-environment | applicable | R8, R9, R10, R13, R29, R30, R31, R32, R33, R43, R44, R50, R52, R53, R55, R56, R57, R58, R59, R60, R61 | BND-ENV-001 | - |
 
 ## Boundary definitions
 
@@ -227,7 +246,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | BND-TEMPORAL-001 | temporal-retry | R29, R30, R31, R32, R33, R34, R36, R37, R38, R40, R41 | preflight, preparation, identity reread, conditional commit, read-back, concurrent write, partial batch, and fresh retry | commit-time predicates protect current state and retries never adopt stale manifests | success, exact partial result, or blocked retry | R30 |
 | BND-RECOVERY-001 | failure-recovery | R20, R27, R30, R31, R33, R34, R39, R40, R41, R53 | missing mapping/resource, unavailable conditional primitive, failed commit, uncertain bytes, unsafe batch order, atomic-group need, and architecture escalation | no unknown file or partial state is reconstructed, overwritten, or adopted | unchanged stop, fresh reclassification, or architecture-required | R33 |
 | BND-COMPAT-001 | compatibility-migration | R21, R22, R23, R24, R25, R45, R46, R47, R48, R49, R50, R51, R54 | old flat package, split package, historical workflow, amended and retained legacy clauses, safe skeleton creation, structure-preserving revision, literals, measurements, and package forms | historical files are not migrated solely for package adoption, unlisted legacy requirements remain authoritative, and amended consumers migrate atomically | prospective migration passes atomically or blocks | R54 |
-| BND-ENV-001 | external-environment | R8, R9, R10, R13, R29, R30, R31, R32, R33, R43, R44, R50, R52, R53 | GitHub repository file, project-native repository file, external host state, filesystem primitives, local syntax tools, generated adapters, hosted CI, and unavailable environments | local evidence never becomes hosted execution and external state remains read-only | deterministic local proof, exact route, or blocked mutation | R43 |
+| BND-ENV-001 | external-environment | R8, R9, R10, R13, R29, R30, R31, R32, R33, R43, R44, R50, R52, R53, R55, R56, R57, R58, R59, R60, R61 | GitHub repository file, project-native repository file, external host state, filesystem primitives, local syntax tools, generated adapters, hosted CI, bounded PR repair, and unavailable environments | local evidence never becomes hosted execution and external mutation requires existing authority | deterministic local proof, exact observed run, exact route, or blocked mutation | R61 |
 
 ## Selected interactions
 
@@ -238,7 +257,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | INT-003 | R15, R16, R17, R18, R19, R20 | BND-AUTH-001, BND-COMPOSE-001 | the serializer chooses semantic check placement or a narrow concern avoids required risk analysis | the risk map remains sole placement owner and every coverage-sensitive path loads it |
 | INT-004 | R29, R30, R31, R32, R33, R34 | BND-STATE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-ENV-001 | a concurrent create/revise is overwritten because atomic rename or read-back is mistaken for compare-and-swap | commit-time absence or identity guard fails closed; read-back only confirms successful bytes |
 | INT-005 | R35, R36, R37, R38, R39, R40, R41 | BND-STATE-001, BND-TEMPORAL-001, BND-RECOVERY-001 | a dependent wrapper commits before its provider or partial work is reported as group success | prepare all, prove safe order, commit providers first, and report exact partial or pre-write blocker |
-| INT-006 | R42, R43, R44, R47, R48, R49, R50, R52 | BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001 | relocation hides semantic loss, a real profile grows, or static proof becomes a hosted-CI claim | ledgers, per-assembly measurements, parity checks, and fixed hosted observation all pass |
+| INT-006 | R42, R43, R44, R47, R48, R49, R50, R51, R52, R55, R56, R57, R58, R59, R60, R61 | BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001 | relocation hides semantic loss, a real profile grows, or local proof becomes a hosted-CI claim | ledgers, per-assembly measurements, parity checks, and exact observation authority all pass |
 
 ## Example ownership
 
@@ -266,6 +285,7 @@ This amendment applies the following closed legacy-clause dispositions:
 | `CIM-R45` | superseded for mutation under approved design; external policy design remains out of scope | R11-R14 and R25-R28 permit only exact approved-design realization |
 | `CIM-R53` | narrowed; changed-surface coverage is mandatory only for coverage-sensitive review | R18-R20 and R25 distinguish narrow from coverage review |
 | `CIM-R59` | superseded for skeleton validation | R21-R23 validate the minimal safe skeleton without built-in PR or boundary jobs, cache policy, or privileged behavior |
+| `R43` and fixed `not-performed-by-ci-maintenance` observation | superseded | R55-R61 permit exact hosted observation only for an eligible bounded PR CI repair |
 
 All other clauses in `specs/ci-maintenance-skill.md`, including the canonical skill identity, command-source constraints, least-privilege behavior, hard-rename compatibility, resource-map integrity, generated adapter validation, and unchanged repository-workflow boundary, remain authoritative unless a replacement row above names them.
 
@@ -273,7 +293,7 @@ Rollback restores the prior flat skill and prior mapped-resource expectations wi
 
 ## Observability
 
-Results expose the closed classifications, exact target and evidence identities, selected resources, external design or project contract identities, conditional commit outcome, batch dependencies and partial state, local validation evidence, blockers, and the fixed hosted-CI observation. Measurements report words and bytes for every real assembly and complete package.
+Results expose the closed classifications, exact target and evidence identities, selected resources, external design or project contract identities, conditional commit outcome, batch dependencies and partial state, local validation evidence, blockers, and exact hosted-CI observation. Measurements report words and bytes for every real assembly and complete package.
 
 ## Security and privacy
 
@@ -311,7 +331,7 @@ EC10. A real assembly shrinks while total package grows: the assembly gate may p
 
 ## Non-goals
 
-- Running validation, waiting for hosted CI, debugging a failing check, designing tests, verifying a branch, or opening a PR.
+- General validation execution, test design, branch verification, or PR opening. Only R55-R61 permit bounded failure inspection, existing-command execution, and replacement-check observation for an already-open PR.
 - Designing privileged publishing, deployment, OIDC, secret, runner, or environment policy.
 - Mutating external host or account state.
 - Adding provider-neutral generation, managed YAML regions, persistent locks, transaction receipts, or multi-file atomicity.
@@ -330,7 +350,7 @@ EC10. A real assembly shrinks while total package grows: the assembly gate may p
 | AC6 | Privileged mutation binds an exact current approved design and never infers missing privileged choices. |
 | AC7 | Create uses atomic no-clobber and revise uses identity-guarded replacement; read-back is confirmation rather than concurrency protection. |
 | AC8 | Multi-target requests prove dependencies and safe intermediate validity, report exact partial state, and block unsupported atomic groups before writing. |
-| AC9 | External platform state remains read-only and hosted observation remains `not-performed-by-ci-maintenance`. |
+| AC9 | External platform mutation remains authority-bound, ordinary work reports `not-observed`, and bounded repair observation binds the exact hosted run and head. |
 | AC10 | The minimal skeleton contains no built-in privileged, boundary, push, schedule, or manual behavior. |
 | AC11 | Semantic and literal ledgers cover every current rule and consumed literal. |
 | AC12 | Every real assembly decreases in words and bytes, conditional variants and external evidence are disclosed, and complete package size remains visible. |
@@ -338,6 +358,7 @@ EC10. A real assembly shrinks while total package grows: the assembly gate may p
 | AC14 | Acceptance uses deterministic local proof and executes no hosted workflow, live PR, target-agent runtime, or prose-grading gate. |
 | AC15 | Architecture becomes required when safe implementation needs a new persistent coordination, transaction, parser, provider, external-state, or authority owner. |
 | AC16 | Every overlap with the approved legacy CI-maintenance contract has one explicit disposition, and unlisted legacy clauses remain authoritative. |
+| AC17 | An eligible bounded PR CI repair completes through one coherent correction path without lifecycle churn, while substantive or ambiguous corrections return to the normal owning stage. |
 
 ## Open questions
 
