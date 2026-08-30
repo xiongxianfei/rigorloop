@@ -29,6 +29,8 @@ from adapter_distribution import (  # noqa: E402
     ADAPTERS,
     AdapterDriftEntry,
     OPENCODE_COMMAND_ALIASES,
+    POST_CUTOVER_ADAPTER_SKILLS,
+    RETIRED_PROGRESSION_SKILLS,
     ReleaseValidationProfile,
     SUPPORTED_ADAPTERS,
     adapter_archive_name,
@@ -1098,13 +1100,24 @@ release_gate:
                 report.name: report
                 for report in collect_skill_reports(ROOT / "skills")
             }
-            for skill_name in GOVERNED_SKILLS:
+            public_governed_skills = tuple(
+                sorted(set(GOVERNED_SKILLS) & set(POST_CUTOVER_ADAPTER_SKILLS))
+            )
+            for skill_name in public_governed_skills:
                 self.assertEqual(
                     reports[skill_name].included_adapters,
                     SUPPORTED_ADAPTERS,
                     skill_name,
                 )
-            expected_digest = "68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329"
+            expected_records = {
+                (Path("skills") / skill_name / resource.target).as_posix(): raw_sha256(
+                    (ROOT / resource.source).read_bytes()
+                )
+                for skill_name in public_governed_skills
+                for resource in manifest.resources
+                if skill_name in resource.consumers
+            }
+            expected_digest = inventory_digest(expected_records)
             seen: set[tuple[str, str, str]] = set()
             for adapter_name in SUPPORTED_ADAPTERS:
                 config = ADAPTERS[adapter_name]
@@ -1112,7 +1125,7 @@ release_gate:
                 generated_records: dict[str, str] = {}
                 archive_records: dict[str, str] = {}
                 with zipfile.ZipFile(archive_path) as archive:
-                    for skill_name in GOVERNED_SKILLS:
+                    for skill_name in public_governed_skills:
                         skill_entry = config.skill_path(skill_name).as_posix()
                         self.assertTrue(archive.read(skill_entry))
                         for resource in manifest.resources:
@@ -1146,13 +1159,13 @@ release_gate:
                             seen.add(
                                 (adapter_name, skill_name, resource.resource_id)
                             )
-                self.assertEqual(len(generated_records), 14)
+                self.assertEqual(len(generated_records), len(expected_records))
                 self.assertEqual(inventory_digest(generated_records), expected_digest)
-                self.assertEqual(len(archive_records), 14)
+                self.assertEqual(len(archive_records), len(expected_records))
                 self.assertEqual(inventory_digest(archive_records), expected_digest)
             expected = {
                 (adapter_name, skill_name, resource.resource_id)
-                for skill_name in GOVERNED_SKILLS
+                for skill_name in public_governed_skills
                 for adapter_name in SUPPORTED_ADAPTERS
                 for resource in manifest.resources
                 if skill_name in resource.consumers
@@ -1170,7 +1183,9 @@ release_gate:
                 project_root = Path(kwargs["cwd"])
                 records: dict[str, str] = {}
                 for resource in manifest.resources:
-                    for skill_name in resource.consumers:
+                    for skill_name in sorted(
+                        set(resource.consumers) & set(public_governed_skills)
+                    ):
                         installed_path = (
                             project_root
                             / config.skill_root
@@ -1193,14 +1208,14 @@ release_gate:
                     version,
                     output_dir,
                     skills_root=ROOT / "skills",
-                    skill_names=GOVERNED_SKILLS,
+                    skill_names=public_governed_skills,
                     command_runner=capture_runner,
                 ),
             )
             self.assertEqual(
                 installed_identities,
                 {
-                    adapter_name: (14, expected_digest)
+                    adapter_name: (len(expected_records), expected_digest)
                     for adapter_name in SUPPORTED_ADAPTERS
                 },
             )
@@ -2019,6 +2034,81 @@ release_gate:
             set(adapter_distribution_module.PUBLISHED_SKILL_INVOCATION_NAMES),
             published_names,
         )
+
+    def test_post_cutover_adapter_inventory_is_explicit_and_retires_old_gates(self) -> None:
+        reports = collect_skill_reports(ROOT / "skills")
+        report_names = tuple(report.name for report in reports)
+
+        self.assertEqual(report_names, tuple(sorted(POST_CUTOVER_ADAPTER_SKILLS)))
+        self.assertTrue(RETIRED_PROGRESSION_SKILLS.isdisjoint(report_names))
+        self.assertIn("design-review", report_names)
+        self.assertIn("delivery-review", report_names)
+
+    def test_canonical_adapter_inventory_rejects_unknown_value_before_generation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(
+                root, ("portable-basic", "portable-with-assets")
+            )
+            with (
+                patch.object(adapter_distribution_module, "CANONICAL_SKILLS_DIR", skills_root),
+                patch.object(
+                    adapter_distribution_module,
+                    "PUBLISHED_SKILL_INVOCATION_NAMES",
+                    ("portable-basic",),
+                ),
+                patch.object(
+                    adapter_distribution_module,
+                    "POST_CUTOVER_ADAPTER_SKILLS",
+                    ("portable-basic",),
+                ),
+            ):
+                with self.assertRaisesRegex(
+                    ValueError, "undeclared canonical skills: portable-with-assets"
+                ):
+                    collect_skill_reports(skills_root)
+
+    def test_post_cutover_archives_have_exact_gate_inventory_for_every_adapter(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            version = "v0.4.1"
+            archives = build_adapter_archives(version, output_dir)
+
+            self.assertEqual(len(archives), len(SUPPORTED_ADAPTERS))
+            for adapter_name in SUPPORTED_ADAPTERS:
+                archive_path = output_dir / adapter_archive_name(adapter_name, version)
+                skill_root = ADAPTERS[adapter_name].skill_root.as_posix().rstrip("/")
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = set(archive.namelist())
+                packaged = {
+                    path.removeprefix(f"{skill_root}/").split("/", 1)[0]
+                    for path in names
+                    if path.startswith(f"{skill_root}/") and path.endswith("/SKILL.md")
+                }
+                with self.subTest(adapter=adapter_name):
+                    self.assertEqual(packaged, set(POST_CUTOVER_ADAPTER_SKILLS))
+                    self.assertTrue(RETIRED_PROGRESSION_SKILLS.isdisjoint(packaged))
+
+    def test_retired_gate_in_generated_output_is_unexpected_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_root = Path(tmp) / "dist" / "adapters"
+            sync_adapter_output("v0.4.1", output_root=output_root)
+            retired_path = (
+                output_root
+                / "codex"
+                / ".agents"
+                / "skills"
+                / "spec-review"
+                / "SKILL.md"
+            )
+            retired_path.parent.mkdir(parents=True)
+            retired_path.write_text("retired\n", encoding="utf-8")
+
+            drift = collect_adapter_drift_entries("v0.4.1", output_root=output_root)
+            self.assertTrue(
+                any(entry.category == "unexpected" and entry.path == retired_path for entry in drift),
+                drift,
+            )
 
     def test_real_dollar_invocation_is_not_hidden_by_later_dollar(self) -> None:
         source = self.fixture("codex-dollar-skill")
@@ -3248,9 +3338,9 @@ release_gate:
                 "unsupported command alias tool: claude",
             ),
             (
-                "    count: 10\n    aliases:\n",
+                "    count: 11\n    aliases:\n",
                 (
-                    "    count: 11\n"
+                    "    count: 12\n"
                     "    aliases:\n"
                     "      verify: dist/adapters/opencode/.opencode/commands/verify.md\n"
                 ),
