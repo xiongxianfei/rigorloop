@@ -68,7 +68,6 @@ TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint", "schema-version", "versi
 PORTABLE_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 PUBLISHED_SKILL_INVOCATION_NAMES = (
     "architecture",
-    "architecture-review",
     "bugfix",
     "ci-maintenance",
     "code-review",
@@ -80,16 +79,13 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "implement",
     "learn",
     "plan",
-    "plan-review",
     "pr",
     "project-map",
     "proposal",
     "proposal-review",
     "research",
     "spec",
-    "spec-review",
     "test-spec",
-    "test-spec-review",
     "verify",
     "vision",
     "workflow",
@@ -98,9 +94,7 @@ RETIRED_PROGRESSION_SKILLS = frozenset(
     {"spec-review", "architecture-review", "plan-review", "test-spec-review"}
 )
 POST_CUTOVER_ADAPTER_SKILLS = tuple(
-    name
-    for name in PUBLISHED_SKILL_INVOCATION_NAMES
-    if name not in RETIRED_PROGRESSION_SKILLS
+    PUBLISHED_SKILL_INVOCATION_NAMES
 )
 CODEX_SKILL_INVOCATION_PATTERN = re.compile(
     r"\$(?:"
@@ -471,9 +465,9 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     )
     expected_command_blocks = (
         "- `$workflow auto: <target-stage>` selects a structured target. Supported "
-        "targets are `proposal-review`, `spec`, `spec-review`, `architecture`, "
-        "`architecture-review`, `plan`, `plan-review`, `test-spec`, "
-        "`test-spec-review`, `implement`, `code-review`, and `verify`.\n",
+        "targets are `proposal-review`, `architecture`, `spec`, `design-review`, "
+        "`plan`, `test-spec`, `delivery-review`, `implement`, `code-review`, and "
+        "`verify`.\n",
         "- `$workflow auto: status` is read-only. `$workflow auto: off` durably "
         "cancels the unified run and preserves transition evidence.\n",
     )

@@ -32,14 +32,12 @@ Use this order when deciding artifact placement:
 ```text
 proposal
 -> proposal-review
+-> architecture
 -> spec
--> spec-review
--> architecture, when required
--> architecture-review, when required
+-> design-review
 -> plan
--> plan-review
 -> test-spec
--> test-spec-review, when required by this workflow
+-> delivery-review
 -> implement
 -> code-review
 -> review-resolution, when triggered
@@ -185,10 +183,8 @@ artifact_locations:
 | Review type | Path | Creates review-log entry? | Creates review-resolution? |
 | --- | --- | ---: | ---: |
 | Proposal review | `docs/changes/<change-id>/reviews/proposal-review-r<n>.md` | yes | only when findings or blockers require disposition |
-| Spec review | `docs/changes/<change-id>/reviews/spec-review-r<n>.md` | yes | only when findings or blockers require disposition |
-| Architecture review | `docs/changes/<change-id>/reviews/architecture-review-r<n>.md` | yes | only when findings or blockers require disposition |
-| Plan review | `docs/changes/<change-id>/reviews/plan-review-r<n>.md` | yes | only when findings or blockers require disposition |
-| Test-spec review | `docs/changes/<change-id>/reviews/test-spec-review-r<n>.md` | yes | only when findings or blockers require disposition |
+| Design review | `docs/changes/<change-id>/reviews/design-review-r<n>.md` | yes | only when findings or blockers require disposition |
+| Delivery review | `docs/changes/<change-id>/reviews/delivery-review-r<n>.md` | yes | only when findings or blockers require disposition |
 | Code review | `docs/changes/<change-id>/reviews/code-review-<milestone>-r<n>.md` | yes | only when findings or blockers require disposition |
 
 ## Plan surfaces

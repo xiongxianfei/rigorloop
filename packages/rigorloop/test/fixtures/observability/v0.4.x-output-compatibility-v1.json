@@ -307,7 +307,7 @@
           },
           "downstream_package_authority": {
             "status": "not-current",
-            "enforcement": "cutover-pending",
+            "enforcement": "enforced",
             "packages": {
               "design": {
                 "state": "missing",
@@ -464,7 +464,7 @@
           },
           "downstream_package_authority": {
             "status": "not-current",
-            "enforcement": "cutover-pending",
+            "enforcement": "enforced",
             "packages": {
               "design": {
                 "state": "missing",
@@ -509,7 +509,7 @@
           "permitted_registration_operation": "record-review",
           "downstream_package_authority": {
             "status": "not-current",
-            "enforcement": "cutover-pending",
+            "enforcement": "enforced",
             "packages": {
               "design": {
                 "state": "missing",
@@ -607,7 +607,7 @@
           },
           "downstream_package_authority": {
             "status": "not-current",
-            "enforcement": "cutover-pending",
+            "enforcement": "enforced",
             "packages": {
               "design": {
                 "state": "missing",
@@ -736,7 +736,7 @@
           },
           "downstream_package_authority": {
             "status": "not-current",
-            "enforcement": "cutover-pending",
+            "enforcement": "enforced",
             "packages": {
               "design": {
                 "state": "missing",
@@ -903,7 +903,7 @@
           },
           "downstream_package_authority": {
             "status": "not-current",
-            "enforcement": "cutover-pending",
+            "enforcement": "enforced",
             "packages": {
               "design": {
                 "state": "missing",

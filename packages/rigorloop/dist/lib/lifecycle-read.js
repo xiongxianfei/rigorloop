@@ -7,7 +7,7 @@ import { reviewPackageContext, validateStoredReviewPackages } from "./lifecycle-
 import { stageIsComplete } from "./lifecycle-stage-routing.js";
 
 const SUPPORTED_CONTRACT = "stage-owned-change-local-v1";
-const REVIEW_STAGES = new Set(["proposal-review", "spec-review", "architecture-review", "plan-review", "test-spec-review", "design-review", "delivery-review", "code-review"]);
+const REVIEW_STAGES = new Set(["proposal-review", "design-review", "delivery-review", "code-review"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
 const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "plan", "test-spec"]);
 const CORRECTION_STAGE_ORDER = ["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"];
@@ -39,7 +39,7 @@ function downstreamPackageAuthority(change, packageContexts) {
   }
   return {
     status: Object.values(packages).every((entry) => entry.state === "current") ? "current" : "not-current",
-    enforcement: "cutover-pending",
+    enforcement: "enforced",
     packages,
   };
 }
@@ -235,7 +235,9 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
   if (["design-review", "delivery-review"].includes(stage)) {
     const packageKind = stage.replace(/-review$/, "");
     const nextOperation = packageContexts[packageKind]?.next_permitted_operation;
-    return nextOperation ? [nextOperation] : [];
+    if (nextOperation) return [nextOperation];
+    if (stage === "delivery-review" && packageContexts.delivery?.authority === "granted" && !change.workflow_state?.planned_work) return ["initialize-approved-plan"];
+    return [];
   }
   if (target?.lifecycle_state === "revision-required") return ["record-artifact-revision"];
   if (REVIEW_STAGES.has(stage) && registeredReview?.outcome === "changes-requested" && onlyOpenFindings) return ["settle-artifact"];
@@ -283,6 +285,15 @@ export function interpretGovernedChange(root, selected) {
   if (staleEvidence.length) blockers.push({ code: "RL_STALE_EVIDENCE", summary: "Registered evidence is stale.", blocking_invariant: "evidence-freshness", relevant_identities: staleEvidence });
   const packageContexts = Object.fromEntries(["design", "delivery"].map((kind) => [kind, reviewPackageContext(root, change, kind)]));
   const downstreamAuthority = downstreamPackageAuthority(change, packageContexts);
+  if (change.review_packages !== undefined && DOWNSTREAM_AUTHORITY_STAGES.has(change.workflow_state?.current_stage) && downstreamAuthority.status !== "current") {
+    blockers.push(diagnostic(
+      "RL_OPERATION_NOT_PERMITTED",
+      "Current Design Review and Delivery Review package authority is required for downstream work.",
+      "downstream-package-authority",
+      null,
+      Object.entries(downstreamAuthority.packages).filter(([, value]) => value.state !== "current").map(([kind]) => kind),
+    ));
+  }
   for (const packageContext of Object.values(packageContexts)) if (change.review_packages?.[packageContext.package_kind]) blockers.push(...packageContext.blockers, ...packageContext.errors);
   blockers.push(...errors);
   const referenced = collected.artifacts.filter((artifact) => artifact.sha256).map((artifact) => ({ path: artifact.path, sha256: artifact.sha256 }));

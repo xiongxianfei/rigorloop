@@ -18,7 +18,8 @@ export function stageIsComplete(root, change, stage) {
     return context.errors.length === 0
       && context.status === "approved"
       && context.authority === "granted"
-      && projection?.review_id === registered?.review_id;
+      && projection?.review_id === registered?.review_id
+      && (stage !== "delivery-review" || Boolean(change.workflow_state?.planned_work));
   }
 
   const coordination = change.lifecycle_cli;

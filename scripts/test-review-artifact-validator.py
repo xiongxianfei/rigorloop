@@ -3102,9 +3102,8 @@ Validation target: Run tests.
     def test_review_stage_skills_align_with_review_resolution_contract(self) -> None:
         for path in [
             "skills/proposal-review/SKILL.md",
-            "skills/spec-review/SKILL.md",
-            "skills/architecture-review/SKILL.md",
-            "skills/plan-review/SKILL.md",
+            "skills/design-review/SKILL.md",
+            "skills/delivery-review/SKILL.md",
             "skills/code-review/SKILL.md",
         ]:
             with self.subTest(path=path):

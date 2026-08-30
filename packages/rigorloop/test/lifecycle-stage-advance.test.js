@@ -59,6 +59,18 @@ function approvePackage(root, kind) {
   return review;
 }
 
+function initializeDeliveryPlan(root) {
+  const request = writeRequest(root, "initialize-delivery-plan", {
+    schema_version: 1,
+    operation: "initialize-approved-plan",
+    change_id: "example",
+    expected_lifecycle_revision: lifecycleRevision(root),
+    artifact_id: "plan",
+    stage_authority: "plan",
+  });
+  return executeLifecycleCli(["initialize-approved-plan", "--request", request, "--format", "json"], { cwd: root });
+}
+
 test("consolidated authoring stages advance only across adjacent edges", async () => {
   const { root, changeRoot } = await packageRepository({ stage: "proposal-review" });
   for (const [source, destination] of [["proposal-review", "architecture"], ["architecture", "spec"], ["spec", "design-review"]]) {
@@ -80,6 +92,11 @@ test("approved package authority advances design and delivery gates", async () =
   assert.equal(designAdvance.exitCode, 0, JSON.stringify(designAdvance.result));
 
   approvePackage(root, "delivery");
+  const initialized = initializeDeliveryPlan(root);
+  assert.equal(initialized.exitCode, 0, JSON.stringify(initialized.result));
+  const initializationBasis = parseLifecycleYaml(changeBytes(root)).workflow_state.planned_work.initialization_basis;
+  assert.deepEqual(Object.keys(initializationBasis), ["review_id", "review_record", "review_round", "reviewed_artifact_path"]);
+  assert.equal(initializationBasis.review_id, "delivery-review-r1");
   const deliveryAdvance = advance(root, "delivery-review", "implement");
   assert.equal(deliveryAdvance.exitCode, 0, JSON.stringify(deliveryAdvance.result));
 });

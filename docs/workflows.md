@@ -45,10 +45,9 @@ Workflow completion claims require evidence from the relevant standard workflow 
 - On-demand support: `explore` and `research`.
   - Use them when ambiguity, option expansion, architecture uncertainty, external facts, platform behavior, standards, laws, pricing, or other current evidence affects the decision.
 - Per-change chain:
-  - At consolidated cutover: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+  - Current workflow: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
   - Architecture and specification remain separately authored and reconcile before `design-review`. Plan and test specification remain separately authored and reconcile before `delivery-review`.
-  - `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain historical evidence for work completed under the earlier contract. They are retired public progression entrypoints at cutover and are not aliases for `design-review` or `delivery-review`.
-  - The implementing consolidated-gates change itself completes under the earlier gate sequence. This temporary repository-development condition is not a runtime topology selector and creates no per-change topology field.
+  - `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain readable historical evidence only. They are retired public progression entrypoints and are not aliases for `design-review` or `delivery-review`.
   - For milestone-based plans, the `implement -> code-review -> review-resolution when triggered` segment repeats for each in-scope implementation milestone. Final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
   - `review-resolution` runs only when material review findings, non-final dispositions, or review outcomes require explicit closeout.
   - `ci-maintenance` is conditional support when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong.
@@ -408,7 +407,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - For non-trivial work, the baseline change-local pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning.
 - `change.yaml` is the sole owner of mutable artifact lifecycle state, planned-work progress, current review state, blockers, routing, and final-closeout readiness.
 - Governed artifacts and plans keep stable intent and a pointer to the owning change record. They do not mirror mutable current state.
-- Authoring stages update only their own governed content and matching authoring-state transition. After clean current plan-review evidence exists, `plan` additionally initializes missing `workflow_state.planned_work` exactly once from that reviewed revision. Plan-review settles the plan only through an identical retry after matching initialization. Review peers record evidence and settle only the matching artifact entry. `workflow` coordinates this transaction, updates routing, and owns every later planned-work transition.
+- Authoring stages update only their own governed content and matching authoring-state transition. Delivery Review settles the plan and test specification as one package. `plan` may initialize missing `workflow_state.planned_work` exactly once from that approved delivery package; `workflow` coordinates routing and owns every later planned-work transition. Review peers record evidence and settle only their matching review package or artifact entry.
 - Downstream and support stages treat upstream governed artifacts and state as read-only and route corrections to the owning stage.
 - When a non-current upstream authoring context reports `RL_WORKFLOW_ROUTE_REQUIRED`, only `workflow` may request the CLI's guarded correction route and later return. Authoring skills retain semantic authoring plus `record-artifact-revision`; they do not learn settlement mechanics or edit routing fields. Provable duplicate architecture or ADR ownership is removed only through `withdraw-artifact-registration`.
 - For new non-trivial work, the default durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`.
@@ -430,20 +429,16 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 
 - Distinguish `workflow-managed` completion flows from isolated stage requests.
 - Workflow automation writes one mechanism under `docs/changes/<change-id>/change.yaml#workflow.automation`. Legacy automation records are read-only migration inputs and never receive new state.
-- `$workflow auto: <target-stage>` selects a structured target. Current pre-cutover stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
-- At consolidated cutover the supported targets become `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `test-spec`, `delivery-review`, `implement`, `code-review`, and `verify`; the four retired artifact-review targets are no longer admitted.
+- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `test-spec`, `delivery-review`, `implement`, `code-review`, and `verify`; retired artifact-review targets are not admitted.
 - `$workflow auto: status` is read-only.
   `$workflow auto: off` cancels the run and preserves transition evidence.
 - The selected target is the complete repository-local automation boundary. Do not add another authorization, capability, activation selector, profile, or inferred continuation parameter.
-- Authoring may route through proposal review, spec, spec review, architecture assessment, conditional architecture and architecture review, plan and plan review, test spec, and test-spec review when those stages are at or before the selected target and their current prerequisites pass.
-- Architecture assessment records `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses instead of guessing.
+- Authoring routes through Proposal Review, architecture, specification, Design Review, plan, test specification, and Delivery Review when those stages are at or before the selected target and their current prerequisites pass.
 - Automated review stages remain independent formal reviews: reset to the tracked artifact, governing sources, formal criteria, and relevant recorded findings; record the result before downstream routing; do not rely on hidden authoring reasoning or edit the reviewed artifact during review.
 - Stop or pause on an unsatisfied review gate without bounded correction, material findings requiring a decision, `needs-decision`, user pause or cancellation, contradictory workflow state, unreliable partial completion, exhausted transition budget, direct review-only invocation, or an out-of-scope stage request.
 - Resume must use tracked artifact and review evidence. Do not recreate completed artifacts, rerun clean reviews without an explicit rereview event, or infer completion from file existence alone.
 - Reaching the exact structured target stops the run. `implement` and `code-review` targets bind the unique current plan milestone before persistence and never silently rebind on resume.
 - Direct review invocations do not activate, resume, or advance automation, even when persisted state exists.
-- After approved recorded `spec-review`, routing requires exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. `architecture-required` routes through architecture and architecture review; `architecture-not-required` skips them; `architecture-ambiguous` pauses for owner decision.
-- If `architecture-not-required` skips a user-requested conditional target such as `architecture` or `architecture-review`, stop with `target-not-applicable` instead of claiming that target was reached.
 - A target that reaches implementation may run ordered milestone implementation, independent milestone review, reviewer-owned bounded correction, triggered CI maintenance, and final holistic review when those stages are at or before the target.
 - Successful verify reports `pr` as next but never opens a PR. The mechanism never pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
 - Results report the structured target, canonical position source, stage outcome, review and clean-gate state, transitions, fixes, decisions, artifacts, stop reason, and next action.
@@ -460,7 +455,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - If stable plan intent and change-local planned-work state do not identify the reviewed milestone or remaining in-scope implementation milestones consistently, stop and route the mismatch to `plan` and `workflow` instead of inferring final-closeout readiness.
 - Clean reviews require checklist coverage plus no-finding rationale. Positive notes are optional and only useful when they add specific evidence-backed context.
 - Direct `pr` remains in scope and opens the PR when readiness passes.
-- Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
+- Direct `proposal-review`, `design-review`, `delivery-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
 - Manual skill invocations and bugfix skill invocations stay isolated or explicit-step in v1.
 - On-demand and periodic actions such as `explore`, `research`, and `learn` do not auto-run by default.
 - Stop automatic continuation when the user explicitly pauses, validation fails, a review or design issue needs a real decision, permissions or tooling block the next step, or the next action would be stronger than PR creation such as merge, release, deploy, or destructive Git operations.

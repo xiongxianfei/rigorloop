@@ -26,10 +26,10 @@ Within one canonical target, prepare all Markdown and diagrams together, write s
 
 Use an ADR for a durable system boundary, packaging or adapter rule, validation architecture, cache or indexing strategy, portability constraint, release architecture, security boundary, or major workflow architecture decision. Use `adr-skeleton.md`; record context, decision, meaningful alternatives, consequences, and follow-up.
 
-ADRs are history. Author replacement and supersession/deprecation links instead of rewriting old decisions; all remain unapproved until architecture-review.
+ADRs are history. Author replacement and supersession/deprecation links instead of rewriting old decisions; changed design members remain unapproved until Design Review.
 
 ## Quality and completion
 
 Map requirements to choices and expose tradeoffs, quality, deployment, security, compatibility, risk, and recovery. Exclude behavior absent from the spec and plan sequencing.
 
-Remove all copied placeholders. Report changed arc42 sections, diagram paths, ADR paths, unaffected surfaces with rationale, and a truthful architecture-review handoff or blocker.
+Remove all copied placeholders. Report changed arc42 sections, diagram paths, ADR paths, unaffected surfaces with rationale, and a truthful specification-reconciliation or Design Review handoff or blocker.

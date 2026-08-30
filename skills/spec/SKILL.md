@@ -3,7 +3,7 @@ name: spec
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Author observable feature contracts before design or implementation; spec-review approves.
+  Author observable feature contracts before delivery planning or implementation; Design Review approves the specification with architecture.
 argument-hint: [proposal path, feature name, behavior request, or issue number]
 ---
 
@@ -14,12 +14,10 @@ argument-hint: [proposal path, feature name, behavior request, or issue number]
 - role_name: spec
 - stage: authoring
 - upstream: accepted proposal or approved direction
-- downstream: spec-review
-
-At consolidated-gates cutover, completed specification authoring reconciles with architecture and applicable ADRs and hands the exact package to `design-review`; it does not seek independent component approval. The pre-cutover `spec-review` handoff remains only for changes completing under the earlier contract.
+- downstream: design-review after reconciliation with architecture and applicable ADRs
 - summary: Author the contract.
 - ownership: Write the spec and authorized governed evidence/transition.
-- must_not_claim: spec-review approval, architecture readiness, plan readiness, implementation readiness, verification, branch readiness, or PR readiness.
+- must_not_claim: Design Review approval, plan readiness, implementation readiness, verification, branch readiness, or PR readiness.
 
 Portable work is isolated. Workflow-managed execution does not enlarge the `spec` write set.
 
@@ -60,7 +58,7 @@ Both boundary references load initially; loading and formal-block emission are i
 
 Block state is `absent`, `present-complete`, `present-incomplete`, `present-duplicated`, or `present-misplaced`; anchors are `unique-ordered`, `missing`, `duplicated`, or `misordered`. Adoption needs unique anchors or an authorized full rewrite; otherwise stop.
 
-A complete block preserves IDs and is never removed implicitly. Removal needs approved deactivation/supersession and impact traceability. Malformed or unresolved structure stops. Spec-review retains final authority over grandfathered substantive-revision classification.
+A complete block preserves IDs and is never removed implicitly. Removal needs approved deactivation/supersession and impact traceability. Malformed or unresolved structure stops. Design Review retains final authority over grandfathered substantive-revision classification.
 
 ## Generated Markdown readability
 
@@ -68,7 +66,7 @@ Write normal Markdown paragraphs. Do not split a sentence across physical source
 
 ## Rules and handoff
 
-Only governed authority may end at `review-required`; `spec-review` settles it. Never change other artifact or stage state. Governed work hands off; portable stays isolated; unclear behavior routes upstream.
+Only governed authority may end at `review-required`; `design-review` settles the complete design package. Never change other artifact or stage state. Governed work hands off; portable stays isolated; unclear behavior routes upstream.
 
 ## Stop conditions
 
@@ -78,7 +76,7 @@ The common path must not reconstruct missing procedure. Report blocker and owner
 
 ## Claims this skill must not make
 
-Never claim spec-review approval; architecture, plan, implementation, branch, or PR readiness; validation, verification, release, deployment, publication, or settlement.
+Never claim Design Review approval; plan, implementation, branch, or PR readiness; validation, verification, release, deployment, publication, or settlement.
 
 ## Evidence collection efficiency
 
@@ -117,7 +115,7 @@ Start with the exact approved rows cited for the current decision. Expand approv
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
-Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `design-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
 Author the normative applicability, boundary, interaction, and example-ownership record. Stop spec authoring and route the gap upstream when governing requirements cannot own an applicable boundary, an example would be the only source of behavior, or applicability is unsafe to decide. The two initially loaded references own detailed vocabulary, record shape, semantic procedure, and structural-validation limits.
 

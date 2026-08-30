@@ -20,7 +20,39 @@ BASELINE_WARNINGS = {
             "BFA-M2-R9-001",
         ],
     },
+    "2026-08-25-cli-observability-token-efficient-results": {
+        "blocker_codes": ["RL_STALE_EVIDENCE"],
+        "finding_ids": [],
+    },
 }
+RETIRED_PROGRESSION_STAGES = frozenset({
+    "spec-review", "architecture-review", "plan-review", "test-spec-review",
+})
+
+
+def legacy_progression_dependency(path: Path) -> list[str]:
+    """Return retired live routing stages; historical evidence is intentionally ignored."""
+    if not path.is_file():
+        return []
+    fields: dict[str, str] = {}
+    in_workflow_state = False
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line == "workflow_state:":
+            in_workflow_state = True
+            continue
+        if in_workflow_state and line and not line.startswith(" "):
+            break
+        if in_workflow_state and line.startswith("  ") and not line.startswith("    "):
+            key, separator, value = line.strip().partition(":")
+            if separator:
+                fields[key] = value.strip()
+    if fields.get("lifecycle_state") != "active":
+        return []
+    return [
+        fields[name]
+        for name in ("current_stage", "next_stage")
+        if fields.get(name) in RETIRED_PROGRESSION_STAGES
+    ]
 
 
 def baseline_matches(change_id: str, payload: dict) -> bool:
@@ -55,7 +87,11 @@ def result_codes(payload: dict) -> list[str]:
 def build_report(records: list[tuple[str, Path]], *, runner=subprocess.run, root: Path = ROOT) -> dict:
     failures = []
     warned = []
+    legacy_dependent = []
     for change_id, _ in records:
+        retired_stages = legacy_progression_dependency(_)
+        if retired_stages:
+            legacy_dependent.append({"change_id": change_id, "stages": retired_stages})
         command = [
             "node", "packages/rigorloop/dist/bin/rigorloop.js", "lifecycle", "validate",
             "--change", change_id, "--format", "json",
@@ -76,7 +112,14 @@ def build_report(records: list[tuple[str, Path]], *, runner=subprocess.run, root
             warned.append(item)
         else:
             failures.append(item)
-    return {"schema_version": 1, "validated": len(records), "baseline_warnings": warned, "failures": failures, "status": "passed" if not failures else "failed"}
+    return {
+        "schema_version": 1,
+        "validated": len(records),
+        "baseline_warnings": warned,
+        "legacy_progression_dependencies": legacy_dependent,
+        "failures": failures,
+        "status": "passed" if not failures and not legacy_dependent else "failed",
+    }
 
 
 def main(*, records=None, runner=subprocess.run, root: Path = ROOT, output=sys.stdout) -> int:
