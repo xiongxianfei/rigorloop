@@ -13,6 +13,7 @@
 | `code-review-m2-r5` | `code-review` | `r5` | M2 aggregate through `e757b2a310aa3360511c8e33e00267c58050861e` | `reviews/code-review-m2-r5.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r3` | `code-review` | `r3` | M3 implementation through `c8527ea9185213c1f91f2a143a01ca0f066ef1a5` | `reviews/code-review-m3-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r4` | `code-review` | `r4` | M3 implementation through `3e5ea6cc7100ca5eb926622e8578892bd49e4349` | `reviews/code-review-m3-r4.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m4-r2` | `code-review` | `r2` | SPC-M4-CR1 correction at `c1863b7ab47e2b20cc80bd056db8aff00a36b9f3` | `reviews/code-review-m4-r2.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Package review occurrence
 

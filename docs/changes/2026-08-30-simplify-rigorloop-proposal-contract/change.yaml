@@ -116,10 +116,10 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m4-r1.md
+  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m4-r2.md
   review_log: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
-  reviewed_artifact: branch-diff:origin/main...c3238d0382bccacf7f3ab000261847ef3821f4a8
-  status: changes-requested
+  reviewed_artifact: correction-commit:c1863b7ab47e2b20cc80bd056db8aff00a36b9f3
+  status: clean-with-notes
   unresolved_items: 1
 lifecycle_cli:
   schema_version: 2
