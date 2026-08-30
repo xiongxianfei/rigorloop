@@ -6,6 +6,7 @@ Closeout status: closed
 
 Review closeout: code-review-m6-r1
 Review closeout: code-review-final-r1
+Review closeout: code-review-final-r3
 Review closeout: code-review-m1-r2
 Review closeout: plan-review-r1
 Review closeout: plan-review-r3
@@ -25,15 +26,16 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m6-r1`, `code-review-final-r1`
-- Findings resolved: 28
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m6-r1`, `code-review-final-r1`, `code-review-final-r3`
+- Findings resolved: 29
 - Unresolved findings: 0
-- Current result: all implementation and final holistic findings are resolved; the complete corrected diff is ready for final holistic rereview.
+- Current result: all implementation and final holistic findings are resolved; Final Holistic Code Review R4 is clean, and the post-correction explanation and Verify evidence require refresh.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| CRG-SEL-CR1 | accepted | resolved | Reverted the unvalidated request selector route and removed all 84 transient request inputs from the governed change diff. |
 | CRG-FH-CR1 | accepted | resolved | Added a concise package-owner correction route for Delivery Review upstream-direction findings and named blocked outcomes, including required Design Review rereview and delivery invalidation. |
 | CRG-SR1 | accepted | resolved | The later owner-approved cutover decision supersedes the earlier baseline choice: old progression remains authoritative until one complete release cutover, with no runtime topology machinery. |
 | CRG-SR2 | accepted | resolved | Added deterministic authority and next-action semantics for every package-review outcome. |
@@ -585,3 +587,22 @@ Safe resolution path: keep concrete artifact routes unchanged, special-case only
 Follow-up: rerun final holistic Code Review over the complete corrected diff.
 Validation target: CRG-R29, CRG-R31, CRG-R33, CRG-T08, BND-AUTH-001, BND-RECOVERY-001, INT-007.
 Validation evidence: focused lifecycle suite passed 97 tests (95 passed, 2 explicitly historical scenarios skipped); the new public-operation regression covers `changes-requested`, `blocked`, wrong-stage immutability, Design Review rereview, return, and Delivery Review invalidation; governed lifecycle CLI validator passed 7 tests.
+
+### code-review-final-r3
+
+#### CRG-SEL-CR1
+
+Finding ID: CRG-SEL-CR1
+Disposition: accepted
+Status: resolved
+Owner: final validation correction owner
+Owning stage: implement
+Decision owner: final validation correction owner
+Decision needed: none; the finding had a bounded correction that preserved the governing request-input contract.
+Chosen action: revert the `requests/*.json` selector exception and its fixture, then delete all 84 transient request JSON files introduced under this change root.
+Rationale: lifecycle request files are operation inputs, not durable evidence. Routing them to a validator that ignores JSON content created a false proof claim; keeping them transient removes the routing obligation without adding a validator or artifact type.
+Required outcome: no changed request path can receive `status: ok` solely because an unrelated validator was selected, and no transient request input remains in the governed diff.
+Safe resolution path: remove the selector exception and its test, delete the transient inputs, confirm no durable reference remains, and rerun actual PR selection plus selector regression.
+Follow-up: refresh Explain Change and Verify after clean Final Holistic Code Review R4.
+Validation target: selector R13 through R15, CRM-R7 through CRM-R15 and CRM-R50, actual PR changed paths, and request-input non-authority.
+Validation evidence: `code-review-final-r4.md`; PR selector status `ok` with 174 changed paths, zero blockers, zero unclassified paths, and zero request paths; selector regression and diff check passed; no surviving request reference exists under the current change.

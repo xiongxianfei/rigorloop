@@ -4,6 +4,7 @@
 
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
+| `code-review-final-r4` | `code-review` | `r4` | complete corrected diff `8f80771e..93f212a8` | `reviews/code-review-final-r4.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r2` | `code-review` | `r2` | complete corrected diff `8f80771e..638b9cca` | `reviews/code-review-final-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m6-r2` | `code-review` | `r2` | corrected M6 implementation through commit `48f8a4a8` | `reviews/code-review-m6-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m5-r1` | `code-review` | `r1` | M5 implementation in commit `5d412dab` | `reviews/code-review-m5-r1.md` | `clean-with-notes` | 0 | `recorded` |
@@ -26,6 +27,21 @@
 | `test-spec-review-r3` | `test-spec-review` | `r3` | test-spec at `sha256:0f3a235de400f568eb7fa57c4a97f94a8b1dcb9d9c5459958aa32fdce3398b6a` | `reviews/test-spec-review-r3.md` | `approved` | 0 | `recorded` |
 
 ## Detailed review entries
+
+### Review entry
+
+Review ID: code-review-final-r3
+Stage: code-review
+Round: r3
+Reviewed artifact: selector correction commit `523762d789bf1cece8b865f8a55ea028ba2f760d`
+Status: changes-requested
+Detailed record: reviews/code-review-final-r3.md
+Resolution: review-resolution.md#code-review-final-r3
+Material findings: CRG-SEL-CR1
+Open findings: none
+Finding ID: CRG-SEL-CR1
+Recording status: recorded
+Blocker: none; CRG-SEL-CR1 is resolved and final holistic rereview R4 is clean
 
 ### Review entry
 
