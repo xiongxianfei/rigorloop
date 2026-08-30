@@ -4,6 +4,7 @@
 
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
+| `code-review-m4-r2` | `code-review` | `r2` | complete `origin/main...234f10d8` branch diff | `reviews/code-review-m4-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m4-r1` | `code-review` | `r1` | complete `origin/main...30bf2857` branch diff | `reviews/code-review-m4-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r2` | `code-review` | `r2` | corrected M3 implementation through commit `a1686ca1` | `reviews/code-review-m3-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r1` | `code-review` | `r1` | M2 implementation commit `acb455cfa86d449985ed5709fb41168cf519d3b1` | `reviews/code-review-m2-r1.md` | `clean-with-notes` | 0 | `recorded` |
