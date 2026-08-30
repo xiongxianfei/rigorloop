@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -14,11 +14,12 @@ Review closeout: code-review-cli-fix-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
+Review closeout: code-review-m3-r2
 
 - Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
-- Findings resolved: 20
-- Unresolved findings: 1
-- Current result: M3 R2 found that combined reviews cannot complete through the Python stage-native verifier; CRG-M3-CR3 requires resolution and rereview.
+- Findings resolved: 21
+- Unresolved findings: 0
+- Current result: CRG-M3-CR3 is resolved with package-aware Python completion verification and direct design/delivery proof; M3 is ready for rereview.
 
 ## Resolution Overview
 
@@ -43,7 +44,7 @@ Review closeout: code-review-m3-r1
 | CRG-M2-CR7 | accepted | resolved | Settled non-approved package states now expose outcome-specific safe continuations. |
 | CRG-M3-CR1 | accepted | resolved | Python automation now uses and proves the consolidated stage vocabulary and route. |
 | CRG-M3-CR2 | partially-accepted | resolved | M3 detects and proves every invalid package state; M6 retains atomic activation ownership under CRG-R35 through CRG-R40. |
-| CRG-M3-CR3 | needs-decision | open | Replace the scalar reviewed-artifact check with explicit package-aware completion verification. |
+| CRG-M3-CR3 | accepted | resolved | Python completion now verifies explicit package members, upstream authority, registration, and canonical review occurrence. |
 
 ## Finding Details
 
@@ -52,19 +53,19 @@ Review closeout: code-review-m3-r1
 #### CRG-M3-CR3
 
 Finding ID: CRG-M3-CR3
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: M3 implementation owner
 Owning stage: implement M3
 Decision owner: M3 implementation owner
-Decision needed: accept the package-aware verifier correction or stop M3.
-Chosen action: pending owner disposition.
+Decision needed: none; the user requested correction followed by rereview.
+Chosen action: replace scalar package identities with explicit package-aware completion verification.
 Rationale: the consolidated stages are routable, but their completion verifier requests scalar package identities that the approved explicit member-map model does not define.
 Required outcome: Design Review and Delivery Review completion verify the exact explicit package facts and canonical review occurrence without aggregate or per-document package hashes.
 Safe resolution path: add a package-specific native verifier and direct valid/mismatch tests for both consolidated review stages.
-Follow-up: resolve, implement, and rerun M3 Code Review.
+Follow-up: rerun M3 Code Review.
 Validation target: CRG-R22 through CRG-R24; CRG-T11; BND-STATE-001; BND-COMPOSE-001.
-Validation evidence: pending.
+Validation evidence: `python scripts/test-workflow-automation-state.py` passed 67 tests including valid Design Review and Delivery Review completion plus member and upstream mismatch rejection; the engine, policy, and code-state suites passed 76, 17, and 18 tests.
 
 ### code-review-m3-r1
 

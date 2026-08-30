@@ -131,7 +131,7 @@ review:
   review_log: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-log.md
   reviewed_artifact: corrected M3 implementation in commit 5494d2cf
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -334,6 +334,14 @@ lifecycle_cli:
       evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
       evidence_sha256: 190ce6b3fbf08da706ac2abfb5d20196437132c9d594d9ce0a82f647f984d7f7
       finding_id: CRG-M3-CR2
+      owner: M3 implementation owner
+      stage_authority: review-resolution
+    CRG-M3-CR3:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
+      evidence_sha256: 3e6243c3f0f0c575b8b10ac22d73a605e771c177899a721cd06f7b34321694fc
+      finding_id: CRG-M3-CR3
       owner: M3 implementation owner
       stage_authority: review-resolution
     CRG-SR5:

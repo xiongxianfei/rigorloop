@@ -32,10 +32,10 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r2.md
 Resolution: review-resolution.md#code-review-m3-r2
 Material findings: CRG-M3-CR3
-Open findings: CRG-M3-CR3
+Open findings: none
 Finding ID: CRG-M3-CR3
 Recording status: recorded
-Blocker: M3 requires package-aware Python completion verification and direct proof before rereview
+Blocker: none; CRG-M3-CR3 is resolved and M3 rereview is required
 
 ### Review entry
 
