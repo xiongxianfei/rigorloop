@@ -1056,6 +1056,11 @@ def _verify_package_review_completion(
     expected_members = _package_members(document, kind)
     if expected_members is None or fields["members"] != expected_members:
         return CompletionVerification(False, "stage-native-package-members-mismatch")
+    if any(
+        _resolve_repository_file(Path(artifact_path), repository_root=root) is None
+        for artifact_path in expected_members.values()
+    ):
+        return CompletionVerification(False, "stage-native-package-member-path-invalid")
     states = document.get("artifact_states")
     artifact_registrations = document.get("lifecycle_cli", {}).get("artifacts", {})
     if not isinstance(artifact_registrations, dict) or any(
