@@ -18,7 +18,7 @@ Recording status: recorded
 
 - Skill: code-review
 - Status: completed
-- Artifacts changed: `docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m4-r1.md` and `docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md`
+- Artifacts changed: `docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m4-r1.md`, `docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md`, and the matching review projection in `docs/changes/2026-08-30-lightweight-requirement-delivery-model/change.yaml`
 - Open blockers: none for final holistic Code Review; workflow owns the next-stage transition
 - Next stage: explain-change
 - Review status: clean-with-notes

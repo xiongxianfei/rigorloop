@@ -114,10 +114,10 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/delivery-review-r2.md
+  latest_review: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m4-r1.md
   review_log: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md
-  reviewed_artifact: review-package:delivery
-  status: clean
+  reviewed_artifact: branch-diff:origin/main...30bf28579448b6ca0b16f7a54f631ea3f64db5b4
+  status: clean-with-notes
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
