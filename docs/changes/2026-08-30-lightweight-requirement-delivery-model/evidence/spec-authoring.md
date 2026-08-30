@@ -1,7 +1,7 @@
 # Specification authoring evidence
 
 Artifact path: specs/lightweight-requirement-delivery-model.md
-Artifact identity: sha256:2b130c10fb6b07c17e1f9e72d909056d00514e0dd8e8195aa35cfe49e16bbe79
+Artifact identity: sha256:6bc2d07d0a026201d52060ab9966ad850cf37b1d0f61203a8fc4512aa44d71a6
 Authoring result: complete
 
-The specification defines 20 normative requirements, six formal boundaries, three selected interactions, ten acceptance criteria, and explicit compatibility, authority, proportionality, and semantic-review limits. It is reconciled with the registered architecture's shared-source, skill-local packaging, and no-new-lifecycle-state boundaries.
+The specification defines 20 normative requirements, six formal boundaries, three selected interactions, ten acceptance criteria, and explicit compatibility, authority, proportionality, and semantic-review limits. It declares the active boundary-first contract, keeps each example's cited requirements within every cited boundary, and remains reconciled with the registered architecture's shared-source, skill-local packaging, and no-new-lifecycle-state boundaries.

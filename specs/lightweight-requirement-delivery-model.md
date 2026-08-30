@@ -4,6 +4,8 @@
 
 `docs/changes/2026-08-30-lightweight-requirement-delivery-model/change.yaml`
 
+boundary_contract: boundary-first-v1
+
 ## Related proposal
 
 [Introduce a Lightweight Requirement-to-Delivery Model](../docs/proposals/2026-08-30-lightweight-requirement-delivery-model.md)
@@ -146,11 +148,11 @@ Boundary model scope: RTD-R1, RTD-R2, RTD-R3, RTD-R4, RTD-R5, RTD-R6, RTD-R7, RT
 
 | Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
 | --- | --- | --- | --- | --- | --- |
-| E1 | illustration | RTD-R2, RTD-R3, RTD-R6, RTD-R8, RTD-R16 | BND-INPUT-001, BND-AUTH-001 | - | - |
-| E2 | illustration | RTD-R4, RTD-R5, RTD-R6, RTD-R9, RTD-R10 | BND-INPUT-001, BND-AUTH-001 | - | - |
-| E3 | illustration | RTD-R7, RTD-R10 | BND-INPUT-001 | - | - |
-| E4 | illustration | RTD-R11, RTD-R12, RTD-R15 | BND-AUTH-001, BND-COMPOSE-001 | - | - |
-| E5 | illustration | RTD-R13, RTD-R18 | BND-COMPOSE-001, BND-RECOVERY-001, BND-ENV-001 | - | - |
+| E1 | illustration | RTD-R3, RTD-R6 | BND-AUTH-001 | - | - |
+| E2 | illustration | RTD-R4, RTD-R9, RTD-R10 | BND-INPUT-001 | - | - |
+| E3 | illustration | RTD-R10 | BND-INPUT-001 | - | - |
+| E4 | illustration | RTD-R11, RTD-R15 | BND-AUTH-001, BND-COMPOSE-001 | - | - |
+| E5 | illustration | RTD-R18 | BND-COMPOSE-001, BND-RECOVERY-001, BND-ENV-001 | - | - |
 
 ## Compatibility and migration
 

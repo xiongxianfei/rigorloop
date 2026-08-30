@@ -49,7 +49,7 @@ review_packages:
     package_kind: design
     review_id: design-review-r1
     review_round: r1
-    status: changes-requested
+    status: review-required
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
@@ -92,11 +92,34 @@ lifecycle_cli:
       artifact_kind: spec
       artifact_path: specs/lightweight-requirement-delivery-model.md
       artifact_role: primary
-      artifact_sha256: 2b130c10fb6b07c17e1f9e72d909056d00514e0dd8e8195aa35cfe49e16bbe79
+      artifact_sha256: 6bc2d07d0a026201d52060ab9966ad850cf37b1d0f61203a8fc4512aa44d71a6
       authoring_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/spec-authoring.md
-      authoring_evidence_sha256: 4cb9a5e8fe71cb6945d1c8acd09c240798b57a482c704d6d72d6ab09609b91c0
+      authoring_evidence_sha256: de49f8a374c9f18d46471670bd439dde2a4fe78e79d9c41a0a33127c1b550830
       stage_authority: spec
-  correction_history: {}
+  correction_history:
+    route-a7ec901fcafb38ce1dfde97e6059cd065b3722a0a62eb6b1c22577208c51072b:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/design-review-r1-spec-route.md
+      evidence_sha256: 23347d122f7f4b2bc3f2d9a05871360ecbde22573f9dc0182eaa198f235bf4ec
+      prior_artifact_sha256: 2b130c10fb6b07c17e1f9e72d909056d00514e0dd8e8195aa35cfe49e16bbe79
+      prior_lifecycle_revision: sha256:eb38d6e30105efbcaa8ba1d0ca5046b9bec9cf190bc064a2d5d719003f70c94f
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/design-review-r1-spec-return.md
+      return_evidence_sha256: 72f17c3a81a75848a95776f1ca403734f25784ca419eb875a5f2003753025cbc
+      return_stage: design-review
+      route_id: route-a7ec901fcafb38ce1dfde97e6059cd065b3722a0a62eb6b1c22577208c51072b
+      source_review_id: design-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - RTD-DR1
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: design-review
+      status: returned
   milestones: {}
   package_reviews:
     design:
@@ -126,7 +149,15 @@ lifecycle_cli:
       round: r1
       stage_authority: design-review
       upstream_review_id: proposal-review-r1
-  resolutions: {}
+  resolutions:
+    RTD-DR1:
+      artifact_id: spec
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-resolution.md
+      evidence_sha256: d2545980b109b2c4ad45242f35e60fbb904ad1fc123333e93344054160be9f9a
+      finding_id: RTD-DR1
+      owner: specification author
+      stage_authority: review-resolution
   reviews:
     proposal:
       artifact_path: docs/proposals/2026-08-30-lightweight-requirement-delivery-model.md
