@@ -13,17 +13,17 @@ generator:
 artifacts:
   - adapter: codex
     archive: rigorloop-adapter-codex-v0.4.1.zip
-    sha256: 5e3d0c125525d367dd36b9b4ddd260622ba94381b791a58b2b311b14e8da6c02
+    sha256: 78c67a10bf80c6beb69dfcea10746c4d66548af31059cd029c952537e11d8df9
     install_root: .agents/skills/
     result: pass
   - adapter: claude
     archive: rigorloop-adapter-claude-v0.4.1.zip
-    sha256: 810e0bdae6e8f349371b19c8cb5c82c6cba7d35eeec06fff6c7d6ec5af7c1c7b
+    sha256: bf9ebd15e55978ec3eb561937a829877d29bb05901478f36cb3ee407f3360e58
     install_root: .claude/skills/
     result: pass
   - adapter: opencode
     archive: rigorloop-adapter-opencode-v0.4.1.zip
-    sha256: 1f6a86ce5dd22b511ff7ee0985c3a2b1ceaa98772972fe336ca8514ccac35997
+    sha256: 33e4bf91ebc76c626e73dd6c4a4a0a832d491a8bd0fa43dc319cd35cb5899afc
     install_root: .opencode/skills/
     result: pass
 
