@@ -8,7 +8,7 @@ import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
 import { parseLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
-import { packageContext, packageRepository, writePackageReview } from "./helpers/lifecycle-package-fixture.js";
+import { packageContext, packageRepository, setWorkflowStage, writePackageReview } from "./helpers/lifecycle-package-fixture.js";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 
@@ -149,6 +149,88 @@ test("package finding routes each required owner before package rereview", async
     reason: "upstream-contract-gap", evidence_path: repeatEvidence, finding_ids: ["PKG-CROSS"], return_stage: "design-review", stage_authority: "workflow",
   });
   assert.equal(repeated.result.errors[0].code, "RL_CORRECTION_ROUTE_INVALID");
+});
+
+test("delivery upstream-direction and blocked findings route through the design package owner", async () => {
+  for (const outcome of ["changes-requested", "blocked"]) {
+    const { root, changeRoot } = await packageRepository({ stage: "design-review" });
+    const design = writePackageReview(root, packageContext(root), { outcome: "approved" });
+    assert.equal(execute(root, "record-package-review", {
+      schema_version: 1, operation: "record-package-review", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+      package_kind: "design", review_id: design.reviewId, upstream_review_id: design.packageFacts.upstream_review_id,
+      members: design.packageFacts.members, evidence_path: design.reviewPath, stage_authority: "design-review",
+    }).exitCode, 0);
+    assert.equal(execute(root, "settle-review-package", {
+      schema_version: 1, operation: "settle-review-package", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+      package_kind: "design", review_id: design.reviewId, stage_authority: "design-review",
+    }).exitCode, 0);
+    setWorkflowStage(root, "delivery-review");
+
+    const delivery = writePackageReview(root, packageContext(root, "delivery-review"), {
+      kind: "delivery", outcome,
+      findings: [{ id: `PKG-UPSTREAM-${outcome}`, scope: "upstream-direction", affected: ["design"], owners: ["design-review"] }],
+      correctionTargets: ["design"],
+    });
+    assert.equal(execute(root, "record-package-review", {
+      schema_version: 1, operation: "record-package-review", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+      package_kind: "delivery", review_id: delivery.reviewId, upstream_review_id: delivery.packageFacts.upstream_review_id,
+      members: delivery.packageFacts.members, evidence_path: delivery.reviewPath, stage_authority: "delivery-review",
+    }).exitCode, 0);
+    assert.equal(execute(root, "settle-review-package", {
+      schema_version: 1, operation: "settle-review-package", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+      package_kind: "delivery", review_id: delivery.reviewId, stage_authority: "delivery-review",
+    }).exitCode, 0);
+    assert.deepEqual(status(root).permitted_operations, ["route-correction"]);
+
+    const priorBytes = readFileSync(join(changeRoot, "change.yaml"), "utf8");
+    const rejectedRevision = status(root).lifecycle_revision;
+    const rejectedEvidence = "docs/changes/example/evidence/package-route-wrong-stage.md";
+    writeFileSync(join(root, rejectedEvidence), `Change ID: example\nSource stage: delivery-review\nDestination artifact: design\nReason: upstream-contract-gap\nFinding IDs: PKG-UPSTREAM-${outcome}\nReturn stage: delivery-review\nLifecycle revision: ${rejectedRevision}\n`, "utf8");
+    const rejected = execute(root, "route-correction", {
+      schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: rejectedRevision,
+      source_stage: "delivery-review", destination_stage: "spec", destination_artifact_id: "design",
+      reason: "upstream-contract-gap", evidence_path: rejectedEvidence, finding_ids: [`PKG-UPSTREAM-${outcome}`], return_stage: "delivery-review", stage_authority: "workflow",
+    });
+    assert.notEqual(rejected.exitCode, 0);
+    assert.equal(readFileSync(join(changeRoot, "change.yaml"), "utf8"), priorBytes);
+
+    const routeRevision = status(root).lifecycle_revision;
+    const routeEvidence = "docs/changes/example/evidence/package-route-design.md";
+    writeFileSync(join(root, routeEvidence), `Change ID: example\nSource stage: delivery-review\nDestination artifact: design\nReason: upstream-contract-gap\nFinding IDs: PKG-UPSTREAM-${outcome}\nReturn stage: delivery-review\nLifecycle revision: ${routeRevision}\n`, "utf8");
+    const routed = execute(root, "route-correction", {
+      schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: routeRevision,
+      source_stage: "delivery-review", destination_stage: "design-review", destination_artifact_id: "design",
+      reason: "upstream-contract-gap", evidence_path: routeEvidence, finding_ids: [`PKG-UPSTREAM-${outcome}`], return_stage: "delivery-review", stage_authority: "workflow",
+    });
+    assert.equal(routed.exitCode, 0, JSON.stringify(routed.result));
+    assert.deepEqual(status(root).permitted_operations, ["record-package-review"]);
+
+    const revisedDesign = writePackageReview(root, packageContext(root), { outcome: "approved", round: "r2" });
+    const recordedDesign = execute(root, "record-package-review", {
+      schema_version: 1, operation: "record-package-review", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+      package_kind: "design", review_id: revisedDesign.reviewId, upstream_review_id: revisedDesign.packageFacts.upstream_review_id,
+      members: revisedDesign.packageFacts.members, evidence_path: revisedDesign.reviewPath, stage_authority: "design-review",
+    });
+    assert.equal(recordedDesign.exitCode, 0, JSON.stringify(recordedDesign.result));
+    assert.equal(execute(root, "settle-review-package", {
+      schema_version: 1, operation: "settle-review-package", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+      package_kind: "design", review_id: revisedDesign.reviewId, stage_authority: "design-review",
+    }).exitCode, 0);
+    assert.deepEqual(status(root).permitted_operations, ["return-correction"]);
+
+    const change = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
+    const route = change.lifecycle_cli.active_correction;
+    const returnRevision = status(root).lifecycle_revision;
+    const returnEvidence = "docs/changes/example/evidence/package-return-design.md";
+    writeFileSync(join(root, returnEvidence), `Change ID: example\nRoute ID: ${route.route_id}\nLifecycle revision: ${returnRevision}\nDestination package: design\nReview ID: ${revisedDesign.reviewId}\nReview evidence path: ${revisedDesign.reviewPath}\n`, "utf8");
+    const returned = execute(root, "return-correction", {
+      schema_version: 1, operation: "return-correction", change_id: "example", expected_lifecycle_revision: returnRevision,
+      route_id: route.route_id, evidence_path: returnEvidence, stage_authority: "workflow",
+    });
+    assert.equal(returned.exitCode, 0, JSON.stringify(returned.result));
+    assert.equal(status(root).effective_state.current_stage, "delivery-review");
+    assert.equal(status(root).effective_state.review_packages.delivery.status, "review-required");
+  }
 });
 
 test.skip("historical individual-review correction flow", async () => {
