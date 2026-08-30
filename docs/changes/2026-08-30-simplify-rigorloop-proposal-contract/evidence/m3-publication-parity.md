@@ -1,5 +1,8 @@
 # M3 Publication Parity
 
+Milestone: M3
+Validation result: passed
+
 ## Result
 
 ## Core result
