@@ -2,12 +2,12 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
-- Reviews covered: `design-review-r1`, `delivery-review-r1`
+- Reviews covered: `design-review-r1`, `delivery-review-r1`, `code-review-m1-r1`
 - Findings resolved: 3
-- Unresolved findings: 0
-- Current result: Design Review is approved; Delivery Review R1 corrections are complete and await Delivery Review R2.
+- Unresolved findings: 1
+- Current result: Design Review and Delivery Review are approved; M1 Code Review requests one bounded correction before milestone closeout.
 
 ## Resolution Overview
 
@@ -16,6 +16,7 @@ Closeout status: closed
 | RTD-DR1 | accepted | resolved | The active boundary-contract marker and valid example ownership are recorded; rereview the exact design package. |
 | RTD-DLR1 | accepted | resolved | All ten acceptance criteria now have explicit test-case ownership. |
 | RTD-DLR2 | accepted | resolved | M3 owns RTD-R20 and every multi-milestone proof row names its complete timing. |
+| RTD-M1-CR1 | needs-decision | open | Add and directly prove the missing concrete many-to-many allocation example, or record another final disposition. |
 
 ## Finding Details
 
@@ -73,3 +74,22 @@ Safe resolution path: Add `RTD-R20` to M3 allocation, list every required milest
 Follow-up: Delivery Review R2 over the corrected exact package.
 Validation target: Every proof row's required milestones cover all named test and evidence milestones, and the plan allocates every requirement exercised by each milestone.
 Validation evidence: The plan at `sha256:0c912fc274d278329690401c91df7380aad3a06e2a605af1d5fd283cb73f839f` allocates RTD-R20 to M3, the exact revised proof map records every named milestone, and boundary-first validation passes.
+
+### code-review-m1-r1
+
+#### RTD-M1-CR1
+
+Finding ID: RTD-M1-CR1
+Disposition: needs-decision
+Status: open
+Owner: implementation owner
+Owning stage: implement M1
+Decision owner: implementation owner
+Decision needed: Accept, reject, defer, or partially accept the bounded correction requested by Code Review.
+Chosen action: pending
+Rationale: The shared reference states that SR/work mappings may be many-to-many but does not include the concrete larger example required by RTD-AC4, the approved M1 plan, and RTD-T03/RTD-T04; the focused test checks only phrases.
+Required outcome: The published M1 package demonstrates both one-SR-to-multiple-work and multiple-SR-to-one-work allocation, and focused proof detects loss of either direction without requiring a new artifact or complete hierarchy.
+Safe resolution path: Add one concise example to the canonical source and four identical M1 copies, strengthen `RequirementDeliveryModelM1Tests`, rerun the M1 command set, update M1 evidence, and request independent Code Review R2.
+Follow-up: implementation-owner disposition, bounded correction when accepted, then independent Code Review R2.
+Validation target: RTD-AC4, RTD-T03, RTD-T04, CMD-001, CMD-002, CMD-003, and CMD-007.
+Validation evidence: pending
