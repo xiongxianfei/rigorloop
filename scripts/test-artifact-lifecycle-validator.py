@@ -3503,10 +3503,55 @@ No blocked plans.
         messages = "\n".join(f.message for f in result.blocking_findings)
         self.assertIn("release evidence contains forbidden secret or private machine-state marker", messages)
 
-    def test_valid_proposal_passes(self) -> None:
+    def test_valid_fixtures_pass(self) -> None:
+        cases = (
+            ("valid-proposal", "docs/proposals/2026-04-20-valid-proposal.md"),
+            ("valid-draft-proposal", "docs/proposals/2026-04-20-draft-proposal.md"),
+            ("valid-spec", "specs/valid-spec.md"),
+            ("valid-test-spec", "specs/valid-feature.test.md"),
+            ("valid-architecture", "docs/architecture/2026-04-20-valid-architecture.md"),
+            ("canonical-architecture-lifecycle-only", "docs/architecture/system/architecture.md"),
+            ("valid-adr", "docs/adr/ADR-20260420-valid-decision.md"),
+            ("valid-active-adr", "docs/adr/ADR-20260420-active-decision.md"),
+            ("valid-deprecated-adr", "docs/adr/ADR-20260420-deprecated-decision.md"),
+            ("plan-downstream-active", "docs/plans/2026-05-01-downstream-plan.md"),
+        )
+        for fixture, path in cases:
+            with self.subTest(fixture=fixture, path=path):
+                self.assertFixturePasses(fixture, path)
+
+    def test_invalid_fixtures_fail(self) -> None:
+        cases = (
+            ("invalid-canonical-arc42-legacy-path", "docs/architecture/2026-04-20-canonical-shaped-architecture.md", "missing required 'Related artifacts' section"),
+            ("invalid-reviewed-spec", "specs/invalid-reviewed.md", "invalid status 'reviewed'"),
+            ("invalid-complete-test-spec", "specs/invalid-complete.test.md", "invalid status 'complete'"),
+            ("invalid-empty-follow-on", "specs/invalid-empty-follow-on.test.md", "Follow-on artifacts section must not be empty"),
+            ("invalid-empty-next-artifacts", "docs/proposals/2026-04-20-empty-next-artifacts.md", "Next artifacts section must not be empty"),
+            ("invalid-superseded-without-pointer", "docs/architecture/2026-04-20-old-architecture.md", "superseded artifacts must identify a replacement"),
+            ("invalid-placeholder", "docs/proposals/2026-04-20-placeholder-proposal.md", "placeholder text is not allowed"),
+            ("invalid-proposal-name", "docs/proposals/not-date-prefixed.md", "invalid proposal identifier"),
+            ("invalid-spec-name", "specs/InvalidSpec.md", "invalid top-level spec identifier"),
+            ("invalid-adr-name", "docs/adr/ADR-20260420-InvalidDecision.md", "invalid ADR identifier"),
+            ("plan-index-completed-under-active", "docs/plans/2026-05-01-completed-plan.md", "completed, blocked, or superseded plan must not be listed under Active"),
+            ("plan-index-completed-under-active-and-done", "docs/plans/2026-05-01-completed-plan.md", "completed, blocked, or superseded plan must not be listed under Active"),
+            ("plan-index-body-disagreement", "docs/plans/2026-05-01-active-plan.md", "docs/plan.md lists plan as done but plan body status is active"),
+            ("plan-terminal-stale-readiness", "docs/plans/2026-05-01-stale-readiness-plan.md", "terminal plan readiness still describes active or in-progress work"),
+        )
+        for fixture, path, message in cases:
+            with self.subTest(fixture=fixture, path=path):
+                self.assertFixtureFails(fixture, path, message)
+
+    def test_valid_canonical_arc42_architecture_passes(self) -> None:
         self.assertFixturePasses(
-            "valid-proposal",
-            "docs/proposals/2026-04-20-valid-proposal.md",
+            "valid-canonical-arc42-architecture",
+            "docs/architecture/system/architecture.md",
+        )
+
+    def test_plan_index_change_validates_linked_plan_body(self) -> None:
+        self.assertFixtureFails(
+            "plan-index-completed-under-active",
+            "docs/plan.md",
+            "completed, blocked, or superseded plan must not be listed under Active",
         )
 
     def test_stage_owned_proposal_without_embedded_status_uses_change_record_state(self) -> None:
@@ -3698,12 +3743,6 @@ No blocked plans.
         messages = "\n".join(f.message for f in result.blocking_findings)
         self.assertIn("missing required Status section", messages)
 
-    def test_valid_draft_proposal_passes(self) -> None:
-        self.assertFixturePasses(
-            "valid-draft-proposal",
-            "docs/proposals/2026-04-20-draft-proposal.md",
-        )
-
     def test_title_case_proposal_headings_pass(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-title-case-"))
         self.addCleanupTree(fixture_root)
@@ -3755,12 +3794,6 @@ Ready for proposal-review.
 
         self.assertFalse(result.blocking_findings)
 
-    def test_valid_spec_passes(self) -> None:
-        self.assertFixturePasses("valid-spec", "specs/valid-spec.md")
-
-    def test_valid_test_spec_passes(self) -> None:
-        self.assertFixturePasses("valid-test-spec", "specs/valid-feature.test.md")
-
     def test_active_test_spec_may_delegate_live_state_to_current_handoff_summary(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-readiness-"))
         self.addCleanupTree(fixture_root)
@@ -3794,112 +3827,6 @@ Ready for proposal-review.
         combined_messages = "\n".join(f.message for f in result.blocking_findings)
         self.assertTrue(result.blocking_findings)
         self.assertIn("status and readiness disagree", combined_messages)
-
-    def test_valid_architecture_passes(self) -> None:
-        self.assertFixturePasses(
-            "valid-architecture",
-            "docs/architecture/2026-04-20-valid-architecture.md",
-        )
-
-    def test_valid_canonical_arc42_architecture_passes(self) -> None:
-        self.assertFixturePasses(
-            "valid-canonical-arc42-architecture",
-            "docs/architecture/system/architecture.md",
-        )
-
-    def test_canonical_architecture_compatibility_does_not_enforce_package_shape(self) -> None:
-        self.assertFixturePasses(
-            "canonical-architecture-lifecycle-only",
-            "docs/architecture/system/architecture.md",
-        )
-
-    def test_canonical_arc42_contract_is_path_scoped(self) -> None:
-        self.assertFixtureFails(
-            "invalid-canonical-arc42-legacy-path",
-            "docs/architecture/2026-04-20-canonical-shaped-architecture.md",
-            "missing required 'Related artifacts' section",
-        )
-
-    def test_valid_adr_passes(self) -> None:
-        self.assertFixturePasses(
-            "valid-adr",
-            "docs/adr/ADR-20260420-valid-decision.md",
-        )
-
-    def test_valid_active_adr_passes(self) -> None:
-        self.assertFixturePasses(
-            "valid-active-adr",
-            "docs/adr/ADR-20260420-active-decision.md",
-        )
-
-    def test_valid_deprecated_adr_passes(self) -> None:
-        self.assertFixturePasses(
-            "valid-deprecated-adr",
-            "docs/adr/ADR-20260420-deprecated-decision.md",
-        )
-
-    def test_reviewed_status_fails(self) -> None:
-        self.assertFixtureFails(
-            "invalid-reviewed-spec",
-            "specs/invalid-reviewed.md",
-            "invalid status 'reviewed'",
-        )
-
-    def test_complete_test_spec_fails(self) -> None:
-        self.assertFixtureFails(
-            "invalid-complete-test-spec",
-            "specs/invalid-complete.test.md",
-            "invalid status 'complete'",
-        )
-
-    def test_empty_follow_on_fails(self) -> None:
-        self.assertFixtureFails(
-            "invalid-empty-follow-on",
-            "specs/invalid-empty-follow-on.test.md",
-            "Follow-on artifacts section must not be empty",
-        )
-
-    def test_empty_next_artifacts_fails(self) -> None:
-        self.assertFixtureFails(
-            "invalid-empty-next-artifacts",
-            "docs/proposals/2026-04-20-empty-next-artifacts.md",
-            "Next artifacts section must not be empty",
-        )
-
-    def test_superseded_without_pointer_fails(self) -> None:
-        self.assertFixtureFails(
-            "invalid-superseded-without-pointer",
-            "docs/architecture/2026-04-20-old-architecture.md",
-            "superseded artifacts must identify a replacement",
-        )
-
-    def test_placeholder_text_fails(self) -> None:
-        self.assertFixtureFails(
-            "invalid-placeholder",
-            "docs/proposals/2026-04-20-placeholder-proposal.md",
-            "placeholder text is not allowed",
-        )
-
-    def test_invalid_proposal_filename_fails(self) -> None:
-        self.assertFixtureFails(
-            "invalid-proposal-name",
-            "docs/proposals/not-date-prefixed.md",
-            "invalid proposal identifier",
-        )
-
-    def test_invalid_spec_filename_fails(self) -> None:
-        self.assertFixtureFails(
-            "invalid-spec-name",
-            "specs/InvalidSpec.md",
-            "invalid top-level spec identifier",
-        )
-
-    def test_invalid_adr_filename_fails(self) -> None:
-        self.assertFixtureFails(
-            "invalid-adr-name",
-            "docs/adr/ADR-20260420-InvalidDecision.md",
-            "invalid ADR identifier",
-        )
 
     def test_duplicate_spec_identifier_fails(self) -> None:
         result = self.validate_fixture(
@@ -4329,47 +4256,6 @@ artifacts:
                 and "invalid status 'reviewed' for spec" in finding.message
                 for finding in result.blocking_findings
             )
-        )
-
-    def test_plan_done_under_active_index_fails(self) -> None:
-        self.assertFixtureFails(
-            "plan-index-completed-under-active",
-            "docs/plans/2026-05-01-completed-plan.md",
-            "completed, blocked, or superseded plan must not be listed under Active",
-        )
-
-    def test_plan_index_change_validates_linked_plan_body(self) -> None:
-        self.assertFixtureFails(
-            "plan-index-completed-under-active",
-            "docs/plan.md",
-            "completed, blocked, or superseded plan must not be listed under Active",
-        )
-
-    def test_plan_done_under_active_and_done_index_fails(self) -> None:
-        self.assertFixtureFails(
-            "plan-index-completed-under-active-and-done",
-            "docs/plans/2026-05-01-completed-plan.md",
-            "completed, blocked, or superseded plan must not be listed under Active",
-        )
-
-    def test_plan_index_and_body_status_disagreement_fails(self) -> None:
-        self.assertFixtureFails(
-            "plan-index-body-disagreement",
-            "docs/plans/2026-05-01-active-plan.md",
-            "docs/plan.md lists plan as done but plan body status is active",
-        )
-
-    def test_terminal_plan_with_active_readiness_fails(self) -> None:
-        self.assertFixtureFails(
-            "plan-terminal-stale-readiness",
-            "docs/plans/2026-05-01-stale-readiness-plan.md",
-            "terminal plan readiness still describes active or in-progress work",
-        )
-
-    def test_active_plan_with_true_downstream_event_passes(self) -> None:
-        self.assertFixturePasses(
-            "plan-downstream-active",
-            "docs/plans/2026-05-01-downstream-plan.md",
         )
 
     def test_merge_dependent_lifecycle_language_warns_without_blocking(self) -> None:

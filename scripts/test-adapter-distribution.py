@@ -5723,36 +5723,25 @@ release_gate:
             self.write_v0_3_0_npm_publication_evidence(release_dir, status="published", rows=rows)
             return adapter_distribution_module._validate_npm_publication_evidence("v0.3.0", release_dir)
 
-    def test_npm_publication_evidence_requires_installed_roots_for_published_target_smoke(self) -> None:
-        errors = self.v0_3_0_published_evidence_errors(
-            lambda rows: rows["codex"].pop("installed_roots")
+    def test_npm_publication_evidence_requires_complete_published_target_smoke_rows(self) -> None:
+        cases = (
+            ("codex", "installed_roots", "missing installed root(s)"),
+            ("claude", "tree_hashes", "missing tree hash value(s)"),
+            ("opencode", "file_counts", "missing file count(s)"),
+            ("codex", "command_output_summary", "missing command output summary"),
         )
-
-        self.assertTrue(any("target_init_smoke row for codex is missing installed root(s)" in error for error in errors), errors)
-
-    def test_npm_publication_evidence_requires_tree_hashes_for_published_target_smoke(self) -> None:
-        errors = self.v0_3_0_published_evidence_errors(
-            lambda rows: rows["claude"].pop("tree_hashes")
-        )
-
-        self.assertTrue(any("target_init_smoke row for claude is missing tree hash value(s)" in error for error in errors), errors)
-
-    def test_npm_publication_evidence_requires_file_counts_for_published_target_smoke(self) -> None:
-        errors = self.v0_3_0_published_evidence_errors(
-            lambda rows: rows["opencode"].pop("file_counts")
-        )
-
-        self.assertTrue(any("target_init_smoke row for opencode is missing file count(s)" in error for error in errors), errors)
-
-    def test_npm_publication_evidence_requires_command_output_summary_for_published_target_smoke(self) -> None:
-        errors = self.v0_3_0_published_evidence_errors(
-            lambda rows: rows["codex"].pop("command_output_summary")
-        )
-
-        self.assertTrue(
-            any("target_init_smoke row for codex is missing command output summary" in error for error in errors),
-            errors,
-        )
+        for target, field, message in cases:
+            with self.subTest(target=target, field=field):
+                errors = self.v0_3_0_published_evidence_errors(
+                    lambda rows, target=target, field=field: rows[target].pop(field)
+                )
+                self.assertTrue(
+                    any(
+                        f"target_init_smoke row for {target} is {message}" in error
+                        for error in errors
+                    ),
+                    errors,
+                )
 
     def test_npm_publication_evidence_requires_all_opencode_roots_for_live_smoke(self) -> None:
         errors = self.v0_3_0_published_evidence_errors(
