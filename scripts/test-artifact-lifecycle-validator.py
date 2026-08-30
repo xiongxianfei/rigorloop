@@ -3795,6 +3795,35 @@ No blocked plans.
         messages = "\n".join(f.message for f in result.blocking_findings)
         self.assertIn("does not identify this proposal as its primary proposal", messages)
 
+    def test_portable_proposal_with_unrelated_stage_owned_record_passes(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="portable-proposal-unrelated-record-"))
+        self.addCleanupTree(fixture_root)
+        proposal, _ = write_simplified_proposal(fixture_root)
+        _, change_record = write_simplified_proposal(
+            fixture_root,
+            change_id="2026-08-30-unrelated-change",
+            governed=True,
+        )
+        assert change_record is not None
+        source = change_record.read_text(encoding="utf-8")
+        source = source.replace("  proposal:\n", "  spec:\n", 1)
+        source = source.replace("    kind: proposal\n", "    kind: spec\n", 1)
+        source = source.replace(
+            "docs/proposals/2026-08-30-unrelated-change.md",
+            "specs/unrelated-change.md",
+            1,
+        )
+        change_record.write_text(source, encoding="utf-8")
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        self.assertFalse(result.blocking_findings, result.blocking_findings)
+
     def test_invalid_fixtures_fail(self) -> None:
         cases = (
             ("invalid-canonical-arc42-legacy-path", "docs/architecture/2026-04-20-canonical-shaped-architecture.md", "missing required 'Related artifacts' section"),

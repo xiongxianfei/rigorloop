@@ -1949,6 +1949,7 @@ def validate_repository(
     root_resolved = root.resolve()
     related_paths = set(scope.related_artifact_paths)
     stage_owned_records: set[Path] = set()
+    stage_owned_proposal_records: set[Path] = set()
     stage_owned_states: dict[Path, list[StageOwnedArtifactState]] = {}
 
     for path in scope.change_yaml_paths:
@@ -2015,6 +2016,7 @@ def validate_repository(
                         continue
                     raw_artifact_path = entry.get("path")
                     kind = entry.get("kind")
+                    role = entry.get("role")
                     lifecycle_state = entry.get("lifecycle_state")
                     if not all(
                         isinstance(value, str)
@@ -2031,6 +2033,8 @@ def validate_repository(
                             lifecycle_state=lifecycle_state,
                         )
                     )
+                    if kind == "proposal" and role == "primary":
+                        stage_owned_proposal_records.add(path)
 
         for message in _change_yaml_closeout_cache_findings(
             root_resolved,
@@ -2098,7 +2102,7 @@ def validate_repository(
             contract is not None
             and contract.class_name == "proposal"
             and path in scope.changed_paths
-            and len(stage_owned_records & set(scope.changed_paths)) == 1
+            and len(stage_owned_proposal_records & set(scope.changed_paths)) == 1
             and not owners
         ):
             blocking_findings.append(
