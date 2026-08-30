@@ -4,12 +4,12 @@
 
 Closeout status: open
 
-Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 - Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`
-- Findings resolved: 3
-- Unresolved findings: 2
-- Current result: `SPC-DR1`, `SPC-M2-CR1`, and `SPC-M2-CR2` remain resolved. `SPC-M2-CR3` and `SPC-M2-CR4` await owner disposition.
+- Findings resolved: 5
+- Unresolved findings: 0
+- Current result: all five findings are resolved. M2 correction commit `b98e9926` is ready for independent rereview.
 
 ## Resolution Overview
 
@@ -18,8 +18,8 @@ Review closeout: code-review-m2-r1
 | SPC-DR1 | accepted | resolved | The plan now identifies the existing test specification and the current Delivery Review gate. |
 | SPC-M2-CR1 | accepted | resolved | Current selected-path scope now distinguishes changed settled governed proposals from untouched settled history. |
 | SPC-M2-CR2 | accepted | resolved | Explicitly selected stage-owned proposal/change-record pairs now fail when the primary proposal path differs. |
-| SPC-M2-CR3 | needs-decision | open | Decide whether to accept the settled simplified proposal correction. |
-| SPC-M2-CR4 | needs-decision | open | Decide whether to accept removal of filename-dependent mismatch correlation. |
+| SPC-M2-CR3 | accepted | resolved | Complete simplified shape is recognized before the settled-history legacy exception. |
+| SPC-M2-CR4 | accepted | resolved | Selected governed inputs are correlated directly without a filename-equality rule. |
 
 ## Finding Details
 
@@ -81,31 +81,31 @@ Validation evidence: correction commit `f3fd200c`; direct mismatch regression pa
 #### SPC-M2-CR3
 
 Finding ID: SPC-M2-CR3
-Disposition: needs-decision
-Status: open
-Owner: developer
-Owning stage: review-resolution
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: implement
 Decision owner: developer
-Decision needed: Accept, reject, defer, or partially accept the settled simplified proposal correction.
-Stop state: M2 remains resolution-needed; no implementation correction or rereview is authorized by this record alone.
+Decision needed: none; the user's `go ahead` authorized the bounded correction and mandatory rereview.
+Chosen action: Recognize a complete simplified proposal shape before applying the settled-history legacy exception, while still treating a selected settled legacy proposal as current.
 Rationale: Terminal lifecycle state currently overrides simplified proposal shape and causes an unchanged accepted simplified proposal to be validated as legacy.
 Required outcome: Preserve readable unchanged settled proposals under both the legacy and simplified contracts while changed legacy work uses the current contract.
 Safe resolution path: Accept the focused scope in `code-review-m2-r2.md`, adjust only current-versus-historical shape selection, add the accepted simplified governed regression, rerun M2 proof, and rereview.
 Validation target: an accepted simplified governed proposal selected only through its change record passes the simplified contract while the existing legacy partitions retain their outcomes.
-Validation evidence: pending owner disposition and corrected M2 validation.
+Validation evidence: correction commit `b98e9926`; accepted simplified, accepted legacy, changed legacy, and unsettled legacy regressions pass; artifact-lifecycle validator 156/156 and review-artifact validator 107/107 pass.
 
 #### SPC-M2-CR4
 
 Finding ID: SPC-M2-CR4
-Disposition: needs-decision
-Status: open
-Owner: developer
-Owning stage: review-resolution
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: implement
 Decision owner: developer
-Decision needed: Accept, reject, defer, or partially accept removal of filename-dependent governed mismatch correlation.
-Stop state: M2 remains resolution-needed; no implementation correction or rereview is authorized by this record alone.
+Decision needed: none; the user's `go ahead` authorized the bounded correction and mandatory rereview.
+Chosen action: Correlate one explicitly selected stage-owned change record with the selected proposal directly, regardless of their filenames.
 Rationale: The correction detects only same-named proposal/change-record pairs even though the approved ownership contract defines no filename equality requirement.
 Required outcome: Block an unambiguous selected governed path mismatch without imposing a new proposal/change-record naming contract or breaking portable proposals.
 Safe resolution path: Accept the focused scope in `code-review-m2-r2.md`, correlate selected scope directly, add the different-identity mismatch regression, rerun M2 proof, and rereview.
 Validation target: same-named and different-identity selected mismatches fail, matching governed proposals pass, and a proposal with no selected governing record remains portable.
-Validation evidence: pending owner disposition and corrected M2 validation.
+Validation evidence: correction commit `b98e9926`; different-change-ID mismatch regression passed; artifact-lifecycle validator 156/156 and review-artifact validator 107/107 pass.
