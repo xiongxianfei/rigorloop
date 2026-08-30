@@ -25,7 +25,7 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
-None.
+- [2026-08-30 Lightweight Requirement-to-Delivery Model](plans/2026-08-30-lightweight-requirement-delivery-model.md)
 
 ## Done (recent)
 
