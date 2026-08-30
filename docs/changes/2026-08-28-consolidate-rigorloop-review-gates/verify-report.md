@@ -1,6 +1,6 @@
 # Verify Report: Consolidate RigorLoop Review Gates
 
-Verification ID: verify-r1
+Verification ID: verify-r2
 Stage: verify
 Verifier: Codex verify
 Verification date: 2026-08-30
@@ -36,10 +36,10 @@ verification_basis:
   base_revision: 7510513c669f6cf17a155f88378cc4f4f6a7c045
   merge_base_revision: 8f80771ea0d85264e3ca33be443e17c30d77d179
   head_branch: proposal/consolidate-review-gates
-  verified_subject_revision: d11bf712cc0df010ef0a2ac708df3202904e83e2
+  verified_subject_revision: d3383669e07f13cac0c7026d375d85d41e1c4fe8
 ```
 
-The final reviewed implementation subject is `93f212a895941793e9eba480e494fda79ad0ed77`, the durable final-review evidence revision is `12d02b22a7c23aa806af6343308919bf76f92ff2`, and the explanation handoff revision is `d11bf712cc0df010ef0a2ac708df3202904e83e2`. Review and explanation commits after the implementation subject alter evidence only; their validators passed before this report.
+The final reviewed implementation subject is `93f212a895941793e9eba480e494fda79ad0ed77`, the durable final-review evidence revision is `12d02b22a7c23aa806af6343308919bf76f92ff2`, the explanation handoff revision is `d11bf712cc0df010ef0a2ac708df3202904e83e2`, and the locally prepared PR handoff revision is `d3383669e07f13cac0c7026d375d85d41e1c4fe8`. Evidence-only commits after the implementation subject passed their focused validators before this refreshed report.
 
 ## Verification dimensions
 
@@ -51,9 +51,9 @@ The final reviewed implementation subject is `93f212a895941793e9eba480e494fda79a
 | Lifecycle compatibility | pass | CRG-R40 grandfathering is explicit; post-cutover changes cannot infer package authority from historical individual reviews. |
 | Review closeout | pass | Closeout validation reports 40 reviews, 29 resolved findings, 40 log entries, and 29 resolution entries. |
 | Explanation currency | pass | The explanation binds the final implementation subject and clean Final Review R4. |
-| Validation selection | pass | PR selection reports 176 changed paths, zero blockers, and zero unclassified paths. |
+| Validation selection | pass | PR selection reports 178 changed paths, zero blockers, and zero unclassified paths. |
 | Broad compatibility | pass | Exact implementation-head broad smoke passed 11 checks in 796 seconds; subsequent commits contain review and explanation evidence only and passed their focused validators. |
-| Branch integration | pass | `git diff --check` passes and merge-tree produced conflict-free tree `f2f14cfa8e9f588b492df050a47567552a7a8c4f`. |
+| Branch integration | pass | `git diff --check` passes and merge-tree produced conflict-free tree `db15cc148b5911cf68176e443b44206b25395869`. |
 | Generated/local state | pass | Adapter validation passed; the temporary dependency tree was moved outside the worktree before readiness recording. |
 | Hosted CI | not-observed | No hosted-CI run was inspected or claimed. |
 
@@ -69,13 +69,13 @@ The final reviewed implementation subject is `93f212a895941793e9eba480e494fda79a
 | `python scripts/test-skill-validator.py` | passed, 450 tests; 90 retired-topology cases skipped by design |
 | `python scripts/test-adapter-distribution.py` | passed, 154 tests |
 | `python scripts/test-select-validation.py` | passed |
-| `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` | passed; 176 changed paths, zero blockers, zero unclassified paths |
+| `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` | passed; 178 changed paths, zero blockers, zero unclassified paths |
 | `python scripts/validate-change-metadata.py docs/changes/2026-08-28-consolidate-rigorloop-review-gates/change.yaml` | passed |
 | `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-28-consolidate-rigorloop-review-gates` | passed; 40 reviews and 29 resolved findings |
 | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <plan> --path <spec> --path <test-spec> --path <ADR>` | passed |
 | `bash scripts/ci.sh --mode broad-smoke` | passed, 11 checks in 796 seconds against `93f212a8` |
 | `git diff --check origin/main...HEAD` | passed |
-| `git merge-tree --write-tree origin/main HEAD` | passed; tree `f2f14cfa8e9f588b492df050a47567552a7a8c4f` |
+| `git merge-tree --write-tree origin/main HEAD` | passed; tree `db15cc148b5911cf68176e443b44206b25395869` |
 
 ## Residual risk and claim limits
 
