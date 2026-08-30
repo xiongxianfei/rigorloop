@@ -3,9 +3,6 @@ skills:
   architecture:
     portable: true
     adapters: [codex, claude, opencode]
-  architecture-review:
-    portable: true
-    adapters: [codex, claude, opencode]
   bugfix:
     portable: true
     adapters: [codex, claude, opencode]
@@ -16,6 +13,12 @@ skills:
     portable: true
     adapters: [codex, claude, opencode]
   constitution:
+    portable: true
+    adapters: [codex, claude, opencode]
+  delivery-review:
+    portable: true
+    adapters: [codex, claude, opencode]
+  design-review:
     portable: true
     adapters: [codex, claude, opencode]
   explain-change:
@@ -31,9 +34,6 @@ skills:
     portable: true
     adapters: [codex, claude, opencode]
   plan:
-    portable: true
-    adapters: [codex, claude, opencode]
-  plan-review:
     portable: true
     adapters: [codex, claude, opencode]
   pr:
@@ -54,13 +54,7 @@ skills:
   spec:
     portable: true
     adapters: [codex, claude, opencode]
-  spec-review:
-    portable: true
-    adapters: [codex, claude, opencode]
   test-spec:
-    portable: true
-    adapters: [codex, claude, opencode]
-  test-spec-review:
     portable: true
     adapters: [codex, claude, opencode]
   verify:
@@ -74,15 +68,16 @@ skills:
     adapters: [codex, claude, opencode]
 command_aliases:
   opencode:
-    count: 10
+    count: 11
     aliases:
       proposal: dist/adapters/opencode/.opencode/commands/proposal.md
       proposal-review: dist/adapters/opencode/.opencode/commands/proposal-review.md
+      architecture: dist/adapters/opencode/.opencode/commands/architecture.md
       spec: dist/adapters/opencode/.opencode/commands/spec.md
-      spec-review: dist/adapters/opencode/.opencode/commands/spec-review.md
+      design-review: dist/adapters/opencode/.opencode/commands/design-review.md
       plan: dist/adapters/opencode/.opencode/commands/plan.md
-      plan-review: dist/adapters/opencode/.opencode/commands/plan-review.md
       test-spec: dist/adapters/opencode/.opencode/commands/test-spec.md
+      delivery-review: dist/adapters/opencode/.opencode/commands/delivery-review.md
       implement: dist/adapters/opencode/.opencode/commands/implement.md
       code-review: dist/adapters/opencode/.opencode/commands/code-review.md
       pr: dist/adapters/opencode/.opencode/commands/pr.md

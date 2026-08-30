@@ -38,11 +38,12 @@ DEFAULT_ADAPTER_VERSION = "0.1.1"
 OPENCODE_COMMAND_ALIASES = (
     "proposal",
     "proposal-review",
+    "architecture",
     "spec",
-    "spec-review",
+    "design-review",
     "plan",
-    "plan-review",
     "test-spec",
+    "delivery-review",
     "implement",
     "code-review",
     "pr",
@@ -72,6 +73,8 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "ci-maintenance",
     "code-review",
     "constitution",
+    "delivery-review",
+    "design-review",
     "explain-change",
     "explore",
     "implement",
@@ -90,6 +93,14 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "verify",
     "vision",
     "workflow",
+)
+RETIRED_PROGRESSION_SKILLS = frozenset(
+    {"spec-review", "architecture-review", "plan-review", "test-spec-review"}
+)
+POST_CUTOVER_ADAPTER_SKILLS = tuple(
+    name
+    for name in PUBLISHED_SKILL_INVOCATION_NAMES
+    if name not in RETIRED_PROGRESSION_SKILLS
 )
 CODEX_SKILL_INVOCATION_PATTERN = re.compile(
     r"\$(?:"
@@ -1104,7 +1115,24 @@ def collect_skill_reports(skills_root: Path = CANONICAL_SKILLS_DIR) -> tuple[Ski
 
     if not skills_root.exists():
         return ()
-    reports = [evaluate_skill(directory) for directory in discover_source_skill_dirs(skills_root)]
+    directories = discover_source_skill_dirs(skills_root)
+    if skills_root.resolve() == CANONICAL_SKILLS_DIR.resolve():
+        directories_by_name = {directory.name: directory for directory in directories}
+        discovered = set(directories_by_name)
+        declared = set(PUBLISHED_SKILL_INVOCATION_NAMES)
+        if discovered != declared:
+            missing = sorted(declared - discovered)
+            unexpected = sorted(discovered - declared)
+            details = []
+            if missing:
+                details.append(f"missing declared canonical skills: {', '.join(missing)}")
+            if unexpected:
+                details.append(f"undeclared canonical skills: {', '.join(unexpected)}")
+            raise ValueError("canonical skill inventory mismatch: " + "; ".join(details))
+        directories = tuple(
+            directories_by_name[name] for name in POST_CUTOVER_ADAPTER_SKILLS
+        )
+    reports = [evaluate_skill(directory) for directory in directories]
     return tuple(sorted(reports, key=lambda report: (report.name, report.path.as_posix())))
 
 
