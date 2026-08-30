@@ -68,13 +68,13 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence:
     - docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/proposal-review-r1.md
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M1
+    current_milestone: M2
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -96,10 +96,10 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: closed
       M2:
         kind: implementation
-        state: planned
+        state: implementing
       M3:
         kind: implementation
         state: planned
@@ -108,7 +108,6 @@ workflow_state:
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M1
       - M2
       - M3
 workflow: {}
@@ -188,7 +187,27 @@ lifecycle_cli:
         milestone_state: null
         next_stage: delivery-review
       status: returned
-  milestones: {}
+  milestones:
+    M1:
+      completion_fingerprint: f4196f0795943fd31d1fda4f7b6eaaa6c2aaf500c341320a16144b5d4f0d2369
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/m1-canonical-contract.md
+      evidence_sha256: 532c0707aaf4e09d59514b6eb3421ffd3fa0ede80ae64b164571cd5acbb9a4b9
+      milestone_id: M1
+      review_evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m1-r1.md
+      review_evidence_sha256: d6c85089bd4060b32a47159acce36c7d815711819e469845564471e3dcba9f18
+      review_id: code-review-m1-r1
+      review_log_entry_sha256: 7596d7c7e0c784fc85967fb9e9d8ccbf16e519fb38e57f02a2e7d85034450e7b
+      review_log_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m1-r1.md
+      review_recording_status: recorded
+      review_round: r1
+      review_stage: code-review
+      stage_authority: workflow
   package_reviews:
     delivery:
       correction_targets: []
