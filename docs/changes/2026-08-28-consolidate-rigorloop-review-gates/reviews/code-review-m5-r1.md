@@ -5,6 +5,7 @@ Stage: code-review
 Round: r1
 Reviewer: Codex independent code-review with fresh-assumption reset
 Review date: 2026-08-30
+Reviewed artifact: M5 implementation in commit `5d412dab`
 Target: M5 implementation in commit `5d412dab`
 Reviewed milestone: M5
 Recording status: recorded

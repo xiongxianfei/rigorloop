@@ -143,7 +143,7 @@ function expectedAuthorAuthority(kind) {
 }
 
 function expectedReviewAuthority(kind) {
-  return kind === "adr" ? "architecture-review" : `${kind}-review`;
+  return kind === "proposal" ? "proposal-review" : null;
 }
 
 function coordinationErrors(root, change) {
@@ -175,7 +175,7 @@ function coordinationErrors(root, change) {
     const registration = state.artifacts?.[route.destination_artifact_id];
     const absolute = repositoryPath(root, route.evidence_path);
     const evidenceCurrent = absolute && existsSync(absolute) && lstatSync(absolute).isFile() && hashFile(absolute) === route.evidence_sha256;
-    const allowedCurrentStages = new Set([route.destination_stage, `${route.destination_stage}-review`]);
+    const allowedCurrentStages = new Set([route.destination_stage]);
     const snapshot = route.source_snapshot;
     if (route.status !== "active") errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction has an unknown status.", "active-correction-route", null, [String(route.status)]));
     if (!CORRECTION_REASONS.has(route.reason) || !CORRECTION_DESTINATIONS.has(route.destination_stage)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction has an unknown reason or destination stage.", "active-correction-route", null, [String(route.reason), String(route.destination_stage)]));
@@ -202,15 +202,8 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
 
   if (coordination?.active_correction) {
     const route = coordination.active_correction;
-    const packageCorrection = ["design-review", "delivery-review"].includes(route.return_stage);
-    if (stage === route.destination_stage && packageCorrection && coordination.artifacts?.[route.destination_artifact_id]?.artifact_sha256 !== route.prior_artifact_sha256) return ["return-correction"];
+    if (stage === route.destination_stage && coordination.artifacts?.[route.destination_artifact_id]?.artifact_sha256 !== route.prior_artifact_sha256) return ["return-correction"];
     if (stage === route.destination_stage) return ["record-artifact-revision"];
-    if (stage === `${route.destination_stage}-review`) {
-      const routeTarget = change.artifact_states?.[route.destination_artifact_id];
-      if (!coordination.reviews?.[route.destination_artifact_id]) return ["record-review"];
-      if (["accepted", "approved", "active"].includes(routeTarget?.lifecycle_state)) return ["return-correction"];
-      return ["settle-artifact"];
-    }
   }
   const sourceIndex = CORRECTION_STAGE_ORDER.indexOf(stage);
   const packageContext = ["design-review", "delivery-review"].includes(stage) ? packageContexts[stage.replace(/-review$/, "")] : null;
@@ -242,7 +235,6 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
   if (target?.lifecycle_state === "revision-required") return ["record-artifact-revision"];
   if (REVIEW_STAGES.has(stage) && registeredReview?.outcome === "changes-requested" && onlyOpenFindings) return ["settle-artifact"];
   if (blockers.length > 0) return [...operations, ...(onlyOpenFindings ? ["record-finding-resolution"] : [])];
-  if (stage === "plan-review" && target?.kind === "plan" && target.role === "primary" && target.lifecycle_state === "review-required" && ["approved", "clean-with-notes"].includes(registeredReview?.outcome) && !change.workflow_state?.planned_work) return ["initialize-approved-plan"];
   if (stageIsComplete(root, change, stage) && allowedNextStages(change, stage).length > 0) operations.push("advance-stage");
   if (["proposal", "spec", "architecture", "plan", "test-spec"].includes(stage) && ["authoring", "revision-required"].includes(target?.lifecycle_state)) operations.push("record-artifact-revision");
   if (REVIEW_STAGES.has(stage) && !operations.includes("advance-stage")) operations.push(registeredReview ? "settle-artifact" : "record-review");

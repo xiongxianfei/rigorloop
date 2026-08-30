@@ -2,7 +2,7 @@
 
 ## Purpose / big picture
 
-Implement consolidated review gates as the single supported workflow after one reviewed release cutover. The implementation keeps proposal, architecture, specification, plan, and test-specification authorship separate; introduces atomic Design Review and Delivery Review package authority; adds embedded proposal feasibility evaluation; preserves downstream Code Review and Verify responsibilities; and retires old progression only after canonical sources, lifecycle behavior, generated adapters, legacy-work inventory, and rollback proof agree.
+Implement consolidated review gates as the single supported workflow after one reviewed release cutover. The implementation keeps proposal, architecture, specification, plan, and test-specification authorship separate; introduces atomic Design Review and Delivery Review package authority; adds embedded proposal feasibility evaluation; preserves downstream Code Review and Verify responsibilities; and retires old progression only after canonical sources, lifecycle behavior, generated adapters, and legacy-work inventory agree.
 
 ## Current Handoff Summary
 
@@ -33,7 +33,7 @@ The implementation must preserve one mutable state owner in each change-local `c
 - Do not migrate active legacy changes in place or infer package approval from old individual reviews.
 - Do not introduce cross-change canonical revision ownership, automatic path succession, a generic lifecycle status setter, a new top-level CLI family, external services, or new production dependencies.
 - Do not remove milestone Code Review, final holistic Code Review when required, review-resolution, `explain-change`, Verify, or PR preparation.
-- Do not cut over before legacy-dependent work is closed and generated-output parity and rollback proof are current.
+- Do not cut over before legacy-dependent work is closed and generated-output parity is current.
 
 ## Requirements covered
 
@@ -42,13 +42,13 @@ The implementation must preserve one mutable state owner in each change-local `c
 - CRG-R12 through CRG-R21: M2 implements exact design and delivery package composition and atomic authority; M4 supplies the independent review responsibilities.
 - CRG-R22 through CRG-R28: M2 implements visible member maps, read context, governed invalidation, atomic package recording and settlement, idempotency, and fail-closed vocabularies.
 - CRG-R29 through CRG-R34: M2 records closed outcomes, findings, affected artifacts, and correction targets; M3 integrates workflow-owned correction routing; M4 preserves reviewer independence and review-resolution ownership.
-- CRG-R35 through CRG-R40: M1 removes dual-topology activation machinery; M6 performs the atomic cutover only after legacy-dependent work is closed and proves the pre-adoption revert boundary.
+- CRG-R35 through CRG-R40: M1 removes dual-topology activation machinery; M6 performs the atomic cutover only after legacy-dependent work is closed and adds no rollback-specific workflow mechanism.
 - CRG-R41 and CRG-R42: M3 and M4 preserve downstream stage semantics and make Verify consume current package authority.
 - CRG-R43 through CRG-R45: M4 updates canonical guidance, M5 proves validators and generated distribution parity, and M6 blocks cutover until the complete integrated surface is current.
 - BND-INPUT-001 and BND-AUTH-001: M1 and M2 own cutover authority, package input, role, authority, and upstream-binding admission.
 - BND-STATE-001, BND-COMPOSE-001, BND-TEMPORAL-001, and BND-RECOVERY-001: M2 and M3 own atomic authority, cross-artifact composition, governed invalidation and retry behavior, interruption recovery, and correction paths.
-- BND-COMPAT-001 and BND-ENV-001: M1, M5, and M6 own single-mechanism cutover, historical-evidence boundaries, generated adapters, and rollback.
-- INT-001 through INT-008: M2 proves package contradictions, governed invalidation, stale lifecycle rejection, and atomic recovery; M3 proves correction routing; M5 and M6 prove historical-authority rejection, generated parity, legacy-dependent cutover blocking, and rollback.
+- BND-COMPAT-001 and BND-ENV-001: M1, M5, and M6 own single-mechanism cutover, historical-evidence boundaries, and generated adapters.
+- INT-001 through INT-008: M2 proves package contradictions, governed invalidation, stale lifecycle rejection, and atomic recovery; M3 proves correction routing; M5 and M6 prove historical-authority rejection, generated parity, and legacy-dependent cutover blocking.
 
 ## Milestones
 
@@ -257,7 +257,7 @@ The implementation must preserve one mutable state owner in each change-local `c
   - Extend existing validator owners and fixtures rather than adding standalone validator CLIs.
   - Add package and cutover paths to validation selection and lifecycle governance where existing check ownership requires them.
   - Update adapter descriptors and manifests from canonical skill sources, then regenerate only temporary/release output through repository scripts.
-  - Add archive parity, portability, drift, retired-entrypoint, and rollback-support tests for every supported adapter.
+  - Add archive parity, portability, drift, and retired-entrypoint tests for every supported adapter.
   - Integrate cutover prerequisites into existing release validation without making structural checks claim semantic review quality.
 - Validation commands:
   - `python scripts/test-change-metadata-validator.py`
@@ -284,7 +284,7 @@ The implementation must preserve one mutable state owner in each change-local `c
 - Requirements: CRG-R1 through CRG-R45, CRG-AC1 through CRG-AC11, all eight boundary IDs, INT-001 through INT-008
 - Architecture decisions: Release cutover; Package membership and identity; Package lifecycle and CLI boundary; Normal workflow progression; Review and distribution boundaries
 - Files/components likely touched:
-  - cutover and pre-adoption-revert integration fixtures and repository validation evidence
+  - cutover integration fixtures and repository validation evidence
   - legacy-dependent change inventory validation
   - any tracked release metadata required by the selected release profile
 - Dependencies:
@@ -294,12 +294,12 @@ The implementation must preserve one mutable state owner in each change-local `c
   - The checked cutover revision removes old progression entrypoints and exposes the complete consolidated graph and package authority together.
   - A new fixture completes proposal feasibility, Design Review, Delivery Review, implementation authorization, downstream review, and Verify-input selection through public paths.
   - Nonterminal legacy-dependent work, historical individual evidence presented as package authority, partial cutover, stale package state, and missing generated parity block.
-  - A pre-adoption code-revert fixture restores the prior release without rewriting historical evidence; after adoption begins, recovery is forward-only unless separately specified.
+  - No rollback-specific lifecycle behavior, fixture, or evidence requirement is added; workflow recovery is forward correction or separately approved migration.
 - Implementation steps:
   - Run the complete cutover prerequisite graph and fail without changing released behavior if any owner is stale or legacy-dependent work remains.
   - Remove old progression entrypoints and publish consolidated routing, skills, validators, and generated packages in the same reviewed release slice.
-  - Run end-to-end consolidated flow, historical-authority rejection, interruption, generated-parity, and pre-adoption-revert fixtures.
-  - Record exact cutover and rollback evidence without rewriting historical review or change records.
+  - Run end-to-end consolidated flow, historical-authority rejection, interruption, and generated-parity fixtures.
+  - Record exact cutover evidence without rewriting historical review or change records.
 - Validation commands:
   - `npm test --prefix packages/rigorloop`
   - `python scripts/test-lifecycle-cli-conformance.py`
@@ -308,15 +308,14 @@ The implementation must preserve one mutable state owner in each change-local `c
   - `python scripts/test-adapter-distribution.py`
   - `bash scripts/ci.sh --mode broad-smoke`
 - Expected observable result: New and resumed governed work uses consolidated review gates; old progression entrypoints are absent; historical evidence remains readable; and no canonical/generated parity gap exists.
-- Completion criteria: Cutover prerequisites, consolidated public flow, legacy-work blocker, historical-authority rejection, pre-adoption revert fixture, validators, canonical skills, generated adapters, and full repository proof agree at one revision.
-- Required evidence: M6 cutover revision identity, legacy-dependent inventory result, end-to-end consolidated result, rollback result, generated archive checksums, and broad-smoke result.
-- Review handoff: Final implementation-milestone code review covering cutover atomicity, old-entrypoint retirement, rollback, complete public-path behavior, and cross-milestone interactions.
+- Completion criteria: Cutover prerequisites, consolidated public flow, legacy-work blocker, historical-authority rejection, validators, canonical skills, generated adapters, and full repository proof agree at one revision.
+- Required evidence: M6 cutover revision identity, legacy-dependent inventory result, end-to-end consolidated result, generated archive checksums, and broad-smoke result.
+- Review handoff: Final implementation-milestone code review covering cutover atomicity, old-entrypoint retirement, complete public-path behavior, and cross-milestone interactions.
 - Optional commit boundary: `M6: cut over to consolidated review gates`
 - Risks:
   - Cutover could expose consolidated routing before one consumer or adapter is current.
-  - A late code revert could strand work already started under consolidated gates.
 - Rollback/recovery:
-  - Permit a reviewed code revert only before consolidated work begins; afterward use a forward correction or separately approved migration and do not rewrite change history.
+  - Add no rollback-specific workflow work. Use forward correction or separately approved migration and do not rewrite change history.
 
 ### M7. Complete lifecycle closeout evidence
 
@@ -331,7 +330,7 @@ The implementation must preserve one mutable state owner in each change-local `c
   - M1 through M6 implementation milestones closed with required code-review evidence.
   - Matching test specification approved and its required proof complete.
 - Tests and proof:
-  - Explain-change traces the actual final diff to CRG-R1 through CRG-R45, ADR decisions, milestones, tests, reviews, cutover, and rollback evidence.
+  - Explain-change traces the actual final diff to CRG-R1 through CRG-R45, ADR decisions, milestones, tests, reviews, and cutover evidence.
   - Final holistic Code Review covers cross-milestone interactions when milestone reviews cannot prove them in isolation.
   - Verify consumes current proposal, design, delivery, implementation, code-review, explanation, validation, and generated-package evidence and rejects stale or mixed authority.
 - Implementation steps:
@@ -381,7 +380,7 @@ The implementation must preserve one mutable state owner in each change-local `c
 - Risk: generated adapters may lag canonical skills at cutover.
   - Recovery: Make archive parity a cutover prerequisite and keep released behavior unchanged until all supported adapters validate.
 - Risk: the broad change could become unreviewable.
-  - Recovery: Preserve M1 through M6 as independently revertible implementation slices with focused proof and code review before integration cutover.
+  - Recovery: Preserve M1 through M6 as independently reviewable implementation slices with focused proof and code review before integration cutover.
 
 ## Dependencies
 
@@ -392,7 +391,7 @@ The implementation must preserve one mutable state owner in each change-local `c
 - M3 runtime routing precedes canonical skill claims that consolidated continuation is supported.
 - M4 canonical skills precede adapter generation; generated outputs are never hand-edited.
 - M5 parity and legacy-retirement proof precede M6 cutover.
-- M6 cutover must remain one reviewed slice; pre-adoption rollback is a normal code revert, and later recovery is forward-only unless separately specified.
+- M6 cutover must remain one reviewed slice and adds no rollback-specific workflow mechanism or proof obligation.
 - Each implementation milestone receives focused tests and independent code review before its dependent milestone begins.
 
 ## Decision log
@@ -403,7 +402,7 @@ The implementation must preserve one mutable state owner in each change-local `c
 | 2026-08-29 | Implement package identity and atomic settlement before publishing new review skills. | Public skills must describe executable lifecycle behavior and exact evidence contracts. | Publishing aspirational skills first or letting skills emulate settlement in prose. |
 | 2026-08-29 | Treat the existing `advance-stage` work as incomplete M3 scope. | The approved ADR requires the consolidated graph, package completion authority, replay, and automation synchronization beyond the current partial slice. | Declaring the partial CLI fix complete or creating a separate generic status operation. |
 | 2026-08-29 | Make generated adapter parity a prerequisite to cutover. | CRG-R38 and CRG-R44 prohibit release cutover while installable packages expose a different gate inventory. | Changing canonical sources first and repairing adapters afterward. |
-| 2026-08-29 | Isolate cutover in M6 after all implementation surfaces are reviewed. | The release boundary must retire old progression atomically and allow a normal revert before adoption begins. | Incremental activation, runtime coexistence, or automatic migration of active legacy changes. |
+| 2026-08-29 | Isolate cutover in M6 after all implementation surfaces are reviewed. | The release boundary must retire old progression atomically without adding a second recovery mechanism. | Incremental activation, runtime coexistence, or automatic migration of active legacy changes. |
 
 ## Readiness
 

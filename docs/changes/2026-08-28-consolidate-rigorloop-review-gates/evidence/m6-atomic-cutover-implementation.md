@@ -15,12 +15,12 @@ Validation result: passed
 - Added cutover admission that rejects active `spec-review`, `architecture-review`, `plan-review`, or `test-spec-review` routing while ignoring terminal historical evidence.
 - Updated canonical governance, workflow guidance, authoring and downstream skills, lifecycle behavior, validators, fixtures, and adapter generation together.
 
-## Cutover and rollback evidence
+## Cutover evidence
 
 - Legacy-dependent inventory: zero active governed changes depend on a retired progression stage; 30 governed records were checked.
 - Historical authority: lifecycle tests reject historical artifact reviews as Design Review or Delivery Review package authority.
 - Partial authority: downstream work is blocked when a change uses `review_packages` but either current package lacks authority.
-- Pre-adoption rollback: this slice adds no activation manifest, topology selector, migration, or destructive record rewrite. Before a consolidated change begins, reverting the reviewed cutover commit restores the prior code and skill surface while existing historical records remain unchanged. After adoption, recovery remains forward-only unless separately approved.
+- Recovery scope: this slice adds no rollback-specific lifecycle state, CLI behavior, fixture, or evidence obligation. Workflow recovery remains a forward correction or separately approved migration without rewriting historical evidence.
 - Publication: none. The archives below were generated and validated in a temporary directory only.
 
 ## Generated adapter evidence
@@ -35,7 +35,7 @@ Validation result: passed
 
 ## Validation
 
-- `npm test --prefix packages/rigorloop`: passed; 297 tests.
+- `npm test --prefix packages/rigorloop`: passed; 295 passed and 2 obsolete individual-review correction scenarios skipped.
 - `python scripts/test-lifecycle-cli-conformance.py`: passed; 6 invalid and 10 protected cases.
 - `python scripts/test-governed-lifecycle-cli-validator.py`: passed; 7 tests.
 - `python scripts/validate-governed-lifecycle-cli.py`: passed; 30 records, zero legacy progression dependencies, two known baseline warnings.
@@ -43,9 +43,9 @@ Validation result: passed
 - `python scripts/test-review-artifact-validator.py`: passed; 104 tests.
 - `python scripts/test-boundary-first-reference.py`: passed; 28 tests.
 - `python scripts/test-adapter-distribution.py`: passed; 154 tests.
-- `bash scripts/ci.sh --mode broad-smoke`: passed; 11 checks in 394 seconds.
+- `bash scripts/ci.sh --mode broad-smoke`: passed; 12 checks in 417 seconds on the final corrected runtime.
 - `git diff --check`: passed.
 
 ## Review handoff
 
-M6 is ready for final implementation-milestone Code Review of cutover atomicity, retired-entrypoint removal, package-authority enforcement, historical-evidence behavior, rollback boundaries, generated parity, and cross-milestone composition. This evidence does not publish a release, claim Code Review approval, or close M6.
+M6 is ready for final implementation-milestone Code Review of cutover atomicity, retired-entrypoint removal, package-authority enforcement, historical-evidence behavior, generated parity, and cross-milestone composition. This evidence does not publish a release, claim Code Review approval, or close M6.

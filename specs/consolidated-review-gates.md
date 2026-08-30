@@ -153,7 +153,7 @@ CRG-R16. A current design package MUST NOT expose a progression-authorizing part
 
 CRG-R17. A Delivery Review package MUST include exactly one current execution plan, exactly one current test specification, and the exact approved design package they implement and prove.
 
-CRG-R18. Plan and test specification MUST remain separately authored artifacts. Plan owns implementation sequence, milestone boundaries, dependencies, rollback, and recovery intent; test spec owns proof obligations, fixtures, validation commands, manual-evidence boundaries, and pass/fail criteria.
+CRG-R18. Plan and test specification MUST remain separately authored artifacts. Plan owns implementation sequence, milestone boundaries, dependencies, and recovery intent; test spec owns proof obligations, fixtures, validation commands, manual-evidence boundaries, and pass/fail criteria.
 
 CRG-R19. Delivery Review MUST evaluate the trace `requirement -> architectural boundary -> implementation milestone -> required proof -> validation command or manual evidence` for every applicable requirement and architecture risk.
 
@@ -206,7 +206,7 @@ CRG-R33. A combined reviewer MUST NOT edit and approve the package it reviews. A
 
 CRG-R34. Review resolution closes findings but MUST NOT substitute for a required current same-stage package rereview when reviewed component identities changed or the review outcome requires rereview.
 
-### Cutover and rollback
+### Cutover and recovery
 
 CRG-R35. The consolidated workflow MUST be introduced through one reviewed release cutover. The implementation MUST NOT add an activation manifest, activation baseline, per-change `review_topology` field, or runtime old/new topology selector.
 
@@ -214,9 +214,9 @@ CRG-R36. Cutover MUST remain blocked while any nonterminal governed change still
 
 CRG-R37. Separate historical artifact reviews MUST NOT be inferred to equal a current package review. Historical evidence remains readable but MUST NOT authorize consolidated progression.
 
-CRG-R38. Cutover MUST be workflow-governance-owned and atomic at one reviewed release revision. It requires approved specification and architecture, canonical skill and template updates, lifecycle and validation support, no nonterminal legacy-dependent changes, deterministic generated-package parity, and rollback evidence. Partial cutover MUST grant no consolidated progression authority.
+CRG-R38. Cutover MUST be workflow-governance-owned and atomic at one reviewed release revision. It requires approved specification and architecture, canonical skill and template updates, lifecycle and validation support, no nonterminal legacy-dependent changes, and deterministic generated-package parity. Partial cutover MUST grant no consolidated progression authority.
 
-CRG-R39. Before any new consolidated change begins, rollback MAY restore the prior release through a normal reviewed code revert. After consolidated work begins, recovery MUST use a forward correction or an independently approved migration; rollback MUST NOT destructively rewrite current or historical review evidence.
+CRG-R39. This slice MUST NOT add rollback-specific lifecycle state, CLI behavior, fixtures, or evidence requirements. Recovery within the workflow uses a forward correction or a separately approved migration and MUST NOT destructively rewrite current or historical review evidence.
 
 CRG-R40. The implementing change itself MUST complete under the pre-cutover workflow. Approval or implementation of this specification MUST NOT retroactively change the review authority governing its own in-flight artifacts.
 
@@ -294,7 +294,7 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 | composition-path | applicable | CRG-R12, CRG-R14, CRG-R15, CRG-R16, CRG-R17, CRG-R19, CRG-R21, CRG-R31, CRG-R33, CRG-R42 | BND-COMPOSE-001 | - |
 | temporal-retry | applicable | CRG-R23, CRG-R24, CRG-R25, CRG-R26, CRG-R27, CRG-R34 | BND-TEMPORAL-001 | - |
 | failure-recovery | applicable | CRG-R10, CRG-R13, CRG-R18, CRG-R20, CRG-R26, CRG-R33, CRG-R39 | BND-RECOVERY-001 | - |
-| compatibility-migration | applicable | CRG-R1, CRG-R5, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R39, CRG-R40 | BND-COMPAT-001 | - |
+| compatibility-migration | applicable | CRG-R1, CRG-R5, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R40 | BND-COMPAT-001 | - |
 | external-environment | applicable | CRG-R25, CRG-R26, CRG-R27, CRG-R38, CRG-R43, CRG-R44 | BND-ENV-001 | - |
 
 ## Boundary definitions
@@ -306,8 +306,8 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 | BND-AUTH-001 | identity-authority | CRG-R5, CRG-R13, CRG-R14, CRG-R18, CRG-R22, CRG-R29, CRG-R31, CRG-R33, CRG-R35, CRG-R37 | author, reviewer, workflow router, lifecycle mutation authority, upstream-review authority, release-cutover authority | Each role mutates only its owned surface; package decisions bind one explicit member map and upstream review ID; release governance owns cutover. | Authorized operations record owned evidence; invalid upstream authority, self-approval, wrong-stage operations, cross-owner edits, and premature cutover are rejected. | CRG-R33 |
 | BND-COMPOSE-001 | composition-path | CRG-R12, CRG-R14, CRG-R15, CRG-R16, CRG-R17, CRG-R19, CRG-R21, CRG-R31, CRG-R33, CRG-R42 | artifact-local path, cross-artifact path, upstream-review path, downstream verification path | Package approval covers local quality, current upstream authority, and all selected cross-artifact coherence hazards. | Coherent composition may approve; invalid upstream review, contradiction, or missing trace produces attributable blockers or findings and blocks progression. | CRG-R14 |
 | BND-TEMPORAL-001 | temporal-retry | CRG-R23, CRG-R24, CRG-R25, CRG-R26, CRG-R27, CRG-R34 | first record, exact duplicate retry, stale lifecycle retry, governed member change, upstream-review change, rereview | The expected lifecycle revision, explicit member map, upstream review ID, and package status remain current throughout a mutation. | Exact duplicate is idempotent; stale lifecycle requests are rejected; governed member or upstream-review changes set the package to review-required. | CRG-R26 |
-| BND-RECOVERY-001 | failure-recovery | CRG-R10, CRG-R13, CRG-R18, CRG-R20, CRG-R26, CRG-R33, CRG-R39 | review rejection, interrupted mutation, correction route, release revert | Failure never grants partial progression authority and preserves the last complete recoverable state. | Findings route to owners; interrupted settlement restores or retains prior state; a pre-adoption release revert preserves readable evidence. | CRG-R26 |
-| BND-COMPAT-001 | compatibility-migration | CRG-R1, CRG-R5, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R39, CRG-R40 | pre-cutover implementation, nonterminal legacy work, clean cutover, historical evidence, pre-adoption revert | Only one progression mechanism is active at a time; historical individual reviews are not package authority; records are not destructively rewritten. | Complete prerequisites permit cutover; legacy-dependent work, partial surface updates, or mixed authority block it. | CRG-R35 |
+| BND-RECOVERY-001 | failure-recovery | CRG-R10, CRG-R13, CRG-R18, CRG-R20, CRG-R26, CRG-R33, CRG-R39 | review rejection, interrupted mutation, correction route | Failure never grants partial progression authority and preserves the last complete recoverable state. | Findings route to owners; interrupted settlement restores or retains prior state; workflow recovery uses forward correction or separately approved migration. | CRG-R26 |
+| BND-COMPAT-001 | compatibility-migration | CRG-R1, CRG-R5, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R40 | pre-cutover implementation, nonterminal legacy work, clean cutover, historical evidence | Only one progression mechanism is active at a time; historical individual reviews are not package authority; records are not destructively rewritten. | Complete prerequisites permit cutover; legacy-dependent work, partial surface updates, or mixed authority block it. | CRG-R35 |
 | BND-ENV-001 | external-environment | CRG-R25, CRG-R26, CRG-R27, CRG-R38, CRG-R43, CRG-R44 | canonical sources, local CLI, generated packages, release archives, unavailable dependency | Canonical and generated public surfaces expose the same supported gates without requiring external services. | Parity permits cutover and packaging; drift, unavailable required local support, or inconsistent archives blocks the affected handoff. | CRG-R44 |
 
 ## Selected interactions
@@ -317,11 +317,11 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 | INT-001 | CRG-R14, CRG-R16, CRG-R31 | BND-COMPOSE-001, BND-STATE-001 | One design component appears acceptable while the other contradicts it. | Record a cross-artifact finding and leave the whole design package without progression authority. |
 | INT-002 | CRG-R20, CRG-R21, CRG-R31 | BND-COMPOSE-001, BND-STATE-001 | Plan sequence and proof sequence are individually plausible but mutually incompatible. | Record a cross-artifact finding and reject atomic delivery settlement. |
 | INT-003 | CRG-R24, CRG-R26, CRG-R34 | BND-TEMPORAL-001, BND-AUTH-001, BND-STATE-001 | A governed component or upstream review changes before or after package settlement. | Atomically mark the package review-required, withhold progression, and require a current package rereview; stale lifecycle requests fail unchanged. |
-| INT-004 | CRG-R26, CRG-R39 | BND-RECOVERY-001, BND-STATE-001, BND-COMPAT-001 | Settlement or a pre-adoption release revert interrupts after writing only part of an authoritative projection. | Preserve or restore the last complete authoritative state; partial projection grants no authority. |
+| INT-004 | CRG-R26 | BND-RECOVERY-001, BND-STATE-001 | Settlement interrupts after writing only part of an authoritative projection. | Preserve or restore the last complete authoritative state; partial projection grants no authority. |
 | INT-005 | CRG-R35, CRG-R37 | BND-COMPAT-001, BND-AUTH-001, BND-INPUT-001 | Historical individual review evidence is presented as current package authority. | Reject it with an actionable package-authority error. |
 | INT-006 | CRG-R38, CRG-R44 | BND-ENV-001, BND-COMPAT-001, BND-STATE-001 | Canonical sources switch to consolidated gates while generated packages or guidance still expose legacy progression. | Block cutover until parity and legacy-retirement proof are current. |
 | INT-007 | CRG-R29, CRG-R31, CRG-R33 | BND-STATE-001, BND-AUTH-001, BND-RECOVERY-001 | A non-approved package result names multiple correction owners or lacks evidence needed to choose one. | Grant no progression; record correction targets separately for changes requested, route a named upstream blocker, or stop an inconclusive review for missing evidence. |
-| INT-008 | CRG-R35, CRG-R38, CRG-R39 | BND-COMPAT-001, BND-AUTH-001, BND-STATE-001 | Cutover is attempted while a nonterminal change still requires legacy progression. | Block cutover and identify the change; do not add runtime topology inference or rewrite its evidence. |
+| INT-008 | CRG-R35, CRG-R38 | BND-COMPAT-001, BND-AUTH-001, BND-STATE-001 | Cutover is attempted while a nonterminal change still requires legacy progression. | Block cutover and identify the change; do not add runtime topology inference or rewrite its evidence. |
 
 ## Example ownership
 
@@ -345,7 +345,7 @@ The old and consolidated progression mechanisms do not coexist in a released run
 
 Cutover requires no nonterminal governed change to depend on the old mechanism. Such work completes before release unless a separate approved migration contract is introduced. Historical review records remain readable evidence, but separate historical approvals cannot be combined into current package authority. No per-change topology marker, baseline inventory, or compatibility interpreter is required.
 
-Before the first consolidated change begins, rollback is a normal reviewed code revert to the prior release. After adoption begins, recovery uses a forward fix or a separately approved migration so current evidence is not stranded or rewritten.
+This slice adds no rollback-specific workflow mechanism or proof obligation. Workflow recovery uses a forward correction or separately approved migration so current evidence is not stranded or rewritten.
 
 At cutover, the following `specs/rigorloop-workflow.md` surfaces are replaced: the per-change chain in R6, the affected stage rows in R7a, the authoring continuation stages in R7e and the active automation route, the `spec-review` handoff contract in R7i through R7o, the `plan-review` handoff in R7p, the separate test-spec-review progression contract in R7qa through R7qk, the review-skill projection in R8ka, the allowed formal review stages in R12ao, and the boundary-first stage ownership in R29c through R29g and R34 through R35. All unaffected requirements remain mandatory.
 

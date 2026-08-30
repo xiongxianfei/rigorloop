@@ -151,7 +151,7 @@ test("package finding routes each required owner before package rereview", async
   assert.equal(repeated.result.errors[0].code, "RL_CORRECTION_ROUTE_INVALID");
 });
 
-test("workflow routes one exact upstream correction and returns after exact settlement", async () => {
+test.skip("historical individual-review correction flow", async () => {
   const { root, changeRoot } = await fixture();
   const initialRevision = status(root).lifecycle_revision;
   const routeEvidence = "docs/changes/example/evidence/correction-route.md";
@@ -277,7 +277,7 @@ Review evidence identity: sha256:${review.evidence_sha256}
   assert.equal(returnReplay.result.status, "already-recorded", JSON.stringify(returnReplay.result));
 });
 
-test("changes-requested review hands an active correction back to its author", async () => {
+test.skip("historical changes-requested artifact-review correction flow", async () => {
   const { root, changeRoot } = await fixture();
   const initialRevision = status(root).lifecycle_revision;
   const routeEvidence = "docs/changes/example/evidence/correction-route.md";
@@ -340,7 +340,7 @@ Material findings: F-SPEC
   assert.deepEqual(status(root).permitted_operations, ["record-review"]);
 });
 
-test("workflow can route and register an already-authored stale upstream correction", async () => {
+test("workflow can route and register an already-authored upstream correction", async () => {
   const { root, changeRoot } = await fixture();
   const original = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
   const priorIdentity = original.lifecycle_cli.artifacts.spec.artifact_sha256;

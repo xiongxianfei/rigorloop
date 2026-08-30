@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-finding-resolution",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:a0b37c1acae9934fc08a6292c05fa3f60739b238fe962397af630c282153db29",
+  "artifact_id": "plan",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md",
+  "finding_id": "CRG-M6-CR2",
+  "stage_authority": "review-resolution"
+}

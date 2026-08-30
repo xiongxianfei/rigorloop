@@ -5,6 +5,7 @@ Stage: code-review
 Round: r1
 Reviewer: Codex independent code-review with fresh-assumption reset
 Review date: 2026-08-30
+Reviewed artifact: M4 implementation in commit `f8565829`
 Target: M4 implementation in commit `f8565829`
 Reviewed milestone: M4
 Recording status: recorded

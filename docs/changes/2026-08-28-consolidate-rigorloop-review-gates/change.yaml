@@ -136,7 +136,7 @@ lifecycle_cli:
       artifact_kind: adr
       artifact_path: docs/adr/ADR-20260828-consolidated-review-package-topology.md
       artifact_role: supporting
-      artifact_sha256: 91098e622d577b2e1c8fb7c93fd860a08f6d4fd1f5fd9fb28954da0abf88a92a
+      artifact_sha256: ef4df7ce82c8563b38eb68ef016ae69e30148172bf924746ca0e1b920826c9a6
       authoring_evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/architecture-package-state-simplification-r1.md
       authoring_evidence_sha256: 054e433453eee44e59a1ebc2024c8f0e49cd3dd06f08d47247cc5cf16080ff65
       stage_authority: architecture
@@ -144,7 +144,7 @@ lifecycle_cli:
       artifact_kind: plan
       artifact_path: docs/plans/2026-08-29-consolidate-rigorloop-review-gates.md
       artifact_role: primary
-      artifact_sha256: 0f37ca539a8d2fdc10ad4b982d69c95fe379f04ca4383a78877de34fe1a090f6
+      artifact_sha256: ed0d879a4bc1f10b59291a0ff912b5118447ddf0ce857706363b5a434895def1
       authoring_evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/plan-package-state-simplification-r1.md
       authoring_evidence_sha256: 0955eb33a793ab74576da7c00cbf15656e6020e283441c05fd1149b1520401b8
       stage_authority: plan
@@ -160,7 +160,7 @@ lifecycle_cli:
       artifact_kind: spec
       artifact_path: specs/consolidated-review-gates.md
       artifact_role: primary
-      artifact_sha256: 7405ae69fb0b2868079408102d9bd24e1e8c213bea106306a8291af5dbfccc1b
+      artifact_sha256: d5384105747d81133eb9f49e560b0598d37f4d0ab3b358626c4485f65f9c2d2d
       authoring_evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/spec-package-state-simplification-r2.md
       authoring_evidence_sha256: ec33dfbf57f3286b12e7d7d3c9e2b47adb0def6f337a9c5c85d00a04dd73e41a
       stage_authority: spec
@@ -168,7 +168,7 @@ lifecycle_cli:
       artifact_kind: test-spec
       artifact_path: specs/consolidated-review-gates.test.md
       artifact_role: primary
-      artifact_sha256: 0f3a235de400f568eb7fa57c4a97f94a8b1dcb9d9c5459958aa32fdce3398b6a
+      artifact_sha256: 8e5e50e25465009834277835ebc38de984012775ea3e95ba8c3f565349ab1eae
       authoring_evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/test-spec-package-state-simplification-r1.md
       authoring_evidence_sha256: 7f4b81d2a4450279a76448c415c2ea97af84fd463404532d5007662c9ec77e3f
       stage_authority: test-spec
@@ -424,6 +424,30 @@ lifecycle_cli:
       evidence_sha256: 44acd8c3e65652239d749cf4d32a7bce7cc4d34a6e36e9e80bc346845bdbeaef
       finding_id: CRG-M4-CR2
       owner: M4 implementation owner
+      stage_authority: review-resolution
+    CRG-M6-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
+      evidence_sha256: 5bdcc192492d32218173819da79c7ed6bf329c59a4b27b564e8395ece3a2e654
+      finding_id: CRG-M6-CR1
+      owner: M6 implementation owner
+      stage_authority: review-resolution
+    CRG-M6-CR2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
+      evidence_sha256: 5bdcc192492d32218173819da79c7ed6bf329c59a4b27b564e8395ece3a2e654
+      finding_id: CRG-M6-CR2
+      owner: M6 implementation owner
+      stage_authority: review-resolution
+    CRG-M6-CR3:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
+      evidence_sha256: 5bdcc192492d32218173819da79c7ed6bf329c59a4b27b564e8395ece3a2e654
+      finding_id: CRG-M6-CR3
+      owner: M6 implementation owner
       stage_authority: review-resolution
     CRG-SR5:
       artifact_id: spec

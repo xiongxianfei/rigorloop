@@ -24,31 +24,31 @@ async function fixture(openFindings = "none", reviewOutcome = "approved") {
   mkdirSync(join(changeRoot, "reviews"), { recursive: true });
   mkdirSync(join(changeRoot, "evidence"), { recursive: true });
   mkdirSync(join(root, "requests"), { recursive: true });
-  mkdirSync(join(root, "specs"), { recursive: true });
-  const spec = "# Example spec\n";
-  writeFileSync(join(root, "specs", "example.md"), spec, "utf8");
+  mkdirSync(join(root, "docs", "proposals"), { recursive: true });
+  const proposal = "# Example proposal\n";
+  writeFileSync(join(root, "docs", "proposals", "example.md"), proposal, "utf8");
   const { createHash } = await import("node:crypto");
-  const specIdentity = createHash("sha256").update(spec).digest("hex");
-  writeFileSync(join(changeRoot, "reviews", "spec-review-r1.md"), `Review ID: spec-review-r1\nStage: spec-review\nRound: r1\nStatus: ${reviewOutcome}\nReviewed artifact path: specs/example.md\nReviewed artifact identity: sha256:${specIdentity}\nMaterial findings: ${openFindings}\n`, "utf8");
-  writeFileSync(join(changeRoot, "review-log.md"), `Review ID: earlier-review\nMaterial findings: OLD-1\nOpen findings: none\n\n### Review entry\n\nReview ID: spec-review-r1\nFinding ID: F-1\nMaterial findings: ${openFindings}\nOpen findings: ${openFindings}\n`, "utf8");
-  writeFileSync(join(changeRoot, "review-resolution.md"), "Finding ID: F-1\nDisposition: accepted\nOwner: spec\nStatus: resolved\nValidation evidence: focused test\n", "utf8");
-  writeFileSync(join(changeRoot, "evidence", "validation.md"), `Subject path: specs/example.md\nSubject identity: sha256:${specIdentity}\nValidation result: passed\n`, "utf8");
+  const proposalIdentity = createHash("sha256").update(proposal).digest("hex");
+  writeFileSync(join(changeRoot, "reviews", "proposal-review-r1.md"), `Review ID: proposal-review-r1\nStage: proposal-review\nRound: r1\nStatus: ${reviewOutcome}\nReviewed artifact path: docs/proposals/example.md\nReviewed artifact identity: sha256:${proposalIdentity}\nMaterial findings: ${openFindings}\n`, "utf8");
+  writeFileSync(join(changeRoot, "review-log.md"), `Review ID: earlier-review\nMaterial findings: OLD-1\nOpen findings: none\n\n### Review entry\n\nReview ID: proposal-review-r1\nFinding ID: F-1\nMaterial findings: ${openFindings}\nOpen findings: ${openFindings}\n`, "utf8");
+  writeFileSync(join(changeRoot, "review-resolution.md"), "Finding ID: F-1\nDisposition: accepted\nOwner: proposal\nStatus: resolved\nValidation evidence: focused test\n", "utf8");
+  writeFileSync(join(changeRoot, "evidence", "validation.md"), `Subject path: docs/proposals/example.md\nSubject identity: sha256:${proposalIdentity}\nValidation result: passed\n`, "utf8");
   writeFileSync(join(changeRoot, "change.yaml"), `change_id: example
 title: Example
 classification: feature
 risk: standard
 lifecycle_contract: stage-owned-change-local-v1
 artifact_states:
-  spec:
-    kind: spec
-    path: specs/example.md
+  proposal:
+    kind: proposal
+    path: docs/proposals/example.md
     role: primary
     lifecycle_state: review-required
     authoring_evidence: docs/changes/example/evidence/validation.md
 workflow_state:
   lifecycle_state: active
-  current_stage: spec-review
-  next_stage: spec-review
+  current_stage: proposal-review
+  next_stage: proposal-review
   blocker: null
   evidence: []
 review:
@@ -75,9 +75,9 @@ test("review registration binds exact evidence and settlement derives state", as
     operation: "record-review",
     change_id: "example",
     expected_lifecycle_revision: revision(root),
-    artifact_id: "spec",
-    evidence_path: "docs/changes/example/reviews/spec-review-r1.md",
-    stage_authority: "spec-review",
+    artifact_id: "proposal",
+    evidence_path: "docs/changes/example/reviews/proposal-review-r1.md",
+    stage_authority: "proposal-review",
   });
   const dryRun = executeLifecycleCli(["record-review", "--request", reviewRequest, "--dry-run", "--format", "json"], { cwd: root });
   assert.equal(dryRun.exitCode, 0);
@@ -92,25 +92,25 @@ test("review registration binds exact evidence and settlement derives state", as
     operation: "settle-artifact",
     change_id: "example",
     expected_lifecycle_revision: revision(root),
-    artifact_id: "spec",
-    stage_authority: "spec-review",
+    artifact_id: "proposal",
+    stage_authority: "proposal-review",
   });
   const settled = executeLifecycleCli(["settle-artifact", "--request", settleRequest, "--format", "json"], { cwd: root });
   assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
   const settledChange = readFileSync(join(changeRoot, "change.yaml"), "utf8");
-  assert.match(settledChange, /lifecycle_state: approved/);
-  assert.match(settledChange, /review:\n  latest_review: docs\/changes\/example\/reviews\/spec-review-r1\.md\n  review_log: docs\/changes\/example\/review-log\.md\n  reviewed_artifact: specs\/example\.md\n  status: clean\n  unresolved_items: 0/);
+  assert.match(settledChange, /lifecycle_state: accepted/);
+  assert.match(settledChange, /review:\n  latest_review: docs\/changes\/example\/reviews\/proposal-review-r1\.md\n  review_log: docs\/changes\/example\/review-log\.md\n  reviewed_artifact: docs\/proposals\/example\.md\n  status: clean\n  unresolved_items: 0/);
 });
 
 test("stale request and unresolved findings block without changing bytes", async () => {
   const { root, changeRoot } = await fixture("F-1");
   const oldRevision = revision(root);
-  const reviewPath = request(root, "review", { schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: oldRevision, artifact_id: "spec", evidence_path: "docs/changes/example/reviews/spec-review-r1.md", stage_authority: "spec-review" });
+  const reviewPath = request(root, "review", { schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: oldRevision, artifact_id: "proposal", evidence_path: "docs/changes/example/reviews/proposal-review-r1.md", stage_authority: "proposal-review" });
   const recorded = executeLifecycleCli(["record-review", "--request", reviewPath], { cwd: root });
   assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
   const before = readFileSync(join(changeRoot, "change.yaml"));
   assert.equal(executeLifecycleCli(["record-review", "--request", reviewPath], { cwd: root }).result.errors[0].code, "RL_STALE_OPERATION");
-  const settlePath = request(root, "settle", { schema_version: 1, operation: "settle-artifact", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", stage_authority: "spec-review" });
+  const settlePath = request(root, "settle", { schema_version: 1, operation: "settle-artifact", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", stage_authority: "proposal-review" });
   const blocked = executeLifecycleCli(["settle-artifact", "--request", settlePath], { cwd: root });
   assert.equal(blocked.result.errors[0].code, "RL_UNRESOLVED_MATERIAL_FINDING");
   assert.deepEqual(readFileSync(join(changeRoot, "change.yaml")), before);
@@ -118,11 +118,11 @@ test("stale request and unresolved findings block without changing bytes", async
 
 test("changes-requested settlement hands an artifact back despite its open findings", async () => {
   const { root, changeRoot } = await fixture("F-1", "changes-requested");
-  const reviewPath = request(root, "review", { schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", evidence_path: "docs/changes/example/reviews/spec-review-r1.md", stage_authority: "spec-review" });
+  const reviewPath = request(root, "review", { schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/reviews/proposal-review-r1.md", stage_authority: "proposal-review" });
   const recorded = executeLifecycleCli(["record-review", "--request", reviewPath], { cwd: root });
   assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
 
-  const settlePath = request(root, "settle", { schema_version: 1, operation: "settle-artifact", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", stage_authority: "spec-review" });
+  const settlePath = request(root, "settle", { schema_version: 1, operation: "settle-artifact", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", stage_authority: "proposal-review" });
   const settled = executeLifecycleCli(["settle-artifact", "--request", settlePath, "--format", "json"], { cwd: root });
 
   assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
@@ -135,9 +135,9 @@ test("changes-requested settlement hands an artifact back despite its open findi
 
 test("validation and finding resolution register existing exact evidence only", async () => {
   const { root } = await fixture();
-  const validationPath = request(root, "validation", { schema_version: 1, operation: "record-validation", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", evidence_path: "docs/changes/example/evidence/validation.md", subject_path: "specs/example.md", stage_authority: "verify" });
+  const validationPath = request(root, "validation", { schema_version: 1, operation: "record-validation", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/evidence/validation.md", subject_path: "docs/proposals/example.md", stage_authority: "verify" });
   assert.equal(executeLifecycleCli(["record-validation", "--request", validationPath], { cwd: root }).exitCode, 0);
-  const resolutionPath = request(root, "resolution", { schema_version: 1, operation: "record-finding-resolution", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" });
+  const resolutionPath = request(root, "resolution", { schema_version: 1, operation: "record-finding-resolution", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" });
   assert.equal(executeLifecycleCli(["record-finding-resolution", "--request", resolutionPath], { cwd: root }).exitCode, 0);
   assert.match(readFileSync(join(root, "docs", "changes", "example", "change.yaml"), "utf8"), /resolutions:/);
 });
@@ -145,7 +145,7 @@ test("validation and finding resolution register existing exact evidence only", 
 test("finding resolution reads fields from the requested finding section", async () => {
   const { root, changeRoot } = await fixture();
   writeFileSync(join(changeRoot, "review-resolution.md"), `# Resolution\n\nFinding ID: OTHER-1\nDisposition: accepted\nOwner: other\nStatus: resolved\nValidation evidence: other proof\n\nFinding ID: F-1\nDisposition: partially-accepted\nOwner: spec\nStatus: resolved\nValidation evidence: focused proof\n`, "utf8");
-  const resolutionPath = request(root, "scoped-resolution", { schema_version: 1, operation: "record-finding-resolution", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" });
+  const resolutionPath = request(root, "scoped-resolution", { schema_version: 1, operation: "record-finding-resolution", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" });
   const execution = executeLifecycleCli(["record-finding-resolution", "--request", resolutionPath, "--format", "json"], { cwd: root });
   assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
   const change = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
@@ -155,14 +155,14 @@ test("finding resolution reads fields from the requested finding section", async
 
 test("settlement subtracts resolutions for the exact target review occurrence", async () => {
   const { root, changeRoot } = await fixture("F-1", "approved");
-  const reviewPath = request(root, "review-resolved", { schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", evidence_path: "docs/changes/example/reviews/spec-review-r1.md", stage_authority: "spec-review" });
+  const reviewPath = request(root, "review-resolved", { schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/reviews/proposal-review-r1.md", stage_authority: "proposal-review" });
   assert.equal(executeLifecycleCli(["record-review", "--request", reviewPath], { cwd: root }).exitCode, 0);
-  const resolutionPath = request(root, "resolution-before-settlement", { schema_version: 1, operation: "record-finding-resolution", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" });
+  const resolutionPath = request(root, "resolution-before-settlement", { schema_version: 1, operation: "record-finding-resolution", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" });
   assert.equal(executeLifecycleCli(["record-finding-resolution", "--request", resolutionPath], { cwd: root }).exitCode, 0);
-  const settlePath = request(root, "settle-resolved", { schema_version: 1, operation: "settle-artifact", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", stage_authority: "spec-review" });
+  const settlePath = request(root, "settle-resolved", { schema_version: 1, operation: "settle-artifact", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", stage_authority: "proposal-review" });
   const settled = executeLifecycleCli(["settle-artifact", "--request", settlePath, "--format", "json"], { cwd: root });
   assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
-  assert.match(readFileSync(join(changeRoot, "change.yaml"), "utf8"), /lifecycle_state: approved/);
+  assert.match(readFileSync(join(changeRoot, "change.yaml"), "utf8"), /lifecycle_state: accepted/);
 });
 
 test("package review recording and approved settlement are atomic and compact", async () => {

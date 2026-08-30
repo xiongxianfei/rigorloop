@@ -379,7 +379,7 @@ function milestoneReview(root, change, request) {
 }
 
 function expectedReviewAuthority(kind) {
-  return kind === "adr" ? "architecture-review" : `${kind}-review`;
+  return kind === "proposal" ? "proposal-review" : null;
 }
 
 function requireLogEntry(root, changeId, reviewId) {
@@ -430,7 +430,6 @@ export function evaluateLifecycleOperation({ root, change, request }) {
   }
 
   if (request.operation === "initialize-approved-plan") {
-    const review = state.reviews[request.artifact_id];
     const deliveryReview = state.package_reviews?.delivery;
     const deliveryProjection = next.review_packages?.delivery;
     const consolidated = next.workflow_state?.current_stage === "delivery-review"
@@ -440,18 +439,10 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       && deliveryProjection?.review_id === deliveryReview.review_id
       && deliveryProjection?.members?.[request.artifact_id] === target?.path;
     if (target?.kind !== "plan" || target.role !== "primary" || target.lifecycle_state !== "review-required") throw operationError("RL_OPERATION_NOT_PERMITTED", "initialization requires the review-required primary plan", "approved-plan-initialization", [request.artifact_id, String(target?.kind), String(target?.role), String(target?.lifecycle_state)]);
-    if (!consolidated && next.workflow_state?.current_stage !== "plan-review") throw operationError("RL_OPERATION_NOT_PERMITTED", "approved plan initialization is not current", "approved-plan-initialization", [String(next.workflow_state?.current_stage)]);
-    if (!consolidated && (!review || !["approved", "clean-with-notes"].includes(review.outcome) || review.stage_authority !== "plan-review")) throw operationError("RL_OPERATION_NOT_PERMITTED", "initialization requires approved delivery-package or historical plan-review authority", "approved-plan-review", [request.artifact_id], "record-review");
+    if (!consolidated) throw operationError("RL_OPERATION_NOT_PERMITTED", "initialization requires current approved Delivery Review authority", "approved-delivery-review", [request.artifact_id], "record-package-review");
     const registration = state.artifacts[request.artifact_id];
     const plan = targetIdentity;
     if (!registration || registration.artifact_kind !== "plan" || registration.artifact_role !== "primary" || registration.stage_authority !== "plan" || registration.artifact_path !== target.path || registration.artifact_sha256 !== plan.sha256) throw operationError("RL_STALE_EVIDENCE", "primary plan registration is missing or stale", "approved-plan-identity", [request.artifact_id, target.path], "record-artifact-revision");
-    if (!consolidated) {
-      const evidence = safeFile(root, review.evidence_path);
-      const log = requireLogEntry(root, change.change_id, review.review_id);
-      if (review.artifact_path !== target.path || review.artifact_sha256 !== plan.sha256 || review.evidence_sha256 !== evidence.sha256 || review.review_log_sha256 !== log.sha256) throw operationError("RL_STALE_EVIDENCE", "clean plan review is stale", "approved-plan-review", [review.review_id, target.path], "record-review");
-      const openFindings = review.findings.filter((findingId) => state.resolutions[findingId]?.artifact_id !== request.artifact_id);
-      if (openFindings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "plan review findings remain open", "approved-plan-review", openFindings, "record-finding-resolution");
-    }
     const milestones = reviewedPlanMilestones(plan);
     const ordered = Object.keys(milestones);
     const expected = {
@@ -461,9 +452,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       remaining_implementation_milestones: ordered.filter((milestoneId) => milestones[milestoneId].kind === "implementation"),
       latest_review: resetLatestReview(),
       final_closeout: { readiness: "not-ready", reasons: [ordered.some((milestoneId) => milestones[milestoneId].kind === "implementation") ? "implementation-milestones-open" : "lifecycle-gates-open"], evidence: [] },
-      initialization_basis: consolidated
-        ? { review_id: deliveryReview.review_id, review_round: deliveryReview.round, review_record: deliveryReview.evidence_path, reviewed_artifact_path: target.path }
-        : { review_id: review.review_id, review_round: review.round, review_record: review.evidence_path, reviewed_artifact_path: target.path, reviewed_revision: plan.sha256 },
+      initialization_basis: { review_id: deliveryReview.review_id, review_round: deliveryReview.round, review_record: deliveryReview.evidence_path, reviewed_artifact_path: target.path },
     };
     const existing = next.workflow_state?.planned_work;
     if (existing) {
@@ -471,7 +460,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       throw operationError("RL_OPERATION_NOT_PERMITTED", "existing planned work cannot be replaced", "approved-plan-initialization", [request.artifact_id]);
     }
     next.workflow_state.planned_work = expected;
-    return { status: "initialized", candidate: next, operationResult: { artifact_id: request.artifact_id, current_milestone: expected.current_milestone, next_operation: consolidated ? "advance-stage" : "settle-artifact" } };
+    return { status: "initialized", candidate: next, operationResult: { artifact_id: request.artifact_id, current_milestone: expected.current_milestone, next_operation: "advance-stage" } };
   }
 
   if (request.operation === "route-correction") {
@@ -539,7 +528,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       ...(packageReview ? { source_review_id: packageReview.review_id } : {}),
     };
     workflow.current_stage = request.destination_stage;
-    workflow.next_stage = expectedReviewAuthority(destination.kind);
+    workflow.next_stage = request.return_stage;
     workflow.blocker = null;
     return { status: "routed", candidate: next, operationResult: { route_id: routeId, source_stage: request.source_stage, destination_stage: request.destination_stage, destination_artifact_id: request.destination_artifact_id, reason: request.reason, finding_ids: [...request.finding_ids].sort(), return_stage: request.return_stage, evidence_path: evidence.path, source_snapshot: { current_stage: state.active_correction.source_snapshot.current_stage, next_stage: state.active_correction.source_snapshot.next_stage, lifecycle_state: state.active_correction.source_snapshot.lifecycle_state, blocker: state.active_correction.source_snapshot.blocker, milestone_id: state.active_correction.source_snapshot.milestone_id, milestone_state: state.active_correction.source_snapshot.milestone_state } } };
   }
@@ -553,19 +542,13 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const destination = artifact(next, route.destination_artifact_id);
     const currentIdentity = artifactIdentity(root, destination);
     if (currentIdentity.sha256 === route.prior_artifact_sha256) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact has not changed", "correction-return", [route.destination_artifact_id]);
-    const packageCorrection = ["design-review", "delivery-review"].includes(route.return_stage);
-    const review = state.reviews[route.destination_artifact_id];
     const registration = state.artifacts[route.destination_artifact_id];
-    if (packageCorrection) {
-      if (!registration || registration.artifact_sha256 !== currentIdentity.sha256 || registration.stage_authority !== route.destination_stage || destination.lifecycle_state !== "review-required") throw operationError("RL_CORRECTION_ROUTE_INVALID", "package correction destination lacks an exact current authoring revision", "correction-return", [route.destination_artifact_id]);
-    } else if (!review || !["approved", "clean-with-notes"].includes(review.outcome) || review.artifact_sha256 !== currentIdentity.sha256 || review.stage_authority !== expectedReviewAuthority(destination.kind)) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination lacks an exact current approving review", "correction-return", [route.destination_artifact_id]);
+    if (!registration || registration.artifact_sha256 !== currentIdentity.sha256 || registration.stage_authority !== route.destination_stage || destination.lifecycle_state !== "review-required") throw operationError("RL_CORRECTION_ROUTE_INVALID", "correction destination lacks an exact current authoring revision", "correction-return", [route.destination_artifact_id]);
     const evidence = safeFile(root, request.evidence_path);
     const baseFields = ["Change ID", "Route ID", "Lifecycle revision", "Destination artifact", "Artifact path", "Artifact identity"];
-    const facts = evidenceMetadata(evidence, packageCorrection ? [...baseFields, "Authoring evidence path", "Authoring evidence identity"] : [...baseFields, "Review ID", "Review round", "Review authority", "Review outcome", "Review evidence path", "Review evidence identity"]);
+    const facts = evidenceMetadata(evidence, [...baseFields, "Authoring evidence path", "Authoring evidence identity"]);
     const baseMatches = facts["Change ID"] === change.change_id && facts["Route ID"] === route.route_id && facts["Lifecycle revision"] === request.expected_lifecycle_revision && facts["Destination artifact"] === route.destination_artifact_id && facts["Artifact path"] === destination.path && identityValue(facts["Artifact identity"]) === currentIdentity.sha256;
-    const authorityMatches = packageCorrection
-      ? facts["Authoring evidence path"] === registration.authoring_evidence_path && identityValue(facts["Authoring evidence identity"]) === registration.authoring_evidence_sha256
-      : facts["Review ID"] === review.review_id && facts["Review round"] === review.round && facts["Review authority"] === review.stage_authority && facts["Review outcome"] === review.outcome && facts["Review evidence path"] === review.evidence_path && identityValue(facts["Review evidence identity"]) === review.evidence_sha256;
+    const authorityMatches = facts["Authoring evidence path"] === registration.authoring_evidence_path && identityValue(facts["Authoring evidence identity"]) === registration.authoring_evidence_sha256;
     if (!baseMatches || !authorityMatches) throw operationError("RL_CORRECTION_ROUTE_INVALID", "return evidence does not bind the exact route and owning-stage result", "correction-return-evidence", [request.evidence_path]);
     const snapshot = route.source_snapshot;
     next.workflow_state.current_stage = snapshot.current_stage;
@@ -614,10 +597,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     if (state.active_correction && state.active_correction.destination_artifact_id !== request.artifact_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "only the routed destination artifact may be revised", "correction-destination", [request.artifact_id, state.active_correction.destination_artifact_id]);
     if (state.active_correction) {
       const atDestination = next.workflow_state?.current_stage === state.active_correction.destination_stage;
-      const handedBackByReview = next.workflow_state?.current_stage === expectedReviewAuthority(request.artifact_kind)
-        && target?.lifecycle_state === "revision-required"
-        && target?.review?.outcome === "changes-requested";
-      if (!atDestination && !handedBackByReview) throw operationError("RL_CORRECTION_ROUTE_INVALID", "routed destination revision is not current", "correction-destination", [String(next.workflow_state?.current_stage), state.active_correction.destination_stage]);
+      if (!atDestination) throw operationError("RL_CORRECTION_ROUTE_INVALID", "routed destination revision is not current", "correction-destination", [String(next.workflow_state?.current_stage), state.active_correction.destination_stage]);
     }
     const authored = safeFile(root, request.artifact_path);
     const evidence = safeFile(root, request.evidence_path);
@@ -658,9 +638,8 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       }
     }
     if (state.active_correction?.destination_artifact_id === request.artifact_id) {
-      const packageCorrection = ["design-review", "delivery-review"].includes(state.active_correction.return_stage);
-      next.workflow_state.current_stage = packageCorrection ? state.active_correction.destination_stage : expectedReviewAuthority(request.artifact_kind);
-      next.workflow_state.next_stage = packageCorrection ? state.active_correction.return_stage : expectedReviewAuthority(request.artifact_kind);
+      next.workflow_state.current_stage = state.active_correction.destination_stage;
+      next.workflow_state.next_stage = state.active_correction.return_stage;
     }
     return { status: "recorded", candidate: next };
   }
