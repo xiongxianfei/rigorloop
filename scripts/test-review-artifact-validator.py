@@ -185,6 +185,26 @@ def test_spec_review_text(
     """
 
 
+def proposal_review_text(*, vision_alignment: str | None = "aligned") -> str:
+    alignment = f"- Vision alignment: {vision_alignment}" if vision_alignment is not None else ""
+    return f"""
+    # Proposal Review R1
+
+    Review ID: proposal-review-r1
+    Stage: proposal-review
+    Round: 1
+    Reviewer: Codex proposal-review skill
+    Target: docs/proposals/example.md
+    Status: approved
+    Review date: 2026-08-31
+    {alignment}
+
+    ## Findings
+
+    No material findings.
+    """
+
+
 def package_review_text(*, stage: str = "design-review", status: str = "approved", scope: str | None = None) -> str:
     kind = stage.removesuffix("-review")
     members = "architecture, spec" if kind == "design" else "plan, test-spec"
@@ -2129,6 +2149,69 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                     ),
                 )
                 self.assertFails(root, expected)
+
+    def test_proposal_review_requires_one_known_vision_alignment(self) -> None:
+        for outcome in (
+            "aligned",
+            "material-conflict",
+            "vision-revision-requested",
+            "no-vision-bootstrap",
+        ):
+            with self.subTest(outcome=outcome):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-proposal-vision-valid-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "proposal-review-r1.md", proposal_review_text(vision_alignment=outcome))
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id="proposal-review-r1",
+                        stage="proposal-review",
+                        status="approved",
+                        detailed_record="reviews/proposal-review-r1.md",
+                    ),
+                )
+                self.assertPasses(root)
+
+    def test_proposal_review_vision_alignment_unknown_value_fails_closed(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-proposal-vision-unknown-value-"))
+        self.addCleanupTree(root)
+        write_text(root / "reviews" / "proposal-review-r1.md", proposal_review_text(vision_alignment="mostly-aligned"))
+        write_text(
+            root / "review-log.md",
+            review_log_text(
+                review_id="proposal-review-r1",
+                stage="proposal-review",
+                status="approved",
+                detailed_record="reviews/proposal-review-r1.md",
+            ),
+        )
+        self.assertFails(root, "unsupported proposal-review Vision alignment")
+
+    def test_proposal_review_requires_exactly_one_vision_alignment(self) -> None:
+        for name, source in (
+            ("missing", proposal_review_text(vision_alignment=None)),
+            (
+                "duplicate",
+                proposal_review_text(vision_alignment="aligned").replace(
+                    "- Vision alignment: aligned",
+                    "- Vision alignment: aligned\n- Vision alignment: material-conflict",
+                ),
+            ),
+        ):
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-proposal-vision-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "proposal-review-r1.md", source)
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id="proposal-review-r1",
+                        stage="proposal-review",
+                        status="approved",
+                        detailed_record="reviews/proposal-review-r1.md",
+                    ),
+                )
+                self.assertFails(root, "proposal-review must contain exactly one Vision alignment")
 
     def test_test_spec_review_result_fields_validate_status_handoff_and_next_stage(self) -> None:
         valid_cases = [
