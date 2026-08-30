@@ -126,11 +126,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m3-r4.md
+  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m4-r1.md
   review_log: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-log.md
-  reviewed_artifact: corrected M3 implementation through commit 4af08771
-  status: clean
-  unresolved_items: 0
+  reviewed_artifact: M4 implementation in commit f8565829
+  status: changes-requested
+  unresolved_items: 2
 lifecycle_cli:
   schema_version: 2
   artifacts:

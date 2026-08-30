@@ -25,6 +25,22 @@
 
 ### Review entry
 
+Review ID: code-review-m4-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: M4 implementation in commit `f8565829`
+Status: changes-requested
+Detailed record: reviews/code-review-m4-r1.md
+Resolution: review-resolution.md#code-review-m4-r1
+Material findings: CRG-M4-CR1, CRG-M4-CR2
+Open findings: CRG-M4-CR1, CRG-M4-CR2
+Finding ID: CRG-M4-CR1
+Finding ID: CRG-M4-CR2
+Recording status: recorded
+Blocker: M4 requires review-resolution, correction, focused proof, and rereview
+
+### Review entry
+
 Review ID: code-review-m3-r3
 Stage: code-review
 Round: r3
