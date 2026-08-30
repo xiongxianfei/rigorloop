@@ -46,6 +46,20 @@ function metadata(text, name) {
   return match?.[1]?.trim().replace(/^`|`$/g, "") ?? null;
 }
 
+function findingResolution(text, findingId) {
+  const lines = text.split(/\r?\n/);
+  const start = lines.findIndex((line) => line.trim() === `Finding ID: ${findingId}`);
+  if (start < 0) return null;
+  let end = lines.length;
+  for (let index = start + 1; index < lines.length; index += 1) {
+    if (/^#{2,6}\s/.test(lines[index]) || /^Finding ID:\s*/.test(lines[index])) {
+      end = index;
+      break;
+    }
+  }
+  return lines.slice(start, end).join("\n");
+}
+
 function reviewedTarget(text, target) {
   const pathLine = text.split("\n").find((line) => line.includes(target.path));
   const path = metadata(text, "Reviewed artifact path") ?? (pathLine ? target.path : null);
@@ -675,11 +689,12 @@ export function evaluateLifecycleOperation({ root, change, request }) {
 
   if (request.operation === "record-finding-resolution") {
     const evidence = safeFile(root, request.evidence_path);
-    if (!evidence.text.includes(`Finding ID: ${request.finding_id}`)) throw operationError("RL_INVALID_REQUEST", "resolution evidence does not contain the finding identity", "resolution-consistency", [request.finding_id]);
-    const disposition = metadata(evidence.text, "Disposition");
-    const owner = metadata(evidence.text, "Owner");
-    const status = metadata(evidence.text, "Status");
-    const validationEvidence = metadata(evidence.text, "Validation evidence");
+    const resolution = findingResolution(evidence.text, request.finding_id);
+    if (!resolution) throw operationError("RL_INVALID_REQUEST", "resolution evidence does not contain the finding identity", "resolution-consistency", [request.finding_id]);
+    const disposition = metadata(resolution, "Disposition");
+    const owner = metadata(resolution, "Owner");
+    const status = metadata(resolution, "Status");
+    const validationEvidence = metadata(resolution, "Validation evidence");
     if (!RESOLUTION_DISPOSITIONS.has(disposition) || !owner || status !== "resolved" || !validationEvidence || /^pending$/i.test(validationEvidence)) throw operationError("RL_INVALID_REQUEST", "resolution requires a closed disposition, owner, resolved status, and validation evidence", "resolution-shape", [request.finding_id]);
     requireLogEntry(root, change.change_id, request.finding_id);
     const registration = { artifact_id: request.artifact_id, finding_id: request.finding_id, disposition, owner, evidence_path: evidence.path, evidence_sha256: evidence.sha256, stage_authority: request.stage_authority };

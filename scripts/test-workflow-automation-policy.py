@@ -52,6 +52,26 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
                 frozenset()
             )
 
+    def test_consolidated_authoring_sequence_is_exact(self) -> None:
+        self.assertEqual(
+            PUBLIC_TARGET_SEQUENCE[:8],
+            (
+                WorkflowStage.PROPOSAL_REVIEW,
+                WorkflowStage.ARCHITECTURE,
+                WorkflowStage.SPEC,
+                WorkflowStage.DESIGN_REVIEW,
+                WorkflowStage.PLAN,
+                WorkflowStage.TEST_SPEC,
+                WorkflowStage.DELIVERY_REVIEW,
+                WorkflowStage.IMPLEMENT,
+            ),
+        )
+        self.assertEqual(WorkflowStage("design-review"), WorkflowStage.DESIGN_REVIEW)
+        self.assertEqual(WorkflowStage("delivery-review"), WorkflowStage.DELIVERY_REVIEW)
+        for retired in ("spec-review", "architecture-review", "plan-review", "test-spec-review"):
+            with self.assertRaises(ValueError):
+                WorkflowStage(retired)
+
     def test_transition_rules_own_predecessor_and_target_boundaries(self) -> None:
         self.assertTrue(
             is_immediate_predecessor(
@@ -67,7 +87,7 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
         )
         self.assertTrue(
             is_immediate_predecessor(
-                WorkflowPosition.ARCHITECTURE_ASSESSMENT,
+                WorkflowPosition.DESIGN_REVIEW,
                 WorkflowStage.PLAN,
             )
         )
@@ -126,7 +146,7 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
                 TransitionContext(
                     WorkflowPosition.PROPOSAL_REVIEW,
                     WorkflowStage.PROPOSAL,
-                    WorkflowStage.SPEC,
+                    WorkflowStage.ARCHITECTURE,
                     evidence={
                         "review_outcome": "changes-requested",
                         "review_identity": "sha256:review",
@@ -181,26 +201,15 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
                 ),
             ),
             (
-                TransitionGuard.ARCHITECTURE_REQUIRED,
+                TransitionGuard.PACKAGE_CORRECTION,
                 TransitionContext(
-                    WorkflowPosition.ARCHITECTURE_ASSESSMENT,
+                    WorkflowPosition.DESIGN_REVIEW,
                     WorkflowStage.ARCHITECTURE,
-                    WorkflowStage.ARCHITECTURE,
+                    WorkflowStage.DESIGN_REVIEW,
                     evidence={
-                        "architecture_applicability": "required",
-                        "architecture_applicability_identity": "sha256:assessment",
-                    },
-                ),
-            ),
-            (
-                TransitionGuard.ARCHITECTURE_NOT_REQUIRED,
-                TransitionContext(
-                    WorkflowPosition.ARCHITECTURE_ASSESSMENT,
-                    WorkflowStage.PLAN,
-                    WorkflowStage.PLAN,
-                    evidence={
-                        "architecture_applicability": "not-applicable",
-                        "architecture_applicability_identity": "sha256:assessment",
+                        "review_outcome": "changes-requested",
+                        "review_identity": "design-review-r1",
+                        "correction_target_identity": "architecture",
                     },
                 ),
             ),
@@ -392,7 +401,6 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
         occurrences = {policy.stage: policy.occurrence_rule for policy in STAGE_POLICIES}
         for stage in {
             WorkflowStage.PROPOSAL,
-            WorkflowStage.ARCHITECTURE_ASSESSMENT,
             WorkflowStage.REVIEW_RESOLUTION,
             WorkflowStage.CI_MAINTENANCE,
         }:

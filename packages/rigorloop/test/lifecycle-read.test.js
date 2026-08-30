@@ -8,7 +8,7 @@ import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
 import { parseLifecycleYaml, serializeLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
-import { packageContext, packageRepository } from "./helpers/lifecycle-package-fixture.js";
+import { lifecycleRevision, packageContext, packageRepository, writePackageReview, writeRequest } from "./helpers/lifecycle-package-fixture.js";
 
 async function repository(changeIds = ["example"], overrides = {}) {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-lifecycle-read-"));
@@ -75,6 +75,10 @@ test("status exposes one deterministic result model without writes", async () =>
   ]);
   assert.equal(execution.result.effective_state.recorded_state.spec, "approved");
   assert.equal(execution.result.effective_state.evidence_state.spec, "current");
+  assert.equal(execution.result.effective_state.downstream_package_authority.enforcement, "cutover-pending");
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.design.state, "missing");
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.delivery.state, "missing");
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.design.authority, "withheld");
   assert.deepEqual(execution.result.permitted_operations, ["record-validation", "complete-milestone"]);
   assert.match(execution.human, /Current stage: implement/);
   assert.match(execution.human, /Artifact spec: approved; evidence current/);
@@ -87,11 +91,51 @@ test("context returns bounded stage facts from the shared interpretation", async
   assert.equal(result.context.exact_change, "example");
   assert.equal(result.context.target_artifact, null);
   assert.equal(result.context.permitted_registration_operation, "record-review");
+  assert.equal(result.context.downstream_package_authority.enforcement, "cutover-pending");
+  assert.equal(result.context.downstream_package_authority.status, "not-current");
   assert.match(result.context.lifecycle_revision, /^sha256:[a-f0-9]{64}$/);
   assert.equal(JSON.stringify(result).includes(root), false);
   const human = executeLifecycleCli(["context", "code-review"], { cwd: root }).human;
   assert.match(human, /Context operation: code-review/);
   assert.match(human, /Permitted registration operation: record-review/);
+});
+
+test("downstream authority distinguishes historical-only reviews without activating the cutover blocker", async () => {
+  const root = await repository(["example"], {
+    artifact_states: {
+      architecture: { kind: "architecture", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
+      spec: { kind: "spec", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
+      plan: { kind: "plan", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
+      "test-spec": { kind: "test-spec", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
+    },
+  });
+  const execution = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.design.state, "historical-only");
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.delivery.state, "historical-only");
+  assert.equal(execution.result.blockers.some((item) => item.blocking_invariant === "downstream-package-authority"), false);
+});
+
+test("downstream authority reports a recorded but unsettled package as partial", async () => {
+  const { root } = await packageRepository();
+  const context = packageContext(root);
+  const review = writePackageReview(root, context);
+  const request = writeRequest(root, "record-partial-design", {
+    schema_version: 1,
+    operation: "record-package-review",
+    change_id: "example",
+    expected_lifecycle_revision: lifecycleRevision(root),
+    package_kind: "design",
+    review_id: review.reviewId,
+    upstream_review_id: review.packageFacts.upstream_review_id,
+    members: review.packageFacts.members,
+    evidence_path: review.reviewPath,
+    stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["record-package-review", "--request", request], { cwd: root }).exitCode, 0);
+  const status = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root }).result;
+  assert.equal(status.effective_state.downstream_package_authority.packages.design.state, "partial");
+  assert.equal(status.effective_state.downstream_package_authority.packages.design.authority, "withheld");
 });
 
 test("non-current upstream context requires workflow routing and keeps deferred work out of immediate permissions", async () => {

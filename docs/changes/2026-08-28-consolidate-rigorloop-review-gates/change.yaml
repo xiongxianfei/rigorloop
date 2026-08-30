@@ -131,7 +131,7 @@ review:
   review_log: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-log.md
   reviewed_artifact: M3 path-bounded implementation in commit e1a205e86a103c8001509dc111b84c9a5d1b0db7
   status: changes-requested
-  unresolved_items: 2
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -320,6 +320,22 @@ lifecycle_cli:
       stage_authority: workflow
   package_reviews: {}
   resolutions:
+    CRG-M3-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
+      evidence_sha256: 190ce6b3fbf08da706ac2abfb5d20196437132c9d594d9ce0a82f647f984d7f7
+      finding_id: CRG-M3-CR1
+      owner: M3 implementation owner
+      stage_authority: review-resolution
+    CRG-M3-CR2:
+      artifact_id: plan
+      disposition: partially-accepted
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
+      evidence_sha256: 190ce6b3fbf08da706ac2abfb5d20196437132c9d594d9ce0a82f647f984d7f7
+      finding_id: CRG-M3-CR2
+      owner: M3 implementation owner
+      stage_authority: review-resolution
     CRG-SR5:
       artifact_id: spec
       disposition: accepted

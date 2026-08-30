@@ -32,11 +32,11 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: CRG-M3-CR1, CRG-M3-CR2
-Open findings: CRG-M3-CR1, CRG-M3-CR2
+Open findings: none
 Finding ID: CRG-M3-CR1
 Finding ID: CRG-M3-CR2
 Recording status: recorded
-Blocker: M3 requires automation-graph and downstream-authority corrections, direct proof, and rereview
+Blocker: none; both findings are resolved and M3 rereview is required
 
 ### Review entry
 

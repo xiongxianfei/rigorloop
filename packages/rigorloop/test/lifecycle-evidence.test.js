@@ -142,6 +142,17 @@ test("validation and finding resolution register existing exact evidence only", 
   assert.match(readFileSync(join(root, "docs", "changes", "example", "change.yaml"), "utf8"), /resolutions:/);
 });
 
+test("finding resolution reads fields from the requested finding section", async () => {
+  const { root, changeRoot } = await fixture();
+  writeFileSync(join(changeRoot, "review-resolution.md"), `# Resolution\n\nFinding ID: OTHER-1\nDisposition: accepted\nOwner: other\nStatus: resolved\nValidation evidence: other proof\n\nFinding ID: F-1\nDisposition: partially-accepted\nOwner: spec\nStatus: resolved\nValidation evidence: focused proof\n`, "utf8");
+  const resolutionPath = request(root, "scoped-resolution", { schema_version: 1, operation: "record-finding-resolution", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" });
+  const execution = executeLifecycleCli(["record-finding-resolution", "--request", resolutionPath, "--format", "json"], { cwd: root });
+  assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
+  const change = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
+  assert.equal(change.lifecycle_cli.resolutions["F-1"].disposition, "partially-accepted");
+  assert.equal(change.lifecycle_cli.resolutions["F-1"].owner, "spec");
+});
+
 test("settlement subtracts resolutions for the exact target review occurrence", async () => {
   const { root, changeRoot } = await fixture("F-1", "approved");
   const reviewPath = request(root, "review-resolved", { schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "spec", evidence_path: "docs/changes/example/reviews/spec-review-r1.md", stage_authority: "spec-review" });

@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 
-import { allowedNextStages, lifecycleRevision, parseLifecycleYaml } from "./lifecycle-contract.js";
+import { allowedNextStages, canonicalJson, lifecycleRevision, parseLifecycleYaml } from "./lifecycle-contract.js";
 import { reviewPackageContext, validateStoredReviewPackages } from "./lifecycle-packages.js";
 import { stageIsComplete } from "./lifecycle-stage-routing.js";
 
@@ -11,9 +11,37 @@ const REVIEW_STAGES = new Set(["proposal-review", "spec-review", "architecture-r
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
 const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "plan", "test-spec"]);
 const CORRECTION_STAGE_ORDER = ["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"];
+const DOWNSTREAM_AUTHORITY_STAGES = new Set(["implement", "code-review", "explain-change", "verify", "pr"]);
 
 function diagnostic(code, summary, invariant, correctiveOperation = null, identities = []) {
   return { code, summary, blocking_invariant: invariant, relevant_identities: identities, corrective_operation: correctiveOperation };
+}
+
+function hasHistoricalArtifactReviews(change, kind) {
+  const memberKinds = kind === "design" ? new Set(["architecture", "spec", "adr"]) : new Set(["plan", "test-spec"]);
+  return Object.values(change.artifact_states ?? {}).some((entry) => memberKinds.has(entry?.kind) && entry?.review?.outcome === "approved");
+}
+
+function downstreamPackageAuthority(change, packageContexts) {
+  const packages = {};
+  for (const kind of ["design", "delivery"]) {
+    const context = packageContexts[kind];
+    const projection = change.review_packages?.[kind] ?? null;
+    const diagnostics = [...context.errors, ...context.blockers];
+    let state;
+    if (!projection && change.lifecycle_cli?.package_reviews?.[kind]) state = "partial";
+    else if (!projection) state = hasHistoricalArtifactReviews(change, kind) ? "historical-only" : "missing";
+    else if (diagnostics.some((item) => item.code === "RL_STALE_EVIDENCE")) state = "stale";
+    else if (canonicalJson(projection.members ?? {}) !== canonicalJson(context.members) || projection.upstream_review_id !== context.upstream_review_id) state = "mixed";
+    else if (context.status === "approved" && context.authority === "granted" && diagnostics.length === 0) state = "current";
+    else state = "partial";
+    packages[kind] = { state, authority: state === "current" ? "granted" : "withheld" };
+  }
+  return {
+    status: Object.values(packages).every((entry) => entry.state === "current") ? "current" : "not-current",
+    enforcement: "cutover-pending",
+    packages,
+  };
 }
 
 function repositoryPath(root, candidate) {
@@ -254,6 +282,7 @@ export function interpretGovernedChange(root, selected) {
   if (unresolvedFindings.length) blockers.push({ code: "RL_UNRESOLVED_MATERIAL_FINDING", summary: "Material review findings remain open.", blocking_invariant: "finding-closeout", relevant_identities: unresolvedFindings });
   if (staleEvidence.length) blockers.push({ code: "RL_STALE_EVIDENCE", summary: "Registered evidence is stale.", blocking_invariant: "evidence-freshness", relevant_identities: staleEvidence });
   const packageContexts = Object.fromEntries(["design", "delivery"].map((kind) => [kind, reviewPackageContext(root, change, kind)]));
+  const downstreamAuthority = downstreamPackageAuthority(change, packageContexts);
   for (const packageContext of Object.values(packageContexts)) if (change.review_packages?.[packageContext.package_kind]) blockers.push(...packageContext.blockers, ...packageContext.errors);
   blockers.push(...errors);
   const referenced = collected.artifacts.filter((artifact) => artifact.sha256).map((artifact) => ({ path: artifact.path, sha256: artifact.sha256 }));
@@ -294,6 +323,7 @@ export function interpretGovernedChange(root, selected) {
         errors: packageContext.errors,
         next_permitted_operation: packageContext.next_permitted_operation,
       }])),
+      downstream_package_authority: downstreamAuthority,
       supporting_paths: [relative(root, selected.path), ...collected.artifacts.map((artifact) => artifact.path)].sort(),
     },
     blockers,
@@ -364,6 +394,7 @@ export function contextForStage(interpreted, stage) {
     lifecycle_revision: interpreted.lifecycle_revision,
     permitted_registration_operation: routeAvailable ? null : interpreted.permitted_operations.includes("initialize-approved-plan") ? "initialize-approved-plan" : interpreted.permitted_operations.includes("advance-stage") ? "advance-stage" : REVIEW_STAGES.has(stage) ? "record-review" : stage === "review-resolution" ? "record-finding-resolution" : ["proposal", "spec", "architecture", "plan", "test-spec"].includes(stage) ? "record-artifact-revision" : ["implement", "verify", "ci-maintenance"].includes(stage) ? "record-validation" : null,
     ...(routeAvailable ? { route_required: { code: "RL_WORKFLOW_ROUTE_REQUIRED", current_stage: currentStage, requested_stage: stage, route_owner: "workflow", finding_ids: interpreted.effective_state.unresolved_findings }, available_after_workflow_route: "record-artifact-revision" } : {}),
+    ...(DOWNSTREAM_AUTHORITY_STAGES.has(stage) ? { downstream_package_authority: interpreted.effective_state.downstream_package_authority } : {}),
   };
 }
 

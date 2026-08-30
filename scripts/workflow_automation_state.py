@@ -63,22 +63,19 @@ PROPOSAL_REVIEW_OUTCOMES = frozenset(
 )
 FORMAL_REVIEW_INPUT_IDENTITIES = {
     "proposal-review": "proposal",
-    "spec-review": "spec",
-    "architecture-review": "architecture",
-    "plan-review": "plan",
-    "test-spec-review": "test-spec",
+    "design-review": "design-package",
+    "delivery-review": "delivery-package",
 }
 LIFECYCLE_STAGE_CLASSES = {
     "proposal": "proposal",
-    "spec": "spec",
     "architecture": "architecture",
+    "spec": "spec",
     "test-spec": "test-spec",
 }
 STAGE_NATIVE_VERIFIER_STAGES = frozenset(
     set(FORMAL_REVIEW_INPUT_IDENTITIES)
     | set(LIFECYCLE_STAGE_CLASSES)
     | {
-        "architecture-assessment",
         "plan",
         "implement",
         "code-review",
@@ -1056,22 +1053,6 @@ def _verify_transition_completion(
             handoff, handoff_errors = parse_handoff_summary(plan.read_text(encoding="utf-8"))
             if handoff is None or handoff_errors:
                 return CompletionVerification(False, "stage-native-plan-invalid")
-        elif stage_name == "architecture-assessment":
-            assessment = next(iter(artifacts), None)
-            if assessment is None:
-                return CompletionVerification(False, "stage-native-assessment-invalid")
-            fields: dict[str, str] = {}
-            for line in assessment.read_text(encoding="utf-8").splitlines():
-                if ":" in line:
-                    key, value = line.split(":", 1)
-                    fields[key.strip()] = value.strip()
-            if (
-                fields.get("Stage") != "architecture-assessment"
-                or fields.get("Applicability") not in {"required", "not-required"}
-                or fields.get("Spec identity") != inputs.get("spec")
-            ):
-                return CompletionVerification(False, "stage-native-assessment-invalid")
-            stage_facts["architecture_applicability"] = fields["Applicability"]
         elif stage_name in LIFECYCLE_STAGE_CLASSES:
             if len(artifacts) != 1:
                 return CompletionVerification(False, "stage-native-artifact-evidence-mismatch")

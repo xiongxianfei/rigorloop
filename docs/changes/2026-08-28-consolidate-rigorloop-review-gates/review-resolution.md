@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -13,11 +13,12 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-cli-fix-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r1
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`
-- Findings resolved: 17
-- Unresolved findings: 2
-- Current result: M3 Code Review R1 requests changes for the incompatible Python automation graph and missing downstream package-authority gate.
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
+- Findings resolved: 20
+- Unresolved findings: 0
+- Current result: both M3 findings are resolved with direct routing and authority-state proof; M3 is ready for rereview.
 
 ## Resolution Overview
 
@@ -40,8 +41,8 @@ Review closeout: code-review-m2-r2
 | CRG-M2-CR5 | accepted | resolved | Proposal Review replacement now invalidates dependent design authority while retaining the prior Design Review ID. |
 | CRG-M2-CR6 | accepted | resolved | Exact settlement replay now rereads current package and review evidence before recognizing replay. |
 | CRG-M2-CR7 | accepted | resolved | Settled non-approved package states now expose outcome-specific safe continuations. |
-| CRG-M3-CR1 | needs-decision | open | The Python automation vocabulary and policies still encode the retired artifact-review graph and reject both consolidated review stages. |
-| CRG-M3-CR2 | needs-decision | open | Downstream status and context accept changes with no current design or delivery package authority. |
+| CRG-M3-CR1 | accepted | resolved | Python automation now uses and proves the consolidated stage vocabulary and route. |
+| CRG-M3-CR2 | partially-accepted | resolved | M3 detects and proves every invalid package state; M6 retains atomic activation ownership under CRG-R35 through CRG-R40. |
 
 ## Finding Details
 
@@ -50,36 +51,38 @@ Review closeout: code-review-m2-r2
 #### CRG-M3-CR1
 
 Finding ID: CRG-M3-CR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: M3 implementation owner
 Owning stage: implement M3
 Decision owner: M3 implementation owner
-Decision needed: accept the in-scope correction and update the existing automation graph to the approved consolidated sequence.
-Chosen action: pending.
+Decision needed: none; the owner accepted the correction.
+Chosen action: replace the affected Python automation vocabulary, policy, and transition route with the consolidated sequence and add direct proof for both consolidated review stages.
 Rationale: The JavaScript lifecycle can write `design-review` and `delivery-review`, but the Python automation engine rejects both values and retains the retired review sequence.
 Required outcome: automation policy, state, validation, and tests represent the consolidated graph and can resume synchronized active automation projections.
 Safe resolution path: replace the affected Python stage vocabulary and policies, update fixtures, and add end-to-end automation proof across both consolidated reviews.
 Follow-up: implement the correction and rerun M3 Code Review.
 Validation target: CRG-T11; M3 automation commands; BND-STATE-001; INT-005.
-Validation evidence: pending.
+Validation evidence: Python automation policy, state, engine, and code-state suites passed 17, 65, 76, and 18 tests; the Node lifecycle routing packet passed 43 tests; details are recorded in `evidence/m3-consolidated-routing-implementation.md`.
 
 #### CRG-M3-CR2
 
 Finding ID: CRG-M3-CR2
-Disposition: needs-decision
-Status: open
+Disposition: partially-accepted
+Status: resolved
+Accepted portion: M3 adds one compact shared assessment and direct proof for every invalid package-authority state.
+Deferred portion: M6 activates that assessment as a downstream blocker in the single reviewed cutover revision.
 Owner: M3 implementation owner
 Owning stage: implement M3
 Decision owner: M3 implementation owner
-Decision needed: accept the in-scope correction and make current consolidated package authority mandatory for downstream consumers.
-Chosen action: pending.
-Rationale: Current read logic checks package validity only when a package projection already exists, allowing absent or historical-only package authority to bypass the downstream gate.
-Required outcome: Code Review, explanation, Verify, and PR inputs reject missing, partial, stale, mixed, and historical-only package authority.
-Safe resolution path: add a shared downstream authority gate aligned with the single-cutover contract and public regressions for absent and historical-only packages, without content hashes or a topology selector.
+Decision needed: none; the owner accepted detection and proof in M3 and cutover-owned enforcement in M6.
+Chosen action: add one shared downstream authority assessment that identifies missing, partial, stale, mixed, and historical-only package authority; expose it in status/context and prove every partition. Keep it advisory for the implementing change, then make the same assessment blocking atomically in M6.
+Rationale: The missing detection is valid, but activating the blocker during M3 would violate CRG-R35 through CRG-R40 by retroactively forcing this implementing change onto the consolidated workflow. A special exception, migration, activation manifest, topology field, or runtime selector is explicitly rejected.
+Required outcome: M3 exposes and directly proves all invalid downstream authority states; M6 activates the already-proved gate for Code Review, explanation, Verify, and PR in the single reviewed cutover revision.
+Safe resolution path: centralize the assessment without hashes or topology metadata, add missing and historical-only regressions alongside stale/mixed proof, and retain the M6 activation dependency.
 Follow-up: implement the correction and rerun M3 Code Review.
 Validation target: CRG-T12; CRG-R41; CRG-R42; BND-COMPOSE-001; BND-COMPAT-001.
-Validation evidence: pending.
+Validation evidence: lifecycle read and stage-advance tests directly prove missing, historical-only, partial, stale, mixed, and current authority partitions; the full package suite passed 296 tests; `enforcement: cutover-pending` and the M6 activation dependency are recorded in `evidence/m3-consolidated-routing-implementation.md`.
 
 ### spec-review-r1
 

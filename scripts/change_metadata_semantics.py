@@ -78,8 +78,8 @@ REVIEW_PACKAGE_FINDING_SCOPES = {"artifact-local", "cross-artifact", "upstream-d
 WORKFLOW_LIFECYCLE_STATES = {"active", "paused", "completed", "cancelled"}
 WORKFLOW_STAGES = {
     "explore", "research", "proposal", "proposal-review", "spec", "spec-review",
-    "architecture-assessment", "architecture", "architecture-review", "plan",
-    "plan-review", "test-spec", "test-spec-review", "implement", "code-review",
+    "architecture-assessment", "architecture", "architecture-review", "design-review", "plan",
+    "plan-review", "test-spec", "test-spec-review", "delivery-review", "implement", "code-review",
     "review-resolution", "ci-maintenance", "final-holistic-code-review",
     "explain-change", "verify", "pr", "learn", "none",
 }

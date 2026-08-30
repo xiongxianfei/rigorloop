@@ -9,7 +9,7 @@ Validation result: pass
 
 ## Scope completed
 
-M3 replaces the lifecycle CLI's pre-implementation forward graph with the approved consolidated sequence, centralizes source-stage completion checks, integrates package correction routing, synchronizes active automation projections, and makes current package evidence participate in downstream status. Milestone operations remain separate and unchanged.
+M3 replaces both lifecycle routing implementations with the approved consolidated sequence, centralizes source-stage completion checks, integrates package correction routing, synchronizes active automation projections, and exposes one compact downstream package-authority assessment. Milestone operations remain separate and unchanged.
 
 ## Stage-transition matrix
 
@@ -38,22 +38,28 @@ Retired and skipped edges fail unchanged. Package settlement leaves `current_sta
 
 `advance-stage` atomically updates `workflow_state.current_stage`, `workflow_state.next_stage`, and an active `workflow.automation.current_stage`. A contradictory active automation projection fails without mutation.
 
-Status and context reread registered package review evidence and the canonical review-log occurrence. Changed review evidence, a mismatched upstream review ID, or another mixed package projection withholds authority and blocks downstream status. Appending an unrelated review-log entry does not stale earlier package authority because package registrations bind their canonical log occurrence rather than the entire mutable log file.
+The JavaScript lifecycle and Python automation policy now use the same sequence: `proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement`. Retired public review stages are rejected by the active Python vocabulary, while historical automation mechanism names remain readable until cutover.
+
+Status and downstream context expose one compact assessment for both packages. Each package reports only `state` (`missing`, `historical-only`, `partial`, `stale`, `mixed`, or `current`) and `authority`; the assessment reports `enforcement: cutover-pending`. This makes invalid authority explicit without adding document hashes, aggregate revisions, activation metadata, or a retroactive blocker. M6 will activate the same assessment atomically after legacy-dependent work is closed, as required by CRG-R35 through CRG-R40.
 
 ## Tests added or updated
 
 - `packages/rigorloop/test/lifecycle-stage-advance.test.js`: consolidated adjacent graph, package-authorized advancement, isolated settlement, retired-edge rejection, automation synchronization, and stale/mixed downstream authority.
 - `packages/rigorloop/test/lifecycle-correction-route.test.js`: exact package-finding route, authoring return, repeat-target rejection, and package-rereview requirement.
+- `packages/rigorloop/test/lifecycle-read.test.js`: missing, historical-only, and partial authority projections plus pre-cutover non-enforcement.
 - `packages/rigorloop/test/helpers/lifecycle-package-fixture.js`: preserves multiple canonical package-review log occurrences.
+- `scripts/test-workflow-automation-policy.py`, `scripts/test-workflow-automation-state.py`, and `scripts/test-workflow-automation.py`: exact consolidated vocabulary, graph, positioning, routing, and retired-stage rejection.
+- `packages/rigorloop/test/fixtures/observability/v0.4.x-output-compatibility-v1.json`: approved lifecycle status/context evolution governed by CRG-R41.
+- `packages/rigorloop/test/lifecycle-evidence.test.js`: finding-resolution recording reads disposition and ownership from the requested finding section rather than the first finding in a shared resolution file.
 
 ## Validation
 
-- `node --test packages/rigorloop/test/lifecycle-stage-advance.test.js packages/rigorloop/test/lifecycle-correction-route.test.js packages/rigorloop/test/lifecycle-milestone.test.js packages/rigorloop/test/lifecycle-read.test.js` — 41 passed.
+- `node --test packages/rigorloop/test/lifecycle-stage-advance.test.js packages/rigorloop/test/lifecycle-correction-route.test.js packages/rigorloop/test/lifecycle-milestone.test.js packages/rigorloop/test/lifecycle-read.test.js` — 43 passed.
 - `python scripts/test-workflow-automation.py` — 76 passed.
-- `python scripts/test-workflow-automation-policy.py` — 16 passed.
+- `python scripts/test-workflow-automation-policy.py` — 17 passed.
 - `python scripts/test-workflow-automation-state.py` — 65 passed.
 - `python scripts/test-workflow-code-state.py` — 18 passed.
-- `npm test --prefix packages/rigorloop` — 294 passed.
+- `npm test --prefix packages/rigorloop` — 297 passed.
 - `python scripts/test-change-metadata-validator.py` — 66 passed.
 - `python scripts/validate-review-artifacts.py docs/changes/2026-08-28-consolidate-rigorloop-review-gates` — passed.
 - `python scripts/validate-change-metadata.py docs/changes/2026-08-28-consolidate-rigorloop-review-gates/change.yaml` — passed.
@@ -63,8 +69,8 @@ Status and context reread registered package review evidence and the canonical r
 
 ## Unaffected surfaces
 
-- `scripts/workflow_automation.py`, `scripts/workflow_automation_policy.py`, and `scripts/workflow_automation_state.py` are unchanged. Their existing policy, durable-state, recovery, and code-state suites pass; lifecycle `advance-stage` owns synchronization of the active automation stage projection in this slice. Canonical public target and skill inventory replacement remains M4 and final cutover work remains M6.
-- Code Review, milestone completion, final holistic review, explanation, Verify, and PR ownership are unchanged. M3 only makes stale or mixed package evidence visible to their downstream contexts.
+- Historical automation record names and legacy change-stage vocabulary remain readable until the atomic M6 cutover; they grant no new consolidated authority.
+- Code Review, milestone completion, final holistic review, explanation, Verify, and PR ownership are unchanged. M3 exposes invalid package authority to downstream contexts; M6 owns activation of the blocker.
 - No topology field, activation document, package hash, new top-level CLI family, dependency, or separate completion receipt was added.
 
 ## Recovery

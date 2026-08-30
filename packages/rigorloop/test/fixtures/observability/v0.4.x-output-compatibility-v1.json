@@ -305,6 +305,20 @@
               "next_permitted_operation": null
             }
           },
+          "downstream_package_authority": {
+            "status": "not-current",
+            "enforcement": "cutover-pending",
+            "packages": {
+              "design": {
+                "state": "missing",
+                "authority": "withheld"
+              },
+              "delivery": {
+                "state": "missing",
+                "authority": "withheld"
+              }
+            }
+          },
           "supporting_paths": [
             "docs/changes/example/change.yaml",
             "specs/example.md"
@@ -448,6 +462,20 @@
               "next_permitted_operation": null
             }
           },
+          "downstream_package_authority": {
+            "status": "not-current",
+            "enforcement": "cutover-pending",
+            "packages": {
+              "design": {
+                "state": "missing",
+                "authority": "withheld"
+              },
+              "delivery": {
+                "state": "missing",
+                "authority": "withheld"
+              }
+            }
+          },
           "supporting_paths": [
             "docs/changes/example/change.yaml",
             "specs/example.md"
@@ -478,7 +506,21 @@
           "authorized_output_path": null,
           "blockers": [],
           "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
-          "permitted_registration_operation": "record-review"
+          "permitted_registration_operation": "record-review",
+          "downstream_package_authority": {
+            "status": "not-current",
+            "enforcement": "cutover-pending",
+            "packages": {
+              "design": {
+                "state": "missing",
+                "authority": "withheld"
+              },
+              "delivery": {
+                "state": "missing",
+                "authority": "withheld"
+              }
+            }
+          }
         }
       },
       "stderr": ""
@@ -561,6 +603,20 @@
                 }
               ],
               "next_permitted_operation": null
+            }
+          },
+          "downstream_package_authority": {
+            "status": "not-current",
+            "enforcement": "cutover-pending",
+            "packages": {
+              "design": {
+                "state": "missing",
+                "authority": "withheld"
+              },
+              "delivery": {
+                "state": "missing",
+                "authority": "withheld"
+              }
             }
           },
           "supporting_paths": [
@@ -676,6 +732,20 @@
                 }
               ],
               "next_permitted_operation": null
+            }
+          },
+          "downstream_package_authority": {
+            "status": "not-current",
+            "enforcement": "cutover-pending",
+            "packages": {
+              "design": {
+                "state": "missing",
+                "authority": "withheld"
+              },
+              "delivery": {
+                "state": "missing",
+                "authority": "withheld"
+              }
             }
           },
           "supporting_paths": [
@@ -829,6 +899,20 @@
                 }
               ],
               "next_permitted_operation": null
+            }
+          },
+          "downstream_package_authority": {
+            "status": "not-current",
+            "enforcement": "cutover-pending",
+            "packages": {
+              "design": {
+                "state": "missing",
+                "authority": "withheld"
+              },
+              "delivery": {
+                "state": "missing",
+                "authority": "withheld"
+              }
             }
           },
           "supporting_paths": [
