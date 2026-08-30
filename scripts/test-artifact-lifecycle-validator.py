@@ -3752,12 +3752,32 @@ No blocked plans.
         messages = "\n".join(f.message for f in result.blocking_findings)
         self.assertIn("missing required proposal section 'Challenge'", messages)
 
+    def test_settled_simplified_proposal_remains_readable(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="simplified-proposal-settled-"))
+        self.addCleanupTree(fixture_root)
+        _, change_record = write_simplified_proposal(
+            fixture_root,
+            governed=True,
+            lifecycle_state="accepted",
+        )
+        assert change_record is not None
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[change_record.relative_to(fixture_root).as_posix()],
+        )
+        self.assertFalse(result.blocking_findings, result.blocking_findings)
+
     def test_selected_governed_proposal_path_mismatch_fails(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="simplified-proposal-path-mismatch-"))
         self.addCleanupTree(fixture_root)
         proposal, change_record = write_simplified_proposal(fixture_root, governed=True)
         assert change_record is not None
-        change_record.write_text(
+        different_record = (
+            fixture_root / "docs" / "changes" / "2026-08-30-different-change" / "change.yaml"
+        )
+        different_record.parent.mkdir(parents=True, exist_ok=True)
+        different_record.write_text(
             change_record.read_text(encoding="utf-8").replace(
                 proposal.relative_to(fixture_root).as_posix(),
                 "docs/proposals/2026-08-30-different-proposal.md",
@@ -3769,7 +3789,7 @@ No blocked plans.
             mode="explicit-paths",
             paths=[
                 proposal.relative_to(fixture_root).as_posix(),
-                change_record.relative_to(fixture_root).as_posix(),
+                different_record.relative_to(fixture_root).as_posix(),
             ],
         )
         messages = "\n".join(f.message for f in result.blocking_findings)

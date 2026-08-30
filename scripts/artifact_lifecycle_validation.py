@@ -1428,6 +1428,11 @@ def _uses_simplified_proposal_shape(text: str) -> bool:
     return any(heading in simplified_names for heading in _level_two_headings(text))
 
 
+def _has_complete_simplified_proposal_shape(text: str) -> bool:
+    headings = _level_two_headings(text)
+    return all(headings.count(section) == 1 for section in SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS)
+
+
 def _proposal_requires_simplified_contract(
     relative_path: Path,
     text: str,
@@ -1438,7 +1443,7 @@ def _proposal_requires_simplified_contract(
     if stage_owned_status is not None:
         settled = stage_owned_status in {"accepted", "rejected", "abandoned", "superseded", "archived"}
         if settled:
-            return current_path
+            return current_path or _has_complete_simplified_proposal_shape(text)
         return True
     if _uses_simplified_proposal_shape(text):
         return True
@@ -2093,7 +2098,7 @@ def validate_repository(
             contract is not None
             and contract.class_name == "proposal"
             and path in scope.changed_paths
-            and any(record.parent.name == path.stem for record in stage_owned_records)
+            and len(stage_owned_records & set(scope.changed_paths)) == 1
             and not owners
         ):
             blocking_findings.append(
