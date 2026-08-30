@@ -74,7 +74,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M3
+    current_milestone: M4
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -103,13 +103,12 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: review-requested
+        state: closed
       M4:
         kind: lifecycle-closeout
         state: planned
     plan_artifact_id: plan
-    remaining_implementation_milestones:
-      - M3
+    remaining_implementation_milestones: []
 workflow: {}
 artifacts: {}
 requirements: []
@@ -187,7 +186,27 @@ lifecycle_cli:
         milestone_state: null
         next_stage: delivery-review
       status: returned
-  milestones: {}
+  milestones:
+    M3:
+      completion_fingerprint: 1b26e2902ad7dacdabac30602d818dd5d6d41243df845bed9e58f52051742c3d
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/m3-publication-parity.md
+      evidence_sha256: f37af551a4b7284f17774756053a9fc1847c0248c1572eb9780807410415d2f8
+      milestone_id: M3
+      review_evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m3-r4.md
+      review_evidence_sha256: a96c6cc838b1b6e83d96a83bf3c1a099af95d7bd9c14106330649d477a58738a
+      review_id: code-review-m3-r4
+      review_log_entry_sha256: e2c392a10c06318caa172c0b2cd124a2cfca497a49a0f6518eb317339dde92b1
+      review_log_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m3-r4.md
+      review_recording_status: recorded
+      review_round: r4
+      review_stage: code-review
+      stage_authority: workflow
   package_reviews:
     delivery:
       correction_targets: []
