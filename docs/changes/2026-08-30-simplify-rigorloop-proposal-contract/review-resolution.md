@@ -4,20 +4,20 @@
 
 Closeout status: open
 
-Review closeout: delivery-review-r1
+Review closeout: code-review-m2-r1
 
 - Reviews covered: `delivery-review-r1`, `code-review-m2-r1`
-- Findings resolved: 1
-- Unresolved findings: 2
-- Current result: `SPC-DR1` remains resolved. `SPC-M2-CR1` and `SPC-M2-CR2` await an owner disposition before M2 correction begins.
+- Findings resolved: 3
+- Unresolved findings: 0
+- Current result: `SPC-DR1`, `SPC-M2-CR1`, and `SPC-M2-CR2` are resolved. M2 correction commit `f3fd200c` is ready for independent rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
 | SPC-DR1 | accepted | resolved | The plan now identifies the existing test specification and the current Delivery Review gate. |
-| SPC-M2-CR1 | needs-decision | open | Decide whether to accept the current-versus-historical compatibility correction. |
-| SPC-M2-CR2 | needs-decision | open | Decide whether to accept the governed proposal-path mismatch correction. |
+| SPC-M2-CR1 | accepted | resolved | Current selected-path scope now distinguishes changed settled governed proposals from untouched settled history. |
+| SPC-M2-CR2 | accepted | resolved | Explicitly selected stage-owned proposal/change-record pairs now fail when the primary proposal path differs. |
 
 ## Finding Details
 
@@ -45,31 +45,31 @@ Validation evidence: plan identity `sha256:fae8129d5d066e23a1dbf5ec6da1c0e6cf0b2
 #### SPC-M2-CR1
 
 Finding ID: SPC-M2-CR1
-Disposition: needs-decision
-Status: open
-Owner: developer
-Owning stage: review-resolution
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: implement
 Decision owner: developer
-Decision needed: Accept, reject, defer, or partially accept the required current-versus-historical compatibility correction.
-Stop state: M2 remains in code-review with resolution required; no implementation correction or rereview is authorized by this record alone.
+Decision needed: none; the user's `go ahead` authorized the bounded correction and mandatory rereview.
+Chosen action: Use the validator's existing selected-path scope so a settled governed legacy proposal is historical only when reached through its change record and current when the proposal itself is selected.
 Rationale: The validator exempts changed accepted legacy proposals because terminal lifecycle state is treated as sufficient historical identity.
 Required outcome: Preserve untouched settled history while requiring changed, unsettled, and new current proposals to satisfy the simplified contract.
 Safe resolution path: Accept the focused scope in `code-review-m2-r1.md`, correct the selector using existing validation-scope facts without a new hash, version, field, document, or CLI command, then rerun M2 proof and rereview.
 Validation target: governed fixtures distinguish untouched settled legacy evidence from changed settled, unsettled, and new current proposals.
-Validation evidence: pending owner disposition and corrected M2 validation.
+Validation evidence: correction commit `f3fd200c`; artifact-lifecycle validator 155/155; review-artifact validator 107/107; current proposal, review structure, change metadata, and diff checks passed.
 
 #### SPC-M2-CR2
 
 Finding ID: SPC-M2-CR2
-Disposition: needs-decision
-Status: open
-Owner: developer
-Owning stage: review-resolution
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: implement
 Decision owner: developer
-Decision needed: Accept, reject, defer, or partially accept the required governed proposal-path mismatch correction.
-Stop state: M2 remains in code-review with resolution required; no implementation correction or rereview is authorized by this record alone.
+Decision needed: none; the user's `go ahead` authorized the bounded correction and mandatory rereview.
+Chosen action: When a current proposal and same-named stage-owned change record are selected together, require that record's primary proposal entry to match before portable fallback is allowed.
 Rationale: The one-way ownership model loses the legacy reverse-pointer correlation and currently treats a selected mismatched proposal as portable.
 Required outcome: Block a selected governed proposal/change-record path mismatch while preserving the genuinely portable path.
 Safe resolution path: Accept the focused scope in `code-review-m2-r1.md`, correlate selected current inputs at the validation-scope boundary without restoring reverse metadata, add direct fixtures, then rerun M2 proof and rereview.
 Validation target: matching governed and portable proposals pass while a selected mismatched proposal/change-record pair fails with an ownership diagnostic.
-Validation evidence: pending owner disposition and corrected M2 validation.
+Validation evidence: correction commit `f3fd200c`; direct mismatch regression passed; artifact-lifecycle validator 155/155; review-artifact validator 107/107; current proposal, review structure, change metadata, and diff checks passed.
