@@ -4,8 +4,8 @@
 
 Stage: explain-change
 Status: current
-Final diff identity: `8f80771ea0d85264e3ca33be443e17c30d77d179..638b9ccabde7b42b584c1773eec540b16098fdfd`
-Final review identity: `code-review-final-r2` recorded in `fec22dbf31fd4e737ed2753d6992bbddb95946d1`
+Final diff identity: `8f80771ea0d85264e3ca33be443e17c30d77d179..93f212a895941793e9eba480e494fda79ad0ed77`
+Final review identity: `code-review-final-r4` recorded in `12d02b22a7c23aa806af6343308919bf76f92ff2`
 
 ## Summary
 
@@ -34,7 +34,7 @@ The former sequence allowed architecture and specification, and later plan and p
 | Canonical skills and guidance | Added `design-review` and `delivery-review`; removed public `architecture-review`, `spec-review`, `plan-review`, and `test-spec-review`; updated workflow and downstream consumers. | Publish one unambiguous decision-gate model with separate authorship. | CRG-R4–R6, R33, R41 | Skill validator: 450 passed, 90 retired-topology skips. |
 | Validators and schema | Added package shapes, closed vocabularies, historical-authority rejection, cutover inventory, and review-attribution checks. | Fail closed before consistency and prevent partial/mixed authority. | CRG-R22–R29, R35–R45 | Metadata validator: 66 passed; review validator: 104 passed; CLI conformance passed. |
 | Adapter distribution | Published the two new review skills and removed the four retired entrypoints from generated adapter inventories and archives. | Canonical and packaged public behavior must cut over together. | CRG-R38, R43–R44 | Adapter distribution: 154 passed. |
-| Change-local evidence | Recorded milestone reviews, findings, resolutions, cutover proof, and final holistic review. | Preserve durable independent evidence and precise finding ownership. | CRG-R32, R38, R41, R45 | Closeout validator passes with 38 reviews and 28 resolved findings. |
+| Change-local evidence | Recorded milestone reviews, findings, resolutions, cutover proof, and final holistic review; removed 84 transient CLI request inputs that were neither durable evidence nor referenced authority. | Preserve durable independent evidence and precise finding ownership without treating invocation inputs as lifecycle artifacts. | CRG-R32, R38, R41, R45 | Closeout validator passes with 40 reviews and 29 resolved findings; PR selection has zero request paths. |
 
 ## Tests added or changed
 
@@ -57,11 +57,14 @@ The former sequence allowed architecture and specification, and later plan and p
 | `python scripts/test-review-artifact-validator.py` | 104 passed. | corrected subject `638b9cca` |
 | `python scripts/test-skill-validator.py` | 450 passed; 90 retired-topology scenarios skipped by design. | corrected subject `638b9cca` |
 | `python scripts/test-adapter-distribution.py` | 154 passed. | corrected subject `638b9cca` |
-| Final holistic Code Review | `code-review-final-r2` is clean-with-notes. | review revision `fec22dbf` |
+| `python scripts/test-select-validation.py` | passed; restored strict handling after removing transient current-change requests. | final subject `93f212a8` |
+| `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` | passed; 174 changed paths, zero blockers, zero unclassified paths, and zero request paths. | final subject `93f212a8` |
+| `bash scripts/ci.sh --mode broad-smoke` | passed; 11 checks in 796 seconds. | final subject `93f212a8` |
+| Final holistic Code Review | `code-review-final-r4` is clean-with-notes after CRG-SEL-CR1 resolution. | review revision `12d02b22` |
 
 ## Review resolution summary
 
-The change-local resolution record closes 28 material findings: 26 accepted, one partially accepted, and one rejected owner-level finding. `CRG-FH-CR1`, the only final holistic finding, was accepted and corrected by the bounded design-package owner route. See `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md`; closeout validation reports no open finding.
+The change-local resolution record closes all 29 material findings. `CRG-FH-CR1` was accepted and corrected by the bounded design-package owner route. `CRG-SEL-CR1` was accepted and resolved by reverting a selector route that did not inspect JSON and removing the transient request inputs from the final diff. See `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md`; closeout validation reports no open finding.
 
 ## Alternatives rejected
 
@@ -81,8 +84,8 @@ This slice does not merge architecture/specification or plan/test specification;
 ## Workflow handback
 
 Explanation status: current
-Explanation basis: `fec22dbf31fd4e737ed2753d6992bbddb95946d1`
-Validation-evidence cutoff: corrected subject `638b9ccabde7b42b584c1773eec540b16098fdfd` on 2026-08-30
+Explanation basis: `12d02b22a7c23aa806af6343308919bf76f92ff2`
+Validation-evidence cutoff: final reviewed subject `93f212a895941793e9eba480e494fda79ad0ed77` on 2026-08-30
 Open explain-change blockers: none
 Control returned to workflow: yes
 Next-stage decision owner: workflow
