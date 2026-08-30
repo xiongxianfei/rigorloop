@@ -38,6 +38,8 @@ Repeat `implement -> code-review -> review-resolution when triggered` for each i
 
 The compact canonical chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`. Architecture and specification remain separate authoring stages reconciled before Design Review; plan and test specification remain separate authoring stages reconciled before Delivery Review. Retired artifact-review records are historical evidence only and grant no progression authority.
 
+After a PR is open, a user-authorized bounded PR CI repair is an isolated correction, not a new profile or another pass through the chain. Preserve current review, explanation, verification, and lifecycle evidence only when the correction restores already-approved behavior without changing their decision basis. Otherwise route to the earliest affected owning stage.
+
 ## When to use
 
 Use this skill when starting, resuming, auditing, or routing work through the standard workflow, including an explicitly authorized automation command.

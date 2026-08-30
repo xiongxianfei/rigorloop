@@ -186,23 +186,23 @@ Contract and migration coverage focus on the hard rename: no active `ci` skill b
 - Failure proves: The renamed skill still reads like a generic local test runner.
 - Automation location: `scripts/test-skill-validator.py`.
 
-### TCIM-011. Claim boundary forbids running validation, designing tests, waiting for CI, or claiming readiness
+### TCIM-011. Claim boundary separates ordinary work from bounded PR CI repair
 
 - Covers: CIM-R13, CIM-R14, CIM-R15, CIM-R16, CIM-R17, CIM-R46, E3
 - Level: unit
 - Fixture/setup: Canonical skill and negative wording fixtures.
 - Steps: Validate claim-boundary text and forbidden readiness claims.
-- Expected result: The skill states the boundaries and does not claim CI pass, verify readiness, branch readiness, PR readiness, release readiness, or deployment readiness.
+- Expected result: Ordinary infrastructure work does not run validation or wait for CI; an eligible bounded PR CI repair may execute already-authoritative commands and report an exact observed replacement run without claiming verify, branch, PR, release, or deployment readiness.
 - Failure proves: `ci-maintenance` can overclaim downstream proof or validation ownership.
 - Automation location: `scripts/test-skill-validator.py`.
 
-### TCIM-012. Workflow-managed success hands off to explain-change
+### TCIM-012. Ordinary workflow-managed success hands off to explain-change
 
 - Covers: CIM-R18
 - Level: unit
 - Fixture/setup: Canonical skill handoff section.
 - Steps: Inspect handoff rule for workflow-managed execution.
-- Expected result: Successful workflow-managed `ci-maintenance` hands off to `explain-change` unless a stop condition applies.
+- Expected result: Successful ordinary workflow-managed `ci-maintenance` hands off to `explain-change`; an eligible bounded PR CI repair stays isolated and preserves current downstream evidence when its decision basis is unchanged.
 - Failure proves: The renamed skill breaks the standard lifecycle handoff.
 - Automation location: `scripts/test-skill-validator.py`; `python scripts/validate-skills.py`.
 

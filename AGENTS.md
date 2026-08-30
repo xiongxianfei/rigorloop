@@ -75,6 +75,8 @@ In workflow-managed completion flows, continue automatically into the next manda
 
 Use `bugfix` for bugs, `ci-maintenance` when GitHub Actions or related automation for a material risk is missing, stale, or wrong, and `pr` only when the branch is already ready for review.
 
+For an already-open PR, a user-authorized bounded CI repair may inspect the exact failure, make the smallest correction, run existing focused and PR checks, push under existing authority, and observe the replacement check. Preserve current review and verification evidence only when the correction restores approved behavior without changing their decision basis; otherwise return to the earliest affected owning stage.
+
 ## Plan file policy
 
 - `docs/roadmap.md` stores future ideas and unapproved work.

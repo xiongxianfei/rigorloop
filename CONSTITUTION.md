@@ -161,6 +161,8 @@ Architecture, specification, plan, and test-specification authorship remain sepa
 
 `code-review`, `explain-change`, and `verify` MUST happen before non-trivial changes are considered ready for PR.
 
+After a PR is open, a user-authorized CI repair MAY preserve those completed gates when it only restores already-approved behavior and does not change their decision basis. Such a repair uses existing commands and authority; a substantive or ambiguous correction returns to the earliest affected owning stage.
+
 In workflow-managed completion flows, agents MUST continue into the next mandatory or triggered downstream stage when an approved autoprogression spec says continuation applies. Review-only or otherwise isolated stage requests MUST remain isolated by default, except that direct `pr` still performs PR opening when readiness passes.
 
 Manual skill invocations and bugfix skill invocations remain isolated or explicit-step unless a higher-priority approved artifact broadens their automation scope. On-demand or periodic actions such as `explore`, `research`, and `learn` MUST NOT auto-run by default unless a higher-priority approved artifact elevates them.

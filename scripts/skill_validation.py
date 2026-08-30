@@ -3441,6 +3441,26 @@ def validate_ci_maintenance_contract(
         "slow PR checks during workflow review": ("slow comprehensive checks on every PR",),
         "pull_request_target warning": ("pull_request_target", "untrusted code"),
         "risk coverage review": ("missing risk coverage", "unmapped changed surfaces"),
+        "bounded PR repair eligibility": (
+            "Use `bounded-pr-ci-repair` only for an already-open PR with an exact failing run and head",
+            "current review and verification evidence",
+            "no open material finding",
+        ),
+        "bounded PR repair decision boundary": (
+            "runtime implementation",
+            "dependencies",
+            "lifecycle schema",
+            "stage routing",
+            "earliest affected owning stage",
+        ),
+        "bounded PR repair lifecycle restraint": (
+            "Do not create a new review round",
+            "lifecycle-only commit solely because CI failed",
+        ),
+        "bounded PR repair hosted observation": (
+            "`not-observed`, `pending`, `passed`, or `failed`",
+            "exact run and head",
+        ),
     }
     for label, terms in required_body_terms.items():
         if not all(term in body for term in terms):
