@@ -73,7 +73,7 @@ review_packages:
     package_kind: delivery
     review_id: delivery-review-r1
     review_round: r1
-    status: changes-requested
+    status: review-required
     upstream_review_id: design-review-r2
   design:
     authority: granted
@@ -121,9 +121,9 @@ lifecycle_cli:
       artifact_kind: plan
       artifact_path: docs/plans/2026-08-30-lightweight-requirement-delivery-model.md
       artifact_role: primary
-      artifact_sha256: 7277d1138d6a4f20953acfda7f45626afee852cbe9d926a8028b5ad69d942a0f
+      artifact_sha256: 0c912fc274d278329690401c91df7380aad3a06e2a605af1d5fd283cb73f839f
       authoring_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/plan-authoring.md
-      authoring_evidence_sha256: daa327f0253c073ac58cf4f4d3fa8abf50976bd98434f175264c18c2a6b11f3e
+      authoring_evidence_sha256: 6dee4fcfd038fe336c0a4c7155e1b644a90fbe28f02119b0c73d01aeccd60dec
       stage_authority: plan
     proposal:
       artifact_kind: proposal
@@ -145,9 +145,9 @@ lifecycle_cli:
       artifact_kind: test-spec
       artifact_path: specs/lightweight-requirement-delivery-model.test.md
       artifact_role: primary
-      artifact_sha256: 53f52e2980b5dc9ab57be44ef7dc59e050f43dc779bd3904e037b121e29281e9
+      artifact_sha256: 5616ca914618d9bbde256f80acf61447a19cd62fe8f0dda4a488bffe614bdeb2
       authoring_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/test-spec-authoring.md
-      authoring_evidence_sha256: b0dd6178bb087eaf491f0f24ac75543115d0103857d2529946b11f491b73a239
+      authoring_evidence_sha256: 088b22079608db6eb6058a574e8029d63e5ee8bf06bd89561d9d15de49a232a5
       stage_authority: test-spec
   correction_history:
     route-a7ec901fcafb38ce1dfde97e6059cd065b3722a0a62eb6b1c22577208c51072b:
@@ -172,6 +172,53 @@ lifecycle_cli:
         milestone_id: null
         milestone_state: null
         next_stage: design-review
+      status: returned
+    route-d9fcfd07ad9695e7a80f7fb38dbc44ce8eca6a66aa902d28cbb00fe2696a701d:
+      destination_artifact_id: plan
+      destination_stage: plan
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/delivery-review-r1-plan-route.md
+      evidence_sha256: 1e12578baf31fd3629b2fcdb26f42066e6582ecb078aa3f92a657146605ed408
+      prior_artifact_sha256: 7277d1138d6a4f20953acfda7f45626afee852cbe9d926a8028b5ad69d942a0f
+      prior_lifecycle_revision: sha256:49f97a2e26cb1b4695c808ac1f86a3ceb0dbcd77c55396f63610e4e7a7237653
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/delivery-review-r1-plan-return.md
+      return_evidence_sha256: 64f765ff984e3313b7ede0595f9e7c0663a045e41cd9e6c4356f0efdec496c31
+      return_stage: delivery-review
+      route_id: route-d9fcfd07ad9695e7a80f7fb38dbc44ce8eca6a66aa902d28cbb00fe2696a701d
+      source_review_id: delivery-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: delivery-review
+        finding_ids:
+          - RTD-DLR2
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: delivery-review
+      status: returned
+    route-ec95a0ed0a83a8a7b2f7b4b73089c2415761d27848f36068722eaebe9ff9b015:
+      destination_artifact_id: test-spec
+      destination_stage: test-spec
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/delivery-review-r1-test-spec-route.md
+      evidence_sha256: d07e0f7f19f07834cab41aad452b7d846111164e3e17afd81e3d5a8cb83ddcc8
+      prior_artifact_sha256: 53f52e2980b5dc9ab57be44ef7dc59e050f43dc779bd3904e037b121e29281e9
+      prior_lifecycle_revision: sha256:5fd931cafa3ba59f598ff7d1bd31e27a1c93b12ef06cdaf7280981565a3e878e
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/delivery-review-r1-test-spec-return.md
+      return_evidence_sha256: 55fccf39af06ad5b9fa9cc6c7a24db5acbe82590a2ff3aa0740012eb7153a21e
+      return_stage: delivery-review
+      route_id: route-ec95a0ed0a83a8a7b2f7b4b73089c2415761d27848f36068722eaebe9ff9b015
+      source_review_id: delivery-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: delivery-review
+        finding_ids:
+          - RTD-DLR1
+          - RTD-DLR2
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: delivery-review
       status: returned
   milestones: {}
   package_reviews:
@@ -232,6 +279,22 @@ lifecycle_cli:
       stage_authority: design-review
       upstream_review_id: proposal-review-r1
   resolutions:
+    RTD-DLR1:
+      artifact_id: test-spec
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-resolution.md
+      evidence_sha256: d827a1d740b6f2cd8406fc39c3e6d3a2f1d7e67c1f321e11f801c40916335572
+      finding_id: RTD-DLR1
+      owner: test-specification author
+      stage_authority: review-resolution
+    RTD-DLR2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-resolution.md
+      evidence_sha256: d827a1d740b6f2cd8406fc39c3e6d3a2f1d7e67c1f321e11f801c40916335572
+      finding_id: RTD-DLR2
+      owner: plan and test-specification authors
+      stage_authority: review-resolution
     RTD-DR1:
       artifact_id: spec
       disposition: accepted

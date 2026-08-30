@@ -1,0 +1,8 @@
+Change ID: 2026-08-30-lightweight-requirement-delivery-model
+Route ID: route-ec95a0ed0a83a8a7b2f7b4b73089c2415761d27848f36068722eaebe9ff9b015
+Lifecycle revision: sha256:a2d2fef661d2fa14494f07330d2c31e218e5e86179e71d1dacc0aba4d42a612e
+Destination artifact: test-spec
+Artifact path: specs/lightweight-requirement-delivery-model.test.md
+Artifact identity: sha256:5616ca914618d9bbde256f80acf61447a19cd62fe8f0dda4a488bffe614bdeb2
+Authoring evidence path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/test-spec-authoring.md
+Authoring evidence identity: sha256:088b22079608db6eb6058a574e8029d63e5ee8bf06bd89561d9d15de49a232a5

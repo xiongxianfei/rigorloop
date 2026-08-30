@@ -2,20 +2,20 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 - Reviews covered: `design-review-r1`, `delivery-review-r1`
-- Findings resolved: 1
-- Unresolved findings: 2
-- Current result: Design Review is approved; Delivery Review R1 requests bounded plan and test-specification corrections.
+- Findings resolved: 3
+- Unresolved findings: 0
+- Current result: Design Review is approved; Delivery Review R1 corrections are complete and await Delivery Review R2.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
 | RTD-DR1 | accepted | resolved | The active boundary-contract marker and valid example ownership are recorded; rereview the exact design package. |
-| RTD-DLR1 | needs-decision | open | Six acceptance criteria lack explicit test-case ownership. |
-| RTD-DLR2 | needs-decision | open | Plan allocation and multi-milestone proof timing do not agree. |
+| RTD-DLR1 | accepted | resolved | All ten acceptance criteria now have explicit test-case ownership. |
+| RTD-DLR2 | accepted | resolved | M3 owns RTD-R20 and every multi-milestone proof row names its complete timing. |
 
 ## Finding Details
 
@@ -43,33 +43,33 @@ Validation evidence: Passed after registration at `sha256:6bc2d07d0a026201d52060
 #### RTD-DLR1
 
 Finding ID: RTD-DLR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: test-specification author
 Owning stage: test-spec
 Decision owner: test-specification author
-Decision needed: Accept the bounded traceability correction or explain why the six acceptance criteria do not require explicit test-case ownership.
-Chosen action: pending
+Decision needed: none; the bounded traceability correction is accepted.
+Chosen action: Add RTD-AC2, RTD-AC3, RTD-AC5, RTD-AC7, RTD-AC9, and RTD-AC10 to the existing direct test cases that prove their outcomes.
 Rationale: The test specification claims complete acceptance coverage but does not identify proof owners for `RTD-AC2`, `RTD-AC3`, `RTD-AC5`, `RTD-AC7`, `RTD-AC9`, or `RTD-AC10`.
 Required outcome: Every acceptance criterion maps to existing direct proof or an explicit justified gap.
 Safe resolution path: Add the missing criterion identities to the appropriate existing test cases, register the revised test specification, validate its trace, and request Delivery Review R2.
 Follow-up: Delivery Review R2 over the corrected exact package.
 Validation target: The union of test-case `Covers` fields includes `RTD-AC1` through `RTD-AC10`.
-Validation evidence: pending
+Validation evidence: The union of RTD-T01 through RTD-T08 now cites RTD-AC1 through RTD-AC10, and boundary-first validation passes for the exact feature/test-spec pair at test-spec identity `sha256:5616ca914618d9bbde256f80acf61447a19cd62fe8f0dda4a488bffe614bdeb2`.
 
 #### RTD-DLR2
 
 Finding ID: RTD-DLR2
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: plan and test-specification authors
 Owning stage: plan, test-spec
 Decision owner: plan and test-specification authors
-Decision needed: Accept the bounded allocation and proof-timing correction or identify a different coherent milestone ownership model.
-Chosen action: pending
+Decision needed: none; the bounded allocation and timing correction is accepted.
+Chosen action: Add RTD-R20 to M3 allocation; set PRF-002 to M1 and M2, PRF-003 through PRF-005 to M2 and M3, and PRF-009 to M1 and M2.
 Rationale: M3 proves `RTD-R20` without plan allocation, and five proof rows name tests and evidence from later milestones than their single recorded required milestone.
 Required outcome: Plan requirement allocation, required proof milestones, test cases, and evidence timing agree.
 Safe resolution path: Add `RTD-R20` to M3 allocation, list every required milestone on `PRF-002` through `PRF-005` and `PRF-009`, register both revisions, validate the exact pair, and request Delivery Review R2.
 Follow-up: Delivery Review R2 over the corrected exact package.
 Validation target: Every proof row's required milestones cover all named test and evidence milestones, and the plan allocates every requirement exercised by each milestone.
-Validation evidence: pending
+Validation evidence: The plan at `sha256:0c912fc274d278329690401c91df7380aad3a06e2a605af1d5fd283cb73f839f` allocates RTD-R20 to M3, the exact revised proof map records every named milestone, and boundary-first validation passes.

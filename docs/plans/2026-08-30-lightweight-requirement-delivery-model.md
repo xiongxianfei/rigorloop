@@ -38,7 +38,7 @@ The shared model explains relationships but grants no stage authority. Stable SR
 | --- | --- |
 | RTD-R1-RTD-R10, RTD-R13-RTD-R16; BND-INPUT-001, BND-AUTH-001, BND-COMPOSE-001 | M1 shared model, authoring skills, proportional examples, and artifact structures |
 | RTD-R11-RTD-R12, RTD-R15, RTD-R20; BND-AUTH-001, BND-RECOVERY-001; INT-001, INT-003 | M2 review and verification guidance with unchanged authority and semantic ownership |
-| RTD-R13-RTD-R14, RTD-R17-RTD-R19; BND-COMPOSE-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001; INT-002 | M3 shared-copy validation and supported package parity |
+| RTD-R13-RTD-R14, RTD-R17-RTD-R20; BND-COMPOSE-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001; INT-002 | M3 shared-copy validation and supported package parity |
 | RTD-AC1-RTD-AC10 | Matching test specification and evidence across M1-M3 |
 
 ## Milestones
@@ -117,7 +117,7 @@ The shared model explains relationships but grants no stage authority. Stable SR
 
 - Milestone kind: implementation
 - Goal: Extend the existing skill-resource validation owner so every selected consumer, generated adapter archive, and clean installation carries the same self-contained model.
-- Requirements: RTD-R13-RTD-R14, RTD-R17-RTD-R19; BND-COMPOSE-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001; INT-002.
+- Requirements: RTD-R13-RTD-R14, RTD-R17-RTD-R20; BND-COMPOSE-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001; INT-002.
 - Architecture decisions: existing validator and build pipeline own structural parity; generated output remains derived; historical artifacts remain untouched.
 - Files/components likely touched:
   - `scripts/skill_validation.py` and `scripts/test-skill-validator.py`
