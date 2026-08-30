@@ -3893,10 +3893,10 @@ def _validate_blocking_review_closeout(
 ) -> list[ValidationFinding]:
     findings: list[ValidationFinding] = []
     explicit_closeouts = set(resolution.explicit_review_closeout_ids) if resolution else set()
-    for index, entry in enumerate(log_entries):
+    for entry in log_entries:
         if entry.status.lower() not in BLOCKING_REVIEW_STATUSES:
             continue
-        if _has_later_nonblocking_review(entry, log_entries[index + 1 :]):
+        if _has_later_nonblocking_review(entry, log_entries):
             continue
         if entry.review_id in explicit_closeouts:
             continue
@@ -3914,14 +3914,17 @@ def _validate_blocking_review_closeout(
 
 def _has_later_nonblocking_review(
     entry: ReviewLogEntry,
-    later_entries: list[ReviewLogEntry],
+    review_entries: list[ReviewLogEntry],
 ) -> bool:
     entry_round = _round_number(entry.round)
     if entry_round is None:
         return False
+    entry_occurrence = _review_occurrence_id(entry.review_id)
 
-    for later in later_entries:
+    for later in review_entries:
         if later.stage != entry.stage:
+            continue
+        if _review_occurrence_id(later.review_id) != entry_occurrence:
             continue
         if later.status.lower() in BLOCKING_REVIEW_STATUSES:
             continue
@@ -3932,9 +3935,14 @@ def _has_later_nonblocking_review(
     return False
 
 
+def _review_occurrence_id(review_id: str) -> str:
+    return re.sub(r"-r[0-9]+$", "", review_id)
+
+
 def _round_number(value: str) -> int | None:
+    normalized = value[1:] if value.startswith("r") else value
     try:
-        return int(value, 10)
+        return int(normalized, 10)
     except ValueError:
         return None
 
