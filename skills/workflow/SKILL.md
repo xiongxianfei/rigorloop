@@ -28,16 +28,15 @@ Next stage: the specialized skill permitted by authoritative state, or a stop co
 Use this skill to start, resume, audit, or route the standard RigorLoop workflow. RigorLoop has one recommended per-change chain:
 
 ```text
-proposal -> proposal-review -> spec -> spec-review -> architecture assessment
--> architecture -> architecture-review when required
--> plan -> plan-review -> test-spec -> test-spec-review
+proposal -> proposal-review -> architecture -> spec -> design-review
+-> plan -> test-spec -> delivery-review
 -> implement -> code-review -> review-resolution when triggered
 -> ci-maintenance when triggered -> explain-change -> verify -> pr
 ```
 
 Repeat `implement -> code-review -> review-resolution when triggered` for each implementation milestone. A clean non-final milestone returns to the next milestone. Final closeout requires all implementation milestones and required review resolution to be closed, followed by triggered CI maintenance, explanation, verification, and PR handoff.
 
-The compact canonical chain is `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`; architecture authoring and review apply only when assessment requires them.
+The compact canonical chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`. Architecture and specification remain separate authoring stages reconciled before Design Review; plan and test specification remain separate authoring stages reconciled before Delivery Review. Retired artifact-review records are historical evidence only and grant no progression authority.
 
 ## When to use
 
@@ -80,7 +79,7 @@ Produce a routing decision, authoritative current-stage assessment, blockers or 
 Classify the four predicates below from authoritative evidence. Automation command forms are portable across supported adapters:
 
 - Adapter invocation equivalents preserve the same arguments: Codex uses `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and OpenCode invokes the installed `workflow` skill with `auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or `off`.
-- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
+- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `test-spec`, `delivery-review`, `implement`, `code-review`, and `verify`.
 - `$workflow auto: status` is read-only. `$workflow auto: off` durably cancels the unified run and preserves transition evidence.
 - `governed_change_context`: a valid current governed change record exists.
 - `automation_command_context`: the invocation is an explicit automation command, including a pre-persistence target bootstrap.
@@ -130,7 +129,7 @@ Start with the exact approved rows cited for the current decision. Expand approv
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
-Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `design-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
 Route the method, locate governing artifacts, and stop on missing applicable ownership. For an adopting change, identify the approved feature boundary record and proof map before routing downstream. Stop routing and name the owning upstream stage when ownership is absent or an identity is invalid.
 
@@ -147,7 +146,7 @@ Stage-obligation values are `mandatory`, `conditional`, `on-demand`, and `period
 
 ## Universal ownership and safety
 
-The user owns product intent and destructive or external authority. Each authoring stage owns its artifact and matching authoring transition. Review peers own their review evidence and matching settlement. Implementation and evidence stages own only their scoped outputs. Workflow owns routing and later planned-work transitions. New primary plans reach review without live work; after clean plan-review evidence, plan owns the one-time initialization of missing `planned_work`, workflow coordinates the identical plan-review settlement retry, and workflow owns every later transition.
+The user owns product intent and destructive or external authority. Each authoring stage owns its artifact and matching authoring transition. Review peers own their review evidence and matching settlement. Implementation and evidence stages own only their scoped outputs. Workflow owns routing and later planned-work transitions. New primary plans reach Delivery Review without live work; after the delivery package is approved, plan owns the one-time initialization of missing `planned_work`, and workflow owns every later transition.
 
 Do not update an upstream artifact as workflow bookkeeping. Do not infer completion from file existence. Review readiness is not verification readiness, and verification readiness is not PR readiness.
 

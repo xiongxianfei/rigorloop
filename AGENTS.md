@@ -63,15 +63,15 @@ Use `explore` and `research` as on-demand support when ambiguity, option expansi
 
 Once proposal, spec, and architecture are already settled, execution usually proceeds through:
 
-`plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+`plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+
+The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves plan and test specification as one exact package. Earlier evidence for the implementing consolidated-gates change remains historical under its approved pre-cutover plan; it is not a current progression route.
 
 For milestone-based plans, repeat implementation and code-review for each in-scope implementation milestone. A clean non-final milestone review routes to the next implementation milestone; final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
 
 For planned initiatives, `docs/changes/<change-id>/change.yaml` owns the current milestone, milestone state, review status, remaining in-scope implementation milestones, next stage, and final closeout readiness. Plans carry stable execution intent, while stage-owned artifacts provide scoped evidence. Every state-changing handoff checks the change-local state and affected evidence before downstream readiness is claimed.
 
 In workflow-managed completion flows, continue automatically into the next mandatory or triggered downstream stage when the approved autoprogression contract says to do so. Do not wait for redundant user confirmation to enter a known review or PR gate. Review-only and manual individual-skill invocations stay isolated by default, direct `pr` still opens the PR when readiness passes, and bugfix skill invocations remain explicit-step unless a higher-priority artifact broadens them.
-
-Add `plan-review` before spec work when the task is risky, cross-cutting, or hard to sequence cleanly.
 
 Use `bugfix` for bugs, `ci-maintenance` when GitHub Actions or related automation for a material risk is missing, stale, or wrong, and `pr` only when the branch is already ready for review.
 
@@ -112,7 +112,7 @@ If the work changes externally observable behavior and no relevant spec exists, 
 
 - Mutable proposal, spec, test-spec, architecture, ADR, and plan lifecycle state lives in the owning `docs/changes/<change-id>/change.yaml`.
 - Governed artifacts contain one stable pointer to their owning change record and keep stable intent, planning history, and explicitly historical evidence.
-- Authoring skills may change only their own governed content and matching authoring-state transition. The sole narrow exception is that `plan` initializes missing `workflow_state.planned_work` exactly once from an exact clean-reviewed primary plan revision; it never initializes an unreviewed draft or replaces or updates existing planned work. Plan review records judgment before initialization and settles only through an identical retry after matching initialization. Review peers may change only their own review evidence and the matching artifact settlement transition.
+- Authoring skills may change only their own governed content and matching authoring-state transition. The sole narrow exception is that `plan` initializes missing `workflow_state.planned_work` exactly once from an approved Delivery Review package containing that primary plan; it never initializes an unreviewed draft or replaces or updates existing planned work. Review peers may change only their own review evidence and the matching package or artifact settlement transition.
 - Workflow owns routing. Downstream and support skills treat upstream governed artifacts and lifecycle state as read-only and route corrections to the owning stage.
 - Keep `Next artifacts` as planning history while an artifact is active. Use `Follow-on artifacts` or `Closeout` for actual downstream artifacts or final disposition. If a `Follow-on artifacts` section appears before real follow-ons exist, it must say `None yet`.
 - A superseded artifact's change-local state and owning closeout evidence must identify its replacement.

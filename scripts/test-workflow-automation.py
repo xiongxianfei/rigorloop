@@ -801,14 +801,14 @@ Planned validation rule: proposal-exact-append
 
     def test_public_routes_enter_only_through_the_unified_engine_adapter(self) -> None:
         authoring = evaluate_public_authoring_route(
-            command="$workflow auto: spec-review",
+            command="$workflow auto: design-review",
             current_stage="spec",
             capability_kind="post-proposal-authoring",
             capability_status="active",
         )
         self.assertEqual(
             (authoring.status, authoring.next_stage),
-            ("continue", "spec-review"),
+            ("continue", "design-review"),
         )
 
         plan = ActivePlanContext.from_text(
@@ -915,7 +915,7 @@ Planned validation rule: proposal-exact-append
 
         started = start_public_run(
             store,
-            "workflow auto-through: plan-review",
+            "workflow auto-through: delivery-review",
             run_id="run-public-001",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
@@ -928,7 +928,7 @@ Planned validation rule: proposal-exact-append
             proposal_correction_budget=REVIEW_FIX_BUDGET_LIMITS,
         )
         state = store.read()
-        self.assertEqual(started["structured_target"]["stage"], "plan-review")
+        self.assertEqual(started["structured_target"]["stage"], "delivery-review")
         self.assertEqual(
             started["canonical_position_source"],
             "authoritative-artifact-review-evidence",
@@ -1035,9 +1035,9 @@ Planned validation rule: proposal-exact-append
         basis_store = WorkflowAutomationStateStore(basis_path)
         implementation_basis = {
             "plan_identity": "sha256:plan",
-            "plan_review_identity": "sha256:plan-review",
+            "plan_review_identity": "sha256:delivery-review",
             "test_spec_identity": "sha256:test-spec",
-            "test_spec_review_identity": "sha256:test-spec-review",
+            "test_spec_review_identity": "sha256:delivery-review",
             "milestone_identity": "sha256:M1",
             "affected_paths_identity": "sha256:paths",
             "mutation_categories_identity": "sha256:categories",
@@ -1307,6 +1307,7 @@ Planned validation rule: proposal-exact-append
             positions={
                 "proposal": ("sha256:proposal",),
                 "proposal-review": ("sha256:proposal-review",),
+                "architecture": ("sha256:architecture",),
             },
             review_outcomes={"proposal-review": "approved"},
             review_resolution_closed=True,
@@ -1314,7 +1315,7 @@ Planned validation rule: proposal-exact-append
         )
         start_public_run(
             store,
-            "$workflow auto: test-spec-review",
+            "$workflow auto: delivery-review",
             run_id="run-public-resume",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
@@ -1323,6 +1324,7 @@ Planned validation rule: proposal-exact-append
         basis = {
             "proposal_identity": "sha256:proposal",
             "approved_proposal_review_identity": "sha256:proposal-review",
+            "architecture_identity": "sha256:architecture",
             "closed_review_resolution_identity": "sha256:resolution",
             "stage_scope_identity": "sha256:scope",
         }
@@ -1330,6 +1332,7 @@ Planned validation rule: proposal-exact-append
             **basis,
             "proposal": "sha256:proposal",
             "proposal-review": "sha256:proposal-review",
+            "architecture": "sha256:architecture",
         }
 
         def invoke() -> StageExecutionResult:
@@ -1351,7 +1354,7 @@ Planned validation rule: proposal-exact-append
 
         result = workflow_automation_module.resume_public_run(
             store,
-            "$workflow auto: test-spec-review",
+            "$workflow auto: delivery-review",
             repository_root=root,
             stage="spec",
             occurrence={"kind": "singleton"},
@@ -1372,12 +1375,13 @@ Planned validation rule: proposal-exact-append
         self.assertEqual(result["stage_outcome"], "continue")
         self.assertEqual(result["transitions_attempted"][0]["status"], "completed")
         self.assertEqual(result["artifacts_changed"], ["specs/example.md"])
-        self.assertEqual(result["next_action"], "spec-review")
+        self.assertEqual(result["next_action"], "design-review")
         self.assertEqual(
             store.read().automation["observed_identities"],
             {
                 "proposal": "sha256:proposal",
                 "proposal-review": "sha256:proposal-review",
+                "architecture": "sha256:architecture",
                 "spec": result["latest_evidence_identities"]["spec"],
             },
         )
@@ -1490,7 +1494,7 @@ Planned validation rule: proposal-exact-append
         )
         start_public_run(
             store,
-            "$workflow auto: test-spec-review",
+            "$workflow auto: delivery-review",
             run_id="run-public-drift",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
@@ -1515,7 +1519,7 @@ Planned validation rule: proposal-exact-append
         ):
             workflow_automation_module.resume_public_run(
                 store,
-                "$workflow auto: test-spec-review",
+                "$workflow auto: delivery-review",
                 repository_root=root,
                 stage="spec",
                 occurrence={"kind": "singleton"},
@@ -1819,6 +1823,7 @@ Planned validation rule: proposal-exact-append
                         positions={
                             "proposal": ("sha256:proposal",),
                             "proposal-review": ("sha256:proposal-review",),
+                            "architecture": ("sha256:architecture",),
                         },
                         review_outcomes={"proposal-review": "approved"},
                         review_resolution_closed=True,
@@ -1826,7 +1831,7 @@ Planned validation rule: proposal-exact-append
                     )
                     start_public_run(
                         store,
-                        "$workflow auto: test-spec-review",
+                        "$workflow auto: delivery-review",
                         run_id="run-deterministic",
                         actor="user",
                         occurred_at="2026-07-24T00:00:00Z",
@@ -1836,6 +1841,7 @@ Planned validation rule: proposal-exact-append
                         "proposal_identity": "sha256:proposal",
                         "approved_proposal_review_identity":
                             "sha256:proposal-review",
+                        "architecture_identity": "sha256:architecture",
                         "closed_review_resolution_identity":
                             "sha256:resolution",
                         "stage_scope_identity": "sha256:scope",
@@ -1870,7 +1876,7 @@ Planned validation rule: proposal-exact-append
                         try:
                             workflow_automation_module.resume_public_run(
                                 store,
-                                "$workflow auto: test-spec-review",
+                                "$workflow auto: delivery-review",
                                 repository_root=root,
                                 stage="spec",
                                 occurrence={"kind": "singleton"},
@@ -1887,6 +1893,7 @@ Planned validation rule: proposal-exact-append
                                     "proposal": "sha256:proposal",
                                     "proposal-review":
                                         "sha256:proposal-review",
+                                    "architecture": "sha256:architecture",
                                 },
                                 invoke_stage=interrupt_after_stage_write,
                                 synchronize_canonical_state=lambda result:
@@ -1936,6 +1943,7 @@ Planned validation rule: proposal-exact-append
                                 "proposal": "sha256:proposal",
                                 "proposal-review":
                                     "sha256:proposal-review",
+                                "architecture": "sha256:architecture",
                             },
                             "expected_postcondition": prepared[
                                 "transition_receipts"
@@ -1962,7 +1970,7 @@ Planned validation rule: proposal-exact-append
                         }
                     result = workflow_automation_module.resume_public_run(
                         store,
-                        "$workflow auto: test-spec-review",
+                        "$workflow auto: delivery-review",
                         repository_root=root,
                         stage="spec",
                         occurrence={"kind": "singleton"},
@@ -1982,6 +1990,7 @@ Planned validation rule: proposal-exact-append
                             **basis,
                             "proposal": "sha256:proposal",
                             "proposal-review": "sha256:proposal-review",
+                            "architecture": "sha256:architecture",
                         },
                         invoke_stage=(
                             (
@@ -2004,6 +2013,7 @@ Planned validation rule: proposal-exact-append
                                     "proposal-review": (
                                         "sha256:proposal-review",
                                     ),
+                                    "architecture": ("sha256:architecture",),
                                     "spec": tuple(
                                         evidence.identity
                                         for evidence in (
@@ -2393,41 +2403,37 @@ Planned validation rule: proposal-exact-append
             positions={
                 "proposal": ("sha256:proposal",),
                 "proposal-review": ("sha256:proposal-review",),
+                "architecture": ("sha256:architecture",),
                 "spec": ("sha256:spec",),
-                "spec-review": ("sha256:spec-review",),
+                "design-review": ("sha256:design-review",),
             },
-            review_outcomes={"proposal-review": "approved", "spec-review": "approved"},
+            review_outcomes={"proposal-review": "approved", "design-review": "approved"},
             review_resolution_closed=True,
-            architecture_applicability="not-required",
+            architecture_applicability="required",
         )
 
         position = resolve_canonical_position(pre_plan=evidence)
 
-        self.assertEqual(position.position, "spec-review")
+        self.assertEqual(position.position, "design-review")
         self.assertEqual(position.source, "authoritative-artifact-review-evidence")
         self.assertNotIn("current_stage", position.observed_identities)
 
-    def test_position_artifact_sequence_reaches_test_spec_review(self) -> None:
+    def test_position_artifact_sequence_reaches_delivery_review(self) -> None:
         evidence = PrePlanEvidence(
             positions={
                 "proposal": ("sha256:proposal",),
                 "proposal-review": ("sha256:proposal-review",),
-                "spec": ("sha256:spec",),
-                "spec-review": ("sha256:spec-review",),
-                "architecture-assessment": ("sha256:assessment",),
                 "architecture": ("sha256:architecture",),
-                "architecture-review": ("sha256:architecture-review",),
+                "spec": ("sha256:spec",),
+                "design-review": ("sha256:design-review",),
                 "plan": ("sha256:plan",),
-                "plan-review": ("sha256:plan-review",),
                 "test-spec": ("sha256:test-spec",),
-                "test-spec-review": ("sha256:test-spec-review",),
+                "delivery-review": ("sha256:delivery-review",),
             },
             review_outcomes={
                 "proposal-review": "approved",
-                "spec-review": "approved",
-                "architecture-review": "approved",
-                "plan-review": "approved",
-                "test-spec-review": "approved",
+                "design-review": "approved",
+                "delivery-review": "approved",
             },
             review_resolution_closed=True,
             architecture_applicability="required",
@@ -2435,10 +2441,10 @@ Planned validation rule: proposal-exact-append
 
         position = resolve_canonical_position(pre_plan=evidence)
 
-        self.assertEqual(position.position, "test-spec-review")
+        self.assertEqual(position.position, "delivery-review")
         self.assertEqual(
-            position.observed_identities["plan-review"],
-            "sha256:plan-review",
+            position.observed_identities["design-review"],
+            "sha256:design-review",
         )
         self.assertEqual(
             position.observed_identities["test-spec"],
@@ -2449,10 +2455,9 @@ Planned validation rule: proposal-exact-append
         self,
     ) -> None:
         cases = (
-            ("plan-review", "plan"),
-            ("test-spec", "plan-review"),
-            ("test-spec-review", "test-spec"),
-            ("implement M1", "test-spec-review"),
+            ("test-spec", "plan"),
+            ("delivery-review", "test-spec"),
+            ("implement M1", "delivery-review"),
         )
         for next_stage, expected_position in cases:
             with self.subTest(next_stage=next_stage):
@@ -2483,7 +2488,6 @@ Planned validation rule: proposal-exact-append
             PrePlanEvidence(**{**base, "positions": {"proposal": ("sha256:a", "sha256:b")}}),
             PrePlanEvidence(**base, stale_identities=frozenset({"sha256:review"})),
             PrePlanEvidence(**{**base, "positions": {**base["positions"], "spec": ("sha256:spec",)}, "review_outcomes": {"proposal-review": "changes-requested"}}),
-            PrePlanEvidence(**{**base, "architecture_applicability": "ambiguous"}),
             PrePlanEvidence(**{**base, "review_outcomes": {"proposal-review": "unknown"}}),
             PrePlanEvidence(
                 **base,
@@ -2508,12 +2512,12 @@ Planned validation rule: proposal-exact-append
             positions={
                 "proposal": ("sha256:proposal",),
                 "proposal-review": ("sha256:proposal-review",),
+                "architecture": ("sha256:architecture",),
                 "spec": ("sha256:spec",),
-                "spec-review": ("sha256:spec-review",),
-                "architecture-assessment": ("sha256:assessment",),
+                "design-review": ("sha256:design-review",),
                 "plan": ("sha256:plan-artifact",),
             },
-            review_outcomes={"proposal-review": "approved", "spec-review": "approved"},
+            review_outcomes={"proposal-review": "approved", "design-review": "approved"},
             review_resolution_closed=True,
             architecture_applicability="not-required",
         )
@@ -2522,7 +2526,7 @@ Planned validation rule: proposal-exact-append
         self.assertEqual(handoff["pre_plan_evidence"]["plan"], "sha256:plan-artifact")
 
         stale = dataclasses.replace(
-            pre_plan, stale_identities=frozenset({"sha256:spec-review"})
+            pre_plan, stale_identities=frozenset({"sha256:design-review"})
         )
         with self.assertRaisesRegex(AutomationContractError, "stale canonical"):
             record_plan_ownership_handoff(stale, plan)
@@ -3270,17 +3274,17 @@ Planned validation rule: proposal-exact-append
             review_id="proposal-review-r1",
             proposal_identity="sha256:proposal-v1",
             reviewed_proposal_identity="sha256:proposal-v1",
-            target_stage="spec",
+            target_stage="architecture",
         )
         self.assertEqual((approved.clean_gate, approved.routing_action), ("satisfied", "continue"))
-        self.assertEqual(approved.next_stage, "spec")
+        self.assertEqual(approved.next_stage, "architecture")
 
         correction = evaluate_proposal_review(
             outcome="changes-requested",
             review_id="proposal-review-r1",
             proposal_identity="sha256:proposal-v1",
             reviewed_proposal_identity="sha256:proposal-v1",
-            target_stage="test-spec-review",
+            target_stage="delivery-review",
             review_record_identity="sha256:review-v1",
             correction_authority=ProposalCorrectionAuthority(
                 "capability-correction-001",
@@ -3304,7 +3308,7 @@ Planned validation rule: proposal-exact-append
             review_id="proposal-review-r1",
             proposal_identity="sha256:proposal-v1",
             reviewed_proposal_identity="sha256:proposal-v1",
-            target_stage="test-spec-review",
+            target_stage="delivery-review",
             correction_authority=ProposalCorrectionAuthority(
                 "capability-correction-empty",
                 "sha256:review-v1",
@@ -3324,7 +3328,7 @@ Planned validation rule: proposal-exact-append
             review_id="proposal-review-r1",
             proposal_identity="sha256:proposal-v1",
             reviewed_proposal_identity="sha256:proposal-v1",
-            target_stage="test-spec-review",
+            target_stage="delivery-review",
             correction_authority=ProposalCorrectionAuthority(
                 "capability-correction-over-budget",
                 "sha256:review-v1",
@@ -4123,7 +4127,7 @@ Planned validation rule: proposal-exact-append
             )
 
     def test_non_public_authoring_stage_uses_receipt_backed_spec_completion(self) -> None:
-        target = bind_target("test-spec-review", bound_at="2026-07-22T00:00:00Z")
+        target = bind_target("delivery-review", bound_at="2026-07-22T00:00:00Z")
         parent = create_parent_authorization(
             authorization_id="auth-authoring",
             authorization_class="authoring",
@@ -4146,10 +4150,11 @@ Planned validation rule: proposal-exact-append
         basis = {
             "proposal_identity": proposal_identity,
             "approved_proposal_review_identity": review_identity,
+            "architecture_identity": "sha256:architecture",
             "closed_review_resolution_identity": "sha256:resolution",
             "stage_scope_identity": "sha256:scope",
         }
-        inputs = dict(basis, proposal=proposal_identity, **{"proposal-review": review_identity})
+        inputs = dict(basis, proposal=proposal_identity, architecture="sha256:architecture", **{"proposal-review": review_identity})
 
         def invoke() -> StageExecutionResult:
             relative = Path("specs/example.md")
@@ -4167,7 +4172,7 @@ Planned validation rule: proposal-exact-append
 
         coordinated = coordinate_non_public_authoring_stage(
             invocation_context="non-public-test-harness",
-            target_stage="test-spec-review",
+            target_stage="delivery-review",
             store=store,
             repository_root=store.repository_root,
             parent_authorization_id="auth-authoring",
@@ -4188,6 +4193,7 @@ Planned validation rule: proposal-exact-append
                 positions={
                     "proposal": (proposal_identity,),
                     "proposal-review": (review_identity,),
+                    "architecture": ("sha256:architecture",),
                 },
                 review_outcomes={"proposal-review": "approved"},
                 review_resolution_closed=True,
@@ -4195,7 +4201,7 @@ Planned validation rule: proposal-exact-append
             ),
         )
         self.assertEqual(coordinated.coordination.status, "completed")
-        self.assertEqual((coordinated.route.status, coordinated.route.next_stage), ("continue", "spec-review"))
+        self.assertEqual((coordinated.route.status, coordinated.route.next_stage), ("continue", "design-review"))
         persisted = store.read().automation
         self.assertEqual(persisted["transition_receipts"]["transition-spec-001"]["status"], "completed")
         self.assertEqual(persisted["effective_capabilities"]["cap-spec-transaction"]["status"], "consumed")
@@ -4214,9 +4220,9 @@ Planned validation rule: proposal-exact-append
             ("continue", "completed-evidence-current"),
         )
 
-    def test_test_spec_transition_is_authorized_after_plan_review(self) -> None:
+    def test_test_spec_transition_is_authorized_after_plan(self) -> None:
         target = bind_target(
-            "test-spec-review",
+            "delivery-review",
             bound_at="2026-07-22T00:00:00Z",
         )
         parent = create_parent_authorization(
@@ -4248,7 +4254,7 @@ Planned validation rule: proposal-exact-append
             **basis,
             "spec": "sha256:spec",
             "plan": "sha256:plan-v1",
-            "plan-review": "sha256:plan-review",
+            "design-review": "sha256:design-review",
         }
         plan = ActivePlanContext.from_text(
             plan_text(
@@ -4283,7 +4289,7 @@ Planned validation rule: proposal-exact-append
 
         coordinated = coordinate_non_public_authoring_stage(
             invocation_context="non-public-test-harness",
-            target_stage="test-spec-review",
+            target_stage="delivery-review",
             store=store,
             repository_root=store.repository_root,
             parent_authorization_id="auth-authoring",
@@ -4307,13 +4313,13 @@ Planned validation rule: proposal-exact-append
         self.assertEqual(coordinated.coordination.status, "completed")
         self.assertEqual(
             (coordinated.route.status, coordinated.route.next_stage),
-            ("continue", "test-spec-review"),
+            ("continue", "delivery-review"),
         )
         persisted = store.read().automation
         receipt = persisted["transition_receipts"][
             "transition-test-spec-001"
         ]
-        self.assertEqual(receipt["from_position"], "plan-review")
+        self.assertEqual(receipt["from_position"], "plan")
         self.assertEqual(receipt["status"], "completed")
         self.assertEqual(
             persisted["effective_capabilities"][
@@ -4322,31 +4328,19 @@ Planned validation rule: proposal-exact-append
             "consumed",
         )
 
-    def test_completed_recovery_is_stage_semantic_for_assessment_and_plan(
+    def test_completed_recovery_is_stage_semantic_for_plan(
         self,
     ) -> None:
         cases = (
-            (
-                "architecture-assessment",
-                Path(
-                    "docs/changes/2026-07-20-example/architecture-assessment.md"
-                ),
-                {
-                    "proposal": ("sha256:proposal",),
-                    "proposal-review": ("sha256:proposal-review",),
-                    "spec": ("sha256:spec",),
-                    "spec-review": ("sha256:spec-review",),
-                },
-            ),
             (
                 "plan",
                 Path("docs/plans/example.md"),
                 {
                     "proposal": ("sha256:proposal",),
                     "proposal-review": ("sha256:proposal-review",),
+                    "architecture": ("sha256:architecture",),
                     "spec": ("sha256:spec",),
-                    "spec-review": ("sha256:spec-review",),
-                    "architecture-assessment": ("sha256:assessment",),
+                    "design-review": ("sha256:design-review",),
                 },
             ),
         )
@@ -4398,34 +4392,18 @@ Planned validation rule: proposal-exact-append
                         for name, identities in positions.items()
                     }
                 )
-                if stage == "plan":
-                    inputs.update(
-                        {
-                            "architecture_applicability": "not-applicable",
-                            "architecture_applicability_identity": "sha256:assessment",
-                        }
-                    )
-
                 def invoke() -> StageExecutionResult:
                     artifact = store.repository_root / relative
                     artifact.parent.mkdir(parents=True, exist_ok=True)
-                    if stage == "architecture-assessment":
-                        artifact.write_text(
-                            "Stage: architecture-assessment\n"
-                            "Applicability: not-required\n"
-                            "Spec identity: sha256:spec\n",
-                            encoding="utf-8",
-                        )
-                    else:
-                        artifact.write_text(
-                            plan_text(
-                                current="M2. Engine Slice",
-                                current_state="implementing",
-                                remaining="M2, M3",
-                                next_stage="implement M2",
-                            ),
-                            encoding="utf-8",
-                        )
+                    artifact.write_text(
+                        plan_text(
+                            current="M2. Engine Slice",
+                            current_state="implementing",
+                            remaining="M2, M3",
+                            next_stage="implement M2",
+                        ),
+                        encoding="utf-8",
+                    )
                     evidence = ArtifactEvidence(
                         relative.as_posix(),
                         "sha256:"
@@ -4452,9 +4430,7 @@ Planned validation rule: proposal-exact-append
                     occurrence={"kind": "singleton"},
                     basis=basis,
                     affected_path_roots=(
-                        "docs/changes/2026-07-20-example/"
-                        if stage == "architecture-assessment"
-                        else "docs/plans/",
+                        "docs/plans/",
                     ),
                     mutation_categories=(
                         stage_mutation_category,
@@ -4470,7 +4446,7 @@ Planned validation rule: proposal-exact-append
                         positions=positions,
                         review_outcomes={
                             "proposal-review": "approved",
-                            "spec-review": "approved",
+                            "design-review": "approved",
                         },
                         review_resolution_closed=True,
                         architecture_applicability="not-required",
@@ -4972,14 +4948,14 @@ Planned validation rule: proposal-exact-append
             "active",
         )
 
-    def test_authoring_non_public_harness_routes_through_test_spec_review(self) -> None:
+    def test_authoring_non_public_harness_routes_through_delivery_review(self) -> None:
         cases = (
-            ("proposal-review", "approved", "spec"),
-            ("spec", None, "spec-review"),
-            ("spec-review", "approved", "architecture-assessment"),
-            ("plan", None, "plan-review"),
-            ("plan-review", "approved", "test-spec"),
-            ("test-spec", None, "test-spec-review"),
+            ("proposal-review", "approved", "architecture"),
+            ("architecture", None, "spec"),
+            ("spec", None, "design-review"),
+            ("design-review", "approved", "plan"),
+            ("plan", None, "test-spec"),
+            ("test-spec", None, "delivery-review"),
         )
         for current_stage, review_outcome, expected in cases:
             with self.subTest(stage=current_stage):
@@ -4988,7 +4964,7 @@ Planned validation rule: proposal-exact-append
                 )
                 decision = evaluate_non_public_authoring_route(
                     current_stage=current_stage,
-                    target_stage="test-spec-review",
+                    target_stage="delivery-review",
                     capability_kind=capability,
                     capability_status="active",
                     invocation_context="non-public-test-harness",
@@ -4997,7 +4973,7 @@ Planned validation rule: proposal-exact-append
                 self.assertEqual((decision.status, decision.next_stage), ("continue", expected))
 
         boundary = evaluate_non_public_authoring_route(
-            current_stage="test-spec-review",
+            current_stage="delivery-review",
             target_stage="verify",
             capability_kind="post-proposal-authoring",
             capability_status="active",
@@ -5007,50 +4983,24 @@ Planned validation rule: proposal-exact-append
         self.assertEqual(boundary.status, "paused")
         self.assertEqual(boundary.pause_reason, "implementation-authorization-required")
 
-    def test_authoring_conditional_architecture_routes(self) -> None:
-        required = evaluate_non_public_authoring_route(
-            current_stage="architecture-assessment",
-            target_stage="plan",
-            capability_kind="post-proposal-authoring",
-            capability_status="active",
-            invocation_context="non-public-test-harness",
-            architecture_applicability="required",
-        )
-        self.assertEqual(required.next_stage, "architecture")
-        skipped = evaluate_non_public_authoring_route(
-            current_stage="architecture-assessment",
-            target_stage="plan",
-            capability_kind="post-proposal-authoring",
-            capability_status="active",
-            invocation_context="non-public-test-harness",
-            architecture_applicability="not-required",
-        )
-        self.assertEqual((skipped.next_stage, skipped.record_not_applicable), ("plan", True))
-        explicit = evaluate_non_public_authoring_route(
-            current_stage="architecture-assessment",
-            target_stage="architecture",
-            capability_kind="post-proposal-authoring",
-            capability_status="active",
-            invocation_context="non-public-test-harness",
-            architecture_applicability="not-required",
-        )
-        self.assertEqual(explicit.status, "target-not-applicable")
-        ambiguous = evaluate_non_public_authoring_route(
-            current_stage="architecture-assessment",
-            target_stage="plan",
-            capability_kind="post-proposal-authoring",
-            capability_status="active",
-            invocation_context="non-public-test-harness",
-            architecture_applicability="unknown",
-        )
-        self.assertEqual(ambiguous.pause_reason, "architecture-applicability-ambiguous")
+    def test_retired_authoring_review_stages_are_rejected(self) -> None:
+        for retired in ("spec-review", "architecture-review", "plan-review", "test-spec-review"):
+            with self.subTest(stage=retired), self.assertRaises(AutomationContractError):
+                evaluate_non_public_authoring_route(
+                    current_stage=retired,
+                    target_stage="delivery-review",
+                    capability_kind="post-proposal-authoring",
+                    capability_status="active",
+                    invocation_context="non-public-test-harness",
+                    review_outcome="approved",
+                )
 
     def test_non_public_authoring_harness_rejects_public_direct_and_legacy_entry(self) -> None:
         for context in ("public-command", "direct-skill", "bugfix", "legacy-adapter"):
             with self.subTest(context=context):
                 decision = evaluate_non_public_authoring_route(
                     current_stage="proposal-review",
-                    target_stage="spec",
+                    target_stage="architecture",
                     capability_kind="proposal-review",
                     capability_status="active",
                     invocation_context=context,
@@ -5903,9 +5853,9 @@ Open findings: None
         )
         basis = {
             "plan_identity": plan_identity,
-            "plan_review_identity": "sha256:plan-review",
+            "plan_review_identity": "sha256:delivery-review",
             "test_spec_identity": "sha256:test-spec",
-            "test_spec_review_identity": "sha256:test-spec-review",
+            "test_spec_review_identity": "sha256:delivery-review",
             "milestone_identity": "sha256:M2",
             "affected_paths_identity": "sha256:paths",
             "mutation_categories_identity": "sha256:categories",
@@ -6055,9 +6005,9 @@ Open findings: None
         )
         basis = {
             "plan_identity": plan_identity,
-            "plan_review_identity": "sha256:plan-review",
+            "plan_review_identity": "sha256:delivery-review",
             "test_spec_identity": "sha256:test-spec",
-            "test_spec_review_identity": "sha256:test-spec-review",
+            "test_spec_review_identity": "sha256:delivery-review",
             "milestone_identity": "sha256:M2",
             "affected_paths_identity": "sha256:paths",
             "mutation_categories_identity": "sha256:categories",

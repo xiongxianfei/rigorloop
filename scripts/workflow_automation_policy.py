@@ -21,15 +21,12 @@ class ClosedStringEnum(str, Enum):
 class WorkflowStage(ClosedStringEnum):
     PROPOSAL = "proposal"
     PROPOSAL_REVIEW = "proposal-review"
-    SPEC = "spec"
-    SPEC_REVIEW = "spec-review"
-    ARCHITECTURE_ASSESSMENT = "architecture-assessment"
     ARCHITECTURE = "architecture"
-    ARCHITECTURE_REVIEW = "architecture-review"
+    SPEC = "spec"
+    DESIGN_REVIEW = "design-review"
     PLAN = "plan"
-    PLAN_REVIEW = "plan-review"
     TEST_SPEC = "test-spec"
-    TEST_SPEC_REVIEW = "test-spec-review"
+    DELIVERY_REVIEW = "delivery-review"
     IMPLEMENT = "implement"
     CODE_REVIEW = "code-review"
     REVIEW_RESOLUTION = "review-resolution"
@@ -43,15 +40,12 @@ class WorkflowPosition(ClosedStringEnum):
     CHANGE_CREATED = "change-created"
     PROPOSAL = "proposal"
     PROPOSAL_REVIEW = "proposal-review"
-    SPEC = "spec"
-    SPEC_REVIEW = "spec-review"
-    ARCHITECTURE_ASSESSMENT = "architecture-assessment"
     ARCHITECTURE = "architecture"
-    ARCHITECTURE_REVIEW = "architecture-review"
+    SPEC = "spec"
+    DESIGN_REVIEW = "design-review"
     PLAN = "plan"
-    PLAN_REVIEW = "plan-review"
     TEST_SPEC = "test-spec"
-    TEST_SPEC_REVIEW = "test-spec-review"
+    DELIVERY_REVIEW = "delivery-review"
     IMPLEMENT = "implement"
     CODE_REVIEW = "code-review"
     REVIEW_RESOLUTION = "review-resolution"
@@ -173,7 +167,7 @@ def project_proposal_review_result(
     elif outcome == "approved":
         routing_action = "continue"
         run_status = "active"
-        next_stage = WorkflowStage.SPEC.value
+        next_stage = WorkflowStage.ARCHITECTURE.value
     elif correction_capability_id is not None:
         if (
             not isinstance(correction_capability_id, str)
@@ -214,8 +208,7 @@ def project_proposal_review_result(
 class TransitionGuard(ClosedStringEnum):
     ALWAYS = "always"
     PROPOSAL_CORRECTION = "proposal-correction"
-    ARCHITECTURE_REQUIRED = "architecture-required"
-    ARCHITECTURE_NOT_REQUIRED = "architecture-not-required"
+    PACKAGE_CORRECTION = "package-correction"
     IMPLEMENTATION_FINDINGS = "implementation-findings"
     NEXT_MILESTONE = "next-milestone"
     CI_TRIGGERED = "ci-triggered"
@@ -232,14 +225,12 @@ class OccurrenceConstraint(ClosedStringEnum):
 PUBLIC_TARGET_STAGES = frozenset(
     {
         WorkflowStage.PROPOSAL_REVIEW,
-        WorkflowStage.SPEC,
-        WorkflowStage.SPEC_REVIEW,
         WorkflowStage.ARCHITECTURE,
-        WorkflowStage.ARCHITECTURE_REVIEW,
+        WorkflowStage.SPEC,
+        WorkflowStage.DESIGN_REVIEW,
         WorkflowStage.PLAN,
-        WorkflowStage.PLAN_REVIEW,
         WorkflowStage.TEST_SPEC,
-        WorkflowStage.TEST_SPEC_REVIEW,
+        WorkflowStage.DELIVERY_REVIEW,
         WorkflowStage.IMPLEMENT,
         WorkflowStage.CODE_REVIEW,
         WorkflowStage.VERIFY,
@@ -249,7 +240,6 @@ PUBLIC_TARGET_STAGES = frozenset(
 INTERNAL_STAGES = frozenset(
     {
         WorkflowStage.PROPOSAL,
-        WorkflowStage.ARCHITECTURE_ASSESSMENT,
         WorkflowStage.REVIEW_RESOLUTION,
         WorkflowStage.CI_MAINTENANCE,
         WorkflowStage.EXPLAIN_CHANGE,
@@ -260,14 +250,12 @@ INTERNAL_STAGES = frozenset(
 
 PUBLIC_TARGET_SEQUENCE = (
     WorkflowStage.PROPOSAL_REVIEW,
-    WorkflowStage.SPEC,
-    WorkflowStage.SPEC_REVIEW,
     WorkflowStage.ARCHITECTURE,
-    WorkflowStage.ARCHITECTURE_REVIEW,
+    WorkflowStage.SPEC,
+    WorkflowStage.DESIGN_REVIEW,
     WorkflowStage.PLAN,
-    WorkflowStage.PLAN_REVIEW,
     WorkflowStage.TEST_SPEC,
-    WorkflowStage.TEST_SPEC_REVIEW,
+    WorkflowStage.DELIVERY_REVIEW,
     WorkflowStage.IMPLEMENT,
     WorkflowStage.CODE_REVIEW,
     WorkflowStage.VERIFY,
@@ -360,7 +348,7 @@ TRANSITION_RULES: tuple[TransitionRule, ...] = (
     _transition(
         WorkflowPosition.PROPOSAL_REVIEW,
         WorkflowStage.PROPOSAL,
-        WorkflowStage.SPEC,
+        WorkflowStage.ARCHITECTURE,
         T.PROPOSAL_CORRECTION,
     ),
     _transition(
@@ -368,35 +356,17 @@ TRANSITION_RULES: tuple[TransitionRule, ...] = (
         WorkflowStage.PROPOSAL_REVIEW,
         WorkflowStage.PROPOSAL_REVIEW,
     ),
-    _transition(WorkflowPosition.PROPOSAL_REVIEW, WorkflowStage.SPEC, WorkflowStage.SPEC),
-    _transition(WorkflowPosition.SPEC, WorkflowStage.SPEC_REVIEW, WorkflowStage.SPEC_REVIEW),
-    _transition(
-        WorkflowPosition.SPEC_REVIEW,
-        WorkflowStage.ARCHITECTURE_ASSESSMENT,
-        WorkflowStage.ARCHITECTURE,
-    ),
-    _transition(
-        WorkflowPosition.ARCHITECTURE_ASSESSMENT,
-        WorkflowStage.ARCHITECTURE,
-        WorkflowStage.ARCHITECTURE,
-        T.ARCHITECTURE_REQUIRED,
-    ),
-    _transition(
-        WorkflowPosition.ARCHITECTURE_ASSESSMENT,
-        WorkflowStage.PLAN,
-        WorkflowStage.PLAN,
-        T.ARCHITECTURE_NOT_REQUIRED,
-    ),
-    _transition(
-        WorkflowPosition.ARCHITECTURE,
-        WorkflowStage.ARCHITECTURE_REVIEW,
-        WorkflowStage.ARCHITECTURE_REVIEW,
-    ),
-    _transition(WorkflowPosition.ARCHITECTURE_REVIEW, WorkflowStage.PLAN, WorkflowStage.PLAN),
-    _transition(WorkflowPosition.PLAN, WorkflowStage.PLAN_REVIEW, WorkflowStage.PLAN_REVIEW),
-    _transition(WorkflowPosition.PLAN_REVIEW, WorkflowStage.TEST_SPEC, WorkflowStage.TEST_SPEC),
-    _transition(WorkflowPosition.TEST_SPEC, WorkflowStage.TEST_SPEC_REVIEW, WorkflowStage.TEST_SPEC_REVIEW),
-    _transition(WorkflowPosition.TEST_SPEC_REVIEW, WorkflowStage.IMPLEMENT, WorkflowStage.IMPLEMENT),
+    _transition(WorkflowPosition.PROPOSAL_REVIEW, WorkflowStage.ARCHITECTURE, WorkflowStage.ARCHITECTURE),
+    _transition(WorkflowPosition.ARCHITECTURE, WorkflowStage.SPEC, WorkflowStage.SPEC),
+    _transition(WorkflowPosition.SPEC, WorkflowStage.DESIGN_REVIEW, WorkflowStage.DESIGN_REVIEW),
+    _transition(WorkflowPosition.DESIGN_REVIEW, WorkflowStage.ARCHITECTURE, WorkflowStage.DESIGN_REVIEW, T.PACKAGE_CORRECTION),
+    _transition(WorkflowPosition.DESIGN_REVIEW, WorkflowStage.SPEC, WorkflowStage.DESIGN_REVIEW, T.PACKAGE_CORRECTION),
+    _transition(WorkflowPosition.DESIGN_REVIEW, WorkflowStage.PLAN, WorkflowStage.PLAN),
+    _transition(WorkflowPosition.PLAN, WorkflowStage.TEST_SPEC, WorkflowStage.TEST_SPEC),
+    _transition(WorkflowPosition.TEST_SPEC, WorkflowStage.DELIVERY_REVIEW, WorkflowStage.DELIVERY_REVIEW),
+    _transition(WorkflowPosition.DELIVERY_REVIEW, WorkflowStage.PLAN, WorkflowStage.DELIVERY_REVIEW, T.PACKAGE_CORRECTION),
+    _transition(WorkflowPosition.DELIVERY_REVIEW, WorkflowStage.TEST_SPEC, WorkflowStage.DELIVERY_REVIEW, T.PACKAGE_CORRECTION),
+    _transition(WorkflowPosition.DELIVERY_REVIEW, WorkflowStage.IMPLEMENT, WorkflowStage.IMPLEMENT),
     _transition(
         WorkflowPosition.IMPLEMENT,
         WorkflowStage.CODE_REVIEW,
@@ -576,17 +546,14 @@ CAPABILITY_MUTATION_CATEGORIES = {
 # with the approved contract without interpreting a generated policy DSL.
 STAGE_POLICIES: tuple[StagePolicy, ...] = (
     _policy(S.PROPOSAL, (W.CHANGE_CREATED, W.PROPOSAL_REVIEW), "proposal", O.SINGLETON, A.AUTHORING, C.PROPOSAL_CORRECTION, M.PROPOSAL_CONTENT, P.TRIGGERED, "proposal authoring or accepted correction is authorized", ("change", "proposal-scope"), "proposal identity is current and reviewable", ("proposal",), (W.PROPOSAL_REVIEW,), R.RECONCILE_ONLY, X.DRIVER_OWNED, B.TARGET_AWARE),
-    _policy(S.PROPOSAL_REVIEW, (W.PROPOSAL,), "proposal-review", O.SINGLETON, A.AUTHORING, C.PROPOSAL_REVIEW, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "proposal and standing gates are current", ("proposal", "standing-gates", "review-policy"), "formal review occurrence is recorded", ("proposal-review",), (W.PROPOSAL, W.SPEC), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
-    _policy(S.SPEC, (W.PROPOSAL_REVIEW,), "spec", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "clean proposal gate and resolution are current", ("proposal", "proposal-review", "review-resolution"), "spec is authored against current upstream identities", ("spec",), (W.SPEC_REVIEW,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
-    _policy(S.SPEC_REVIEW, (W.SPEC,), "spec-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "spec identity is current", ("spec",), "formal spec review is recorded", ("spec-review",), (W.ARCHITECTURE_ASSESSMENT,), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
-    _policy(S.ARCHITECTURE_ASSESSMENT, (W.SPEC_REVIEW,), "architecture", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_EVIDENCE, P.REQUIRED, "approved spec is current", ("spec", "spec-review"), "architecture applicability is recorded", ("architecture-assessment",), (W.ARCHITECTURE, W.PLAN), R.IDEMPOTENT_RETRY, X.NONE, B.NOT_APPLICABLE_AWARE),
-    _policy(S.ARCHITECTURE, (W.ARCHITECTURE_ASSESSMENT,), "architecture", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.CONDITIONAL, "architecture is required", ("spec", "architecture-assessment"), "architecture package is complete", ("architecture",), (W.ARCHITECTURE_REVIEW,), R.RECONCILE_ONLY, X.NONE, B.NOT_APPLICABLE_AWARE),
-    _policy(S.ARCHITECTURE_REVIEW, (W.ARCHITECTURE,), "architecture-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.CONDITIONAL, "architecture identity is current", ("architecture",), "formal architecture review is recorded", ("architecture-review",), (W.PLAN,), R.RECONCILE_ONLY, X.NONE, B.NOT_APPLICABLE_AWARE),
-    _policy(S.PLAN, (W.ARCHITECTURE_ASSESSMENT, W.ARCHITECTURE_REVIEW), "plan", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "upstream authoring gates are clean", ("spec", "applicable-architecture"), "valid active plan handoff is established", ("plan", "current-handoff-summary"), (W.PLAN_REVIEW,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
-    _policy(S.PLAN_REVIEW, (W.PLAN,), "plan-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "plan identity is current", ("plan",), "formal plan review is recorded", ("plan-review",), (W.TEST_SPEC,), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
-    _policy(S.TEST_SPEC, (W.PLAN_REVIEW,), "test-spec", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "plan and upstream identities are current", ("plan", "plan-review", "spec"), "active test spec is authored", ("test-spec",), (W.TEST_SPEC_REVIEW,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
-    _policy(S.TEST_SPEC_REVIEW, (W.TEST_SPEC,), "test-spec-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "test-spec identity is current", ("test-spec", "plan"), "formal test-spec review is recorded", ("test-spec-review",), (W.IMPLEMENT,), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
-    _policy(S.IMPLEMENT, (W.TEST_SPEC_REVIEW, W.CODE_REVIEW), "implement", O.MILESTONE, A.IMPLEMENTATION, C.IMPLEMENTATION, M.PRODUCTION_CODE, P.REQUIRED, "bound plan milestone and implementation basis are current", ("plan", "plan-review", "test-spec", "test-spec-review", "milestone"), "bound implementation exists, validation passes, and plan requests review", ("implementation-diff", "validation", "plan-handoff"), (W.CODE_REVIEW,), R.MANUAL_RECOVERY, X.NONE, B.TARGET_AWARE),
+    _policy(S.PROPOSAL_REVIEW, (W.PROPOSAL,), "proposal-review", O.SINGLETON, A.AUTHORING, C.PROPOSAL_REVIEW, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "proposal and feasibility evidence are current", ("proposal", "feasibility", "review-policy"), "formal review occurrence is recorded", ("proposal-review",), (W.PROPOSAL, W.ARCHITECTURE), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
+    _policy(S.ARCHITECTURE, (W.PROPOSAL_REVIEW, W.DESIGN_REVIEW), "architecture", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "accepted proposal review or design correction is current", ("proposal", "proposal-review"), "architecture design envelope is current", ("architecture",), (W.SPEC,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
+    _policy(S.SPEC, (W.ARCHITECTURE, W.DESIGN_REVIEW), "spec", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "architecture design envelope or design correction is current", ("proposal-review", "architecture"), "specification is current and design-reviewable", ("spec",), (W.DESIGN_REVIEW,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
+    _policy(S.DESIGN_REVIEW, (W.SPEC,), "design-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "design member map and proposal review are current", ("proposal-review", "architecture", "spec", "applicable-adrs"), "current design package review is recorded", ("design-review",), (W.ARCHITECTURE, W.SPEC, W.PLAN), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
+    _policy(S.PLAN, (W.DESIGN_REVIEW, W.DELIVERY_REVIEW), "plan", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "approved design package or delivery correction is current", ("design-review", "architecture", "spec"), "valid active plan handoff is established", ("plan", "current-handoff-summary"), (W.TEST_SPEC,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
+    _policy(S.TEST_SPEC, (W.PLAN, W.DELIVERY_REVIEW), "test-spec", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "plan, approved design, or delivery correction identities are current", ("plan", "design-review", "spec"), "active test spec is authored", ("test-spec",), (W.DELIVERY_REVIEW,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
+    _policy(S.DELIVERY_REVIEW, (W.TEST_SPEC,), "delivery-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "delivery member map and design review are current", ("design-review", "plan", "test-spec"), "current delivery package review is recorded", ("delivery-review",), (W.PLAN, W.TEST_SPEC, W.IMPLEMENT), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
+    _policy(S.IMPLEMENT, (W.DELIVERY_REVIEW, W.CODE_REVIEW), "implement", O.MILESTONE, A.IMPLEMENTATION, C.IMPLEMENTATION, M.PRODUCTION_CODE, P.REQUIRED, "bound plan milestone and delivery package are current", ("design-review", "delivery-review", "plan", "test-spec", "milestone"), "bound implementation exists, validation passes, and plan requests review", ("implementation-diff", "validation", "plan-handoff"), (W.CODE_REVIEW,), R.MANUAL_RECOVERY, X.NONE, B.TARGET_AWARE),
     _policy(S.CODE_REVIEW, (W.IMPLEMENT, W.REVIEW_RESOLUTION), "code-review", O.MILESTONE, A.IMPLEMENTATION, C.IMPLEMENTATION, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "bound milestone is review-requested", ("plan", "milestone", "implementation-diff", "validation"), "milestone review is approved and resolution is closed", ("code-review", "review-resolution", "plan-handoff"), (W.IMPLEMENT, W.REVIEW_RESOLUTION, W.CI_MAINTENANCE, W.FINAL_HOLISTIC_CODE_REVIEW), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
     _policy(S.REVIEW_RESOLUTION, (W.CODE_REVIEW, W.FINAL_HOLISTIC_CODE_REVIEW), "review-resolution", O.SINGLETON, A.IMPLEMENTATION, C.IMPLEMENTATION_CORRECTION, frozenset({M.TESTS, M.PRODUCTION_CODE, M.CHANGE_LOCAL_REVIEW_EVIDENCE, M.CHANGE_LOCAL_EVIDENCE}), P.TRIGGERED, "accepted implementation findings require resolution", ("review", "finding-set", "plan"), "required findings have final dispositions and evidence", ("review-resolution",), (W.CODE_REVIEW, W.FINAL_HOLISTIC_CODE_REVIEW), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
     _policy(S.CI_MAINTENANCE, (W.CODE_REVIEW,), "ci-maintenance", O.SINGLETON, A.IMPLEMENTATION, C.IMPLEMENTATION, M.TESTS, P.TRIGGERED, "approved implementation scope requires CI maintenance", ("plan", "test-spec", "implementation-scope"), "required CI proof is current", ("ci-configuration", "ci-validation"), (W.FINAL_HOLISTIC_CODE_REVIEW,), R.MANUAL_RECOVERY, X.NONE, B.PAUSE_ON_FAILURE),
@@ -835,15 +802,11 @@ def _evaluate_guard(
             ("correction_budget_state", "remaining"),
             ("correction_budget_identity", None),
         )
-    elif guard == TransitionGuard.ARCHITECTURE_REQUIRED:
+    elif guard == TransitionGuard.PACKAGE_CORRECTION:
         requirements = (
-            ("architecture_applicability", "required"),
-            ("architecture_applicability_identity", None),
-        )
-    elif guard == TransitionGuard.ARCHITECTURE_NOT_REQUIRED:
-        requirements = (
-            ("architecture_applicability", "not-applicable"),
-            ("architecture_applicability_identity", None),
+            ("review_outcome", "changes-requested"),
+            ("review_identity", None),
+            ("correction_target_identity", None),
         )
     elif guard == TransitionGuard.IMPLEMENTATION_FINDINGS:
         requirements = (

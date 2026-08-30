@@ -7,6 +7,8 @@ import { tmpdir } from "node:os";
 import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
+import { parseLifecycleYaml, serializeLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
+import { lifecycleRevision, packageContext, packageRepository, writePackageReview, writeRequest } from "./helpers/lifecycle-package-fixture.js";
 
 async function repository(changeIds = ["example"], overrides = {}) {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-lifecycle-read-"));
@@ -73,7 +75,12 @@ test("status exposes one deterministic result model without writes", async () =>
   ]);
   assert.equal(execution.result.effective_state.recorded_state.spec, "approved");
   assert.equal(execution.result.effective_state.evidence_state.spec, "current");
+  assert.equal(execution.result.effective_state.downstream_package_authority.enforcement, "enforced");
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.design.state, "missing");
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.delivery.state, "missing");
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.design.authority, "withheld");
   assert.deepEqual(execution.result.permitted_operations, ["record-validation", "complete-milestone"]);
+  assert.equal(execution.result.blockers.some((item) => item.blocking_invariant === "downstream-package-authority"), false);
   assert.match(execution.human, /Current stage: implement/);
   assert.match(execution.human, /Artifact spec: approved; evidence current/);
   assert.equal(readFileSync(path, "utf8"), before);
@@ -85,11 +92,53 @@ test("context returns bounded stage facts from the shared interpretation", async
   assert.equal(result.context.exact_change, "example");
   assert.equal(result.context.target_artifact, null);
   assert.equal(result.context.permitted_registration_operation, "record-review");
+  assert.equal(result.context.downstream_package_authority.enforcement, "enforced");
+  assert.equal(result.context.downstream_package_authority.status, "not-current");
   assert.match(result.context.lifecycle_revision, /^sha256:[a-f0-9]{64}$/);
   assert.equal(JSON.stringify(result).includes(root), false);
   const human = executeLifecycleCli(["context", "code-review"], { cwd: root }).human;
   assert.match(human, /Context operation: code-review/);
   assert.match(human, /Permitted registration operation: record-review/);
+});
+
+test("downstream authority rejects historical-only artifact reviews", async () => {
+  const root = await repository(["example"], {
+    review_packages: {},
+    lifecycle_cli: { schema_version: 2, artifacts: {}, reviews: {}, package_reviews: {}, validations: {}, resolutions: {}, milestones: {}, correction_history: {}, withdrawals: {} },
+    artifact_states: {
+      architecture: { kind: "architecture", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
+      spec: { kind: "spec", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
+      plan: { kind: "plan", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
+      "test-spec": { kind: "test-spec", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
+    },
+  });
+  const execution = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(execution.exitCode, 2, JSON.stringify(execution.result));
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.design.state, "historical-only");
+  assert.equal(execution.result.effective_state.downstream_package_authority.packages.delivery.state, "historical-only");
+  assert.equal(execution.result.blockers.some((item) => item.blocking_invariant === "downstream-package-authority"), true);
+});
+
+test("downstream authority reports a recorded but unsettled package as partial", async () => {
+  const { root } = await packageRepository();
+  const context = packageContext(root);
+  const review = writePackageReview(root, context);
+  const request = writeRequest(root, "record-partial-design", {
+    schema_version: 1,
+    operation: "record-package-review",
+    change_id: "example",
+    expected_lifecycle_revision: lifecycleRevision(root),
+    package_kind: "design",
+    review_id: review.reviewId,
+    upstream_review_id: review.packageFacts.upstream_review_id,
+    members: review.packageFacts.members,
+    evidence_path: review.reviewPath,
+    stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["record-package-review", "--request", request], { cwd: root }).exitCode, 0);
+  const status = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root }).result;
+  assert.equal(status.effective_state.downstream_package_authority.packages.design.state, "partial");
+  assert.equal(status.effective_state.downstream_package_authority.packages.design.authority, "withheld");
 });
 
 test("non-current upstream context requires workflow routing and keeps deferred work out of immediate permissions", async () => {
@@ -154,7 +203,7 @@ test("open findings preserve the owner-stage revision operation and advance the 
   const status = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root }).result;
   assert.deepEqual(status.permitted_operations, ["record-artifact-revision"]);
   const context = executeLifecycleCli(["context", "spec-review", "--change", "example", "--format", "json"], { cwd: root }).result.context;
-  assert.equal(context.review_round, "r2");
+  assert.equal(context.review_round, null);
 
   const blockedRoot = await repository(["example"], {
     artifact_states: {
@@ -214,4 +263,63 @@ test("upstream context does not advertise a route against stale registered ident
   assert.equal(execution.result.context.available_after_workflow_route, undefined);
   assert.equal(execution.result.permitted_operations.includes("route-correction"), false);
   assert.deepEqual(execution.result.effective_state.stale_evidence, ["spec"]);
+});
+
+test("design review context exposes deterministic explicit package identity", async () => {
+  const { root } = await packageRepository();
+  const execution = packageContext(root);
+  assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
+  assert.deepEqual(execution.result.context.review_package.members, { architecture: "docs/architecture/example.md", spec: "specs/example.md", "adr-cache": "docs/adr/ADR-cache.md" });
+  assert.equal(execution.result.context.review_package.upstream_review_id, "proposal-review-r1");
+  assert.equal(execution.result.context.review_package.status, "review-required");
+  assert.equal(execution.result.context.permitted_registration_operation, "record-package-review");
+  assert.equal(JSON.stringify(execution.result.context.review_package).includes("artifact_sha256"), false);
+});
+
+test("design package exposes changed membership and upstream review directly", async () => {
+  const membership = await packageRepository();
+  const changePath = join(membership.root, "docs", "changes", "example", "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  const extraPath = "docs/adr/ADR-extra.md";
+  const extraBytes = "# ADR extra\n";
+  writeFileSync(join(membership.root, extraPath), extraBytes, "utf8");
+  change.artifact_states["adr-extra"] = { kind: "adr", path: extraPath, role: "supporting", lifecycle_state: "review-required" };
+  change.lifecycle_cli.artifacts["adr-extra"] = {
+    artifact_kind: "adr", artifact_role: "supporting", artifact_path: extraPath,
+    artifact_sha256: createHash("sha256").update(extraBytes).digest("hex"), stage_authority: "architecture",
+  };
+  writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+  const membershipContext = packageContext(membership.root).result.context.review_package;
+  assert.deepEqual(membershipContext.members, { architecture: "docs/architecture/example.md", spec: "specs/example.md", "adr-cache": "docs/adr/ADR-cache.md", "adr-extra": "docs/adr/ADR-extra.md" });
+
+  const binding = await packageRepository();
+  const bindingPath = join(binding.root, "docs", "changes", "example", "change.yaml");
+  writeFileSync(bindingPath, readFileSync(bindingPath, "utf8").replaceAll("proposal-review-r1", "proposal-review-r2"), "utf8");
+  const bindingContext = packageContext(binding.root).result.context.review_package;
+  assert.equal(bindingContext.upstream_review_id, "proposal-review-r2");
+});
+
+test("package context fails closed for missing membership and ignores direct member-byte edits", async () => {
+  const missing = await packageRepository({ includeArchitecture: false });
+  const rejected = packageContext(missing.root);
+  assert.equal(rejected.exitCode, 2);
+  assert.equal(rejected.result.context.review_package.errors[0].code, "RL_OPERATION_NOT_PERMITTED");
+  assert.match(rejected.result.context.review_package.errors[0].summary, /primary architecture/);
+
+  const complete = await packageRepository();
+  const before = packageContext(complete.root).result.context.review_package;
+  writeFileSync(join(complete.root, complete.sources.spec[0]), "# Specification changed\n", "utf8");
+  const after = packageContext(complete.root).result.context.review_package;
+  assert.deepEqual(after.members, before.members);
+  assert.equal(after.status, before.status);
+});
+
+test("stored package review vocabularies reject an unknown outcome before consistency", async () => {
+  const { root } = await packageRepository();
+  const path = join(root, "docs", "changes", "example", "change.yaml");
+  const source = readFileSync(path, "utf8").replace("package_reviews: {}", "package_reviews:\n    design:\n      package_kind: design\n      outcome: accepted\n      stage_authority: design-review\n      reviewer_authority: design-review\n      members: {architecture: docs/architecture/example.md, spec: specs/example.md}\n      upstream_review_id: proposal-review-r1");
+  writeFileSync(path, source, "utf8");
+  const execution = executeLifecycleCli(["validate", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(execution.exitCode, 4);
+  assert.equal(execution.result.errors.some((error) => /outcome accepted is unknown/.test(error.summary)), true);
 });

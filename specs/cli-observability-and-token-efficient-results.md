@@ -14,7 +14,7 @@ boundary_contract: boundary-first-v1
 
 RigorLoop must retain a bounded, privacy-safe machine-local history of CLI execution while keeping routine human and agent results concise. Logging is diagnostic and must remain independent of governed lifecycle truth, semantic command behavior, transaction correctness, and exit status.
 
-The first compatibility slice adds default local logging, log discovery and exact invocation lookup, and opt-in concise and detailed projections. Existing default human output and existing JSON contracts remain unchanged throughout v0.4.x. Concise defaults may be adopted only at the declared v0.5.0 compatibility boundary after the measurement and semantic-preservation gates in this specification pass.
+The first compatibility slice adds default local logging, log discovery and exact invocation lookup, and opt-in concise and detailed projections. Its frozen v0.4.x fixtures protect that slice from accidental renderer drift; they do not prohibit a later approved feature from intentionally adding or replacing public lifecycle facts when the governing feature spec and release notes identify the change. Concise defaults may be adopted only at the declared v0.5.0 compatibility boundary after the measurement and semantic-preservation gates in this specification pass.
 
 ## Glossary
 
@@ -90,8 +90,8 @@ Then concise projections remain opt-in and existing defaults remain unchanged.
 | R18 | `rigorloop logs path` MUST return the resolved log directory in human or JSON form without creating governed state; failure MUST use a stable diagnostic and MUST NOT expose unrelated environment values. |
 | R19 | `rigorloop logs show <invocation-id>` MUST validate the exact ID grammar, search only the active file and retained archives, return events only for that ID, and distinguish `RL_LOG_NOT_FOUND`, `RL_LOG_UNAVAILABLE`, and `RL_LOG_CORRUPT_ENTRY`. `RL_LOG_NOT_FOUND` covers both IDs never recorded and IDs no longer retained; the first release MUST NOT claim which case occurred. |
 | R20 | Log inspection MUST be read-only, MUST NOT rerun or reconstruct the original command, MUST NOT recursively include its own diagnostic events in the lookup result, and MUST preserve corrupt unrelated lines as warnings without returning their raw content. |
-| R21 | During v0.4.x, existing default human output, `--json`, and lifecycle `--format json` schemas and whitespace-independent semantics MUST remain compatible. |
-| R22 | The compatibility slice MUST add `--format concise-human`, `--format concise-json`, and `--format detailed-json` to the common renderer. Existing `--json` MUST remain an alias for the existing detailed JSON contract through v0.4.x. |
+| R21 | During the v0.4.x observability slice, existing default human output, `--json`, and lifecycle `--format json` schemas and whitespace-independent semantics MUST remain compatible unless a later approved feature specification explicitly supersedes the affected fields for a release-visible behavior change. |
+| R22 | The compatibility slice MUST add `--format concise-human`, `--format concise-json`, and `--format detailed-json` to the common renderer. Existing `--json` MUST remain an alias for the detailed JSON contract; an approved feature may evolve that detailed contract without adding a legacy rendering mode when its governing spec, tests, and release notes change together. |
 | R23 | Concise JSON MUST use result schema version `2`, identify `projection: concise`, use compact JSON encoding, omit null and empty optional fields, and include only applicable fields from the closed common set: `schema_version`, `projection`, `invocation_id`, `command`, `operation`, `status`, `exit_code`, `change_id`, `lifecycle_revision`, `state_changed`, `next_operation`, `codes`, `finding_ids`, `milestone_ids`, and `observability`. |
 | R24 | Every concise-human terminal result MUST contain at most two non-empty lines and MUST include the operation or command, outcome, relevant identity, stable code when present, safe next operation when deterministically known, and invocation ID. Help text, shell completion, version text, and explicit detailed or log-event-list projections are not concise-human terminal results. |
 | R25 | A concise result MUST contain every fact required to select the next safe operation without log lookup. Complete artifact inventories, supporting paths, repeated explanations, stack traces, and empty collections MUST be omitted. |
@@ -223,7 +223,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 ## Compatibility and migration
 
-The v0.4.x slice is additive. Existing human defaults and JSON aliases remain unchanged, while explicit concise and detailed formats are added. Log schema version 1 is independent of result schema versions. No repository migration is required because logs and configuration remain machine-local.
+The v0.4.x observability slice is additive. Existing human defaults and JSON aliases remain unchanged for that slice, while explicit concise and detailed formats are added. Later approved features may intentionally evolve lifecycle output without preserving an obsolete projection or adding output-version selection; the feature spec, exact fixtures, and release note must make that change together. Log schema version 1 is independent of result schema versions. No repository migration is required because logs and configuration remain machine-local.
 
 At v0.5.0, changing defaults requires all R30 gates and a release-visible compatibility note. `detailed-json` remains available through v0.5.x. Existing logs remain readable by schema-version-aware lookup, but logs are disposable diagnostics and require no durable migration. Rollback disables the file sink and restores existing default projections independently.
 
@@ -290,7 +290,7 @@ EC12. A new command is added without an event family: conformance validation fai
 | AC3 | Active plus four archives never exceeds five owned log files, records remain complete under concurrency, and unsafe paths never mutate. |
 | AC4 | Logging enabled, disabled, degraded, rotated, or corrupt does not change semantic stdout, repository diff, or exit code. |
 | AC5 | Exact path discovery and lookup distinguish found, missing, unavailable, and corrupt outcomes without guessed history or rerun. |
-| AC6 | Existing v0.4.x output contracts pass unchanged; explicit concise and detailed projections agree on shared facts. |
+| AC6 | Existing v0.4.x observability fixtures pass unchanged except where a later approved feature explicitly supersedes affected fields; explicit concise and detailed projections agree on shared facts. |
 | AC7 | Concise output preserves the complete continuation-critical set and meets the human and machine shape contracts. |
 | AC8 | Synthetic secret, request, environment, control-character, and absolute-path fixtures are absent from every output and retained log surface. |
 | AC9 | Representative complete-interaction measurements enforce the 30% median, 10% per-profile, and one-pass continuation gates before any default change. |

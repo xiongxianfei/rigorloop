@@ -150,7 +150,7 @@ test("legacy JSON and detailed JSON retain the detailed object", () => {
   assert.deepEqual(JSON.parse(renderResult(detailed, { format: "detailed-json", observability: "recorded" })), { ...detailed, observability: "recorded" });
 });
 
-test("T10 v0.4.x public output remains exact and detailed projection preserves legacy facts", () => {
+test("T10 exact output fixture includes approved lifecycle fact evolution", () => {
   const fixture = JSON.parse(readFileSync(compatibilityFixturePath, "utf8"));
   assert.equal(fixture.baseline_revision, "fcbbfda44a89945ee06cfa0c1b16dcbd39984036");
   const cli = process.env.RIGORLOOP_COMPATIBILITY_CLI ?? new URL("../dist/bin/rigorloop.js", import.meta.url).pathname;

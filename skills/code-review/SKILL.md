@@ -3,7 +3,7 @@ name: code-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Review an implementation slice against the actual diff, governing artifacts, tests, and validation evidence, then record findings or a clean first-pass review. Use after implement hands off a milestone or when implementation review is requested. Use plan-review, spec-review, architecture-review, verify, or pr for those gates instead.
+  Review an implementation slice against the actual diff, approved design and delivery packages, tests, and validation evidence, then record findings or a clean first-pass review. Use after implement hands off a milestone or when implementation review is requested. Use design-review, delivery-review, verify, or pr for those gates instead.
 argument-hint: [branch, diff, plan path, spec path, or feature name]
 ---
 
@@ -58,6 +58,8 @@ Read the target, tracked authority, current milestone, tests, and relevant valid
 ## Review authority and evidence
 
 Inspect the actual changed files, staged or unstaged diff, commit range, PR diff, or other explicit target. Read the approved spec, matching test spec, stable plan milestone, relevant architecture or ADR, related tests, and named validation evidence. For planned work, read `change.yaml` for current milestone and handoff state; use the plan only for stable intent and `review-resolution.md` for prior-finding disposition.
+
+For work governed by consolidated gates, require the current approved Design Review ID and its exact member map plus the current approved Delivery Review ID and its exact member map. Treat review-required, partial, stale, or historical artifact-review evidence as non-authorizing. These package inputs strengthen implementation review but do not merge Code Review with Design Review, Delivery Review, or Verify.
 
 Use the smallest sufficient evidence set. Begin with the diff, spec, test spec, milestone, tests, and validation. Add architecture, governance, related code, generated output, or history only when the reviewed behavior or an evidence conflict requires it. Record why substantive evidence outside that set was needed. Full-file reading is appropriate when the whole file is the target or bounded evidence is incomplete, contradictory, or context-sensitive.
 
@@ -220,7 +222,7 @@ Start with the exact approved rows cited for the current decision. Expand approv
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
-Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `design-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
 Inspect composed public, helper, sibling, failure, stale, recovery, and escaped-boundary paths.
 

@@ -46,6 +46,8 @@ preserves skill-local package self-containment, and requires deterministic
 one-source projection and raw-byte parity without moving stage-specific
 workflow policy into the shared reference.
 
+This amendment also admits `design-review` and `delivery-review` as normalized formal review skills for the consolidated gate model. Each owns a distinct recurring package decision, review evidence, exact-package settlement procedure, isolation boundary, and claim limit. They are not aliases for the retired `spec-review`, `architecture-review`, `plan-review`, or `test-spec-review` entrypoints. The canonical proposal asset owns one embedded Feasibility section, and Proposal Review evaluates it without creating another artifact or skill.
+
 ## Prospective proof disposition for published-skill-first changes
 
 For changes governed by

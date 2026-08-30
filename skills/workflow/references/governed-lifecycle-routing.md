@@ -22,12 +22,7 @@ Use the lifecycle CLI for governed correction coordination. When an upstream aut
 
 ## Canonical applicability
 
-Architecture-assessment applicability and routing are owned here. After approved recorded `spec-review`, record exactly one assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`.
-
-- `architecture-required` routes through architecture authoring and review.
-- `architecture-not-required` skips those stages.
-- `architecture-ambiguous` pauses for owner resolution.
-- A requested conditional target that is not applicable stops as `target-not-applicable`; it is not silently treated as reached.
+Architecture and specification are both mandatory design-package members. Route architecture authoring before specification finalization, then reconcile both artifacts before `design-review`.
 
 Stage transitions and settlement are owned here. A stage advances only from the evidence its owner is permitted to write. Authoring skills write their own governed artifact and authoring transition. Review skills write formal review evidence and matching settlement. Workflow reads those surfaces and performs the next transition.
 

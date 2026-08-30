@@ -4,7 +4,7 @@ Load only for `AA2-governed-authoring`. The parent and package method own archit
 
 ## Basis and manifest
 
-Run `rigorloop lifecycle context architecture --change <change-id> --format json`. Require a current `architecture-required` assessment, exact approved spec identity, legal authority, and no blocker. Prepare one ordered authoring-evidence manifest covering each canonical or ADR target, its kind, role, path, prior digest or absence, dependencies, commit group, and independently valid commit point. Capture every prior target digest before writing.
+Run `rigorloop lifecycle context architecture --change <change-id> --format json`. Require the accepted Proposal Review ID, exact proposal and architecture paths, legal authority, and no blocker. Prepare one ordered authoring-evidence manifest covering each canonical or ADR target, its kind, role, path, prior digest or absence, dependencies, commit group, and independently valid commit point. Capture every prior target digest before writing.
 
 If context returns `RL_WORKFLOW_ROUTE_REQUIRED`, do not author or mutate state. Return its route facts to workflow and resume only after context makes `record-artifact-revision` immediately available.
 
@@ -16,4 +16,4 @@ Stop on drift, dependency failure, conflicting target, rejected registration, un
 
 ## Result
 
-Report assessment basis, manifest, each target and CLI result, preserved partial state, blockers, and architecture-review eligibility. Do not claim approval or continuation.
+Report assessment basis, manifest, each target and CLI result, preserved partial state, blockers, and Design Review eligibility after specification reconciliation. Do not claim approval or continuation.

@@ -28,7 +28,7 @@ Do not choose product direction, replace a missing specification, implement code
 - role_name: plan
 - stage: authoring
 - upstream: accepted proposal, approved or reviewed spec, architecture or ADRs when relevant, test-spec when present, and project-local workflow evidence
-- downstream: plan-review
+- downstream: test-spec, then delivery-review after reconciliation
 - summary: Own stable plan content and its authoring transition; initialize approved plan work only through the governed operation.
 - must_not_claim: implementation completion, review approval, verification, branch readiness, PR readiness, final closeout, or Done
 
@@ -81,7 +81,7 @@ Plan surfaces are distinct: `docs/workflows.md` maps project-local workflow and 
 4. Copy the mapped structural assets, fill every applicable field, and omit no required execution intent.
 5. For governed work, follow the loaded reference for create, revise, or approved-plan initialization and validate the complete candidate state.
 6. Check traceability, sequencing, scope completeness, rollback, source readability, and absence of mutable plan state.
-7. Record plan-owned authoring evidence and hand the plan to `plan-review`. Do not settle review or advance routing.
+7. Record plan-owned authoring evidence and hand the plan to `test-spec` for delivery-package reconciliation. Do not settle review or advance routing.
 
 ## Boundary-first method
 
@@ -98,7 +98,7 @@ Start with the exact approved rows cited for the current decision. Expand approv
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
-Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `design-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
 Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing. Stop planning when an applicable boundary lacks one of those owners and route a contract gap upstream.
 
@@ -150,9 +150,9 @@ Produce or update the stable plan body, its navigation link when needed, plan-ow
 
 ## Handoff
 
-Normal next stage: `plan-review`.
+Normal next stage: `test-spec`, followed by `delivery-review` after reconciliation.
 
-Conditional next stages: return to `spec` or `architecture` for a blocking upstream gap, or to `workflow` for governed migration or coordination. A workflow-managed invocation may hand off to `plan-review`, but plan never marks the review clean, initializes routing, or invokes `test-spec`.
+Conditional next stages: return to `spec` or `architecture` for a blocking upstream gap, or to `workflow` for governed migration or coordination. Plan never marks Delivery Review clean or initializes routing.
 
 ## Output skeleton
 
@@ -174,4 +174,4 @@ Use the mapped assets as the sole full-plan, milestone, and decision-row structu
 - Status: <created | updated | initialized | blocked>
 - Artifacts changed: <paths or none>
 - Open blockers: <blockers or none>
-- Next stage: <plan-review | spec | architecture | workflow | blocked>
+- Next stage: <test-spec | delivery-review | spec | architecture | workflow | blocked>

@@ -16,7 +16,7 @@ Do not expand scope, silently alter the contract, or claim success without direc
 
 - role_name: implement
 - stage: execution
-- upstream: approved spec, active plan, active test spec plus recorded, approved, current test-spec-review evidence when required, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
+- upstream: approved Design Review package, approved Delivery Review package, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
 - downstream: code-review
 - summary: Implement one scope-complete slice, record validation evidence, and hand it to code-review.
 - must_not_claim: review passed, clean review, branch readiness, PR readiness, final verification, final closeout readiness, or derived artifact currency without owning proof.
@@ -73,14 +73,15 @@ Read before editing:
 
 - `AGENTS.md` and `CONSTITUTION.md` when present;
 - the approved feature spec and concrete current milestone or isolated scope;
-- the active test spec and recorded, approved, current test-spec-review evidence when a formal workflow-managed test spec is required;
+- the active test spec and recorded, approved, current Delivery Review package when a formal workflow-managed delivery package is required;
+- for consolidated-gate work, the approved Delivery Review ID and exact plan/test-specification member map, plus the approved Design Review ID it binds;
 - relevant architecture or ADRs when the slice touches their boundaries;
 - code, tests, neighboring patterns, and milestone validation commands;
 - accepted review-resolution evidence when implementing recorded findings.
 
 ## Evidence access
 
-Start with the smallest sufficient set: change-local state, current milestone, approved spec, active test spec, recorded, approved, current test-spec-review evidence when required, relevant code/tests, and scoped validation commands.
+Start with the smallest sufficient set: change-local state, current milestone, approved Design Review and Delivery Review packages, relevant code/tests, and scoped validation commands.
 Read architecture, review resolution, workflow guidance, governance, or neighboring code only when triggered.
 Expand when bounded evidence is missing, stale, contradictory, or insufficient; read the full file when the whole file or surrounding context controls the decision.
 
@@ -118,7 +119,7 @@ A `first-pass acceptable result` means:
 Record any unchanged required surface and its rationale in contributor-visible evidence.
 A later issue that this completeness set should have caught is a `preventable first-pass miss`.
 If missing or conflicting inputs prevent a complete first pass, stop rather than guess.
-If a formal workflow-managed test spec lacks recorded, approved, current `test-spec-review` evidence, or a substantive edit made that approval stale, stop before implementation and route to the owning authoring/review stage.
+If a formal workflow-managed delivery package lacks recorded, approved, current `delivery-review` evidence, or a substantive member edit made that approval stale, stop before implementation and route to the owning authoring or review stage.
 
 ## Implementation contract
 
@@ -227,7 +228,7 @@ Start with the exact approved rows cited for the current decision. Expand approv
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
-Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `design-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
 Stop on missing boundary or proof ownership and implement against the approved model and proof map.
 
