@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
-Review closeout: code-review-m3-r1
+Review closeout: code-review-m3-r2
 
-- Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m2-r4`, `code-review-m2-r5`, `code-review-m3-r1`, `delivery-review-r3`
+- Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m2-r4`, `code-review-m2-r5`, `code-review-m3-r1`, `delivery-review-r3`, `code-review-m3-r2`
 - Findings resolved: 8
-- Unresolved findings: 0
-- Current result: all findings are resolved. Delivery Review R3 approved the corrected proof boundary, published v0.4.1 identities are restored, and M3 is ready for independent code rereview.
+- Unresolved findings: 1
+- Current result: `SPC-M3-CR1` remains resolved. `SPC-M3-CR2` is open because the corrected M3 evidence still attributes its plan authority to Delivery Review R2 instead of the exact approved R3 package.
 
 ## Resolution Overview
 
@@ -23,8 +23,28 @@ Review closeout: code-review-m3-r1
 | SPC-M2-CR5 | accepted | resolved | Mismatch inference now considers only selected records that declare a primary proposal entry. |
 | SPC-M2-CR6 | accepted | resolved | Mismatch inference is limited to an unambiguous one-proposal/one-primary-record selection. |
 | SPC-M3-CR1 | accepted | resolved | Current temporary parity is owned by CMD-07; CMD-08 validates immutable v0.4.1 evidence through its recorded source. |
+| SPC-M3-CR2 | needs-decision | open | Correct the stale M3 evidence attribution from Delivery Review R2 to R3, or explicitly challenge the finding before M3 rereview. |
 
 ## Finding Details
+
+### code-review-m3-r2
+
+#### SPC-M3-CR2
+
+Finding ID: SPC-M3-CR2
+Disposition: needs-decision
+Status: open
+Owner: implementation author
+Owning stage: implement
+Decision owner: implementation author
+Decision needed: Accept the one-line authority-attribution correction or provide evidence that Delivery Review R2 authorizes the post-R2 command split.
+Chosen action: none before owner disposition.
+Rationale: Durable M3 evidence must cite the exact Delivery package that approved the commands and proof boundary it reports.
+Required outcome: The M3 evidence identifies `delivery-review-r3` as the exact approved package.
+Safe resolution path: Change only `delivery-review-r2` to `delivery-review-r3` in the M3 evidence, record an accepted disposition, validate review artifacts and change metadata, run `git diff --check`, and request focused M3 R3 rereview.
+Follow-up: review-resolution, one-line evidence correction, then code-review M3 R3.
+Validation target: M3 evidence, `change.yaml`, and Delivery Review R3 all identify the same exact authorizing review.
+Validation evidence: `code-review-m3-r2.md`; current M3 evidence line 20, corrected plan/test-spec commit `3c4aff53`, Delivery Review R3 receipt `004b711d`, and current `change.yaml` package authority.
 
 ### code-review-m3-r1
 

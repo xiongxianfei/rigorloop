@@ -117,11 +117,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/delivery-review-r3.md
+  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m3-r2.md
   review_log: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
-  reviewed_artifact: review-package:delivery
-  status: clean
-  unresolved_items: 0
+  reviewed_artifact: implementation-milestone:M3@7491345b69b5159beb03cf1a935b8f5811a21044
+  status: changes-requested
+  unresolved_items: 1
 lifecycle_cli:
   schema_version: 2
   artifacts:
