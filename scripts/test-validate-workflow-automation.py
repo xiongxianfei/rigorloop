@@ -1934,11 +1934,8 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
                 errors = validate_workflow_automation(state)
                 self.assertTrue(any("from_position" in error for error in errors), errors)
 
-    def test_receipt_accepts_conditional_skip_and_review_resolution_edges(self) -> None:
-        cases = (
-            ("architecture-assessment", "plan", "post-proposal-authoring"),
-            ("review-resolution", "code-review", "implementation"),
-        )
+    def test_receipt_accepts_review_resolution_edge(self) -> None:
+        cases = (("review-resolution", "code-review", "implementation"),)
         for from_position, stage_name, capability_kind in cases:
             with self.subTest(stage=stage_name):
                 policy = STAGE_POLICY_BY_STAGE[stage_name]
@@ -2107,7 +2104,7 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         receipt["transition_key"] = compute_transition_key(receipt)
         self.assertEqual(validate_workflow_automation(state), [])
 
-    def test_architecture_skip_requires_matching_applicability_evidence(self) -> None:
+    def test_retired_architecture_skip_is_rejected(self) -> None:
         state = valid_automation()
         receipt = configure_post_proposal_transition(
             state,
@@ -2117,16 +2114,14 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         receipt["from_position"] = "architecture-assessment"
         receipt["input_identities"] = {"proposal": "sha256:proposal"}
         errors = validate_workflow_automation(state)
-        self.assertTrue(any("architecture_applicability" in error for error in errors), errors)
-
-        receipt["input_identities"].update(  # type: ignore[union-attr]
-            {
-                "architecture_applicability": "not-applicable",
-                "architecture_applicability_identity": "sha256:assessment",
-            }
+        self.assertTrue(
+            any(
+                "from_position: unknown value 'architecture-assessment'"
+                in error
+                for error in errors
+            ),
+            errors,
         )
-        receipt["transition_key"] = compute_transition_key(receipt)
-        self.assertEqual(validate_workflow_automation(state), [])
 
     def test_next_milestone_requires_ordered_source_and_destination_evidence(self) -> None:
         state = valid_automation()

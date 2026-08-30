@@ -12,7 +12,7 @@ from typing import Mapping
 METHOD_VERSION = "boundary-first-v1"
 RESOURCE_MANIFEST = Path("specs/boundary-first-resources.yaml")
 RESOURCE_MANIFEST_SHA256 = (
-    "6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113"
+    "040fe7aa2eb85caf72f55f54bd5d2334a20aad4b0a1d99900f549ff7958bbc72"
 )
 CANONICAL_REFERENCE = Path(
     "specs/references/boundary-first-method-v1.md"
@@ -21,11 +21,10 @@ PROJECTED_REFERENCE = Path("references/boundary-first-method-v1.md")
 GOVERNED_SKILLS = (
     "workflow",
     "spec",
-    "spec-review",
+    "design-review",
     "plan",
-    "plan-review",
     "test-spec",
-    "test-spec-review",
+    "delivery-review",
     "implement",
     "code-review",
     "verify",
@@ -33,13 +32,13 @@ GOVERNED_SKILLS = (
 RESOURCE_IDS = ("compact-core", "feature-authoring", "proof")
 RESOURCE_IDENTITY_SHA256 = {
     "compact-core": (
-        "f4cb04ac883f143c392c49d949e1bd6a644608b5fc2dcc8f2856eda11834f377"
+        "ec9d4a5cd0c0111a1d0da08b7170c1f1a6b0eaf3609c4b9555023aad4887072e"
     ),
     "feature-authoring": (
-        "e30e555649d56b43848587c63a4b7c0f0e15a2ec6b5d78873c7b6e3b80525ec6"
+        "78cf6cc80e180781526fc33f4b0894dccf6373a429be8ff13c7e5a7567f6272e"
     ),
     "proof": (
-        "fbb2015d93de95a5be3f2ee89344c5a00955f86628ca20f13a46323ea749ffda"
+        "2b1578894cb078139cf5be7f1193784b639aedcdeefe75ff7a083fd1feb974cc"
     ),
 }
 PROJECTION_MODES = frozenset({"check", "write"})
