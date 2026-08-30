@@ -1,0 +1,43 @@
+change_id: 2026-08-30-lightweight-requirement-delivery-model
+title: Introduce a Lightweight Requirement-to-Delivery Model
+classification: workflow
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    authoring_evidence: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/proposal-authoring.md
+    kind: proposal
+    lifecycle_state: review-required
+    path: docs/proposals/2026-08-30-lightweight-requirement-delivery-model.md
+    role: primary
+workflow_state:
+  blocker: null
+  current_stage: proposal
+  evidence: []
+  lifecycle_state: active
+  next_stage: proposal-review
+workflow: {}
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  status: pending
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 1
+  artifacts:
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-08-30-lightweight-requirement-delivery-model.md
+      artifact_role: primary
+      artifact_sha256: 7ab59ec73392b5d86fd59957de1e3e53e39d0560705352f7d3721bb93f12f9c1
+      authoring_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/proposal-authoring.md
+      authoring_evidence_sha256: 7a1eb4bf4d1002a6f695096876877f3eb332ac36cd41f4adf0dcc8959d8a34eb
+      stage_authority: proposal
+  milestones: {}
+  package_reviews: {}
+  resolutions: {}
+  reviews: {}
+  validations: {}
