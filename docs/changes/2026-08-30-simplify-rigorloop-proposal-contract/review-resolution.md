@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m4-r1
 
 - Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m2-r4`, `code-review-m2-r5`, `code-review-m3-r1`, `delivery-review-r3`, `code-review-m3-r2`, `code-review-m4-r1`
-- Findings resolved: 9
-- Unresolved findings: 1
-- Current result: all nine earlier findings remain resolved. `SPC-M4-CR1` is open because review closeout validation treats Markdown source order as review chronology and rejects seven superseded blocking reviews.
+- Findings resolved: 10
+- Unresolved findings: 0
+- Current result: all findings are resolved. Review closeout now uses stable occurrence, stage, and numeric round instead of Markdown source order.
 
 ## Resolution Overview
 
@@ -24,7 +24,7 @@ Review closeout: code-review-m4-r1
 | SPC-M2-CR6 | accepted | resolved | Mismatch inference is limited to an unambiguous one-proposal/one-primary-record selection. |
 | SPC-M3-CR1 | accepted | resolved | Current temporary parity is owned by CMD-07; CMD-08 validates immutable v0.4.1 evidence through its recorded source. |
 | SPC-M3-CR2 | accepted | resolved | The M3 evidence now attributes its corrected proof split to Delivery Review R3. |
-| SPC-M4-CR1 | needs-decision | open | Closeout validation must recognize higher-round rereviews for the same stable occurrence independently of canonical review-log section order. |
+| SPC-M4-CR1 | accepted | resolved | Closeout validation now recognizes higher-round rereviews for the same stable occurrence independently of canonical review-log section order. |
 
 ## Finding Details
 
@@ -33,19 +33,19 @@ Review closeout: code-review-m4-r1
 #### SPC-M4-CR1
 
 Finding ID: SPC-M4-CR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation author
 Owning stage: implement
 Decision owner: implementation author
-Decision needed: Accept or challenge the bounded correction to use stable review occurrence, stage, and numeric round, rather than Markdown source position, for closeout chronology.
-Chosen action: none until implementation ownership accepts the correction.
+Decision needed: none; the bounded validator correction is accepted.
+Chosen action: Compare blocking reviews against all parsed entries using stable occurrence identity, stage, and normalized numeric round, with focused positive and negative regressions.
 Rationale: The canonical review log places clean receipts before detailed findings, while the validator searches only entries physically below a blocking occurrence. Seven reviews with valid higher-round nonblocking rereviews are therefore reported unresolved.
 Required outcome: A blocking review is closed by a higher-round nonblocking rereview for the same stable occurrence regardless of canonical section placement, while a review with no later round for that occurrence or explicit closeout remains blocking.
 Safe resolution path: Compare each blocking review against all parsed entries using stable occurrence identity (for example, review ID without final `-rN`), stage, and numeric round; add canonical-order positive, no-rereview negative, and different-milestone negative regressions; rerun review-artifact tests plus structure and closeout validation, record the accepted resolution, and request final holistic rereview.
-Follow-up: bounded validator correction and independent code-review M4 R2.
+Follow-up: final holistic code-review M4 R3.
 Validation target: closeout mode passes this fully resolved prior review history, keeps the open M4 occurrence blocking, and still rejects a blocking occurrence without a same-occurrence higher-round nonblocking review or explicit closeout.
-Validation evidence: `code-review-m4-r1.md`; CMD-01 through CMD-12 pass in their approved modes, while direct closeout validation reports seven superseded review occurrences because `_validate_blocking_review_closeout` slices candidates by source position.
+Validation evidence: correction commit `c1863b7a`; independent `code-review-m4-r2.md`; review-artifact validator 108/108; canonical-order positive, same-round negative, and cross-milestone negative regressions passed; closeout validation no longer reports the seven false historical failures; structure validation, change metadata, and diff check passed.
 
 ### code-review-m3-r2
 

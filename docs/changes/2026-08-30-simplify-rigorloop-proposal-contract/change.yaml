@@ -120,7 +120,7 @@ review:
   review_log: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
   reviewed_artifact: correction-commit:c1863b7ab47e2b20cc80bd056db8aff00a36b9f3
   status: clean-with-notes
-  unresolved_items: 1
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -257,6 +257,14 @@ lifecycle_cli:
       evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-resolution.md
       evidence_sha256: 3396bd6e40caa06e2ea04940194150bf0781676a999cc4ff1853cf1faaff51ec
       finding_id: SPC-M3-CR2
+      owner: implementation author
+      stage_authority: review-resolution
+    SPC-M4-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-resolution.md
+      evidence_sha256: ced04be2ae97b9aa5eb67c497128d10c2a4b8b03136e5562c4099fe4cbdb8048
+      finding_id: SPC-M4-CR1
       owner: implementation author
       stage_authority: review-resolution
   reviews: {}

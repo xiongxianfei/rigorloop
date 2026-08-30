@@ -66,7 +66,7 @@ Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: SPC-M4-CR1
 Finding ID: SPC-M4-CR1
-Open findings: SPC-M4-CR1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
