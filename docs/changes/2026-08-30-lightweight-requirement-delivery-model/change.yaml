@@ -68,12 +68,12 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M1
+    current_milestone: M2
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -95,10 +95,10 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: closed
       M2:
         kind: implementation
-        state: planned
+        state: implementing
       M3:
         kind: implementation
         state: planned
@@ -107,7 +107,6 @@ workflow_state:
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M1
       - M2
       - M3
 workflow: {}
@@ -236,7 +235,27 @@ lifecycle_cli:
         milestone_state: null
         next_stage: delivery-review
       status: returned
-  milestones: {}
+  milestones:
+    M1:
+      completion_fingerprint: 6d1565f0bdd73cda80a5f4e38d74e847d7778a8a78b203c433829e228731478f
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/m1-authoring-model.md
+      evidence_sha256: 0397b47ffe556882644ce09c3c33755e4effc177d611f141fa921c7504a40727
+      milestone_id: M1
+      review_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m1-r2.md
+      review_evidence_sha256: eb53ab70399669d24fb411f2ad0d31300422165f126980cbe6e383958dcc2bb5
+      review_id: code-review-m1-r2
+      review_log_entry_sha256: 33ac3dc4ced3ff92e7ae9e07bbd0c4abe5cf003e0dd5a855dfbce16a7638e657
+      review_log_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m1-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
   package_reviews:
     delivery:
       correction_targets: []

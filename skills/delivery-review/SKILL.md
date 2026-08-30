@@ -13,6 +13,8 @@ Judge whether the approved design can be implemented safely and proved adequatel
 
 ## Purpose
 
+Trace SRs and architecture boundaries into proportional allocated work and proof.
+
 Approve or reject one explicit delivery package and preserve requirement-to-proof traceability and precise finding ownership.
 
 ## When to use
@@ -105,6 +107,7 @@ Do not claim that plan or test specification is independently approved, that imp
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when tracing approved design into allocated milestones, work, and proof.
 - READ `references/boundary-first-method-v1.md` initially for every `delivery-review` invocation.
 - READ `references/boundary-first-proof-v1.md` after the method reference when the delivery package consumes a `boundary-first-v1` proof map.
 - READ `references/delivery-review-recording-and-settlement.md` for every durable or formal review before recording or settlement.

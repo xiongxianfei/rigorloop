@@ -11,6 +11,8 @@ argument-hint: [proposal path, feature idea, or review focus]
 
 Independently answer: **Does this proposal provide enough evidence for a responsible decision about whether to pursue the direction?** Do not rubber-stamp formatting or demand information owned by Design or Delivery.
 
+Judge whether the proposal responsibly refines the incoming RR into an IR-level direction sufficient for Design.
+
 ## Workflow role
 
 - role_name: proposal-review
@@ -182,6 +184,7 @@ Do not claim spec completion, downstream execution, implementation review, verif
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when tracing an incoming need through proposal direction or downstream Design handoff.
 - READ `references/proposal-review-recording-and-settlement.md` exactly when `durable_recording_context` is true. Stop before dependent writes, settlement, automation, or recording claims if it is missing or unreadable.
 - READ `references/conditional-proposal-gates.md` exactly when one or more specialized predicates are true. Apply every true predicate and load the reference once.
 - COPY `assets/review-result-skeleton.md` for every proposal-review result. Fill: the core group and only the specialized-gate, durable-recording, formal-settlement, and automated-review groups selected by current classification. Do not emit unfilled placeholders.
