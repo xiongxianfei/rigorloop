@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:5d0c7a48b4ee526fa124b4e926c550d41d4e19593b0e7934ff6680565b33a695",
+  "milestone_id": "M4",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/m4-canonical-review-responsibilities-implementation.md",
+  "stage_authority": "workflow"
+}
