@@ -1481,6 +1481,27 @@ release_gate:
             self.assertNotIn("prompt", " ".join(command).lower())
             self.assertNotIn("exec", command)
 
+    def test_proposal_stage_packages_pass_supported_archive_install_parity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            version = "v0.4.1"
+            build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+
+            archive_errors = validate_adapter_archives(
+                version,
+                output_dir,
+                skills_root=ROOT / "skills",
+            )
+            install_errors = validate_clean_install_smoke(
+                version,
+                output_dir,
+                skills_root=ROOT / "skills",
+                skill_names=("proposal", "proposal-review"),
+            )
+
+        self.assertEqual(archive_errors, [])
+        self.assertEqual(install_errors, [])
+
     def clean_install_runner_with_resource_mutation(
         self,
         *,

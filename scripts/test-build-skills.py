@@ -45,6 +45,27 @@ class BuildSkillsTests(unittest.TestCase):
         self.assertTrue((output_dir / "workflow" / "assets" / "workflows-skeleton.md").is_file())
         self.assertFalse(self.build_skills.collect_drift(self.build_skills.CANONICAL_SKILLS_DIR, output_dir))
 
+    def test_proposal_stage_packages_preserve_canonical_resources(self) -> None:
+        output_dir = self.tmpdir / "generated-skills"
+
+        result = self.build_skills.main(["--output-dir", str(output_dir)])
+
+        self.assertEqual(result, 0)
+        for skill_name in ("proposal", "proposal-review"):
+            canonical_root = self.build_skills.CANONICAL_SKILLS_DIR / skill_name
+            generated_root = output_dir / skill_name
+            canonical_files = {
+                path.relative_to(canonical_root): path.read_bytes()
+                for path in canonical_root.rglob("*")
+                if path.is_file()
+            }
+            generated_files = {
+                path.relative_to(generated_root): path.read_bytes()
+                for path in generated_root.rglob("*")
+                if path.is_file()
+            }
+            self.assertEqual(generated_files, canonical_files)
+
     def test_check_with_output_dir_generates_and_validates_non_tracked_output(self) -> None:
         output_dir = self.tmpdir / "check-output"
 
