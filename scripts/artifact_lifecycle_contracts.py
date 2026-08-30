@@ -79,7 +79,24 @@ ARCHITECTURE_CONTRACT = ArtifactContract(
     allowed_statuses=frozenset({"draft", "approved", "abandoned", "superseded", "archived"}),
     settlement_statuses=frozenset({"approved"}),
     terminal_statuses=frozenset({"abandoned", "superseded", "archived"}),
-    required_sections=("Related artifacts", "Summary", "Requirements covered", "Proposed architecture", "Interfaces and contracts"),
+    required_sections=(
+        "Related artifacts",
+        "Introduction and Goals",
+        "Architecture Constraints",
+        "Context and Scope",
+        "Solution Strategy",
+        "Building Block View",
+        "Runtime View",
+        "Deployment View",
+        "Crosscutting Concepts",
+        "Architecture Decisions",
+        "Quality Requirements",
+        "Risks and Technical Debt",
+        "Glossary",
+        "Next artifacts",
+        "Follow-on artifacts",
+        "Readiness",
+    ),
 )
 
 CANONICAL_ARCHITECTURE_CONTRACT = ArtifactContract(
