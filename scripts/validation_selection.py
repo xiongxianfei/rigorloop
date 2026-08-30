@@ -2430,8 +2430,6 @@ def _path_category(path: str) -> str | None:
             return "review-artifacts"
         if len(parts) == 5 and parts[3] == "evidence":
             return "change-local-lifecycle"
-        if len(parts) == 5 and parts[3] == "requests" and parts[4].endswith(".json"):
-            return "change-local-lifecycle"
         if len(parts) == 4:
             matches = _matching_evidence_classes(parts[3])
             if len(matches) == 1:
