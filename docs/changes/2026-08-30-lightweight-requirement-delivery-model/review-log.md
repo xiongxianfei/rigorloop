@@ -17,6 +17,20 @@ Material findings: none
 Record: reviews/design-review-r2.md
 Recording status: recorded
 
+### Review entry
+
+Review ID: delivery-review-r1
+Stage: delivery-review
+Round: r1
+Status: changes-requested
+Detailed record: reviews/delivery-review-r1.md
+Resolution: review-resolution.md#delivery-review-r1
+Material findings: RTD-DLR1, RTD-DLR2
+Finding ID: RTD-DLR1
+Finding ID: RTD-DLR2
+Open findings: RTD-DLR1, RTD-DLR2
+Recording status: recorded
+
 ## Detailed review entries
 
 ### Review entry
