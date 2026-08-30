@@ -307,6 +307,10 @@ Open findings: None
             if kind == "design"
             else {"plan": "docs/plans/example.md", "test-spec": "specs/example.test.md"}
         )
+        for member_path in members.values():
+            member = root / member_path
+            member.parent.mkdir(parents=True, exist_ok=True)
+            member.write_text(f"# {member_path}\n", encoding="utf-8")
         upstream = "proposal-review-r1" if kind == "design" else "design-review-r1"
         review_path.write_text(
             f"""# {stage}
@@ -407,6 +411,15 @@ Recording status: recorded
         result = _verify_package_review_completion(stage_name="delivery-review", evidence_name="delivery-review", evidence=evidence, artifact=review_path, artifact_identity=review_identity, repository_root=root)
         self.assertFalse(result.valid)
         self.assertEqual(result.reason, "stage-native-package-upstream-mismatch")
+
+    def test_package_review_completion_rejects_missing_member_files(self) -> None:
+        for kind, missing_path in (("design", "specs/example.md"), ("delivery", "docs/plans/example.md")):
+            with self.subTest(kind=kind):
+                root, review_path, review_identity, evidence = self.package_review_completion_fixture(kind)
+                (root / missing_path).unlink()
+                result = _verify_package_review_completion(stage_name=f"{kind}-review", evidence_name=f"{kind}-review", evidence=evidence, artifact=review_path, artifact_identity=review_identity, repository_root=root)
+                self.assertFalse(result.valid)
+                self.assertEqual(result.reason, "stage-native-package-member-path-invalid")
 
     def materialize_valid_review_completion(
         self,

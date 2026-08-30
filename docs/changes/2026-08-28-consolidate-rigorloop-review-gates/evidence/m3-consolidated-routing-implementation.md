@@ -42,7 +42,7 @@ The JavaScript lifecycle and Python automation policy now use the same sequence:
 
 Status and downstream context expose one compact assessment for both packages. Each package reports only `state` (`missing`, `historical-only`, `partial`, `stale`, `mixed`, or `current`) and `authority`; the assessment reports `enforcement: cutover-pending`. This makes invalid authority explicit without adding document hashes, aggregate revisions, activation metadata, or a retroactive blocker. M6 will activate the same assessment atomically after legacy-dependent work is closed, as required by CRG-R35 through CRG-R40.
 
-Python stage-native completion now validates combined reviews against the explicit package member map, upstream review ID, registered package-review decision, and canonical review-log occurrence. It records compact member facts in the completion proof and does not introduce a package hash or aggregate revision.
+Python stage-native completion now validates combined reviews against safe current member paths, the explicit package member map, upstream review ID, registered package-review decision, and canonical review-log occurrence. It records compact member facts in the completion proof and does not introduce a package hash or aggregate revision.
 
 ## Tests added or updated
 
@@ -59,7 +59,7 @@ Python stage-native completion now validates combined reviews against the explic
 - `node --test packages/rigorloop/test/lifecycle-stage-advance.test.js packages/rigorloop/test/lifecycle-correction-route.test.js packages/rigorloop/test/lifecycle-milestone.test.js packages/rigorloop/test/lifecycle-read.test.js` — 43 passed.
 - `python scripts/test-workflow-automation.py` — 76 passed.
 - `python scripts/test-workflow-automation-policy.py` — 17 passed.
-- `python scripts/test-workflow-automation-state.py` — 67 passed.
+- `python scripts/test-workflow-automation-state.py` — 68 passed.
 - `python scripts/test-workflow-code-state.py` — 18 passed.
 - `npm test --prefix packages/rigorloop` — 297 passed.
 - `python scripts/test-change-metadata-validator.py` — 66 passed.

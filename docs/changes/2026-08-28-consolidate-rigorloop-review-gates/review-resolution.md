@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -15,11 +15,12 @@ Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
+Review closeout: code-review-m3-r3
 
 - Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
-- Findings resolved: 21
-- Unresolved findings: 1
-- Current result: M3 R3 found that Python package completion does not reject missing or unsafe member paths; CRG-M3-CR4 requires resolution and rereview.
+- Findings resolved: 22
+- Unresolved findings: 0
+- Current result: CRG-M3-CR4 is resolved with safe member-path existence checks and direct design/delivery missing-file proof; M3 is ready for rereview.
 
 ## Resolution Overview
 
@@ -45,7 +46,7 @@ Review closeout: code-review-m3-r2
 | CRG-M3-CR1 | accepted | resolved | Python automation now uses and proves the consolidated stage vocabulary and route. |
 | CRG-M3-CR2 | partially-accepted | resolved | M3 detects and proves every invalid package state; M6 retains atomic activation ownership under CRG-R35 through CRG-R40. |
 | CRG-M3-CR3 | accepted | resolved | Python completion now verifies explicit package members, upstream authority, registration, and canonical review occurrence. |
-| CRG-M3-CR4 | needs-decision | open | Require every explicit package member path to resolve safely before completion. |
+| CRG-M3-CR4 | accepted | resolved | Every explicit package member must resolve as a safe current regular file before completion. |
 
 ## Finding Details
 
@@ -54,19 +55,19 @@ Review closeout: code-review-m3-r2
 #### CRG-M3-CR4
 
 Finding ID: CRG-M3-CR4
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: M3 implementation owner
 Owning stage: implement M3
 Decision owner: M3 implementation owner
-Decision needed: accept the safe-path existence correction or stop M3.
-Chosen action: pending owner disposition.
+Decision needed: none; the user requested correction followed by rereview.
+Chosen action: resolve every explicit member through the existing repository-safe path boundary before granting completion.
 Rationale: package completion currently accepts registered paths whose files are absent, diverging from lifecycle package authority.
 Required outcome: every explicit package member resolves as a safe current regular file without package-member hashing.
 Safe resolution path: use the repository-safe path resolver and add present/missing regressions for both package kinds.
-Follow-up: resolve, implement, and rerun M3 Code Review.
+Follow-up: rerun M3 Code Review.
 Validation target: CRG-R23; CRG-T11; BND-INPUT-001; BND-STATE-001.
-Validation evidence: pending.
+Validation evidence: `python scripts/test-workflow-automation-state.py` passed 68 tests, including safe-present completion and missing-member rejection for both design and delivery packages.
 
 ### code-review-m3-r2
 

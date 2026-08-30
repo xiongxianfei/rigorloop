@@ -32,10 +32,10 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r3.md
 Resolution: review-resolution.md#code-review-m3-r3
 Material findings: CRG-M3-CR4
-Open findings: CRG-M3-CR4
+Open findings: none
 Finding ID: CRG-M3-CR4
 Recording status: recorded
-Blocker: package completion must reject missing or unsafe member paths
+Blocker: none; CRG-M3-CR4 is resolved and M3 rereview is required
 
 ### Review entry
 
