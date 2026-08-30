@@ -68,17 +68,19 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
-  evidence: []
+  current_stage: verify
+  evidence:
+    - docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m4-r2.md
+    - docs/changes/2026-08-30-lightweight-requirement-delivery-model/explain-change.md
   lifecycle_state: active
-  next_stage: code-review
+  next_stage: verify
   planned_work:
     current_milestone: M4
     final_closeout:
       evidence: []
       readiness: not-ready
       reasons:
-        - implementation-milestones-open
+        - verify-pending
     initialization_basis:
       review_id: delivery-review-r2
       review_record: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/delivery-review-r2.md
