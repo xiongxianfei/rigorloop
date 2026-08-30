@@ -24,6 +24,21 @@
 
 ### Review entry
 
+Review ID: code-review-m3-r2
+Stage: code-review
+Round: r2
+Reviewed artifact: corrected M3 implementation in commit `5494d2cf`
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r2.md
+Resolution: review-resolution.md#code-review-m3-r2
+Material findings: CRG-M3-CR3
+Open findings: CRG-M3-CR3
+Finding ID: CRG-M3-CR3
+Recording status: recorded
+Blocker: M3 requires package-aware Python completion verification and direct proof before rereview
+
+### Review entry
+
 Review ID: code-review-m3-r1
 Stage: code-review
 Round: r1

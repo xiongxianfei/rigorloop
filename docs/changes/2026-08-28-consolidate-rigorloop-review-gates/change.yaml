@@ -127,11 +127,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m3-r1.md
+  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m3-r2.md
   review_log: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-log.md
-  reviewed_artifact: M3 path-bounded implementation in commit e1a205e86a103c8001509dc111b84c9a5d1b0db7
+  reviewed_artifact: corrected M3 implementation in commit 5494d2cf
   status: changes-requested
-  unresolved_items: 0
+  unresolved_items: 1
 lifecycle_cli:
   schema_version: 2
   artifacts:
