@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:c3c21e5e22b1b8222e78e8d702f1ef43475e42b5b9e36718ae30f19dcb5c9245",
+  "source_stage": "code-review",
+  "destination_stage": "architecture",
+  "destination_artifact_id": "adr-consolidated-review-package-topology",
+  "reason": "upstream-contract-gap",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-route-m2-package-simplification-to-architecture.md",
+  "finding_ids": ["CRG-M2-CR1", "CRG-M2-CR2", "CRG-M2-CR3", "CRG-M2-CR4"],
+  "return_stage": "code-review",
+  "milestone_id": "M2",
+  "stage_authority": "workflow"
+}

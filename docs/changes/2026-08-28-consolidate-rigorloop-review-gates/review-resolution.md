@@ -11,11 +11,13 @@ Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-cli-fix-r1
+Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`
-- Findings resolved: 10
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`
+- Findings resolved: 15
 - Unresolved findings: 0
-- Current result: The owner rejected both Code Review CLI Fix R1 findings and explicitly authorized M2 continuation without changing the CLI fix.
+- Current result: M2 rereview is clean; the accepted upstream invalidation, evidence replay, and non-approved next-action corrections are implemented and directly proved.
 
 ## Resolution Overview
 
@@ -31,6 +33,13 @@ Review closeout: code-review-cli-fix-r1
 | CRG-M1-CR2 | accepted | resolved | Explicitly allowed later approved lifecycle features to supersede obsolete frozen fields; no legacy renderer or output-version mechanism was added. |
 | CRG-CLI-CR1 | rejected | resolved | The owner rejected a mandatory commit or packet identity for direct clean-review settlement; the existing exact milestone evidence, review evidence, and review-log binding are sufficient for this workflow. |
 | CRG-CLI-CR2 | rejected | resolved | The owner accepted the concise two-phase `complete-milestone` behavior and rejected adding another operation or documentation gate before M2. |
+| CRG-M2-CR1 | accepted | resolved | Aggregate and hash-based replay were removed; the narrower remaining evidence-replay defect is CRG-M2-CR6. |
+| CRG-M2-CR2 | accepted | resolved | Non-approved outcomes now block; the narrower incorrect-next-action defect is CRG-M2-CR7. |
+| CRG-M2-CR3 | rejected | resolved | The owner explicitly rejected per-document content-hash registration; rereview confirms package authority no longer uses those hashes. |
+| CRG-M2-CR4 | accepted | resolved | Finding ownership and correction targets now fail closed against the explicit member map. |
+| CRG-M2-CR5 | accepted | resolved | Proposal Review replacement now invalidates dependent design authority while retaining the prior Design Review ID. |
+| CRG-M2-CR6 | accepted | resolved | Exact settlement replay now rereads current package and review evidence before recognizing replay. |
+| CRG-M2-CR7 | accepted | resolved | Settled non-approved package states now expose outcome-specific safe continuations. |
 
 ## Finding Details
 
@@ -211,6 +220,131 @@ Follow-up: none.
 Validation target: `specs/governed-lifecycle-cli.md` R16/E7, direct review settlement, completion fingerprint, and stale replay.
 Validation evidence: owner rejection recorded 2026-08-29; targeted lifecycle suite passed 53 tests in Code Review CLI Fix R1.
 
+### code-review-m2-r1
+
+#### CRG-M2-CR1
+
+Finding ID: CRG-M2-CR1
+Disposition: accepted
+Status: resolved
+Owner: M2 implementation owner
+Owning stage: implement
+Decision owner: workflow owner
+Decision needed: resolved; use explicit lifecycle invalidation rather than aggregate or per-document hashes.
+Chosen action: remove `aggregate_revision`, content-derived package identity, and hash-based replay from the specification, ADR, schema, CLI, validators, fixtures, and tests.
+Rationale: The owner requires a simple workflow. The reviewed stale-replay defect is real in the current mechanism, but removing that mechanism is safer and smaller than repairing its hash protocol.
+Required outcome: package approval binds explicit member IDs and paths plus the review ID; authoring through the governed workflow marks the affected package `review-required`.
+Safe resolution path: revise the governed contract first, simplify M2 implementation and proof, then rerun code review.
+Follow-up: rerun M2 Code Review after implementation correction and targeted proof.
+Validation target: CRG-R24, CRG-R26, CRG-T09, BND-TEMPORAL-001, INT-003.
+Validation evidence: `code-review-m2-r2.md` confirms aggregate replay removal; the remaining evidence-order issue is recorded separately as CRG-M2-CR6.
+
+#### CRG-M2-CR2
+
+Finding ID: CRG-M2-CR2
+Disposition: accepted
+Status: resolved
+Owner: M2 implementation owner
+Owning stage: implement
+Decision owner: M2 implementation owner
+Decision needed: resolved; implement the approved blocker and next-action mapping.
+Chosen action: keep each non-approved package status blocking and expose the single workflow-owned correction or rereview operation.
+Rationale: Code Review directly observed blocked and inconclusive package outcomes as overall current state with no blockers and no next permitted operation.
+Required outcome: every non-approved package outcome remains a blocker and exposes its contract-defined correction or rereview continuation.
+Safe resolution path: derive blockers and next operations from non-approved package states and add direct status/context matrix tests.
+Follow-up: rerun M2 Code Review after implementation correction and targeted proof.
+Validation target: CRG-R25, CRG-R29, CRG-T06, CRG-T07, BND-STATE-001, INT-007.
+Validation evidence: `code-review-m2-r2.md` confirms all non-approved statuses block; the remaining next-action issue is recorded separately as CRG-M2-CR7.
+
+#### CRG-M2-CR3
+
+Finding ID: CRG-M2-CR3
+Disposition: rejected
+Status: resolved
+Owner: M2 implementation owner
+Owning stage: implement
+Decision owner: workflow owner
+Decision needed: resolved; do not require per-document hashes.
+Chosen action: reject content-hash freshness as package authority. Keep exact member IDs and paths visible and rely on governed authoring transitions to invalidate package approval.
+Rationale: Per-document hashes and aggregate content hashing add bookkeeping and retry complexity that the project does not need. Direct out-of-workflow edits are an accepted limitation of the lightweight contract.
+Required outcome: no package member content hashes are persisted or required; path, kind, role, owner, package status, and review evidence remain explicit.
+Safe resolution path: remove hash requirements from the contract and implementation and test CLI-owned invalidation instead.
+Follow-up: rerun M2 Code Review after implementation correction and targeted proof.
+Validation target: CRG-R22, CRG-R26, CRG-T04, CRG-T09, BND-AUTH-001, INT-003.
+Validation evidence: `code-review-m2-r2.md`; focused lifecycle 63/63 and full package 288/288 confirm the no-hash governed-invalidation model.
+
+#### CRG-M2-CR4
+
+Finding ID: CRG-M2-CR4
+Disposition: accepted
+Status: resolved
+Owner: M2 implementation owner
+Owning stage: implement
+Decision owner: M2 implementation owner
+Decision needed: resolved; enforce the approved member-to-owner mapping.
+Chosen action: validate finding scope, affected member IDs, owning stages, and correction targets as one mapping resolved from the package's explicit ID-to-path members.
+Rationale: Code Review recorded an artifact-local specification finding while naming plan as the owner and correction target.
+Required outcome: finding scope, affected artifacts, owners, and correction targets form one valid authority mapping and contradictory mappings fail before recording.
+Safe resolution path: validate owners from affected member kinds and upstream bindings, require cross-artifact coverage, constrain correction targets, and add mapping regressions.
+Follow-up: rerun M2 Code Review after implementation correction and targeted proof.
+Validation target: CRG-R30 through CRG-R33, CRG-T08, BND-AUTH-001, INT-001, INT-002, INT-007.
+Validation evidence: `code-review-m2-r2.md`; `package review rejects contradictory finding owner and correction target mappings` passes through the public CLI.
+
+### code-review-m2-r2
+
+#### CRG-M2-CR5
+
+Finding ID: CRG-M2-CR5
+Disposition: accepted
+Status: resolved
+Owner: M2 implementation owner
+Owning stage: implement
+Decision owner: M2 implementation owner
+Decision needed: resolved by owner instruction on 2026-08-30.
+Chosen action: implement the already approved Proposal Review replacement invalidation path.
+Rationale: Delivery invalidation exists for replacement Design Review, but Proposal Review settlement does not invalidate its dependent approved design package.
+Required outcome: replacing the bound Proposal Review ID atomically sets design status to review-required, withholds authority, and retains the prior review ID.
+Safe resolution path: add dependent design invalidation to proposal settlement and cover it through the public CLI.
+Follow-up: resolve, implement, and rerun M2 Code Review.
+Validation target: CRG-R24, CRG-R26, CRG-T09, BND-TEMPORAL-001, INT-003.
+Validation evidence: public CLI regression `replacement Proposal Review invalidates approved design authority`; focused lifecycle 64/64 and full package 289/289 pass.
+
+#### CRG-M2-CR6
+
+Finding ID: CRG-M2-CR6
+Disposition: accepted
+Status: resolved
+Owner: M2 implementation owner
+Owning stage: implement
+Decision owner: M2 implementation owner
+Decision needed: resolved by owner instruction on 2026-08-30.
+Chosen action: revalidate current package and review evidence before exact replay returns.
+Rationale: settlement replay currently returns before rereading the registered review evidence and log.
+Required outcome: exact replay revalidates current package and review evidence before returning already-recorded.
+Safe resolution path: move replay recognition after evidence revalidation and add a public regression.
+Follow-up: resolve, implement, and rerun M2 Code Review.
+Validation target: CRG-R26, CRG-T06, BND-TEMPORAL-001.
+Validation evidence: public CLI settlement-replay regression changes registered review evidence after settlement and receives `RL_STALE_EVIDENCE`; focused lifecycle 64/64 and full package 289/289 pass.
+
+#### CRG-M2-CR7
+
+Finding ID: CRG-M2-CR7
+Disposition: accepted
+Status: resolved
+Owner: M2 implementation owner
+Owning stage: implement
+Decision owner: M2 implementation owner
+Decision needed: resolved by owner instruction on 2026-08-30.
+Chosen action: derive one safe next action from each non-approved package status.
+Rationale: settled non-approved packages currently recommend settlement replay instead of correction, upstream resolution, or evidence acquisition and rereview.
+Required outcome: each non-approved settled status exposes exactly one safe outcome-specific next action.
+Safe resolution path: derive next action from status and correction targets and add a three-outcome public status matrix.
+Follow-up: resolve, implement, and rerun M2 Code Review.
+Validation target: CRG-R25, CRG-R29, CRG-T07, BND-STATE-001, INT-007.
+Validation evidence: public three-outcome matrix confirms `route-correction` for changes requested, no automatic operation for an unrouteable block, and `record-package-review` for inconclusive; focused lifecycle 64/64 and full package 289/289 pass.
+
+### code-review-cli-fix-r1 (continued)
+
 #### CRG-CLI-CR2
 
 Finding ID: CRG-CLI-CR2
@@ -227,3 +361,22 @@ Safe resolution path: no implementation change required.
 Follow-up: none.
 Validation target: `specs/governed-lifecycle-cli.md` E6/R3/R16/state invariants and `specs/rigorloop-workflow.md` R7x/R7xa.
 Validation evidence: owner rejection recorded 2026-08-29; targeted lifecycle suite passed 53 tests in Code Review CLI Fix R1.
+
+### spec-review-r4
+
+#### CRG-SR5
+
+Finding ID: CRG-SR5
+Disposition: accepted
+Status: resolved
+Owner: specification author
+Owning stage: spec
+Decision owner: workflow owner
+Decision needed: resolved; the lightweight package contract invalidates authority from governed revision events, not repository byte inspection.
+Chosen action: replace the byte-change invariant with explicit governed member-revision and upstream-review-settlement triggers.
+Rationale: The owner explicitly rejected aggregate and per-document hashing. Requiring automatic detection of every direct byte edit would silently reintroduce the same content-inspection mechanism.
+Required outcome: CRG-R24, invariants, boundaries, examples, and acceptance criteria describe one consistent no-hash invalidation boundary.
+Safe resolution path: revise the specification through the active correction route, record the new spec revision, and rerun `spec-review`.
+Follow-up: rerun focused Spec Review R5 after the authoring correction.
+Validation target: CRG-R22 through CRG-R26, CRG-AC4, BND-STATE-001, BND-TEMPORAL-001, and INT-003.
+Validation evidence: `node --test packages/rigorloop/test/lifecycle-correction-route.test.js packages/rigorloop/test/lifecycle-evidence.test.js` passed 15 tests; `python scripts/validate-review-artifacts.py docs/changes/2026-08-28-consolidate-rigorloop-review-gates` passed structure validation; direct inspection confirms CRG-R24, the package invalidation glossary, State and invariants, and EC11 now use one governed-event, no-hash contract. Boundary proof-map validation remains a downstream test-spec revision dependency and is not claimed here.

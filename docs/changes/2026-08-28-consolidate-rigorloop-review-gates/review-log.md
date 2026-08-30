@@ -4,18 +4,41 @@
 
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
+| `code-review-m2-r3` | `code-review` | `r3` | M2 path-bounded packet at `sha256:e277ff7bba302ff9195b30cb2bc423fae922a50ff379fce8b07eea33b20d19c1` | `reviews/code-review-m2-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m1-r3` | `code-review` | `r3` | M1 committed packet at `sha256:d0722221c781cd81bf508596d65e40c5128164dfd9b171b2db0fce73ae1ad759` | `reviews/code-review-m1-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `plan-review-r4` | `plan-review` | `r4` | plan at `sha256:e4de52bb785e50e85631cc417f227ff903842979c05cc5118c403f73f6b5b5c1` | `reviews/plan-review-r4.md` | `approved` | 0 | `recorded` |
+| `plan-review-r5` | `plan-review` | `r5` | plan at `sha256:0f37ca539a8d2fdc10ad4b982d69c95fe379f04ca4383a78877de34fe1a090f6` | `reviews/plan-review-r5.md` | `approved` | 0 | `recorded` |
 | `proposal-review-r3` | `proposal-review` | `r3` | proposal at `sha256:e0f4a9ff9f25f2a885b5ca1e8092b97c06f8e91e1811a4592dd6c58d4399cac7` | `reviews/proposal-review-r3.md` | `approved` | 0 | `recorded` |
 | `proposal-review-r4` | `proposal-review` | `r4` | proposal at `sha256:e0f4a9ff9f25f2a885b5ca1e8092b97c06f8e91e1811a4592dd6c58d4399cac7` | `reviews/proposal-review-r4.md` | `approved` | 0 | `recorded` |
 | `proposal-review-r5` | `proposal-review` | `r5` | proposal at `sha256:e0f4a9ff9f25f2a885b5ca1e8092b97c06f8e91e1811a4592dd6c58d4399cac7` | `reviews/proposal-review-r5.md` | `approved` | 0 | `recorded` |
 | `spec-review-r3` | `spec-review` | `r3` | spec at `sha256:ae8b9452fc028fadb9cdd616f3d6d07ce312847951ee178e874aab753a1c357c` | `reviews/spec-review-r3.md` | `approved` | 0 | `recorded` |
+| `spec-review-r5` | `spec-review` | `r5` | spec at `sha256:7405ae69fb0b2868079408102d9bd24e1e8c213bea106306a8291af5dbfccc1b` | `reviews/spec-review-r5.md` | `approved` | 0 | `recorded` |
 | `architecture-review-adr-r1` | `architecture-review` | `r1` | ADR at `sha256:78276b47a616f1a67e5f7f788eae69887b17d24c4d8260ef432901de81612243` | `reviews/architecture-review-adr-r1.md` | `approved` | 0 | `recorded` |
 | `architecture-review-adr-r2` | `architecture-review` | `r2` | ADR at `sha256:0a694e636e980dcae4376d74e0175d25caf0e31c53c3b46f7990ca69bb9f5282` | `reviews/architecture-review-adr-r2.md` | `approved` | 0 | `recorded` |
 | `architecture-review-adr-r3` | `architecture-review` | `r3` | ADR at `sha256:844c012a40c1a4104b024ea648ecb413d28deb7687e00e34e3f6882b86d98440` | `reviews/architecture-review-adr-r3.md` | `approved` | 0 | `recorded` |
+| `architecture-review-adr-r4` | `architecture-review` | `r4` | ADR at `sha256:91098e622d577b2e1c8fb7c93fd860a08f6d4fd1f5fd9fb28954da0abf88a92a` | `reviews/architecture-review-adr-r4.md` | `approved` | 0 | `recorded` |
 | `test-spec-review-r2` | `test-spec-review` | `r2` | test-spec at `sha256:cb69d565f9744fb086172037f4b5872d3e2c2f0555e67142f1553a6108774596` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
+| `test-spec-review-r3` | `test-spec-review` | `r3` | test-spec at `sha256:0f3a235de400f568eb7fa57c4a97f94a8b1dcb9d9c5459958aa32fdce3398b6a` | `reviews/test-spec-review-r3.md` | `approved` | 0 | `recorded` |
 
 ## Detailed review entries
+
+### Review entry
+
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: M2 commit `2dee37d9118c9fdeaee58785867040e06e3f92b2`
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: CRG-M2-CR1, CRG-M2-CR2, CRG-M2-CR3, CRG-M2-CR4
+Open findings: none
+Finding ID: CRG-M2-CR1
+Finding ID: CRG-M2-CR2
+Finding ID: CRG-M2-CR3
+Finding ID: CRG-M2-CR4
+Recording status: recorded
+Blocker: M2 requires review-resolution, correction, direct regression proof, and rereview
 
 ### Review entry
 
@@ -137,6 +160,20 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: spec-review-r4
+Stage: spec-review
+Round: r4
+Reviewed artifact: `specs/consolidated-review-gates.md` at `sha256:9284fbeacd3aaaf1fc330f477e5c171c860b864435ea5eb7fec5be9ec9a99ad5`
+Status: changes-requested
+Detailed record: reviews/spec-review-r4.md
+Resolution: review-resolution.md#spec-review-r4
+Material findings: CRG-SR5
+Open findings: none
+Finding ID: CRG-SR5
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r2
 Stage: spec-review
 Round: r2
@@ -147,4 +184,20 @@ Resolution: review-resolution.md#spec-review-r2
 Material findings: CRG-SR4
 Open findings: none
 Finding ID: CRG-SR4
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: r2
+Reviewed artifact: M2 working-tree packet `sha256:d61a2f17de8238b9e88b9f953d95653bf0c566fc4c10a20d66350bffd72be165`
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: CRG-M2-CR6, CRG-M2-CR7, CRG-M2-CR5
+Open findings: none
+Finding ID: CRG-M2-CR6
+Finding ID: CRG-M2-CR7
+Finding ID: CRG-M2-CR5
 Recording status: recorded

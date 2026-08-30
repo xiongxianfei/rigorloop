@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:b84e1cbb5621f581919092644f59680959201bf1e6bd9a42e5046bd8238261a2",
+  "artifact_id": "adr-consolidated-review-package-topology",
+  "stage_authority": "architecture-review"
+}

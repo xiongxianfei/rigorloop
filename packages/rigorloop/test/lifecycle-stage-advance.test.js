@@ -1,121 +1,163 @@
 import assert from "node:assert/strict";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { mkdtemp } from "node:fs/promises";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { tmpdir } from "node:os";
 import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
-import { parseLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
+import { parseLifecycleYaml, serializeLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
+import {
+  changeBytes,
+  lifecycleRevision,
+  packageContext,
+  packageRepository,
+  setWorkflowStage,
+  writePackageReview,
+  writeRequest,
+} from "./helpers/lifecycle-package-fixture.js";
 
-async function fixture() {
-  const root = await mkdtemp(join(tmpdir(), "rigorloop-stage-advance-"));
-  const changeRoot = join(root, "docs", "changes", "example");
-  mkdirSync(join(changeRoot, "evidence"), { recursive: true });
-  mkdirSync(join(root, "requests"), { recursive: true });
-  mkdirSync(join(root, "specs"), { recursive: true });
-  writeFileSync(join(root, "specs", "example.md"), "# Approved spec\n", "utf8");
-  writeFileSync(join(changeRoot, "change.yaml"), `change_id: example
-title: Example
-classification: feature
-risk: standard
-lifecycle_contract: stage-owned-change-local-v1
-artifact_states:
-  spec:
-    kind: spec
-    path: specs/example.md
-    role: primary
-    lifecycle_state: approved
-    review:
-      artifact_id: spec
-      id: spec-review-r1
-      outcome: approved
-      record: docs/changes/example/reviews/spec-review-r1.md
-      round: r1
-workflow_state:
-  lifecycle_state: active
-  current_stage: spec-review
-  next_stage: spec-review
-  blocker: null
-  evidence: []
-workflow: {}
-`, "utf8");
-  return { root, changeRoot };
-}
-
-function revision(root) {
-  return executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root }).result.lifecycle_revision;
-}
-
-function request(root, name, body) {
-  const path = `requests/${name}.json`;
-  writeFileSync(join(root, path), `${JSON.stringify(body, null, 2)}\n`, "utf8");
-  return path;
-}
-
-test("advance-stage moves a completed review to the next allowed stage", async () => {
-  const { root, changeRoot } = await fixture();
-  const before = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root }).result;
-  assert.equal(before.effective_state.current_stage, "spec-review");
-  assert.equal(before.permitted_operations.includes("advance-stage"), true);
-
-  const advance = request(root, "advance-to-architecture", {
+function advance(root, source, destination, name = `${source}-to-${destination}`) {
+  const request = writeRequest(root, name, {
     schema_version: 1,
     operation: "advance-stage",
     change_id: "example",
-    expected_lifecycle_revision: revision(root),
-    source_stage: "spec-review",
-    destination_stage: "architecture",
+    expected_lifecycle_revision: lifecycleRevision(root),
+    source_stage: source,
+    destination_stage: destination,
     stage_authority: "workflow",
   });
-  const execution = executeLifecycleCli(["advance-stage", "--request", advance, "--format", "json"], { cwd: root });
+  return executeLifecycleCli(["advance-stage", "--request", request, "--format", "json"], { cwd: root });
+}
 
-  assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
-  assert.equal(execution.result.effective_state.current_stage, "architecture");
+function approvePackage(root, kind) {
+  const stage = `${kind}-review`;
+  setWorkflowStage(root, stage);
+  const context = packageContext(root, stage);
+  const review = writePackageReview(root, context, { kind });
+  const record = writeRequest(root, `record-${kind}`, {
+    schema_version: 1,
+    operation: "record-package-review",
+    change_id: "example",
+    expected_lifecycle_revision: lifecycleRevision(root),
+    package_kind: kind,
+    review_id: review.reviewId,
+    upstream_review_id: review.packageFacts.upstream_review_id,
+    members: review.packageFacts.members,
+    evidence_path: review.reviewPath,
+    stage_authority: stage,
+  });
+  assert.equal(executeLifecycleCli(["record-package-review", "--request", record], { cwd: root }).exitCode, 0);
+  const settle = writeRequest(root, `settle-${kind}`, {
+    schema_version: 1,
+    operation: "settle-review-package",
+    change_id: "example",
+    expected_lifecycle_revision: lifecycleRevision(root),
+    package_kind: kind,
+    review_id: review.reviewId,
+    stage_authority: stage,
+  });
+  assert.equal(executeLifecycleCli(["settle-review-package", "--request", settle], { cwd: root }).exitCode, 0);
+  return review;
+}
+
+test("consolidated authoring stages advance only across adjacent edges", async () => {
+  const { root, changeRoot } = await packageRepository({ stage: "proposal-review" });
+  for (const [source, destination] of [["proposal-review", "architecture"], ["architecture", "spec"], ["spec", "design-review"]]) {
+    setWorkflowStage(root, source);
+    const status = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root }).result;
+    assert.equal(status.permitted_operations.includes("advance-stage"), true, source);
+    const execution = advance(root, source, destination);
+    assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
+  }
   const recorded = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
-  assert.equal(recorded.workflow_state.current_stage, "architecture");
-  assert.equal(recorded.workflow_state.next_stage, "architecture");
+  assert.equal(recorded.workflow_state.current_stage, "design-review");
+  assert.equal(recorded.workflow_state.next_stage, "design-review");
 });
 
-test("advance-stage rejects a skipped stage without changing lifecycle bytes", async () => {
-  const { root, changeRoot } = await fixture();
-  const before = readFileSync(join(changeRoot, "change.yaml"));
-  const advance = request(root, "skip-architecture", {
-    schema_version: 1,
-    operation: "advance-stage",
-    change_id: "example",
-    expected_lifecycle_revision: revision(root),
-    source_stage: "spec-review",
-    destination_stage: "architecture-review",
-    stage_authority: "workflow",
-  });
-  const execution = executeLifecycleCli(["advance-stage", "--request", advance, "--format", "json"], { cwd: root });
+test("approved package authority advances design and delivery gates", async () => {
+  const { root } = await packageRepository();
+  approvePackage(root, "design");
+  const designAdvance = advance(root, "design-review", "plan");
+  assert.equal(designAdvance.exitCode, 0, JSON.stringify(designAdvance.result));
 
-  assert.equal(execution.result.errors[0].code, "RL_OPERATION_NOT_PERMITTED");
-  assert.deepEqual(readFileSync(join(changeRoot, "change.yaml")), before);
+  approvePackage(root, "delivery");
+  const deliveryAdvance = advance(root, "delivery-review", "implement");
+  assert.equal(deliveryAdvance.exitCode, 0, JSON.stringify(deliveryAdvance.result));
 });
 
-test("advance-stage rejects an incomplete current stage without changing lifecycle bytes", async () => {
-  const { root, changeRoot } = await fixture();
-  const changePath = join(changeRoot, "change.yaml");
-  const incomplete = readFileSync(changePath, "utf8")
-    .replace("lifecycle_state: approved", "lifecycle_state: review-required")
-    .replace(/    review:\n(?:      .+\n)+/, "");
-  writeFileSync(changePath, incomplete, "utf8");
-  const before = readFileSync(changePath);
+test("package settlement remains isolated until workflow advances", async () => {
+  const { root } = await packageRepository();
+  approvePackage(root, "design");
+  const settled = parseLifecycleYaml(changeBytes(root));
+  assert.equal(settled.review_packages.design.status, "approved");
+  assert.equal(settled.workflow_state.current_stage, "design-review");
+  assert.equal(settled.workflow_state.next_stage, "design-review");
+});
+
+test("retired and skipped progression edges fail without mutation", async () => {
+  const { root } = await packageRepository({ stage: "spec-review" });
+  const before = changeBytes(root);
+  for (const [source, destination] of [["spec-review", "architecture"], ["spec", "plan"], ["design-review", "implement"]]) {
+    setWorkflowStage(root, source);
+    const stable = changeBytes(root);
+    const execution = advance(root, source, destination, `reject-${source}-${destination}`);
+    assert.equal(execution.result.errors[0].code, "RL_OPERATION_NOT_PERMITTED");
+    assert.equal(changeBytes(root), stable);
+  }
+  assert.notEqual(before.length, 0);
+});
+
+test("design review cannot advance without current approved package authority", async () => {
+  const { root } = await packageRepository({ stage: "design-review" });
+  const before = changeBytes(root);
   const status = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root }).result;
   assert.equal(status.permitted_operations.includes("advance-stage"), false);
-  const advance = request(root, "advance-incomplete", {
-    schema_version: 1,
-    operation: "advance-stage",
-    change_id: "example",
-    expected_lifecycle_revision: revision(root),
-    source_stage: "spec-review",
-    destination_stage: "architecture",
-    stage_authority: "workflow",
-  });
-  const execution = executeLifecycleCli(["advance-stage", "--request", advance, "--format", "json"], { cwd: root });
-
+  const execution = advance(root, "design-review", "plan");
   assert.equal(execution.result.errors[0].code, "RL_OPERATION_NOT_PERMITTED");
-  assert.deepEqual(readFileSync(changePath), before);
+  assert.equal(changeBytes(root), before);
+});
+
+test("advance-stage synchronizes active automation and rejects contradiction", async () => {
+  const { root, changeRoot } = await packageRepository({ stage: "architecture" });
+  const path = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(path, "utf8"));
+  change.workflow.automation = { current_stage: "architecture", mechanism: "bounded-review-fix", status: "active" };
+  writeFileSync(path, serializeLifecycleYaml(change), "utf8");
+
+  const execution = advance(root, "architecture", "spec", "automation-sync");
+  assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
+  assert.equal(parseLifecycleYaml(changeBytes(root)).workflow.automation.current_stage, "spec");
+
+  setWorkflowStage(root, "architecture");
+  const contradictory = parseLifecycleYaml(changeBytes(root));
+  contradictory.workflow.automation.current_stage = "proposal-review";
+  writeFileSync(path, serializeLifecycleYaml(contradictory), "utf8");
+  const before = changeBytes(root);
+  const rejected = advance(root, "architecture", "spec", "automation-contradiction");
+  assert.equal(rejected.result.errors[0].code, "RL_OPERATION_NOT_PERMITTED");
+  assert.equal(changeBytes(root), before);
+});
+
+test("downstream status rejects stale and mixed package authority", async () => {
+  const stale = await packageRepository();
+  approvePackage(stale.root, "design");
+  const delivery = approvePackage(stale.root, "delivery");
+  setWorkflowStage(stale.root, "verify");
+  assert.equal(executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: stale.root }).exitCode, 0);
+  writeFileSync(join(stale.root, delivery.reviewPath), `${readFileSync(join(stale.root, delivery.reviewPath), "utf8")}\nchanged\n`, "utf8");
+  const staleStatus = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: stale.root });
+  assert.equal(staleStatus.exitCode, 2);
+  assert.equal(staleStatus.result.blockers.some((item) => item.code === "RL_STALE_EVIDENCE"), true);
+
+  const mixed = await packageRepository();
+  approvePackage(mixed.root, "design");
+  approvePackage(mixed.root, "delivery");
+  setWorkflowStage(mixed.root, "code-review");
+  const mixedPath = join(mixed.changeRoot, "change.yaml");
+  const mixedChange = parseLifecycleYaml(changeBytes(mixed.root));
+  mixedChange.review_packages.delivery.upstream_review_id = "design-review-other";
+  writeFileSync(mixedPath, serializeLifecycleYaml(mixedChange), "utf8");
+  const mixedStatus = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: mixed.root });
+  assert.equal(mixedStatus.exitCode, 2);
+  assert.equal(mixedStatus.result.effective_state.review_packages.delivery.status, "review-required");
+  assert.equal(mixedStatus.result.effective_state.review_packages.delivery.authority, "withheld");
 });

@@ -141,10 +141,9 @@ function human(result) {
     }
     if (result.context.review_package) {
       const reviewPackage = result.context.review_package;
-      lines.push(`Review package: ${reviewPackage.package_kind}; state ${reviewPackage.state}; authority ${reviewPackage.authority}`);
-      lines.push(`Package members: ${reviewPackage.member_artifact_ids.join(", ") || "none"}`);
-      lines.push(`Upstream binding: ${reviewPackage.upstream_binding ?? "none"}`);
-      lines.push(`Aggregate package revision: ${reviewPackage.aggregate_revision ?? "none"}`);
+      lines.push(`Review package: ${reviewPackage.package_kind}; status ${reviewPackage.status}; authority ${reviewPackage.authority}`);
+      lines.push(`Package members: ${Object.entries(reviewPackage.members).map(([id, path]) => `${id}=${path}`).join(", ") || "none"}`);
+      lines.push(`Upstream review ID: ${reviewPackage.upstream_review_id ?? "none"}`);
     }
   }
   if (result.validation) lines.push(`Repository validation: ${result.validation.valid ? "valid" : "invalid"}`);
@@ -211,7 +210,12 @@ export function executeLifecycleCli(args, options = {}) {
               const result = withStateChanged(baseResult(parsed.operation, { status: "already-recorded", change_id: interpreted.change_id, lifecycle_revision: interpreted.lifecycle_revision, effective_state: interpreted.effective_state, blockers: interpreted.blockers, permitted_operations: interpreted.permitted_operations, artifacts: interpreted.artifacts, warnings: [], errors: [], mutation: { status: "already-recorded", changed_path: `docs/changes/${interpreted.change_id}/change.yaml` } }), false);
               return { result, exitCode: 0, format: parsed.format, human: human(result) };
             }
-          } catch {
+          } catch (error) {
+            if (error?.code === "RL_STALE_EVIDENCE") {
+              const issue = error.diagnostic ?? lifecycleDiagnostic("RL_STALE_EVIDENCE", error.message, "review-package-review-freshness");
+              const result = errorResult(parsed.operation, issue);
+              return { result, exitCode: resultExitCode(result), format: parsed.format, human: human(result) };
+            }
             // A stale request that is not an exact semantic replay follows the normal stale rejection.
           }
         }

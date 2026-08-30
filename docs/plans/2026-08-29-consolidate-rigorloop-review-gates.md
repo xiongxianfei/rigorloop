@@ -40,15 +40,15 @@ The implementation must preserve one mutable state owner in each change-local `c
 - CRG-R1 through CRG-R6: M1 establishes the single-cutover contract; M3 enforces the consolidated progression graph; M4 establishes and retires the public review entrypoints.
 - CRG-R7 through CRG-R11: M4 adds and evaluates embedded proposal feasibility without a separate artifact or gate.
 - CRG-R12 through CRG-R21: M2 implements exact design and delivery package composition and atomic authority; M4 supplies the independent review responsibilities.
-- CRG-R22 through CRG-R28: M2 implements aggregate identity, read context, atomic package recording and settlement, staleness, idempotency, and fail-closed vocabularies.
+- CRG-R22 through CRG-R28: M2 implements visible member maps, read context, governed invalidation, atomic package recording and settlement, idempotency, and fail-closed vocabularies.
 - CRG-R29 through CRG-R34: M2 records closed outcomes, findings, affected artifacts, and correction targets; M3 integrates workflow-owned correction routing; M4 preserves reviewer independence and review-resolution ownership.
 - CRG-R35 through CRG-R40: M1 removes dual-topology activation machinery; M6 performs the atomic cutover only after legacy-dependent work is closed and proves the pre-adoption revert boundary.
 - CRG-R41 and CRG-R42: M3 and M4 preserve downstream stage semantics and make Verify consume current package authority.
 - CRG-R43 through CRG-R45: M4 updates canonical guidance, M5 proves validators and generated distribution parity, and M6 blocks cutover until the complete integrated surface is current.
 - BND-INPUT-001 and BND-AUTH-001: M1 and M2 own cutover authority, package input, role, authority, and upstream-binding admission.
-- BND-STATE-001, BND-COMPOSE-001, BND-TEMPORAL-001, and BND-RECOVERY-001: M2 and M3 own atomic authority, cross-artifact composition, stale/retry behavior, interruption recovery, and correction paths.
+- BND-STATE-001, BND-COMPOSE-001, BND-TEMPORAL-001, and BND-RECOVERY-001: M2 and M3 own atomic authority, cross-artifact composition, governed invalidation and retry behavior, interruption recovery, and correction paths.
 - BND-COMPAT-001 and BND-ENV-001: M1, M5, and M6 own single-mechanism cutover, historical-evidence boundaries, generated adapters, and rollback.
-- INT-001 through INT-008: M2 proves package contradictions, stale settlement, and atomic recovery; M3 proves correction routing; M5 and M6 prove historical-authority rejection, generated parity, legacy-dependent cutover blocking, and rollback.
+- INT-001 through INT-008: M2 proves package contradictions, governed invalidation, stale lifecycle rejection, and atomic recovery; M3 proves correction routing; M5 and M6 prove historical-authority rejection, generated parity, legacy-dependent cutover blocking, and rollback.
 
 ## Milestones
 
@@ -93,10 +93,10 @@ The implementation must preserve one mutable state owner in each change-local `c
 - Rollback/recovery:
   - Revert the M1 correction while the implementing change remains pre-cutover; no released workflow transition occurs.
 
-### M2. Implement aggregate review packages and atomic lifecycle authority
+### M2. Implement visible review packages and atomic lifecycle authority
 
 - Milestone kind: implementation
-- Goal: Calculate exact design and delivery package revisions and record or settle one package decision atomically through the existing lifecycle transaction boundary.
+- Goal: Expose exact design and delivery member ID-to-path maps and record or settle one package decision atomically through the existing lifecycle transaction boundary.
 - Requirements: CRG-R12 through CRG-R34, CRG-AC2 through CRG-AC6, CRG-AC10, BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, INT-001 through INT-005, INT-007
 - Architecture decisions: Package membership and identity; Package lifecycle and CLI boundary
 - Files/components likely touched:
@@ -112,14 +112,15 @@ The implementation must preserve one mutable state owner in each change-local `c
 - Tests and proof:
   - Design membership is primary architecture, primary spec, and applicable ADRs in deterministic order; delivery membership is primary plan then primary test spec.
   - Duplicate, missing, unsafe, extra-role, wrong-stage, unknown-kind, and unknown-outcome inputs fail closed.
-  - `review-package-sha256-v1` is stable for identical canonical inputs and changes for every member-byte, membership, package-kind, or upstream-binding change.
-  - Durable package projections store member IDs, upstream binding, and one aggregate revision without durable per-member hashes.
+  - Status exposes the exact architecture, specification, applicable ADR, plan, and test-specification IDs and normalized repository-relative paths.
+  - Durable package projections store the explicit member map, upstream review ID, package review ID and round, outcome, status, correction targets, and evidence path without aggregate or member hashes.
+  - Governed member revision and replacement upstream-review settlement set an approved package to `review-required`; unrecorded direct edits are outside automatic first-slice detection.
   - Approved settlement is atomic; changes-requested, blocked, and inconclusive remain visible but grant no authority.
-  - Exact replay is idempotent; stale revision, stale member, stale binding, interrupted replacement, and post-validation failure preserve the prior complete authority.
+  - Identical replay with a refreshed lifecycle revision is idempotent; stale lifecycle revision, mismatched map or review data, interrupted replacement, and post-validation failure preserve the prior complete authority.
 - Implementation steps:
-  - Write the package composition, identity, outcome, stale-input, interruption, and unknown-vocabulary regression fixtures first.
+  - Write the package composition, visible-map, invalidation, outcome, stale-lifecycle, interruption, finding-owner, and unknown-vocabulary regression fixtures first.
   - Add `review_packages.design` and `review_packages.delivery` projections with closed states and compact durable fields.
-  - Implement transient member resolution and canonical aggregate calculation inside the lifecycle engine.
+  - Implement deterministic member-map resolution and governed package invalidation inside the lifecycle engine.
   - Add `context design-review` and `context delivery-review` package views and bounded status fields.
   - Add `record-package-review` and `settle-review-package` mutations using the common envelope, pure evaluator, lock, recovery, and single-file transaction.
   - Integrate finding scopes, affected artifact IDs, correction targets, review logs, and review-resolution without creating partial component authority.
@@ -128,13 +129,13 @@ The implementation must preserve one mutable state owner in each change-local `c
   - `npm test --prefix packages/rigorloop`
   - `python scripts/test-review-artifact-validator.py`
   - `python scripts/test-governed-lifecycle-cli-validator.py`
-- Expected observable result: Contributors can inspect, record, retry, and atomically settle one exact design or delivery package using one CLI-calculated aggregate identity and precise findings, without maintaining member-document hashes.
+- Expected observable result: Contributors can directly inspect which architecture, specification, ADRs, plan, and test specification were reviewed, then record, retry, and atomically settle that exact package without aggregate or member-document hashes.
 - Completion criteria: Every package input, outcome, staleness, retry, authority, finding, interruption, and recovery partition has direct proof and no partial or component-only progression path remains.
-- Required evidence: M2 evidence containing aggregate-identity vectors, atomic transaction fault results, outcome/authority matrix results, and exact package status examples.
-- Review handoff: Code review of package composition, canonical identity, state projection, atomic settlement, finding attribution, and recovery behavior.
+- Required evidence: M2 evidence containing visible member-map results, governed invalidation results, atomic transaction fault results, outcome/authority matrix results, finding-owner mapping results, and exact package status examples.
+- Review handoff: Code review of package composition, visible identity, state projection, invalidation, atomic settlement, finding attribution, and recovery behavior.
 - Optional commit boundary: `M2: add atomic design and delivery package authority`
 - Risks:
-  - Package identity could drift across readers, validators, or generated evidence.
+  - Member maps could drift across readers, validators, or review evidence.
   - Sequential internal writes could accidentally expose partial authority.
 - Rollback/recovery:
   - Revert package operations and projections together before cutover; the released workflow remains unchanged.
@@ -248,7 +249,7 @@ The implementation must preserve one mutable state owner in each change-local `c
   - M4 complete canonical skill inventory.
 - Tests and proof:
   - Every new closed vocabulary has an explicit unknown-value regression that fails before consistency checks.
-  - Validators prove package shape, aggregate identity consistency, finding scope, atomic settlement consistency, stale authority, cutover prerequisites, and recovery invariants without attempting semantic review.
+  - Validators prove package shape, member-map consistency, finding scope and ownership, atomic settlement consistency, governed invalidation, cutover prerequisites, and recovery invariants without attempting semantic review.
   - Generated Codex, Claude Code, and opencode archives contain the two new skills and omit the four retired progression skills.
   - Drift, missing skills, unexpected files, wrong gate inventory, and release-archive mismatch block generation or validation.
   - Historical-evidence and interruption fixtures preserve old records and prior complete state without granting old progression authority.
@@ -371,10 +372,10 @@ The implementation must preserve one mutable state owner in each change-local `c
 
 - Risk: historical individual-review evidence may be mistaken for current package authority.
   - Recovery: Block cutover until historical-authority fixtures and every public entrypoint enforce the single consolidated graph.
-- Risk: aggregate identity may diverge across context, recording, settlement, validators, or Verify.
-  - Recovery: Use one lifecycle-engine canonicalization owner and shared fixed vectors; fail closed on every mismatch and retain the last complete settlement.
+- Risk: member maps may diverge across context, recording, settlement, validators, or Verify.
+  - Recovery: Resolve one ordered artifact ID-to-path map from registered artifacts, validate the same map at recording and settlement, and retain the last complete settlement on mismatch.
 - Risk: package review may weaken artifact-level traceability or reviewer independence.
-  - Recovery: Persist member IDs and aggregate revision, keep findings scoped to artifacts/relationships, and route every correction to authoring owners before rereview.
+  - Recovery: Persist exact member IDs and paths, keep findings scoped to artifacts/relationships, and route every correction to authoring owners before rereview.
 - Risk: stage advancement may become a generic status setter or collapse settlement with continuation.
   - Recovery: Admit only closed graph edges with exact source completion and workflow authority; keep settlement isolated and test direct invocation.
 - Risk: generated adapters may lag canonical skills at cutover.

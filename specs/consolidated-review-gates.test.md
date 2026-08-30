@@ -14,15 +14,16 @@
 
 | Input | Path | Artifact ID | Review evidence |
 | --- | --- | --- | --- |
-| Specification | `specs/consolidated-review-gates.md` | `spec` | `spec-review-r3`; `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/spec-review-r3.md` |
-| Execution plan | `docs/plans/2026-08-29-consolidate-rigorloop-review-gates.md` | `plan` | `plan-review-r4`; `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/plan-review-r4.md` |
-| Architecture decision | `docs/adr/ADR-20260828-consolidated-review-package-topology.md` | `adr-consolidated-review-package-topology` | `architecture-review-adr-r3`; `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/architecture-review-adr-r3.md` |
+| Specification | `specs/consolidated-review-gates.md` | `spec` | `spec-review-r5`; `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/spec-review-r5.md` |
+| Execution plan | `docs/plans/2026-08-29-consolidate-rigorloop-review-gates.md` | `plan` | `plan-review-r5`; `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/plan-review-r5.md` |
+| Architecture decision | `docs/adr/ADR-20260828-consolidated-review-package-topology.md` | `adr-consolidated-review-package-topology` | `architecture-review-adr-r4`; `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/architecture-review-adr-r4.md` |
 
 ## Testing strategy
 
-Use contract and integration fixtures for cutover admission, package composition, aggregate identity, review outcomes, atomic settlement, routing, historical-authority rejection, and rollback. Use repository validator suites for closed schemas and generated parity, skill-validator fixtures for public responsibility boundaries, and one broad smoke run only at the cutover milestone. Tests exercise public CLI and generated-package paths where those paths are the contract; helper-only proof does not substitute for an admitted public path.
+Use contract and integration fixtures for cutover admission, visible package membership, governed invalidation, review outcomes, finding ownership, atomic settlement, routing, historical-authority rejection, and rollback. Use repository validator suites for closed schemas and generated parity, skill-validator fixtures for public responsibility boundaries, and one broad smoke run only at the cutover milestone. Tests exercise public CLI and generated-package paths where those paths are the contract; helper-only proof does not substitute for an admitted public path.
 
-Boundary model version: `boundary-first-v1`.
+Boundary model version: boundary-first-v1
+Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CRG-R8, CRG-R9, CRG-R10, CRG-R11, CRG-R12, CRG-R13, CRG-R14, CRG-R15, CRG-R16, CRG-R17, CRG-R18, CRG-R19, CRG-R20, CRG-R21, CRG-R22, CRG-R23, CRG-R24, CRG-R25, CRG-R26, CRG-R27, CRG-R28, CRG-R29, CRG-R30, CRG-R31, CRG-R32, CRG-R33, CRG-R34, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R39, CRG-R40, CRG-R41, CRG-R42, CRG-R43, CRG-R44, CRG-R45
 
 ## Requirement coverage map
 
@@ -33,7 +34,7 @@ Boundary model version: `boundary-first-v1`.
 | CRG-R7–CRG-R11 | CRG-T03, CRG-T13 | contract | Embedded feasibility and Proposal Review authority. |
 | CRG-R12–CRG-R16 | CRG-T04, CRG-T07, CRG-T09 | integration | Exact design membership, coherence, and atomic authority. |
 | CRG-R17–CRG-R21 | CRG-T05, CRG-T07, CRG-T09 | integration | Exact delivery membership, traceability, and implementation authorization. |
-| CRG-R22–CRG-R24 | CRG-T04, CRG-T05, CRG-T09 | contract | Aggregate identity and staleness without durable member hashes. |
+| CRG-R22–CRG-R24 | CRG-T04, CRG-T05, CRG-T09 | contract | Visible member maps and governed invalidation without package hashes. |
 | CRG-R25–CRG-R28 | CRG-T02, CRG-T06, CRG-T07, CRG-T10 | contract, integration | Bounded context, checked mutation, atomic failure, and unknown vocabularies. |
 | CRG-R29–CRG-R34 | CRG-T07, CRG-T08, CRG-T09 | integration | Outcomes, finding attribution, corrections, and rereview. |
 | CRG-R35–CRG-R40 | CRG-T01, CRG-T10, CRG-T16 | integration, end-to-end | No dual-mode metadata, cutover blocking, and rollback. |
@@ -47,7 +48,7 @@ Boundary model version: `boundary-first-v1`.
 | E1 | CRG-T03 | Feasibility remains embedded and jointly reviewed. |
 | E2, E3 | CRG-T04, CRG-T08 | Coherent design approves atomically; contradiction blocks the package. |
 | E4 | CRG-T05 | Delivery trace is evaluated as one package. |
-| E5 | CRG-T09 | Any component-byte change makes package authority stale. |
+| E5 | CRG-T09 | A governed member revision makes package authority review-required. |
 | E6, E7 | CRG-T01, CRG-T16 | Legacy-dependent work blocks cutover; historical evidence is not package authority. |
 | E8 | CRG-T08, CRG-T13 | Reviewer independence and owner routing are preserved. |
 | E9 | CRG-T06, CRG-T07 | Existing lifecycle family exposes and performs package operations. |
@@ -65,18 +66,18 @@ Boundary model version: `boundary-first-v1`.
 | EC13 | CRG-T13 |
 | EC14 | CRG-T05, CRG-T13 |
 
-## Boundary and interaction proof obligations
+## Proof map
 
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| PRF-001 | covered | CRG-R1, CRG-R7–CRG-R12, CRG-R17, CRG-R22, CRG-R28 | BND-INPUT-001 | CRG-T01, CRG-T02, CRG-T03, CRG-T04, CRG-T05 | contract | automated | CMD-002, CMD-003, CMD-010, CMD-011 | M1/M2/M4 evidence | M1 | - | - |
-| PRF-002 | covered | CRG-R2, CRG-R12, CRG-R15–CRG-R17, CRG-R19, CRG-R21, CRG-R24, CRG-R29, CRG-R34–CRG-R35 | BND-STATE-001 | CRG-T04, CRG-T05, CRG-T07, CRG-T09, CRG-T11 | integration | automated | CMD-001, CMD-004, CMD-012, CMD-014, CMD-015, CMD-016, CMD-017 | M2/M3 evidence | M2 | - | - |
-| PRF-003 | covered | CRG-R5, CRG-R13–CRG-R14, CRG-R18, CRG-R22, CRG-R29, CRG-R31, CRG-R33, CRG-R35, CRG-R37 | BND-AUTH-001 | CRG-T01, CRG-T04, CRG-T05, CRG-T08, CRG-T13 | contract | automated | CMD-001, CMD-005, CMD-006, CMD-010, CMD-012, CMD-018 | M1/M2/M4 evidence | M1 | - | - |
-| PRF-004 | covered | CRG-R12, CRG-R14–CRG-R17, CRG-R19, CRG-R21, CRG-R31, CRG-R33, CRG-R42 | BND-COMPOSE-001 | CRG-T04, CRG-T05, CRG-T08, CRG-T12 | integration | automated | CMD-001, CMD-012, CMD-014 | M2/M3 evidence | M2 | - | - |
-| PRF-005 | covered | CRG-R23–CRG-R27, CRG-R34 | BND-TEMPORAL-001 | CRG-T09 | integration | automated | CMD-012, CMD-013 | M2 evidence | M2 | - | - |
+| PRF-001 | covered | CRG-R1, CRG-R7, CRG-R8, CRG-R9, CRG-R10, CRG-R12, CRG-R17, CRG-R22, CRG-R28 | BND-INPUT-001 | CRG-T01, CRG-T02, CRG-T03, CRG-T04, CRG-T05 | contract | automated | CMD-002, CMD-003, CMD-010, CMD-011 | M1/M2/M4 evidence | M1 | - | - |
+| PRF-002 | covered | CRG-R2, CRG-R12, CRG-R15, CRG-R16, CRG-R17, CRG-R19, CRG-R21, CRG-R24, CRG-R29, CRG-R34, CRG-R35 | BND-STATE-001 | CRG-T04, CRG-T05, CRG-T07, CRG-T09, CRG-T11 | integration | automated | CMD-001, CMD-004, CMD-012, CMD-014, CMD-015, CMD-016, CMD-017 | M2/M3 evidence | M2 | - | - |
+| PRF-003 | covered | CRG-R5, CRG-R13, CRG-R14, CRG-R18, CRG-R22, CRG-R29, CRG-R31, CRG-R33, CRG-R35, CRG-R37 | BND-AUTH-001 | CRG-T01, CRG-T04, CRG-T05, CRG-T08, CRG-T13 | contract | automated | CMD-001, CMD-005, CMD-006, CMD-010, CMD-012, CMD-018 | M1/M2/M4 evidence | M1 | - | - |
+| PRF-004 | covered | CRG-R12, CRG-R14, CRG-R15, CRG-R16, CRG-R17, CRG-R19, CRG-R21, CRG-R31, CRG-R33, CRG-R42 | BND-COMPOSE-001 | CRG-T04, CRG-T05, CRG-T08, CRG-T12 | integration | automated | CMD-001, CMD-012, CMD-014 | M2/M3 evidence | M2 | - | - |
+| PRF-005 | covered | CRG-R23, CRG-R24, CRG-R25, CRG-R26, CRG-R27, CRG-R34 | BND-TEMPORAL-001 | CRG-T09 | integration | automated | CMD-012, CMD-013 | M2 evidence | M2 | - | - |
 | PRF-006 | covered | CRG-R10, CRG-R13, CRG-R18, CRG-R20, CRG-R26, CRG-R33, CRG-R39 | BND-RECOVERY-001 | CRG-T08, CRG-T10, CRG-T16 | integration | automated | CMD-009, CMD-012, CMD-013 | M2/M6 evidence | M2 | - | - |
-| PRF-007 | covered | CRG-R1, CRG-R5, CRG-R35–CRG-R40 | BND-COMPAT-001 | CRG-T01, CRG-T11, CRG-T16 | end-to-end | automated | CMD-009, CMD-010, CMD-011, CMD-014 | M1/M3/M6 evidence | M1 | - | - |
-| PRF-008 | covered | CRG-R25–CRG-R27, CRG-R38, CRG-R43–CRG-R44 | BND-ENV-001 | CRG-T06, CRG-T15, CRG-T17 | smoke | automated | CMD-007, CMD-008, CMD-009 | M5/M6 evidence | M5 | - | - |
+| PRF-007 | covered | CRG-R1, CRG-R5, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R39, CRG-R40 | BND-COMPAT-001 | CRG-T01, CRG-T11, CRG-T16 | end-to-end | automated | CMD-009, CMD-010, CMD-011, CMD-014 | M1/M3/M6 evidence | M1 | - | - |
+| PRF-008 | covered | CRG-R25, CRG-R26, CRG-R27, CRG-R38, CRG-R43, CRG-R44 | BND-ENV-001 | CRG-T06, CRG-T15, CRG-T17 | smoke | automated | CMD-007, CMD-008, CMD-009 | M5/M6 evidence | M5 | - | - |
 | PRF-009 | covered | CRG-R14, CRG-R16, CRG-R31 | INT-001 | CRG-T04, CRG-T08 | integration | automated | CMD-012, CMD-013 | M2 evidence | M2 | - | - |
 | PRF-010 | covered | CRG-R20, CRG-R21, CRG-R31 | INT-002 | CRG-T05, CRG-T08 | integration | automated | CMD-012, CMD-013 | M2 evidence | M2 | - | - |
 | PRF-011 | covered | CRG-R24, CRG-R26, CRG-R34 | INT-003 | CRG-T09 | integration | automated | CMD-012, CMD-013 | M2 evidence | M2 | - | - |
@@ -119,7 +120,7 @@ Boundary model version: `boundary-first-v1`.
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | CRG-T01, CRG-T02 | none | CMD-002, CMD-010, CMD-011, CMD-023 | M1 correction evidence | M1 code review | No manifest or topology marker exists. |
-| M2 | CRG-T04–CRG-T10 | none | CMD-001, CMD-003, CMD-012, CMD-013 | M2 implementation evidence | M2 code review | Includes aggregate vectors and fault injection. |
+| M2 | CRG-T04–CRG-T10 | none | CMD-001, CMD-003, CMD-012, CMD-013 | M2 implementation evidence | M2 code review | Includes visible-map, invalidation, owner-mapping, outcome, and fault-injection proof. |
 | M3 | CRG-T08, CRG-T11, CRG-T12 | none | CMD-004, CMD-014, CMD-015, CMD-016, CMD-017 | M3 implementation evidence | M3 code review | Covers the consolidated graph and downstream authority. |
 | M4 | CRG-T03, CRG-T13 | none | CMD-005, CMD-006, CMD-018 | M4 implementation evidence | M4 code review | Semantic review remains independent. |
 | M5 | CRG-T02, CRG-T14, CRG-T15 | none | CMD-002, CMD-003, CMD-007, CMD-008, CMD-011 | M5 implementation evidence | M5 code review | Generated parity precedes cutover. |
@@ -173,8 +174,8 @@ Boundary model version: `boundary-first-v1`.
 - Level: integration
 - Command IDs: CMD-001, CMD-003, CMD-012, CMD-013
 - Fixture/setup: Primary architecture/spec, ordered ADRs, accepted proposal binding, and missing, duplicate, extra-role, unsafe-path, and contradictory variants.
-- Steps: Request design context, calculate aggregate identity, and attempt each review outcome.
-- Expected result: Exact coherent membership has one stable aggregate revision; invalid membership fails; contradiction records a cross-artifact finding; no component-only approval grants progression.
+- Steps: Request design context, inspect the explicit member ID-to-path map, and attempt each review outcome.
+- Expected result: Exact coherent membership exposes the architecture, specification, and applicable ADR paths directly; invalid membership fails; contradiction records a cross-artifact finding; no component-only approval grants progression.
 - Failure proves: Design package composition or atomic authority is unsound.
 - Evidence artifact: M2 evidence
 - Automation location: package lifecycle and review-validator tests
@@ -198,9 +199,9 @@ Boundary model version: `boundary-first-v1`.
 - Covers: CRG-R25, CRG-R27, E9, BND-ENV-001
 - Level: contract
 - Command IDs: CMD-001, CMD-012, CMD-013
-- Fixture/setup: Current, stale, incomplete, blocked, and settled design/delivery packages.
+- Fixture/setup: Current, review-required, incomplete, blocked, and settled design/delivery packages.
 - Steps: Run public lifecycle status and both review contexts.
-- Expected result: Output names member IDs, upstream binding, aggregate revision, review state, staleness, blockers, and next operation without topology metadata or durable member hashes.
+- Expected result: Output names each member ID and exact path, upstream review ID, review ID and round, package status, blockers, correction targets, and next operation without aggregate or member hashes.
 - Failure proves: Contributors must infer package authority or maintain redundant identities.
 - Evidence artifact: M2 evidence
 - Automation location: lifecycle read tests
@@ -232,15 +233,15 @@ Boundary model version: `boundary-first-v1`.
 - Automation location: lifecycle correction, review-validator, and skill-validator tests
 - Required by milestone: M2
 
-### CRG-T09. Reject stale package mutations and require rereview
+### CRG-T09. Invalidate governed package revisions and reject stale mutations
 
 - Covers: CRG-R23–CRG-R26, CRG-R34, E5, EC4, EC11, BND-STATE-001, BND-TEMPORAL-001, INT-003
 - Level: integration
 - Command IDs: CMD-001, CMD-012, CMD-013
-- Fixture/setup: Change each member byte, membership, upstream binding, expected lifecycle revision, and evidence identity between context, record, and settlement.
-- Steps: Attempt stale record, stale settlement, exact duplicate replay, and current rereview.
-- Expected result: Every changed input alters aggregate identity and blocks stale authority; exact duplicate is idempotent; current rereview may proceed.
-- Failure proves: Package freshness or retry identity is unsafe.
+- Fixture/setup: Record a member revision, replace the upstream review ID, change membership, use a stale lifecycle revision, mismatch the explicit map or review data, and make one unrecorded direct edit.
+- Steps: Inspect invalidation after governed events; attempt stale record, mismatched settlement, identical replay with refreshed lifecycle context, and current rereview.
+- Expected result: Governed member or upstream-review changes set approval to `review-required`; stale lifecycle or mismatched review data fails unchanged; identical refreshed replay is idempotent; an unrecorded direct edit does not trigger hashing or automatic invalidation in this slice.
+- Failure proves: Package invalidation or retry authority is inconsistent with the lightweight contract.
 - Evidence artifact: M2 evidence
 - Automation location: lifecycle package and transaction tests
 - Required by milestone: M2
@@ -351,11 +352,11 @@ Boundary model version: `boundary-first-v1`.
 
 ## Fixtures and data
 
-Use repository-local temporary fixture roots. Fixed aggregate-identity vectors must declare package kind, ordered member IDs and bytes, and upstream binding. Cutover fixtures must declare the nonterminal legacy-dependent inventory and expected public gate inventory. Fault fixtures inject failures only through the existing lifecycle transaction test adapter. No fixture may depend on network access, machine-local paths, or contributor-maintained member hashes.
+Use repository-local temporary fixture roots. Package fixtures declare package kind, ordered artifact ID-to-path members, upstream review ID, review ID, outcome, and status. Cutover fixtures declare the nonterminal legacy-dependent inventory and expected public gate inventory. Fault fixtures inject failures only through the existing lifecycle transaction test adapter. No fixture may depend on network access, machine-local paths, aggregate hashes, or member content hashes.
 
 ## Mocking/stubbing policy
 
-Mock only filesystem transaction faults, generated archive inputs, and unavailable external boundaries already abstracted by repository test adapters. Do not mock aggregate calculation, cutover admission, public lifecycle dispatch, validator admission, or workflow completion authority in tests claiming those outcomes.
+Mock only filesystem transaction faults, generated archive inputs, and unavailable external boundaries already abstracted by repository test adapters. Do not mock member-map resolution, governed invalidation, cutover admission, public lifecycle dispatch, validator admission, or workflow completion authority in tests claiming those outcomes.
 
 ## Migration or compatibility tests
 
@@ -380,7 +381,7 @@ Not applicable. All first-slice observable outcomes have automated contract, int
 ## What not to test and why
 
 - Do not test merged architecture/spec or plan/test-spec artifacts because merging is a non-goal.
-- Do not test semantic-equivalence exemptions because every member-byte change is intentionally stale in the first slice.
+- Do not test automatic semantic or byte-equivalence detection for unrecorded direct edits because that behavior and content hashing are outside the first slice.
 - Do not test in-place legacy migration, runtime old/new coexistence, multiple workflow profiles, external services, deployment, or publication because they are outside scope.
 - Do not treat validators as proof of feasibility credibility, design coherence, delivery adequacy, implementation fidelity, or final readiness; those remain independent semantic decisions.
 
