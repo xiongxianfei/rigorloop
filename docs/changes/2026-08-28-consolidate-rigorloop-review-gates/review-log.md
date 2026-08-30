@@ -28,6 +28,21 @@
 
 ### Review entry
 
+Review ID: code-review-final-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: complete change diff `8f80771e..6622d842`
+Status: changes-requested
+Detailed record: reviews/code-review-final-r1.md
+Resolution: review-resolution.md#code-review-final-r1
+Material findings: CRG-FH-CR1
+Open findings: none
+Finding ID: CRG-FH-CR1
+Recording status: recorded
+Blocker: CRG-FH-CR1 is resolved; final holistic rereview is required
+
+### Review entry
+
 Review ID: code-review-m6-r1
 Stage: code-review
 Round: r1

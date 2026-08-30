@@ -9,7 +9,7 @@ import { stageIsComplete } from "./lifecycle-stage-routing.js";
 const SUPPORTED_CONTRACT = "stage-owned-change-local-v1";
 const REVIEW_STAGES = new Set(["proposal-review", "design-review", "delivery-review", "code-review"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
-const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "plan", "test-spec"]);
+const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec"]);
 const CORRECTION_STAGE_ORDER = ["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"];
 const DOWNSTREAM_AUTHORITY_STAGES = new Set(["implement", "code-review", "explain-change", "verify", "pr"]);
 
@@ -171,6 +171,7 @@ function coordinationErrors(root, change) {
   }
   const route = state.active_correction;
   if (route) {
+    const packageDestination = route.destination_artifact_id === "design" && route.destination_stage === "design-review";
     const destination = change.artifact_states?.[route.destination_artifact_id];
     const registration = state.artifacts?.[route.destination_artifact_id];
     const absolute = repositoryPath(root, route.evidence_path);
@@ -179,9 +180,13 @@ function coordinationErrors(root, change) {
     const snapshot = route.source_snapshot;
     if (route.status !== "active") errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction has an unknown status.", "active-correction-route", null, [String(route.status)]));
     if (!CORRECTION_REASONS.has(route.reason) || !CORRECTION_DESTINATIONS.has(route.destination_stage)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction has an unknown reason or destination stage.", "active-correction-route", null, [String(route.reason), String(route.destination_stage)]));
-    if (!destination || registration?.artifact_path !== destination.path) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination is missing or mismatched.", "active-correction-route", null, [String(route.destination_artifact_id)]));
+    if (packageDestination) {
+      const design = change.review_packages?.design;
+      const sourceReview = state.package_reviews?.delivery;
+      if (!route.prior_package_review_id || !design || route.source_review_id !== sourceReview?.review_id || route.prior_package_review_id !== sourceReview?.upstream_review_id) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active package correction destination is missing or mismatched.", "active-correction-route", null, [String(route.destination_artifact_id)]));
+    } else if (!destination || registration?.artifact_path !== destination.path) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination is missing or mismatched.", "active-correction-route", null, [String(route.destination_artifact_id)]));
     const destinationAbsolute = repositoryPath(root, destination?.path);
-    if (change.workflow_state?.current_stage !== route.destination_stage && (!destinationAbsolute || !existsSync(destinationAbsolute) || hashFile(destinationAbsolute) !== registration?.artifact_sha256)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination registration is stale.", "active-correction-route", null, [String(route.destination_artifact_id)]));
+    if (!packageDestination && change.workflow_state?.current_stage !== route.destination_stage && (!destinationAbsolute || !existsSync(destinationAbsolute) || hashFile(destinationAbsolute) !== registration?.artifact_sha256)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination registration is stale.", "active-correction-route", null, [String(route.destination_artifact_id)]));
     if (!evidenceCurrent) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction evidence is missing or stale.", "active-correction-evidence", null, [String(route.evidence_path)]));
     if (!snapshot || snapshot.current_stage !== route.return_stage || !Object.hasOwn(snapshot, "blocker") || !Array.isArray(snapshot.finding_ids)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction source snapshot is incomplete or contradictory.", "active-correction-snapshot", null, [String(route.route_id)]));
     if (!allowedCurrentStages.has(change.workflow_state?.current_stage) || change.workflow_state?.blocker !== null) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Workflow routing contradicts the active correction.", "active-correction-routing", null, [String(change.workflow_state?.current_stage), String(change.workflow_state?.blocker)]));
@@ -202,6 +207,13 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
 
   if (coordination?.active_correction) {
     const route = coordination.active_correction;
+    if (stage === route.destination_stage && route.destination_artifact_id === "design") {
+      const registered = coordination.package_reviews?.design;
+      const projection = change.review_packages?.design;
+      if (projection?.status === "approved" && projection?.review_id !== route.prior_package_review_id && projection?.review_id === registered?.review_id) return ["return-correction"];
+      if (registered?.review_id !== route.prior_package_review_id) return ["settle-review-package"];
+      return ["record-package-review"];
+    }
     if (stage === route.destination_stage && coordination.artifacts?.[route.destination_artifact_id]?.artifact_sha256 !== route.prior_artifact_sha256) return ["return-correction"];
     if (stage === route.destination_stage) return ["record-artifact-revision"];
   }
@@ -211,6 +223,10 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
     .filter((receipt) => receipt?.return_stage === stage && receipt?.source_review_id === packageContext?.latest_review?.review_id)
     .map((receipt) => receipt.destination_artifact_id));
   const packageCorrectionTargets = new Set((packageContext?.correction_targets ?? []).filter((artifactId) => !completedPackageTargets.has(artifactId)));
+  const upstreamPackageCorrection = stage === "delivery-review"
+    && packageCorrectionTargets.has("design")
+    && change.review_packages?.design?.status === "approved"
+    && change.review_packages?.design?.authority === "granted";
   const eligibleDestinationIds = Object.entries(change.artifact_states ?? {}).filter(([artifactId, entry]) => {
     const destinationStage = entry?.kind === "adr" ? "architecture" : entry?.kind;
     return ["proposal", "spec", "architecture", "plan", "test-spec"].includes(destinationStage)
@@ -222,7 +238,7 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
   const staleCorrectionIsRoutable = staleIdentities.length === 0
     || (blockerCodes.has("RL_UNRESOLVED_MATERIAL_FINDING") && staleIdentities.every((artifactId) => eligibleDestinationIds.includes(artifactId)));
   const routeCompatibleBlockers = staleCorrectionIsRoutable && blockers.every((blocker) => ["RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_STALE_EVIDENCE"].includes(blocker.code));
-  if (coordination?.schema_version === 2 && !coordination.active_correction && eligibleDestinationIds.length && routeCompatibleBlockers && (["review-resolution", "code-review", "verify"].includes(stage) || blockers.length)) operations.push("route-correction");
+  if (coordination?.schema_version === 2 && !coordination.active_correction && (eligibleDestinationIds.length || upstreamPackageCorrection) && routeCompatibleBlockers && (["review-resolution", "code-review", "verify"].includes(stage) || blockers.length)) operations.push("route-correction");
 
   if (blockers.some((blocker) => blocker.code !== "RL_UNRESOLVED_MATERIAL_FINDING")) return operations;
   if (["design-review", "delivery-review"].includes(stage)) {

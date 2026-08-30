@@ -118,7 +118,7 @@ const OPERATION_CONTRACTS = Object.freeze({
 
 const REPAIR_CONDITIONS = new Set(["reconcile-interrupted-replace", "clear-orphaned-lock"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
-const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "plan", "test-spec"]);
+const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec"]);
 
 const STAGE_TRANSITIONS = Object.freeze({
   proposal: ["proposal-review"],

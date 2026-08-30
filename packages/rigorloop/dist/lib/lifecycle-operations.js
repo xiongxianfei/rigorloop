@@ -483,17 +483,26 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const sourceIndex = CORRECTION_STAGE_ORDER.indexOf(request.source_stage);
     const destinationIndex = CORRECTION_STAGE_ORDER.indexOf(request.destination_stage);
     if (sourceIndex < 0 || destinationIndex < 0 || destinationIndex >= sourceIndex) throw operationError("RL_CORRECTION_ROUTE_INVALID", "correction destination must precede the source stage", "correction-order", [request.source_stage, request.destination_stage]);
-    const destination = artifact(next, request.destination_artifact_id);
     const packageKind = ["design-review", "delivery-review"].includes(request.source_stage) ? request.source_stage.replace(/-review$/, "") : null;
     const packageReview = packageKind ? state.package_reviews?.[packageKind] : null;
-    if (packageKind && (packageReview?.outcome !== "changes-requested" || !packageReview.correction_targets?.includes(request.destination_artifact_id))) throw operationError("RL_CORRECTION_ROUTE_INVALID", "package correction must target an artifact named by the current changes-requested review", "correction-destination", [request.source_stage, request.destination_artifact_id]);
+    const packageDestination = packageKind === "delivery" && request.destination_artifact_id === "design";
+    if (packageKind && (!["changes-requested", "blocked"].includes(packageReview?.outcome) || !packageReview.correction_targets?.includes(request.destination_artifact_id))) throw operationError("RL_CORRECTION_ROUTE_INVALID", "package correction must target an owner named by the current non-approved review", "correction-destination", [request.source_stage, request.destination_artifact_id]);
     if (packageKind && Object.values(state.correction_history ?? {}).some((receipt) => receipt?.source_review_id === packageReview.review_id && receipt?.destination_artifact_id === request.destination_artifact_id)) throw operationError("RL_CORRECTION_ROUTE_INVALID", "package correction target already returned for the current review", "correction-destination", [packageReview.review_id, request.destination_artifact_id]);
-    if (destination.kind !== request.destination_stage && !(request.destination_stage === "architecture" && destination.kind === "adr")) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact kind does not match destination stage", "correction-destination", [request.destination_stage, request.destination_artifact_id, destination.kind]);
-    if (!["accepted", "approved", "active", ...(packageKind ? ["review-required"] : [])].includes(destination.lifecycle_state)) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact is not currently settled or package-reviewable", "correction-destination", [request.destination_artifact_id, String(destination.lifecycle_state)]);
-    const registration = state.artifacts[request.destination_artifact_id];
-    const destinationIdentity = artifactIdentity(root, destination);
-    if (!registration || registration.artifact_path !== destination.path) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact registration is missing or mismatched", "correction-destination", [request.destination_artifact_id]);
-    if (registration.artifact_sha256 !== destinationIdentity.sha256 && request.finding_ids.length === 0) throw operationError("RL_CORRECTION_ROUTE_INVALID", "a stale destination correction requires an open finding", "correction-findings", [request.destination_artifact_id]);
+    let destination = null;
+    let registration = null;
+    let destinationIdentity = null;
+    if (packageDestination) {
+      const design = next.review_packages?.design;
+      if (request.destination_stage !== "design-review" || design?.status !== "approved" || design?.authority !== "granted" || design.review_id !== packageReview.upstream_review_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "delivery upstream correction must target its current approved design package", "correction-destination", [request.destination_stage, request.destination_artifact_id, String(design?.review_id)]);
+    } else {
+      destination = artifact(next, request.destination_artifact_id);
+      if (destination.kind !== request.destination_stage && !(request.destination_stage === "architecture" && destination.kind === "adr")) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact kind does not match destination stage", "correction-destination", [request.destination_stage, request.destination_artifact_id, destination.kind]);
+      if (!["accepted", "approved", "active", ...(packageKind ? ["review-required"] : [])].includes(destination.lifecycle_state)) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact is not currently settled or package-reviewable", "correction-destination", [request.destination_artifact_id, String(destination.lifecycle_state)]);
+      registration = state.artifacts[request.destination_artifact_id];
+      destinationIdentity = artifactIdentity(root, destination);
+      if (!registration || registration.artifact_path !== destination.path) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact registration is missing or mismatched", "correction-destination", [request.destination_artifact_id]);
+      if (registration.artifact_sha256 !== destinationIdentity.sha256 && request.finding_ids.length === 0) throw operationError("RL_CORRECTION_ROUTE_INVALID", "a stale destination correction requires an open finding", "correction-findings", [request.destination_artifact_id]);
+    }
     const evidence = safeFile(root, request.evidence_path);
     const facts = evidenceMetadata(evidence, ["Change ID", "Source stage", "Destination artifact", "Reason", "Finding IDs", "Return stage", "Lifecycle revision"]);
     const evidenceFindings = findingSet(facts["Finding IDs"]);
@@ -520,7 +529,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       },
       destination_stage: request.destination_stage,
       destination_artifact_id: request.destination_artifact_id,
-      prior_artifact_sha256: registration.artifact_sha256,
+      ...(packageDestination ? { prior_package_review_id: next.review_packages.design.review_id } : { prior_artifact_sha256: registration.artifact_sha256 }),
       reason: request.reason,
       evidence_path: evidence.path,
       evidence_sha256: evidence.sha256,
@@ -539,17 +548,27 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const returned = state.correction_history[request.route_id];
     if (!route && returned?.status === "returned" && returned.return_evidence_path === request.evidence_path) return { status: "already-recorded", candidate: change };
     if (!route || route.route_id !== request.route_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "return does not identify the active correction route", "correction-return", [request.route_id]);
-    const destination = artifact(next, route.destination_artifact_id);
-    const currentIdentity = artifactIdentity(root, destination);
-    if (currentIdentity.sha256 === route.prior_artifact_sha256) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact has not changed", "correction-return", [route.destination_artifact_id]);
-    const registration = state.artifacts[route.destination_artifact_id];
-    if (!registration || registration.artifact_sha256 !== currentIdentity.sha256 || registration.stage_authority !== route.destination_stage || destination.lifecycle_state !== "review-required") throw operationError("RL_CORRECTION_ROUTE_INVALID", "correction destination lacks an exact current authoring revision", "correction-return", [route.destination_artifact_id]);
     const evidence = safeFile(root, request.evidence_path);
-    const baseFields = ["Change ID", "Route ID", "Lifecycle revision", "Destination artifact", "Artifact path", "Artifact identity"];
-    const facts = evidenceMetadata(evidence, [...baseFields, "Authoring evidence path", "Authoring evidence identity"]);
-    const baseMatches = facts["Change ID"] === change.change_id && facts["Route ID"] === route.route_id && facts["Lifecycle revision"] === request.expected_lifecycle_revision && facts["Destination artifact"] === route.destination_artifact_id && facts["Artifact path"] === destination.path && identityValue(facts["Artifact identity"]) === currentIdentity.sha256;
-    const authorityMatches = facts["Authoring evidence path"] === registration.authoring_evidence_path && identityValue(facts["Authoring evidence identity"]) === registration.authoring_evidence_sha256;
-    if (!baseMatches || !authorityMatches) throw operationError("RL_CORRECTION_ROUTE_INVALID", "return evidence does not bind the exact route and owning-stage result", "correction-return-evidence", [request.evidence_path]);
+    const packageDestination = route.destination_artifact_id === "design" && route.destination_stage === "design-review";
+    if (packageDestination) {
+      const projection = next.review_packages?.design;
+      const registered = state.package_reviews?.design;
+      if (projection?.status !== "approved" || projection?.authority !== "granted" || projection?.review_id === route.prior_package_review_id || projection?.review_id !== registered?.review_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "design package has not received a new approved review", "correction-return", [route.destination_artifact_id, String(projection?.review_id)]);
+      const facts = evidenceMetadata(evidence, ["Change ID", "Route ID", "Lifecycle revision", "Destination package", "Review ID", "Review evidence path"]);
+      const matches = facts["Change ID"] === change.change_id && facts["Route ID"] === route.route_id && facts["Lifecycle revision"] === request.expected_lifecycle_revision && facts["Destination package"] === "design" && facts["Review ID"] === projection.review_id && facts["Review evidence path"] === registered.evidence_path;
+      if (!matches) throw operationError("RL_CORRECTION_ROUTE_INVALID", "return evidence does not bind the exact package route and review result", "correction-return-evidence", [request.evidence_path]);
+    } else {
+      const destination = artifact(next, route.destination_artifact_id);
+      const currentIdentity = artifactIdentity(root, destination);
+      if (currentIdentity.sha256 === route.prior_artifact_sha256) throw operationError("RL_CORRECTION_ROUTE_INVALID", "destination artifact has not changed", "correction-return", [route.destination_artifact_id]);
+      const registration = state.artifacts[route.destination_artifact_id];
+      if (!registration || registration.artifact_sha256 !== currentIdentity.sha256 || registration.stage_authority !== route.destination_stage || destination.lifecycle_state !== "review-required") throw operationError("RL_CORRECTION_ROUTE_INVALID", "correction destination lacks an exact current authoring revision", "correction-return", [route.destination_artifact_id]);
+      const baseFields = ["Change ID", "Route ID", "Lifecycle revision", "Destination artifact", "Artifact path", "Artifact identity"];
+      const facts = evidenceMetadata(evidence, [...baseFields, "Authoring evidence path", "Authoring evidence identity"]);
+      const baseMatches = facts["Change ID"] === change.change_id && facts["Route ID"] === route.route_id && facts["Lifecycle revision"] === request.expected_lifecycle_revision && facts["Destination artifact"] === route.destination_artifact_id && facts["Artifact path"] === destination.path && identityValue(facts["Artifact identity"]) === currentIdentity.sha256;
+      const authorityMatches = facts["Authoring evidence path"] === registration.authoring_evidence_path && identityValue(facts["Authoring evidence identity"]) === registration.authoring_evidence_sha256;
+      if (!baseMatches || !authorityMatches) throw operationError("RL_CORRECTION_ROUTE_INVALID", "return evidence does not bind the exact route and owning-stage result", "correction-return-evidence", [request.evidence_path]);
+    }
     const snapshot = route.source_snapshot;
     next.workflow_state.current_stage = snapshot.current_stage;
     next.workflow_state.next_stage = snapshot.next_stage;
@@ -742,7 +761,11 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     if (request.upstream_review_id !== context.upstream_review_id || canonicalJson(request.members) !== canonicalJson(context.members)) throw operationError("RL_STALE_EVIDENCE", "Package review request does not bind the current member map and upstream review ID.", "review-package-request-identity", [request.package_kind, request.upstream_review_id, String(context.upstream_review_id)]);
     if (next.workflow_state?.current_stage !== expectedAuthority) throw operationError("RL_OPERATION_NOT_PERMITTED", "Package review recording is not current for its reviewing stage.", "review-package-stage", [String(next.workflow_state?.current_stage), expectedAuthority]);
     const registration = readPackageReview(root, next, request, context);
-    if (alreadyRecorded(state.package_reviews[request.package_kind], registration)) return { status: "already-recorded", candidate: change };
+    const existing = state.package_reviews[request.package_kind];
+    if (existing && canonicalJson(existing) === canonicalJson(registration)) return { status: "already-recorded", candidate: change };
+    const activePackageRereview = state.active_correction?.destination_artifact_id === request.package_kind
+      && state.active_correction?.destination_stage === expectedAuthority;
+    if (existing && !["review-required", "inconclusive"].includes(context.status) && !activePackageRereview) throw operationError("RL_OPERATION_NOT_PERMITTED", "conflicting durable facts are already registered", "idempotent-registration");
     state.package_reviews[request.package_kind] = registration;
     return { status: "recorded", candidate: next, operationResult: { package_kind: request.package_kind, members: context.members, upstream_review_id: context.upstream_review_id, review_id: registration.review_id, outcome: registration.outcome } };
   }

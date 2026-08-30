@@ -5,6 +5,7 @@
 Closeout status: closed
 
 Review closeout: code-review-m6-r1
+Review closeout: code-review-final-r1
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -20,15 +21,16 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
 
-- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m6-r1`
-- Findings resolved: 27
+- Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m6-r1`, `code-review-final-r1`
+- Findings resolved: 28
 - Unresolved findings: 0
-- Current result: all M6 findings are resolved and the corrected slice is ready for rereview.
+- Current result: all implementation and final holistic findings are resolved; the complete corrected diff is ready for final holistic rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| CRG-FH-CR1 | accepted | resolved | Added a concise package-owner correction route for Delivery Review upstream-direction findings and named blocked outcomes, including required Design Review rereview and delivery invalidation. |
 | CRG-SR1 | accepted | resolved | The later owner-approved cutover decision supersedes the earlier baseline choice: old progression remains authoritative until one complete release cutover, with no runtime topology machinery. |
 | CRG-SR2 | accepted | resolved | Added deterministic authority and next-action semantics for every package-review outcome. |
 | CRG-SR3 | accepted | resolved | Kept accepted proposal evidence outside multi-artifact package settlement and removed per-document hash recording. |
@@ -560,3 +562,22 @@ Safe resolution path: revise the specification through the active correction rou
 Follow-up: rerun focused Spec Review R5 after the authoring correction.
 Validation target: CRG-R22 through CRG-R26, CRG-AC4, BND-STATE-001, BND-TEMPORAL-001, and INT-003.
 Validation evidence: `node --test packages/rigorloop/test/lifecycle-correction-route.test.js packages/rigorloop/test/lifecycle-evidence.test.js` passed 15 tests; `python scripts/validate-review-artifacts.py docs/changes/2026-08-28-consolidate-rigorloop-review-gates` passed structure validation; direct inspection confirms CRG-R24, the package invalidation glossary, State and invariants, and EC11 now use one governed-event, no-hash contract. Boundary proof-map validation remains a downstream test-spec revision dependency and is not claimed here.
+
+### code-review-final-r1
+
+#### CRG-FH-CR1
+
+Finding ID: CRG-FH-CR1
+Disposition: accepted
+Status: resolved
+Owner: consolidated review-gate implementation owner
+Owning stage: implement
+Decision owner: consolidated review-gate implementation owner
+Decision needed: none; the approved finding and package-routing contract determine the correction.
+Chosen action: add one synthetic `design` package destination to the existing package-aware correction operation, admit named `blocked` package corrections, require a new approved Design Review before return, and invalidate Delivery Review authority for rereview.
+Rationale: Delivery Review upstream-direction findings identify the approved design package rather than one authoring artifact. Reusing `route-correction` preserves workflow ownership without inventing a design artifact, generic status setter, hash, or new lifecycle operation.
+Required outcome: every attributable upstream package finding and named blocked outcome has an executable route while wrong target/stage requests fail unchanged.
+Safe resolution path: keep concrete artifact routes unchanged, special-case only `delivery-review -> design-review` with target `design`, and bind return evidence to a new approved Design Review ID and evidence path.
+Follow-up: rerun final holistic Code Review over the complete corrected diff.
+Validation target: CRG-R29, CRG-R31, CRG-R33, CRG-T08, BND-AUTH-001, BND-RECOVERY-001, INT-007.
+Validation evidence: focused lifecycle suite passed 97 tests (95 passed, 2 explicitly historical scenarios skipped); the new public-operation regression covers `changes-requested`, `blocked`, wrong-stage immutability, Design Review rereview, return, and Delivery Review invalidation; governed lifecycle CLI validator passed 7 tests.

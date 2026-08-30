@@ -123,10 +123,10 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m5-r1.md
+  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r1.md
   review_log: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-log.md
-  reviewed_artifact: M5 implementation in commit 5d412dab
-  status: clean
+  reviewed_artifact: complete change diff 8f80771e..6622d842
+  status: changes-requested
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
@@ -396,6 +396,14 @@ lifecycle_cli:
       stage_authority: workflow
   package_reviews: {}
   resolutions:
+    CRG-FH-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
+      evidence_sha256: 043d0a2af74162de5e47157ff30d0a55d8ef6ae29d0cce4e43bccd91b2497fee
+      finding_id: CRG-FH-CR1
+      owner: consolidated review-gate implementation owner
+      stage_authority: review-resolution
     CRG-M3-CR1:
       artifact_id: plan
       disposition: accepted

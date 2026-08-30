@@ -86,16 +86,16 @@ export function writeRequest(root, name, body) {
   return path;
 }
 
-export function writePackageReview(root, context, { kind = "design", outcome = "approved", findings = [], correctionTargets = [] } = {}) {
+export function writePackageReview(root, context, { kind = "design", outcome = "approved", findings = [], correctionTargets = [], round = "r1" } = {}) {
   const stage = `${kind}-review`;
-  const reviewId = `${stage}-r1`;
+  const reviewId = `${stage}-${round}`;
   const reviewPath = `docs/changes/example/reviews/${reviewId}.md`;
   const packageFacts = context.result.context.review_package;
   const findingText = findings.map((finding) => `\n### Finding ${finding.id}\n\nFinding ID: ${finding.id}\nFinding scope: ${finding.scope}\nAffected artifact IDs: ${finding.affected.join(", ")}\nOwning stages: ${finding.owners.join(", ")}\nEvidence: direct fixture evidence\nRequired outcome: correct the package\nSafe resolution path: route to the named owner\n`).join("");
-  writeFileSync(join(root, reviewPath), `# ${stage}\n\nReview ID: ${reviewId}\nStage: ${stage}\nRound: r1\nReviewer authority: ${stage}\nPackage kind: ${kind}\nPackage members: ${Object.entries(packageFacts.members).map(([id, path]) => `${id}=${path}`).join(", ")}\nUpstream review ID: ${packageFacts.upstream_review_id}\nStatus: ${outcome}\nMaterial findings: ${findings.length ? findings.map((item) => item.id).join(", ") : "none"}\nCorrection targets: ${correctionTargets.length ? correctionTargets.join(", ") : "none"}\nRecording status: recorded\n${findingText}`, "utf8");
+  writeFileSync(join(root, reviewPath), `# ${stage}\n\nReview ID: ${reviewId}\nStage: ${stage}\nRound: ${round}\nReviewer authority: ${stage}\nPackage kind: ${kind}\nPackage members: ${Object.entries(packageFacts.members).map(([id, path]) => `${id}=${path}`).join(", ")}\nUpstream review ID: ${packageFacts.upstream_review_id}\nStatus: ${outcome}\nMaterial findings: ${findings.length ? findings.map((item) => item.id).join(", ") : "none"}\nCorrection targets: ${correctionTargets.length ? correctionTargets.join(", ") : "none"}\nRecording status: recorded\n${findingText}`, "utf8");
   const logPath = join(root, "docs", "changes", "example", "review-log.md");
   const priorLog = readFileSync(logPath, "utf8").trimEnd();
-  writeFileSync(logPath, `${priorLog}\n\n### Review entry\n\nReview ID: ${reviewId}\nStage: ${stage}\nRound: r1\nStatus: ${outcome}\nDetailed record: reviews/${reviewId}.md\nResolution: ${findings.length ? "review-resolution.md" : "not-required"}\nMaterial findings: ${findings.length ? findings.map((item) => item.id).join(", ") : "none"}\nOpen findings: ${findings.length ? findings.map((item) => item.id).join(", ") : "none"}\nRecording status: recorded\n`, "utf8");
+  writeFileSync(logPath, `${priorLog}\n\n### Review entry\n\nReview ID: ${reviewId}\nStage: ${stage}\nRound: ${round}\nStatus: ${outcome}\nDetailed record: reviews/${reviewId}.md\nResolution: ${findings.length ? "review-resolution.md" : "not-required"}\nMaterial findings: ${findings.length ? findings.map((item) => item.id).join(", ") : "none"}\nOpen findings: ${findings.length ? findings.map((item) => item.id).join(", ") : "none"}\nRecording status: recorded\n`, "utf8");
   return { reviewId, reviewPath, packageFacts };
 }
 
