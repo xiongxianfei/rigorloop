@@ -39,6 +39,8 @@ Repeat `implement -> code-review -> review-resolution when triggered` for each i
 
 The compact canonical chain is `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`; architecture authoring and review apply only when assessment requires them.
 
+At the consolidated-gates cutover, replace that pre-implementation segment with `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement`. Architecture and specification remain separate authoring stages reconciled before Design Review; plan and test specification remain separate authoring stages reconciled before Delivery Review. `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` then become historical-only entrypoints, not aliases. The implementing change itself remains governed by the pre-cutover chain until its atomic release boundary.
+
 ## When to use
 
 Use this skill when starting, resuming, auditing, or routing work through the standard workflow, including an explicitly authorized automation command.
@@ -81,6 +83,7 @@ Classify the four predicates below from authoritative evidence. Automation comma
 
 - Adapter invocation equivalents preserve the same arguments: Codex uses `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and OpenCode invokes the installed `workflow` skill with `auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or `off`.
 - `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
+- At consolidated cutover the pre-implementation targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `test-spec`, and `delivery-review`; the four retired artifact-review targets are no longer admitted.
 - `$workflow auto: status` is read-only. `$workflow auto: off` durably cancels the unified run and preserves transition evidence.
 - `governed_change_context`: a valid current governed change record exists.
 - `automation_command_context`: the invocation is an explicit automation command, including a pre-persistence target bootstrap.

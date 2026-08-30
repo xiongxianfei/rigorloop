@@ -3,7 +3,7 @@ name: proposal-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Review a change proposal before spec. Use when the user asks to challenge problem framing, option quality, strategic value, scope boundaries, risks, vision fit, decision rationale, or readiness for spec. Use proposal to write proposals; use spec-review, plan-review, code-review, verify, or pr for later-stage review and readiness work.
+  Review a proposal and its embedded feasibility evaluation before design work. Use when the user asks to challenge direction, scope, value, feasibility, risks, vision fit, or decision rationale. Use proposal to write proposals; use design-review, delivery-review, code-review, verify, or pr for later gates.
 argument-hint: [proposal path, feature idea, or review focus]
 ---
 
@@ -16,8 +16,8 @@ Independently challenge proposal value, direction, scope, risk, and readiness be
 - role_name: proposal-review
 - stage: review
 - upstream: proposal artifact plus user intent when available
-- downstream: proposal revision, accepted proposal, or isolated stop before specification
-- summary: Review proposal quality, scope, risk, testability, and readiness.
+- downstream: proposal revision, accepted proposal, or isolated stop before architecture and specification
+- summary: Review proposal direction, scope, risk, and feasibility as one decision.
 - ownership: Write review evidence and, with exact formal authority, settle only the matching proposal entry. Workflow owns routing and continuation.
 - must_not_claim: spec completion, implementation review, final verification, branch readiness, PR readiness, or automatic downstream handoff
 
@@ -88,6 +88,7 @@ Judge every proposal across:
 | User value | Is the benefit concrete? |
 | Option diversity | Are materially different options, including doing nothing, considered? |
 | Decision rationale | Does the recommendation follow explicit criteria? |
+| Feasibility | Is there one credible assessment supported by evidence or bounded assumptions, with constraints and blockers explicit? |
 | Vision fit | Does direction align with standing vision or expose a governed exception? |
 | Scope control | Do goals, non-goals, dependencies, and follow-ups preserve initial intent? |
 | Architecture awareness | Are affected boundaries and long-lived decisions visible? |
@@ -97,6 +98,10 @@ Judge every proposal across:
 | Readiness for spec | Are remaining questions small enough for contract authoring? |
 
 Use `pass`, `concern`, or `block`. Challenge investment value, simpler dismissed options, deferred cost, affected users, invariants, and proof of value.
+
+### Feasibility
+
+Require exactly one embedded `Feasibility` section with an assessment, basis, constraints, and blockers. Treat supporting research as input, not as a separate proposal artifact or gate. A missing, unsupported, contradicted, materially stale, or blocking evaluation requires proposal revision and cannot authorize architecture or specification authoring. Approval confirms only that the direction is valuable, bounded, and feasible enough for design work; it does not approve detailed behavior, architecture, delivery, implementation, or proof adequacy.
 
 ### Vision fit
 
@@ -133,7 +138,7 @@ Report the scope-preservation result in the mapped result asset.
 
 Every material finding includes Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or a `needs-decision` rationale naming the decision and owner. Copy the finding asset once per material finding. A material finding is a required change or decision, not a quota.
 
-Use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval means the proposal is ready for specification judgment, not that a spec exists. Use `changes-requested` for actionable proposal defects, `blocked` for an authority or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
+Use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval authorizes architecture and specification authoring, not that either artifact exists or is approved. Use `changes-requested` for actionable proposal or feasibility defects, `blocked` for an authority, feasibility blocker, or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
 
 ## Isolation and Recording
 

@@ -9,6 +9,8 @@ argument-hint: [test-spec path, change ID, or proof-review focus]
 
 # Test spec review
 
+This entrypoint is pre-cutover only. At consolidated-gates cutover, `delivery-review` replaces it as progression authority over the exact plan/test-specification package. Historical Test Spec Review evidence remains readable but this skill is not an alias for Delivery Review.
+
 Independently decide whether a test specification is an adequate, executable, and traceable proof map for its approved contract and plan.
 
 ## Workflow role

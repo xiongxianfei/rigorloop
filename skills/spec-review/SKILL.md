@@ -9,6 +9,8 @@ argument-hint: [spec path or feature name]
 
 # Spec review
 
+This entrypoint is pre-cutover only. At consolidated-gates cutover, `design-review` replaces it as progression authority over the exact architecture/specification/ADR package. Historical Spec Review evidence remains readable but this skill is not an alias for Design Review.
+
 Independently review a feature specification as a formal contract gate. Produce durable evidence or report blocked recording. Explicit feedback requesting no formal status, readiness, record, or lifecycle use belongs outside `spec-review`.
 
 ## Workflow role

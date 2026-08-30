@@ -7,6 +7,8 @@ argument-hint: [architecture doc path, ADR path, or feature name]
 
 # Architecture review
 
+This entrypoint is pre-cutover only. At consolidated-gates cutover, `design-review` replaces it as progression authority over the exact architecture/specification/ADR package. Historical Architecture Review evidence remains readable but this skill is not an alias for Design Review.
+
 Act as an independent staff-level reviewer. Challenge safety, explainability, specification alignment, and readiness without editing the reviewed artifacts.
 
 ## Workflow role

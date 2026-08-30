@@ -19,6 +19,8 @@ Use after review closeout or for a direct rationale request. Direct requests rem
 
 Resolve the actual diff first. Read the smallest decision-bearing proposal, spec, test spec, design, plan, review, tests, and validation evidence. Distinguish observed, inferred, and unknown facts. Flag unrelated changes, non-goals, risks, sensitive data, and evidence gaps; never explain from memory.
 
+For work governed by consolidated gates, trace the accepted proposal evidence, approved Design Review ID and exact member map, approved Delivery Review ID and exact member map, implementation milestones, Code Review, and validation. Do not infer either package from separate historical artifact reviews.
+
 Resolve paths from the request, active metadata, project guidance, then the portable default. Portable durable output requires one exact path and never creates governed state.
 
 Use `change.yaml` for current state and treat the plan and upstream artifacts as read-only.

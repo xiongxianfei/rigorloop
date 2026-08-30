@@ -17,6 +17,8 @@ Design proof before implementation.
 - stage: authoring
 - upstream: approved spec and review, approved plan, and applicable architecture or ADRs
 - downstream: test-spec-review
+
+At consolidated-gates cutover, completed test-specification authoring reconciles with the plan and hands the exact package to `delivery-review`; it does not seek independent proof-map approval. The pre-cutover `test-spec-review` handoff remains only for changes completing under the earlier contract.
 - summary: Map settled requirements and execution intent to concrete proof before implementation.
 - ownership: Author test-spec content and, with exact governed authority, only its authoring evidence and matching artifact-entry transition.
 - must_not_claim: implementation, validation, verification, branch, PR, release, deployment, publication, or peer-review completion
