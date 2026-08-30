@@ -544,7 +544,36 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                 review = primary_plan_entry.get("review")
                 planned = workflow_state.get("planned_work")
                 basis = planned.get("initialization_basis") if isinstance(planned, dict) else None
-                if not isinstance(review, dict) or review.get("outcome") != "approved" or not isinstance(basis, dict):
+                delivery = review_packages.get("delivery") if isinstance(review_packages, dict) else None
+                lifecycle_cli = data.get("lifecycle_cli")
+                package_reviews = lifecycle_cli.get("package_reviews") if isinstance(lifecycle_cli, dict) else None
+                delivery_receipt = package_reviews.get("delivery") if isinstance(package_reviews, dict) else None
+                delivery_basis = (
+                    isinstance(basis, dict)
+                    and isinstance(delivery, dict)
+                    and isinstance(delivery_receipt, dict)
+                    and delivery.get("package_kind") == "delivery"
+                    and delivery.get("status") == "approved"
+                    and delivery.get("outcome") == "approved"
+                    and delivery.get("authority") == "granted"
+                    and isinstance(delivery.get("members"), dict)
+                    and delivery["members"].get(primary_plan[0]) == primary_plan_entry.get("path")
+                    and basis.get("review_id") == delivery.get("review_id")
+                    and basis.get("review_round") == delivery.get("review_round")
+                    and basis.get("reviewed_artifact_path") == primary_plan_entry.get("path")
+                    and delivery_receipt.get("review_id") == delivery.get("review_id")
+                    and delivery_receipt.get("round") == delivery.get("review_round")
+                    and delivery_receipt.get("outcome") == "approved"
+                    and delivery_receipt.get("stage_authority") == "delivery-review"
+                    and delivery_receipt.get("members") == delivery.get("members")
+                    and basis.get("review_record") == delivery_receipt.get("evidence_path")
+                )
+                legacy_plan_review_basis = (
+                    isinstance(review, dict)
+                    and review.get("outcome") == "approved"
+                    and isinstance(basis, dict)
+                )
+                if not delivery_basis and not legacy_plan_review_basis:
                     errors.append(
                         "workflow_state.planned_work: review-required plan needs current clean review and initialization basis"
                     )
@@ -561,10 +590,26 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
             if not isinstance(plan_entry, dict) or plan_entry.get("kind") != "plan" or plan_entry.get("role") != "primary":
                 errors.append("workflow_state.planned_work.plan_artifact_id: must name the primary plan")
             basis = planned.get("initialization_basis")
+            delivery = review_packages.get("delivery") if isinstance(review_packages, dict) else None
+            lifecycle_cli = data.get("lifecycle_cli")
+            package_reviews = lifecycle_cli.get("package_reviews") if isinstance(lifecycle_cli, dict) else None
+            delivery_receipt = package_reviews.get("delivery") if isinstance(package_reviews, dict) else None
+            delivery_basis = (
+                isinstance(basis, dict)
+                and isinstance(delivery, dict)
+                and isinstance(delivery_receipt, dict)
+                and basis.get("review_id") == delivery.get("review_id")
+                and basis.get("review_id") == delivery_receipt.get("review_id")
+            )
+            required_basis_fields = {
+                "review_id", "review_round", "review_record", "reviewed_artifact_path"
+            }
+            if not delivery_basis:
+                required_basis_fields.add("reviewed_revision")
             if basis is not None and _exact_keys(
                 basis,
                 "workflow_state.planned_work.initialization_basis",
-                {"review_id", "review_round", "review_record", "reviewed_artifact_path", "reviewed_revision"},
+                required_basis_fields,
                 set(),
                 errors,
             ):
@@ -576,15 +621,32 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                     errors.append("workflow_state.planned_work.initialization_basis.review_record: expected normalized repository-relative path")
                 if not _repo_path(basis.get("reviewed_artifact_path")):
                     errors.append("workflow_state.planned_work.initialization_basis.reviewed_artifact_path: expected normalized repository-relative path")
-                if not _nonempty_string(basis.get("reviewed_revision")):
+                if not delivery_basis and not _nonempty_string(basis.get("reviewed_revision")):
                     errors.append("workflow_state.planned_work.initialization_basis.reviewed_revision: expected non-empty string")
                 review = plan_entry.get("review") if isinstance(plan_entry, dict) else None
-                if not isinstance(review, dict) or (
-                    basis.get("review_id") != review.get("id")
-                    or basis.get("review_round") != review.get("round")
-                    or basis.get("review_record") != review.get("record")
-                    or basis.get("reviewed_artifact_path") != plan_entry.get("path")
-                ):
+                matching_delivery = (
+                    delivery_basis
+                    and delivery.get("package_kind") == "delivery"
+                    and delivery.get("status") == "approved"
+                    and delivery.get("outcome") == "approved"
+                    and delivery.get("authority") == "granted"
+                    and basis.get("review_round") == delivery.get("review_round")
+                    and isinstance(delivery.get("members"), dict)
+                    and delivery["members"].get(plan_id) == plan_entry.get("path")
+                    and basis.get("reviewed_artifact_path") == plan_entry.get("path")
+                    and delivery_receipt.get("round") == delivery.get("review_round")
+                    and delivery_receipt.get("outcome") == "approved"
+                    and delivery_receipt.get("stage_authority") == "delivery-review"
+                    and delivery_receipt.get("members") == delivery.get("members")
+                    and basis.get("review_record") == delivery_receipt.get("evidence_path")
+                )
+                matching_historical_plan_review = isinstance(review, dict) and (
+                    basis.get("review_id") == review.get("id")
+                    and basis.get("review_round") == review.get("round")
+                    and basis.get("review_record") == review.get("record")
+                    and basis.get("reviewed_artifact_path") == plan_entry.get("path")
+                )
+                if not matching_delivery and not matching_historical_plan_review:
                     errors.append(
                         "workflow_state.planned_work.initialization_basis: must match current clean plan review"
                     )

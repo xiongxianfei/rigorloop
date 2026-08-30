@@ -17,6 +17,20 @@ SPEC_CONTRACT_HEADINGS = (
     "## Requirements",
     "## Acceptance criteria",
 )
+SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS = (
+    "Challenge",
+    "Goals",
+    "Scope and non-goals",
+    "Governing principle",
+    "Proposed direction",
+    "Feasibility",
+    "Decision requested",
+)
+SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION = "Impact and major trade-offs"
+SIMPLIFIED_PROPOSAL_FORBIDDEN_SECTIONS = frozenset(
+    {"Status", "Owning change record", "Vision fit"}
+)
+SIMPLIFIED_PROPOSAL_CUTOVER_DATE = "2026-08-30"
 
 
 @dataclass(frozen=True)
@@ -65,7 +79,24 @@ ARCHITECTURE_CONTRACT = ArtifactContract(
     allowed_statuses=frozenset({"draft", "approved", "abandoned", "superseded", "archived"}),
     settlement_statuses=frozenset({"approved"}),
     terminal_statuses=frozenset({"abandoned", "superseded", "archived"}),
-    required_sections=("Related artifacts", "Summary", "Requirements covered", "Proposed architecture", "Interfaces and contracts"),
+    required_sections=(
+        "Related artifacts",
+        "Introduction and Goals",
+        "Architecture Constraints",
+        "Context and Scope",
+        "Solution Strategy",
+        "Building Block View",
+        "Runtime View",
+        "Deployment View",
+        "Crosscutting Concepts",
+        "Architecture Decisions",
+        "Quality Requirements",
+        "Risks and Technical Debt",
+        "Glossary",
+        "Next artifacts",
+        "Follow-on artifacts",
+        "Readiness",
+    ),
 )
 
 CANONICAL_ARCHITECTURE_CONTRACT = ArtifactContract(

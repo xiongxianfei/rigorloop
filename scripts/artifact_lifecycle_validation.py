@@ -11,7 +11,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from artifact_lifecycle_contracts import ArtifactContract, classify_artifact
+from artifact_lifecycle_contracts import (
+    SIMPLIFIED_PROPOSAL_CUTOVER_DATE,
+    SIMPLIFIED_PROPOSAL_FORBIDDEN_SECTIONS,
+    SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION,
+    SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS,
+    ArtifactContract,
+    classify_artifact,
+)
 from change_metadata_semantics import STAGE_OWNED_CONTRACT, validate_stage_owned_lifecycle_metadata
 from lifecycle_state_sync import (
     has_structured_workflow_state_marker,
@@ -1411,6 +1418,84 @@ def _parse_sections(text: str) -> dict[str, str]:
     return sections
 
 
+def _level_two_headings(text: str) -> tuple[str, ...]:
+    return tuple(line[3:].strip() for line in text.splitlines() if line.startswith("## "))
+
+
+def _uses_simplified_proposal_shape(text: str) -> bool:
+    simplified_names = set(SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS) - {"Goals"}
+    simplified_names.add(SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION)
+    return any(heading in simplified_names for heading in _level_two_headings(text))
+
+
+def _has_complete_simplified_proposal_shape(text: str) -> bool:
+    headings = _level_two_headings(text)
+    return all(headings.count(section) == 1 for section in SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS)
+
+
+def _proposal_requires_simplified_contract(
+    relative_path: Path,
+    text: str,
+    *,
+    stage_owned_status: str | None,
+    current_path: bool,
+) -> bool:
+    if stage_owned_status is not None:
+        settled = stage_owned_status in {"accepted", "rejected", "abandoned", "superseded", "archived"}
+        if settled:
+            return current_path or _has_complete_simplified_proposal_shape(text)
+        return True
+    if _uses_simplified_proposal_shape(text):
+        return True
+    date_prefix = relative_path.stem[:10]
+    return bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_prefix)) and date_prefix >= SIMPLIFIED_PROPOSAL_CUTOVER_DATE
+
+
+def _validate_simplified_proposal(
+    relative_path: Path,
+    text: str,
+    *,
+    stage_owned_status: str | None,
+) -> tuple[list[str], str | None]:
+    errors: list[str] = []
+    headings = _level_two_headings(text)
+    allowed = set(SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS) | {SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION}
+
+    for heading in dict.fromkeys(headings):
+        count = headings.count(heading)
+        if count > 1:
+            errors.append(f"duplicate proposal section '{heading}'")
+        if heading in SIMPLIFIED_PROPOSAL_FORBIDDEN_SECTIONS:
+            errors.append(f"forbidden proposal-owned section '{heading}'")
+        elif heading not in allowed:
+            errors.append(f"unknown proposal level-two section '{heading}'")
+
+    for section_name in SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS:
+        if headings.count(section_name) == 0:
+            errors.append(f"missing required proposal section '{section_name}'")
+
+    expected = list(SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS)
+    if SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION in headings:
+        expected.insert(-1, SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION)
+    if not any(
+        message.startswith(("missing required", "duplicate proposal", "unknown proposal", "forbidden proposal"))
+        for message in errors
+    ) and list(headings) != expected:
+        errors.append(f"proposal sections are misordered; expected {', '.join(expected)}")
+
+    feasibility = _get_section(_parse_sections(text), "Feasibility")
+    if feasibility is not None and not feasibility.strip():
+        errors.append("proposal Feasibility section must not be empty")
+    if _contains_placeholder_text(text):
+        errors.append("placeholder text is not allowed")
+    if not relative_path.stem or not re.fullmatch(
+        r"\d{4}-\d{2}-\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*",
+        relative_path.stem,
+    ):
+        errors.append(f"invalid proposal identifier: {relative_path.stem}")
+    return errors, stage_owned_status
+
+
 def _get_section(sections: dict[str, str], name: str) -> str | None:
     if name in sections:
         return sections[name]
@@ -1595,12 +1680,31 @@ def _inspect_artifact(
     *,
     stage_owned: bool = False,
     stage_owned_status: str | None = None,
+    current_path: bool = False,
 ) -> ArtifactInspection | None:
     relative_path = path.relative_to(root)
     text = _read_repo_text(root, path, tracked_revision)
     contract = classify_artifact(relative_path, text)
     if contract is None:
         return None
+    if contract.class_name == "proposal" and _proposal_requires_simplified_contract(
+        relative_path,
+        text,
+        stage_owned_status=stage_owned_status,
+        current_path=current_path,
+    ):
+        errors, status = _validate_simplified_proposal(
+            relative_path,
+            text,
+            stage_owned_status=stage_owned_status,
+        )
+        return ArtifactInspection(
+            path=path,
+            contract=contract,
+            status=status,
+            identifier=_extract_identifier(contract, relative_path),
+            errors=tuple(errors),
+        )
     sections = _parse_sections(text)
     errors, status = _validate_status_and_sections(
         relative_path,
@@ -1845,6 +1949,7 @@ def validate_repository(
     root_resolved = root.resolve()
     related_paths = set(scope.related_artifact_paths)
     stage_owned_records: set[Path] = set()
+    stage_owned_proposal_records: set[Path] = set()
     stage_owned_states: dict[Path, list[StageOwnedArtifactState]] = {}
 
     for path in scope.change_yaml_paths:
@@ -1911,6 +2016,7 @@ def validate_repository(
                         continue
                     raw_artifact_path = entry.get("path")
                     kind = entry.get("kind")
+                    role = entry.get("role")
                     lifecycle_state = entry.get("lifecycle_state")
                     if not all(
                         isinstance(value, str)
@@ -1927,6 +2033,8 @@ def validate_repository(
                             lifecycle_state=lifecycle_state,
                         )
                     )
+                    if kind == "proposal" and role == "primary":
+                        stage_owned_proposal_records.add(path)
 
         for message in _change_yaml_closeout_cache_findings(
             root_resolved,
@@ -1967,6 +2075,15 @@ def validate_repository(
             )
         )
 
+    selected_proposal_paths: set[Path] = set()
+    for selected_path in scope.changed_paths:
+        if selected_path not in related_paths or selected_path.suffix != ".md":
+            continue
+        selected_text = _read_repo_text(root_resolved, selected_path, scope.tracked_revision)
+        selected_contract = classify_artifact(selected_path.relative_to(root_resolved), selected_text)
+        if selected_contract is not None and selected_contract.class_name == "proposal":
+            selected_proposal_paths.add(selected_path)
+
     for path in tuple(sorted(related_paths)):
         relative_path = path.relative_to(root_resolved)
         if not _is_release_evidence_path(relative_path):
@@ -1989,19 +2106,48 @@ def validate_repository(
         owning_refs = _extract_owning_change_record_refs(root_resolved, path, text)
         stage_owned_refs = owning_refs & stage_owned_records
         owners = stage_owned_states.get(path, [])
+        contract = classify_artifact(path.relative_to(root_resolved), text)
+        if (
+            contract is not None
+            and contract.class_name == "proposal"
+            and path in scope.changed_paths
+            and len(selected_proposal_paths) == 1
+            and len(stage_owned_proposal_records & set(scope.changed_paths)) == 1
+            and not owners
+        ):
+            blocking_findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=path,
+                    artifact_class="change_metadata",
+                    status=None,
+                    message="selected change record does not identify this proposal as its primary proposal",
+                )
+            )
         stage_owned = bool(stage_owned_refs or owners)
         stage_owned_status: str | None = None
         if stage_owned:
             target_findings = blocking_findings if path in related_paths else warning_findings
             severity = "block" if path in related_paths else "warn"
-            if len(stage_owned_refs) != 1:
+            simplified_proposal = bool(
+                contract is not None
+                and contract.class_name == "proposal"
+                and _uses_simplified_proposal_shape(text)
+            )
+            expected_ref_counts = {0} if simplified_proposal else {1}
+            if len(stage_owned_refs) not in expected_ref_counts:
+                ownership_message = (
+                    "simplified governed proposal must not contain an owning change-record pointer"
+                    if simplified_proposal
+                    else "stage-owned governed artifact must identify exactly one owning change record"
+                )
                 target_findings.append(
                     ValidationFinding(
                         severity=severity,
                         path=path,
                         artifact_class="change_metadata",
                         status=None,
-                        message="stage-owned governed artifact must identify exactly one owning change record",
+                        message=ownership_message,
                     )
                 )
             if len(owners) != 1:
@@ -2017,7 +2163,6 @@ def validate_repository(
             else:
                 owner = owners[0]
                 stage_owned_status = owner.lifecycle_state
-                contract = classify_artifact(path.relative_to(root_resolved), text)
                 if contract is not None and owner.kind != contract.class_name:
                     target_findings.append(
                         ValidationFinding(
@@ -2047,6 +2192,7 @@ def validate_repository(
             scope.tracked_revision,
             stage_owned=stage_owned,
             stage_owned_status=stage_owned_status,
+            current_path=path in scope.changed_paths,
         )
         if inspection is not None:
             inspections[path] = inspection

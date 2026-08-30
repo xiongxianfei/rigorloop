@@ -7,6 +7,7 @@
 
 - Skill: proposal-review
 - Review status: <approved | changes-requested | blocked | inconclusive>
+- Vision alignment: <aligned | material-conflict | vision-revision-requested | no-vision-bootstrap>
 - Material findings: <finding IDs or none>
 - Open blockers: <blockers or none>
 - Proposal readiness: <readiness>

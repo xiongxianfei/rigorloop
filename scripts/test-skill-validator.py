@@ -3505,65 +3505,81 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(term=term):
                 self.assertIn(term, body)
 
-    def test_proposal_skills_define_vision_fit_contract(self) -> None:
+    def test_proposal_skills_define_simplified_direction_contract(self) -> None:
         proposal_body = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal_asset = (
+            ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md"
+        ).read_text(encoding="utf-8")
         proposal_review_body = (
             ROOT / "skills" / "proposal-review" / "SKILL.md"
         ).read_text(encoding="utf-8")
-        proposal_review_body += "\n" + (
-            ROOT / "skills" / "proposal-review" / "references" / "conditional-proposal-gates.md"
+        review_asset = (
+            ROOT / "skills" / "proposal-review" / "assets" / "review-result-skeleton.md"
         ).read_text(encoding="utf-8")
 
+        required_sections = [
+            "Challenge",
+            "Goals",
+            "Scope and non-goals",
+            "Governing principle",
+            "Proposed direction",
+            "Feasibility",
+            "Decision requested",
+        ]
+        level_two_headings = [
+            line.removeprefix("## ")
+            for line in proposal_asset.splitlines()
+            if line.startswith("## ")
+        ]
+        self.assertEqual(
+            level_two_headings,
+            required_sections[:-1] + ["Impact and major trade-offs", required_sections[-1]],
+        )
+
         proposal_terms = [
-            "`Vision fit`",
-            "new or substantively revised proposals",
-            "fits the current vision",
-            "may conflict with the current vision",
-            "proposes a vision revision",
-            "no vision exists yet",
-            "first non-empty line",
-            "When root `VISION.md` does not exist, proposals must use the exact `Vision fit` value `no vision exists yet`.",
-            "If root `VISION.md` exists, choose one of the current-vision outcomes",
-            "Retired root `vision.md` must not prevent `no vision exists yet`",
-            "must not silently redefine project vision",
-            "Legacy proposals",
+            "direction-approval artifact",
+            "exactly seven required level-two sections",
+            "Impact and major trade-offs",
+            "only when it could materially affect approval",
+            "depth is proportional to uncertainty",
+            "No fixed word count, length, or token budget",
+            "detailed behavior, architecture, APIs, commands, schemas, component design, implementation sequencing, verification design, test cases, and rollout mechanics",
+            "Portable authoring requires no `change.yaml`",
+            "`change.yaml` is the sole owner of governed proposal lifecycle state and ownership",
         ]
         for term in proposal_terms:
             with self.subTest(skill="proposal", term=term):
                 self.assertIn(term, proposal_body)
 
         proposal_review_terms = [
-            "Check the proposal's `Vision fit` section",
-            "created or substantively revised after the vision spec was adopted",
-            "request revision",
-            "When root `VISION.md` does not exist, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision.",
-            "If root `VISION.md` exists, `Vision fit` must not say `no vision exists yet`.",
-            "Retired root `vision.md` must not prevent `no vision exists yet`",
-            "revise proposal",
-            "revise vision",
-            "record explicit exception",
-            "approving owner or owning stage",
-            "evidence for the conflict",
-            "why proposal revision is not chosen",
-            "why vision revision is not chosen",
-            "where the exception is recorded",
-            "one-time",
-            "future vision-revision trigger",
-            "`explain-change.md`",
+            "Does this proposal provide enough evidence for a responsible decision about whether to pursue the direction?",
+            "too vague",
+            "prematurely settles",
+            "must not create a finding solely because downstream detail or a routine impact section is absent",
+            "architecture and specification authoring only",
+            "Direct and review-only requests remain isolated",
+            "aligned",
+            "material-conflict",
+            "vision-revision-requested",
+            "no-vision-bootstrap",
         ]
         for term in proposal_review_terms:
             with self.subTest(skill="proposal-review", term=term):
                 self.assertIn(term, proposal_review_body)
+        self.assertIn("Vision alignment: <aligned | material-conflict | vision-revision-requested | no-vision-bootstrap>", review_asset)
 
         forbidden_terms = [
-            "migration-recognized legacy root `vision.md`",
-            "During the `vision.md` to `VISION.md` migration",
-            "has not yet replaced",
+            "## Status",
+            "## Owning change record",
+            "## Vision fit",
+            "## Expected Behavior Changes",
+            "## Architecture Impact",
+            "## Testing and Verification Strategy",
+            "## Rollout and Rollback",
         ]
-        for body, label in ((proposal_body, "proposal"), (proposal_review_body, "proposal-review")):
-            for term in forbidden_terms:
-                with self.subTest(skill=label, forbidden=term):
-                    self.assertNotIn(term, body)
+        for term in forbidden_terms:
+            with self.subTest(asset="proposal", forbidden=term):
+                self.assertNotIn(term, proposal_asset)
 
     def test_governance_workflow_and_readme_define_vision_source_of_truth(self) -> None:
         constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
@@ -3573,7 +3589,6 @@ Use the inputs somehow and produce a useful result.
 
         required_terms = [
             "`VISION.md` is the canonical project-vision artifact",
-            "created or substantively revised after this spec is adopted include `Vision fit`",
             "README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`",
             "README front-matter is not the source of truth when it conflicts with `VISION.md`",
         ]
@@ -3582,6 +3597,13 @@ Use the inputs somehow and produce a useful result.
             for term in required_terms:
                 with self.subTest(path=relative_path, term=term):
                     self.assertIn(term, body)
+
+        for relative_path in ["CONSTITUTION.md", "AGENTS.md", "docs/workflows.md"]:
+            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            self.assertIn(
+                "Routine vision alignment is Proposal Review evidence, not a required proposal section.",
+                body,
+            )
 
     def test_active_vision_spec_retires_lowercase_path_and_user_facing_modes(self) -> None:
         spec = (ROOT / "specs" / "vision-skill.md").read_text(encoding="utf-8")
@@ -3682,7 +3704,7 @@ Use the inputs somehow and produce a useful result.
             "`VISION.md` absence blocks the first substantive proposal",
             "`CONSTITUTION.md` absence blocks governance adoption",
             "Bootstrap proposals",
-            "identify the bootstrap exception in `Vision fit`",
+            "`Impact and major trade-offs` and `Decision requested`",
             "next mandatory or triggered downstream stage",
         ]
         for term in proposal_terms:
@@ -3690,9 +3712,9 @@ Use the inputs somehow and produce a useful result.
                 self.assertIn(term, proposal)
 
         proposal_review_terms = [
-            "Bootstrap proposals",
-            "identify the bootstrap exception in `Vision fit`",
-            "request revision if the bootstrap exception is missing",
+            "bootstrap exception",
+            "`Impact and major trade-offs` and `Decision requested`",
+            "Request revision if the disclosure is missing",
             "standing artifact gate",
         ]
         for term in proposal_review_terms:
@@ -5347,12 +5369,10 @@ and result format.
         proposal_terms = [
             "## Scope preservation",
             "Before drafting or materially revising a proposal, extract the user's initial goals, concerns, constraints, and requested outcomes.",
-            "Every initial user goal must be visible in the proposal as one `initial goal treatment` enum value.",
+            "Keep each material goal visible in `Goals`, `Scope and non-goals`, or the requested decision.",
             "Closed enum: initial goal treatment",
-            "## Initial intent preservation",
-            "| Initial user goal | Proposal treatment | Where recorded |",
-            "Do not silently drop a user goal when narrowing a proposal.",
-            "If a proposal intentionally narrows the user's request, record the narrowing",
+            "summarize its destination inside `Scope and non-goals`",
+            "Do not silently drop a user goal when narrowing a proposal; state intentional narrowing and its reason.",
         ]
         for term in proposal_terms:
             with self.subTest(skill="proposal", term=term):
@@ -5361,7 +5381,7 @@ and result format.
         proposal_review_terms = [
             "## Scope preservation review",
             "Compare the user's initial request with the proposal.",
-            "Every initial goal must be visibly classified with one `initial goal treatment` enum value.",
+            "Each material goal must remain visible in goals, scope, or the requested decision.",
             "Return `changes-requested` if any initial user goal disappears.",
             "Return `changes-requested` if a deferred goal has no follow-up.",
             "Return `changes-requested` if a rejected goal has no rationale.",
@@ -5389,9 +5409,8 @@ and result format.
             "release policy, workflow policy, generated output, public skill behavior, or validation policy",
             "`proposal-review` identifies silent narrowing, hidden follow-up risk, or multi-workstream scope",
             "Small single-decision proposals may omit the scope budget.",
-            "| Work item | Treatment | Reason |",
             "Closed enum: scope budget treatment",
-            "Use the `scope budget treatment` enum above for allowed treatment values.",
+            "keep the result inside `Scope and non-goals` rather than adding a level-two section.",
             "Route deferred work through the follow-up ownership model rather than chat-only notes or `project-map` ownership.",
             "workflow routes, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.",
             "Do not search generated adapter output for authored skill truth.",
@@ -7550,13 +7569,28 @@ class ProposalSkillSimplificationTests(unittest.TestCase):
         for value in ("in scope", "out of scope", "deferred follow-up", "rejected option", "open question", "core to this proposal", "first-slice candidate", "same-slice dependency", "separate implementation slice", "deferable follow-up", "separate proposal"):
             self.assertIn(value, self.strategic)
 
-    def test_skeleton_owns_four_independent_conditional_groups(self) -> None:
-        for heading in ("Vision exception or revision", "Standing artifact dependency or bootstrap", "Initial intent preservation", "Scope budget"):
-            self.assertEqual(self.skeleton.count(f"## {heading}"), 1)
-        for placeholder in ("<current vision relationship>", "<required standing artifact>", "<initial user goal>", "<work item>"):
-            self.assertIn(placeholder, self.skeleton)
-        self.assertIn("Inapplicable conditional groups are omitted", self.skill)
-        self.assertIn("Applicable but unresolved groups report an explicit blocker", self.skill)
+    def test_skeleton_owns_exact_direction_sections_and_one_conditional_section(self) -> None:
+        headings = [
+            line.removeprefix("## ")
+            for line in self.skeleton.splitlines()
+            if line.startswith("## ")
+        ]
+        self.assertEqual(
+            headings,
+            [
+                "Challenge",
+                "Goals",
+                "Scope and non-goals",
+                "Governing principle",
+                "Proposed direction",
+                "Feasibility",
+                "Impact and major trade-offs",
+                "Decision requested",
+            ],
+        )
+        self.assertIn("otherwise omit this section", self.skeleton)
+        self.assertIn("Omit the material-impact section when it is not needed", self.skill)
+        self.assertIn("inside an allowed section", self.skill)
 
     def test_references_have_non_overlapping_policy_owners(self) -> None:
         self.assertIn("governed proposal authoring", self.governed.lower())
@@ -8646,9 +8680,9 @@ class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
         )
 
         self.assertEqual(skeleton.count("## Feasibility"), 1)
-        for term in ("Assessment", "Basis", "Constraints", "Blockers"):
-            self.assertIn(f"### {term}", skeleton)
-        self.assertIn("embedded `Feasibility` section", proposal)
+        for term in ("assessment", "basis", "constraints", "blockers"):
+            self.assertIn(term, skeleton.lower())
+        self.assertIn("exactly one non-empty `Feasibility` section", proposal)
         self.assertIn("no standalone feasibility artifact", proposal)
         for term in (
             "missing",

@@ -46,6 +46,10 @@ FORMAL_REVIEW_STAGES = frozenset(
 PACKAGE_REVIEW_KINDS = frozenset({"design", "delivery"})
 PACKAGE_REVIEW_OUTCOMES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
 PACKAGE_FINDING_SCOPES = frozenset({"artifact-local", "cross-artifact", "upstream-direction"})
+PROPOSAL_REVIEW_VISION_ALIGNMENTS = frozenset(
+    {"aligned", "material-conflict", "vision-revision-requested", "no-vision-bootstrap"}
+)
+SIMPLIFIED_PROPOSAL_REVIEW_CUTOVER_DATE = "2026-08-30"
 TEST_SPEC_REVIEW_STATUSES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
 TEST_SPEC_REVIEW_IMMEDIATE_NEXT_STAGES = frozenset(
     {
@@ -817,6 +821,23 @@ def _parse_review_file(
     _validate_automated_review_gate_fields(path, review_id, fields, mode, findings)
     _validate_requirement_fidelity_fields(path, review_id, fields, mode, findings)
     _validate_calibration_record_fields(path, review_id, fields, mode, findings)
+    review_date = _first_nonempty(fields, "Review date")
+    vision_alignment_values = list(fields.get("Vision alignment", []))
+    for line_number, line in enumerate(lines, start=1):
+        match = re.match(r"^\s*-\s+Vision alignment:\s*(.*)$", line)
+        if match:
+            vision_alignment_values.append(FieldValue(value=match.group(1).strip(), line=line_number))
+    has_current_proposal_review_shape = bool(vision_alignment_values) or bool(
+        review_date is not None and review_date.value > SIMPLIFIED_PROPOSAL_REVIEW_CUTOVER_DATE
+    )
+    if stage is not None and stage.value == "proposal-review" and has_current_proposal_review_shape:
+        _validate_proposal_review_result_fields(
+            path,
+            review_id,
+            vision_alignment_values,
+            mode,
+            findings,
+        )
     if stage is not None and stage.value == "test-spec-review":
         _validate_test_spec_review_result_fields(path, review_id, fields, mode, findings)
     if stage is not None and stage.value in {"design-review", "delivery-review"}:
@@ -1780,6 +1801,40 @@ def _validate_calibration_record_fields(
     _validate_calibration_critical_authority(path, review_id, fields, calibration_booleans, mode, findings)
     _validate_calibration_sampling_gates(path, review_id, fields, calibration_booleans, mode, findings)
     _validate_requirement_compression_calibration_fields(path, review_id, fields, mode, findings)
+
+
+def _validate_proposal_review_result_fields(
+    path: Path,
+    review_id: str,
+    values: list[FieldValue],
+    mode: str,
+    findings: list[ValidationFinding],
+) -> None:
+    if len(values) != 1 or not values[0].value:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=values[0].line if values else None,
+                mode=mode,
+                message="proposal-review must contain exactly one Vision alignment",
+                review_id=review_id,
+            )
+        )
+        return
+    alignment = values[0]
+    if alignment.value not in PROPOSAL_REVIEW_VISION_ALIGNMENTS:
+        findings.append(
+            ValidationFinding(
+                path=path,
+                line=alignment.line,
+                mode=mode,
+                message=(
+                    f"unsupported proposal-review Vision alignment '{alignment.value}'; "
+                    f"allowed values are {', '.join(sorted(PROPOSAL_REVIEW_VISION_ALIGNMENTS))}"
+                ),
+                review_id=review_id,
+            )
+        )
 
 
 def _validate_test_spec_review_result_fields(
@@ -3838,10 +3893,10 @@ def _validate_blocking_review_closeout(
 ) -> list[ValidationFinding]:
     findings: list[ValidationFinding] = []
     explicit_closeouts = set(resolution.explicit_review_closeout_ids) if resolution else set()
-    for index, entry in enumerate(log_entries):
+    for entry in log_entries:
         if entry.status.lower() not in BLOCKING_REVIEW_STATUSES:
             continue
-        if _has_later_nonblocking_review(entry, log_entries[index + 1 :]):
+        if _has_later_nonblocking_review(entry, log_entries):
             continue
         if entry.review_id in explicit_closeouts:
             continue
@@ -3859,14 +3914,17 @@ def _validate_blocking_review_closeout(
 
 def _has_later_nonblocking_review(
     entry: ReviewLogEntry,
-    later_entries: list[ReviewLogEntry],
+    review_entries: list[ReviewLogEntry],
 ) -> bool:
     entry_round = _round_number(entry.round)
     if entry_round is None:
         return False
+    entry_occurrence = _review_occurrence_id(entry.review_id)
 
-    for later in later_entries:
+    for later in review_entries:
         if later.stage != entry.stage:
+            continue
+        if _review_occurrence_id(later.review_id) != entry_occurrence:
             continue
         if later.status.lower() in BLOCKING_REVIEW_STATUSES:
             continue
@@ -3877,9 +3935,14 @@ def _has_later_nonblocking_review(
     return False
 
 
+def _review_occurrence_id(review_id: str) -> str:
+    return re.sub(r"-r[0-9]+$", "", review_id)
+
+
 def _round_number(value: str) -> int | None:
+    normalized = value[1:] if value.startswith("r") else value
     try:
-        return int(value, 10)
+        return int(normalized, 10)
     except ValueError:
         return None
 

@@ -558,6 +558,7 @@ PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS = {
 PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS = {
     "skill",
     "review-status",
+    "vision-alignment",
     "material-findings",
     "recording-status",
     "recording-blocker",

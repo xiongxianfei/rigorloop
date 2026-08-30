@@ -317,8 +317,86 @@ test("every non-approved package outcome settles visibly without granting author
     assert.match(changeBytes(root), new RegExp(`status: ${outcome}`));
     assert.match(changeBytes(root), /authority: withheld/);
     const status = packageContext(root).result.context.review_package;
-    assert.equal(status.next_permitted_operation, { "changes-requested": "route-correction", blocked: null, inconclusive: "record-package-review" }[outcome]);
+    assert.equal(status.next_permitted_operation, { "changes-requested": "route-correction", blocked: "record-package-review", inconclusive: "record-package-review" }[outcome]);
   }
+});
+
+test("blocked package review without correction targets permits an unchanged clean rereview", async () => {
+  const { root } = await packageRepository();
+  const initialContext = packageContext(root);
+  const blockedReview = writePackageReview(root, initialContext, { outcome: "blocked" });
+  const recordBlocked = writePackageRequest(root, "record-blocked-r1", {
+    schema_version: 1, operation: "record-package-review", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
+    review_id: blockedReview.reviewId, upstream_review_id: blockedReview.packageFacts.upstream_review_id,
+    members: blockedReview.packageFacts.members, evidence_path: blockedReview.reviewPath, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["record-package-review", "--request", recordBlocked], { cwd: root }).exitCode, 0);
+  const settleBlocked = writePackageRequest(root, "settle-blocked-r1", {
+    schema_version: 1, operation: "settle-review-package", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
+    review_id: blockedReview.reviewId, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["settle-review-package", "--request", settleBlocked], { cwd: root }).exitCode, 0);
+
+  const blockedContext = packageContext(root).result.context.review_package;
+  assert.equal(blockedContext.next_permitted_operation, "record-package-review");
+
+  const approvedReview = writePackageReview(root, packageContext(root), { outcome: "approved", round: "r2" });
+  const recordApproved = writePackageRequest(root, "record-approved-r2", {
+    schema_version: 1, operation: "record-package-review", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
+    review_id: approvedReview.reviewId, upstream_review_id: approvedReview.packageFacts.upstream_review_id,
+    members: approvedReview.packageFacts.members, evidence_path: approvedReview.reviewPath, stage_authority: "design-review",
+  });
+  const recorded = executeLifecycleCli(["record-package-review", "--request", recordApproved, "--format", "json"], { cwd: root });
+  assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
+  const settleApproved = writePackageRequest(root, "settle-approved-r2", {
+    schema_version: 1, operation: "settle-review-package", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
+    review_id: approvedReview.reviewId, stage_authority: "design-review",
+  });
+  const settled = executeLifecycleCli(["settle-review-package", "--request", settleApproved, "--format", "json"], { cwd: root });
+  assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
+  assert.equal(packageContext(root).result.context.review_package.authority, "granted");
+});
+
+test("blocked package rereview rejects modified prior review evidence", async () => {
+  const { root } = await packageRepository();
+  const blockedReview = writePackageReview(root, packageContext(root), { outcome: "blocked" });
+  const recordBlocked = writePackageRequest(root, "record-blocked-before-stale", {
+    schema_version: 1, operation: "record-package-review", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
+    review_id: blockedReview.reviewId, upstream_review_id: blockedReview.packageFacts.upstream_review_id,
+    members: blockedReview.packageFacts.members, evidence_path: blockedReview.reviewPath, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["record-package-review", "--request", recordBlocked], { cwd: root }).exitCode, 0);
+  const settleBlocked = writePackageRequest(root, "settle-blocked-before-stale", {
+    schema_version: 1, operation: "settle-review-package", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
+    review_id: blockedReview.reviewId, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["settle-review-package", "--request", settleBlocked], { cwd: root }).exitCode, 0);
+
+  const currentContext = packageContext(root);
+  const priorEvidence = join(root, blockedReview.reviewPath);
+  writeFileSync(priorEvidence, `${readFileSync(priorEvidence, "utf8")}\nModified after settlement.\n`, "utf8");
+  const staleContext = packageContext(root).result.context.review_package;
+  assert.equal(staleContext.status, "incomplete");
+  assert.equal(staleContext.next_permitted_operation, null);
+  assert.equal(staleContext.errors[0].code, "RL_STALE_EVIDENCE");
+  const approvedReview = writePackageReview(root, currentContext, { outcome: "approved", round: "r2" });
+  const recordApproved = writePackageRequest(root, "record-approved-after-stale", {
+    schema_version: 1, operation: "record-package-review", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
+    review_id: approvedReview.reviewId, upstream_review_id: approvedReview.packageFacts.upstream_review_id,
+    members: approvedReview.packageFacts.members, evidence_path: approvedReview.reviewPath, stage_authority: "design-review",
+  });
+  const before = changeBytes(root);
+  const rejected = executeLifecycleCli(["record-package-review", "--request", recordApproved, "--format", "json"], { cwd: root });
+  assert.notEqual(rejected.exitCode, 0);
+  assert.equal(rejected.result.errors[0].code, "RL_STALE_EVIDENCE");
+  assert.equal(changeBytes(root), before);
 });
 
 test("replacement Proposal Review invalidates approved design authority", async () => {

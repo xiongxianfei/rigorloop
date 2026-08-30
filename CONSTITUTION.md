@@ -34,7 +34,7 @@ For project vision and proposal-fit questions, the source-of-truth order is:
 
 `VISION.md` is the canonical project-vision artifact for project identity, target users, commitments, refusals, and proposal-fit reference. It is subordinate to `CONSTITUTION.md` and does not replace specs, proposals, architecture artifacts, or execution plans.
 
-Proposals created or substantively revised after this spec is adopted include `Vision fit`. README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`. README front-matter is not the source of truth when it conflicts with `VISION.md`.
+Routine vision alignment is Proposal Review evidence, not a required proposal section. A material vision conflict, revision request, or bootstrap exception belongs in the proposal's material-impact disclosure and requested decision because it can change approval. README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`. README front-matter is not the source of truth when it conflicts with `VISION.md`.
 
 `docs/project-map.md`, when present, is a living reference rather than a standing artifact. Contributors MUST NOT rely on it when it is absent, known-stale, contradicted by the current repository, or missing the relied-on area unless they refresh it or record a no-map rationale.
 
