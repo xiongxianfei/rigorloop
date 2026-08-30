@@ -62,22 +62,26 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: verify
   evidence:
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-to-review.md
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-to-spec.md
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-review-receipt-rereview.md
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-r4-to-spec.md
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-spec-to-review-r1.md
+    - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/explain-change.md
   lifecycle_state: active
-  next_stage: code-review
+  next_stage: verify
   planned_work:
     current_milestone: M7
     final_closeout:
-      evidence: []
+      evidence:
+        - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r2.md
+        - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/explain-change.md
       readiness: not-ready
       reasons:
-        - implementation-milestones-open
+        - verify-pending
     initialization_basis:
       review_id: plan-review-r5
       review_record: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/plan-review-r5.md
@@ -85,13 +89,14 @@ workflow_state:
       reviewed_artifact_path: docs/plans/2026-08-29-consolidate-rigorloop-review-gates.md
       reviewed_revision: 0f37ca539a8d2fdc10ad4b982d69c95fe379f04ca4383a78877de34fe1a090f6
     latest_review:
-      artifact_id: none
-      evidence: []
+      artifact_id: plan
+      evidence:
+        - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r2.md
       milestone_id: none
-      occurrence: none
-      round: none
-      stage: none
-      status: not-started
+      occurrence: final
+      round: r2
+      stage: code-review
+      status: approved
     milestones:
       M1:
         kind: implementation
