@@ -2,12 +2,12 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 - Reviews covered: `design-review-r1`, `delivery-review-r1`, `code-review-m1-r1`, `code-review-m3-r1`
-- Findings resolved: 4
-- Unresolved findings: 1
-- Current result: RTD-M3-CR1 requires disposition before M3 correction and rereview.
+- Findings resolved: 5
+- Unresolved findings: 0
+- Current result: RTD-M3-CR1 is corrected and ready for independent M3 Code Review R2.
 
 ## Resolution Overview
 
@@ -17,7 +17,7 @@ Closeout status: open
 | RTD-DLR1 | accepted | resolved | All ten acceptance criteria now have explicit test-case ownership. |
 | RTD-DLR2 | accepted | resolved | M3 owns RTD-R20 and every multi-milestone proof row names its complete timing. |
 | RTD-M1-CR1 | accepted | resolved | Added and directly proved a concise many-to-many allocation example in both mapping directions. |
-| RTD-M3-CR1 | needs-decision | open | Decide whether to add public skill-validator integration proof for missing or drifted selected-consumer copies. |
+| RTD-M3-CR1 | accepted | resolved | Added public skill-validator proof that removal of a mapped copy fails closed. |
 
 ## Finding Details
 
@@ -100,16 +100,16 @@ Validation evidence: `python scripts/test-skill-validator.py -k RequirementDeliv
 #### RTD-M3-CR1
 
 Finding ID: RTD-M3-CR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: implementation owner
 Owning stage: implement M3
 Decision owner: implementation owner
-Decision needed: Accept, reject, defer, or partially accept the bounded public-validator regression correction.
-Chosen action: Pending owner disposition.
+Decision needed: none; the bounded public-validator regression correction is accepted.
+Chosen action: Invoke the real skill-tree validator on an isolated copy of the proposal skill with its mapped reference removed and require the direct missing-copy diagnostic.
 Rationale: The new negative test invokes the parity helper directly, so removal of the production `validate_skill_file` integration leaves every M3 test green despite RTD-T07 requiring fail-closed behavior through existing validator/build entrypoints.
 Required outcome: Public canonical skill validation must have direct negative regression proof for a missing or drifted selected-consumer model copy.
 Safe resolution path: Add a temporary valid selected-skill fixture, patch test-local canonical roots, invoke `validate_skill_tree` or the existing validation CLI after removing or drifting its mapped copy, assert the actionable path diagnostic, rerun the M3 command set, update M3 evidence, and request independent M3 rereview.
-Follow-up: Record the disposition, implement only the accepted bounded regression correction, then rerun independent Code Review on M3 and the holistic M1-M3 publication behavior.
+Follow-up: Independent Code Review R2 on M3 and the holistic M1-M3 publication behavior.
 Validation target: RTD-T07, CMD-001, CMD-003, CMD-004, and CMD-005; the focused negative regression must fail if the production integration call is removed.
-Validation evidence: Pending disposition and correction. Current review reruns pass 368 skill-validator tests, 8 build-skill tests, temporary generated validation, and 152 adapter-distribution tests, but none protects the new helper-to-public-validator wiring.
+Validation evidence: The focused M3 suite passes 3/3 including the public-entrypoint missing-copy regression, the full skill validator passes 369 tests, and the temporary build check passes. The prior 8 build-skill and 152 adapter-distribution tests remain current because this correction changes only validator integration proof and test-time canonical path injection.

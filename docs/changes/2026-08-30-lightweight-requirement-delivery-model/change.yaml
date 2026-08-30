@@ -343,6 +343,14 @@ lifecycle_cli:
       finding_id: RTD-M1-CR1
       owner: implementation owner
       stage_authority: review-resolution
+    RTD-M3-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-resolution.md
+      evidence_sha256: bd813be26ffea8f1a3294877a5509fdf4642bfcbb11adc1fc61775eec1b2fd95
+      finding_id: RTD-M3-CR1
+      owner: implementation owner
+      stage_authority: review-resolution
   reviews:
     proposal:
       artifact_path: docs/proposals/2026-08-30-lightweight-requirement-delivery-model.md
