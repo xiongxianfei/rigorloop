@@ -4,12 +4,12 @@
 
 Closeout status: open
 
-Review closeout: code-review-m2-r2
+Review closeout: code-review-m2-r3
 
 - Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
-- Findings resolved: 5
-- Unresolved findings: 1
-- Current result: the earlier five findings remain resolved. `SPC-M2-CR5` awaits owner disposition.
+- Findings resolved: 6
+- Unresolved findings: 0
+- Current result: all six findings are resolved. M2 correction commit `f395ab51` is ready for independent rereview.
 
 ## Resolution Overview
 
@@ -20,7 +20,7 @@ Review closeout: code-review-m2-r2
 | SPC-M2-CR2 | accepted | resolved | Explicitly selected stage-owned proposal/change-record pairs now fail when the primary proposal path differs. |
 | SPC-M2-CR3 | accepted | resolved | Complete simplified shape is recognized before the settled-history legacy exception. |
 | SPC-M2-CR4 | accepted | resolved | Selected governed inputs are correlated directly without a filename-equality rule. |
-| SPC-M2-CR5 | needs-decision | open | Decide whether to narrow mismatch inference to records that declare a proposal entry. |
+| SPC-M2-CR5 | accepted | resolved | Mismatch inference now considers only selected records that declare a primary proposal entry. |
 
 ## Finding Details
 
@@ -116,15 +116,15 @@ Validation evidence: correction commit `b98e9926`; different-change-ID mismatch 
 #### SPC-M2-CR5
 
 Finding ID: SPC-M2-CR5
-Disposition: needs-decision
-Status: open
-Owner: developer
-Owning stage: review-resolution
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: implement
 Decision owner: developer
-Decision needed: Accept, reject, defer, or partially accept narrowing governed mismatch inference to selected records that declare a proposal entry.
-Stop state: M2 remains resolution-needed; no implementation correction or rereview is authorized by this record alone.
+Decision needed: none; the user's `go ahead` authorized the bounded correction and mandatory rereview.
+Chosen action: Track selected stage-owned records with a primary proposal entry separately and apply mismatch correlation only to that set.
 Rationale: The current condition couples a portable proposal to any single selected stage-owned change record, including a record with no proposal entry.
 Required outcome: Preserve portable proposal validity when an unrelated selected change record has no proposal entry, while keeping different-ID governed mismatch detection when the record declares proposal ownership.
 Safe resolution path: Accept the focused scope in `code-review-m2-r3.md`, narrow only the ownership inference, add the composition regression, rerun M2 proof, and rereview.
 Validation target: portable proposal plus unrelated non-proposal change record passes; matching governed proposal passes; different-ID selected proposal mismatch still fails.
-Validation evidence: pending owner disposition and corrected M2 validation.
+Validation evidence: correction commit `f395ab51`; portable-plus-spec-only-record and different-ID mismatch regressions pass; artifact-lifecycle validator 157/157 and review-artifact validator 107/107 pass.

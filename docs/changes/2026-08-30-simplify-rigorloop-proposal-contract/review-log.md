@@ -79,7 +79,7 @@ Detailed record: reviews/code-review-m2-r3.md
 Resolution: review-resolution.md#code-review-m2-r3
 Material findings: SPC-M2-CR5
 Finding ID: SPC-M2-CR5
-Open findings: SPC-M2-CR5
+Open findings: none
 Recording status: recorded
 
 ### Review entry
