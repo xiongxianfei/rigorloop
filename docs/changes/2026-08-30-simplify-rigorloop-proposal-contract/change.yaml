@@ -41,7 +41,7 @@ artifact_states:
     role: primary
 review_packages:
   delivery:
-    authority: withheld
+    authority: granted
     correction_targets: []
     findings: []
     members:
@@ -49,9 +49,9 @@ review_packages:
       test-spec: specs/simplified-proposal-contract.test.md
     outcome: approved
     package_kind: delivery
-    review_id: delivery-review-r2
-    review_round: r2
-    status: review-required
+    review_id: delivery-review-r3
+    review_round: r3
+    status: approved
     upstream_review_id: design-review-r2
   design:
     authority: granted
@@ -117,11 +117,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m3-r1.md
+  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/delivery-review-r3.md
   review_log: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
-  reviewed_artifact: implementation-milestone:M3@788d3ae56dbd3394feeeea6c4bc334df7edeeebf
-  status: blocked
-  unresolved_items: 1
+  reviewed_artifact: review-package:delivery
+  status: clean
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -191,19 +191,19 @@ lifecycle_cli:
   package_reviews:
     delivery:
       correction_targets: []
-      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/delivery-review-r2.md
-      evidence_sha256: e042ac5c05990f3d84be48a24a36ab9567bd6c800977095f994a822e623b4d82
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/delivery-review-r3.md
+      evidence_sha256: 7e1b951d3f3229ab0addaf0c71ea660046f1e558ac55a3f0c8061cc485166f43
       findings: []
       members:
         plan: docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md
         test-spec: specs/simplified-proposal-contract.test.md
       outcome: approved
       package_kind: delivery
-      review_id: delivery-review-r2
+      review_id: delivery-review-r3
       review_log_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
-      review_log_sha256: 873620e896b576cb14d6c7bc7bf4399ca9a85914ca38b2dfd454e1a6c1f2abb6
+      review_log_sha256: bb0c8a0f83fc5093913240315f6439bd1af2c89af223708915fa9d2b85dfee96
       reviewer_authority: delivery-review
-      round: r2
+      round: r3
       stage_authority: delivery-review
       upstream_review_id: design-review-r2
     design:
