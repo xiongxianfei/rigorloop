@@ -115,4 +115,4 @@ The final branch realizes the approved conceptual model with one concise source,
 
 The remaining work is lifecycle closeout rather than implementation: durable change explanation, final verification including its selected PR-mode checks, and PR preparation. This clean review does not establish those later outcomes.
 
-This review performs no implementation, lifecycle routing, explanation, verification, or PR edit. After supported review recording, the exact next workflow step is `advance-stage` from `code-review` to `explain-change` under workflow authority.
+This review performs no implementation, lifecycle routing, explanation, verification, or PR edit. After supported durable review recording, the exact next workflow step is `explain-change`; workflow owns consuming this receipt and recording the downstream route. The lifecycle CLI does not currently expose `code-review` authority for `record-review` at this state, so this review does not claim a CLI transition that the command contract does not support.
