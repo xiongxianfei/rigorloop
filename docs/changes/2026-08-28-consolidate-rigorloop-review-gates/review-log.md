@@ -24,6 +24,22 @@
 
 ### Review entry
 
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: M3 path-bounded implementation in commit `e1a205e86a103c8001509dc111b84c9a5d1b0db7`
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-m3-r1
+Material findings: CRG-M3-CR1, CRG-M3-CR2
+Open findings: CRG-M3-CR1, CRG-M3-CR2
+Finding ID: CRG-M3-CR1
+Finding ID: CRG-M3-CR2
+Recording status: recorded
+Blocker: M3 requires automation-graph and downstream-authority corrections, direct proof, and rereview
+
+### Review entry
+
 Review ID: code-review-m2-r1
 Stage: code-review
 Round: r1

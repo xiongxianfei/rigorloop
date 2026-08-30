@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:f3334ff8cf10504bdd56b49ac228f84a7ad6523503fa4ec83be5b8bd5ff041a6",
+  "milestone_id": "M3",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/m3-consolidated-routing-implementation.md",
+  "stage_authority": "workflow"
+}

@@ -62,7 +62,7 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: implement
+  current_stage: code-review
   evidence:
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-to-review.md
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-to-spec.md
@@ -101,7 +101,7 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: implementing
+        state: review-requested
       M4:
         kind: implementation
         state: planned
@@ -127,11 +127,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m2-r3.md
+  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m3-r1.md
   review_log: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-log.md
-  reviewed_artifact: M2 path-bounded working-tree packet sha256:e277ff7bba302ff9195b30cb2bc423fae922a50ff379fce8b07eea33b20d19c1
-  status: clean
-  unresolved_items: 0
+  reviewed_artifact: M3 path-bounded implementation in commit e1a205e86a103c8001509dc111b84c9a5d1b0db7
+  status: changes-requested
+  unresolved_items: 2
 lifecycle_cli:
   schema_version: 2
   artifacts:
