@@ -22,7 +22,7 @@ Use the lifecycle CLI for governed correction coordination. When an upstream aut
 
 ## Canonical applicability
 
-Architecture-assessment applicability and routing are owned here. After approved recorded `spec-review`, record exactly one assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`.
+Architecture and specification are both mandatory design-package members. Route architecture authoring before specification finalization, then reconcile both artifacts before `design-review`.
 
 - `architecture-required` routes through architecture authoring and review.
 - `architecture-not-required` skips those stages.

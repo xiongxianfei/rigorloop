@@ -75,11 +75,12 @@ test("status exposes one deterministic result model without writes", async () =>
   ]);
   assert.equal(execution.result.effective_state.recorded_state.spec, "approved");
   assert.equal(execution.result.effective_state.evidence_state.spec, "current");
-  assert.equal(execution.result.effective_state.downstream_package_authority.enforcement, "cutover-pending");
+  assert.equal(execution.result.effective_state.downstream_package_authority.enforcement, "enforced");
   assert.equal(execution.result.effective_state.downstream_package_authority.packages.design.state, "missing");
   assert.equal(execution.result.effective_state.downstream_package_authority.packages.delivery.state, "missing");
   assert.equal(execution.result.effective_state.downstream_package_authority.packages.design.authority, "withheld");
   assert.deepEqual(execution.result.permitted_operations, ["record-validation", "complete-milestone"]);
+  assert.equal(execution.result.blockers.some((item) => item.blocking_invariant === "downstream-package-authority"), false);
   assert.match(execution.human, /Current stage: implement/);
   assert.match(execution.human, /Artifact spec: approved; evidence current/);
   assert.equal(readFileSync(path, "utf8"), before);
@@ -91,7 +92,7 @@ test("context returns bounded stage facts from the shared interpretation", async
   assert.equal(result.context.exact_change, "example");
   assert.equal(result.context.target_artifact, null);
   assert.equal(result.context.permitted_registration_operation, "record-review");
-  assert.equal(result.context.downstream_package_authority.enforcement, "cutover-pending");
+  assert.equal(result.context.downstream_package_authority.enforcement, "enforced");
   assert.equal(result.context.downstream_package_authority.status, "not-current");
   assert.match(result.context.lifecycle_revision, /^sha256:[a-f0-9]{64}$/);
   assert.equal(JSON.stringify(result).includes(root), false);
@@ -100,8 +101,10 @@ test("context returns bounded stage facts from the shared interpretation", async
   assert.match(human, /Permitted registration operation: record-review/);
 });
 
-test("downstream authority distinguishes historical-only reviews without activating the cutover blocker", async () => {
+test("downstream authority rejects historical-only artifact reviews", async () => {
   const root = await repository(["example"], {
+    review_packages: {},
+    lifecycle_cli: { schema_version: 2, artifacts: {}, reviews: {}, package_reviews: {}, validations: {}, resolutions: {}, milestones: {}, correction_history: {}, withdrawals: {} },
     artifact_states: {
       architecture: { kind: "architecture", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
       spec: { kind: "spec", path: "specs/example.md", role: "primary", lifecycle_state: "approved", review: { outcome: "approved" } },
@@ -110,10 +113,10 @@ test("downstream authority distinguishes historical-only reviews without activat
     },
   });
   const execution = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root });
-  assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
+  assert.equal(execution.exitCode, 2, JSON.stringify(execution.result));
   assert.equal(execution.result.effective_state.downstream_package_authority.packages.design.state, "historical-only");
   assert.equal(execution.result.effective_state.downstream_package_authority.packages.delivery.state, "historical-only");
-  assert.equal(execution.result.blockers.some((item) => item.blocking_invariant === "downstream-package-authority"), false);
+  assert.equal(execution.result.blockers.some((item) => item.blocking_invariant === "downstream-package-authority"), true);
 });
 
 test("downstream authority reports a recorded but unsettled package as partial", async () => {
@@ -200,7 +203,7 @@ test("open findings preserve the owner-stage revision operation and advance the 
   const status = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root }).result;
   assert.deepEqual(status.permitted_operations, ["record-artifact-revision"]);
   const context = executeLifecycleCli(["context", "spec-review", "--change", "example", "--format", "json"], { cwd: root }).result.context;
-  assert.equal(context.review_round, "r2");
+  assert.equal(context.review_round, null);
 
   const blockedRoot = await repository(["example"], {
     artifact_states: {

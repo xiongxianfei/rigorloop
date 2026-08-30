@@ -3,53 +3,48 @@ name: architecture
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Create or update technical architecture after the spec is stable and before execution planning.
+  Create or update technical architecture after Proposal Review and before the specification is finalized.
 argument-hint: [feature spec path, proposal path, architecture question, or change name]
 ---
 
-# Architecture assessment and authoring
+# Architecture authoring
 
 ## Workflow role
 
 - role_name: architecture
 - stage: authoring
-- upstream: approved spec and current spec review
-- downstream: architecture-review
-
-At consolidated-gates cutover, completed architecture authoring reconciles with specification and hands the exact package to `design-review`; it does not seek independent component approval. The pre-cutover `architecture-review` handoff remains only for changes completing under the earlier contract.
-- summary: Assess architecture impact and author the smallest justified package.
+- upstream: accepted proposal and embedded feasibility evidence
+- downstream: spec reconciliation, then design-review
+- summary: Author the smallest architecture package that establishes the technical design envelope.
 - ownership: Architecture artifacts and authorized architecture authoring evidence only.
-- must_not_claim: architecture-review approval, plan readiness, implementation readiness, verification, branch readiness, release readiness, or PR readiness.
+- must_not_claim: Design Review approval, plan readiness, implementation readiness, verification, branch readiness, release readiness, or PR readiness.
 
 Portable work is isolated. Workflow-managed execution does not enlarge the architecture write set.
 
 ## Evidence and upstream settlement
 
-Read current guidance, proposal, approved spec/review, canonical architecture, relevant ADRs, project map, and affected system surfaces. Rank governing artifacts above history and inference; upstream artifacts and state are read-only.
+Read current guidance, the accepted proposal and feasibility evidence, draft specification when present, canonical architecture, relevant ADRs, project map, and affected system surfaces. Rank governing artifacts above history and inference; upstream artifacts and state are read-only.
 
-Require an approved current spec without later contradiction or open resolution. Route unsettled direction to `proposal`, unclear behavior to `spec`, and missing settlement to `spec-review`.
+Require an accepted current proposal and feasibility evidence without later contradiction or open resolution. Route unsettled direction to `proposal` and behavior needing reconciliation to `spec`.
 
 ## Classification and loaded assemblies
 
-Classify before mutation. Assessment mode is `isolated` or `workflow-managed`; applicability judgment is `required`, `not-required`, or `ambiguous`; route result is `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; authoring action is `assessment-only`, `canonical-update`, `adr-only`, `canonical-update-with-adr`, or `blocked`.
+Classify before mutation. Authoring mode is `portable` or `governed`; authoring action is `canonical-update`, `adr-only`, `canonical-update-with-adr`, `no-change-required`, or `blocked`.
 
 | Assembly | Use | Loaded procedure |
 | --- | --- | --- |
-| `AA0-assessment` | assessment only | `SKILL.md` |
-| `AA1-portable-authoring` | portable architecture authoring | AA0 plus package method |
+| `AA1-portable-authoring` | portable architecture authoring | `SKILL.md` plus package method |
 | `AA2-governed-authoring` | governed authoring | AA1 plus governed authoring |
 
 Loading selects procedure, not authority.
 
-## Applicability and routing
+## Scope and routing
 
 Use architecture for cross-component structure, data flow, persistence, APIs, deployment, packaging, adapters, security, quality targets, cross-cutting rules, or durable decisions. Use the smallest surface: canonical truth, ADR decision history, or both.
 
-For a leaf change without those effects, return `architecture-not-required` with rationale and write no artifact. Unresolved applicability returns `architecture-ambiguous` and blocks. Never create temporary architecture to resolve product or behavioral uncertainty.
+For a focused change with no new architectural decision, confirm the current architecture envelope with `no-change-required`; the current architecture remains the package member. Never create temporary architecture to resolve product or behavioral uncertainty.
 
 Portable authoring repeats current applicability, writes only resolved architecture or ADR files, and never writes lifecycle, review, routing, or automation state.
-
-Workflow-managed assessment records `Stage: architecture-assessment`, `Applicability: required | not-required`, and exact `Spec identity`; ambiguity pauses without completion. Isolated assessment writes only to an explicit valid user-provided evidence path.
 
 ## Governed signals and targets
 
@@ -61,13 +56,13 @@ Target operations are `create`, `revise`, `supersede`, and `deprecate`. Canonica
 
 Author only accepted design required by the spec. Exclude milestones, secrets, review settlement, unsupported claims, and mutable state. Preserve history and identify replacement or supersession.
 
-Governed authoring ends each completed target at `review-required` and hands off to `architecture-review`. It never approves ADRs, settles supersession, or advances workflow. Report partial targets and blockers.
+Governed authoring ends each completed target at `review-required` and hands off to specification reconciliation, then `design-review`. It never approves ADRs, settles supersession, or advances workflow. Report partial targets and blockers.
 
 ## Stop conditions and claims
 
 Stop on missing or unreadable required resources, unresolved placement, invalid signals, stale basis, illegal state, ambiguity, conflicts, changed baseline, unsafe dependencies, unrecorded files, concurrency, incomplete recovery, or placeholders. The common path must not reconstruct missing procedure.
 
-Never claim architecture-review approval, ADR settlement, plan or implementation readiness, validation, verification, branch readiness, release, deployment, publication, or PR readiness.
+Never claim Design Review approval, ADR settlement, plan or implementation readiness, validation, verification, branch readiness, release, deployment, publication, or PR readiness.
 
 ## Resource map
 
@@ -77,7 +72,7 @@ Never claim architecture-review approval, ADR settlement, plan or implementation
 - COPY `assets/adr-skeleton.md` when creating a new ADR. Fill every applicable field.
 - COPY `assets/diagram-styles.mmd` when Mermaid flowchart or graph diagrams need the standard role styles.
 
-Require readable, contained, same-version resources. Missing triggered resources stop dependent work; untriggered references do not block assessment.
+Require readable, contained, same-version resources. Missing triggered resources stop dependent work.
 
 ## Evidence collection efficiency
 
@@ -93,7 +88,7 @@ Read fully when the whole file is the review target, bounded searches disagree, 
 COPY `<applicable mapped asset>` to `<resolved target>` and replace every placeholder.
 ```
 
-Use mapped assets only for applicable authoring output; assessment-only results use the compact result below.
+Use mapped assets only for applicable authoring output; `no-change-required` uses the compact result below.
 
 ## Expected output
 
@@ -101,4 +96,4 @@ Return a concise result without unfilled placeholders.
 
 ## Result
 
-Report assessment mode, applicability judgment, route, action, assembly, targets, changed sections or ADRs, blockers, recording state, claim limitations, and next stage.
+Report authoring mode, action, assembly, targets, changed sections or ADRs, blockers, recording state, claim limitations, and next stage.

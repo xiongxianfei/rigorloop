@@ -24,7 +24,7 @@ Confirm:
 - `lifecycle_contract: stage-owned-change-local-v1`;
 - plan artifact identity and current milestone match;
 - the milestone is the first nonterminal implementation milestone;
-- test-spec and test-spec-review identities are current;
+- the test-spec member and Delivery Review ID are current;
 - no blocker or unresolved prior review prevents execution.
 
 For milestone readiness, do not run broad repository searches to infer milestone state.

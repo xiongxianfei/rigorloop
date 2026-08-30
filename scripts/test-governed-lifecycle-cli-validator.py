@@ -7,6 +7,7 @@ import importlib.util
 import io
 import json
 import unittest
+import tempfile
 from pathlib import Path
 
 
@@ -95,6 +96,31 @@ class WrapperExecutionTests(unittest.TestCase):
         self.assertEqual(rendered.count('"schema_version"'), 1)
         self.assertNotIn("CHILD_SUCCESS_SENTINEL", rendered)
         self.assertEqual(json.loads(rendered)["status"], "passed")
+
+    def test_cutover_rejects_nonterminal_retired_stage_but_ignores_history(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            blocked = root / "blocked.yaml"
+            blocked.write_text(
+                "workflow_state:\n  lifecycle_state: active\n  current_stage: spec-review\n  next_stage: architecture\nreview:\n  latest_review: spec-review-r1\n",
+                encoding="utf-8",
+            )
+            historical = root / "historical.yaml"
+            historical.write_text(
+                "workflow_state:\n  lifecycle_state: terminal\n  current_stage: pr\n  next_stage: none\nreview:\n  latest_review: spec-review-r1\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(MODULE.legacy_progression_dependency(blocked), ["spec-review"])
+            self.assertEqual(MODULE.legacy_progression_dependency(historical), [])
+
+    def test_unknown_stage_is_not_mistaken_for_legacy_compatibility(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "unknown.yaml"
+            path.write_text(
+                "workflow_state:\n  lifecycle_state: active\n  current_stage: unknown-review\n  next_stage: unknown-review\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(MODULE.legacy_progression_dependency(path), [])
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -431,17 +431,27 @@ export function evaluateLifecycleOperation({ root, change, request }) {
 
   if (request.operation === "initialize-approved-plan") {
     const review = state.reviews[request.artifact_id];
+    const deliveryReview = state.package_reviews?.delivery;
+    const deliveryProjection = next.review_packages?.delivery;
+    const consolidated = next.workflow_state?.current_stage === "delivery-review"
+      && deliveryReview?.outcome === "approved"
+      && deliveryProjection?.status === "approved"
+      && deliveryProjection?.authority === "granted"
+      && deliveryProjection?.review_id === deliveryReview.review_id
+      && deliveryProjection?.members?.[request.artifact_id] === target?.path;
     if (target?.kind !== "plan" || target.role !== "primary" || target.lifecycle_state !== "review-required") throw operationError("RL_OPERATION_NOT_PERMITTED", "initialization requires the review-required primary plan", "approved-plan-initialization", [request.artifact_id, String(target?.kind), String(target?.role), String(target?.lifecycle_state)]);
-    if (next.workflow_state?.current_stage !== "plan-review") throw operationError("RL_OPERATION_NOT_PERMITTED", "approved plan initialization is not current", "approved-plan-initialization", [String(next.workflow_state?.current_stage)]);
-    if (!review || !["approved", "clean-with-notes"].includes(review.outcome) || review.stage_authority !== "plan-review") throw operationError("RL_OPERATION_NOT_PERMITTED", "initialization requires one registered clean plan review", "approved-plan-review", [request.artifact_id], "record-review");
+    if (!consolidated && next.workflow_state?.current_stage !== "plan-review") throw operationError("RL_OPERATION_NOT_PERMITTED", "approved plan initialization is not current", "approved-plan-initialization", [String(next.workflow_state?.current_stage)]);
+    if (!consolidated && (!review || !["approved", "clean-with-notes"].includes(review.outcome) || review.stage_authority !== "plan-review")) throw operationError("RL_OPERATION_NOT_PERMITTED", "initialization requires approved delivery-package or historical plan-review authority", "approved-plan-review", [request.artifact_id], "record-review");
     const registration = state.artifacts[request.artifact_id];
     const plan = targetIdentity;
-    const evidence = safeFile(root, review.evidence_path);
-    const log = requireLogEntry(root, change.change_id, review.review_id);
     if (!registration || registration.artifact_kind !== "plan" || registration.artifact_role !== "primary" || registration.stage_authority !== "plan" || registration.artifact_path !== target.path || registration.artifact_sha256 !== plan.sha256) throw operationError("RL_STALE_EVIDENCE", "primary plan registration is missing or stale", "approved-plan-identity", [request.artifact_id, target.path], "record-artifact-revision");
-    if (review.artifact_path !== target.path || review.artifact_sha256 !== plan.sha256 || review.evidence_sha256 !== evidence.sha256 || review.review_log_sha256 !== log.sha256) throw operationError("RL_STALE_EVIDENCE", "clean plan review is stale", "approved-plan-review", [review.review_id, target.path], "record-review");
-    const openFindings = review.findings.filter((findingId) => state.resolutions[findingId]?.artifact_id !== request.artifact_id);
-    if (openFindings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "plan review findings remain open", "approved-plan-review", openFindings, "record-finding-resolution");
+    if (!consolidated) {
+      const evidence = safeFile(root, review.evidence_path);
+      const log = requireLogEntry(root, change.change_id, review.review_id);
+      if (review.artifact_path !== target.path || review.artifact_sha256 !== plan.sha256 || review.evidence_sha256 !== evidence.sha256 || review.review_log_sha256 !== log.sha256) throw operationError("RL_STALE_EVIDENCE", "clean plan review is stale", "approved-plan-review", [review.review_id, target.path], "record-review");
+      const openFindings = review.findings.filter((findingId) => state.resolutions[findingId]?.artifact_id !== request.artifact_id);
+      if (openFindings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "plan review findings remain open", "approved-plan-review", openFindings, "record-finding-resolution");
+    }
     const milestones = reviewedPlanMilestones(plan);
     const ordered = Object.keys(milestones);
     const expected = {
@@ -451,7 +461,9 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       remaining_implementation_milestones: ordered.filter((milestoneId) => milestones[milestoneId].kind === "implementation"),
       latest_review: resetLatestReview(),
       final_closeout: { readiness: "not-ready", reasons: [ordered.some((milestoneId) => milestones[milestoneId].kind === "implementation") ? "implementation-milestones-open" : "lifecycle-gates-open"], evidence: [] },
-      initialization_basis: { review_id: review.review_id, review_round: review.round, review_record: review.evidence_path, reviewed_artifact_path: target.path, reviewed_revision: plan.sha256 },
+      initialization_basis: consolidated
+        ? { review_id: deliveryReview.review_id, review_round: deliveryReview.round, review_record: deliveryReview.evidence_path, reviewed_artifact_path: target.path }
+        : { review_id: review.review_id, review_round: review.round, review_record: review.evidence_path, reviewed_artifact_path: target.path, reviewed_revision: plan.sha256 },
     };
     const existing = next.workflow_state?.planned_work;
     if (existing) {
@@ -459,7 +471,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       throw operationError("RL_OPERATION_NOT_PERMITTED", "existing planned work cannot be replaced", "approved-plan-initialization", [request.artifact_id]);
     }
     next.workflow_state.planned_work = expected;
-    return { status: "initialized", candidate: next, operationResult: { artifact_id: request.artifact_id, current_milestone: expected.current_milestone, next_operation: "settle-artifact" } };
+    return { status: "initialized", candidate: next, operationResult: { artifact_id: request.artifact_id, current_milestone: expected.current_milestone, next_operation: consolidated ? "advance-stage" : "settle-artifact" } };
   }
 
   if (request.operation === "route-correction") {

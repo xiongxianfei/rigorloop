@@ -29,7 +29,7 @@ export async function packageRepository({ stage = "design-review", includeArchit
     architecture: ["docs/architecture/example.md", "# Architecture\n"],
     "adr-cache": ["docs/adr/ADR-cache.md", "# ADR cache\n"],
     spec: ["specs/example.md", "# Specification\n"],
-    plan: ["docs/plans/example.md", "# Plan\n"],
+    plan: ["docs/plans/example.md", "# Plan\n\n## Milestones\n\n### M1. Implement\n\n- Milestone kind: implementation\n\n### M2. Close lifecycle\n\n- Milestone kind: lifecycle-closeout\n"],
     "test-spec": ["specs/example.test.md", "# Test specification\n"],
   };
   for (const [path, bytes] of Object.values(sources)) writeFileSync(join(root, path), bytes, "utf8");

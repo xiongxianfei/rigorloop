@@ -157,7 +157,7 @@ test("initialize-approved-plan creates reviewed milestone state once before sett
       reviewed_revision: planSha,
     },
   });
-  assert.deepEqual(initialized.result.permitted_operations, ["settle-artifact"]);
+  assert.deepEqual(initialized.result.permitted_operations, []);
 
   const retryRequest = request(root, "initialize-retry", {
     schema_version: 1,

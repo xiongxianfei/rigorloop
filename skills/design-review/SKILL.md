@@ -82,7 +82,7 @@ Each finding records a stable Finding ID, Severity, Location, Evidence, Required
 
 A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to workflow after settlement.
 
-Every formal result must be recorded or explicitly blocked. Clean review uses a lightweight receipt and review-log entry. Material or blocking results use a detailed record and review-resolution when disposition is required. Do not create an empty review-resolution solely for a clean result.
+Every formal result must be recorded or explicitly blocked. Clean review uses a lightweight receipt and review-log entry. Material or blocking results use a detailed record and `review-resolution.md` when disposition is required. Do not create an empty `review-resolution.md` solely for a clean result.
 
 ## Package recording and settlement
 

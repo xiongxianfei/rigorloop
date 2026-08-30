@@ -16,9 +16,7 @@ Design proof before implementation.
 - role_name: test-spec
 - stage: authoring
 - upstream: approved spec and review, approved plan, and applicable architecture or ADRs
-- downstream: test-spec-review
-
-At consolidated-gates cutover, completed test-specification authoring reconciles with the plan and hands the exact package to `delivery-review`; it does not seek independent proof-map approval. The pre-cutover `test-spec-review` handoff remains only for changes completing under the earlier contract.
+- downstream: delivery-review after reconciliation with the plan
 - summary: Map settled requirements and execution intent to concrete proof before implementation.
 - ownership: Author test-spec content and, with exact governed authority, only its authoring evidence and matching artifact-entry transition.
 - must_not_claim: implementation, validation, verification, branch, PR, release, deployment, publication, or peer-review completion
@@ -31,13 +29,13 @@ Use this skill to create or revise a proof map from settled requirements and exe
 
 Read first: the approved spec and review, plan, applicable architecture, project guidance, test conventions, and both initially required boundary references.
 
-Produce: traceable cases, coverage and command ledgers, milestone proof timing, explicit gaps, and a `test-spec-review` handoff.
+Produce: traceable cases, coverage and command ledgers, milestone proof timing, explicit gaps, and a `delivery-review` handoff.
 
 Stop when: required input, identity, proof, authority, resource, or output is unsafe to infer.
 
 Do not claim: implementation or downstream readiness.
 
-Next stage: required `test-spec-review` for formal governed authoring.
+Next stage: required `delivery-review` for formal governed authoring.
 
 ## Purpose and use
 
@@ -84,10 +82,10 @@ Write ordinary prose as normal Markdown paragraphs. Do not split a sentence acro
 
 - Do not invent behavior, substitute helper proof for an admitted public path, or count proof that misses the asserted outcome.
 - Route untestable requirements to their spec or architecture owner.
-- Authoring ends at `review-required`; only `test-spec-review` may settle the matching artifact to `active` after independent approval.
+- Authoring ends at `review-required`; only `delivery-review` may settle the complete delivery package after independent approval.
 - Workflow may validate and route later state but cannot rewrite content or peer-review evidence.
 - Preserve prior authoring and review evidence when revision creates a new identity.
-- Governed authoring hands off to `test-spec-review`; portable authoring remains isolated.
+- Governed authoring hands off to `delivery-review`; portable authoring remains isolated.
 
 ## Stop conditions
 
@@ -137,7 +135,7 @@ Start with the exact approved rows cited for the current decision. Expand approv
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
-Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `design-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
 The two initially loaded references own the detailed boundary vocabulary and proof contract. Apply their exact-ID consumption, interaction selection, direct-proof, gap-routing, and scenario-stop rules.
 
@@ -151,7 +149,7 @@ Fill <all applicable fields> and remove insertion markers and placeholders.
 
 ## Expected output
 
-Report the test-spec path, grouped cases, coverage and proof maps, fixtures, commands, milestone proof timing, exclusions, gaps, and truthful `test-spec-review` readiness.
+Report the test-spec path, grouped cases, coverage and proof maps, fixtures, commands, milestone proof timing, exclusions, gaps, and truthful `delivery-review` readiness.
 
 ## Outputs
 

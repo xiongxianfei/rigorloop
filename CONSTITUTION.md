@@ -147,7 +147,7 @@ Until repository-specific release checks replace the current conservative templa
 
 ## Review rules
 
-At consolidated cutover, the following package-gate rules take effect. Until that cutover, the implementing change and every other legacy-dependent change remain governed by the pre-cutover review sequence.
+The following consolidated package-gate rules are current.
 
 `proposal-review` MUST evaluate proposal direction, scope, and embedded feasibility before design work for governed changes.
 
@@ -157,7 +157,7 @@ At consolidated cutover, the following package-gate rules take effect. Until tha
 
 Architecture, specification, plan, and test-specification authorship remain separate. A package reviewer MUST NOT edit and approve the artifacts it reviews.
 
-At consolidated cutover, `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` are retired as progression entrypoints. Historical evidence remains readable but does not grant package authority.
+`spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` are retired as progression entrypoints. Historical evidence remains readable but does not grant package authority.
 
 `code-review`, `explain-change`, and `verify` MUST happen before non-trivial changes are considered ready for PR.
 
