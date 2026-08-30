@@ -74,7 +74,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M2
+    current_milestone: M3
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -87,21 +87,20 @@ workflow_state:
       review_round: r2
       reviewed_artifact_path: docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md
     latest_review:
-      artifact_id: plan
-      evidence:
-        - docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m2-r5.md
-      milestone_id: M2
-      occurrence: milestone
-      round: r5
-      stage: code-review
-      status: approved
+      artifact_id: none
+      evidence: []
+      milestone_id: none
+      occurrence: none
+      round: none
+      stage: none
+      status: not-started
     milestones:
       M1:
         kind: implementation
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: closed
       M3:
         kind: implementation
         state: planned
@@ -110,7 +109,6 @@ workflow_state:
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M2
       - M3
 workflow: {}
 artifacts: {}
@@ -208,6 +206,26 @@ lifecycle_cli:
       review_record_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m1-r1.md
       review_recording_status: recorded
       review_round: r1
+      review_stage: code-review
+      stage_authority: workflow
+    M2:
+      completion_fingerprint: d32a38d5658cb1065fa9557b513e0a4af564e342fe11ad83c0d41345ca52b9a6
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/m2-validation-and-compatibility.md
+      evidence_sha256: 12f14ea3d201472a36cd4acc861e2a3512cf90d5e076191301710ce2a06ce8da
+      milestone_id: M2
+      review_evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m2-r5.md
+      review_evidence_sha256: e35f6d2fb34dad2c8508b182c3466b2f9f9799768799590888b7890cf1e2f967
+      review_id: code-review-m2-r5
+      review_log_entry_sha256: dafa0e0e78814af53140be1165339cce77350ad69b1637bc7a5b7c3fa87aaef7
+      review_log_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m2-r5.md
+      review_recording_status: recorded
+      review_round: r5
       review_stage: code-review
       stage_authority: workflow
   package_reviews:
