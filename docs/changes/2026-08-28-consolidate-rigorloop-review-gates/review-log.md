@@ -4,6 +4,7 @@
 
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
+| `code-review-final-r5` | `code-review` | `r5` | consolidated-review CI projection correction commit `7c6bdd7f` | `reviews/code-review-final-r5.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r4` | `code-review` | `r4` | complete corrected diff `8f80771e..93f212a8` | `reviews/code-review-final-r4.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r2` | `code-review` | `r2` | complete corrected diff `8f80771e..638b9cca` | `reviews/code-review-final-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m6-r2` | `code-review` | `r2` | corrected M6 implementation through commit `48f8a4a8` | `reviews/code-review-m6-r2.md` | `clean-with-notes` | 0 | `recorded` |
