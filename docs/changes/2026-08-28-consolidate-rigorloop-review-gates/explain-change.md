@@ -4,8 +4,8 @@
 
 Stage: explain-change
 Status: current
-Final diff identity: `8f80771ea0d85264e3ca33be443e17c30d77d179..93f212a895941793e9eba480e494fda79ad0ed77`
-Final review identity: `code-review-final-r4` recorded in `12d02b22a7c23aa806af6343308919bf76f92ff2`
+Final diff identity: `8f80771ea0d85264e3ca33be443e17c30d77d179..7c6bdd7f84bd036fc97355c084fd53862659e1f0`
+Final review identity: `code-review-final-r5` recorded in `b31fccdd31e8e7e619ab47327db26bbee51e9d3e`
 
 ## Summary
 
@@ -34,7 +34,9 @@ The former sequence allowed architecture and specification, and later plan and p
 | Canonical skills and guidance | Added `design-review` and `delivery-review`; removed public `architecture-review`, `spec-review`, `plan-review`, and `test-spec-review`; updated workflow and downstream consumers. | Publish one unambiguous decision-gate model with separate authorship. | CRG-R4–R6, R33, R41 | Skill validator: 450 passed, 90 retired-topology skips. |
 | Validators and schema | Added package shapes, closed vocabularies, historical-authority rejection, cutover inventory, and review-attribution checks. | Fail closed before consistency and prevent partial/mixed authority. | CRG-R22–R29, R35–R45 | Metadata validator: 66 passed; review validator: 104 passed; CLI conformance passed. |
 | Adapter distribution | Published the two new review skills and removed the four retired entrypoints from generated adapter inventories and archives. | Canonical and packaged public behavior must cut over together. | CRG-R38, R43–R44 | Adapter distribution: 154 passed. |
-| Change-local evidence | Recorded milestone reviews, findings, resolutions, cutover proof, and final holistic review; removed 84 transient CLI request inputs that were neither durable evidence nor referenced authority. | Preserve durable independent evidence and precise finding ownership without treating invocation inputs as lifecycle artifacts. | CRG-R32, R38, R41, R45 | Closeout validator passes with 40 reviews and 29 resolved findings; PR selection has zero request paths. |
+| Boundary-first review resources | Moved review projections and activation ownership from the four retired artifact reviewers to `design-review` and `delivery-review`; updated frozen identities and cutover fixtures. | The public gate cutover must include the shared review-method resources consumed by the replacement gates. | CRG-R4–R6, R38, R43–R44 | Boundary reference: 28 passed; boundary validation: 65 passed; projection check passed. |
+| Workflow automation fixtures | Replaced the obsolete `architecture-assessment` skip fixture with a rejection check and retained the supported review-resolution edge. | Tests must prove the consolidated stage graph rather than preserve a retired optional transition. | CRG-R4–R6, R35–R39 | Workflow metadata: 68 passed; workflow automation: 76 passed. |
+| Change-local evidence | Recorded milestone reviews, findings, resolutions, cutover proof, and final holistic review; removed 84 transient CLI request inputs that were neither durable evidence nor referenced authority. | Preserve durable independent evidence and precise finding ownership without treating invocation inputs as lifecycle artifacts. | CRG-R32, R38, R41, R45 | Closeout validator passes with 41 reviews and 29 resolved findings; PR selection has zero request paths. |
 
 ## Tests added or changed
 
@@ -60,11 +62,17 @@ The former sequence allowed architecture and specification, and later plan and p
 | `python scripts/test-select-validation.py` | passed; restored strict handling after removing transient current-change requests. | final subject `93f212a8` |
 | `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` | passed; 174 changed paths, zero blockers, zero unclassified paths, and zero request paths. | final subject `93f212a8` |
 | `bash scripts/ci.sh --mode broad-smoke` | passed; 11 checks in 796 seconds. | final subject `93f212a8` |
-| Final holistic Code Review | `code-review-final-r4` is clean-with-notes after CRG-SEL-CR1 resolution. | review revision `12d02b22` |
+| `python scripts/test-boundary-first-reference.py` | 28 passed. | corrected subject `7c6bdd7f` |
+| `python scripts/test-boundary-first-validation.py` | 65 passed. | corrected subject `7c6bdd7f` |
+| `python scripts/project-boundary-first-reference.py --check` | passed; 13 projections, manifest `040fe7aa`, projection `e88317d3`. | corrected subject `7c6bdd7f` |
+| `python scripts/test-validate-workflow-automation.py` | 68 passed. | corrected subject `7c6bdd7f` |
+| `python scripts/test-workflow-automation.py` | 76 passed. | corrected subject `7c6bdd7f` |
+| `bash scripts/ci.sh --mode pr --base 7510513c669f6cf17a155f88378cc4f4f6a7c045 --head HEAD` | passed locally; direct gate graph completed all 28 selected checks. | corrected subject `7c6bdd7f` |
+| Final holistic Code Review | `code-review-final-r5` is clean for the exact CI-corrected subject. | review revision `b31fccdd` |
 
 ## Review resolution summary
 
-The change-local resolution record closes all 29 material findings. `CRG-FH-CR1` was accepted and corrected by the bounded design-package owner route. `CRG-SEL-CR1` was accepted and resolved by reverting a selector route that did not inspect JSON and removing the transient request inputs from the final diff. See `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md`; closeout validation reports no open finding.
+The change-local resolution record closes all 29 material findings. `CRG-FH-CR1` was accepted and corrected by the bounded design-package owner route. `CRG-SEL-CR1` was accepted and resolved by reverting a selector route that did not inspect JSON and removing the transient request inputs from the final diff. The final CI correction did not add a material finding: R5 independently confirmed that boundary-resource ownership and workflow fixtures now match the consolidated gates. See `docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md`; closeout validation reports no open finding.
 
 ## Alternatives rejected
 
@@ -79,13 +87,13 @@ This slice does not merge architecture/specification or plan/test specification;
 - Post-cutover changes must use actual Design and Delivery package evidence; this implementing change's grandfathered individual reviews cannot authorize later work.
 - An omitted applicable ADR remains a semantic review risk; explicit architecture-stage ADR registration makes membership deterministic but cannot replace reviewer judgment.
 - Direct ungoverned edits do not automatically invalidate a package. The project intentionally accepts that first-slice limit instead of restoring content hashes.
-- Hosted CI has not yet been observed for the final handoff revision. Final Verify must run current required validation, broad smoke, drift checks, and immutable branch-basis resolution.
+- The first hosted PR run exposed two cutover omissions: frozen boundary-first ownership still named retired review skills, and one workflow-automation fixture still accepted the retired `architecture-assessment` path. Both are corrected in `7c6bdd7f`; the exact 28-check PR graph passes locally, but hosted CI has not yet been observed for the corrected head.
 
 ## Workflow handback
 
 Explanation status: current
-Explanation basis: `12d02b22a7c23aa806af6343308919bf76f92ff2`
-Validation-evidence cutoff: final reviewed subject `93f212a895941793e9eba480e494fda79ad0ed77` on 2026-08-30
+Explanation basis: `b31fccdd31e8e7e619ab47327db26bbee51e9d3e`
+Validation-evidence cutoff: final reviewed subject `7c6bdd7f84bd036fc97355c084fd53862659e1f0` on 2026-08-30
 Open explain-change blockers: none
 Control returned to workflow: yes
 Next-stage decision owner: workflow
