@@ -41,39 +41,17 @@ artifact_states:
     role: primary
 review_packages:
   delivery:
-    authority: withheld
-    correction_targets:
-      - plan
-      - test-spec
-    findings:
-      - affected_artifact_ids:
-          - test-spec
-        evidence: The package says its matching test specification maps `RTD-AC1` through `RTD-AC10`, but the test-case `Covers` fields cite only `RTD-AC1`, `RTD-AC4`, `RTD-AC6`, and `RTD-AC8`. No test case explicitly owns `RTD-AC2`, `RTD-AC3`, `RTD-AC5`, `RTD-AC7`, `RTD-AC9`, or `RTD-AC10`, so the acceptance-criterion-to-proof trace cannot be audited from the test specification.
-        finding_id: RTD-DLR1
-        owning_stages:
-          - test-spec
-        required_outcome: Map every acceptance criterion to the existing test case or cases that prove it, without inventing redundant tests where the current cases already provide the required behavior.
-        safe_resolution_path: The test-specification owner should add the six missing acceptance-criterion identities to the appropriate existing `Covers` fields, confirm the coverage against the approved specification, register the revised artifact, and request a new Delivery Review of the exact package.
-        scope: artifact-local
-      - affected_artifact_ids:
-          - plan
-          - test-spec
-        evidence: M3's plan allocation omits `RTD-R20`, while M3 test `RTD-T07` and recovery proof `PRF-004` explicitly prove `RTD-R20`. In addition, `PRF-002` names M1/M2 tests and evidence but records only M1 as required; `PRF-003` through `PRF-005` name M2/M3 tests and evidence but record only M2; and `PRF-009` names M1/M2 tests and evidence but records only M1. The command table distinguishes a first required milestone from full ownership, but the proof-map column is `Required milestone`, so the current rows claim closure before all named direct proof can exist.
-        finding_id: RTD-DLR2
-        owning_stages:
-          - plan
-          - test-spec
-        required_outcome: "Make plan allocation and proof timing agree: allocate `RTD-R20` to every milestone that must prove it, and identify every milestone required to complete each multi-milestone proof obligation."
-        safe_resolution_path: The plan owner should add the missing M3 allocation for `RTD-R20`; the test-specification owner should list the complete required milestone set for each affected proof row. Preserve the existing implementation order and proof cases unless reconciliation reveals a substantive design gap, then register both revisions and request a new exact-package Delivery Review.
-        scope: cross-artifact
+    authority: granted
+    correction_targets: []
+    findings: []
     members:
       plan: docs/plans/2026-08-30-lightweight-requirement-delivery-model.md
       test-spec: specs/lightweight-requirement-delivery-model.test.md
-    outcome: changes-requested
+    outcome: approved
     package_kind: delivery
-    review_id: delivery-review-r1
-    review_round: r1
-    status: review-required
+    review_id: delivery-review-r2
+    review_round: r2
+    status: approved
     upstream_review_id: design-review-r2
   design:
     authority: granted
@@ -101,11 +79,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/delivery-review-r1.md
+  latest_review: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/delivery-review-r2.md
   review_log: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md
   reviewed_artifact: review-package:delivery
-  status: changes-requested
-  unresolved_items: 2
+  status: clean
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -223,42 +201,20 @@ lifecycle_cli:
   milestones: {}
   package_reviews:
     delivery:
-      correction_targets:
-        - plan
-        - test-spec
-      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/delivery-review-r1.md
-      evidence_sha256: f25334233f988524753beb03016538d2e362c14c7a69e2832ca5d3f7f8aeea8d
-      findings:
-        - affected_artifact_ids:
-            - test-spec
-          evidence: The package says its matching test specification maps `RTD-AC1` through `RTD-AC10`, but the test-case `Covers` fields cite only `RTD-AC1`, `RTD-AC4`, `RTD-AC6`, and `RTD-AC8`. No test case explicitly owns `RTD-AC2`, `RTD-AC3`, `RTD-AC5`, `RTD-AC7`, `RTD-AC9`, or `RTD-AC10`, so the acceptance-criterion-to-proof trace cannot be audited from the test specification.
-          finding_id: RTD-DLR1
-          owning_stages:
-            - test-spec
-          required_outcome: Map every acceptance criterion to the existing test case or cases that prove it, without inventing redundant tests where the current cases already provide the required behavior.
-          safe_resolution_path: The test-specification owner should add the six missing acceptance-criterion identities to the appropriate existing `Covers` fields, confirm the coverage against the approved specification, register the revised artifact, and request a new Delivery Review of the exact package.
-          scope: artifact-local
-        - affected_artifact_ids:
-            - plan
-            - test-spec
-          evidence: M3's plan allocation omits `RTD-R20`, while M3 test `RTD-T07` and recovery proof `PRF-004` explicitly prove `RTD-R20`. In addition, `PRF-002` names M1/M2 tests and evidence but records only M1 as required; `PRF-003` through `PRF-005` name M2/M3 tests and evidence but record only M2; and `PRF-009` names M1/M2 tests and evidence but records only M1. The command table distinguishes a first required milestone from full ownership, but the proof-map column is `Required milestone`, so the current rows claim closure before all named direct proof can exist.
-          finding_id: RTD-DLR2
-          owning_stages:
-            - plan
-            - test-spec
-          required_outcome: "Make plan allocation and proof timing agree: allocate `RTD-R20` to every milestone that must prove it, and identify every milestone required to complete each multi-milestone proof obligation."
-          safe_resolution_path: The plan owner should add the missing M3 allocation for `RTD-R20`; the test-specification owner should list the complete required milestone set for each affected proof row. Preserve the existing implementation order and proof cases unless reconciliation reveals a substantive design gap, then register both revisions and request a new exact-package Delivery Review.
-          scope: cross-artifact
+      correction_targets: []
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/delivery-review-r2.md
+      evidence_sha256: 91d7475f69f09f8e7206d8ecd115df0dfa936d877142c2c98efd63dbca0c850b
+      findings: []
       members:
         plan: docs/plans/2026-08-30-lightweight-requirement-delivery-model.md
         test-spec: specs/lightweight-requirement-delivery-model.test.md
-      outcome: changes-requested
+      outcome: approved
       package_kind: delivery
-      review_id: delivery-review-r1
+      review_id: delivery-review-r2
       review_log_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md
-      review_log_sha256: 00d88e8f787c218e935a6aca1e7016f6e7de96f10942369b454a725e1f60926d
+      review_log_sha256: 873620e896b576cb14d6c7bc7bf4399ca9a85914ca38b2dfd454e1a6c1f2abb6
       reviewer_authority: delivery-review
-      round: r1
+      round: r2
       stage_authority: delivery-review
       upstream_review_id: design-review-r2
     design:
