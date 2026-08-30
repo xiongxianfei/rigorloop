@@ -57,6 +57,20 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: r2
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: SPC-M2-CR3, SPC-M2-CR4
+Finding ID: SPC-M2-CR3
+Finding ID: SPC-M2-CR4
+Open findings: SPC-M2-CR3, SPC-M2-CR4
+Recording status: recorded
+
+### Review entry
+
 Review ID: delivery-review-r1
 Stage: delivery-review
 Round: r1

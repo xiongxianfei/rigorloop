@@ -6,10 +6,10 @@ Closeout status: open
 
 Review closeout: code-review-m2-r1
 
-- Reviews covered: `delivery-review-r1`, `code-review-m2-r1`
+- Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 3
-- Unresolved findings: 0
-- Current result: `SPC-DR1`, `SPC-M2-CR1`, and `SPC-M2-CR2` are resolved. M2 correction commit `f3fd200c` is ready for independent rereview.
+- Unresolved findings: 2
+- Current result: `SPC-DR1`, `SPC-M2-CR1`, and `SPC-M2-CR2` remain resolved. `SPC-M2-CR3` and `SPC-M2-CR4` await owner disposition.
 
 ## Resolution Overview
 
@@ -18,6 +18,8 @@ Review closeout: code-review-m2-r1
 | SPC-DR1 | accepted | resolved | The plan now identifies the existing test specification and the current Delivery Review gate. |
 | SPC-M2-CR1 | accepted | resolved | Current selected-path scope now distinguishes changed settled governed proposals from untouched settled history. |
 | SPC-M2-CR2 | accepted | resolved | Explicitly selected stage-owned proposal/change-record pairs now fail when the primary proposal path differs. |
+| SPC-M2-CR3 | needs-decision | open | Decide whether to accept the settled simplified proposal correction. |
+| SPC-M2-CR4 | needs-decision | open | Decide whether to accept removal of filename-dependent mismatch correlation. |
 
 ## Finding Details
 
@@ -73,3 +75,37 @@ Required outcome: Block a selected governed proposal/change-record path mismatch
 Safe resolution path: Accept the focused scope in `code-review-m2-r1.md`, correlate selected current inputs at the validation-scope boundary without restoring reverse metadata, add direct fixtures, then rerun M2 proof and rereview.
 Validation target: matching governed and portable proposals pass while a selected mismatched proposal/change-record pair fails with an ownership diagnostic.
 Validation evidence: correction commit `f3fd200c`; direct mismatch regression passed; artifact-lifecycle validator 155/155; review-artifact validator 107/107; current proposal, review structure, change metadata, and diff checks passed.
+
+### code-review-m2-r2
+
+#### SPC-M2-CR3
+
+Finding ID: SPC-M2-CR3
+Disposition: needs-decision
+Status: open
+Owner: developer
+Owning stage: review-resolution
+Decision owner: developer
+Decision needed: Accept, reject, defer, or partially accept the settled simplified proposal correction.
+Stop state: M2 remains resolution-needed; no implementation correction or rereview is authorized by this record alone.
+Rationale: Terminal lifecycle state currently overrides simplified proposal shape and causes an unchanged accepted simplified proposal to be validated as legacy.
+Required outcome: Preserve readable unchanged settled proposals under both the legacy and simplified contracts while changed legacy work uses the current contract.
+Safe resolution path: Accept the focused scope in `code-review-m2-r2.md`, adjust only current-versus-historical shape selection, add the accepted simplified governed regression, rerun M2 proof, and rereview.
+Validation target: an accepted simplified governed proposal selected only through its change record passes the simplified contract while the existing legacy partitions retain their outcomes.
+Validation evidence: pending owner disposition and corrected M2 validation.
+
+#### SPC-M2-CR4
+
+Finding ID: SPC-M2-CR4
+Disposition: needs-decision
+Status: open
+Owner: developer
+Owning stage: review-resolution
+Decision owner: developer
+Decision needed: Accept, reject, defer, or partially accept removal of filename-dependent governed mismatch correlation.
+Stop state: M2 remains resolution-needed; no implementation correction or rereview is authorized by this record alone.
+Rationale: The correction detects only same-named proposal/change-record pairs even though the approved ownership contract defines no filename equality requirement.
+Required outcome: Block an unambiguous selected governed path mismatch without imposing a new proposal/change-record naming contract or breaking portable proposals.
+Safe resolution path: Accept the focused scope in `code-review-m2-r2.md`, correlate selected scope directly, add the different-identity mismatch regression, rerun M2 proof, and rereview.
+Validation target: same-named and different-identity selected mismatches fail, matching governed proposals pass, and a proposal with no selected governing record remains portable.
+Validation evidence: pending owner disposition and corrected M2 validation.
