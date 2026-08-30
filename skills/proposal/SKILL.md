@@ -3,13 +3,13 @@ name: proposal
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Create a decision-oriented change proposal before spec or plan. Use when the user has a selected direction, explored options, problem statement, or issue that needs problem, goals, non-goals, options, recommendation, risks, rollout, and readiness recorded. Use proposal-review to review an existing proposal; use spec, plan, implement, or verify for downstream work.
+  Create a concise direction-approval proposal before Design. Use when the user has a selected direction, explored options, problem statement, or issue that needs its challenge, goals, bounds, governing principle, direction, and feasibility recorded. Use proposal-review to review an existing proposal; use architecture and spec for detailed Design decisions.
 argument-hint: [feature idea, selected option, problem statement, or issue number]
 ---
 
 # Change proposal
 
-Turn a problem or selected direction into a reviewable decision: why this change, why now, and why this approach, without requirements or implementation tasks.
+Turn a problem or selected direction into a concise direction-approval artifact: why the problem matters, what outcome is sought, what direction should be pursued, and whether it is credible enough to enter Design.
 
 ## Workflow role
 
@@ -17,7 +17,7 @@ Turn a problem or selected direction into a reviewable decision: why this change
 - stage: authoring
 - upstream: user request, exploration, research, issue, or incident
 - downstream: proposal-review
-- summary: Author the proposal artifact recording problem, options, recommendation, scope, risks, and readiness.
+- summary: Author the proposal artifact recording the challenge, goals, bounds, governing principle, direction, feasibility, and requested decision.
 - must_not_claim: proposal-review approval, spec readiness, implementation readiness, verification, branch readiness, or PR readiness.
 
 ## Project-local evidence
@@ -54,7 +54,7 @@ Operations are exactly `create-primary-proposal` and `revise-primary-proposal`. 
 
 `governed_proposal_candidate_context` requires an explicit change ID, workflow-managed exact change, or valid structured owning-change pointer. Conversational wording alone does not establish it. Loading does not grant mutation authority; failure must not fall back to portable authoring.
 
-Specialized predicates are exactly `vision_exception_context`, `standing_artifact_context`, `initial_intent_table_context`, and `scope_budget_context`. Truth is semantic proposal judgment. Predicates apply independently; a non-empty set loads exactly once. Resolve material ambiguity before drafting or readiness.
+Specialized predicates are exactly `vision_exception_context`, `standing_artifact_context`, `initial_intent_table_context`, and `scope_budget_context`. Truth is semantic proposal judgment. Predicates apply independently; a non-empty set loads exactly once. Resolve material ambiguity before drafting or review readiness. Record applicable detail inside `Scope and non-goals`, `Impact and major trade-offs`, or `Decision requested`; specialized predicates do not add level-two sections.
 
 The four loaded assemblies are `PA0-portable`, `PA0G-portable-gated`, `PA1-governed`, and `PA1G-governed-gated`.
 
@@ -63,34 +63,42 @@ The four loaded assemblies are `PA0-portable`, `PA0G-portable-gated`, `PA1-gover
 - READ `references/governed-proposal-authoring.md` when `governed_proposal_candidate_context` is true. Validate authority before governed work.
 - READ `references/strategic-and-scope-gates.md` when any specialized predicate is true. Apply all true predicates once.
 - COPY `assets/proposal-skeleton.md` when creating a proposal.
-  Fields: universal proposal sections and every applicable conditional group.
+  Fields: the seven required sections and the conditional material-impact section.
   Do not emit unfilled placeholders.
 
 Missing, unreadable, escaped, contradictory, stale, or mixed-version required resources stop dependent work; must not reconstruct them. Untriggered resources do not block.
 
 ## Proposal contract
 
-Cover problem, goals, non-goals, context, three options or linked exploration, recommendation, feasibility, behavior, architecture, testing, rollout/rollback, risks, questions, decisions, artifacts, and readiness. Preserve `Next artifacts` as history; use `Follow-on artifacts` for results and `None yet` before any exist.
+The proposal has exactly seven required level-two sections, in this order:
 
-Every new governed proposal contains exactly one embedded `Feasibility` section. State an assessment, its evidence or bounded assumptions, material constraints, and blockers that would prevent responsible design work. Keep the evaluation proportionate: concise evidence is sufficient when uncertainty and risk are small. Supporting research may be linked, but the proposal must contain the relied-on conclusion. Create no standalone feasibility artifact, skill, lifecycle state, or review gate.
+1. `Challenge`
+2. `Goals`
+3. `Scope and non-goals`
+4. `Governing principle`
+5. `Proposed direction`
+6. `Feasibility`
+7. `Decision requested`
 
-Frame the problem independently, compare tradeoffs, protect scope and intent, state value, and make risks actionable. Do not write milestones, invent `MUST` rules, hide tradeoffs, or claim acceptance without authority.
+`Impact and major trade-offs` is the only optional level-two section. Include it only when it could materially affect approval, and place it between `Feasibility` and `Decision requested`. Nested headings may organize content inside an allowed section.
 
-## Vision fit
+Frame the challenge before the solution. State outcomes rather than detailed design. Bound included and excluded work. Give one short implementation-independent governing principle. Make the direction concrete enough to approve while leaving detailed behavior and architecture to Design and implementation sequencing and proof design to Delivery.
 
-Include `Vision fit` in new or substantively revised proposals after vision adoption; Legacy proposals need it when revised. Its first non-empty line is `fits the current vision`, `may conflict with the current vision`, `proposes a vision revision`, or `no vision exists yet`.
+Every proposal contains exactly one non-empty `Feasibility` section with an explicit assessment, credible evidence or bounded assumptions, material constraints, and blockers that would prevent responsible Design work. Its depth is proportional to uncertainty; a few sentences are sufficient for an ordinary low-uncertainty change. Supporting research may be linked, but the proposal contains the relied-on conclusion. Create no standalone feasibility artifact, skill, lifecycle state, or review gate.
 
-When root `VISION.md` does not exist, proposals must use the exact `Vision fit` value `no vision exists yet`. If root `VISION.md` exists, choose one of the current-vision outcomes. Retired root `vision.md` must not prevent `no vision exists yet`. A proposal must not silently redefine project vision.
+Use this inclusion test: would changing the decision later mean the developer approved a materially different direction? If yes, it likely belongs in the proposal. Otherwise leave it downstream. Do not settle detailed behavior, architecture, APIs, commands, schemas, component design, implementation sequencing, verification design, test cases, and rollout mechanics. No fixed word count, length, or token budget applies; decision sufficiency and proportionality govern.
+
+Portable authoring requires no `change.yaml`, status, owning-change pointer, routine `Vision fit`, or lifecycle command. For governed work, `change.yaml` is the sole owner of governed proposal lifecycle state and ownership. Proposal Review records routine vision alignment; a material conflict, revision request, or bootstrap exception belongs in `Impact and major trade-offs` and `Decision requested` because it can change approval.
 
 ## Scope preservation
 
-Before drafting or materially revising a proposal, extract the user's initial goals, concerns, constraints, and requested outcomes. Every initial user goal must be visible in the proposal as one `initial goal treatment` enum value. Do not silently drop a user goal when narrowing a proposal. If a proposal intentionally narrows the user's request, record the narrowing.
+Before drafting or materially revising a proposal, extract the user's initial goals, concerns, constraints, and requested outcomes. Keep each material goal visible in `Goals`, `Scope and non-goals`, or the requested decision. Do not silently drop a user goal when narrowing a proposal; state intentional narrowing and its reason.
 
 Use `initial_intent_table_context` for broad or multi-part requests. Use `scope_budget_context` for multiple work items/families/artifacts, policy, generated output, public skill behavior, or review concern about narrowing, hidden follow-up, or multi-workstream ambiguity. Scope-budget applicability is proposal/proposal-review judgment in this first slice, not mechanical validator inference. Small single-decision proposals may omit the scope budget.
 
 ## Structural groups
 
-The skeleton owns structure only; procedure owns meaning and applicability. Inapplicable conditional groups are omitted. Applicable but unresolved groups report an explicit blocker. Never emit an unfilled placeholder.
+The skeleton owns structure only; procedure owns meaning and applicability. Omit the material-impact section when it is not needed. Keep applicable strategic and scope detail inside an allowed section. Never emit an unfilled placeholder.
 
 ## Generated Markdown readability
 
@@ -125,4 +133,4 @@ Omit inapplicable groups and do not emit unfilled placeholders.
 
 ## Expected output
 
-Return path, operation, assembly, recommendation, rationale, risks, blockers, and review readiness or stop.
+Return path, operation, assembly, requested decision, blockers, and proposal-review readiness or stop.

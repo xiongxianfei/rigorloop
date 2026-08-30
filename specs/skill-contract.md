@@ -48,6 +48,8 @@ workflow policy into the shared reference.
 
 This amendment also admits `design-review` and `delivery-review` as normalized formal review skills for the consolidated gate model. Each owns a distinct recurring package decision, review evidence, exact-package settlement procedure, isolation boundary, and claim limit. They are not aliases for the retired `spec-review`, `architecture-review`, `plan-review`, or `test-spec-review` entrypoints. The canonical proposal asset owns one embedded Feasibility section, and Proposal Review evaluates it without creating another artifact or skill.
 
+The current proposal-stage contract is direction-level. The canonical proposal asset contains exactly seven required level-two sections—`Challenge`, `Goals`, `Scope and non-goals`, `Governing principle`, `Proposed direction`, `Feasibility`, and `Decision requested`—plus conditional `Impact and major trade-offs` only when material to approval. Routine vision alignment is Proposal Review evidence, while detailed behavior and architecture remain with Design and implementation sequencing and proof design remain with Delivery. Proposal Review stays independent and isolated by default and authorizes only architecture and specification authoring.
+
 ## Prospective proof disposition for published-skill-first changes
 
 For changes governed by

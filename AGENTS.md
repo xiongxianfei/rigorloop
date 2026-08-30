@@ -38,7 +38,7 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Follow `specs/skill-contract.md` for normalized skill structure and claim boundaries.
 - Treat shipped skill text as user-facing. Keep repository-maintainer details about canonical source paths, generated mirrors, adapter paths, selector path constraints, drift checks, and shared-block implementation mechanics in contributor or governance surfaces, not in published skills.
 - Do not create a new skill for one-off behavior; update an existing skill unless the new skill owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
-- `VISION.md` is the canonical project-vision artifact. Proposals created or substantively revised after this spec is adopted include `Vision fit`.
+- `VISION.md` is the canonical project-vision artifact. Routine vision alignment is Proposal Review evidence, not a required proposal section. Material vision issues remain proposal-level decisions.
 - README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`; README front-matter is not the source of truth when it conflicts with `VISION.md`.
 - For non-trivial work, the baseline change-local artifact pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. Standalone `review-resolution.md` and `verify-report.md` remain conditional under the workflow contract.
 - Every supported formal lifecycle review creates durable review evidence or reports blocked recording. Clean formal reviews use a lightweight clean review receipt; material findings use detailed change-local review records.

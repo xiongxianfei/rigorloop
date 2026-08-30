@@ -6,116 +6,34 @@
 
 # <Proposal title>
 
-## Owning change record
+## Challenge
 
-<owning change record or portable-authoring statement>
-
-## Problem
-
-<problem>
+<what is insufficient today and why it is worth addressing>
 
 ## Goals
 
 <goals>
 
-## Non-goals
+## Scope and non-goals
 
-<non-goals>
+<included work, explicit exclusions, and boundaries>
 
-## Vision fit
+## Governing principle
 
-<one Vision fit value and rationale>
+<one short implementation-independent principle>
 
-## Context
+## Proposed direction
 
-<context>
-
-## Options Considered
-
-<at least three options or exploration link>
-
-## Recommended Direction
-
-<direction and rationale>
+<the high-level direction to approve or reject>
 
 ## Feasibility
 
-### Assessment
+<assessment, credible basis or bounded assumptions, material constraints, and blockers>
 
-<feasible, feasible with constraints, or not currently feasible>
+## Impact and major trade-offs
 
-### Basis
+<include only when consequences could materially affect approval; otherwise omit this section>
 
-<evidence or bounded assumptions supporting the assessment>
+## Decision requested
 
-### Constraints
-
-<material constraints or none>
-
-### Blockers
-
-<blockers that prevent responsible design work or none>
-
-## Expected Behavior Changes
-
-<observable changes>
-
-## Architecture Impact
-
-<impact>
-
-## Testing and Verification Strategy
-
-<strategy>
-
-## Rollout and Rollback
-
-<rollout and rollback>
-
-## Risks and Mitigations
-
-<risks and mitigations>
-
-## Open Questions
-
-<questions or None>
-
-## Decision Log
-
-<decisions>
-
-## Next Artifacts
-
-<planned artifacts>
-
-## Follow-on Artifacts
-
-None yet
-
-## Readiness
-
-<next-stage status>
-
-## Vision exception or revision
-
-| Current vision relationship | Conflict or unsupported direction | Exception or revision requested | Owner decision required | Effect on direction |
-| --- | --- | --- | --- | --- |
-| <current vision relationship> | <conflict> | <request> | <owner decision> | <effect> |
-
-## Standing artifact dependency or bootstrap
-
-| Required standing artifact | Current status | Dependency | Route | Current blocker | Owner or follow-up |
-| --- | --- | --- | --- | --- | --- |
-| <required standing artifact> | <status> | <dependency> | <bootstrap, replacement, or exception route> | <blocker or none> | <owner or follow-up> |
-
-## Initial intent preservation
-
-| Initial user goal | Proposal treatment | Where recorded |
-| --- | --- | --- |
-| <initial user goal> | <one initial goal treatment value> | <section> |
-
-## Scope budget
-
-| Work item | Treatment | Reason |
-| --- | --- | --- |
-| <work item> | <one scope budget treatment value> | <reason> |
+<the explicit direction-level approval requested and its limits>

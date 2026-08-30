@@ -374,12 +374,12 @@ def parse_inline_mapping_item(
     key, value = split_mapping_entry(remainder, lineno)
     if value:
         item[key] = parse_scalar(value)
-    elif index < len(lines) and lines[index].indent > indent:
-        if lines[index].indent != indent + 2:
+    elif index < len(lines) and lines[index].indent > indent + 2:
+        if lines[index].indent != indent + 4:
             raise MetadataValidationError(
                 f"line {lines[index].lineno}: nested mapping blocks must be indented by two spaces"
             )
-        item[key], index = parse_yaml_block(lines, index, indent + 2)
+        item[key], index = parse_yaml_block(lines, index, indent + 4)
     else:
         item[key] = None
 

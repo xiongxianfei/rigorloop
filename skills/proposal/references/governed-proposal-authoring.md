@@ -8,7 +8,7 @@ Run `rigorloop lifecycle context proposal --change <change-id> --format json`. R
 
 If context returns `RL_WORKFLOW_ROUTE_REQUIRED`, do not author or mutate state. Return its route facts to workflow and resume only after context makes `record-artifact-revision` immediately available.
 
-Author only the proposal and its evidence, which records `Artifact path`, `Artifact identity`, and `Authoring result: complete`. Creation requires an absent entry and non-conflicting path. Revision requires exact prior identity and explicit revision authority; downstream reliance first routes to workflow impact handling. Preserve history and every unrelated artifact.
+Author only the proposal and its authoring evidence. The proposal itself contains no status, ownership pointer, lifecycle identity, or reverse link. Creation requires an absent entry and non-conflicting path. Revision requires the exact current governed entry and explicit revision authority; downstream reliance first routes to workflow impact handling. Preserve history and every unrelated artifact.
 
 After writing and validating both files, refresh context and submit `record-artifact-revision` with the returned lifecycle revision, exact artifact ID, `artifact_kind: proposal`, role, path, evidence path, `stage_authority: proposal`, and the captured prior digest for revision. The CLI derives `review-required`, invalidates replaced evidence, and changes only the matching entry. Never edit lifecycle fields directly.
 
