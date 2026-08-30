@@ -29,27 +29,17 @@ artifact_states:
     role: primary
 review_packages:
   design:
-    authority: withheld
-    correction_targets:
-      - spec
-    findings:
-      - affected_artifact_ids:
-          - spec
-        evidence: "The specification contains `Boundary model version: boundary-first-v1` inside its boundary record but omits the required active `boundary_contract: boundary-first-v1` marker near the top of a new feature spec. `python scripts/validate-boundary-first.py --check --path specs/lightweight-requirement-delivery-model.md` fails closed with `BFR-NEW-SPEC-MARKER` and reports that `boundary-first-v1` was expected."
-        finding_id: RTD-DR1
-        owning_stages:
-          - spec
-        required_outcome: "Add the active `boundary_contract: boundary-first-v1` marker in the specification's canonical preamble so the complete boundary record is explicitly activated and the focused validator passes."
-        safe_resolution_path: The specification owner should add only the required marker, record the revised artifact through the lifecycle CLI, run the focused boundary and artifact-lifecycle validators, record the finding disposition and correction return, and request a fresh Design Review of the changed exact package.
-        scope: artifact-local
+    authority: granted
+    correction_targets: []
+    findings: []
     members:
       architecture: docs/architecture/2026-08-30-lightweight-requirement-delivery-model.md
       spec: specs/lightweight-requirement-delivery-model.md
-    outcome: changes-requested
+    outcome: approved
     package_kind: design
-    review_id: design-review-r1
-    review_round: r1
-    status: review-required
+    review_id: design-review-r2
+    review_round: r2
+    status: approved
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
@@ -64,11 +54,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/design-review-r1.md
+  latest_review: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/design-review-r2.md
   review_log: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md
   reviewed_artifact: review-package:design
-  status: changes-requested
-  unresolved_items: 1
+  status: clean
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -123,30 +113,20 @@ lifecycle_cli:
   milestones: {}
   package_reviews:
     design:
-      correction_targets:
-        - spec
-      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/design-review-r1.md
-      evidence_sha256: 673b4f086be6f42a7beadb0125636240836553cf0665e35642403e61f1a23baa
-      findings:
-        - affected_artifact_ids:
-            - spec
-          evidence: "The specification contains `Boundary model version: boundary-first-v1` inside its boundary record but omits the required active `boundary_contract: boundary-first-v1` marker near the top of a new feature spec. `python scripts/validate-boundary-first.py --check --path specs/lightweight-requirement-delivery-model.md` fails closed with `BFR-NEW-SPEC-MARKER` and reports that `boundary-first-v1` was expected."
-          finding_id: RTD-DR1
-          owning_stages:
-            - spec
-          required_outcome: "Add the active `boundary_contract: boundary-first-v1` marker in the specification's canonical preamble so the complete boundary record is explicitly activated and the focused validator passes."
-          safe_resolution_path: The specification owner should add only the required marker, record the revised artifact through the lifecycle CLI, run the focused boundary and artifact-lifecycle validators, record the finding disposition and correction return, and request a fresh Design Review of the changed exact package.
-          scope: artifact-local
+      correction_targets: []
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/design-review-r2.md
+      evidence_sha256: cea9b08d009ddafadbc06f622008ad1f57dbd130622dea4e849de742e6b4f0bc
+      findings: []
       members:
         architecture: docs/architecture/2026-08-30-lightweight-requirement-delivery-model.md
         spec: specs/lightweight-requirement-delivery-model.md
-      outcome: changes-requested
+      outcome: approved
       package_kind: design
-      review_id: design-review-r1
+      review_id: design-review-r2
       review_log_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md
-      review_log_sha256: c3ca9b442a2d712ebe9ffcaa55989d63ddf6688856bf03ad619998add135ec4c
+      review_log_sha256: 682a37dcbb8be34fe89b0ee489168822593f3e441345eee79061400e3089b2b3
       reviewer_authority: design-review
-      round: r1
+      round: r2
       stage_authority: design-review
       upstream_review_id: proposal-review-r1
   resolutions:
