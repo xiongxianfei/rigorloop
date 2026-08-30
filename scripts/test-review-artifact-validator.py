@@ -218,9 +218,8 @@ def package_review_text(*, stage: str = "design-review", status: str = "approved
     Review date: 2026-08-29
     Status: {status}
     Package kind: {kind}
-    Package member artifact IDs: {members}
-    Upstream binding: proposal-review-r1
-    Aggregate package revision: sha256:{'a' * 64}
+    Package members: {', '.join(f'{member}=docs/{member}.md' for member in members.split(', '))}
+    Upstream review ID: proposal-review-r1
     Material findings: {material}
     Correction targets: {correction}
     Recording status: recorded

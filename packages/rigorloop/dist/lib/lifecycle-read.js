@@ -4,12 +4,13 @@ import { dirname, join, relative, resolve, sep } from "node:path";
 
 import { allowedNextStages, lifecycleRevision, parseLifecycleYaml } from "./lifecycle-contract.js";
 import { reviewPackageContext, validateStoredReviewPackages } from "./lifecycle-packages.js";
+import { stageIsComplete } from "./lifecycle-stage-routing.js";
 
 const SUPPORTED_CONTRACT = "stage-owned-change-local-v1";
 const REVIEW_STAGES = new Set(["proposal-review", "spec-review", "architecture-review", "plan-review", "test-spec-review", "design-review", "delivery-review", "code-review"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
 const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "plan", "test-spec"]);
-const CORRECTION_STAGE_ORDER = ["proposal", "proposal-review", "spec", "spec-review", "architecture", "architecture-review", "plan", "plan-review", "test-spec", "test-spec-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"];
+const CORRECTION_STAGE_ORDER = ["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"];
 
 function diagnostic(code, summary, invariant, correctiveOperation = null, identities = []) {
   return { code, summary, blocking_invariant: invariant, relevant_identities: identities, corrective_operation: correctiveOperation };
@@ -117,31 +118,6 @@ function expectedReviewAuthority(kind) {
   return kind === "adr" ? "architecture-review" : `${kind}-review`;
 }
 
-function stageIsComplete(change, stage) {
-  const coordination = change.lifecycle_cli;
-  const entries = Object.entries(change.artifact_states ?? {}).filter(([, entry]) => entry && (
-    stage.endsWith("-review")
-      ? expectedReviewAuthority(entry.kind) === stage
-      : expectedAuthorAuthority(entry.kind) === stage
-  ));
-  if (!entries.length) return false;
-  if (stage.endsWith("-review")) {
-    return entries.every(([artifactId, entry]) => {
-      const registeredReview = coordination?.reviews?.[artifactId];
-      return ["accepted", "approved", "active"].includes(entry.lifecycle_state)
-        && entry.review?.outcome === "approved"
-        && (!registeredReview || registeredReview.review_id === entry.review.id);
-    });
-  }
-  return entries.every(([artifactId, entry]) => {
-    if (entry.lifecycle_state !== "review-required") return false;
-    const registration = coordination?.artifacts?.[artifactId];
-    return registration
-      ? registration.artifact_path === entry.path && registration.stage_authority === stage
-      : Boolean(entry.authoring_evidence);
-  });
-}
-
 function coordinationErrors(root, change) {
   const state = change.lifecycle_cli;
   if (state?.schema_version !== 2) return [];
@@ -186,7 +162,7 @@ function coordinationErrors(root, change) {
   return errors;
 }
 
-function permittedOperations(change, blockers, packageContexts = {}) {
+function permittedOperations(root, change, blockers, packageContexts = {}) {
   const stage = change.workflow_state?.current_stage;
   const operations = [];
   const targetId = artifactForStage(stage);
@@ -198,6 +174,8 @@ function permittedOperations(change, blockers, packageContexts = {}) {
 
   if (coordination?.active_correction) {
     const route = coordination.active_correction;
+    const packageCorrection = ["design-review", "delivery-review"].includes(route.return_stage);
+    if (stage === route.destination_stage && packageCorrection && coordination.artifacts?.[route.destination_artifact_id]?.artifact_sha256 !== route.prior_artifact_sha256) return ["return-correction"];
     if (stage === route.destination_stage) return ["record-artifact-revision"];
     if (stage === `${route.destination_stage}-review`) {
       const routeTarget = change.artifact_states?.[route.destination_artifact_id];
@@ -207,11 +185,16 @@ function permittedOperations(change, blockers, packageContexts = {}) {
     }
   }
   const sourceIndex = CORRECTION_STAGE_ORDER.indexOf(stage);
+  const packageContext = ["design-review", "delivery-review"].includes(stage) ? packageContexts[stage.replace(/-review$/, "")] : null;
+  const completedPackageTargets = new Set(Object.values(coordination?.correction_history ?? {})
+    .filter((receipt) => receipt?.return_stage === stage && receipt?.source_review_id === packageContext?.latest_review?.review_id)
+    .map((receipt) => receipt.destination_artifact_id));
+  const packageCorrectionTargets = new Set((packageContext?.correction_targets ?? []).filter((artifactId) => !completedPackageTargets.has(artifactId)));
   const eligibleDestinationIds = Object.entries(change.artifact_states ?? {}).filter(([artifactId, entry]) => {
     const destinationStage = entry?.kind === "adr" ? "architecture" : entry?.kind;
     return ["proposal", "spec", "architecture", "plan", "test-spec"].includes(destinationStage)
       && CORRECTION_STAGE_ORDER.indexOf(destinationStage) < sourceIndex
-      && ["accepted", "approved", "active"].includes(entry?.lifecycle_state)
+      && (["accepted", "approved", "active"].includes(entry?.lifecycle_state) || (entry?.lifecycle_state === "review-required" && packageCorrectionTargets.has(artifactId)))
       && coordination?.artifacts?.[artifactId]?.artifact_path === entry?.path;
   }).map(([artifactId]) => artifactId);
   const staleIdentities = blockers.filter((blocker) => blocker.code === "RL_STALE_EVIDENCE").flatMap((blocker) => blocker.relevant_identities ?? []);
@@ -230,7 +213,7 @@ function permittedOperations(change, blockers, packageContexts = {}) {
   if (REVIEW_STAGES.has(stage) && registeredReview?.outcome === "changes-requested" && onlyOpenFindings) return ["settle-artifact"];
   if (blockers.length > 0) return [...operations, ...(onlyOpenFindings ? ["record-finding-resolution"] : [])];
   if (stage === "plan-review" && target?.kind === "plan" && target.role === "primary" && target.lifecycle_state === "review-required" && ["approved", "clean-with-notes"].includes(registeredReview?.outcome) && !change.workflow_state?.planned_work) return ["initialize-approved-plan"];
-  if (stageIsComplete(change, stage) && allowedNextStages(change, stage).length > 0) operations.push("advance-stage");
+  if (stageIsComplete(root, change, stage) && allowedNextStages(change, stage).length > 0) operations.push("advance-stage");
   if (["proposal", "spec", "architecture", "plan", "test-spec"].includes(stage) && ["authoring", "revision-required"].includes(target?.lifecycle_state)) operations.push("record-artifact-revision");
   if (REVIEW_STAGES.has(stage) && !operations.includes("advance-stage")) operations.push(registeredReview ? "settle-artifact" : "record-review");
   if (stage === "review-resolution") operations.push("record-finding-resolution");
@@ -271,7 +254,7 @@ export function interpretGovernedChange(root, selected) {
   if (unresolvedFindings.length) blockers.push({ code: "RL_UNRESOLVED_MATERIAL_FINDING", summary: "Material review findings remain open.", blocking_invariant: "finding-closeout", relevant_identities: unresolvedFindings });
   if (staleEvidence.length) blockers.push({ code: "RL_STALE_EVIDENCE", summary: "Registered evidence is stale.", blocking_invariant: "evidence-freshness", relevant_identities: staleEvidence });
   const packageContexts = Object.fromEntries(["design", "delivery"].map((kind) => [kind, reviewPackageContext(root, change, kind)]));
-  for (const packageContext of Object.values(packageContexts)) if (change.review_packages?.[packageContext.package_kind]) blockers.push(...packageContext.blockers);
+  for (const packageContext of Object.values(packageContexts)) if (change.review_packages?.[packageContext.package_kind]) blockers.push(...packageContext.blockers, ...packageContext.errors);
   blockers.push(...errors);
   const referenced = collected.artifacts.filter((artifact) => artifact.sha256).map((artifact) => ({ path: artifact.path, sha256: artifact.sha256 }));
   const revision = lifecycleRevision(change, referenced);
@@ -303,12 +286,10 @@ export function interpretGovernedChange(root, selected) {
       unresolved_findings: unresolvedFindings,
       stale_evidence: staleEvidence,
       review_packages: Object.fromEntries(Object.entries(packageContexts).map(([kind, packageContext]) => [kind, {
-        member_artifact_ids: packageContext.member_artifact_ids,
-        upstream_binding: packageContext.upstream_binding,
-        aggregate_revision: packageContext.aggregate_revision,
-        state: packageContext.state,
+        members: packageContext.members,
+        upstream_review_id: packageContext.upstream_review_id,
+        status: packageContext.status,
         authority: packageContext.authority,
-        stale: packageContext.stale,
         blockers: packageContext.blockers,
         errors: packageContext.errors,
         next_permitted_operation: packageContext.next_permitted_operation,
@@ -316,7 +297,7 @@ export function interpretGovernedChange(root, selected) {
       supporting_paths: [relative(root, selected.path), ...collected.artifacts.map((artifact) => artifact.path)].sort(),
     },
     blockers,
-    permitted_operations: permittedOperations(change, blockers, packageContexts),
+    permitted_operations: permittedOperations(root, change, blockers, packageContexts),
     artifacts: collected.artifacts,
     next_review_rounds: Object.fromEntries([...REVIEW_STAGES].map((stage) => [stage, nextDurableReviewRound(root, selected.id, stage)])),
     warnings: [],
@@ -340,7 +321,7 @@ export function contextForStage(interpreted, stage) {
       exact_change: interpreted.change_id,
       operation: stage,
       target_artifact: null,
-      settled_upstream_inputs: reviewPackage.member_artifact_ids.map((artifactId) => interpreted.artifacts.find((artifact) => artifact.artifact_id === artifactId)).filter(Boolean).map(({ artifact_id, path, sha256 }) => ({ artifact_id, path, sha256 })),
+      settled_upstream_inputs: Object.entries(reviewPackage.members).map(([artifact_id, path]) => ({ artifact_id, path })),
       review_round: reviewPackage.latest_review?.round ?? interpreted.next_review_rounds?.[stage] ?? "r1",
       authorized_output_path: `docs/changes/${interpreted.change_id}/reviews/${stage}-${reviewPackage.latest_review?.round ?? interpreted.next_review_rounds?.[stage] ?? "r1"}.md`,
       blockers: [...interpreted.blockers, ...reviewPackage.blockers],

@@ -72,7 +72,7 @@ ARTIFACT_STATES_BY_KIND = {
 }
 REVIEW_OUTCOMES = {"approved", "changes-requested", "blocked", "inconclusive"}
 REVIEW_PACKAGE_KINDS = {"design", "delivery"}
-REVIEW_PACKAGE_STATES = {"approved", "changes-requested", "blocked", "inconclusive"}
+REVIEW_PACKAGE_STATES = {"review-required", "approved", "changes-requested", "blocked", "inconclusive"}
 REVIEW_PACKAGE_AUTHORITIES = {"granted", "withheld"}
 REVIEW_PACKAGE_FINDING_SCOPES = {"artifact-local", "cross-artifact", "upstream-direction"}
 WORKFLOW_LIFECYCLE_STATES = {"active", "paused", "completed", "cancelled"}
@@ -438,42 +438,35 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                     errors.append(f"{base}: unknown_value package kind")
                 if not _exact_keys(
                     package, base,
-                    {"aggregate_revision", "authority", "correction_targets", "findings", "latest_review", "member_artifact_ids", "package_kind", "state", "upstream_binding"},
+                    {"authority", "correction_targets", "findings", "members", "outcome", "package_kind", "review_id", "review_round", "status", "upstream_review_id"},
                     set(), errors,
                 ):
                     continue
                 _closed(package.get("package_kind"), f"{base}.package_kind", REVIEW_PACKAGE_KINDS, errors)
                 if package.get("package_kind") != package_kind:
                     errors.append(f"{base}.package_kind: must match package key")
-                _closed(package.get("state"), f"{base}.state", REVIEW_PACKAGE_STATES, errors)
+                _closed(package.get("status"), f"{base}.status", REVIEW_PACKAGE_STATES, errors)
+                _closed(package.get("outcome"), f"{base}.outcome", REVIEW_OUTCOMES, errors)
                 _closed(package.get("authority"), f"{base}.authority", REVIEW_PACKAGE_AUTHORITIES, errors)
-                if (package.get("state") == "approved") != (package.get("authority") == "granted"):
-                    errors.append(f"{base}.authority: must be granted exactly for approved state")
-                if SHA256_RE.fullmatch(str(package.get("aggregate_revision"))) is None:
-                    errors.append(f"{base}.aggregate_revision: expected sha256 identity")
-                if not isinstance(package.get("upstream_binding"), str) or not package.get("upstream_binding"):
-                    errors.append(f"{base}.upstream_binding: expected non-empty identity")
-                members = package.get("member_artifact_ids")
-                if not isinstance(members, list) or not members or len(members) != len(set(item for item in members if isinstance(item, str))):
-                    errors.append(f"{base}.member_artifact_ids: expected non-empty unique list")
-                    members = []
-                for index, artifact_id in enumerate(members):
+                if (package.get("status") == "approved") != (package.get("authority") == "granted"):
+                    errors.append(f"{base}.authority: must be granted exactly for approved status")
+                if not isinstance(package.get("upstream_review_id"), str) or not package.get("upstream_review_id"):
+                    errors.append(f"{base}.upstream_review_id: expected non-empty identity")
+                members = package.get("members")
+                if not isinstance(members, dict) or not members:
+                    errors.append(f"{base}.members: expected non-empty artifact ID to path map")
+                    members = {}
+                for artifact_id, artifact_path in members.items():
                     if artifact_id not in states:
-                        errors.append(f"{base}.member_artifact_ids[{index}]: must name a registered artifact")
+                        errors.append(f"{base}.members.{artifact_id}: must name a registered artifact")
+                    elif states[artifact_id].get("path") != artifact_path:
+                        errors.append(f"{base}.members.{artifact_id}: path must match registered artifact")
                 correction_targets = package.get("correction_targets")
                 if not isinstance(correction_targets, list) or len(correction_targets) != len(set(item for item in correction_targets if isinstance(item, str))):
                     errors.append(f"{base}.correction_targets: expected unique list")
-                latest = package.get("latest_review")
-                if _exact_keys(latest, f"{base}.latest_review", {"evidence_path", "outcome", "review_id", "reviewer_authority", "round"}, set(), errors):
-                    _closed(latest.get("outcome"), f"{base}.latest_review.outcome", REVIEW_OUTCOMES, errors)
-                    if latest.get("outcome") != package.get("state"):
-                        errors.append(f"{base}.latest_review.outcome: must match package state")
-                    if latest.get("reviewer_authority") != f"{package_kind}-review":
-                        errors.append(f"{base}.latest_review.reviewer_authority: must match package kind")
-                    if _ROUND_RE.fullmatch(str(latest.get("round"))) is None:
-                        errors.append(f"{base}.latest_review.round: expected r<n>")
-                    if not _repo_path(latest.get("evidence_path")):
-                        errors.append(f"{base}.latest_review.evidence_path: expected normalized repository-relative path")
+                    correction_targets = []
+                if _ROUND_RE.fullmatch(str(package.get("review_round"))) is None:
+                    errors.append(f"{base}.review_round: expected r<n>")
                 findings = package.get("findings")
                 if not isinstance(findings, list):
                     errors.append(f"{base}.findings: expected list")
@@ -496,9 +489,19 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                         errors.append(f"{finding_path}.affected_artifact_ids: upstream-direction requires {expected_upstream}")
                     if not isinstance(finding.get("owning_stages"), list) or not finding.get("owning_stages"):
                         errors.append(f"{finding_path}.owning_stages: expected non-empty list")
+                    else:
+                        if finding.get("scope") == "upstream-direction":
+                            expected_owners = ["proposal" if package_kind == "design" else "design-review"]
+                        else:
+                            expected_owners = sorted(set("architecture" if states.get(item, {}).get("kind") == "adr" else states.get(item, {}).get("kind") for item in affected if states.get(item, {}).get("kind")))
+                        if sorted(finding.get("owning_stages")) != expected_owners:
+                            errors.append(f"{finding_path}.owning_stages: must match affected artifact owners")
                     for field in ("finding_id", "evidence", "required_outcome", "safe_resolution_path"):
                         if not isinstance(finding.get(field), str) or not finding.get(field):
                             errors.append(f"{finding_path}.{field}: expected non-empty string")
+                expected_targets = sorted(set(item for finding in findings if isinstance(finding, dict) for item in finding.get("affected_artifact_ids", []) if isinstance(item, str)))
+                if sorted(correction_targets) != expected_targets:
+                    errors.append(f"{base}.correction_targets: must exactly match affected artifacts")
 
     if _exact_keys(
         workflow_state, "workflow_state",

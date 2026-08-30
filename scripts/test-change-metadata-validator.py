@@ -2085,21 +2085,16 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
             }
         record["review_packages"] = {
             "design": {
-                "aggregate_revision": f"sha256:{'a' * 64}",
                 "authority": "granted",
                 "correction_targets": [],
                 "findings": [],
-                "latest_review": {
-                    "evidence_path": "docs/changes/example/reviews/design-review-r1.md",
-                    "outcome": "approved",
-                    "review_id": "design-review-r1",
-                    "reviewer_authority": "design-review",
-                    "round": "r1",
-                },
-                "member_artifact_ids": ["architecture", "spec"],
+                "members": {"architecture": "docs/architecture/example.md", "spec": "specs/example.md"},
+                "outcome": "approved",
                 "package_kind": "design",
-                "state": "approved",
-                "upstream_binding": "proposal-review-r1",
+                "review_id": "design-review-r1",
+                "review_round": "r1",
+                "status": "approved",
+                "upstream_review_id": "proposal-review-r1",
             }
         }
         self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
@@ -2108,7 +2103,6 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
         record = self.valid_record()
         record["review_packages"] = {
             "combined": {
-                "aggregate_revision": f"sha256:{'a' * 64}",
                 "authority": "partial",
                 "correction_targets": [],
                 "findings": [{
@@ -2120,22 +2114,18 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
                     "safe_resolution_path": "resolution",
                     "scope": "mixed",
                 }],
-                "latest_review": {
-                    "evidence_path": "docs/changes/example/reviews/design-review-r1.md",
-                    "outcome": "accepted",
-                    "review_id": "design-review-r1",
-                    "reviewer_authority": "design-review",
-                    "round": "r1",
-                },
-                "member_artifact_ids": ["proposal"],
+                "members": {"proposal": "docs/proposals/example.md"},
+                "outcome": "accepted",
                 "package_kind": "combined",
-                "state": "settled",
-                "upstream_binding": "proposal-review-r1",
+                "review_id": "design-review-r1",
+                "review_round": "r1",
+                "status": "settled",
+                "upstream_review_id": "proposal-review-r1",
             }
         }
         errors = validate_stage_owned_lifecycle_metadata(record)
         self.assertTrue(any("review_packages.combined: unknown_value" in error for error in errors))
-        self.assertTrue(any("review_packages.combined.state: unknown_value" in error for error in errors))
+        self.assertTrue(any("review_packages.combined.status: unknown_value" in error for error in errors))
         self.assertTrue(any("review_packages.combined.authority: unknown_value" in error for error in errors))
         self.assertTrue(any("review_packages.combined.findings[0].scope: unknown_value" in error for error in errors))
 

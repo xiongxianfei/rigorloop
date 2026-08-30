@@ -25,11 +25,11 @@ The first slice uses one atomic release cutover rather than runtime coexistence.
 - `legacy artifact gates`: the retiring workflow with separate `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` progression gates.
 - `consolidated review gates`: the standard workflow with `proposal-review`, `design-review`, `delivery-review`, `code-review`, and `verify` decision gates.
 - `accepted proposal evidence`: the current accepted proposal artifact, its embedded Feasibility section, and its current Proposal Review ID and evidence. Any relied-on research conclusion must be captured in the proposal; links and separate research artifacts remain supporting inputs rather than hidden package members.
-- `design package`: one exact architecture revision, one exact specification revision, all applicable exact ADR revisions, and the accepted proposal constraints they must preserve.
-- `delivery package`: one exact plan revision, one exact test-specification revision, and the approved design package they operationalize.
-- `package member set`: the ordered component artifact IDs included in one design or delivery package; their registered repository-relative paths are resolved from the same owning change record rather than duplicated in every review record.
-- `upstream binding`: the accepted Proposal Review ID for a design package or the approved aggregate design-package revision for a delivery package.
-- `package revision`: one opaque aggregate content identity calculated by the lifecycle CLI from the package kind, package member set, current member contents, and upstream binding. Contributors do not record or maintain per-document hashes.
+- `design package`: one explicit member map from stable artifact IDs to the repository-relative paths of the current architecture, specification, and applicable ADRs, plus the accepted proposal constraints they must preserve.
+- `delivery package`: one explicit member map from stable artifact IDs to the repository-relative paths of the current plan and test specification, plus the approved design review they operationalize.
+- `package member set`: the ordered mapping from component artifact IDs to their registered repository-relative paths for one design or delivery package. The lifecycle state exposes that map directly, and each package review record binds the same map.
+- `upstream review`: the accepted Proposal Review ID for a design package or the approved Design Review ID for a delivery package.
+- `package invalidation`: the lifecycle transition that changes an approved package to `review-required` when an owning authoring stage records a member revision or an upstream review settlement replaces the bound review ID. Package authority does not use aggregate or per-document content hashes.
 - `component artifact`: an independently authored artifact included in a review package.
 - `package settlement`: the atomic lifecycle transition that records one review decision over every component in the exact reviewed package.
 - `finding scope`: the closed classification that identifies whether a finding is artifact-local, cross-artifact, or requires revision of an approved upstream direction.
@@ -49,7 +49,7 @@ Then: The proposal contains one `## Feasibility` section with an assessment, evi
 
 Given: Architecture and specification are separately authored for one change, and both bind the same accepted proposal direction.
 
-When: Design Review approves their exact revisions and applicable ADRs.
+When: Design Review approves their explicit artifact IDs and repository-relative paths together with the applicable ADRs.
 
 Then: The design package is approved atomically, planning may begin, and neither component has independent progression authority outside the approved package.
 
@@ -69,13 +69,13 @@ When: Delivery Review evaluates the exact pair.
 
 Then: Approval requires a complete trace from requirement through architectural boundary, milestone, proof, and validation evidence, and approval authorizes implementation.
 
-### Example E5: component edit makes package evidence stale
+### Example E5: governed component edit requires package rereview
 
 Given: An approved design package.
 
-When: Any included architecture, specification, or applicable ADR bytes change.
+When: The owning authoring stage records a change to any included architecture, specification, or applicable ADR.
 
-Then: The approved design-package evidence becomes stale, and downstream progression stops until an exact current package is reviewed and settled again.
+Then: The lifecycle CLI changes the design package to `review-required`, retains the previous review as history, and stops downstream progression until the explicit current member map is reviewed again.
 
 ### Example E6: cutover does not strand active work
 
@@ -161,21 +161,21 @@ CRG-R20. Delivery Review MUST reject missing milestone ownership, unsafe or over
 
 CRG-R21. Delivery Review approval MUST settle the exact delivery package atomically and authorize implementation. Plan review and test-spec review MUST NOT remain separate progression gates after cutover.
 
-### Identity, staleness, and CLI behavior
+### Package identity, invalidation, and CLI behavior
 
-CRG-R22. Every Design Review and Delivery Review record MUST bind the package kind, ordered package member artifact IDs, one upstream binding, one CLI-calculated aggregate package revision, review ID, review round, reviewer authority, outcome, findings, and evidence path. Durable review and lifecycle records MUST NOT require contributors to record or maintain a separate content hash for every member document.
+CRG-R22. Every Design Review and Delivery Review record MUST bind the package kind, an explicit member mapping from stable artifact IDs to normalized repository-relative paths, one upstream review ID, review ID, review round, reviewer authority, outcome, findings, and evidence path. Package lifecycle and review records MUST NOT contain or require an aggregate package revision or per-document content hashes.
 
-For Design Review, the upstream binding MUST be the accepted Proposal Review ID and the review MUST consume the corresponding accepted proposal evidence; no proposal-package revision exists. For Delivery Review, the upstream binding MUST be the approved aggregate design-package revision.
+For Design Review, the upstream review ID MUST be the accepted Proposal Review ID and the review MUST consume the corresponding accepted proposal evidence. For Delivery Review, the upstream review ID MUST be the approved Design Review ID.
 
-CRG-R23. Package revision calculation MUST be deterministic and content-addressed. Architecture MAY choose the canonical serialization, digest algorithm, and lifecycle projection, but the CLI MUST calculate the revision automatically from the ordered package member set, current member contents, package kind, and upstream binding. Identical inputs MUST produce the same aggregate revision, and any changed governed input MUST produce a different aggregate revision.
+CRG-R23. Package membership MUST be deterministic and directly inspectable. Design members MUST appear as primary architecture, primary specification, then applicable ADRs ordered by artifact ID. Delivery members MUST appear as primary plan then primary test specification. Each member path MUST be normalized, repository-relative, safe, and consistent with its registered artifact ID, kind, role, and authoring owner.
 
-CRG-R24. In the first slice, any byte change to a component artifact included in an approved package or any change to its upstream binding MUST change the aggregate package revision and make that package review stale. The durable state MAY report only the upstream binding, aggregate revision, and member artifact IDs; it need not retain per-member hashes. A later proposal and spec MAY introduce reviewed semantic-equivalence rules; this change MUST NOT infer non-materiality automatically.
+CRG-R24. When a governed authoring operation records a revision of a package member, or when Proposal Review or Design Review settlement replaces the package's upstream review ID, the lifecycle CLI MUST atomically change the affected approved package to `review-required`, retain the prior review ID as historical evidence, and withhold progression until a current package review is approved. Direct edits outside the governed authoring workflow are not automatically detected in this first slice and MUST NOT cause the implementation to introduce content hashing as a substitute.
 
-CRG-R25. The lifecycle CLI MUST expose enough read-only context and status information to identify current package members, upstream binding, current aggregate package revision, review state, stale state, blockers, and the next permitted operation without requiring users to infer them from file existence or manually calculate hashes.
+CRG-R25. The lifecycle CLI MUST expose enough read-only context and status information to identify each package member ID and exact path, upstream review ID, current review ID and round, package status, blockers, correction targets, and the next permitted operation without requiring users to infer paths from IDs or inspect content hashes.
 
-CRG-R26. Lifecycle mutation MUST support aggregate-package-revision-checked, authority-checked, atomic package review recording and settlement. The CLI MUST validate the current upstream binding and recalculate the aggregate revision at review recording and settlement. A failed, interrupted, or mismatched mutation MUST leave no progression-authorizing partial package settlement.
+CRG-R26. Lifecycle mutation MUST support authority-checked, lifecycle-revision-checked, atomic package review recording and settlement. Recording and settlement MUST validate the current explicit member map, upstream review ID, review evidence, and current package status. A failed, interrupted, mismatched, or unauthorized mutation MUST leave no progression-authorizing partial package settlement. Exact replay of an already-recorded identical review decision is idempotent.
 
-CRG-R27. This specification does not require a new top-level CLI command name. Architecture MUST decide whether existing generic lifecycle operations are extended or another compatible request shape is introduced, while preserving CRG-R22 through CRG-R26.
+CRG-R27. This specification does not require a new top-level CLI command name. Architecture MUST decide whether existing generic lifecycle operations are extended or another compatible request shape is introduced, while preserving the concise state-based behavior in CRG-R22 through CRG-R26.
 
 CRG-R28. Unknown package kinds, component roles, review outcomes, finding scopes, artifact kinds, or settlement states MUST produce explicit validation or CLI errors before consistency logic can accept them.
 
@@ -187,14 +187,14 @@ The outcome-to-authority mapping MUST be deterministic:
 
 | Outcome | Progression authority | Required next action |
 | --- | --- | --- |
-| `approved` | Design Review authorizes plan and test-specification authoring; Delivery Review authorizes implementation. | Record and atomically settle the current aggregate package revision, then return routing control to workflow. |
+| `approved` | Design Review authorizes plan and test-specification authoring; Delivery Review authorizes implementation. | Record and atomically settle the current explicit member map and review ID, then return routing control to workflow. |
 | `changes-requested` | None. | Record the attempted package review and findings; use `review-resolution` when material findings require disposition; route the named artifact-local or cross-artifact correction targets to their owners; require current package rereview after revision. |
 | `blocked` | None. | Record the attempted review and the missing or contradictory upstream prerequisite; use `review-resolution` when disposition is required; route only to the named upstream owner or stop when no authorized route exists. |
 | `inconclusive` | None. | Record the missing evidence and stop with no forward handoff; obtain the required input and rerun the same package review. |
 
 Correction targets MUST be recorded separately from the outcome so one cross-artifact result can name every required owner without inventing partial package authority.
 
-Every outcome MUST remain visible as the latest package-review attempt. Only `approved` creates or refreshes progression-authorizing package settlement. Every other outcome MUST withhold package authority, expose itself as a blocker, and preserve any prior historical approval only as non-current evidence.
+Every outcome MUST remain visible as the latest package-review attempt. Only `approved` creates or refreshes progression-authorizing package settlement. Every other outcome MUST withhold package authority, expose itself as a blocker, preserve any prior approval only as historical evidence, and expose one safe correction, evidence-acquisition, or rereview operation.
 
 CRG-R30. Every material Design Review or Delivery Review finding MUST use exactly one finding scope: `artifact-local`, `cross-artifact`, or `upstream-direction`.
 
@@ -224,7 +224,7 @@ CRG-R40. The implementing change itself MUST complete under the pre-cutover work
 
 CRG-R41. Milestone Code Review, required final holistic Code Review, review-resolution, `ci-maintenance` when triggered, `explain-change`, Verify, and PR ownership MUST retain their current semantic responsibilities.
 
-CRG-R42. Verify MUST consume the current accepted proposal evidence, approved design package revision, approved delivery package revision, implementation and Code Review evidence, current explanation, and current validation results. Stale, legacy-only, or partial package evidence MUST block readiness.
+CRG-R42. Verify MUST consume the current accepted proposal evidence, approved Design Review ID and member map, approved Delivery Review ID and member map, implementation and Code Review evidence, current explanation, and current validation results. Review-required, legacy-only, or partial package evidence MUST block readiness.
 
 CRG-R43. Canonical workflow specifications, `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md`, affected skills, skill-contract surfaces, templates, schemas, CLI behavior, validators, fixtures, examples, generated adapter manifests, and release archives MUST be updated, marked unaffected with rationale, or deferred with owner and follow-up before cutover.
 
@@ -238,17 +238,17 @@ CRG-R45. Structural validation MAY prove vocabulary, identities, references, pac
 
 - one governed change identity;
 - an accepted proposal with embedded feasibility evaluation;
-- current architecture, specification, and applicable ADR revisions for Design Review;
-- current plan and test-specification revisions for Delivery Review;
-- current accepted proposal evidence and applicable upstream bindings;
+- current architecture, specification, and applicable ADR artifact IDs and paths for Design Review;
+- current plan and test-specification artifact IDs and paths for Delivery Review;
+- current accepted proposal evidence and applicable upstream review IDs;
 - current review findings, resolutions, and lifecycle revision;
 - canonical skill, template, schema, CLI, validation, documentation, and packaging sources.
 
 ### Outputs
 
 - a Proposal Review decision over direction and feasibility;
-- a deterministic aggregate design-package revision, member set, review record, and atomic settlement;
-- a deterministic aggregate delivery-package revision, member set, review record, and atomic settlement;
+- a deterministic design-package member map, review record, status, and atomic settlement;
+- a deterministic delivery-package member map, review record, status, and atomic settlement;
 - precisely attributed findings and workflow-owned correction routes;
 - package-aware lifecycle status and permitted-operation output;
 - cutover evidence proving no nonterminal change depends on legacy progression;
@@ -257,12 +257,12 @@ CRG-R45. Structural validation MAY prove vocabulary, identities, references, pac
 ## State and invariants
 
 - Mutable lifecycle and routing state remains solely in `docs/changes/<change-id>/change.yaml`; governed Markdown artifacts contain stable intent and one owning-change pointer.
-- A design or delivery approval belongs to one exact aggregate package revision.
-- Every aggregate package revision includes exactly one current upstream binding.
-- Durable lifecycle and review state records one aggregate package revision and member artifact IDs, not contributor-maintained per-document hashes.
+- A design or delivery approval belongs to one explicit member ID-to-path map and one review ID.
+- Every package includes exactly one current upstream review ID.
+- Durable lifecycle and review state records member IDs, exact repository-relative paths, review identity, and status without aggregate or per-document content hashes.
 - Component artifacts retain separate owners and identities even when package approval is atomic.
 - No component-only state authorizes progression.
-- Any component byte change invalidates the package review in the first slice.
+- A governed member-revision event or replacement upstream-review settlement invalidates the affected package approval in the first slice. Unrecorded direct edits are outside automatic detection.
 - Review authority remains separate from authorship authority.
 - Workflow remains the owner of routing and correction coordination.
 - Package review evidence is durable and findings remain attributable to exact artifacts or relationships.
@@ -272,7 +272,7 @@ CRG-R45. Structural validation MAY prove vocabulary, identities, references, pac
 
 - Missing or invalid Feasibility content stops at Proposal Review and routes to proposal revision.
 - A missing design or delivery component makes the package incomplete and prevents review settlement.
-- Conflicting or stale upstream bindings, duplicate component roles, unsafe paths, unknown vocabulary, or stale lifecycle revisions fail closed.
+- Conflicting upstream review IDs, duplicate component roles, unsafe paths, unknown vocabulary, or stale lifecycle revisions fail closed.
 - A contradiction between package members is a cross-artifact finding and prevents approval.
 - A finding that changes accepted direction routes upstream and cannot be silently absorbed by a downstream author.
 - A reviewer-authored component edit invalidates independence and requires author-owned revision plus rereview.
@@ -301,11 +301,11 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
-| BND-INPUT-001 | input-domain | CRG-R1, CRG-R7, CRG-R8, CRG-R9, CRG-R10, CRG-R12, CRG-R17, CRG-R22, CRG-R28 | complete or incomplete feasibility; complete, missing, duplicate, unknown, or unsafe package inputs | Every admitted package has one known kind, required member roles, safe paths, and one current aggregate package revision. | Complete known input may proceed; missing, duplicate, unsafe, or unknown input fails closed before review settlement. | CRG-R22 |
-| BND-STATE-001 | state-lifecycle | CRG-R2, CRG-R12, CRG-R15, CRG-R16, CRG-R17, CRG-R19, CRG-R21, CRG-R24, CRG-R29, CRG-R34, CRG-R35 | authoring, review-required, approved package, changes requested, blocked, inconclusive, stale package, correction, terminal | Progression authority exists only for one current atomically approved package; every non-approved outcome grants none. | Legal transitions advance atomically; changes requested route named corrections; blocked routes upstream or stops; inconclusive stops for evidence; partial, stale, or illegal transitions stop. | CRG-R29 |
-| BND-AUTH-001 | identity-authority | CRG-R5, CRG-R13, CRG-R14, CRG-R18, CRG-R22, CRG-R29, CRG-R31, CRG-R33, CRG-R35, CRG-R37 | author, reviewer, workflow router, lifecycle mutation authority, upstream-binding authority, release-cutover authority | Each role mutates only its owned surface; package decisions bind one upstream binding and aggregate revision; release governance owns cutover. | Authorized operations record owned evidence; stale upstream authority, self-approval, wrong-stage operations, cross-owner edits, and premature cutover are rejected. | CRG-R33 |
-| BND-COMPOSE-001 | composition-path | CRG-R12, CRG-R14, CRG-R15, CRG-R16, CRG-R17, CRG-R19, CRG-R21, CRG-R31, CRG-R33, CRG-R42 | artifact-local path, cross-artifact path, upstream-binding path, downstream verification path | Package approval covers local quality, current upstream authority, and all selected cross-artifact coherence hazards. | Coherent composition may approve; stale upstream binding, contradiction, or missing trace produces attributable blockers or findings and blocks progression. | CRG-R14 |
-| BND-TEMPORAL-001 | temporal-retry | CRG-R23, CRG-R24, CRG-R25, CRG-R26, CRG-R27, CRG-R34 | first record, duplicate retry, stale retry, component change, upstream-binding change, rereview | The expected lifecycle revision, upstream binding, and aggregate package revision remain current throughout a mutation. | Exact duplicate is idempotent; stale or changed member or upstream input is rejected; changed components or bindings require rereview. | CRG-R26 |
+| BND-INPUT-001 | input-domain | CRG-R1, CRG-R7, CRG-R8, CRG-R9, CRG-R10, CRG-R12, CRG-R17, CRG-R22, CRG-R28 | complete or incomplete feasibility; complete, missing, duplicate, unknown, or unsafe package inputs | Every admitted package has one known kind, required member roles, stable artifact IDs, and safe exact repository-relative paths. | Complete known input may proceed; missing, duplicate, unsafe, mismatched, or unknown input fails closed before review settlement. | CRG-R22 |
+| BND-STATE-001 | state-lifecycle | CRG-R2, CRG-R12, CRG-R15, CRG-R16, CRG-R17, CRG-R19, CRG-R21, CRG-R24, CRG-R29, CRG-R34, CRG-R35 | authoring, review-required, approved package, changes requested, blocked, inconclusive, correction, terminal | Progression authority exists only for one current atomically approved package; every non-approved outcome grants none. | Legal transitions advance atomically; governed member edits invalidate approval; changes requested route named corrections; blocked routes upstream or stops; inconclusive stops for evidence; partial or illegal transitions stop. | CRG-R29 |
+| BND-AUTH-001 | identity-authority | CRG-R5, CRG-R13, CRG-R14, CRG-R18, CRG-R22, CRG-R29, CRG-R31, CRG-R33, CRG-R35, CRG-R37 | author, reviewer, workflow router, lifecycle mutation authority, upstream-review authority, release-cutover authority | Each role mutates only its owned surface; package decisions bind one explicit member map and upstream review ID; release governance owns cutover. | Authorized operations record owned evidence; invalid upstream authority, self-approval, wrong-stage operations, cross-owner edits, and premature cutover are rejected. | CRG-R33 |
+| BND-COMPOSE-001 | composition-path | CRG-R12, CRG-R14, CRG-R15, CRG-R16, CRG-R17, CRG-R19, CRG-R21, CRG-R31, CRG-R33, CRG-R42 | artifact-local path, cross-artifact path, upstream-review path, downstream verification path | Package approval covers local quality, current upstream authority, and all selected cross-artifact coherence hazards. | Coherent composition may approve; invalid upstream review, contradiction, or missing trace produces attributable blockers or findings and blocks progression. | CRG-R14 |
+| BND-TEMPORAL-001 | temporal-retry | CRG-R23, CRG-R24, CRG-R25, CRG-R26, CRG-R27, CRG-R34 | first record, exact duplicate retry, stale lifecycle retry, governed member change, upstream-review change, rereview | The expected lifecycle revision, explicit member map, upstream review ID, and package status remain current throughout a mutation. | Exact duplicate is idempotent; stale lifecycle requests are rejected; governed member or upstream-review changes set the package to review-required. | CRG-R26 |
 | BND-RECOVERY-001 | failure-recovery | CRG-R10, CRG-R13, CRG-R18, CRG-R20, CRG-R26, CRG-R33, CRG-R39 | review rejection, interrupted mutation, correction route, release revert | Failure never grants partial progression authority and preserves the last complete recoverable state. | Findings route to owners; interrupted settlement restores or retains prior state; a pre-adoption release revert preserves readable evidence. | CRG-R26 |
 | BND-COMPAT-001 | compatibility-migration | CRG-R1, CRG-R5, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R39, CRG-R40 | pre-cutover implementation, nonterminal legacy work, clean cutover, historical evidence, pre-adoption revert | Only one progression mechanism is active at a time; historical individual reviews are not package authority; records are not destructively rewritten. | Complete prerequisites permit cutover; legacy-dependent work, partial surface updates, or mixed authority block it. | CRG-R35 |
 | BND-ENV-001 | external-environment | CRG-R25, CRG-R26, CRG-R27, CRG-R38, CRG-R43, CRG-R44 | canonical sources, local CLI, generated packages, release archives, unavailable dependency | Canonical and generated public surfaces expose the same supported gates without requiring external services. | Parity permits cutover and packaging; drift, unavailable required local support, or inconsistent archives blocks the affected handoff. | CRG-R44 |
@@ -316,7 +316,7 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 | --- | --- | --- | --- | --- |
 | INT-001 | CRG-R14, CRG-R16, CRG-R31 | BND-COMPOSE-001, BND-STATE-001 | One design component appears acceptable while the other contradicts it. | Record a cross-artifact finding and leave the whole design package without progression authority. |
 | INT-002 | CRG-R20, CRG-R21, CRG-R31 | BND-COMPOSE-001, BND-STATE-001 | Plan sequence and proof sequence are individually plausible but mutually incompatible. | Record a cross-artifact finding and reject atomic delivery settlement. |
-| INT-003 | CRG-R24, CRG-R26, CRG-R34 | BND-TEMPORAL-001, BND-AUTH-001, BND-STATE-001 | A component or upstream binding changes between review, recording, and settlement. | Reject stale mutation and require current upstream evidence or author-owned revision evidence plus current package rereview. |
+| INT-003 | CRG-R24, CRG-R26, CRG-R34 | BND-TEMPORAL-001, BND-AUTH-001, BND-STATE-001 | A governed component or upstream review changes before or after package settlement. | Atomically mark the package review-required, withhold progression, and require a current package rereview; stale lifecycle requests fail unchanged. |
 | INT-004 | CRG-R26, CRG-R39 | BND-RECOVERY-001, BND-STATE-001, BND-COMPAT-001 | Settlement or a pre-adoption release revert interrupts after writing only part of an authoritative projection. | Preserve or restore the last complete authoritative state; partial projection grants no authority. |
 | INT-005 | CRG-R35, CRG-R37 | BND-COMPAT-001, BND-AUTH-001, BND-INPUT-001 | Historical individual review evidence is presented as current package authority. | Reject it with an actionable package-authority error. |
 | INT-006 | CRG-R38, CRG-R44 | BND-ENV-001, BND-COMPAT-001, BND-STATE-001 | Canonical sources switch to consolidated gates while generated packages or guidance still expose legacy progression. | Block cutover until parity and legacy-retirement proof are current. |
@@ -351,14 +351,14 @@ At cutover, the following `specs/rigorloop-workflow.md` surfaces are replaced: t
 
 ## Observability
 
-- Design and delivery status MUST show member artifact IDs, upstream binding, one aggregate package revision, review ID and round, outcome, correction targets, stale state, open findings, blockers, and next permitted operation. It MUST NOT require contributors to inspect or maintain per-document hashes.
+- Design and delivery status MUST show the member artifact ID-to-path map, upstream review ID, review ID and round, package status, outcome, correction targets, open findings, blockers, and next permitted operation. It MUST NOT calculate, expose, or require an aggregate or per-document content hash for package authority.
 - Review logs MUST make artifact-local, cross-artifact, and upstream-direction finding ownership visible without requiring chat history.
 - CLI errors MUST name the violated invariant and relevant package, artifact, review, or lifecycle identities.
 - Cutover evidence MUST identify canonical-source parity, generated-package parity, legacy-entrypoint retirement, and the absence of nonterminal legacy-dependent changes.
 
 ## Security and privacy
 
-The consolidated workflow introduces no new secret, credential, personal-data, network, or external-account requirement. Package member sets and review evidence MUST contain repository-relative artifact IDs and one aggregate package revision, not machine-local absolute paths, private runtime data, or contributor-maintained per-document hashes. Review consolidation MUST NOT weaken existing author/reviewer separation, lifecycle authority checks, or repository control boundaries.
+The consolidated workflow introduces no new secret, credential, personal-data, network, or external-account requirement. Package member sets and review evidence MUST contain stable artifact IDs and normalized repository-relative paths, not machine-local absolute paths, private runtime data, aggregate content hashes, or per-document content hashes. Review consolidation MUST NOT weaken existing author/reviewer separation, lifecycle authority checks, or repository control boundaries.
 
 ## Accessibility and UX
 
@@ -366,7 +366,7 @@ No end-user graphical interface is introduced. Contributor-facing CLI and Markdo
 
 ## Performance expectations
 
-Aggregate package revision calculation, status inspection, and structural validation SHOULD remain suitable for ordinary local workflow use. The first slice defines no numeric latency budget. Implementations SHOULD avoid rereading unrelated repository history or invoking external services to determine current package state.
+Package membership resolution, status inspection, and structural validation SHOULD remain suitable for ordinary local workflow use. The first slice defines no numeric latency budget. Implementations SHOULD resolve only registered IDs, paths, review evidence, and lifecycle state and SHOULD avoid rereading document contents, unrelated repository history, or external services to determine package authority.
 
 ## Edge cases
 
@@ -376,7 +376,7 @@ EC2. Supporting research changes after Proposal Review. If the change contradict
 
 EC3. An ADR becomes applicable after Design Review. The design package is incomplete and must be rebuilt and rereviewed with the ADR included.
 
-EC4. A spelling-only edit changes a package component's bytes. The first slice still makes the package stale; no automated semantic-equivalence exception applies.
+EC4. A spelling-only edit is recorded through the owning authoring stage. The affected package becomes `review-required`; the workflow does not attempt content hashing or semantic-equivalence inference.
 
 EC5. Design Review approves architecture but requests specification changes. The package outcome is `changes-requested`; architecture has no independent progression authority.
 
@@ -390,7 +390,7 @@ EC9. A nonterminal legacy change exists at the proposed cutover revision. Releas
 
 EC10. A historical change lacks consolidated package evidence. Its old review records remain readable, but they do not authorize resumed consolidated progression.
 
-EC11. Package settlement is retried with the same expected revision and exact evidence. The operation is idempotent. A retry with a stale expected revision is rejected.
+EC11. After recording a package review, a caller refreshes lifecycle context and retries with the current lifecycle revision and the same review ID, explicit member map, upstream review ID, outcome, and evidence path. The operation reports the existing identical decision without creating another review. A retry with a stale lifecycle revision or mismatched review data is rejected.
 
 EC12. Generated adapter archives expose old review skills at the proposed cutover. Release and public enforcement remain blocked until parity is restored.
 
@@ -405,7 +405,7 @@ EC14. A one-milestone ordinary fix still follows Proposal Review, Design Review,
 - Creating combined design-authoring or delivery-authoring skills.
 - Simplifying the broader proposal content contract beyond adding and evaluating Feasibility.
 - Creating a standalone feasibility artifact, skill, state, or review gate.
-- Prescribing exact `change.yaml` package-state placement, aggregate-revision serialization, CLI command spelling, or request-envelope schema before architecture.
+- Prescribing exact `change.yaml` package-state placement, CLI command spelling, or request-envelope schema before architecture.
 - Automatically classifying component edits as semantically non-material.
 - Migrating active legacy changes in place in the first slice.
 - Inferring coherent package approval from separate historical reviews.
@@ -418,10 +418,10 @@ EC14. A one-milestone ordinary fix still follows Proposal Review, Design Review,
 | Acceptance ID | Criteria | Governing requirements |
 | --- | --- | --- |
 | CRG-AC1 | A new proposal template contains one Feasibility section, Proposal Review evaluates it, and no standalone feasibility artifact or skill exists. | CRG-R7 through CRG-R10 |
-| CRG-AC2 | A contributor can author architecture and specification separately, reconcile them, and obtain one Design Review decision over the current member set and one aggregate package revision. | CRG-R12 through CRG-R16 |
+| CRG-AC2 | A contributor can author architecture and specification separately, reconcile them, and obtain one Design Review decision over a visible current artifact ID-to-path member map. | CRG-R12 through CRG-R16 |
 | CRG-AC3 | A contributor can author plan and test specification separately and obtain one Delivery Review decision that proves full requirement-to-evidence traceability. | CRG-R17 through CRG-R21 |
-| CRG-AC4 | A component or upstream-binding change changes one aggregate package revision and blocks progression until current rereview, without requiring durable per-document hashes. | CRG-R22 through CRG-R24 |
-| CRG-AC5 | CLI status exposes package members, upstream binding, one aggregate package revision, staleness, blockers, and permitted operation, while mutation is revision-checked, authority-checked, idempotent, and atomic. | CRG-R25 through CRG-R28 |
+| CRG-AC4 | A governed component or upstream-review change sets the affected package to review-required and blocks progression until current rereview, without aggregate or per-document hashes. | CRG-R22 through CRG-R24 |
+| CRG-AC5 | CLI status exposes exact member IDs and paths, upstream review, package status, blockers, and permitted operation, while mutation is lifecycle-revision-checked, authority-checked, idempotent, and atomic. | CRG-R25 through CRG-R28 |
 | CRG-AC6 | Every package-review outcome has deterministic authority and next-action semantics, and findings are precisely classified and routed without reviewer-owned silent fixes or loss of existing review-resolution evidence. | CRG-R29 through CRG-R34 |
 | CRG-AC7 | One reviewed release cutover retires old progression only after no nonterminal change depends on it; no activation manifest, baseline inventory, topology marker, or runtime selector is introduced. | CRG-R35 through CRG-R40 |
 | CRG-AC8 | Code Review, Verify, explanation, and PR responsibilities retain their distinct assurance roles. | CRG-R41, CRG-R42 |
@@ -431,7 +431,7 @@ EC14. A one-milestone ordinary fix still follows Proposal Review, Design Review,
 
 ## Open questions
 
-- Which aggregate package-revision serialization and compact `change.yaml` projection best preserve component traceability while avoiding durable per-document hashes?
+- Which smallest `change.yaml` mapping shape best exposes stable member IDs and exact repository-relative paths without duplicating unrelated artifact state?
 - Should the lifecycle CLI extend existing `record-review` and settlement operations or add package-specific request operations while keeping one `lifecycle` command family?
 - How should applicable ADR discovery be made deterministic before Design Review context is issued?
 - Which public result fields best distinguish component state, package state, and progression authority without excessive output?
@@ -441,7 +441,7 @@ These questions are architecture-owned and do not change the observable outcomes
 ## Next artifacts
 
 - `spec-review` for this specification under the implementing change's pre-cutover contract.
-- Architecture and applicable ADR work defining aggregate package revision calculation, compact lifecycle projections, CLI mutation shape, atomic settlement, release cutover, review-skill composition, and generated-package impact.
+- Architecture and applicable ADR work defining explicit package membership, compact lifecycle projections, CLI invalidation and settlement shape, release cutover, review-skill composition, and generated-package impact.
 - Architecture review under the implementing change's pre-cutover contract.
 - A reviewed execution plan and test specification after the design is approved.
 

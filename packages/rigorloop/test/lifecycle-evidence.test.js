@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
@@ -6,6 +7,7 @@ import { tmpdir } from "node:os";
 import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
+import { parseLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
 import {
   changeBytes,
   lifecycleRevision as packageLifecycleRevision,
@@ -162,9 +164,9 @@ test("package review recording and approved settlement are atomic and compact", 
     change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(root),
     package_kind: "design",
-    package_revision: review.packageFacts.aggregate_revision,
-    upstream_binding: review.packageFacts.upstream_binding,
-    member_artifact_ids: review.packageFacts.member_artifact_ids,
+    review_id: review.reviewId,
+    upstream_review_id: review.packageFacts.upstream_review_id,
+    members: review.packageFacts.members,
     evidence_path: review.reviewPath,
     stage_authority: "design-review",
   });
@@ -181,14 +183,17 @@ test("package review recording and approved settlement are atomic and compact", 
     change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(root),
     package_kind: "design",
-    package_revision: review.packageFacts.aggregate_revision,
+    review_id: review.reviewId,
     stage_authority: "design-review",
   });
   const settled = executeLifecycleCli(["settle-review-package", "--request", settleRequest, "--format", "json"], { cwd: root });
   assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
   const change = changeBytes(root);
   const compactProjection = change.slice(change.indexOf("review_packages:"), change.indexOf("workflow_state:"));
-  assert.match(change, /review_packages:\n  design:\n    aggregate_revision: sha256:/);
+  assert.match(change, /review_packages:\n  design:\n    authority: granted/);
+  assert.match(change, /members:\n(?:      .+\n)*      architecture: docs\/architecture\/example\.md/);
+  assert.match(change, /upstream_review_id: proposal-review-r1/);
+  assert.doesNotMatch(compactProjection, /aggregate_revision|package_revision/);
   assert.match(change, /authority: granted/);
   assert.doesNotMatch(compactProjection, /member_sha256/);
   assert.doesNotMatch(compactProjection, /artifact_sha256/);
@@ -197,6 +202,10 @@ test("package review recording and approved settlement are atomic and compact", 
   assert.equal(replay.exitCode, 0, JSON.stringify(replay.result));
   assert.equal(replay.result.status, "already-recorded");
   assert.equal(replay.result.state_changed, false);
+
+  writeFileSync(join(root, review.reviewPath), `${readFileSync(join(root, review.reviewPath), "utf8")}\nChanged after settlement.\n`, "utf8");
+  const staleReplay = executeLifecycleCli(["settle-review-package", "--request", settleRequest, "--format", "json"], { cwd: root });
+  assert.equal(staleReplay.result.errors[0].code, "RL_STALE_EVIDENCE");
 });
 
 test("non-approved package outcomes remain visible and grant no authority", async () => {
@@ -213,9 +222,9 @@ test("non-approved package outcomes remain visible and grant no authority", asyn
     change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(root),
     package_kind: "design",
-    package_revision: review.packageFacts.aggregate_revision,
-    upstream_binding: review.packageFacts.upstream_binding,
-    member_artifact_ids: review.packageFacts.member_artifact_ids,
+    review_id: review.reviewId,
+    upstream_review_id: review.packageFacts.upstream_review_id,
+    members: review.packageFacts.members,
     evidence_path: review.reviewPath,
     stage_authority: "design-review",
   });
@@ -226,14 +235,49 @@ test("non-approved package outcomes remain visible and grant no authority", asyn
     change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(root),
     package_kind: "design",
-    package_revision: review.packageFacts.aggregate_revision,
+    review_id: review.reviewId,
     stage_authority: "design-review",
   });
   const settled = executeLifecycleCli(["settle-review-package", "--request", settleRequest, "--format", "json"], { cwd: root });
   assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
   assert.match(changeBytes(root), /authority: withheld/);
-  assert.match(changeBytes(root), /state: changes-requested/);
+  assert.match(changeBytes(root), /status: changes-requested/);
   assert.match(changeBytes(root), /affected_artifact_ids:\n\s+- architecture\n\s+- spec/);
+});
+
+test("governed member revision invalidates approved package without package hashes", async () => {
+  const { root } = await packageRepository();
+  const review = writePackageReview(root, packageContext(root));
+  const record = writePackageRequest(root, "invalidation-record", {
+    schema_version: 1, operation: "record-package-review", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design", review_id: review.reviewId,
+    members: review.packageFacts.members, upstream_review_id: review.packageFacts.upstream_review_id,
+    evidence_path: review.reviewPath, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["record-package-review", "--request", record], { cwd: root }).exitCode, 0);
+  const settle = writePackageRequest(root, "invalidation-settle", {
+    schema_version: 1, operation: "settle-review-package", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design", review_id: review.reviewId, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["settle-review-package", "--request", settle], { cwd: root }).exitCode, 0);
+
+  const revised = "# Revised specification\n";
+  writeFileSync(join(root, "specs/example.md"), revised, "utf8");
+  const evidencePath = "docs/changes/example/evidence/spec-revision.md";
+  writeFileSync(join(root, evidencePath), `Artifact path: specs/example.md\nArtifact identity: sha256:${createHash("sha256").update(revised).digest("hex")}\nAuthoring result: complete\n`, "utf8");
+  const prior = parseLifecycleYaml(changeBytes(root)).lifecycle_cli.artifacts.spec.artifact_sha256;
+  const revise = writePackageRequest(root, "invalidate-member", {
+    schema_version: 1, operation: "record-artifact-revision", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), artifact_id: "spec", artifact_kind: "spec", artifact_role: "primary",
+    artifact_path: "specs/example.md", evidence_path: evidencePath, prior_artifact_sha256: prior, stage_authority: "spec",
+  });
+  const result = executeLifecycleCli(["record-artifact-revision", "--request", revise, "--format", "json"], { cwd: root });
+  assert.equal(result.exitCode, 0, JSON.stringify(result.result));
+  const changed = parseLifecycleYaml(changeBytes(root));
+  assert.equal(changed.review_packages.design.status, "review-required");
+  assert.equal(changed.review_packages.design.authority, "withheld");
+  assert.equal(changed.review_packages.design.review_id, review.reviewId);
+  assert.equal(JSON.stringify(changed.review_packages.design).includes("sha256"), false);
 });
 
 test("every non-approved package outcome settles visibly without granting authority", async () => {
@@ -248,20 +292,61 @@ test("every non-approved package outcome settles visibly without granting author
     const recordRequest = writePackageRequest(root, `record-${outcome}`, {
       schema_version: 1, operation: "record-package-review", change_id: "example",
       expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
-      package_revision: review.packageFacts.aggregate_revision, upstream_binding: review.packageFacts.upstream_binding,
-      member_artifact_ids: review.packageFacts.member_artifact_ids, evidence_path: review.reviewPath, stage_authority: "design-review",
+      review_id: review.reviewId, upstream_review_id: review.packageFacts.upstream_review_id,
+      members: review.packageFacts.members, evidence_path: review.reviewPath, stage_authority: "design-review",
     });
     assert.equal(executeLifecycleCli(["record-package-review", "--request", recordRequest], { cwd: root }).exitCode, 0, outcome);
     const settleRequest = writePackageRequest(root, `settle-${outcome}`, {
       schema_version: 1, operation: "settle-review-package", change_id: "example",
       expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
-      package_revision: review.packageFacts.aggregate_revision, stage_authority: "design-review",
+      review_id: review.reviewId, stage_authority: "design-review",
     });
     const settled = executeLifecycleCli(["settle-review-package", "--request", settleRequest, "--format", "json"], { cwd: root });
     assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
-    assert.match(changeBytes(root), new RegExp(`state: ${outcome}`));
+    assert.match(changeBytes(root), new RegExp(`status: ${outcome}`));
     assert.match(changeBytes(root), /authority: withheld/);
+    const status = packageContext(root).result.context.review_package;
+    assert.equal(status.next_permitted_operation, { "changes-requested": "route-correction", blocked: null, inconclusive: "record-package-review" }[outcome]);
   }
+});
+
+test("replacement Proposal Review invalidates approved design authority", async () => {
+  const { root } = await packageRepository();
+  const designReview = writePackageReview(root, packageContext(root));
+  const recordDesign = writePackageRequest(root, "proposal-replacement-design-record", {
+    schema_version: 1, operation: "record-package-review", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design", review_id: designReview.reviewId,
+    members: designReview.packageFacts.members, upstream_review_id: designReview.packageFacts.upstream_review_id,
+    evidence_path: designReview.reviewPath, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["record-package-review", "--request", recordDesign], { cwd: root }).exitCode, 0);
+  const settleDesign = writePackageRequest(root, "proposal-replacement-design-settle", {
+    schema_version: 1, operation: "settle-review-package", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design", review_id: designReview.reviewId, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["settle-review-package", "--request", settleDesign], { cwd: root }).exitCode, 0);
+
+  setWorkflowStage(root, "proposal-review");
+  const proposalBytes = readFileSync(join(root, "docs/proposals/example.md"));
+  const proposalIdentity = createHash("sha256").update(proposalBytes).digest("hex");
+  const reviewPath = "docs/changes/example/reviews/proposal-review-r2.md";
+  writeFileSync(join(root, reviewPath), `Review ID: proposal-review-r2\nStage: proposal-review\nRound: r2\nStatus: approved\nReviewed artifact path: docs/proposals/example.md\nReviewed artifact identity: sha256:${proposalIdentity}\nMaterial findings: none\n`, "utf8");
+  writeFileSync(join(root, "docs/changes/example/review-log.md"), `### Review entry\n\nReview ID: proposal-review-r2\nStage: proposal-review\nRound: r2\nStatus: approved\nMaterial findings: none\nOpen findings: none\n`, "utf8");
+  const recordProposal = writePackageRequest(root, "proposal-replacement-record", {
+    schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: packageLifecycleRevision(root),
+    artifact_id: "proposal", evidence_path: reviewPath, stage_authority: "proposal-review",
+  });
+  assert.equal(executeLifecycleCli(["record-review", "--request", recordProposal], { cwd: root }).exitCode, 0);
+  const settleProposal = writePackageRequest(root, "proposal-replacement-settle", {
+    schema_version: 1, operation: "settle-artifact", change_id: "example", expected_lifecycle_revision: packageLifecycleRevision(root),
+    artifact_id: "proposal", stage_authority: "proposal-review",
+  });
+  const result = executeLifecycleCli(["settle-artifact", "--request", settleProposal, "--format", "json"], { cwd: root });
+  assert.equal(result.exitCode, 0, JSON.stringify(result.result));
+  const changed = parseLifecycleYaml(changeBytes(root));
+  assert.equal(changed.review_packages.design.status, "review-required");
+  assert.equal(changed.review_packages.design.authority, "withheld");
+  assert.equal(changed.review_packages.design.review_id, designReview.reviewId);
 });
 
 test("delivery package binds the approved design revision and settles independently", async () => {
@@ -271,41 +356,41 @@ test("delivery package binds the approved design revision and settles independen
   const designRecord = writePackageRequest(root, "delivery-setup-design-record", {
     schema_version: 1, operation: "record-package-review", change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
-    package_revision: designReview.packageFacts.aggregate_revision, upstream_binding: designReview.packageFacts.upstream_binding,
-    member_artifact_ids: designReview.packageFacts.member_artifact_ids, evidence_path: designReview.reviewPath, stage_authority: "design-review",
+    review_id: designReview.reviewId, upstream_review_id: designReview.packageFacts.upstream_review_id,
+    members: designReview.packageFacts.members, evidence_path: designReview.reviewPath, stage_authority: "design-review",
   });
   assert.equal(executeLifecycleCli(["record-package-review", "--request", designRecord], { cwd: root }).exitCode, 0);
   const designSettle = writePackageRequest(root, "delivery-setup-design-settle", {
     schema_version: 1, operation: "settle-review-package", change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
-    package_revision: designReview.packageFacts.aggregate_revision, stage_authority: "design-review",
+    review_id: designReview.reviewId, stage_authority: "design-review",
   });
   assert.equal(executeLifecycleCli(["settle-review-package", "--request", designSettle], { cwd: root }).exitCode, 0);
 
   setWorkflowStage(root, "delivery-review");
   const deliveryContext = packageContext(root, "delivery-review");
   assert.equal(deliveryContext.exitCode, 0, JSON.stringify(deliveryContext.result));
-  assert.deepEqual(deliveryContext.result.context.review_package.member_artifact_ids, ["plan", "test-spec"]);
-  assert.equal(deliveryContext.result.context.review_package.upstream_binding, designReview.packageFacts.aggregate_revision);
+  assert.deepEqual(deliveryContext.result.context.review_package.members, { plan: "docs/plans/example.md", "test-spec": "specs/example.test.md" });
+  assert.equal(deliveryContext.result.context.review_package.upstream_review_id, designReview.reviewId);
   const deliveryReview = writePackageReview(root, deliveryContext, { kind: "delivery" });
   const deliveryRecord = writePackageRequest(root, "delivery-record", {
     schema_version: 1, operation: "record-package-review", change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "delivery",
-    package_revision: deliveryReview.packageFacts.aggregate_revision, upstream_binding: deliveryReview.packageFacts.upstream_binding,
-    member_artifact_ids: deliveryReview.packageFacts.member_artifact_ids, evidence_path: deliveryReview.reviewPath, stage_authority: "delivery-review",
+    review_id: deliveryReview.reviewId, upstream_review_id: deliveryReview.packageFacts.upstream_review_id,
+    members: deliveryReview.packageFacts.members, evidence_path: deliveryReview.reviewPath, stage_authority: "delivery-review",
   });
   assert.equal(executeLifecycleCli(["record-package-review", "--request", deliveryRecord], { cwd: root }).exitCode, 0);
   const deliverySettle = writePackageRequest(root, "delivery-settle", {
     schema_version: 1, operation: "settle-review-package", change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "delivery",
-    package_revision: deliveryReview.packageFacts.aggregate_revision, stage_authority: "delivery-review",
+    review_id: deliveryReview.reviewId, stage_authority: "delivery-review",
   });
   const settled = executeLifecycleCli(["settle-review-package", "--request", deliverySettle, "--format", "json"], { cwd: root });
   assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
   assert.match(changeBytes(root), /review_packages:[\s\S]*delivery:[\s\S]*authority: granted/);
 });
 
-test("package review rejects unknown finding scope and stale member settlement unchanged", async () => {
+test("package review rejects unknown finding scope and ignores ungoverned direct edits", async () => {
   const unknown = await packageRepository();
   const unknownContext = packageContext(unknown.root);
   const unknownReview = writePackageReview(unknown.root, unknownContext, {
@@ -316,8 +401,8 @@ test("package review rejects unknown finding scope and stale member settlement u
   const unknownRequest = writePackageRequest(unknown.root, "unknown-scope", {
     schema_version: 1, operation: "record-package-review", change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(unknown.root), package_kind: "design",
-    package_revision: unknownReview.packageFacts.aggregate_revision, upstream_binding: unknownReview.packageFacts.upstream_binding,
-    member_artifact_ids: unknownReview.packageFacts.member_artifact_ids, evidence_path: unknownReview.reviewPath, stage_authority: "design-review",
+    review_id: unknownReview.reviewId, upstream_review_id: unknownReview.packageFacts.upstream_review_id,
+    members: unknownReview.packageFacts.members, evidence_path: unknownReview.reviewPath, stage_authority: "design-review",
   });
   const rejected = executeLifecycleCli(["record-package-review", "--request", unknownRequest, "--format", "json"], { cwd: unknown.root });
   assert.equal(rejected.result.errors[0].code, "RL_INVALID_REQUEST");
@@ -329,8 +414,8 @@ test("package review rejects unknown finding scope and stale member settlement u
   const recordRequest = writePackageRequest(stale.root, "stale-record", {
     schema_version: 1, operation: "record-package-review", change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(stale.root), package_kind: "design",
-    package_revision: staleReview.packageFacts.aggregate_revision, upstream_binding: staleReview.packageFacts.upstream_binding,
-    member_artifact_ids: staleReview.packageFacts.member_artifact_ids, evidence_path: staleReview.reviewPath, stage_authority: "design-review",
+    review_id: staleReview.reviewId, upstream_review_id: staleReview.packageFacts.upstream_review_id,
+    members: staleReview.packageFacts.members, evidence_path: staleReview.reviewPath, stage_authority: "design-review",
   });
   assert.equal(executeLifecycleCli(["record-package-review", "--request", recordRequest], { cwd: stale.root }).exitCode, 0);
   writeFileSync(join(stale.root, stale.sources.spec[0]), "# Changed after review\n", "utf8");
@@ -338,9 +423,41 @@ test("package review rejects unknown finding scope and stale member settlement u
   const settleRequest = writePackageRequest(stale.root, "stale-settle", {
     schema_version: 1, operation: "settle-review-package", change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(stale.root), package_kind: "design",
-    package_revision: staleReview.packageFacts.aggregate_revision, stage_authority: "design-review",
+    review_id: staleReview.reviewId, stage_authority: "design-review",
   });
   const staleResult = executeLifecycleCli(["settle-review-package", "--request", settleRequest, "--format", "json"], { cwd: stale.root });
-  assert.equal(staleResult.result.errors[0].code, "RL_STALE_EVIDENCE");
-  assert.equal(changeBytes(stale.root), beforeStaleSettle);
+  assert.equal(staleResult.exitCode, 0, JSON.stringify(staleResult.result));
+  assert.notEqual(changeBytes(stale.root), beforeStaleSettle);
+});
+
+test("package review rejects contradictory finding owner and correction target mappings", async () => {
+  const wrongOwner = await packageRepository();
+  const ownerReview = writePackageReview(wrongOwner.root, packageContext(wrongOwner.root), {
+    outcome: "changes-requested",
+    findings: [{ id: "PKG-OWNER", scope: "artifact-local", affected: ["spec"], owners: ["plan"] }],
+    correctionTargets: ["spec"],
+  });
+  const ownerRequest = writePackageRequest(wrongOwner.root, "wrong-owner", {
+    schema_version: 1, operation: "record-package-review", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(wrongOwner.root), package_kind: "design", review_id: ownerReview.reviewId,
+    members: ownerReview.packageFacts.members, upstream_review_id: ownerReview.packageFacts.upstream_review_id,
+    evidence_path: ownerReview.reviewPath, stage_authority: "design-review",
+  });
+  const ownerResult = executeLifecycleCli(["record-package-review", "--request", ownerRequest, "--format", "json"], { cwd: wrongOwner.root });
+  assert.equal(ownerResult.result.errors[0].code, "RL_AUTHORITY_BOUNDARY");
+
+  const wrongTarget = await packageRepository();
+  const targetReview = writePackageReview(wrongTarget.root, packageContext(wrongTarget.root), {
+    outcome: "changes-requested",
+    findings: [{ id: "PKG-TARGET", scope: "artifact-local", affected: ["spec"], owners: ["spec"] }],
+    correctionTargets: ["architecture"],
+  });
+  const targetRequest = writePackageRequest(wrongTarget.root, "wrong-target", {
+    schema_version: 1, operation: "record-package-review", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(wrongTarget.root), package_kind: "design", review_id: targetReview.reviewId,
+    members: targetReview.packageFacts.members, upstream_review_id: targetReview.packageFacts.upstream_review_id,
+    evidence_path: targetReview.reviewPath, stage_authority: "design-review",
+  });
+  const targetResult = executeLifecycleCli(["record-package-review", "--request", targetRequest, "--format", "json"], { cwd: wrongTarget.root });
+  assert.equal(targetResult.result.errors[0].code, "RL_AUTHORITY_BOUNDARY");
 });

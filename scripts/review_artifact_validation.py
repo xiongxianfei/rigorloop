@@ -872,8 +872,8 @@ def _validate_package_review_fields(
     findings: list[ValidationFinding],
 ) -> None:
     required = (
-        "Reviewer authority", "Package kind", "Package member artifact IDs",
-        "Upstream binding", "Aggregate package revision", "Material findings",
+        "Reviewer authority", "Package kind", "Package members",
+        "Upstream review ID", "Material findings",
         "Correction targets", "Recording status",
     )
     values = {label: _first_nonempty(fields, label) for label in required}
@@ -892,12 +892,10 @@ def _validate_package_review_fields(
     status = _first_nonempty(fields, "Status")
     if status is not None and status.value not in PACKAGE_REVIEW_OUTCOMES:
         findings.append(ValidationFinding(path=path, line=status.line, mode=mode, message=f"unknown package review outcome '{status.value}'", review_id=review_id))
-    revision = values["Aggregate package revision"]
-    if revision is not None and re.fullmatch(r"sha256:[a-f0-9]{64}", revision.value) is None:
-        findings.append(ValidationFinding(path=path, line=revision.line, mode=mode, message="invalid aggregate package revision", review_id=review_id))
-    members = _package_list(values["Package member artifact IDs"])
-    if not members or len(members) != len(set(members)):
-        findings.append(ValidationFinding(path=path, line=values["Package member artifact IDs"].line if values["Package member artifact IDs"] else None, mode=mode, message="package members must be a non-empty unique list", review_id=review_id))
+    member_entries = _package_list(values["Package members"])
+    members = [entry.split("=", 1)[0].strip() for entry in member_entries if "=" in entry and entry.split("=", 1)[1].strip()]
+    if not members or len(members) != len(member_entries) or len(members) != len(set(members)):
+        findings.append(ValidationFinding(path=path, line=values["Package members"].line if values["Package members"] else None, mode=mode, message="package members must be a non-empty unique artifact-id=path map", review_id=review_id))
     correction_targets = _package_list(values["Correction targets"])
     if len(correction_targets) != len(set(correction_targets)):
         findings.append(ValidationFinding(path=path, line=values["Correction targets"].line if values["Correction targets"] else None, mode=mode, message="package correction targets must be unique", review_id=review_id))

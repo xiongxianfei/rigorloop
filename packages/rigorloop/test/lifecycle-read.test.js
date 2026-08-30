@@ -218,21 +218,19 @@ test("upstream context does not advertise a route against stale registered ident
   assert.deepEqual(execution.result.effective_state.stale_evidence, ["spec"]);
 });
 
-test("design review context exposes deterministic compact package identity", async () => {
+test("design review context exposes deterministic explicit package identity", async () => {
   const { root } = await packageRepository();
   const execution = packageContext(root);
   assert.equal(execution.exitCode, 0, JSON.stringify(execution.result));
-  assert.deepEqual(execution.result.context.review_package.member_artifact_ids, ["architecture", "spec", "adr-cache"]);
-  assert.equal(execution.result.context.review_package.upstream_binding, "proposal-review-r1");
-  assert.equal(execution.result.context.review_package.aggregate_revision, "sha256:77973cd683195f8c9b468ebff64e0cf1055fe0a093309ab4469507d033afda46");
-  assert.equal(execution.result.context.review_package.stale, false);
+  assert.deepEqual(execution.result.context.review_package.members, { architecture: "docs/architecture/example.md", spec: "specs/example.md", "adr-cache": "docs/adr/ADR-cache.md" });
+  assert.equal(execution.result.context.review_package.upstream_review_id, "proposal-review-r1");
+  assert.equal(execution.result.context.review_package.status, "review-required");
   assert.equal(execution.result.context.permitted_registration_operation, "record-package-review");
   assert.equal(JSON.stringify(execution.result.context.review_package).includes("artifact_sha256"), false);
 });
 
-test("design package identity changes with ordered membership and upstream binding", async () => {
+test("design package exposes changed membership and upstream review directly", async () => {
   const membership = await packageRepository();
-  const beforeMembership = packageContext(membership.root).result.context.review_package.aggregate_revision;
   const changePath = join(membership.root, "docs", "changes", "example", "change.yaml");
   const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
   const extraPath = "docs/adr/ADR-extra.md";
@@ -245,19 +243,16 @@ test("design package identity changes with ordered membership and upstream bindi
   };
   writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
   const membershipContext = packageContext(membership.root).result.context.review_package;
-  assert.deepEqual(membershipContext.member_artifact_ids, ["architecture", "spec", "adr-cache", "adr-extra"]);
-  assert.notEqual(membershipContext.aggregate_revision, beforeMembership);
+  assert.deepEqual(membershipContext.members, { architecture: "docs/architecture/example.md", spec: "specs/example.md", "adr-cache": "docs/adr/ADR-cache.md", "adr-extra": "docs/adr/ADR-extra.md" });
 
   const binding = await packageRepository();
-  const beforeBinding = packageContext(binding.root).result.context.review_package.aggregate_revision;
   const bindingPath = join(binding.root, "docs", "changes", "example", "change.yaml");
   writeFileSync(bindingPath, readFileSync(bindingPath, "utf8").replaceAll("proposal-review-r1", "proposal-review-r2"), "utf8");
   const bindingContext = packageContext(binding.root).result.context.review_package;
-  assert.equal(bindingContext.upstream_binding, "proposal-review-r2");
-  assert.notEqual(bindingContext.aggregate_revision, beforeBinding);
+  assert.equal(bindingContext.upstream_review_id, "proposal-review-r2");
 });
 
-test("package context fails closed for missing required membership and changes on member bytes", async () => {
+test("package context fails closed for missing membership and ignores direct member-byte edits", async () => {
   const missing = await packageRepository({ includeArchitecture: false });
   const rejected = packageContext(missing.root);
   assert.equal(rejected.exitCode, 2);
@@ -265,16 +260,17 @@ test("package context fails closed for missing required membership and changes o
   assert.match(rejected.result.context.review_package.errors[0].summary, /primary architecture/);
 
   const complete = await packageRepository();
-  const before = packageContext(complete.root).result.context.review_package.aggregate_revision;
+  const before = packageContext(complete.root).result.context.review_package;
   writeFileSync(join(complete.root, complete.sources.spec[0]), "# Specification changed\n", "utf8");
-  const after = packageContext(complete.root).result.context.review_package.aggregate_revision;
-  assert.notEqual(after, before);
+  const after = packageContext(complete.root).result.context.review_package;
+  assert.deepEqual(after.members, before.members);
+  assert.equal(after.status, before.status);
 });
 
 test("stored package review vocabularies reject an unknown outcome before consistency", async () => {
   const { root } = await packageRepository();
   const path = join(root, "docs", "changes", "example", "change.yaml");
-  const source = readFileSync(path, "utf8").replace("package_reviews: {}", `package_reviews:\n    design:\n      package_kind: design\n      outcome: accepted\n      stage_authority: design-review\n      reviewer_authority: design-review\n      member_artifact_ids: [architecture, spec]\n      aggregate_revision: sha256:${"a".repeat(64)}`);
+  const source = readFileSync(path, "utf8").replace("package_reviews: {}", "package_reviews:\n    design:\n      package_kind: design\n      outcome: accepted\n      stage_authority: design-review\n      reviewer_authority: design-review\n      members: {architecture: docs/architecture/example.md, spec: specs/example.md}\n      upstream_review_id: proposal-review-r1");
   writeFileSync(path, source, "utf8");
   const execution = executeLifecycleCli(["validate", "--change", "example", "--format", "json"], { cwd: root });
   assert.equal(execution.exitCode, 4);

@@ -82,9 +82,8 @@ test("package review post-validation failure restores the complete prior authori
     change_id: "example",
     expected_lifecycle_revision: lifecycleRevision(root),
     package_kind: "design",
-    package_revision: review.packageFacts.aggregate_revision,
-    upstream_binding: review.packageFacts.upstream_binding,
-    member_artifact_ids: review.packageFacts.member_artifact_ids,
+    members: review.packageFacts.members,
+    upstream_review_id: review.packageFacts.upstream_review_id,
     evidence_path: review.reviewPath,
     stage_authority: "design-review",
   });

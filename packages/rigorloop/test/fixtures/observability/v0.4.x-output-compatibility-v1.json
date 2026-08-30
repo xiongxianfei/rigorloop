@@ -255,12 +255,10 @@
           "stale_evidence": [],
           "review_packages": {
             "design": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -272,7 +270,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "summary": "Design package requires one accepted Proposal Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [],
                   "corrective_operation": null
@@ -281,12 +279,10 @@
               "next_permitted_operation": null
             },
             "delivery": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -298,7 +294,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Delivery package requires one current approved design package revision.",
+                  "summary": "Delivery package requires one approved Design Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [
                     "none"
@@ -402,12 +398,10 @@
           "stale_evidence": [],
           "review_packages": {
             "design": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -419,7 +413,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "summary": "Design package requires one accepted Proposal Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [],
                   "corrective_operation": null
@@ -428,12 +422,10 @@
               "next_permitted_operation": null
             },
             "delivery": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -445,7 +437,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Delivery package requires one current approved design package revision.",
+                  "summary": "Delivery package requires one approved Design Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [
                     "none"
@@ -521,12 +513,10 @@
           "stale_evidence": [],
           "review_packages": {
             "design": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -538,7 +528,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "summary": "Design package requires one accepted Proposal Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [],
                   "corrective_operation": null
@@ -547,12 +537,10 @@
               "next_permitted_operation": null
             },
             "delivery": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -564,7 +552,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Delivery package requires one current approved design package revision.",
+                  "summary": "Delivery package requires one approved Design Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [
                     "none"
@@ -640,12 +628,10 @@
           "stale_evidence": [],
           "review_packages": {
             "design": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -657,7 +643,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "summary": "Design package requires one accepted Proposal Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [],
                   "corrective_operation": null
@@ -666,12 +652,10 @@
               "next_permitted_operation": null
             },
             "delivery": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -683,7 +667,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Delivery package requires one current approved design package revision.",
+                  "summary": "Delivery package requires one approved Design Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [
                     "none"
@@ -797,12 +781,10 @@
           "stale_evidence": [],
           "review_packages": {
             "design": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -814,7 +796,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Design package requires one exact accepted Proposal Review binding.",
+                  "summary": "Design package requires one accepted Proposal Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [],
                   "corrective_operation": null
@@ -823,12 +805,10 @@
               "next_permitted_operation": null
             },
             "delivery": {
-              "member_artifact_ids": [],
-              "upstream_binding": null,
-              "aggregate_revision": null,
-              "state": "incomplete",
+              "members": {},
+              "upstream_review_id": null,
+              "status": "incomplete",
               "authority": "withheld",
-              "stale": false,
               "blockers": [],
               "errors": [
                 {
@@ -840,7 +820,7 @@
                 },
                 {
                   "code": "RL_OPERATION_NOT_PERMITTED",
-                  "summary": "Delivery package requires one current approved design package revision.",
+                  "summary": "Delivery package requires one approved Design Review ID.",
                   "blocking_invariant": "review-package-upstream",
                   "relevant_identities": [
                     "none"

@@ -80,8 +80,8 @@ const OPERATION_FIELDS = Object.freeze({
   "record-validation": ["artifact_id", "evidence_path", "subject_path", "stage_authority"],
   "record-finding-resolution": ["artifact_id", "evidence_path", "finding_id", "stage_authority"],
   "settle-artifact": ["artifact_id", "stage_authority"],
-  "record-package-review": ["package_kind", "package_revision", "upstream_binding", "member_artifact_ids", "evidence_path", "stage_authority"],
-  "settle-review-package": ["package_kind", "package_revision", "stage_authority"],
+  "record-package-review": ["package_kind", "members", "upstream_review_id", "review_id", "evidence_path", "stage_authority"],
+  "settle-review-package": ["package_kind", "review_id", "stage_authority"],
   "advance-stage": ["source_stage", "destination_stage", "stage_authority"],
   "initialize-approved-plan": ["artifact_id", "stage_authority"],
   "start-milestone": ["milestone_id", "stage_authority"],
@@ -108,8 +108,8 @@ const OPERATION_CONTRACTS = Object.freeze({
   "record-validation": { required: ["artifact_id", "evidence_path", "subject_path", "stage_authority"], authorities: ["implement", "verify", "ci-maintenance"] },
   "record-finding-resolution": { required: ["artifact_id", "evidence_path", "finding_id", "stage_authority"], authorities: ["review-resolution"] },
   "settle-artifact": { required: ["artifact_id", "stage_authority"], authorities: REVIEW_AUTHORITIES },
-  "record-package-review": { required: ["package_kind", "package_revision", "upstream_binding", "member_artifact_ids", "evidence_path", "stage_authority"], authorities: ["design-review", "delivery-review"] },
-  "settle-review-package": { required: ["package_kind", "package_revision", "stage_authority"], authorities: ["design-review", "delivery-review"] },
+  "record-package-review": { required: ["package_kind", "members", "upstream_review_id", "evidence_path", "stage_authority"], authorities: ["design-review", "delivery-review"] },
+  "settle-review-package": { required: ["package_kind", "review_id", "stage_authority"], authorities: ["design-review", "delivery-review"] },
   "advance-stage": { required: ["source_stage", "destination_stage", "stage_authority"], authorities: ["workflow"] },
   "initialize-approved-plan": { required: ["artifact_id", "stage_authority"], authorities: ["plan"] },
   "start-milestone": { required: ["milestone_id", "stage_authority"], authorities: ["workflow"] },
@@ -127,15 +127,13 @@ const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "pl
 
 const STAGE_TRANSITIONS = Object.freeze({
   proposal: ["proposal-review"],
-  "proposal-review": ["spec"],
-  spec: ["spec-review"],
-  "spec-review": ["architecture"],
-  architecture: ["architecture-review"],
-  "architecture-review": ["plan"],
-  plan: ["plan-review"],
-  "plan-review": ["test-spec"],
-  "test-spec": ["test-spec-review"],
-  "test-spec-review": ["implement"],
+  "proposal-review": ["architecture"],
+  architecture: ["spec"],
+  spec: ["design-review"],
+  "design-review": ["plan"],
+  plan: ["test-spec"],
+  "test-spec": ["delivery-review"],
+  "delivery-review": ["implement"],
 });
 
 export function allowedNextStages(_change, sourceStage) {
@@ -284,7 +282,7 @@ export function validateLifecycleRequest(request) {
   if (!contract.authorities.includes(request.stage_authority)) {
     return { ok: false, errors: [requestError(`unknown stage_authority ${String(request.stage_authority)}`)] };
   }
-  for (const field of ["artifact_id", "finding_id", "milestone_id", "destination_artifact_id", "route_id", "canonical_owner_change_id"]) {
+  for (const field of ["artifact_id", "finding_id", "milestone_id", "destination_artifact_id", "route_id", "canonical_owner_change_id", "review_id"]) {
     if (request[field] !== undefined && (typeof request[field] !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(request[field]))) {
       return { ok: false, errors: [requestError(`${field} must be one safe identifier`)] };
     }
@@ -292,17 +290,14 @@ export function validateLifecycleRequest(request) {
   if (request.finding_ids !== undefined && (!Array.isArray(request.finding_ids) || request.finding_ids.some((value) => typeof value !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value)) || new Set(request.finding_ids).size !== request.finding_ids.length)) {
     return { ok: false, errors: [requestError("finding_ids must be a unique array of safe identifiers")] };
   }
-  if (request.member_artifact_ids !== undefined && (!Array.isArray(request.member_artifact_ids) || request.member_artifact_ids.length === 0 || request.member_artifact_ids.some((value) => typeof value !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value)) || new Set(request.member_artifact_ids).size !== request.member_artifact_ids.length)) {
-    return { ok: false, errors: [requestError("member_artifact_ids must be a non-empty unique array of safe identifiers")] };
+  if (request.members !== undefined && (typeof request.members !== "object" || request.members === null || Array.isArray(request.members) || Object.keys(request.members).length === 0 || Object.entries(request.members).some(([id, path]) => !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(id) || !isRepositoryRelativePath(path)))) {
+    return { ok: false, errors: [requestError("members must map safe artifact IDs to normalized repository-relative paths")] };
   }
   if (request.package_kind !== undefined && !["design", "delivery"].includes(request.package_kind)) {
     return { ok: false, errors: [requestError(`unknown package_kind ${String(request.package_kind)}`)] };
   }
-  if (request.package_revision !== undefined && !/^sha256:[a-f0-9]{64}$/.test(request.package_revision)) {
-    return { ok: false, errors: [requestError("package_revision must be one sha256 aggregate revision")] };
-  }
-  if (request.upstream_binding !== undefined && (typeof request.upstream_binding !== "string" || request.upstream_binding.length === 0 || request.upstream_binding.includes("\n"))) {
-    return { ok: false, errors: [requestError("upstream_binding must be one non-empty identity")] };
+  if (request.upstream_review_id !== undefined && (typeof request.upstream_review_id !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(request.upstream_review_id))) {
+    return { ok: false, errors: [requestError("upstream_review_id must be one safe review identity")] };
   }
   if (request.reason !== undefined) {
     const allowedReasons = request.operation === "withdraw-artifact-registration" ? new Set(["duplicate-registration"]) : CORRECTION_REASONS;
