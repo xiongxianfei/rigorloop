@@ -68,7 +68,7 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: review-resolution
+  current_stage: code-review
   evidence:
     - docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/proposal-review-r1.md
   lifecycle_state: active
@@ -101,7 +101,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: resolution-needed
+        state: review-requested
       M3:
         kind: implementation
         state: planned
