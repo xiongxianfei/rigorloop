@@ -91,15 +91,12 @@ class WorkflowAutomationStateTests(unittest.TestCase):
                 {
                     "proposal",
                     "proposal-review",
-                    "spec",
-                    "spec-review",
-                    "architecture-assessment",
                     "architecture",
-                    "architecture-review",
+                    "spec",
+                    "design-review",
                     "plan",
-                    "plan-review",
                     "test-spec",
-                    "test-spec-review",
+                    "delivery-review",
                     "implement",
                     "code-review",
                     "review-resolution",
@@ -705,20 +702,6 @@ Open findings: None
         cases = []
 
         state = valid_automation()
-        receipt = FIXTURES.configure_post_proposal_transition(
-            state,
-            stage_name="architecture-assessment",
-            target_stage="plan",
-        )
-        receipt["from_position"] = "spec-review"
-        receipt["input_identities"] = {
-            "spec": "sha256:spec",
-            "spec-review": "sha256:spec-review",
-        }
-        receipt["transition_key"] = compute_transition_key(receipt)
-        cases.append(("architecture-assessment", state, "retry"))
-
-        state = valid_automation()
         persist_receipt(state)
         cases.append(("proposal-review", state, "pause"))
 
@@ -739,7 +722,6 @@ Open findings: None
         cases.append(("implement", state, "manual-recovery"))
 
         mismatch_policy = {
-            "architecture-assessment": "reconcile-only",
             "proposal-review": "idempotent-retry",
             "implement": "reconcile-only",
         }
@@ -2432,7 +2414,7 @@ class StageOwnedChangeStateStoreTests(unittest.TestCase):
         state = {
             "lifecycle_state": "active",
             "current_stage": "spec",
-            "next_stage": "spec-review",
+            "next_stage": "design-review",
             "blocker": None,
             "evidence": ["docs/changes/example/reviews/proposal-review-r1.md"],
         }

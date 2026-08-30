@@ -147,6 +147,7 @@ test("downstream status rejects stale and mixed package authority", async () => 
   const staleStatus = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: stale.root });
   assert.equal(staleStatus.exitCode, 2);
   assert.equal(staleStatus.result.blockers.some((item) => item.code === "RL_STALE_EVIDENCE"), true);
+  assert.equal(staleStatus.result.effective_state.downstream_package_authority.packages.delivery.state, "stale");
 
   const mixed = await packageRepository();
   approvePackage(mixed.root, "design");
@@ -160,4 +161,5 @@ test("downstream status rejects stale and mixed package authority", async () => 
   assert.equal(mixedStatus.exitCode, 2);
   assert.equal(mixedStatus.result.effective_state.review_packages.delivery.status, "review-required");
   assert.equal(mixedStatus.result.effective_state.review_packages.delivery.authority, "withheld");
+  assert.equal(mixedStatus.result.effective_state.downstream_package_authority.packages.delivery.state, "mixed");
 });

@@ -638,10 +638,12 @@
                     "spec-review",
                     "architecture",
                     "architecture-review",
+                    "design-review",
                     "plan",
                     "plan-review",
                     "test-spec",
-                    "test-spec-review"
+                    "test-spec-review",
+                    "delivery-review"
                   ]
                 },
                 "armed_by": {
