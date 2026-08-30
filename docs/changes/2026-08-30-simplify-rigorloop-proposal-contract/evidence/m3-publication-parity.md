@@ -18,7 +18,7 @@
 ## Planned milestone
 
 - Change ID: `2026-08-30-simplify-rigorloop-proposal-contract`
-- Plan identity: `docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md`, approved in `delivery-review-r2`.
+- Plan identity: `docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md`, approved in `delivery-review-r3`.
 - Milestone ID: M3
 - Milestone state: implementing
 - Baseline or change-pack status: Current approved Design and Delivery packages; M1 and M2 are closed.
