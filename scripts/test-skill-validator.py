@@ -7533,7 +7533,7 @@ class ProposalSkillSimplificationTests(unittest.TestCase):
         self.skeleton = (self.root / "assets" / "proposal-skeleton.md").read_text(encoding="utf-8")
 
     def test_package_assemblies_and_resource_ownership_are_closed(self) -> None:
-        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-proposal-authoring.md", "strategic-and-scope-gates.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-proposal-authoring.md", "requirement-to-delivery-model.md", "strategic-and-scope-gates.md"])
         for assembly in ("PA0-portable", "PA0G-portable-gated", "PA1-governed", "PA1G-governed-gated"):
             self.assertIn(assembly, self.skill)
         self.assertIn("READ `references/governed-proposal-authoring.md`", self.skill)
@@ -7611,7 +7611,7 @@ class SpecSkillSimplificationTests(unittest.TestCase):
         self.skeleton = (self.root / "assets" / "spec-skeleton.md").read_text(encoding="utf-8")
 
     def test_package_profiles_and_initial_boundary_loading_are_closed(self) -> None:
-        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["boundary-first-feature-authoring-v1.md", "boundary-first-method-v1.md", "governed-spec-authoring.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["boundary-first-feature-authoring-v1.md", "boundary-first-method-v1.md", "governed-spec-authoring.md", "requirement-to-delivery-model.md"])
         for profile in ("SA0-portable", "SA1-governed"):
             self.assertIn(profile, self.skill)
         self.assertIn("READ `references/boundary-first-method-v1.md` initially", self.skill)
@@ -8766,6 +8766,69 @@ class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
             with self.subTest(skill=skill_name):
                 self.assertIn("approved Design Review ID", body)
                 self.assertIn("approved Delivery Review ID", body)
+
+
+class RequirementDeliveryModelM1Tests(unittest.TestCase):
+    def test_m1_shared_model_defines_lightweight_refinement_and_work_decomposition(self) -> None:
+        shared_path = ROOT / "templates" / "shared" / "requirement-to-delivery-model.md"
+        self.assertTrue(shared_path.is_file(), shared_path)
+        shared = shared_path.read_text(encoding="utf-8")
+        for term in (
+            "RR → IR → SR → AR",
+            "Epic → Feature → Story → Task",
+            "The two views are not equivalent hierarchies.",
+            "SR identities are the durable downstream requirement references.",
+            "RR, IR, and AR do not require separate artifacts or identifiers.",
+            "Add a work level only when it materially improves ownership, sequencing, reviewability, traceability, or coordination.",
+        ):
+            with self.subTest(term=term):
+                self.assertIn(term, shared)
+
+    def test_m1_authoring_skills_map_local_responsibility_and_conditionally_load_model(self) -> None:
+        expected = {
+            "proposal": (
+                "Treat the incoming need as RR and the approved proposal as the durable IR-level direction.",
+                "when clarifying an incoming need into proposal direction or explaining how proposal approval feeds Design",
+            ),
+            "spec": (
+                "Treat the approved proposal direction as IR-level input and author stable SR identities for downstream traceability.",
+                "when refining an approved direction into system requirements or defining their downstream traceability",
+            ),
+            "architecture": (
+                "Treat specification requirements as SRs and architecture as their technical realization, not as another requirement level.",
+                "when relating system requirements to technical realization or downstream allocation",
+            ),
+            "plan": (
+                "Treat the plan as the primary allocation surface from SRs and architecture boundaries into proportional delivery work.",
+                "when allocating system requirements and architecture boundaries into milestones or optional work hierarchy",
+            ),
+        }
+        for skill_name, (responsibility, load_condition) in expected.items():
+            skill_root = ROOT / "skills" / skill_name
+            body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+            local_reference = skill_root / "references" / "requirement-to-delivery-model.md"
+            with self.subTest(skill=skill_name, check="responsibility"):
+                self.assertIn(responsibility, body)
+            with self.subTest(skill=skill_name, check="resource-map"):
+                self.assertIn(
+                    f"READ `references/requirement-to-delivery-model.md` {load_condition}.",
+                    body,
+                )
+            with self.subTest(skill=skill_name, check="packaged-reference"):
+                self.assertTrue(local_reference.is_file(), local_reference)
+
+    def test_m1_existing_artifact_structures_already_expose_traceability_without_new_entities(self) -> None:
+        spec_asset = (ROOT / "skills" / "spec" / "assets" / "spec-skeleton.md").read_text(encoding="utf-8")
+        architecture_asset = (ROOT / "skills" / "architecture" / "assets" / "architecture-skeleton.md").read_text(encoding="utf-8")
+        milestone_asset = (ROOT / "skills" / "plan" / "assets" / "milestone.md").read_text(encoding="utf-8")
+        self.assertIn("## Requirements", spec_asset)
+        self.assertIn("## Related artifacts", architecture_asset)
+        self.assertIn("- Requirements:", milestone_asset)
+        self.assertIn("- Architecture decisions:", milestone_asset)
+        combined = "\n".join((spec_asset, architecture_asset, milestone_asset))
+        for forbidden in ("RR ID", "IR ID", "AR ID", "## Epic", "## Feature", "## Story"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, combined)
 
 
 if __name__ == "__main__":

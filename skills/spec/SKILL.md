@@ -50,6 +50,8 @@ Operations are `create-primary-spec` and `revise-primary-spec`. Portable create 
 
 ## Contract quality
 
+Treat the approved proposal direction as IR-level input and author stable SR identities for downstream traceability.
+
 Cover inputs, outputs, state, errors, compatibility, observability, security/privacy, accessibility, performance, and edges with normative, testable requirements; examples never own behavior and the spec must not invent excluded scope. Explain inapplicability. Preserve `Next artifacts`; use `Follow-on artifacts` for outcomes and `None yet` before any exist. A superseded spec identifies its replacement.
 
 ## Formal boundary composition
@@ -93,6 +95,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when refining an approved direction into system requirements or defining their downstream traceability.
 - READ `references/boundary-first-method-v1.md` initially for every `spec` invocation.
 - READ `references/boundary-first-feature-authoring-v1.md` initially after the method reference for every `spec` invocation.
 - READ `references/governed-spec-authoring.md` only for `single-governed-candidate`; validate exact authority before any governed write.
