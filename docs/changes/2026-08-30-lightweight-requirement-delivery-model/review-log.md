@@ -29,5 +29,5 @@ Detailed record: reviews/design-review-r1.md
 Resolution: review-resolution.md#design-review-r1
 Material findings: RTD-DR1
 Finding ID: RTD-DR1
-Open findings: RTD-DR1
+Open findings: none
 Recording status: recorded
