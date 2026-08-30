@@ -69,19 +69,21 @@ workflow_state:
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-review-receipt-rereview.md
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-proposal-r4-to-spec.md
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/workflow-spec-to-review-r1.md
-    - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r4.md
     - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/explain-change.md
+    - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/verify-report.md
   lifecycle_state: active
-  next_stage: verify
+  next_stage: pr
   planned_work:
-    current_milestone: M7
+    current_milestone: none
     final_closeout:
       evidence:
-        - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r2.md
+        - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r4.md
         - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/explain-change.md
-      readiness: not-ready
+        - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/verify-report.md
+      readiness: ready
       reasons:
-        - verify-pending
+        - ready
     initialization_basis:
       review_id: plan-review-r5
       review_record: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/plan-review-r5.md
@@ -91,10 +93,10 @@ workflow_state:
     latest_review:
       artifact_id: plan
       evidence:
-        - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r2.md
+        - docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r4.md
       milestone_id: none
       occurrence: final
-      round: r2
+      round: r4
       stage: code-review
       status: approved
     milestones:
@@ -118,19 +120,20 @@ workflow_state:
         state: closed
       M7:
         kind: lifecycle-closeout
-        state: planned
+        state: closed
     plan_artifact_id: plan
     remaining_implementation_milestones: []
 workflow: {}
-artifacts: {}
+artifacts:
+  verify_report: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/verify-report.md
 requirements: []
 tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r2.md
+  latest_review: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-final-r4.md
   review_log: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-log.md
-  reviewed_artifact: complete corrected diff 8f80771e..638b9cca
+  reviewed_artifact: complete corrected diff 8f80771e..93f212a8
   status: clean
   unresolved_items: 0
 lifecycle_cli:
