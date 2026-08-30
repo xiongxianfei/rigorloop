@@ -4,6 +4,7 @@
 
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
+| `code-review-m5-r1` | `code-review` | `r1` | M5 implementation in commit `5d412dab` | `reviews/code-review-m5-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m4-r2` | `code-review` | `r2` | corrected M4 implementation through commit `04959ff3` | `reviews/code-review-m4-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r4` | `code-review` | `r4` | corrected M3 implementation through commit `4af08771` | `reviews/code-review-m3-r4.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r3` | `code-review` | `r3` | M2 path-bounded packet at `sha256:e277ff7bba302ff9195b30cb2bc423fae922a50ff379fce8b07eea33b20d19c1` | `reviews/code-review-m2-r3.md` | `clean-with-notes` | 0 | `recorded` |
