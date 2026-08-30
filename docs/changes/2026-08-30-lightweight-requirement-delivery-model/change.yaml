@@ -5,14 +5,19 @@ risk: medium
 lifecycle_contract: stage-owned-change-local-v1
 artifact_states:
   proposal:
-    authoring_evidence: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/proposal-authoring.md
     kind: proposal
-    lifecycle_state: review-required
+    lifecycle_state: accepted
     path: docs/proposals/2026-08-30-lightweight-requirement-delivery-model.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r1
+      outcome: approved
+      record: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/proposal-review-r1.md
+      round: r1
     role: primary
 workflow_state:
   blocker: null
-  current_stage: proposal
+  current_stage: proposal-review
   evidence: []
   lifecycle_state: active
   next_stage: proposal-review
@@ -23,7 +28,10 @@ tests: []
 validation: []
 changed_files: []
 review:
-  status: pending
+  latest_review: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/proposal-review-r1.md
+  review_log: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md
+  reviewed_artifact: docs/proposals/2026-08-30-lightweight-requirement-delivery-model.md
+  status: clean
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 1
@@ -36,8 +44,21 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/proposal-authoring.md
       authoring_evidence_sha256: 7a1eb4bf4d1002a6f695096876877f3eb332ac36cd41f4adf0dcc8959d8a34eb
       stage_authority: proposal
+  correction_history: {}
   milestones: {}
   package_reviews: {}
   resolutions: {}
-  reviews: {}
+  reviews:
+    proposal:
+      artifact_path: docs/proposals/2026-08-30-lightweight-requirement-delivery-model.md
+      artifact_sha256: 7ab59ec73392b5d86fd59957de1e3e53e39d0560705352f7d3721bb93f12f9c1
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/proposal-review-r1.md
+      evidence_sha256: dab47d5a52f221ff4758cde951fceabad0d7ee619b4e84611d2f46c67908b4f5
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r1
+      review_log_sha256: 7df639589f103d3249991e9edd059ce01cceff08b88730fb7c7e9813df978537
+      round: r1
+      stage_authority: proposal-review
   validations: {}
+  withdrawals: {}
