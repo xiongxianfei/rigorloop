@@ -68,12 +68,12 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M2
+    current_milestone: M3
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -98,16 +98,15 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: closed
       M3:
         kind: implementation
-        state: planned
+        state: implementing
       M4:
         kind: lifecycle-closeout
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M2
       - M3
 workflow: {}
 artifacts: {}
@@ -254,6 +253,26 @@ lifecycle_cli:
       review_record_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m1-r2.md
       review_recording_status: recorded
       review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M2:
+      completion_fingerprint: e544a968bbfc3e7a66b7a2c551140ee8b01e0b19d3bf2ea05b19bbce3e0dee66
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/m2-review-traceability.md
+      evidence_sha256: dbbd232401d4f76c8f41f1992ad068da78e12829b91b5fa5e75fdac07afa3411
+      milestone_id: M2
+      review_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m2-r1.md
+      review_evidence_sha256: 206c5452a17e0ce7b6055061b2843d3b6678536c280928b2ccb28216a0d2c4f3
+      review_id: code-review-m2-r1
+      review_log_entry_sha256: 515232f34e23f977359162d26fd12d2d81ef352ed4b15bbccf57b6caaa179d19
+      review_log_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m2-r1.md
+      review_recording_status: recorded
+      review_round: r1
       review_stage: code-review
       stage_authority: workflow
   package_reviews:
