@@ -223,7 +223,15 @@ lifecycle_cli:
       round: r2
       stage_authority: design-review
       upstream_review_id: proposal-review-r1
-  resolutions: {}
+  resolutions:
+    SPC-M3-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-resolution.md
+      evidence_sha256: 54f381063336ea03b0a7af0f2c5328972a8f1d52a5a08dae123a7a0c875ff768
+      finding_id: SPC-M3-CR1
+      owner: delivery package authors and implementation author
+      stage_authority: review-resolution
   reviews: {}
   validations: {}
   withdrawals: {}
