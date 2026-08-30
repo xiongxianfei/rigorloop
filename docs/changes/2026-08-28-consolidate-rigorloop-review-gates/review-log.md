@@ -4,6 +4,7 @@
 
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
+| `code-review-m3-r4` | `code-review` | `r4` | corrected M3 implementation through commit `4af08771` | `reviews/code-review-m3-r4.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r3` | `code-review` | `r3` | M2 path-bounded packet at `sha256:e277ff7bba302ff9195b30cb2bc423fae922a50ff379fce8b07eea33b20d19c1` | `reviews/code-review-m2-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m1-r3` | `code-review` | `r3` | M1 committed packet at `sha256:d0722221c781cd81bf508596d65e40c5128164dfd9b171b2db0fce73ae1ad759` | `reviews/code-review-m1-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `plan-review-r4` | `plan-review` | `r4` | plan at `sha256:e4de52bb785e50e85631cc417f227ff903842979c05cc5118c403f73f6b5b5c1` | `reviews/plan-review-r4.md` | `approved` | 0 | `recorded` |
