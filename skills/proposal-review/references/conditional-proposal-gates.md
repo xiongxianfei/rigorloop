@@ -6,11 +6,11 @@ Load this reference once when one or more specialized predicates are true. The p
 
 Apply when `vision_exception_context` is true. Classify the outcome as `revise proposal`, `revise vision`, or `record explicit exception`.
 
-An explicit exception names the approving owner or owning stage, evidence for the conflict, why proposal revision is not chosen, why vision revision is not chosen, where the exception is recorded, and whether it is one-time or establishes a future vision-revision trigger. Record it in the proposal's `Vision fit` section and review result; for non-trivial changes recommend carrying the rationale into `explain-change.md`.
+An explicit exception names the approving owner or owning stage, evidence for the conflict, why proposal revision is not chosen, why vision revision is not chosen, where the exception is recorded, and whether it is one-time or establishes a future vision-revision trigger. Require proposal disclosure in `Impact and major trade-offs` and `Decision requested`, and record the outcome in review evidence; for non-trivial changes recommend carrying the rationale into `explain-change.md`.
 
 ## Standing artifact gate
 
-Apply when `standing_artifact_context` is true. This standing artifact gate requires bootstrap proposals proceeding without a required standing artifact to identify the bootstrap exception in `Vision fit`. Request revision if the bootstrap exception is missing or when the proposal silently bypasses a `VISION.md` absence gate for a first substantive proposal or a `CONSTITUTION.md` absence gate for governance adoption, workflow-governance changes, or source-of-truth changes.
+Apply when `standing_artifact_context` is true. This standing artifact gate requires bootstrap proposals proceeding without a required standing artifact to disclose the bootstrap exception and owner decision in `Impact and major trade-offs` and `Decision requested`. Request revision if the disclosure is missing or when the proposal silently bypasses a `VISION.md` absence gate for a first substantive proposal or a `CONSTITUTION.md` absence gate for governance adoption, workflow-governance changes, or source-of-truth changes.
 
 Merely citing a standing artifact does not activate this gate. The proposal must depend on missing standing authority, a bootstrap exception, or an equivalent current decision.
 

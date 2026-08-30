@@ -3,13 +3,13 @@ name: proposal-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Review a proposal and its embedded feasibility evaluation before design work. Use when the user asks to challenge direction, scope, value, feasibility, risks, vision fit, or decision rationale. Use proposal to write proposals; use design-review, delivery-review, code-review, verify, or pr for later gates.
+  Review a concise proposal and its embedded feasibility evaluation before Design. Use when the user asks whether a direction is valuable, bounded, feasible, vision-aligned, and specific enough to pursue without prematurely settling downstream decisions. Use proposal to write proposals; use design-review, delivery-review, code-review, verify, or pr for later gates.
 argument-hint: [proposal path, feature idea, or review focus]
 ---
 
 # Proposal review
 
-Independently challenge proposal value, direction, scope, risk, and readiness before specification. Do not rubber-stamp formatting or demand implementation detail that belongs downstream.
+Independently answer: **Does this proposal provide enough evidence for a responsible decision about whether to pursue the direction?** Do not rubber-stamp formatting or demand information owned by Design or Delivery.
 
 ## Workflow role
 
@@ -84,47 +84,32 @@ Judge every proposal across:
 
 | Dimension | Question |
 | --- | --- |
-| Problem clarity | Is the problem stated rather than only a solution? |
-| User value | Is the benefit concrete? |
-| Option diversity | Are materially different options, including doing nothing, considered? |
-| Decision rationale | Does the recommendation follow explicit criteria? |
-| Feasibility | Is there one credible assessment supported by evidence or bounded assumptions, with constraints and blockers explicit? |
-| Vision fit | Does direction align with standing vision or expose a governed exception? |
-| Scope control | Do goals, non-goals, dependencies, and follow-ups preserve initial intent? |
-| Architecture awareness | Are affected boundaries and long-lived decisions visible? |
-| Testability | Can intended behavior and failure paths be proven? |
-| Risk honesty | Are material product, delivery, compatibility, and operational risks named? |
-| Rollout realism | Are migration, adoption, and rollback proportionate? |
-| Readiness for spec | Are remaining questions small enough for contract authoring? |
+| Challenge | Is the current insufficiency clear, material, and framed before the solution? |
+| Goals | Do outcome-oriented goals address the challenge without dictating downstream design? |
+| Scope | Are included work, exclusions, and major boundaries clear enough to prevent silent expansion or narrowing? |
+| Governing principle | Is it sound, brief, and independent of implementation detail? |
+| Direction | Is the high-level direction concrete enough to approve and reasonably supported by the preceding reasoning? |
+| Feasibility | Is there one proportionate credible assessment with evidence or bounded assumptions, constraints, and blockers explicit? |
+| Material impact | Are consequences that could change approval disclosed, without requiring a routine impact section? |
+| Vision alignment | Does the direction align with `VISION.md`, or is a material conflict, revision, or bootstrap decision explicit? |
+| Downstream authority | Do behavior, architecture, APIs, sequencing, proof design, and rollout mechanics remain with Design or Delivery? |
+| Requested decision | Is the direction-level decision and its limits explicit? |
 
-Use `pass`, `concern`, or `block`. Challenge investment value, simpler dismissed options, deferred cost, affected users, invariants, and proof of value.
+Use `pass`, `concern`, or `block`. Judge decision sufficiency and proportionality, not maximum available information. No fixed word count, length, or token budget applies.
 
 ### Feasibility
 
 Require exactly one embedded `Feasibility` section with an assessment, basis, constraints, and blockers. Treat supporting research as input, not as a separate proposal artifact or gate. A missing, unsupported, contradicted, materially stale, or blocking evaluation requires proposal revision and cannot authorize architecture or specification authoring. Approval confirms only that the direction is valuable, bounded, and feasible enough for design work; it does not approve detailed behavior, architecture, delivery, implementation, or proof adequacy.
 
-### Vision fit
+### Vision alignment
 
-Check the proposal's `Vision fit` section. Proposals created or substantively revised after the vision spec was adopted require it; legacy proposals are not invalid solely because it is absent.
+Compare the direction with current `VISION.md` and record exactly one outcome in review evidence: `aligned`, `material-conflict`, `vision-revision-requested`, or `no-vision-bootstrap`. Routine alignment belongs only in review evidence; do not request a `Vision fit` section.
 
-Closed enum: Vision fit
-
-```text
-fits the current vision
-may conflict with the current vision
-proposes a vision revision
-no vision exists yet
-```
-
-The value is the section's first non-empty line. If root `VISION.md` exists, `Vision fit` must not say `no vision exists yet`. When root `VISION.md` does not exist, proposal-review must request revision if `Vision fit` is missing or replaced with a claim that fits, conflicts with, or revises a nonexistent vision. Retired root `vision.md` must not prevent `no vision exists yet`.
-
-Ordinary vision judgment stays inline. Load specialized procedure only for `vision_exception_context` or `standing_artifact_context`.
-
-Bootstrap proposals that depend on a missing standing artifact activate the standing artifact gate. They must identify the bootstrap exception in `Vision fit`; request revision if the bootstrap exception is missing.
+A material conflict, requested vision revision, or bootstrap exception that could affect approval must be disclosed in `Impact and major trade-offs` and made explicit in `Decision requested`. Withhold approval when that disclosure or the required owner decision is absent. Load specialized procedure only for `vision_exception_context` or `standing_artifact_context`.
 
 ## Scope preservation review
 
-Compare the user's initial request with the proposal. Every initial goal must be visibly classified with one `initial goal treatment` enum value. Values are `in scope`, `out of scope`, `deferred follow-up`, `rejected option`, or `open question`.
+Compare the user's initial request with the proposal. Each material goal must remain visible in goals, scope, or the requested decision. For a broad request, an `initial goal treatment` of `in scope`, `out of scope`, `deferred follow-up`, `rejected option`, or `open question` may make the boundary explicit inside `Scope and non-goals`.
 
 Return `changes-requested` if any initial user goal disappears. Return `changes-requested` if a deferred goal has no follow-up. Return `changes-requested` if a rejected goal has no rationale. Return `changes-requested` if the proposal narrows scope but does not say why. Scope-preservation failures must return `changes-requested`.
 
@@ -138,7 +123,9 @@ Report the scope-preservation result in the mapped result asset.
 
 Every material finding includes Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or a `needs-decision` rationale naming the decision and owner. Copy the finding asset once per material finding. A material finding is a required change or decision, not a quota.
 
-Use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval authorizes architecture and specification authoring, not that either artifact exists or is approved. Use `changes-requested` for actionable proposal or feasibility defects, `blocked` for an authority, feasibility blocker, or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
+Use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval locks only the accepted challenge, goals, scope and non-goals, governing principle, high-level direction, sufficient feasibility, and disclosed proposal-level impacts. It authorizes architecture and specification authoring only, not that either artifact exists or is approved. Use `changes-requested` for actionable proposal or feasibility defects, `blocked` for an authority, feasibility blocker, or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
+
+A direction that is too vague to approve is a material finding. Content that prematurely settles a detailed Design or Delivery decision is also a material finding. Proposal Review must not create a finding solely because downstream detail or a routine impact section is absent.
 
 ## Isolation and Recording
 

@@ -11,6 +11,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from artifact_lifecycle_contracts import ARCHITECTURE_CONTRACT
 from artifact_lifecycle_validation import validate_release_evidence_checklist, validate_repository
 from lifecycle_state_sync import CLEAN_ADVANCE_GATES
 from lifecycle_state_sync import evaluate_authoring_autoprogression_route
@@ -140,6 +141,18 @@ Ready for proposal-review.
 """,
         encoding="utf-8",
     )
+    proposal_evidence = (
+        f"    authoring_evidence: docs/changes/{change_id}/evidence/proposal-authoring.md\n"
+        if lifecycle_state in {"authoring", "review-required", "revision-required"}
+        else (
+            "    review:\n"
+            "      artifact_id: proposal\n"
+            "      id: proposal-review-r1\n"
+            "      outcome: approved\n"
+            f"      record: docs/changes/{change_id}/reviews/proposal-review-r1.md\n"
+            "      round: r1\n"
+        )
+    )
     change_record.write_text(
         f"""lifecycle_contract: stage-owned-change-local-v1
 artifact_states:
@@ -148,7 +161,102 @@ artifact_states:
     path: docs/proposals/{change_id}.md
     role: primary
     lifecycle_state: {lifecycle_state}
-    authoring_evidence: docs/changes/{change_id}/evidence/proposal-authoring.md
+{proposal_evidence.rstrip()}
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence: []
+workflow: {{}}
+""",
+        encoding="utf-8",
+    )
+    return proposal, change_record
+
+
+def write_simplified_proposal(
+    root: Path,
+    *,
+    change_id: str = "2026-08-30-simplified-proposal",
+    impact: bool = False,
+    nested: bool = False,
+    governed: bool = False,
+    lifecycle_state: str = "review-required",
+) -> tuple[Path, Path | None]:
+    proposal = root / "docs" / "proposals" / f"{change_id}.md"
+    proposal.parent.mkdir(parents=True, exist_ok=True)
+    impact_section = (
+        "\n## Impact and major trade-offs\n\nThis changes a public workflow contract.\n"
+        if impact
+        else ""
+    )
+    nested_section = "\n### Constraint detail\n\nExisting mechanisms remain available.\n" if nested else ""
+    proposal.write_text(
+        f"""# Simplified Proposal
+
+## Challenge
+
+Proposal decisions currently require too much downstream detail.
+
+## Goals
+
+- Make direction approval concise.
+
+## Scope and non-goals
+
+Update proposal authoring without redesigning Delivery.
+
+## Governing principle
+
+Direction approval should contain only direction-level decisions.
+
+## Proposed direction
+
+Adopt a seven-section proposal contract.
+
+## Feasibility
+
+Assessment: Feasible.
+
+The repository already has the required authoring and validation mechanisms.
+
+Material constraints: preserve settled history.
+
+Blockers: none.
+{nested_section}{impact_section}
+## Decision requested
+
+Approve this direction to proceed to Design.
+""",
+        encoding="utf-8",
+    )
+    if not governed:
+        return proposal, None
+    change_record = root / "docs" / "changes" / change_id / "change.yaml"
+    change_record.parent.mkdir(parents=True, exist_ok=True)
+    proposal_evidence = (
+        "    authoring_evidence: docs/changes/"
+        f"{change_id}/evidence/proposal-authoring.md\n"
+        if lifecycle_state in {"authoring", "review-required", "revision-required"}
+        else (
+            "    review:\n"
+            "      artifact_id: proposal\n"
+            "      id: proposal-review-r1\n"
+            "      outcome: approved\n"
+            f"      record: docs/changes/{change_id}/reviews/proposal-review-r1.md\n"
+            "      round: r1\n"
+        )
+    )
+    change_record.write_text(
+        f"""lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/{change_id}.md
+    role: primary
+    lifecycle_state: {lifecycle_state}
+{proposal_evidence.rstrip()}
 workflow_state:
   lifecycle_state: active
   current_stage: proposal-review
@@ -426,6 +534,18 @@ def current_fixture_branch(path: Path) -> str:
 
 
 class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
+    def test_architecture_contract_matches_canonical_arc42_skeleton(self) -> None:
+        skeleton = (ROOT / "skills" / "architecture" / "assets" / "architecture-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+        skeleton_sections = tuple(
+            line.removeprefix("## ")
+            for line in skeleton.splitlines()
+            if line.startswith("## ") and line != "## Owning change record"
+        )
+
+        self.assertEqual(ARCHITECTURE_CONTRACT.required_sections, skeleton_sections)
+
     maxDiff = None
 
     def test_public_governance_entry_point_composes_review_artifact_validation(self) -> None:
@@ -3520,6 +3640,227 @@ No blocked plans.
             with self.subTest(fixture=fixture, path=path):
                 self.assertFixturePasses(fixture, path)
 
+    def test_simplified_proposal_variants_pass(self) -> None:
+        for name, kwargs in (
+            ("ordinary", {}),
+            ("material-impact", {"impact": True}),
+            ("nested", {"nested": True}),
+        ):
+            with self.subTest(name=name):
+                fixture_root = Path(tempfile.mkdtemp(prefix=f"simplified-proposal-{name}-"))
+                self.addCleanupTree(fixture_root)
+                proposal, _ = write_simplified_proposal(fixture_root, **kwargs)
+                result = validate_repository(
+                    fixture_root,
+                    mode="explicit-paths",
+                    paths=[proposal.relative_to(fixture_root).as_posix()],
+                )
+                self.assertFalse(result.blocking_findings, result.blocking_findings)
+
+    def test_simplified_proposal_rejects_malformed_current_structure(self) -> None:
+        cases = (
+            ("missing", "## Goals\n\n- Make direction approval concise.\n", "missing required proposal section 'Goals'"),
+            ("duplicate", "## Goals", "duplicate proposal section 'Goals'"),
+            ("misordered", "## Challenge", "proposal sections are misordered"),
+            ("unknown", "## Unexpected", "unknown proposal level-two section 'Unexpected'"),
+            ("empty-feasibility", "## Feasibility", "proposal Feasibility section must not be empty"),
+            ("forbidden-status", "## Status", "forbidden proposal-owned section 'Status'"),
+            ("reverse-pointer", "## Owning change record", "forbidden proposal-owned section 'Owning change record'"),
+            ("routine-vision", "## Vision fit", "forbidden proposal-owned section 'Vision fit'"),
+        )
+        for name, marker, expected in cases:
+            with self.subTest(name=name):
+                fixture_root = Path(tempfile.mkdtemp(prefix=f"simplified-proposal-invalid-{name}-"))
+                self.addCleanupTree(fixture_root)
+                proposal, _ = write_simplified_proposal(fixture_root)
+                source = proposal.read_text(encoding="utf-8")
+                if name == "missing":
+                    source = source.replace(marker + "\n", "")
+                elif name == "duplicate":
+                    source = source.replace(
+                        "## Scope and non-goals",
+                        "## Goals\n\nRepeated goals.\n\n## Scope and non-goals",
+                    )
+                elif name == "misordered":
+                    source = source.replace("## Challenge", "## __temporary__", 1)
+                    source = source.replace("## Proposed direction", "## Challenge", 1)
+                    source = source.replace("## __temporary__", "## Proposed direction", 1)
+                elif name == "empty-feasibility":
+                    start = source.index("## Feasibility")
+                    end = source.index("## Decision requested")
+                    source = source[:start] + "## Feasibility\n\n" + source[end:]
+                else:
+                    source = source.replace(
+                        "## Decision requested",
+                        f"{marker}\n\nNot allowed.\n\n## Decision requested",
+                    )
+                proposal.write_text(source, encoding="utf-8")
+                result = validate_repository(
+                    fixture_root,
+                    mode="explicit-paths",
+                    paths=[proposal.relative_to(fixture_root).as_posix()],
+                )
+                messages = "\n".join(f.message for f in result.blocking_findings)
+                self.assertIn(expected, messages)
+
+    def test_simplified_governed_proposal_uses_change_record_without_reverse_pointer(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="simplified-proposal-governed-"))
+        self.addCleanupTree(fixture_root)
+        proposal, change_record = write_simplified_proposal(fixture_root, governed=True)
+        assert change_record is not None
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        self.assertFalse(result.blocking_findings, result.blocking_findings)
+
+    def test_unsettled_legacy_proposal_must_adopt_simplified_contract(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="legacy-proposal-unsettled-"))
+        self.addCleanupTree(fixture_root)
+        proposal, change_record = write_stage_owned_proposal(fixture_root)
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("missing required proposal section 'Challenge'", messages)
+
+    def test_settled_legacy_proposal_remains_readable(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="legacy-proposal-settled-"))
+        self.addCleanupTree(fixture_root)
+        _, change_record = write_stage_owned_proposal(
+            fixture_root,
+            lifecycle_state="accepted",
+        )
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[change_record.relative_to(fixture_root).as_posix()],
+        )
+        self.assertFalse(result.blocking_findings, result.blocking_findings)
+
+    def test_changed_settled_legacy_proposal_must_adopt_simplified_contract(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="legacy-proposal-changed-settled-"))
+        self.addCleanupTree(fixture_root)
+        proposal, change_record = write_stage_owned_proposal(
+            fixture_root,
+            lifecycle_state="accepted",
+        )
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("missing required proposal section 'Challenge'", messages)
+
+    def test_settled_simplified_proposal_remains_readable(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="simplified-proposal-settled-"))
+        self.addCleanupTree(fixture_root)
+        _, change_record = write_simplified_proposal(
+            fixture_root,
+            governed=True,
+            lifecycle_state="accepted",
+        )
+        assert change_record is not None
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[change_record.relative_to(fixture_root).as_posix()],
+        )
+        self.assertFalse(result.blocking_findings, result.blocking_findings)
+
+    def test_selected_governed_proposal_path_mismatch_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="simplified-proposal-path-mismatch-"))
+        self.addCleanupTree(fixture_root)
+        proposal, change_record = write_simplified_proposal(fixture_root, governed=True)
+        assert change_record is not None
+        different_record = (
+            fixture_root / "docs" / "changes" / "2026-08-30-different-change" / "change.yaml"
+        )
+        different_record.parent.mkdir(parents=True, exist_ok=True)
+        different_record.write_text(
+            change_record.read_text(encoding="utf-8").replace(
+                proposal.relative_to(fixture_root).as_posix(),
+                "docs/proposals/2026-08-30-different-proposal.md",
+            ),
+            encoding="utf-8",
+        )
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                different_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("does not identify this proposal as its primary proposal", messages)
+
+    def test_portable_proposal_with_unrelated_stage_owned_record_passes(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="portable-proposal-unrelated-record-"))
+        self.addCleanupTree(fixture_root)
+        proposal, _ = write_simplified_proposal(fixture_root)
+        _, change_record = write_simplified_proposal(
+            fixture_root,
+            change_id="2026-08-30-unrelated-change",
+            governed=True,
+        )
+        assert change_record is not None
+        source = change_record.read_text(encoding="utf-8")
+        source = source.replace("  proposal:\n", "  spec:\n", 1)
+        source = source.replace("    kind: proposal\n", "    kind: spec\n", 1)
+        source = source.replace(
+            "docs/proposals/2026-08-30-unrelated-change.md",
+            "specs/unrelated-change.md",
+            1,
+        )
+        change_record.write_text(source, encoding="utf-8")
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        self.assertFalse(result.blocking_findings, result.blocking_findings)
+
+    def test_portable_and_matching_governed_proposals_compose(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="portable-and-governed-proposals-"))
+        self.addCleanupTree(fixture_root)
+        portable, _ = write_simplified_proposal(
+            fixture_root,
+            change_id="2026-08-30-portable-proposal",
+        )
+        governed, change_record = write_simplified_proposal(
+            fixture_root,
+            change_id="2026-08-30-governed-proposal",
+            governed=True,
+        )
+        assert change_record is not None
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                portable.relative_to(fixture_root).as_posix(),
+                governed.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        self.assertFalse(result.blocking_findings, result.blocking_findings)
+
     def test_invalid_fixtures_fail(self) -> None:
         cases = (
             ("invalid-canonical-arc42-legacy-path", "docs/architecture/2026-04-20-canonical-shaped-architecture.md", "missing required 'Related artifacts' section"),
@@ -3557,12 +3898,16 @@ No blocked plans.
     def test_stage_owned_proposal_without_embedded_status_uses_change_record_state(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="stage-owned-proposal-"))
         self.addCleanupTree(fixture_root)
-        proposal, _ = write_stage_owned_proposal(fixture_root)
+        proposal, change_record = write_simplified_proposal(fixture_root, governed=True)
+        assert change_record is not None
 
         result = validate_repository(
             fixture_root,
             mode="explicit-paths",
-            paths=[proposal.relative_to(fixture_root).as_posix()],
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
         )
 
         self.assertFalse(result.blocking_findings, result.blocking_findings)
@@ -3570,20 +3915,28 @@ No blocked plans.
     def test_stage_owned_proposal_with_embedded_status_fails(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="stage-owned-proposal-status-"))
         self.addCleanupTree(fixture_root)
-        proposal, _ = write_stage_owned_proposal(
-            fixture_root,
-            embedded_status="draft",
+        proposal, change_record = write_simplified_proposal(fixture_root, governed=True)
+        assert change_record is not None
+        proposal.write_text(
+            proposal.read_text(encoding="utf-8").replace(
+                "## Decision requested",
+                "## Status\n\ndraft\n\n## Decision requested",
+            ),
+            encoding="utf-8",
         )
 
         result = validate_repository(
             fixture_root,
             mode="explicit-paths",
-            paths=[proposal.relative_to(fixture_root).as_posix()],
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
         )
 
         messages = "\n".join(f.message for f in result.blocking_findings)
         self.assertIn(
-            "stage-owned governed artifact must not contain embedded Status section",
+            "forbidden proposal-owned section 'Status'",
             messages,
         )
 

@@ -28,7 +28,7 @@ Workflow completion claims require evidence from the relevant standard workflow 
 
 - `VISION.md` is the canonical project-vision artifact for project identity, target users, commitments, refusals, and proposal-fit reference.
 - The `vision` skill is upstream of the per-change workflow, not a normal lifecycle stage.
-- Proposals created or substantively revised after this spec is adopted include `Vision fit`.
+- Routine vision alignment is Proposal Review evidence, not a required proposal section. Material conflicts, revision requests, and bootstrap exceptions stay explicit in proposal impact and decision content.
 - README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`.
 - README front-matter is not the source of truth when it conflicts with `VISION.md`.
 
@@ -74,7 +74,8 @@ Notes:
 - `ci-maintenance` means creating or updating hosted CI workflow files, validation automation, or platform configuration. It does not mean running validation, designing tests, specifying validation commands, or waiting for existing CI checks.
 - Exception for an already-open PR: a user-authorized bounded CI repair may inspect an exact failure, make the smallest correction that restores approved behavior, run already-authoritative focused and PR commands, push under existing authority, and observe the replacement check. Keep current review, explanation, verification, and lifecycle evidence only when their decision basis is unchanged; otherwise resume at the earliest affected owning stage.
 - Contributor-facing Markdown source-line guidance lives in `CONTRIBUTING.md`; the normative contract lives in `specs/documentation-source-formatting.md`.
-- Proposal Review evaluates direction, scope, and the proposal's single embedded Feasibility section. Approval authorizes architecture and specification authoring only.
+- A proposal contains exactly seven required level-two sections: `Challenge`, `Goals`, `Scope and non-goals`, `Governing principle`, `Proposed direction`, `Feasibility`, and `Decision requested`. `Impact and major trade-offs` is conditional and appears only when it could materially affect approval.
+- Proposal Review evaluates direction-level decision sufficiency, proportional feasibility, material impact, and vision alignment without requiring detailed behavior, architecture, delivery sequencing, proof design, or rollout mechanics. Approval authorizes architecture and specification authoring only.
 - Design Review settles the exact architecture, specification, and applicable ADR member map as one package. Approval authorizes plan and test-specification authoring only.
 - Delivery Review settles the exact plan and test-specification member map as one package. Approval authorizes implementation.
 - Package authority uses explicit artifact IDs and repository-relative paths plus the upstream review ID. It does not use aggregate revisions or per-document hashes.

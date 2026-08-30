@@ -1,0 +1,272 @@
+change_id: 2026-08-30-simplify-rigorloop-proposal-contract
+title: Simplify the RigorLoop Proposal Contract
+classification: workflow
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  architecture:
+    authoring_evidence: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/architecture-authoring.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-08-30-simplified-proposal-contract.md
+    role: primary
+  plan:
+    authoring_evidence: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/plan-authoring.md
+    kind: plan
+    lifecycle_state: review-required
+    path: docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md
+    role: primary
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-08-30-simplify-rigorloop-proposal-contract.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r1
+      outcome: approved
+      record: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/proposal-review-r1.md
+      round: r1
+    role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/spec-authoring.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/simplified-proposal-contract.md
+    role: primary
+  test-spec:
+    authoring_evidence: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/test-spec-authoring.md
+    kind: test-spec
+    lifecycle_state: review-required
+    path: specs/simplified-proposal-contract.test.md
+    role: primary
+review_packages:
+  delivery:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      plan: docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md
+      test-spec: specs/simplified-proposal-contract.test.md
+    outcome: approved
+    package_kind: delivery
+    review_id: delivery-review-r3
+    review_round: r3
+    status: approved
+    upstream_review_id: design-review-r2
+  design:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      architecture: docs/architecture/2026-08-30-simplified-proposal-contract.md
+      spec: specs/simplified-proposal-contract.md
+    outcome: approved
+    package_kind: design
+    review_id: design-review-r2
+    review_round: r2
+    status: approved
+    upstream_review_id: proposal-review-r1
+workflow_state:
+  blocker: null
+  current_stage: verify
+  evidence:
+    - docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m4-r3.md
+    - docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/explain-change.md
+  lifecycle_state: active
+  next_stage: verify
+  planned_work:
+    current_milestone: M4
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - verify-pending
+    initialization_basis:
+      review_id: delivery-review-r3
+      review_record: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/delivery-review-r3.md
+      review_round: r3
+      reviewed_artifact_path: docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md
+    latest_review:
+      artifact_id: none
+      evidence: []
+      milestone_id: none
+      occurrence: none
+      round: none
+      stage: none
+      status: not-started
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+      M4:
+        kind: lifecycle-closeout
+        state: planned
+    plan_artifact_id: plan
+    remaining_implementation_milestones: []
+workflow: {}
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m4-r3.md
+  review_log: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
+  reviewed_artifact: branch-diff:origin/main...3ee81ed9bf2f65eab95da9c8e2ae89830481ed24
+  status: clean-with-notes
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 2
+  artifacts:
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-08-30-simplified-proposal-contract.md
+      artifact_role: primary
+      artifact_sha256: d9dc71c61628543ff1e5eae80394e9e0121488eb856c123413c8fc78940b11c8
+      authoring_evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/architecture-authoring.md
+      authoring_evidence_sha256: ebc5b646b8a802b946565de47da01cefc13ed9d7850bf535d4a028f8ed09017a
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md
+      artifact_role: primary
+      artifact_sha256: 4139b2dc1fadfca86301b42534108d7b4605dfa0c5790cff29a2feed8bde1701
+      authoring_evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/plan-authoring.md
+      authoring_evidence_sha256: 5203a7dc334fc35b31a7d1a2c275dc61108ef708361ec48f607ed990a43c924f
+      stage_authority: plan
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-08-30-simplify-rigorloop-proposal-contract.md
+      artifact_role: primary
+      artifact_sha256: d9743912eb0e688639e61e81a83a7ba1e25bd9f39a00d3576cf9bce105be90db
+      stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/simplified-proposal-contract.md
+      artifact_role: primary
+      artifact_sha256: 2cf50c6c990596b30a64bd5f029806fedec28f688930d72232c2a8b45a1eb71e
+      authoring_evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/spec-authoring.md
+      authoring_evidence_sha256: 179ae81bea456409adb491204451860c8dc54a3b119d8f4580702c85dc0388e2
+      stage_authority: spec
+    test-spec:
+      artifact_kind: test-spec
+      artifact_path: specs/simplified-proposal-contract.test.md
+      artifact_role: primary
+      artifact_sha256: b4f2a36a451a5e69c6a187ba915382008ab458832988e3333e6ed26f86596d64
+      authoring_evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/test-spec-authoring.md
+      authoring_evidence_sha256: 638679e87b4aa93dd7fab849a675a3f7994b6709f176fed22677a0bf4e5fc3c5
+      stage_authority: test-spec
+  correction_history:
+    route-40459949b4c12e2dbc5750bc54d346d106f0f7923c27d3621837cdbf3e70bd74:
+      destination_artifact_id: plan
+      destination_stage: plan
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/delivery-review-r1-plan-route.md
+      evidence_sha256: aa438ba4906c0320af49caaf7d82ce875eb5c195cd326ea92e3e1289dd864e9b
+      prior_artifact_sha256: 0001fe1850fae81af1f7adbe6fb2c46aa56f42afadc6713db2cccc40683c375a
+      prior_lifecycle_revision: sha256:68262d53312690edfb7821d44315e61958e427dda2621502ce4a214eaa024fe5
+      reason: upstream-planning-gap
+      return_evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/delivery-review-r1-plan-return.md
+      return_evidence_sha256: b3d8cf124476c6796004a49217dfb11d063c8811ba6306b0c54fe6df7b73a686
+      return_stage: delivery-review
+      route_id: route-40459949b4c12e2dbc5750bc54d346d106f0f7923c27d3621837cdbf3e70bd74
+      source_review_id: delivery-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: delivery-review
+        finding_ids:
+          - SPC-DR1
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: delivery-review
+      status: returned
+  milestones:
+    M3:
+      completion_fingerprint: 1b26e2902ad7dacdabac30602d818dd5d6d41243df845bed9e58f52051742c3d
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/m3-publication-parity.md
+      evidence_sha256: f37af551a4b7284f17774756053a9fc1847c0248c1572eb9780807410415d2f8
+      milestone_id: M3
+      review_evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m3-r4.md
+      review_evidence_sha256: a96c6cc838b1b6e83d96a83bf3c1a099af95d7bd9c14106330649d477a58738a
+      review_id: code-review-m3-r4
+      review_log_entry_sha256: e2c392a10c06318caa172c0b2cd124a2cfca497a49a0f6518eb317339dde92b1
+      review_log_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m3-r4.md
+      review_recording_status: recorded
+      review_round: r4
+      review_stage: code-review
+      stage_authority: workflow
+  package_reviews:
+    delivery:
+      correction_targets: []
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/delivery-review-r3.md
+      evidence_sha256: 7e1b951d3f3229ab0addaf0c71ea660046f1e558ac55a3f0c8061cc485166f43
+      findings: []
+      members:
+        plan: docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md
+        test-spec: specs/simplified-proposal-contract.test.md
+      outcome: approved
+      package_kind: delivery
+      review_id: delivery-review-r3
+      review_log_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
+      review_log_sha256: bb0c8a0f83fc5093913240315f6439bd1af2c89af223708915fa9d2b85dfee96
+      reviewer_authority: delivery-review
+      round: r3
+      stage_authority: delivery-review
+      upstream_review_id: design-review-r2
+    design:
+      correction_targets: []
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/design-review-r2.md
+      evidence_sha256: 7dbc360abdf9ea14b61d3acceb2c4e1069b0b8ded7400386f46a0a3d2fcb6cb9
+      findings: []
+      members:
+        architecture: docs/architecture/2026-08-30-simplified-proposal-contract.md
+        spec: specs/simplified-proposal-contract.md
+      outcome: approved
+      package_kind: design
+      review_id: design-review-r2
+      review_log_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
+      review_log_sha256: 682a37dcbb8be34fe89b0ee489168822593f3e441345eee79061400e3089b2b3
+      reviewer_authority: design-review
+      round: r2
+      stage_authority: design-review
+      upstream_review_id: proposal-review-r1
+  resolutions:
+    SPC-M3-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-resolution.md
+      evidence_sha256: 54f381063336ea03b0a7af0f2c5328972a8f1d52a5a08dae123a7a0c875ff768
+      finding_id: SPC-M3-CR1
+      owner: delivery package authors and implementation author
+      stage_authority: review-resolution
+    SPC-M3-CR2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-resolution.md
+      evidence_sha256: 3396bd6e40caa06e2ea04940194150bf0781676a999cc4ff1853cf1faaff51ec
+      finding_id: SPC-M3-CR2
+      owner: implementation author
+      stage_authority: review-resolution
+    SPC-M4-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-resolution.md
+      evidence_sha256: ced04be2ae97b9aa5eb67c497128d10c2a4b8b03136e5562c4099fe4cbdb8048
+      finding_id: SPC-M4-CR1
+      owner: implementation author
+      stage_authority: review-resolution
+  reviews: {}
+  validations: {}
+  withdrawals: {}

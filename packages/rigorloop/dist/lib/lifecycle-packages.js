@@ -92,7 +92,7 @@ export function reviewPackageContext(root, change, kind) {
     }
     try {
       const log = logEntry(root, change.change_id, latest.review_id);
-      if (log.path !== latest.review_log_path || log.sha256 !== latest.review_log_sha256) errors.push(diagnostic("RL_STALE_EVIDENCE", `${kind} package review log is stale.`, "review-package-review-freshness", [String(latest.review_id), String(latest.review_log_path)], "record-package-review"));
+      if (log.path !== latest.review_log_path || !log.compatible_sha256.includes(latest.review_log_sha256)) errors.push(diagnostic("RL_STALE_EVIDENCE", `${kind} package review log is stale.`, "review-package-review-freshness", [String(latest.review_id), String(latest.review_log_path)], "record-package-review"));
     } catch (error) {
       errors.push(error.diagnostic ?? diagnostic("RL_STALE_EVIDENCE", `${kind} package review log is missing or stale.`, "review-package-review-freshness", [String(latest.review_id)], "record-package-review"));
     }
@@ -106,6 +106,7 @@ export function reviewPackageContext(root, change, kind) {
   else if (!errors.length && status === "review-required") nextOperation = "record-package-review";
   else if (!errors.length && status === "changes-requested" && (projection?.correction_targets ?? []).length) nextOperation = "route-correction";
   else if (!errors.length && status === "blocked" && (projection?.correction_targets ?? []).length) nextOperation = "route-correction";
+  else if (!errors.length && status === "blocked" && !(projection?.correction_targets ?? []).length) nextOperation = "record-package-review";
   else if (!errors.length && status === "inconclusive") nextOperation = "record-package-review";
   const blockers = status === "approved" || errors.length ? [] : [diagnostic("RL_OPERATION_NOT_PERMITTED", `${kind} package is ${status} and grants no progression authority.`, "review-package-authority", [`review-package:${kind}`, status], nextOperation)];
   return { package_kind: kind, members, upstream_review_id: upstream.value ?? null, status, authority, latest_review: latest ? { review_id: latest.review_id, round: latest.round, outcome: latest.outcome, evidence_path: latest.evidence_path } : null, correction_targets: projection?.correction_targets ?? latest?.correction_targets ?? [], blockers, errors, next_permitted_operation: nextOperation };
@@ -119,9 +120,19 @@ function logEntry(root, changeId, reviewId) {
   const indexes = [...text.matchAll(new RegExp(`^Review ID: ${reviewId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "gm"))];
   if (indexes.length !== 1) throw packageError("RL_INVALID_REQUEST", "Review log must contain exactly one package review occurrence.", "review-log-consistency", [reviewId]);
   const start = indexes[0].index;
-  const end = text.indexOf("\n### Review entry", start + reviewId.length);
-  const entry = text.slice(start, end < 0 ? undefined : end).trimEnd();
-  return { path, sha256: hash(entry), entry };
+  const remainder = text.slice(start);
+  const nextHeading = /\n#{2,6}\s+/.exec(remainder);
+  const entry = remainder.slice(0, nextHeading?.index).trimEnd();
+  const compatibleSha256 = new Set([hash(entry)]);
+  if (nextHeading) {
+    const afterEntry = remainder.slice(nextHeading.index + 1);
+    const nextSection = /\n##\s+/.exec(afterEntry);
+    if (nextSection) {
+      const sectionStart = nextHeading.index + 1 + nextSection.index;
+      compatibleSha256.add(hash(`${entry}\n${remainder.slice(sectionStart)}`.trimEnd()));
+    }
+  }
+  return { path, sha256: hash(entry), compatible_sha256: [...compatibleSha256], entry };
 }
 
 function parseFindings(text, declared, context, change) {

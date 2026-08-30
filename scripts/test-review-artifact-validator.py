@@ -14,8 +14,10 @@ from pathlib import Path
 
 from review_artifact_validation import finding_closure_state
 from review_artifact_validation import parse_formal_review_log
+from review_artifact_validation import ReviewLogEntry
 from review_artifact_validation import summarize_review_evidence
 from review_artifact_validation import validate_change_root
+from review_artifact_validation import _validate_blocking_review_closeout
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -178,6 +180,26 @@ def test_spec_review_text(
     Review status: {review_status}
     Immediate next stage: {immediate_next_stage}
     Implementation handoff: {implementation_handoff}
+
+    ## Findings
+
+    No material findings.
+    """
+
+
+def proposal_review_text(*, vision_alignment: str | None = "aligned") -> str:
+    alignment = f"- Vision alignment: {vision_alignment}" if vision_alignment is not None else ""
+    return f"""
+    # Proposal Review R1
+
+    Review ID: proposal-review-r1
+    Stage: proposal-review
+    Round: 1
+    Reviewer: Codex proposal-review skill
+    Target: docs/proposals/example.md
+    Status: approved
+    Review date: 2026-08-31
+    {alignment}
 
     ## Findings
 
@@ -2130,6 +2152,69 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                 )
                 self.assertFails(root, expected)
 
+    def test_proposal_review_requires_one_known_vision_alignment(self) -> None:
+        for outcome in (
+            "aligned",
+            "material-conflict",
+            "vision-revision-requested",
+            "no-vision-bootstrap",
+        ):
+            with self.subTest(outcome=outcome):
+                root = Path(tempfile.mkdtemp(prefix="review-artifact-proposal-vision-valid-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "proposal-review-r1.md", proposal_review_text(vision_alignment=outcome))
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id="proposal-review-r1",
+                        stage="proposal-review",
+                        status="approved",
+                        detailed_record="reviews/proposal-review-r1.md",
+                    ),
+                )
+                self.assertPasses(root)
+
+    def test_proposal_review_vision_alignment_unknown_value_fails_closed(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-proposal-vision-unknown-value-"))
+        self.addCleanupTree(root)
+        write_text(root / "reviews" / "proposal-review-r1.md", proposal_review_text(vision_alignment="mostly-aligned"))
+        write_text(
+            root / "review-log.md",
+            review_log_text(
+                review_id="proposal-review-r1",
+                stage="proposal-review",
+                status="approved",
+                detailed_record="reviews/proposal-review-r1.md",
+            ),
+        )
+        self.assertFails(root, "unsupported proposal-review Vision alignment")
+
+    def test_proposal_review_requires_exactly_one_vision_alignment(self) -> None:
+        for name, source in (
+            ("missing", proposal_review_text(vision_alignment=None)),
+            (
+                "duplicate",
+                proposal_review_text(vision_alignment="aligned").replace(
+                    "- Vision alignment: aligned",
+                    "- Vision alignment: aligned\n- Vision alignment: material-conflict",
+                ),
+            ),
+        ):
+            with self.subTest(name=name):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-proposal-vision-{name}-"))
+                self.addCleanupTree(root)
+                write_text(root / "reviews" / "proposal-review-r1.md", source)
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id="proposal-review-r1",
+                        stage="proposal-review",
+                        status="approved",
+                        detailed_record="reviews/proposal-review-r1.md",
+                    ),
+                )
+                self.assertFails(root, "proposal-review must contain exactly one Vision alignment")
+
     def test_test_spec_review_result_fields_validate_status_handoff_and_next_stage(self) -> None:
         valid_cases = [
             ("approved", "implement", "allowed"),
@@ -3029,6 +3114,42 @@ Validation target: Run tests.
         write_text(root / "review-resolution.md", accepted_closed_resolution_text())
         replace_field(root / "review-log.md", "Open findings", "None")
         self.assertCloseoutPasses(root)
+
+    def test_blocking_review_closeout_uses_occurrence_round_not_source_order(self) -> None:
+        def entry(review_id: str, round_value: str, status: str, line: int) -> ReviewLogEntry:
+            return ReviewLogEntry(
+                path=Path("review-log.md"),
+                line=line,
+                review_id=review_id,
+                stage="code-review",
+                round=round_value,
+                status=status,
+                detailed_record=f"reviews/{review_id}.md",
+                resolution=None,
+                material_finding_ids=(),
+                open_finding_ids=(),
+            )
+
+        blocking_m2 = entry("code-review-m2-r1", "r1", "changes-requested", 20)
+        clean_m2 = entry("code-review-m2-r2", "r2", "approved", 5)
+        self.assertEqual(
+            _validate_blocking_review_closeout([clean_m2, blocking_m2], None, "closeout"),
+            [],
+            msg="canonical clean-receipt placement must not define review chronology",
+        )
+
+        same_round_m2 = entry("code-review-m2-r2", "r1", "approved", 5)
+        self.assertTrue(
+            _validate_blocking_review_closeout([same_round_m2, blocking_m2], None, "closeout"),
+            msg="a nonblocking review without a higher round must not close the occurrence",
+        )
+
+        clean_m3 = entry("code-review-m3-r4", "r4", "approved", 5)
+        blocking_m4 = entry("code-review-m4-r1", "r1", "changes-requested", 20)
+        self.assertTrue(
+            _validate_blocking_review_closeout([clean_m3, blocking_m4], None, "closeout"),
+            msg="a higher round from another milestone must not close the occurrence",
+        )
 
         root = self.fixture()
         write_text(root / "review-resolution.md", accepted_closed_resolution_text())
