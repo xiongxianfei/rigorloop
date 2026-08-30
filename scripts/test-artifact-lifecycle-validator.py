@@ -11,6 +11,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from artifact_lifecycle_contracts import ARCHITECTURE_CONTRACT
 from artifact_lifecycle_validation import validate_release_evidence_checklist, validate_repository
 from lifecycle_state_sync import CLEAN_ADVANCE_GATES
 from lifecycle_state_sync import evaluate_authoring_autoprogression_route
@@ -533,6 +534,18 @@ def current_fixture_branch(path: Path) -> str:
 
 
 class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
+    def test_architecture_contract_matches_canonical_arc42_skeleton(self) -> None:
+        skeleton = (ROOT / "skills" / "architecture" / "assets" / "architecture-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+        skeleton_sections = tuple(
+            line.removeprefix("## ")
+            for line in skeleton.splitlines()
+            if line.startswith("## ") and line != "## Owning change record"
+        )
+
+        self.assertEqual(ARCHITECTURE_CONTRACT.required_sections, skeleton_sections)
+
     maxDiff = None
 
     def test_public_governance_entry_point_composes_review_artifact_validation(self) -> None:
