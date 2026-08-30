@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -18,8 +18,8 @@ Review closeout: code-review-m3-r2
 
 - Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
 - Findings resolved: 21
-- Unresolved findings: 0
-- Current result: CRG-M3-CR3 is resolved with package-aware Python completion verification and direct design/delivery proof; M3 is ready for rereview.
+- Unresolved findings: 1
+- Current result: M3 R3 found that Python package completion does not reject missing or unsafe member paths; CRG-M3-CR4 requires resolution and rereview.
 
 ## Resolution Overview
 
@@ -45,8 +45,28 @@ Review closeout: code-review-m3-r2
 | CRG-M3-CR1 | accepted | resolved | Python automation now uses and proves the consolidated stage vocabulary and route. |
 | CRG-M3-CR2 | partially-accepted | resolved | M3 detects and proves every invalid package state; M6 retains atomic activation ownership under CRG-R35 through CRG-R40. |
 | CRG-M3-CR3 | accepted | resolved | Python completion now verifies explicit package members, upstream authority, registration, and canonical review occurrence. |
+| CRG-M3-CR4 | needs-decision | open | Require every explicit package member path to resolve safely before completion. |
 
 ## Finding Details
+
+### code-review-m3-r3
+
+#### CRG-M3-CR4
+
+Finding ID: CRG-M3-CR4
+Disposition: needs-decision
+Status: open
+Owner: M3 implementation owner
+Owning stage: implement M3
+Decision owner: M3 implementation owner
+Decision needed: accept the safe-path existence correction or stop M3.
+Chosen action: pending owner disposition.
+Rationale: package completion currently accepts registered paths whose files are absent, diverging from lifecycle package authority.
+Required outcome: every explicit package member resolves as a safe current regular file without package-member hashing.
+Safe resolution path: use the repository-safe path resolver and add present/missing regressions for both package kinds.
+Follow-up: resolve, implement, and rerun M3 Code Review.
+Validation target: CRG-R23; CRG-T11; BND-INPUT-001; BND-STATE-001.
+Validation evidence: pending.
 
 ### code-review-m3-r2
 

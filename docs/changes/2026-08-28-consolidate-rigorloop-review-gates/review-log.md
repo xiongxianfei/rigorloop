@@ -24,6 +24,21 @@
 
 ### Review entry
 
+Review ID: code-review-m3-r3
+Stage: code-review
+Round: r3
+Reviewed artifact: M3 package-aware completion correction in commit `3685941f`
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r3.md
+Resolution: review-resolution.md#code-review-m3-r3
+Material findings: CRG-M3-CR4
+Open findings: CRG-M3-CR4
+Finding ID: CRG-M3-CR4
+Recording status: recorded
+Blocker: package completion must reject missing or unsafe member paths
+
+### Review entry
+
 Review ID: code-review-m3-r2
 Stage: code-review
 Round: r2
