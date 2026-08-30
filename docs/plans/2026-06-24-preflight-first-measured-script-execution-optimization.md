@@ -2,8 +2,8 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Change ID: 2026-06-24-preflight-first-measured-script-execution-optimization
 - Owner: agent
