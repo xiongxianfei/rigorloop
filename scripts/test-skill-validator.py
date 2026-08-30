@@ -8862,5 +8862,41 @@ class RequirementDeliveryModelM2Tests(unittest.TestCase):
                 self.assertNotIn(forbidden, shared.lower())
 
 
+class RequirementDeliveryModelM3Tests(unittest.TestCase):
+    def test_m3_all_nine_consumers_match_canonical_bytes(self) -> None:
+        canonical = ROOT / "templates" / "shared" / "requirement-to-delivery-model.md"
+        for skill_name in sorted(skill_validation.REQUIREMENT_DELIVERY_MODEL_CONSUMERS):
+            skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    skill_validation.validate_requirement_delivery_model_copy(skill_path, skill_name),
+                    [],
+                )
+                self.assertEqual(
+                    (skill_path.parent / "references" / "requirement-to-delivery-model.md").read_bytes(),
+                    canonical.read_bytes(),
+                )
+
+    def test_m3_missing_and_drifted_copy_fail_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical = root / "canonical.md"
+            canonical.write_text("canonical\n", encoding="utf-8")
+            skill_path = root / "skills" / "proposal" / "SKILL.md"
+            skill_path.parent.mkdir(parents=True)
+            skill_path.write_text("# Proposal\n", encoding="utf-8")
+            missing = skill_validation.validate_requirement_delivery_model_copy(
+                skill_path, "proposal", canonical_path=canonical
+            )
+            self.assertIn("is missing", missing[0])
+            local = skill_path.parent / "references" / "requirement-to-delivery-model.md"
+            local.parent.mkdir()
+            local.write_text("drifted\n", encoding="utf-8")
+            drifted = skill_validation.validate_requirement_delivery_model_copy(
+                skill_path, "proposal", canonical_path=canonical
+            )
+            self.assertIn("differs from canonical", drifted[0])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
