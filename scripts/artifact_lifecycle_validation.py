@@ -1433,11 +1433,15 @@ def _proposal_requires_simplified_contract(
     text: str,
     *,
     stage_owned_status: str | None,
+    current_path: bool,
 ) -> bool:
+    if stage_owned_status is not None:
+        settled = stage_owned_status in {"accepted", "rejected", "abandoned", "superseded", "archived"}
+        if settled:
+            return current_path
+        return True
     if _uses_simplified_proposal_shape(text):
         return True
-    if stage_owned_status is not None:
-        return stage_owned_status not in {"accepted", "rejected", "abandoned", "superseded", "archived"}
     date_prefix = relative_path.stem[:10]
     return bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_prefix)) and date_prefix >= SIMPLIFIED_PROPOSAL_CUTOVER_DATE
 
@@ -1671,6 +1675,7 @@ def _inspect_artifact(
     *,
     stage_owned: bool = False,
     stage_owned_status: str | None = None,
+    current_path: bool = False,
 ) -> ArtifactInspection | None:
     relative_path = path.relative_to(root)
     text = _read_repo_text(root, path, tracked_revision)
@@ -1681,6 +1686,7 @@ def _inspect_artifact(
         relative_path,
         text,
         stage_owned_status=stage_owned_status,
+        current_path=current_path,
     ):
         errors, status = _validate_simplified_proposal(
             relative_path,
@@ -2082,12 +2088,28 @@ def validate_repository(
         owning_refs = _extract_owning_change_record_refs(root_resolved, path, text)
         stage_owned_refs = owning_refs & stage_owned_records
         owners = stage_owned_states.get(path, [])
+        contract = classify_artifact(path.relative_to(root_resolved), text)
+        if (
+            contract is not None
+            and contract.class_name == "proposal"
+            and path in scope.changed_paths
+            and any(record.parent.name == path.stem for record in stage_owned_records)
+            and not owners
+        ):
+            blocking_findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=path,
+                    artifact_class="change_metadata",
+                    status=None,
+                    message="selected change record does not identify this proposal as its primary proposal",
+                )
+            )
         stage_owned = bool(stage_owned_refs or owners)
         stage_owned_status: str | None = None
         if stage_owned:
             target_findings = blocking_findings if path in related_paths else warning_findings
             severity = "block" if path in related_paths else "warn"
-            contract = classify_artifact(path.relative_to(root_resolved), text)
             simplified_proposal = bool(
                 contract is not None
                 and contract.class_name == "proposal"
@@ -2151,6 +2173,7 @@ def validate_repository(
             scope.tracked_revision,
             stage_owned=stage_owned,
             stage_owned_status=stage_owned_status,
+            current_path=path in scope.changed_paths,
         )
         if inspection is not None:
             inspections[path] = inspection

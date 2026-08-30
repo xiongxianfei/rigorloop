@@ -140,6 +140,18 @@ Ready for proposal-review.
 """,
         encoding="utf-8",
     )
+    proposal_evidence = (
+        f"    authoring_evidence: docs/changes/{change_id}/evidence/proposal-authoring.md\n"
+        if lifecycle_state in {"authoring", "review-required", "revision-required"}
+        else (
+            "    review:\n"
+            "      artifact_id: proposal\n"
+            "      id: proposal-review-r1\n"
+            "      outcome: approved\n"
+            f"      record: docs/changes/{change_id}/reviews/proposal-review-r1.md\n"
+            "      round: r1\n"
+        )
+    )
     change_record.write_text(
         f"""lifecycle_contract: stage-owned-change-local-v1
 artifact_states:
@@ -148,7 +160,7 @@ artifact_states:
     path: docs/proposals/{change_id}.md
     role: primary
     lifecycle_state: {lifecycle_state}
-    authoring_evidence: docs/changes/{change_id}/evidence/proposal-authoring.md
+{proposal_evidence.rstrip()}
 workflow_state:
   lifecycle_state: active
   current_stage: proposal-review
@@ -222,6 +234,19 @@ Approve this direction to proceed to Design.
         return proposal, None
     change_record = root / "docs" / "changes" / change_id / "change.yaml"
     change_record.parent.mkdir(parents=True, exist_ok=True)
+    proposal_evidence = (
+        "    authoring_evidence: docs/changes/"
+        f"{change_id}/evidence/proposal-authoring.md\n"
+        if lifecycle_state in {"authoring", "review-required", "revision-required"}
+        else (
+            "    review:\n"
+            "      artifact_id: proposal\n"
+            "      id: proposal-review-r1\n"
+            "      outcome: approved\n"
+            f"      record: docs/changes/{change_id}/reviews/proposal-review-r1.md\n"
+            "      round: r1\n"
+        )
+    )
     change_record.write_text(
         f"""lifecycle_contract: stage-owned-change-local-v1
 artifact_states:
@@ -230,7 +255,7 @@ artifact_states:
     path: docs/proposals/{change_id}.md
     role: primary
     lifecycle_state: {lifecycle_state}
-    authoring_evidence: docs/changes/{change_id}/evidence/proposal-authoring.md
+{proposal_evidence.rstrip()}
 workflow_state:
   lifecycle_state: active
   current_stage: proposal-review
@@ -3698,24 +3723,57 @@ No blocked plans.
     def test_settled_legacy_proposal_remains_readable(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="legacy-proposal-settled-"))
         self.addCleanupTree(fixture_root)
-        proposal, _ = write_stage_owned_proposal(
+        _, change_record = write_stage_owned_proposal(
             fixture_root,
-            embedded_status="accepted",
+            lifecycle_state="accepted",
         )
-        source = proposal.read_text(encoding="utf-8")
-        source = source.replace(
-            "## Owning change record\n\n"
-            "[Change record](../changes/2026-07-29-stage-owned-proposal/change.yaml)\n\n",
-            "",
-        )
-        source = source.replace("Ready for proposal-review.", "Proposal review completed.")
-        proposal.write_text(source, encoding="utf-8")
         result = validate_repository(
             fixture_root,
             mode="explicit-paths",
-            paths=[proposal.relative_to(fixture_root).as_posix()],
+            paths=[change_record.relative_to(fixture_root).as_posix()],
         )
         self.assertFalse(result.blocking_findings, result.blocking_findings)
+
+    def test_changed_settled_legacy_proposal_must_adopt_simplified_contract(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="legacy-proposal-changed-settled-"))
+        self.addCleanupTree(fixture_root)
+        proposal, change_record = write_stage_owned_proposal(
+            fixture_root,
+            lifecycle_state="accepted",
+        )
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("missing required proposal section 'Challenge'", messages)
+
+    def test_selected_governed_proposal_path_mismatch_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="simplified-proposal-path-mismatch-"))
+        self.addCleanupTree(fixture_root)
+        proposal, change_record = write_simplified_proposal(fixture_root, governed=True)
+        assert change_record is not None
+        change_record.write_text(
+            change_record.read_text(encoding="utf-8").replace(
+                proposal.relative_to(fixture_root).as_posix(),
+                "docs/proposals/2026-08-30-different-proposal.md",
+            ),
+            encoding="utf-8",
+        )
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("does not identify this proposal as its primary proposal", messages)
 
     def test_invalid_fixtures_fail(self) -> None:
         cases = (

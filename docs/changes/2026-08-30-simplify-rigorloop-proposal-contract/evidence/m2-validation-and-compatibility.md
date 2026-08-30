@@ -9,7 +9,7 @@ Validation result: passed
 - Status: implemented
 - Completed scope: Added current simplified-proposal structure validation, governed ownership without a reverse document pointer, settled legacy readability, unsettled legacy rejection, and closed Proposal Review vision-alignment validation.
 - Artifacts changed: `scripts/artifact_lifecycle_contracts.py`, `scripts/artifact_lifecycle_validation.py`, `scripts/review_artifact_validation.py`, and their focused test modules.
-- Tests added or updated: Current ordinary, material-impact, nested, portable, and governed proposals; missing, duplicate, misordered, unknown, empty-feasibility, forbidden-status, reverse-pointer, and routine-vision failures; settled and unsettled legacy behavior; all four vision outcomes plus missing, duplicate, and unknown outcomes.
+- Tests added or updated: Current ordinary, material-impact, nested, portable, and governed proposals; missing, duplicate, misordered, unknown, empty-feasibility, forbidden-status, reverse-pointer, routine-vision, and governed-path-mismatch failures; untouched settled, changed settled, and unsettled legacy behavior; all four vision outcomes plus missing, duplicate, and unknown outcomes.
 - Open blockers: none
 - Next stage: code-review
 - Claim limitations: M2 does not generate or validate adapter archives, perform M3 cutover parity, close the milestone lifecycle state, or claim final verification or PR readiness.
@@ -26,7 +26,7 @@ Validation result: passed
 
 ## Proof results
 
-- `python scripts/test-artifact-lifecycle-validator.py`: passed, 153 tests.
+- `python scripts/test-artifact-lifecycle-validator.py`: passed, 155 tests.
 - `python scripts/test-review-artifact-validator.py`: passed, 107 tests.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-08-30-simplify-rigorloop-proposal-contract.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md`: passed, one lifecycle artifact validated.
 - `python scripts/validate-review-artifacts.py docs/changes/2026-08-30-simplify-rigorloop-proposal-contract`: passed, six reviews, one historical finding, six log entries, and one resolution entry.
@@ -41,3 +41,5 @@ The deterministic review validator proves that one known vision outcome is prese
 ## Test-first proof
 
 The focused proposal tests initially failed because the legacy validator required embedded `Status` and legacy sections. The focused Proposal Review tests initially failed because no vision-outcome validator existed. Both focused sets and the full suites pass after the bounded implementation.
+
+Code Review R1 then exposed two missing boundary cases. The correction uses the validator's existing selected-path scope to distinguish a changed settled governed proposal from an untouched proposal reached only through its change record. It also correlates an explicitly selected stage-owned change record with the same-named proposal before portable fallback is allowed. Direct regression tests now cover both cases without introducing document hashes, version markers, reverse pointers, or a new command.
