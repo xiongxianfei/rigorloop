@@ -571,8 +571,8 @@ test("TNP-005 package version maps to bundled v0.4.1 adapter metadata", () => {
   const artifact = metadata.artifacts.find((entry) => entry.adapter === "codex");
   assert.equal(artifact.archive, publicArchiveFile);
   assert.equal(artifact.install_root, ".agents/skills");
-  assert.equal(artifact.tree_sha256, "a5d09e71bfe3c7234a1f9a6c31595b80d68bfe5e403981699aa6aef4540dc5db");
-  assert.equal(artifact.file_count, 75);
+  assert.equal(artifact.tree_sha256, "719bafad29a018c9ec9a5be9c1d214ad2f3428c4eb0bb08d33d8d08c1f4b69d5");
+  assert.equal(artifact.file_count, 90);
   assert.equal(
     artifact.url,
     `https://github.com/xiongxianfei/rigorloop/releases/download/${publicReleaseTag}/${publicArchiveFile}`,
