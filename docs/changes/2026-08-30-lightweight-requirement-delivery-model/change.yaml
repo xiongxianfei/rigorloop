@@ -4,6 +4,12 @@ classification: workflow
 risk: medium
 lifecycle_contract: stage-owned-change-local-v1
 artifact_states:
+  architecture:
+    authoring_evidence: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/architecture-authoring.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-08-30-lightweight-requirement-delivery-model.md
+    role: primary
   proposal:
     kind: proposal
     lifecycle_state: accepted
@@ -15,12 +21,18 @@ artifact_states:
       record: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/proposal-review-r1.md
       round: r1
     role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/spec-authoring.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/lightweight-requirement-delivery-model.md
+    role: primary
 workflow_state:
   blocker: null
-  current_stage: proposal-review
+  current_stage: design-review
   evidence: []
   lifecycle_state: active
-  next_stage: proposal-review
+  next_stage: design-review
 workflow: {}
 artifacts: {}
 requirements: []
@@ -36,6 +48,14 @@ review:
 lifecycle_cli:
   schema_version: 1
   artifacts:
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-08-30-lightweight-requirement-delivery-model.md
+      artifact_role: primary
+      artifact_sha256: 4107cbd508dc3832cb1fa94b6e4fe224989a1173177174e436b07f840e562488
+      authoring_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/architecture-authoring.md
+      authoring_evidence_sha256: d5ae73179b4b7f01a1f0c41fb8f0dda1abdc2be5c60736a70e4cf68c32fdd1d7
+      stage_authority: architecture
     proposal:
       artifact_kind: proposal
       artifact_path: docs/proposals/2026-08-30-lightweight-requirement-delivery-model.md
@@ -44,6 +64,14 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/proposal-authoring.md
       authoring_evidence_sha256: 7a1eb4bf4d1002a6f695096876877f3eb332ac36cd41f4adf0dcc8959d8a34eb
       stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/lightweight-requirement-delivery-model.md
+      artifact_role: primary
+      artifact_sha256: 2b130c10fb6b07c17e1f9e72d909056d00514e0dd8e8195aa35cfe49e16bbe79
+      authoring_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/spec-authoring.md
+      authoring_evidence_sha256: 4cb9a5e8fe71cb6945d1c8acd09c240798b57a482c704d6d72d6ab09609b91c0
+      stage_authority: spec
   correction_history: {}
   milestones: {}
   package_reviews: {}
