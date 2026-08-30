@@ -9,7 +9,7 @@ import { clearOrphanedLifecycleLock, inspectLifecycleLock, inspectLifecycleRecov
 import { renderResult, RESULT_FORMATS } from "./result-renderer.js";
 
 const RESULT_FIELDS = ["schema_version", "command", "operation", "status", "change_id", "lifecycle_revision", "effective_state", "blockers", "permitted_operations", "artifacts", "warnings", "errors"];
-const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "start-milestone", "complete-milestone", "route-correction", "return-correction", "withdraw-artifact-registration", "migrate", "repair"]);
+const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "record-package-review", "settle-review-package", "advance-stage", "initialize-approved-plan", "start-milestone", "complete-milestone", "route-correction", "return-correction", "withdraw-artifact-registration", "migrate", "repair"]);
 const REPAIR_CHANGED_STATUSES = new Set(["cleared-orphaned-lock", "restored-prior", "committed-candidate", "abandoned-prepared"]);
 const REPAIR_UNCHANGED_STATUSES = new Set(["already-clear", "nothing-to-reconcile"]);
 const UNSAFE_RECOVERY_CODES = new Set(["RL_RECOVERY_REQUIRED", "RL_REPAIR_UNSAFE"]);
@@ -139,6 +139,12 @@ function human(result) {
       lines.push(`${result.context.route_required.code}: workflow must route ${result.context.route_required.current_stage} -> ${result.context.route_required.requested_stage}`);
       lines.push(`Available after workflow route: ${result.context.available_after_workflow_route}`);
     }
+    if (result.context.review_package) {
+      const reviewPackage = result.context.review_package;
+      lines.push(`Review package: ${reviewPackage.package_kind}; status ${reviewPackage.status}; authority ${reviewPackage.authority}`);
+      lines.push(`Package members: ${Object.entries(reviewPackage.members).map(([id, path]) => `${id}=${path}`).join(", ") || "none"}`);
+      lines.push(`Upstream review ID: ${reviewPackage.upstream_review_id ?? "none"}`);
+    }
   }
   if (result.validation) lines.push(`Repository validation: ${result.validation.valid ? "valid" : "invalid"}`);
   if (result.mutation) lines.push(`Mutation: ${result.mutation.status}; ${result.mutation.changed_path}`);
@@ -197,6 +203,22 @@ export function executeLifecycleCli(args, options = {}) {
         return { result, exitCode: resultExitCode(result), format: parsed.format, human: human(result) };
       }
       if (request.expected_lifecycle_revision !== interpreted.lifecycle_revision) {
+        if (["record-package-review", "settle-review-package"].includes(request.operation)) {
+          try {
+            const replay = evaluateLifecycleOperation({ root, change: interpreted.change, request });
+            if (replay.status === "already-recorded") {
+              const result = withStateChanged(baseResult(parsed.operation, { status: "already-recorded", change_id: interpreted.change_id, lifecycle_revision: interpreted.lifecycle_revision, effective_state: interpreted.effective_state, blockers: interpreted.blockers, permitted_operations: interpreted.permitted_operations, artifacts: interpreted.artifacts, warnings: [], errors: [], mutation: { status: "already-recorded", changed_path: `docs/changes/${interpreted.change_id}/change.yaml` } }), false);
+              return { result, exitCode: 0, format: parsed.format, human: human(result) };
+            }
+          } catch (error) {
+            if (error?.code === "RL_STALE_EVIDENCE") {
+              const issue = error.diagnostic ?? lifecycleDiagnostic("RL_STALE_EVIDENCE", error.message, "review-package-review-freshness");
+              const result = errorResult(parsed.operation, issue);
+              return { result, exitCode: resultExitCode(result), format: parsed.format, human: human(result) };
+            }
+            // A stale request that is not an exact semantic replay follows the normal stale rejection.
+          }
+        }
         const issue = lifecycleDiagnostic("RL_STALE_OPERATION", "expected lifecycle revision is not current", "optimistic-concurrency", null, [request.expected_lifecycle_revision, interpreted.lifecycle_revision]);
         const result = errorResult(parsed.operation, issue, "blocked");
         return { result, exitCode: resultExitCode(result), format: parsed.format, human: human(result) };
@@ -261,8 +283,9 @@ export function executeLifecycleCli(args, options = {}) {
   }
   const context = parsed.operation === "context" ? contextForStage(interpreted, parsed.stage) : null;
   const routeIssue = context?.route_required ? lifecycleDiagnostic("RL_WORKFLOW_ROUTE_REQUIRED", `Workflow must route from ${context.route_required.current_stage} to ${context.route_required.requested_stage} before authoring can begin.`, "correction-route-ownership", "route-correction", context.route_required.finding_ids) : null;
+  const packageIssue = context?.review_package?.errors?.[0] ?? null;
   const result = baseResult(parsed.operation, {
-    status: interpreted.errors.length ? "error" : interpreted.blockers.length || routeIssue ? "blocked" : "success",
+    status: interpreted.errors.length ? "error" : interpreted.blockers.length || routeIssue || packageIssue ? "blocked" : "success",
     change_id: interpreted.change_id,
     lifecycle_revision: interpreted.lifecycle_revision,
     effective_state: interpreted.effective_state,
@@ -270,8 +293,8 @@ export function executeLifecycleCli(args, options = {}) {
     permitted_operations: interpreted.permitted_operations,
     artifacts: interpreted.artifacts,
     warnings: interpreted.warnings,
-    errors: routeIssue ? [...interpreted.errors, routeIssue] : interpreted.errors,
-    ...(routeIssue ? { blockers: [...interpreted.blockers, routeIssue] } : {}),
+    errors: [...interpreted.errors, ...(routeIssue ? [routeIssue] : []), ...(packageIssue ? [packageIssue] : [])],
+    ...((routeIssue || packageIssue) ? { blockers: [...interpreted.blockers, ...(routeIssue ? [routeIssue] : []), ...(packageIssue ? [packageIssue] : [])] } : {}),
     ...(context ? { context } : {}),
     ...(parsed.operation === "validate" ? { validation: { valid: interpreted.errors.length === 0, checks: ["schema", "artifacts", "evidence", "findings", "milestones"] } } : {}),
   });

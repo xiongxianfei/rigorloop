@@ -14,8 +14,8 @@ Refresh context and submit `record-artifact-revision` with the returned lifecycl
 
 ## Approved-plan initialization
 
-Retain the contract's narrow authority to initialize `workflow_state.planned_work` exactly once when a current clean plan review requires it and work is absent. Set every implementation milestone to `planned`, select the first implementation milestone, set `latest_review.status: not-started` and `final_closeout.readiness: not-ready`, bind the exact review and plan revision, and report `settlement-retry-required`. Never replace existing work: plan must not replace or update existing `planned_work`; workflow owns every later `planned_work` transition. If CLI enforcement or repository compatibility rejects this exception, stop for workflow migration.
+Retain the contract's narrow authority to initialize `workflow_state.planned_work` exactly once when the approved current Delivery Review package contains the primary plan and work is absent. Set every implementation milestone to `planned`, select the first implementation milestone, set `latest_review.status: not-started` and `final_closeout.readiness: not-ready`, and bind the Delivery Review ID and plan path. Never replace existing work: plan must not replace or update existing `planned_work`; workflow owns every later `planned_work` transition. If CLI enforcement rejects this exception, stop for workflow correction.
 
 ## Result
 
-Report authoring and CLI results, initialization state when applicable, blockers, and `plan-review` handoff. Do not settle or route.
+Report authoring and CLI results, initialization state when applicable, blockers, and the `test-spec` or `delivery-review` handoff. Do not settle or route.

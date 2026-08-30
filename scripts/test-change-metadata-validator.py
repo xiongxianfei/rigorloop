@@ -1667,6 +1667,30 @@ review:
             )
             self.assertPathPasses(target)
 
+    def test_changes_requested_review_pointers_do_not_declare_clean_receipt_root(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-changes-requested-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            target.write_text(
+                """change_id: "changes-requested-review"
+title: "Changes requested review"
+classification: "test"
+risk: "low"
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/changes-requested-review/reviews/spec-review-r1.md
+  review_log: docs/changes/changes-requested-review/review-log.md
+  reviewed_artifact: specs/example.md
+  status: "changes-requested"
+  unresolved_items: 1
+""",
+                encoding="utf-8",
+            )
+            self.assertPathPasses(target)
+
     def test_noncanonical_artifact_key_fails(self) -> None:
         self.assertPathFails(
             FIXTURES / "bad-artifact-key" / "change.yaml",
@@ -1714,16 +1738,6 @@ review:
                 "  status: clean\n",
                 "",
                 "review.status: missing required field",
-            ),
-            (
-                "  status: clean\n",
-                "  status: approved\n",
-                "review.status must be 'clean' for clean receipt roots",
-            ),
-            (
-                "  status: clean\n",
-                "  status: changes-requested\n",
-                "review.status must be 'clean' for clean receipt roots",
             ),
             (
                 "  unresolved_items: 0\n",
@@ -2049,6 +2063,71 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
         record["workflow"]["automation"]["status"] = "waiting"
         errors = validate_stage_owned_lifecycle_metadata(record)
         self.assertTrue(any("automation.status: unknown_value" in error for error in errors))
+
+    def test_review_package_projection_validates_compact_authority(self) -> None:
+        record = self.valid_record()
+        for artifact_id, kind, path in (
+            ("architecture", "architecture", "docs/architecture/example.md"),
+            ("spec", "spec", "specs/example.md"),
+        ):
+            record["artifact_states"][artifact_id] = {
+                "kind": kind,
+                "path": path,
+                "role": "primary",
+                "lifecycle_state": "approved",
+                "review": {
+                    "id": f"{kind}-review-r1",
+                    "artifact_id": artifact_id,
+                    "outcome": "approved",
+                    "record": f"docs/changes/example/reviews/{kind}-review-r1.md",
+                    "round": "r1",
+                },
+            }
+        record["review_packages"] = {
+            "design": {
+                "authority": "granted",
+                "correction_targets": [],
+                "findings": [],
+                "members": {"architecture": "docs/architecture/example.md", "spec": "specs/example.md"},
+                "outcome": "approved",
+                "package_kind": "design",
+                "review_id": "design-review-r1",
+                "review_round": "r1",
+                "status": "approved",
+                "upstream_review_id": "proposal-review-r1",
+            }
+        }
+        self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
+
+    def test_review_package_closed_vocabularies_reject_unknown_values(self) -> None:
+        record = self.valid_record()
+        record["review_packages"] = {
+            "combined": {
+                "authority": "partial",
+                "correction_targets": [],
+                "findings": [{
+                    "affected_artifact_ids": ["proposal"],
+                    "evidence": "evidence",
+                    "finding_id": "F-1",
+                    "owning_stages": ["proposal"],
+                    "required_outcome": "outcome",
+                    "safe_resolution_path": "resolution",
+                    "scope": "mixed",
+                }],
+                "members": {"proposal": "docs/proposals/example.md"},
+                "outcome": "accepted",
+                "package_kind": "combined",
+                "review_id": "design-review-r1",
+                "review_round": "r1",
+                "status": "settled",
+                "upstream_review_id": "proposal-review-r1",
+            }
+        }
+        errors = validate_stage_owned_lifecycle_metadata(record)
+        self.assertTrue(any("review_packages.combined: unknown_value" in error for error in errors))
+        self.assertTrue(any("review_packages.combined.status: unknown_value" in error for error in errors))
+        self.assertTrue(any("review_packages.combined.authority: unknown_value" in error for error in errors))
+        self.assertTrue(any("review_packages.combined.findings[0].scope: unknown_value" in error for error in errors))
 
     def test_review_outcome_must_match_settled_state(self) -> None:
         record = self.valid_record()

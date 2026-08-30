@@ -85,7 +85,7 @@ CHANGE_ID_RE = re.compile(
     r"^Change ID:\s*(?P<value>[a-zA-Z0-9][a-zA-Z0-9._-]+)\s*$"
 )
 
-LEGACY_TARGETS = frozenset({"plan-review", "verify"})
+LEGACY_TARGETS = frozenset({"delivery-review", "verify"})
 PUBLIC_ENGINE_CONTEXT = "bounded-review-fix-engine"
 TERMINAL_MILESTONE_STATES = frozenset({"closed"})
 KNOWN_MILESTONE_STATES = frozenset(
@@ -94,23 +94,18 @@ KNOWN_MILESTONE_STATES = frozenset(
 PRE_PLAN_SEQUENCE = (
     "proposal",
     "proposal-review",
-    "spec",
-    "spec-review",
-    "architecture-assessment",
     "architecture",
-    "architecture-review",
+    "spec",
+    "design-review",
     "plan",
-    "plan-review",
     "test-spec",
-    "test-spec-review",
+    "delivery-review",
 )
 REVIEW_POSITIONS = frozenset(
     {
         "proposal-review",
-        "spec-review",
-        "architecture-review",
-        "plan-review",
-        "test-spec-review",
+        "design-review",
+        "delivery-review",
     }
 )
 REVIEW_OUTCOMES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
@@ -118,10 +113,12 @@ TRANSITION_EVIDENCE_POSITIONS = frozenset(PRE_PLAN_SEQUENCE[1:])
 CANONICAL_BASIS_FIELDS = {
     "proposal": ("proposal_identity", "reviewed_proposal_identity"),
     "proposal-review": ("approved_proposal_review_identity", "review_record_identity"),
+    "architecture": ("architecture_identity",),
+    "spec": ("spec_identity",),
+    "design-review": ("design_review_identity",),
     "plan": ("plan_identity",),
-    "plan-review": ("plan_review_identity",),
     "test-spec": ("test_spec_identity",),
-    "test-spec-review": ("test_spec_review_identity",),
+    "delivery-review": ("delivery_review_identity",),
 }
 
 
@@ -1847,20 +1844,16 @@ def evaluate_proposal_correction(
 
 
 _AUTHORING_NEXT_STAGE = {
-    WorkflowStage.SPEC.value: WorkflowStage.SPEC_REVIEW.value,
-    WorkflowStage.SPEC_REVIEW.value: WorkflowStage.ARCHITECTURE_ASSESSMENT.value,
-    WorkflowStage.ARCHITECTURE.value: WorkflowStage.ARCHITECTURE_REVIEW.value,
-    WorkflowStage.ARCHITECTURE_REVIEW.value: WorkflowStage.PLAN.value,
-    WorkflowStage.PLAN.value: WorkflowStage.PLAN_REVIEW.value,
-    WorkflowStage.PLAN_REVIEW.value: WorkflowStage.TEST_SPEC.value,
-    WorkflowStage.TEST_SPEC.value: WorkflowStage.TEST_SPEC_REVIEW.value,
+    WorkflowStage.ARCHITECTURE.value: WorkflowStage.SPEC.value,
+    WorkflowStage.SPEC.value: WorkflowStage.DESIGN_REVIEW.value,
+    WorkflowStage.DESIGN_REVIEW.value: WorkflowStage.PLAN.value,
+    WorkflowStage.PLAN.value: WorkflowStage.TEST_SPEC.value,
+    WorkflowStage.TEST_SPEC.value: WorkflowStage.DELIVERY_REVIEW.value,
 }
 _AUTHORING_REVIEW_STAGES = frozenset(
     {
-        WorkflowStage.SPEC_REVIEW.value,
-        WorkflowStage.ARCHITECTURE_REVIEW.value,
-        WorkflowStage.PLAN_REVIEW.value,
-        WorkflowStage.TEST_SPEC_REVIEW.value,
+        WorkflowStage.DESIGN_REVIEW.value,
+        WorkflowStage.DELIVERY_REVIEW.value,
     }
 )
 
@@ -1901,19 +1894,6 @@ def evaluate_non_public_authoring_route(
         status = "continue" if review.routing_action == "continue" else review.routing_action
         return AuthoringRouteDecision(status, review.next_stage, review.pause_reason)
 
-    if current_stage == WorkflowStage.ARCHITECTURE_ASSESSMENT.value:
-        if architecture_applicability not in {"required", "not-required"}:
-            return AuthoringRouteDecision(
-                "paused", pause_reason="architecture-applicability-ambiguous"
-            )
-        if architecture_applicability == "required":
-            return AuthoringRouteDecision("continue", WorkflowStage.ARCHITECTURE.value)
-        if target in {WorkflowStage.ARCHITECTURE, WorkflowStage.ARCHITECTURE_REVIEW}:
-            return AuthoringRouteDecision("target-not-applicable", record_not_applicable=True)
-        return AuthoringRouteDecision(
-            "continue", WorkflowStage.PLAN.value, record_not_applicable=True
-        )
-
     if current_stage in _AUTHORING_REVIEW_STAGES:
         if review_outcome not in REVIEW_OUTCOMES:
             return AuthoringRouteDecision("paused", pause_reason="review-outcome-required")
@@ -1926,7 +1906,7 @@ def evaluate_non_public_authoring_route(
     elif current_stage == target_stage:
         return AuthoringRouteDecision("target-reached")
 
-    if current_stage == WorkflowStage.TEST_SPEC_REVIEW.value:
+    if current_stage == WorkflowStage.DELIVERY_REVIEW.value:
         return AuthoringRouteDecision(
             "paused", pause_reason="implementation-authorization-required"
         )
@@ -2968,7 +2948,7 @@ def _legacy_public_projection(
         if isinstance(candidate_mechanism, str):
             mechanism = candidate_mechanism
     target_stage = {
-        "authoring-through-plan-review": WorkflowStage.PLAN_REVIEW.value,
+        "authoring-through-plan-review": WorkflowStage.DELIVERY_REVIEW.value,
         "implementation-through-verify": WorkflowStage.VERIFY.value,
     }.get(mechanism)
     if target_stage is None and mechanism == "bounded-review-fix":
@@ -3095,7 +3075,7 @@ def execute_public_control_command(
         except StateContractError as error:
             raise AutomationContractError(str(error)) from error
         target_stage = {
-            "authoring-through-plan-review": WorkflowStage.PLAN_REVIEW.value,
+            "authoring-through-plan-review": WorkflowStage.DELIVERY_REVIEW.value,
             "implementation-through-verify": WorkflowStage.VERIFY.value,
         }.get(mechanism)
         if target_stage is None and mechanism == "bounded-review-fix":
@@ -3785,8 +3765,6 @@ def _resolve_pre_plan(evidence: PrePlanEvidence) -> CanonicalPosition:
         raise AutomationContractError(
             "unknown pre-plan workflow position: " + ", ".join(sorted(unknown))
         )
-    if evidence.architecture_applicability not in {"required", "not-required"}:
-        raise AutomationContractError("architecture applicability is ambiguous")
     unknown_review_positions = set(evidence.review_outcomes) - REVIEW_POSITIONS
     if unknown_review_positions:
         raise AutomationContractError(
@@ -3816,26 +3794,16 @@ def _resolve_pre_plan(evidence: PrePlanEvidence) -> CanonicalPosition:
     if set(observed.values()) & set(evidence.stale_identities):
         raise AutomationContractError("stale canonical workflow evidence")
 
-    if "spec" in observed and evidence.review_outcomes.get("proposal-review") != "approved":
+    if "architecture" in observed and evidence.review_outcomes.get("proposal-review") != "approved":
         raise AutomationContractError("contradictory proposal-review evidence")
-    if any(
-        position in observed
-        for position in ("architecture-assessment", "architecture", "architecture-review", "plan")
-    ) and evidence.review_outcomes.get("spec-review") != "approved":
-        raise AutomationContractError("contradictory spec-review evidence")
-    if "plan" in observed and evidence.architecture_applicability == "required":
-        if evidence.review_outcomes.get("architecture-review") != "approved":
-            raise AutomationContractError("contradictory architecture-review evidence")
-    if "test-spec" in observed:
-        if evidence.review_outcomes.get("plan-review") != "approved":
-            raise AutomationContractError("contradictory plan-review evidence")
-    if "spec" in observed and not evidence.review_resolution_closed:
+    if "plan" in observed and evidence.review_outcomes.get("design-review") != "approved":
+        raise AutomationContractError("contradictory design-review evidence")
+    if "delivery-review" in observed and "test-spec" not in observed:
+        raise AutomationContractError("contradictory delivery-review evidence")
+    if "architecture" in observed and not evidence.review_resolution_closed:
         raise AutomationContractError("required review resolution is not closed")
 
     applicable_sequence = list(PRE_PLAN_SEQUENCE)
-    if evidence.architecture_applicability == "not-required":
-        applicable_sequence.remove("architecture")
-        applicable_sequence.remove("architecture-review")
     positions = [position for position in applicable_sequence if position in evidence.positions]
     if not positions:
         return CanonicalPosition(
@@ -3882,9 +3850,8 @@ def _resolve_plan(plan: ActivePlanContext) -> CanonicalPosition:
     state = current.state
     authoring_position = (
         {
-            WorkflowStage.PLAN_REVIEW.value: WorkflowPosition.PLAN.value,
-            WorkflowStage.TEST_SPEC.value: WorkflowPosition.PLAN_REVIEW.value,
-            WorkflowStage.TEST_SPEC_REVIEW.value: WorkflowPosition.TEST_SPEC.value,
+            WorkflowStage.TEST_SPEC.value: WorkflowPosition.PLAN.value,
+            WorkflowStage.DELIVERY_REVIEW.value: WorkflowPosition.TEST_SPEC.value,
         }.get(plan.handoff.next_stage)
         if state == "planned"
         else None
@@ -3906,7 +3873,7 @@ def _resolve_plan(plan: ActivePlanContext) -> CanonicalPosition:
         position = (
             WorkflowPosition.CODE_REVIEW.value
             if any(milestone.state == "closed" for milestone in prior)
-            else WorkflowPosition.TEST_SPEC_REVIEW.value
+            else WorkflowPosition.DELIVERY_REVIEW.value
         )
     else:
         position = WorkflowPosition.CODE_REVIEW.value

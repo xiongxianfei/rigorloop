@@ -1,7 +1,7 @@
-<!-- Template: test-spec-review-material-finding-v1 -->
-<!-- Skill: test-spec-review -->
+<!-- Template: delivery-review-material-finding-v1 -->
+<!-- Skill: delivery-review -->
 <!-- Template status: normative -->
-<!-- Maintained alongside: skills/test-spec-review/SKILL.md -->
+<!-- Maintained alongside: skills/delivery-review/SKILL.md -->
 
 ## Finding <finding ID>
 
@@ -12,3 +12,6 @@
 - Required outcome: <required outcome>
 - Safe resolution path: <safe resolution path>
 - needs-decision rationale: <needs-decision rationale or none>
+- Finding scope: <artifact-local | cross-artifact | upstream-direction>
+- Affected artifact IDs: <artifact IDs>
+- Owning stages: <owning stages>

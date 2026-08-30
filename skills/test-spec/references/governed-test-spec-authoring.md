@@ -16,4 +16,4 @@ After validating proof coverage and evidence, refresh context and submit `record
 
 ## Result
 
-Report operation, identities, validation, CLI result, blockers, and `test-spec-review` handoff without authorizing implementation.
+Report operation, identities, validation, CLI result, blockers, and `delivery-review` handoff without authorizing implementation.

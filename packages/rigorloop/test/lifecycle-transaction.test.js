@@ -6,6 +6,8 @@ import { tmpdir } from "node:os";
 import { test } from "node:test";
 
 import { inspectLifecycleLock, inspectLifecycleRecovery, lifecycleTransactionPaths, reconcileInterruptedTransaction, runLifecycleTransaction } from "../dist/lib/lifecycle-transaction.js";
+import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
+import { changeBytes, lifecycleRevision, packageContext, packageRepository, writePackageReview, writeRequest } from "./helpers/lifecycle-package-fixture.js";
 
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-lifecycle-tx-"));
@@ -68,4 +70,29 @@ test("interruption after replacement reconciles candidate identity", async () =>
   unlinkSync(item.paths.lock);
   assert.deepEqual(reconcileInterruptedTransaction({ changePath: item.changePath, changeId: "example", validateCandidate: valid }), { status: "committed-candidate" });
   assert.match(readFileSync(item.changePath, "utf8"), /next/);
+});
+
+test("package review post-validation failure restores the complete prior authority", async () => {
+  const { root } = await packageRepository();
+  const context = packageContext(root);
+  const review = writePackageReview(root, context);
+  const request = writeRequest(root, "package-post-validation", {
+    schema_version: 1,
+    operation: "record-package-review",
+    change_id: "example",
+    expected_lifecycle_revision: lifecycleRevision(root),
+    package_kind: "design",
+    members: review.packageFacts.members,
+    upstream_review_id: review.packageFacts.upstream_review_id,
+    evidence_path: review.reviewPath,
+    stage_authority: "design-review",
+  });
+  const before = changeBytes(root);
+  const execution = executeLifecycleCli(["record-package-review", "--request", request, "--format", "json"], {
+    cwd: root,
+    runLifecycleTransaction: (options) => runLifecycleTransaction({ ...options, validateCandidate: () => false }),
+  });
+  assert.equal(execution.result.errors[0].code, "RL_POST_VALIDATION_FAILED");
+  assert.equal(changeBytes(root), before);
+  assert.equal(inspectLifecycleRecovery(join(root, "docs", "changes", "example", "change.yaml")).state, "absent");
 });

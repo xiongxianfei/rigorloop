@@ -71,6 +71,8 @@ Read only evidence needed for the classified outcome. This may include the relev
 
 For placement, prefer the explicit target; current change or plan metadata; governing schema; project workflow guide; then a safe portable default. Block when authority remains ambiguous. For planned records, bounded queries may orient the read, but escalate to full `change.yaml` for whole-record review, disputed or unsupported state, or forensic reconstruction.
 
+For work governed by consolidated gates, require the current accepted proposal evidence, approved Design Review ID and exact member map, approved Delivery Review ID and exact member map, implementation and Code Review evidence, current explanation, and current validation results. A review-required, partial, stale, or historical-only package blocks final readiness. This evidence requirement does not merge Verify with any earlier gate.
+
 ## Evidence truthfulness
 
 - Distinguish `passed`, `failed`, `skipped`, `pending`, `not-run`, and `unknown`; reject unknown closed-vocabulary values before consistency checks.
@@ -189,7 +191,7 @@ Start with the exact approved rows cited for the current decision. Expand approv
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
-Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `design-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
 Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure. Stop verification before readiness claims when evidence is missing or stale, an ID is unknown, or a discovery still requires upstream ownership.
 

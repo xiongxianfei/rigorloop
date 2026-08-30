@@ -16,4 +16,4 @@ Treat `already-recorded` as success. Stop on stale context, identity or path mis
 
 ## Result
 
-Report operation, paths, identities, CLI result, blockers, and `spec-review` handoff without claiming settlement or downstream readiness.
+Report operation, paths, identities, CLI result, blockers, and `design-review` handoff after architecture reconciliation without claiming settlement or downstream readiness.

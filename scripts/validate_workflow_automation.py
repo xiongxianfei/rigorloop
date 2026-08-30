@@ -801,15 +801,12 @@ CAPABILITY_STAGES = {
     CapabilityKind.PROPOSAL_CORRECTION.value: frozenset({WorkflowStage.PROPOSAL.value}),
     CapabilityKind.POST_PROPOSAL_AUTHORING.value: frozenset(
         {
-            WorkflowStage.SPEC.value,
-            WorkflowStage.SPEC_REVIEW.value,
-            WorkflowStage.ARCHITECTURE_ASSESSMENT.value,
             WorkflowStage.ARCHITECTURE.value,
-            WorkflowStage.ARCHITECTURE_REVIEW.value,
+            WorkflowStage.SPEC.value,
+            WorkflowStage.DESIGN_REVIEW.value,
             WorkflowStage.PLAN.value,
-            WorkflowStage.PLAN_REVIEW.value,
             WorkflowStage.TEST_SPEC.value,
-            WorkflowStage.TEST_SPEC_REVIEW.value,
+            WorkflowStage.DELIVERY_REVIEW.value,
         }
     ),
     CapabilityKind.IMPLEMENTATION.value: frozenset(

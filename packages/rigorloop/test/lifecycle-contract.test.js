@@ -12,6 +12,7 @@ import {
   serializeLifecycleYaml,
   validateLifecycleRequest,
 } from "../dist/lib/lifecycle-contract.js";
+import { LIFECYCLE_OPERATIONS as OBSERVABLE_LIFECYCLE_OPERATIONS } from "../dist/lib/diagnostic-event.js";
 
 const fixture = JSON.parse(
   readFileSync(join(import.meta.dirname, "fixtures", "lifecycle", "conformance-v1.json"), "utf8"),
@@ -25,6 +26,10 @@ test("closed lifecycle operation vocabulary rejects an unknown operation", () =>
     "record-validation",
     "record-finding-resolution",
     "settle-artifact",
+    "record-package-review",
+    "settle-review-package",
+    "advance-stage",
+    "initialize-approved-plan",
     "start-milestone",
     "complete-milestone",
     "route-correction",
@@ -41,6 +46,7 @@ test("closed lifecycle operation vocabulary rejects an unknown operation", () =>
   });
   assert.equal(result.ok, false);
   assert.equal(result.errors[0].code, "RL_INVALID_REQUEST");
+  assert.equal(OBSERVABLE_LIFECYCLE_OPERATIONS.includes("initialize-approved-plan"), true);
 });
 
 test("request schema rejects unknown fields before operation consistency", () => {
@@ -58,10 +64,14 @@ test("request schema rejects unknown fields before operation consistency", () =>
 
 const operationRequests = {
   "record-artifact-revision": { artifact_id: "spec", artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md", evidence_path: "evidence/spec-authoring.md", stage_authority: "spec" },
-  "record-review": { artifact_id: "spec", evidence_path: "reviews/spec-review-r1.md", stage_authority: "spec-review" },
+  "record-review": { artifact_id: "proposal", evidence_path: "reviews/proposal-review-r1.md", stage_authority: "proposal-review" },
   "record-validation": { artifact_id: "spec", evidence_path: "evidence/validation.md", subject_path: "specs/example.md", stage_authority: "verify" },
   "record-finding-resolution": { artifact_id: "spec", evidence_path: "review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" },
-  "settle-artifact": { artifact_id: "spec", stage_authority: "spec-review" },
+  "settle-artifact": { artifact_id: "proposal", stage_authority: "proposal-review" },
+  "record-package-review": { package_kind: "design", members: { architecture: "docs/architecture/example.md", spec: "specs/example.md" }, upstream_review_id: "proposal-review-r1", evidence_path: "reviews/design-review-r1.md", stage_authority: "design-review" },
+  "settle-review-package": { package_kind: "design", review_id: "design-review-r1", stage_authority: "design-review" },
+  "advance-stage": { source_stage: "spec-review", destination_stage: "architecture", stage_authority: "workflow" },
+  "initialize-approved-plan": { artifact_id: "plan", stage_authority: "plan" },
   "start-milestone": { milestone_id: "M1", stage_authority: "workflow" },
   "complete-milestone": { milestone_id: "M1", evidence_path: "evidence/m1.md", stage_authority: "workflow" },
   "route-correction": { source_stage: "verify", destination_stage: "test-spec", destination_artifact_id: "test-spec", reason: "upstream-proof-gap", evidence_path: "evidence/correction-route.md", finding_ids: ["F-1"], return_stage: "verify", stage_authority: "workflow" },
@@ -107,6 +117,20 @@ test("operation authority and repair condition vocabularies fail closed", () => 
   assert.match(authority.errors[0].summary, /stage_authority/);
 });
 
+test("package request vocabularies fail closed before consistency", () => {
+  const base = {
+    schema_version: 1,
+    operation: "record-package-review",
+    change_id: "example",
+    expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+    ...operationRequests["record-package-review"],
+  };
+  assert.match(validateLifecycleRequest({ ...base, package_kind: "combined" }).errors[0].summary, /package_kind/);
+  assert.match(validateLifecycleRequest({ ...base, stage_authority: "spec-review" }).errors[0].summary, /stage_authority/);
+  assert.match(validateLifecycleRequest({ ...base, members: { spec: "../escape.md" } }).errors[0].summary, /members/);
+  assert.match(validateLifecycleRequest({ ...base, upstream_review_id: "bad review" }).errors[0].summary, /upstream_review_id/);
+});
+
 test("correction and withdrawal vocabularies fail closed before consistency", () => {
   const route = {
     schema_version: 1,
@@ -136,8 +160,8 @@ test("request provenance uses the closed version-one vocabulary", () => {
     operation: "settle-artifact",
     change_id: "example",
     expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
-    artifact_id: "spec",
-    stage_authority: "spec-review",
+    artifact_id: "proposal",
+    stage_authority: "proposal-review",
     actor: "review-agent",
     recorded_at: "2026-08-24T21:15:00+01:00",
   };
@@ -147,6 +171,24 @@ test("request provenance uses the closed version-one vocabulary", () => {
   assert.match(validateLifecycleRequest({ ...request, recorded_at: "2026-02-31T21:15:00Z" }).errors[0].summary, /recorded_at/);
   assert.match(validateLifecycleRequest({ ...request, recorded_at: "2026-08-24T21:15:00+25:00" }).errors[0].summary, /recorded_at/);
   assert.match(validateLifecycleRequest({ ...request, provenance: "hidden" }).errors[0].summary, /unknown field provenance/);
+});
+
+test("retired artifact review authorities fail closed", () => {
+  for (const stage_authority of ["spec-review", "architecture-review", "plan-review", "test-spec-review", "code-review"]) {
+    for (const operation of ["record-review", "settle-artifact"]) {
+      const result = validateLifecycleRequest({
+        schema_version: 1,
+        operation,
+        change_id: "example",
+        expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+        artifact_id: "proposal",
+        ...(operation === "record-review" ? { evidence_path: "reviews/proposal-review-r1.md" } : {}),
+        stage_authority,
+      });
+      assert.equal(result.ok, false);
+      assert.match(result.errors[0].summary, /stage_authority/);
+    }
+  }
 });
 
 for (const entry of fixture.invalid_yaml) {

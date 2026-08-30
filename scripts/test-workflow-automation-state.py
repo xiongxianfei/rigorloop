@@ -19,6 +19,7 @@ from workflow_automation_policy import (
 )
 from workflow_automation_state import (
     _canonical_review_occurrence,
+    _verify_package_review_completion,
     _review_resolution_gate,
     ConcurrentStateChange,
     StateContractError,
@@ -91,15 +92,12 @@ class WorkflowAutomationStateTests(unittest.TestCase):
                 {
                     "proposal",
                     "proposal-review",
-                    "spec",
-                    "spec-review",
-                    "architecture-assessment",
                     "architecture",
-                    "architecture-review",
+                    "spec",
+                    "design-review",
                     "plan",
-                    "plan-review",
                     "test-spec",
-                    "test-spec-review",
+                    "delivery-review",
                     "implement",
                     "code-review",
                     "review-resolution",
@@ -294,6 +292,134 @@ Open findings: None
             document["workflow"]["autoprogression"] = legacy
         path.write_text(dump_yaml(document), encoding="utf-8")
         return WorkflowAutomationStateStore(path), path
+
+    def package_review_completion_fixture(self, kind: str):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        stage = f"{kind}-review"
+        review_id = f"{stage}-r1"
+        change_root = root / "docs/changes/2026-07-20-example"
+        review_path = change_root / f"reviews/{review_id}.md"
+        review_path.parent.mkdir(parents=True)
+        members = (
+            {"architecture": "docs/architecture/example.md", "spec": "specs/example.md"}
+            if kind == "design"
+            else {"plan": "docs/plans/example.md", "test-spec": "specs/example.test.md"}
+        )
+        for member_path in members.values():
+            member = root / member_path
+            member.parent.mkdir(parents=True, exist_ok=True)
+            member.write_text(f"# {member_path}\n", encoding="utf-8")
+        upstream = "proposal-review-r1" if kind == "design" else "design-review-r1"
+        review_path.write_text(
+            f"""# {stage}
+
+Review ID: {review_id}
+Stage: {stage}
+Round: r1
+Reviewer authority: {stage}
+Package kind: {kind}
+Package members: {", ".join(f"{key}={value}" for key, value in members.items())}
+Upstream review ID: {upstream}
+Status: approved
+Material findings: none
+Correction targets: none
+Recording status: recorded
+""",
+            encoding="utf-8",
+        )
+        review_identity = "sha256:" + hashlib.sha256(review_path.read_bytes()).hexdigest()
+        (change_root / "review-log.md").write_text(
+            f"""# Review Log
+
+### Review entry
+
+Review ID: {review_id}
+Stage: {stage}
+Round: r1
+Status: approved
+Detailed record: reviews/{review_id}.md
+Resolution: not-required
+Material findings: none
+Open findings: none
+Recording status: recorded
+""",
+            encoding="utf-8",
+        )
+        artifact_states = {
+            "proposal": {"kind": "proposal", "role": "primary", "path": "docs/proposals/example.md", "lifecycle_state": "accepted", "review": {"id": "proposal-review-r1", "outcome": "approved"}},
+            "architecture": {"kind": "architecture", "role": "primary", "path": "docs/architecture/example.md"},
+            "spec": {"kind": "spec", "role": "primary", "path": "specs/example.md"},
+            "plan": {"kind": "plan", "role": "primary", "path": "docs/plans/example.md"},
+            "test-spec": {"kind": "test-spec", "role": "primary", "path": "specs/example.test.md"},
+        }
+        registration = {
+            "review_id": review_id,
+            "round": "r1",
+            "outcome": "approved",
+            "reviewer_authority": stage,
+            "package_kind": kind,
+            "members": members,
+            "upstream_review_id": upstream,
+            "evidence_path": review_path.relative_to(root).as_posix(),
+            "evidence_sha256": review_identity.removeprefix("sha256:"),
+            "stage_authority": stage,
+        }
+        artifact_registrations = {
+            artifact_id: {
+                "artifact_path": entry["path"],
+                "artifact_kind": entry["kind"],
+                "artifact_role": entry["role"],
+            }
+            for artifact_id, entry in artifact_states.items()
+        }
+        document = {
+            "change_id": "2026-07-20-example",
+            "artifact_states": artifact_states,
+            "review_packages": {"design": {"status": "approved", "authority": "granted", "review_id": "design-review-r1"}} if kind == "delivery" else {},
+            "lifecycle_cli": {"artifacts": artifact_registrations, "package_reviews": {kind: registration}},
+        }
+        (change_root / "change.yaml").write_text(dump_yaml(document), encoding="utf-8")
+        evidence = {"path": review_path.relative_to(root).as_posix(), "identity": review_identity}
+        return root, review_path, review_identity, evidence
+
+    def test_package_review_completion_verifies_explicit_design_and_delivery_facts(self) -> None:
+        for kind in ("design", "delivery"):
+            with self.subTest(kind=kind):
+                root, review_path, review_identity, evidence = self.package_review_completion_fixture(kind)
+                result = _verify_package_review_completion(
+                    stage_name=f"{kind}-review",
+                    evidence_name=f"{kind}-review",
+                    evidence=evidence,
+                    artifact=review_path,
+                    artifact_identity=review_identity,
+                    repository_root=root,
+                )
+                self.assertTrue(result.valid, result.reason)
+                self.assertEqual(result.proof.stage_facts["package_kind"], kind)
+
+    def test_package_review_completion_rejects_member_and_upstream_mismatch(self) -> None:
+        root, review_path, review_identity, evidence = self.package_review_completion_fixture("design")
+        review_path.write_text(review_path.read_text(encoding="utf-8").replace("architecture=docs/architecture/example.md", "architecture=docs/architecture/other.md"), encoding="utf-8")
+        result = _verify_package_review_completion(stage_name="design-review", evidence_name="design-review", evidence=evidence, artifact=review_path, artifact_identity=review_identity, repository_root=root)
+        self.assertFalse(result.valid)
+        self.assertEqual(result.reason, "stage-native-package-members-mismatch")
+
+        root, review_path, review_identity, evidence = self.package_review_completion_fixture("delivery")
+        review_path.write_text(review_path.read_text(encoding="utf-8").replace("Upstream review ID: design-review-r1", "Upstream review ID: design-review-other"), encoding="utf-8")
+        result = _verify_package_review_completion(stage_name="delivery-review", evidence_name="delivery-review", evidence=evidence, artifact=review_path, artifact_identity=review_identity, repository_root=root)
+        self.assertFalse(result.valid)
+        self.assertEqual(result.reason, "stage-native-package-upstream-mismatch")
+
+    def test_package_review_completion_rejects_missing_member_files(self) -> None:
+        for kind, missing_path in (("design", "specs/example.md"), ("delivery", "docs/plans/example.md")):
+            with self.subTest(kind=kind):
+                root, review_path, review_identity, evidence = self.package_review_completion_fixture(kind)
+                (root / missing_path).unlink()
+                result = _verify_package_review_completion(stage_name=f"{kind}-review", evidence_name=f"{kind}-review", evidence=evidence, artifact=review_path, artifact_identity=review_identity, repository_root=root)
+                self.assertFalse(result.valid)
+                self.assertEqual(result.reason, "stage-native-package-member-path-invalid")
 
     def materialize_valid_review_completion(
         self,
@@ -705,20 +831,6 @@ Open findings: None
         cases = []
 
         state = valid_automation()
-        receipt = FIXTURES.configure_post_proposal_transition(
-            state,
-            stage_name="architecture-assessment",
-            target_stage="plan",
-        )
-        receipt["from_position"] = "spec-review"
-        receipt["input_identities"] = {
-            "spec": "sha256:spec",
-            "spec-review": "sha256:spec-review",
-        }
-        receipt["transition_key"] = compute_transition_key(receipt)
-        cases.append(("architecture-assessment", state, "retry"))
-
-        state = valid_automation()
         persist_receipt(state)
         cases.append(("proposal-review", state, "pause"))
 
@@ -739,7 +851,6 @@ Open findings: None
         cases.append(("implement", state, "manual-recovery"))
 
         mismatch_policy = {
-            "architecture-assessment": "reconcile-only",
             "proposal-review": "idempotent-retry",
             "implement": "reconcile-only",
         }
@@ -2432,7 +2543,7 @@ class StageOwnedChangeStateStoreTests(unittest.TestCase):
         state = {
             "lifecycle_state": "active",
             "current_stage": "spec",
-            "next_stage": "spec-review",
+            "next_stage": "design-review",
             "blocker": None,
             "evidence": ["docs/changes/example/reviews/proposal-review-r1.md"],
         }

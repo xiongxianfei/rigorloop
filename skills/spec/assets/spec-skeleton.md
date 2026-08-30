@@ -93,4 +93,4 @@ None yet
 
 ## Readiness
 
-<ready for spec-review | blocked with reason>
+<ready for design-review reconciliation | blocked with reason>

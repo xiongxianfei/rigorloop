@@ -45,7 +45,9 @@ Workflow completion claims require evidence from the relevant standard workflow 
 - On-demand support: `explore` and `research`.
   - Use them when ambiguity, option expansion, architecture uncertainty, external facts, platform behavior, standards, laws, pricing, or other current evidence affects the decision.
 - Per-change chain:
-  - `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+  - Current workflow: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+  - Architecture and specification remain separately authored and reconcile before `design-review`. Plan and test specification remain separately authored and reconcile before `delivery-review`.
+  - `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain readable historical evidence only. They are retired public progression entrypoints and are not aliases for `design-review` or `delivery-review`.
   - For milestone-based plans, the `implement -> code-review -> review-resolution when triggered` segment repeats for each in-scope implementation milestone. Final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
   - `review-resolution` runs only when material review findings, non-final dispositions, or review outcomes require explicit closeout.
   - `ci-maintenance` is conditional support when hosted workflow automation or related CI infrastructure for a material risk is missing, stale, or wrong.
@@ -71,10 +73,10 @@ Notes:
 - `learn` is periodic or explicitly invoked, not a default final per-change stage. It uses tracked session records after Frame and review-visible no-record closeout only before a session runs.
 - `ci-maintenance` means creating or updating hosted CI workflow files, validation automation, or platform configuration. It does not mean running validation, designing tests, specifying validation commands, or waiting for existing CI checks.
 - Contributor-facing Markdown source-line guidance lives in `CONTRIBUTING.md`; the normative contract lives in `specs/documentation-source-formatting.md`.
-- After `spec-review`, the immediate next stage is still `architecture` when needed, otherwise `plan`. Any mention of eventual `test-spec` readiness is downstream readiness, not a stage skip.
-- `plan-review` remains the normal immediate handoff into `test-spec`. If implementation readiness is mentioned there, it is downstream readiness rather than the handoff itself.
-- Formal workflow-managed test specs route from `test-spec` to `test-spec-review` before `implement`; the test spec remains `active`, and approval lives in the review record.
-- `implement` requires the active test spec plus a current approved `test-spec-review` with no open material findings when a formal workflow-managed test spec is required.
+- Proposal Review evaluates direction, scope, and the proposal's single embedded Feasibility section. Approval authorizes architecture and specification authoring only.
+- Design Review settles the exact architecture, specification, and applicable ADR member map as one package. Approval authorizes plan and test-specification authoring only.
+- Delivery Review settles the exact plan and test-specification member map as one package. Approval authorizes implementation.
+- Package authority uses explicit artifact IDs and repository-relative paths plus the upstream review ID. It does not use aggregate revisions or per-document hashes.
 - In standard workflow execution, stage-owned language stays split: `implement` reports implementation completion or readiness for `code-review`; `code-review` owns review findings; `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
 - Before `implement` hands off to `code-review`, the slice should satisfy a first-pass acceptable result: address in-scope requirements, required authored and aligned surfaces, required edge cases, and targeted validation for the smallest scope-complete change.
 - If a required surface stays unchanged, record `unaffected with rationale` in an authoritative surface such as the active plan or required change-local artifacts. If missing or contradictory inputs prevent that standard, stop with a blocker instead of handing off an incomplete slice.
@@ -195,9 +197,7 @@ Unknown artifact types are not placed by naming convention. If an artifact type 
 
 ## Guide ownership
 
-Each guide should answer one kind of question. This table routes users to the
-primary live surface without making orientation guides duplicate specs, schemas,
-or stage-skill contracts.
+Each guide should answer one kind of question. This table routes users to the primary live surface without making orientation guides duplicate specs, schemas, or stage-skill contracts.
 
 | Question | Primary guide | Secondary source | Owner |
 | --- | --- | --- | --- |
@@ -365,9 +365,8 @@ If this project customizes artifact locations, update the registry and this tabl
 | Review type | Path | Creates review-log entry? | Creates review-resolution? |
 | --- | --- | --- | --- |
 | Proposal review | `docs/changes/<change-id>/reviews/proposal-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
-| Spec review | `docs/changes/<change-id>/reviews/spec-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
-| Architecture review | `docs/changes/<change-id>/reviews/architecture-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
-| Plan review | `docs/changes/<change-id>/reviews/plan-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
+| Design review | `docs/changes/<change-id>/reviews/design-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
+| Delivery review | `docs/changes/<change-id>/reviews/delivery-review-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
 | Code review | `docs/changes/<change-id>/reviews/code-review-<milestone>-r<n>.md` | yes | Only when material findings, blocking outcomes, accepted dispositions, or another governing trigger require it. |
 
 ## Plan surfaces
@@ -408,7 +407,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - For non-trivial work, the baseline change-local pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning.
 - `change.yaml` is the sole owner of mutable artifact lifecycle state, planned-work progress, current review state, blockers, routing, and final-closeout readiness.
 - Governed artifacts and plans keep stable intent and a pointer to the owning change record. They do not mirror mutable current state.
-- Authoring stages update only their own governed content and matching authoring-state transition. After clean current plan-review evidence exists, `plan` additionally initializes missing `workflow_state.planned_work` exactly once from that reviewed revision. Plan-review settles the plan only through an identical retry after matching initialization. Review peers record evidence and settle only the matching artifact entry. `workflow` coordinates this transaction, updates routing, and owns every later planned-work transition.
+- Authoring stages update only their own governed content and matching authoring-state transition. Delivery Review settles the plan and test specification as one package. `plan` may initialize missing `workflow_state.planned_work` exactly once from that approved delivery package; `workflow` coordinates routing and owns every later planned-work transition. Review peers record evidence and settle only their matching review package or artifact entry.
 - Downstream and support stages treat upstream governed artifacts and state as read-only and route corrections to the owning stage.
 - When a non-current upstream authoring context reports `RL_WORKFLOW_ROUTE_REQUIRED`, only `workflow` may request the CLI's guarded correction route and later return. Authoring skills retain semantic authoring plus `record-artifact-revision`; they do not learn settlement mechanics or edit routing fields. Provable duplicate architecture or ADR ownership is removed only through `withdraw-artifact-registration`.
 - For new non-trivial work, the default durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`.
@@ -430,36 +429,19 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 
 - Distinguish `workflow-managed` completion flows from isolated stage requests.
 - Workflow automation writes one mechanism under `docs/changes/<change-id>/change.yaml#workflow.automation`. Legacy automation records are read-only migration inputs and never receive new state.
-- `$workflow auto: <target-stage>` selects a structured target. Supported stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
+- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `test-spec`, `delivery-review`, `implement`, `code-review`, and `verify`; retired artifact-review targets are not admitted.
 - `$workflow auto: status` is read-only.
   `$workflow auto: off` cancels the run and preserves transition evidence.
-- The selected target is the complete repository-local automation boundary.
-  Do not add another authorization, capability, activation selector, profile,
-  or inferred continuation parameter.
-- Authoring may route through proposal review, spec, spec review, architecture
-  assessment, conditional architecture and architecture review, plan and plan
-  review, test spec, and test-spec review when those stages are at or before
-  the selected target and their current prerequisites pass.
-- Architecture assessment records `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses instead of guessing.
+- The selected target is the complete repository-local automation boundary. Do not add another authorization, capability, activation selector, profile, or inferred continuation parameter.
+- Authoring routes through Proposal Review, architecture, specification, Design Review, plan, test specification, and Delivery Review when those stages are at or before the selected target and their current prerequisites pass.
 - Automated review stages remain independent formal reviews: reset to the tracked artifact, governing sources, formal criteria, and relevant recorded findings; record the result before downstream routing; do not rely on hidden authoring reasoning or edit the reviewed artifact during review.
-- Stop or pause on an unsatisfied review gate without bounded correction,
-  material findings requiring a decision, `needs-decision`, user pause or
-  cancellation, contradictory workflow state, unreliable partial completion,
-  exhausted transition budget, direct review-only invocation, or an
-  out-of-scope stage request.
+- Stop or pause on an unsatisfied review gate without bounded correction, material findings requiring a decision, `needs-decision`, user pause or cancellation, contradictory workflow state, unreliable partial completion, exhausted transition budget, direct review-only invocation, or an out-of-scope stage request.
 - Resume must use tracked artifact and review evidence. Do not recreate completed artifacts, rerun clean reviews without an explicit rereview event, or infer completion from file existence alone.
 - Reaching the exact structured target stops the run. `implement` and `code-review` targets bind the unique current plan milestone before persistence and never silently rebind on resume.
 - Direct review invocations do not activate, resume, or advance automation, even when persisted state exists.
-- After approved recorded `spec-review`, routing requires exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. `architecture-required` routes through architecture and architecture review; `architecture-not-required` skips them; `architecture-ambiguous` pauses for owner decision.
-- If `architecture-not-required` skips a user-requested conditional target such as `architecture` or `architecture-review`, stop with `target-not-applicable` instead of claiming that target was reached.
-- A target that reaches implementation may run ordered milestone
-  implementation, independent milestone review, reviewer-owned bounded
-  correction, triggered CI maintenance, and final holistic review when those
-  stages are at or before the target.
+- A target that reaches implementation may run ordered milestone implementation, independent milestone review, reviewer-owned bounded correction, triggered CI maintenance, and final holistic review when those stages are at or before the target.
 - Successful verify reports `pr` as next but never opens a PR. The mechanism never pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
-- Results report the structured target, canonical position source, stage
-  outcome, review and clean-gate state, transitions, fixes, decisions,
-  artifacts, stop reason, and next action.
+- Results report the structured target, canonical position source, stage outcome, review and clean-gate state, transitions, fixes, decisions, artifacts, stop reason, and next action.
 - In workflow-managed standard workflow runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
 - Workflow-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet before invoking review, and it withholds validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
 - Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`.
@@ -473,7 +455,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - If stable plan intent and change-local planned-work state do not identify the reviewed milestone or remaining in-scope implementation milestones consistently, stop and route the mismatch to `plan` and `workflow` instead of inferring final-closeout readiness.
 - Clean reviews require checklist coverage plus no-finding rationale. Positive notes are optional and only useful when they add specific evidence-backed context.
 - Direct `pr` remains in scope and opens the PR when readiness passes.
-- Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
+- Direct `proposal-review`, `design-review`, `delivery-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
 - Manual skill invocations and bugfix skill invocations stay isolated or explicit-step in v1.
 - On-demand and periodic actions such as `explore`, `research`, and `learn` do not auto-run by default.
 - Stop automatic continuation when the user explicitly pauses, validation fails, a review or design issue needs a real decision, permissions or tooling block the next step, or the next action would be stronger than PR creation such as merge, release, deploy, or destructive Git operations.
@@ -556,10 +538,7 @@ Use direct product and governance gates for hosted PR and main acceptance:
 - PR: `bash scripts/ci.sh --mode pr --base <sha> --head <sha>`
 - Main: `bash scripts/ci.sh --mode main --base <sha> --head <sha>`
 
-These modes call Gate A, Gate B, Gate C regression proof, public-package proof,
-and lifecycle governance directly. They do not call the validation selector,
-validation cache, broad-smoke scheduler, target agent runtimes, prompt suites, or
-transcript grading.
+These modes call Gate A, Gate B, Gate C regression proof, public-package proof, and lifecycle governance directly. They do not call the validation selector, validation cache, broad-smoke scheduler, target agent runtimes, prompt suites, or transcript grading.
 
 Selector-selected targeted proof remains a compatibility and local inner-loop
 surface while its active contract is retired separately:
@@ -598,10 +577,7 @@ Use `bash scripts/ci.sh` with an explicit mode to run checks through the reposit
 Legacy selected-check execution supports bounded local parallelism for local,
 explicit, and release modes. Direct PR and main gates are intentionally
 sequential and failure-owning; the first failing named owner stops the graph.
-For compatibility modes, use `--jobs <N>` to cap reviewed parallel-safe checks,
-`--jobs 1` for sequential debugging, `--timeout <seconds>` for per-check limits,
-`--fail-fast` to stop launching queued work after failure, and `--verbose` to
-show successful check output.
+For compatibility modes, use `--jobs <N>` to cap reviewed parallel-safe checks, `--jobs 1` for sequential debugging, `--timeout <seconds>` for per-check limits, `--fail-fast` to stop launching queued work after failure, and `--verbose` to show successful check output.
 
 Ordinary contributors do not need all supported tools installed locally for non-smoke validation. Repository-owned checks validate generated package structure, drift, manifests, release metadata, and security without invoking Codex, Claude Code, or opencode.
 
@@ -616,12 +592,7 @@ boundary. Before adding validation logic, record:
 - when it runs and the actionable repair it reports; and
 - what evidence would allow it to retire later.
 
-The default budget for a change is zero new standalone validator CLIs,
-selector systems, validation caches, and validation schedulers. Add a
-deterministic invariant to an existing clear owner when possible. Semantic
-questions such as prose quality, ownership clarity, stop-condition judgment,
-and handoff quality belong to formal review rather than an LLM-backed
-repository acceptance check.
+The default budget for a change is zero new standalone validator CLIs, selector systems, validation caches, and validation schedulers. Add a deterministic invariant to an existing clear owner when possible. Semantic questions such as prose quality, ownership clarity, stop-condition judgment, and handoff quality belong to formal review rather than an LLM-backed repository acceptance check.
 
 Reserve `python scripts/validate-artifact-lifecycle.py --mode local` for clean worktrees only. When unrelated drafts, untracked files, or other local-only changes are present, use `--mode explicit-paths`, the diff-derived CI modes, or `bash scripts/ci.sh` instead of treating `local` mode as milestone proof.
 
@@ -631,14 +602,8 @@ When a change updates canonical `skills/`, use `python scripts/build-skills.py -
 
 - `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands. It may set up required tooling and pass explicit diff inputs, but validation logic belongs in `scripts/ci.sh`.
 - The hosted CI workflow stays matrix-free in this first bounded-parallelism slice. Future hosted fan-out, if approved later, should consume stable check IDs from repository-owned scripts instead of duplicating selector path classification or hardcoded selected-check lists in workflow YAML.
-- `scripts/release-verify.sh` is the repository-owned Gate C composition for
-  supported release profiles. It accepts a tag argument or `GITHUB_REF_NAME`,
-  checks Gate A and Gate B currency, generated archives, package metadata,
-  tracked release notes, checksums, and release/rollback consistency.
-- Release acceptance does not execute Codex, Claude Code, or opencode, send
-  prompts, grade transcripts, or require model-derived smoke status. Historical
-  smoke and token-cost records remain readable context for the releases that
-  produced them.
+- `scripts/release-verify.sh` is the repository-owned Gate C composition for supported release profiles. It accepts a tag argument or `GITHUB_REF_NAME`, checks Gate A and Gate B currency, generated archives, package metadata, tracked release notes, checksums, and release/rollback consistency.
+- Release acceptance does not execute Codex, Claude Code, or opencode, send prompts, grade transcripts, or require model-derived smoke status. Historical smoke and token-cost records remain readable context for the releases that produced them.
 
 ## Documentation Ownership
 

@@ -26,6 +26,144 @@
     "artifact_states": {
       "type": "object"
     },
+    "review_packages": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "design",
+          "delivery"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "authority",
+          "correction_targets",
+          "findings",
+          "members",
+          "outcome",
+          "package_kind",
+          "review_id",
+          "review_round",
+          "status",
+          "upstream_review_id"
+        ],
+        "properties": {
+          "authority": {
+            "enum": [
+              "granted",
+              "withheld"
+            ]
+          },
+          "correction_targets": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "affected_artifact_ids",
+                "evidence",
+                "finding_id",
+                "owning_stages",
+                "required_outcome",
+                "safe_resolution_path",
+                "scope"
+              ],
+              "properties": {
+                "affected_artifact_ids": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "evidence": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "finding_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "owning_stages": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required_outcome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "safe_resolution_path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "scope": {
+                  "enum": [
+                    "artifact-local",
+                    "cross-artifact",
+                    "upstream-direction"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "members": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "outcome": {
+            "enum": ["approved", "changes-requested", "blocked", "inconclusive"]
+          },
+          "package_kind": {
+            "enum": [
+              "design",
+              "delivery"
+            ]
+          },
+          "review_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "review_round": {
+            "type": "string",
+            "pattern": "^r[1-9][0-9]*$"
+          },
+          "status": {
+            "enum": [
+              "review-required",
+              "approved",
+              "changes-requested",
+              "blocked",
+              "inconclusive"
+            ]
+          },
+          "upstream_review_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "workflow_state": {
       "type": "object"
     },
@@ -500,10 +638,12 @@
                     "spec-review",
                     "architecture",
                     "architecture-review",
+                    "design-review",
                     "plan",
                     "plan-review",
                     "test-spec",
-                    "test-spec-review"
+                    "test-spec-review",
+                    "delivery-review"
                   ]
                 },
                 "armed_by": {

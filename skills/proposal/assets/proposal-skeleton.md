@@ -38,6 +38,24 @@
 
 <direction and rationale>
 
+## Feasibility
+
+### Assessment
+
+<feasible, feasible with constraints, or not currently feasible>
+
+### Basis
+
+<evidence or bounded assumptions supporting the assessment>
+
+### Constraints
+
+<material constraints or none>
+
+### Blockers
+
+<blockers that prevent responsible design work or none>
+
 ## Expected Behavior Changes
 
 <observable changes>

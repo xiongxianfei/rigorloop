@@ -1,7 +1,7 @@
-<!-- Template: plan-review-material-finding-v1 -->
-<!-- Skill: plan-review -->
+<!-- Template: design-review-material-finding-v1 -->
+<!-- Skill: design-review -->
 <!-- Template status: normative -->
-<!-- Maintained alongside: skills/plan-review/SKILL.md -->
+<!-- Maintained alongside: skills/design-review/SKILL.md -->
 
 ## Finding <finding ID>
 
@@ -12,3 +12,6 @@
 - Required outcome: <required outcome>
 - Safe resolution path: <safe resolution path>
 - needs-decision rationale: <needs-decision rationale or none>
+- Finding scope: <artifact-local | cross-artifact | upstream-direction>
+- Affected artifact IDs: <artifact IDs>
+- Owning stages: <owning stages>
