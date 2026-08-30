@@ -8833,5 +8833,34 @@ class RequirementDeliveryModelM1Tests(unittest.TestCase):
                 self.assertNotIn(forbidden, combined)
 
 
+class RequirementDeliveryModelM2Tests(unittest.TestCase):
+    def test_m2_review_and_verification_skills_apply_stage_local_traceability(self) -> None:
+        expected = {
+            "proposal-review": "Judge whether the proposal responsibly refines the incoming RR into an IR-level direction sufficient for Design.",
+            "design-review": "Trace the approved IR-level direction into coherent SRs and architecture realization.",
+            "delivery-review": "Trace SRs and architecture boundaries into proportional allocated work and proof.",
+            "code-review": "Trace the implementation to its allocated work, governing SRs, and approved design boundaries.",
+            "verify": "Trace current evidence backward through implementation and allocated work to governing SRs and the approved proposal direction.",
+        }
+        shared = (ROOT / "templates" / "shared" / "requirement-to-delivery-model.md").read_bytes()
+        for skill_name, criterion in expected.items():
+            skill_root = ROOT / "skills" / skill_name
+            body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+            local_reference = skill_root / "references" / "requirement-to-delivery-model.md"
+            with self.subTest(skill=skill_name, check="criterion"):
+                self.assertIn(criterion, body)
+            with self.subTest(skill=skill_name, check="resource-map"):
+                self.assertIn("READ `references/requirement-to-delivery-model.md` when tracing", body)
+            with self.subTest(skill=skill_name, check="packaged-reference"):
+                self.assertEqual(local_reference.read_bytes(), shared)
+
+    def test_m2_shared_guidance_does_not_grant_review_or_lifecycle_authority(self) -> None:
+        shared = (ROOT / "templates" / "shared" / "requirement-to-delivery-model.md").read_text(encoding="utf-8")
+        self.assertIn("It creates no lifecycle stage, artifact, identifier, settlement authority, readiness claim, or required hierarchy.", shared)
+        for forbidden in ("approval authority", "may settle", "may advance", "automatically approves"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, shared.lower())
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

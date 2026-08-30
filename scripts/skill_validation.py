@@ -230,11 +230,13 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
 )
 PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
     ("code-review", "references/workflow-managed-automated-review.md"),
+    ("code-review", "references/requirement-to-delivery-model.md"),
     ("proposal", "references/governed-proposal-authoring.md"),
     ("proposal", "references/requirement-to-delivery-model.md"),
     ("proposal", "references/strategic-and-scope-gates.md"),
     ("proposal-review", "references/proposal-review-recording-and-settlement.md"),
     ("proposal-review", "references/conditional-proposal-gates.md"),
+    ("proposal-review", "references/requirement-to-delivery-model.md"),
     ("spec", "references/governed-spec-authoring.md"),
     ("spec", "references/requirement-to-delivery-model.md"),
     ("spec-review", "references/governed-spec-review-settlement.md"),

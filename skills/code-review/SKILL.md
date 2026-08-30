@@ -13,6 +13,8 @@ Review in independent-review mode with fresh eyes. Determine whether the actual 
 
 ## Purpose
 
+Trace the implementation to its allocated work, governing SRs, and approved design boundaries.
+
 Review the actual implementation slice against approved authority and record a first-pass status with a safe, milestone-aware handoff.
 
 ## When to use
@@ -243,6 +245,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when tracing an implementation slice through allocated work to governing requirements and direction.
 - READ `references/boundary-first-method-v1.md` when approved diff-related boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for review.
 - READ `references/workflow-managed-automated-review.md` only when the invocation is a formally armed workflow-managed automated review or correction loop.
 - COPY `assets/material-finding.md` once per material finding. Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed. Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`. Do not emit unfilled placeholders.

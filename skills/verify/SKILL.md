@@ -12,6 +12,8 @@ Prove that the requested scope, current evidence, implementation, tests, and gov
 
 ## Purpose
 
+Trace current evidence backward through implementation and allocated work to governing SRs and the approved proposal direction.
+
 Perform either a bounded evidence check or a final readiness assessment without taking ownership from authoring, review, workflow, or PR stages. Final verification validates the final change pack after `explain-change` and before PR.
 
 Final verification is scoped evidence and must not own artifact settlement, milestone state, or routing. For planned work, use `change.yaml` to assess current state and treat the plan and upstream artifacts as read-only.
@@ -197,6 +199,7 @@ Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when tracing final evidence backward to implementation, requirements, and proposal direction.
 - READ `references/branch-readiness-verification.md` for `branch-readiness` or `workflow-final-verification` after exact target resolution.
 - READ `references/boundary-first-method-v1.md` when the final approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient for verification.
 
