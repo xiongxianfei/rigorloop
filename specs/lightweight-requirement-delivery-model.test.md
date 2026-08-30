@@ -63,14 +63,14 @@ Boundary model scope: RTD-R1, RTD-R2, RTD-R3, RTD-R4, RTD-R5, RTD-R6, RTD-R7, RT
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PRF-001 | covered | RTD-R2, RTD-R3, RTD-R4, RTD-R9, RTD-R10 | BND-INPUT-001 | RTD-T02, RTD-T03 | contract | automated | CMD-001, CMD-002 | M1 evidence | M1 | - | - |
-| PRF-002 | covered | RTD-R3, RTD-R4, RTD-R5, RTD-R6, RTD-R11, RTD-R12, RTD-R15 | BND-AUTH-001 | RTD-T02, RTD-T05, RTD-T06 | contract | automated | CMD-001, CMD-002 | M1/M2 evidence | M1 | - | - |
-| PRF-003 | covered | RTD-R10, RTD-R11, RTD-R13, RTD-R14, RTD-R15, RTD-R18 | BND-COMPOSE-001 | RTD-T05, RTD-T07, RTD-T08 | integration | automated | CMD-001, CMD-003, CMD-004, CMD-005 | M2/M3 evidence | M2 | - | - |
-| PRF-004 | covered | RTD-R10, RTD-R18, RTD-R20 | BND-RECOVERY-001 | RTD-T05, RTD-T07, RTD-T08 | integration | automated | CMD-001, CMD-004, CMD-005 | M2/M3 evidence | M2 | - | - |
-| PRF-005 | covered | RTD-R12, RTD-R16, RTD-R17, RTD-R18, RTD-R19 | BND-COMPAT-001 | RTD-T06, RTD-T08 | integration | automated | CMD-001, CMD-003, CMD-004, CMD-005 | M2/M3 evidence | M2 | - | - |
+| PRF-002 | covered | RTD-R3, RTD-R4, RTD-R5, RTD-R6, RTD-R11, RTD-R12, RTD-R15 | BND-AUTH-001 | RTD-T02, RTD-T05, RTD-T06 | contract | automated | CMD-001, CMD-002 | M1/M2 evidence | M1, M2 | - | - |
+| PRF-003 | covered | RTD-R10, RTD-R11, RTD-R13, RTD-R14, RTD-R15, RTD-R18 | BND-COMPOSE-001 | RTD-T05, RTD-T07, RTD-T08 | integration | automated | CMD-001, CMD-003, CMD-004, CMD-005 | M2/M3 evidence | M2, M3 | - | - |
+| PRF-004 | covered | RTD-R10, RTD-R18, RTD-R20 | BND-RECOVERY-001 | RTD-T05, RTD-T07, RTD-T08 | integration | automated | CMD-001, CMD-004, CMD-005 | M2/M3 evidence | M2, M3 | - | - |
+| PRF-005 | covered | RTD-R12, RTD-R16, RTD-R17, RTD-R18, RTD-R19 | BND-COMPAT-001 | RTD-T06, RTD-T08 | integration | automated | CMD-001, CMD-003, CMD-004, CMD-005 | M2/M3 evidence | M2, M3 | - | - |
 | PRF-006 | covered | RTD-R13, RTD-R14, RTD-R18 | BND-ENV-001 | RTD-T07, RTD-T08 | smoke | automated | CMD-003, CMD-004, CMD-005 | M3 evidence | M3 | - | - |
 | PRF-007 | covered | RTD-R11, RTD-R12, RTD-R15 | INT-001 | RTD-T05 | contract | automated | CMD-001, CMD-002 | M2 evidence | M2 | - | - |
 | PRF-008 | covered | RTD-R13, RTD-R18, RTD-R19 | INT-002 | RTD-T07, RTD-T08 | integration | automated | CMD-003, CMD-004, CMD-005 | M3 evidence | M3 | - | - |
-| PRF-009 | covered | RTD-R9, RTD-R10, RTD-R20 | INT-003 | RTD-T03, RTD-T05 | contract | automated | CMD-001, CMD-002 | M1/M2 evidence | M1 | - | - |
+| PRF-009 | covered | RTD-R9, RTD-R10, RTD-R20 | INT-003 | RTD-T03, RTD-T05 | contract | automated | CMD-001, CMD-002 | M1/M2 evidence | M1, M2 | - | - |
 
 ## Validation commands
 
@@ -110,7 +110,7 @@ Boundary model scope: RTD-R1, RTD-R2, RTD-R3, RTD-R4, RTD-R5, RTD-R6, RTD-R7, RT
 
 ### RTD-T02. Map authoring stages to existing artifact responsibilities
 
-- Covers: RTD-R2-RTD-R6, RTD-R13-RTD-R15, E1, BND-INPUT-001, BND-AUTH-001
+- Covers: RTD-R2-RTD-R6, RTD-R13-RTD-R15, RTD-AC2, E1, BND-INPUT-001, BND-AUTH-001
 - Level: contract
 - Command IDs: CMD-001, CMD-002, CMD-003
 - Fixture/setup: Proposal, spec, architecture, and plan skills with exact local resource maps and missing, unconditional, escaped, or responsibility-swapped variants.
@@ -123,7 +123,7 @@ Boundary model scope: RTD-R1, RTD-R2, RTD-R3, RTD-R4, RTD-R5, RTD-R6, RTD-R7, RT
 
 ### RTD-T03. Preserve meaningful and many-to-many allocation
 
-- Covers: RTD-R6, RTD-R7, RTD-R9, RTD-R10, E2, E3, EC1-EC3, BND-INPUT-001, INT-003
+- Covers: RTD-R6, RTD-R7, RTD-R9, RTD-R10, RTD-AC5, E2, E3, EC1-EC3, BND-INPUT-001, INT-003
 - Level: contract
 - Command IDs: CMD-001, CMD-002
 - Fixture/setup: Plan guidance and structure for one SR across multiple work items, multiple SRs in one milestone, and justified non-SR maintenance work.
@@ -149,7 +149,7 @@ Boundary model scope: RTD-R1, RTD-R2, RTD-R3, RTD-R4, RTD-R5, RTD-R6, RTD-R7, RT
 
 ### RTD-T05. Ask stage-local traceability questions without granting authority
 
-- Covers: RTD-R11, RTD-R12, RTD-R15, RTD-R20, E4, EC5, BND-AUTH-001, BND-COMPOSE-001, BND-RECOVERY-001, INT-001, INT-003
+- Covers: RTD-R11, RTD-R12, RTD-R15, RTD-R20, RTD-AC3, RTD-AC9, RTD-AC10, E4, EC5, BND-AUTH-001, BND-COMPOSE-001, BND-RECOVERY-001, INT-001, INT-003
 - Level: contract
 - Command IDs: CMD-001, CMD-002, CMD-007
 - Fixture/setup: Five review/verification skills with current authority text plus variants where shared guidance claims settlement, transition, artifact ownership, or semantic automation.
@@ -162,7 +162,7 @@ Boundary model scope: RTD-R1, RTD-R2, RTD-R3, RTD-R4, RTD-R5, RTD-R6, RTD-R7, RT
 
 ### RTD-T06. Preserve lifecycle, proof-design, and historical contracts
 
-- Covers: RTD-R12, RTD-R16, RTD-R17, RTD-R19, EC6, BND-AUTH-001, BND-COMPAT-001
+- Covers: RTD-R12, RTD-R16, RTD-R17, RTD-R19, RTD-AC7, EC6, BND-AUTH-001, BND-COMPAT-001
 - Level: contract
 - Command IDs: CMD-001, CMD-002
 - Fixture/setup: Existing lifecycle and test-spec authority claims, untouched historical examples, and invalid variants adding model-specific state, stages, or mandatory backfill.
