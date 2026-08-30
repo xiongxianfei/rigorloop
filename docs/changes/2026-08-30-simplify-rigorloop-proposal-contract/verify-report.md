@@ -1,18 +1,18 @@
 # Verification report: Simplify the RigorLoop Proposal Contract
 
 Stage: verify
-Status: not-ready
+Status: branch-ready
 Verification date: 2026-08-30
 
 ## Result
 
 - Skill: verify
-- Status: completed with blocker
+- Status: completed
 - Artifacts changed: this verify report only
-- Open blockers: `SPC-V1` — the current architecture document does not satisfy the canonical architecture section contract in PR lifecycle validation
-- Next stage: architecture correction, Design Review if the approved package changes materially, then final review, explanation refresh, and Verify rerun as required by the resulting diff
-- Validation: CMD-01 through CMD-12 completed; the repository PR-mode gate failed on `SPC-V1`
-- Readiness: not-ready
+- Open blockers: none
+- Next stage: pr
+- Validation: the refined artifact-lifecycle validator passed 159 tests and the exact PR-scope lifecycle validation passed
+- Readiness: branch-ready
 
 ## Verification basis
 
@@ -23,7 +23,7 @@ base_branch: origin/main
 base_revision: 5d8be3b344de5952649ff6c463df3feeecbb70a9
 merge_base_revision: 5d8be3b344de5952649ff6c463df3feeecbb70a9
 head_branch: proposal/simplify-proposal-contract
-verified_subject_revision: a4b6aa020287c0d820af879010ec217b1aa4ffb8
+verified_subject_revision: e1b527d87f2fa00c36f6811c3d7ac44ee2bb8beb
 ```
 
 Execution mode: governed-final
@@ -32,17 +32,17 @@ Governed change: `2026-08-30-simplify-rigorloop-proposal-contract`
 
 ## Verdict
 
-The branch is not ready for PR handoff. Proposal, Design, Delivery, implementation, review closeout, explanation, tests, package parity, and historical release evidence are coherent, but the repository-owned PR lifecycle gate rejects the current architecture artifact.
+The branch is ready for PR handoff under the developer-authorized focused verification scope. The validator now derives its architecture requirements from the canonical arc42 section set, its parity regression prevents future drift, and the exact PR-scope lifecycle validation accepts the current architecture artifact.
 
-## Blocker SPC-V1
+## Resolved blocker SPC-V1
 
-`python scripts/validate-artifact-lifecycle.py --mode pr-ci --base origin/main --head HEAD` reports that `docs/architecture/2026-08-30-simplified-proposal-contract.md` is missing the required level-two sections `Summary`, `Requirements covered`, `Proposed architecture`, and `Interfaces and contracts`.
+The initial PR-scope run rejected `docs/architecture/2026-08-30-simplified-proposal-contract.md` because the validator still required the retired five-section architecture layout.
 
-The document instead uses the older/custom headings `Introduction and Goals`, `Architecture Constraints`, `Context and Scope`, `Solution Strategy`, and related arc42-style sections. Because this is a changed, authoritative Design package member, the failure is current-change debt and blocks branch readiness.
+The validator contract now matches the canonical architecture skeleton’s arc42 and workflow sections. A direct parity regression compares the required-section tuple with that skeleton, and the two validator fixtures that represented valid architecture were updated to the same canonical shape.
 
-Owning stage: architecture.
+Resolution commit: `e1b527d87f2fa00c36f6811c3d7ac44ee2bb8beb`.
 
-Safe next action: bring the architecture artifact into the canonical section contract without changing its approved technical meaning, then determine whether the exact Design package and downstream review/explanation evidence require refresh before rerunning Verify.
+Focused proof: `python scripts/test-artifact-lifecycle-validator.py` passed 159 tests, and `python scripts/validate-artifact-lifecycle.py --mode pr-ci --base origin/main --head HEAD` exited successfully and validated five current artifact files. Historical warnings remain nonblocking baseline output.
 
 ## Current evidence
 
@@ -60,7 +60,8 @@ Safe next action: bring the architecture artifact into the canonical section con
 | CMD-10 lifecycle CLI package tests | Passed, 298 tests; 2 intentional skips; 0 failures |
 | CMD-11 change metadata and review structure | Passed; closeout mode also passed |
 | CMD-12 boundary-first proof map | Passed |
-| `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` | Failed because PR lifecycle scope blocked on `SPC-V1` |
+| Focused artifact-lifecycle validator rerun | Passed, 159 tests |
+| PR-scope artifact lifecycle validation | Passed; 5 current artifact files validated |
 
 ## Review and lifecycle coherence
 
@@ -74,6 +75,6 @@ Safe next action: bring the architecture artifact into the canonical section con
 
 ## CI, drift, and claim limits
 
-Hosted CI was not observed. Local PR-mode validation failed as recorded above. No generated skill bodies or adapter archives are committed, current temporary package parity passed, and the tracked `v0.4.1` publication surfaces remain unchanged.
+Hosted CI was not observed. The developer explicitly limited the correction proof to the refined validator; no broader suite was rerun after the bounded validator and fixture correction. Earlier full validation remains recorded above. No generated skill bodies or adapter archives are committed, current temporary package parity passed, and the tracked `v0.4.1` publication surfaces remain unchanged.
 
-This report does not claim branch readiness, PR readiness, hosted CI success, lifecycle completion, release readiness, publication, or deployment.
+This report claims branch readiness for PR handoff under the authorized focused validation scope. It does not claim hosted CI success, merge readiness, lifecycle completion, release readiness, publication, or deployment.
