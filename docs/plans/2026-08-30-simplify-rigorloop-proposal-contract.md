@@ -136,12 +136,13 @@ The prerequisite CLI retry correction in `packages/rigorloop/` restores review s
 - Implementation steps:
   - extend existing distribution proof only where it does not directly select both changed skills
   - build supported packages in temporary output and validate archive contents and clean-install parity
+  - validate the published v0.4.1 evidence through its recorded source without rewriting historical release identities
   - record cutover parity without committing generated skill bodies or repository-local installed copies
 - Validation commands:
   - `python scripts/test-build-skills.py`
   - `python scripts/build-skills.py --check`
   - `python scripts/test-adapter-distribution.py`
-  - `bash scripts/release-verify.sh v0.4.1`
+  - `python scripts/validate-release.py --version v0.4.1 --recorded-source-auto`
 - Expected observable result: canonical skill packages and supported publication paths agree on the simplified proposal contract with no hand-edited generated output.
 - Completion criteria: build, drift, archive, adapter, and release validation pass, and no mixed-contract publication surface remains.
 - Required evidence: `docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/evidence/m3-publication-parity.md`
