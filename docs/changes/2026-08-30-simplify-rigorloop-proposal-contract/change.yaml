@@ -117,9 +117,9 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m3-r3.md
+  latest_review: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/code-review-m3-r4.md
   review_log: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
-  reviewed_artifact: implementation-milestone:M3@c8527ea9185213c1f91f2a143a01ca0f066ef1a5
+  reviewed_artifact: implementation-milestone:M3@3e5ea6cc7100ca5eb926622e8578892bd49e4349
   status: clean-with-notes
   unresolved_items: 0
 lifecycle_cli:

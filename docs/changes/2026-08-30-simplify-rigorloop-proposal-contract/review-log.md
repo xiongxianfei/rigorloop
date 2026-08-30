@@ -12,6 +12,7 @@
 | `code-review-m1-r1` | `code-review` | `r1` | M1 commit `de04957b32144ae5e1da0222300b1afce100773a` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r5` | `code-review` | `r5` | M2 aggregate through `e757b2a310aa3360511c8e33e00267c58050861e` | `reviews/code-review-m2-r5.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r3` | `code-review` | `r3` | M3 implementation through `c8527ea9185213c1f91f2a143a01ca0f066ef1a5` | `reviews/code-review-m3-r3.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m3-r4` | `code-review` | `r4` | M3 implementation through `3e5ea6cc7100ca5eb926622e8578892bd49e4349` | `reviews/code-review-m3-r4.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Package review occurrence
 
