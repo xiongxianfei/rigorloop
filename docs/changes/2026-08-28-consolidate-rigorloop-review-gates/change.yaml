@@ -130,7 +130,7 @@ review:
   review_log: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-log.md
   reviewed_artifact: M4 implementation in commit f8565829
   status: changes-requested
-  unresolved_items: 2
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -370,6 +370,22 @@ lifecycle_cli:
       evidence_sha256: 4693f00f80b3577bcc26779c6476760b1dd8fb3ccd8286d119d381b7b12ae859
       finding_id: CRG-M3-CR4
       owner: M3 implementation owner
+      stage_authority: review-resolution
+    CRG-M4-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
+      evidence_sha256: 44acd8c3e65652239d749cf4d32a7bce7cc4d34a6e36e9e80bc346845bdbeaef
+      finding_id: CRG-M4-CR1
+      owner: M4 implementation owner
+      stage_authority: review-resolution
+    CRG-M4-CR2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-resolution.md
+      evidence_sha256: 44acd8c3e65652239d749cf4d32a7bce7cc4d34a6e36e9e80bc346845bdbeaef
+      finding_id: CRG-M4-CR2
+      owner: M4 implementation owner
       stage_authority: review-resolution
     CRG-SR5:
       artifact_id: spec

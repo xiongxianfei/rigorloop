@@ -11696,18 +11696,26 @@ class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
 
     def test_post_cutover_inventory_retires_old_reviews_without_aliases(self) -> None:
         workflow = (ROOT / "docs/workflows.md").read_text(encoding="utf-8")
+        post_cutover_inventory = (
+            "At consolidated cutover the supported targets become "
+            "`proposal-review`, `architecture`, `spec`, `design-review`, "
+            "`plan`, `test-spec`, `delivery-review`, `implement`, "
+            "`code-review`, and `verify`; the four retired artifact-review "
+            "targets are no longer admitted."
+        )
         self.assertIn(
             "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement",
             workflow,
         )
+        self.assertIn(post_cutover_inventory, workflow)
         self.assertIn("not aliases for `design-review` or `delivery-review`", workflow)
-        for old_skill in (
+        for retired_target in (
             "spec-review",
             "architecture-review",
             "plan-review",
             "test-spec-review",
         ):
-            self.assertIn(f"`{old_skill}`", workflow)
+            self.assertNotIn(f"`{retired_target}`", post_cutover_inventory)
 
     def test_downstream_skills_consume_package_authority_without_merging_gates(self) -> None:
         for skill_name in ("code-review", "explain-change", "verify", "pr"):

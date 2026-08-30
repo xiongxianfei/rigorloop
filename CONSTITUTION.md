@@ -147,6 +147,8 @@ Until repository-specific release checks replace the current conservative templa
 
 ## Review rules
 
+At consolidated cutover, the following package-gate rules take effect. Until that cutover, the implementing change and every other legacy-dependent change remain governed by the pre-cutover review sequence.
+
 `proposal-review` MUST evaluate proposal direction, scope, and embedded feasibility before design work for governed changes.
 
 `design-review` MUST independently approve the exact architecture, specification, and applicable ADR package before delivery planning relies on it.

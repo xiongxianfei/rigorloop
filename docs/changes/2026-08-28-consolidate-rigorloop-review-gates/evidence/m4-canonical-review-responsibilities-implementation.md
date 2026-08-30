@@ -43,3 +43,13 @@ Validation result: pass
 ## Review handoff
 
 M4 is ready for independent Code Review of feasibility ownership, exact-package review responsibilities, finding attribution, review independence, cutover wording, downstream claim preservation, and generated-local-mirror parity. This evidence does not claim Code Review approval or milestone closeout.
+
+## R1 correction
+
+- CRG-M4-CR1: qualified the complete constitutional package-gate block with the atomic cutover boundary and explicitly retained the pre-cutover sequence for this implementing change and other legacy-dependent work.
+- CRG-M4-CR2: added the exact post-cutover automation target inventory to the short workflow guide and strengthened the focused regression to reject every retired review target in that inventory.
+- `python scripts/test-skill-validator.py`: passed; 450 tests, 16 skipped.
+- `python scripts/validate-skills.py`: passed; 26 canonical skills validated.
+- `python scripts/build-skills.py --check`: passed.
+- `python scripts/validate-documentation-prose.py --mode audit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md`: passed with zero errors and 48 baseline reviewer warnings.
+- `git diff --check`: passed.

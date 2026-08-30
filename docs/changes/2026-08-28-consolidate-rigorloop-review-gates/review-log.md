@@ -33,11 +33,11 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: CRG-M4-CR1, CRG-M4-CR2
-Open findings: CRG-M4-CR1, CRG-M4-CR2
+Open findings: none
 Finding ID: CRG-M4-CR1
 Finding ID: CRG-M4-CR2
 Recording status: recorded
-Blocker: M4 requires review-resolution, correction, focused proof, and rereview
+Blocker: none; both findings are resolved and M4 rereview is required
 
 ### Review entry
 

@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
@@ -16,11 +16,12 @@ Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
+Review closeout: code-review-m4-r1
 
 - Reviews covered: `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-cli-fix-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
-- Findings resolved: 22
-- Unresolved findings: 2
-- Current result: M4 Code Review R1 requests cutover-scoped constitutional authority and an explicit post-cutover workflow target inventory.
+- Findings resolved: 24
+- Unresolved findings: 0
+- Current result: Both M4 findings are resolved with cutover-scoped authority, an explicit post-cutover target inventory, and focused regression proof; M4 is ready for rereview.
 
 ## Resolution Overview
 
@@ -47,8 +48,8 @@ Review closeout: code-review-m3-r3
 | CRG-M3-CR2 | partially-accepted | resolved | M3 detects and proves every invalid package state; M6 retains atomic activation ownership under CRG-R35 through CRG-R40. |
 | CRG-M3-CR3 | accepted | resolved | Python completion now verifies explicit package members, upstream authority, registration, and canonical review occurrence. |
 | CRG-M3-CR4 | accepted | resolved | Every explicit package member must resolve as a safe current regular file before completion. |
-| CRG-M4-CR1 | needs-decision | open | Consolidated review authority is stated unconditionally before the atomic cutover. |
-| CRG-M4-CR2 | needs-decision | open | The short workflow guide omits the explicit post-cutover automation target inventory. |
+| CRG-M4-CR1 | accepted | resolved | Consolidated review authority now takes effect only at atomic cutover; legacy-dependent work retains the pre-cutover sequence. |
+| CRG-M4-CR2 | accepted | resolved | The guide and regression now publish and prove the exact post-cutover target inventory. |
 
 ## Finding Details
 
@@ -57,36 +58,36 @@ Review closeout: code-review-m3-r3
 #### CRG-M4-CR1
 
 Finding ID: CRG-M4-CR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: M4 implementation owner
 Owning stage: implement M4
 Decision owner: M4 implementation owner
-Decision needed: accept the in-scope correction that qualifies consolidated review authority with the atomic cutover boundary.
-Chosen action: pending.
+Decision needed: none; workflow-managed correction was authorized by the user's continuation request.
+Chosen action: qualify the complete consolidated review-rule block with the atomic cutover boundary and preserve the implementing change's pre-cutover authority.
 Rationale: the current unconditional constitutional rules conflict with CRG-R35 through CRG-R40 while this implementing change is still pre-cutover.
 Required outcome: preserve pre-cutover authority until M6 while publishing the exact rules that take effect at cutover.
 Safe resolution path: qualify the complete consolidated review-rule block and explicitly preserve this change's legacy sequence.
 Follow-up: implement the correction and rerun M4 Code Review.
 Validation target: CRG-R35; CRG-R38; CRG-R40; CRG-T13.
-Validation evidence: pending.
+Validation evidence: `python scripts/test-skill-validator.py` passed 450 tests with 16 skipped; the documentation prose audit passed with zero errors and 48 baseline warnings.
 
 #### CRG-M4-CR2
 
 Finding ID: CRG-M4-CR2
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: M4 implementation owner
 Owning stage: implement M4
 Decision owner: M4 implementation owner
-Decision needed: accept the concise guide and regression correction.
-Chosen action: pending.
+Decision needed: none; workflow-managed correction was authorized by the user's continuation request.
+Chosen action: publish one adjacent post-cutover target sentence and assert its exact inventory excludes every retired review target.
 Rationale: the operational guide lists only legacy automation targets even though the canonical workflow skill publishes the new cutover inventory.
 Required outcome: distinguish the current pre-cutover target set from the exact post-cutover target set without activating it early.
 Safe resolution path: add one adjacent post-cutover sentence and assert its exact target inventory in the focused M4 test.
 Follow-up: implement the correction and rerun M4 Code Review.
 Validation target: CRG-R38; CRG-R43; CRG-R44; CRG-T13.
-Validation evidence: pending.
+Validation evidence: `python scripts/test-skill-validator.py` passed 450 tests with 16 skipped; `python scripts/validate-skills.py` and `python scripts/build-skills.py --check` passed.
 
 ### code-review-m3-r3
 

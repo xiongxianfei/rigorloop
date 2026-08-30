@@ -430,7 +430,8 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 
 - Distinguish `workflow-managed` completion flows from isolated stage requests.
 - Workflow automation writes one mechanism under `docs/changes/<change-id>/change.yaml#workflow.automation`. Legacy automation records are read-only migration inputs and never receive new state.
-- `$workflow auto: <target-stage>` selects a structured target. Supported stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
+- `$workflow auto: <target-stage>` selects a structured target. Current pre-cutover stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
+- At consolidated cutover the supported targets become `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `test-spec`, `delivery-review`, `implement`, `code-review`, and `verify`; the four retired artifact-review targets are no longer admitted.
 - `$workflow auto: status` is read-only.
   `$workflow auto: off` cancels the run and preserves transition evidence.
 - The selected target is the complete repository-local automation boundary. Do not add another authorization, capability, activation selector, profile, or inferred continuation parameter.
