@@ -3824,6 +3824,30 @@ No blocked plans.
         )
         self.assertFalse(result.blocking_findings, result.blocking_findings)
 
+    def test_portable_and_matching_governed_proposals_compose(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="portable-and-governed-proposals-"))
+        self.addCleanupTree(fixture_root)
+        portable, _ = write_simplified_proposal(
+            fixture_root,
+            change_id="2026-08-30-portable-proposal",
+        )
+        governed, change_record = write_simplified_proposal(
+            fixture_root,
+            change_id="2026-08-30-governed-proposal",
+            governed=True,
+        )
+        assert change_record is not None
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                portable.relative_to(fixture_root).as_posix(),
+                governed.relative_to(fixture_root).as_posix(),
+                change_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+        self.assertFalse(result.blocking_findings, result.blocking_findings)
+
     def test_invalid_fixtures_fail(self) -> None:
         cases = (
             ("invalid-canonical-arc42-legacy-path", "docs/architecture/2026-04-20-canonical-shaped-architecture.md", "missing required 'Related artifacts' section"),

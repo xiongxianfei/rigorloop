@@ -2075,6 +2075,15 @@ def validate_repository(
             )
         )
 
+    selected_proposal_paths: set[Path] = set()
+    for selected_path in scope.changed_paths:
+        if selected_path not in related_paths or selected_path.suffix != ".md":
+            continue
+        selected_text = _read_repo_text(root_resolved, selected_path, scope.tracked_revision)
+        selected_contract = classify_artifact(selected_path.relative_to(root_resolved), selected_text)
+        if selected_contract is not None and selected_contract.class_name == "proposal":
+            selected_proposal_paths.add(selected_path)
+
     for path in tuple(sorted(related_paths)):
         relative_path = path.relative_to(root_resolved)
         if not _is_release_evidence_path(relative_path):
@@ -2102,6 +2111,7 @@ def validate_repository(
             contract is not None
             and contract.class_name == "proposal"
             and path in scope.changed_paths
+            and len(selected_proposal_paths) == 1
             and len(stage_owned_proposal_records & set(scope.changed_paths)) == 1
             and not owners
         ):

@@ -26,7 +26,7 @@ Validation result: passed
 
 ## Proof results
 
-- `python scripts/test-artifact-lifecycle-validator.py`: passed, 157 tests.
+- `python scripts/test-artifact-lifecycle-validator.py`: passed, 158 tests.
 - `python scripts/test-review-artifact-validator.py`: passed, 107 tests.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-08-30-simplify-rigorloop-proposal-contract.md --path skills/proposal/SKILL.md --path skills/proposal-review/SKILL.md`: passed, one lifecycle artifact validated.
 - `python scripts/validate-review-artifacts.py docs/changes/2026-08-30-simplify-rigorloop-proposal-contract`: passed, six reviews, one historical finding, six log entries, and one resolution entry.
@@ -47,3 +47,5 @@ Code Review R1 then exposed two missing boundary cases. The correction uses the 
 Code Review R2 narrowed both rules. Complete simplified shape is now recognized before the settled-history branch, so untouched settled legacy and simplified proposals each remain readable. Governed mismatch detection now correlates one explicitly selected stage-owned change record with the selected proposal directly; it no longer assumes the change ID and proposal filename match. The different-ID mismatch regression and settled-simplified regression pass.
 
 Code Review R3 identified an unrelated-record composition case. Mismatch correlation now considers only a selected stage-owned record that actually declares a primary proposal. A portable proposal selected alongside a spec-only governed record remains portable, while the existing selected proposal-record mismatch still fails.
+
+Code Review R4 identified mixed portable and governed proposals in one batch. Mismatch inference is now limited to the unambiguous one-selected-proposal/one-selected-primary-record case. A portable proposal composes with a separate matching governed proposal and record, while the direct one-pair mismatch remains blocked.
