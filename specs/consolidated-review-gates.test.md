@@ -20,7 +20,7 @@
 
 ## Testing strategy
 
-Use contract and integration fixtures for cutover admission, visible package membership, governed invalidation, review outcomes, finding ownership, atomic settlement, routing, historical-authority rejection, and rollback. Use repository validator suites for closed schemas and generated parity, skill-validator fixtures for public responsibility boundaries, and one broad smoke run only at the cutover milestone. Tests exercise public CLI and generated-package paths where those paths are the contract; helper-only proof does not substitute for an admitted public path.
+Use contract and integration fixtures for cutover admission, visible package membership, governed invalidation, review outcomes, finding ownership, atomic settlement, routing, and historical-authority rejection. Use repository validator suites for closed schemas and generated parity, skill-validator fixtures for public responsibility boundaries, and one broad smoke run only at the cutover milestone. Tests exercise public CLI and generated-package paths where those paths are the contract; helper-only proof does not substitute for an admitted public path.
 
 Boundary model version: boundary-first-v1
 Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CRG-R8, CRG-R9, CRG-R10, CRG-R11, CRG-R12, CRG-R13, CRG-R14, CRG-R15, CRG-R16, CRG-R17, CRG-R18, CRG-R19, CRG-R20, CRG-R21, CRG-R22, CRG-R23, CRG-R24, CRG-R25, CRG-R26, CRG-R27, CRG-R28, CRG-R29, CRG-R30, CRG-R31, CRG-R32, CRG-R33, CRG-R34, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R39, CRG-R40, CRG-R41, CRG-R42, CRG-R43, CRG-R44, CRG-R45
@@ -37,7 +37,7 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 | CRG-R22–CRG-R24 | CRG-T04, CRG-T05, CRG-T09 | contract | Visible member maps and governed invalidation without package hashes. |
 | CRG-R25–CRG-R28 | CRG-T02, CRG-T06, CRG-T07, CRG-T10 | contract, integration | Bounded context, checked mutation, atomic failure, and unknown vocabularies. |
 | CRG-R29–CRG-R34 | CRG-T07, CRG-T08, CRG-T09 | integration | Outcomes, finding attribution, corrections, and rereview. |
-| CRG-R35–CRG-R40 | CRG-T01, CRG-T10, CRG-T16 | integration, end-to-end | No dual-mode metadata, cutover blocking, and rollback. |
+| CRG-R35–CRG-R40 | CRG-T01, CRG-T10, CRG-T16 | integration, end-to-end | No dual-mode metadata, cutover blocking, and no rollback-specific workflow mechanism. |
 | CRG-R41–CRG-R42 | CRG-T11, CRG-T12, CRG-T16 | integration, end-to-end | Preserved downstream gates and Verify inputs. |
 | CRG-R43–CRG-R45 | CRG-T13, CRG-T14, CRG-T15, CRG-T17 | contract, smoke | Canonical surfaces, generated parity, and semantic-review limits. |
 
@@ -75,17 +75,17 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 | PRF-003 | covered | CRG-R5, CRG-R13, CRG-R14, CRG-R18, CRG-R22, CRG-R29, CRG-R31, CRG-R33, CRG-R35, CRG-R37 | BND-AUTH-001 | CRG-T01, CRG-T04, CRG-T05, CRG-T08, CRG-T13 | contract | automated | CMD-001, CMD-005, CMD-006, CMD-010, CMD-012, CMD-018 | M1/M2/M4 evidence | M1 | - | - |
 | PRF-004 | covered | CRG-R12, CRG-R14, CRG-R15, CRG-R16, CRG-R17, CRG-R19, CRG-R21, CRG-R31, CRG-R33, CRG-R42 | BND-COMPOSE-001 | CRG-T04, CRG-T05, CRG-T08, CRG-T12 | integration | automated | CMD-001, CMD-012, CMD-014 | M2/M3 evidence | M2 | - | - |
 | PRF-005 | covered | CRG-R23, CRG-R24, CRG-R25, CRG-R26, CRG-R27, CRG-R34 | BND-TEMPORAL-001 | CRG-T09 | integration | automated | CMD-012, CMD-013 | M2 evidence | M2 | - | - |
-| PRF-006 | covered | CRG-R10, CRG-R13, CRG-R18, CRG-R20, CRG-R26, CRG-R33, CRG-R39 | BND-RECOVERY-001 | CRG-T08, CRG-T10, CRG-T16 | integration | automated | CMD-009, CMD-012, CMD-013 | M2/M6 evidence | M2 | - | - |
-| PRF-007 | covered | CRG-R1, CRG-R5, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R39, CRG-R40 | BND-COMPAT-001 | CRG-T01, CRG-T11, CRG-T16 | end-to-end | automated | CMD-009, CMD-010, CMD-011, CMD-014 | M1/M3/M6 evidence | M1 | - | - |
+| PRF-006 | covered | CRG-R10, CRG-R13, CRG-R18, CRG-R20, CRG-R26, CRG-R33, CRG-R39 | BND-RECOVERY-001 | CRG-T08, CRG-T10 | integration | automated | CMD-009, CMD-012, CMD-013 | M2 evidence | M2 | - | - |
+| PRF-007 | covered | CRG-R1, CRG-R5, CRG-R35, CRG-R36, CRG-R37, CRG-R38, CRG-R40 | BND-COMPAT-001 | CRG-T01, CRG-T11, CRG-T16 | end-to-end | automated | CMD-009, CMD-010, CMD-011, CMD-014 | M1/M3/M6 evidence | M1 | - | - |
 | PRF-008 | covered | CRG-R25, CRG-R26, CRG-R27, CRG-R38, CRG-R43, CRG-R44 | BND-ENV-001 | CRG-T06, CRG-T15, CRG-T17 | smoke | automated | CMD-007, CMD-008, CMD-009 | M5/M6 evidence | M5 | - | - |
 | PRF-009 | covered | CRG-R14, CRG-R16, CRG-R31 | INT-001 | CRG-T04, CRG-T08 | integration | automated | CMD-012, CMD-013 | M2 evidence | M2 | - | - |
 | PRF-010 | covered | CRG-R20, CRG-R21, CRG-R31 | INT-002 | CRG-T05, CRG-T08 | integration | automated | CMD-012, CMD-013 | M2 evidence | M2 | - | - |
 | PRF-011 | covered | CRG-R24, CRG-R26, CRG-R34 | INT-003 | CRG-T09 | integration | automated | CMD-012, CMD-013 | M2 evidence | M2 | - | - |
-| PRF-012 | covered | CRG-R26, CRG-R39 | INT-004 | CRG-T10, CRG-T16 | integration | automated | CMD-009, CMD-012, CMD-014 | M2/M6 evidence | M2 | - | - |
+| PRF-012 | covered | CRG-R26 | INT-004 | CRG-T10 | integration | automated | CMD-009, CMD-012, CMD-014 | M2 evidence | M2 | - | - |
 | PRF-013 | covered | CRG-R35, CRG-R37 | INT-005 | CRG-T01, CRG-T16 | integration | automated | CMD-009, CMD-010, CMD-011, CMD-014 | M1/M6 evidence | M1 | - | - |
 | PRF-014 | covered | CRG-R38, CRG-R44 | INT-006 | CRG-T15, CRG-T17 | smoke | automated | CMD-007, CMD-008, CMD-009 | M5/M6 evidence | M5 | - | - |
 | PRF-015 | covered | CRG-R29, CRG-R31, CRG-R33 | INT-007 | CRG-T08 | integration | automated | CMD-003, CMD-004, CMD-012, CMD-013, CMD-014, CMD-015, CMD-016, CMD-017 | M2/M3 evidence | M2 | - | - |
-| PRF-016 | covered | CRG-R35, CRG-R38, CRG-R39 | INT-008 | CRG-T01, CRG-T16 | end-to-end | automated | CMD-009, CMD-010, CMD-011, CMD-014 | M1/M6 evidence | M1 | - | - |
+| PRF-016 | covered | CRG-R35, CRG-R38 | INT-008 | CRG-T01, CRG-T16 | end-to-end | automated | CMD-009, CMD-010, CMD-011, CMD-014 | M1/M6 evidence | M1 | - | - |
 
 ## Validation commands
 
@@ -124,7 +124,7 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 | M3 | CRG-T08, CRG-T11, CRG-T12 | none | CMD-004, CMD-014, CMD-015, CMD-016, CMD-017 | M3 implementation evidence | M3 code review | Covers the consolidated graph and downstream authority. |
 | M4 | CRG-T03, CRG-T13 | none | CMD-005, CMD-006, CMD-018 | M4 implementation evidence | M4 code review | Semantic review remains independent. |
 | M5 | CRG-T02, CRG-T14, CRG-T15 | none | CMD-002, CMD-003, CMD-007, CMD-008, CMD-011 | M5 implementation evidence | M5 code review | Generated parity precedes cutover. |
-| M6 | CRG-T16, CRG-T17 | none | CMD-001, CMD-005, CMD-007, CMD-009, CMD-013, CMD-019 | M6 cutover and rollback evidence | M6 code review | Cutover is one atomic reviewed slice. |
+| M6 | CRG-T16, CRG-T17 | none | CMD-001, CMD-005, CMD-007, CMD-009, CMD-013, CMD-019 | M6 cutover evidence | M6 code review | Cutover is one atomic reviewed slice. |
 | M7 | CRG-T12, CRG-T17 | none | CMD-009, CMD-020, CMD-021, CMD-022 | explain-change, final review, and verify evidence | Verify and PR handoff | Lifecycle closeout adds no implementation scope. |
 
 ## Test cases
@@ -246,13 +246,13 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 - Automation location: lifecycle package and transaction tests
 - Required by milestone: M2
 
-### CRG-T10. Recover from interrupted package mutation and pre-adoption revert
+### CRG-T10. Recover from interrupted package mutation
 
-- Covers: CRG-R26, CRG-R39, INT-004, BND-RECOVERY-001
+- Covers: CRG-R26, INT-004, BND-RECOVERY-001
 - Level: integration
 - Command IDs: CMD-001, CMD-009, CMD-012, CMD-013
-- Fixture/setup: Fault injection before replacement, after replacement, during validation, and during a pre-adoption release revert.
-- Steps: Interrupt record and settlement transactions, then exercise the reviewed pre-adoption code-revert fixture and inspect recovery.
+- Fixture/setup: Fault injection before replacement, after replacement, and during validation.
+- Steps: Interrupt record and settlement transactions and inspect recovery.
 - Expected result: Only the prior or complete candidate state is authoritative; partial projection grants no authority; recovery is deterministic.
 - Failure proves: Atomicity or recovery can expose partial package state.
 - Evidence artifact: M2/M6 evidence
@@ -324,16 +324,16 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 - Automation location: adapter distribution and validation tests
 - Required by milestone: M5
 
-### CRG-T16. Cut over atomically and preserve evidence on rollback
+### CRG-T16. Cut over atomically and preserve historical evidence
 
 - Covers: CRG-R1–CRG-R45, CRG-AC1–CRG-AC11, E6, E7, EC9, EC10, BND-COMPAT-001, BND-RECOVERY-001, INT-004–INT-006, INT-008
 - Level: end-to-end
 - Command IDs: CMD-001, CMD-005, CMD-007, CMD-009, CMD-013, CMD-019
-- Fixture/setup: Current canonical/generated prerequisites, zero nonterminal legacy-dependent changes, consolidated public flow, historical-authority misuse, partial cutover, and pre-adoption code-revert fixture.
-- Steps: Validate prerequisites, cut over once, run the consolidated flow, reject historical and partial authority, and prove the pre-adoption revert without rewriting records.
-- Expected result: Cutover is atomic; old progression entrypoints are absent; historical evidence remains readable but non-authorizing; pre-adoption revert restores the prior release without rewriting records.
-- Failure proves: Cutover or rollback violates single-mechanism authority or evidence preservation.
-- Evidence artifact: M6 cutover and rollback evidence
+- Fixture/setup: Current canonical/generated prerequisites, zero nonterminal legacy-dependent changes, consolidated public flow, historical-authority misuse, and partial cutover.
+- Steps: Validate prerequisites, cut over once, run the consolidated flow, and reject historical and partial authority without rewriting records.
+- Expected result: Cutover is atomic; old progression entrypoints are absent; historical evidence remains readable but non-authorizing; no rollback-specific workflow mechanism is introduced.
+- Failure proves: Cutover violates single-mechanism authority or evidence preservation.
+- Evidence artifact: M6 cutover evidence
 - Automation location: cutover integration and broad-smoke tests
 - Required by milestone: M6
 
@@ -343,7 +343,7 @@ Boundary model scope: CRG-R1, CRG-R2, CRG-R3, CRG-R4, CRG-R5, CRG-R6, CRG-R7, CR
 - Level: smoke
 - Command IDs: CMD-008, CMD-009, CMD-020, CMD-021, CMD-022
 - Fixture/setup: The complete candidate revision after M1–M6 reviews and generated archive construction.
-- Steps: Run repository broad smoke, archive validation, consolidated and historical-authority flows, and rollback proof at one revision.
+- Steps: Run repository broad smoke, archive validation, and consolidated and historical-authority flows at one revision.
 - Expected result: All canonical, runtime, validator, cutover, and generated surfaces agree; any missing or stale owner blocks cutover or closeout.
 - Failure proves: Integrated release evidence is incomplete.
 - Evidence artifact: M6/M7 evidence
@@ -360,7 +360,7 @@ Mock only filesystem transaction faults, generated archive inputs, and unavailab
 
 ## Migration or compatibility tests
 
-CRG-T01, CRG-T11, and CRG-T16 prove absence of dual-mode metadata, rejection of retired progression and historical-only authority, legacy-dependent cutover blocking, atomic cutover, and pre-adoption rollback. No test migrates active legacy changes in place.
+CRG-T01, CRG-T11, and CRG-T16 prove absence of dual-mode metadata, rejection of retired progression and historical-only authority, legacy-dependent cutover blocking, and atomic cutover. No test migrates active legacy changes in place. Rollback-specific lifecycle behavior and fixtures are outside this slice.
 
 ## Observability verification
 

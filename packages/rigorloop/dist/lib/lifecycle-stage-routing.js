@@ -6,7 +6,7 @@ function expectedAuthorAuthority(kind) {
 }
 
 function expectedReviewAuthority(kind) {
-  return kind === "adr" ? "architecture-review" : `${kind}-review`;
+  return kind === "proposal" ? "proposal-review" : null;
 }
 
 export function stageIsComplete(root, change, stage) {

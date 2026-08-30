@@ -95,11 +95,6 @@ const OPERATION_FIELDS = Object.freeze({
 
 const REVIEW_AUTHORITIES = Object.freeze([
   "proposal-review",
-  "spec-review",
-  "architecture-review",
-  "plan-review",
-  "test-spec-review",
-  "code-review",
 ]);
 
 const OPERATION_CONTRACTS = Object.freeze({

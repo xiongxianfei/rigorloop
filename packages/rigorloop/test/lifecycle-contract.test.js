@@ -64,10 +64,10 @@ test("request schema rejects unknown fields before operation consistency", () =>
 
 const operationRequests = {
   "record-artifact-revision": { artifact_id: "spec", artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md", evidence_path: "evidence/spec-authoring.md", stage_authority: "spec" },
-  "record-review": { artifact_id: "spec", evidence_path: "reviews/spec-review-r1.md", stage_authority: "spec-review" },
+  "record-review": { artifact_id: "proposal", evidence_path: "reviews/proposal-review-r1.md", stage_authority: "proposal-review" },
   "record-validation": { artifact_id: "spec", evidence_path: "evidence/validation.md", subject_path: "specs/example.md", stage_authority: "verify" },
   "record-finding-resolution": { artifact_id: "spec", evidence_path: "review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" },
-  "settle-artifact": { artifact_id: "spec", stage_authority: "spec-review" },
+  "settle-artifact": { artifact_id: "proposal", stage_authority: "proposal-review" },
   "record-package-review": { package_kind: "design", members: { architecture: "docs/architecture/example.md", spec: "specs/example.md" }, upstream_review_id: "proposal-review-r1", evidence_path: "reviews/design-review-r1.md", stage_authority: "design-review" },
   "settle-review-package": { package_kind: "design", review_id: "design-review-r1", stage_authority: "design-review" },
   "advance-stage": { source_stage: "spec-review", destination_stage: "architecture", stage_authority: "workflow" },
@@ -160,8 +160,8 @@ test("request provenance uses the closed version-one vocabulary", () => {
     operation: "settle-artifact",
     change_id: "example",
     expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
-    artifact_id: "spec",
-    stage_authority: "spec-review",
+    artifact_id: "proposal",
+    stage_authority: "proposal-review",
     actor: "review-agent",
     recorded_at: "2026-08-24T21:15:00+01:00",
   };
@@ -171,6 +171,24 @@ test("request provenance uses the closed version-one vocabulary", () => {
   assert.match(validateLifecycleRequest({ ...request, recorded_at: "2026-02-31T21:15:00Z" }).errors[0].summary, /recorded_at/);
   assert.match(validateLifecycleRequest({ ...request, recorded_at: "2026-08-24T21:15:00+25:00" }).errors[0].summary, /recorded_at/);
   assert.match(validateLifecycleRequest({ ...request, provenance: "hidden" }).errors[0].summary, /unknown field provenance/);
+});
+
+test("retired artifact review authorities fail closed", () => {
+  for (const stage_authority of ["spec-review", "architecture-review", "plan-review", "test-spec-review", "code-review"]) {
+    for (const operation of ["record-review", "settle-artifact"]) {
+      const result = validateLifecycleRequest({
+        schema_version: 1,
+        operation,
+        change_id: "example",
+        expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+        artifact_id: "proposal",
+        ...(operation === "record-review" ? { evidence_path: "reviews/proposal-review-r1.md" } : {}),
+        stage_authority,
+      });
+      assert.equal(result.ok, false);
+      assert.match(result.errors[0].summary, /stage_authority/);
+    }
+  }
 });
 
 for (const entry of fixture.invalid_yaml) {
