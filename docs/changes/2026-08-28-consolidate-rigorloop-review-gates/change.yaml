@@ -72,7 +72,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M6
+    current_milestone: M7
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -110,13 +110,12 @@ workflow_state:
         state: closed
       M6:
         kind: implementation
-        state: review-requested
+        state: closed
       M7:
         kind: lifecycle-closeout
         state: planned
     plan_artifact_id: plan
-    remaining_implementation_milestones:
-      - M6
+    remaining_implementation_milestones: []
 workflow: {}
 artifacts: {}
 requirements: []
@@ -373,6 +372,26 @@ lifecycle_cli:
       review_record_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m5-r1.md
       review_recording_status: recorded
       review_round: r1
+      review_stage: code-review
+      stage_authority: workflow
+    M6:
+      completion_fingerprint: 824f10ee2cab12e661120e3f83f70878221b1d35da13ea08668961f0837fd8e2
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/m6-atomic-cutover-implementation.md
+      evidence_sha256: 04755b5f3e3491e5bff0df643fa764d7975c77f51922f2279972072500cdd2c8
+      milestone_id: M6
+      review_evidence_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m6-r2.md
+      review_evidence_sha256: d215760f925588b1997cd24032ee7b0def67a3eca6ac2047fe4a6763fb815ac4
+      review_id: code-review-m6-r2
+      review_log_entry_sha256: ffc8a63b61dc2891fa489feb3303666c36e566e6d1f4b3caed12e73d295206db
+      review_log_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m6-r2.md
+      review_recording_status: recorded
+      review_round: r2
       review_stage: code-review
       stage_authority: workflow
   package_reviews: {}

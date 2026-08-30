@@ -4,6 +4,7 @@
 
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
+| `code-review-m6-r2` | `code-review` | `r2` | corrected M6 implementation through commit `48f8a4a8` | `reviews/code-review-m6-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m5-r1` | `code-review` | `r1` | M5 implementation in commit `5d412dab` | `reviews/code-review-m5-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m4-r2` | `code-review` | `r2` | corrected M4 implementation through commit `04959ff3` | `reviews/code-review-m4-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r4` | `code-review` | `r4` | corrected M3 implementation through commit `4af08771` | `reviews/code-review-m3-r4.md` | `clean-with-notes` | 0 | `recorded` |

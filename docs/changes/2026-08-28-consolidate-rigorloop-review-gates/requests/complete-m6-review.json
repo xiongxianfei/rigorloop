@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
+  "expected_lifecycle_revision": "sha256:1bfa2f506cf6a641ab4192ac3bcbfba007bf721d97baff49c97687acf54bf960",
+  "milestone_id": "M6",
+  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/m6-atomic-cutover-implementation.md",
+  "review_evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/code-review-m6-r2.md",
+  "stage_authority": "workflow"
+}
