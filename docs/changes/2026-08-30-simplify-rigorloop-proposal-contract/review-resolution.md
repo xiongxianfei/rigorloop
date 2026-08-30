@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
-Review closeout: code-review-m2-r5
+Review closeout: code-review-m3-r1
 
-- Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m2-r4`, `code-review-m2-r5`
+- Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m2-r4`, `code-review-m2-r5`, `code-review-m3-r1`
 - Findings resolved: 7
-- Unresolved findings: 0
-- Current result: all seven findings are resolved, and independent Code Review R5 found no material issue in the aggregate M2 implementation through `e757b2a3`. Workflow may consume the clean receipt to close M2.
+- Unresolved findings: 1
+- Current result: all seven earlier findings remain resolved. `SPC-M3-CR1` is open and needs a Delivery-owned correction to the historical-release proof target before M3 implementation correction and rereview.
 
 ## Resolution Overview
 
@@ -22,8 +22,28 @@ Review closeout: code-review-m2-r5
 | SPC-M2-CR4 | accepted | resolved | Selected governed inputs are correlated directly without a filename-equality rule. |
 | SPC-M2-CR5 | accepted | resolved | Mismatch inference now considers only selected records that declare a primary proposal entry. |
 | SPC-M2-CR6 | accepted | resolved | Mismatch inference is limited to an unambiguous one-proposal/one-primary-record selection. |
+| SPC-M3-CR1 | needs-decision | open | The approved CMD-08 target conflicts with immutable published `v0.4.1` release evidence and must return to Delivery ownership. |
 
 ## Finding Details
+
+### code-review-m3-r1
+
+#### SPC-M3-CR1
+
+Finding ID: SPC-M3-CR1
+Disposition: needs-decision
+Status: open
+Owner: delivery package authors
+Owning stage: plan and test-spec
+Decision owner: delivery package authors and Delivery Review
+Decision needed: Replace the exact historical `v0.4.1` current-candidate command with proof that validates current temporary or future-candidate projection while preserving recorded-source validation of the published release.
+Chosen action: none until the approved Delivery package corrects CMD-08 and its M3 proof wording.
+Rationale: M3 cannot satisfy `bash scripts/release-verify.sh v0.4.1` against current canonical sources without replacing the checksums and file identities of an already-published release.
+Required outcome: Preserve the published `v0.4.1` report, bundled metadata, release index, and package expectation; prove current proposal-stage publication parity without reusing that historical identity.
+Safe resolution path: Route the command and proof wording to plan/test-spec ownership, approve the corrected Delivery package, revert the historical metadata and expectation changes, update M3 evidence, rerun the corrected proof, and independently rereview M3.
+Follow-up: Delivery correction, review-resolution update, bounded M3 correction, and code-review M3 R2.
+Validation target: recorded-source `v0.4.1` validation passes with original checksums while current canonical proposal/proposal-review packages pass all supported temporary adapter projection checks.
+Validation evidence: `code-review-m3-r1.md`; the two focused M3 tests pass, while `python scripts/validate-release.py --version v0.4.1 --recorded-source-auto` reports all three checksum mismatches and inconsistent adapter metadata validation.
 
 ### delivery-review-r1
 
