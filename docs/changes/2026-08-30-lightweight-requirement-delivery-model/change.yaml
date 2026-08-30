@@ -73,7 +73,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M3
+    current_milestone: M4
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -101,13 +101,12 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: review-requested
+        state: closed
       M4:
         kind: lifecycle-closeout
         state: planned
     plan_artifact_id: plan
-    remaining_implementation_milestones:
-      - M3
+    remaining_implementation_milestones: []
 workflow: {}
 artifacts: {}
 requirements: []
@@ -273,6 +272,26 @@ lifecycle_cli:
       review_record_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m2-r1.md
       review_recording_status: recorded
       review_round: r1
+      review_stage: code-review
+      stage_authority: workflow
+    M3:
+      completion_fingerprint: 2175afd39bd621b3b50e31c10c687e24188194739cea8a19a264e41c8357613d
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/evidence/m3-package-parity.md
+      evidence_sha256: 48379a63ea98f3c42031ce923ba69039737888e04b8f5de1ca51225852c13007
+      milestone_id: M3
+      review_evidence_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m3-r2.md
+      review_evidence_sha256: 5f4ec93089c90036997c106d184499cbce1f76ba00561e9dd855d9116be7d0e2
+      review_id: code-review-m3-r2
+      review_log_entry_sha256: 5f86dc16ab90f3f52a00e941db29d7226fecd4bf1be103145df1d53d45a479eb
+      review_log_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/code-review-m3-r2.md
+      review_recording_status: recorded
+      review_round: r2
       review_stage: code-review
       stage_authority: workflow
   package_reviews:
