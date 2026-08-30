@@ -8780,6 +8780,8 @@ class RequirementDeliveryModelM1Tests(unittest.TestCase):
             "SR identities are the durable downstream requirement references.",
             "RR, IR, and AR do not require separate artifacts or identifiers.",
             "Add a work level only when it materially improves ownership, sequencing, reviewability, traceability, or coordination.",
+            "SR-01 → M1 and M2",
+            "SR-01 + SR-02 → M2",
         ):
             with self.subTest(term=term):
                 self.assertIn(term, shared)
