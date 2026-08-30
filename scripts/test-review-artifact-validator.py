@@ -14,8 +14,10 @@ from pathlib import Path
 
 from review_artifact_validation import finding_closure_state
 from review_artifact_validation import parse_formal_review_log
+from review_artifact_validation import ReviewLogEntry
 from review_artifact_validation import summarize_review_evidence
 from review_artifact_validation import validate_change_root
+from review_artifact_validation import _validate_blocking_review_closeout
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -3112,6 +3114,42 @@ Validation target: Run tests.
         write_text(root / "review-resolution.md", accepted_closed_resolution_text())
         replace_field(root / "review-log.md", "Open findings", "None")
         self.assertCloseoutPasses(root)
+
+    def test_blocking_review_closeout_uses_occurrence_round_not_source_order(self) -> None:
+        def entry(review_id: str, round_value: str, status: str, line: int) -> ReviewLogEntry:
+            return ReviewLogEntry(
+                path=Path("review-log.md"),
+                line=line,
+                review_id=review_id,
+                stage="code-review",
+                round=round_value,
+                status=status,
+                detailed_record=f"reviews/{review_id}.md",
+                resolution=None,
+                material_finding_ids=(),
+                open_finding_ids=(),
+            )
+
+        blocking_m2 = entry("code-review-m2-r1", "r1", "changes-requested", 20)
+        clean_m2 = entry("code-review-m2-r2", "r2", "approved", 5)
+        self.assertEqual(
+            _validate_blocking_review_closeout([clean_m2, blocking_m2], None, "closeout"),
+            [],
+            msg="canonical clean-receipt placement must not define review chronology",
+        )
+
+        same_round_m2 = entry("code-review-m2-r2", "r1", "approved", 5)
+        self.assertTrue(
+            _validate_blocking_review_closeout([same_round_m2, blocking_m2], None, "closeout"),
+            msg="a nonblocking review without a higher round must not close the occurrence",
+        )
+
+        clean_m3 = entry("code-review-m3-r4", "r4", "approved", 5)
+        blocking_m4 = entry("code-review-m4-r1", "r1", "changes-requested", 20)
+        self.assertTrue(
+            _validate_blocking_review_closeout([clean_m3, blocking_m4], None, "closeout"),
+            msg="a higher round from another milestone must not close the occurrence",
+        )
 
         root = self.fixture()
         write_text(root / "review-resolution.md", accepted_closed_resolution_text())
