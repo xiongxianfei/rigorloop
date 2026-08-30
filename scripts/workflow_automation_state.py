@@ -63,9 +63,8 @@ PROPOSAL_REVIEW_OUTCOMES = frozenset(
 )
 FORMAL_REVIEW_INPUT_IDENTITIES = {
     "proposal-review": "proposal",
-    "design-review": "design-package",
-    "delivery-review": "delivery-package",
 }
+PACKAGE_REVIEW_STAGES = {"design-review": "design", "delivery-review": "delivery"}
 LIFECYCLE_STAGE_CLASSES = {
     "proposal": "proposal",
     "architecture": "architecture",
@@ -74,6 +73,7 @@ LIFECYCLE_STAGE_CLASSES = {
 }
 STAGE_NATIVE_VERIFIER_STAGES = frozenset(
     set(FORMAL_REVIEW_INPUT_IDENTITIES)
+    | set(PACKAGE_REVIEW_STAGES)
     | set(LIFECYCLE_STAGE_CLASSES)
     | {
         "plan",
@@ -946,6 +946,207 @@ def _verify_implementation_stage_completion(
     return None, "stage-native-verifier-unavailable"
 
 
+def _package_members(document: dict[str, Any], kind: str) -> dict[str, str] | None:
+    states = document.get("artifact_states")
+    if not isinstance(states, dict):
+        return None
+
+    def members_for(artifact_kind: str, role: str) -> list[tuple[str, dict[str, Any]]]:
+        return sorted(
+            (
+                (artifact_id, entry)
+                for artifact_id, entry in states.items()
+                if isinstance(artifact_id, str)
+                and isinstance(entry, dict)
+                and entry.get("kind") == artifact_kind
+                and entry.get("role") == role
+            ),
+            key=lambda item: item[0],
+        )
+
+    if kind == "design":
+        architecture = members_for("architecture", "primary")
+        spec = members_for("spec", "primary")
+        adrs = members_for("adr", "supporting")
+        if len(architecture) != 1 or len(spec) != 1:
+            return None
+        selected = [architecture[0], spec[0], *adrs]
+    else:
+        plan = members_for("plan", "primary")
+        test_spec = members_for("test-spec", "primary")
+        if len(plan) != 1 or len(test_spec) != 1:
+            return None
+        selected = [plan[0], test_spec[0]]
+    if any(not isinstance(entry.get("path"), str) for _, entry in selected):
+        return None
+    return {artifact_id: entry["path"] for artifact_id, entry in selected}
+
+
+def _package_review_fields(path: Path) -> dict[str, Any] | None:
+    labels = {
+        "Review ID",
+        "Stage",
+        "Round",
+        "Reviewer authority",
+        "Package kind",
+        "Package members",
+        "Upstream review ID",
+        "Status",
+        "Recording status",
+    }
+    fields = _selected_fields(path, labels)
+    if fields is None or set(fields) != labels:
+        return None
+    members: dict[str, str] = {}
+    for item in fields["Package members"].split(","):
+        artifact_id, separator, artifact_path = item.strip().partition("=")
+        if not separator or not artifact_id or not artifact_path or artifact_id in members:
+            return None
+        members[artifact_id] = artifact_path
+    return {**fields, "members": members}
+
+
+def _verify_package_review_completion(
+    *,
+    stage_name: str,
+    evidence_name: str,
+    evidence: dict[str, str],
+    artifact: Path,
+    artifact_identity: str,
+    repository_root: Path,
+) -> CompletionVerification:
+    kind = PACKAGE_REVIEW_STAGES[stage_name]
+    fields = _package_review_fields(artifact)
+    if fields is None:
+        return CompletionVerification(False, "stage-native-package-review-invalid")
+    review_id = fields["Review ID"]
+    round_value = fields["Round"]
+    if (
+        fields["Stage"] != stage_name
+        or fields["Reviewer authority"] != stage_name
+        or fields["Package kind"] != kind
+        or fields["Status"] not in PROPOSAL_REVIEW_OUTCOMES
+        or fields["Recording status"] != "recorded"
+        or re.fullmatch(r"r[1-9][0-9]*", round_value) is None
+    ):
+        return CompletionVerification(False, "stage-native-package-review-invalid")
+
+    root = repository_root.resolve()
+    try:
+        evidence_path = artifact.resolve().relative_to(root).as_posix()
+        change_root = artifact.parent.parent
+        change_path = change_root / "change.yaml"
+        change_relative = change_path.resolve().relative_to(root)
+    except ValueError:
+        return CompletionVerification(False, "stage-native-package-review-location-invalid")
+    if artifact.parent.name != "reviews" or _resolve_repository_file(
+        change_relative, repository_root=root
+    ) is None:
+        return CompletionVerification(False, "stage-native-package-review-location-invalid")
+
+    parser = _load_metadata_parser()
+    try:
+        lines = parser.tokenize_yaml(change_path.read_text(encoding="utf-8"))
+        document, index = parser.parse_yaml_block(lines, 0, lines[0].indent)
+    except (OSError, UnicodeError, ValueError, IndexError):
+        return CompletionVerification(False, "stage-native-package-state-invalid")
+    if index != len(lines) or not isinstance(document, dict):
+        return CompletionVerification(False, "stage-native-package-state-invalid")
+
+    expected_members = _package_members(document, kind)
+    if expected_members is None or fields["members"] != expected_members:
+        return CompletionVerification(False, "stage-native-package-members-mismatch")
+    states = document.get("artifact_states")
+    artifact_registrations = document.get("lifecycle_cli", {}).get("artifacts", {})
+    if not isinstance(artifact_registrations, dict) or any(
+        not isinstance(artifact_registrations.get(artifact_id), dict)
+        or artifact_registrations[artifact_id].get("artifact_path") != artifact_path
+        or artifact_registrations[artifact_id].get("artifact_kind")
+        != states[artifact_id].get("kind")
+        or artifact_registrations[artifact_id].get("artifact_role")
+        != states[artifact_id].get("role")
+        for artifact_id, artifact_path in expected_members.items()
+    ):
+        return CompletionVerification(False, "stage-native-package-registration-mismatch")
+    if kind == "design":
+        proposal = [
+            entry
+            for entry in states.values()
+            if isinstance(entry, dict)
+            and entry.get("kind") == "proposal"
+            and entry.get("role") == "primary"
+        ]
+        expected_upstream = (
+            proposal[0].get("review", {}).get("id")
+            if len(proposal) == 1
+            and proposal[0].get("lifecycle_state") == "accepted"
+            and proposal[0].get("review", {}).get("outcome") == "approved"
+            else None
+        )
+    else:
+        design = document.get("review_packages", {}).get("design", {})
+        expected_upstream = (
+            design.get("review_id")
+            if design.get("status") == "approved"
+            and design.get("authority") == "granted"
+            else None
+        )
+    if not isinstance(expected_upstream, str) or fields["Upstream review ID"] != expected_upstream:
+        return CompletionVerification(False, "stage-native-package-upstream-mismatch")
+
+    registration = (
+        document.get("lifecycle_cli", {}).get("package_reviews", {}).get(kind)
+    )
+    expected_registration = {
+        "review_id": review_id,
+        "round": round_value,
+        "outcome": fields["Status"],
+        "reviewer_authority": stage_name,
+        "package_kind": kind,
+        "members": expected_members,
+        "upstream_review_id": expected_upstream,
+        "evidence_path": evidence_path,
+        "evidence_sha256": artifact_identity.removeprefix("sha256:"),
+        "stage_authority": stage_name,
+    }
+    if not isinstance(registration, dict) or any(
+        registration.get(key) != value for key, value in expected_registration.items()
+    ):
+        return CompletionVerification(False, "stage-native-package-registration-mismatch")
+
+    review_log = change_root / "review-log.md"
+    try:
+        entries, log_findings = parse_formal_review_log(review_log)
+    except (OSError, UnicodeError):
+        return CompletionVerification(False, "canonical-review-occurrence-missing")
+    matches = [entry for entry in entries if entry.review_id == review_id]
+    if log_findings or len(matches) != 1:
+        return CompletionVerification(False, "canonical-review-occurrence-missing")
+    entry = matches[0]
+    if (
+        entry.stage != stage_name
+        or entry.round != round_value
+        or entry.status != fields["Status"]
+        or _strip_code(entry.detailed_record)
+        != artifact.relative_to(change_root).as_posix()
+    ):
+        return CompletionVerification(False, "canonical-review-occurrence-mismatch")
+
+    proof = VerifiedCompletion(
+        outputs=(copy.deepcopy(evidence),),
+        canonical_evidence={evidence_name: copy.deepcopy(evidence)},
+        observed_identities={evidence_name: artifact_identity},
+        stage_facts={
+            "review_id": review_id,
+            "review_outcome": fields["Status"],
+            "package_kind": kind,
+            "package_members": json.dumps(expected_members, sort_keys=True, separators=(",", ":")),
+            "upstream_review_id": expected_upstream,
+        },
+    )
+    return CompletionVerification(True, "stage-completion-evidence-valid", proof)
+
+
 def _verify_transition_completion(
     automation: dict[str, Any],
     receipt: dict[str, Any],
@@ -1040,6 +1241,18 @@ def _verify_transition_completion(
                 observed_identities=normalized_observed,
                 stage_facts=stage_facts,
             ),
+        )
+
+    if stage_name in PACKAGE_REVIEW_STAGES:
+        evidence_name = next(iter(policy.completion_evidence), None)
+        evidence, artifact, artifact_identity = resolved_evidence[evidence_name]
+        return _verify_package_review_completion(
+            stage_name=stage_name,
+            evidence_name=evidence_name,
+            evidence=evidence,
+            artifact=artifact,
+            artifact_identity=artifact_identity,
+            repository_root=repository_root,
         )
 
     expected_input = FORMAL_REVIEW_INPUT_IDENTITIES.get(stage_name)
