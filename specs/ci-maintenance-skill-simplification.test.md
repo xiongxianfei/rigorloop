@@ -39,7 +39,7 @@ Proof is staged. M1 freezes ownership, literals, scenarios, and baselines. M2 pr
 | R25-R28 | T1, T4-T5 | contract | Every assembly and variant, separate external evidence, late loading, resource failures, and approved-design realization branch. |
 | R29-R34 | T6-T8 | contract, integration | Prepared target identity, no-clobber create, identity-guarded revise, read-back boundary, unsupported capability, and idempotent retry. |
 | R35-R41 | T9-T10 | contract, integration | Batch classification, manifest, cross-target validation, safe ordering, atomic-group stop, partial results, and fresh retry. |
-| R42-R44 | T11 | contract | Complete result fields, fixed hosted observation, and forbidden readiness claims. |
+| R42-R44, R55-R61 | T11, T11a | contract | Complete result fields, exact hosted observation, bounded repair eligibility, and forbidden readiness claims. |
 | R45-R46 | T12, T15 | contract | Rule/literal ledgers and unknown-value-first regression coverage. |
 | R47-R49 | T13 | contract | Exact measurement method, every assembly and conditional variant, external-evidence disclosure, and reduction gates. |
 | R50-R52 | T14 | integration | Canonical-through-installed parity, published portability, deterministic acceptance, and excluded external/runtime execution. |
@@ -71,7 +71,8 @@ Proof is staged. M1 freezes ownership, literals, scenarios, and baselines. M2 pr
 
 | Example | Covered by | Notes |
 | --- | --- | --- |
-| E1 | T1, T11 | Root-only review, no mutation, fixed hosted observation. |
+| E1 | T1, T11 | Root-only review, no mutation, `not-observed` hosted result. |
+| E9 | T11a | Bounded repair uses existing authority without lifecycle churn. |
 | E2 | T1, T3, T5-T6 | Coverage create selects CIM2 and no-clobber commit. |
 | E3 | T4 | Approved-design realization and omitted-field safe-default stop. |
 | E4 | T6 | Concurrent appearance cannot be overwritten. |
@@ -98,7 +99,7 @@ Proof is staged. M1 freezes ownership, literals, scenarios, and baselines. M2 pr
 ## Proof map
 
 Boundary model version: boundary-first-v1
-Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R49, R50, R51, R52, R53, R54
+Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R49, R50, R51, R52, R53, R54, R55, R56, R57, R58, R59, R60, R61
 
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -281,11 +282,23 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Command IDs: CMD1
 - Fixture/setup: Review, create, revise, complete, blocked, and partial results with configured commands, local validation, read-back, and no hosted execution.
 - Steps: Render every result and scan closed fields and forbidden claims.
-- Expected result: Required fields are present; hosted observation is always `not-performed-by-ci-maintenance`; no external mutation or downstream readiness is claimed.
+- Expected result: Required fields are present; ordinary authoring reports hosted observation as not observed, while an authorized bounded PR CI repair may report the exact replacement run as pending, passed, or failed; neither mode claims downstream readiness.
 - Failure proves: Static or local evidence is misrepresented as hosted CI or lifecycle readiness.
 - Evidence artifact: `evidence/m2-package-implementation.md`
 - Automation location: focused result fixtures
 - Required by milestone: M2
+
+### T11a. Bounded PR CI repair stays narrow
+
+- Covers: R42-R44, R55-R61; AC9, AC14, AC17.
+- Level: contract
+- Command IDs: CMD1
+- Fixture/setup: An already-open PR with an exact failing run and a correction that restores approved behavior without changing requirements, architecture, runtime implementation, dependencies, lifecycle schema, or routing; negative fixtures change each excluded surface.
+- Steps: Classify the repair, run the existing focused and exact PR commands, and inspect the replacement hosted check only when push and observation authority already exists.
+- Expected result: The eligible repair uses one coherent correction path and preserves current review, explanation, verification, and lifecycle evidence; every substantive or ambiguous fixture routes to the normal owning stage.
+- Failure proves: A CI failure either triggers unnecessary lifecycle churn or silently bypasses a decision-bearing gate.
+- Automation location: focused skill assertions in `scripts/test-skill-validator.py`.
+- Required by milestone: bounded contract refinement
 
 ### T12. Semantic, literal, and legacy-clause ownership migrate atomically
 

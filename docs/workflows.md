@@ -72,6 +72,7 @@ Notes:
 - `explore` and `research` are on-demand support, not default prerequisites.
 - `learn` is periodic or explicitly invoked, not a default final per-change stage. It uses tracked session records after Frame and review-visible no-record closeout only before a session runs.
 - `ci-maintenance` means creating or updating hosted CI workflow files, validation automation, or platform configuration. It does not mean running validation, designing tests, specifying validation commands, or waiting for existing CI checks.
+- Exception for an already-open PR: a user-authorized bounded CI repair may inspect an exact failure, make the smallest correction that restores approved behavior, run already-authoritative focused and PR commands, push under existing authority, and observe the replacement check. Keep current review, explanation, verification, and lifecycle evidence only when their decision basis is unchanged; otherwise resume at the earliest affected owning stage.
 - Contributor-facing Markdown source-line guidance lives in `CONTRIBUTING.md`; the normative contract lives in `specs/documentation-source-formatting.md`.
 - Proposal Review evaluates direction, scope, and the proposal's single embedded Feasibility section. Approval authorizes architecture and specification authoring only.
 - Design Review settles the exact architecture, specification, and applicable ADR member map as one package. Approval authorizes plan and test-specification authoring only.

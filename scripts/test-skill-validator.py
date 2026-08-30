@@ -1566,6 +1566,23 @@ Use the inputs somehow and produce a useful result.
             "ci-maintenance must flag overbroad permissions during workflow review",
         )
 
+    def test_ci_maintenance_contract_requires_bounded_pr_repair_guardrails(self) -> None:
+        def mutate(skill_dir: Path) -> None:
+            skill_path = skill_dir / "SKILL.md"
+            text = skill_path.read_text(encoding="utf-8")
+            skill_path.write_text(
+                text.replace(
+                    "Use `bounded-pr-ci-repair` only for an already-open PR with an exact failing run and head",
+                    "Use repair mode for a failing PR",
+                ),
+                encoding="utf-8",
+            )
+
+        self.assertCiMaintenanceFixtureFails(
+            mutate,
+            "ci-maintenance must flag bounded PR repair eligibility",
+        )
+
     def test_spec_family_asset_valid_fixture_passes(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -3946,11 +3963,12 @@ Use the inputs somehow and produce a useful result.
         ci_terms = [
             "ci-maintenance",
             "CI infrastructure",
-            "It does not run validation",
+            "bounded PR CI repair",
+            "already-authoritative validation commands",
+            "observe the replacement hosted check",
             "does not design tests",
             "does not specify validation commands",
-            "does not wait for existing CI checks",
-            "validation execution stays under `verify`",
+            "does not claim branch readiness",
         ]
         for term in ci_terms:
             with self.subTest(skill="ci", term=term):
@@ -11346,7 +11364,18 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
     def test_package_split_and_closed_axes_are_present(self) -> None:
         skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
         reference = (self.skill_dir / "references" / "github-workflow-authoring.md").read_text(encoding="utf-8")
-        for value in ("create", "revise", "review", "invalid-or-ambiguous-target", "CIM8", "not-performed-by-ci-maintenance"):
+        for value in (
+            "create",
+            "revise",
+            "review",
+            "invalid-or-ambiguous-target",
+            "CIM8",
+            "bounded-pr-ci-repair",
+            "not-observed",
+            "pending",
+            "passed",
+            "failed",
+        ):
             self.assertIn(value, skill)
         self.assertIn("serializes", reference)
         self.assertIn("MUST NOT independently choose", reference)
