@@ -16,30 +16,30 @@
       "adapter": "codex",
       "archive": "rigorloop-adapter-codex-v0.4.1.zip",
       "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.4.1/rigorloop-adapter-codex-v0.4.1.zip",
-      "sha256": "5e3d0c125525d367dd36b9b4ddd260622ba94381b791a58b2b311b14e8da6c02",
-      "size_bytes": 183397,
+      "sha256": "78c67a10bf80c6beb69dfcea10746c4d66548af31059cd029c952537e11d8df9",
+      "size_bytes": 193955,
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
       "install_root": ".agents/skills",
-      "tree_sha256": "719bafad29a018c9ec9a5be9c1d214ad2f3428c4eb0bb08d33d8d08c1f4b69d5",
-      "file_count": 90
+      "tree_sha256": "a5d09e71bfe3c7234a1f9a6c31595b80d68bfe5e403981699aa6aef4540dc5db",
+      "file_count": 75
     },
     {
       "adapter": "claude",
       "archive": "rigorloop-adapter-claude-v0.4.1.zip",
       "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.4.1/rigorloop-adapter-claude-v0.4.1.zip",
-      "sha256": "810e0bdae6e8f349371b19c8cb5c82c6cba7d35eeec06fff6c7d6ec5af7c1c7b",
-      "size_bytes": 182613,
+      "sha256": "bf9ebd15e55978ec3eb561937a829877d29bb05901478f36cb3ee407f3360e58",
+      "size_bytes": 193169,
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
       "install_root": ".claude/skills",
-      "tree_sha256": "69e1f24d966b7f48f44c88e884543f4a75b421ef0ff902943352d312aedf1a9f",
-      "file_count": 90
+      "tree_sha256": "17dbbcdb288e19710243d27a836fec51546c4c3ffde7aa5f208da25a07edbe5f",
+      "file_count": 75
     },
     {
       "adapter": "opencode",
       "archive": "rigorloop-adapter-opencode-v0.4.1.zip",
       "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.4.1/rigorloop-adapter-opencode-v0.4.1.zip",
-      "sha256": "1f6a86ce5dd22b511ff7ee0985c3a2b1ceaa98772972fe336ca8514ccac35997",
-      "size_bytes": 185758,
+      "sha256": "33e4bf91ebc76c626e73dd6c4a4a0a832d491a8bd0fa43dc319cd35cb5899afc",
+      "size_bytes": 195985,
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
       "install_roots": {
         "skills": ".opencode/skills",
@@ -47,26 +47,25 @@
       },
       "root_hashes": {
         "skills": {
-          "tree_sha256": "69e1f24d966b7f48f44c88e884543f4a75b421ef0ff902943352d312aedf1a9f",
-          "file_count": 90
+          "tree_sha256": "17dbbcdb288e19710243d27a836fec51546c4c3ffde7aa5f208da25a07edbe5f",
+          "file_count": 75
         },
         "commands": {
-          "tree_sha256": "6fbd14109ff90cba821a1a09b048f6625337c42a96c9fdbf2617e8c4cb97e33f",
-          "file_count": 11
+          "tree_sha256": "b9beece61c967adf20cd12d9290849c7137f8b59032a2ec45d85a960869eaa30",
+          "file_count": 10
         }
       },
       "command_aliases": {
         "opencode": {
-          "count": 11,
+          "count": 10,
           "paths": [
             ".opencode/commands/proposal.md",
             ".opencode/commands/proposal-review.md",
-            ".opencode/commands/architecture.md",
             ".opencode/commands/spec.md",
-            ".opencode/commands/design-review.md",
+            ".opencode/commands/spec-review.md",
             ".opencode/commands/plan.md",
+            ".opencode/commands/plan-review.md",
             ".opencode/commands/test-spec.md",
-            ".opencode/commands/delivery-review.md",
             ".opencode/commands/implement.md",
             ".opencode/commands/code-review.md",
             ".opencode/commands/pr.md"

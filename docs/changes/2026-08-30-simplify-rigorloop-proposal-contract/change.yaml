@@ -68,11 +68,11 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: delivery-review
+  current_stage: implement
   evidence:
     - docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/proposal-review-r1.md
   lifecycle_state: active
-  next_stage: delivery-review
+  next_stage: implement
   planned_work:
     current_milestone: M3
     final_closeout:
@@ -82,9 +82,9 @@ workflow_state:
         - implementation-milestones-open
         - review-findings-open
     initialization_basis:
-      review_id: delivery-review-r2
-      review_record: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/delivery-review-r2.md
-      review_round: r2
+      review_id: delivery-review-r3
+      review_record: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/reviews/delivery-review-r3.md
+      review_round: r3
       reviewed_artifact_path: docs/plans/2026-08-30-simplify-rigorloop-proposal-contract.md
     latest_review:
       artifact_id: none
@@ -103,7 +103,7 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: review-requested
+        state: implementing
       M4:
         kind: lifecycle-closeout
         state: planned
