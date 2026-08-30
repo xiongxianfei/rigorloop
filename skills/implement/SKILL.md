@@ -74,6 +74,7 @@ Read before editing:
 - `AGENTS.md` and `CONSTITUTION.md` when present;
 - the approved feature spec and concrete current milestone or isolated scope;
 - the active test spec and recorded, approved, current test-spec-review evidence when a formal workflow-managed test spec is required;
+- for consolidated-gate work, the approved Delivery Review ID and exact plan/test-specification member map, plus the approved Design Review ID it binds;
 - relevant architecture or ADRs when the slice touches their boundaries;
 - code, tests, neighboring patterns, and milestone validation commands;
 - accepted review-resolution evidence when implementing recorded findings.

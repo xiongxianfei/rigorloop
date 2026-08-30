@@ -5079,7 +5079,7 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(term=term):
                 self.assertIn(term, preservation)
 
-    def test_test_spec_review_gate_workflow_baseline_surfaces_are_declared(self) -> None:
+    def test_consolidated_delivery_review_workflow_surfaces_are_declared(self) -> None:
         workflow_spec = (ROOT / "specs" / "rigorloop-workflow.md").read_text(
             encoding="utf-8"
         )
@@ -5096,7 +5096,7 @@ Use the inputs somehow and produce a useful result.
         ]:
             with self.subTest(path=path):
                 self.assertIn(
-                    "plan-review -> test-spec -> test-spec-review -> implement",
+                    "plan -> test-spec -> delivery-review -> implement",
                     body,
                 )
 
@@ -9894,7 +9894,8 @@ class PRSkillSimplificationTests(unittest.TestCase):
         }
         for name, assembled in profiles.items():
             with self.subTest(profile=name):
-                self.assertLess(len(assembled), 11375)
+                # M4 adds the two package-authority identities consumed at PR handoff.
+                self.assertLess(len(assembled), 11750)
                 self.assertLess(len(assembled.decode("utf-8").split()), 1678)
 
 
@@ -10797,7 +10798,8 @@ class ExplainChangeSkillSimplificationTests(unittest.TestCase):
         }
         for name, assembled in profiles.items():
             with self.subTest(profile=name):
-                self.assertLess(len(assembled), 8224)
+                # M4 adds the two package-authority identities to the rationale chain.
+                self.assertLess(len(assembled), 8600)
                 self.assertLess(len(assembled.decode("utf-8").split()), 1175)
 
 
@@ -11622,6 +11624,99 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
             "next owner",
         ):
             self.assertIn(value, self.skill)
+
+
+class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
+    """CRG-T03 and CRG-T13 public-skill contract proof for M4."""
+
+    def test_proposal_owns_one_complete_embedded_feasibility_section(self) -> None:
+        skeleton = (ROOT / "skills/proposal/assets/proposal-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+        proposal = (ROOT / "skills/proposal/SKILL.md").read_text(encoding="utf-8")
+        review = (ROOT / "skills/proposal-review/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertEqual(skeleton.count("## Feasibility"), 1)
+        for term in ("Assessment", "Basis", "Constraints", "Blockers"):
+            self.assertIn(f"### {term}", skeleton)
+        self.assertIn("embedded `Feasibility` section", proposal)
+        self.assertIn("no standalone feasibility artifact", proposal)
+        for term in (
+            "missing",
+            "unsupported",
+            "contradicted",
+            "materially stale",
+            "blocking",
+            "proposal revision",
+        ):
+            self.assertIn(term, review)
+
+    def test_consolidated_review_skills_own_distinct_exact_packages(self) -> None:
+        expected = {
+            "design-review": (
+                "architecture",
+                "specification",
+                "applicable ADR",
+                "accepted Proposal Review ID",
+                "plan and test-specification authoring",
+            ),
+            "delivery-review": (
+                "execution plan",
+                "test specification",
+                "approved Design Review ID",
+                "requirement -> architectural boundary -> implementation milestone -> required proof -> validation command or manual evidence",
+                "implementation",
+            ),
+        }
+        for skill_name, terms in expected.items():
+            skill_dir = ROOT / "skills" / skill_name
+            body = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+            for path in (
+                skill_dir / "assets/review-result-skeleton.md",
+                skill_dir / "assets/material-finding.md",
+                skill_dir / f"references/{skill_name}-recording-and-settlement.md",
+            ):
+                self.assertTrue(path.is_file(), path)
+            for term in terms:
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+            for term in (
+                "artifact-local",
+                "cross-artifact",
+                "upstream-direction",
+                "does not edit",
+                "isolated by default",
+                "record-package-review",
+                "settle-review-package",
+            ):
+                with self.subTest(skill=skill_name, term=term):
+                    self.assertIn(term, body)
+
+    def test_post_cutover_inventory_retires_old_reviews_without_aliases(self) -> None:
+        workflow = (ROOT / "docs/workflows.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement",
+            workflow,
+        )
+        self.assertIn("not aliases for `design-review` or `delivery-review`", workflow)
+        for old_skill in (
+            "spec-review",
+            "architecture-review",
+            "plan-review",
+            "test-spec-review",
+        ):
+            self.assertIn(f"`{old_skill}`", workflow)
+
+    def test_downstream_skills_consume_package_authority_without_merging_gates(self) -> None:
+        for skill_name in ("code-review", "explain-change", "verify", "pr"):
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn("approved Design Review ID", body)
+                self.assertIn("approved Delivery Review ID", body)
 
 
 if __name__ == "__main__":

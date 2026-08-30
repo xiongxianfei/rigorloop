@@ -11,6 +11,14 @@ Upon approval of [Single Bounded Review-Fix Workflow Automation](single-bounded-
 Only selectors explicitly listed in the unified spec's closed affected-selector registry are amended.
 Requirements outside that registry remain current lifecycle and artifact-ordering requirements of this spec and receive no implicit migration disposition.
 
+## Consolidated review-gate amendment
+
+At the reviewed consolidated-gates release cutover, `specs/consolidated-review-gates.md` replaces the legacy artifact-review progression clauses named in that specification. The standard pre-implementation chain becomes `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement`. Proposal Review evaluates the proposal and its embedded feasibility evidence; Design Review approves the exact architecture, specification, and applicable ADR package; Delivery Review approves the exact plan and test-specification package.
+
+Architecture, specification, plan, and test-specification authorship remain separate. Package review authority is atomic and binds explicit artifact ID-to-repository-relative-path maps plus the upstream review ID; it uses neither an aggregate revision nor per-document hashes. `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain readable historical evidence but are not post-cutover progression entrypoints or aliases. Code Review, review-resolution, `explain-change`, Verify, and PR retain their existing semantic owners.
+
+The consolidated-gates implementing change completes under the pre-cutover clauses below. This bounded implementation exception does not introduce runtime coexistence, an activation manifest, or per-change topology metadata.
+
 ## Related proposal
 
 - [RigorLoop Project Direction](../docs/proposals/2026-04-19-rigorloop-project-direction.md)
@@ -116,9 +124,7 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `gate-ready proposal`: a proposal whose artifacts and review evidence satisfy the proposal gate, independent of user authorization.
 - `armed profile`: a user-authorized profile that is waiting for its activation gate.
 - `architecture assessment`: the recorded workflow-managed micro-stage after approved `spec-review` that returns `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`.
-- `boundary-first contract`: the activated portable method defined by
-  `specs/boundary-first-proof-model.md` for connecting governed requirements,
-  applicable boundaries, selected interactions, and proof obligations.
+- `boundary-first contract`: the activated portable method defined by `specs/boundary-first-proof-model.md` for connecting governed requirements, applicable boundaries, selected interactions, and proof obligations.
 
 ## Examples first
 
@@ -202,8 +208,7 @@ Then `review-resolution.md` records `Closeout status: closed` in the same PR, an
 
 ### Example E14: isolated review recording follows the finding
 
-Given a direct `spec-review` returns material finding `SR1`
-And the contributor will revise a tracked spec in response
+Given a direct `spec-review` returns material finding `SR1`, and the contributor will revise a tracked spec in response
 When the contributor prepares the revision
 Then the direct review remains isolated for handoff, but `SR1` is recorded under `docs/changes/<change-id>/reviews/` before the spec edit begins.
 
@@ -211,38 +216,31 @@ Then the direct review remains isolated for handoff, but `SR1` is recorded under
 
 Given `proposal-review-r1` records seven accepted material findings
 When `review-resolution.md` closes those findings with the same validation evidence
-Then the file starts with closeout status, covered reviews, resolved and unresolved counts, and a resolution overview
-And each finding detail keeps validator-readable labels for Finding ID, disposition, owner, owning stage, chosen action, rationale, validation target, and validation evidence.
+Then the file starts with closeout status, covered reviews, resolved and unresolved counts, and a resolution overview. Each finding detail keeps validator-readable labels for Finding ID, disposition, owner, owning stage, chosen action, rationale, validation target, and validation evidence.
 
 ### Example E16: milestone-aware clean review routing
 
-Given a workflow-managed standard workflow change uses a milestone-based plan
-And `code-review` returns clean for a clean non-final implementation milestone
+Given a workflow-managed standard workflow change uses a milestone-based plan, and `code-review` returns clean for a clean non-final implementation milestone
 When another in-scope implementation milestone remains open
 Then the reviewed milestone closes and the next stage is the next in-scope implementation milestone, not `verify`.
 
 ### Example E17: final clean milestone reaches final closeout
 
-Given a workflow-managed standard workflow change uses a milestone-based plan
-And `code-review` returns clean for a clean final implementation milestone
+Given a workflow-managed standard workflow change uses a milestone-based plan, and `code-review` returns clean for a clean final implementation milestone
 When all in-scope implementation milestones are closed and no required review-resolution remains open
 Then the next stage is `ci-maintenance` when triggered; otherwise it is `explain-change`, followed by `verify` and `pr`.
 
 ### Example E18: lifecycle closeout is not implementation work
 
-Given all in-scope implementation milestones are closed
-And the remaining plan work is a lifecycle-closeout milestone for `ci-maintenance`, `explain-change`, `verify`, or PR handoff
+Given all in-scope implementation milestones are closed, and the remaining plan work is a lifecycle-closeout milestone for `ci-maintenance`, `explain-change`, `verify`, or PR handoff
 When no required review-resolution remains open
 Then final closeout may proceed instead of treating the closeout milestone as unfinished implementation work.
 
 ### Example E19: proposal-gated authoring profile stops at plan-review
 
-Given a proposal is accepted
-And formal proposal-review is approved, recorded, and has no material findings or open blockers
-And the user has authorized `auto-through: plan-review`
+Given a proposal is accepted, formal proposal-review is approved and recorded with no material findings or open blockers, and the user has authorized `auto-through: plan-review`
 When workflow-managed execution resumes before spec authoring
-Then the workflow may run `spec`, `spec-review`, recorded architecture assessment, required architecture stages, `plan`, and `plan-review`
-And a clean `plan-review` reports `test-spec` next without invoking it.
+Then the workflow may run `spec`, `spec-review`, recorded architecture assessment, required architecture stages, `plan`, and `plan-review`. A clean `plan-review` reports `test-spec` next without invoking it.
 
 ### Example E20: direct review remains isolated despite an armed profile
 
@@ -252,9 +250,7 @@ Then the review result is recorded when required and downstream handoff remains 
 
 ### Example E21: implementation profile stops before PR
 
-Given clean planning completed
-And the user separately authorized `auto-through: verify`
-And `implementation-through-verify` phase `C` is active
+Given clean planning completed, the user separately authorized `auto-through: verify`, and `implementation-through-verify` phase `C` is active
 When implementation milestones, independent review, `explain-change`, and fresh `verify` complete
 Then the workflow reports `pr` as next and stops without opening a PR.
 
@@ -267,13 +263,8 @@ Then `implement` does not begin until the review is approved, current, recorded 
 ### Example E23: boundary ownership remains stage-local
 
 Given a feature spec adopts `boundary-first-v1`
-When the change proceeds through planning, proof design, implementation,
-review, and verification
-Then each stage loads the same shared method
-And `spec-review` approves semantic boundary completeness
-And `plan-review` approves isolation and sequencing
-And `test-spec-review` approves proof adequacy
-And no structural validator replaces those review judgments.
+When the change proceeds through planning, proof design, implementation, review, and verification
+Then each stage loads the same shared method; `spec-review` approves semantic boundary completeness; `plan-review` approves isolation and sequencing; `test-spec-review` approves proof adequacy; and no structural validator replaces those review judgments.
 
 ## Requirements
 
@@ -1043,8 +1034,7 @@ R29e. `plan-review` MUST reject coupled primary boundaries, omitted boundary
 dependencies, unsafe rollback, and proof sequencing that cannot close
 independently.
 
-R29f. `test-spec` MUST map every applicable boundary and selected interaction
-to proof using the exact approved IDs.
+R29f. `test-spec` MUST map every applicable boundary and selected interaction to proof using the exact approved IDs.
 
 R29g. `test-spec-review` MUST judge proof adequacy, negative coverage,
 fixtures, command ownership, and manual-proof boundaries.
@@ -1058,11 +1048,7 @@ stale, recovery, and escaped-boundary paths admitted by the approved model.
 R29j. `verify` MUST confirm contract-to-proof-to-implementation coherence and
 unresolved-gap closure without reapproving upstream semantic gates.
 
-R30. A stage MUST stop and route upstream when it encounters an unknown or
-stale boundary ID, a required missing owner, an example that is the sole owner
-of behavior, an applicable boundary or selected interaction without proof, a
-helper-only substitute for an admitted public or sibling path, or a discovery
-requiring a normative decision.
+R30. A stage MUST stop and route upstream when it encounters an unknown or stale boundary ID, a required missing owner, an example that is the sole owner of behavior, an applicable boundary or selected interaction without proof, a helper-only substitute for an admitted public or sibling path, or a discovery requiring a normative decision.
 
 R31. Boundary-first interaction selection MUST follow requirement-owned
 hazards and MUST NOT require a Cartesian product.
@@ -1086,8 +1072,7 @@ after the boundary-first activation state is `active`.
 R33b. Accepted historical artifacts MUST remain valid until substantively
 revised.
 
-R33c. In-flight opt-in MUST occur before test-spec approval and MUST stop if
-the governed downstream skill chain is mixed or incomplete.
+R33c. In-flight opt-in MUST occur before test-spec approval and MUST stop if the governed downstream skill chain is mixed or incomplete.
 
 R33d. Activation MUST have a durable baseline and grandfathered-spec inventory
 identity before the state becomes `active`.
@@ -1396,18 +1381,12 @@ mechanism.
 - `RLW-AC-A7`: A reviewer can verify that profile policy metadata does not own live workflow state.
 - `RLW-AC-A8`: A reviewer can verify that profile authorization is recorded durably before activation and that missing, malformed, incomplete, or failed authorization persistence pauses the profile before any profile-driven transition.
 - `RLW-AC-A9`: A reviewer can verify that future profiles require separate proposal and spec amendments.
-- A contributor can follow one unchanged lifecycle sequence while the ten
-  governed stages apply distinct boundary-first responsibilities.
-- A reviewer can distinguish spec semantic completeness, plan isolation,
-  proof adequacy, implementation fidelity, and final coherence ownership.
-- A reviewer can confirm structural validators do not replace independent
-  semantic review.
-- A contributor can see that missing boundary ownership, proof, or admitted
-  public and sibling path coverage stops and routes upstream.
-- A reviewer can confirm activation is prospective and atomic and historical
-  accepted artifacts are grandfathered.
-- A user can apply the method from published skill packages and project-local
-  artifacts without a runtime-specific certification mechanism.
+- A contributor can follow one unchanged lifecycle sequence while the ten governed stages apply distinct boundary-first responsibilities.
+- A reviewer can distinguish spec semantic completeness, plan isolation, proof adequacy, implementation fidelity, and final coherence ownership.
+- A reviewer can confirm structural validators do not replace independent semantic review.
+- A contributor can see that missing boundary ownership, proof, or admitted public and sibling path coverage stops and routes upstream.
+- A reviewer can confirm activation is prospective and atomic and historical accepted artifacts are grandfathered.
+- A user can apply the method from published skill packages and project-local artifacts without a runtime-specific certification mechanism.
 
 ## Open questions
 
@@ -1416,8 +1395,7 @@ mechanism.
 
 ## Next artifacts
 
-- Spec-review for the boundary-first proof-model, workflow, and skill-contract
-  amendment set.
+- Spec-review for the boundary-first proof-model, workflow, and skill-contract amendment set.
 - Architecture assessment for implementation-profile policy, phase gating, workflow orchestration, review classification, correction loops, verify-boundary behavior, and generated adapter impact.
 - Architecture and architecture-review when the assessment requires architecture.
 - Plan and plan-review before implementation.
@@ -1474,7 +1452,5 @@ its complete rollout gate are approved.
 
 ## Readiness
 
-- Approved portable boundary-first workflow amendment ready for architecture
-  assessment.
-- Previously approved workflow amendments remain recorded in Follow-on
-  artifacts.
+- Approved portable boundary-first workflow amendment ready for architecture assessment.
+- Previously approved workflow amendments remain recorded in Follow-on artifacts.

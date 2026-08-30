@@ -9,6 +9,8 @@ argument-hint: [plan path or feature name]
 
 # Execution plan review
 
+This entrypoint is pre-cutover only. At consolidated-gates cutover, `delivery-review` replaces it as progression authority over the exact plan/test-specification package. Historical Plan Review evidence remains readable but this skill is not an alias for Delivery Review.
+
 Judge whether a plan is safe, complete, sequenced, and verifiable.
 
 ## Workflow role

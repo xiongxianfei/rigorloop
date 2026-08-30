@@ -15,6 +15,8 @@ argument-hint: [feature spec path, proposal path, architecture question, or chan
 - stage: authoring
 - upstream: approved spec and current spec review
 - downstream: architecture-review
+
+At consolidated-gates cutover, completed architecture authoring reconciles with specification and hands the exact package to `design-review`; it does not seek independent component approval. The pre-cutover `architecture-review` handoff remains only for changes completing under the earlier contract.
 - summary: Assess architecture impact and author the smallest justified package.
 - ownership: Architecture artifacts and authorized architecture authoring evidence only.
 - must_not_claim: architecture-review approval, plan readiness, implementation readiness, verification, branch readiness, release readiness, or PR readiness.

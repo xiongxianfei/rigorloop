@@ -71,6 +71,8 @@ Read only evidence needed for the classified outcome. This may include the relev
 
 For placement, prefer the explicit target; current change or plan metadata; governing schema; project workflow guide; then a safe portable default. Block when authority remains ambiguous. For planned records, bounded queries may orient the read, but escalate to full `change.yaml` for whole-record review, disputed or unsupported state, or forensic reconstruction.
 
+For work governed by consolidated gates, require the current accepted proposal evidence, approved Design Review ID and exact member map, approved Delivery Review ID and exact member map, implementation and Code Review evidence, current explanation, and current validation results. A review-required, partial, stale, or historical-only package blocks final readiness. This evidence requirement does not merge Verify with any earlier gate.
+
 ## Evidence truthfulness
 
 - Distinguish `passed`, `failed`, `skipped`, `pending`, `not-run`, and `unknown`; reject unknown closed-vocabulary values before consistency checks.

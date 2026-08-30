@@ -29,6 +29,8 @@ Do not choose product direction, replace a missing specification, implement code
 - stage: authoring
 - upstream: accepted proposal, approved or reviewed spec, architecture or ADRs when relevant, test-spec when present, and project-local workflow evidence
 - downstream: plan-review
+
+At consolidated-gates cutover, completed plan authoring reconciles with the test specification and hands the exact package to `delivery-review`; it does not seek independent plan approval. The pre-cutover `plan-review` handoff remains only for changes completing under the earlier contract.
 - summary: Own stable plan content and its authoring transition; initialize approved plan work only through the governed operation.
 - must_not_claim: implementation completion, review approval, verification, branch readiness, PR readiness, final closeout, or Done
 

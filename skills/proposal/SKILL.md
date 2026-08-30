@@ -70,7 +70,9 @@ Missing, unreadable, escaped, contradictory, stale, or mixed-version required re
 
 ## Proposal contract
 
-Cover problem, goals, non-goals, context, three options or linked exploration, recommendation, behavior, architecture, testing, rollout/rollback, risks, questions, decisions, artifacts, and readiness. Preserve `Next artifacts` as history; use `Follow-on artifacts` for results and `None yet` before any exist.
+Cover problem, goals, non-goals, context, three options or linked exploration, recommendation, feasibility, behavior, architecture, testing, rollout/rollback, risks, questions, decisions, artifacts, and readiness. Preserve `Next artifacts` as history; use `Follow-on artifacts` for results and `None yet` before any exist.
+
+Every new governed proposal contains exactly one embedded `Feasibility` section. State an assessment, its evidence or bounded assumptions, material constraints, and blockers that would prevent responsible design work. Keep the evaluation proportionate: concise evidence is sufficient when uncertainty and risk are small. Supporting research may be linked, but the proposal must contain the relied-on conclusion. Create no standalone feasibility artifact, skill, lifecycle state, or review gate.
 
 Frame the problem independently, compare tradeoffs, protect scope and intent, state value, and make risks actionable. Do not write milestones, invent `MUST` rules, hide tradeoffs, or claim acceptance without authority.
 

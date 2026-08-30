@@ -15,6 +15,8 @@ argument-hint: [proposal path, feature name, behavior request, or issue number]
 - stage: authoring
 - upstream: accepted proposal or approved direction
 - downstream: spec-review
+
+At consolidated-gates cutover, completed specification authoring reconciles with architecture and applicable ADRs and hands the exact package to `design-review`; it does not seek independent component approval. The pre-cutover `spec-review` handoff remains only for changes completing under the earlier contract.
 - summary: Author the contract.
 - ownership: Write the spec and authorized governed evidence/transition.
 - must_not_claim: spec-review approval, architecture readiness, plan readiness, implementation readiness, verification, branch readiness, or PR readiness.

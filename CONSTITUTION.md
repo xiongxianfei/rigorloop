@@ -147,13 +147,15 @@ Until repository-specific release checks replace the current conservative templa
 
 ## Review rules
 
-`proposal-review` SHOULD be used for major, risky, or direction-setting changes.
+`proposal-review` MUST evaluate proposal direction, scope, and embedded feasibility before design work for governed changes.
 
-`spec-review` MUST happen before implementation for behavior, workflow, schema, or compatibility changes.
+`design-review` MUST independently approve the exact architecture, specification, and applicable ADR package before delivery planning relies on it.
 
-`architecture-review` SHOULD happen for cross-component, broad-impact, hard-to-reverse, or boundary-changing design work.
+`delivery-review` MUST independently approve the exact plan and test-specification package before implementation.
 
-`plan-review` MUST happen for multi-milestone or sequencing-sensitive work.
+Architecture, specification, plan, and test-specification authorship remain separate. A package reviewer MUST NOT edit and approve the artifacts it reviews.
+
+At consolidated cutover, `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` are retired as progression entrypoints. Historical evidence remains readable but does not grant package authority.
 
 `code-review`, `explain-change`, and `verify` MUST happen before non-trivial changes are considered ready for PR.
 
