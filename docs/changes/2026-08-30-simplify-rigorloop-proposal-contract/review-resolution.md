@@ -7,9 +7,9 @@ Closeout status: open
 Review closeout: code-review-m2-r4
 
 - Reviews covered: `delivery-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m2-r4`
-- Findings resolved: 6
-- Unresolved findings: 1
-- Current result: SPC-DR1 and SPC-M2-CR1 through SPC-M2-CR5 are resolved. SPC-M2-CR6 remains open and requires a bounded implementation correction before M2 rereview.
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: all seven findings are resolved. M2 correction commit `e757b2a3` is ready for independent rereview.
 
 ## Resolution Overview
 
@@ -21,7 +21,7 @@ Review closeout: code-review-m2-r4
 | SPC-M2-CR3 | accepted | resolved | Complete simplified shape is recognized before the settled-history legacy exception. |
 | SPC-M2-CR4 | accepted | resolved | Selected governed inputs are correlated directly without a filename-equality rule. |
 | SPC-M2-CR5 | accepted | resolved | Mismatch inference now considers only selected records that declare a primary proposal entry. |
-| SPC-M2-CR6 | accepted | open | Mixed portable and governed proposals are still coupled by scope-wide mismatch inference. |
+| SPC-M2-CR6 | accepted | resolved | Mismatch inference is limited to an unambiguous one-proposal/one-primary-record selection. |
 
 ## Finding Details
 
@@ -136,7 +136,7 @@ Validation evidence: correction commit `f395ab51`; portable-plus-spec-only-recor
 
 Finding ID: SPC-M2-CR6
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: implement
 Decision owner: developer
@@ -147,4 +147,4 @@ Required outcome: Portable and governed proposals compose in one validation scop
 Safe resolution path: Correlate only an unambiguous one-proposal/one-primary-record selection, or use another bounded selected-scope correlation that introduces no filename rule, hash, version, reverse pointer, repository inventory, or new CLI mechanism; add the mixed portable/governed regression and rerun M2 proof.
 Follow-up: bounded M2 correction followed by independent code-review R5.
 Validation target: portable proposal plus correctly governed proposal/change-record pair passes; matching governed proposal and portable-only cases pass; different-ID single selected mismatch still fails.
-Validation evidence: R4 direct reproduction emitted one false governed mismatch; artifact-lifecycle validator 157/157, review-artifact validator 107/107, focused nine-case compatibility matrix, current explicit-path validation, metadata validation, boundary validation, and aggregate diff check otherwise passed. Correction validation is pending.
+Validation evidence: correction commit `e757b2a3`; mixed portable/governed composition and direct mismatch regressions pass; artifact-lifecycle validator 158/158, review-artifact validator 107/107, current explicit-path validation, metadata validation, boundary validation, and aggregate diff check passed.

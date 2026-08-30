@@ -92,7 +92,7 @@ Detailed record: reviews/code-review-m2-r4.md
 Resolution: review-resolution.md#code-review-m2-r4
 Material findings: SPC-M2-CR6
 Finding ID: SPC-M2-CR6
-Open findings: SPC-M2-CR6
+Open findings: none
 Recording status: recorded
 
 ### Review entry

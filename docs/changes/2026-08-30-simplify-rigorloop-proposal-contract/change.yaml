@@ -123,7 +123,7 @@ review:
   review_log: docs/changes/2026-08-30-simplify-rigorloop-proposal-contract/review-log.md
   reviewed_artifact: implementation-milestone:M2@a1b57bbf05e28f1e4362d49ffb520066a1aff479+f3fd200c+b98e9926+f395ab51
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
