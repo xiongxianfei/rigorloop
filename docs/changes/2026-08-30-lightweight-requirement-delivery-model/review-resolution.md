@@ -2,12 +2,12 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
-- Reviews covered: `design-review-r1`, `delivery-review-r1`, `code-review-m1-r1`
+- Reviews covered: `design-review-r1`, `delivery-review-r1`, `code-review-m1-r1`, `code-review-m3-r1`
 - Findings resolved: 4
-- Unresolved findings: 0
-- Current result: RTD-M1-CR1 is corrected and ready for independent M1 Code Review R2.
+- Unresolved findings: 1
+- Current result: RTD-M3-CR1 requires disposition before M3 correction and rereview.
 
 ## Resolution Overview
 
@@ -17,6 +17,7 @@ Closeout status: closed
 | RTD-DLR1 | accepted | resolved | All ten acceptance criteria now have explicit test-case ownership. |
 | RTD-DLR2 | accepted | resolved | M3 owns RTD-R20 and every multi-milestone proof row names its complete timing. |
 | RTD-M1-CR1 | accepted | resolved | Added and directly proved a concise many-to-many allocation example in both mapping directions. |
+| RTD-M3-CR1 | needs-decision | open | Decide whether to add public skill-validator integration proof for missing or drifted selected-consumer copies. |
 
 ## Finding Details
 
@@ -93,3 +94,22 @@ Safe resolution path: Add one concise example to the canonical source and four i
 Follow-up: independent Code Review R2 over the corrected M1 implementation.
 Validation target: RTD-AC4, RTD-T03, RTD-T04, CMD-001, CMD-002, CMD-003, and CMD-007.
 Validation evidence: `python scripts/test-skill-validator.py -k RequirementDeliveryModelM1Tests` failed on both missing mapping directions before the correction and passes 3/3 afterward; the full skill validator passes 364 tests, all four authoring skills validate, the temporary build check passes, the prose audit reports 0 errors and 0 warnings, and canonical-to-four-copy byte comparison passes.
+
+### code-review-m3-r1
+
+#### RTD-M3-CR1
+
+Finding ID: RTD-M3-CR1
+Disposition: needs-decision
+Status: open
+Owner: implementation owner
+Owning stage: implement M3
+Decision owner: implementation owner
+Decision needed: Accept, reject, defer, or partially accept the bounded public-validator regression correction.
+Chosen action: Pending owner disposition.
+Rationale: The new negative test invokes the parity helper directly, so removal of the production `validate_skill_file` integration leaves every M3 test green despite RTD-T07 requiring fail-closed behavior through existing validator/build entrypoints.
+Required outcome: Public canonical skill validation must have direct negative regression proof for a missing or drifted selected-consumer model copy.
+Safe resolution path: Add a temporary valid selected-skill fixture, patch test-local canonical roots, invoke `validate_skill_tree` or the existing validation CLI after removing or drifting its mapped copy, assert the actionable path diagnostic, rerun the M3 command set, update M3 evidence, and request independent M3 rereview.
+Follow-up: Record the disposition, implement only the accepted bounded regression correction, then rerun independent Code Review on M3 and the holistic M1-M3 publication behavior.
+Validation target: RTD-T07, CMD-001, CMD-003, CMD-004, and CMD-005; the focused negative regression must fail if the production integration call is removed.
+Validation evidence: Pending disposition and correction. Current review reruns pass 368 skill-validator tests, 8 build-skill tests, temporary generated validation, and 152 adapter-distribution tests, but none protects the new helper-to-public-validator wiring.

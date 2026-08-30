@@ -48,6 +48,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: r1
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-m3-r1
+Material findings: RTD-M3-CR1
+Finding ID: RTD-M3-CR1
+Open findings: RTD-M3-CR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m1-r1
 Stage: code-review
 Round: r1
