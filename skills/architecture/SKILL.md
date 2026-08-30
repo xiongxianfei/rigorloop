@@ -40,6 +40,8 @@ Loading selects procedure, not authority.
 
 ## Scope and routing
 
+Treat specification requirements as SRs and architecture as their technical realization, not as another requirement level.
+
 Use architecture for cross-component structure, data flow, persistence, APIs, deployment, packaging, adapters, security, quality targets, cross-cutting rules, or durable decisions. Use the smallest surface: canonical truth, ADR decision history, or both.
 
 For a focused change with no new architectural decision, confirm the current architecture envelope with `no-change-required`; the current architecture remains the package member. Never create temporary architecture to resolve product or behavioral uncertainty.
@@ -66,6 +68,7 @@ Never claim Design Review approval, ADR settlement, plan or implementation readi
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when relating system requirements to technical realization or downstream allocation.
 - READ `references/architecture-package-method.md` for `AA1-portable-authoring` and `AA2-governed-authoring` before package judgment or writes.
 - READ `references/governed-architecture-authoring.md` only for `AA2-governed-authoring`; validate exact authority before governed reads or writes.
 - COPY `assets/architecture-skeleton.md` when creating or fully rewriting canonical architecture. Fill applicable sections and remove placeholders.

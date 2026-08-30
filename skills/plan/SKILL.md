@@ -56,6 +56,8 @@ Use bounded evidence before broad reads. Read a full file when it is the target,
 
 ## Plan quality contract
 
+Treat the plan as the primary allocation surface from SRs and architecture boundaries into proportional delivery work.
+
 - Derive every behavior-changing step from approved requirements and architecture; do not add unstated behavior.
 - Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing.
 - Give each implementation milestone a unique ordered ID and kind, one coherent outcome, requirement and architecture links, affected components, dependencies, tests and proof, implementation steps, validation commands, expected result, completion criteria, required evidence, review handoff, risks, and rollback or recovery.
@@ -104,6 +106,7 @@ Map applicable boundaries to independently closeable milestones, dependencies, a
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when allocating system requirements and architecture boundaries into milestones or optional work hierarchy.
 - READ `references/governed-plan-authoring.md` exactly when valid governed plan authority exists for `create-primary-plan`, `revise-primary-plan`, or `initialize-approved-plan`.
 - READ `references/boundary-first-method-v1.md` when cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for planning.
 - COPY `assets/plan-skeleton.md` when creating a plan or replacing its full structure.

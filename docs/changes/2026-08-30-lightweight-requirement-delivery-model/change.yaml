@@ -68,10 +68,48 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: delivery-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
-  next_stage: delivery-review
+  next_stage: code-review
+  planned_work:
+    current_milestone: M1
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+    initialization_basis:
+      review_id: delivery-review-r2
+      review_record: docs/changes/2026-08-30-lightweight-requirement-delivery-model/reviews/delivery-review-r2.md
+      review_round: r2
+      reviewed_artifact_path: docs/plans/2026-08-30-lightweight-requirement-delivery-model.md
+    latest_review:
+      artifact_id: none
+      evidence: []
+      milestone_id: none
+      occurrence: none
+      round: none
+      stage: none
+      status: not-started
+    milestones:
+      M1:
+        kind: implementation
+        state: implementing
+      M2:
+        kind: implementation
+        state: planned
+      M3:
+        kind: implementation
+        state: planned
+      M4:
+        kind: lifecycle-closeout
+        state: planned
+    plan_artifact_id: plan
+    remaining_implementation_milestones:
+      - M1
+      - M2
+      - M3
 workflow: {}
 artifacts: {}
 requirements: []
