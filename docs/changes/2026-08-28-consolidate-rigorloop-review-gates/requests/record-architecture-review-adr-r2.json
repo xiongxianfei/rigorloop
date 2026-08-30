@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "operation": "record-review",
-  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
-  "expected_lifecycle_revision": "sha256:1a30b6576185f060c98ba3222e15086e758ed660fd6ac1689d503d38c0fe939e",
-  "artifact_id": "adr-consolidated-review-package-topology",
-  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/architecture-review-adr-r2.md",
-  "stage_authority": "architecture-review"
-}

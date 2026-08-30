@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "operation": "return-correction",
-  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
-  "expected_lifecycle_revision": "sha256:986db068e97d2ade05d811573c1384e3839cbe34149cdd708d5923019ae2a5f9",
-  "route_id": "route-7560c9adeaa10285ff6d34ead3af606e3c0c1b81406b0a66dd77e460ff221abb",
-  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/evidence/correction-return-test-spec-package-state-simplification.md",
-  "stage_authority": "workflow"
-}

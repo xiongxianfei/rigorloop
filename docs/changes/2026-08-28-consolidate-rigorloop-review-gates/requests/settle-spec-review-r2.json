@@ -1,8 +1,0 @@
-{
-  "schema_version": 1,
-  "operation": "settle-artifact",
-  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
-  "expected_lifecycle_revision": "sha256:7f5dff9574450c69b5821a42c85838d54ffeae7620609763c0ff119b77591563",
-  "artifact_id": "spec",
-  "stage_authority": "spec-review"
-}

@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "operation": "record-review",
-  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
-  "expected_lifecycle_revision": "sha256:2694ec74b85727d99af97aecedf4612d03ce59244328d27d8cd5bdc769132906",
-  "artifact_id": "proposal",
-  "evidence_path": "docs/changes/2026-08-28-consolidate-rigorloop-review-gates/reviews/proposal-review-r4.md",
-  "stage_authority": "proposal-review"
-}

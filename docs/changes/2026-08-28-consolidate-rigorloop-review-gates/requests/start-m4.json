@@ -1,8 +1,0 @@
-{
-  "schema_version": 1,
-  "operation": "start-milestone",
-  "change_id": "2026-08-28-consolidate-rigorloop-review-gates",
-  "expected_lifecycle_revision": "sha256:c6bca27c5cbf359f0bc398b086f1b220db41eb68010b28642d17c0a31582e102",
-  "milestone_id": "M4",
-  "stage_authority": "workflow"
-}
