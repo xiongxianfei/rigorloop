@@ -260,3 +260,7 @@ Validation evidence: correction commit `63a8d13f`; direct canonical, generated-m
 ### code-review-m5-r2
 
 No material findings. The clean rereview confirms that `RTS-M5-CR1` and `RTS-M5-CR2` are resolved and supports M5 settlement against correction commit `63a8d13f`.
+
+### code-review-final-r1
+
+No material findings. The final holistic review confirms that the M1-M5 slices compose into the approved v2 plan-centered lifecycle, exact manifest-bound v1 compatibility remains fail-closed, all earlier findings are resolved, and M6 may proceed to Explain Change without implementation correction.
