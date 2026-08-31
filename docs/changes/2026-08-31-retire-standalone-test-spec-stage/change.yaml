@@ -80,7 +80,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M1
+    current_milestone: M2
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -102,7 +102,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: closed
       M2:
         kind: implementation
         state: planned
@@ -120,7 +120,6 @@ workflow_state:
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M1
       - M2
       - M3
       - M4
@@ -281,7 +280,27 @@ lifecycle_cli:
         milestone_state: null
         next_stage: design-review
       status: returned
-  milestones: {}
+  milestones:
+    M1:
+      completion_fingerprint: a5c2a731cc3a4707c513e4b476bc302890e51a826bd56d74ce9bee5392538398
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/m1-contract-classification.md
+      evidence_sha256: 1df9c5dbfbfe82af68af1b8fd273ddce12708ea8b76cc4ac5b18087f273f59fc
+      milestone_id: M1
+      review_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m1-r2.md
+      review_evidence_sha256: 220d6a46bb9c1936f32136ac2ae0fcdb188861abd580ed797589d5b3bb61fd47
+      review_id: code-review-m1-r2
+      review_log_entry_sha256: c72cbd103b7a03158f512280c2479d6f38430ba065323943908ca9e9ec830c95
+      review_log_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m1-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
   package_reviews:
     delivery:
       correction_targets: []

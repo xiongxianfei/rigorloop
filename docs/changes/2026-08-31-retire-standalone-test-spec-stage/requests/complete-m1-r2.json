@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:bd148ced645ef89fd9f71b21da9d15fe0ac904ee5ae7100022d73756272acc53",
+  "milestone_id": "M1",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/m1-contract-classification.md",
+  "review_evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m1-r2.md",
+  "stage_authority": "workflow"
+}
