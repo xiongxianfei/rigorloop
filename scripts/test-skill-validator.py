@@ -8705,7 +8705,7 @@ class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
             ),
             "delivery-review": (
                 "execution plan",
-                "test specification",
+                "exact primary plan",
                 "approved Design Review ID",
                 "requirement -> architectural boundary -> implementation milestone -> required proof -> validation command or manual evidence",
                 "implementation",
@@ -8826,7 +8826,7 @@ class RequirementDeliveryModelM1Tests(unittest.TestCase):
         self.assertIn("## Requirements", spec_asset)
         self.assertIn("## Related artifacts", architecture_asset)
         self.assertIn("- Requirements:", milestone_asset)
-        self.assertIn("- Architecture decisions:", milestone_asset)
+        self.assertIn("- Architecture responsibility:", milestone_asset)
         combined = "\n".join((spec_asset, architecture_asset, milestone_asset))
         for forbidden in ("RR ID", "IR ID", "AR ID", "## Epic", "## Feature", "## Story"):
             with self.subTest(forbidden=forbidden):
@@ -8914,6 +8914,130 @@ class RequirementDeliveryModelM3Tests(unittest.TestCase):
                 any("mapped requirement-to-delivery reference is missing" in error for error in result.errors),
                 result.errors,
             )
+
+
+class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
+    """RTS TS-007 through TS-011 and TS-016 skill-package proof."""
+
+    def test_spec_owns_testable_behavior_without_test_mechanics(self) -> None:
+        skill = (ROOT / "skills/spec/SKILL.md").read_text(encoding="utf-8")
+        skeleton = (ROOT / "skills/spec/assets/spec-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+        for concept in (
+            "normal behavior",
+            "invalid input",
+            "failure behavior",
+            "state transitions",
+            "authority",
+            "compatibility",
+            "migration",
+            "retries",
+            "concurrency",
+            "recovery",
+            "important scenarios",
+            "acceptance conditions",
+        ):
+            with self.subTest(concept=concept):
+                self.assertIn(concept, skill.lower())
+        self.assertIn("What must be demonstrably true?", skill)
+        self.assertIn("## Important scenarios", skeleton)
+        self.assertIn("## Acceptance conditions", skeleton)
+        self.assertIn("implementation-specific test mechanics", skill)
+
+    def test_plan_allocates_verification_without_replacement_artifact(self) -> None:
+        skill = (ROOT / "skills/plan/SKILL.md").read_text(encoding="utf-8")
+        skeleton = (ROOT / "skills/plan/assets/plan-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+        milestone = (ROOT / "skills/plan/assets/milestone.md").read_text(
+            encoding="utf-8"
+        )
+        for field in (
+            "Engineering purpose",
+            "Requirements",
+            "Architecture responsibility",
+            "Dependencies",
+            "Implementation scope",
+            "Completion criteria",
+            "Required verification",
+            "Evidence expectations",
+        ):
+            with self.subTest(field=field):
+                self.assertIn(field, milestone)
+        self.assertIn("## Change-level verification", skeleton)
+        self.assertIn("SR → allocated milestone or work → verification group → concrete proof → evidence", skill)
+        self.assertIn("does not imply complete-change correctness", skill)
+        self.assertIn("not a governed artifact", skill)
+        self.assertIn("safe engineering and dependency sequence", skill)
+
+    def test_plan_specialist_methods_are_complete_and_conditional(self) -> None:
+        skill_root = ROOT / "skills/plan"
+        body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+        references = (
+            "boundary-and-negative-verification.md",
+            "state-machine-verification.md",
+            "concurrency-and-retry-verification.md",
+            "migration-and-compatibility-verification.md",
+            "failure-and-recovery-verification.md",
+            "security-and-authority-verification.md",
+            "cross-milestone-integration-verification.md",
+            "manual-and-operational-evidence.md",
+        )
+        for name in references:
+            with self.subTest(reference=name):
+                self.assertTrue((skill_root / "references" / name).is_file())
+                self.assertIn(f"READ `references/{name}` only when", body)
+        self.assertIn("Do not load every specialist reference by default", body)
+
+    def test_delivery_review_owns_one_joint_plan_centered_decision(self) -> None:
+        body = (ROOT / "skills/delivery-review/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        for concept in (
+            "implementation readiness",
+            "verification adequacy",
+            "exact primary plan",
+            "change-level verification",
+            "realistic evidence",
+            "route the correction to `plan`",
+            "standalone test-spec substitute",
+        ):
+            with self.subTest(concept=concept):
+                self.assertIn(concept, body.lower())
+        self.assertIn("one independent decision", body)
+        self.assertNotIn("one execution plan, one test specification", body)
+
+    def test_preactivation_workflow_declares_both_contract_routes(self) -> None:
+        body = (ROOT / "skills/workflow/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("stage-owned-change-local-v1", body)
+        self.assertIn("plan -> test-spec -> delivery-review", body)
+        self.assertIn("stage-owned-change-local-v2", body)
+        self.assertIn("plan -> delivery-review", body)
+        self.assertIn("preactivation", body)
+        self.assertIn("must not select v2", body)
+
+    def test_v2_verification_allocation_gaps_route_to_plan(self) -> None:
+        for skill_name in ("spec", "plan", "workflow"):
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn(
+                    "Under v2, a pre-implementation verification-allocation gap routes to `plan`",
+                    body,
+                )
+                self.assertIn(
+                    "under registered v1, a proof-map gap routes to `test-spec`",
+                    body,
+                )
+                self.assertNotIn("a proof-only gap routes to `test-spec`", body)
+
+    def test_legacy_test_spec_skill_is_explicitly_compatibility_only(self) -> None:
+        body = (ROOT / "skills/test-spec/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("prior-contract compatibility only", body)
+        self.assertIn("must not be selected for a v2 change", body)
+        self.assertIn("scheduled for removal from the active published inventory", body)
 
 
 if __name__ == "__main__":

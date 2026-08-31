@@ -11,6 +11,8 @@ argument-hint: [feature spec path, plan path, or feature name]
 
 Design proof before implementation.
 
+This package exists for prior-contract compatibility only. It must not be selected for a v2 change and is scheduled for removal from the active published inventory at coherent lifecycle activation. Historical and registered v1 work continues to use its exact existing authority until then.
+
 ## Workflow role
 
 - role_name: test-spec
