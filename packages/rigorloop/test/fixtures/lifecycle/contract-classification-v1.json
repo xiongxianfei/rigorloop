@@ -27,5 +27,14 @@
     "state": "preactivation",
     "activating_source_revision": null,
     "changes": []
+  },
+  "contract_cases": {
+    "explicit_null": {
+      "change_id": "null-contract",
+      "change": {
+        "lifecycle_contract": null
+      },
+      "error": "lifecycle_contract: unknown_value null"
+    }
   }
 }

@@ -2310,6 +2310,27 @@ class LifecycleContractClassificationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown_value.*future-v9"):
             classify_lifecycle_contract("missing", {"lifecycle_contract": "future-v9"}, self.fixture["active_manifest"])
 
+    def test_explicit_null_contract_is_unknown_value_not_legacy(self) -> None:
+        case = self.fixture["contract_cases"]["explicit_null"]
+        with self.assertRaisesRegex(ValueError, case["error"]):
+            classify_lifecycle_contract(case["change_id"], case["change"], self.fixture["active_manifest"])
+
+    def test_public_validator_rejects_v2_active_test_spec_state(self) -> None:
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory(prefix="change-metadata-v2-contract-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            text = VALID_BASIC_FIXTURE.read_text(encoding="utf-8").replace(
+                "change_id: valid-basic",
+                "change_id: new-v2\nlifecycle_contract: stage-owned-change-local-v2\nworkflow_state:\n  current_stage: test-spec",
+                1,
+            )
+            target.write_text(text, encoding="utf-8")
+            errors = validator.validate_file(
+                target,
+                activation_manifest=self.fixture["active_manifest"],
+            )
+        self.assertIn("v2 lifecycle contract carries active test-spec state", errors)
+
     def test_unknown_value_activation_state_fails_before_consistency(self) -> None:
         manifest = copy.deepcopy(self.fixture["active_manifest"])
         manifest["state"] = "published"
