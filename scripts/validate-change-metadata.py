@@ -548,6 +548,7 @@ def validate_metadata_semantics(
                 validate_workflow_automation(
                     automation,
                     top_level_change_id=data.get("change_id"),
+                    lifecycle_contract=data.get("lifecycle_contract", "stage-owned-change-local-v1"),
                 )
             )
             if (

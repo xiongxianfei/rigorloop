@@ -801,12 +801,14 @@ TRANSITION_RULES_BY_OPERATION = MappingProxyType(
 def is_immediate_predecessor(
     from_position: WorkflowPosition,
     to_stage: WorkflowStage,
+    *,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> bool:
     """Check structural adjacency without granting transition permission."""
 
     return any(
-        rule.from_position == from_position
-        for rule in TRANSITION_RULES_BY_OPERATION[to_stage]
+        rule.from_position == from_position and rule.operation == to_stage
+        for rule in transition_rules_for_contract(lifecycle_contract)
     )
 
 
@@ -1000,13 +1002,18 @@ def _evaluate_occurrence(
     return (f"transition occurrence constraint: unsupported value {constraint!r}",)
 
 
-def evaluate_transition(context: TransitionContext) -> TransitionEvaluation:
+def evaluate_transition(
+    context: TransitionContext,
+    *,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+) -> TransitionEvaluation:
     """Evaluate one exact transition rule against target and predicate context."""
 
     candidates = tuple(
         rule
-        for rule in TRANSITION_RULES_BY_OPERATION[context.operation]
-        if rule.from_position == context.from_position
+        for rule in transition_rules_for_contract(lifecycle_contract)
+        if rule.operation == context.operation
+        and rule.from_position == context.from_position
         and context.target in rule.allowed_targets
     )
     if not candidates:

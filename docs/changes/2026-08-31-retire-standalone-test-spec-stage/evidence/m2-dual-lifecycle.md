@@ -7,11 +7,11 @@ Validation result: passed
 
 - Skill: implement
 - Status: implemented
-- Completed scope: Added the inactive v2 lifecycle graph, plan-only Delivery Review package, contract-keyed correction ownership, v2 context rejection for retired stages, v1 compatibility behavior, and aligned Node/Python/schema validation.
+- Completed scope: Added the inactive v2 lifecycle graph, plan-only Delivery Review package, contract-keyed routing, transition evaluation, correction ownership, and automation validation; v2 context rejection for retired stages; v1 compatibility behavior; exact primary-plan identity validation; and aligned Node/Python/schema validation.
 - Artifacts changed: lifecycle contract, CLI, read, package, operation, automation-policy, automation-state, metadata, artifact-lifecycle, review-artifact, and schema surfaces; focused Node and Python fixtures; the exact-output compatibility fixture; and this M2 evidence.
-- Tests added or updated: TS-003, TS-004, TS-005, TS-006, TS-010, and TS-015 coverage for direct `plan -> delivery-review`, exact plan-only membership, settlement/advancement separation, plan-owned correction, retired stage/artifact/review/package-member rejection, wholly unknown vocabulary, active-manifest v2 interpretation, and unchanged v1 package/routing behavior.
+- Tests added or updated: TS-003, TS-004, TS-005, TS-006, TS-010, and TS-015 coverage for direct `plan -> delivery-review`, exact nonliteral primary-plan membership, settlement/advancement separation, plan-owned correction, retired stage/artifact/review/package-member rejection, wholly unknown lifecycle contracts and vocabulary, active-manifest v2 interpretation, and unchanged v1 package/routing behavior.
 - Validation performed: CMD-01 through CMD-06, change-local metadata validation, explicit-path artifact-lifecycle validation, and `git diff --check`.
-- Validation result: CMD-01 passed 189 Node tests; CMD-02 passed 310 Node tests with 2 pre-existing skips; CMD-03 passed 77 Python tests; CMD-04 passed 166 Python tests; CMD-05 passed 77 workflow-automation, 18 policy, and 69 state tests; CMD-06 passed 109 Python tests. Change metadata, explicit-path lifecycle consistency, and whitespace validation passed.
+- Validation result: CMD-01 passed 189 Node tests; CMD-02 passed 310 Node tests with 2 pre-existing skips; CMD-03 passed 77 Python tests; CMD-04 passed 166 Python tests; CMD-05 passed 77 workflow-automation, 18 policy, and 69 state tests; CMD-06 passed 110 Python tests. Change metadata, explicit-path lifecycle consistency, relevant Python compilation, and whitespace validation passed.
 - Open blockers: none.
 - Next stage: code-review.
 - Claim limitations: the repository remains in manifest `preactivation`; new-change still emits v1; canonical skill retirement, documentation/publication parity, activation-manifest population, default v2 creation, rollback proof, and adapter publication remain M3-M5 work.
@@ -32,6 +32,8 @@ Validation result: passed
 The first v2 stage test failed because `plan -> delivery-review` was absent and the attempted retired `plan -> test-spec` transition reached post-validation instead of being rejected at the edge. The contract-keyed stage matrix and plan-only package composition made those tests pass. Follow-on negative tests then covered active artifact and review state, public context, plan correction, mixed package membership, and closed-vocabulary diagnostics.
 
 The first full package run exposed a stale observability fixture: M1 had changed `new-change` to emit explicit v1 lifecycle fields, while the exact-output fixture still represented the older unversioned output. The repository-owned fixture update mode regenerated that deterministic fixture, after which the full package suite passed.
+
+The first M2 Code Review found two integration gaps. The correction routes the lifecycle contract through the central transition evaluator, public authoring coordinator, automation validator, and persisted automation-state validation, and makes Delivery Review compare package members with the registered primary plan's actual identity and path. Focused regressions prove direct v2 `plan -> delivery-review`, fail-closed unknown-contract and retired-target handling, and acceptance of a valid nonliteral primary-plan ID.
 
 ## Compatibility and unchanged surfaces
 

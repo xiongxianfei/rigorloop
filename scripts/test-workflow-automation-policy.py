@@ -45,8 +45,26 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
         edges = {(rule.from_position, rule.operation) for rule in transition_rules_for_contract("stage-owned-change-local-v2")}
         self.assertIn((WorkflowPosition.PLAN, WorkflowStage.DELIVERY_REVIEW), edges)
         self.assertNotIn((WorkflowPosition.PLAN, WorkflowStage.TEST_SPEC), edges)
+        transition = evaluate_transition(
+            TransitionContext(
+                WorkflowPosition.PLAN,
+                WorkflowStage.DELIVERY_REVIEW,
+                WorkflowStage.DELIVERY_REVIEW,
+            ),
+            lifecycle_contract="stage-owned-change-local-v2",
+        )
+        self.assertTrue(transition.allowed, transition.errors)
         with self.assertRaisesRegex(ValueError, "unknown_value"):
             public_target_stages_for_contract("future-v9")
+        with self.assertRaisesRegex(ValueError, "unknown_value"):
+            evaluate_transition(
+                TransitionContext(
+                    WorkflowPosition.PLAN,
+                    WorkflowStage.DELIVERY_REVIEW,
+                    WorkflowStage.DELIVERY_REVIEW,
+                ),
+                lifecycle_contract="future-v9",
+            )
 
     def test_registry_has_exactly_one_complete_policy_per_stage(self) -> None:
         expected = set(PUBLIC_TARGET_STAGES) | set(INTERNAL_STAGES)

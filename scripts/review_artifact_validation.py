@@ -761,11 +761,13 @@ def _parse_review_file(
     fields = _collect_fields(lines)
     findings: list[ValidationFinding] = []
     lifecycle_contract = None
+    change_metadata = None
     metadata_path = path.parent.parent / "change.yaml"
     if metadata_path.is_file():
         try:
             metadata = _load_change_metadata(metadata_path)
             if isinstance(metadata, dict):
+                change_metadata = metadata
                 lifecycle_contract = metadata.get("lifecycle_contract")
         except Exception:
             lifecycle_contract = None
@@ -853,7 +855,17 @@ def _parse_review_file(
         else:
             _validate_test_spec_review_result_fields(path, review_id, fields, mode, findings)
     if stage is not None and stage.value in {"design-review", "delivery-review"}:
-        _validate_package_review_fields(path, review_id, stage.value, fields, finding_records, mode, findings, lifecycle_contract=lifecycle_contract)
+        _validate_package_review_fields(
+            path,
+            review_id,
+            stage.value,
+            fields,
+            finding_records,
+            mode,
+            findings,
+            lifecycle_contract=lifecycle_contract,
+            change_metadata=change_metadata,
+        )
     _validate_implementation_profile_finding_fields(path, review_id, fields, finding_records, mode, findings)
 
     if record_mode == "reconstructed":
@@ -905,6 +917,7 @@ def _validate_package_review_fields(
     findings: list[ValidationFinding],
     *,
     lifecycle_contract: str | None = None,
+    change_metadata: dict[str, Any] | None = None,
 ) -> None:
     required = (
         "Reviewer authority", "Package kind", "Package members",
@@ -928,11 +941,30 @@ def _validate_package_review_fields(
     if status is not None and status.value not in PACKAGE_REVIEW_OUTCOMES:
         findings.append(ValidationFinding(path=path, line=status.line, mode=mode, message=f"unknown package review outcome '{status.value}'", review_id=review_id))
     member_entries = _package_list(values["Package members"])
-    members = [entry.split("=", 1)[0].strip() for entry in member_entries if "=" in entry and entry.split("=", 1)[1].strip()]
+    member_map = {
+        artifact_id.strip(): artifact_path.strip()
+        for entry in member_entries
+        for artifact_id, separator, artifact_path in [entry.partition("=")]
+        if separator and artifact_id.strip() and artifact_path.strip()
+    }
+    members = list(member_map)
     if not members or len(members) != len(member_entries) or len(members) != len(set(members)):
         findings.append(ValidationFinding(path=path, line=values["Package members"].line if values["Package members"] else None, mode=mode, message="package members must be a non-empty unique artifact-id=path map", review_id=review_id))
-    if stage == "delivery-review" and lifecycle_contract == "stage-owned-change-local-v2" and members != ["plan"]:
-        findings.append(ValidationFinding(path=path, line=values["Package members"].line if values["Package members"] else None, mode=mode, message="v2 Delivery Review package members must contain exactly plan", review_id=review_id))
+    if stage == "delivery-review" and lifecycle_contract == "stage-owned-change-local-v2":
+        states = change_metadata.get("artifact_states") if isinstance(change_metadata, dict) else None
+        primary_plans = [
+            (artifact_id, entry.get("path"))
+            for artifact_id, entry in (states.items() if isinstance(states, dict) else ())
+            if isinstance(entry, dict)
+            and entry.get("kind") == "plan"
+            and entry.get("role") == "primary"
+            and isinstance(entry.get("path"), str)
+        ]
+        expected_members = dict(primary_plans) if len(primary_plans) == 1 else None
+        if expected_members is None:
+            findings.append(ValidationFinding(path=path, line=values["Package members"].line if values["Package members"] else None, mode=mode, message="v2 Delivery Review requires exactly one primary plan registration", review_id=review_id))
+        elif member_map != expected_members:
+            findings.append(ValidationFinding(path=path, line=values["Package members"].line if values["Package members"] else None, mode=mode, message="v2 Delivery Review package members must exactly match the primary plan", review_id=review_id))
     correction_targets = _package_list(values["Correction targets"])
     if len(correction_targets) != len(set(correction_targets)):
         findings.append(ValidationFinding(path=path, line=values["Correction targets"].line if values["Correction targets"] else None, mode=mode, message="package correction targets must be unique", review_id=review_id))
