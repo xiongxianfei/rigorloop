@@ -2,7 +2,9 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
+
+Review closeout: code-review-m5-r2
 
 Review closeout: code-review-m5-r1
 
@@ -22,10 +24,10 @@ Review closeout: design-review-r2
 
 Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m4-r1`, `code-review-m5-r1`
-- Findings resolved: 8
-- Unresolved findings: 2
-- Current result: Both M5 findings are accepted for bounded implementation correction and same-milestone rereview.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m4-r1`, `code-review-m5-r1`, `code-review-m5-r2`
+- Findings resolved: 10
+- Unresolved findings: 0
+- Current result: Code Review M5 R2 found the bounded corrections clean and resolved both M5 findings.
 
 ## Resolution Overview
 
@@ -39,8 +41,8 @@ Review closeout: proposal-review-r3
 | RTS-M1-CR2 | accepted | resolved | Production repository validators now consume the shared classifier and tracked manifest with direct public-boundary proof. |
 | RTS-M2-CR1 | accepted | resolved | The classified lifecycle contract now reaches central automation evaluation, validation, persistence, binding, coordination, and routing. |
 | RTS-M2-CR2 | accepted | resolved | Delivery Review now validates the exact registered primary plan rather than a literal artifact ID. |
-| RTS-M5-CR1 | accepted | open | Remove standalone test-spec from active conditional workflow resources and add direct package regressions. |
-| RTS-M5-CR2 | accepted | open | Make governed plan authoring v2-only and fail closed for manifest-bound v1 authoring. |
+| RTS-M5-CR1 | accepted | resolved | Active conditional workflow resources omit standalone test-spec and direct package regressions protect the route. |
+| RTS-M5-CR2 | accepted | resolved | Governed plan authoring is v2-only and manifest-bound v1 authoring fails closed for Workflow handling. |
 
 ## Finding Details
 
@@ -225,7 +227,7 @@ No material findings. The review confirms that governance and boundary routing a
 
 Finding ID: RTS-M5-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M5 implementer
 Owning stage: review-resolution
 Decision owner: M5 implementer
@@ -235,13 +237,14 @@ Rationale: active packaged resources contradict the activated common workflow an
 Required outcome: remove the route from the conditional workflow resources and cover those resources directly.
 Safe resolution path: update the bounded automation reference and workflow skeleton, add content regressions, and rerun CMD-07, CMD-08, CMD-09, and CMD-13.
 Validation target: `RTS-R1`, `RTS-R2`, `RTS-R17`, `RTS-R23`, `TG-20`, and `TS-013`.
-Follow-up: return corrected M5 to code-review.
+Follow-up: none; Code Review M5 R2 completed the required same-milestone rereview.
+Validation evidence: correction commit `63a8d13f`; 378 skill tests, 8 build tests, 154 adapter-distribution tests, explicit lifecycle validation, and 12 broad-smoke checks passed; Code Review M5 R2 found the correction clean.
 
 #### RTS-M5-CR2
 
 Finding ID: RTS-M5-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M5 implementer
 Owning stage: review-resolution
 Decision owner: M5 implementer
@@ -251,4 +254,9 @@ Rationale: every resumable v1 record is post-delivery and the referenced skill n
 Required outcome: make governed plan authoring v2-only and fail closed for manifest-bound v1 authoring.
 Safe resolution path: update the governed plan reference, add a direct regression, and rerun CMD-07, CMD-08, and CMD-13.
 Validation target: `RTS-R1`, `RTS-R2`, `RTS-R20`, `RTS-R22`, `TG-18`, and `TS-005`.
-Follow-up: return corrected M5 to code-review.
+Follow-up: none; Code Review M5 R2 completed the required same-milestone rereview.
+Validation evidence: correction commit `63a8d13f`; direct canonical, generated-mirror, and supported-adapter assertions passed; Code Review M5 R2 confirmed the v2-only handoff and v1 fail-closed boundary.
+
+### code-review-m5-r2
+
+No material findings. The clean rereview confirms that `RTS-M5-CR1` and `RTS-M5-CR2` are resolved and supports M5 settlement against correction commit `63a8d13f`.

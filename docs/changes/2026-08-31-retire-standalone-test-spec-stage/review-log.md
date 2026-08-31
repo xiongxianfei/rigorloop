@@ -33,6 +33,18 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-m5-r2
+Stage: code-review
+Round: r2
+Status: clean-with-notes
+Detailed record: reviews/code-review-m5-r2.md
+Resolution: review-resolution.md#code-review-m5-r2
+Material findings: none
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m5-r1
 Stage: code-review
 Round: r1
@@ -42,7 +54,7 @@ Resolution: review-resolution.md#code-review-m5-r1
 Material findings: RTS-M5-CR1, RTS-M5-CR2
 Finding ID: RTS-M5-CR1
 Finding ID: RTS-M5-CR2
-Open findings: RTS-M5-CR1, RTS-M5-CR2
+Open findings: none
 Recording status: recorded
 
 ### Review entry
