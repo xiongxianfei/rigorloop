@@ -75,7 +75,7 @@ review_packages:
     upstream_review_id: proposal-review-r3
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
@@ -114,7 +114,7 @@ workflow_state:
         state: closed
       M5:
         kind: implementation
-        state: planned
+        state: implementing
       M6:
         kind: lifecycle-closeout
         state: planned
