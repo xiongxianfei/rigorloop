@@ -2,16 +2,14 @@ import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 
-import { canonicalJson, parseLifecycleYaml } from "./lifecycle-contract.js";
+import { allowedArtifactKinds, allowedCorrectionDestinations, canonicalJson, correctionStageOrder, parseLifecycleYaml } from "./lifecycle-contract.js";
 import { packageProjection, readPackageReview, reviewPackageContext } from "./lifecycle-packages.js";
 import { stageTransitionDecision } from "./lifecycle-stage-routing.js";
 
 const REVIEW_OUTCOMES = new Set(["approved", "changes-requested", "blocked", "inconclusive", "clean-with-notes"]);
 const RESOLUTION_DISPOSITIONS = new Set(["accepted", "rejected", "deferred", "partially-accepted", "needs-decision"]);
-const ARTIFACT_KINDS = new Set(["proposal", "spec", "architecture", "adr", "plan", "test-spec"]);
 const ARTIFACT_ROLES = new Set(["primary", "supporting"]);
-const CORRECTION_STAGE_ORDER = ["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"];
-const GOVERNED_LIFECYCLE_CONTRACT = /^lifecycle_contract:\s*(?:stage-owned-change-local-v1|"stage-owned-change-local-v1"|'stage-owned-change-local-v1')\s*(?:#.*)?$/m;
+const GOVERNED_LIFECYCLE_CONTRACT = /^lifecycle_contract:\s*(?:stage-owned-change-local-v[12]|"stage-owned-change-local-v[12]"|'stage-owned-change-local-v[12]')\s*(?:#.*)?$/m;
 
 function operationError(code, summary, invariant, identities = [], correctiveOperation = null) {
   const error = new Error(`${code}: ${summary}`);
@@ -106,7 +104,7 @@ function artifactOwners(root, artifactPath) {
     let candidate;
     try { candidate = parseLifecycleYaml(source); }
     catch { throw operationError("RL_ARTIFACT_PATH_OWNED", "artifact ownership cannot be determined from an unreadable change record", "cross-change-artifact-ownership", [entry.changeId]); }
-    if (candidate.lifecycle_contract !== "stage-owned-change-local-v1") continue;
+    if (!["stage-owned-change-local-v1", "stage-owned-change-local-v2"].includes(candidate.lifecycle_contract)) continue;
     const registrations = candidate.lifecycle_cli?.artifacts ?? {};
     for (const [artifactId, registration] of Object.entries(registrations)) {
       const projected = candidate.artifact_states?.[artifactId];
@@ -142,7 +140,7 @@ function expectedAuthorAuthority(kind) {
 function migrateArtifactRegistrations(root, change) {
   const registrations = {};
   for (const [artifactId, entry] of Object.entries(change.artifact_states ?? {})) {
-    if (!entry || !ARTIFACT_KINDS.has(entry.kind) || !ARTIFACT_ROLES.has(entry.role) || !entry.path) {
+    if (!entry || !allowedArtifactKinds(change).includes(entry.kind) || !ARTIFACT_ROLES.has(entry.role) || !entry.path) {
       throw operationError("RL_UNSUPPORTED_SCHEMA", "legacy artifact cannot be migrated without a supported kind, role, and path", "migration-artifact-shape", [artifactId, String(entry?.kind), String(entry?.role), String(entry?.path)]);
     }
     const identity = artifactIdentity(root, entry);
@@ -480,8 +478,10 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       throw operationError("RL_CORRECTION_ROUTE_INVALID", "a conflicting correction route is already active", "active-correction-route", [state.active_correction.route_id]);
     }
     if (workflow.current_stage !== request.source_stage || request.return_stage !== request.source_stage) throw operationError("RL_CORRECTION_ROUTE_INVALID", "route source and return stage must match current workflow stage", "correction-source", [String(workflow.current_stage), request.source_stage, request.return_stage]);
-    const sourceIndex = CORRECTION_STAGE_ORDER.indexOf(request.source_stage);
-    const destinationIndex = CORRECTION_STAGE_ORDER.indexOf(request.destination_stage);
+    if (!allowedCorrectionDestinations(next).has(request.destination_stage)) throw operationError("RL_CORRECTION_ROUTE_INVALID", `correction destination: unknown_value ${String(request.destination_stage)}`, "correction-destination", [String(request.destination_stage)]);
+    const stageOrder = correctionStageOrder(next);
+    const sourceIndex = stageOrder.indexOf(request.source_stage);
+    const destinationIndex = stageOrder.indexOf(request.destination_stage);
     if (sourceIndex < 0 || destinationIndex < 0 || destinationIndex >= sourceIndex) throw operationError("RL_CORRECTION_ROUTE_INVALID", "correction destination must precede the source stage", "correction-order", [request.source_stage, request.destination_stage]);
     const packageKind = ["design-review", "delivery-review"].includes(request.source_stage) ? request.source_stage.replace(/-review$/, "") : null;
     const packageReview = packageKind ? state.package_reviews?.[packageKind] : null;
@@ -613,6 +613,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
   }
 
   if (request.operation === "record-artifact-revision") {
+    if (!allowedArtifactKinds(next).includes(request.artifact_kind)) throw operationError("RL_INVALID_REQUEST", `artifact_kind: unknown_value ${String(request.artifact_kind)}`, "artifact-kind", [String(request.artifact_kind)]);
     if (state.active_correction && state.active_correction.destination_artifact_id !== request.artifact_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "only the routed destination artifact may be revised", "correction-destination", [request.artifact_id, state.active_correction.destination_artifact_id]);
     if (state.active_correction) {
       const atDestination = next.workflow_state?.current_stage === state.active_correction.destination_stage;

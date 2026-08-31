@@ -284,8 +284,9 @@ export function executeLifecycleCli(args, options = {}) {
   const context = parsed.operation === "context" ? contextForStage(interpreted, parsed.stage) : null;
   const routeIssue = context?.route_required ? lifecycleDiagnostic("RL_WORKFLOW_ROUTE_REQUIRED", `Workflow must route from ${context.route_required.current_stage} to ${context.route_required.requested_stage} before authoring can begin.`, "correction-route-ownership", "route-correction", context.route_required.finding_ids) : null;
   const packageIssue = context?.review_package?.errors?.[0] ?? null;
+  const contextIssue = context?.errors?.[0] ?? null;
   const result = baseResult(parsed.operation, {
-    status: interpreted.errors.length ? "error" : interpreted.blockers.length || routeIssue || packageIssue ? "blocked" : "success",
+    status: interpreted.errors.length || contextIssue ? "error" : interpreted.blockers.length || routeIssue || packageIssue ? "blocked" : "success",
     change_id: interpreted.change_id,
     lifecycle_revision: interpreted.lifecycle_revision,
     effective_state: interpreted.effective_state,
@@ -293,8 +294,8 @@ export function executeLifecycleCli(args, options = {}) {
     permitted_operations: interpreted.permitted_operations,
     artifacts: interpreted.artifacts,
     warnings: interpreted.warnings,
-    errors: [...interpreted.errors, ...(routeIssue ? [routeIssue] : []), ...(packageIssue ? [packageIssue] : [])],
-    ...((routeIssue || packageIssue) ? { blockers: [...interpreted.blockers, ...(routeIssue ? [routeIssue] : []), ...(packageIssue ? [packageIssue] : [])] } : {}),
+    errors: [...interpreted.errors, ...(routeIssue ? [routeIssue] : []), ...(packageIssue ? [packageIssue] : []), ...(contextIssue ? [contextIssue] : [])],
+    ...((routeIssue || packageIssue || contextIssue) ? { blockers: [...interpreted.blockers, ...(routeIssue ? [routeIssue] : []), ...(packageIssue ? [packageIssue] : []), ...(contextIssue ? [contextIssue] : [])] } : {}),
     ...(context ? { context } : {}),
     ...(parsed.operation === "validate" ? { validation: { valid: interpreted.errors.length === 0, checks: ["schema", "artifacts", "evidence", "findings", "milestones"] } } : {}),
   });

@@ -26,6 +26,9 @@ from workflow_automation_policy import (
     TransitionGuard,
     WorkflowPosition,
     WorkflowStage,
+    public_target_stages_for_contract,
+    stage_policy_by_stage_for_contract,
+    transition_rules_for_contract,
     evaluate_transition,
     is_immediate_predecessor,
     validate_policy_registry,
@@ -33,6 +36,18 @@ from workflow_automation_policy import (
 
 
 class WorkflowAutomationPolicyTests(unittest.TestCase):
+    def test_v2_policy_removes_test_spec_and_routes_plan_to_delivery_review(self) -> None:
+        targets = public_target_stages_for_contract("stage-owned-change-local-v2")
+        self.assertNotIn(WorkflowStage.TEST_SPEC, targets)
+        policies = stage_policy_by_stage_for_contract("stage-owned-change-local-v2")
+        self.assertNotIn("test-spec", policies)
+        self.assertEqual(policies["delivery-review"].required_input_identities, frozenset({"design-review", "plan"}))
+        edges = {(rule.from_position, rule.operation) for rule in transition_rules_for_contract("stage-owned-change-local-v2")}
+        self.assertIn((WorkflowPosition.PLAN, WorkflowStage.DELIVERY_REVIEW), edges)
+        self.assertNotIn((WorkflowPosition.PLAN, WorkflowStage.TEST_SPEC), edges)
+        with self.assertRaisesRegex(ValueError, "unknown_value"):
+            public_target_stages_for_contract("future-v9")
+
     def test_registry_has_exactly_one_complete_policy_per_stage(self) -> None:
         expected = set(PUBLIC_TARGET_STAGES) | set(INTERNAL_STAGES)
         self.assertEqual({policy.stage for policy in STAGE_POLICIES}, expected)

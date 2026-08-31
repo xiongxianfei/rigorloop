@@ -77,6 +77,13 @@ test("v2 contract rejects active standalone test-spec state", () => {
     }, classificationFixture.active_manifest),
     /active test-spec state/,
   );
+  assert.throws(
+    () => classifyLifecycleContract("new-v2", {
+      lifecycle_contract: LIFECYCLE_CONTRACT_V2,
+      lifecycle_cli: { reviews: { "test-spec": { stage_authority: "test-spec-review" } } },
+    }, classificationFixture.active_manifest),
+    /active test-spec state/,
+  );
 });
 
 test("contract classification ignores heuristic dates stages artifacts git and network facts", () => {

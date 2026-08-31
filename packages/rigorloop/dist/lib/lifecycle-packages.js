@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readFileSync } from "node:fs";
 import { relative, resolve, sep } from "node:path";
 
-import { canonicalJson } from "./lifecycle-contract.js";
+import { canonicalJson, lifecycleContractVersion, LIFECYCLE_CONTRACT_V2 } from "./lifecycle-contract.js";
 
 export const REVIEW_PACKAGE_KINDS = Object.freeze(["design", "delivery"]);
 export const REVIEW_PACKAGE_OUTCOMES = Object.freeze(["approved", "changes-requested", "blocked", "inconclusive"]);
@@ -53,8 +53,9 @@ function currentMembers(change, kind) {
   }
   if (kind === "delivery") {
     const plans = primary("plan");
-    const tests = primary("test-spec");
     if (plans.length !== 1) return { error: diagnostic("RL_OPERATION_NOT_PERMITTED", "Delivery package requires exactly one primary plan artifact.", "review-package-membership", plans.map(([id]) => id)) };
+    if (lifecycleContractVersion(change) === LIFECYCLE_CONTRACT_V2) return { entries: [plans[0]] };
+    const tests = primary("test-spec");
     if (tests.length !== 1) return { error: diagnostic("RL_OPERATION_NOT_PERMITTED", "Delivery package requires exactly one primary test specification artifact.", "review-package-membership", tests.map(([id]) => id)) };
     return { entries: [plans[0], tests[0]] };
   }

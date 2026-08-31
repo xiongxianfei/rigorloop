@@ -973,10 +973,15 @@ def _package_members(document: dict[str, Any], kind: str) -> dict[str, str] | No
         selected = [architecture[0], spec[0], *adrs]
     else:
         plan = members_for("plan", "primary")
-        test_spec = members_for("test-spec", "primary")
-        if len(plan) != 1 or len(test_spec) != 1:
+        if len(plan) != 1:
             return None
-        selected = [plan[0], test_spec[0]]
+        if document.get("lifecycle_contract") == "stage-owned-change-local-v2":
+            selected = [plan[0]]
+        else:
+            test_spec = members_for("test-spec", "primary")
+            if len(test_spec) != 1:
+                return None
+            selected = [plan[0], test_spec[0]]
     if any(not isinstance(entry.get("path"), str) for _, entry in selected):
         return None
     return {artifact_id: entry["path"] for artifact_id, entry in selected}

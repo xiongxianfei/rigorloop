@@ -2152,6 +2152,31 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                 )
                 self.assertFails(root, expected)
 
+    def test_v2_rejects_test_spec_review_and_delivery_member(self) -> None:
+        cases = (
+            ("test-spec-review", test_spec_review_text(), "test-spec-review: unknown_value"),
+            ("delivery-review", package_review_text(stage="delivery-review", status="changes-requested", scope="cross-artifact"), "v2 Delivery Review package members must contain exactly plan"),
+        )
+        for stage, source, expected in cases:
+            with self.subTest(stage=stage):
+                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-v2-{stage}-"))
+                self.addCleanupTree(root)
+                write_text(root / "change.yaml", "lifecycle_contract: stage-owned-change-local-v2\n")
+                review_id = f"{stage}-r1"
+                write_text(root / "reviews" / f"{review_id}.md", source)
+                write_text(
+                    root / "review-log.md",
+                    review_log_text(
+                        review_id=review_id,
+                        stage=stage,
+                        status="changes-requested",
+                        detailed_record=f"reviews/{review_id}.md",
+                        material_findings="PKG-1" if stage == "delivery-review" else "none",
+                        open_findings="PKG-1" if stage == "delivery-review" else "none",
+                    ),
+                )
+                self.assertFails(root, expected)
+
     def test_proposal_review_requires_one_known_vision_alignment(self) -> None:
         for outcome in (
             "aligned",

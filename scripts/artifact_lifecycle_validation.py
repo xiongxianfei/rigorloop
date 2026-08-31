@@ -872,7 +872,7 @@ def _extract_change_yaml_refs(root: Path, path: Path, tracked_revision: str | No
         data = _parse_change_yaml_text(text)
     except Exception:
         data = None
-    if isinstance(data, dict) and data.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
+    if isinstance(data, dict) and data.get("lifecycle_contract") in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}:
         states = data.get("artifact_states")
         if isinstance(states, dict):
             for entry in states.values():
@@ -2080,16 +2080,16 @@ def validate_repository(
                         )
                     continue
 
-        is_stage_owned_v1 = (
+        is_stage_owned = (
             lifecycle_classification is not None
-            and lifecycle_classification["contract_class"] == LIFECYCLE_CONTRACT_V1
+            and lifecycle_classification["contract_class"] in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}
         ) or (
             lifecycle_classification is None
             and not activation_manifest_present
             and isinstance(metadata, dict)
             and metadata.get("lifecycle_contract") == STAGE_OWNED_CONTRACT
         )
-        if isinstance(metadata, dict) and is_stage_owned_v1:
+        if isinstance(metadata, dict) and is_stage_owned:
             stage_owned_records.add(path)
             for message in validate_stage_owned_lifecycle_metadata(metadata):
                 if message in metadata_error_messages:

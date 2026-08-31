@@ -232,6 +232,23 @@ Change ID: 2026-07-20-example
 
 
 class WorkflowAutomationEngineTests(unittest.TestCase):
+    def test_v2_authoring_route_skips_test_spec_and_rejects_it_as_a_target(self) -> None:
+        decision = evaluate_non_public_authoring_route(
+            current_stage="plan",
+            target_stage="delivery-review",
+            capability_kind="post-proposal-authoring",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            lifecycle_contract="stage-owned-change-local-v2",
+        )
+        self.assertEqual((decision.status, decision.next_stage), ("continue", "delivery-review"))
+        with self.assertRaisesRegex(AutomationContractError, "public target"):
+            bind_target(
+                "test-spec",
+                bound_at="2026-07-22T00:00:00Z",
+                lifecycle_contract="stage-owned-change-local-v2",
+            )
+
     def test_preserved_implementation_correction_recipe_vocabulary_compiles(self) -> None:
         mechanical_kinds = {
             "formatter-output",
