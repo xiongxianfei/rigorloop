@@ -4,6 +4,8 @@
 
 Closeout status: closed
 
+Review closeout: code-review-pr-amendment-r1
+
 Review closeout: code-review-final-r2
 
 Review closeout: code-review-m5-r2
@@ -26,10 +28,10 @@ Review closeout: design-review-r2
 
 Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m4-r1`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-final-r1`, `code-review-final-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m4-r1`, `code-review-m5-r1`, `code-review-m5-r2`, `code-review-final-r1`, `code-review-final-r2`, `code-review-pr-amendment-r1`
 - Findings resolved: 10
 - Unresolved findings: 0
-- Current result: Final Code Review R2 found the bounded RTS-VRF1 correction clean with no material findings.
+- Current result: PR Amendment Code Review R1 found the repository-wide dependency ignore rule clean with no material findings.
 
 ## Resolution Overview
 
@@ -270,3 +272,7 @@ No material findings. The final holistic review confirms that the M1-M5 slices c
 ### code-review-final-r2
 
 No material findings. The rereview confirms that the bounded correction removes retired test-spec consumers from the active boundary-first projection, preserves historical grandfathering, and keeps projection failure tests valid for the live target count.
+
+### code-review-pr-amendment-r1
+
+No material findings. The review confirms that the root `node_modules/` rule ignores generated dependency trees while keeping package manifests and lockfiles trackable.

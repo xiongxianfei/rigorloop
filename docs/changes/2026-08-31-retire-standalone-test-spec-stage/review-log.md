@@ -33,6 +33,18 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-pr-amendment-r1
+Stage: code-review
+Round: r1
+Status: clean-with-notes
+Detailed record: reviews/code-review-pr-amendment-r1.md
+Resolution: review-resolution.md#code-review-pr-amendment-r1
+Material findings: none
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-final-r2
 Stage: code-review
 Round: r2
