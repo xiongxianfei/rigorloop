@@ -14,7 +14,7 @@ External runtime instructions still outrank repository artifacts. Within the rep
 2. approved feature specs in `specs/`
 3. approved architecture and ADR documents under `docs/architecture/` and `docs/adr/`
 4. active execution plans under `docs/plans/`
-5. matching test specs in `specs/*.test.md`
+5. matching test specs in `specs/*.test.md` for manifest-bound v1 continuation
 6. workflow summaries such as `docs/workflows.md`
 7. `AGENTS.md`
 8. code, scripts, schemas, and tracked fixtures
@@ -54,7 +54,7 @@ Specs MUST define non-goals and compatibility expectations for behavior-changing
 
 ## Test-driven rules
 
-Before implementing non-trivial behavior changes, contributors MUST read the matching test spec when one exists.
+Before implementing a manifest-bound v1 continuation, contributors MUST read its matching test spec. V2 work reads verification allocation from the approved plan.
 
 For non-trivial work, the test spec MUST operationalize the approved feature spec and MUST NOT override it.
 
@@ -125,7 +125,7 @@ Deprecations or removed paths MUST be reflected in contributor-facing docs in th
 
 ## Verification rules
 
-Before PR, contributors MUST run the repository-owned validation commands required by the active plan, matching test spec, or workflow docs.
+Before PR, contributors MUST run the repository-owned validation commands required by the active plan, any registered v1 test spec, or workflow docs.
 
 When `scripts/ci.sh` is the repository-wide validation wrapper, contributors SHOULD run it unless the task is intentionally narrower and the plan or test spec names a smaller proof scope first.
 
@@ -149,7 +149,7 @@ Until repository-specific release checks replace the current conservative templa
 
 The following consolidated package-gate rules are current.
 
-During preactivation, delivery authority is lifecycle-contract keyed. `stage-owned-change-local-v1` retains its exact plan-plus-test-spec Delivery Review package. `stage-owned-change-local-v2` uses one exact plan-only Delivery Review package in which the plan owns verification allocation. Newly governed changes MUST remain v1 until the coherent M5 activation; historical prior-contract artifacts remain readable and MUST NOT authorize test-spec under v2.
+Delivery authority is lifecycle-contract keyed. New governed changes MUST use `stage-owned-change-local-v2` and one exact plan-only Delivery Review package in which the plan owns verification allocation. `stage-owned-change-local-v1` changes frozen in `specs/lifecycle-contract-activation.yaml` MAY continue only from their registered post-delivery package. Historical prior-contract artifacts remain readable and MUST NOT authorize new test-spec work.
 
 `proposal-review` MUST evaluate proposal direction, scope, and embedded feasibility before design work for governed changes.
 
@@ -157,7 +157,7 @@ During preactivation, delivery authority is lifecycle-contract keyed. `stage-own
 
 `delivery-review` MUST independently approve the exact contract-selected delivery package before implementation.
 
-Architecture, specification, and plan authorship remain separate. Registered v1 test-specification authorship also remains separate. A package reviewer MUST NOT edit and approve the artifacts it reviews.
+Architecture, specification, and plan authorship remain separate. Historical registered v1 test-specification evidence remains a separate record. A package reviewer MUST NOT edit and approve the artifacts it reviews.
 
 `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` are retired as progression entrypoints. Historical evidence remains readable but does not grant package authority.
 

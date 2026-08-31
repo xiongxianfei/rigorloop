@@ -42,7 +42,6 @@ OPENCODE_COMMAND_ALIASES = (
     "spec",
     "design-review",
     "plan",
-    "test-spec",
     "delivery-review",
     "implement",
     "code-review",
@@ -85,7 +84,6 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "proposal-review",
     "research",
     "spec",
-    "test-spec",
     "verify",
     "vision",
     "workflow",
@@ -93,9 +91,7 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
 RETIRED_PROGRESSION_SKILLS = frozenset(
     {"spec-review", "architecture-review", "plan-review", "test-spec-review"}
 )
-POST_CUTOVER_ADAPTER_SKILLS = tuple(
-    PUBLISHED_SKILL_INVOCATION_NAMES
-)
+POST_CUTOVER_ADAPTER_SKILLS = PUBLISHED_SKILL_INVOCATION_NAMES
 STAGED_V2_ADAPTER_SKILLS = tuple(
     name for name in POST_CUTOVER_ADAPTER_SKILLS if name != "test-spec"
 )
@@ -472,7 +468,7 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     expected_command_blocks = (
         "- `$workflow auto: <target-stage>` selects a structured target. Supported "
         "targets are `proposal-review`, `architecture`, `spec`, `design-review`, "
-        "`plan`, `test-spec`, `delivery-review`, `implement`, `code-review`, and "
+        "`plan`, `delivery-review`, `implement`, `code-review`, and "
         "`verify`.\n",
         "- `$workflow auto: status` is read-only. `$workflow auto: off` durably "
         "cancels the unified run and preserves transition evidence.\n",

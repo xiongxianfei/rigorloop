@@ -28,7 +28,7 @@ Do not choose product direction, replace a missing specification, implement code
 - role_name: plan
 - stage: authoring
 - upstream: accepted proposal, approved specification, architecture or ADRs when relevant, and project-local workflow evidence
-- downstream: delivery-review; prior-contract v1 changes may still use their registered test-spec route
+- downstream: delivery-review; manifest-bound v1 changes are already post-delivery and do not re-enter planning
 - summary: Own stable plan content and its authoring transition; initialize approved plan work only through the governed operation.
 - must_not_claim: implementation completion, review approval, verification, branch readiness, PR readiness, final closeout, or Done
 
@@ -37,7 +37,7 @@ Do not choose product direction, replace a missing specification, implement code
 Classify the invocation before writing.
 
 - Portable planning has no exact governed change authority. It writes the plan and navigation only; it does not read or mutate `change.yaml` as lifecycle state.
-- Governed planning requires one exact supported lifecycle contract, settled prerequisites, plan-owned authority, and a deterministic plan path. Load `references/governed-plan-authoring.md` and select exactly one operation: `create-primary-plan`, `revise-primary-plan`, or `initialize-approved-plan`. V1 retains its registered test-spec handoff; v2 hands the exact plan directly to Delivery Review.
+- Governed planning requires v2, settled prerequisites, plan-owned authority, and a deterministic plan path. Load `references/governed-plan-authoring.md` and select exactly one operation: `create-primary-plan`, `revise-primary-plan`, or `initialize-approved-plan`. Hand the exact plan directly to Delivery Review.
 - Boundary-first procedure is additive. Load its reference only under the mapped trigger.
 
 Conversational wording, resource availability, or an automation command does not establish governed authority. Missing, stale, conflicting, or ambiguous authority stops before dependent writes. Manual and workflow-managed execution use the same plan-owned write boundary; only workflow may coordinate later stages or routing.
@@ -91,7 +91,7 @@ Plan surfaces are distinct: `docs/workflows.md` maps project-local workflow and 
 4. Copy the mapped structural assets, fill every applicable field, and omit no required execution intent.
 5. For governed work, follow the loaded reference for create, revise, or approved-plan initialization and validate the complete candidate state.
 6. Check traceability, sequencing, scope completeness, rollback, source readability, and absence of mutable plan state.
-7. Record plan-owned authoring evidence and hand the plan to `delivery-review`. Prior-contract v1 work follows its registered test-spec route. Do not settle review or advance routing.
+7. Record plan-owned authoring evidence and hand the plan to `delivery-review`. Do not settle review or advance routing. Manifest-bound v1 work never re-enters authoring.
 
 ## Boundary-first method
 
@@ -104,7 +104,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. Under v2, a pre-implementation verification-allocation gap routes to `plan`; under registered v1, a proof-map gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
@@ -169,7 +169,7 @@ Produce or update the stable plan body, its navigation link when needed, plan-ow
 
 ## Handoff
 
-Normal next stage: `delivery-review`. A registered prior-contract v1 change retains its required `test-spec` handoff.
+Normal next stage: `delivery-review`. Manifest-bound v1 work continues only from its already registered post-delivery package.
 
 Conditional next stages: return to `spec` or `architecture` for a blocking upstream gap, or to `workflow` for governed migration or coordination. Plan never marks Delivery Review clean or initializes routing.
 
@@ -193,4 +193,4 @@ Use the mapped assets as the sole full-plan, milestone, and decision-row structu
 - Status: <created | updated | initialized | blocked>
 - Artifacts changed: <paths or none>
 - Open blockers: <blockers or none>
-- Next stage: <delivery-review | test-spec for prior-contract v1 | spec | architecture | workflow | blocked>
+- Next stage: <delivery-review | spec | architecture | workflow | blocked>

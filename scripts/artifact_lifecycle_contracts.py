@@ -136,14 +136,26 @@ def validate_lifecycle_activation_prerequisites(
         review_packages = change.get("review_packages")
         delivery = review_packages.get("delivery") if isinstance(review_packages, dict) else None
         members = delivery.get("members") if isinstance(delivery, dict) else None
-        if not (
+        consolidated_delivery_ready = (
             isinstance(delivery, dict)
             and delivery.get("status") == "approved"
             and delivery.get("authority") == "granted"
             and isinstance(members, dict)
             and any(isinstance(path, str) and path.startswith("docs/plans/") for path in members.values())
             and any(isinstance(path, str) and path.startswith("specs/") and path.endswith(".test.md") for path in members.values())
-        ):
+        )
+        artifact_states = change.get("artifact_states")
+        primary_approved_kinds = {
+            artifact.get("kind")
+            for artifact in artifact_states.values()
+            if isinstance(artifact_states, dict)
+            and isinstance(artifact, dict)
+            and artifact.get("role") == "primary"
+            and isinstance(artifact.get("review"), dict)
+            and artifact["review"].get("outcome") == "approved"
+        } if isinstance(artifact_states, dict) else set()
+        legacy_delivery_ready = {"plan", "test-spec"}.issubset(primary_approved_kinds)
+        if not (consolidated_delivery_ready or legacy_delivery_ready):
             blocking_ids.append(change_id)
 
     if blocking_ids:

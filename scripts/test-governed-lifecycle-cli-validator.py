@@ -122,5 +122,25 @@ class WrapperExecutionTests(unittest.TestCase):
             )
             self.assertEqual(MODULE.legacy_progression_dependency(path), [])
 
+    def test_active_inventory_rejects_unfrozen_change(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "specs").mkdir()
+            (root / "docs" / "changes" / "old").mkdir(parents=True)
+            (root / "docs" / "changes" / "new").mkdir(parents=True)
+            (root / "docs" / "changes" / "old" / "change.yaml").write_text("{}\n", encoding="utf-8")
+            (root / "docs" / "changes" / "new" / "change.yaml").write_text("{}\n", encoding="utf-8")
+            manifest = {
+                "schema_version": 1,
+                "state": "active",
+                "activating_source_revision": "a" * 40,
+                "changes": [{"change_id": "old", "contract_class": "legacy-unversioned"}],
+            }
+            (root / "specs" / "lifecycle-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
+            self.assertEqual(
+                MODULE.activation_inventory_errors(root, loader=lambda path: {}),
+                ["activation inventory mismatch: missing=['new'], extra=[], class_mismatch=[]"],
+            )
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

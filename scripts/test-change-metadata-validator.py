@@ -2444,6 +2444,23 @@ class LifecycleContractClassificationTests(unittest.TestCase):
         }
         self.assertEqual(validate_lifecycle_activation_prerequisites(manifest, records), [])
 
+    def test_activation_prerequisites_accept_legacy_plan_and_test_spec_reviews(self) -> None:
+        manifest = copy.deepcopy(self.fixture["active_manifest"])
+        records = {
+            "Z-change": {"lifecycle_contract": "stage-owned-change-local-v1", "workflow_state": {"lifecycle_state": "completed"}},
+            "a-change": {"workflow_state": {"lifecycle_state": "completed"}},
+            "legacy": {"workflow_state": {"lifecycle_state": "completed"}},
+            "v1": {
+                "lifecycle_contract": "stage-owned-change-local-v1",
+                "workflow_state": {"lifecycle_state": "active", "current_stage": "verify"},
+                "artifact_states": {
+                    "plan": {"kind": "plan", "role": "primary", "path": "docs/plans/v1.md", "review": {"outcome": "approved"}},
+                    "test-spec": {"kind": "test-spec", "role": "primary", "path": "specs/v1.test.md", "review": {"outcome": "approved"}},
+                },
+            },
+        }
+        self.assertEqual(validate_lifecycle_activation_prerequisites(manifest, records), [])
+
     def test_activation_prerequisites_reject_unknown_state_before_readiness(self) -> None:
         manifest = copy.deepcopy(self.fixture["active_manifest"])
         records = {

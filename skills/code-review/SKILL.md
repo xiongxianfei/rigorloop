@@ -59,7 +59,7 @@ Read the target, tracked authority, current milestone, tests, and relevant valid
 
 ## Review authority and evidence
 
-Inspect the actual changed files, staged or unstaged diff, commit range, PR diff, or other explicit target. Read the approved spec, matching test spec, stable plan milestone, relevant architecture or ADR, related tests, and named validation evidence. For planned work, read `change.yaml` for current milestone and handoff state; use the plan only for stable intent and `review-resolution.md` for prior-finding disposition.
+Inspect the actual changed files, staged or unstaged diff, commit range, PR diff, or other explicit target. Read the approved spec, stable plan milestone, relevant architecture or ADR, related tests, named validation evidence, and a matching test spec only for manifest-bound v1 continuation. For planned work, read `change.yaml` for current milestone and handoff state; use the plan only for stable intent and `review-resolution.md` for prior-finding disposition.
 
 For work governed by consolidated gates, require the current approved Design Review ID and its exact member map plus the current approved Delivery Review ID and its exact member map. Treat review-required, partial, stale, or historical artifact-review evidence as non-authorizing. These package inputs strengthen implementation review but do not merge Code Review with Design Review, Delivery Review, or Verify.
 
@@ -220,7 +220,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. Under v2, a pre-implementation verification-allocation gap routes to `plan`; under registered v1, a proof-map gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 

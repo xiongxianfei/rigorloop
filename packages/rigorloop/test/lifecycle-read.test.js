@@ -12,10 +12,16 @@ import { lifecycleRevision, packageContext, packageRepository, writePackageRevie
 
 async function repository(changeIds = ["example"], overrides = {}) {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-lifecycle-read-"));
+  mkdirSync(join(root, "docs", "changes"), { recursive: true });
+  mkdirSync(join(root, "specs"), { recursive: true });
+  writeFileSync(
+    join(root, "specs", "lifecycle-contract-activation.yaml"),
+    `${JSON.stringify({ schema_version: 1, state: "preactivation", activating_source_revision: null, changes: [] }, null, 2)}\n`,
+    "utf8",
+  );
   for (const changeId of changeIds) {
     const changeRoot = join(root, "docs", "changes", changeId);
     mkdirSync(changeRoot, { recursive: true });
-    mkdirSync(join(root, "specs"), { recursive: true });
     const specPath = join(root, "specs", `${changeId}.md`);
     writeFileSync(specPath, `# ${changeId}\n`, "utf8");
     const change = {
