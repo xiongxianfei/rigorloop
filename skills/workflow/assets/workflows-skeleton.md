@@ -36,7 +36,6 @@ proposal
 -> spec
 -> design-review
 -> plan
--> test-spec
 -> delivery-review
 -> implement
 -> code-review
@@ -77,12 +76,6 @@ artifact_locations:
     path: specs/<slug>.md
     required_when: feature behavior requires a durable contract
     notes: approved feature contract
-
-  test_spec:
-    owner: test-spec
-    path: specs/<slug>.test.md
-    required_when: proof map is required before implementation
-    notes: active proof-planning surface
 
   architecture_record:
     owner: architecture
@@ -164,7 +157,6 @@ artifact_locations:
 | Workflow guide | `docs/workflows.md` | `workflow` | RigorLoop is adopted or routing needs local guide | This file |
 | Proposals | `docs/proposals/<change-id>.md` | `proposal` | Proposal stage | Decision artifact |
 | Specs | `specs/<slug>.md` | `spec` | Spec stage | Behavior contract |
-| Test specs | `specs/<slug>.test.md` | `test-spec` | Test-spec stage | Active proof map |
 | Architecture | `docs/architecture/<scope>/architecture.md` | `architecture` | Architecture required | Architecture package |
 | ADRs | `docs/adr/ADR-YYYYMMDD-<slug>.md` | `architecture` | Durable architecture decision | ADR |
 | Plan index | `docs/plan.md` | `plan` / `workflow` | Planning exists | Global index |
