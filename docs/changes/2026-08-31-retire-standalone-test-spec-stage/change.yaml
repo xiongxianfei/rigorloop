@@ -80,7 +80,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M3
+    current_milestone: M4
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -108,7 +108,7 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: review-requested
+        state: closed
       M4:
         kind: implementation
         state: planned
@@ -120,7 +120,6 @@ workflow_state:
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M3
       - M4
       - M5
 workflow: {}
@@ -318,6 +317,26 @@ lifecycle_cli:
       review_record_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m2-r2.md
       review_recording_status: recorded
       review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M3:
+      completion_fingerprint: b0e33509efed237579864de1ecd3ea825e6bc32df53a0beacb07b53f931539a2
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/m3-verification-ownership.md
+      evidence_sha256: 746abd20224f107268ff1e028c4cb5c206ed4916710b31437ca3216f914db1df
+      milestone_id: M3
+      review_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m3-r1.md
+      review_evidence_sha256: 880f89f16ca9da41c8e6ca7e31b0ffff830c9fd2b5700affafbfcd5c65521bb7
+      review_id: code-review-m3-r1
+      review_log_entry_sha256: b6cf1c1cb9b71b4426dd9716dc18ee86a567d827af9c3fce63500dec548fca11
+      review_log_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m3-r1.md
+      review_recording_status: recorded
+      review_round: r1
       review_stage: code-review
       stage_authority: workflow
   package_reviews:
