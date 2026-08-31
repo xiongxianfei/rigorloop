@@ -2,9 +2,9 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
-Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 Review closeout: delivery-review-r3
 
@@ -12,10 +12,10 @@ Review closeout: design-review-r2
 
 Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`
-- Findings resolved: 4
-- Unresolved findings: 2
-- Current result: Code Review M1 R1 requested changes for Python classifier parity and production repository-validator integration.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`
+- Findings resolved: 6
+- Unresolved findings: 0
+- Current result: Code Review M1 R2 found the corrected classifier and production validator integration clean with no material findings.
 
 ## Resolution Overview
 
@@ -25,8 +25,8 @@ Review closeout: proposal-review-r3
 | RTS-DR1 | accepted | resolved | The architecture and ADR now select v2 plus a frozen activation manifest as the durable discriminator. |
 | RTS-DLR1 | accepted | resolved | The test specification now assigns stable identities and complete mappings to all plan-dependent validation commands. |
 | RTS-DLR2 | accepted | resolved | Every acceptance criterion now maps explicitly to its existing direct test owner. |
-| RTS-M1-CR1 | accepted | open | Correct Python explicit-null handling and prove Node/Python unknown-value parity. |
-| RTS-M1-CR2 | accepted | open | Connect the shared classifier and tracked activation manifest to production repository validators and prove the public boundary. |
+| RTS-M1-CR1 | accepted | resolved | Python now rejects explicit null as unknown and shared fixtures prove Node/Python parity. |
+| RTS-M1-CR2 | accepted | resolved | Production repository validators now consume the shared classifier and tracked manifest with direct public-boundary proof. |
 
 ## Finding Details
 
@@ -123,7 +123,7 @@ No material findings. The clean rereview confirms `RTS-DLR1` and `RTS-DLR2` are 
 
 Finding ID: RTS-M1-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Decision owner: M1 implementer
@@ -134,13 +134,13 @@ Required outcome: Python and Node both reject explicit null before manifest cons
 Safe resolution path: use key-presence or a sentinel, add an explicit-null `unknown_value` parity regression, and rerun CMD-01, CMD-03, and CMD-04.
 Follow-up: return corrected M1 to code-review.
 Validation target: `RTS-R22`, `TS-002`, and the repository closed-vocabulary validator rule.
-Validation evidence: pending implementation correction and focused rerun.
+Validation evidence: shared explicit-null fixture passed in Node and Python; CMD-01 passed 173 tests with isolated `TMPDIR`; CMD-03 passed 75 tests; Code Review M1 R2 found the correction clean.
 
 #### RTS-M1-CR2
 
 Finding ID: RTS-M1-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Decision owner: M1 implementer
@@ -151,4 +151,8 @@ Required outcome: public repository validators reject invalid or contradictory v
 Safe resolution path: integrate the shared Python classifier through existing validator entry points, add public-boundary regressions for v2 active test-spec state, prior membership/class mismatch, and invalid manifest content, then rerun CMD-03, CMD-04, and CMD-01.
 Follow-up: return corrected M1 to code-review.
 Validation target: `RTS-R18`, `RTS-R22`, `RTS-AC7`, `RTS-AC10`, `TS-001`, `TS-002`, `TS-015`, `BND-STATE-001`, and `BND-COMPAT-001`.
-Validation evidence: pending implementation correction and public-validator regression proof.
+Validation evidence: public change-metadata and artifact-lifecycle regressions cover v2 active test-spec state, active-manifest membership, invalid manifest vocabulary, and missing-manifest recovery; CMD-03 passed 75 tests; CMD-04 passed 166 tests; Code Review M1 R2 found the correction clean.
+
+### code-review-m1-r2
+
+No material findings. The clean rereview confirms `RTS-M1-CR1` and `RTS-M1-CR2` are resolved and supports M1 milestone settlement against correction commits `ac9b7e2b` and `1aaf38e8`.

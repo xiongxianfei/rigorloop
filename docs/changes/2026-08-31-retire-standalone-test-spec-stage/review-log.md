@@ -42,7 +42,19 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: RTS-M1-CR1, RTS-M1-CR2
 Finding ID: RTS-M1-CR1
 Finding ID: RTS-M1-CR2
-Open findings: RTS-M1-CR1, RTS-M1-CR2
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: r2
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: none
+Open findings: none
 Recording status: recorded
 
 ### Review entry
