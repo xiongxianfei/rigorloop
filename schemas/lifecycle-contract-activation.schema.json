@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rigorloop.dev/schemas/lifecycle-contract-activation.schema.json",
+  "title": "RigorLoop Lifecycle Contract Activation Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "state",
+    "activating_source_revision",
+    "changes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "state": {
+      "enum": [
+        "preactivation",
+        "active"
+      ]
+    },
+    "activating_source_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "change_id",
+          "contract_class"
+        ],
+        "properties": {
+          "change_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+          },
+          "contract_class": {
+            "enum": [
+              "stage-owned-change-local-v1",
+              "legacy-unversioned"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "preactivation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "activating_source_revision": {
+            "type": "null"
+          },
+          "changes": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "active"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "activating_source_revision": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

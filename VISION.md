@@ -2,13 +2,14 @@
 
 ## Pitch
 
-AI coding agents produce output quickly, but the reasoning behind that output often disappears.
+RigorLoop is a rigorous software engineering workflow for AI coding agents.
+AI agents produce output quickly, but the reasoning behind that output often disappears.
 When the chat ends, teams can lose why a change was made, what was considered, what was tested, and how to resume the work safely.
 
 RigorLoop exists to make AI-assisted software work traceable, resumable, and reviewable in Git.
 
 It turns agent work into durable artifacts.
-The chain runs through proposal, spec, execution plan, test plan, implementation evidence, review findings, verification, and PR handoff.
+The chain runs through proposal, testable system requirements, architecture, verification-aware delivery planning, implementation evidence, review findings, verification, and PR handoff.
 The goal is not just faster output.
 The goal is AI work that humans can inspect, trust, continue, and improve.
 
@@ -19,7 +20,7 @@ RigorLoop optimizes for trustworthy change delivery after the output exists.
 It treats agent work as a reviewable software engineering artifact rather than a chat transcript: decisions are written down, tests trace to the contract, design intent is visible, validation evidence is captured, and review concerns stay attached to the change.
 
 The differentiator is the traceability chain.
-A meaningful change can be traced from idea to proposal, spec, plan, test spec, implementation, review, verification, and PR handoff.
+A meaningful change can be traced from idea to proposal, system requirements, architecture, allocated delivery work, implementation, concrete proof, review, verification, and PR handoff.
 Months later, a reviewer should be able to see why the change was made, what proved it correct, and where to resume if work stopped.
 
 ## Principles
@@ -27,7 +28,7 @@ Months later, a reviewer should be able to see why the change was made, what pro
 ### Reviewable artifacts
 
 Important decisions become repository artifacts, not lost chat logs.
-Proposals, specs, test plans, reviews, validation evidence, and handoff state are versioned, diffable, and reviewable.
+Proposals, specifications, plans, concrete tests, reviews, validation evidence, and handoff state are versioned, diffable, and reviewable.
 
 ### Human-understandable AI work
 
@@ -41,7 +42,7 @@ The repository carries the task state so another agent or human can continue fro
 
 ### Traceable from idea to PR
 
-A feature should have a visible chain from proposal to spec, plan, test spec, implementation, review, verification, and PR.
+A feature should have a visible chain from proposal to system requirements, architecture, allocated work, implementation, evidence, review, verification, and PR.
 The chain makes later review, maintenance, and resumption possible.
 
 ### Durable lessons

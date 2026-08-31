@@ -1,0 +1,359 @@
+change_id: 2026-08-31-retire-standalone-test-spec-stage
+title: Retire the Standalone Test-Spec Stage
+classification: workflow
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  adr-verification-ownership:
+    authoring_evidence: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/adr-correction-r1.md
+    kind: adr
+    lifecycle_state: review-required
+    path: docs/adr/ADR-20260831-verification-ownership-without-test-spec-stage.md
+    role: supporting
+  architecture:
+    authoring_evidence: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/architecture-correction-r1.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-08-31-retire-standalone-test-spec-stage.md
+    role: primary
+  plan:
+    authoring_evidence: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/plan-authoring.md
+    kind: plan
+    lifecycle_state: review-required
+    path: docs/plans/2026-08-31-retire-standalone-test-spec-stage.md
+    role: primary
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-08-31-retire-standalone-test-spec-stage.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r3
+      outcome: approved
+      record: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/proposal-review-r3.md
+      round: r3
+    role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/spec-authoring.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/retire-standalone-test-spec-stage.md
+    role: primary
+  test-spec:
+    authoring_evidence: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/test-spec-correction-r2.md
+    kind: test-spec
+    lifecycle_state: review-required
+    path: specs/retire-standalone-test-spec-stage.test.md
+    role: primary
+review_packages:
+  delivery:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      plan: docs/plans/2026-08-31-retire-standalone-test-spec-stage.md
+      test-spec: specs/retire-standalone-test-spec-stage.test.md
+    outcome: approved
+    package_kind: delivery
+    review_id: delivery-review-r3
+    review_round: r3
+    status: approved
+    upstream_review_id: design-review-r2
+  design:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      adr-verification-ownership: docs/adr/ADR-20260831-verification-ownership-without-test-spec-stage.md
+      architecture: docs/architecture/2026-08-31-retire-standalone-test-spec-stage.md
+      spec: specs/retire-standalone-test-spec-stage.md
+    outcome: approved
+    package_kind: design
+    review_id: design-review-r2
+    review_round: r2
+    status: approved
+    upstream_review_id: proposal-review-r3
+workflow_state:
+  blocker: null
+  current_stage: code-review
+  evidence: []
+  lifecycle_state: active
+  next_stage: code-review
+  planned_work:
+    current_milestone: M1
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+    initialization_basis:
+      review_id: delivery-review-r3
+      review_record: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/delivery-review-r3.md
+      review_round: r3
+      reviewed_artifact_path: docs/plans/2026-08-31-retire-standalone-test-spec-stage.md
+    latest_review:
+      artifact_id: none
+      evidence: []
+      milestone_id: none
+      occurrence: none
+      round: none
+      stage: none
+      status: not-started
+    milestones:
+      M1:
+        kind: implementation
+        state: review-requested
+      M2:
+        kind: implementation
+        state: planned
+      M3:
+        kind: implementation
+        state: planned
+      M4:
+        kind: implementation
+        state: planned
+      M5:
+        kind: implementation
+        state: planned
+      M6:
+        kind: lifecycle-closeout
+        state: planned
+    plan_artifact_id: plan
+    remaining_implementation_milestones:
+      - M1
+      - M2
+      - M3
+      - M4
+      - M5
+workflow: {}
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/delivery-review-r3.md
+  review_log: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-log.md
+  reviewed_artifact: review-package:delivery
+  status: clean
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 2
+  artifacts:
+    adr-verification-ownership:
+      artifact_kind: adr
+      artifact_path: docs/adr/ADR-20260831-verification-ownership-without-test-spec-stage.md
+      artifact_role: supporting
+      artifact_sha256: fb9409e89524101cc54cb0af1ab9d7a22b6472a7a2cabe556ac9aaf3a91e795e
+      authoring_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/adr-correction-r1.md
+      authoring_evidence_sha256: 9aff17ab6ff1abc8675ebbe3a454e2d6c98786ed6f38df569aa03636024c310a
+      stage_authority: architecture
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-08-31-retire-standalone-test-spec-stage.md
+      artifact_role: primary
+      artifact_sha256: 98023a64b3248bd4095a25242dd830b7f71bff280f050127a1390f623175129c
+      authoring_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/architecture-correction-r1.md
+      authoring_evidence_sha256: 43ee7f074c439d09f27015df18eac61564c94b6e8b34e75c1f1129d133de3aec
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-08-31-retire-standalone-test-spec-stage.md
+      artifact_role: primary
+      artifact_sha256: 727b5a71f1d5ce001876cde59f195536c9671b4743e50a70ef95cf437ccc9938
+      authoring_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/plan-authoring.md
+      authoring_evidence_sha256: a0ff125bd7b55ea22b91cb2a6467db6dacd41d46536435950460554f49a07eaf
+      stage_authority: plan
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-08-31-retire-standalone-test-spec-stage.md
+      artifact_role: primary
+      artifact_sha256: b8dd19d8ad073dbae31ffe232e59f23ac3f8445cf9cf791c2be95f8c5781d774
+      authoring_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/proposal-review-evidence-reconciliation.md
+      authoring_evidence_sha256: 467c5a598de93a87f6f272fa0382333cdb7f5c711a70708ea455bae92a544446
+      stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/retire-standalone-test-spec-stage.md
+      artifact_role: primary
+      artifact_sha256: e05c78bc2ce875d18d173fe3ae63caf72e37372663a335019c4794198aad7db4
+      authoring_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/spec-authoring.md
+      authoring_evidence_sha256: e56d1d4612bf58ecbf2abd9d81f97e76b0b707833835bb386e7efb3057fd9285
+      stage_authority: spec
+    test-spec:
+      artifact_kind: test-spec
+      artifact_path: specs/retire-standalone-test-spec-stage.test.md
+      artifact_role: primary
+      artifact_sha256: 4924c73977b907a8348ea7d1d78914d8dfb14c7365262bcc4bdfaeca52c53fd7
+      authoring_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/test-spec-correction-r2.md
+      authoring_evidence_sha256: 6c01aa7b3752f6aff43b21660353064957530b1f5ed7a5189899772586e77b5a
+      stage_authority: test-spec
+  correction_history:
+    route-5ba1d71714ccbce3e1ce69200509036cfcf76cfb7e2b0bde671b35cd9f61bd89:
+      destination_artifact_id: test-spec
+      destination_stage: test-spec
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/delivery-review-r2-test-spec-route.md
+      evidence_sha256: e64f1e736cc369a54cbce4f674a8eb98cb187b97badd48ad6a515ae47094984f
+      prior_artifact_sha256: 5f7c890e74e843980d1dd5570d32f83465155e7ef6bbf6e685a09a9a2a084f67
+      prior_lifecycle_revision: sha256:2887cb208180f32767c6703004ac1dfefb9a09d9d2045c780764c68ef5531d85
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/delivery-review-r2-test-spec-return.md
+      return_evidence_sha256: cfc5252f5662fc44ea6760c390c819a0a2606deacab4c52103b82953d2025e45
+      return_stage: delivery-review
+      route_id: route-5ba1d71714ccbce3e1ce69200509036cfcf76cfb7e2b0bde671b35cd9f61bd89
+      source_review_id: delivery-review-r2
+      source_snapshot:
+        blocker: null
+        current_stage: delivery-review
+        finding_ids:
+          - RTS-DLR2
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: delivery-review
+      status: returned
+    route-a871f86eab3b1785df736f8880b36e0d6e909b9886c30c1daeb312713b190f8e:
+      destination_artifact_id: adr-verification-ownership
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/design-review-r1-adr-route.md
+      evidence_sha256: 2e7bf956bf4fa7d6caf8a98d6f75ee410e0a1b9bd53c3f421f42ad7f65a1ae54
+      prior_artifact_sha256: 8e73252cbe4642240e0f7a6989029a1ca59e89a8e958983fde8e494a3fb7becb
+      prior_lifecycle_revision: sha256:6d7b5a33d0e9b8c92c7e0da39d8e6b7bc7bd0017faab3cc87957996d0b5a1837
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/design-review-r1-adr-return.md
+      return_evidence_sha256: f79f52f726fc4d0fcf2debec4d27b23c2741cee5a7dde4c3d92528367cd5e68f
+      return_stage: design-review
+      route_id: route-a871f86eab3b1785df736f8880b36e0d6e909b9886c30c1daeb312713b190f8e
+      source_review_id: design-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - RTS-DR1
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: design-review
+      status: returned
+    route-b1f5dc30137e0e76a43e7a9defb7112cca2d982a427addb2a12fd2d477b1e8c7:
+      destination_artifact_id: test-spec
+      destination_stage: test-spec
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/delivery-review-r1-test-spec-route.md
+      evidence_sha256: 637d8fe1a2538501aafaf595d71d900bf0b46f28933789457cef1e1b9182b8ad
+      prior_artifact_sha256: eb1d1bd638ecf5ce6018994f84e215fb1589214190bfa36ffc39533814f88b05
+      prior_lifecycle_revision: sha256:7048bc4b3b5a04e4908e4805f14173ba1895649a5c8426e99cec68772ac33a9c
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/delivery-review-r1-test-spec-return.md
+      return_evidence_sha256: 1440e3c1c5756874425e7f84162d7fbee501784d8c45c9dd51971c6a4416f0eb
+      return_stage: delivery-review
+      route_id: route-b1f5dc30137e0e76a43e7a9defb7112cca2d982a427addb2a12fd2d477b1e8c7
+      source_review_id: delivery-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: delivery-review
+        finding_ids:
+          - RTS-DLR1
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: delivery-review
+      status: returned
+    route-e00296c6c58e1e38ee9096f079f57f1eecc95190e632b0200aa66feca5f79d20:
+      destination_artifact_id: architecture
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/design-review-r1-architecture-route.md
+      evidence_sha256: 4588bec8bdd8cf286e59a2d52c095f4f362bb4f3b56b0f4110d5211c74f01793
+      prior_artifact_sha256: 86b94693a3ca1c53c6612cb573b7951a54c3e672edc07d4017f345625d516e6e
+      prior_lifecycle_revision: sha256:fa148a10480d80af86d5344781f1090148e60d4d3870ca60eb27eeef8842c385
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/design-review-r1-architecture-return.md
+      return_evidence_sha256: 642c046a9c45b700cf494abae8a4a1aba8c095f98e4f4f5227ad5bdff9566365
+      return_stage: design-review
+      route_id: route-e00296c6c58e1e38ee9096f079f57f1eecc95190e632b0200aa66feca5f79d20
+      source_review_id: design-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - RTS-DR1
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: design-review
+      status: returned
+  milestones: {}
+  package_reviews:
+    delivery:
+      correction_targets: []
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/delivery-review-r3.md
+      evidence_sha256: bc9b04461ddaf6354a427590fd7f0a84490abd75cf6d9f3122fd3364552a6ac5
+      findings: []
+      members:
+        plan: docs/plans/2026-08-31-retire-standalone-test-spec-stage.md
+        test-spec: specs/retire-standalone-test-spec-stage.test.md
+      outcome: approved
+      package_kind: delivery
+      review_id: delivery-review-r3
+      review_log_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-log.md
+      review_log_sha256: bb0c8a0f83fc5093913240315f6439bd1af2c89af223708915fa9d2b85dfee96
+      reviewer_authority: delivery-review
+      round: r3
+      stage_authority: delivery-review
+      upstream_review_id: design-review-r2
+    design:
+      correction_targets: []
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/design-review-r2.md
+      evidence_sha256: ef2117399036df59ce2c1a41e67074f18a927de50f435e45cb89351e002a151a
+      findings: []
+      members:
+        adr-verification-ownership: docs/adr/ADR-20260831-verification-ownership-without-test-spec-stage.md
+        architecture: docs/architecture/2026-08-31-retire-standalone-test-spec-stage.md
+        spec: specs/retire-standalone-test-spec-stage.md
+      outcome: approved
+      package_kind: design
+      review_id: design-review-r2
+      review_log_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-log.md
+      review_log_sha256: 682a37dcbb8be34fe89b0ee489168822593f3e441345eee79061400e3089b2b3
+      reviewer_authority: design-review
+      round: r2
+      stage_authority: design-review
+      upstream_review_id: proposal-review-r3
+  resolutions:
+    RTS-DLR1:
+      artifact_id: test-spec
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-resolution.md
+      evidence_sha256: 0e443c012d072cb5ab2aee638e0f009e72fa2248ac910df7d42f14986d625739
+      finding_id: RTS-DLR1
+      owner: test-spec author
+      stage_authority: review-resolution
+    RTS-DR1:
+      artifact_id: architecture
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-resolution.md
+      evidence_sha256: 07141e8aafd4995e315701fa973e828ad733d8d8e06b527baf47b232fa930a9a
+      finding_id: RTS-DR1
+      owner: architecture author
+      stage_authority: review-resolution
+    RTS-PR1:
+      artifact_id: proposal
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-resolution.md
+      evidence_sha256: ad2b3cff05dd80083a0f8eb4226c871be4b732a5a0cd64ce6c0f9b52268b802c
+      finding_id: RTS-PR1
+      owner: proposal author
+      stage_authority: review-resolution
+  reviews:
+    proposal:
+      artifact_path: docs/proposals/2026-08-31-retire-standalone-test-spec-stage.md
+      artifact_sha256: b8dd19d8ad073dbae31ffe232e59f23ac3f8445cf9cf791c2be95f8c5781d774
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/proposal-review-r3.md
+      evidence_sha256: 8974ca1de4745d6697b276226bd53dd4edc6f256fe9e478385da7b8ec0a02013
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r3
+      review_log_sha256: 041a0ddf2862b092b6b63233bcb163c7acf26bf6af90826fce5b47c45e49ac99
+      round: r3
+      stage_authority: proposal-review
+  validations: {}
+  withdrawals: {}

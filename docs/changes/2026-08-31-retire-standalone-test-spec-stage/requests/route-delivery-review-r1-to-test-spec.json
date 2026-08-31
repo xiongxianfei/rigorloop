@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:7048bc4b3b5a04e4908e4805f14173ba1895649a5c8426e99cec68772ac33a9c",
+  "source_stage": "delivery-review",
+  "destination_stage": "test-spec",
+  "destination_artifact_id": "test-spec",
+  "reason": "upstream-proof-gap",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/delivery-review-r1-test-spec-route.md",
+  "finding_ids": [
+    "RTS-DLR1"
+  ],
+  "return_stage": "delivery-review",
+  "stage_authority": "workflow"
+}

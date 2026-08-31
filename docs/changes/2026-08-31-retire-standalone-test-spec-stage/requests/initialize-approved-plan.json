@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "initialize-approved-plan",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:8ceca429a0e6ef2698b402e004f2d28250dc3277f821795d7aae597162540c2a",
+  "artifact_id": "plan",
+  "stage_authority": "plan"
+}

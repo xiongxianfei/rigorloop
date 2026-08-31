@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "advance-stage",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:f9e07b9cb7561ee7c75637540588b3415d70af7f47fcac8da2f08cd5450810db",
+  "source_stage": "proposal",
+  "destination_stage": "proposal-review",
+  "stage_authority": "workflow"
+}

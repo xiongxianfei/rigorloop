@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:aee3c7bb20d8b5276bcecf6d8611f3f59339b601dce5dc57c915c01a30dae613",
+  "artifact_id": "proposal",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/proposal-review-r1.md",
+  "stage_authority": "proposal-review"
+}

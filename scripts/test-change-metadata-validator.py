@@ -23,6 +23,10 @@ from change_metadata_semantics import (
     validate_artifact_transition,
     validate_stage_owned_lifecycle_metadata,
 )
+from artifact_lifecycle_contracts import (
+    classify_lifecycle_contract,
+    validate_lifecycle_activation_manifest,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -2275,6 +2279,55 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
         self.assertTrue(validate_artifact_transition("spec", "approved", "review-required"))
         self.assertTrue(validate_artifact_transition("proposal", "accepted", "deprecated"))
         self.assertEqual(validate_artifact_transition("adr", "active", "deprecated"), [])
+
+
+class LifecycleContractClassificationTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        fixture_path = ROOT / "packages/rigorloop/test/fixtures/lifecycle/contract-classification-v1.json"
+        cls.fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+
+    def test_manifest_classifies_exact_prior_records(self) -> None:
+        manifest = self.fixture["active_manifest"]
+        self.assertEqual(validate_lifecycle_activation_manifest(manifest), [])
+        self.assertEqual(classify_lifecycle_contract("new-v2", {"lifecycle_contract": "stage-owned-change-local-v2"}, manifest)["contract_class"], "stage-owned-change-local-v2")
+        self.assertEqual(classify_lifecycle_contract("v1", {"lifecycle_contract": "stage-owned-change-local-v1"}, manifest)["contract_class"], "stage-owned-change-local-v1")
+        self.assertEqual(classify_lifecycle_contract("legacy", {}, manifest)["contract_class"], "legacy-unversioned")
+
+    def test_manifest_rejects_missing_mismatch_and_v2_test_spec_state(self) -> None:
+        manifest = self.fixture["active_manifest"]
+        with self.assertRaisesRegex(ValueError, "not present in the activation manifest"):
+            classify_lifecycle_contract("missing", {"lifecycle_contract": "stage-owned-change-local-v1"}, manifest)
+        with self.assertRaisesRegex(ValueError, "does not match"):
+            classify_lifecycle_contract("legacy", {"lifecycle_contract": "stage-owned-change-local-v1"}, manifest)
+        with self.assertRaisesRegex(ValueError, "active test-spec state"):
+            classify_lifecycle_contract("new-v2", {
+                "lifecycle_contract": "stage-owned-change-local-v2",
+                "workflow_state": {"current_stage": "test-spec"},
+            }, manifest)
+
+    def test_unknown_value_contract_fails_before_manifest_consistency(self) -> None:
+        with self.assertRaisesRegex(ValueError, "unknown_value.*future-v9"):
+            classify_lifecycle_contract("missing", {"lifecycle_contract": "future-v9"}, self.fixture["active_manifest"])
+
+    def test_unknown_value_activation_state_fails_before_consistency(self) -> None:
+        manifest = copy.deepcopy(self.fixture["active_manifest"])
+        manifest["state"] = "published"
+        manifest["changes"].append(copy.deepcopy(manifest["changes"][0]))
+        self.assertRegex(validate_lifecycle_activation_manifest(manifest)[0], "state: unknown_value published")
+
+    def test_classification_ignores_heuristic_facts(self) -> None:
+        manifest = self.fixture["active_manifest"]
+        baseline = classify_lifecycle_contract("v1", {"lifecycle_contract": "stage-owned-change-local-v1"}, manifest)
+        changed = classify_lifecycle_contract("v1", {
+            "lifecycle_contract": "stage-owned-change-local-v1",
+            "created_at": "2999-01-01",
+            "workflow_state": {"current_stage": "implement"},
+            "artifacts": {"plan": "docs/plans/example.md"},
+            "git_reachable": False,
+            "network_available": False,
+        }, manifest)
+        self.assertEqual(changed, baseline)
 
 
 if __name__ == "__main__":

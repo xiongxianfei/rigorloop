@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "operation": "record-package-review",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:1e2a27b540dcb91ef1d077244acceecfbb492dafd34fc410b20c1ea36dede1ed",
+  "package_kind": "delivery",
+  "members": {
+    "plan": "docs/plans/2026-08-31-retire-standalone-test-spec-stage.md",
+    "test-spec": "specs/retire-standalone-test-spec-stage.test.md"
+  },
+  "upstream_review_id": "design-review-r2",
+  "review_id": "delivery-review-r1",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/delivery-review-r1.md",
+  "stage_authority": "delivery-review"
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "return-correction",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:cfdc9fb5d5d1fb4f864b680bba8fda692b79256801c06b9927311f45d4df6947",
+  "route_id": "route-b1f5dc30137e0e76a43e7a9defb7112cca2d982a427addb2a12fd2d477b1e8c7",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/delivery-review-r1-test-spec-return.md",
+  "stage_authority": "workflow"
+}

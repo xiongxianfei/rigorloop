@@ -2,6 +2,24 @@ import { createHash } from "node:crypto";
 
 import { isAlias, isMap, isScalar, isSeq, parseAllDocuments, stringify } from "yaml";
 
+export const LIFECYCLE_CONTRACT_V1 = "stage-owned-change-local-v1";
+export const LIFECYCLE_CONTRACT_V2 = "stage-owned-change-local-v2";
+export const LEGACY_UNVERSIONED_CONTRACT = "legacy-unversioned";
+export const LIFECYCLE_ACTIVATION_MANIFEST_PATH = "specs/lifecycle-contract-activation.yaml";
+export const PREACTIVATION_LIFECYCLE_MANIFEST = Object.freeze({
+  schema_version: 1,
+  state: "preactivation",
+  activating_source_revision: null,
+  changes: Object.freeze([]),
+});
+
+const LIFECYCLE_CONTRACT_VALUES = new Set([LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2]);
+const PRIOR_CONTRACT_CLASSES = new Set([LIFECYCLE_CONTRACT_V1, LEGACY_UNVERSIONED_CONTRACT]);
+const ACTIVATION_STATES = new Set(["preactivation", "active"]);
+const MANIFEST_FIELDS = new Set(["schema_version", "state", "activating_source_revision", "changes"]);
+const MANIFEST_ENTRY_FIELDS = new Set(["change_id", "contract_class"]);
+const SAFE_CHANGE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
+
 export const LIFECYCLE_OPERATIONS = Object.freeze([
   "record-artifact-revision",
   "record-review",
@@ -130,6 +148,103 @@ const STAGE_TRANSITIONS = Object.freeze({
   "test-spec": ["delivery-review"],
   "delivery-review": ["implement"],
 });
+
+function rawUtf8Compare(left, right) {
+  return Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8"));
+}
+
+function exactFields(value, allowed) {
+  return value && !Array.isArray(value) && typeof value === "object"
+    && Object.keys(value).length === allowed.size
+    && Object.keys(value).every((field) => allowed.has(field));
+}
+
+export function validateLifecycleActivationManifest(manifest) {
+  const errors = [];
+  if (!exactFields(manifest, MANIFEST_FIELDS)) return ["activation manifest must contain only schema_version, state, activating_source_revision, and changes"];
+  if (manifest.schema_version !== 1) errors.push(`activation manifest schema_version: unknown_value ${String(manifest.schema_version)}`);
+  if (!ACTIVATION_STATES.has(manifest.state)) errors.push(`activation manifest state: unknown_value ${String(manifest.state)}`);
+  if (!Array.isArray(manifest.changes)) return [...errors, "activation manifest changes must be an array"];
+
+  for (const [index, entry] of manifest.changes.entries()) {
+    if (!exactFields(entry, MANIFEST_ENTRY_FIELDS)) {
+      errors.push(`activation manifest changes[${index}] must contain only change_id and contract_class`);
+      continue;
+    }
+    if (!PRIOR_CONTRACT_CLASSES.has(entry.contract_class)) {
+      errors.push(`activation manifest changes[${index}].contract_class: unknown_value ${String(entry.contract_class)}`);
+    }
+  }
+  if (errors.length) return errors;
+
+  if (manifest.state === "preactivation") {
+    if (manifest.activating_source_revision !== null) errors.push("preactivation manifest activating_source_revision must be null");
+    if (manifest.changes.length !== 0) errors.push("preactivation manifest changes must be empty");
+  } else if (typeof manifest.activating_source_revision !== "string" || !/^[0-9a-f]{40}$/.test(manifest.activating_source_revision)) {
+    errors.push("active manifest activating_source_revision must be a 40-character lowercase Git revision");
+  }
+
+  const ids = [];
+  for (const [index, entry] of manifest.changes.entries()) {
+    if (typeof entry.change_id !== "string" || !SAFE_CHANGE_ID.test(entry.change_id)) {
+      errors.push(`activation manifest changes[${index}].change_id must be one safe identifier`);
+    } else {
+      ids.push(entry.change_id);
+    }
+  }
+  if (new Set(ids).size !== ids.length) errors.push("activation manifest changes contain a duplicate change_id");
+  for (let index = 1; index < ids.length; index += 1) {
+    if (rawUtf8Compare(ids[index - 1], ids[index]) >= 0) {
+      errors.push("activation manifest changes must use strict raw UTF-8 byte order");
+      break;
+    }
+  }
+  return errors;
+}
+
+function lifecycleContractError(code, message) {
+  const error = new Error(`${code}: ${message}`);
+  error.code = code;
+  return error;
+}
+
+function hasActiveTestSpecState(change) {
+  const activeStages = new Set(["test-spec", "test-spec-review"]);
+  if (activeStages.has(change.workflow_state?.current_stage) || activeStages.has(change.workflow_state?.next_stage)) return true;
+  if (Object.values(change.artifact_states ?? {}).some((entry) => entry?.kind === "test-spec" && !["abandoned", "archived", "superseded"].includes(entry?.lifecycle_state))) return true;
+  if (Object.keys(change.review_packages?.delivery?.members ?? {}).includes("test-spec")) return true;
+  return false;
+}
+
+export function classifyLifecycleContract(changeId, change, manifest = PREACTIVATION_LIFECYCLE_MANIFEST) {
+  const explicit = change?.lifecycle_contract;
+  if (explicit !== undefined && !LIFECYCLE_CONTRACT_VALUES.has(explicit)) {
+    throw lifecycleContractError("RL_UNSUPPORTED_SCHEMA", `lifecycle_contract: unknown_value ${String(explicit)}`);
+  }
+  const manifestErrors = validateLifecycleActivationManifest(manifest);
+  if (manifestErrors.length) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", manifestErrors[0]);
+
+  const contractClass = explicit ?? LEGACY_UNVERSIONED_CONTRACT;
+  if (contractClass === LIFECYCLE_CONTRACT_V2) {
+    if (hasActiveTestSpecState(change)) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", "v2 lifecycle contract carries active test-spec state");
+    return {
+      contract_class: contractClass,
+      activation_state: manifest.state,
+      authority: manifest.state === "active" ? "active" : "inactive",
+    };
+  }
+
+  if (manifest.state === "active") {
+    const entry = manifest.changes.find((candidate) => candidate.change_id === changeId);
+    if (!entry) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", `prior-contract change ${changeId} is not present in the activation manifest`);
+    if (entry.contract_class !== contractClass) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", `prior-contract change ${changeId} does not match activation manifest class ${entry.contract_class}`);
+  }
+  return {
+    contract_class: contractClass,
+    activation_state: manifest.state,
+    authority: manifest.state === "active" ? "prior-compatible" : "preactivation",
+  };
+}
 
 export function allowedNextStages(_change, sourceStage) {
   return STAGE_TRANSITIONS[sourceStage] ?? [];

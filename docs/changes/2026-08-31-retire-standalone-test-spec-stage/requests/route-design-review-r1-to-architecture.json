@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:fa148a10480d80af86d5344781f1090148e60d4d3870ca60eb27eeef8842c385",
+  "source_stage": "design-review",
+  "destination_stage": "architecture",
+  "destination_artifact_id": "architecture",
+  "reason": "upstream-contract-gap",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/design-review-r1-architecture-route.md",
+  "finding_ids": [
+    "RTS-DR1"
+  ],
+  "return_stage": "design-review",
+  "stage_authority": "workflow"
+}

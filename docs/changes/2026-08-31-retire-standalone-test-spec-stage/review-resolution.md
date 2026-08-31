@@ -1,0 +1,114 @@
+# Review Resolution: Retire the Standalone Test-Spec Stage
+
+## Summary
+
+Closeout status: closed
+
+Review closeout: delivery-review-r3
+
+Review closeout: design-review-r2
+
+Review closeout: proposal-review-r3
+
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`
+- Findings resolved: 4
+- Unresolved findings: 0
+- Current result: Delivery Review R3 approved the exact corrected plan and legacy-path test specification with no material findings.
+
+## Resolution Overview
+
+| Finding ID | Disposition | Status | Resolution summary |
+| --- | --- | --- | --- |
+| RTS-PR1 | accepted | resolved | The proposal now reflects the completed upstream vision revision and no longer requests that completed action. |
+| RTS-DR1 | accepted | resolved | The architecture and ADR now select v2 plus a frozen activation manifest as the durable discriminator. |
+| RTS-DLR1 | accepted | resolved | The test specification now assigns stable identities and complete mappings to all plan-dependent validation commands. |
+| RTS-DLR2 | accepted | resolved | Every acceptance criterion now maps explicitly to its existing direct test owner. |
+
+## Finding Details
+
+### proposal-review-r1
+
+#### RTS-PR1
+
+Finding ID: RTS-PR1
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: none
+Chosen action: revised the vision-impact disclosure and requested decision without changing the retirement direction.
+Rationale: current standing authority already expresses artifact-independent verification traceability.
+Required outcome: the proposal describes current vision alignment and does not request an already-completed vision revision.
+Follow-up: none; proposal-review-r2 completed the required same-stage rereview.
+Validation target: `Impact and major trade-offs`, `Decision requested`, and the closing authority paragraph agree with current `VISION.md`.
+Validation evidence: corrected proposal `sha256:b8dd19d8ad073dbae31ffe232e59f23ac3f8445cf9cf791c2be95f8c5781d774`; proposal-review-r3 approved the exact revision with no material findings against the final closeout records.
+
+### proposal-review-r2
+
+No material findings. The clean rereview confirms that `RTS-PR1` is resolved and that the proposal remains direction-ready.
+
+### proposal-review-r3
+
+No material findings. This clean evidence-reconciliation review binds the unchanged proposal judgment to the final review-log and resolution identities.
+
+### design-review-r1
+
+#### RTS-DR1
+
+Finding ID: RTS-DR1
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture
+Decision owner: architecture author
+Decision needed: none
+Chosen action: use `stage-owned-change-local-v2` for new changes and a frozen activation manifest binding every pre-activation ID to its exact v1 or legacy-unversioned class; keep migration optional and workflow-owned.
+Rationale: the explicit contract plus immutable eligibility inventory distinguishes prior, new, historical, migrated, unknown, and contradictory states without relying on dates, artifact presence, Git history, or network state.
+Required outcome: prior-contract, new active, historical, migrated, unknown, and contradictory states are classified without date inference, artifact-presence inference, or history rewriting.
+Safe resolution path: revise the ADR and architecture, register both exact revisions, validate their coherence with the unchanged specification, and return to Design Review.
+Follow-up: Design Review R2 of the complete revised package.
+Validation target: RTS-R20 through RTS-R23; BND-STATE-001; BND-RECOVERY-001; BND-COMPAT-001; INT-001; INT-005.
+Validation evidence: primary architecture `sha256:98023a64b3248bd4095a25242dd830b7f71bff280f050127a1390f623175129c`; ADR `sha256:fb9409e89524101cc54cb0af1ab9d7a22b6472a7a2cabe556ac9aaf3a91e795e`; registered authoring evidence `evidence/architecture-correction-r1.md` and `evidence/adr-correction-r1.md`; workflow return receipts `evidence/design-review-r1-architecture-return.md` and `evidence/design-review-r1-adr-return.md`; `git diff --check` passed.
+
+### delivery-review-r1
+
+#### RTS-DLR1
+
+Finding ID: RTS-DLR1
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: test-spec author
+Decision needed: none
+Chosen action: add stable command entries for focused skill validation and the two final closeout validators, then update every affected proof and milestone mapping.
+Rationale: the plan already depends on these repository-owned commands, so the test-spec command ledger must make their ownership, timing, failure, evidence, and side-effect behavior auditable.
+Required outcome: every plan-dependent validation command has a stable ID and complete ledger and milestone mapping.
+Safe resolution path: revise and register only the test specification, validate boundary and lifecycle structure, return to Delivery Review, and settle the exact revised package only after a clean rereview.
+Follow-up: Delivery Review R2 of the revised exact package.
+Validation target: test-spec Validation commands, Proof map, Milestone proof map, and affected test-case Command IDs.
+Validation evidence: corrected test specification `sha256:5f7c890e74e843980d1dd5570d32f83465155e7ef6bbf6e685a09a9a2a084f67`; `evidence/test-spec-correction-r1.md`; boundary-first validation, documentation prose audit, and `git diff --check` passed; workflow correction return is `evidence/delivery-review-r1-test-spec-return.md`.
+
+### delivery-review-r2
+
+#### RTS-DLR2
+
+Finding ID: RTS-DLR2
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: test-spec author
+Decision needed: none
+Chosen action: add one explicit acceptance-criterion coverage map and discrete criterion IDs to existing test cases.
+Rationale: stable-ID traceability cannot rely on prose ranges, and the approved Design Review coherence criterion also needs an explicit proof owner.
+Required outcome: every one of `RTS-AC1` through `RTS-AC13` has an explicit direct test mapping.
+Safe resolution path: revise and register only the test specification, validate the exact proof map and documentation, return to Delivery Review, and perform a clean exact-package rereview.
+Follow-up: Delivery Review R3 of the revised exact package.
+Validation target: acceptance-criterion coverage map and affected test-case `Covers` fields.
+Validation evidence: corrected test specification `sha256:4924c73977b907a8348ea7d1d78914d8dfb14c7365262bcc4bdfaeca52c53fd7`; `evidence/test-spec-correction-r2.md`; boundary-first validation, documentation prose audit, thirteen-ID coverage check, and `git diff --check` passed; workflow correction return is `evidence/delivery-review-r2-test-spec-return.md`; Delivery Review R3 found no material issue.
+
+### delivery-review-r3
+
+No material findings. The clean rereview confirms `RTS-DLR1` and `RTS-DLR2` are resolved and approves the exact corrected delivery package.

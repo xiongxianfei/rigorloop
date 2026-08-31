@@ -20,7 +20,8 @@
     "lifecycle_contract": {
       "type": "string",
       "enum": [
-        "stage-owned-change-local-v1"
+        "stage-owned-change-local-v1",
+        "stage-owned-change-local-v2"
       ]
     },
     "artifact_states": {

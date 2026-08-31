@@ -233,6 +233,28 @@ test("validate rejects unsupported contracts and malformed YAML deterministicall
   assert.equal(executeLifecycleCli(["validate", "--change", "example"], { cwd: malformed }).result.errors[0].code, "RL_INVALID_REQUEST");
 });
 
+test("preactivation reader keeps v1 current and blocks explicit v2", async () => {
+  const v1 = await repository();
+  const v1Result = executeLifecycleCli(["validate", "--change", "example", "--format", "json"], { cwd: v1 }).result;
+  assert.equal(v1Result.effective_state.lifecycle_contract.contract_class, "stage-owned-change-local-v1");
+  assert.equal(v1Result.effective_state.lifecycle_contract.activation_state, "preactivation");
+
+  const v2 = await repository(["example"], { lifecycle_contract: "stage-owned-change-local-v2" });
+  const v2Execution = executeLifecycleCli(["validate", "--change", "example", "--format", "json"], { cwd: v2 });
+  assert.equal(v2Execution.exitCode, 4);
+  assert.equal(v2Execution.result.errors[0].code, "RL_INCOMPATIBLE_VERSION");
+});
+
+test("active manifest requires exact prior-contract membership", async () => {
+  const root = await repository();
+  const fixturePath = join(import.meta.dirname, "fixtures", "lifecycle", "contract-classification-v1.json");
+  const manifest = JSON.parse(readFileSync(fixturePath, "utf8")).active_manifest;
+  writeFileSync(join(root, "specs", "lifecycle-contract-activation.yaml"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+  const execution = executeLifecycleCli(["validate", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(execution.exitCode, 4);
+  assert.match(execution.result.errors[0].summary, /not present in the activation manifest/);
+});
+
 test("stored correction and withdrawal vocabularies fail closed", async () => {
   const artifactSha = createHash("sha256").update("# example\n").digest("hex");
   const root = await repository(["example"], {

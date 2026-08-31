@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "settle-review-package",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:80b767a8e62edff3215f82e9c3e0307c59ffde04a74e1cde53e14d9d77b71644",
+  "package_kind": "delivery",
+  "review_id": "delivery-review-r2",
+  "stage_authority": "delivery-review"
+}
