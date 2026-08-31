@@ -2,7 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
+
+Review closeout: code-review-m2-r1
 
 Review closeout: code-review-m1-r2
 
@@ -12,10 +14,10 @@ Review closeout: design-review-r2
 
 Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: Code Review M1 R2 found the corrected classifier and production validator integration clean with no material findings.
+- Unresolved findings: 2
+- Current result: Code Review M2 R1 requested changes for complete v2 automation contract propagation and identity-independent exact-primary-plan review validation.
 
 ## Resolution Overview
 
@@ -27,6 +29,8 @@ Review closeout: proposal-review-r3
 | RTS-DLR2 | accepted | resolved | Every acceptance criterion now maps explicitly to its existing direct test owner. |
 | RTS-M1-CR1 | accepted | resolved | Python now rejects explicit null as unknown and shared fixtures prove Node/Python parity. |
 | RTS-M1-CR2 | accepted | resolved | Production repository validators now consume the shared classifier and tracked manifest with direct public-boundary proof. |
+| RTS-M2-CR1 | accepted | open | Propagate the classified lifecycle contract through central automation evaluation, validation, binding, coordination, and routing. |
+| RTS-M2-CR2 | accepted | open | Validate Delivery Review against the exact primary plan identity rather than the literal artifact ID `plan`. |
 
 ## Finding Details
 
@@ -156,3 +160,39 @@ Validation evidence: public change-metadata and artifact-lifecycle regressions c
 ### code-review-m1-r2
 
 No material findings. The clean rereview confirms `RTS-M1-CR1` and `RTS-M1-CR2` are resolved and supports M1 milestone settlement against correction commits `ac9b7e2b` and `1aaf38e8`.
+
+### code-review-m2-r1
+
+#### RTS-M2-CR1
+
+Finding ID: RTS-M2-CR1
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Decision owner: M2 implementer
+Decision needed: none; complete the already-approved contract-keyed automation boundary.
+Chosen action: propagate the classified lifecycle contract through central transition evaluation, automation validation, target binding/resolution, coordination, and post-completion routing.
+Rationale: an isolated v2 route helper is insufficient when the central evaluator and public/coordinated paths continue to select v1 by default.
+Required outcome: explicit v2 automation traverses `plan -> delivery-review` through the complete executable path, v1 remains unchanged, and unknown contracts fail before transition consistency.
+Safe resolution path: make the central evaluator contract-aware, forward the owning change's classified contract through all callers, add complete v2 transaction and validation regressions, and rerun CMD-05 plus relevant classifier checks.
+Follow-up: return corrected M2 to code-review.
+Validation target: `RTS-R1`, `RTS-R2`, `RTS-R18`, `RTS-R19`, `RTS-R21`, `RTS-R22`, `TG-04`, `TG-05`, `TG-06`, `BND-STATE-001`, `BND-COMPOSE-001`, and `INT-004`.
+Validation evidence: pending implementation correction and end-to-end automation proof.
+
+#### RTS-M2-CR2
+
+Finding ID: RTS-M2-CR2
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Decision owner: M2 implementer
+Decision needed: none; align the review validator with existing exact artifact identity authority.
+Chosen action: derive the one primary-plan artifact ID and path from the owning v2 change and compare the review member map exactly.
+Rationale: artifact IDs are identities rather than fixed kind names, and the other package validators already preserve that distinction.
+Required outcome: any valid exact primary-plan identity passes, while missing, extra, wrong-kind, wrong-role, and test-spec members fail.
+Safe resolution path: replace the literal `["plan"]` comparison with an exact owning-change projection and add nonliteral-ID positive and mixed-member negative regressions; rerun CMD-06 and CMD-03.
+Follow-up: return corrected M2 to code-review.
+Validation target: `RTS-R13`, `RTS-R18`, `RTS-R19`, `TG-04`, `TG-06`, `BND-INPUT-001`, `BND-AUTH-001`, and `INT-002`.
+Validation evidence: pending implementation correction and review-validator identity proof.
