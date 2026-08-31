@@ -16,7 +16,9 @@ from pathlib import Path
 
 from adapter_distribution import parse_adapter_artifact_metadata_yaml
 from boundary_first_reference import (
+    GOVERNED_SKILLS,
     inventory_digest,
+    load_resource_manifest,
     projected_paths,
     raw_sha256,
 )
@@ -729,6 +731,27 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
 
 
 class BoundaryFirstActivationTests(unittest.TestCase):
+    def test_active_inventory_retires_test_spec_consumers_without_rewriting_history(self) -> None:
+        activation = json.loads(
+            (ROOT / "specs" / "boundary-first-activation.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        manifest = load_resource_manifest(ROOT)
+
+        self.assertNotIn("test-spec", GOVERNED_SKILLS)
+        self.assertNotIn("test-spec", activation["governed_skills"])
+        self.assertTrue(
+            all(
+                "test-spec" not in resource.consumers
+                for resource in manifest.resources
+            )
+        )
+        self.assertIn(
+            "specs/test-spec-review-gate.md",
+            activation["grandfathered_specs"],
+        )
+
     def test_repository_and_no_history_active_snapshots_are_independent(self) -> None:
         self.assertEqual(validate_activation(ROOT), ())
         with tempfile.TemporaryDirectory() as temporary:
