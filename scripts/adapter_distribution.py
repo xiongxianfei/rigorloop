@@ -96,6 +96,12 @@ RETIRED_PROGRESSION_SKILLS = frozenset(
 POST_CUTOVER_ADAPTER_SKILLS = tuple(
     PUBLISHED_SKILL_INVOCATION_NAMES
 )
+STAGED_V2_ADAPTER_SKILLS = tuple(
+    name for name in POST_CUTOVER_ADAPTER_SKILLS if name != "test-spec"
+)
+STAGED_V2_OPENCODE_COMMAND_ALIASES = tuple(
+    name for name in OPENCODE_COMMAND_ALIASES if name != "test-spec"
+)
 CODEX_SKILL_INVOCATION_PATTERN = re.compile(
     r"\$(?:"
     + "|".join(
@@ -665,13 +671,20 @@ def _yaml_double_quoted(value: str) -> str:
     return '"' + "".join(replacements.get(char, char) for char in value) + '"'
 
 
-def render_manifest_yaml(version: str, reports: Iterable[SkillPortabilityReport]) -> str:
+def render_manifest_yaml(
+    version: str,
+    reports: Iterable[SkillPortabilityReport],
+    *,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> str:
     """Render the constrained generated adapter manifest shape deterministically."""
 
     report_tuple = tuple(reports)
     render_opencode_aliases = False
     if _supports_opencode_command_aliases(version):
-        missing_alias_skills = _opencode_command_alias_missing_skill_errors(report_tuple)
+        missing_alias_skills = _opencode_command_alias_missing_skill_errors(
+            report_tuple, command_aliases=command_aliases
+        )
         if missing_alias_skills:
             if not version.startswith("v"):
                 raise ValueError("\n".join(missing_alias_skills))
@@ -688,9 +701,9 @@ def render_manifest_yaml(version: str, reports: Iterable[SkillPortabilityReport]
     if render_opencode_aliases:
         lines.append("command_aliases:")
         lines.append("  opencode:")
-        lines.append(f"    count: {len(OPENCODE_COMMAND_ALIASES)}")
+        lines.append(f"    count: {len(command_aliases)}")
         lines.append("    aliases:")
-        for alias, alias_path in _expected_opencode_command_alias_paths().items():
+        for alias, alias_path in _expected_opencode_command_alias_paths(command_aliases).items():
             lines.append(f"      {alias}: {alias_path}")
     lines.append("")
     return "\n".join(lines)
@@ -1202,15 +1215,19 @@ def _opencode_command_alias_contract_path(alias: str) -> str:
     return _adapter_contract_relative_path(opencode_command_alias_relative_path(alias))
 
 
-def _expected_opencode_command_alias_paths() -> dict[str, str]:
+def _expected_opencode_command_alias_paths(
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> dict[str, str]:
     return {
         alias: _opencode_command_alias_contract_path(alias)
-        for alias in OPENCODE_COMMAND_ALIASES
+        for alias in command_aliases
     }
 
 
 def _opencode_command_alias_missing_skill_errors(
     reports: Iterable[SkillPortabilityReport],
+    *,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
 ) -> list[str]:
     included = {
         report.name
@@ -1222,7 +1239,7 @@ def _opencode_command_alias_missing_skill_errors(
             f"opencode command alias {alias} maps to missing included skill: "
             f"{_opencode_command_alias_contract_path(alias)}"
         )
-        for alias in OPENCODE_COMMAND_ALIASES
+        for alias in command_aliases
         if alias not in included
     ]
 
@@ -1324,11 +1341,14 @@ def _expected_adapter_files_from_reports(
     reports: tuple[SkillPortabilityReport, ...],
     *,
     template_root: Path = ADAPTER_TEMPLATE_ROOT,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
 ) -> dict[Path, str]:
     """Return expected generated adapter files from already collected reports."""
 
     expected: dict[Path, str] = {
-        Path("manifest.yaml"): render_manifest_yaml(version, reports),
+        Path("manifest.yaml"): render_manifest_yaml(
+            version, reports, command_aliases=command_aliases
+        ),
     }
 
     for adapter_name in SUPPORTED_ADAPTERS:
@@ -1356,9 +1376,11 @@ def _expected_adapter_files_from_reports(
 
     if (
         _supports_opencode_command_aliases(version)
-        and not _opencode_command_alias_missing_skill_errors(reports)
+        and not _opencode_command_alias_missing_skill_errors(
+            reports, command_aliases=command_aliases
+        )
     ):
-        for alias in OPENCODE_COMMAND_ALIASES:
+        for alias in command_aliases:
             expected[opencode_command_alias_relative_path(alias)] = render_opencode_command_alias(alias)
 
     return dict(sorted(expected.items(), key=lambda item: item[0].as_posix()))
@@ -1881,6 +1903,102 @@ def build_adapter_archives(
         archives.append(archive_path)
 
     return tuple(archives)
+
+
+def _staged_v2_adapter_files(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> dict[Path, str]:
+    reports = _validated_skill_reports(skills_root)
+    by_name = {report.name: report for report in reports}
+    missing = sorted(set(STAGED_V2_ADAPTER_SKILLS) - set(by_name))
+    if missing:
+        raise ValueError(f"staged v2 adapter inventory missing canonical skills: {', '.join(missing)}")
+    selected = tuple(by_name[name] for name in STAGED_V2_ADAPTER_SKILLS)
+    return _expected_adapter_files_from_reports(
+        version,
+        selected,
+        template_root=template_root,
+        command_aliases=STAGED_V2_OPENCODE_COMMAND_ALIASES,
+    )
+
+
+def build_staged_v2_adapter_archives(
+    version: str,
+    output_dir: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> tuple[Path, ...]:
+    """Build the inactive v2 adapter candidate without changing tracked output."""
+
+    expected = _staged_v2_adapter_files(
+        version, skills_root=skills_root, template_root=template_root
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    archives: list[Path] = []
+    for adapter_name in SUPPORTED_ADAPTERS:
+        adapter = ADAPTERS[adapter_name]
+        files = {
+            relative_path: text
+            for expected_path, text in expected.items()
+            if (relative_path := _archive_relative_path(adapter, expected_path)) is not None
+        }
+        archive_path = output_dir / adapter_archive_name(adapter_name, version)
+        _write_deterministic_zip(archive_path, files)
+        archives.append(archive_path)
+    return tuple(archives)
+
+
+def validate_staged_v2_adapter_archives(
+    version: str,
+    root: Path,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> list[str]:
+    """Validate exact inactive-v2 archive contents and reject mixed packages."""
+
+    try:
+        expected = _staged_v2_adapter_files(
+            version, skills_root=skills_root, template_root=template_root
+        )
+    except ValueError as exc:
+        return [str(exc)]
+    errors: list[str] = []
+    for adapter_name in SUPPORTED_ADAPTERS:
+        adapter = ADAPTERS[adapter_name]
+        archive_path = root / adapter_archive_name(adapter_name, version)
+        if not archive_path.is_file():
+            errors.append(f"missing staged v2 adapter archive: {adapter_name}: {archive_path}")
+            continue
+        expected_files = {
+            relative_path.as_posix(): text.encode("utf-8")
+            for expected_path, text in expected.items()
+            if (relative_path := _archive_relative_path(adapter, expected_path)) is not None
+        }
+        try:
+            with zipfile.ZipFile(archive_path) as archive:
+                names = sorted(name for name in archive.namelist() if not name.endswith("/"))
+                expected_names = sorted(expected_files)
+                missing = sorted(set(expected_names) - set(names))
+                unexpected = sorted(set(names) - set(expected_names))
+                if missing:
+                    errors.append(
+                        f"staged v2 adapter archive missing entries: {adapter_name}: {', '.join(missing[:10])}"
+                    )
+                if unexpected:
+                    errors.append(
+                        f"staged v2 adapter archive unexpected entries: {adapter_name}: {', '.join(unexpected[:10])}"
+                    )
+                for name in sorted(set(names) & set(expected_names)):
+                    if archive.read(name) != expected_files[name]:
+                        errors.append(f"staged v2 adapter archive stale entry: {adapter_name}: {name}")
+        except zipfile.BadZipFile:
+            errors.append(f"invalid staged v2 adapter archive: {adapter_name}: {archive_path}")
+    return _dedupe_errors(errors)
 
 
 def _adapter_root(output_root: Path, config: AdapterConfig) -> Path:
@@ -2578,7 +2696,12 @@ def _archive_root_hash(archive_path: Path, install_root: str) -> tuple[str, int]
     return _tree_hash_for_rows(rows), len(rows)
 
 
-def _local_release_candidate_metadata(version: str, release_output_dir: Path) -> dict[str, Any]:
+def _local_release_candidate_metadata(
+    version: str,
+    release_output_dir: Path,
+    *,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> dict[str, Any]:
     artifacts: list[dict[str, Any]] = []
     for adapter_name in SUPPORTED_ADAPTERS:
         config = ADAPTERS[adapter_name]
@@ -2619,10 +2742,10 @@ def _local_release_candidate_metadata(version: str, release_output_dir: Path) ->
                     },
                     "command_aliases": {
                         "opencode": {
-                            "count": len(OPENCODE_COMMAND_ALIASES),
+                            "count": len(command_aliases),
                             "paths": [
                                 f"{command_root}/{alias}.md"
-                                for alias in OPENCODE_COMMAND_ALIASES
+                                for alias in command_aliases
                             ],
                         },
                     },
@@ -2661,7 +2784,12 @@ def _local_release_candidate_metadata(version: str, release_output_dir: Path) ->
     }
 
 
-def _prepare_local_cli_release_candidate(version: str, release_output_dir: Path) -> Path:
+def _prepare_local_cli_release_candidate(
+    version: str,
+    release_output_dir: Path,
+    *,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
+) -> Path:
     candidate_root = Path(tempfile.mkdtemp(prefix="rigorloop-clean-install-cli-"))
     candidate_dist = candidate_root / "dist"
     shutil.copytree(RIGORLOOP_CLI_DIST_ROOT, candidate_dist)
@@ -2672,7 +2800,9 @@ def _prepare_local_cli_release_candidate(version: str, release_output_dir: Path)
     package_json_path.write_text(json.dumps(package_data, indent=2) + "\n", encoding="utf-8")
     metadata_dir = candidate_dist / "metadata"
     metadata_path = metadata_dir / f"adapter-artifacts-{version}.json"
-    metadata = _local_release_candidate_metadata(version, release_output_dir)
+    metadata = _local_release_candidate_metadata(
+        version, release_output_dir, command_aliases=command_aliases
+    )
     metadata_text = json.dumps(metadata, indent=2, sort_keys=False) + "\n"
     metadata_path.write_text(metadata_text, encoding="utf-8")
     release_index = {
@@ -2770,6 +2900,7 @@ def validate_clean_install_smoke(
     command_runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
     node_binary: str = "node",
     temp_root: Path | None = None,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
 ) -> list[str]:
     """Install locally packed archives into empty target projects and verify mapped resources."""
 
@@ -2788,7 +2919,9 @@ def validate_clean_install_smoke(
     if errors:
         return _dedupe_errors(errors)
 
-    cli_path = _prepare_local_cli_release_candidate(version, release_output_dir)
+    cli_path = _prepare_local_cli_release_candidate(
+        version, release_output_dir, command_aliases=command_aliases
+    )
     projects_root = Path(tempfile.mkdtemp(prefix="rigorloop-clean-install-projects-", dir=temp_root))
     try:
         for adapter_name in SUPPORTED_ADAPTERS:

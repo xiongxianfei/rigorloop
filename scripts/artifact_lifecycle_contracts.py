@@ -18,6 +18,17 @@ LIFECYCLE_ACTIVATION_SCHEMA_PATH = Path("schemas/lifecycle-contract-activation.s
 LIFECYCLE_CONTRACT_VALUES = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2})
 PRIOR_CONTRACT_CLASSES = frozenset({LIFECYCLE_CONTRACT_V1, LEGACY_UNVERSIONED_CONTRACT})
 ACTIVATION_STATES = frozenset({"preactivation", "active"})
+WORKFLOW_LIFECYCLE_STATES = frozenset({"active", "paused", "completed", "cancelled"})
+POST_DELIVERY_STAGES = frozenset(
+    {"implement", "code-review", "review-resolution", "ci-maintenance", "explain-change", "verify", "pr"}
+)
+WORKFLOW_STAGES = frozenset(
+    {
+        "proposal", "proposal-review", "architecture", "architecture-review",
+        "spec", "spec-review", "design-review", "plan", "plan-review",
+        "test-spec", "test-spec-review", "delivery-review", *POST_DELIVERY_STAGES,
+    }
+)
 _MANIFEST_FIELDS = frozenset({"schema_version", "state", "activating_source_revision", "changes"})
 _MANIFEST_ENTRY_FIELDS = frozenset({"change_id", "contract_class"})
 _SAFE_CHANGE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
@@ -73,6 +84,74 @@ def validate_lifecycle_activation_manifest(manifest: Any) -> list[str]:
     if any(left.encode("utf-8") >= right.encode("utf-8") for left, right in zip(ids, ids[1:])):
         errors.append("activation manifest changes must use strict raw UTF-8 byte order")
     return errors
+
+
+def validate_lifecycle_activation_prerequisites(
+    manifest: Any,
+    changes_by_id: dict[str, Any],
+) -> list[str]:
+    """Validate the frozen prior-change inventory before v2 activation."""
+
+    manifest_errors = validate_lifecycle_activation_manifest(manifest)
+    if manifest_errors:
+        return manifest_errors
+    if not isinstance(changes_by_id, dict):
+        return ["activation prerequisite change inventory must be a mapping"]
+
+    blocking_ids: list[str] = []
+    for entry in manifest["changes"]:
+        change_id = entry["change_id"]
+        change = changes_by_id.get(change_id)
+        if not isinstance(change, dict):
+            blocking_ids.append(change_id)
+            continue
+        recorded_class = change.get("lifecycle_contract", LEGACY_UNVERSIONED_CONTRACT)
+        if recorded_class not in LIFECYCLE_CONTRACT_VALUES | {LEGACY_UNVERSIONED_CONTRACT}:
+            return [f"prior-contract change {change_id} lifecycle_contract: unknown_value {recorded_class}"]
+        if recorded_class != entry["contract_class"]:
+            return [
+                f"prior-contract change {change_id} does not match activation manifest class {entry['contract_class']}"
+            ]
+
+        workflow_state = change.get("workflow_state")
+        if not isinstance(workflow_state, dict):
+            blocking_ids.append(change_id)
+            continue
+        lifecycle_state = workflow_state.get("lifecycle_state")
+        if lifecycle_state not in WORKFLOW_LIFECYCLE_STATES:
+            return [
+                f"prior-contract change {change_id} lifecycle_state: unknown_value {lifecycle_state}"
+            ]
+        if lifecycle_state in {"completed", "cancelled"}:
+            continue
+
+        current_stage = workflow_state.get("current_stage")
+        if current_stage not in WORKFLOW_STAGES:
+            return [
+                f"prior-contract change {change_id} current_stage: unknown_value {current_stage}"
+            ]
+        if current_stage not in POST_DELIVERY_STAGES:
+            blocking_ids.append(change_id)
+            continue
+        review_packages = change.get("review_packages")
+        delivery = review_packages.get("delivery") if isinstance(review_packages, dict) else None
+        members = delivery.get("members") if isinstance(delivery, dict) else None
+        if not (
+            isinstance(delivery, dict)
+            and delivery.get("status") == "approved"
+            and delivery.get("authority") == "granted"
+            and isinstance(members, dict)
+            and any(isinstance(path, str) and path.startswith("docs/plans/") for path in members.values())
+            and any(isinstance(path, str) and path.startswith("specs/") and path.endswith(".test.md") for path in members.values())
+        ):
+            blocking_ids.append(change_id)
+
+    if blocking_ids:
+        return [
+            "activation prerequisite blocked by prior-contract changes: "
+            + ", ".join(sorted(blocking_ids, key=lambda item: item.encode("utf-8")))
+        ]
+    return []
 
 
 def _has_active_test_spec_state(change: dict[str, Any]) -> bool:

@@ -26,6 +26,7 @@ from change_metadata_semantics import (
 from artifact_lifecycle_contracts import (
     classify_lifecycle_contract,
     validate_lifecycle_activation_manifest,
+    validate_lifecycle_activation_prerequisites,
 )
 
 
@@ -2399,6 +2400,81 @@ class LifecycleContractClassificationTests(unittest.TestCase):
             "network_available": False,
         }, manifest)
         self.assertEqual(changed, baseline)
+
+    def test_activation_prerequisites_report_exact_blocking_change_ids(self) -> None:
+        manifest = copy.deepcopy(self.fixture["active_manifest"])
+        records = {
+            "Z-change": {"lifecycle_contract": "stage-owned-change-local-v1", "workflow_state": {"lifecycle_state": "completed"}},
+            "a-change": {"workflow_state": {"lifecycle_state": "completed"}},
+            "legacy": {
+                "workflow_state": {"lifecycle_state": "completed"},
+            },
+            "v1": {
+                "lifecycle_contract": "stage-owned-change-local-v1",
+                "workflow_state": {"lifecycle_state": "active", "current_stage": "plan"},
+                "review_packages": {},
+            },
+        }
+        errors = validate_lifecycle_activation_prerequisites(manifest, records)
+        self.assertEqual(
+            errors,
+            ["activation prerequisite blocked by prior-contract changes: v1"],
+        )
+
+    def test_activation_prerequisites_accept_post_delivery_and_terminal_records(self) -> None:
+        manifest = copy.deepcopy(self.fixture["active_manifest"])
+        records = {
+            "Z-change": {"lifecycle_contract": "stage-owned-change-local-v1", "workflow_state": {"lifecycle_state": "completed"}},
+            "a-change": {"workflow_state": {"lifecycle_state": "completed"}},
+            "legacy": {"workflow_state": {"lifecycle_state": "completed"}},
+            "v1": {
+                "lifecycle_contract": "stage-owned-change-local-v1",
+                "workflow_state": {"lifecycle_state": "active", "current_stage": "implement"},
+                "review_packages": {
+                    "delivery": {
+                        "status": "approved",
+                        "authority": "granted",
+                        "members": {
+                            "plan": "docs/plans/v1.md",
+                            "test-spec": "specs/v1.test.md",
+                        },
+                    }
+                },
+            },
+        }
+        self.assertEqual(validate_lifecycle_activation_prerequisites(manifest, records), [])
+
+    def test_activation_prerequisites_reject_unknown_state_before_readiness(self) -> None:
+        manifest = copy.deepcopy(self.fixture["active_manifest"])
+        records = {
+            "Z-change": {"lifecycle_contract": "stage-owned-change-local-v1", "workflow_state": {"lifecycle_state": "completed"}},
+            "a-change": {"workflow_state": {"lifecycle_state": "completed"}},
+            "legacy": {"workflow_state": {"lifecycle_state": "completed"}},
+            "v1": {
+                "lifecycle_contract": "stage-owned-change-local-v1",
+                "workflow_state": {"lifecycle_state": "future-state", "current_stage": "implement"},
+            },
+        }
+        self.assertEqual(
+            validate_lifecycle_activation_prerequisites(manifest, records),
+            ["prior-contract change v1 lifecycle_state: unknown_value future-state"],
+        )
+
+    def test_activation_prerequisites_reject_unknown_stage_before_readiness(self) -> None:
+        manifest = copy.deepcopy(self.fixture["active_manifest"])
+        records = {
+            "Z-change": {"lifecycle_contract": "stage-owned-change-local-v1", "workflow_state": {"lifecycle_state": "completed"}},
+            "a-change": {"workflow_state": {"lifecycle_state": "completed"}},
+            "legacy": {"workflow_state": {"lifecycle_state": "completed"}},
+            "v1": {
+                "lifecycle_contract": "stage-owned-change-local-v1",
+                "workflow_state": {"lifecycle_state": "active", "current_stage": "future-stage"},
+            },
+        }
+        self.assertEqual(
+            validate_lifecycle_activation_prerequisites(manifest, records),
+            ["prior-contract change v1 current_stage: unknown_value future-stage"],
+        )
 
 
 if __name__ == "__main__":
