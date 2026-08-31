@@ -293,7 +293,7 @@ Open findings: None
         path.write_text(dump_yaml(document), encoding="utf-8")
         return WorkflowAutomationStateStore(path), path
 
-    def package_review_completion_fixture(self, kind: str):
+    def package_review_completion_fixture(self, kind: str, *, lifecycle_contract: str = "stage-owned-change-local-v1"):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         root = Path(temp.name)
@@ -305,7 +305,7 @@ Open findings: None
         members = (
             {"architecture": "docs/architecture/example.md", "spec": "specs/example.md"}
             if kind == "design"
-            else {"plan": "docs/plans/example.md", "test-spec": "specs/example.test.md"}
+            else ({"plan": "docs/plans/example.md"} if lifecycle_contract == "stage-owned-change-local-v2" else {"plan": "docs/plans/example.md", "test-spec": "specs/example.test.md"})
         )
         for member_path in members.values():
             member = root / member_path
@@ -352,8 +352,9 @@ Recording status: recorded
             "architecture": {"kind": "architecture", "role": "primary", "path": "docs/architecture/example.md"},
             "spec": {"kind": "spec", "role": "primary", "path": "specs/example.md"},
             "plan": {"kind": "plan", "role": "primary", "path": "docs/plans/example.md"},
-            "test-spec": {"kind": "test-spec", "role": "primary", "path": "specs/example.test.md"},
         }
+        if lifecycle_contract == "stage-owned-change-local-v1":
+            artifact_states["test-spec"] = {"kind": "test-spec", "role": "primary", "path": "specs/example.test.md"}
         registration = {
             "review_id": review_id,
             "round": "r1",
@@ -376,6 +377,7 @@ Recording status: recorded
         }
         document = {
             "change_id": "2026-07-20-example",
+            "lifecycle_contract": lifecycle_contract,
             "artifact_states": artifact_states,
             "review_packages": {"design": {"status": "approved", "authority": "granted", "review_id": "design-review-r1"}} if kind == "delivery" else {},
             "lifecycle_cli": {"artifacts": artifact_registrations, "package_reviews": {kind: registration}},
@@ -398,6 +400,21 @@ Recording status: recorded
                 )
                 self.assertTrue(result.valid, result.reason)
                 self.assertEqual(result.proof.stage_facts["package_kind"], kind)
+
+    def test_v2_delivery_review_completion_binds_the_primary_plan_only(self) -> None:
+        root, review_path, review_identity, evidence = self.package_review_completion_fixture(
+            "delivery", lifecycle_contract="stage-owned-change-local-v2"
+        )
+        result = _verify_package_review_completion(
+            stage_name="delivery-review",
+            evidence_name="delivery-review",
+            evidence=evidence,
+            artifact=review_path,
+            artifact_identity=review_identity,
+            repository_root=root,
+        )
+        self.assertTrue(result.valid, result.reason)
+        self.assertEqual(result.proof.stage_facts["package_members"], '{"plan":"docs/plans/example.md"}')
 
     def test_package_review_completion_rejects_member_and_upstream_mismatch(self) -> None:
         root, review_path, review_identity, evidence = self.package_review_completion_fixture("design")

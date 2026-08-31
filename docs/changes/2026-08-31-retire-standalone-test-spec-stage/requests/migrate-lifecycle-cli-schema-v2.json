@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "migrate",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:7a760002fbe4cdf320327b95a13d4c2ea3b22dfdf2a68e9f649368e2e6ab9fe4",
+  "source_schema_version": 1,
+  "stage_authority": "workflow"
+}

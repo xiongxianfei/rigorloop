@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:e40fd7e036fa2de68e3afde4e43e5e93d2df0e1afd49ec366569e4ac9b916f52",
+  "artifact_id": "test-spec",
+  "artifact_kind": "test-spec",
+  "artifact_role": "primary",
+  "artifact_path": "specs/retire-standalone-test-spec-stage.test.md",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/test-spec-correction-r2.md",
+  "prior_artifact_sha256": "5f7c890e74e843980d1dd5570d32f83465155e7ef6bbf6e685a09a9a2a084f67",
+  "stage_authority": "test-spec"
+}

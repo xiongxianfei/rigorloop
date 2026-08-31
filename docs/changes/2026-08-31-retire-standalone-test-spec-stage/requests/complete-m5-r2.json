@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:edb061b66e493724437501501dc25b895dd9fd0475ec0cd6ded1cf79035d0d36",
+  "milestone_id": "M5",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/m5-v2-activation.md",
+  "review_evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m5-r2.md",
+  "stage_authority": "workflow"
+}

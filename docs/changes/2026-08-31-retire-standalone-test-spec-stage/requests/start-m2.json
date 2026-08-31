@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "start-milestone",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:c1fb33fe45824902dba545568977bc909c8bb7de2acddd20ae10ed8283693202",
+  "milestone_id": "M2",
+  "stage_authority": "workflow"
+}

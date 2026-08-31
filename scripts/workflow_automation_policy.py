@@ -8,7 +8,7 @@ and mechanically checkable.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, replace
 from enum import Enum
 from types import MappingProxyType
 from typing import Any, Iterable, Mapping
@@ -562,6 +562,66 @@ STAGE_POLICIES: tuple[StagePolicy, ...] = (
     _policy(S.VERIFY, (W.EXPLAIN_CHANGE,), "verify", O.FINAL, A.VERIFICATION, C.VERIFICATION, M.VERIFICATION_EVIDENCE, P.REQUIRED, "all closeout evidence and verification inputs are current", ("plan", "final-code-review", "explain-change", "verification-commands"), "fresh verification passes", ("verify-report", "validation"), (W.PR,), R.MANUAL_RECOVERY, X.NO_AUTOMATIC_REPAIR, B.STOP_BEFORE_PR),
 )
 
+LIFECYCLE_CONTRACT_V1 = "stage-owned-change-local-v1"
+LIFECYCLE_CONTRACT_V2 = "stage-owned-change-local-v2"
+V2_PUBLIC_TARGET_STAGES = PUBLIC_TARGET_STAGES - {WorkflowStage.TEST_SPEC}
+V2_PUBLIC_TARGET_SEQUENCE = tuple(stage for stage in PUBLIC_TARGET_SEQUENCE if stage != WorkflowStage.TEST_SPEC)
+_V2_REMOVED_RULES = {
+    (WorkflowPosition.PLAN, WorkflowStage.TEST_SPEC),
+    (WorkflowPosition.TEST_SPEC, WorkflowStage.DELIVERY_REVIEW),
+    (WorkflowPosition.DELIVERY_REVIEW, WorkflowStage.TEST_SPEC),
+}
+_V2_PLAN_TO_DELIVERY = TransitionRule(
+    from_position=WorkflowPosition.PLAN,
+    to_position=WorkflowPosition.DELIVERY_REVIEW,
+    operation=WorkflowStage.DELIVERY_REVIEW,
+    allowed_targets=frozenset(V2_PUBLIC_TARGET_SEQUENCE[V2_PUBLIC_TARGET_SEQUENCE.index(WorkflowStage.DELIVERY_REVIEW):]),
+    guard=TransitionGuard.ALWAYS,
+)
+V2_TRANSITION_RULES = tuple(
+    replace(rule, allowed_targets=rule.allowed_targets - {WorkflowStage.TEST_SPEC})
+    for rule in TRANSITION_RULES
+    if (rule.from_position, rule.operation) not in _V2_REMOVED_RULES
+    and rule.from_position != WorkflowPosition.TEST_SPEC
+) + (_V2_PLAN_TO_DELIVERY,)
+
+
+def _v2_policy(policy: StagePolicy) -> StagePolicy:
+    incoming = frozenset(rule for rule in V2_TRANSITION_RULES if rule.operation == policy.stage)
+    outgoing = frozenset(rule for rule in V2_TRANSITION_RULES if rule.from_position == WorkflowPosition(policy.stage.value))
+    inputs = policy.required_input_identities - {"test-spec"}
+    if policy.stage == WorkflowStage.DELIVERY_REVIEW:
+        inputs = frozenset({"design-review", "plan"})
+    return replace(policy, predecessor_rule=incoming, required_input_identities=inputs, next_stage_calculation=outgoing)
+
+
+V2_STAGE_POLICIES = tuple(_v2_policy(policy) for policy in STAGE_POLICIES if policy.stage != WorkflowStage.TEST_SPEC)
+V2_STAGE_POLICY_BY_STAGE = MappingProxyType({policy.stage.value: policy for policy in V2_STAGE_POLICIES})
+
+
+def public_target_stages_for_contract(contract: str) -> frozenset[WorkflowStage]:
+    if contract == LIFECYCLE_CONTRACT_V1:
+        return PUBLIC_TARGET_STAGES
+    if contract == LIFECYCLE_CONTRACT_V2:
+        return V2_PUBLIC_TARGET_STAGES
+    raise ValueError(f"lifecycle_contract: unknown_value {contract}")
+
+
+def stage_policy_by_stage_for_contract(contract: str) -> Mapping[str, StagePolicy]:
+    if contract == LIFECYCLE_CONTRACT_V1:
+        return STAGE_POLICY_BY_STAGE
+    if contract == LIFECYCLE_CONTRACT_V2:
+        return V2_STAGE_POLICY_BY_STAGE
+    raise ValueError(f"lifecycle_contract: unknown_value {contract}")
+
+
+def transition_rules_for_contract(contract: str) -> tuple[TransitionRule, ...]:
+    if contract == LIFECYCLE_CONTRACT_V1:
+        return TRANSITION_RULES
+    if contract == LIFECYCLE_CONTRACT_V2:
+        return V2_TRANSITION_RULES
+    raise ValueError(f"lifecycle_contract: unknown_value {contract}")
+
 
 def _unknown_enum_error(index: int, field_name: str, value: object, enum: type[Enum]) -> str | None:
     if isinstance(value, enum):
@@ -741,16 +801,18 @@ TRANSITION_RULES_BY_OPERATION = MappingProxyType(
 def is_immediate_predecessor(
     from_position: WorkflowPosition,
     to_stage: WorkflowStage,
+    *,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> bool:
     """Check structural adjacency without granting transition permission."""
 
     return any(
-        rule.from_position == from_position
-        for rule in TRANSITION_RULES_BY_OPERATION[to_stage]
+        rule.from_position == from_position and rule.operation == to_stage
+        for rule in transition_rules_for_contract(lifecycle_contract)
     )
 
 
-def can_operation_fit_target(operation: WorkflowStage, target: WorkflowStage) -> bool:
+def can_operation_fit_target(operation: WorkflowStage, target: WorkflowStage, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> bool:
     """Return whether an operation can fit a parent target structurally.
 
     Parent authorization validation has no concrete transition predecessor and
@@ -760,16 +822,19 @@ def can_operation_fit_target(operation: WorkflowStage, target: WorkflowStage) ->
 
     return any(
         target in rule.allowed_targets
-        for rule in TRANSITION_RULES_BY_OPERATION[operation]
+        for rule in transition_rules_for_contract(lifecycle_contract)
+        if rule.operation == operation
     )
 
 
-def target_completion_predicate(stage: WorkflowStage | str) -> dict[str, str]:
+def target_completion_predicate(stage: WorkflowStage | str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> dict[str, str]:
     """Project the one canonical public-target completion predicate."""
 
     stage_name = stage.value if isinstance(stage, WorkflowStage) else stage
-    policy = STAGE_POLICY_BY_STAGE.get(stage_name)
-    if policy is None or policy.stage not in PUBLIC_TARGET_STAGES:
+    policies = stage_policy_by_stage_for_contract(lifecycle_contract)
+    targets = public_target_stages_for_contract(lifecycle_contract)
+    policy = policies.get(stage_name)
+    if policy is None or policy.stage not in targets:
         raise ValueError(f"stage is not a public target: {stage_name}")
     return {"rule": policy.completion_rule}
 
@@ -937,13 +1002,18 @@ def _evaluate_occurrence(
     return (f"transition occurrence constraint: unsupported value {constraint!r}",)
 
 
-def evaluate_transition(context: TransitionContext) -> TransitionEvaluation:
+def evaluate_transition(
+    context: TransitionContext,
+    *,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+) -> TransitionEvaluation:
     """Evaluate one exact transition rule against target and predicate context."""
 
     candidates = tuple(
         rule
-        for rule in TRANSITION_RULES_BY_OPERATION[context.operation]
-        if rule.from_position == context.from_position
+        for rule in transition_rules_for_contract(lifecycle_contract)
+        if rule.operation == context.operation
+        and rule.from_position == context.from_position
         and context.target in rule.allowed_targets
     )
     if not candidates:

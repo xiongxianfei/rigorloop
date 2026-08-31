@@ -3,9 +3,236 @@
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
+
+
+LIFECYCLE_CONTRACT_V1 = "stage-owned-change-local-v1"
+LIFECYCLE_CONTRACT_V2 = "stage-owned-change-local-v2"
+LEGACY_UNVERSIONED_CONTRACT = "legacy-unversioned"
+LIFECYCLE_ACTIVATION_MANIFEST_PATH = Path("specs/lifecycle-contract-activation.yaml")
+LIFECYCLE_ACTIVATION_SCHEMA_PATH = Path("schemas/lifecycle-contract-activation.schema.json")
+LIFECYCLE_CONTRACT_VALUES = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2})
+PRIOR_CONTRACT_CLASSES = frozenset({LIFECYCLE_CONTRACT_V1, LEGACY_UNVERSIONED_CONTRACT})
+ACTIVATION_STATES = frozenset({"preactivation", "active"})
+WORKFLOW_LIFECYCLE_STATES = frozenset({"active", "paused", "completed", "cancelled"})
+POST_DELIVERY_STAGES = frozenset(
+    {"implement", "code-review", "review-resolution", "ci-maintenance", "explain-change", "verify", "pr"}
+)
+WORKFLOW_STAGES = frozenset(
+    {
+        "proposal", "proposal-review", "architecture", "architecture-review",
+        "spec", "spec-review", "design-review", "plan", "plan-review",
+        "test-spec", "test-spec-review", "delivery-review", *POST_DELIVERY_STAGES,
+    }
+)
+_MANIFEST_FIELDS = frozenset({"schema_version", "state", "activating_source_revision", "changes"})
+_MANIFEST_ENTRY_FIELDS = frozenset({"change_id", "contract_class"})
+_SAFE_CHANGE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+
+
+def parse_lifecycle_activation_manifest(text: str) -> Any:
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"activation manifest is not valid JSON-compatible YAML: {exc.msg}") from exc
+
+
+def validate_lifecycle_activation_manifest(manifest: Any) -> list[str]:
+    if not isinstance(manifest, dict) or set(manifest) != _MANIFEST_FIELDS:
+        return ["activation manifest must contain exactly schema_version, state, activating_source_revision, and changes"]
+    errors: list[str] = []
+    if manifest.get("schema_version") != 1:
+        errors.append(f"activation manifest schema_version: unknown_value {manifest.get('schema_version')}")
+    state = manifest.get("state")
+    if state not in ACTIVATION_STATES:
+        errors.append(f"activation manifest state: unknown_value {state}")
+    changes = manifest.get("changes")
+    if not isinstance(changes, list):
+        return [*errors, "activation manifest changes must be an array"]
+
+    for index, entry in enumerate(changes):
+        if not isinstance(entry, dict) or set(entry) != _MANIFEST_ENTRY_FIELDS:
+            errors.append(f"activation manifest changes[{index}] must contain exactly change_id and contract_class")
+            continue
+        if entry.get("contract_class") not in PRIOR_CONTRACT_CLASSES:
+            errors.append(f"activation manifest changes[{index}].contract_class: unknown_value {entry.get('contract_class')}")
+    if errors:
+        return errors
+
+    revision = manifest.get("activating_source_revision")
+    if state == "preactivation":
+        if revision is not None:
+            errors.append("preactivation manifest activating_source_revision must be null")
+        if changes:
+            errors.append("preactivation manifest changes must be empty")
+    elif not isinstance(revision, str) or re.fullmatch(r"[0-9a-f]{40}", revision) is None:
+        errors.append("active manifest activating_source_revision must be a 40-character lowercase Git revision")
+
+    ids: list[str] = []
+    for index, entry in enumerate(changes):
+        change_id = entry.get("change_id")
+        if not isinstance(change_id, str) or _SAFE_CHANGE_ID.fullmatch(change_id) is None:
+            errors.append(f"activation manifest changes[{index}].change_id must be one safe identifier")
+        else:
+            ids.append(change_id)
+    if len(set(ids)) != len(ids):
+        errors.append("activation manifest changes contain a duplicate change_id")
+    if any(left.encode("utf-8") >= right.encode("utf-8") for left, right in zip(ids, ids[1:])):
+        errors.append("activation manifest changes must use strict raw UTF-8 byte order")
+    return errors
+
+
+def validate_lifecycle_activation_prerequisites(
+    manifest: Any,
+    changes_by_id: dict[str, Any],
+) -> list[str]:
+    """Validate the frozen prior-change inventory before v2 activation."""
+
+    manifest_errors = validate_lifecycle_activation_manifest(manifest)
+    if manifest_errors:
+        return manifest_errors
+    if not isinstance(changes_by_id, dict):
+        return ["activation prerequisite change inventory must be a mapping"]
+
+    blocking_ids: list[str] = []
+    for entry in manifest["changes"]:
+        change_id = entry["change_id"]
+        change = changes_by_id.get(change_id)
+        if not isinstance(change, dict):
+            blocking_ids.append(change_id)
+            continue
+        recorded_class = change.get("lifecycle_contract", LEGACY_UNVERSIONED_CONTRACT)
+        if recorded_class not in LIFECYCLE_CONTRACT_VALUES | {LEGACY_UNVERSIONED_CONTRACT}:
+            return [f"prior-contract change {change_id} lifecycle_contract: unknown_value {recorded_class}"]
+        if recorded_class != entry["contract_class"]:
+            return [
+                f"prior-contract change {change_id} does not match activation manifest class {entry['contract_class']}"
+            ]
+
+        workflow_state = change.get("workflow_state")
+        if not isinstance(workflow_state, dict):
+            blocking_ids.append(change_id)
+            continue
+        lifecycle_state = workflow_state.get("lifecycle_state")
+        if lifecycle_state not in WORKFLOW_LIFECYCLE_STATES:
+            return [
+                f"prior-contract change {change_id} lifecycle_state: unknown_value {lifecycle_state}"
+            ]
+        if lifecycle_state in {"completed", "cancelled"}:
+            continue
+
+        current_stage = workflow_state.get("current_stage")
+        if current_stage not in WORKFLOW_STAGES:
+            return [
+                f"prior-contract change {change_id} current_stage: unknown_value {current_stage}"
+            ]
+        if current_stage not in POST_DELIVERY_STAGES:
+            blocking_ids.append(change_id)
+            continue
+        review_packages = change.get("review_packages")
+        delivery = review_packages.get("delivery") if isinstance(review_packages, dict) else None
+        members = delivery.get("members") if isinstance(delivery, dict) else None
+        consolidated_delivery_ready = (
+            isinstance(delivery, dict)
+            and delivery.get("status") == "approved"
+            and delivery.get("authority") == "granted"
+            and isinstance(members, dict)
+            and any(isinstance(path, str) and path.startswith("docs/plans/") for path in members.values())
+            and any(isinstance(path, str) and path.startswith("specs/") and path.endswith(".test.md") for path in members.values())
+        )
+        artifact_states = change.get("artifact_states")
+        primary_approved_kinds = {
+            artifact.get("kind")
+            for artifact in artifact_states.values()
+            if isinstance(artifact_states, dict)
+            and isinstance(artifact, dict)
+            and artifact.get("role") == "primary"
+            and isinstance(artifact.get("review"), dict)
+            and artifact["review"].get("outcome") == "approved"
+        } if isinstance(artifact_states, dict) else set()
+        legacy_delivery_ready = {"plan", "test-spec"}.issubset(primary_approved_kinds)
+        if not (consolidated_delivery_ready or legacy_delivery_ready):
+            blocking_ids.append(change_id)
+
+    if blocking_ids:
+        return [
+            "activation prerequisite blocked by prior-contract changes: "
+            + ", ".join(sorted(blocking_ids, key=lambda item: item.encode("utf-8")))
+        ]
+    return []
+
+
+def _has_active_test_spec_state(change: dict[str, Any]) -> bool:
+    workflow_state = change.get("workflow_state")
+    if isinstance(workflow_state, dict) and (
+        workflow_state.get("current_stage") in {"test-spec", "test-spec-review"}
+        or workflow_state.get("next_stage") in {"test-spec", "test-spec-review"}
+    ):
+        return True
+    states = change.get("artifact_states")
+    if isinstance(states, dict):
+        for entry in states.values():
+            if isinstance(entry, dict) and entry.get("kind") == "test-spec" and entry.get("lifecycle_state") not in {"abandoned", "archived", "superseded"}:
+                return True
+    packages = change.get("review_packages")
+    delivery = packages.get("delivery") if isinstance(packages, dict) else None
+    members = delivery.get("members") if isinstance(delivery, dict) else None
+    if isinstance(members, dict) and "test-spec" in members:
+        return True
+    coordination = change.get("lifecycle_cli")
+    if not isinstance(coordination, dict):
+        return False
+    artifacts = coordination.get("artifacts")
+    if isinstance(artifacts, dict) and any(
+        isinstance(entry, dict) and entry.get("artifact_kind") == "test-spec"
+        for entry in artifacts.values()
+    ):
+        return True
+    reviews = coordination.get("reviews")
+    if isinstance(reviews, dict) and any(
+        isinstance(entry, dict) and entry.get("stage_authority") == "test-spec-review"
+        for entry in reviews.values()
+    ):
+        return True
+    package_reviews = coordination.get("package_reviews")
+    delivery_review = package_reviews.get("delivery") if isinstance(package_reviews, dict) else None
+    review_members = delivery_review.get("members") if isinstance(delivery_review, dict) else None
+    return isinstance(review_members, dict) and "test-spec" in review_members
+
+
+def classify_lifecycle_contract(change_id: str, change: dict[str, Any], manifest: Any) -> dict[str, str]:
+    has_explicit_contract = "lifecycle_contract" in change
+    explicit = change.get("lifecycle_contract")
+    if has_explicit_contract and explicit not in LIFECYCLE_CONTRACT_VALUES:
+        rendered = "null" if explicit is None else str(explicit)
+        raise ValueError(f"lifecycle_contract: unknown_value {rendered}")
+    manifest_errors = validate_lifecycle_activation_manifest(manifest)
+    if manifest_errors:
+        raise ValueError(manifest_errors[0])
+    contract_class = explicit if has_explicit_contract else LEGACY_UNVERSIONED_CONTRACT
+    if contract_class == LIFECYCLE_CONTRACT_V2:
+        if _has_active_test_spec_state(change):
+            raise ValueError("v2 lifecycle contract carries active test-spec state")
+        return {
+            "contract_class": contract_class,
+            "activation_state": manifest["state"],
+            "authority": "active" if manifest["state"] == "active" else "inactive",
+        }
+    if manifest["state"] == "active":
+        entry = next((item for item in manifest["changes"] if item["change_id"] == change_id), None)
+        if entry is None:
+            raise ValueError(f"prior-contract change {change_id} is not present in the activation manifest")
+        if entry["contract_class"] != contract_class:
+            raise ValueError(f"prior-contract change {change_id} does not match activation manifest class {entry['contract_class']}")
+    return {
+        "contract_class": contract_class,
+        "activation_state": manifest["state"],
+        "authority": "prior-compatible" if manifest["state"] == "active" else "preactivation",
+    }
 
 
 PROPOSAL_ID_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$")

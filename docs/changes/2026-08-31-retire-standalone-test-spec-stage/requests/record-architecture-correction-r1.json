@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:6cf9aebc334bded107ee4f3aacae5db8a6e3035b02dd8aaf56d60c6588fc098e",
+  "artifact_id": "architecture",
+  "artifact_kind": "architecture",
+  "artifact_role": "primary",
+  "artifact_path": "docs/architecture/2026-08-31-retire-standalone-test-spec-stage.md",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/architecture-correction-r1.md",
+  "prior_artifact_sha256": "86b94693a3ca1c53c6612cb573b7951a54c3e672edc07d4017f345625d516e6e",
+  "stage_authority": "architecture"
+}

@@ -6,7 +6,7 @@ Load for every durable or formal Delivery Review. The parent skill owns judgment
 
 Resolve the exact change and package from `rigorloop lifecycle context delivery-review --change <change-id> --format json`. Record a clean receipt or detailed review at `docs/changes/<change-id>/reviews/delivery-review-r<n>.md`, update `review-log.md`, and use `review-resolution.md` only when material findings or dispositions require it. If placement or identity is ambiguous, report recording blocked without weakening findings.
 
-The record binds package kind `delivery`, the exact member ID-to-path map, approved Design Review ID, Delivery Review ID and round, reviewer authority, outcome, findings, correction targets, and evidence path. It contains no aggregate revision or content hash.
+The record binds package kind `delivery`, the exact member ID-to-path map, approved Design Review ID, Delivery Review ID and round, reviewer authority, outcome, findings, correction targets, and evidence path. Under v2 the member map contains exactly the registered primary plan; prior-contract v1 retains its registered plan-plus-test-spec map. It contains no aggregate revision or content hash.
 
 ## CLI settlement
 

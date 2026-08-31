@@ -11,7 +11,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from artifact_lifecycle_contracts import ARCHITECTURE_CONTRACT
+from artifact_lifecycle_contracts import ARCHITECTURE_CONTRACT, validate_lifecycle_activation_manifest
 from artifact_lifecycle_validation import validate_release_evidence_checklist, validate_repository
 from lifecycle_state_sync import CLEAN_ADVANCE_GATES
 from lifecycle_state_sync import evaluate_authoring_autoprogression_route
@@ -5327,6 +5327,122 @@ Leave this draft stale.
         self.assertEqual(second.returncode, 0, second.stderr)
         self.assertIn("validated", second.stdout)
         self.assertNotIn("[CACHE HIT]", second.stdout)
+
+
+class LifecycleActivationManifestTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        fixture_path = ROOT / "packages/rigorloop/test/fixtures/lifecycle/contract-classification-v1.json"
+        import json
+        cls.manifest = json.loads(fixture_path.read_text(encoding="utf-8"))["active_manifest"]
+
+    def test_manifest_rejects_duplicate_and_unsorted_entries(self) -> None:
+        duplicate = dict(self.manifest)
+        duplicate["changes"] = [dict(item) for item in self.manifest["changes"]]
+        duplicate["changes"].insert(1, dict(duplicate["changes"][0]))
+        self.assertIn("duplicate", validate_lifecycle_activation_manifest(duplicate)[0])
+
+        unsorted = dict(self.manifest)
+        unsorted["changes"] = [dict(item) for item in self.manifest["changes"]]
+        unsorted["changes"][0], unsorted["changes"][1] = unsorted["changes"][1], unsorted["changes"][0]
+        self.assertIn("raw UTF-8 byte order", validate_lifecycle_activation_manifest(unsorted)[0])
+
+    def test_unknown_value_manifest_class_fails_first(self) -> None:
+        invalid = dict(self.manifest)
+        invalid["changes"] = [dict(item) for item in self.manifest["changes"]]
+        invalid["changes"][0]["contract_class"] = "future-v9"
+        invalid["changes"].append(dict(invalid["changes"][0]))
+        self.assertRegex(validate_lifecycle_activation_manifest(invalid)[0], "unknown_value.*future-v9")
+
+    def test_tracked_preactivation_manifest_matches_schema_model(self) -> None:
+        import json
+        manifest = json.loads((ROOT / "specs/lifecycle-contract-activation.yaml").read_text(encoding="utf-8"))
+        schema = json.loads((ROOT / "schemas/lifecycle-contract-activation.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(validate_lifecycle_activation_manifest(manifest), [])
+        self.assertEqual(set(manifest), set(schema["required"]))
+        self.assertEqual(schema["properties"]["state"]["enum"], ["preactivation", "active"])
+        self.assertEqual(schema["properties"]["changes"]["items"]["properties"]["contract_class"]["enum"], ["stage-owned-change-local-v1", "legacy-unversioned"])
+
+    def write_contract_repository(self, manifest: dict, change_yaml: str) -> Path:
+        import json
+
+        root = Path(tempfile.mkdtemp(prefix="lifecycle-contract-repository-"))
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        manifest_path = root / "specs" / "lifecycle-contract-activation.yaml"
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        change_path = root / "docs" / "changes" / "new-v2" / "change.yaml"
+        change_path.parent.mkdir(parents=True, exist_ok=True)
+        change_path.write_text(change_yaml, encoding="utf-8")
+        return root
+
+    def test_public_validator_rejects_v2_active_test_spec_state(self) -> None:
+        root = self.write_contract_repository(
+            self.manifest,
+            """change_id: new-v2
+lifecycle_contract: stage-owned-change-local-v2
+workflow_state:
+  current_stage: test-spec
+""",
+        )
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=["docs/changes/new-v2/change.yaml"],
+        )
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("v2 lifecycle contract carries active test-spec state", messages)
+
+    def test_public_validator_enforces_active_manifest_membership(self) -> None:
+        root = self.write_contract_repository(
+            self.manifest,
+            """change_id: new-v2
+lifecycle_contract: stage-owned-change-local-v1
+""",
+        )
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=["docs/changes/new-v2/change.yaml"],
+        )
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("prior-contract change new-v2 is not present in the activation manifest", messages)
+
+    def test_public_validator_rejects_invalid_activation_manifest(self) -> None:
+        invalid = dict(self.manifest)
+        invalid["state"] = "published"
+        root = self.write_contract_repository(
+            invalid,
+            """change_id: new-v2
+lifecycle_contract: stage-owned-change-local-v2
+""",
+        )
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=["docs/changes/new-v2/change.yaml"],
+        )
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("activation manifest state: unknown_value published", messages)
+
+    def test_public_validator_rejects_v2_when_activation_manifest_is_missing(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="lifecycle-contract-missing-manifest-"))
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        change_path = root / "docs" / "changes" / "new-v2" / "change.yaml"
+        change_path.parent.mkdir(parents=True, exist_ok=True)
+        change_path.write_text(
+            """change_id: new-v2
+lifecycle_contract: stage-owned-change-local-v2
+""",
+            encoding="utf-8",
+        )
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=["docs/changes/new-v2/change.yaml"],
+        )
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("v2 lifecycle contract requires the tracked activation manifest", messages)
 
 
 if __name__ == "__main__":

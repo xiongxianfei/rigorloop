@@ -6,7 +6,7 @@
   "canonical_reference": "specs/references/boundary-first-method-v1.md",
   "canonical_reference_sha256": "4268fbe89ecdfd7b79ca1321b8d6b19b2ed24e8adeda17cae8c319b087760f6f",
   "resource_manifest": "specs/boundary-first-resources.yaml",
-  "resource_manifest_sha256": "040fe7aa2eb85caf72f55f54bd5d2334a20aad4b0a1d99900f549ff7958bbc72",
+  "resource_manifest_sha256": "8f255f2706fd18081921bb4725fd24715dddb9d61e0cc17cc36ec8cc4289ff71",
   "grandfathering_baseline_revision": "ca2630e4a0a4bc82c330b51f0480eb97e047ec3f",
   "grandfathered_specs": [
     "specs/artifact-status-lifecycle-ownership.md",
@@ -93,11 +93,10 @@
     "spec",
     "design-review",
     "plan",
-    "test-spec",
     "delivery-review",
     "implement",
     "code-review",
     "verify"
   ],
-  "projection_sha256": "e88317d3deefa9c811c7ef7ef4d0a3be5acacbe79553464bbb92c636fe95c888"
+  "projection_sha256": "f1bf8aa5a5ea0fff4b2baf86a44c5374a4aebc8ed57bce12712d35a66546b8f7"
 }

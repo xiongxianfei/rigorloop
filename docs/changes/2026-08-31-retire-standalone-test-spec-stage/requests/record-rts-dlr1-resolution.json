@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-finding-resolution",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:7842993ac2ac69391d5636b623b90c423fbd15c9519e00a747dceb2f649637fa",
+  "artifact_id": "test-spec",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-resolution.md",
+  "finding_id": "RTS-DLR1",
+  "stage_authority": "review-resolution"
+}

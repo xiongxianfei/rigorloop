@@ -45,6 +45,21 @@ class BuildSkillsTests(unittest.TestCase):
         self.assertTrue((output_dir / "workflow" / "assets" / "workflows-skeleton.md").is_file())
         self.assertFalse(self.build_skills.collect_drift(self.build_skills.CANONICAL_SKILLS_DIR, output_dir))
 
+        workflow_automation = (
+            output_dir / "workflow" / "references" / "bounded-workflow-automation.md"
+        ).read_text(encoding="utf-8")
+        workflow_skeleton = (
+            output_dir / "workflow" / "assets" / "workflows-skeleton.md"
+        ).read_text(encoding="utf-8")
+        plan_authoring = (
+            output_dir / "plan" / "references" / "governed-plan-authoring.md"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn("`plan`, `test-spec`, `delivery-review`", workflow_automation)
+        self.assertNotIn("-> test-spec", workflow_skeleton)
+        self.assertNotIn("test_spec:", workflow_skeleton)
+        self.assertIn("Governed plan authoring is available only for v2", plan_authoring)
+        self.assertNotIn("handoff: `test-spec`", plan_authoring)
+
     def test_proposal_stage_packages_preserve_canonical_resources(self) -> None:
         output_dir = self.tmpdir / "generated-skills"
 

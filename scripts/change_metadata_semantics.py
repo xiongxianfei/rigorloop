@@ -6,6 +6,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from artifact_lifecycle_contracts import LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2
+
 
 REVIEW_GATE_INDEPENDENCE_LEVELS = {"L1", "L2", "L3"}
 REVIEW_GATE_PHASE_RECEIPTS = (
@@ -52,7 +54,7 @@ REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS = {
     "surfaces covered by spec-derived constants exercised in tests",
 }
 SHA256_RE = re.compile(r"^sha256:[0-9a-fA-F]{64}$")
-STAGE_OWNED_CONTRACT = "stage-owned-change-local-v1"
+STAGE_OWNED_CONTRACT = LIFECYCLE_CONTRACT_V1
 ARTIFACT_KINDS = {
     "proposal", "spec", "architecture", "adr", "plan", "test-spec"
 }
@@ -330,8 +332,15 @@ def _evidence_paths(value: Any, path: str, errors: list[str], *, nonempty: bool 
 def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
     """Validate only records that opt into the stage-owned lifecycle contract."""
 
-    if not isinstance(data, dict) or data.get("lifecycle_contract") != STAGE_OWNED_CONTRACT:
+    if not isinstance(data, dict):
         return []
+    contract = data.get("lifecycle_contract")
+    if contract not in {None, LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}:
+        return [f"lifecycle_contract: unknown_value; expected one of {LIFECYCLE_CONTRACT_V1}, {LIFECYCLE_CONTRACT_V2}"]
+    if contract not in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}:
+        return []
+    allowed_artifact_kinds = ARTIFACT_KINDS - ({"test-spec"} if contract == LIFECYCLE_CONTRACT_V2 else set())
+    allowed_workflow_stages = WORKFLOW_STAGES - ({"test-spec", "test-spec-review"} if contract == LIFECYCLE_CONTRACT_V2 else set())
     errors: list[str] = []
     states = data.get("artifact_states")
     workflow_state = data.get("workflow_state")
@@ -356,7 +365,7 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
         kind = entry.get("kind")
         role = entry.get("role")
         state = entry.get("lifecycle_state")
-        _closed(kind, f"{base}.kind", ARTIFACT_KINDS, errors)
+        _closed(kind, f"{base}.kind", allowed_artifact_kinds, errors)
         _closed(role, f"{base}.role", ARTIFACT_ROLES, errors)
         _closed(state, f"{base}.lifecycle_state", ARTIFACT_STATES, errors)
         if kind in ARTIFACT_STATES_BY_KIND and state not in ARTIFACT_STATES_BY_KIND[kind]:
@@ -461,6 +470,21 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                         errors.append(f"{base}.members.{artifact_id}: must name a registered artifact")
                     elif states[artifact_id].get("path") != artifact_path:
                         errors.append(f"{base}.members.{artifact_id}: path must match registered artifact")
+                expected_member_ids: set[str] = set()
+                if package_kind == "design":
+                    expected_member_ids = {
+                        artifact_id for artifact_id, entry in states.items()
+                        if isinstance(entry, dict)
+                        and ((entry.get("kind") in {"architecture", "spec"} and entry.get("role") == "primary") or (entry.get("kind") == "adr" and entry.get("role") == "supporting"))
+                    }
+                elif package_kind == "delivery":
+                    delivery_kinds = {"plan"} if contract == LIFECYCLE_CONTRACT_V2 else {"plan", "test-spec"}
+                    expected_member_ids = {
+                        artifact_id for artifact_id, entry in states.items()
+                        if isinstance(entry, dict) and entry.get("kind") in delivery_kinds and entry.get("role") == "primary"
+                    }
+                if set(members) != expected_member_ids:
+                    errors.append(f"{base}.members: must exactly match the {contract} package member set")
                 correction_targets = package.get("correction_targets")
                 if not isinstance(correction_targets, list) or len(correction_targets) != len(set(item for item in correction_targets if isinstance(item, str))):
                     errors.append(f"{base}.correction_targets: expected unique list")
@@ -503,14 +527,28 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                 if sorted(correction_targets) != expected_targets:
                     errors.append(f"{base}.correction_targets: must exactly match affected artifacts")
 
+    if contract == LIFECYCLE_CONTRACT_V2:
+        lifecycle_cli = data.get("lifecycle_cli")
+        if isinstance(lifecycle_cli, dict):
+            registrations = lifecycle_cli.get("artifacts")
+            if isinstance(registrations, dict):
+                for artifact_id, registration in registrations.items():
+                    if isinstance(registration, dict) and registration.get("artifact_kind") == "test-spec":
+                        errors.append(f"lifecycle_cli.artifacts.{artifact_id}.artifact_kind: unknown_value test-spec")
+            reviews = lifecycle_cli.get("reviews")
+            if isinstance(reviews, dict):
+                for artifact_id, review in reviews.items():
+                    if isinstance(review, dict) and review.get("stage_authority") == "test-spec-review":
+                        errors.append(f"lifecycle_cli.reviews.{artifact_id}.stage_authority: unknown_value test-spec-review")
+
     if _exact_keys(
         workflow_state, "workflow_state",
         {"lifecycle_state", "current_stage", "next_stage", "blocker", "evidence"},
         {"planned_work"}, errors
     ):
         _closed(workflow_state.get("lifecycle_state"), "workflow_state.lifecycle_state", WORKFLOW_LIFECYCLE_STATES, errors)
-        _closed(workflow_state.get("current_stage"), "workflow_state.current_stage", WORKFLOW_STAGES, errors)
-        _closed(workflow_state.get("next_stage"), "workflow_state.next_stage", WORKFLOW_STAGES, errors)
+        _closed(workflow_state.get("current_stage"), "workflow_state.current_stage", allowed_workflow_stages, errors)
+        _closed(workflow_state.get("next_stage"), "workflow_state.next_stage", allowed_workflow_stages, errors)
         _evidence_paths(workflow_state.get("evidence"), "workflow_state.evidence", errors)
         blocker = workflow_state.get("blocker")
         if blocker is not None:

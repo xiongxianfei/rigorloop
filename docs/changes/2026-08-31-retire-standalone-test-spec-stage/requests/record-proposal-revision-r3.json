@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:ed1fc774dda47f09670d1c2ef72c3dd226703aab7ac8521740986a407ef14e36",
+  "artifact_id": "proposal",
+  "artifact_kind": "proposal",
+  "artifact_role": "primary",
+  "artifact_path": "docs/proposals/2026-08-31-retire-standalone-test-spec-stage.md",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/proposal-review-evidence-reconciliation.md",
+  "prior_artifact_sha256": "b8dd19d8ad073dbae31ffe232e59f23ac3f8445cf9cf791c2be95f8c5781d774",
+  "stage_authority": "proposal"
+}

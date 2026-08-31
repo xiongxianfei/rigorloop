@@ -33,6 +33,14 @@ Then <observable outcome>
 
 <requirement rows>
 
+## Important scenarios
+
+<representative normal, invalid, failure, state, authority, compatibility, migration, retry, concurrency, recovery, and boundary scenarios when relevant>
+
+## Acceptance conditions
+
+<observable conditions that must be demonstrably true without prescribing implementation test mechanics>
+
 ## Inputs and outputs
 
 <inputs, outputs, events, responses, config, data>

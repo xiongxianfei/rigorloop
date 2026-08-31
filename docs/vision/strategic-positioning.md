@@ -20,7 +20,7 @@ RigorLoop makes AI-assisted changes reviewable, traceable, and reproducible enou
 
 ## Core Mechanism
 
-The workflow turns product intent into explicit proposals, requirements, test specifications, architecture decisions, execution plans, implementation, validation evidence, review records, and change explanations.
+The workflow turns product intent into explicit proposals, testable system requirements, architecture decisions, verification-aware execution plans, implementation, concrete proof, review records, validation evidence, and change explanations.
 
 ## Alternatives
 

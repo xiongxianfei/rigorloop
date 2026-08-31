@@ -38,7 +38,6 @@ resources:
       - spec
       - design-review
       - plan
-      - test-spec
       - delivery-review
       - implement
       - code-review
@@ -53,7 +52,6 @@ resources:
     source: specs/references/boundary-first-proof-v1.md
     target: references/boundary-first-proof-v1.md
     consumers:
-      - test-spec
       - delivery-review
 """
 
@@ -102,7 +100,6 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 "spec",
                 "design-review",
                 "plan",
-                "test-spec",
                 "delivery-review",
                 "implement",
                 "code-review",
@@ -145,10 +142,6 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 Path(
                     "skills/design-review/references/"
                     "boundary-first-feature-authoring-v1.md"
-                ),
-                Path(
-                    "skills/test-spec/references/"
-                    "boundary-first-proof-v1.md"
                 ),
                 Path(
                     "skills/delivery-review/references/"
@@ -481,7 +474,9 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
 
         from boundary_first_reference import _write_target_bytes
 
-        for failure_index in (1, 7, 13):
+        target_count = len(projected_paths(root))
+        failure_indices = (1, (target_count + 1) // 2, target_count)
+        for failure_index in failure_indices:
             calls = 0
             failed = False
 
@@ -539,13 +534,14 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                     before = {relative: None for relative in paths}
 
                 calls = 0
+                interrupt_index = (len(paths) + 1) // 2
 
                 def interrupt(
                     write_root: Path, path: Path, data: bytes
                 ) -> None:
                     nonlocal calls
                     calls += 1
-                    if calls == 7:
+                    if calls == interrupt_index:
                         raise KeyboardInterrupt
                     _write_target_bytes(write_root, path, data)
 
@@ -579,8 +575,10 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             ),
             Path("specs/references/boundary-first-proof-v1.md"),
         )
+        target_count = len(projected_paths())
+        mutation_indices = (1, (target_count + 1) // 2, target_count)
         for relative_input in inputs:
-            for mutation_index in (1, 7, 13):
+            for mutation_index in mutation_indices:
                 with self.subTest(
                     input=relative_input,
                     mutation_index=mutation_index,

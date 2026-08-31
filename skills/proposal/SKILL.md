@@ -60,6 +60,7 @@ The four loaded assemblies are `PA0-portable`, `PA0G-portable-gated`, `PA1-gover
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when clarifying an incoming need into proposal direction or explaining how proposal approval feeds Design.
 - READ `references/governed-proposal-authoring.md` when `governed_proposal_candidate_context` is true. Validate authority before governed work.
 - READ `references/strategic-and-scope-gates.md` when any specialized predicate is true. Apply all true predicates once.
 - COPY `assets/proposal-skeleton.md` when creating a proposal.
@@ -69,6 +70,8 @@ The four loaded assemblies are `PA0-portable`, `PA0G-portable-gated`, `PA1-gover
 Missing, unreadable, escaped, contradictory, stale, or mixed-version required resources stop dependent work; must not reconstruct them. Untriggered resources do not block.
 
 ## Proposal contract
+
+Treat the incoming need as RR and the approved proposal as the durable IR-level direction.
 
 The proposal has exactly seven required level-two sections, in this order:
 

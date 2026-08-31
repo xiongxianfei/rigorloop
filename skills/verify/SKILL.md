@@ -12,6 +12,8 @@ Prove that the requested scope, current evidence, implementation, tests, and gov
 
 ## Purpose
 
+Trace current evidence backward through implementation and allocated work to governing SRs and the approved proposal direction.
+
 Perform either a bounded evidence check or a final readiness assessment without taking ownership from authoring, review, workflow, or PR stages. Final verification validates the final change pack after `explain-change` and before PR.
 
 Final verification is scoped evidence and must not own artifact settlement, milestone state, or routing. For planned work, use `change.yaml` to assess current state and treat the plan and upstream artifacts as read-only.
@@ -138,7 +140,7 @@ Do not substitute commands, unresolved names, or prose for these fields. Missing
 ## Handoff
 
 - Normal next stage: return a clean governed-final result to `workflow` for handoff to `pr`.
-- Conditional next stages: route missing or stale rationale to `explain-change`, CI-infrastructure gaps to `ci-maintenance`, proof-contract gaps to `test-spec`, and behavior-contract gaps to `spec`.
+- Conditional next stages: route missing or stale rationale to `explain-change`, CI-infrastructure gaps to `ci-maintenance`, verification-allocation gaps to `plan`, and behavior-contract gaps to `spec`.
 - Direct requests remain isolated unless explicitly broadened; stop when blockers remain.
 
 ## Stop conditions
@@ -187,7 +189,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
@@ -197,6 +199,7 @@ Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when tracing final evidence backward to implementation, requirements, and proposal direction.
 - READ `references/branch-readiness-verification.md` for `branch-readiness` or `workflow-final-verification` after exact target resolution.
 - READ `references/boundary-first-method-v1.md` when the final approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient for verification.
 

@@ -24,6 +24,21 @@ CANONICAL_SKILLS_DIR = ROOT / "skills"
 GENERATED_SKILLS_DIR = ROOT / ".codex" / "skills"
 SKILL_SCHEMA_PATH = ROOT / "schemas" / "skill.schema.json"
 WORKFLOWS_DOC_PATH = ROOT / "docs" / "workflows.md"
+REQUIREMENT_DELIVERY_MODEL_SOURCE = ROOT / "templates" / "shared" / "requirement-to-delivery-model.md"
+REQUIREMENT_DELIVERY_MODEL_CONSUMERS = frozenset(
+    {
+        "proposal",
+        "proposal-review",
+        "architecture",
+        "spec",
+        "design-review",
+        "plan",
+        "delivery-review",
+        "code-review",
+        "verify",
+    }
+)
+REQUIREMENT_DELIVERY_MODEL_TARGET = Path("references/requirement-to-delivery-model.md")
 
 
 @dataclass(frozen=True)
@@ -65,6 +80,28 @@ class BoundaryLoadingMeasurement:
     mapped_resource_bytes: int
     initial_resource_bytes: int
     expanded_resource_bytes: int
+
+
+def validate_requirement_delivery_model_copy(
+    skill_path: Path,
+    skill_name: str | None,
+    *,
+    canonical_path: Path | None = None,
+) -> list[str]:
+    """Require every selected canonical consumer to carry the shared bytes."""
+
+    if skill_name not in REQUIREMENT_DELIVERY_MODEL_CONSUMERS:
+        return []
+    if canonical_path is None:
+        canonical_path = REQUIREMENT_DELIVERY_MODEL_SOURCE
+    local_path = skill_path.parent / REQUIREMENT_DELIVERY_MODEL_TARGET
+    if not canonical_path.is_file():
+        return [f"{canonical_path}: requirement-to-delivery canonical reference is missing"]
+    if not local_path.is_file():
+        return [f"{local_path}: mapped requirement-to-delivery reference is missing"]
+    if local_path.read_bytes() != canonical_path.read_bytes():
+        return [f"{local_path}: mapped requirement-to-delivery reference differs from canonical source"]
+    return []
 
 
 def measure_boundary_loading_profiles(
@@ -230,11 +267,15 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
 )
 PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
     ("code-review", "references/workflow-managed-automated-review.md"),
+    ("code-review", "references/requirement-to-delivery-model.md"),
     ("proposal", "references/governed-proposal-authoring.md"),
+    ("proposal", "references/requirement-to-delivery-model.md"),
     ("proposal", "references/strategic-and-scope-gates.md"),
     ("proposal-review", "references/proposal-review-recording-and-settlement.md"),
     ("proposal-review", "references/conditional-proposal-gates.md"),
+    ("proposal-review", "references/requirement-to-delivery-model.md"),
     ("spec", "references/governed-spec-authoring.md"),
+    ("spec", "references/requirement-to-delivery-model.md"),
     ("spec-review", "references/governed-spec-review-settlement.md"),
     ("test-spec", "references/governed-test-spec-authoring.md"),
     ("test-spec-review", "references/test-spec-review-recording-and-settlement.md"),
@@ -1006,7 +1047,6 @@ WORKFLOW_ARTIFACT_REPOSITORY_LOCAL_ENTRIES = {
     "examples",
     "proposal",
     "spec",
-    "test_spec",
     "architecture_record",
     "adr",
     "plan_index",
@@ -1031,7 +1071,6 @@ WORKFLOW_ARTIFACT_TABLE_LABELS = {
     "Examples": "examples",
     "Proposals": "proposal",
     "Specs": "spec",
-    "Test specs": "test_spec",
     "Architecture": "architecture_record",
     "ADRs": "adr",
     "Plan index": "plan_index",
@@ -1053,7 +1092,6 @@ WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES = {
     "architecture_record",
     "proposal",
     "spec",
-    "test_spec",
     "plan_index",
     "change_plan",
     "change_metadata",
@@ -1068,7 +1106,6 @@ WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES = {
 WORKFLOW_ARTIFACT_REQUIRED_DEFAULT_ENTRIES = {
     "proposal",
     "spec",
-    "test_spec",
     "plan_index",
     "change_plan",
     "change_metadata",
@@ -3681,6 +3718,7 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     )
     errors.extend(validate_project_map_canonical_contract(path, metadata, body))
     if skill_name and _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
+        errors.extend(validate_requirement_delivery_model_copy(path, skill_name))
         workflow_text = (
             WORKFLOWS_DOC_PATH.read_text(encoding="utf-8")
             if WORKFLOWS_DOC_PATH.is_file()

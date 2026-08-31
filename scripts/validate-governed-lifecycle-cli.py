@@ -4,9 +4,20 @@
 from __future__ import annotations
 
 import json
+import runpy
 import subprocess
 import sys
 from pathlib import Path
+
+from artifact_lifecycle_contracts import (
+    LEGACY_UNVERSIONED_CONTRACT,
+    LIFECYCLE_ACTIVATION_MANIFEST_PATH,
+    LIFECYCLE_CONTRACT_V1,
+    LIFECYCLE_CONTRACT_V2,
+    parse_lifecycle_activation_manifest,
+    validate_lifecycle_activation_manifest,
+    validate_lifecycle_activation_prerequisites,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,9 +78,57 @@ def baseline_matches(change_id: str, payload: dict) -> bool:
 def governed_records(root: Path = ROOT) -> list[tuple[str, Path]]:
     records = []
     for path in sorted((root / "docs" / "changes").glob("*/change.yaml")):
-        if "lifecycle_contract: stage-owned-change-local-v1" in path.read_text(encoding="utf-8"):
+        text = path.read_text(encoding="utf-8")
+        if any(f"lifecycle_contract: {contract}" in text for contract in (LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2)):
             records.append((path.parent.name, path))
     return records
+
+
+def activation_inventory_errors(root: Path = ROOT, *, loader=None) -> list[str]:
+    """Validate the active manifest against every tracked prior change."""
+    manifest_path = root / LIFECYCLE_ACTIVATION_MANIFEST_PATH
+    try:
+        manifest = parse_lifecycle_activation_manifest(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        return [f"activation manifest unreadable: {exc}"]
+    errors = validate_lifecycle_activation_manifest(manifest)
+    if errors or manifest.get("state") != "active":
+        return errors or ["activation manifest state must be active"]
+
+    paths = sorted((root / "docs" / "changes").glob("*/change.yaml"), key=lambda path: path.parent.name.encode("utf-8"))
+    actual_classes = {}
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        if f"lifecycle_contract: {LIFECYCLE_CONTRACT_V1}" in text:
+            contract = LIFECYCLE_CONTRACT_V1
+        elif f"lifecycle_contract: {LIFECYCLE_CONTRACT_V2}" in text:
+            contract = LIFECYCLE_CONTRACT_V2
+        else:
+            contract = LEGACY_UNVERSIONED_CONTRACT
+        actual_classes[path.parent.name] = contract
+
+    frozen_classes = {entry["change_id"]: entry["contract_class"] for entry in manifest["changes"]}
+    if frozen_classes != actual_classes:
+        missing = sorted(set(actual_classes) - set(frozen_classes), key=lambda item: item.encode("utf-8"))
+        extra = sorted(set(frozen_classes) - set(actual_classes), key=lambda item: item.encode("utf-8"))
+        changed = sorted(
+            (change_id for change_id in set(actual_classes) & set(frozen_classes) if actual_classes[change_id] != frozen_classes[change_id]),
+            key=lambda item: item.encode("utf-8"),
+        )
+        return [f"activation inventory mismatch: missing={missing}, extra={extra}, class_mismatch={changed}"]
+
+    if loader is None:
+        scripts_dir = str(ROOT / "scripts")
+        if scripts_dir not in sys.path:
+            sys.path.insert(0, scripts_dir)
+        loader = runpy.run_path(str(ROOT / "scripts" / "validate-change-metadata.py"))["load_yaml"]
+    records = {}
+    for path in paths:
+        if actual_classes[path.parent.name] == LEGACY_UNVERSIONED_CONTRACT:
+            records[path.parent.name] = {"workflow_state": {"lifecycle_state": "completed"}}
+        else:
+            records[path.parent.name] = loader(path)
+    return validate_lifecycle_activation_prerequisites(manifest, records)
 
 
 def result_codes(payload: dict) -> list[str]:
@@ -124,6 +183,9 @@ def build_report(records: list[tuple[str, Path]], *, runner=subprocess.run, root
 
 def main(*, records=None, runner=subprocess.run, root: Path = ROOT, output=sys.stdout) -> int:
     report = build_report(governed_records(root) if records is None else records, runner=runner, root=root)
+    report["activation_errors"] = activation_inventory_errors(root)
+    if report["activation_errors"]:
+        report["status"] = "failed"
     print(json.dumps(report, indent=2, sort_keys=True), file=output)
     return 0 if report["status"] == "passed" else 1
 

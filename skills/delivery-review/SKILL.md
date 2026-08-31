@@ -3,43 +3,45 @@ name: delivery-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Independently review an execution plan and test specification as one delivery package before implementation. Use delivery-review to judge sequencing, traceability, proof adequacy, recovery, and exact package authority; use plan and test-spec for authorship.
-argument-hint: [change ID, delivery package, plan path, or test specification path]
+  Independently review one plan-centered delivery package before implementation. Judge safe sequencing and verification adequacy together; use plan for delivery and verification allocation and spec for behavioral gaps.
+argument-hint: [change ID, delivery package, or plan path]
 ---
 
 # Delivery review
 
-Judge whether the approved design can be implemented safely and proved adequately through one reconciled plan and test specification. Review without editing either artifact.
+Judge whether the approved design can be implemented safely and proved adequately through the exact primary plan. Review without editing the plan or approved design.
 
 ## Purpose
 
-Approve or reject one explicit delivery package and preserve requirement-to-proof traceability and precise finding ownership.
+Trace SRs and architecture boundaries into proportional allocated work and proof.
+
+Approve or reject one explicit plan-centered package in one independent decision covering implementation readiness and verification adequacy. Preserve requirement-to-proof traceability and precise finding ownership.
 
 ## When to use
 
-Use after the execution plan and test specification have been reconciled against an approved design package and before implementation.
+Use after the execution plan has allocated the approved design's behavior, work, milestone verification, and applicable change-level verification, and before implementation.
 
 ## When not to use
 
-Do not use to author the plan or test specification, redesign upstream behavior or architecture, review implementation, execute final verification, or combine historical plan-review and test-spec-review evidence into package authority.
+Do not use to author the plan, repair specification behavior, redesign architecture, review implementation, execute final verification, or combine historical artifact-review evidence into package authority.
 
 ## Workflow role
 
 - role_name: delivery-review
 - stage: review
-- upstream: one execution plan, one test specification, and the approved Design Review ID
+- upstream: one exact primary plan and the approved Design Review ID
 - downstream: implementation, author-owned correction, upstream design reconsideration, or isolated stop
 - summary: Decide whether the exact delivery package can implement and prove the approved design.
 - ownership: Write Delivery Review evidence and settle only the exact delivery package. Workflow owns routing.
-- must_not_claim: plan or test-specification authorship, implementation completion, code-review, final verification, branch readiness, or PR readiness
+- must_not_claim: plan or specification authorship, implementation completion, code-review, final verification, branch readiness, or PR readiness
 
-The reviewer does not edit the execution plan, test specification, design package, implementation, or routing state. Approval is package authority, never plan-only or proof-only approval.
+The reviewer does not edit the execution plan, design package, implementation, or routing state. Approval judges the plan's sequence and verification together; it is never a partial sequencing-only or proof-only approval.
 
 ## Quick operating guide
 
-Use this skill to: review one exact plan/test-specification package against the approved design.
+Use this skill to: review one exact primary-plan package against the approved design.
 
-Read first: `change.yaml`, `context delivery-review`, both member paths, the approved Design Review ID and member map, and relevant prior findings.
+Read first: `change.yaml`, `context delivery-review`, the exact primary plan, the approved Design Review ID and member map, and relevant prior findings.
 
 Produce: one recorded package outcome, precise findings or a no-finding rationale, and an isolated or workflow-owned handoff.
 
@@ -51,17 +53,21 @@ Next stage: workflow may route an approved package to implementation; otherwise 
 
 ## Inputs to read
 
-Resolve the governed change, then obtain the package with `rigorloop lifecycle context delivery-review --change <change-id> --format json`. Read the complete execution plan and test specification plus the approved Design Review ID and member map they operationalize. Read current proposal constraints, architecture, specification, ADRs, and prior review or resolution evidence only as needed to validate the trace.
+Resolve the governed change, then obtain the package with `rigorloop lifecycle context delivery-review --change <change-id> --format json`. Read the complete exact primary plan plus the approved Design Review ID and member map it operationalizes. Read current proposal constraints, architecture, specification, ADRs, and prior review or resolution evidence as needed to validate the trace.
 
-The package member map must show stable artifact IDs and exact normalized repository-relative paths in this order: execution plan, then test specification. Do not calculate or request aggregate revisions or content hashes.
+For v2, the package member map must contain exactly the registered primary-plan artifact ID and normalized repository-relative path. A standalone test-spec substitute or extra member is invalid. Registered prior-contract v1 changes retain their exact plan-plus-test-spec package. Do not calculate or request aggregate revisions or content hashes.
 
 ## Review contract
+
+Evaluate implementation readiness and verification adequacy in the same decision. Check safe dependency order, acceptable intermediate states, milestone boundaries, migration sequence, reversibility, SR allocation, milestone verification, applicable change-level verification, important normal and negative scenarios, compatibility, migration, recovery, concurrency, security and authority concerns, and realistic evidence expectations.
 
 Evaluate this exact trace for every applicable requirement and architecture risk:
 
 `requirement -> architectural boundary -> implementation milestone -> required proof -> validation command or manual evidence`
 
-Reject or request correction for missing milestone ownership, unsafe or overly broad sequencing, unreviewable milestones, proof at the wrong boundary, architecture risk without validation, compatibility or migration work without evidence, nondeterministic or unavailable proof, and tests that require a different implementation order than the plan.
+Reject or request correction for missing SR allocation, unsafe or overly broad sequencing, unreviewable milestones, insufficient milestone or change-level verification, proof at the wrong boundary, architecture risk without validation, compatibility or migration work without evidence, unrealistic proof, and verification that requires a different implementation order than the plan. Milestone completion must not be treated as complete-change correctness.
+
+Route the correction to `plan` when verification allocation is missing or inadequate; route missing observable behavior to `spec`. Do not author the correction, accept a standalone test-spec substitute, or defer material pre-implementation coverage to final Verify.
 
 Use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Only `approved` authorizes implementation. Every other outcome grants no progression authority.
 
@@ -69,8 +75,8 @@ Use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconcl
 
 Every material finding uses exactly one scope:
 
-- `artifact-local`: name exactly one plan or test-specification artifact ID and its owning stage.
-- `cross-artifact`: name at least two affected artifact IDs and every authoring stage needed for reconciliation.
+- `artifact-local`: name exactly one plan artifact ID and its owning stage.
+- `cross-artifact`: name the plan plus affected approved design artifact IDs and every authoring stage needed for reconciliation.
 - `upstream-direction`: name the approved design package whose direction must be reconsidered.
 
 Each finding records a stable Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path or `needs-decision` rationale, finding scope, affected artifact IDs, and owning stages. Copy the finding asset once per material finding. Review resolution does not replace a required current Delivery Review after package members change.
@@ -93,7 +99,7 @@ Produce the package identity, upstream review ID, traceability judgment, outcome
 
 ## Handoff
 
-An approved workflow-managed review returns to workflow for implementation. `changes-requested` routes each named artifact-local or cross-artifact correction to its owning plan or test-spec stage. `blocked` routes only to the named design owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
+An approved workflow-managed review returns to workflow for implementation. `changes-requested` routes plan allocation gaps to `plan` and behavioral or design gaps to their named upstream owner. `blocked` routes only to the named design owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
 
 ## Stop conditions
 
@@ -101,10 +107,11 @@ Stop on incomplete or unsafe member maps, missing or stale design authority, sta
 
 ## Claims this skill must not make
 
-Do not claim that plan or test specification is independently approved, that implementation is complete or correct, or that code review, verification, branch, PR, release, or deployment readiness exists.
+Do not claim plan authorship, implementation completion or correctness, or code-review, verification, branch, PR, release, or deployment readiness.
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when tracing approved design into allocated milestones, work, and proof.
 - READ `references/boundary-first-method-v1.md` initially for every `delivery-review` invocation.
 - READ `references/boundary-first-proof-v1.md` after the method reference when the delivery package consumes a `boundary-first-v1` proof map.
 - READ `references/delivery-review-recording-and-settlement.md` for every durable or formal review before recording or settlement.
@@ -117,7 +124,7 @@ Use exact member IDs, paths, requirement IDs, boundary IDs, milestone IDs, proof
 
 ## When full-file read is required
 
-Read both package members in full because the review decides cross-artifact coherence. Read other files in full only when bounded evidence is insufficient or surrounding context changes the conclusion.
+Read the primary plan in full because the review decides its complete sequencing and verification contract. Read other files in full only when bounded evidence is insufficient or surrounding context changes the conclusion.
 
 ## Output skeleton
 

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:4641ea4e934e076e7e242f37a17fe08c56f6501c24b8a632c4d77b27b7a15ada",
+  "artifact_id": "proposal",
+  "stage_authority": "proposal-review"
+}

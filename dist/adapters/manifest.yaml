@@ -54,9 +54,6 @@ skills:
   spec:
     portable: true
     adapters: [codex, claude, opencode]
-  test-spec:
-    portable: true
-    adapters: [codex, claude, opencode]
   verify:
     portable: true
     adapters: [codex, claude, opencode]
@@ -68,7 +65,7 @@ skills:
     adapters: [codex, claude, opencode]
 command_aliases:
   opencode:
-    count: 11
+    count: 10
     aliases:
       proposal: dist/adapters/opencode/.opencode/commands/proposal.md
       proposal-review: dist/adapters/opencode/.opencode/commands/proposal-review.md
@@ -76,7 +73,6 @@ command_aliases:
       spec: dist/adapters/opencode/.opencode/commands/spec.md
       design-review: dist/adapters/opencode/.opencode/commands/design-review.md
       plan: dist/adapters/opencode/.opencode/commands/plan.md
-      test-spec: dist/adapters/opencode/.opencode/commands/test-spec.md
       delivery-review: dist/adapters/opencode/.opencode/commands/delivery-review.md
       implement: dist/adapters/opencode/.opencode/commands/implement.md
       code-review: dist/adapters/opencode/.opencode/commands/code-review.md

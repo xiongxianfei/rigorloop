@@ -6,9 +6,9 @@ Read this procedure only when a valid current governed change record must be int
 
 ## Governed identity and evidence
 
-Require the exact change identity and a readable `docs/changes/<change-id>/change.yaml`; read the complete `change.yaml` before state-changing routing. Require `lifecycle_contract: stage-owned-change-local-v1` for mutation.
+Require the exact change identity and a readable `docs/changes/<change-id>/change.yaml`; read the complete `change.yaml` before state-changing routing. Require `lifecycle_contract: stage-owned-change-local-v2` for new work. Permit v1 mutation only for a change frozen in the active lifecycle-contract manifest and already at or beyond Delivery Review.
 
-For every new governed change, create `lifecycle_contract: stage-owned-change-local-v1` without requiring another parameter. Before the first mutation of resumed nonterminal historical work, migrate the record once; read-only historical inspection never creates the marker.
+For every new governed change, create `lifecycle_contract: stage-owned-change-local-v2` without requiring another parameter. Do not migrate manifest-bound prior-contract records in place; read-only historical inspection never creates the marker or changes it.
 
 Derive routing only from current artifact settlement, the active plan identity, stage-owned evidence, review resolution, and workflow-owned transition receipts. File existence alone is not settlement. Stop on missing, stale, mismatched, contradictory, or illegal evidence, including failed available change-metadata validation.
 

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "settle-review-package",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:a55fd9a1f1d5249712f7925944ad78470133afbdb7f6b2c06f85473a9d10f706",
+  "package_kind": "design",
+  "review_id": "design-review-r1",
+  "stage_authority": "design-review"
+}
