@@ -2,7 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
+
+Review closeout: code-review-m1-r1
 
 Review closeout: delivery-review-r3
 
@@ -10,10 +12,10 @@ Review closeout: design-review-r2
 
 Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`
 - Findings resolved: 4
-- Unresolved findings: 0
-- Current result: Delivery Review R3 approved the exact corrected plan and legacy-path test specification with no material findings.
+- Unresolved findings: 2
+- Current result: Code Review M1 R1 requested changes for Python classifier parity and production repository-validator integration.
 
 ## Resolution Overview
 
@@ -23,6 +25,8 @@ Review closeout: proposal-review-r3
 | RTS-DR1 | accepted | resolved | The architecture and ADR now select v2 plus a frozen activation manifest as the durable discriminator. |
 | RTS-DLR1 | accepted | resolved | The test specification now assigns stable identities and complete mappings to all plan-dependent validation commands. |
 | RTS-DLR2 | accepted | resolved | Every acceptance criterion now maps explicitly to its existing direct test owner. |
+| RTS-M1-CR1 | accepted | open | Correct Python explicit-null handling and prove Node/Python unknown-value parity. |
+| RTS-M1-CR2 | accepted | open | Connect the shared classifier and tracked activation manifest to production repository validators and prove the public boundary. |
 
 ## Finding Details
 
@@ -112,3 +116,39 @@ Validation evidence: corrected test specification `sha256:4924c73977b907a8348ea7
 ### delivery-review-r3
 
 No material findings. The clean rereview confirms `RTS-DLR1` and `RTS-DLR2` are resolved and approves the exact corrected delivery package.
+
+### code-review-m1-r1
+
+#### RTS-M1-CR1
+
+Finding ID: RTS-M1-CR1
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Decision owner: M1 implementer
+Decision needed: none; apply the bounded correction required by the approved contract.
+Chosen action: distinguish missing lifecycle-contract metadata from explicit null and reject explicit null as an unknown value in Python.
+Rationale: the Node implementation already fails closed, and the approved M1 contract requires deterministic cross-runtime classification rather than treating an explicit unknown as legacy.
+Required outcome: Python and Node both reject explicit null before manifest consistency checks, while genuinely absent metadata remains legacy-unversioned.
+Safe resolution path: use key-presence or a sentinel, add an explicit-null `unknown_value` parity regression, and rerun CMD-01, CMD-03, and CMD-04.
+Follow-up: return corrected M1 to code-review.
+Validation target: `RTS-R22`, `TS-002`, and the repository closed-vocabulary validator rule.
+Validation evidence: pending implementation correction and focused rerun.
+
+#### RTS-M1-CR2
+
+Finding ID: RTS-M1-CR2
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Decision owner: M1 implementer
+Decision needed: none; complete the already-approved M1 integration boundary.
+Chosen action: make production change-metadata and artifact-lifecycle validators load the tracked activation manifest and invoke the shared classifier for governed records.
+Rationale: helper-only tests do not enforce the lifecycle compatibility contract at the repository validator boundary that M1 explicitly owns.
+Required outcome: public repository validators reject invalid or contradictory v2 states and active-manifest membership/class mismatches for prior records while preserving permitted preactivation behavior.
+Safe resolution path: integrate the shared Python classifier through existing validator entry points, add public-boundary regressions for v2 active test-spec state, prior membership/class mismatch, and invalid manifest content, then rerun CMD-03, CMD-04, and CMD-01.
+Follow-up: return corrected M1 to code-review.
+Validation target: `RTS-R18`, `RTS-R22`, `RTS-AC7`, `RTS-AC10`, `TS-001`, `TS-002`, `TS-015`, `BND-STATE-001`, and `BND-COMPAT-001`.
+Validation evidence: pending implementation correction and public-validator regression proof.
