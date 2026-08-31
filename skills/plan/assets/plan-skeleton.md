@@ -1,7 +1,7 @@
 <!-- Template: plan-skeleton-v3 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:0470fc97e393450e93f5fde427bce22a6627f7f5d0f19679e290ab4c9de06712 -->
+<!-- Structural-fingerprint: sha256:30e8f3f615bb10e46f6ebb684b9e91c04d4412c91d67090fa4d39e91e9ae9c43 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 <!-- Readability contract: use normal prose paragraphs, keep complete sentences intact, and retain stable IDs and tables for repeated proof or mapping structures. -->
 
@@ -20,7 +20,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 - Proposal: <path or none>
 - Spec: <path or none>
 - Architecture: <path or not-required>
-- Test spec: <path or pending>
+- Prior-contract test spec: <path when required by registered v1 contract, otherwise none>
 
 ## Context and orientation
 
@@ -37,6 +37,15 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 ## Milestones
 
 <copy assets/milestone.md once per implementation milestone>
+
+## Change-level verification
+
+### TG-FINAL-<number>. <integrated verification objective>
+
+- Covers: <SR IDs, milestones, architecture boundaries, or justified non-SR obligations>
+- Demonstrate: <end-to-end or cross-boundary behavior and important scenarios>
+- Evidence expectations: <realistic tests, checks, or manual/operational evidence>
+- Non-applicability: <reason when milestone-local verification is sufficient>
 
 ## Validation plan
 

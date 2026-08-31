@@ -18,4 +18,4 @@ Retain the contract's narrow authority to initialize `workflow_state.planned_wor
 
 ## Result
 
-Report authoring and CLI results, initialization state when applicable, blockers, and the `test-spec` or `delivery-review` handoff. Do not settle or route.
+Report authoring and CLI results, initialization state when applicable, blockers, and the contract-selected handoff: `test-spec` for registered v1 or `delivery-review` for v2. Do not settle or route.
