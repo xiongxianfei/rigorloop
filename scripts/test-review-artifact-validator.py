@@ -2155,13 +2155,23 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
     def test_v2_rejects_test_spec_review_and_delivery_member(self) -> None:
         cases = (
             ("test-spec-review", test_spec_review_text(), "test-spec-review: unknown_value"),
-            ("delivery-review", package_review_text(stage="delivery-review", status="changes-requested", scope="cross-artifact"), "v2 Delivery Review package members must contain exactly plan"),
+            ("delivery-review", package_review_text(stage="delivery-review", status="changes-requested", scope="cross-artifact"), "v2 Delivery Review package members must exactly match the primary plan"),
         )
         for stage, source, expected in cases:
             with self.subTest(stage=stage):
                 root = Path(tempfile.mkdtemp(prefix=f"review-artifact-v2-{stage}-"))
                 self.addCleanupTree(root)
-                write_text(root / "change.yaml", "lifecycle_contract: stage-owned-change-local-v2\n")
+                write_text(
+                    root / "change.yaml",
+                    """lifecycle_contract: stage-owned-change-local-v2
+artifact_states:
+  primary-plan:
+    kind: plan
+    path: docs/plan.md
+    role: primary
+    lifecycle_state: review-required
+""",
+                )
                 review_id = f"{stage}-r1"
                 write_text(root / "reviews" / f"{review_id}.md", source)
                 write_text(
@@ -2176,6 +2186,36 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                     ),
                 )
                 self.assertFails(root, expected)
+
+    def test_v2_delivery_review_accepts_the_exact_nonliteral_primary_plan_id(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-v2-primary-plan-"))
+        self.addCleanupTree(root)
+        write_text(
+            root / "change.yaml",
+            """lifecycle_contract: stage-owned-change-local-v2
+artifact_states:
+  primary-plan:
+    kind: plan
+    path: docs/plan.md
+    role: primary
+    lifecycle_state: review-required
+""",
+        )
+        source = package_review_text(stage="delivery-review").replace(
+            "plan=docs/plan.md, test-spec=docs/test-spec.md",
+            "primary-plan=docs/plan.md",
+        )
+        write_text(root / "reviews" / "delivery-review-r1.md", source)
+        write_text(
+            root / "review-log.md",
+            review_log_text(
+                review_id="delivery-review-r1",
+                stage="delivery-review",
+                status="approved",
+                detailed_record="reviews/delivery-review-r1.md",
+            ),
+        )
+        self.assertPasses(root)
 
     def test_proposal_review_requires_one_known_vision_alignment(self) -> None:
         for outcome in (

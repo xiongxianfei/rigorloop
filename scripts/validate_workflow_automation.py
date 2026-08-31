@@ -29,6 +29,7 @@ from workflow_automation_policy import (
     OccurrenceKind,
     ProposalReviewProjection,
     PUBLIC_TARGET_STAGES,
+    LIFECYCLE_CONTRACT_V1,
     RetryPolicy,
     STAGE_POLICY_BY_STAGE,
     TransitionContext,
@@ -38,6 +39,8 @@ from workflow_automation_policy import (
     evaluate_transition,
     is_immediate_predecessor,
     project_proposal_review_result,
+    public_target_stages_for_contract,
+    stage_policy_by_stage_for_contract,
     target_completion_predicate,
 )
 
@@ -1095,6 +1098,7 @@ def _validate_operation_within_target(
     target_label: str,
     from_position: Any = None,
     transition_evidence: Any = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> list[str]:
     stage = capability.get("stage")
     if not isinstance(stage, dict) or not isinstance(target, dict):
@@ -1108,7 +1112,11 @@ def _validate_operation_within_target(
         return []
     errors: list[str] = []
     if from_position is None:
-        permitted = can_operation_fit_target(operation_stage, destination_stage)
+        permitted = can_operation_fit_target(
+            operation_stage,
+            destination_stage,
+            lifecycle_contract=lifecycle_contract,
+        )
     else:
         try:
             canonical_from_position = WorkflowPosition(from_position)
@@ -1147,7 +1155,10 @@ def _validate_operation_within_target(
                 else {}
             ),
         )
-        evaluation = evaluate_transition(context)
+        evaluation = evaluate_transition(
+            context,
+            lifecycle_contract=lifecycle_contract,
+        )
         permitted = evaluation.allowed
         if not permitted:
             errors.extend(
@@ -1174,12 +1185,19 @@ def _validate_operation_within_target(
     return errors
 
 
-def _validate_target_vocabulary(target: Any, path: str) -> list[str]:
+def _validate_target_vocabulary(
+    target: Any,
+    path: str,
+    lifecycle_contract: str,
+) -> list[str]:
     if not isinstance(target, dict):
         return []
     errors: list[str] = []
     if "stage" in target:
-        error = _unknown_value(f"{path}.stage", target["stage"], PUBLIC_STAGE_VALUES)
+        public_values = frozenset(
+            stage.value for stage in public_target_stages_for_contract(lifecycle_contract)
+        )
+        error = _unknown_value(f"{path}.stage", target["stage"], public_values)
         if error:
             errors.append(error)
     occurrence = target.get("occurrence")
@@ -1190,7 +1208,10 @@ def _validate_target_vocabulary(target: Any, path: str) -> list[str]:
     return errors
 
 
-def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
+def _validate_vocabulary(
+    automation: dict[str, Any],
+    lifecycle_contract: str,
+) -> list[str]:
     errors: list[str] = []
     vocabulary_fields = (
         ("workflow.automation.mechanism", automation.get("mechanism"), MECHANISMS),
@@ -1209,7 +1230,7 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
             error = _unknown_value("workflow.automation.run.status", run["status"], RUN_STATUSES)
             if error:
                 errors.append(error)
-        errors.extend(_validate_target_vocabulary(run.get("target"), "workflow.automation.run.target"))
+        errors.extend(_validate_target_vocabulary(run.get("target"), "workflow.automation.run.target", lifecycle_contract))
         if "policy_version" in run:
             error = _unknown_value(
                 "workflow.automation.run.policy_version", run["policy_version"], POLICY_VERSIONS
@@ -1233,7 +1254,7 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                     error = _unknown_value(f"{path}.{field}", parent[field], allowed)
                     if error:
                         errors.append(error)
-            errors.extend(_validate_target_vocabulary(parent.get("maximum_target"), f"{path}.maximum_target"))
+            errors.extend(_validate_target_vocabulary(parent.get("maximum_target"), f"{path}.maximum_target", lifecycle_contract))
             kinds = parent.get("allowed_capability_kinds")
             if isinstance(kinds, list):
                 for index, value in enumerate(kinds):
@@ -1336,7 +1357,7 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
                 )
                 if error:
                     errors.append(error)
-            errors.extend(_validate_target_vocabulary(receipt.get("target"), f"{path}.target"))
+            errors.extend(_validate_target_vocabulary(receipt.get("target"), f"{path}.target", lifecycle_contract))
             canonical_sync = receipt.get("canonical_sync")
             if isinstance(canonical_sync, dict) and "status" in canonical_sync:
                 error = _unknown_value(
@@ -1439,7 +1460,11 @@ def _validate_vocabulary(automation: dict[str, Any]) -> list[str]:
     return errors
 
 
-def _validate_target(target: Any, path: str) -> list[str]:
+def _validate_target(
+    target: Any,
+    path: str,
+    lifecycle_contract: str,
+) -> list[str]:
     errors = _required(target, {"stage", "occurrence", "bound_at", "completion"}, path)
     if not isinstance(target, dict):
         return errors
@@ -1459,13 +1484,23 @@ def _validate_target(target: Any, path: str) -> list[str]:
     if not isinstance(bound_at, str) or RFC3339_UTC_RE.fullmatch(bound_at) is None:
         errors.append(f"{path}.bound_at: expected RFC3339 UTC timestamp")
     errors.extend(_validate_concrete_object(target.get("completion"), f"{path}.completion"))
-    if isinstance(stage, str) and stage in {item.value for item in PUBLIC_TARGET_STAGES}:
-        if target.get("completion") != target_completion_predicate(stage):
+    public_stages = public_target_stages_for_contract(lifecycle_contract)
+    if isinstance(stage, str) and stage in {item.value for item in public_stages}:
+        if target.get("completion") != target_completion_predicate(
+            stage,
+            lifecycle_contract=lifecycle_contract,
+        ):
             errors.append(f"{path}.completion: must match immutable stage policy")
     return errors
 
 
-def _validate_parent(parent_id: str, parent: Any, top_change_id: Any, path: str) -> list[str]:
+def _validate_parent(
+    parent_id: str,
+    parent: Any,
+    top_change_id: Any,
+    path: str,
+    lifecycle_contract: str,
+) -> list[str]:
     required = {
         "authorization_id",
         "authorization_class",
@@ -1527,7 +1562,7 @@ def _validate_parent(parent_id: str, parent: Any, top_change_id: Any, path: str)
         errors.append(f"{path}.authorized_at: expected RFC3339 UTC timestamp")
     maximum_target = parent.get("maximum_target")
     if isinstance(maximum_target, dict):
-        errors.extend(_validate_target(maximum_target, f"{path}.maximum_target"))
+        errors.extend(_validate_target(maximum_target, f"{path}.maximum_target", lifecycle_contract))
     else:
         errors.append(f"{path}.maximum_target: expected object")
     allowed_kinds = parent.get("allowed_capability_kinds")
@@ -1563,6 +1598,7 @@ def _validate_capability(
     parents: dict[str, Any],
     top_change_id: Any,
     path: str,
+    lifecycle_contract: str,
 ) -> list[str]:
     required = {
         "capability_id",
@@ -1615,7 +1651,8 @@ def _validate_capability(
         errors.extend(_required(occurrence, {"kind"}, f"{path}.stage.occurrence"))
     if kind in CAPABILITY_STAGES and stage_name not in CAPABILITY_STAGES[kind]:
         errors.append(f"{path}.stage.name: incompatible with capability kind {kind}")
-    policy = STAGE_POLICY_BY_STAGE.get(stage_name) if isinstance(stage_name, str) else None
+    policies = stage_policy_by_stage_for_contract(lifecycle_contract)
+    policy = policies.get(stage_name) if isinstance(stage_name, str) else None
     if policy is not None and isinstance(occurrence, dict):
         expected = policy.occurrence_rule.value
         if occurrence.get("kind") != expected:
@@ -2016,6 +2053,7 @@ def _validate_capability(
                 parent.get("maximum_target"),
                 path,
                 "parent maximum target",
+                lifecycle_contract=lifecycle_contract,
             )
         )
     return errors
@@ -2041,13 +2079,19 @@ def validate_workflow_automation(
     automation: Any,
     *,
     top_level_change_id: str | None = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> list[str]:
     """Return deterministic errors for one unified automation subsection."""
 
     if not isinstance(automation, dict):
         return ["workflow.automation: expected object"]
 
-    vocabulary_errors = _validate_vocabulary(automation)
+    try:
+        stage_policies = stage_policy_by_stage_for_contract(lifecycle_contract)
+    except ValueError as error:
+        return [str(error)]
+
+    vocabulary_errors = _validate_vocabulary(automation, lifecycle_contract)
     if vocabulary_errors:
         return vocabulary_errors
 
@@ -2076,7 +2120,7 @@ def validate_workflow_automation(
         if top_level_change_id is not None and run.get("change_id") != top_level_change_id:
             errors.append("workflow.automation.run.change_id: must match top-level change_id")
         run_change_id = run.get("change_id")
-        errors.extend(_validate_target(run.get("target"), "workflow.automation.run.target"))
+        errors.extend(_validate_target(run.get("target"), "workflow.automation.run.target", lifecycle_contract))
 
     parents = automation.get("parent_authorizations")
     if not isinstance(parents, dict):
@@ -2089,6 +2133,7 @@ def validate_workflow_automation(
                 parent,
                 run_change_id,
                 f"workflow.automation.parent_authorizations.{parent_id}",
+                lifecycle_contract,
             )
         )
 
@@ -2104,6 +2149,7 @@ def validate_workflow_automation(
                 parents,
                 run_change_id,
                 f"workflow.automation.effective_capabilities.{capability_id}",
+                lifecycle_contract,
             )
         )
 
@@ -2361,7 +2407,7 @@ def validate_workflow_automation(
                     errors.append(
                         f"{path}.transition_key: does not match immutable operation inputs"
                     )
-            errors.extend(_validate_target(receipt.get("target"), f"{path}.target"))
+            errors.extend(_validate_target(receipt.get("target"), f"{path}.target", lifecycle_contract))
             if isinstance(run, dict):
                 if receipt.get("run_id") != run.get("run_id"):
                     errors.append(f"{path}.run_id: must match automation run")
@@ -2478,7 +2524,7 @@ def validate_workflow_automation(
                     except (TypeError, ValueError):
                         pass
                     else:
-                        stage_policy = STAGE_POLICY_BY_STAGE.get(stage_name)
+                        stage_policy = stage_policies.get(stage_name)
                         if (
                             stage_policy is not None
                             and receipt.get("retry_policy")
@@ -2508,7 +2554,11 @@ def validate_workflow_automation(
                                         f"{path}.canonical_sync.evidence: must contain exact "
                                         "stage-policy completion evidence"
                                     )
-                        if not is_immediate_predecessor(from_position, operation_stage):
+                        if not is_immediate_predecessor(
+                            from_position,
+                            operation_stage,
+                            lifecycle_contract=lifecycle_contract,
+                        ):
                             errors.append(
                                 f"{path}.from_position: {from_position.value} cannot transition "
                                 f"to {operation_stage.value}"
@@ -2521,6 +2571,7 @@ def validate_workflow_automation(
                             "run target",
                             receipt.get("from_position"),
                             receipt.get("input_identities"),
+                            lifecycle_contract,
                         )
                     )
 

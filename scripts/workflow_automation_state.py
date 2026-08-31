@@ -2050,7 +2050,9 @@ class WorkflowAutomationStateStore:
             return StateSnapshot(document, automation, _identity(payload))
         if automation is not None:
             errors = validate_workflow_automation(
-                automation, top_level_change_id=document.get("change_id")
+                automation,
+                top_level_change_id=document.get("change_id"),
+                lifecycle_contract=document.get("lifecycle_contract", "stage-owned-change-local-v1"),
             )
             if errors:
                 raise AutomationStateContractError(
@@ -2092,7 +2094,9 @@ class WorkflowAutomationStateStore:
         if snapshot.document_identity != expected_document_identity:
             raise ConcurrentStateChange("change metadata identity changed before transaction")
         errors = validate_workflow_automation(
-            automation, top_level_change_id=snapshot.document.get("change_id")
+            automation,
+            top_level_change_id=snapshot.document.get("change_id"),
+            lifecycle_contract=snapshot.document.get("lifecycle_contract", "stage-owned-change-local-v1"),
         )
         if errors:
             raise StateContractError("invalid replacement automation state: " + "; ".join(errors))
