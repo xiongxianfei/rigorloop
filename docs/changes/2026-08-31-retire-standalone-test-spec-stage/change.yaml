@@ -80,12 +80,12 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M5
+    current_milestone: M6
     final_closeout:
       evidence: []
       readiness: not-ready
       reasons:
-        - implementation-milestones-open
+        - lifecycle-gates-open
     initialization_basis:
       review_id: delivery-review-r3
       review_record: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/delivery-review-r3.md
@@ -114,13 +114,12 @@ workflow_state:
         state: closed
       M5:
         kind: implementation
-        state: review-requested
+        state: closed
       M6:
         kind: lifecycle-closeout
         state: planned
     plan_artifact_id: plan
-    remaining_implementation_milestones:
-      - M5
+    remaining_implementation_milestones: []
 workflow: {}
 artifacts: {}
 requirements: []
@@ -128,11 +127,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m5-r1.md
+  latest_review: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m5-r2.md
   review_log: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-log.md
-  reviewed_artifact: implementation-commit:c67ef259
-  status: changes-requested
-  unresolved_items: 2
+  reviewed_artifact: implementation-correction-commit:63a8d13f
+  status: clean
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -356,6 +355,26 @@ lifecycle_cli:
       review_record_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m4-r1.md
       review_recording_status: recorded
       review_round: r1
+      review_stage: code-review
+      stage_authority: workflow
+    M5:
+      completion_fingerprint: 0aebec7aff0a3398ab7bf668ed84c50df73dedaf78732d5d6977a967c8a26f86
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/m5-v2-activation.md
+      evidence_sha256: 0cdb72ab703936700e5acedde6bd6ca29f3d804255182297984d25364aa43195
+      milestone_id: M5
+      review_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m5-r2.md
+      review_evidence_sha256: 71345d4c3bf25c3a6aa60728232d77a13b57db22b61664fc52acdad9af997de3
+      review_id: code-review-m5-r2
+      review_log_entry_sha256: 89f857b0f6cd29778444a88f402702301e4542d151e2b3e5965768bf71d8b9d4
+      review_log_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m5-r2.md
+      review_recording_status: recorded
+      review_round: r2
       review_stage: code-review
       stage_authority: workflow
   package_reviews:
