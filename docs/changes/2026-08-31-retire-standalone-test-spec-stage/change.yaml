@@ -80,7 +80,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M2
+    current_milestone: M3
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -105,7 +105,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: closed
       M3:
         kind: implementation
         state: planned
@@ -120,7 +120,6 @@ workflow_state:
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M2
       - M3
       - M4
       - M5
@@ -297,6 +296,26 @@ lifecycle_cli:
       review_open_findings: []
       review_outcome: clean-with-notes
       review_record_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m1-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M2:
+      completion_fingerprint: 6558adcad7ef94390cfca36b86fcd669b4ed2377e83dc7244424e45fc4731bf5
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/m2-dual-lifecycle.md
+      evidence_sha256: d5b38f17fb66c3b5ea48b84d10b1dec23c013ccf1d67aaec57092323a40099bf
+      milestone_id: M2
+      review_evidence_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m2-r2.md
+      review_evidence_sha256: 8481f58ca905532d1a8174d4c4a079cef61f1ff7d94d2c602a3f4509b286d796
+      review_id: code-review-m2-r2
+      review_log_entry_sha256: e8d6b174adc51a4a7f5c3a7edc377cd86ff225cbd84f35e1731f392f71ae59d5
+      review_log_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-m2-r2.md
       review_recording_status: recorded
       review_round: r2
       review_stage: code-review
