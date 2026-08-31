@@ -6,6 +6,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from artifact_lifecycle_contracts import LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2
+
 
 REVIEW_GATE_INDEPENDENCE_LEVELS = {"L1", "L2", "L3"}
 REVIEW_GATE_PHASE_RECEIPTS = (
@@ -52,7 +54,7 @@ REQUIREMENT_FIDELITY_NOT_APPLICABLE_REASONS = {
     "surfaces covered by spec-derived constants exercised in tests",
 }
 SHA256_RE = re.compile(r"^sha256:[0-9a-fA-F]{64}$")
-STAGE_OWNED_CONTRACT = "stage-owned-change-local-v1"
+STAGE_OWNED_CONTRACT = LIFECYCLE_CONTRACT_V1
 ARTIFACT_KINDS = {
     "proposal", "spec", "architecture", "adr", "plan", "test-spec"
 }
@@ -330,7 +332,12 @@ def _evidence_paths(value: Any, path: str, errors: list[str], *, nonempty: bool 
 def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
     """Validate only records that opt into the stage-owned lifecycle contract."""
 
-    if not isinstance(data, dict) or data.get("lifecycle_contract") != STAGE_OWNED_CONTRACT:
+    if not isinstance(data, dict):
+        return []
+    contract = data.get("lifecycle_contract")
+    if contract not in {None, LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}:
+        return [f"lifecycle_contract: unknown_value; expected one of {LIFECYCLE_CONTRACT_V1}, {LIFECYCLE_CONTRACT_V2}"]
+    if contract != STAGE_OWNED_CONTRACT:
         return []
     errors: list[str] = []
     states = data.get("artifact_states")

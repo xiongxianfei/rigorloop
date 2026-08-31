@@ -4,12 +4,16 @@ import { join } from "node:path";
 import { test } from "node:test";
 
 import {
+  LIFECYCLE_CONTRACT_V1,
+  LIFECYCLE_CONTRACT_V2,
   LIFECYCLE_OPERATIONS,
   PROVENANCE_EXCLUDED_FIELDS,
   canonicalJson,
+  classifyLifecycleContract,
   lifecycleRevision,
   parseLifecycleYaml,
   serializeLifecycleYaml,
+  validateLifecycleActivationManifest,
   validateLifecycleRequest,
 } from "../dist/lib/lifecycle-contract.js";
 import { LIFECYCLE_OPERATIONS as OBSERVABLE_LIFECYCLE_OPERATIONS } from "../dist/lib/diagnostic-event.js";
@@ -18,6 +22,70 @@ const fixture = JSON.parse(
   readFileSync(join(import.meta.dirname, "fixtures", "lifecycle", "conformance-v1.json"), "utf8"),
 );
 const validChange = fixture.valid_yaml;
+const classificationFixture = JSON.parse(
+  readFileSync(join(import.meta.dirname, "fixtures", "lifecycle", "contract-classification-v1.json"), "utf8"),
+);
+
+test("contract activation manifest classifies v2 and exact prior records", () => {
+  const manifest = classificationFixture.active_manifest;
+  assert.deepEqual(validateLifecycleActivationManifest(manifest), []);
+  assert.equal(classifyLifecycleContract("new-v2", { lifecycle_contract: LIFECYCLE_CONTRACT_V2 }, manifest).contract_class, LIFECYCLE_CONTRACT_V2);
+  assert.equal(classifyLifecycleContract("v1", { lifecycle_contract: LIFECYCLE_CONTRACT_V1 }, manifest).contract_class, LIFECYCLE_CONTRACT_V1);
+  assert.equal(classifyLifecycleContract("legacy", {}, manifest).contract_class, "legacy-unversioned");
+});
+
+test("contract activation manifest rejects missing mismatch duplicate and unsorted entries", () => {
+  const manifest = classificationFixture.active_manifest;
+  assert.throws(() => classifyLifecycleContract("missing", { lifecycle_contract: LIFECYCLE_CONTRACT_V1 }, manifest), /not present in the activation manifest/);
+  assert.throws(() => classifyLifecycleContract("legacy", { lifecycle_contract: LIFECYCLE_CONTRACT_V1 }, manifest), /does not match/);
+  const duplicate = structuredClone(manifest);
+  duplicate.changes.splice(1, 0, structuredClone(duplicate.changes[0]));
+  assert.match(validateLifecycleActivationManifest(duplicate)[0], /duplicate/);
+  const unsorted = structuredClone(manifest);
+  [unsorted.changes[0], unsorted.changes[1]] = [unsorted.changes[1], unsorted.changes[0]];
+  assert.match(validateLifecycleActivationManifest(unsorted)[0], /raw UTF-8 byte order/);
+});
+
+test("unknown_value contract and manifest class fail before consistency checks", () => {
+  const manifest = structuredClone(classificationFixture.active_manifest);
+  manifest.changes[0].contract_class = "future-v9";
+  manifest.changes.push(structuredClone(manifest.changes[0]));
+  assert.match(validateLifecycleActivationManifest(manifest)[0], /unknown_value.*future-v9/);
+  assert.throws(
+    () => classifyLifecycleContract("missing", { lifecycle_contract: "future-v9" }, classificationFixture.active_manifest),
+    /unknown_value.*future-v9/,
+  );
+});
+
+test("unknown_value activation state fails before manifest consistency checks", () => {
+  const manifest = structuredClone(classificationFixture.active_manifest);
+  manifest.state = "published";
+  manifest.changes.push(structuredClone(manifest.changes[0]));
+  assert.match(validateLifecycleActivationManifest(manifest)[0], /state: unknown_value published/);
+});
+
+test("v2 contract rejects active standalone test-spec state", () => {
+  assert.throws(
+    () => classifyLifecycleContract("new-v2", {
+      lifecycle_contract: LIFECYCLE_CONTRACT_V2,
+      workflow_state: { current_stage: "test-spec" },
+    }, classificationFixture.active_manifest),
+    /active test-spec state/,
+  );
+});
+
+test("contract classification ignores heuristic dates stages artifacts git and network facts", () => {
+  const baseline = classifyLifecycleContract("v1", { lifecycle_contract: LIFECYCLE_CONTRACT_V1 }, classificationFixture.active_manifest);
+  const changed = classifyLifecycleContract("v1", {
+    lifecycle_contract: LIFECYCLE_CONTRACT_V1,
+    created_at: "2999-01-01",
+    workflow_state: { current_stage: "implement" },
+    artifacts: { plan: "docs/plans/example.md" },
+    git_reachable: false,
+    network_available: false,
+  }, classificationFixture.active_manifest);
+  assert.deepEqual(changed, baseline);
+});
 
 test("closed lifecycle operation vocabulary rejects an unknown operation", () => {
   assert.deepEqual([...LIFECYCLE_OPERATIONS], [

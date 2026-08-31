@@ -2,11 +2,20 @@ import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 
-import { allowedNextStages, canonicalJson, lifecycleRevision, parseLifecycleYaml } from "./lifecycle-contract.js";
+import {
+  LIFECYCLE_ACTIVATION_MANIFEST_PATH,
+  LIFECYCLE_CONTRACT_V1,
+  LIFECYCLE_CONTRACT_V2,
+  PREACTIVATION_LIFECYCLE_MANIFEST,
+  allowedNextStages,
+  canonicalJson,
+  classifyLifecycleContract,
+  lifecycleRevision,
+  parseLifecycleYaml,
+} from "./lifecycle-contract.js";
 import { reviewPackageContext, validateStoredReviewPackages } from "./lifecycle-packages.js";
 import { stageIsComplete } from "./lifecycle-stage-routing.js";
 
-const SUPPORTED_CONTRACT = "stage-owned-change-local-v1";
 const REVIEW_STAGES = new Set(["proposal-review", "design-review", "delivery-review", "code-review"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
 const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec"]);
@@ -279,7 +288,21 @@ export function interpretGovernedChange(root, selected) {
   const change = selected.change;
   const errors = [];
   if (change.change_id !== selected.id) errors.push(diagnostic("RL_INVALID_REQUEST", "Change directory and change_id do not match.", "change-identity", null, [selected.id, String(change.change_id)]));
-  if (change.lifecycle_contract !== SUPPORTED_CONTRACT) errors.push(diagnostic("RL_UNSUPPORTED_SCHEMA", `Unsupported lifecycle contract ${String(change.lifecycle_contract)}.`, "lifecycle-contract", "migrate", [String(change.lifecycle_contract)]));
+  let lifecycleContract = null;
+  try {
+    const manifestPath = join(root, ...LIFECYCLE_ACTIVATION_MANIFEST_PATH.split("/"));
+    const manifest = existsSync(manifestPath) && lstatSync(manifestPath).isFile()
+      ? parseLifecycleYaml(readFileSync(manifestPath, "utf8"))
+      : PREACTIVATION_LIFECYCLE_MANIFEST;
+    lifecycleContract = classifyLifecycleContract(selected.id, change, manifest);
+    if (lifecycleContract.contract_class === LIFECYCLE_CONTRACT_V2 && lifecycleContract.activation_state !== "active") {
+      errors.push(diagnostic("RL_INCOMPATIBLE_VERSION", "Lifecycle contract v2 is not active.", "lifecycle-contract-activation", null, [selected.id]));
+    } else if (lifecycleContract.contract_class !== LIFECYCLE_CONTRACT_V1 && lifecycleContract.activation_state !== "active") {
+      errors.push(diagnostic("RL_UNSUPPORTED_SCHEMA", "Unversioned lifecycle records are not supported by the preactivation CLI reader.", "lifecycle-contract", null, [selected.id]));
+    }
+  } catch (error) {
+    errors.push(diagnostic(error.code ?? "RL_INCOMPATIBLE_VERSION", String(error.message).replace(/^[A-Z_]+:\s*/, ""), "lifecycle-contract-activation", null, [selected.id]));
+  }
   if (change.lifecycle_cli !== undefined && ![1, 2].includes(change.lifecycle_cli?.schema_version)) errors.push(diagnostic("RL_UNSUPPORTED_SCHEMA", `Unsupported lifecycle CLI schema ${String(change.lifecycle_cli?.schema_version)}.`, "coordination-schema", "migrate", [String(change.lifecycle_cli?.schema_version)]));
   if (change.lifecycle_cli?.active_correction && change.lifecycle_cli.schema_version !== 2) errors.push(diagnostic("RL_UNSUPPORTED_SCHEMA", "Correction state requires lifecycle CLI schema version 2.", "coordination-schema", "migrate"));
   errors.push(...coordinationErrors(root, change));
@@ -316,6 +339,7 @@ export function interpretGovernedChange(root, selected) {
       recorded_state: recordedState,
       evidence_state: evidenceState,
       effective_state: errors.length ? "invalid" : blockers.length ? "blocked" : "current",
+      lifecycle_contract: lifecycleContract,
       current_stage: change.workflow_state?.current_stage ?? null,
       active_artifact: artifactForStage(change.workflow_state?.current_stage),
       active_milestone: activeMilestone(change),

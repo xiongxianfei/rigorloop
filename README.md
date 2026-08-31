@@ -1,9 +1,9 @@
 # RigorLoop
 
 <!-- vision:start -->
-RigorLoop is a Git-first lifecycle workflow for AI coding agents. It turns AI work into traceable, resumable artifacts so humans can review, trust, and continue what the AI did.
+RigorLoop is a rigorous software engineering workflow for AI coding agents. It turns AI work into traceable, resumable repository artifacts so humans can review, trust, and continue what the AI did.
 
-What makes it different: AI coding agents produce output quickly, but the reasoning often disappears. RigorLoop keeps decisions, tests, reviews, validation evidence, and handoff state in durable repository artifacts instead of lost chat logs.
+What makes it different: AI coding agents produce output quickly, but the reasoning often disappears. RigorLoop keeps decisions, requirements, tests, reviews, validation evidence, and handoff state in durable repository artifacts instead of lost chat logs.
 
 Who it is for: RigorLoop is for individual contributors, maintainers, and teams that want AI-assisted software work to remain traceable, resumable, and reviewable in Git.
 
