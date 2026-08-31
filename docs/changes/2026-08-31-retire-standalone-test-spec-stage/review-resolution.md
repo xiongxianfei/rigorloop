@@ -4,6 +4,8 @@
 
 Closeout status: closed
 
+Review closeout: code-review-m3-r1
+
 Review closeout: code-review-m2-r2
 
 Review closeout: code-review-m2-r1
@@ -16,10 +18,10 @@ Review closeout: design-review-r2
 
 Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
 - Findings resolved: 8
 - Unresolved findings: 0
-- Current result: Code Review M2 R2 found the corrected inactive v2 lifecycle and exact primary-plan package validation clean.
+- Current result: Code Review M3 R1 found the verification-ownership skill changes clean; M4 and M5 remain open.
 
 ## Resolution Overview
 
@@ -202,3 +204,7 @@ Validation evidence: correction commit `ec20afe6`; CMD-06 passed 110 tests inclu
 ### code-review-m2-r2
 
 No material findings. The clean rereview confirms `RTS-M2-CR1` and `RTS-M2-CR2` are resolved and supports M2 settlement against correction commit `ec20afe6`.
+
+### code-review-m3-r1
+
+No material findings. The review confirms that specification, plan, and Delivery Review own their approved verification responsibilities, v1 compatibility remains executable, and v2 remains inactive pending M4-M5.
