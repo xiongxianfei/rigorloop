@@ -30,11 +30,14 @@ from adapter_distribution import (  # noqa: E402
     AdapterDriftEntry,
     OPENCODE_COMMAND_ALIASES,
     POST_CUTOVER_ADAPTER_SKILLS,
+    STAGED_V2_ADAPTER_SKILLS,
+    STAGED_V2_OPENCODE_COMMAND_ALIASES,
     RETIRED_PROGRESSION_SKILLS,
     ReleaseValidationProfile,
     SUPPORTED_ADAPTERS,
     adapter_archive_name,
     build_adapter_archives,
+    build_staged_v2_adapter_archives,
     build_required_benchmark_context,
     collect_adapter_drift,
     collect_adapter_drift_entries,
@@ -49,6 +52,7 @@ from adapter_distribution import (  # noqa: E402
     render_manifest_yaml,
     sync_adapter_output,
     validate_adapter_archives,
+    validate_staged_v2_adapter_archives,
     validate_adapter_artifact_metadata,
     validate_adapter_output,
     validate_clean_install_smoke,
@@ -77,6 +81,48 @@ class AdapterDistributionTests(unittest.TestCase):
 
     def fixture(self, name: str) -> Path:
         return FIXTURES / name
+
+    def test_staged_v2_archives_omit_test_spec_and_package_plan_methods(self) -> None:
+        self.assertNotIn("test-spec", STAGED_V2_ADAPTER_SKILLS)
+        self.assertNotIn("test-spec", STAGED_V2_OPENCODE_COMMAND_ALIASES)
+        with tempfile.TemporaryDirectory(prefix="staged-v2-adapters-") as temp_dir:
+            output = Path(temp_dir)
+            archives = build_staged_v2_adapter_archives("v0.1.5", output)
+            self.assertEqual(validate_staged_v2_adapter_archives("v0.1.5", output), [])
+            self.assertEqual(
+                validate_clean_install_smoke(
+                    "v0.1.5",
+                    output,
+                    skill_names=("plan",),
+                    command_aliases=STAGED_V2_OPENCODE_COMMAND_ALIASES,
+                ),
+                [],
+            )
+            required = {
+                "boundary-and-negative-verification.md",
+                "state-machine-verification.md",
+                "concurrency-and-retry-verification.md",
+                "migration-and-compatibility-verification.md",
+                "failure-and-recovery-verification.md",
+                "security-and-authority-verification.md",
+                "cross-milestone-integration-verification.md",
+                "manual-and-operational-evidence.md",
+            }
+            for archive_path in archives:
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = set(archive.namelist())
+                self.assertFalse(any("/test-spec/" in name for name in names))
+                self.assertTrue(all(any(name.endswith(f"/plan/references/{item}") for name in names) for item in required))
+
+    def test_staged_v2_archive_validation_rejects_extra_retired_entrypoint(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="staged-v2-mixed-") as temp_dir:
+            output = Path(temp_dir)
+            archives = build_staged_v2_adapter_archives("v0.1.5", output)
+            target = archives[0]
+            with zipfile.ZipFile(target, "a") as archive:
+                archive.writestr(".agents/skills/test-spec/SKILL.md", "retired")
+            errors = validate_staged_v2_adapter_archives("v0.1.5", output)
+            self.assertTrue(any("unexpected entries" in error and "test-spec" in error for error in errors))
 
     def copy_fixture_skills(self, target: Path, names: tuple[str, ...]) -> Path:
         skills_root = target / "skills"

@@ -4,6 +4,8 @@
 
 `dist/adapters/manifest.yaml` is the tracked adapter support matrix. It records adapter support and opencode command aliases; it must not contain generated skill bodies.
 
+During no-test-spec preactivation, the tracked manifest continues to describe the released v1 package. Repository tests build and validate an untracked v2 candidate for Codex, Claude Code, and opencode; that candidate uses the plan-only route, omits standalone `test-spec`, and packages every plan-owned specialist reference. M5 performs the coherent active-inventory switch.
+
 For `v0.1.3` and later, public adapter installation uses GitHub release archives. The repository keeps adapter metadata and install guidance under `dist/adapters/`; generated public adapter skill bodies are not tracked source.
 
 Download the adapter archive for your tool from the GitHub release assets and extract it into the target project root:

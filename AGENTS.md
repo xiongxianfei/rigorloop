@@ -65,7 +65,9 @@ Once proposal, spec, and architecture are already settled, execution usually pro
 
 `plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
 
-The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves plan and test specification as one exact package. Earlier evidence for the implementing consolidated-gates change remains historical under its approved pre-cutover plan; it is not a current progression route.
+During preactivation, this chain is lifecycle-contract keyed: `stage-owned-change-local-v1` retains the registered plan-plus-test-spec package, while `stage-owned-change-local-v2` uses a plan-only Delivery Review package. New changes remain v1 until M5 coherently activates v2; historical prior-contract records remain readable without authorizing new test-spec work.
+
+The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves the exact contract-selected package. V1 uses plan plus test specification; v2 uses the plan only and judges verification allocation with implementation readiness. Earlier evidence for the implementing consolidated-gates change remains historical under its approved pre-cutover plan; it is not a current progression route.
 
 For milestone-based plans, repeat implementation and code-review for each in-scope implementation milestone. A clean non-final milestone review routes to the next implementation milestone; final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
 

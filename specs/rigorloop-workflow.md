@@ -13,6 +13,8 @@ Requirements outside that registry remain current lifecycle and artifact-orderin
 
 ## Consolidated review-gate amendment
 
+During preactivation of `stage-owned-change-local-v2`, delivery routing is contract-keyed. `stage-owned-change-local-v1` retains the exact plan-plus-test-spec package below. V2 stages an exact plan-only Delivery Review package in which plan owns verification allocation, but new governed changes remain v1 until the coherent M5 activation. Historical prior-contract artifacts remain readable and do not authorize test-spec under v2.
+
 At the reviewed consolidated-gates release cutover, `specs/consolidated-review-gates.md` replaces the legacy artifact-review progression clauses named in that specification. The standard pre-implementation chain becomes `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement`. Proposal Review evaluates the proposal and its embedded feasibility evidence; Design Review approves the exact architecture, specification, and applicable ADR package; Delivery Review approves the exact plan and test-specification package.
 
 Architecture, specification, plan, and test-specification authorship remain separate. Package review authority is atomic and binds explicit artifact ID-to-repository-relative-path maps plus the upstream review ID; it uses neither an aggregate revision nor per-document hashes. `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain readable historical evidence but are not post-cutover progression entrypoints or aliases. Code Review, review-resolution, `explain-change`, Verify, and PR retain their existing semantic owners.

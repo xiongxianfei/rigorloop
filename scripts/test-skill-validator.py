@@ -9040,5 +9040,49 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
         self.assertIn("scheduled for removal from the active published inventory", body)
 
 
+class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
+    """RTS TS-012 and TS-016 preactivation governance coherence."""
+
+    def test_current_governance_declares_contract_keyed_delivery_packages(self) -> None:
+        for relative in (
+            "CONSTITUTION.md",
+            "AGENTS.md",
+            "docs/workflows.md",
+            "specs/rigorloop-workflow.md",
+        ):
+            body = (ROOT / relative).read_text(encoding="utf-8")
+            with self.subTest(path=relative):
+                self.assertIn("stage-owned-change-local-v1", body)
+                self.assertIn("stage-owned-change-local-v2", body)
+                self.assertIn("preactivation", body.lower())
+                self.assertIn("plan-plus-test-spec", body)
+                self.assertIn("plan-only", body)
+
+    def test_shared_boundary_routing_is_contract_keyed(self) -> None:
+        required = (
+            "Under v2, a pre-implementation verification-allocation gap routes to `plan`",
+            "under registered v1, a proof-map gap routes to `test-spec`",
+        )
+        template = (ROOT / "templates/shared/boundary-first-compact-scan.md").read_text(encoding="utf-8")
+        for phrase in required:
+            self.assertIn(phrase, template)
+        for skill_name in ("workflow", "spec", "plan", "test-spec", "implement", "code-review", "verify"):
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                for phrase in required:
+                    self.assertIn(phrase, body)
+
+    def test_preactivation_guidance_preserves_downstream_gates_and_history(self) -> None:
+        combined = "\n".join(
+            (ROOT / path).read_text(encoding="utf-8")
+            for path in ("CONSTITUTION.md", "AGENTS.md", "docs/workflows.md")
+        )
+        lowered = combined.lower()
+        self.assertIn("code-review", lowered)
+        self.assertIn("verify", lowered)
+        self.assertIn("historical", lowered)
+        self.assertIn("M5", combined)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

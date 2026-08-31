@@ -149,13 +149,15 @@ Until repository-specific release checks replace the current conservative templa
 
 The following consolidated package-gate rules are current.
 
+During preactivation, delivery authority is lifecycle-contract keyed. `stage-owned-change-local-v1` retains its exact plan-plus-test-spec Delivery Review package. `stage-owned-change-local-v2` uses one exact plan-only Delivery Review package in which the plan owns verification allocation. Newly governed changes MUST remain v1 until the coherent M5 activation; historical prior-contract artifacts remain readable and MUST NOT authorize test-spec under v2.
+
 `proposal-review` MUST evaluate proposal direction, scope, and embedded feasibility before design work for governed changes.
 
 `design-review` MUST independently approve the exact architecture, specification, and applicable ADR package before delivery planning relies on it.
 
-`delivery-review` MUST independently approve the exact plan and test-specification package before implementation.
+`delivery-review` MUST independently approve the exact contract-selected delivery package before implementation.
 
-Architecture, specification, plan, and test-specification authorship remain separate. A package reviewer MUST NOT edit and approve the artifacts it reviews.
+Architecture, specification, and plan authorship remain separate. Registered v1 test-specification authorship also remains separate. A package reviewer MUST NOT edit and approve the artifacts it reviews.
 
 `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` are retired as progression entrypoints. Historical evidence remains readable but does not grant package authority.
 
