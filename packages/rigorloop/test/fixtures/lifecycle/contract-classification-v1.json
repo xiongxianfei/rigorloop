@@ -1,0 +1,40 @@
+{
+  "active_manifest": {
+    "schema_version": 1,
+    "state": "active",
+    "activating_source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "changes": [
+      {
+        "change_id": "Z-change",
+        "contract_class": "stage-owned-change-local-v1"
+      },
+      {
+        "change_id": "a-change",
+        "contract_class": "legacy-unversioned"
+      },
+      {
+        "change_id": "legacy",
+        "contract_class": "legacy-unversioned"
+      },
+      {
+        "change_id": "v1",
+        "contract_class": "stage-owned-change-local-v1"
+      }
+    ]
+  },
+  "preactivation_manifest": {
+    "schema_version": 1,
+    "state": "preactivation",
+    "activating_source_revision": null,
+    "changes": []
+  },
+  "contract_cases": {
+    "explicit_null": {
+      "change_id": "null-contract",
+      "change": {
+        "lifecycle_contract": null
+      },
+      "error": "lifecycle_contract: unknown_value null"
+    }
+  }
+}

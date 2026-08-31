@@ -13,6 +13,8 @@ Review in independent-review mode with fresh eyes. Determine whether the actual 
 
 ## Purpose
 
+Trace the implementation to its allocated work, governing SRs, and approved design boundaries.
+
 Review the actual implementation slice against approved authority and record a first-pass status with a safe, milestone-aware handoff.
 
 ## When to use
@@ -57,7 +59,7 @@ Read the target, tracked authority, current milestone, tests, and relevant valid
 
 ## Review authority and evidence
 
-Inspect the actual changed files, staged or unstaged diff, commit range, PR diff, or other explicit target. Read the approved spec, matching test spec, stable plan milestone, relevant architecture or ADR, related tests, and named validation evidence. For planned work, read `change.yaml` for current milestone and handoff state; use the plan only for stable intent and `review-resolution.md` for prior-finding disposition.
+Inspect the actual changed files, staged or unstaged diff, commit range, PR diff, or other explicit target. Read the approved spec, stable plan milestone, relevant architecture or ADR, related tests, named validation evidence, and a matching test spec only for manifest-bound v1 continuation. For planned work, read `change.yaml` for current milestone and handoff state; use the plan only for stable intent and `review-resolution.md` for prior-finding disposition.
 
 For work governed by consolidated gates, require the current approved Design Review ID and its exact member map plus the current approved Delivery Review ID and its exact member map. Treat review-required, partial, stale, or historical artifact-review evidence as non-authorizing. These package inputs strengthen implementation review but do not merge Code Review with Design Review, Delivery Review, or Verify.
 
@@ -218,7 +220,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
@@ -243,6 +245,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when tracing an implementation slice through allocated work to governing requirements and direction.
 - READ `references/boundary-first-method-v1.md` when approved diff-related boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for review.
 - READ `references/workflow-managed-automated-review.md` only when the invocation is a formally armed workflow-managed automated review or correction loop.
 - COPY `assets/material-finding.md` once per material finding. Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed. Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`. Do not emit unfilled placeholders.

@@ -50,7 +50,13 @@ Operations are `create-primary-spec` and `revise-primary-spec`. Portable create 
 
 ## Contract quality
 
-Cover inputs, outputs, state, errors, compatibility, observability, security/privacy, accessibility, performance, and edges with normative, testable requirements; examples never own behavior and the spec must not invent excluded scope. Explain inapplicability. Preserve `Next artifacts`; use `Follow-on artifacts` for outcomes and `None yet` before any exist. A superseded spec identifies its replacement.
+Treat the approved proposal direction as IR-level input and author stable SR identities for downstream traceability.
+
+Answer: **What must be demonstrably true?** Make each applicable SR explicit enough for downstream verification planning. Cover normal behavior, invalid input, failure behavior, state transitions, permissions and authority, compatibility, migration, retries, concurrency, recovery, important system boundaries, important scenarios, and acceptance conditions. Explain inapplicability rather than forcing irrelevant categories.
+
+Keep this contract behavioral. Do not normally prescribe test filenames, test frameworks, fixtures, mocks, exact validation commands, implementation-specific test mechanics, or milestone allocation. Those mechanics and allocations belong downstream; the specification owns the observable outcome they must preserve.
+
+Also cover inputs, outputs, observability, security/privacy, accessibility, performance, and edges with normative, testable requirements. Examples illustrate but never own behavior, and the spec must not invent excluded scope. Preserve `Next artifacts`; use `Follow-on artifacts` for outcomes and `None yet` before any exist. A superseded spec identifies its replacement.
 
 ## Formal boundary composition
 
@@ -93,6 +99,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Resource map
 
+- READ `references/requirement-to-delivery-model.md` when refining an approved direction into system requirements or defining their downstream traceability.
 - READ `references/boundary-first-method-v1.md` initially for every `spec` invocation.
 - READ `references/boundary-first-feature-authoring-v1.md` initially after the method reference for every `spec` invocation.
 - READ `references/governed-spec-authoring.md` only for `single-governed-candidate`; validate exact authority before any governed write.
@@ -111,7 +118,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 

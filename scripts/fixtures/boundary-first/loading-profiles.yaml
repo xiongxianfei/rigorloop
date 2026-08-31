@@ -3,11 +3,9 @@
   "profiles": [
     {"skill": "workflow", "mapped_resource_ids": ["compact-core"], "initial_resource_ids": [], "permitted_expansion_ids": ["compact-core"]},
     {"skill": "spec", "mapped_resource_ids": ["compact-core", "feature-authoring"], "initial_resource_ids": ["compact-core", "feature-authoring"], "permitted_expansion_ids": []},
-    {"skill": "spec-review", "mapped_resource_ids": ["compact-core", "feature-authoring"], "initial_resource_ids": ["compact-core", "feature-authoring"], "permitted_expansion_ids": []},
+    {"skill": "design-review", "mapped_resource_ids": ["compact-core", "feature-authoring"], "initial_resource_ids": ["compact-core", "feature-authoring"], "permitted_expansion_ids": []},
     {"skill": "plan", "mapped_resource_ids": ["compact-core"], "initial_resource_ids": [], "permitted_expansion_ids": ["compact-core"]},
-    {"skill": "plan-review", "mapped_resource_ids": ["compact-core"], "initial_resource_ids": [], "permitted_expansion_ids": ["compact-core"]},
-    {"skill": "test-spec", "mapped_resource_ids": ["compact-core", "proof"], "initial_resource_ids": ["compact-core", "proof"], "permitted_expansion_ids": []},
-    {"skill": "test-spec-review", "mapped_resource_ids": ["compact-core", "proof"], "initial_resource_ids": ["compact-core", "proof"], "permitted_expansion_ids": []},
+    {"skill": "delivery-review", "mapped_resource_ids": ["compact-core", "proof"], "initial_resource_ids": ["compact-core", "proof"], "permitted_expansion_ids": []},
     {"skill": "implement", "mapped_resource_ids": ["compact-core"], "initial_resource_ids": [], "permitted_expansion_ids": ["compact-core"]},
     {"skill": "code-review", "mapped_resource_ids": ["compact-core"], "initial_resource_ids": [], "permitted_expansion_ids": ["compact-core"]},
     {"skill": "verify", "mapped_resource_ids": ["compact-core"], "initial_resource_ids": [], "permitted_expansion_ids": ["compact-core"]}

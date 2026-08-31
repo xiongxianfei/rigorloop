@@ -12,7 +12,7 @@ from typing import Mapping
 METHOD_VERSION = "boundary-first-v1"
 RESOURCE_MANIFEST = Path("specs/boundary-first-resources.yaml")
 RESOURCE_MANIFEST_SHA256 = (
-    "040fe7aa2eb85caf72f55f54bd5d2334a20aad4b0a1d99900f549ff7958bbc72"
+    "8f255f2706fd18081921bb4725fd24715dddb9d61e0cc17cc36ec8cc4289ff71"
 )
 CANONICAL_REFERENCE = Path(
     "specs/references/boundary-first-method-v1.md"
@@ -23,7 +23,6 @@ GOVERNED_SKILLS = (
     "spec",
     "design-review",
     "plan",
-    "test-spec",
     "delivery-review",
     "implement",
     "code-review",

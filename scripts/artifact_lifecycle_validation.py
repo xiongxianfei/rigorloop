@@ -12,12 +12,18 @@ from pathlib import Path
 from typing import Any
 
 from artifact_lifecycle_contracts import (
+    LIFECYCLE_ACTIVATION_MANIFEST_PATH,
+    LIFECYCLE_CONTRACT_V1,
+    LIFECYCLE_CONTRACT_V2,
     SIMPLIFIED_PROPOSAL_CUTOVER_DATE,
     SIMPLIFIED_PROPOSAL_FORBIDDEN_SECTIONS,
     SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION,
     SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS,
     ArtifactContract,
     classify_artifact,
+    classify_lifecycle_contract,
+    parse_lifecycle_activation_manifest,
+    validate_lifecycle_activation_manifest,
 )
 from change_metadata_semantics import STAGE_OWNED_CONTRACT, validate_stage_owned_lifecycle_metadata
 from lifecycle_state_sync import (
@@ -866,7 +872,7 @@ def _extract_change_yaml_refs(root: Path, path: Path, tracked_revision: str | No
         data = _parse_change_yaml_text(text)
     except Exception:
         data = None
-    if isinstance(data, dict) and data.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
+    if isinstance(data, dict) and data.get("lifecycle_contract") in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}:
         states = data.get("artifact_states")
         if isinstance(states, dict):
             for entry in states.values():
@@ -1952,12 +1958,53 @@ def validate_repository(
     stage_owned_proposal_records: set[Path] = set()
     stage_owned_states: dict[Path, list[StageOwnedArtifactState]] = {}
 
+    activation_manifest: Any | None = None
+    activation_manifest_valid = False
+    activation_manifest_path = root_resolved / LIFECYCLE_ACTIVATION_MANIFEST_PATH
+    activation_manifest_present = _path_exists(
+        root_resolved,
+        activation_manifest_path,
+        scope.tracked_revision,
+    )
+    if activation_manifest_present:
+        try:
+            activation_manifest = parse_lifecycle_activation_manifest(
+                _read_repo_text(root_resolved, activation_manifest_path, scope.tracked_revision)
+            )
+            manifest_errors = validate_lifecycle_activation_manifest(activation_manifest)
+        except ValueError as exc:
+            manifest_errors = [str(exc)]
+        if manifest_errors:
+            for message in manifest_errors:
+                blocking_findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=activation_manifest_path,
+                        artifact_class="change_metadata",
+                        status=None,
+                        message=message,
+                    )
+                )
+        else:
+            activation_manifest_valid = True
+    classification_manifest = activation_manifest if activation_manifest_valid else {
+        "schema_version": 1,
+        "state": "preactivation",
+        "activating_source_revision": None,
+        "changes": [],
+    }
+
     for path in scope.change_yaml_paths:
         metadata_error_messages: set[str] = set()
         if compose_change_metadata:
             metadata_parser = _load_change_metadata_parser()
             try:
-                metadata_errors = metadata_parser.validate_file(path)
+                metadata_kwargs = (
+                    {"activation_manifest": activation_manifest}
+                    if activation_manifest is not None
+                    else {}
+                )
+                metadata_errors = metadata_parser.validate_file(path, **metadata_kwargs)
             except (FileNotFoundError, metadata_parser.MetadataValidationError) as exc:
                 metadata_errors = [f"invalid change metadata: {exc}"]
             for message in metadata_errors:
@@ -1992,10 +2039,57 @@ def validate_repository(
                 )
             metadata = None
 
+        lifecycle_classification: dict[str, str] | None = None
+        if isinstance(metadata, dict) and activation_manifest_present and not activation_manifest_valid:
+            continue
         if (
             isinstance(metadata, dict)
-            and metadata.get("lifecycle_contract") == STAGE_OWNED_CONTRACT
+            and not activation_manifest_present
+            and metadata.get("lifecycle_contract") == LIFECYCLE_CONTRACT_V2
         ):
+            blocking_findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=path,
+                    artifact_class="change_metadata",
+                    status=None,
+                    message="v2 lifecycle contract requires the tracked activation manifest",
+                )
+            )
+            continue
+        if isinstance(metadata, dict) and (activation_manifest_valid or not activation_manifest_present):
+            change_id = metadata.get("change_id")
+            if isinstance(change_id, str):
+                try:
+                    lifecycle_classification = classify_lifecycle_contract(
+                        change_id,
+                        metadata,
+                        classification_manifest,
+                    )
+                except ValueError as exc:
+                    message = str(exc)
+                    if message not in metadata_error_messages:
+                        blocking_findings.append(
+                            ValidationFinding(
+                                severity="block",
+                                path=path,
+                                artifact_class="change_metadata",
+                                status=None,
+                                message=message,
+                            )
+                        )
+                    continue
+
+        is_stage_owned = (
+            lifecycle_classification is not None
+            and lifecycle_classification["contract_class"] in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}
+        ) or (
+            lifecycle_classification is None
+            and not activation_manifest_present
+            and isinstance(metadata, dict)
+            and metadata.get("lifecycle_contract") == STAGE_OWNED_CONTRACT
+        )
+        if isinstance(metadata, dict) and is_stage_owned:
             stage_owned_records.add(path)
             for message in validate_stage_owned_lifecycle_metadata(metadata):
                 if message in metadata_error_messages:

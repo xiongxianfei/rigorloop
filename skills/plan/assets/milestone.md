@@ -1,21 +1,23 @@
 <!-- Template: plan-milestone-v1 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:2a4c1dca788f27af29fe6c5472fc4ab2147e1814751f82da0aae5efaed8af3e8 -->
+<!-- Structural-fingerprint: sha256:339cd1be51c01c3c14f395189e9c14b60641bd9a284f4bee780b7acb3e0f15da -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 
 ### M<milestone-number>. <title>
 
 - Milestone kind: <implementation | lifecycle-closeout>
-- Goal: <milestone goal>
+- Engineering purpose: <why this is a safe, dependency-correct reviewable slice>
 - Requirements: <requirement ids>
-- Architecture decisions: <decision ids or none>
+- Architecture responsibility: <realization boundary or decision ids>
+- Dependencies:
+  - <dependency or safe predecessor state>
+- Implementation scope: <what changes and what remains outside this milestone>
 - Files/components likely touched:
   - <path or component>
-- Dependencies:
-  - <dependency>
-- Tests and proof:
-  - <test or proof>
+- Required verification:
+  - TG-<number> — <behavior and important scenarios this milestone must demonstrate>
+- Evidence expectations: <concrete tests, checks, or manual evidence implementation must record>
 - Implementation steps:
   - <step>
 - Validation commands:

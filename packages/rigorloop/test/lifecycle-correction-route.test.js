@@ -233,6 +233,56 @@ test("delivery upstream-direction and blocked findings route through the design 
   }
 });
 
+test("v2 delivery verification findings route to plan and cannot route to test-spec", async () => {
+  const { root, changeRoot } = await packageRepository({ stage: "design-review", lifecycleContract: "stage-owned-change-local-v2" });
+  const design = writePackageReview(root, packageContext(root), { outcome: "approved" });
+  assert.equal(execute(root, "record-package-review", {
+    schema_version: 1, operation: "record-package-review", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    package_kind: "design", review_id: design.reviewId, upstream_review_id: design.packageFacts.upstream_review_id,
+    members: design.packageFacts.members, evidence_path: design.reviewPath, stage_authority: "design-review",
+  }).exitCode, 0);
+  assert.equal(execute(root, "settle-review-package", {
+    schema_version: 1, operation: "settle-review-package", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    package_kind: "design", review_id: design.reviewId, stage_authority: "design-review",
+  }).exitCode, 0);
+  setWorkflowStage(root, "delivery-review");
+  const delivery = writePackageReview(root, packageContext(root, "delivery-review"), {
+    kind: "delivery", outcome: "changes-requested",
+    findings: [{ id: "V2-PLAN-GAP", scope: "artifact-local", affected: ["plan"], owners: ["plan"] }],
+    correctionTargets: ["plan"],
+  });
+  assert.equal(execute(root, "record-package-review", {
+    schema_version: 1, operation: "record-package-review", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    package_kind: "delivery", review_id: delivery.reviewId, upstream_review_id: delivery.packageFacts.upstream_review_id,
+    members: delivery.packageFacts.members, evidence_path: delivery.reviewPath, stage_authority: "delivery-review",
+  }).exitCode, 0);
+  assert.equal(execute(root, "settle-review-package", {
+    schema_version: 1, operation: "settle-review-package", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    package_kind: "delivery", review_id: delivery.reviewId, stage_authority: "delivery-review",
+  }).exitCode, 0);
+
+  const revision = status(root).lifecycle_revision;
+  const evidence = "docs/changes/example/evidence/v2-plan-route.md";
+  writeFileSync(join(root, evidence), `Change ID: example\nSource stage: delivery-review\nDestination artifact: plan\nReason: upstream-planning-gap\nFinding IDs: V2-PLAN-GAP\nReturn stage: delivery-review\nLifecycle revision: ${revision}\n`, "utf8");
+  const routed = execute(root, "route-correction", {
+    schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: revision,
+    source_stage: "delivery-review", destination_stage: "plan", destination_artifact_id: "plan",
+    reason: "upstream-planning-gap", evidence_path: evidence, finding_ids: ["V2-PLAN-GAP"], return_stage: "delivery-review", stage_authority: "workflow",
+  });
+  assert.equal(routed.exitCode, 0, JSON.stringify(routed.result));
+  assert.equal(status(root).effective_state.current_stage, "plan");
+
+  const path = join(changeRoot, "change.yaml");
+  const before = readFileSync(path, "utf8");
+  const rejected = execute(root, "route-correction", {
+    schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    source_stage: "delivery-review", destination_stage: "test-spec", destination_artifact_id: "test-spec",
+    reason: "upstream-proof-gap", evidence_path: evidence, finding_ids: ["V2-PLAN-GAP"], return_stage: "delivery-review", stage_authority: "workflow",
+  });
+  assert.notEqual(rejected.exitCode, 0);
+  assert.equal(readFileSync(path, "utf8"), before);
+});
+
 test.skip("historical individual-review correction flow", async () => {
   const { root, changeRoot } = await fixture();
   const initialRevision = status(root).lifecycle_revision;

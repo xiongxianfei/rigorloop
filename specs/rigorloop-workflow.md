@@ -11,7 +11,13 @@ Upon approval of [Single Bounded Review-Fix Workflow Automation](single-bounded-
 Only selectors explicitly listed in the unified spec's closed affected-selector registry are amended.
 Requirements outside that registry remain current lifecycle and artifact-ordering requirements of this spec and receive no implicit migration disposition.
 
-## Consolidated review-gate amendment
+## V2 delivery-contract activation amendment
+
+`stage-owned-change-local-v2` is active for every new governed change. The standard pre-implementation chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement`. Plan owns milestone and change-level verification allocation, and Delivery Review approves implementation and verification readiness as one exact plan-only package.
+
+The exact prior-contract inventory frozen in `specs/lifecycle-contract-activation.yaml` remains readable. A registered v1 change may continue only from its already-approved post-delivery package; it may not start or repeat standalone test-spec authoring or review. The legacy clauses below remain historical compatibility context and do not override this amendment.
+
+## Consolidated review-gate amendment (historical)
 
 At the reviewed consolidated-gates release cutover, `specs/consolidated-review-gates.md` replaces the legacy artifact-review progression clauses named in that specification. The standard pre-implementation chain becomes `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement`. Proposal Review evaluates the proposal and its embedded feasibility evidence; Design Review approves the exact architecture, specification, and applicable ADR package; Delivery Review approves the exact plan and test-specification package.
 

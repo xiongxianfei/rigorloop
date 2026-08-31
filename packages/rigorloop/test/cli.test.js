@@ -737,6 +737,10 @@ test("TNC-006 generated change metadata defaults and field order are determinist
       "title",
       "classification",
       "risk",
+      "lifecycle_contract",
+      "artifact_states",
+      "workflow_state",
+      "workflow",
       "artifacts",
       "requirements",
       "tests",
@@ -1099,6 +1103,8 @@ test("TNC-020 generated metadata validates with repository schema", () => {
 
   assert.equal(standard.status, 0, standard.stderr);
   assert.equal(minimal.status, 0, minimal.stderr);
+  assert.match(readFileSync(join(cwd, "docs/changes/schema-standard/change.yaml"), "utf8"), /^lifecycle_contract: stage-owned-change-local-v2$/m);
+  assert.match(readFileSync(join(cwd, "docs/changes/schema-minimal/change.yaml"), "utf8"), /^lifecycle_contract: stage-owned-change-local-v2$/m);
   const validator = resolve(packageRoot, "..", "..", "scripts", "validate-change-metadata.py");
   execFileSync("python", [validator, join(cwd, "docs/changes/schema-standard/change.yaml")], { encoding: "utf8" });
   execFileSync("python", [validator, join(cwd, "docs/changes/schema-minimal/change.yaml")], { encoding: "utf8" });

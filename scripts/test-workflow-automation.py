@@ -232,6 +232,92 @@ Change ID: 2026-07-20-example
 
 
 class WorkflowAutomationEngineTests(unittest.TestCase):
+    def test_v2_authoring_route_skips_test_spec_and_rejects_it_as_a_target(self) -> None:
+        decision = evaluate_non_public_authoring_route(
+            current_stage="plan",
+            target_stage="delivery-review",
+            capability_kind="post-proposal-authoring",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            lifecycle_contract="stage-owned-change-local-v2",
+        )
+        self.assertEqual((decision.status, decision.next_stage), ("continue", "delivery-review"))
+        public = evaluate_public_authoring_route(
+            command="workflow auto: delivery-review",
+            current_stage="plan",
+            capability_kind="post-proposal-authoring",
+            capability_status="active",
+            lifecycle_contract="stage-owned-change-local-v2",
+        )
+        self.assertEqual((public.status, public.next_stage), ("continue", "delivery-review"))
+        retired_target = FIXTURES.valid_automation()
+        retired_target["run"]["target"] = bind_target(
+            "test-spec",
+            bound_at="2026-07-22T00:00:00Z",
+        )
+        errors = validate_workflow_automation(
+            retired_target,
+            lifecycle_contract="stage-owned-change-local-v2",
+        )
+        self.assertTrue(
+            any("run.target.stage: unknown value 'test-spec'" in error for error in errors),
+            errors,
+        )
+        with self.assertRaisesRegex(AutomationContractError, "public target"):
+            bind_target(
+                "test-spec",
+                bound_at="2026-07-22T00:00:00Z",
+                lifecycle_contract="stage-owned-change-local-v2",
+            )
+
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "change.yaml"
+        path.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-example",
+                    "title": "V2 public route fixture",
+                    "classification": "default",
+                    "risk": "medium",
+                    "lifecycle_contract": "stage-owned-change-local-v2",
+                    "review": {"status": "resolved", "unresolved_items": 0},
+                }
+            ),
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(path)
+        with self.assertRaisesRegex(AutomationContractError, "unknown workflow automation target"):
+            start_public_run(
+                store,
+                "workflow auto: test-spec",
+                run_id="run-v2-retired",
+                actor="user",
+                occurred_at="2026-07-22T00:00:00Z",
+                pre_plan=PrePlanEvidence(
+                    positions={"proposal": ("sha256:proposal",)},
+                    review_outcomes={},
+                    review_resolution_closed=True,
+                    architecture_applicability="not-required",
+                ),
+            )
+        self.assertIsNone(store.read().automation)
+
+        started = start_public_run(
+            store,
+            "workflow auto: delivery-review",
+            run_id="run-v2-delivery",
+            actor="user",
+            occurred_at="2026-07-22T00:01:00Z",
+            pre_plan=PrePlanEvidence(
+                positions={"proposal": ("sha256:proposal",)},
+                review_outcomes={},
+                review_resolution_closed=True,
+                architecture_applicability="not-required",
+            ),
+        )
+        self.assertEqual(started["structured_target"]["stage"], "delivery-review")
+
     def test_preserved_implementation_correction_recipe_vocabulary_compiles(self) -> None:
         mechanical_kinds = {
             "formatter-output",

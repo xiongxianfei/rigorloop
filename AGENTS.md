@@ -63,9 +63,11 @@ Use `explore` and `research` as on-demand support when ambiguity, option expansi
 
 Once proposal, spec, and architecture are already settled, execution usually proceeds through:
 
-`plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+`plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
 
-The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves plan and test specification as one exact package. Earlier evidence for the implementing consolidated-gates change remains historical under its approved pre-cutover plan; it is not a current progression route.
+New governed changes use `stage-owned-change-local-v2` and a plan-only Delivery Review package. `stage-owned-change-local-v1` changes frozen in `specs/lifecycle-contract-activation.yaml` continue only from their registered post-delivery package; historical test-spec artifacts remain readable but authorize no new test-spec work.
+
+The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves the exact contract-selected package. V1 uses plan plus test specification; v2 uses the plan only and judges verification allocation with implementation readiness. Earlier evidence for the implementing consolidated-gates change remains historical under its approved pre-cutover plan; it is not a current progression route.
 
 For milestone-based plans, repeat implementation and code-review for each in-scope implementation milestone. A clean non-final milestone review routes to the next implementation milestone; final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
 
@@ -97,7 +99,7 @@ Before implementing behavior-changing work, follow the source-of-truth order fro
 2. the relevant feature spec in `specs/<feature>.md`
 3. approved architecture or ADR docs when they are relevant to the change
 4. `docs/plan.md`, then the active plan file in `docs/plans/`
-5. the matching test spec in `specs/<feature>.test.md`
+5. the matching test spec in `specs/<feature>.test.md` only for a manifest-bound v1 continuation
 6. `docs/workflows.md` when the task touches an existing flow or release process
 7. the files you expect to modify
 
@@ -106,9 +108,9 @@ If the work changes externally observable behavior and no relevant spec exists, 
 ## Spec and test conventions
 
 - `specs/<feature>.md` defines the contract: requirements, examples, edge cases, non-goals, compatibility expectations, and acceptance criteria.
-- `specs/<feature>.test.md` maps requirements and edge cases to concrete tests.
-- Every `MUST` in a spec should map to at least one test.
-- The test spec does not override the feature spec; it operationalizes it.
+- A v2 plan maps requirements and edge cases to verification groups, concrete checks, and evidence expectations.
+- Every `MUST` in a spec should map to planned verification.
+- Historical v1 test specs remain subordinate to their feature specs.
 
 ## Artifact lifecycle defaults
 
@@ -131,7 +133,7 @@ If the work changes externally observable behavior and no relevant spec exists, 
 
 ## Verification expectations
 
-- Until the repository-wide validation scripts are fully implemented, use the exact validation commands named in the active plan and matching test spec.
+- Until the repository-wide validation scripts are fully implemented, use the exact validation commands named in the active plan and, for manifest-bound v1 continuation, its matching test spec.
 - When repo-owned validation scripts exist, run those named commands before PR instead of inventing substitute checks.
 - For adapter package work, ordinary contributors do not need all supported tools installed locally; non-smoke validation is repository-owned through adapter generation, adapter validation, release metadata validation, and `scripts/release-verify.sh`.
 - Release automation must use tracked release notes under `docs/releases/<tag>/release-notes.md`; do not rely on generated release notes for adapter compatibility claims.

@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# Installed JavaScript dependencies
+node_modules/
+
 # Generated local Codex runtime mirror
 .codex/skills/
 .agents/

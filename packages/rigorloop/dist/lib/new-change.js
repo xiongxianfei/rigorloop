@@ -2,6 +2,7 @@ const CHANGE_ID_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 const CLASSIFICATION_PATTERN = /^[a-z][a-z0-9-]{0,63}$/;
 const VALID_RISKS = new Set(["low", "medium", "high"]);
 const VALID_PROFILES = new Set(["standard", "minimal"]);
+const DEFAULT_LIFECYCLE_CONTRACT = "stage-owned-change-local-v2";
 
 function result(ok, code, message) {
   return ok ? { ok: true } : { ok: false, code, message };
@@ -44,6 +45,15 @@ export function renderChangeMetadata({ changeId, title, classification, risk }) 
 title: ${yamlString(title)}
 classification: ${yamlString(classification)}
 risk: ${yamlString(risk)}
+lifecycle_contract: ${DEFAULT_LIFECYCLE_CONTRACT}
+artifact_states: {}
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal
+  next_stage: proposal
+  blocker: null
+  evidence: []
+workflow: {}
 artifacts: {}
 requirements: []
 tests: []

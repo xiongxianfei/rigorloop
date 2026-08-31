@@ -20,7 +20,8 @@
     "lifecycle_contract": {
       "type": "string",
       "enum": [
-        "stage-owned-change-local-v1"
+        "stage-owned-change-local-v1",
+        "stage-owned-change-local-v2"
       ]
     },
     "artifact_states": {
@@ -727,5 +728,45 @@
       "additionalProperties": true
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "lifecycle_contract": {"const": "stage-owned-change-local-v2"}
+        },
+        "required": ["lifecycle_contract"]
+      },
+      "then": {
+        "properties": {
+          "artifact_states": {
+            "additionalProperties": {
+              "not": {
+                "properties": {"kind": {"const": "test-spec"}},
+                "required": ["kind"]
+              }
+            }
+          },
+          "review_packages": {
+            "properties": {
+              "delivery": {
+                "properties": {
+                  "members": {
+                    "maxProperties": 1,
+                    "propertyNames": {"not": {"const": "test-spec"}}
+                  }
+                }
+              }
+            }
+          },
+          "workflow_state": {
+            "properties": {
+              "current_stage": {"not": {"enum": ["test-spec", "test-spec-review"]}},
+              "next_stage": {"not": {"enum": ["test-spec", "test-spec-review"]}}
+            }
+          }
+        }
+      }
+    }
+  ],
   "additionalProperties": true
 }

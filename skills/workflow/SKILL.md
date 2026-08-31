@@ -29,14 +29,16 @@ Use this skill to start, resume, audit, or route the standard RigorLoop workflow
 
 ```text
 proposal -> proposal-review -> architecture -> spec -> design-review
--> plan -> test-spec -> delivery-review
+-> plan -> delivery-review
 -> implement -> code-review -> review-resolution when triggered
 -> ci-maintenance when triggered -> explain-change -> verify -> pr
 ```
 
 Repeat `implement -> code-review -> review-resolution when triggered` for each implementation milestone. A clean non-final milestone returns to the next milestone. Final closeout requires all implementation milestones and required review resolution to be closed, followed by triggered CI maintenance, explanation, verification, and PR handoff.
 
-The compact canonical chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`. Architecture and specification remain separate authoring stages reconciled before Design Review; plan and test specification remain separate authoring stages reconciled before Delivery Review. Retired artifact-review records are historical evidence only and grant no progression authority.
+The compact canonical chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`. Architecture and specification remain separate authoring stages reconciled before Design Review; plan owns verification allocation and is reviewed for implementation and verification readiness by Delivery Review. Retired artifact-review records are historical evidence only and grant no progression authority.
+
+Routing is contract-keyed. New governed changes use `stage-owned-change-local-v2` and `plan -> delivery-review`, with the exact primary plan owning verification allocation. Manifest-bound `stage-owned-change-local-v1` changes may continue only from their registered post-delivery package. Historical authority never permits new test-spec authoring, and v2 introduces no replacement verification artifact or skill.
 
 After a PR is open, a user-authorized bounded PR CI repair is an isolated correction, not a new profile or another pass through the chain. Preserve current review, explanation, verification, and lifecycle evidence only when the correction restores already-approved behavior without changing their decision basis. Otherwise route to the earliest affected owning stage.
 
@@ -81,7 +83,7 @@ Produce a routing decision, authoritative current-stage assessment, blockers or 
 Classify the four predicates below from authoritative evidence. Automation command forms are portable across supported adapters:
 
 - Adapter invocation equivalents preserve the same arguments: Codex uses `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and OpenCode invokes the installed `workflow` skill with `auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or `off`.
-- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `test-spec`, `delivery-review`, `implement`, `code-review`, and `verify`.
+- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `verify`.
 - `$workflow auto: status` is read-only. `$workflow auto: off` durably cancels the unified run and preserves transition evidence.
 - `governed_change_context`: a valid current governed change record exists.
 - `automation_command_context`: the invocation is an explicit automation command, including a pre-persistence target bootstrap.
@@ -127,7 +129,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
@@ -229,7 +231,6 @@ docs/changes/<change-id>/review-resolution.md
 docs/changes/<change-id>/explain-change.md
 docs/changes/<change-id>/verify-report.md
 specs/slug.md
-specs/slug.test.md
 docs/learn/sessions/YYYY-MM-DD-slug.md
 ```
 

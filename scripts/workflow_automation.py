@@ -47,6 +47,7 @@ from validate_workflow_automation import (
 )
 from workflow_automation_policy import (
     CAPABILITY_MUTATION_CATEGORIES,
+    LIFECYCLE_CONTRACT_V1,
     PUBLIC_TARGET_STAGES,
     STAGE_POLICY_BY_STAGE,
     AuthorizationClass,
@@ -55,8 +56,10 @@ from workflow_automation_policy import (
     WorkflowPosition,
     WorkflowStage,
     can_operation_fit_target,
+    public_target_stages_for_contract,
     project_proposal_review_result,
     target_completion_predicate,
+    stage_policy_by_stage_for_contract,
 )
 from workflow_automation_state import (
     _canonical_review_occurrence,
@@ -1156,6 +1159,7 @@ def evaluate_non_public_implementation_route(
     explanation_current: bool | None = None,
     verification_passed: bool | None = None,
     ci_maintenance_required: bool = False,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> ImplementationRouteDecision:
     """Route one verified M5 stage while the integration remains non-public."""
 
@@ -1170,7 +1174,7 @@ def evaluate_non_public_implementation_route(
 
     if invocation_context not in {"non-public-test-harness", PUBLIC_ENGINE_CONTEXT}:
         return pause("non-public-harness-required")
-    policy = STAGE_POLICY_BY_STAGE.get(current_stage)
+    policy = stage_policy_by_stage_for_contract(lifecycle_contract).get(current_stage)
     if policy is None or current_stage not in {
         WorkflowStage.IMPLEMENT.value,
         WorkflowStage.CODE_REVIEW.value,
@@ -1190,10 +1194,12 @@ def evaluate_non_public_implementation_route(
         return pause("effective-capability-required")
     if occurrence_kind != policy.occurrence_rule.value:
         raise AutomationContractError("stage occurrence does not match policy")
-    target = _target_stage(target_stage)
+    target = _target_stage(target_stage, lifecycle_contract=lifecycle_contract)
     if occurrence_kind == OccurrenceKind.MILESTONE.value and not milestone_id:
         raise AutomationContractError("milestone stage requires milestone identity")
-    if not can_operation_fit_target(WorkflowStage(current_stage), target):
+    if not can_operation_fit_target(
+        WorkflowStage(current_stage), target, lifecycle_contract=lifecycle_contract
+    ):
         raise AutomationContractError("implementation stage exceeds structured target")
     if (
         target in {WorkflowStage.IMPLEMENT, WorkflowStage.CODE_REVIEW}
@@ -1867,18 +1873,19 @@ def evaluate_non_public_authoring_route(
     invocation_context: str,
     review_outcome: str | None = None,
     architecture_applicability: str | None = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> AuthoringRouteDecision:
     """Evaluate M4 authoring progression without exposing a public route."""
 
     if invocation_context not in {"non-public-test-harness", PUBLIC_ENGINE_CONTEXT}:
         return AuthoringRouteDecision("paused", pause_reason="non-public-harness-required")
-    target = _target_stage(target_stage)
-    policy = STAGE_POLICY_BY_STAGE.get(current_stage)
+    target = _target_stage(target_stage, lifecycle_contract=lifecycle_contract)
+    policy = stage_policy_by_stage_for_contract(lifecycle_contract).get(current_stage)
     if policy is None:
         raise AutomationContractError(f"unknown authoring stage: {current_stage}")
     if capability_status != "active" or capability_kind != policy.capability_kind.value:
         return AuthoringRouteDecision("paused", pause_reason="effective-capability-required")
-    if not can_operation_fit_target(WorkflowStage(current_stage), target):
+    if not can_operation_fit_target(WorkflowStage(current_stage), target, lifecycle_contract=lifecycle_contract):
         raise AutomationContractError("authoring stage exceeds structured target")
 
     if current_stage == WorkflowStage.PROPOSAL_REVIEW.value:
@@ -1911,9 +1918,20 @@ def evaluate_non_public_authoring_route(
             "paused", pause_reason="implementation-authorization-required"
         )
     next_stage = _AUTHORING_NEXT_STAGE.get(current_stage)
+    if lifecycle_contract != LIFECYCLE_CONTRACT_V1 and current_stage == WorkflowStage.PLAN.value:
+        next_stage = WorkflowStage.DELIVERY_REVIEW.value
     if next_stage is None:
         raise AutomationContractError(f"authoring route is undefined for stage: {current_stage}")
     return AuthoringRouteDecision("continue", next_stage)
+
+
+def _change_lifecycle_contract(document: Mapping[str, Any]) -> str:
+    contract = document.get("lifecycle_contract", LIFECYCLE_CONTRACT_V1)
+    try:
+        stage_policy_by_stage_for_contract(contract)
+    except ValueError as error:
+        raise AutomationContractError(str(error)) from error
+    return contract
 
 
 def coordinate_non_public_authoring_stage(
@@ -1928,6 +1946,7 @@ def coordinate_non_public_authoring_stage(
 
     if invocation_context not in {"non-public-test-harness", PUBLIC_ENGINE_CONTEXT}:
         raise AutomationContractError("non-public authoring harness is required")
+    lifecycle_contract = _change_lifecycle_contract(store.read().document)
     stage_request = coordination.get("stage")
     correction_decision: ProposalCorrectionDecision | None = None
     proposal_path_for_rollback: Path | None = None
@@ -2166,6 +2185,7 @@ def coordinate_non_public_authoring_stage(
         invocation_context=invocation_context,
         review_outcome=review_outcome,
         architecture_applicability=architecture_applicability,
+        lifecycle_contract=lifecycle_contract,
     )
     return AuthoringCoordinationResult(result, route)
 
@@ -2188,6 +2208,7 @@ def coordinate_non_public_implementation_stage(
         raise AutomationContractError(
             "non-public implementation harness is required"
         )
+    lifecycle_contract = _change_lifecycle_contract(store.read().document)
     try:
         repository_root = store.require_repository_root(repository_root)
     except StateContractError as error:
@@ -2306,6 +2327,7 @@ def coordinate_non_public_implementation_stage(
             else None
         ),
         ci_maintenance_required=ci_maintenance_required,
+        lifecycle_contract=lifecycle_contract,
     )
     return ImplementationCoordinationResult(result, route)
 
@@ -2706,7 +2728,11 @@ def coordinate_public_authoring_stage(
 ) -> AuthoringCoordinationResult:
     """Execute one stage selected by a public authoring target command."""
 
-    normalized = normalize_command(command)
+    store = coordination.get("store")
+    if not isinstance(store, WorkflowAutomationStateStore):
+        raise AutomationContractError("public authoring execution requires a state store")
+    lifecycle_contract = _change_lifecycle_contract(store.read().document)
+    normalized = normalize_command(command, lifecycle_contract=lifecycle_contract)
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError("public authoring execution requires a target")
     return coordinate_non_public_authoring_stage(
@@ -2724,7 +2750,11 @@ def coordinate_public_implementation_stage(
 ) -> ImplementationCoordinationResult:
     """Execute one stage selected by a public implementation target command."""
 
-    normalized = normalize_command(command)
+    store = coordination.get("store")
+    if not isinstance(store, WorkflowAutomationStateStore):
+        raise AutomationContractError("public implementation execution requires a state store")
+    lifecycle_contract = _change_lifecycle_contract(store.read().document)
+    normalized = normalize_command(command, lifecycle_contract=lifecycle_contract)
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError(
             "public implementation execution requires a target"
@@ -2744,7 +2774,11 @@ def coordinate_public_implementation_correction(
 ) -> ImplementationCoordinationResult:
     """Execute reviewer-owned correction inside a public unified run."""
 
-    normalized = normalize_command(command)
+    store = coordination.get("store")
+    if not isinstance(store, WorkflowAutomationStateStore):
+        raise AutomationContractError("public implementation correction requires a state store")
+    lifecycle_contract = _change_lifecycle_contract(store.read().document)
+    normalized = normalize_command(command, lifecycle_contract=lifecycle_contract)
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError(
             "public implementation correction requires a target"
@@ -2756,7 +2790,7 @@ def coordinate_public_implementation_correction(
     )
 
 
-def normalize_command(command: str) -> NormalizedCommand:
+def normalize_command(command: str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> NormalizedCommand:
     """Normalize current and supported legacy forms without persisting state."""
 
     if not isinstance(command, str):
@@ -2772,18 +2806,18 @@ def normalize_command(command: str) -> NormalizedCommand:
     is_legacy = legacy is not None
     if value in {"status", "off"}:
         return NormalizedCommand(value, legacy=is_legacy)
-    public_values = {stage.value for stage in PUBLIC_TARGET_STAGES}
+    public_values = {stage.value for stage in public_target_stages_for_contract(lifecycle_contract)}
     if value not in public_values or (is_legacy and value not in LEGACY_TARGETS):
         raise AutomationContractError(f"unknown workflow automation target: {value}")
     return NormalizedCommand("target", value, is_legacy)
 
 
-def _target_stage(stage: str) -> WorkflowStage:
+def _target_stage(stage: str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> WorkflowStage:
     try:
         parsed = WorkflowStage(stage)
     except (TypeError, ValueError) as exc:
         raise AutomationContractError(f"unknown workflow automation target: {stage}") from exc
-    if parsed not in PUBLIC_TARGET_STAGES:
+    if parsed not in public_target_stages_for_contract(lifecycle_contract):
         raise AutomationContractError(f"stage is not a public target: {stage}")
     return parsed
 
@@ -2801,13 +2835,14 @@ def bind_target(
     bound_at: str,
     plan: ActivePlanContext | None = None,
     requested_occurrence: str | None = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> dict[str, Any]:
     """Bind one complete structured target before run or authority persistence."""
 
-    parsed = _target_stage(stage)
+    parsed = _target_stage(stage, lifecycle_contract=lifecycle_contract)
     if not RFC3339_UTC_RE.fullmatch(bound_at):
         raise AutomationContractError("target binding time must be RFC3339 UTC")
-    policy = STAGE_POLICY_BY_STAGE[parsed.value]
+    policy = stage_policy_by_stage_for_contract(lifecycle_contract)[parsed.value]
     expected = policy.occurrence_rule.value
     if requested_occurrence is not None and requested_occurrence != expected:
         raise AutomationContractError(
@@ -2818,7 +2853,7 @@ def bind_target(
         "stage": parsed.value,
         "occurrence": occurrence,
         "bound_at": bound_at,
-        "completion": target_completion_predicate(parsed),
+        "completion": target_completion_predicate(parsed, lifecycle_contract=lifecycle_contract),
     }
     if expected == OccurrenceKind.MILESTONE.value:
         if plan is None:
@@ -2836,13 +2871,19 @@ def resolve_command_target(
     *,
     bound_at: str,
     plan: ActivePlanContext | None = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> dict[str, Any]:
     """Normalize a target command and bind its complete occurrence envelope."""
 
-    normalized = normalize_command(command)
+    normalized = normalize_command(command, lifecycle_contract=lifecycle_contract)
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError("workflow command does not select a target")
-    return bind_target(normalized.target_stage, bound_at=bound_at, plan=plan)
+    return bind_target(
+        normalized.target_stage,
+        bound_at=bound_at,
+        plan=plan,
+        lifecycle_contract=lifecycle_contract,
+    )
 
 
 def evaluate_public_authoring_route(
@@ -2853,10 +2894,11 @@ def evaluate_public_authoring_route(
     capability_status: str,
     review_outcome: str | None = None,
     architecture_applicability: str | None = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> AuthoringRouteDecision:
     """Route one public authoring operation through the unified engine."""
 
-    normalized = normalize_command(command)
+    normalized = normalize_command(command, lifecycle_contract=lifecycle_contract)
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError("public authoring route requires a target command")
     return evaluate_non_public_authoring_route(
@@ -2867,6 +2909,7 @@ def evaluate_public_authoring_route(
         invocation_context=PUBLIC_ENGINE_CONTEXT,
         review_outcome=review_outcome,
         architecture_applicability=architecture_applicability,
+        lifecycle_contract=lifecycle_contract,
     )
 
 
@@ -2889,10 +2932,11 @@ def evaluate_public_implementation_route(
     explanation_current: bool | None = None,
     verification_passed: bool | None = None,
     ci_maintenance_required: bool = False,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> ImplementationRouteDecision:
     """Route one public implementation operation through the unified engine."""
 
-    normalized = normalize_command(command)
+    normalized = normalize_command(command, lifecycle_contract=lifecycle_contract)
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError(
             "public implementation route requires a target command"
@@ -2916,6 +2960,7 @@ def evaluate_public_implementation_route(
         explanation_current=explanation_current,
         verification_passed=verification_passed,
         ci_maintenance_required=ci_maintenance_required,
+        lifecycle_contract=lifecycle_contract,
     )
 
 
@@ -3171,7 +3216,9 @@ def start_public_run(
 ) -> dict[str, Any]:
     """Persist one new public target and its currently valid consent envelope."""
 
-    normalized = normalize_command(command)
+    snapshot = store.read(allow_legacy_without_change_id=True)
+    lifecycle_contract = _change_lifecycle_contract(snapshot.document)
+    normalized = normalize_command(command, lifecycle_contract=lifecycle_contract)
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError("public run creation requires a target command")
     if not all(
@@ -3182,7 +3229,6 @@ def start_public_run(
     if not RFC3339_UTC_RE.fullmatch(occurred_at):
         raise AutomationContractError("public run time must be RFC3339 UTC")
 
-    snapshot = store.read(allow_legacy_without_change_id=True)
     if snapshot.automation is not None:
         raise AutomationContractError("active writable automation run already exists")
     change_id = snapshot.document.get("change_id")
@@ -3193,13 +3239,14 @@ def start_public_run(
         normalized.target_stage,
         bound_at=occurred_at,
         plan=plan,
+        lifecycle_contract=lifecycle_contract,
     )
     canonical = resolve_canonical_position(
         pre_plan=pre_plan,
         active_plan=plan,
     )
     parents: dict[str, Any] = {}
-    target_policy = STAGE_POLICY_BY_STAGE[normalized.target_stage]
+    target_policy = stage_policy_by_stage_for_contract(lifecycle_contract)[normalized.target_stage]
     if target_policy.required_authorization_class == AuthorizationClass.AUTHORING:
         authorization_id = f"authorization-authoring-{run_id}"
         authoring_kinds = [
@@ -3372,7 +3419,9 @@ def authorize_public_run(
 ) -> dict[str, Any]:
     """Add one current risk-class consent envelope to an existing public run."""
 
-    normalized = normalize_command(command)
+    snapshot = store.read()
+    lifecycle_contract = _change_lifecycle_contract(snapshot.document)
+    normalized = normalize_command(command, lifecycle_contract=lifecycle_contract)
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError(
             "public authorization requires a target command"
@@ -3386,7 +3435,6 @@ def authorize_public_run(
         raise AutomationContractError(
             "legacy verify adapter must not infer authoring authority"
         )
-    snapshot = store.read()
     if snapshot.automation is None:
         raise AutomationContractError("unified automation state does not exist")
     run = snapshot.automation.get("run")
@@ -3563,10 +3611,11 @@ def resume_public_run(
 ) -> dict[str, Any]:
     """Execute one public stage through the persisted target and consent envelope."""
 
-    normalized = normalize_command(command)
+    snapshot = store.read()
+    lifecycle_contract = _change_lifecycle_contract(snapshot.document)
+    normalized = normalize_command(command, lifecycle_contract=lifecycle_contract)
     if normalized.action != "target" or normalized.target_stage is None:
         raise AutomationContractError("public resume requires a target command")
-    snapshot = store.read()
     if snapshot.automation is None:
         raise AutomationContractError("unified automation state does not exist")
     run = snapshot.automation.get("run")
@@ -3580,11 +3629,13 @@ def resume_public_run(
         raise AutomationContractError(
             "public resume command does not match the persisted structured target"
         )
-    policy = STAGE_POLICY_BY_STAGE.get(stage)
+    policy = stage_policy_by_stage_for_contract(lifecycle_contract).get(stage)
     if policy is None:
         raise AutomationContractError(f"unknown public stage operation: {stage}")
     if not can_operation_fit_target(
-        WorkflowStage(stage), WorkflowStage(normalized.target_stage)
+        WorkflowStage(stage),
+        WorkflowStage(normalized.target_stage),
+        lifecycle_contract=lifecycle_contract,
     ):
         raise AutomationContractError(
             "public stage operation exceeds the persisted structured target"
@@ -4451,6 +4502,7 @@ def coordinate_one_stage(
     snapshot = store.read()
     if snapshot.automation is None:
         raise AutomationContractError("unified automation state does not exist")
+    lifecycle_contract = _change_lifecycle_contract(snapshot.document)
     prepared = [
         receipt
         for receipt in snapshot.automation.get("transition_receipts", {}).values()
@@ -4540,7 +4592,7 @@ def coordinate_one_stage(
             derived_at=derived_at,
             existing_capabilities=existing,
         )
-    policy = STAGE_POLICY_BY_STAGE[stage]
+    policy = stage_policy_by_stage_for_contract(lifecycle_contract)[stage]
     expected_postcondition = {
         "completion_rule": policy.completion_rule,
         "required_evidence": sorted(policy.completion_evidence),
@@ -4644,7 +4696,9 @@ def coordinate_one_stage(
         replacement["effective_capabilities"][capability_id] = capability
         replacement["transition_receipts"][transition_id] = copy.deepcopy(receipt)
         preflight_errors = validate_workflow_automation(
-            replacement, top_level_change_id=capability["change_id"]
+            replacement,
+            top_level_change_id=capability["change_id"],
+            lifecycle_contract=lifecycle_contract,
         )
         if preflight_errors:
             raise AutomationContractError(
