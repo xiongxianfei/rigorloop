@@ -75,25 +75,27 @@ review_packages:
     upstream_review_id: proposal-review-r3
 workflow_state:
   blocker: null
-  current_stage: pr
+  current_stage: verify
   evidence:
     - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-final-r1.md
     - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-pr-amendment-r1.md
     - docs/changes/2026-08-31-retire-standalone-test-spec-stage/explain-change.md
     - docs/changes/2026-08-31-retire-standalone-test-spec-stage/verify-report.md
   lifecycle_state: active
-  next_stage: none
+  next_stage: verify
   planned_work:
-    current_milestone: none
+    current_milestone: M6
     final_closeout:
       evidence:
         - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-final-r1.md
         - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-final-r2.md
+        - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-pr-amendment-r1.md
         - docs/changes/2026-08-31-retire-standalone-test-spec-stage/explain-change.md
         - docs/changes/2026-08-31-retire-standalone-test-spec-stage/verify-report.md
-      readiness: ready
+      readiness: not-ready
       reasons:
-        - ready
+        - lifecycle-gates-open
     initialization_basis:
       review_id: delivery-review-r3
       review_record: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/delivery-review-r3.md
@@ -102,10 +104,10 @@ workflow_state:
     latest_review:
       artifact_id: plan
       evidence:
-        - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-final-r2.md
+        - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-pr-amendment-r1.md
       milestone_id: none
       occurrence: final
-      round: r2
+      round: r1
       stage: code-review
       status: approved
     milestones:
@@ -126,7 +128,7 @@ workflow_state:
         state: closed
       M6:
         kind: lifecycle-closeout
-        state: closed
+        state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones: []
 workflow: {}
@@ -137,9 +139,9 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-final-r2.md
+  latest_review: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-pr-amendment-r1.md
   review_log: docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-log.md
-  reviewed_artifact: branch-diff:7ff73122f72a863bc0ea2619988ef90b84005b1c...e84f1fe7aa145d8b56700abb2b1e9699b1b8ee45
+  reviewed_artifact: branch-diff:7ff73122f72a863bc0ea2619988ef90b84005b1c...4537cb9d8472971a766480889a4ff1aa1528c1df
   status: clean
   unresolved_items: 0
 lifecycle_cli:
