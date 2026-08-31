@@ -126,7 +126,8 @@ workflow_state:
     plan_artifact_id: plan
     remaining_implementation_milestones: []
 workflow: {}
-artifacts: {}
+artifacts:
+  verify_report: docs/changes/2026-08-31-retire-standalone-test-spec-stage/verify-report.md
 requirements: []
 tests: []
 validation: []
