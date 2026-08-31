@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -20,6 +21,13 @@ ACTIVATION_STATES = frozenset({"preactivation", "active"})
 _MANIFEST_FIELDS = frozenset({"schema_version", "state", "activating_source_revision", "changes"})
 _MANIFEST_ENTRY_FIELDS = frozenset({"change_id", "contract_class"})
 _SAFE_CHANGE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+
+
+def parse_lifecycle_activation_manifest(text: str) -> Any:
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"activation manifest is not valid JSON-compatible YAML: {exc.msg}") from exc
 
 
 def validate_lifecycle_activation_manifest(manifest: Any) -> list[str]:
@@ -86,13 +94,15 @@ def _has_active_test_spec_state(change: dict[str, Any]) -> bool:
 
 
 def classify_lifecycle_contract(change_id: str, change: dict[str, Any], manifest: Any) -> dict[str, str]:
+    has_explicit_contract = "lifecycle_contract" in change
     explicit = change.get("lifecycle_contract")
-    if explicit is not None and explicit not in LIFECYCLE_CONTRACT_VALUES:
-        raise ValueError(f"lifecycle_contract: unknown_value {explicit}")
+    if has_explicit_contract and explicit not in LIFECYCLE_CONTRACT_VALUES:
+        rendered = "null" if explicit is None else str(explicit)
+        raise ValueError(f"lifecycle_contract: unknown_value {rendered}")
     manifest_errors = validate_lifecycle_activation_manifest(manifest)
     if manifest_errors:
         raise ValueError(manifest_errors[0])
-    contract_class = explicit or LEGACY_UNVERSIONED_CONTRACT
+    contract_class = explicit if has_explicit_contract else LEGACY_UNVERSIONED_CONTRACT
     if contract_class == LIFECYCLE_CONTRACT_V2:
         if _has_active_test_spec_state(change):
             raise ValueError("v2 lifecycle contract carries active test-spec state")

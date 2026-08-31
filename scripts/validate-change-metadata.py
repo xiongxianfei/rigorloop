@@ -12,6 +12,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from artifact_lifecycle_contracts import (
+    LIFECYCLE_ACTIVATION_MANIFEST_PATH,
+    classify_lifecycle_contract,
+    parse_lifecycle_activation_manifest,
+)
 from change_metadata_semantics import validate_clean_receipt_root_review_metadata
 from change_metadata_semantics import validate_requirement_fidelity_metadata
 from change_metadata_semantics import validate_review_gate_metadata
@@ -26,6 +31,8 @@ from validate_workflow_automation import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schemas" / "change.schema.json"
+ACTIVATION_MANIFEST_PATH = ROOT / LIFECYCLE_ACTIVATION_MANIFEST_PATH
+_LOAD_TRACKED_ACTIVATION_MANIFEST = object()
 CANONICAL_ARTIFACT_KEYS = {
     "adr",
     "architecture",
@@ -509,11 +516,29 @@ def validate_against_schema(schema: dict[str, Any], value: Any, path: str = "$")
     return errors
 
 
-def validate_metadata_semantics(data: Any, metadata_path: Path | None = None) -> list[str]:
+def validate_metadata_semantics(
+    data: Any,
+    metadata_path: Path | None = None,
+    *,
+    activation_manifest: Any = _LOAD_TRACKED_ACTIVATION_MANIFEST,
+) -> list[str]:
     if not isinstance(data, dict):
         return []
 
     errors: list[str] = []
+    if activation_manifest is _LOAD_TRACKED_ACTIVATION_MANIFEST:
+        try:
+            activation_manifest = parse_lifecycle_activation_manifest(
+                ACTIVATION_MANIFEST_PATH.read_text(encoding="utf-8")
+            )
+        except (OSError, ValueError) as exc:
+            return [f"activation manifest: {exc}"]
+    change_id = data.get("change_id")
+    if isinstance(change_id, str):
+        try:
+            classify_lifecycle_contract(change_id, data, activation_manifest)
+        except ValueError as exc:
+            return [str(exc)]
     errors.extend(validate_stage_owned_lifecycle_metadata(data))
     workflow = data.get("workflow")
     if isinstance(workflow, dict) and data.get("lifecycle_contract") != "stage-owned-change-local-v1":
@@ -2125,7 +2150,11 @@ def validate_measurement_evidence(data: Any) -> list[str]:
     return list(dict.fromkeys(errors))
 
 
-def validate_file(path: Path) -> list[str]:
+def validate_file(
+    path: Path,
+    *,
+    activation_manifest: Any = _LOAD_TRACKED_ACTIVATION_MANIFEST,
+) -> list[str]:
     data = load_yaml(path)
     if is_measurement_file(path):
         return validate_measurement_evidence(data)
@@ -2133,7 +2162,11 @@ def validate_file(path: Path) -> list[str]:
         return validate_compact_metadata_semantics(data)
     schema = load_schema()
     schema_errors = validate_against_schema(schema, data)
-    semantic_errors = validate_metadata_semantics(data, path)
+    semantic_errors = validate_metadata_semantics(
+        data,
+        path,
+        activation_manifest=activation_manifest,
+    )
     return [*schema_errors, *semantic_errors]
 
 

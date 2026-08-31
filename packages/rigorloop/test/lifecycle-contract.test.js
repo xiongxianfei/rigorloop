@@ -55,6 +55,11 @@ test("unknown_value contract and manifest class fail before consistency checks",
     () => classifyLifecycleContract("missing", { lifecycle_contract: "future-v9" }, classificationFixture.active_manifest),
     /unknown_value.*future-v9/,
   );
+  const explicitNull = classificationFixture.contract_cases.explicit_null;
+  assert.throws(
+    () => classifyLifecycleContract(explicitNull.change_id, explicitNull.change, classificationFixture.active_manifest),
+    new RegExp(explicitNull.error),
+  );
 });
 
 test("unknown_value activation state fails before manifest consistency checks", () => {

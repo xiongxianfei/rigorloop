@@ -5363,6 +5363,68 @@ class LifecycleActivationManifestTests(unittest.TestCase):
         self.assertEqual(schema["properties"]["state"]["enum"], ["preactivation", "active"])
         self.assertEqual(schema["properties"]["changes"]["items"]["properties"]["contract_class"]["enum"], ["stage-owned-change-local-v1", "legacy-unversioned"])
 
+    def write_contract_repository(self, manifest: dict, change_yaml: str) -> Path:
+        import json
+
+        root = Path(tempfile.mkdtemp(prefix="lifecycle-contract-repository-"))
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        manifest_path = root / "specs" / "lifecycle-contract-activation.yaml"
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        change_path = root / "docs" / "changes" / "new-v2" / "change.yaml"
+        change_path.parent.mkdir(parents=True, exist_ok=True)
+        change_path.write_text(change_yaml, encoding="utf-8")
+        return root
+
+    def test_public_validator_rejects_v2_active_test_spec_state(self) -> None:
+        root = self.write_contract_repository(
+            self.manifest,
+            """change_id: new-v2
+lifecycle_contract: stage-owned-change-local-v2
+workflow_state:
+  current_stage: test-spec
+""",
+        )
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=["docs/changes/new-v2/change.yaml"],
+        )
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("v2 lifecycle contract carries active test-spec state", messages)
+
+    def test_public_validator_enforces_active_manifest_membership(self) -> None:
+        root = self.write_contract_repository(
+            self.manifest,
+            """change_id: new-v2
+lifecycle_contract: stage-owned-change-local-v1
+""",
+        )
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=["docs/changes/new-v2/change.yaml"],
+        )
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("prior-contract change new-v2 is not present in the activation manifest", messages)
+
+    def test_public_validator_rejects_invalid_activation_manifest(self) -> None:
+        invalid = dict(self.manifest)
+        invalid["state"] = "published"
+        root = self.write_contract_repository(
+            invalid,
+            """change_id: new-v2
+lifecycle_contract: stage-owned-change-local-v2
+""",
+        )
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=["docs/changes/new-v2/change.yaml"],
+        )
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("activation manifest state: unknown_value published", messages)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
