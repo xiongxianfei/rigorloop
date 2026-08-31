@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-31-retire-standalone-test-spec-stage",
+  "expected_lifecycle_revision": "sha256:4ec39736110155f8538c7b10fa4fd8c99726ab50f1c416eb3c68664eb77f8b3a",
+  "milestone_id": "M4",
+  "evidence_path": "docs/changes/2026-08-31-retire-standalone-test-spec-stage/evidence/m4-preactivation-parity.md",
+  "stage_authority": "workflow"
+}
