@@ -11,7 +11,7 @@ function digest(value) {
   return createHash("sha256").update(value).digest("hex");
 }
 
-export async function packageRepository({ stage = "design-review", includeArchitecture = true, includeAdr = true } = {}) {
+export async function packageRepository({ stage = "design-review", includeArchitecture = true, includeAdr = true, lifecycleContract = "stage-owned-change-local-v1" } = {}) {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-package-"));
   const changeId = "example";
   const changeRoot = join(root, "docs", "changes", changeId);
@@ -33,13 +33,16 @@ export async function packageRepository({ stage = "design-review", includeArchit
     "test-spec": ["specs/example.test.md", "# Test specification\n"],
   };
   for (const [path, bytes] of Object.values(sources)) writeFileSync(join(root, path), bytes, "utf8");
+  if (lifecycleContract === "stage-owned-change-local-v2") {
+    writeFileSync(join(root, "specs", "lifecycle-contract-activation.yaml"), `schema_version: 1\nstate: active\nactivating_source_revision: ${"a".repeat(40)}\nchanges: []\n`, "utf8");
+  }
 
   const artifactStates = {
     proposal: { kind: "proposal", path: sources.proposal[0], role: "primary", lifecycle_state: "accepted", review: { id: "proposal-review-r1", artifact_id: "proposal", outcome: "approved", record: "docs/changes/example/reviews/proposal-review-r1.md", round: "r1" } },
     spec: { kind: "spec", path: sources.spec[0], role: "primary", lifecycle_state: "review-required" },
     plan: { kind: "plan", path: sources.plan[0], role: "primary", lifecycle_state: "review-required" },
-    "test-spec": { kind: "test-spec", path: sources["test-spec"][0], role: "primary", lifecycle_state: "review-required" },
   };
+  if (lifecycleContract === "stage-owned-change-local-v1") artifactStates["test-spec"] = { kind: "test-spec", path: sources["test-spec"][0], role: "primary", lifecycle_state: "review-required" };
   if (includeArchitecture) artifactStates.architecture = { kind: "architecture", path: sources.architecture[0], role: "primary", lifecycle_state: "review-required" };
   if (includeAdr) artifactStates["adr-cache"] = { kind: "adr", path: sources["adr-cache"][0], role: "supporting", lifecycle_state: "review-required" };
 
@@ -55,7 +58,7 @@ export async function packageRepository({ stage = "design-review", includeArchit
     title: "Package fixture",
     classification: "workflow",
     risk: "high",
-    lifecycle_contract: "stage-owned-change-local-v1",
+    lifecycle_contract: lifecycleContract,
     artifact_states: artifactStates,
     workflow_state: { lifecycle_state: "active", current_stage: stage, next_stage: stage, blocker: null, evidence: [] },
     workflow: {},

@@ -193,7 +193,7 @@
         },
         "planned_change_metadata": {
           "path": "docs/changes/example-change/change.yaml",
-          "content": "change_id: \"example-change\"\ntitle: \"Example change\"\nclassification: \"default\"\nrisk: \"medium\"\nartifacts: {}\nrequirements: []\ntests: []\nvalidation: []\nchanged_files: []\nreview:\n  status: \"pending\"\n  unresolved_items: 0\n"
+          "content": "change_id: \"example-change\"\ntitle: \"Example change\"\nclassification: \"default\"\nrisk: \"medium\"\nlifecycle_contract: stage-owned-change-local-v1\nartifact_states: {}\nworkflow_state:\n  lifecycle_state: active\n  current_stage: proposal\n  next_stage: proposal\n  blocker: null\n  evidence: []\nworkflow: {}\nartifacts: {}\nrequirements: []\ntests: []\nvalidation: []\nchanged_files: []\nreview:\n  status: \"pending\"\n  unresolved_items: 0\n"
         }
       },
       "stderr": ""
@@ -247,6 +247,11 @@
             "spec": "current"
           },
           "effective_state": "current",
+          "lifecycle_contract": {
+            "contract_class": "stage-owned-change-local-v1",
+            "activation_state": "preactivation",
+            "authority": "preactivation"
+          },
           "current_stage": "implement",
           "active_artifact": "plan",
           "active_milestone": "M1",
@@ -404,6 +409,11 @@
             "spec": "current"
           },
           "effective_state": "current",
+          "lifecycle_contract": {
+            "contract_class": "stage-owned-change-local-v1",
+            "activation_state": "preactivation",
+            "authority": "preactivation"
+          },
           "current_stage": "implement",
           "active_artifact": "plan",
           "active_milestone": "M1",
@@ -547,6 +557,11 @@
             "spec": "current"
           },
           "effective_state": "current",
+          "lifecycle_contract": {
+            "contract_class": "stage-owned-change-local-v1",
+            "activation_state": "preactivation",
+            "authority": "preactivation"
+          },
           "current_stage": "implement",
           "active_artifact": "plan",
           "active_milestone": "M1",
@@ -676,6 +691,11 @@
             "spec": "current"
           },
           "effective_state": "current",
+          "lifecycle_contract": {
+            "contract_class": "stage-owned-change-local-v1",
+            "activation_state": "preactivation",
+            "authority": "preactivation"
+          },
           "current_stage": "implement",
           "active_artifact": "plan",
           "active_milestone": "M1",
@@ -843,6 +863,11 @@
             "spec": "current"
           },
           "effective_state": "current",
+          "lifecycle_contract": {
+            "contract_class": "stage-owned-change-local-v1",
+            "activation_state": "preactivation",
+            "authority": "preactivation"
+          },
           "current_stage": "implement",
           "active_artifact": "plan",
           "active_milestone": "M1",

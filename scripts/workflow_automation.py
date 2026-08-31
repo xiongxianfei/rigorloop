@@ -47,6 +47,7 @@ from validate_workflow_automation import (
 )
 from workflow_automation_policy import (
     CAPABILITY_MUTATION_CATEGORIES,
+    LIFECYCLE_CONTRACT_V1,
     PUBLIC_TARGET_STAGES,
     STAGE_POLICY_BY_STAGE,
     AuthorizationClass,
@@ -55,8 +56,10 @@ from workflow_automation_policy import (
     WorkflowPosition,
     WorkflowStage,
     can_operation_fit_target,
+    public_target_stages_for_contract,
     project_proposal_review_result,
     target_completion_predicate,
+    stage_policy_by_stage_for_contract,
 )
 from workflow_automation_state import (
     _canonical_review_occurrence,
@@ -1867,18 +1870,19 @@ def evaluate_non_public_authoring_route(
     invocation_context: str,
     review_outcome: str | None = None,
     architecture_applicability: str | None = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> AuthoringRouteDecision:
     """Evaluate M4 authoring progression without exposing a public route."""
 
     if invocation_context not in {"non-public-test-harness", PUBLIC_ENGINE_CONTEXT}:
         return AuthoringRouteDecision("paused", pause_reason="non-public-harness-required")
-    target = _target_stage(target_stage)
-    policy = STAGE_POLICY_BY_STAGE.get(current_stage)
+    target = _target_stage(target_stage, lifecycle_contract=lifecycle_contract)
+    policy = stage_policy_by_stage_for_contract(lifecycle_contract).get(current_stage)
     if policy is None:
         raise AutomationContractError(f"unknown authoring stage: {current_stage}")
     if capability_status != "active" or capability_kind != policy.capability_kind.value:
         return AuthoringRouteDecision("paused", pause_reason="effective-capability-required")
-    if not can_operation_fit_target(WorkflowStage(current_stage), target):
+    if not can_operation_fit_target(WorkflowStage(current_stage), target, lifecycle_contract=lifecycle_contract):
         raise AutomationContractError("authoring stage exceeds structured target")
 
     if current_stage == WorkflowStage.PROPOSAL_REVIEW.value:
@@ -1911,6 +1915,8 @@ def evaluate_non_public_authoring_route(
             "paused", pause_reason="implementation-authorization-required"
         )
     next_stage = _AUTHORING_NEXT_STAGE.get(current_stage)
+    if lifecycle_contract != LIFECYCLE_CONTRACT_V1 and current_stage == WorkflowStage.PLAN.value:
+        next_stage = WorkflowStage.DELIVERY_REVIEW.value
     if next_stage is None:
         raise AutomationContractError(f"authoring route is undefined for stage: {current_stage}")
     return AuthoringRouteDecision("continue", next_stage)
@@ -2756,7 +2762,7 @@ def coordinate_public_implementation_correction(
     )
 
 
-def normalize_command(command: str) -> NormalizedCommand:
+def normalize_command(command: str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> NormalizedCommand:
     """Normalize current and supported legacy forms without persisting state."""
 
     if not isinstance(command, str):
@@ -2772,18 +2778,18 @@ def normalize_command(command: str) -> NormalizedCommand:
     is_legacy = legacy is not None
     if value in {"status", "off"}:
         return NormalizedCommand(value, legacy=is_legacy)
-    public_values = {stage.value for stage in PUBLIC_TARGET_STAGES}
+    public_values = {stage.value for stage in public_target_stages_for_contract(lifecycle_contract)}
     if value not in public_values or (is_legacy and value not in LEGACY_TARGETS):
         raise AutomationContractError(f"unknown workflow automation target: {value}")
     return NormalizedCommand("target", value, is_legacy)
 
 
-def _target_stage(stage: str) -> WorkflowStage:
+def _target_stage(stage: str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> WorkflowStage:
     try:
         parsed = WorkflowStage(stage)
     except (TypeError, ValueError) as exc:
         raise AutomationContractError(f"unknown workflow automation target: {stage}") from exc
-    if parsed not in PUBLIC_TARGET_STAGES:
+    if parsed not in public_target_stages_for_contract(lifecycle_contract):
         raise AutomationContractError(f"stage is not a public target: {stage}")
     return parsed
 
@@ -2801,13 +2807,14 @@ def bind_target(
     bound_at: str,
     plan: ActivePlanContext | None = None,
     requested_occurrence: str | None = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> dict[str, Any]:
     """Bind one complete structured target before run or authority persistence."""
 
-    parsed = _target_stage(stage)
+    parsed = _target_stage(stage, lifecycle_contract=lifecycle_contract)
     if not RFC3339_UTC_RE.fullmatch(bound_at):
         raise AutomationContractError("target binding time must be RFC3339 UTC")
-    policy = STAGE_POLICY_BY_STAGE[parsed.value]
+    policy = stage_policy_by_stage_for_contract(lifecycle_contract)[parsed.value]
     expected = policy.occurrence_rule.value
     if requested_occurrence is not None and requested_occurrence != expected:
         raise AutomationContractError(
@@ -2818,7 +2825,7 @@ def bind_target(
         "stage": parsed.value,
         "occurrence": occurrence,
         "bound_at": bound_at,
-        "completion": target_completion_predicate(parsed),
+        "completion": target_completion_predicate(parsed, lifecycle_contract=lifecycle_contract),
     }
     if expected == OccurrenceKind.MILESTONE.value:
         if plan is None:

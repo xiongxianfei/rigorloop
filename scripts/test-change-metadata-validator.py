@@ -1989,6 +1989,51 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
     def test_stage_owned_valid_record_passes(self) -> None:
         self.assertEqual(validate_stage_owned_lifecycle_metadata(self.valid_record()), [])
 
+    def test_v2_plan_centered_delivery_package_passes_without_test_spec(self) -> None:
+        record = self.valid_record()
+        record["lifecycle_contract"] = "stage-owned-change-local-v2"
+        record["artifact_states"]["plan"] = {
+            "kind": "plan",
+            "path": "docs/plans/example.md",
+            "role": "primary",
+            "lifecycle_state": "review-required",
+            "authoring_evidence": "docs/changes/example/evidence/plan-authoring.md",
+        }
+        record["review_packages"] = {
+            "delivery": {
+                "authority": "granted",
+                "correction_targets": [],
+                "findings": [],
+                "members": {"plan": "docs/plans/example.md"},
+                "outcome": "approved",
+                "package_kind": "delivery",
+                "review_id": "delivery-review-r1",
+                "review_round": "r1",
+                "status": "approved",
+                "upstream_review_id": "design-review-r1",
+            }
+        }
+        self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
+
+    def test_v2_retired_test_spec_values_fail_closed(self) -> None:
+        record = self.valid_record()
+        record["lifecycle_contract"] = "stage-owned-change-local-v2"
+        record["artifact_states"]["test-spec"] = {
+            "kind": "test-spec",
+            "path": "specs/example.test.md",
+            "role": "primary",
+            "lifecycle_state": "review-required",
+            "authoring_evidence": "docs/changes/example/evidence/test-spec-authoring.md",
+        }
+        record["workflow_state"]["current_stage"] = "test-spec-review"
+        record["lifecycle_cli"] = {
+            "reviews": {"test-spec": {"stage_authority": "test-spec-review"}}
+        }
+        errors = validate_stage_owned_lifecycle_metadata(record)
+        self.assertTrue(any("artifact_states.test-spec.kind: unknown_value" in error for error in errors), errors)
+        self.assertTrue(any("workflow_state.current_stage: unknown_value" in error for error in errors), errors)
+        self.assertTrue(any("stage_authority: unknown_value test-spec-review" in error for error in errors), errors)
+
     def test_new_primary_plan_allows_review_required_without_planned_work(self) -> None:
         record = self.valid_record()
         record["artifact_states"]["plan"] = {
@@ -2304,6 +2349,11 @@ class LifecycleContractClassificationTests(unittest.TestCase):
             classify_lifecycle_contract("new-v2", {
                 "lifecycle_contract": "stage-owned-change-local-v2",
                 "workflow_state": {"current_stage": "test-spec"},
+            }, manifest)
+        with self.assertRaisesRegex(ValueError, "active test-spec state"):
+            classify_lifecycle_contract("new-v2", {
+                "lifecycle_contract": "stage-owned-change-local-v2",
+                "lifecycle_cli": {"reviews": {"test-spec": {"stage_authority": "test-spec-review"}}},
             }, manifest)
 
     def test_unknown_value_contract_fails_before_manifest_consistency(self) -> None:

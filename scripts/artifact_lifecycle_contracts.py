@@ -90,7 +90,27 @@ def _has_active_test_spec_state(change: dict[str, Any]) -> bool:
     packages = change.get("review_packages")
     delivery = packages.get("delivery") if isinstance(packages, dict) else None
     members = delivery.get("members") if isinstance(delivery, dict) else None
-    return isinstance(members, dict) and "test-spec" in members
+    if isinstance(members, dict) and "test-spec" in members:
+        return True
+    coordination = change.get("lifecycle_cli")
+    if not isinstance(coordination, dict):
+        return False
+    artifacts = coordination.get("artifacts")
+    if isinstance(artifacts, dict) and any(
+        isinstance(entry, dict) and entry.get("artifact_kind") == "test-spec"
+        for entry in artifacts.values()
+    ):
+        return True
+    reviews = coordination.get("reviews")
+    if isinstance(reviews, dict) and any(
+        isinstance(entry, dict) and entry.get("stage_authority") == "test-spec-review"
+        for entry in reviews.values()
+    ):
+        return True
+    package_reviews = coordination.get("package_reviews")
+    delivery_review = package_reviews.get("delivery") if isinstance(package_reviews, dict) else None
+    review_members = delivery_review.get("members") if isinstance(delivery_review, dict) else None
+    return isinstance(review_members, dict) and "test-spec" in review_members
 
 
 def classify_lifecycle_contract(change_id: str, change: dict[str, Any], manifest: Any) -> dict[str, str]:

@@ -136,9 +136,7 @@ const OPERATION_CONTRACTS = Object.freeze({
 
 const REPAIR_CONDITIONS = new Set(["reconcile-interrupted-replace", "clear-orphaned-lock"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
-const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec"]);
-
-const STAGE_TRANSITIONS = Object.freeze({
+const V1_STAGE_TRANSITIONS = Object.freeze({
   proposal: ["proposal-review"],
   "proposal-review": ["architecture"],
   architecture: ["spec"],
@@ -148,6 +146,20 @@ const STAGE_TRANSITIONS = Object.freeze({
   "test-spec": ["delivery-review"],
   "delivery-review": ["implement"],
 });
+const V2_STAGE_TRANSITIONS = Object.freeze({
+  proposal: ["proposal-review"],
+  "proposal-review": ["architecture"],
+  architecture: ["spec"],
+  spec: ["design-review"],
+  "design-review": ["plan"],
+  plan: ["delivery-review"],
+  "delivery-review": ["implement"],
+});
+const V1_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan", "test-spec"]);
+const V2_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan"]);
+const V1_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
+const V2_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
+const REQUEST_CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec"]);
 
 function rawUtf8Compare(left, right) {
   return Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8"));
@@ -213,6 +225,9 @@ function hasActiveTestSpecState(change) {
   if (activeStages.has(change.workflow_state?.current_stage) || activeStages.has(change.workflow_state?.next_stage)) return true;
   if (Object.values(change.artifact_states ?? {}).some((entry) => entry?.kind === "test-spec" && !["abandoned", "archived", "superseded"].includes(entry?.lifecycle_state))) return true;
   if (Object.keys(change.review_packages?.delivery?.members ?? {}).includes("test-spec")) return true;
+  if (Object.values(change.lifecycle_cli?.artifacts ?? {}).some((entry) => entry?.artifact_kind === "test-spec")) return true;
+  if (Object.values(change.lifecycle_cli?.reviews ?? {}).some((entry) => entry?.stage_authority === "test-spec-review")) return true;
+  if (Object.keys(change.lifecycle_cli?.package_reviews?.delivery?.members ?? {}).includes("test-spec")) return true;
   return false;
 }
 
@@ -246,8 +261,28 @@ export function classifyLifecycleContract(changeId, change, manifest = PREACTIVA
   };
 }
 
-export function allowedNextStages(_change, sourceStage) {
-  return STAGE_TRANSITIONS[sourceStage] ?? [];
+export function lifecycleContractVersion(change) {
+  const contract = change?.lifecycle_contract;
+  if (contract === undefined || contract === LIFECYCLE_CONTRACT_V1) return LIFECYCLE_CONTRACT_V1;
+  if (contract === LIFECYCLE_CONTRACT_V2) return LIFECYCLE_CONTRACT_V2;
+  return LIFECYCLE_CONTRACT_V1;
+}
+
+export function allowedNextStages(change, sourceStage) {
+  const transitions = lifecycleContractVersion(change) === LIFECYCLE_CONTRACT_V2 ? V2_STAGE_TRANSITIONS : V1_STAGE_TRANSITIONS;
+  return transitions[sourceStage] ?? [];
+}
+
+export function allowedArtifactKinds(change) {
+  return lifecycleContractVersion(change) === LIFECYCLE_CONTRACT_V2 ? V2_ARTIFACT_KINDS : V1_ARTIFACT_KINDS;
+}
+
+export function correctionStageOrder(change) {
+  return lifecycleContractVersion(change) === LIFECYCLE_CONTRACT_V2 ? V2_CORRECTION_STAGES : V1_CORRECTION_STAGES;
+}
+
+export function allowedCorrectionDestinations(change) {
+  return new Set(correctionStageOrder(change).filter((stage) => ["proposal", "spec", "architecture", "design-review", "plan", "test-spec"].includes(stage)));
 }
 
 function invalid(message) {
@@ -413,7 +448,7 @@ export function validateLifecycleRequest(request) {
     const allowedReasons = request.operation === "withdraw-artifact-registration" ? new Set(["duplicate-registration"]) : CORRECTION_REASONS;
     if (!allowedReasons.has(request.reason)) return { ok: false, errors: [requestError(`unknown reason ${String(request.reason)}`, request.operation === "withdraw-artifact-registration" ? "RL_WITHDRAWAL_UNSAFE" : "RL_INVALID_REQUEST")] };
   }
-  if (request.operation === "route-correction" && request.destination_stage !== undefined && !CORRECTION_DESTINATIONS.has(request.destination_stage)) {
+  if (request.operation === "route-correction" && request.destination_stage !== undefined && !REQUEST_CORRECTION_DESTINATIONS.has(request.destination_stage)) {
     return { ok: false, errors: [requestError(`unknown destination_stage ${String(request.destination_stage)}`)] };
   }
   for (const field of ["source_stage", "destination_stage", "return_stage"]) {
