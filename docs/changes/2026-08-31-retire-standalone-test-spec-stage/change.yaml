@@ -74,11 +74,15 @@ review_packages:
     status: approved
     upstream_review_id: proposal-review-r3
 workflow_state:
-  blocker: null
+  blocker:
+    code: validation-failed
+    evidence:
+      - docs/changes/2026-08-31-retire-standalone-test-spec-stage/verify-report.md
   current_stage: verify
   evidence:
     - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-final-r1.md
     - docs/changes/2026-08-31-retire-standalone-test-spec-stage/explain-change.md
+    - docs/changes/2026-08-31-retire-standalone-test-spec-stage/verify-report.md
   lifecycle_state: active
   next_stage: verify
   planned_work:
@@ -87,9 +91,10 @@ workflow_state:
       evidence:
         - docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/code-review-final-r1.md
         - docs/changes/2026-08-31-retire-standalone-test-spec-stage/explain-change.md
+        - docs/changes/2026-08-31-retire-standalone-test-spec-stage/verify-report.md
       readiness: not-ready
       reasons:
-        - verify-pending
+        - lifecycle-gates-open
     initialization_basis:
       review_id: delivery-review-r3
       review_record: docs/changes/2026-08-31-retire-standalone-test-spec-stage/reviews/delivery-review-r3.md
