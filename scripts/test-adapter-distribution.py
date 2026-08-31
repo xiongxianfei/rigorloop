@@ -83,6 +83,8 @@ class AdapterDistributionTests(unittest.TestCase):
         return FIXTURES / name
 
     def test_staged_v2_archives_omit_test_spec_and_package_plan_methods(self) -> None:
+        self.assertNotIn("test-spec", POST_CUTOVER_ADAPTER_SKILLS)
+        self.assertNotIn("test-spec", OPENCODE_COMMAND_ALIASES)
         self.assertNotIn("test-spec", STAGED_V2_ADAPTER_SKILLS)
         self.assertNotIn("test-spec", STAGED_V2_OPENCODE_COMMAND_ALIASES)
         with tempfile.TemporaryDirectory(prefix="staged-v2-adapters-") as temp_dir:
@@ -1406,7 +1408,6 @@ release_gate:
         cases = (
             ("workflow", "references/boundary-first-method-v1.md"),
             ("spec", "references/boundary-first-feature-authoring-v1.md"),
-            ("test-spec", "references/boundary-first-proof-v1.md"),
         )
         for skill_name, relative_resource in cases:
             with self.subTest(layer=relative_resource), tempfile.TemporaryDirectory() as tmp:
@@ -3405,9 +3406,9 @@ release_gate:
                 "unsupported command alias tool: claude",
             ),
             (
-                "    count: 11\n    aliases:\n",
+                "    count: 10\n    aliases:\n",
                 (
-                    "    count: 12\n"
+                    "    count: 11\n"
                     "    aliases:\n"
                     "      verify: dist/adapters/opencode/.opencode/commands/verify.md\n"
                 ),

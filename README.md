@@ -60,10 +60,10 @@ Key paths: [workflow](docs/workflows.md) · [contribute](CONTRIBUTING.md) · [bu
 Use RigorLoop as a repository-local workflow, not as a chat convention. The useful path is:
 
 ```text
-proposal -> proposal-review -> spec -> spec-review -> plan -> plan-review -> test-spec -> implement -> code-review -> explain-change -> verify -> pr
+proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> explain-change -> verify -> pr
 ```
 
-Add `architecture` / `architecture-review` when the change affects system design, data flow, persistence, security, performance, deployment, or other hard-to-reverse decisions.
+Architecture and specification are separate design inputs reconciled by `design-review`. Delivery Review jointly approves safe implementation sequencing and the plan's verification allocation.
 
 Add `review-resolution` when review records material findings. Add `ci-maintenance` only when CI workflows or related automation must change.
 
@@ -71,7 +71,7 @@ Best practices:
 
 1. Start with `proposal` for substantive work. Use it to settle the problem, goals, non-goals, scope, options, risks, and recommended direction before implementation pressure starts.
 2. Keep each lifecycle stage grounded in tracked artifacts. Do not rely on chat-only approval when a later stage needs reviewable evidence.
-3. Let `test-spec` map requirements and edge cases to proof before writing implementation code.
+3. Let `plan` allocate requirements to milestones, verification groups, concrete checks, and evidence expectations before writing implementation code.
 4. Implement one approved milestone at a time, then run `code-review` against the actual diff and governing artifacts.
 5. Use `explain-change` after implementation and review closeout so reviewers can see why each meaningful change exists.
 6. Run `verify` before `pr`. `verify` owns branch readiness; `pr` owns the pull request body and opening the PR.
@@ -149,8 +149,8 @@ $workflow auto: <target-stage>
 Supported targets are:
 
 ```text
-proposal-review, spec, spec-review, architecture, architecture-review,
-plan, plan-review, test-spec, test-spec-review, implement, code-review, verify
+proposal-review, architecture, spec, design-review,
+plan, delivery-review, implement, code-review, verify
 ```
 
 The mechanism persists one `bounded-review-fix` run under `workflow.automation`.
@@ -333,7 +333,7 @@ OpenCode uses generated command aliases for the curated lifecycle stages. All in
 /pr Prepare the verified change for pull request review.
 ```
 
-OpenCode command aliases are generated only for `proposal`, `proposal-review`, `spec`, `spec-review`, `plan`, `plan-review`, `test-spec`, `implement`, `code-review`, and `pr`. Other portable skills remain available as skills but do not receive command aliases.
+OpenCode command aliases are generated only for `proposal`, `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `pr`. Other portable skills remain available as skills but do not receive command aliases.
 
 OpenCode one-shot example:
 
@@ -360,7 +360,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 - Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
 - Workflow infrastructure: specs, workflow summaries, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
-- Per-change chain: `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+- Per-change chain: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
 - Periodic learning: `learn`
 
 `explore` and `research` run only when ambiguity, options, or current external facts matter. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.

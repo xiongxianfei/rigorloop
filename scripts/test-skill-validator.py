@@ -46,7 +46,6 @@ SCAN_SENSITIVE_SKILLS = [
     "research",
     "spec",
     "spec-review",
-    "test-spec",
     "verify",
     "vision",
     "workflow",
@@ -64,7 +63,6 @@ DOWNSTREAM_STATUS_SETTLEMENT_FIRST_SLICE_SKILLS = [
     "plan",
 ]
 DOWNSTREAM_STATUS_SETTLEMENT_LATER_SLICE_SKILLS = [
-    "test-spec",
     "implement",
     "explain-change",
     "verify",
@@ -270,7 +268,6 @@ PROJECT_ARTIFACT_LOOKUP_SKILLS = [
     "spec",
     "architecture",
     "plan",
-    "test-spec",
     "proposal-review",
     "spec-review",
     "architecture-review",
@@ -4486,7 +4483,7 @@ Use the inputs somehow and produce a useful result.
         ]:
             with self.subTest(path=path):
                 self.assertIn(
-                    "plan -> test-spec -> delivery-review -> implement",
+                    "plan -> delivery-review -> implement",
                     body,
                 )
 
@@ -5644,7 +5641,6 @@ and result format.
             "Workflow guide",
             "Proposals",
             "Specs",
-            "Test specs",
             "Architecture",
             "ADRs",
             "Plans",
@@ -5678,8 +5674,6 @@ and result format.
             "path: docs/proposals/YYYY-MM-DD-slug.md",
             "spec:",
             "path: specs/slug.md",
-            "test_spec:",
-            "path: specs/slug.test.md",
             "plan_index:",
             "path: docs/plan.md",
             "change_plan:",
@@ -5724,7 +5718,6 @@ and result format.
             "docs/plan.md",
             "docs/proposals/YYYY-MM-DD-slug.md",
             "specs/slug.md",
-            "specs/slug.test.md",
             "docs/plans/YYYY-MM-DD-slug.md",
             "docs/changes/<change-id>/change.yaml",
             "docs/changes/<change-id>/reviews/<stage>-r<n>.md",
@@ -6649,7 +6642,6 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
             ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md",
             ROOT / "skills" / "spec" / "assets" / "spec-skeleton.md",
             ROOT / "skills" / "plan" / "assets" / "plan-skeleton.md",
-            ROOT / "skills" / "test-spec" / "assets" / "test-spec-skeleton.md",
         ]
         required_terms = [
             "Readability contract:",
@@ -6670,7 +6662,6 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
             ROOT / "skills" / "proposal" / "SKILL.md",
             ROOT / "skills" / "spec" / "SKILL.md",
             ROOT / "skills" / "plan" / "SKILL.md",
-            ROOT / "skills" / "test-spec" / "SKILL.md",
             ROOT / "skills" / "code-review" / "SKILL.md",
             ROOT / "skills" / "explain-change" / "SKILL.md",
             ROOT / "skills" / "verify" / "SKILL.md",
@@ -6727,7 +6718,6 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         "spec": "spec",
         "architecture": "architecture or ADR",
         "plan": "plan",
-        "test-spec": "test-spec",
     }
 
     REVIEW_SETTLEMENT_PHRASES = {
@@ -6805,14 +6795,6 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     / "references"
                     / "governed-spec-authoring.md"
                 ).read_text(encoding="utf-8")
-            if skill_name == "test-spec":
-                body += (
-                    ROOT
-                    / "skills"
-                    / "test-spec"
-                    / "references"
-                    / "governed-test-spec-authoring.md"
-                ).read_text(encoding="utf-8")
             if skill_name == "architecture":
                 body += (
                     ROOT
@@ -6867,7 +6849,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         for phrase in (
             "read the complete `change.yaml`",
-            "`lifecycle_contract: stage-owned-change-local-v1`",
+            "`lifecycle_contract: stage-owned-change-local-v2`",
             "Derive routing only from",
             "Update only",
             "preserve `artifact_states`",
@@ -6925,7 +6907,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                 self.assertIn(phrase, body)
 
     def test_authoring_skills_do_not_claim_review_settlement(self) -> None:
-        for skill_name in ("proposal", "spec", "architecture", "plan", "test-spec"):
+        for skill_name in ("proposal", "spec", "architecture", "plan"):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
                 encoding="utf-8"
             )
@@ -6943,7 +6925,6 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             ROOT / "skills" / "architecture" / "assets" / "architecture-skeleton.md",
             ROOT / "skills" / "architecture" / "assets" / "adr-skeleton.md",
             ROOT / "skills" / "plan" / "assets" / "plan-skeleton.md",
-            ROOT / "skills" / "test-spec" / "assets" / "test-spec-skeleton.md",
         ]
         forbidden = (
             "## Status",
@@ -6993,9 +6974,8 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         for phrase in (
             "For every new governed change, create",
-            "`lifecycle_contract: stage-owned-change-local-v1`",
+            "`lifecycle_contract: stage-owned-change-local-v2`",
             "without requiring another parameter",
-            "Before the first mutation of resumed nonterminal historical work",
             "read-only historical inspection never creates the marker",
         ):
             with self.subTest(phrase=phrase):
@@ -8102,119 +8082,6 @@ class ArchitectureSkillSimplificationLedgerTests(unittest.TestCase):
 
 
 
-class TestSpecSkillSimplificationTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self.root = ROOT / "skills" / "test-spec"
-        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
-        self.reference = (
-            self.root / "references" / "governed-test-spec-authoring.md"
-        ).read_text(encoding="utf-8")
-
-    def test_package_profiles_resources_and_initial_boundary_load_are_closed(self) -> None:
-        self.assertEqual(
-            sorted(path.name for path in (self.root / "assets").iterdir()),
-            [
-                "coverage-map-row.md",
-                "milestone-proof-row.md",
-                "test-case.md",
-                "test-spec-skeleton.md",
-                "validation-command-row.md",
-            ],
-        )
-        self.assertEqual(
-            sorted(path.name for path in (self.root / "references").iterdir()),
-            [
-                "boundary-first-method-v1.md",
-                "boundary-first-proof-v1.md",
-                "governed-test-spec-authoring.md",
-            ],
-        )
-        for value in ("TSA0-portable", "TSA1-governed"):
-            self.assertIn(value, self.skill)
-        self.assertIn("READ `references/boundary-first-method-v1.md` initially", self.skill)
-        self.assertIn("READ `references/boundary-first-proof-v1.md` initially", self.skill)
-        self.assertIn("governed_test_spec_candidate_context", self.skill)
-        self.assertIn("Loading does not grant mutation authority", self.skill)
-
-    def test_governed_operations_and_retry_identifiers_are_complete(self) -> None:
-        for operation in (
-            "create-primary-test-spec",
-            "revise-primary-test-spec",
-            "restart-stale-authoring",
-        ):
-            self.assertIn(operation, self.skill)
-        for phrase in ("artifact ID", "evidence path", "prior digest", "current finding", "upstream change"):
-            self.assertIn(phrase, self.reference)
-        self.assertIn("record-artifact-revision", self.reference)
-        self.assertIn("already-recorded", self.reference)
-
-    def test_governed_write_boundaries_and_settlement_are_narrow(self) -> None:
-        for phrase in (
-            "review-required",
-            "delivery-review",
-            "Never edit lifecycle",
-            "without authorizing implementation",
-            "record-artifact-revision",
-        ):
-            self.assertIn(phrase, self.reference)
-        self.assertNotIn("branch-ready", self.reference)
-        self.assertIn("workflow-managed execution does not enlarge", self.skill.lower())
-
-    def test_structural_assets_have_one_body_owner_and_no_sixth_asset(self) -> None:
-        skeleton = (self.root / "assets" / "test-spec-skeleton.md").read_text(
-            encoding="utf-8"
-        )
-        self.assertNotIn("| <requirement ID> |", skeleton)
-        self.assertNotIn("| <command ID> |", skeleton)
-        self.assertNotIn("### <test ID>.", skeleton)
-        self.assertNotIn("| <milestone> |", skeleton)
-        for marker in (
-            "<insert requirement coverage rows>",
-            "<insert example coverage rows>",
-            "<insert validation command rows",
-            "<insert milestone proof rows",
-            "<insert test case blocks>",
-        ):
-            self.assertIn(marker, skeleton)
-        self.assertNotIn("manual-proof", " ".join(path.name for path in (self.root / "assets").iterdir()))
-
-    def test_optional_manual_verification_keeps_existing_distributed_owners(self) -> None:
-        combined = self.skill + self.reference
-        for phrase in (
-            "automated",
-            "manual",
-            "hybrid",
-            "Manual QA checklist",
-            "manual procedure",
-            "evidence artifact",
-        ):
-            self.assertIn(phrase, combined)
-        self.assertIn("no new manual-proof contract", self.skill)
-        self.assertIn("no sixth asset", self.skill)
-
-    def test_resource_failure_and_claim_boundaries_fail_closed(self) -> None:
-        for phrase in (
-            "missing",
-            "unreadable",
-            "escaped",
-            "contradictory",
-            "mixed-version",
-            "stop before dependent interpretation or mutation",
-            "must not reconstruct",
-        ):
-            self.assertIn(phrase, self.skill.lower())
-        for claim in (
-            "implementation",
-            "verification",
-            "branch",
-            "PR",
-            "release",
-            "deployment",
-            "publication",
-        ):
-            self.assertIn(claim.lower(), self.skill.lower())
-
-
 class ProjectMapSkillSimplificationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.root = ROOT / "skills" / "project-map"
@@ -8740,12 +8607,12 @@ class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
         post_cutover_inventory = (
             "Supported targets are "
             "`proposal-review`, `architecture`, `spec`, `design-review`, "
-            "`plan`, `test-spec`, `delivery-review`, `implement`, "
-            "`code-review`, and `verify`; retired artifact-review targets are "
+            "`plan`, `delivery-review`, `implement`, "
+            "`code-review`, and `verify`; retired artifact-review and standalone test-spec targets are "
             "not admitted."
         )
         self.assertIn(
-            "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement",
+            "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement",
             workflow,
         )
         self.assertIn(post_cutover_inventory, workflow)
@@ -9008,14 +8875,13 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
         self.assertIn("one independent decision", body)
         self.assertNotIn("one execution plan, one test specification", body)
 
-    def test_preactivation_workflow_declares_both_contract_routes(self) -> None:
+    def test_active_workflow_declares_v2_and_bounded_prior_compatibility(self) -> None:
         body = (ROOT / "skills/workflow/SKILL.md").read_text(encoding="utf-8")
         self.assertIn("stage-owned-change-local-v1", body)
-        self.assertIn("plan -> test-spec -> delivery-review", body)
         self.assertIn("stage-owned-change-local-v2", body)
         self.assertIn("plan -> delivery-review", body)
-        self.assertIn("preactivation", body)
-        self.assertIn("must not select v2", body)
+        self.assertIn("active", body)
+        self.assertNotIn("must not select v2", body)
 
     def test_v2_verification_allocation_gaps_route_to_plan(self) -> None:
         for skill_name in ("spec", "plan", "workflow"):
@@ -9024,26 +8890,23 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
             )
             with self.subTest(skill=skill_name):
                 self.assertIn(
-                    "Under v2, a pre-implementation verification-allocation gap routes to `plan`",
+                    "A pre-implementation verification-allocation gap routes to `plan`",
                     body,
                 )
                 self.assertIn(
-                    "under registered v1, a proof-map gap routes to `test-spec`",
+                    "Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring",
                     body,
                 )
                 self.assertNotIn("a proof-only gap routes to `test-spec`", body)
 
-    def test_legacy_test_spec_skill_is_explicitly_compatibility_only(self) -> None:
-        body = (ROOT / "skills/test-spec/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("prior-contract compatibility only", body)
-        self.assertIn("must not be selected for a v2 change", body)
-        self.assertIn("scheduled for removal from the active published inventory", body)
+    def test_standalone_test_spec_skill_is_absent_from_canonical_inventory(self) -> None:
+        self.assertFalse((ROOT / "skills/test-spec").exists())
 
 
 class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
-    """RTS TS-012 and TS-016 preactivation governance coherence."""
+    """RTS TS-012 and TS-016 activation governance coherence."""
 
-    def test_current_governance_declares_contract_keyed_delivery_packages(self) -> None:
+    def test_current_governance_declares_active_v2_and_prior_compatibility(self) -> None:
         for relative in (
             "CONSTITUTION.md",
             "AGENTS.md",
@@ -9054,25 +8917,24 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
             with self.subTest(path=relative):
                 self.assertIn("stage-owned-change-local-v1", body)
                 self.assertIn("stage-owned-change-local-v2", body)
-                self.assertIn("preactivation", body.lower())
-                self.assertIn("plan-plus-test-spec", body)
+                self.assertIn("active", body.lower())
                 self.assertIn("plan-only", body)
 
     def test_shared_boundary_routing_is_contract_keyed(self) -> None:
         required = (
-            "Under v2, a pre-implementation verification-allocation gap routes to `plan`",
-            "under registered v1, a proof-map gap routes to `test-spec`",
+            "A pre-implementation verification-allocation gap routes to `plan`",
+            "Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring",
         )
         template = (ROOT / "templates/shared/boundary-first-compact-scan.md").read_text(encoding="utf-8")
         for phrase in required:
             self.assertIn(phrase, template)
-        for skill_name in ("workflow", "spec", "plan", "test-spec", "implement", "code-review", "verify"):
+        for skill_name in ("workflow", "spec", "plan", "implement", "code-review", "verify"):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             with self.subTest(skill=skill_name):
                 for phrase in required:
                     self.assertIn(phrase, body)
 
-    def test_preactivation_guidance_preserves_downstream_gates_and_history(self) -> None:
+    def test_active_guidance_preserves_downstream_gates_and_history(self) -> None:
         combined = "\n".join(
             (ROOT / path).read_text(encoding="utf-8")
             for path in ("CONSTITUTION.md", "AGENTS.md", "docs/workflows.md")
@@ -9081,7 +8943,28 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
         self.assertIn("code-review", lowered)
         self.assertIn("verify", lowered)
         self.assertIn("historical", lowered)
-        self.assertIn("M5", combined)
+        self.assertNotIn("New changes remain v1 until M5", combined)
+
+
+class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
+    """RTS TS-013 and TS-017 active publication contract."""
+
+    def test_active_public_skill_inventory_has_no_standalone_test_spec(self) -> None:
+        self.assertFalse((ROOT / "skills/test-spec").exists())
+        self.assertFalse((ROOT / "skills/test-spec-review").exists())
+
+    def test_active_workflow_is_plan_centered(self) -> None:
+        body = (ROOT / "skills/workflow/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("plan -> delivery-review -> implement", body)
+        self.assertNotIn("plan -> test-spec -> delivery-review", body)
+
+    def test_active_governance_has_no_preactivation_default(self) -> None:
+        combined = "\n".join(
+            (ROOT / path).read_text(encoding="utf-8")
+            for path in ("CONSTITUTION.md", "AGENTS.md", "docs/workflows.md")
+        )
+        self.assertIn("stage-owned-change-local-v2", combined)
+        self.assertNotIn("New changes remain v1 until M5", combined)
 
 
 if __name__ == "__main__":

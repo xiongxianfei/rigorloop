@@ -45,9 +45,9 @@ Workflow completion claims require evidence from the relevant standard workflow 
 - On-demand support: `explore` and `research`.
   - Use them when ambiguity, option expansion, architecture uncertainty, external facts, platform behavior, standards, laws, pricing, or other current evidence affects the decision.
 - Per-change chain:
-  - Current workflow: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
-  - During preactivation, routing is contract-keyed: `stage-owned-change-local-v1` retains its plan-plus-test-spec Delivery Review package; `stage-owned-change-local-v2` uses a plan-only Delivery Review package. New changes remain v1 until M5 activation.
-  - Architecture and specification remain separately authored and reconcile before `design-review`. Plan and test specification remain separately authored and reconcile before `delivery-review`.
+  - Current workflow: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+  - Active routing creates new governed changes with `stage-owned-change-local-v2`; plan owns verification allocation and Delivery Review approves the exact plan-only package. Manifest-bound `stage-owned-change-local-v1` changes may continue only from their registered post-delivery package.
+  - Architecture and specification remain separately authored and reconcile before `design-review`. Delivery Review jointly assesses implementation sequencing and verification adequacy in the plan.
   - `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain readable historical evidence only. They are retired public progression entrypoints and are not aliases for `design-review` or `delivery-review`.
   - For milestone-based plans, the `implement -> code-review -> review-resolution when triggered` segment repeats for each in-scope implementation milestone. Final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
   - `review-resolution` runs only when material review findings, non-final dispositions, or review outcomes require explicit closeout.
@@ -77,8 +77,8 @@ Notes:
 - Contributor-facing Markdown source-line guidance lives in `CONTRIBUTING.md`; the normative contract lives in `specs/documentation-source-formatting.md`.
 - A proposal contains exactly seven required level-two sections: `Challenge`, `Goals`, `Scope and non-goals`, `Governing principle`, `Proposed direction`, `Feasibility`, and `Decision requested`. `Impact and major trade-offs` is conditional and appears only when it could materially affect approval.
 - Proposal Review evaluates direction-level decision sufficiency, proportional feasibility, material impact, and vision alignment without requiring detailed behavior, architecture, delivery sequencing, proof design, or rollout mechanics. Approval authorizes architecture and specification authoring only.
-- Design Review settles the exact architecture, specification, and applicable ADR member map as one package. Approval authorizes plan and test-specification authoring only.
-- Delivery Review settles the exact contract-selected member map. Registered v1 uses plan plus test specification; v2 uses the plan only and reviews implementation readiness with verification adequacy. Approval authorizes implementation.
+- Design Review settles the exact architecture, specification, and applicable ADR member map as one package. Approval authorizes plan authoring.
+- Delivery Review settles the exact contract-selected member map. V2 uses the plan-only package and reviews implementation readiness with verification adequacy. Manifest-bound v1 continuation retains its registered historical package. Approval authorizes implementation.
 - Package authority uses explicit artifact IDs and repository-relative paths plus the upstream review ID. It does not use aggregate revisions or per-document hashes.
 - In standard workflow execution, stage-owned language stays split: `implement` reports implementation completion or readiness for `code-review`; `code-review` owns review findings; `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
 - Before `implement` hands off to `code-review`, the slice should satisfy a first-pass acceptable result: address in-scope requirements, required authored and aligned surfaces, required edge cases, and targeted validation for the smallest scope-complete change.
@@ -257,10 +257,6 @@ artifact_locations:
     owner: spec
     path: specs/slug.md
     required_when: spec stage
-  test_spec:
-    owner: test-spec
-    path: specs/slug.test.md
-    required_when: test-spec stage
   architecture_record:
     owner: architecture
     path: docs/architecture/YYYY-MM-DD-slug.md
@@ -345,7 +341,6 @@ If this project customizes artifact locations, update the registry and this tabl
 | Follow-up register | `docs/follow-ups.md` | `workflow` | Unowned cross-change follow-up exists. |
 | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |
 | Specs | `specs/slug.md` | `spec` | Spec stage. |
-| Test specs | `specs/slug.test.md` | `test-spec` | Test-spec stage. |
 | Architecture | `docs/architecture/YYYY-MM-DD-slug.md` | `architecture` | Architecture stage is triggered. |
 | ADRs | `docs/adr/ADR-YYYYMMDD-slug.md` | `architecture` | Durable architecture decision is recorded. |
 | Plan index | `docs/plan.md` | `plan` / workflow bookkeeping | Planned initiatives exist. |
@@ -432,7 +427,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 
 - Distinguish `workflow-managed` completion flows from isolated stage requests.
 - Workflow automation writes one mechanism under `docs/changes/<change-id>/change.yaml#workflow.automation`. Legacy automation records are read-only migration inputs and never receive new state.
-- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `test-spec`, `delivery-review`, `implement`, `code-review`, and `verify`; retired artifact-review targets are not admitted.
+- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `verify`; retired artifact-review and standalone test-spec targets are not admitted.
 - `$workflow auto: status` is read-only.
   `$workflow auto: off` cancels the run and preserves transition evidence.
 - The selected target is the complete repository-local automation boundary. Do not add another authorization, capability, activation selector, profile, or inferred continuation parameter.
@@ -554,7 +549,7 @@ surface while its active contract is retired separately:
 selected local, explicit, and release checks. It does not imply broad smoke for
 every PR.
 
-Use broad smoke only when an authoritative trigger requires it, such as selector mode `main`, selector mode `release`, an explicit `--broad-smoke` request, active plan field `broad_smoke_required: true`, test-spec requirement, review-resolution requirement, or release metadata. The selected check ID for repository broad smoke is `broad_smoke.repo`, and the direct command is:
+Use broad smoke only when an authoritative trigger requires it, such as selector mode `main`, selector mode `release`, an explicit `--broad-smoke` request, active plan field `broad_smoke_required: true`, a registered v1 test-spec requirement, review-resolution requirement, or release metadata. The selected check ID for repository broad smoke is `broad_smoke.repo`, and the direct command is:
 
 ```bash
 bash scripts/ci.sh --mode broad-smoke

@@ -21,10 +21,10 @@ Start with the owning `change.yaml`, then the active plan's `Current Handoff Sum
 
 Confirm:
 
-- `lifecycle_contract: stage-owned-change-local-v1`;
+- `lifecycle_contract: stage-owned-change-local-v2`, or a manifest-bound v1 continuation already past Delivery Review;
 - plan artifact identity and current milestone match;
 - the milestone is the first nonterminal implementation milestone;
-- the test-spec member and Delivery Review ID are current;
+- the contract-selected Delivery Review package and review ID are current;
 - no blocker or unresolved prior review prevents execution.
 
 For milestone readiness, do not run broad repository searches to infer milestone state.

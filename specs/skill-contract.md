@@ -4,6 +4,10 @@
 
 - approved
 
+## V2 skill-surface amendment
+
+The active published inventory omits standalone `test-spec` and `test-spec-review`. Specification owns testable behavior, plan owns milestone and change-level verification allocation plus progressive specialist methods, and Delivery Review owns the joint readiness decision. Historical clauses below remain compatibility history and do not authorize publishing, invoking, or recreating either retired skill for new governed work.
+
 ## Related proposal
 
 - [Skill Contract Optimization](../docs/proposals/2026-05-08-skill-contract-optimization.md)

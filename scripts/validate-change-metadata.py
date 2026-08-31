@@ -536,7 +536,21 @@ def validate_metadata_semantics(
     change_id = data.get("change_id")
     if isinstance(change_id, str):
         try:
-            classify_lifecycle_contract(change_id, data, activation_manifest)
+            classification_manifest = activation_manifest
+            tracked_change_root = ROOT / "docs" / "changes"
+            if (
+                activation_manifest.get("state") == "active"
+                and metadata_path is not None
+                and not metadata_path.resolve().is_relative_to(tracked_change_root.resolve())
+                and data.get("lifecycle_contract") != "stage-owned-change-local-v2"
+            ):
+                classification_manifest = {
+                    "schema_version": 1,
+                    "state": "preactivation",
+                    "activating_source_revision": None,
+                    "changes": [],
+                }
+            classify_lifecycle_contract(change_id, data, classification_manifest)
         except ValueError as exc:
             return [str(exc)]
     errors.extend(validate_stage_owned_lifecycle_metadata(data))

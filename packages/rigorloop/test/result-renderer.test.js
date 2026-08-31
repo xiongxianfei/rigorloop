@@ -13,6 +13,7 @@ const compatibilityFixturePath = join(import.meta.dirname, "fixtures", "observab
 
 function compatibilityProject(kind) {
   const project = mkdtempSync(join(tmpdir(), "rigorloop-compatibility-"));
+  if (kind === "empty-lifecycle") mkdirSync(join(project, "docs", "changes"), { recursive: true });
   if (kind === "governed") {
     mkdirSync(join(project, "docs", "changes", "example"), { recursive: true });
     mkdirSync(join(project, "specs"), { recursive: true });
@@ -168,8 +169,8 @@ test("T10 exact output fixture includes approved lifecycle fact evolution", () =
     ["new-change-json-failure", ["new-change", "example-change", "--json"], "empty", true],
     ["lifecycle-status-human-success", ["lifecycle", "status", "--change", "example"], "governed", false],
     ["lifecycle-status-json-success", ["lifecycle", "status", "--change", "example", "--format", "json"], "governed", true],
-    ["lifecycle-status-human-failure", ["lifecycle", "status"], "empty", false],
-    ["lifecycle-status-json-failure", ["lifecycle", "status", "--format", "json"], "empty", true],
+    ["lifecycle-status-human-failure", ["lifecycle", "status"], "empty-lifecycle", false],
+    ["lifecycle-status-json-failure", ["lifecycle", "status", "--format", "json"], "empty-lifecycle", true],
     ["lifecycle-context-human-success", ["lifecycle", "context", "code-review", "--change", "example"], "governed", false],
     ["lifecycle-context-json-success", ["lifecycle", "context", "code-review", "--change", "example", "--format", "json"], "governed", true],
     ["lifecycle-context-human-failure", ["lifecycle", "context", "unknown-stage", "--change", "example"], "governed", false],
