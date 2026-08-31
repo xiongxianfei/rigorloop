@@ -25,7 +25,7 @@ Review closeout: proposal-review-r3
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `design-review-r1`, `design-review-r2`, `delivery-review-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m4-r1`, `code-review-m5-r1`
 - Findings resolved: 8
 - Unresolved findings: 2
-- Current result: Code Review M5 R1 requested changes for stale active workflow and plan conditional resources.
+- Current result: Both M5 findings are accepted for bounded implementation correction and same-milestone rereview.
 
 ## Resolution Overview
 
@@ -39,8 +39,8 @@ Review closeout: proposal-review-r3
 | RTS-M1-CR2 | accepted | resolved | Production repository validators now consume the shared classifier and tracked manifest with direct public-boundary proof. |
 | RTS-M2-CR1 | accepted | resolved | The classified lifecycle contract now reaches central automation evaluation, validation, persistence, binding, coordination, and routing. |
 | RTS-M2-CR2 | accepted | resolved | Delivery Review now validates the exact registered primary plan rather than a literal artifact ID. |
-| RTS-M5-CR1 | needs-decision | open | Active workflow automation and guide resources still expose standalone test-spec. |
-| RTS-M5-CR2 | needs-decision | open | Governed plan authoring still routes v1 work to the removed skill. |
+| RTS-M5-CR1 | accepted | open | Remove standalone test-spec from active conditional workflow resources and add direct package regressions. |
+| RTS-M5-CR2 | accepted | open | Make governed plan authoring v2-only and fail closed for manifest-bound v1 authoring. |
 
 ## Finding Details
 
@@ -224,13 +224,13 @@ No material findings. The review confirms that governance and boundary routing a
 #### RTS-M5-CR1
 
 Finding ID: RTS-M5-CR1
-Disposition: needs-decision
+Disposition: accepted
 Status: open
 Owner: M5 implementer
 Owning stage: review-resolution
 Decision owner: M5 implementer
-Decision needed: accept the bounded removal of stale test-spec routing from active workflow automation and guide resources.
-Chosen action: pending
+Decision needed: none; apply the bounded correction required by the approved active publication contract.
+Chosen action: remove standalone test-spec from the automation target list and workflow-guide skeleton, then cover canonical, generated, and adapter-packaged resources directly.
 Rationale: active packaged resources contradict the activated common workflow and can recreate the retired route.
 Required outcome: remove the route from the conditional workflow resources and cover those resources directly.
 Safe resolution path: update the bounded automation reference and workflow skeleton, add content regressions, and rerun CMD-07, CMD-08, CMD-09, and CMD-13.
@@ -240,13 +240,13 @@ Follow-up: return corrected M5 to code-review.
 #### RTS-M5-CR2
 
 Finding ID: RTS-M5-CR2
-Disposition: needs-decision
+Disposition: accepted
 Status: open
 Owner: M5 implementer
 Owning stage: review-resolution
 Decision owner: M5 implementer
-Decision needed: accept the bounded removal of the impossible v1-to-test-spec authoring handoff.
-Chosen action: pending
+Decision needed: none; apply the bounded correction required by the approved compatibility contract.
+Chosen action: make governed plan authoring explicitly v2-only, route v2 to Delivery Review, and stop manifest-bound v1 authoring for Workflow handling.
 Rationale: every resumable v1 record is post-delivery and the referenced skill no longer exists.
 Required outcome: make governed plan authoring v2-only and fail closed for manifest-bound v1 authoring.
 Safe resolution path: update the governed plan reference, add a direct regression, and rerun CMD-07, CMD-08, and CMD-13.

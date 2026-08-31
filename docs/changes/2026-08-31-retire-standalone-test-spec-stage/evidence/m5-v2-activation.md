@@ -30,6 +30,13 @@ Before production changes, focused tests failed because new-change still emitted
 - Manifest-bound v1 changes remain readable and may continue only from their already-approved post-delivery packages.
 - Plan-owned specialist verification references remain packaged conditionally for every supported adapter.
 
+## Code Review R1 correction
+
+- `RTS-M5-CR1`: removed standalone test-spec from the conditionally loaded automation target list and workflow-guide skeleton, including its lifecycle chain, registry entry, and artifact table row.
+- `RTS-M5-CR2`: made governed plan authoring v2-only, routed its handoff to Delivery Review, and made manifest-bound v1 authoring stop for Workflow because resumable v1 work is already post-delivery.
+- Added direct regressions over canonical conditional resources, generated skill mirrors, and each supported staged adapter archive.
+- The first correction broad-smoke run stopped on stale change-local review summary fields. Workflow synchronized `review.status: changes-requested` and `review.unresolved_items: 2` to the already-recorded M5 R1 findings; explicit-path lifecycle validation and the complete broad-smoke rerun then passed.
+
 ## Validation
 
 - `node --test packages/rigorloop/test/cli.test.js packages/rigorloop/test/lifecycle-contract.test.js packages/rigorloop/test/lifecycle-read.test.js packages/rigorloop/test/lifecycle-stage-advance.test.js packages/rigorloop/test/lifecycle-transaction.test.js` — passed, 189 tests.
@@ -38,14 +45,15 @@ Before production changes, focused tests failed because new-change still emitted
 - `python scripts/test-artifact-lifecycle-validator.py` — passed.
 - `python scripts/test-workflow-automation.py && python scripts/test-workflow-automation-policy.py && python scripts/test-workflow-automation-state.py` — passed.
 - `python scripts/test-review-artifact-validator.py` — passed.
-- `python scripts/test-skill-validator.py` — passed, 376 tests.
-- `python scripts/test-build-skills.py && python scripts/build-skills.py --check` — passed, including temporary generated-skill parity.
-- `python scripts/test-adapter-distribution.py` — passed, 154 tests in 380 seconds, including supported archive and clean-install checks.
+- `python scripts/test-skill-validator.py && python scripts/validate-skills.py` — passed, 378 tests plus canonical skill integrity.
+- `python scripts/test-build-skills.py && python scripts/build-skills.py --check` — passed, 8 tests plus temporary generated-skill parity.
+- `python scripts/test-adapter-distribution.py` — passed, 154 tests in 408 seconds, including direct conditional-resource assertions in every supported staged archive.
 - `python scripts/validate-documentation-prose.py --mode audit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md` — passed with 0 errors and 48 pre-existing/source-format warnings assessed as non-blocking.
 - `python scripts/test-lifecycle-cli-conformance.py` — passed, 6 invalid and 10 protected fixtures.
 - `python scripts/test-governed-lifecycle-cli-validator.py` — passed, 8 tests.
 - `python scripts/validate-governed-lifecycle-cli.py` — passed; activation errors 0, failures 0, retired progression dependencies 0, 33 explicit records validated, 2 approved baseline warnings.
-- `bash scripts/ci.sh --mode broad-smoke` — passed, 11 checks in 434 seconds.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-08-31-retire-standalone-test-spec-stage/change.yaml --path docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-resolution.md --path scripts/test-adapter-distribution.py --path scripts/test-build-skills.py --path scripts/test-skill-validator.py --path skills/plan/references/governed-plan-authoring.md --path skills/workflow/assets/workflows-skeleton.md --path skills/workflow/references/bounded-workflow-automation.md` — passed, 5 lifecycle-managed artifact files validated.
+- `bash scripts/ci.sh --mode broad-smoke` — passed on the correction rerun, 12 checks in 445 seconds.
 - `git diff --check` — passed.
 
 ## Unaffected with rationale

@@ -8958,6 +8958,33 @@ class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
         self.assertIn("plan -> delivery-review -> implement", body)
         self.assertNotIn("plan -> test-spec -> delivery-review", body)
 
+    def test_conditional_workflow_resources_are_plan_centered(self) -> None:
+        automation = (
+            ROOT / "skills/workflow/references/bounded-workflow-automation.md"
+        ).read_text(encoding="utf-8")
+        skeleton = (
+            ROOT / "skills/workflow/assets/workflows-skeleton.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("`plan`, `delivery-review`", automation)
+        self.assertNotIn("`plan`, `test-spec`, `delivery-review`", automation)
+        self.assertIn("-> plan\n-> delivery-review", skeleton)
+        self.assertNotIn("-> test-spec", skeleton)
+        self.assertNotIn("test_spec:", skeleton)
+        self.assertNotIn("owner: test-spec", skeleton)
+        self.assertNotIn("| Test specs |", skeleton)
+
+    def test_governed_plan_authoring_is_v2_only_and_v1_fails_closed(self) -> None:
+        reference = (
+            ROOT / "skills/plan/references/governed-plan-authoring.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("Governed plan authoring is available only for v2", reference)
+        self.assertIn("Manifest-bound v1 work is post-delivery", reference)
+        self.assertIn("stop and return the context to Workflow", reference)
+        self.assertIn("handoff: `delivery-review`", reference)
+        self.assertNotIn("handoff: `test-spec`", reference)
+
     def test_active_governance_has_no_preactivation_default(self) -> None:
         combined = "\n".join(
             (ROOT / path).read_text(encoding="utf-8")

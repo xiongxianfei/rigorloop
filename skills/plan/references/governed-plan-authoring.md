@@ -2,6 +2,8 @@
 
 Load this reference only after the parent resolves one exact governed change with plan authority. The parent owns plan quality; this reference owns authoring registration and the existing one-time initialization exception.
 
+Governed plan authoring is available only for v2. Manifest-bound v1 work is post-delivery and continues from its registered package; it never re-enters plan or test-spec authoring. If plan context identifies manifest-bound v1 work, stop and return the context to Workflow rather than authoring or routing to a removed stage.
+
 ## CLI-bound authoring
 
 Run `rigorloop lifecycle context plan --change <change-id> --format json`. Require settled inputs, exact target or unambiguous creation path, legal authority, and no blocker. Capture the current target digest before revision.
@@ -18,4 +20,4 @@ Retain the contract's narrow authority to initialize `workflow_state.planned_wor
 
 ## Result
 
-Report authoring and CLI results, initialization state when applicable, blockers, and the contract-selected handoff: `test-spec` for registered v1 or `delivery-review` for v2. Do not settle or route.
+Report authoring and CLI results, initialization state when applicable, blockers, and the v2 handoff: `delivery-review`. Do not settle or route.

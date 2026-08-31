@@ -113,8 +113,40 @@ class AdapterDistributionTests(unittest.TestCase):
             for archive_path in archives:
                 with zipfile.ZipFile(archive_path) as archive:
                     names = set(archive.namelist())
+                    automation_entry = next(
+                        name
+                        for name in names
+                        if name.endswith(
+                            "/workflow/references/bounded-workflow-automation.md"
+                        )
+                    )
+                    skeleton_entry = next(
+                        name
+                        for name in names
+                        if name.endswith("/workflow/assets/workflows-skeleton.md")
+                    )
+                    plan_authoring_entry = next(
+                        name
+                        for name in names
+                        if name.endswith(
+                            "/plan/references/governed-plan-authoring.md"
+                        )
+                    )
+                    automation = archive.read(automation_entry).decode("utf-8")
+                    skeleton = archive.read(skeleton_entry).decode("utf-8")
+                    plan_authoring = archive.read(plan_authoring_entry).decode(
+                        "utf-8"
+                    )
                 self.assertFalse(any("/test-spec/" in name for name in names))
                 self.assertTrue(all(any(name.endswith(f"/plan/references/{item}") for name in names) for item in required))
+                self.assertNotIn("`plan`, `test-spec`, `delivery-review`", automation)
+                self.assertNotIn("-> test-spec", skeleton)
+                self.assertNotIn("test_spec:", skeleton)
+                self.assertIn(
+                    "Governed plan authoring is available only for v2",
+                    plan_authoring,
+                )
+                self.assertNotIn("handoff: `test-spec`", plan_authoring)
 
     def test_staged_v2_archive_validation_rejects_extra_retired_entrypoint(self) -> None:
         with tempfile.TemporaryDirectory(prefix="staged-v2-mixed-") as temp_dir:
