@@ -14,6 +14,7 @@ from typing import Any
 from artifact_lifecycle_contracts import (
     LIFECYCLE_ACTIVATION_MANIFEST_PATH,
     LIFECYCLE_CONTRACT_V1,
+    LIFECYCLE_CONTRACT_V2,
     SIMPLIFIED_PROPOSAL_CUTOVER_DATE,
     SIMPLIFIED_PROPOSAL_FORBIDDEN_SECTIONS,
     SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION,
@@ -1986,6 +1987,12 @@ def validate_repository(
                 )
         else:
             activation_manifest_valid = True
+    classification_manifest = activation_manifest if activation_manifest_valid else {
+        "schema_version": 1,
+        "state": "preactivation",
+        "activating_source_revision": None,
+        "changes": [],
+    }
 
     for path in scope.change_yaml_paths:
         metadata_error_messages: set[str] = set()
@@ -2035,14 +2042,29 @@ def validate_repository(
         lifecycle_classification: dict[str, str] | None = None
         if isinstance(metadata, dict) and activation_manifest_present and not activation_manifest_valid:
             continue
-        if isinstance(metadata, dict) and activation_manifest_valid:
+        if (
+            isinstance(metadata, dict)
+            and not activation_manifest_present
+            and metadata.get("lifecycle_contract") == LIFECYCLE_CONTRACT_V2
+        ):
+            blocking_findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=path,
+                    artifact_class="change_metadata",
+                    status=None,
+                    message="v2 lifecycle contract requires the tracked activation manifest",
+                )
+            )
+            continue
+        if isinstance(metadata, dict) and (activation_manifest_valid or not activation_manifest_present):
             change_id = metadata.get("change_id")
             if isinstance(change_id, str):
                 try:
                     lifecycle_classification = classify_lifecycle_contract(
                         change_id,
                         metadata,
-                        activation_manifest,
+                        classification_manifest,
                     )
                 except ValueError as exc:
                     message = str(exc)

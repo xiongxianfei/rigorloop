@@ -5425,6 +5425,25 @@ lifecycle_contract: stage-owned-change-local-v2
         messages = "\n".join(finding.message for finding in result.blocking_findings)
         self.assertIn("activation manifest state: unknown_value published", messages)
 
+    def test_public_validator_rejects_v2_when_activation_manifest_is_missing(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="lifecycle-contract-missing-manifest-"))
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        change_path = root / "docs" / "changes" / "new-v2" / "change.yaml"
+        change_path.parent.mkdir(parents=True, exist_ok=True)
+        change_path.write_text(
+            """change_id: new-v2
+lifecycle_contract: stage-owned-change-local-v2
+""",
+            encoding="utf-8",
+        )
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=["docs/changes/new-v2/change.yaml"],
+        )
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("v2 lifecycle contract requires the tracked activation manifest", messages)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
