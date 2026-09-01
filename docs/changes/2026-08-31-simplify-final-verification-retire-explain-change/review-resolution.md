@@ -2,15 +2,16 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`
 - Findings resolved: 2
-- Unresolved findings: 0
-- Current result: Code Review M1 R2 confirmed semantic inventory discovery and direct final-manifest ordering proof; both R1 findings are resolved.
+- Unresolved findings: 5
+- Current result: Code Review M2 R1 requested correction of evidence-surface closure, execution proof, evidence-tail registration, JavaScript/Python parity, and exact basis identity enforcement.
 
 ## Resolution Overview
 
@@ -18,6 +19,11 @@ Review closeout: code-review-m1-r2
 | --- | --- | --- | --- |
 | FV-M1-CR1 | accepted | resolved | Governed, v1 or legacy, and v2 inventories now use parsed semantic lifecycle contracts and fail closed on unknown or unreadable metadata. |
 | FV-M1-CR2 | accepted | resolved | Node, Python, and public-wrapper tests directly reject duplicate and unsorted final-verification manifest entries. |
+| FV-M2-CR1 | accepted | open | Close and map every evidence proved-surface reference before applicability consistency. |
+| FV-M2-CR2 | accepted | open | Bind actual runs, hosted observations, always-current checks, and reuse to exact proof identities. |
+| FV-M2-CR3 | accepted | open | Require one exact report plus matching schema-valid content registration for a current evidence tail. |
+| FV-M2-CR4 | accepted | open | Make JavaScript and Python reject identical duplicate and empty-content partitions. |
+| FV-M2-CR5 | accepted | open | Enforce canonical immutable basis identities before successful readiness. |
 
 ## Finding Details
 
@@ -60,3 +66,90 @@ Validation evidence: Code Review M1 R2 confirmed direct duplicate, raw-UTF-8-uns
 ### code-review-m1-r2
 
 No material findings.
+
+### code-review-m2-r1
+
+#### FV-M2-CR1
+
+Finding ID: FV-M2-CR1
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Decision owner: M2 implementer
+Decision needed: none; apply the bounded correction required by the approved evidence-map contract.
+Chosen action: validate every proved-surface reference against the closed impact vocabulary and the classified impact map before freshness or decision consistency.
+Rationale: freshness can determine execution but cannot authorize an unclassified evidence surface.
+Required outcome: unknown, duplicate, or unmapped proved surfaces fail closed and valid multi-surface evidence remains conservative.
+Safe resolution path: add identical JavaScript/Python validation and shared regressions, rerun every M2 command, and return M2 for rereview.
+Follow-up: Code Review M2 R2.
+Validation target: FV-R10, FV-R11, FV-R14, FV-R18, FV-R22, FV-R38, TG-06, TG-07.
+Validation evidence: pending implementation correction and focused rerun.
+
+#### FV-M2-CR2
+
+Finding ID: FV-M2-CR2
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Decision owner: M2 implementer
+Decision needed: none; implement the already-approved exact command and observed-result contract.
+Chosen action: add execution-kind-specific proof identities for evidence and always-current entries.
+Rationale: an execution label alone does not prove that a command ran or hosted evidence was observed.
+Required outcome: successful reports bind exact command or observation proof, while cache hits and configured-only commands cannot establish a pass.
+Safe resolution path: close entry shapes, update resources/skeleton, add direct negative and successful round-trip tests, and rerun M2 validation.
+Follow-up: Code Review M2 R2.
+Validation target: FV-R20, FV-R21, FV-R22, FV-R26, TG-08.
+Validation evidence: pending implementation correction and focused rerun.
+
+#### FV-M2-CR3
+
+Finding ID: FV-M2-CR3
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Decision owner: M2 implementer
+Decision needed: none; close the exact report and lifecycle-registration boundary approved by Design.
+Chosen action: require and bind both tail members and exact report content, aligned with the actual lifecycle registration schema.
+Rationale: an allow-list over supplied paths cannot detect a missing report or registration and cannot grant readiness after partial persistence.
+Required outcome: only one complete report plus its matching content registration is current; every partial, mismatched, duplicated, trailing, or drifted state is non-authoritative.
+Safe resolution path: replace the subset predicate with exact tail-state validation and add direct write/read-back/registration/replay/drift tests before M3 integration.
+Follow-up: Code Review M2 R2.
+Validation target: FV-R31-FV-R34, TG-09, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001.
+Validation evidence: pending implementation correction and focused rerun.
+
+#### FV-M2-CR4
+
+Finding ID: FV-M2-CR4
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Decision owner: M2 implementer
+Decision needed: none; restore the required cross-language conformance contract.
+Chosen action: align exact always-current cardinality and successful explanation non-empty rules through shared fixtures.
+Rationale: the runtime and repository validator must not disagree about whether the same report grants readiness.
+Required outcome: JavaScript and Python return identical outcomes for duplicate checks, whitespace strings, empty list members, malformed collections, and every closed vocabulary.
+Safe resolution path: add one shared fixture matrix and mirror error ordering and content validation in both implementations.
+Follow-up: Code Review M2 R2.
+Validation target: FV-R19, FV-R27, FV-R38, TG-09, BND-STATE-001.
+Validation evidence: pending implementation correction and focused rerun.
+
+#### FV-M2-CR5
+
+Finding ID: FV-M2-CR5
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Decision owner: M2 implementer
+Decision needed: none; enforce existing canonical identity types and formats.
+Chosen action: validate each normalized basis member with its repository identity, revision, digest, safe-ID, review-ID, or repository-relative path contract.
+Rationale: a non-empty scalar is not necessarily an exact immutable identity.
+Required outcome: malformed or unresolved basis values cannot support success, while exact current identities continue to round-trip identically.
+Safe resolution path: reuse existing validators, add shared invalid-format fixtures, and rerun M2 validation.
+Follow-up: Code Review M2 R2.
+Validation target: FV-R8, FV-R26, FV-R31, FV-R33, TG-05, BND-AUTH-001, INT-003.
+Validation evidence: pending implementation correction and focused rerun.
