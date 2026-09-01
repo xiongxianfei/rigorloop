@@ -59,6 +59,10 @@ Loaded procedure and execution authority are independent:
 
 Use execution mode `isolated` for direct checks and direct branch-readiness assessments. Use `governed-final` only when current governed evidence establishes final `verify` for the same change. Never infer the mode from conversational wording.
 
+### Inactive v3 final-readiness profile
+
+The impact-aware v3 protocol is staged but not current while `specs/final-verification-contract-activation.yaml` is `preactivation`. Do not use it to reinterpret v1 or v2 work or bypass the current `explain-change` prerequisite. After coherent v3 activation, final readiness additionally loads impact analysis and evidence applicability; successful results then load explanation guidance and use the v3 report skeleton. Scoped verification loads none of those resources.
+
 ## Execution authority
 
 An `isolated` result does not mutate lifecycle state, perform governed recording unless explicitly authorized by an existing contract, or invoke `pr`. It may name `pr` only as a possible next stage.
@@ -202,6 +206,10 @@ Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure
 - READ `references/requirement-to-delivery-model.md` when tracing final evidence backward to implementation, requirements, and proposal direction.
 - READ `references/branch-readiness-verification.md` for `branch-readiness` or `workflow-final-verification` after exact target resolution.
 - READ `references/boundary-first-method-v1.md` when the final approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient for verification.
+- READ `references/final-impact-analysis-v3.md` only for an active v3 final-readiness attempt after exact target resolution.
+- READ `references/evidence-applicability-v3.md` only for an active v3 final-readiness attempt after impact classification.
+- READ `references/successful-explanation-v3.md` only after an active v3 final-readiness attempt has succeeded.
+- COPY `assets/verify-report-v3-skeleton.md` only when recording an active v3 final-readiness result.
 
 Conditional references specialize their activation context; they cannot override this file or each other's owned contract. A contradiction is a package defect and stops dependent work.
 

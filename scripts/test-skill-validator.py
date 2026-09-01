@@ -8946,6 +8946,38 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
         self.assertNotIn("New changes remain v1 until M5", combined)
 
 
+class FinalVerificationProtocolM2Tests(unittest.TestCase):
+    def test_verify_v3_resources_are_progressive_and_inactive(self) -> None:
+        skill = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("Inactive v3 final-readiness profile", skill)
+        self.assertIn("preactivation", skill)
+        self.assertIn("Scoped verification loads none of those resources", skill)
+        for path in (
+            "references/final-impact-analysis-v3.md",
+            "references/evidence-applicability-v3.md",
+            "references/successful-explanation-v3.md",
+        ):
+            self.assertIn(f"READ `{path}`", skill)
+            self.assertTrue((ROOT / "skills/verify" / path).is_file())
+        self.assertIn("COPY `assets/verify-report-v3-skeleton.md`", skill)
+
+    def test_impact_guidance_forbids_filename_only_non_impact(self) -> None:
+        body = (ROOT / "skills/verify/references/final-impact-analysis-v3.md").read_text(encoding="utf-8")
+        for phrase in ("affirmative evidence", "filename", "`.gitignore`", "`unknown` expands verification"):
+            self.assertIn(phrase, body)
+
+    def test_applicability_guidance_preserves_freshness_and_cache_boundaries(self) -> None:
+        body = (ROOT / "skills/verify/references/evidence-applicability-v3.md").read_text(encoding="utf-8")
+        for phrase in ("`always-current`", "`fresh-required`", "`impact-sensitive`", "cache hit", "not an actual run"):
+            self.assertIn(phrase, body)
+
+    def test_explanation_guidance_is_success_only_and_identity_safe(self) -> None:
+        body = (ROOT / "skills/verify/references/successful-explanation-v3.md").read_text(encoding="utf-8")
+        self.assertIn("must omit the explanation", body)
+        self.assertIn("must not embed its own Git commit identity", body)
+        self.assertIn("identical complete registered replay is idempotent", body)
+
+
 class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
     """RTS TS-013 and TS-017 active publication contract."""
 
