@@ -26,7 +26,7 @@ The design serves contributors maintaining the workflow contract, agents perform
 - Explicit fresh-required policy, required hosted CI, and security-, release-, or environment-sensitive obligations override ordinary evidence reuse.
 - Every final run performs an always-current readiness set against current repository and lifecycle state.
 - `skills/` remains the only authored skill source; installed and released adapter packages remain generated output.
-- Historical `explain-change` artifacts, skills, reviews, and lifecycle records remain readable under their original contract and are not migrated.
+- Historical `explain-change` artifacts, skills, reviews, and lifecycle records remain readable evidence and are not migrated, but they grant no current progression authority.
 - Closed lifecycle, impact, freshness, evidence-decision, and outcome vocabularies fail closed before consistency checks.
 - This implementing change remains governed by `stage-owned-change-local-v2` and completes its registered `explain-change -> verify -> pr` path before activation.
 
@@ -64,7 +64,7 @@ C4 system and container diagrams are not applicable because this change modifies
 Adopt one final-verification protocol with six coordinated parts:
 
 1. Retire `explain-change` from the active stage graph, public skill inventory, generated adapters, and current artifact prerequisites.
-2. Introduce `stage-owned-change-local-v3` as the active graph discriminator after one coherent release cutover; v1, v2, and unversioned records remain bounded historical compatibility inputs.
+2. Introduce `stage-owned-change-local-v3` as the sole current executable graph after one coherent release cutover; v1, v2, and unversioned records remain non-executable history.
 3. Make Verify classify final-diff impact against a closed set of system and delivery surfaces, starting from the Delivery plan's verification allocation.
 4. Decide each required evidence item's applicability as `reuse`, `rerun`, or `newly-required`, with explicit rationale and conservative expansion on unknown impact.
 5. Record the readiness verdict, evidence basis, and final change explanation together in the Verify-owned report only after all required evidence and current-state checks pass.
@@ -114,11 +114,11 @@ The Verify-owned `docs/changes/<change-id>/verify-report.md` is the durable fina
 
 The report never embeds its own Git commit identity. The verified subject remains the reviewed product subject. The report and matching Verify-owned lifecycle recording form a closed evidence tail whose permitted paths and fields cannot contain product, spec, architecture, plan, dependency, generated-product, or unrelated documentation changes.
 
-### Lifecycle and compatibility interpreter
+### Lifecycle interpreter
 
 After activation, v3 uses `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`. `explain-change` is not a v3 stage, active artifact kind, prerequisite, or public skill.
 
-A new frozen activation manifest records the activating source revision and the complete set of pre-v3 v2 change IDs. V2 is accepted only for an exact manifest-listed change. Existing v1 and unversioned interpretation continues through the current v2 activation manifest. Unknown contract values, an unlisted v2 record, or v3 state containing active explain-change state fail before consistency interpretation.
+The activation record binds the activating source revision and proves every nonterminal pre-v3 change is complete or explicitly closed. The current runtime accepts only v3 progression. Historical non-v3 records remain readable but do not enter a current stage graph. Unknown or non-v3 progression requests, and v3 state containing active explain-change state, fail before consistency interpretation.
 
 ### Published skill packages
 
@@ -163,9 +163,9 @@ An interrupted run with no complete registered report has no successful explanat
 
 ## Deployment View
 
-Activation is one repository and release compatibility boundary covering governance, workflow specs, lifecycle schema and engine, validators, canonical skills and resources, templates, docs, fixtures, generated adapter packages, manifests, and release validation.
+Activation is one repository and release boundary covering governance, workflow specs, lifecycle schema and engine, validators, canonical skills and resources, templates, docs, fixtures, generated adapter packages, manifests, and release validation.
 
-Before any v3 record exists, rollback restores the last coherent v2 package and leaves the unused v3 activation manifest as historical evidence. After a v3 record exists, recovery is forward through a compatible corrective release. Returning v2 to the default would require a separately approved migration design because v3 records have no explain-change obligation.
+Before any v3 record exists, rollback restores the last coherent v2 release package. After a v3 record exists, recovery is forward through a corrective release; the current runtime never branches back into v1/v2 progression.
 
 This change itself completes under v2. The release cutover may occur only after it and every other nonterminal pre-v3 change has completed or is explicitly excluded by validated policy.
 
@@ -215,14 +215,14 @@ This ADR supersedes the active `S -> R -> E -> verify` direction in [ADR-2026081
 | Failure integrity | Verification finds a defect or stale review. | The attempt records the blocker, emits no final explanation, and grants no `branch-ready`. |
 | Identity safety | Verify records its own report after evaluating the reviewed subject. | The report binds `S` and `R`, omits its own commit hash, and the closed evidence tail contains no product or governing drift. |
 | Policy compliance | A plan marks a check fresh-required. | Verify reruns it even when impact analysis would otherwise allow reuse. |
-| Historical compatibility | A completed v2 change contains explain-change evidence. | The exact manifest-listed record remains readable without mutation or v3 reinterpretation. |
+| Historical readability | A completed v2 change contains explain-change evidence. | The record remains readable without mutation, v3 reinterpretation, or current progression authority. |
 | Package coherence | A supported adapter is generated or released. | Current packages contain Verify with mapped resources, omit standalone explain-change, and mixed packages fail validation. |
 
 ## Risks and Technical Debt
 
 - Incorrect non-impact classification could reuse unsound evidence. The affirmative proof requirement, `unknown` fallback, reviewable rationale, and fresh-policy override mitigate but do not eliminate semantic judgment risk.
 - Verify becomes a larger responsibility boundary. Progressive disclosure and one normalized report prevent the common path from absorbing every specialized procedure.
-- The v3 activation manifest and v1/v2 compatibility readers add bounded legacy complexity. They are preferable to silently applying a new graph to old evidence.
+- Historical records require no current compatibility interpreter. Their original release archives preserve context while the current runtime enforces one v3 graph.
 - Report recording after substantive proof creates an identity boundary. The closed Verify evidence tail and content registration avoid self-referential commit fields, but Delivery must allocate direct recovery and drift tests.
 - Current guidance distributes final-stage rules across governance, specs, skills, schemas, validators, fixtures, and generated packages. Activation must inventory all current surfaces and reject mixed versions.
 - Impact-based reuse is semantic and may initially be conservative enough to yield modest savings. Precision may improve only through later evidence, not by weakening the unknown fallback.

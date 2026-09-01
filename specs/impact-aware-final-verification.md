@@ -14,7 +14,7 @@ boundary_contract: boundary-first-v1
 
 RigorLoop must replace the separate `explain-change -> verify` closeout sequence with one final Verify stage that selects evidence according to actual impact, preserves explicit freshness requirements, decides readiness, and produces the durable final explanation only when the exact verified subject is ready for PR handoff.
 
-This contract removes ceremony without weakening review, traceability, failure handling, historical compatibility, or final-readiness authority.
+This contract removes ceremony without weakening review, traceability, failure handling, historical readability, or final-readiness authority.
 
 ## Glossary
 
@@ -70,7 +70,7 @@ Then it consumes that report's explanation and evidence basis without authoring 
 Example E8: Historical explanation remains historical
 Given a completed v1 or v2 change contains an explain-change artifact or stage record
 When current tooling reads the record
-Then it remains readable under its registered contract and is not migrated or interpreted as a v3 prerequisite
+Then it remains readable as historical evidence but grants no current lifecycle progression and is not interpreted as a v3 prerequisite
 
 Example E9: Product drift after Verify invalidates readiness
 Given a successful Verify report exists for reviewed subject `S`
@@ -84,10 +84,10 @@ Then the prior `branch-ready` result is stale and the change returns to the appl
 | FV-R1 | Newly governed v3 changes MUST use the final sequence `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr` and MUST NOT route through `explain-change`. |
 | FV-R2 | V3 lifecycle state, routing, schemas, validators, current templates, and public stage inventories MUST NOT require or create an active `explain-change` stage or artifact. |
 | FV-R3 | Verify MUST NOT require a current explain-change artifact as a final-readiness prerequisite for v3 changes. |
-| FV-R4 | Historical explain-change artifacts, review evidence, and settled v1 or v2 lifecycle records MUST remain readable without migration or retroactive invalidation. |
-| FV-R5 | `stage-owned-change-local-v3` MUST be the active discriminator after coherent activation, and every pre-v3 v2 change MUST be bound by exact change ID in frozen activation evidence before v2 remains accepted. |
-| FV-R6 | Unknown contracts, unlisted v2 records, contract-class mismatches, and v3 state containing active explain-change values MUST fail closed before consistency interpretation. |
-| FV-R7 | The implementing v2 change MUST complete its registered v2 lifecycle before v3 activation; activation MUST NOT reinterpret its in-flight state. |
+| FV-R4 | Historical explain-change artifacts, review evidence, release archives, and settled v1 or v2 lifecycle records MUST remain readable without migration or retroactive invalidation, but MUST grant no current progression authority. |
+| FV-R5 | `stage-owned-change-local-v3` MUST be the sole current executable lifecycle contract after coherent activation; current tooling MUST NOT maintain v1/v2 progression branches or a compatibility allowlist. |
+| FV-R6 | Any non-v3 or unknown contract presented for current progression, any contract-class mismatch, and any v3 state containing active explain-change values MUST fail closed before consistency interpretation. |
+| FV-R7 | The implementing v2 change MUST complete through the last coherent v2 package before v3 activation; the activated package MUST NOT reinterpret or continue its historical state. |
 | FV-R8 | Final Verify MUST resolve exactly one repository, governed change, verified subject, final holistic Code Review basis, approved Design package, approved Delivery plan, and final diff before selecting evidence. |
 | FV-R9 | Verify MUST use the approved Delivery plan's verification allocation as the initial required evidence map and MUST NOT silently replace or weaken it. |
 | FV-R10 | Verify MUST classify every relevant final-diff surface using a closed impact vocabulary whose outcomes distinguish `affected`, `unaffected`, and `unknown`. |
@@ -139,7 +139,7 @@ Then the prior `branch-ready` result is stale and the change returns to the appl
 - Fresh-policy and always-current proof cannot be bypassed by impact classification.
 - Failed attempts contain blockers but no final explanation or branch-ready claim.
 - Successful reports contain one PR-consumable explanation bound to the exact evidence basis.
-- Historical records remain readable, and current mixed packages fail closed.
+- Historical records remain readable without executable authority, and current mixed packages fail closed.
 
 ## Inputs and outputs
 
@@ -156,7 +156,7 @@ Outputs are a failed or inconclusive Verify result containing blockers and owner
 - The approved plan remains the initial evidence authority; Verify may add obligations but cannot erase them.
 - Unknown impact, freshness, decision, lifecycle, or outcome values cannot support readiness.
 - The verified subject and final-review basis remain stable across the Verify evidence tail.
-- Historical contract interpretation never grants current v3 progression authority.
+- Historical contract interpretation never grants current progression authority.
 
 ## Error and boundary behavior
 
@@ -191,12 +191,12 @@ Boundary model scope: FV-R1, FV-R2, FV-R3, FV-R4, FV-R5, FV-R6, FV-R7, FV-R8, FV
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
 | BND-INPUT-001 | input-domain | FV-R8, FV-R9, FV-R10, FV-R11, FV-R12, FV-R13, FV-R14, FV-R15, FV-R16, FV-R17, FV-R18, FV-R20, FV-R21, FV-R22 | target exact or ambiguous; surface affected, unaffected, or unknown; evidence pass, fail, stale, missing, or conflicting; decision reuse, rerun, or newly-required; freshness always-current, fresh-required, or impact-sensitive | Every required input resolves under a closed value before readiness; unaffected and reuse require affirmative evidence. | Exact sufficient inputs permit selection and execution; ambiguity, unknown impact, or insufficient evidence broadens or blocks. | FV-R14 |
-| BND-STATE-001 | state-lifecycle | FV-R1, FV-R2, FV-R3, FV-R4, FV-R5, FV-R6, FV-R7, FV-R23, FV-R25, FV-R26, FV-R28, FV-R33, FV-R34, FV-R35, FV-R37 | v1, v2, or v3 contract; attempt pending, failed, inconclusive, successful, interrupted, or stale; report absent, partial, current, or stale | Only a complete current successful v3 Verify result contains final explanation and grants branch-ready; historical state grants no v3 progression. | Success permits PR handoff; every other state withholds readiness and routes or stops. | FV-R26 |
+| BND-STATE-001 | state-lifecycle | FV-R1, FV-R2, FV-R3, FV-R4, FV-R5, FV-R6, FV-R7, FV-R23, FV-R25, FV-R26, FV-R28, FV-R33, FV-R34, FV-R35, FV-R37 | current v3 or historical non-v3 record; attempt pending, failed, inconclusive, successful, interrupted, or stale; report absent, partial, current, or stale | Only a complete current successful v3 Verify result contains final explanation and grants branch-ready; historical state grants no progression. | Current v3 success permits PR handoff; historical or other non-success state withholds readiness and stops or routes. | FV-R26 |
 | BND-AUTH-001 | identity-authority | FV-R8, FV-R9, FV-R17, FV-R23, FV-R24, FV-R26, FV-R29, FV-R30, FV-R31, FV-R32, FV-R33 | proposal, Design, Delivery, reviewed subject, review, Verify, Workflow, PR, and correction-owner identities; current, stale, missing, or mismatched authority | Each stage writes only its owned surface; Verify never repairs or routes; PR consumes only current Verify authority. | Current identities permit judgment and handoff; stale or mismatched authority blocks and names the owner. | FV-R30 |
 | BND-COMPOSE-001 | composition-path | FV-R9, FV-R19, FV-R21, FV-R26, FV-R27, FV-R29, FV-R32, FV-R35, FV-R36, FV-R37 | plan map to evidence; diff to impact; evidence to verdict; verdict to explanation; Verify result to PR; canonical skill to generated package | One traceable chain produces one authoritative successful result; cache, historical skill, or PR prose cannot bypass it. | Coherent composition supports readiness; missing mappings or mixed packages block. | FV-R26 |
 | BND-TEMPORAL-001 | temporal-retry | FV-R23, FV-R25, FV-R31, FV-R32, FV-R33, FV-R34 | first attempt, correction, rereview, retry, interruption, identical replay, changed-basis replay, later drift | Every attempt binds one subject and basis; identical complete replay is idempotent; changed basis requires re-evaluation. | Retry succeeds only from current evidence; interruption and drift withhold or stale readiness. | FV-R34 |
 | BND-RECOVERY-001 | failure-recovery | FV-R13, FV-R16, FV-R17, FV-R20, FV-R22, FV-R23, FV-R24, FV-R25, FV-R33, FV-R34 | unknown impact, failed check, missing allocation, stale review, report failure, owner correction, rereview, reattempt | Verify records and routes but never repairs; unaffected evidence is reconsidered rather than automatically discarded or retained. | Safe recovery returns through the owning stage and a new final attempt; unresolved failure blocks. | FV-R24 |
-| BND-COMPAT-001 | compatibility-migration | FV-R4, FV-R5, FV-R6, FV-R7, FV-R28, FV-R35, FV-R37 | historical v1 or v2; active v3; listed or unlisted prior record; coherent or mixed package; pre- or post-v3 activation | Historical evidence remains readable; only v3 grants the new graph; unknown or mixed state fails closed. | Coherent activation enables v3; prior records remain historical; invalid classification blocks. | FV-R5 |
+| BND-COMPAT-001 | compatibility-migration | FV-R4, FV-R5, FV-R6, FV-R7, FV-R28, FV-R35, FV-R37 | historical non-v3 record; current v3 record; coherent or mixed package; pre- or post-v3 activation | Historical evidence remains readable but only v3 grants current execution; unknown, non-v3 progression, or mixed state fails closed. | Coherent activation enables v3; prior records remain non-executable history; invalid classification blocks. | FV-R5 |
 | BND-ENV-001 | external-environment | FV-R16, FV-R18, FV-R20, FV-R21, FV-R22, FV-R26 | local command, hosted CI, release environment, security environment, cache context, current or changed environment | Local evidence never claims hosted observation; environment-sensitive and explicitly fresh proof remains fresh-required. | Required current observation supports readiness; unavailable or stale external evidence blocks or remains a named gap. | FV-R20 |
 
 ## Selected interactions
@@ -206,7 +206,7 @@ Boundary model scope: FV-R1, FV-R2, FV-R3, FV-R4, FV-R5, FV-R6, FV-R7, FV-R8, FV
 | INT-001 | FV-R12, FV-R13, FV-R15, FV-R20 | BND-INPUT-001, BND-ENV-001 | A narrow-looking diff is classified unaffected while policy or environment makes prior evidence stale. | Freshness and environment override reuse; uncertainty broadens. |
 | INT-002 | FV-R23, FV-R24, FV-R25, FV-R33 | BND-STATE-001, BND-AUTH-001, BND-RECOVERY-001, BND-TEMPORAL-001 | Verify repairs a failure or carries prior evidence across a changed basis without owner correction and rereview. | Verify routes the blocker; a new attempt re-evaluates all evidence after authorized correction. |
 | INT-003 | FV-R26, FV-R27, FV-R29, FV-R31, FV-R32 | BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001 | Generating the final explanation creates a self-referential or unreviewed product identity. | The report binds the reviewed subject, omits its own commit identity, and only closed Verify evidence writes follow review. |
-| INT-004 | FV-R4, FV-R5, FV-R6, FV-R35, FV-R37 | BND-STATE-001, BND-COMPOSE-001, BND-COMPAT-001 | Current packages remove explain-change while readers reinterpret historical records or publish mixed stage inventories. | V3 activates coherently; exact listed prior records remain readable; mixed or unknown state fails closed. |
+| INT-004 | FV-R4, FV-R5, FV-R6, FV-R35, FV-R37 | BND-STATE-001, BND-COMPOSE-001, BND-COMPAT-001 | Current packages remove explain-change while tooling grants historical records progression or publishes mixed stage inventories. | V3 activates coherently; historical records remain readable only; non-v3 progression, mixed, or unknown state fails closed. |
 
 ## Example ownership
 
@@ -224,9 +224,9 @@ Boundary model scope: FV-R1, FV-R2, FV-R3, FV-R4, FV-R5, FV-R6, FV-R7, FV-R8, FV
 
 ## Compatibility and migration
 
-V3 activates through one coherent release after the implementing v2 change and every other nonterminal pre-v3 change completes or is handled by separately approved policy. A frozen activation manifest binds every pre-v3 v2 change ID. Existing v1 and unversioned records continue under the current activation manifest.
+V3 activates through one coherent release after the implementing v2 change and every other nonterminal pre-v3 change completes or is explicitly closed. The activated runtime has one executable contract and no frozen v1/v2 continuation list.
 
-No historical explain-change artifact, review, skill archive, or completed change is rewritten. Current authored and generated skill inventories remove explain-change only for v3. Before any v3 record exists, rollback may restore the prior coherent v2 package. After a v3 record exists, recovery is forward-compatible; returning v2 to default needs a separate approved migration design.
+No historical explain-change artifact, review, skill archive, or completed change is rewritten. Historical release archives retain the tooling that produced their records, but current tooling does not progress those records. Current authored and generated skill inventories remove explain-change. Before any v3 record exists, rollback may restore the prior coherent v2 package; after a v3 record exists, recovery is forward-compatible.
 
 ## Observability
 
@@ -294,7 +294,7 @@ EC10. A current generated adapter contains explain-change after v3 activation; p
 | FV-AC9 | The Verify evidence tail accepts only permitted report and lifecycle writes and invalidates product or governing drift. |
 | FV-AC10 | PR consumes the exact current successful Verify report without creating a competing authoritative explanation. |
 | FV-AC11 | Current authored and generated v3 packages omit standalone explain-change while historical archives remain unchanged. |
-| FV-AC12 | Exact manifest-listed v1 and v2 records remain readable, while unlisted, unknown, mismatched, and mixed v3 states fail closed. |
+| FV-AC12 | Historical v1 and v2 records remain readable without current progression authority, while non-v3 progression, unknown, mismatched, and mixed states fail closed. |
 | FV-AC13 | Scoped Verify does not load final-impact or explanation resources; final readiness loads the complete required procedure. |
 | FV-AC14 | Repository lifecycle, review, skill, adapter, generated-output, and explicit-path validation pass for the coherently activated surfaces. |
 
