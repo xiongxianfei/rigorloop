@@ -321,6 +321,19 @@ review:
         )
         self.assertIn(expected_text, combined_output)
 
+    def test_nested_duplicate_mapping_key_fails(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-duplicate-key-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            content = VALID_BASIC_FIXTURE.read_text(encoding="utf-8")
+            target.write_text(
+                content.replace(
+                    "review:\n  status: resolved\n",
+                    "review:\n  status: resolved\n  status: pending\n",
+                ),
+                encoding="utf-8",
+            )
+            self.assertPathFails(target, "duplicate mapping key 'status'")
+
     def valid_implementation_named_record_workflow(self, *, extra_container: str = "") -> str:
         extra = f"{extra_container}\n" if extra_container else ""
         return f"""workflow:
@@ -983,14 +996,17 @@ review:
             change_id = "2026-06-24-policy-fixture"
             change_root = repo_root / "docs" / "changes" / change_id
             change_root.mkdir(parents=True)
-            target = self.write_policy_fixture(
-                change_root,
-                workflow_block="""review:
-  status: clean
-  reviewed_artifact: docs/example.md
-  review_log: docs/changes/2026-06-24-policy-fixture/review-log.md
-  unresolved_items: 0
-""",
+            target = self.write_policy_fixture(change_root, workflow_block="")
+            target.write_text(
+                target.read_text(encoding="utf-8").replace(
+                    "review:\n  status: pending\n  unresolved_items: 0\n",
+                    "review:\n"
+                    "  status: clean\n"
+                    "  reviewed_artifact: docs/example.md\n"
+                    "  review_log: docs/changes/2026-06-24-policy-fixture/review-log.md\n"
+                    "  unresolved_items: 0\n",
+                ),
+                encoding="utf-8",
             )
             self.assertPathPasses(target)
             result = run_query_change_record(repo_root, change_id, "summary")

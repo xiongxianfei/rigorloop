@@ -37,7 +37,7 @@ Review closeout: delivery-review-r3
 | FV-M3-CR1 | accepted | resolved | V3 accepts only the S-R review-recorded tail; legacy S-R-E remains required only by v1/v2. |
 | FV-M3-CR2 | accepted | resolved | Public v3 owner routing is executable through exact review boundaries and v1/v2 reject verification-only reasons. |
 | FV-M3-CR3 | accepted | resolved | R3 confirmed every R2 counterexample fails through public transaction and authority probes. |
-| FV-M4-CR1 | accepted | open | Contract-key Verify's explanation prerequisites and handoffs so v3 has no pre-Verify explanation dependency in canonical or staged adapter packages. |
+| FV-M4-CR1 | accepted | open | Make Verify and current handoffs v3-only; historical v1/v2 records grant no current progression authority. |
 | FV-M4-CR2 | accepted | open | Reject duplicate governed mapping keys at every depth before selecting the registered primary plan or any nested authority value. |
 | FV-DLR2-01 | accepted | resolved | The plan now binds Design Review R2 consistently at every current upstream authority point. |
 | FV-DLR2-02 | accepted | resolved | M5 is non-authoritative with one exact exception; M6 binds and proves the immutable v2 closeout snapshot; activation follows only after M6. |
@@ -280,14 +280,14 @@ Status: open
 Owner: M4 implementer
 Owning stage: review-resolution
 Decision owner: M4 implementer
-Decision needed: none; apply the contract-keyed wording and semantic package proof already required by the approved v3 graph.
-Chosen action: make every Verify explanation prerequisite and correction handoff explicitly v1/v2-only or v3 success-only, then prove the same semantics in all staged candidates.
-Rationale: omitting `explain-change` from the candidate inventory is incoherent while Verify still globally requires and routes to that stage.
-Required outcome: v3 Verify accepts no standalone explanation input, creates no explanation on failure, creates the final explanation only on success, and active v2 retains its current prerequisite.
-Safe resolution path: update canonical Verify clauses, add semantic canonical and three-adapter candidate regressions, rerun all M4 commands, and return for Code Review M4 R2.
+Decision needed: none; the user selected the newest-contract-only rule and Design Review R2 approved it.
+Chosen action: make Verify and every current handoff v3-only, with historical v1/v2 records readable but non-executable; prove the same semantics in all staged candidates.
+Rationale: one current contract avoids both the impossible candidate dependency and a permanent compatibility checker. The implementing change's v2 closeout is bound separately to an immutable reviewed snapshot.
+Required outcome: current Verify accepts no standalone explanation input, creates no explanation on failure, creates the final explanation only on success, and no current skill route grants v1/v2 progression.
+Safe resolution path: update canonical Verify and workflow clauses, add semantic canonical and three-adapter candidate regressions, rerun all M4 commands, and return for Code Review M4 R2.
 Follow-up: Code Review M4 R2 after bounded implementation correction.
 Validation target: FV-R1-FV-R3, FV-R24, FV-R27, FV-R28, FV-R35-FV-R38, TG-15, TG-16, TG-18, BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001, INT-002, INT-004.
-Validation evidence: pending correction and rereview.
+Validation evidence: Correction validation passed 386 skill tests, 156 adapter tests, canonical skill validation for 21 skills, 8 build tests, and generated-skill drift checking. Code Review M4 R2 remains required.
 
 #### FV-M4-CR2
 
@@ -304,7 +304,7 @@ Required outcome: duplicate `artifact_states`, `plan`, `kind`, `role`, or `path`
 Safe resolution path: correct the shared parser or boundary parser, add direct reversal fixtures at every nested authority level, rerun all M4 commands, and return for Code Review M4 R2.
 Follow-up: Code Review M4 R2 after bounded implementation correction.
 Validation target: TG-17, BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001.
-Validation evidence: pending correction and rereview.
+Validation evidence: The shared parsed-YAML mapper now rejects a duplicate before assignment at every recursive depth; the boundary validator has no separate raw-text duplicate scan. Correction validation passed 69 boundary tests and 107 metadata-validator tests. Code Review M4 R2 remains required.
 
 ### delivery-review-r2
 

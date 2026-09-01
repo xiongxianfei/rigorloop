@@ -15,9 +15,9 @@ Requirements outside that registry remain current lifecycle and artifact-orderin
 
 `stage-owned-change-local-v2` is active for every new governed change. The standard pre-implementation chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement`. Plan owns milestone and change-level verification allocation, and Delivery Review approves implementation and verification readiness as one exact plan-only package.
 
-Final-verification v3 is staged in preactivation under `specs/final-verification-contract-activation.yaml`. Preactivation does not reinterpret current v2 work. At coherent activation, new changes use `stage-owned-change-local-v3`; the final route becomes `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`, and only a successful Verify result contains the final durable explanation. Exact manifest-listed v2 records retain `explain-change -> verify -> pr`, and historical explanation artifacts remain readable.
+Final-verification v3 is staged in preactivation under `specs/final-verification-contract-activation.yaml`. Preactivation does not reinterpret current v2 work. At coherent activation, `stage-owned-change-local-v3` becomes the only current executable contract; the final route is `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`, and only a successful Verify result contains the final durable explanation. Historical v1/v2 records and explanation artifacts remain readable but grant no current progression authority.
 
-The exact prior-contract inventory frozen in `specs/lifecycle-contract-activation.yaml` remains readable. A registered v1 change may continue only from its already-approved post-delivery package; it may not start or repeat standalone test-spec authoring or review. The legacy clauses below remain historical compatibility context and do not override this amendment.
+The exact prior-contract inventory frozen in `specs/lifecycle-contract-activation.yaml` remains readable historical evidence. It does not create a current v1/v2 execution branch. The legacy clauses below remain historical context and do not override this amendment.
 
 ## Consolidated review-gate amendment (historical)
 

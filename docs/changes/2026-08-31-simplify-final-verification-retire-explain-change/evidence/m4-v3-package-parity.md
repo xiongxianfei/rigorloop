@@ -11,14 +11,21 @@ Validation result: passed
 
 - Skill: implement
 - Status: implemented
-- Completed scope: Assembled one inactive v3 candidate across current governance, workflow documentation, canonical stage skills, boundary validation, adapter generation, and package-parity fixtures while retaining the active v2 package and historical archives.
+- Completed scope: Assembled one v3-only current candidate across governance, workflow documentation, canonical stage skills, boundary validation, adapter generation, and package-parity fixtures while preserving historical archives as read-only evidence.
 - Artifacts changed: `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md`, `specs/rigorloop-workflow.md`, canonical workflow/code-review/CI/PR skills and resources, boundary and adapter validation modules, their focused tests, and `dist/adapters/README.md`.
 - Tests added or updated: current-versus-staged governance parity, v3 skill handoff agreement, scoped Verify resource exclusion, semantic lifecycle-contract parsing, v2/v3 plan-owned boundary proof, composed-boundary examples, staged v3 archive completeness, and mixed-inventory rejection.
 - Validation performed: every M4 plan command plus `git diff --check`.
 - Validation result: passed.
-- Open blockers: none.
+- Open blockers: Code Review R1 findings await independent rereview after the corrections below.
 - Next stage: code-review.
-- Claim limitations: v3 remains inactive. This milestone does not change the default lifecycle contract, edit the current adapter manifest, remove `skills/explain-change/`, mutate historical release archives or change evidence, or start M5.
+- Claim limitations: public activation and standalone-skill removal remain M5 work. This milestone does not edit the current adapter manifest, mutate historical release archives or change evidence, or start M5.
+
+## Code Review M4 R1 correction
+
+- `FV-M4-CR1`: canonical Verify and its three generated v3 candidates now have no pre-Verify explanation prerequisite. Verify creates the durable explanation only after a successful readiness decision; failure and inconclusive outcomes create none. Current workflow guidance has one executable v3 route. The implementing change's released-v2 closeout is a one-time preactivation bootstrap, not a general compatibility branch.
+- `FV-M4-CR2`: the shared parsed-YAML mapping routine rejects duplicate keys before assignment at every nesting depth. Boundary validation delegates to that one parser and no longer maintains a raw-text or top-level-only duplicate checker.
+- Direct regressions cover shared-parser nested duplicates and authority-relevant `artifact_states`, `plan`, `kind`, `role`, and `path` duplicates in both orders. V3 candidate tests scan every supported adapter for forbidden pre-Verify explanation clauses.
+- Design Review R2 independently approved the latest-contract package. Delivery Review R3 independently approved the corrected execution sequence and reproduced all four immutable v2-bootstrap hashes. Their durable receipts record that formal CLI settlement is blocked by the already-open M4 Code Review findings; no lifecycle state was hand-edited.
 
 ## Planned milestone
 
@@ -43,37 +50,37 @@ Validation result: passed
 
 | Inventory | Authority in M4 | Evidence |
 | --- | --- | --- |
-| Current v2 | Active for new governed changes during preactivation; retains standalone `explain-change` and existing Verify handoff. | Governance surfaces name `stage-owned-change-local-v2`; tracked `dist/adapters/manifest.yaml` remains unchanged. |
-| Staged v3 | Inactive candidate; final Code Review and triggered CI route to Verify, successful Verify owns the final explanation, and PR consumes that exact result. | Contract-keyed governance/skills and temporary v3 adapter archives. |
-| Exact v1/v2 continuations | Continue only for registered prior identities under their original contracts. | Existing activation manifests and compatibility tests. |
-| Historical artifacts and releases | Readable evidence only; no new authority and no migration. | No historical change record, release archive, or generated release body was modified. |
+| Current v3 candidate | Final Code Review and triggered CI route to Verify; successful Verify owns the final explanation and PR consumes that exact result. | Current governance, canonical skills, and temporary v3 adapter archives. |
+| Implementing-change bootstrap | This change alone closes before activation through the last coherent released v2 package. | Approved plan amendment; no reusable current checker branch. |
+| Historical v1/v2 | Readable evidence only; no progression authority and no migration. | Historical records and archives remain unchanged. |
 
 ## Verification-group evidence
 
-- TG-15: current governance distinguishes active v2 from inactive v3; Workflow, Code Review, CI Maintenance, Verify, and PR agree on the v3 route, correction boundary, success-only explanation, and PR consumption. Historical v1/v2 language remains explicit.
+- TG-15: Workflow, Code Review, CI Maintenance, Verify, and PR agree on one current v3 route, correction boundary, success-only explanation, and PR consumption. Historical v1/v2 readability is separate from executable authority.
 - TG-16: scoped Verify continues to load none of the final-impact, evidence-applicability, or explanation resources. The inactive final-readiness profile maps all three, and explanation guidance loads only after a successful v3 readiness decision.
-- TG-17: v2/v3 stage-owned specs obtain boundary proof from the exact primary plan registered in parsed change metadata. Unsafe paths, missing plans, incomplete boundary/integration allocation, duplicate mapping keys, malformed YAML, and unknown contracts fail closed. Legacy proof behavior remains available only to its prior contract.
+- TG-17: governed specs obtain boundary proof from the exact primary plan registered in parsed change metadata. Unsafe paths, missing plans, incomplete boundary/integration allocation, recursive duplicate mapping keys, malformed YAML, and unknown or non-current contracts fail closed.
 - TG-18: temporary candidates for all supported adapters are generated from canonical sources and validated by exact archive inventory. Tests reject a mixed v3 archive containing an `explain-change` entrypoint and prove Verify resources are complete. The tracked current manifest and historical archives remain untouched.
 
 ## Unchanged-surface rationale
 
 - Existing M1 schema and lifecycle metadata validation already define the closed v3 contract and forbid v3 explain-change state; M4 adds no duplicate schema vocabulary.
-- Existing M3 runtime, routing, selector, and review validators already implement inactive v3 behavior. M4 changes their published governance and package projections without changing those settled semantics.
+- Existing M3 runtime, routing, selector, and review validators provide the staged protocol foundation. M4 makes published governance and package projections v3-only; M5 removes remaining executable legacy runtime branches atomically.
 - `dist/adapters/manifest.yaml` intentionally remains the active v2 inventory. Switching it or removing the canonical standalone skill belongs to the atomic M5 activation candidate.
 - No generated public adapter skill body was hand-edited. Candidate output existed only in temporary test directories.
 
 ## Validation evidence
 
-- `python scripts/test-skill-validator.py` — passed, 385 tests.
+- `python scripts/test-skill-validator.py` — passed, 386 tests.
 - `python scripts/validate-skills.py` — passed, 21 canonical skills.
 - `python scripts/test-build-skills.py` — passed, 8 tests.
 - `python scripts/build-skills.py --check` — passed using temporary generated output.
-- `python scripts/test-boundary-first-validation.py` — passed, 68 tests.
+- `python scripts/test-boundary-first-validation.py` — passed, 69 tests.
+- `python scripts/test-change-metadata-validator.py` — passed, 107 tests, including the direct recursive-duplicate parser regression and corrected single-mapping fixture.
 - `python scripts/validate-boundary-first.py --check` — passed; active snapshot and rollback artifacts validated.
-- `python scripts/test-adapter-distribution.py` — passed, 156 tests.
+- `python scripts/test-adapter-distribution.py` — passed, 156 tests in 402.878 seconds.
 - `python scripts/validate-documentation-prose.py --mode audit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md` — passed with 0 errors and 48 pre-existing or review-visible warnings.
 - `git diff --check` — passed.
 
 ## Review handoff
 
-Review M4 as an inactive package-assembly milestone. Confirm that current v2 authority is unaltered, v3 wording is consistent across all current surfaces, scoped Verify does not load final-readiness resources, plan-owned boundary proof is semantic and fail-closed, all three adapter candidates have an exact unmixed inventory, and no historical artifact or current release manifest changed.
+Review M4 as a v3-only package-assembly milestone. Confirm that no current checker or skill route selects v1/v2, the implementing change retains only its explicit released-v2 bootstrap, scoped Verify does not load final-readiness resources, plan-owned boundary proof uses the single recursive duplicate-safe parser, all three adapter candidates have an exact unmixed inventory, and no historical artifact or current release manifest changed.
