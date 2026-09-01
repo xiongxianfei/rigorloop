@@ -1,0 +1,74 @@
+schema_version: 1
+review_id: code-review-m3-r2
+review_stage: code-review
+review_target: commit:128e70c6
+base_revision: f2c69a20b89399b12b41ee7565113a32bd4dd30e
+head_revision: 128e70c6
+native_review_status: changes-requested
+review_gate_outcome: review-resolution
+independence_level: L1
+author_context_id: implement-m3-correction-128e70c6
+reviewer_context_id: independent-code-review-m3-r2
+context_separation_mechanism: fresh-assumption-diff-first-rereview
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-routing
+  - authority-boundary
+  - compatibility
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/adr/ADR-20260831-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-rereview-v1
+  - requirement-to-delivery-model-v1
+  - boundary-first-review-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/impact-aware-final-verification.md
+    revision: 128e70c6
+    sha256: 3aa7aeb6e8b3fd97ef033f5e01da12b313fa65f562934ff67d24f58eac4857e6
+  - path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+    revision: 128e70c6
+    sha256: 3a1062b8f1b16ba66df128f7e341d5e4253ed48dc089e4f293307d38c06fa74a
+  - path: docs/adr/ADR-20260831-impact-aware-final-verification.md
+    revision: 128e70c6
+    sha256: fec451d080cce96f197a8c68512233f1306031ad5feb124d448e2391f1e3abb0
+  - path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    revision: 128e70c6
+    sha256: be59397c12da69495be71c353585ab858642d00704fc1b156a40c5921dacef52
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-v3-routing-and-pr.md
+    revision: 128e70c6
+    sha256: f45b9a49a89e1184b20169913c0439da3d35aefe771190ff175806d3dc4d9410
+  - path: commit:128e70c6.diff
+    revision: 128e70c6
+    sha256: 22f5052b0a1006af44c25fdadfc19128a54b9eaa4cdd1d166011f8d7a4a40a7b
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-finding-release
+  - verdict-recorded
+risk_map:
+  affected_behavior: v3 pre-Verify tail, Verify correction ownership, correction returns, and v1/v2 compatibility
+  highest_impact_failure_modes: legacy explanation leakage, bypassed required rereview, v2 contract leakage, or unsupported owner routing
+  changed_boundaries: S-R-V temporal identity, public correction request, correction recovery, and contract selection
+  evidence_expected: exact v3 and legacy tails, all-owner public routes and returns, no-mutation failures, and v2 isolation
+  direct_inspection_areas: request vocabulary, transaction evaluator, return operation, correction storage, public automation consumer, and tests
+  intentionally_out_of_scope: skill publication, adapter generation, activation, and release cutover
+  applicable_risk_classes:
+    - lifecycle-authority
+    - temporal-identity
+    - recovery-routing
+    - compatibility
+  non_applicable_risk_classes:
+    - network-access
+    - credential-handling
+  falsifiable_questions:
+    - Can v3 consume a legacy explanation tail?
+    - Can an artifact-owner correction return before its required consolidated review?
+    - Can v1 or v2 accept a verification-only correction reason?

@@ -88,5 +88,18 @@ Resolution: review-resolution.md#code-review-m3-r1
 Material findings: FV-M3-CR1, FV-M3-CR2
 Finding ID: FV-M3-CR1
 Finding ID: FV-M3-CR2
-Open findings: None
+Open findings: FV-M3-CR2
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m3-r2
+Stage: code-review
+Round: r2
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r2.md
+Resolution: review-resolution.md#code-review-m3-r2
+Material findings: FV-M3-CR3
+Finding ID: FV-M3-CR3
+Open findings: FV-M3-CR3
 Recording status: recorded
