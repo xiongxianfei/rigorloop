@@ -14,6 +14,7 @@
 | `delivery-review-r3` | `delivery-review` | `r3` | delivery package `plan` | `reviews/delivery-review-r3.md` | `approved` | 0 | `recorded` |
 | `code-review-m4-r2` | `code-review` | `r2` | corrected M4 diff `585c2bee..64bd8791` | `reviews/code-review-m4-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-lifecycle-deadlock-r1` | `code-review` | `r1` | bounded lifecycle fix `56beba62..6fdd7ac2` | `reviews/code-review-lifecycle-deadlock-r1.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m5-r2` | `code-review` | `r2` | corrected M5 candidate `60136823..96af0c70` | `reviews/code-review-m5-r2.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Package review occurrence
 
