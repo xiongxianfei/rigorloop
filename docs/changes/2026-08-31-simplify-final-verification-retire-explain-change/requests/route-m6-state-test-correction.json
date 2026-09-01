@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:1f606ffe55a8548bc46ede9bebb58da62393208a5df26501524bf98d46f345fb",
+  "source_stage": "verify",
+  "destination_stage": "implement",
+  "destination_artifact_id": "implement",
+  "reason": "upstream-proof-gap",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-state-test-correction-route.md",
+  "finding_ids": ["FV-M6-CR4"],
+  "return_stage": "verify",
+  "milestone_id": "M6",
+  "stage_authority": "workflow"
+}
