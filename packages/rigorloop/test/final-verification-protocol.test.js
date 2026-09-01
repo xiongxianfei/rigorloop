@@ -125,3 +125,33 @@ test("review counterexamples fail closed", () => {
   }
   assert.throws(() => parseVerifyReport(`${renderVerifyReport(success())}trailing\n`), /trailing or malformed content/);
 });
+
+test("collection shapes are required for every outcome", () => {
+  for (const field of ["impact", "evidence", "always_current"]) {
+    for (const value of [null, "items", { item: true }, 1]) {
+      const result = success();
+      Object.assign(result, { outcome: "inconclusive", branch_ready: false, blockers: ["owner: workflow"], explanation: null, [field]: value });
+      assert.ok(validateFinalVerificationResult(result).includes(`${field}: expected array`), `${field}: ${JSON.stringify(value)}`);
+    }
+    const empty = success(); empty[field] = [];
+    assert.notDeepEqual(validateFinalVerificationResult(empty), [], `successful ${field}`);
+  }
+  const inconclusive = success();
+  Object.assign(inconclusive, { outcome: "inconclusive", branch_ready: false, blockers: ["owner: workflow"], explanation: null, impact: [], evidence: [], always_current: [] });
+  assert.deepEqual(validateFinalVerificationResult(inconclusive), []);
+});
+
+test("evidence facts require JSON booleans", () => {
+  const fields = ["authority_current", "identity_current", "environment_current", "conflicting", "new_obligation", "cache_hit"];
+  for (const field of fields) {
+    for (const value of ["yes", 1, null, {}, []]) {
+      const result = success(); result.evidence[0][field] = value;
+      assert.ok(validateFinalVerificationResult(result).includes(`evidence[0].${field}: expected boolean`), `${field}: ${JSON.stringify(value)}`);
+    }
+    for (const value of [true, false]) {
+      const result = success(); result.evidence[0][field] = value;
+      assert.ok(!validateFinalVerificationResult(result).includes(`evidence[0].${field}: expected boolean`), `${field}: ${value}`);
+    }
+  }
+  assert.throws(() => evaluateEvidenceDecision({ ...success().evidence[0], authority_current: "yes" }, success().impact), /authority_current: expected boolean/);
+});

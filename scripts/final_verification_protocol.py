@@ -113,6 +113,10 @@ EVIDENCE_FIELDS = {
     "observed_result", "cache_hit", "proof",
 }
 ALWAYS_CURRENT_FIELDS = {"check_id", "execution", "observed_result", "proof"}
+APPLICABILITY_BOOLEAN_FIELDS = (
+    "authority_current", "identity_current", "environment_current", "conflicting", "new_obligation",
+)
+EVIDENCE_BOOLEAN_FIELDS = (*APPLICABILITY_BOOLEAN_FIELDS, "cache_hit")
 
 
 def _unknown(prefix: str, value: Any, allowed: set[str]) -> list[str]:
@@ -240,6 +244,9 @@ def evaluate_evidence_decision(obligation: dict[str, Any], impacts: list[dict[st
     freshness = obligation.get("freshness")
     if freshness not in FRESHNESS_CLASSES:
         raise ValueError(f"freshness: unknown_value {freshness}")
+    for field in APPLICABILITY_BOOLEAN_FIELDS:
+        if not isinstance(obligation.get(field), bool):
+            raise ValueError(f"{field}: expected boolean")
     if obligation.get("new_obligation") is True:
         return "newly-required"
     if freshness in {"always-current", "fresh-required"}:
@@ -325,9 +332,11 @@ def validate_final_verification_result(result: Any) -> list[str]:
     if not isinstance(basis_status, dict) or set(basis_status) != BASIS_STATUS_FIELDS:
         errors.append(f"basis_status fields: expected exactly {sorted(BASIS_STATUS_FIELDS)}")
 
-    if not isinstance(impacts, list) or (result.get("outcome") == "successful" and not impacts):
-        errors.append("impact: expected at least one classified surface")
+    if not isinstance(impacts, list):
+        errors.append("impact: expected array")
         impacts = []
+    if result.get("outcome") == "successful" and not impacts:
+        errors.append("impact: expected at least one classified surface")
     seen_surfaces: set[str] = set()
     for index, item in enumerate(impacts):
         if not isinstance(item, dict):
@@ -342,9 +351,11 @@ def validate_final_verification_result(result: Any) -> list[str]:
         if item.get("state") == "unaffected" and not _nonempty_strings(item.get("affirmative_evidence")):
             errors.append(f"impact[{index}].unaffected: affirmative_evidence required")
 
-    if not isinstance(evidence, list) or (result.get("outcome") == "successful" and not evidence):
-        errors.append("evidence: expected at least one obligation")
+    if not isinstance(evidence, list):
+        errors.append("evidence: expected array")
         evidence = []
+    if result.get("outcome") == "successful" and not evidence:
+        errors.append("evidence: expected at least one obligation")
     seen_evidence: set[str] = set()
     for index, item in enumerate(evidence):
         if not isinstance(item, dict):
@@ -371,6 +382,13 @@ def validate_final_verification_result(result: Any) -> list[str]:
                 errors.append(f"evidence[{index}].proved_surfaces[{surface_index}]: unclassified {surface}")
         if not isinstance(item.get("decision_rationale"), str) or not item["decision_rationale"].strip():
             errors.append(f"evidence[{index}].decision_rationale: required")
+        invalid_boolean = False
+        for field in EVIDENCE_BOOLEAN_FIELDS:
+            if not isinstance(item.get(field), bool):
+                errors.append(f"evidence[{index}].{field}: expected boolean")
+                invalid_boolean = True
+        if invalid_boolean:
+            continue
         try:
             expected = evaluate_evidence_decision(item, impacts)
             if item.get("decision") != expected:
@@ -389,9 +407,11 @@ def validate_final_verification_result(result: Any) -> list[str]:
             errors.append(f"evidence[{index}].cache_hit: cannot represent actual execution")
         errors.extend(_validate_proof(item.get("proof"), execution, f"evidence[{index}]"))
 
-    if not isinstance(always_current, list) or (result.get("outcome") == "successful" and not always_current):
-        errors.append("always_current: expected at least one check")
+    if not isinstance(always_current, list):
+        errors.append("always_current: expected array")
         always_current = []
+    if result.get("outcome") == "successful" and not always_current:
+        errors.append("always_current: expected at least one check")
     actual_always_current: set[str] = set()
     for index, item in enumerate(always_current):
         if not isinstance(item, dict):

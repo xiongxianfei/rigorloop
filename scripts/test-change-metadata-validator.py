@@ -2906,6 +2906,70 @@ class FinalVerificationProtocolTests(unittest.TestCase):
             with self.subTest(field=field):
                 self.assertTrue(any(error.startswith(f"basis.{field}:") for error in validate_final_verification_result(result)))
 
+    def test_collection_shapes_are_required_for_every_outcome(self) -> None:
+        for field in ("impact", "evidence", "always_current"):
+            for value in (None, "items", {"item": True}, 1):
+                result = self.successful_result()
+                result.update({
+                    "outcome": "inconclusive",
+                    "branch_ready": False,
+                    "blockers": ["owner: workflow"],
+                    "explanation": None,
+                    field: value,
+                })
+                with self.subTest(field=field, value=value):
+                    self.assertIn(f"{field}: expected array", validate_final_verification_result(result))
+
+        result = self.successful_result()
+        for field in ("impact", "evidence", "always_current"):
+            empty = copy.deepcopy(result)
+            empty[field] = []
+            with self.subTest(success_empty=field):
+                self.assertNotEqual(validate_final_verification_result(empty), [])
+
+        inconclusive = self.successful_result()
+        inconclusive.update({
+            "outcome": "inconclusive",
+            "branch_ready": False,
+            "blockers": ["owner: workflow"],
+            "explanation": None,
+            "impact": [],
+            "evidence": [],
+            "always_current": [],
+        })
+        self.assertEqual(validate_final_verification_result(inconclusive), [])
+
+    def test_evidence_facts_require_json_booleans(self) -> None:
+        fields = (
+            "authority_current",
+            "identity_current",
+            "environment_current",
+            "conflicting",
+            "new_obligation",
+            "cache_hit",
+        )
+        for field in fields:
+            for value in ("yes", 1, None, {}, []):
+                result = self.successful_result()
+                result["evidence"][0][field] = value
+                with self.subTest(field=field, value=value):
+                    self.assertIn(
+                        f"evidence[0].{field}: expected boolean",
+                        validate_final_verification_result(result),
+                    )
+
+        for field in fields:
+            for value in (True, False):
+                result = self.successful_result()
+                result["evidence"][0][field] = value
+                with self.subTest(valid_field=field, value=value):
+                    self.assertFalse(any(
+                        error == f"evidence[0].{field}: expected boolean"
+                        for error in validate_final_verification_result(result)
+                    ))
+        with self.assertRaisesRegex(ValueError, "authority_current: expected boolean"):
+            evaluate_evidence_decision(self.obligation(authority_current="yes"), self.impact())
+
     def test_javascript_and_python_result_conformance_matches(self) -> None:
         cases = [self.successful_result()]
         duplicate = self.successful_result()
@@ -2923,6 +2987,29 @@ class FinalVerificationProtocolTests(unittest.TestCase):
         missing_proof = self.successful_result()
         missing_proof["always_current"][0]["proof"] = None
         cases.append(missing_proof)
+        for field in ("impact", "evidence", "always_current"):
+            for value in (None, "items", {"item": True}, 1):
+                malformed_collection = self.successful_result()
+                malformed_collection.update({
+                    "outcome": "inconclusive",
+                    "branch_ready": False,
+                    "blockers": ["owner: workflow"],
+                    "explanation": None,
+                    field: value,
+                })
+                cases.append(malformed_collection)
+        for field in (
+            "authority_current",
+            "identity_current",
+            "environment_current",
+            "conflicting",
+            "new_obligation",
+            "cache_hit",
+        ):
+            for value in ("yes", 1, None, {}, []):
+                malformed_boolean = self.successful_result()
+                malformed_boolean["evidence"][0][field] = value
+                cases.append(malformed_boolean)
 
         node_source = """
 import { validateFinalVerificationResult } from './packages/rigorloop/dist/lib/final-verification-protocol.js';
