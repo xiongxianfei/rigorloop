@@ -125,6 +125,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-pr-preflight-r5
+Stage: code-review
+Round: r5
+Status: changes-requested
+Detailed record: reviews/code-review-pr-preflight-r5.md
+Resolution: review-resolution.md#code-review-pr-preflight-r5
+Material findings: FV-M6-CR3
+Finding ID: FV-M6-CR3
+Open findings: FV-M6-CR3
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m1-r1
 Stage: code-review
 Round: r1
