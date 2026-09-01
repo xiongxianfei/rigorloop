@@ -432,7 +432,7 @@ lifecycle_cli:
       artifact_path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
       artifact_sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
       evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/verify-report.md
-      evidence_sha256: 26e1bf23e9d3ab66287b361bcf356939812623aa82512f0ad34bd03d9d05b1cc
+      evidence_sha256: 2275a5f80734e2546188c0a8279ce321bb4b1993a8611ccc43e95dc70244e127
       stage_authority: verify
       subject_path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
       subject_sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514

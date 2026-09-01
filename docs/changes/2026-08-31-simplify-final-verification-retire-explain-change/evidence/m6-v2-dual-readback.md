@@ -1,12 +1,12 @@
 # M6 immutable-v2 lifecycle recording and dual read-back
 
 Change ID: 2026-08-31-simplify-final-verification-retire-explain-change
-Reviewed product subject: c93e38340170c9c0e336bb6e3e253469ec4380ac
-Workflow Verify handoff subject: b81522d8aa806491cca5d92bfd8100939b4fc99c
-Final review: code-review-final-r1
-Explanation handoff: b81522d8aa806491cca5d92bfd8100939b4fc99c
+Reviewed product subject: 9c364d6162a32a03ac63d81093e728fd0e41b0bc
+Workflow Verify handoff subject: f3f1f440205e61be8da525b1fd7fe7e174db2604
+Final review: code-review-final-r1 plus targeted PR-preflight rereviews through code-review-pr-preflight-r8
+Explanation handoff: f3f1f440205e61be8da525b1fd7fe7e174db2604
 Verify report: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/verify-report.md
-Lifecycle revision: sha256:917d52d2720b058730f9574e0f9ade02ef540e40479b3b5b4d32024dd1a81489
+Lifecycle revision: sha256:ea70df83a1cce993a7f537c2f9fdeaf61b609d7dec445754d3574d7d564c3d35
 
 ## Bound runtime
 
@@ -23,9 +23,9 @@ Lifecycle revision: sha256:917d52d2720b058730f9574e0f9ade02ef540e40479b3b5b4d320
 - Request: `docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/requests/record-m6-v2-verification.json`.
 - Artifact: registered primary plan at SHA-256 `5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514`.
 - Evidence: current `verify-report.md`, recording `Validation result: branch-ready` for the immutable reviewed subject.
-- Prior lifecycle revision: `sha256:11225897cffdd293f71be471b02378b93a2b4631d394371a3b2ac6c8bcc35ad6`.
+- Prior lifecycle revision: `sha256:d5ce50a092eeef98c25e663969811d227cafb2fbe3c046f065d7846608608503`.
 - CLI operation result: `success`, mutation status `recorded`.
-- Immediate and final resulting lifecycle revision: `sha256:917d52d2720b058730f9574e0f9ade02ef540e40479b3b5b4d32024dd1a81489`.
+- Immediate and final resulting lifecycle revision: `sha256:ea70df83a1cce993a7f537c2f9fdeaf61b609d7dec445754d3574d7d564c3d35`.
 
 ## Archived-v2 read-back
 
@@ -34,7 +34,7 @@ Lifecycle revision: sha256:917d52d2720b058730f9574e0f9ade02ef540e40479b3b5b4d320
 - Current stage: `verify`; active milestone: `M6`.
 - Unresolved findings: none; stale evidence: none; blockers: none.
 - Permitted operations: `route-correction`, `record-validation`.
-- Observed lifecycle revision: `sha256:917d52d2720b058730f9574e0f9ade02ef540e40479b3b5b4d32024dd1a81489`.
+- Observed lifecycle revision: `sha256:ea70df83a1cce993a7f537c2f9fdeaf61b609d7dec445754d3574d7d564c3d35`.
 
 ## Current-runtime read-back
 
@@ -43,8 +43,8 @@ Lifecycle revision: sha256:917d52d2720b058730f9574e0f9ade02ef540e40479b3b5b4d320
 - Current stage: `verify`; active milestone: `M6`.
 - Unresolved findings: none; stale evidence: none; blockers: none.
 - Permitted operations: none, as required for historical v2 state under the candidate runtime.
-- Observed lifecycle revision: `sha256:917d52d2720b058730f9574e0f9ade02ef540e40479b3b5b4d32024dd1a81489`.
+- Observed lifecycle revision: `sha256:ea70df83a1cce993a7f537c2f9fdeaf61b609d7dec445754d3574d7d564c3d35`.
 
 ## Interpretation
 
-Both readers agree on the exact serialized lifecycle revision, current stage, active milestone, absence of findings, absence of stale evidence, and absence of blockers. Their authority projections differ intentionally: the bound v2 runtime supplies this change's preactivation closeout authority, while the current candidate treats the same record as readable history with no progression authority. No activation, publication, release, tag, migration, or historical artifact mutation occurred.
+Both readers agree on the exact serialized lifecycle revision, current stage, active milestone, absence of findings, absence of stale evidence, and absence of blockers. Their authority projections differ intentionally: the bound v2 runtime supplies this change's preactivation closeout authority, while the current candidate treats the same record as readable history with no progression authority. Four PR-preflight fixture findings were routed, corrected, rereviewed, and returned before the refreshed 28-check PR gate and final validation registration. No activation, publication, release, tag, migration, or historical artifact mutation occurred.
