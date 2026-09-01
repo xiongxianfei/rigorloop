@@ -84,6 +84,27 @@ test("final verification manifest and v3 explain-change values fail closed", () 
   }
 });
 
+test("final verification manifest rejects duplicate and raw UTF-8-unsorted entries", () => {
+  const active = finalVerificationClassificationFixture.active_manifest;
+  const duplicate = structuredClone(active);
+  duplicate.changes.push(structuredClone(duplicate.changes[0]));
+  assert.match(validateFinalVerificationActivationManifest(duplicate)[0], /duplicate/);
+
+  const unsorted = structuredClone(active);
+  unsorted.changes = [
+    { change_id: "z-v2", contract_class: LIFECYCLE_CONTRACT_V2 },
+    { change_id: "a-v2", contract_class: LIFECYCLE_CONTRACT_V2 },
+  ];
+  assert.match(validateFinalVerificationActivationManifest(unsorted)[0], /raw UTF-8 byte order/);
+
+  const unknownBeforeConsistency = structuredClone(duplicate);
+  unknownBeforeConsistency.changes[0].contract_class = LIFECYCLE_CONTRACT_V1;
+  assert.match(
+    validateFinalVerificationActivationManifest(unknownBeforeConsistency)[0],
+    /unknown_value.*stage-owned-change-local-v1/,
+  );
+});
+
 test("contract activation manifest classifies v2 and exact prior records", () => {
   const manifest = classificationFixture.active_manifest;
   assert.deepEqual(validateLifecycleActivationManifest(manifest), []);

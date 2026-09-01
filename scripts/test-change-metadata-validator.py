@@ -2380,6 +2380,29 @@ class LifecycleContractClassificationTests(unittest.TestCase):
                     self.final_fixture["preactivation_manifest"],
                 )
 
+    def test_final_verification_manifest_rejects_duplicate_and_unsorted_entries(self) -> None:
+        active = self.final_fixture["active_manifest"]
+        duplicate = copy.deepcopy(active)
+        duplicate["changes"].append(copy.deepcopy(duplicate["changes"][0]))
+        self.assertRegex(validate_final_verification_activation_manifest(duplicate)[0], "duplicate")
+
+        unsorted = copy.deepcopy(active)
+        unsorted["changes"] = [
+            {"change_id": "z-v2", "contract_class": "stage-owned-change-local-v2"},
+            {"change_id": "a-v2", "contract_class": "stage-owned-change-local-v2"},
+        ]
+        self.assertRegex(
+            validate_final_verification_activation_manifest(unsorted)[0],
+            "raw UTF-8 byte order",
+        )
+
+        unknown_before_consistency = copy.deepcopy(duplicate)
+        unknown_before_consistency["changes"][0]["contract_class"] = "stage-owned-change-local-v1"
+        self.assertRegex(
+            validate_final_verification_activation_manifest(unknown_before_consistency)[0],
+            "unknown_value.*stage-owned-change-local-v1",
+        )
+
     def test_v3_metadata_semantics_reject_explain_change_authority(self) -> None:
         change = {
             "lifecycle_contract": "stage-owned-change-local-v3",
