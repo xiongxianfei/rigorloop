@@ -69,7 +69,9 @@ review_packages:
 workflow_state:
   blocker: null
   current_stage: code-review
-  evidence: []
+  evidence:
+    - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-final-r1.md
   lifecycle_state: active
   next_stage: code-review
   planned_work:
@@ -78,20 +80,23 @@ workflow_state:
       evidence: []
       readiness: not-ready
       reasons:
-        - implementation-milestones-open
+        - lifecycle-gates-open
+        - pr-handoff-pending
     initialization_basis:
       review_id: delivery-review-r1
       review_record: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r1.md
       review_round: r1
       reviewed_artifact_path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
     latest_review:
-      artifact_id: none
-      evidence: []
+      artifact_id: code-review-final-r1
+      evidence:
+        - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-invocation-code-review-final-r1.yaml
+        - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-final-r1.md
       milestone_id: none
-      occurrence: none
-      round: none
-      stage: none
-      status: not-started
+      occurrence: final
+      round: r1
+      stage: code-review
+      status: approved
     milestones:
       M1:
         kind: implementation
@@ -120,9 +125,9 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r3.md
+  latest_review: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-final-r1.md
   review_log: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
-  reviewed_artifact: review-package:delivery
+  reviewed_artifact: code-review-final-r1
   status: clean
   unresolved_items: 0
 lifecycle_cli:
