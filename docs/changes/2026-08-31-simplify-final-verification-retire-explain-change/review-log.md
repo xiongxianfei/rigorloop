@@ -12,6 +12,7 @@
 | `code-review-m3-r3` | `code-review` | `r3` | corrected M3 diff `f2c69a20..4285c4de` | `reviews/code-review-m3-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `design-review-r2` | `design-review` | `r2` | design package `architecture`, `spec`, `adr-impact-aware-final-verification` | `reviews/design-review-r2.md` | `approved` | 0 | `recorded` |
 | `delivery-review-r3` | `delivery-review` | `r3` | delivery package `plan` | `reviews/delivery-review-r3.md` | `approved` | 0 | `recorded` |
+| `code-review-m4-r2` | `code-review` | `r2` | corrected M4 diff `585c2bee..64bd8791` | `reviews/code-review-m4-r2.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Package review occurrence
 
@@ -152,5 +153,5 @@ Resolution: review-resolution.md#code-review-m4-r1
 Material findings: FV-M4-CR1, FV-M4-CR2
 Finding ID: FV-M4-CR1
 Finding ID: FV-M4-CR2
-Open findings: FV-M4-CR1, FV-M4-CR2
+Open findings: None
 Recording status: recorded

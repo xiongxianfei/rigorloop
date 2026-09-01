@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -13,13 +13,14 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
+Review closeout: code-review-m4-r2
 Review closeout: delivery-review-r2
 Review closeout: delivery-review-r3
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `delivery-review-r2`, `delivery-review-r3`
-- Findings resolved: 14
-- Unresolved findings: 2
-- Current result: Delivery Review R3 independently confirmed FV-DLR2-01 and FV-DLR2-02 resolved; the exact corrected plan is clean, while the two M4 implementation-review findings remain open.
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `delivery-review-r2`, `delivery-review-r3`
+- Findings resolved: 16
+- Unresolved findings: 0
+- Current result: Code Review M4 R2 independently confirmed FV-M4-CR1 and FV-M4-CR2 resolved; the corrected M4 implementation is clean. Lifecycle milestone settlement remains blocked by withheld package authority rather than an implementation-review finding.
 
 ## Resolution Overview
 
@@ -37,8 +38,8 @@ Review closeout: delivery-review-r3
 | FV-M3-CR1 | accepted | resolved | V3 accepts only the S-R review-recorded tail; legacy S-R-E remains required only by v1/v2. |
 | FV-M3-CR2 | accepted | resolved | Public v3 owner routing is executable through exact review boundaries and v1/v2 reject verification-only reasons. |
 | FV-M3-CR3 | accepted | resolved | R3 confirmed every R2 counterexample fails through public transaction and authority probes. |
-| FV-M4-CR1 | accepted | open | Make Verify and current handoffs v3-only; historical v1/v2 records grant no current progression authority. |
-| FV-M4-CR2 | accepted | open | Reject duplicate governed mapping keys at every depth before selecting the registered primary plan or any nested authority value. |
+| FV-M4-CR1 | accepted | resolved | Verify and current handoffs are v3-only; historical v1/v2 records grant no current progression authority. |
+| FV-M4-CR2 | accepted | resolved | The shared parsed-YAML mapper rejects duplicate governed keys at every depth before selecting the registered primary plan or any nested authority value. |
 | FV-DLR2-01 | accepted | resolved | The plan now binds Design Review R2 consistently at every current upstream authority point. |
 | FV-DLR2-02 | accepted | resolved | M5 is non-authoritative with one exact exception; M6 binds and proves the immutable v2 closeout snapshot; activation follows only after M6. |
 
@@ -276,7 +277,7 @@ No material findings.
 
 Finding ID: FV-M4-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementer
 Owning stage: review-resolution
 Decision owner: M4 implementer
@@ -287,13 +288,13 @@ Required outcome: current Verify accepts no standalone explanation input, create
 Safe resolution path: update canonical Verify and workflow clauses, add semantic canonical and three-adapter candidate regressions, rerun all M4 commands, and return for Code Review M4 R2.
 Follow-up: Code Review M4 R2 after bounded implementation correction.
 Validation target: FV-R1-FV-R3, FV-R24, FV-R27, FV-R28, FV-R35-FV-R38, TG-15, TG-16, TG-18, BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001, INT-002, INT-004.
-Validation evidence: Correction validation passed 386 skill tests, 156 adapter tests, canonical skill validation for 21 skills, 8 build tests, and generated-skill drift checking. Code Review M4 R2 remains required.
+Validation evidence: Code Review M4 R2 inspected the complete corrected M4 diff, confirmed canonical and all three generated candidate semantics, and reran 386 skill tests, 156 adapter tests, canonical skill validation for 21 skills, 8 build tests, and generated-skill drift checking.
 
 #### FV-M4-CR2
 
 Finding ID: FV-M4-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementer
 Owning stage: review-resolution
 Decision owner: M4 implementer
@@ -304,7 +305,11 @@ Required outcome: duplicate `artifact_states`, `plan`, `kind`, `role`, or `path`
 Safe resolution path: correct the shared parser or boundary parser, add direct reversal fixtures at every nested authority level, rerun all M4 commands, and return for Code Review M4 R2.
 Follow-up: Code Review M4 R2 after bounded implementation correction.
 Validation target: TG-17, BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001.
-Validation evidence: The shared parsed-YAML mapper now rejects a duplicate before assignment at every recursive depth; the boundary validator has no separate raw-text duplicate scan. Correction validation passed 69 boundary tests and 107 metadata-validator tests. Code Review M4 R2 remains required.
+Validation evidence: Code Review M4 R2 confirmed the shared parsed-YAML mapper rejects duplicates before assignment at every recursive depth, the boundary validator has no separate raw-text duplicate scan, direct probes reject all five authority key families, and 69 boundary plus 107 metadata-validator tests pass.
+
+### code-review-m4-r2
+
+No material findings.
 
 ### delivery-review-r2
 
