@@ -2,21 +2,22 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
-- Reviews covered: `code-review-m1-r1`
-- Findings resolved: 0
-- Unresolved findings: 2
-- Current result: Code Review M1 R1 requested correction of semantic inventory discovery and direct final-manifest ordering proof.
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`
+- Findings resolved: 2
+- Unresolved findings: 0
+- Current result: Code Review M1 R2 confirmed semantic inventory discovery and direct final-manifest ordering proof; both R1 findings are resolved.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| FV-M1-CR1 | accepted | open | Parse lifecycle contracts semantically when building governed and final-verification compatibility inventories. |
-| FV-M1-CR2 | accepted | open | Add direct Node, Python, and public-boundary proof for duplicate and unsorted final-verification manifest entries. |
+| FV-M1-CR1 | accepted | resolved | Governed, v1 or legacy, and v2 inventories now use parsed semantic lifecycle contracts and fail closed on unknown or unreadable metadata. |
+| FV-M1-CR2 | accepted | resolved | Node, Python, and public-wrapper tests directly reject duplicate and unsorted final-verification manifest entries. |
 
 ## Finding Details
 
@@ -26,7 +27,7 @@ Review closeout: code-review-m1-r1
 
 Finding ID: FV-M1-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Decision owner: M1 implementer
@@ -37,13 +38,13 @@ Required outcome: wrapper inventory, Node runtime, and Python classifiers agree 
 Safe resolution path: reuse the safe YAML loader and shared classifier, add public wrapper regressions, rerun all M1 commands, and return the corrected M1 diff to Code Review.
 Follow-up: Code Review M1 R2 after implementation correction.
 Validation target: FV-R5, FV-R6, TG-01, TG-03, BND-COMPAT-001, INT-004.
-Validation evidence: pending implementation correction and focused rerun.
+Validation evidence: Code Review M1 R2 inspected `311b2f3b..17067726`; quoted v2 and v3, misleading-comment, unknown-contract, and public inventory regressions pass. Reviewer probes also proved unrelated scalar text does not select a contract, malformed metadata fails explicitly, and quoted v1 plus unversioned inventory remains valid. The 71-test Node suite, 87-test change-metadata suite, 167-test artifact-lifecycle suite, and 16-test governed-wrapper suite passed.
 
 #### FV-M1-CR2
 
 Finding ID: FV-M1-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Decision owner: M1 implementer
@@ -54,4 +55,8 @@ Required outcome: duplicate and unsorted new-manifest entries fail directly in N
 Safe resolution path: add named regressions, retain unknown-value-first behavior, rerun all M1 commands, and return the corrected M1 diff to Code Review.
 Follow-up: Code Review M1 R2 after implementation correction.
 Validation target: TG-02, FV-R5, FV-R6, FV-R38, BND-COMPAT-001.
-Validation evidence: pending implementation correction and focused rerun.
+Validation evidence: Code Review M1 R2 confirmed direct duplicate, raw-UTF-8-unsorted, and unknown-value-first final-manifest tests in Node and Python, plus duplicate and ordering failures at the public wrapper boundary. The complete planned M1 command set passed.
+
+### code-review-m1-r2
+
+No material findings.

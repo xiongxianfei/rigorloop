@@ -73,7 +73,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M1
+    current_milestone: M2
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -95,7 +95,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: closed
       M2:
         kind: implementation
         state: planned
@@ -113,7 +113,6 @@ workflow_state:
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M1
       - M2
       - M3
       - M4
@@ -174,7 +173,27 @@ lifecycle_cli:
       authoring_evidence_sha256: 414ef802b0ae871bd254f280611dbadb27fa4d85d476fb71c8e4fe17ae56abbc
       stage_authority: spec
   correction_history: {}
-  milestones: {}
+  milestones:
+    M1:
+      completion_fingerprint: f6228ed15aab709d8c07ff4a339d303f232945854976f93edeaab0382dceac3e
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m1-v3-classification.md
+      evidence_sha256: 698eb61bfe9b636b4c7a1761cbdce79f40a72584ef1d97109fe35a514cc6c7d8
+      milestone_id: M1
+      review_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m1-r2.md
+      review_evidence_sha256: 19a893857d84d2201820c600d56b73e61aaaae90f58a8877e3bc4d25c024120a
+      review_id: code-review-m1-r2
+      review_log_entry_sha256: 8f8881c3d0177a0529813372409bc4cd116a1ed2860a622197d86edf678c9482
+      review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m1-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
   package_reviews:
     delivery:
       correction_targets: []
