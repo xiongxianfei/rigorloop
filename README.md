@@ -11,7 +11,7 @@ See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->
 
 RigorLoop makes AI-assisted delivery inspectable after the chat ends.
-The chain runs from proposal to spec, plan, test spec, implementation, review, verification, and PR handoff.
+The chain runs from proposal through Design, delivery planning, implementation, review, final verification, and PR handoff.
 
 It is for contributors and maintainers who want AI agents to help with serious software work without losing the reasoning, proof, and review trail that make a change safe to continue.
 
@@ -60,7 +60,7 @@ Key paths: [workflow](docs/workflows.md) · [contribute](CONTRIBUTING.md) · [bu
 Use RigorLoop as a repository-local workflow, not as a chat convention. The useful path is:
 
 ```text
-proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> explain-change -> verify -> pr
+proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> verify -> pr
 ```
 
 Architecture and specification are separate design inputs reconciled by `design-review`. Delivery Review jointly approves safe implementation sequencing and the plan's verification allocation.
@@ -73,8 +73,8 @@ Best practices:
 2. Keep each lifecycle stage grounded in tracked artifacts. Do not rely on chat-only approval when a later stage needs reviewable evidence.
 3. Let `plan` allocate requirements to milestones, verification groups, concrete checks, and evidence expectations before writing implementation code.
 4. Implement one approved milestone at a time, then run `code-review` against the actual diff and governing artifacts.
-5. Use `explain-change` after implementation and review closeout so reviewers can see why each meaningful change exists.
-6. Run `verify` before `pr`. `verify` owns branch readiness; `pr` owns the pull request body and opening the PR.
+5. Run `verify` after implementation and review closeout. Verify selects current evidence, decides branch readiness, and writes the final explanation only in a successful Verify report.
+6. Run `pr` only after successful final verification. `pr` consumes Verify's evidence basis and explanation when preparing and opening the pull request.
 
 For smaller focused tasks, you can invoke an individual skill directly. Treat that as isolated output unless you intentionally route the work through the full workflow.
 
@@ -118,16 +118,15 @@ Do not rewrite durable guides just for symmetry.
 flowchart LR
   A[Idea] --> B[Proposal]
   B --> C[Proposal review]
-  C --> D[Spec]
-  D --> E[Spec review]
-  E --> F[Plan]
-  F --> G[Plan review]
-  G --> H[Test spec]
+  C --> D[Architecture]
+  D --> E[Specification]
+  E --> F[Design review]
+  F --> G[Plan]
+  G --> H[Delivery review]
   H --> I[Implementation]
   I --> J[Code review]
-  J --> K[Explain change]
-  K --> L[Verify]
-  L --> M[PR]
+  J --> K[Verify]
+  K --> L[PR]
 ```
 
 This is the recommended full chain for complete AI-assisted delivery.
@@ -159,21 +158,9 @@ The target is a destination, not blanket consent: authoring, implementation, and
 Use `$workflow auto: status` for a read-only status projection and `$workflow auto: off` to durably cancel the run while preserving receipts.
 
 Repeated `implement` and `code-review` targets bind the current plan milestone before persistence and never silently rebind on resume.
-A final `verify` target may be selected early, but verification authority is created only after implementation closeout, final review, promotion, explanation-input, branch-state, and verification-input evidence is concrete.
+A final `verify` target may be selected early, but verification authority is created only after implementation closeout, final review, promotion, branch-state, and verification-input evidence is concrete.
 
-### Legacy command compatibility
-
-Existing commands remain compatibility adapters during migration:
-
-```text
-workflow auto-through: plan-review
-workflow auto-through: verify
-workflow auto-through: status
-workflow auto-through: off
-```
-
-These aliases resolve to unified structured targets and write only `workflow.automation`.
-`plan-review` authorizes authoring only. `verify` creates only authority whose concrete basis already exists and never stores future-contingent verification consent.
+Historical v1/v2 records may name retired stages or commands. They remain readable evidence only and do not provide current workflow progression authority.
 
 Automation always stops before PR creation, push, publication, release, deployment, merge, destructive Git operations, credential access, or other external mutation.
 
@@ -181,7 +168,7 @@ Automation always stops before PR creation, push, publication, release, deployme
 
 - Profiles are off by default.
 - Authorization is recorded per change.
-- Direct skill requests such as `spec-review`, `plan-review`, `code-review`, or `verify` remain isolated unless you explicitly resume the workflow-managed change.
+- Direct skill requests such as `proposal-review`, `design-review`, `delivery-review`, `code-review`, or `verify` remain isolated unless you explicitly resume the workflow-managed change.
 - Automatic review-driven fixes require reviewer-declared eligibility and bounded affected paths.
 - Automatic workflow never merges, releases, deploys, publishes, or performs destructive Git actions by default.
 - `pr` is still the human-visible external boundary; open it only when readiness checks pass.
@@ -195,12 +182,12 @@ A RigorLoop change leaves a traceable artifact chain:
 | Stage | Example artifact |
 | --- | --- |
 | Proposal | `docs/proposals/<change>.md` |
+| Architecture | `docs/architecture/<change>.md` |
 | Spec | `specs/<slug>.md` |
 | Plan | `docs/plans/<change>.md` |
-| Test spec | `specs/<slug>.test.md` |
 | Review records | `docs/changes/<change>/reviews/` |
 | Validation evidence | `docs/changes/<change>/change.yaml` |
-| Explain change | `docs/changes/<change>/explain-change.md` |
+| Successful Verify result and final explanation | `docs/changes/<change>/verify-report.md` |
 | PR handoff | linked from change records or release notes |
 
 ## When to use / When not to use
@@ -360,7 +347,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 - Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
 - Workflow infrastructure: specs, workflow summaries, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
-- Per-change chain: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+- Per-change chain: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`
 - Periodic learning: `learn`
 
 `explore` and `research` run only when ambiguity, options, or current external facts matter. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.
@@ -385,7 +372,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 ## Change-Local Artifact Packs
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
-- Ordinary non-trivial work uses the baseline pack: `docs/changes/<change-id>/change.yaml` plus `docs/changes/<change-id>/explain-change.md`.
+- Ordinary non-trivial work uses the baseline pack: `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. A successful final-readiness run records its evidence basis and final explanation in `docs/changes/<change-id>/verify-report.md`.
 - `review-resolution.md` and `verify-report.md` stay conditional and are added only when their governing workflow triggers apply.
 - Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
 

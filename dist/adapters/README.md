@@ -4,9 +4,9 @@
 
 `dist/adapters/manifest.yaml` is the tracked adapter support matrix. It records adapter support and opencode command aliases; it must not contain generated skill bodies.
 
-The active v2 package uses the plan-only Delivery Review route, omits standalone `test-spec`, and packages every plan-owned specialist verification reference for Codex, Claude Code, and opencode. Historical v1 release archives remain unchanged records.
+During final-verification v3 preactivation, `dist/adapters/manifest.yaml` describes the non-authoritative Codex, Claude Code, and opencode candidate inventory. That candidate omits standalone `test-spec` and `explain-change`, uses the consolidated review aliases, and includes every mapped impact, applicability, successful-explanation, and Verify-report resource.
 
-During final-verification v3 preactivation, repository tests also build and validate temporary Codex, Claude Code, and opencode candidates that omit standalone `explain-change` and include every mapped impact, applicability, successful-explanation, and Verify-report resource. The tracked manifest continues to describe the released v2 package until the atomic activation milestone; historical archives are never rewritten.
+The tracked manifest is candidate metadata, not a publication or activation record. Published v1/v2 release archives remain immutable historical packages and are never rewritten; the v3 candidate becomes authoritative only through the separately governed atomic activation and release process.
 
 For `v0.1.3` and later, public adapter installation uses GitHub release archives. The repository keeps adapter metadata and install guidance under `dist/adapters/`; generated public adapter skill bodies are not tracked source.
 

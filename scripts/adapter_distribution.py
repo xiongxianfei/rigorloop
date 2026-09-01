@@ -1299,6 +1299,7 @@ def render_entrypoint_template(
     *,
     version: str,
     adapter: AdapterConfig,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
 ) -> str:
     """Render one authored thin adapter entrypoint template."""
 
@@ -1308,6 +1309,7 @@ def render_entrypoint_template(
         package_root=adapter.package_root.as_posix(),
         skill_root=adapter.skill_root.as_posix(),
         version=version,
+        command_aliases=", ".join(f"`{alias}`" for alias in command_aliases),
     )
 
 
@@ -1350,6 +1352,7 @@ def _expected_adapter_files_from_reports(
             template_path,
             version=version,
             adapter=config,
+            command_aliases=command_aliases,
         )
 
         for report in reports:
