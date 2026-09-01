@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -14,13 +14,14 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
+Review closeout: code-review-m5-r1
 Review closeout: delivery-review-r2
 Review closeout: delivery-review-r3
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `delivery-review-r2`, `delivery-review-r3`
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`
 - Findings resolved: 16
-- Unresolved findings: 0
-- Current result: Code Review M4 R2 independently confirmed FV-M4-CR1 and FV-M4-CR2 resolved; the corrected M4 implementation is clean. Lifecycle milestone settlement remains blocked by withheld package authority rather than an implementation-review finding.
+- Unresolved findings: 2
+- Current result: Code Review M5 R1 found two public-package coherence defects. Runtime and core validation pass, but root and generated adapter guidance still advertise retired or contradictory current entrypoints.
 
 ## Resolution Overview
 
@@ -40,6 +41,8 @@ Review closeout: delivery-review-r3
 | FV-M3-CR3 | accepted | resolved | R3 confirmed every R2 counterexample fails through public transaction and authority probes. |
 | FV-M4-CR1 | accepted | resolved | Verify and current handoffs are v3-only; historical v1/v2 records grant no current progression authority. |
 | FV-M4-CR2 | accepted | resolved | The shared parsed-YAML mapper rejects duplicate governed keys at every depth before selecting the registered primary plan or any nested authority value. |
+| FV-M5-CR1 | accepted | open | Align the public root README with the sole current v3 graph and success-only Verify explanation ownership. |
+| FV-M5-CR2 | accepted | open | Align generated OpenCode alias guidance and adapter support documentation with the exact v3 candidate inventory. |
 | FV-DLR2-01 | accepted | resolved | The plan now binds Design Review R2 consistently at every current upstream authority point. |
 | FV-DLR2-02 | accepted | resolved | M5 is non-authoritative with one exact exception; M6 binds and proves the immutable v2 closeout snapshot; activation follows only after M6. |
 
@@ -350,3 +353,39 @@ Validation evidence: Delivery Review R3 reproduced the bound archive, explain-ch
 ### delivery-review-r3
 
 No material findings.
+
+### code-review-m5-r1
+
+#### FV-M5-CR1
+
+Finding ID: FV-M5-CR1
+Disposition: accepted
+Status: open
+Owner: M5 implementer
+Owning stage: review-resolution
+Decision owner: M5 implementer
+Decision needed: none; the approved v3 contract already defines the only current public route.
+Chosen action: align the root public README with the sole v3 lifecycle graph, consolidated reviews, and successful Verify-owned explanation output.
+Rationale: deleting executable entrypoints without updating the primary public route leaves a mixed package that sends users to unavailable stages and artifacts.
+Required outcome: current README guidance contains no standalone explain-change, test-spec, spec-review, or plan-review route and accurately describes the post-verification explanation handoff.
+Safe resolution path: update only current guidance, preserve explicitly historical references, add a semantic route regression, rerun M5 validation, and return for Code Review M5 R2.
+Follow-up: Code Review M5 R2 after bounded implementation correction.
+Validation target: FV-R1, FV-R2, FV-R3, FV-R35, FV-R37, FV-AC11, TG-19, TG-21, BND-STATE-001, BND-COMPOSE-001, BND-COMPAT-001, INT-004.
+Validation evidence: pending bounded M5 correction and independent R2 review.
+
+#### FV-M5-CR2
+
+Finding ID: FV-M5-CR2
+Disposition: accepted
+Status: open
+Owner: M5 implementer
+Owning stage: review-resolution
+Decision owner: M5 implementer
+Decision needed: none; the canonical alias tuple and approved preactivation boundary determine the truthful candidate inventory.
+Chosen action: align generated OpenCode entrypoint guidance and tracked adapter support documentation with the actual non-authoritative v3 candidate.
+Rationale: a generated package cannot be parity-complete when its own entrypoint advertises retired aliases and omits current aliases, or when support prose misclassifies changed candidate metadata as unchanged released v2 metadata.
+Required outcome: generated entrypoints enumerate the exact current alias set, support prose distinguishes candidate metadata from historical releases, and regressions compare declared and actual inventories.
+Safe resolution path: derive or correct the alias declaration, clarify candidate versus release authority in `dist/adapters/README.md`, add package-level semantic parity tests, rerun all adapter checks, and return for Code Review M5 R2.
+Follow-up: Code Review M5 R2 after bounded implementation correction.
+Validation target: FV-R35, FV-R37, FV-AC11, FV-AC14, TG-21, TG-23, BND-COMPOSE-001, BND-COMPAT-001, INT-004.
+Validation evidence: pending bounded M5 correction and independent R2 review.

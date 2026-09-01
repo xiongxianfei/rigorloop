@@ -156,3 +156,17 @@ Finding ID: FV-M4-CR1
 Finding ID: FV-M4-CR2
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m5-r1
+Stage: code-review
+Round: r1
+Status: changes-requested
+Detailed record: reviews/code-review-m5-r1.md
+Resolution: review-resolution.md#code-review-m5-r1
+Material findings: FV-M5-CR1, FV-M5-CR2
+Finding ID: FV-M5-CR1
+Finding ID: FV-M5-CR2
+Open findings: FV-M5-CR1, FV-M5-CR2
+Recording status: recorded
