@@ -68,7 +68,7 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: implement
+  current_stage: code-review
   evidence: []
   lifecycle_state: active
   next_stage: code-review
@@ -101,7 +101,7 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: implementing
+        state: review-requested
       M4:
         kind: implementation
         state: planned
@@ -130,27 +130,6 @@ review:
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
-  active_correction:
-    destination_artifact_id: implement
-    destination_kind: stage
-    destination_stage: implement
-    evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-r1-correction-route.md
-    evidence_sha256: 30372450eb8b6a6521347ec029b5c3bf4da64a2b4bd463979f0781fe0d601b8e
-    prior_lifecycle_revision: sha256:d71305992d594299e4a3e02139958184f803668f2d4a2e128822301e2a18fc64
-    reason: upstream-proof-gap
-    return_stage: code-review
-    route_id: route-12695a83e4df2e3638de5cce1b6d969bea8240e3f2ff49d0d926e2ae29805098
-    source_snapshot:
-      blocker: null
-      current_stage: code-review
-      finding_ids:
-        - FV-M3-CR1
-        - FV-M3-CR2
-      lifecycle_state: active
-      milestone_id: M3
-      milestone_state: review-requested
-      next_stage: code-review
-    status: active
   artifacts:
     adr-impact-aware-final-verification:
       artifact_kind: adr
@@ -192,7 +171,30 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/spec-authoring.md
       authoring_evidence_sha256: 414ef802b0ae871bd254f280611dbadb27fa4d85d476fb71c8e4fe17ae56abbc
       stage_authority: spec
-  correction_history: {}
+  correction_history:
+    route-12695a83e4df2e3638de5cce1b6d969bea8240e3f2ff49d0d926e2ae29805098:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-r1-correction-route.md
+      evidence_sha256: 30372450eb8b6a6521347ec029b5c3bf4da64a2b4bd463979f0781fe0d601b8e
+      prior_lifecycle_revision: sha256:d71305992d594299e4a3e02139958184f803668f2d4a2e128822301e2a18fc64
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-r1-correction-return.md
+      return_evidence_sha256: b5d765856663a1e298a0461ff1123e2f75ee93e4642f48c4475d6dac9bdf649c
+      return_stage: code-review
+      route_id: route-12695a83e4df2e3638de5cce1b6d969bea8240e3f2ff49d0d926e2ae29805098
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - FV-M3-CR1
+          - FV-M3-CR2
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
   milestones:
     M1:
       completion_fingerprint: f6228ed15aab709d8c07ff4a339d303f232945854976f93edeaab0382dceac3e
