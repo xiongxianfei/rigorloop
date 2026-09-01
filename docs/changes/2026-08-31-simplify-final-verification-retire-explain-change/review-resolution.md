@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -12,11 +12,12 @@ Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
+Review closeout: code-review-m4-r1
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`
 - Findings resolved: 12
-- Unresolved findings: none
-- Current result: Code Review M3 R3 independently confirmed FV-M3-CR2 and FV-M3-CR3 resolved; the complete corrected M3 slice is clean with M4 and M5 still planned.
+- Unresolved findings: 2
+- Current result: Code Review M4 R1 found two material package-coherence and fail-closed authority defects; M4 requires bounded correction and rereview before M5.
 
 ## Resolution Overview
 
@@ -34,6 +35,8 @@ Review closeout: code-review-m3-r3
 | FV-M3-CR1 | accepted | resolved | V3 accepts only the S-R review-recorded tail; legacy S-R-E remains required only by v1/v2. |
 | FV-M3-CR2 | accepted | resolved | Public v3 owner routing is executable through exact review boundaries and v1/v2 reject verification-only reasons. |
 | FV-M3-CR3 | accepted | resolved | R3 confirmed every R2 counterexample fails through public transaction and authority probes. |
+| FV-M4-CR1 | accepted | open | Contract-key Verify's explanation prerequisites and handoffs so v3 has no pre-Verify explanation dependency in canonical or staged adapter packages. |
+| FV-M4-CR2 | accepted | open | Reject duplicate governed mapping keys at every depth before selecting the registered primary plan or any nested authority value. |
 
 ## Finding Details
 
@@ -262,3 +265,39 @@ Validation evidence: Code Review M3 R3 directly confirmed v1/v2 rejection withou
 ### code-review-m3-r3
 
 No material findings.
+
+### code-review-m4-r1
+
+#### FV-M4-CR1
+
+Finding ID: FV-M4-CR1
+Disposition: accepted
+Status: open
+Owner: M4 implementer
+Owning stage: review-resolution
+Decision owner: M4 implementer
+Decision needed: none; apply the contract-keyed wording and semantic package proof already required by the approved v3 graph.
+Chosen action: make every Verify explanation prerequisite and correction handoff explicitly v1/v2-only or v3 success-only, then prove the same semantics in all staged candidates.
+Rationale: omitting `explain-change` from the candidate inventory is incoherent while Verify still globally requires and routes to that stage.
+Required outcome: v3 Verify accepts no standalone explanation input, creates no explanation on failure, creates the final explanation only on success, and active v2 retains its current prerequisite.
+Safe resolution path: update canonical Verify clauses, add semantic canonical and three-adapter candidate regressions, rerun all M4 commands, and return for Code Review M4 R2.
+Follow-up: Code Review M4 R2 after bounded implementation correction.
+Validation target: FV-R1-FV-R3, FV-R24, FV-R27, FV-R28, FV-R35-FV-R38, TG-15, TG-16, TG-18, BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001, INT-002, INT-004.
+Validation evidence: pending correction and rereview.
+
+#### FV-M4-CR2
+
+Finding ID: FV-M4-CR2
+Disposition: accepted
+Status: open
+Owner: M4 implementer
+Owning stage: review-resolution
+Decision owner: M4 implementer
+Decision needed: none; make existing safe parsing fail closed at every mapping depth.
+Chosen action: reject recursive duplicate mapping keys before any lifecycle or registered-plan authority is selected.
+Rationale: last-wins parsing lets ambiguous nested metadata choose a different plan, kind, role, or path.
+Required outcome: duplicate `artifact_states`, `plan`, `kind`, `role`, or `path` keys fail for both v2 and v3 regardless of ordering, while valid metadata and active v2 behavior remain unchanged.
+Safe resolution path: correct the shared parser or boundary parser, add direct reversal fixtures at every nested authority level, rerun all M4 commands, and return for Code Review M4 R2.
+Follow-up: Code Review M4 R2 after bounded implementation correction.
+Validation target: TG-17, BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001.
+Validation evidence: pending correction and rereview.
