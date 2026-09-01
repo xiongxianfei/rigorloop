@@ -68,7 +68,7 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: implement
+  current_stage: verify
   evidence:
     - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-invocation-code-review-final-r1.yaml
     - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-final-r1.md
@@ -120,7 +120,7 @@ workflow_state:
         state: closed
       M6:
         kind: lifecycle-closeout
-        state: implementing
+        state: review-requested
     plan_artifact_id: plan
     remaining_implementation_milestones: []
 workflow: {}
@@ -139,26 +139,6 @@ review:
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
-  active_correction:
-    destination_artifact_id: implement
-    destination_kind: stage
-    destination_stage: implement
-    evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-state-test-correction-route.md
-    evidence_sha256: e1b1ef84d15733b7123a6d47d7f388f68b0b7919e5c521289c22b849ccd4da32
-    prior_lifecycle_revision: sha256:1f606ffe55a8548bc46ede9bebb58da62393208a5df26501524bf98d46f345fb
-    reason: upstream-proof-gap
-    return_stage: verify
-    route_id: route-cf16aba0c51eaf3c98028fbae803d630924a5888cea768a14bf6efe677b9d494
-    source_snapshot:
-      blocker: null
-      current_stage: verify
-      finding_ids:
-        - FV-M6-CR4
-      lifecycle_state: active
-      milestone_id: M6
-      milestone_state: review-requested
-      next_stage: verify
-    status: active
   artifacts:
     adr-impact-aware-final-verification:
       artifact_kind: adr
@@ -290,6 +270,28 @@ lifecycle_cli:
         milestone_id: M3
         milestone_state: review-requested
         next_stage: code-review
+      status: returned
+    route-cf16aba0c51eaf3c98028fbae803d630924a5888cea768a14bf6efe677b9d494:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-state-test-correction-route.md
+      evidence_sha256: e1b1ef84d15733b7123a6d47d7f388f68b0b7919e5c521289c22b849ccd4da32
+      prior_lifecycle_revision: sha256:1f606ffe55a8548bc46ede9bebb58da62393208a5df26501524bf98d46f345fb
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-state-test-correction-return.md
+      return_evidence_sha256: 6e4345d60aa27d40c07ea74cd573b3b20ea5aaf3c04f78a2fd9f1b1dc84f8f48
+      return_stage: verify
+      route_id: route-cf16aba0c51eaf3c98028fbae803d630924a5888cea768a14bf6efe677b9d494
+      source_snapshot:
+        blocker: null
+        current_stage: verify
+        finding_ids:
+          - FV-M6-CR4
+        lifecycle_state: active
+        milestone_id: M6
+        milestone_state: review-requested
+        next_stage: verify
       status: returned
     route-f68a2810f9d66fc3f6f9359ec760e341aed83fc5e2be3de98aa9829340dd94d0:
       destination_artifact_id: implement
