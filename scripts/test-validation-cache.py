@@ -11,6 +11,7 @@ import unittest
 from pathlib import Path
 
 import validation_cache
+from final_verification_protocol import validate_final_verification_result
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -980,6 +981,26 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         policy_changed = validation_cache.build_lifecycle_cache_identity(self.temp_root, command)
         policy_context = context.with_updates(policy_hash=policy_changed.policy.manifest_hash)
         self.assertIsNone(validation_cache.find_local_cache_hit(cache_dir, policy_context).record)
+
+    def test_final_verification_cache_hit_is_not_actual_run_evidence(self) -> None:
+        result = {
+            "outcome": "successful",
+            "impact": [],
+            "evidence": [{
+                "freshness": "fresh-required",
+                "decision": "rerun",
+                "existing_result": "pass",
+                "observed_result": "pass",
+                "execution": "cache-hit",
+            }],
+            "always_current": [],
+            "ci_status": "not-required",
+        }
+        errors = validate_final_verification_result(result)
+        self.assertIn(
+            "evidence[0].execution: rerun requires actual-run or hosted-observation",
+            errors,
+        )
 
 
 if __name__ == "__main__":

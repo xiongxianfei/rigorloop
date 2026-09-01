@@ -29,6 +29,14 @@ from artifact_lifecycle_contracts import (
     validate_lifecycle_activation_manifest,
     validate_lifecycle_activation_prerequisites,
 )
+from final_verification_protocol import (
+    evaluate_evidence_decision,
+    parse_verify_report,
+    render_verify_report,
+    replay_disposition,
+    tail_disposition,
+    validate_final_verification_result,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -2584,6 +2592,214 @@ class LifecycleContractClassificationTests(unittest.TestCase):
             validate_lifecycle_activation_prerequisites(manifest, records),
             ["prior-contract change v1 current_stage: unknown_value future-stage"],
         )
+
+
+class FinalVerificationProtocolTests(unittest.TestCase):
+    def basis(self) -> dict[str, str]:
+        return {
+            "repository_identity": "github.com/example/project",
+            "remote_identity": "origin:github.com/example/project",
+            "base_branch": "main",
+            "base_revision": "d" * 40,
+            "merge_base_revision": "e" * 40,
+            "head_branch": "proposal/example",
+            "governed_change_id": "2026-08-31-example",
+            "verified_subject_revision": "a" * 40,
+            "final_review_id": "code-review-r1",
+            "design_package_id": "design-review-r1",
+            "delivery_plan_id": "docs/plans/2026-08-31-example.md",
+            "final_diff_sha256": "sha256:" + "b" * 64,
+        }
+
+    def impact(self, state: str = "unaffected") -> list[dict[str, object]]:
+        return [{
+            "surface": "runtime-behavior",
+            "state": state,
+            "rationale": "The reviewed metadata-only tail cannot alter runtime inputs.",
+            "affirmative_evidence": ["TG-06:runtime-input-boundary"],
+        }]
+
+    def obligation(self, **updates: object) -> dict[str, object]:
+        value: dict[str, object] = {
+            "evidence_id": "TG-06-runtime",
+            "proved_surfaces": ["runtime-behavior"],
+            "freshness": "impact-sensitive",
+            "existing_result": "pass",
+            "authority_current": True,
+            "identity_current": True,
+            "environment_current": True,
+            "conflicting": False,
+            "new_obligation": False,
+        }
+        value.update(updates)
+        return value
+
+    def successful_result(self) -> dict[str, object]:
+        return {
+            "protocol_version": 3,
+            "outcome": "successful",
+            "basis": self.basis(),
+            "basis_status": {
+                "repository": "current",
+                "governed_change": "current",
+                "verified_subject": "current",
+                "final_review": "current",
+                "design_package": "current",
+                "delivery_plan": "current",
+                "final_diff": "current",
+            },
+            "impact": self.impact(),
+            "evidence": [{
+                **self.obligation(),
+                "decision": "reuse",
+                "decision_rationale": "Affirmative non-impact proof preserves this passing result.",
+                "execution": "reused-pass",
+                "observed_result": "pass",
+                "cache_hit": False,
+            }],
+            "always_current": [
+                {"check_id": check_id, "execution": "actual-run", "observed_result": "pass"}
+                for check_id in (
+                    "current-change-and-repository-identity",
+                    "reviewed-subject-and-review-identity",
+                    "lifecycle-and-package-consistency",
+                    "review-closeout",
+                    "unresolved-blocker-state",
+                    "final-diff-classification",
+                    "required-artifact-and-evidence-existence",
+                    "complete-verify-result-consistency",
+                )
+            ],
+            "ci_status": "not-required",
+            "blockers": [],
+            "residual_risks": ["Semantic non-impact judgment remains reviewable."],
+            "branch_ready": True,
+            "explanation": {
+                "what_changed": "Added the inactive final-verification protocol.",
+                "why": "Enable impact-aware evidence selection.",
+                "requirements_and_design": "Implements FV-R8 through FV-R22.",
+                "important_choices": "Uses conservative structural checks.",
+                "supporting_evidence": ["TG-06-runtime"],
+                "limitations": ["The v3 public route remains inactive."],
+                "residual_risks": ["Semantic decisions require review."],
+            },
+        }
+
+    def test_closed_vocabulary_unknown_values_fail_before_consistency(self) -> None:
+        cases = (
+            ("impact-surface", {**self.successful_result(), "impact": [{**self.impact()[0], "surface": "magic-surface"}]}, "impact[0].surface: unknown_value magic-surface"),
+            ("impact", {**self.successful_result(), "impact": self.impact("future-impact")}, "impact[0].state: unknown_value future-impact"),
+            ("freshness", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "freshness": "eventually-fresh"}]}, "evidence[0].freshness: unknown_value eventually-fresh"),
+            ("decision", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "decision": "skip"}]}, "evidence[0].decision: unknown_value skip"),
+            ("evidence-result", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "observed_result": "mostly-pass"}]}, "evidence[0].observed_result: unknown_value mostly-pass"),
+            ("execution", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "execution": "assumed-run"}]}, "evidence[0].execution: unknown_value assumed-run"),
+            ("outcome", {**self.successful_result(), "outcome": "mostly-successful"}, "outcome: unknown_value mostly-successful"),
+            ("basis-status", {**self.successful_result(), "basis_status": {**self.successful_result()["basis_status"], "final_diff": "probably-current"}}, "basis_status.final_diff: unknown_value probably-current"),
+            ("ci-status", {**self.successful_result(), "ci_status": "probably-passed"}, "ci_status: unknown_value probably-passed"),
+            ("always-current-check", {**self.successful_result(), "always_current": [{**self.successful_result()["always_current"][0], "check_id": "probably-current"}, *self.successful_result()["always_current"][1:]]}, "always_current[0].check_id: unknown_value probably-current"),
+        )
+        for name, result, expected in cases:
+            with self.subTest(name=name):
+                self.assertEqual(validate_final_verification_result(result)[0], expected)
+
+    def test_target_basis_requires_exact_singleton_identities(self) -> None:
+        result = self.successful_result()
+        result["basis"] = {**self.basis(), "final_review_id": ["r1", "r2"]}
+        self.assertIn("basis.final_review_id: expected exactly one non-empty scalar identity", validate_final_verification_result(result))
+
+        stale = self.successful_result()
+        stale["basis_status"]["final_review"] = "stale"
+        self.assertIn("successful result requires every basis authority current", validate_final_verification_result(stale))
+
+    def test_unaffected_requires_affirmative_evidence_not_filename(self) -> None:
+        result = self.successful_result()
+        result["impact"] = [{
+            "surface": "repository-metadata",
+            "state": "unaffected",
+            "rationale": ".gitignore file extension",
+            "affirmative_evidence": [],
+        }]
+        self.assertIn("impact[0].unaffected: affirmative_evidence required", validate_final_verification_result(result))
+
+    def test_unknown_impact_broadens_and_freshness_overrides_reuse(self) -> None:
+        self.assertEqual(evaluate_evidence_decision(self.obligation(), self.impact("unknown")), "rerun")
+        self.assertEqual(evaluate_evidence_decision(self.obligation(freshness="fresh-required"), self.impact()), "rerun")
+        self.assertEqual(evaluate_evidence_decision(self.obligation(freshness="always-current"), self.impact()), "rerun")
+
+    def test_new_obligation_and_multi_surface_impact_select_execution(self) -> None:
+        impacts = self.impact() + [{
+            "surface": "generated-output",
+            "state": "affected",
+            "rationale": "Generator input changed.",
+            "affirmative_evidence": [],
+        }]
+        self.assertEqual(evaluate_evidence_decision(self.obligation(new_obligation=True), impacts), "newly-required")
+        self.assertEqual(evaluate_evidence_decision(self.obligation(proved_surfaces=["runtime-behavior", "generated-output"]), impacts), "rerun")
+
+    def test_cache_hit_cannot_satisfy_required_execution(self) -> None:
+        result = self.successful_result()
+        result["evidence"] = [{
+            **self.obligation(freshness="fresh-required"),
+            "decision": "rerun",
+            "decision_rationale": "Policy requires fresh evidence.",
+            "execution": "cache-hit",
+            "observed_result": "pass",
+            "cache_hit": True,
+        }]
+        self.assertIn("evidence[0].execution: rerun requires actual-run or hosted-observation", validate_final_verification_result(result))
+
+    def test_non_success_omits_explanation_and_readiness(self) -> None:
+        for outcome in ("failed", "inconclusive", "interrupted"):
+            result = self.successful_result()
+            result.update({"outcome": outcome, "branch_ready": False, "blockers": ["owner: plan"], "explanation": None})
+            self.assertEqual(validate_final_verification_result(result), [], outcome)
+            result["explanation"] = self.successful_result()["explanation"]
+            self.assertIn(f"{outcome} result must omit explanation", validate_final_verification_result(result))
+
+    def test_early_inconclusive_result_may_record_unresolved_inputs(self) -> None:
+        result = self.successful_result()
+        result.update({
+            "outcome": "inconclusive",
+            "basis": {field: None for field in self.basis()},
+            "basis_status": {field: "missing" for field in result["basis_status"]},
+            "impact": [],
+            "evidence": [],
+            "always_current": [],
+            "blockers": ["owner: workflow; exact target unresolved"],
+            "branch_ready": False,
+            "explanation": None,
+        })
+        self.assertEqual(validate_final_verification_result(result), [])
+
+    def test_success_serializes_and_reads_back_without_self_commit_identity(self) -> None:
+        result = self.successful_result()
+        rendered = render_verify_report(result)
+        self.assertEqual(parse_verify_report(rendered), result)
+        self.assertNotIn("report_commit", rendered)
+        self.assertEqual(validate_final_verification_result(result), [])
+
+        result["report_commit_identity"] = "f" * 40
+        self.assertIn("result: Verify report must not embed its own Git commit identity", validate_final_verification_result(result))
+
+    def test_report_write_and_registration_failure_grant_no_authority(self) -> None:
+        for failure in ("report-write-failure", "registration-failure"):
+            result = self.successful_result()
+            result.update({"outcome": "inconclusive", "branch_ready": False, "blockers": [failure], "explanation": None})
+            self.assertEqual(validate_final_verification_result(result), [], failure)
+
+    def test_identical_replay_is_idempotent_and_changed_basis_is_new(self) -> None:
+        result = self.successful_result()
+        self.assertEqual(replay_disposition(result, parse_verify_report(render_verify_report(result))), "identical-replay")
+        changed = copy.deepcopy(result)
+        changed["basis"]["final_diff_sha256"] = "sha256:" + "c" * 64
+        self.assertEqual(replay_disposition(result, changed), "changed-basis")
+
+    def test_tail_drift_allows_only_verify_owned_paths_and_fields(self) -> None:
+        self.assertEqual(tail_disposition(["docs/changes/example/verify-report.md", "docs/changes/example/change.yaml#validation_events.verify"], "example"), "current")
+        for path in ("src/product.py", "specs/feature.md", "docs/plans/feature.md", "package-lock.json", "docs/unrelated.md"):
+            with self.subTest(path=path):
+                self.assertEqual(tail_disposition([path], "example"), "stale")
+        self.assertEqual(tail_disposition(["docs/changes/other/verify-report.md"], "example"), "stale")
 
 
 if __name__ == "__main__":
