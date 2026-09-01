@@ -29,23 +29,7 @@
     },
     "changes": {
       "type": "array",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "change_id",
-          "contract_class"
-        ],
-        "properties": {
-          "change_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
-          },
-          "contract_class": {
-            "const": "stage-owned-change-local-v2"
-          }
-        }
-      }
+      "maxItems": 0
     }
   },
   "allOf": [
@@ -61,9 +45,6 @@
         "properties": {
           "activating_source_revision": {
             "type": "null"
-          },
-          "changes": {
-            "maxItems": 0
           }
         }
       }

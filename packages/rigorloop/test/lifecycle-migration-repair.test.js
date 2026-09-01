@@ -8,9 +8,11 @@ import { test } from "node:test";
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
 import { parseLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
 import { lifecycleTransactionPaths } from "../dist/lib/lifecycle-transaction.js";
+import { writeActiveV3Manifests } from "./helpers/lifecycle-package-fixture.js";
 
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-lifecycle-migrate-"));
+  writeActiveV3Manifests(root);
   const changeRoot = join(root, "docs", "changes", "example");
   mkdirSync(changeRoot, { recursive: true });
   mkdirSync(join(root, "specs"), { recursive: true });
@@ -21,7 +23,7 @@ async function fixture() {
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   spec:
     kind: spec

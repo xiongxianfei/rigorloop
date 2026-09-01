@@ -155,10 +155,10 @@ class WrapperExecutionTests(unittest.TestCase):
             (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
             self.assertRegex(
                 MODULE.final_verification_manifest_errors(root)[0],
-                r"unknown_value stage-owned-change-local-v1",
+                r"changes must be empty",
             )
 
-    def test_active_final_verification_inventory_rejects_unfrozen_v2(self):
+    def test_active_final_verification_manifest_does_not_allowlist_v2(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "specs").mkdir()
@@ -174,12 +174,9 @@ class WrapperExecutionTests(unittest.TestCase):
                 "changes": [],
             }
             (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
-            self.assertEqual(
-                MODULE.final_verification_manifest_errors(root),
-                ["final verification activation inventory mismatch: missing=['old-v2'], extra=[], class_mismatch=[]"],
-            )
+            self.assertEqual(MODULE.final_verification_manifest_errors(root), [])
 
-    def test_quoted_v2_is_included_in_final_verification_inventory(self):
+    def test_quoted_v2_remains_history_without_allowlist_membership(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "specs").mkdir()
@@ -195,10 +192,7 @@ class WrapperExecutionTests(unittest.TestCase):
                 "changes": [],
             }
             (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
-            self.assertEqual(
-                MODULE.final_verification_manifest_errors(root),
-                ["final verification activation inventory mismatch: missing=['quoted-v2'], extra=[], class_mismatch=[]"],
-            )
+            self.assertEqual(MODULE.final_verification_manifest_errors(root), [])
 
     def test_comments_do_not_select_a_lifecycle_contract(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -246,7 +240,7 @@ class WrapperExecutionTests(unittest.TestCase):
             (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
             self.assertRegex(
                 MODULE.final_verification_manifest_errors(root)[0],
-                r"raw UTF-8 byte order",
+                r"changes must be empty",
             )
 
     def test_final_verification_manifest_duplicate_fails_before_inventory(self):
@@ -263,7 +257,7 @@ class WrapperExecutionTests(unittest.TestCase):
             (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
             self.assertRegex(
                 MODULE.final_verification_manifest_errors(root)[0],
-                r"duplicate change_id",
+                r"changes must be empty",
             )
 
     def test_unknown_parsed_contract_fails_closed(self):
@@ -282,10 +276,8 @@ class WrapperExecutionTests(unittest.TestCase):
                 "changes": [],
             }
             (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
-            self.assertRegex(
-                MODULE.final_verification_manifest_errors(root)[0],
-                r"lifecycle_contract: unknown_value stage-owned-change-local-v9",
-            )
+            _inventory, errors = MODULE.parsed_change_inventory(root)
+            self.assertRegex(errors[0], r"lifecycle_contract: unknown_value stage-owned-change-local-v9")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

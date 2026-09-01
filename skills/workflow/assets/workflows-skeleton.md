@@ -41,22 +41,11 @@ proposal
 -> code-review
 -> review-resolution, when triggered
 -> ci-maintenance, when triggered
--> explain-change
 -> verify
 -> pr
 ```
 
-While final-verification v3 is in preactivation, the sequence above is the active v2 closeout. After coherent v3 activation, new changes use:
-
-```text
-code-review
--> review-resolution when triggered
--> ci-maintenance when triggered
--> verify
--> pr
-```
-
-Successful v3 Verify owns the final durable explanation; no standalone explain-change artifact or stage is created.
+This is the sole current executable v3 graph. Historical non-v3 records remain readable but select no progression route. Successful Verify owns the final durable explanation; no standalone explanation artifact or stage is created.
 
 ## Stage obligations
 
@@ -137,12 +126,6 @@ artifact_locations:
     required_when: material findings or blocking outcomes require disposition
     notes: finding disposition record
 
-  explain_change:
-    owner: explain-change
-    path: docs/changes/<change-id>/explain-change.md
-    required_when: final explanation is required
-    notes: human-readable change rationale
-
   verify_report:
     owner: verify
     path: docs/changes/<change-id>/verify-report.md
@@ -177,8 +160,7 @@ artifact_locations:
 | Formal review records | `docs/changes/<change-id>/reviews/<stage>-r<n>.md` | review skill | Formal review | Review evidence |
 | Review log | `docs/changes/<change-id>/review-log.md` | review skills | Formal review exists | Review index |
 | Review resolution | `docs/changes/<change-id>/review-resolution.md` | review-resolution | Findings require disposition | Resolution evidence |
-| Explain change | `docs/changes/<change-id>/explain-change.md` | `explain-change` | Final explanation | Change rationale |
-| Verify report | `docs/changes/<change-id>/verify-report.md` | `verify` | Verify stage | Branch-readiness proof |
+| Verify report | `docs/changes/<change-id>/verify-report.md` | `verify` | Verify stage | Branch-readiness proof and successful final explanation |
 | PR handoff | Pull request body | `pr` | PR stage | Local handoff only when project policy requires it |
 | Learn session | `docs/learn/sessions/YYYY-MM-DD-<slug>.md` | `learn` | Learn trigger | Historical rationale |
 

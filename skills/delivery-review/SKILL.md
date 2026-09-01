@@ -55,7 +55,7 @@ Next stage: workflow may route an approved package to implementation; otherwise 
 
 Resolve the governed change, then obtain the package with `rigorloop lifecycle context delivery-review --change <change-id> --format json`. Read the complete exact primary plan plus the approved Design Review ID and member map it operationalizes. Read current proposal constraints, architecture, specification, ADRs, and prior review or resolution evidence as needed to validate the trace.
 
-For v2, the package member map must contain exactly the registered primary-plan artifact ID and normalized repository-relative path. A standalone test-spec substitute or extra member is invalid. Registered prior-contract v1 changes retain their exact plan-plus-test-spec package. Do not calculate or request aggregate revisions or content hashes.
+For v3, the package member map must contain exactly the registered primary-plan artifact ID and normalized repository-relative path. A standalone test-spec substitute or extra member is invalid. Historical packages remain readable but grant no current review or progression authority. Do not calculate or request aggregate revisions or content hashes.
 
 ## Review contract
 

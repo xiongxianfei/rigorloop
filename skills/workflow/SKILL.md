@@ -228,7 +228,6 @@ docs/changes/<change-id>/change.yaml
 docs/changes/<change-id>/reviews/<stage>-r<n>.md
 docs/changes/<change-id>/review-log.md
 docs/changes/<change-id>/review-resolution.md
-docs/changes/<change-id>/explain-change.md
 docs/changes/<change-id>/verify-report.md
 specs/slug.md
 docs/learn/sessions/YYYY-MM-DD-slug.md

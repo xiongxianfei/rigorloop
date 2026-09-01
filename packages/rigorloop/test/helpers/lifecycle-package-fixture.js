@@ -11,7 +11,13 @@ function digest(value) {
   return createHash("sha256").update(value).digest("hex");
 }
 
-export async function packageRepository({ stage = "design-review", includeArchitecture = true, includeAdr = true, lifecycleContract = "stage-owned-change-local-v1" } = {}) {
+export function writeActiveV3Manifests(root) {
+  mkdirSync(join(root, "specs"), { recursive: true });
+  writeFileSync(join(root, "specs", "lifecycle-contract-activation.yaml"), `schema_version: 1\nstate: active\nactivating_source_revision: ${"a".repeat(40)}\nchanges: []\n`, "utf8");
+  writeFileSync(join(root, "specs", "final-verification-contract-activation.yaml"), `schema_version: 1\nstate: active\nactivating_source_revision: ${"b".repeat(40)}\nchanges: []\n`, "utf8");
+}
+
+export async function packageRepository({ stage = "design-review", includeArchitecture = true, includeAdr = true, lifecycleContract = "stage-owned-change-local-v3" } = {}) {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-package-"));
   const changeId = "example";
   const changeRoot = join(root, "docs", "changes", changeId);
@@ -33,7 +39,9 @@ export async function packageRepository({ stage = "design-review", includeArchit
     "test-spec": ["specs/example.test.md", "# Test specification\n"],
   };
   for (const [path, bytes] of Object.values(sources)) writeFileSync(join(root, path), bytes, "utf8");
-  if (lifecycleContract === "stage-owned-change-local-v2") {
+  if (lifecycleContract === "stage-owned-change-local-v3") {
+    writeActiveV3Manifests(root);
+  } else if (lifecycleContract === "stage-owned-change-local-v2") {
     writeFileSync(join(root, "specs", "lifecycle-contract-activation.yaml"), `schema_version: 1\nstate: active\nactivating_source_revision: ${"a".repeat(40)}\nchanges: []\n`, "utf8");
   }
 

@@ -6,7 +6,7 @@ Load only when `strategic_authoring_context` is true. The parent skill owns oper
 
 Before initial drafting or material repositioning, identify project category, primary user, primary pain, primary promise, core mechanism, alternatives, tradeoff, compatibility surfaces, refusals, and falsifiability. Write it to `docs/vision/strategic-positioning.md` as supporting rationale. `VISION.md` remains canonical; rationale never overrides it.
 
-For editorial updates, README-only sync, or narrow edits, do not update rationale unless strategic assumptions changed or a conflict was found. For substantive repositioning in a governed repository, require `explain-change.md` to summarize the delta and link the rationale path.
+For editorial updates, README-only sync, or narrow edits, do not update rationale unless strategic assumptions changed or a conflict was found. For substantive repositioning in a governed repository, require the successful final Verify report to summarize the delta and link the rationale path.
 
 Treat repository layout, Git, CI, pull requests, runtime, package format, hosting platform, language, and template mechanics as compatibility surfaces unless genuinely the product.
 

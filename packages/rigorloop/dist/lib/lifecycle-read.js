@@ -5,8 +5,6 @@ import { dirname, join, relative, resolve, sep } from "node:path";
 import {
   FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH,
   LIFECYCLE_ACTIVATION_MANIFEST_PATH,
-  LIFECYCLE_CONTRACT_V1,
-  LIFECYCLE_CONTRACT_V2,
   LIFECYCLE_CONTRACT_V3,
   PREACTIVATION_FINAL_VERIFICATION_MANIFEST,
   PREACTIVATION_LIFECYCLE_MANIFEST,
@@ -25,14 +23,14 @@ import { stageIsComplete } from "./lifecycle-stage-routing.js";
 
 const REVIEW_STAGES = new Set(["proposal-review", "design-review", "delivery-review", "code-review"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input", "system-requirement-gap", "technical-realization-gap", "verification-allocation-gap", "implementation-defect", "stale-or-incomplete-review", "ci-or-environment-gap", "external-evidence-gap"]);
-const DOWNSTREAM_AUTHORITY_STAGES = new Set(["implement", "code-review", "explain-change", "verify", "pr"]);
+const DOWNSTREAM_AUTHORITY_STAGES = new Set(["implement", "code-review", "verify", "pr"]);
 
 function diagnostic(code, summary, invariant, correctiveOperation = null, identities = []) {
   return { code, summary, blocking_invariant: invariant, relevant_identities: identities, corrective_operation: correctiveOperation };
 }
 
 function hasHistoricalArtifactReviews(change, kind) {
-  const memberKinds = kind === "design" ? new Set(["architecture", "spec", "adr"]) : new Set(allowedArtifactKinds(change).filter((value) => ["plan", "test-spec"].includes(value)));
+  const memberKinds = kind === "design" ? new Set(["architecture", "spec", "adr"]) : new Set(["plan"]);
   return Object.values(change.artifact_states ?? {}).some((entry) => memberKinds.has(entry?.kind) && entry?.review?.outcome === "approved");
 }
 
@@ -213,6 +211,7 @@ function coordinationErrors(root, change) {
 }
 
 function permittedOperations(root, change, blockers, packageContexts = {}) {
+  if (lifecycleContractVersion(change) !== LIFECYCLE_CONTRACT_V3) return [];
   const stage = change.workflow_state?.current_stage;
   const operations = [];
   const targetId = artifactForStage(stage, change);
@@ -312,12 +311,8 @@ export function interpretGovernedChange(root, selected) {
       ? parseLifecycleYaml(readFileSync(finalManifestPath, "utf8"))
       : PREACTIVATION_FINAL_VERIFICATION_MANIFEST;
     lifecycleContract = classifyLifecycleContract(selected.id, change, manifest, finalManifest);
-    if (lifecycleContract.contract_class === LIFECYCLE_CONTRACT_V2 && lifecycleContract.activation_state !== "active") {
-      errors.push(diagnostic("RL_INCOMPATIBLE_VERSION", "Lifecycle contract v2 is not active.", "lifecycle-contract-activation", null, [selected.id]));
-    } else if (lifecycleContract.contract_class === LIFECYCLE_CONTRACT_V3 && lifecycleContract.activation_state !== "active") {
+    if (lifecycleContract.contract_class === LIFECYCLE_CONTRACT_V3 && lifecycleContract.activation_state !== "active") {
       errors.push(diagnostic("RL_INCOMPATIBLE_VERSION", "Lifecycle contract v3 is not active.", "lifecycle-contract-activation", null, [selected.id]));
-    } else if (lifecycleContract.contract_class !== LIFECYCLE_CONTRACT_V1 && lifecycleContract.activation_state !== "active") {
-      errors.push(diagnostic("RL_UNSUPPORTED_SCHEMA", "Unversioned lifecycle records are not supported by the preactivation CLI reader.", "lifecycle-contract", null, [selected.id]));
     }
   } catch (error) {
     errors.push(diagnostic(error.code ?? "RL_INCOMPATIBLE_VERSION", String(error.message).replace(/^[A-Z_]+:\s*/, ""), "lifecycle-contract-activation", null, [selected.id]));
@@ -333,9 +328,15 @@ export function interpretGovernedChange(root, selected) {
   if (change.workflow_state?.blocker) blockers.push({ code: "RL_OPERATION_NOT_PERMITTED", summary: String(change.workflow_state.blocker), blocking_invariant: "workflow-blocker" });
   if (unresolvedFindings.length) blockers.push({ code: "RL_UNRESOLVED_MATERIAL_FINDING", summary: "Material review findings remain open.", blocking_invariant: "finding-closeout", relevant_identities: unresolvedFindings });
   if (staleEvidence.length) blockers.push({ code: "RL_STALE_EVIDENCE", summary: "Registered evidence is stale.", blocking_invariant: "evidence-freshness", relevant_identities: staleEvidence });
-  const packageContexts = Object.fromEntries(["design", "delivery"].map((kind) => [kind, reviewPackageContext(root, change, kind)]));
+  const historical = lifecycleContract?.contract_class !== LIFECYCLE_CONTRACT_V3;
+  const packageContexts = historical
+    ? Object.fromEntries(["design", "delivery"].map((kind) => {
+      const projection = change.review_packages?.[kind] ?? {};
+      return [kind, { package_kind: kind, members: projection.members ?? {}, upstream_review_id: projection.upstream_review_id ?? null, status: projection.status ?? "historical", authority: "historical", latest_review: null, correction_targets: [], blockers: [], errors: [], next_permitted_operation: null }];
+    }))
+    : Object.fromEntries(["design", "delivery"].map((kind) => [kind, reviewPackageContext(root, change, kind)]));
   const downstreamAuthority = downstreamPackageAuthority(change, packageContexts);
-  if (change.review_packages !== undefined && DOWNSTREAM_AUTHORITY_STAGES.has(change.workflow_state?.current_stage) && downstreamAuthority.status !== "current") {
+  if (!historical && change.review_packages !== undefined && DOWNSTREAM_AUTHORITY_STAGES.has(change.workflow_state?.current_stage) && downstreamAuthority.status !== "current") {
     blockers.push(diagnostic(
       "RL_OPERATION_NOT_PERMITTED",
       "Current Design Review and Delivery Review package authority is required for downstream work.",
@@ -344,7 +345,7 @@ export function interpretGovernedChange(root, selected) {
       Object.entries(downstreamAuthority.packages).filter(([, value]) => value.state !== "current").map(([kind]) => kind),
     ));
   }
-  for (const packageContext of Object.values(packageContexts)) if (change.review_packages?.[packageContext.package_kind]) blockers.push(...packageContext.blockers, ...packageContext.errors);
+  if (!historical) for (const packageContext of Object.values(packageContexts)) if (change.review_packages?.[packageContext.package_kind]) blockers.push(...packageContext.blockers, ...packageContext.errors);
   blockers.push(...errors);
   const referenced = collected.artifacts.filter((artifact) => artifact.sha256).map((artifact) => ({ path: artifact.path, sha256: artifact.sha256 }));
   const revision = lifecycleRevision(change, referenced);
@@ -400,13 +401,28 @@ export function interpretGovernedChange(root, selected) {
 
 function artifactForStage(stage, change = null) {
   const normalized = String(stage ?? "").replace(/-review$/, "");
-  const kinds = change ? allowedArtifactKinds(change) : ["proposal", "spec", "architecture", "plan", "test-spec"];
+  const kinds = change ? allowedArtifactKinds(change) : ["proposal", "spec", "architecture", "plan"];
   if (kinds.includes(normalized)) return normalized;
-  if (["implement", "code-review", "verify", "explain-change"].includes(stage)) return "plan";
+  if (["implement", "code-review", "verify"].includes(stage)) return "plan";
   return null;
 }
 
 export function contextForStage(interpreted, stage) {
+  if (lifecycleContractVersion(interpreted.change) !== LIFECYCLE_CONTRACT_V3) {
+    const issue = diagnostic("RL_INCOMPATIBLE_VERSION", "Historical non-v3 records are readable but cannot select a current progression context.", "lifecycle-contract-authority", null, [String(interpreted.change?.lifecycle_contract ?? "legacy-unversioned")]);
+    return {
+      exact_change: interpreted.change_id,
+      operation: stage,
+      target_artifact: null,
+      settled_upstream_inputs: [],
+      review_round: null,
+      authorized_output_path: null,
+      blockers: [issue],
+      errors: [issue],
+      lifecycle_revision: interpreted.lifecycle_revision,
+      permitted_registration_operation: null,
+    };
+  }
   if (interpreted.change?.lifecycle_contract === LIFECYCLE_CONTRACT_V3 && stage === "explain-change") {
     const issue = diagnostic("RL_INVALID_REQUEST", `stage: unknown_value ${String(stage)}`, "workflow-stage", null, [String(stage)]);
     return {
@@ -422,7 +438,7 @@ export function contextForStage(interpreted, stage) {
       permitted_registration_operation: null,
     };
   }
-  if (String(stage).replace(/-review$/, "") === "test-spec" && !allowedArtifactKinds(interpreted.change).includes("test-spec")) {
+  if (String(stage).replace(/-review$/, "") === "test-spec") {
     const issue = diagnostic("RL_INVALID_REQUEST", `stage: unknown_value ${String(stage)}`, "workflow-stage", null, [String(stage)]);
     return {
       exact_change: interpreted.change_id,
@@ -461,7 +477,6 @@ export function contextForStage(interpreted, stage) {
     spec: ["proposal"],
     architecture: ["spec"],
     plan: ["spec", "architecture"],
-    "test-spec": ["spec", "architecture", "plan"],
   }[stage] ?? [];
   const settledInputs = interpreted.artifacts
     .filter((artifact) => directDependencies.includes(artifact.artifact_id) && ["accepted", "approved", "active"].includes(artifact.recorded_state) && artifact.evidence_state === "current")

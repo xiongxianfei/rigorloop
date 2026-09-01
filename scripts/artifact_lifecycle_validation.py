@@ -2082,21 +2082,6 @@ def validate_repository(
             continue
         if (
             isinstance(metadata, dict)
-            and not activation_manifest_present
-            and metadata.get("lifecycle_contract") == LIFECYCLE_CONTRACT_V2
-        ):
-            blocking_findings.append(
-                ValidationFinding(
-                    severity="block",
-                    path=path,
-                    artifact_class="change_metadata",
-                    status=None,
-                    message="v2 lifecycle contract requires the tracked activation manifest",
-                )
-            )
-            continue
-        if (
-            isinstance(metadata, dict)
             and metadata.get("lifecycle_contract") == LIFECYCLE_CONTRACT_V3
             and not final_verification_manifest_present
         ):

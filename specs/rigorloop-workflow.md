@@ -11,11 +11,11 @@ Upon approval of [Single Bounded Review-Fix Workflow Automation](single-bounded-
 Only selectors explicitly listed in the unified spec's closed affected-selector registry are amended.
 Requirements outside that registry remain current lifecycle and artifact-ordering requirements of this spec and receive no implicit migration disposition.
 
-## V2 delivery-contract activation amendment
+## Current v3 lifecycle amendment
 
-`stage-owned-change-local-v2` is active for every new governed change. The standard pre-implementation chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement`. Plan owns milestone and change-level verification allocation, and Delivery Review approves implementation and verification readiness as one exact plan-only package.
+The current source package defines only `stage-owned-change-local-v3`. Its standard chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement`, followed after implementation closeout by `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`. Plan owns milestone and change-level verification allocation, Delivery Review approves one exact plan-only package, and only a successful Verify result contains the final durable explanation.
 
-Final-verification v3 is staged in preactivation under `specs/final-verification-contract-activation.yaml`. Preactivation does not reinterpret current v2 work. At coherent activation, `stage-owned-change-local-v3` becomes the only current executable contract; the final route is `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`, and only a successful Verify result contains the final durable explanation. Historical v1/v2 records and explanation artifacts remain readable but grant no current progression authority.
+The publication candidate remains non-authoritative while `specs/final-verification-contract-activation.yaml` is in preactivation. Coherent activation grants current v3 authority; it does not reinterpret prior work. Historical v1/v2 records and explanation artifacts remain readable but grant no current progression authority.
 
 The exact prior-contract inventory frozen in `specs/lifecycle-contract-activation.yaml` remains readable historical evidence. It does not create a current v1/v2 execution branch. The legacy clauses below remain historical context and do not override this amendment.
 
@@ -23,7 +23,7 @@ The exact prior-contract inventory frozen in `specs/lifecycle-contract-activatio
 
 At the reviewed consolidated-gates release cutover, `specs/consolidated-review-gates.md` replaces the legacy artifact-review progression clauses named in that specification. The standard pre-implementation chain becomes `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> test-spec -> delivery-review -> implement`. Proposal Review evaluates the proposal and its embedded feasibility evidence; Design Review approves the exact architecture, specification, and applicable ADR package; Delivery Review approves the exact plan and test-specification package.
 
-Architecture, specification, plan, and test-specification authorship remain separate. Package review authority is atomic and binds explicit artifact ID-to-repository-relative-path maps plus the upstream review ID; it uses neither an aggregate revision nor per-document hashes. `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain readable historical evidence but are not post-cutover progression entrypoints or aliases. Code Review, review-resolution, `explain-change`, Verify, and PR retain their existing semantic owners.
+Architecture, specification, plan, and historical test-specification authorship remain distinct in their records. Package review authority is atomic and binds explicit artifact ID-to-repository-relative-path maps plus the upstream review ID; it uses neither an aggregate revision nor per-document hashes. `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain readable historical evidence but are not current progression entrypoints or aliases. Current final ownership belongs to Code Review, review-resolution, Verify, and PR.
 
 The consolidated-gates implementing change completes under the pre-cutover clauses below. This bounded implementation exception does not introduce runtime coexistence, an activation manifest, or per-change topology metadata.
 

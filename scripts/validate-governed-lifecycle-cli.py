@@ -14,7 +14,6 @@ from artifact_lifecycle_contracts import (
     LEGACY_UNVERSIONED_CONTRACT,
     LIFECYCLE_ACTIVATION_MANIFEST_PATH,
     LIFECYCLE_CONTRACT_V1,
-    LIFECYCLE_CONTRACT_V2,
     LIFECYCLE_CONTRACT_V3,
     parse_lifecycle_activation_manifest,
     validate_lifecycle_activation_manifest,
@@ -42,7 +41,7 @@ BASELINE_WARNINGS = {
 RETIRED_PROGRESSION_STAGES = frozenset({
     "spec-review", "architecture-review", "plan-review", "test-spec-review",
 })
-GOVERNED_CONTRACTS = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3})
+GOVERNED_CONTRACTS = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V3, "stage-owned-change-local-v2"})
 _DEFAULT_METADATA_LOADER = None
 
 
@@ -181,26 +180,7 @@ def final_verification_manifest_errors(root: Path = ROOT, *, loader=None) -> lis
     except (OSError, ValueError) as exc:
         return [f"final verification activation manifest unreadable: {exc}"]
     errors = validate_final_verification_activation_manifest(manifest)
-    if errors or manifest.get("state") != "active":
-        return errors
-    inventory, inventory_errors = parsed_change_inventory(root, loader=loader)
-    if inventory_errors:
-        return inventory_errors
-    actual_v2 = {
-        change_id: LIFECYCLE_CONTRACT_V2
-        for change_id, entry in inventory.items()
-        if entry["contract"] == LIFECYCLE_CONTRACT_V2
-    }
-    frozen_v2 = {entry["change_id"]: entry["contract_class"] for entry in manifest["changes"]}
-    if frozen_v2 == actual_v2:
-        return []
-    missing = sorted(set(actual_v2) - set(frozen_v2), key=lambda item: item.encode("utf-8"))
-    extra = sorted(set(frozen_v2) - set(actual_v2), key=lambda item: item.encode("utf-8"))
-    changed = sorted(
-        (change_id for change_id in set(actual_v2) & set(frozen_v2) if actual_v2[change_id] != frozen_v2[change_id]),
-        key=lambda item: item.encode("utf-8"),
-    )
-    return [f"final verification activation inventory mismatch: missing={missing}, extra={extra}, class_mismatch={changed}"]
+    return errors
 
 
 def result_codes(payload: dict) -> list[str]:

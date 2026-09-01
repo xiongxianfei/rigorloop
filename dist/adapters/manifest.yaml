@@ -21,9 +21,6 @@ skills:
   design-review:
     portable: true
     adapters: [codex, claude, opencode]
-  explain-change:
-    portable: true
-    adapters: [codex, claude, opencode]
   explore:
     portable: true
     adapters: [codex, claude, opencode]

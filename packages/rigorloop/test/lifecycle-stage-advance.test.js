@@ -110,8 +110,8 @@ test("package settlement remains isolated until workflow advances", async () => 
   assert.equal(settled.workflow_state.next_stage, "design-review");
 });
 
-test("v2 delivery package contains only the primary plan and advances directly from plan", async () => {
-  const { root } = await packageRepository({ lifecycleContract: "stage-owned-change-local-v2" });
+test("v3 delivery package contains only the primary plan and advances directly from plan", async () => {
+  const { root } = await packageRepository();
   approvePackage(root, "design");
   const designAdvance = advance(root, "design-review", "plan", "v2-design-to-plan");
   assert.equal(designAdvance.exitCode, 0, JSON.stringify(designAdvance.result));
@@ -128,34 +128,31 @@ test("v2 delivery package contains only the primary plan and advances directly f
   assert.equal(deliveryAdvance.exitCode, 0, JSON.stringify(deliveryAdvance.result));
 });
 
-test("v2 rejects retired test-spec edges and active artifact state without mutation", async () => {
+test("historical v2 rejects every progression operation without mutation", async () => {
   const fixture = await packageRepository({ lifecycleContract: "stage-owned-change-local-v2", stage: "plan" });
   const before = changeBytes(fixture.root);
   const skipped = advance(fixture.root, "plan", "test-spec", "v2-retired-edge");
-  assert.equal(skipped.result.errors[0].code, "RL_OPERATION_NOT_PERMITTED");
+  assert.equal(skipped.result.errors[0].code, "RL_INCOMPATIBLE_VERSION");
   assert.equal(changeBytes(fixture.root), before);
   const retiredContext = executeLifecycleCli(["context", "test-spec", "--change", "example", "--format", "json"], { cwd: fixture.root });
   assert.notEqual(retiredContext.exitCode, 0);
-  assert.match(retiredContext.result.errors[0].summary, /unknown_value test-spec/);
+  assert.match(retiredContext.result.errors[0].summary, /Historical non-v3 records/);
 
   const path = join(fixture.changeRoot, "change.yaml");
   const mixed = parseLifecycleYaml(before);
   mixed.artifact_states["test-spec"] = { kind: "test-spec", path: "specs/example.test.md", role: "primary", lifecycle_state: "review-required" };
   writeFileSync(path, serializeLifecycleYaml(mixed), "utf8");
   const status = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: fixture.root });
-  assert.equal(status.exitCode, 4);
-  assert.match(status.result.errors[0].summary, /active test-spec state/);
+  assert.equal(status.exitCode, 0);
+  assert.equal(status.result.effective_state.lifecycle_contract.authority, "historical");
 });
 
-test("v1 delivery package and plan to test-spec route remain unchanged", async () => {
-  const { root } = await packageRepository({ stage: "plan" });
+test("historical v1 remains readable but has no delivery context or route", async () => {
+  const { root } = await packageRepository({ lifecycleContract: "stage-owned-change-local-v1", stage: "plan" });
   const context = packageContext(root, "delivery-review");
-  assert.deepEqual(context.result.context.review_package.members, {
-    plan: "docs/plans/example.md",
-    "test-spec": "specs/example.test.md",
-  });
+  assert.equal(context.result.errors[0].code, "RL_INCOMPATIBLE_VERSION");
   const routed = advance(root, "plan", "test-spec", "v1-plan-to-test-spec");
-  assert.equal(routed.exitCode, 0, JSON.stringify(routed.result));
+  assert.equal(routed.result.errors[0].code, "RL_INCOMPATIBLE_VERSION");
 });
 
 test("retired and skipped progression edges fail without mutation", async () => {

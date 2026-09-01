@@ -45,7 +45,7 @@ This state-based behavior resolves ordinary user intent to exactly `establish-vi
 - `revise-vision` requires existing `VISION.md` and exact update intent. Absent vision routes to establishment. Update only requested or necessarily related sections and explain required cascades.
 - `sync-readme` requires existing `VISION.md`, leaves it unchanged, and changes only authorized README front-matter.
 
-For revision, ask or confirm whether the change is `substantive` or `editorial` before finalizing. Internally classify exactly `editorial`, `substantive-nonmaterial`, or `material-repositioning`. Scope, audience, commitment, refusal, proposal-fit, or falsifiability changes are substantive absent owner rationale. Governed work uses the existing or required change-local pack and records causal links in `change.yaml` and `explain-change.md`.
+For revision, ask or confirm whether the change is `substantive` or `editorial` before finalizing. Internally classify exactly `editorial`, `substantive-nonmaterial`, or `material-repositioning`. Scope, audience, commitment, refusal, proposal-fit, or falsifiability changes are substantive absent owner rationale. Governed work uses the existing or required change-local pack and records causal links in `change.yaml`; successful final Verify records the durable explanation.
 
 If the user asks this skill to read, edit, merge, delete, or migrate retired root `vision.md` as project vision, stop and explain that root `VISION.md` is the only supported project-vision artifact unless the owner gives a separate non-vision-file instruction.
 
