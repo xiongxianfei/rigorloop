@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -21,11 +21,13 @@ Review closeout: code-review-pr-preflight-r1
 Review closeout: code-review-pr-preflight-r2
 Review closeout: code-review-pr-preflight-r3
 Review closeout: code-review-pr-preflight-r4
+Review closeout: code-review-pr-preflight-r5
+Review closeout: code-review-pr-preflight-r6
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-pr-preflight-r1`, `code-review-pr-preflight-r2`, `code-review-pr-preflight-r3`, `code-review-pr-preflight-r4`, `code-review-pr-preflight-r5`
-- Findings resolved: 20
-- Unresolved findings: 1
-- Current result: FV-M6-CR3 records stale workflow policy tests that reference retired stages and executable v2 behavior. One consolidated test-only correction and targeted rereview are required.
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-pr-preflight-r1`, `code-review-pr-preflight-r2`, `code-review-pr-preflight-r3`, `code-review-pr-preflight-r4`, `code-review-pr-preflight-r5`, `code-review-pr-preflight-r6`
+- Findings resolved: 21
+- Unresolved findings: 0
+- Current result: FV-M6-CR3 is resolved by the consolidated v3-only workflow-policy test correction and clean targeted rereview. Final verification and PR-mode validation remain downstream obligations.
 
 ## Resolution Overview
 
@@ -49,7 +51,7 @@ Review closeout: code-review-pr-preflight-r4
 | FV-M5-CR2 | accepted | resolved | Generated OpenCode guidance derives its alias declaration from the canonical tuple, and adapter support prose distinguishes candidate metadata from immutable release archives. |
 | FV-M6-CR1 | accepted | resolved | Query-helper current fixtures now select v3 and the exact current Verify completion policy; focused and structural proof pass. |
 | FV-M6-CR2 | accepted | resolved | Workflow-code-state tests now accept the valid v3 review-only tail and reject historical review-to-explanation tails as current Verify authority. |
-| FV-M6-CR3 | accepted | open | Workflow policy tests still reference removed Test Spec/Explain Change enums and expect v2 selector/evaluator success. |
+| FV-M6-CR3 | accepted | resolved | Workflow policy tests now assert the exact v3 graph, retired-stage absence, and fail-closed v1/v2/future selection. |
 | FV-DLR2-01 | accepted | resolved | The plan now binds Design Review R2 consistently at every current upstream authority point. |
 | FV-DLR2-02 | accepted | resolved | M5 is non-authoritative with one exact exception; M6 binds and proves the immutable v2 closeout snapshot; activation follows only after M6. |
 
@@ -413,7 +415,7 @@ No material findings.
 
 Finding ID: FV-M6-CR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: bounded candidate correction implementer
 Owning stage: review-resolution
 Decision owner: bounded candidate correction implementer
@@ -424,7 +426,11 @@ Required outcome: all 20 focused tests pass while proving exact v3 stages, retir
 Safe resolution path: apply the test-only correction described in `reviews/code-review-pr-preflight-r5.md`, rerun focused and structural validation, rescan direct sibling references, and return for targeted rereview.
 Follow-up: Code Review PR Preflight R6 after bounded correction.
 Validation target: FV-R1, FV-R5, FV-R6, FV-R35, FV-R37, BND-INPUT-001, BND-COMPAT-001, INT-004.
-Validation evidence: pending correction and rereview.
+Validation evidence: Code Review PR Preflight R6 inspected `bf7abf2f..1bc0e76c`; only the consolidated policy test and bounded implementation evidence changed. All 20 focused tests pass, stale current-policy references are absent, intentional historical siblings and production are untouched, review structure and change metadata validate, and the exact-range diff check passes.
+
+### code-review-pr-preflight-r6
+
+No material findings.
 
 ### code-review-m5-r1
 
