@@ -1,0 +1,33 @@
+schema_version: 1
+review_id: code-review-pr-preflight-r3
+review_stage: code-review
+review_target: commit:2e1bd067
+base_revision: 2e1bd067
+head_revision: 2e1bd067
+native_review_status: changes-requested
+review_gate_outcome: blocked
+independence_level: L1
+author_context_id: post-r2-pr-preflight-workflow-code-state
+reviewer_context_id: independent-pr-preflight-code-review-r3
+context_separation_mechanism: focused-failure-reproduction-and-production-contract-comparison
+risk_tier: elevated
+risk_tier_triggers:
+  - evidence-tail-authority
+  - lifecycle-compatibility
+  - verification-evidence-invalidated
+governing_artifacts:
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-v1
+  - requirement-to-delivery-model-v1
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - failure-reproduced
+  - production-contract-inspected
+  - minimal-test-correction-probed
+  - finding-recorded
+second_review_requirement: required-after-correction
