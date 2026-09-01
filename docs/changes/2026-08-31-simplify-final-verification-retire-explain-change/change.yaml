@@ -68,7 +68,7 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: implement
+  current_stage: verify
   evidence:
     - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-invocation-code-review-final-r1.yaml
     - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-final-r1.md
@@ -120,7 +120,7 @@ workflow_state:
         state: closed
       M6:
         kind: lifecycle-closeout
-        state: implementing
+        state: review-requested
     plan_artifact_id: plan
     remaining_implementation_milestones: []
 workflow: {}
@@ -139,26 +139,6 @@ review:
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
-  active_correction:
-    destination_artifact_id: implement
-    destination_kind: stage
-    destination_stage: implement
-    evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-pr-preflight-correction-route.md
-    evidence_sha256: 820626f32f72a0fa5f3da055644a65e4171f2a87bc0924f9e522622957088cfa
-    prior_lifecycle_revision: sha256:806ef36a6d98a580218b28678344f8fccca1831390dd68d5471650d952ef2da7
-    reason: upstream-proof-gap
-    return_stage: verify
-    route_id: route-b8ed4433e1c03c2cd2928fece127562b226ec04da5b85102285fb2d7435987ce
-    source_snapshot:
-      blocker: null
-      current_stage: verify
-      finding_ids:
-        - FV-M6-CR1
-      lifecycle_state: active
-      milestone_id: M6
-      milestone_state: planned
-      next_stage: pr
-    status: active
   artifacts:
     adr-impact-aware-final-verification:
       artifact_kind: adr
@@ -223,6 +203,28 @@ lifecycle_cli:
         milestone_id: M3
         milestone_state: review-requested
         next_stage: code-review
+      status: returned
+    route-b8ed4433e1c03c2cd2928fece127562b226ec04da5b85102285fb2d7435987ce:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-pr-preflight-correction-route.md
+      evidence_sha256: 820626f32f72a0fa5f3da055644a65e4171f2a87bc0924f9e522622957088cfa
+      prior_lifecycle_revision: sha256:806ef36a6d98a580218b28678344f8fccca1831390dd68d5471650d952ef2da7
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-pr-preflight-correction-return.md
+      return_evidence_sha256: 3c9edf454ec90c4918ebec3fb46975cf8d4fced77f55c1be0094da7b794d3cee
+      return_stage: verify
+      route_id: route-b8ed4433e1c03c2cd2928fece127562b226ec04da5b85102285fb2d7435987ce
+      source_snapshot:
+        blocker: null
+        current_stage: verify
+        finding_ids:
+          - FV-M6-CR1
+        lifecycle_state: active
+        milestone_id: M6
+        milestone_state: planned
+        next_stage: pr
       status: returned
     route-c326bbc6fbe9dae96806ae94198c4fb4732970347420c15719f90c0e42846dfb:
       destination_artifact_id: implement
