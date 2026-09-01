@@ -65,7 +65,9 @@ Once proposal, spec, and architecture are already settled, execution usually pro
 
 `plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
 
-New governed changes use `stage-owned-change-local-v2` and a plan-only Delivery Review package. `stage-owned-change-local-v1` changes frozen in `specs/lifecycle-contract-activation.yaml` continue only from their registered post-delivery package; historical test-spec artifacts remain readable but authorize no new test-spec work.
+That is the active v2 closeout while final-verification v3 remains in preactivation. The staged v3 closeout is `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`; successful Verify owns the final durable explanation.
+
+New governed changes use `stage-owned-change-local-v2` and a plan-only Delivery Review package while `specs/final-verification-contract-activation.yaml` is in preactivation. After coherent activation, new changes use `stage-owned-change-local-v3`; exact manifest-listed `stage-owned-change-local-v2` and `stage-owned-change-local-v1` changes continue under their registered contracts. Historical test-spec and explain-change artifacts remain readable but authorize no new v3 stage or artifact work.
 
 The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves the exact contract-selected package. V1 uses plan plus test specification; v2 uses the plan only and judges verification allocation with implementation readiness. Earlier evidence for the implementing consolidated-gates change remains historical under its approved pre-cutover plan; it is not a current progression route.
 

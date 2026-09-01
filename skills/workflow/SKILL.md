@@ -40,6 +40,10 @@ The compact canonical chain is `proposal -> proposal-review -> architecture -> s
 
 Routing is contract-keyed. New governed changes use `stage-owned-change-local-v2` and `plan -> delivery-review`, with the exact primary plan owning verification allocation. Manifest-bound `stage-owned-change-local-v1` changes may continue only from their registered post-delivery package. Historical authority never permits new test-spec authoring, and v2 introduces no replacement verification artifact or skill.
 
+### Inactive v3 final route
+
+While `specs/final-verification-contract-activation.yaml` is in preactivation, v2 remains the active route. After coherent v3 activation, new changes use `stage-owned-change-local-v3` and final closeout routes from final holistic Code Review through triggered review resolution and `ci-maintenance`, then directly to `verify` and `pr`. V3 has no standalone `explain-change` stage: successful Verify owns the final explanation, Workflow owns correction routing, and exact manifest-listed v2 records retain their prior route.
+
 After a PR is open, a user-authorized bounded PR CI repair is an isolated correction, not a new profile or another pass through the chain. Preserve current review, explanation, verification, and lifecycle evidence only when the correction restores already-approved behavior without changing their decision basis. Otherwise route to the earliest affected owning stage.
 
 ## When to use

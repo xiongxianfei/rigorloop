@@ -6,6 +6,8 @@
 
 The active v2 package uses the plan-only Delivery Review route, omits standalone `test-spec`, and packages every plan-owned specialist verification reference for Codex, Claude Code, and opencode. Historical v1 release archives remain unchanged records.
 
+During final-verification v3 preactivation, repository tests also build and validate temporary Codex, Claude Code, and opencode candidates that omit standalone `explain-change` and include every mapped impact, applicability, successful-explanation, and Verify-report resource. The tracked manifest continues to describe the released v2 package until the atomic activation milestone; historical archives are never rewritten.
+
 For `v0.1.3` and later, public adapter installation uses GitHub release archives. The repository keeps adapter metadata and install guidance under `dist/adapters/`; generated public adapter skill bodies are not tracked source.
 
 Download the adapter archive for your tool from the GitHub release assets and extract it into the target project root:

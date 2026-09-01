@@ -16,7 +16,7 @@ Maintain CI infrastructure from project-owned commands and risk evidence. Ordina
 - role_name: ci-maintenance
 - stage: support
 - upstream: user request, exact repository target, project-owned commands, risk evidence, and approved privileged design when applicable
-- downstream: `explain-change` for ordinary workflow-managed authoring; none for an eligible bounded PR CI repair
+- downstream: `explain-change` for ordinary v1/v2 workflow-managed authoring, `verify` for ordinary v3 workflow-managed authoring; none for an eligible bounded PR CI repair
 - summary: Review or conditionally author repository-owned CI automation without inventing commands, policy, or external state.
 - must_not_claim: unexecuted validation, unobserved hosted-CI status, verification, branch, PR, release, deployment, or lifecycle readiness
 
@@ -80,7 +80,7 @@ Classify batches as `independent`, `ordered-dependent`, or `atomic-group-require
 
 Report requested and actual operation, repair mode, target kind, provider, privilege, concerns, structure, assembly, target identity, mutation outcome, validation evidence, blockers, and hosted CI observation. Use `not-observed`, `pending`, `passed`, or `failed`; when observed, include the exact run and head.
 
-Do not claim tests or hosted CI succeeded unless executed or observed. A bounded repair does not claim branch readiness, PR readiness, deployment readiness, release readiness, or lifecycle completion. Ordinary workflow-managed success hands off to `explain-change`; an eligible repair and other direct invocations stay isolated.
+Do not claim tests or hosted CI succeeded unless executed or observed. A bounded repair does not claim branch readiness, PR readiness, deployment readiness, release readiness, or lifecycle completion. Ordinary workflow-managed success hands off to `explain-change` under v1/v2 and directly to `verify` under v3; an eligible repair and other direct invocations stay isolated.
 
 ## Evidence collection efficiency
 
@@ -105,7 +105,7 @@ Result
 - Validation evidence: <evidence>
 - Blockers: <none or exact blockers>
 - Hosted CI observation: <not-observed | pending | passed | failed; exact run and head when observed>
-- Next stage: <explain-change | none | blocked>
+- Next stage: <explain-change | verify | none | blocked>
 ```
 
 ## Expected output

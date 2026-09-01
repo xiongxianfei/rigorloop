@@ -32,12 +32,15 @@ from adapter_distribution import (  # noqa: E402
     POST_CUTOVER_ADAPTER_SKILLS,
     STAGED_V2_ADAPTER_SKILLS,
     STAGED_V2_OPENCODE_COMMAND_ALIASES,
+    STAGED_V3_ADAPTER_SKILLS,
+    STAGED_V3_OPENCODE_COMMAND_ALIASES,
     RETIRED_PROGRESSION_SKILLS,
     ReleaseValidationProfile,
     SUPPORTED_ADAPTERS,
     adapter_archive_name,
     build_adapter_archives,
     build_staged_v2_adapter_archives,
+    build_staged_v3_adapter_archives,
     build_required_benchmark_context,
     collect_adapter_drift,
     collect_adapter_drift_entries,
@@ -53,6 +56,7 @@ from adapter_distribution import (  # noqa: E402
     sync_adapter_output,
     validate_adapter_archives,
     validate_staged_v2_adapter_archives,
+    validate_staged_v3_adapter_archives,
     validate_adapter_artifact_metadata,
     validate_adapter_output,
     validate_clean_install_smoke,
@@ -157,6 +161,37 @@ class AdapterDistributionTests(unittest.TestCase):
                 archive.writestr(".agents/skills/test-spec/SKILL.md", "retired")
             errors = validate_staged_v2_adapter_archives("v0.1.5", output)
             self.assertTrue(any("unexpected entries" in error and "test-spec" in error for error in errors))
+
+    def test_staged_v3_archives_omit_explain_change_and_package_complete_verify_resources(self) -> None:
+        self.assertNotIn("explain-change", STAGED_V3_ADAPTER_SKILLS)
+        self.assertNotIn("explain-change", STAGED_V3_OPENCODE_COMMAND_ALIASES)
+        with tempfile.TemporaryDirectory(prefix="staged-v3-adapters-") as temp_dir:
+            output = Path(temp_dir)
+            archives = build_staged_v3_adapter_archives("v0.1.6", output)
+            self.assertEqual(validate_staged_v3_adapter_archives("v0.1.6", output), [])
+            required = {
+                "final-impact-analysis-v3.md",
+                "evidence-applicability-v3.md",
+                "successful-explanation-v3.md",
+                "verify-report-v3-skeleton.md",
+            }
+            for archive_path in archives:
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = set(archive.namelist())
+                self.assertFalse(any("/explain-change/" in name for name in names))
+                self.assertTrue(
+                    all(any(name.endswith(f"/verify/{'assets' if item.endswith('skeleton.md') else 'references'}/{item}") for name in names) for item in required)
+                )
+
+    def test_staged_v3_archive_validation_rejects_mixed_explain_change_entrypoint(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="staged-v3-mixed-") as temp_dir:
+            output = Path(temp_dir)
+            archives = build_staged_v3_adapter_archives("v0.1.6", output)
+            target = archives[0]
+            with zipfile.ZipFile(target, "a") as archive:
+                archive.writestr(".agents/skills/explain-change/SKILL.md", "retired")
+            errors = validate_staged_v3_adapter_archives("v0.1.6", output)
+            self.assertTrue(any("unexpected entries" in error and "explain-change" in error for error in errors))
 
     def copy_fixture_skills(self, target: Path, names: tuple[str, ...]) -> Path:
         skills_root = target / "skills"

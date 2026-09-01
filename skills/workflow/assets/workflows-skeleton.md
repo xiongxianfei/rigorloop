@@ -46,6 +46,18 @@ proposal
 -> pr
 ```
 
+While final-verification v3 is in preactivation, the sequence above is the active v2 closeout. After coherent v3 activation, new changes use:
+
+```text
+code-review
+-> review-resolution when triggered
+-> ci-maintenance when triggered
+-> verify
+-> pr
+```
+
+Successful v3 Verify owns the final durable explanation; no standalone explain-change artifact or stage is created.
+
 ## Stage obligations
 
 | Stage | Obligation | Required input | Output artifact | Blocks downstream when |
