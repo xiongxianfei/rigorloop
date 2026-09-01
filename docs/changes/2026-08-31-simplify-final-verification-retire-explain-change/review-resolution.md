@@ -14,11 +14,12 @@ Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
 Review closeout: delivery-review-r2
+Review closeout: delivery-review-r3
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `delivery-review-r2`
-- Findings resolved: 12
-- Unresolved findings: 4
-- Current result: Delivery Review R2 found stale Design authority and a circular/unproved M5-M6 bootstrap sequence; plan correction and Delivery Review R3 are required in addition to the open M4 implementation findings.
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `delivery-review-r2`, `delivery-review-r3`
+- Findings resolved: 14
+- Unresolved findings: 2
+- Current result: Delivery Review R3 independently confirmed FV-DLR2-01 and FV-DLR2-02 resolved; the exact corrected plan is clean, while the two M4 implementation-review findings remain open.
 
 ## Resolution Overview
 
@@ -38,8 +39,8 @@ Review closeout: delivery-review-r2
 | FV-M3-CR3 | accepted | resolved | R3 confirmed every R2 counterexample fails through public transaction and authority probes. |
 | FV-M4-CR1 | accepted | open | Contract-key Verify's explanation prerequisites and handoffs so v3 has no pre-Verify explanation dependency in canonical or staged adapter packages. |
 | FV-M4-CR2 | accepted | open | Reject duplicate governed mapping keys at every depth before selecting the registered primary plan or any nested authority value. |
-| FV-DLR2-01 | accepted | open | Bind the revised plan to current approved Design Review R2 rather than superseded R1. |
-| FV-DLR2-02 | accepted | open | Make M5 candidate assembly, exact v2 closeout tooling, and post-M6 activation a directly provable non-circular sequence. |
+| FV-DLR2-01 | accepted | resolved | The plan now binds Design Review R2 consistently at every current upstream authority point. |
+| FV-DLR2-02 | accepted | resolved | M5 is non-authoritative with one exact exception; M6 binds and proves the immutable v2 closeout snapshot; activation follows only after M6. |
 
 ## Finding Details
 
@@ -311,7 +312,7 @@ Validation evidence: pending correction and rereview.
 
 Finding ID: FV-DLR2-01
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan
 Decision owner: plan author
@@ -322,13 +323,13 @@ Required outcome: every current upstream Design reference in the plan and Delive
 Safe resolution path: revise only plan-owned authority references, record the plan revision through the lifecycle CLI after Design settlement, and request Delivery Review R3.
 Follow-up: Delivery Review R3.
 Validation target: package upstream identity and requirement-to-delivery authority trace.
-Validation evidence: pending plan correction and rereview.
+Validation evidence: Delivery Review R3 found only `design-review-r2` at current authority points and confirmed the registered plan hash `5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514`.
 
 #### FV-DLR2-02
 
 Finding ID: FV-DLR2-02
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan
 Decision owner: plan author
@@ -339,4 +340,8 @@ Required outcome: M5 can start without claiming this change complete; M6 can pro
 Safe resolution path: revise dependencies, TGs, evidence expectations, commands, tool identities, integrity checks, and recovery boundaries, then request Delivery Review R3.
 Follow-up: Delivery Review R3.
 Validation target: FV-R7, FV-AC12, BND-AUTH-001, BND-RECOVERY-001, BND-COMPAT-001, TG-23, TG-26, TG-FINAL-03.
-Validation evidence: pending plan correction and rereview.
+Validation evidence: Delivery Review R3 reproduced the bound archive, explain-change skill, Verify skill, and CLI hashes; confirmed the sole M5 exception and absence of activation evidence; and confirmed M6 extracted mutation plus dual read-back and post-M6 zero-nonterminal activation allocation.
+
+### delivery-review-r3
+
+No material findings.

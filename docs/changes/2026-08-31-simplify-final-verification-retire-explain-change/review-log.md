@@ -11,6 +11,7 @@
 | `code-review-m2-r3` | `code-review` | `r3` | corrected M2 diff `839c84bb..9cad1d9f` | `reviews/code-review-m2-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r3` | `code-review` | `r3` | corrected M3 diff `f2c69a20..4285c4de` | `reviews/code-review-m3-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `design-review-r2` | `design-review` | `r2` | design package `architecture`, `spec`, `adr-impact-aware-final-verification` | `reviews/design-review-r2.md` | `approved` | 0 | `recorded` |
+| `delivery-review-r3` | `delivery-review` | `r3` | delivery package `plan` | `reviews/delivery-review-r3.md` | `approved` | 0 | `recorded` |
 
 ## Package review occurrence
 
@@ -42,6 +43,18 @@ Material findings: none
 Record: reviews/delivery-review-r1.md
 Recording status: recorded
 
+### Review entry: delivery-review-r3
+
+Review ID: delivery-review-r3
+Stage: delivery-review
+Round: r3
+Status: approved
+Material findings: none
+Record: reviews/delivery-review-r3.md
+Recording status: recorded
+
+## Detailed review entries
+
 ### Review entry
 
 Review ID: delivery-review-r2
@@ -53,10 +66,8 @@ Resolution: review-resolution.md#delivery-review-r2
 Material findings: FV-DLR2-01, FV-DLR2-02
 Finding ID: FV-DLR2-01
 Finding ID: FV-DLR2-02
-Open findings: FV-DLR2-01, FV-DLR2-02
+Open findings: None
 Recording status: recorded
-
-## Detailed review entries
 
 ### Review entry
 
