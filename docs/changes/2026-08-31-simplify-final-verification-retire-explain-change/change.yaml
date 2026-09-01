@@ -73,7 +73,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M5
+    current_milestone: M6
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -107,13 +107,12 @@ workflow_state:
         state: closed
       M5:
         kind: implementation
-        state: review-requested
+        state: closed
       M6:
         kind: lifecycle-closeout
         state: planned
     plan_artifact_id: plan
-    remaining_implementation_milestones:
-      - M5
+    remaining_implementation_milestones: []
 workflow: {}
 artifacts: {}
 requirements: []
@@ -256,6 +255,26 @@ lifecycle_cli:
       review_open_findings: []
       review_outcome: clean-with-notes
       review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m4-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M5:
+      completion_fingerprint: f2e287448f4760744161c923f177ba9d56da506bf6c333b03448842f72f8a89a
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-v3-publication-candidate.md
+      evidence_sha256: 464810f9368e0cc62ed727ec83caecc3d095b4b93627be41e59ea3998fd1a69a
+      milestone_id: M5
+      review_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m5-r2.md
+      review_evidence_sha256: 67c94951c05c92b8677078e6c8b009308aa68f1bc72fccea483dc1e5b96592f3
+      review_id: code-review-m5-r2
+      review_log_entry_sha256: c980055908ba53137f40f57178cec6c0c6ecaa2c1679146b47c52182a02886ae
+      review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m5-r2.md
       review_recording_status: recorded
       review_round: r2
       review_stage: code-review
