@@ -322,6 +322,10 @@ def parse_yaml_mapping(lines: list[Line], index: int, indent: int) -> tuple[dict
                 f"line {line.lineno}: unexpected list item where mapping entry was expected"
             )
         key, remainder = split_mapping_entry(line.text, line.lineno)
+        if key in data:
+            raise MetadataValidationError(
+                f"line {line.lineno}: duplicate mapping key '{key}'"
+            )
         index += 1
         if remainder:
             data[key] = parse_scalar(remainder)

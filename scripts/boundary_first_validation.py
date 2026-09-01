@@ -324,13 +324,6 @@ def _parse_change_record(text: str) -> dict[str, object]:
     lines = parser.tokenize_yaml(text)
     if not lines:
         raise parser.MetadataValidationError("metadata file is empty")
-    top_level_keys = [
-        parser.split_mapping_entry(line.text, line.lineno)[0]
-        for line in lines
-        if line.indent == 0 and line.text != "-" and not line.text.startswith("- ")
-    ]
-    if len(top_level_keys) != len(set(top_level_keys)):
-        raise parser.MetadataValidationError("duplicate top-level mapping key")
     data, index = parser.parse_yaml_block(lines, 0, lines[0].indent)
     if index != len(lines) or not isinstance(data, dict):
         raise parser.MetadataValidationError("change metadata must be one complete mapping")

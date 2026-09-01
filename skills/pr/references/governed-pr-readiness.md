@@ -4,7 +4,7 @@ Load for a governed candidate. This read-only reference owns bounded readiness a
 
 Confirm the change pack matches invocation, branch, verify basis, and pointers. Invalid authority stops without portable fallback.
 
-Inspect plan, review resolution, explain-change, Verify/state-sync, release-sensitive, migration, and external completion. V1/v2 use standalone rationale; v3 uses the exact successful Verify explanation and basis. Expand only for conflicts; presence is not proof.
+Inspect plan, review resolution, Verify/state-sync, release-sensitive, migration, and external completion. Use only the exact successful Verify explanation and basis; historical rationale grants no current authority. Expand only for conflicts; presence is not proof.
 
 Return evidence identities, blockers and owners, and governed body data. Missing, stale, open, failing, or mismatched evidence blocks.
 

@@ -178,9 +178,22 @@ class AdapterDistributionTests(unittest.TestCase):
             for archive_path in archives:
                 with zipfile.ZipFile(archive_path) as archive:
                     names = set(archive.namelist())
+                    verify_entry = next(name for name in names if name.endswith("/verify/SKILL.md"))
+                    verify_body = archive.read(verify_entry).decode("utf-8")
                 self.assertFalse(any("/explain-change/" in name for name in names))
                 self.assertTrue(
                     all(any(name.endswith(f"/verify/{'assets' if item.endswith('skeleton.md') else 'references'}/{item}") for name in names) for item in required)
+                )
+                for forbidden in (
+                    "after `explain-change`",
+                    "explain-change artifact",
+                    "current explanation",
+                    "rationale to `explain-change`",
+                ):
+                    self.assertNotIn(forbidden, verify_body)
+                self.assertIn(
+                    "final explanation only after successful final readiness",
+                    verify_body,
                 )
 
     def test_staged_v3_archive_validation_rejects_mixed_explain_change_entrypoint(self) -> None:

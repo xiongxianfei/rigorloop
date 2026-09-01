@@ -4904,8 +4904,8 @@ Use the inputs somehow and produce a useful result.
                 with self.subTest(path=str(relative_path), pattern=label):
                     self.assertIsNone(pattern.search(body))
 
-    def test_code_review_and_verify_public_skills_use_final_closeout_order(self) -> None:
-        """Shipped review and verify skills must not restore direct-verify closeout."""
+    def test_code_review_and_verify_public_skills_use_current_final_closeout_order(self) -> None:
+        """Current review and Verify route directly through success-owned rationale."""
 
         code_review_paths = iter_published_skill_surfaces_for("code-review")
         self.assertTrue(code_review_paths, "expected published code-review skill surfaces")
@@ -4915,7 +4915,7 @@ Use the inputs somehow and produce a useful result.
             for label, pattern in CODE_REVIEW_FORBIDDEN_FINAL_CLOSEOUT_PATTERNS.items():
                 with self.subTest(path=str(relative_path), forbidden=label):
                     self.assertIsNone(pattern.search(body))
-            for term in ["final closeout", "explain-change", "verify", "pr"]:
+            for term in ["final closeout", "final explanation", "verify", "PR"]:
                 with self.subTest(path=str(relative_path), required=term):
                     self.assertIn(term, body)
 
@@ -4928,10 +4928,9 @@ Use the inputs somehow and produce a useful result.
                 with self.subTest(path=str(relative_path), forbidden=label):
                     self.assertIsNone(pattern.search(body))
             for term in [
-                "after durable change rationale",
-                "after `explain-change`",
+                "final explanation only after successful final readiness",
                 "before PR",
-                "validates the final change pack",
+                "validates the reviewed final change pack",
                 "hands off to `pr`",
             ]:
                 with self.subTest(path=str(relative_path), required=term):
@@ -7224,7 +7223,7 @@ class PRSkillSimplificationTests(unittest.TestCase):
 
     def test_governed_reference_is_bounded_and_read_only(self) -> None:
         for phrase in (
-            "change pack", "plan", "review resolution", "explain-change", "verify",
+            "change pack", "plan", "review resolution", "historical rationale", "verify",
             "state-sync", "release-sensitive", "migration", "external completion",
             "read-only", "must not mutate",
         ):
@@ -8875,15 +8874,14 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
         self.assertIn("one independent decision", body)
         self.assertNotIn("one execution plan, one test specification", body)
 
-    def test_active_workflow_declares_v2_and_bounded_prior_compatibility(self) -> None:
+    def test_active_workflow_declares_v3_and_historical_prior_contracts(self) -> None:
         body = (ROOT / "skills/workflow/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("stage-owned-change-local-v1", body)
-        self.assertIn("stage-owned-change-local-v2", body)
+        self.assertIn("stage-owned-change-local-v3", body)
         self.assertIn("plan -> delivery-review", body)
-        self.assertIn("active", body)
-        self.assertNotIn("must not select v2", body)
+        self.assertIn("Historical v1/v2 records grant no current route", body)
+        self.assertIn("bounded preactivation closeout bootstrap", body)
 
-    def test_v2_verification_allocation_gaps_route_to_plan(self) -> None:
+    def test_verification_allocation_gaps_route_to_plan_without_legacy_progression(self) -> None:
         for skill_name in ("spec", "plan", "workflow"):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
                 encoding="utf-8"
@@ -8894,7 +8892,7 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
                     body,
                 )
                 self.assertIn(
-                    "Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring",
+                    "Historical contracts grant no current progression authority",
                     body,
                 )
                 self.assertNotIn("a proof-only gap routes to `test-spec`", body)
@@ -8906,7 +8904,7 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
 class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
     """RTS TS-012 and TS-016 activation governance coherence."""
 
-    def test_current_governance_declares_active_v2_and_prior_compatibility(self) -> None:
+    def test_current_governance_declares_v3_and_historical_readability(self) -> None:
         for relative in (
             "CONSTITUTION.md",
             "AGENTS.md",
@@ -8915,24 +8913,26 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
         ):
             body = (ROOT / relative).read_text(encoding="utf-8")
             with self.subTest(path=relative):
-                self.assertIn("stage-owned-change-local-v1", body)
-                self.assertIn("stage-owned-change-local-v2", body)
-                self.assertIn("active", body.lower())
-                self.assertIn("plan-only", body)
+                self.assertIn("stage-owned-change-local-v3", body)
+                self.assertIn("historical", body.lower())
+                self.assertIn("current", body.lower())
 
-    def test_shared_boundary_routing_is_contract_keyed(self) -> None:
+    def test_shared_boundary_routing_is_v3_only(self) -> None:
         required = (
             "A pre-implementation verification-allocation gap routes to `plan`",
-            "Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring",
+            "Historical contracts grant no current progression authority",
         )
         template = (ROOT / "templates/shared/boundary-first-compact-scan.md").read_text(encoding="utf-8")
         for phrase in required:
             self.assertIn(phrase, template)
-        for skill_name in ("workflow", "spec", "plan", "implement", "code-review", "verify"):
+        for skill_name in ("workflow", "spec", "plan", "implement", "code-review"):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             with self.subTest(skill=skill_name):
                 for phrase in required:
                     self.assertIn(phrase, body)
+        verify = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("A pre-implementation verification-allocation gap routes to `plan`", verify)
+        self.assertIn("Historical contracts grant no current progression authority", verify)
 
     def test_active_guidance_preserves_downstream_gates_and_history(self) -> None:
         combined = "\n".join(
@@ -8947,10 +8947,10 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
 
 
 class FinalVerificationProtocolM2Tests(unittest.TestCase):
-    def test_verify_v3_resources_are_progressive_and_inactive(self) -> None:
+    def test_verify_v3_resources_are_progressive_and_current(self) -> None:
         skill = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("Inactive v3 final-readiness profile", skill)
-        self.assertIn("preactivation", skill)
+        self.assertIn("V3 final-readiness profile", skill)
+        self.assertIn("only current executable final-readiness contract", skill)
         self.assertIn("Scoped verification loads none of those resources", skill)
         for path in (
             "references/final-impact-analysis-v3.md",
@@ -8983,21 +8983,31 @@ class FinalVerificationProtocolM2Tests(unittest.TestCase):
 
 
 class FinalVerificationPackageParityM4Tests(unittest.TestCase):
-    def test_current_governance_distinguishes_active_v2_from_inactive_v3(self) -> None:
+    def test_current_governance_selects_only_v3_for_executable_authority(self) -> None:
         for path in ("CONSTITUTION.md", "AGENTS.md", "docs/workflows.md", "specs/rigorloop-workflow.md"):
             body = (ROOT / path).read_text(encoding="utf-8")
             with self.subTest(path=path):
-                self.assertIn("stage-owned-change-local-v2", body)
                 self.assertIn("stage-owned-change-local-v3", body)
-                self.assertIn("preactivation", body.lower())
+                self.assertIn("historical", body.lower())
+
+    def test_verify_has_no_preverification_explanation_dependency(self) -> None:
+        body = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
+        for forbidden in (
+            "after `explain-change`",
+            "explain-change artifact",
+            "current explanation",
+            "rationale to `explain-change`",
+        ):
+            self.assertNotIn(forbidden, body)
+        self.assertIn("final explanation only after successful final readiness", body)
 
     def test_v3_capable_stage_skills_agree_on_verify_owned_explanation_and_handoff(self) -> None:
         expectations = {
-            "workflow": ("v3", "ci-maintenance", "verify", "pr", "explain-change"),
-            "code-review": ("v3", "final holistic", "verify", "explain-change"),
-            "ci-maintenance": ("v3", "verify", "explain-change"),
+            "workflow": ("v3", "ci-maintenance", "verify", "pr", "Historical v1/v2 records grant no current route"),
+            "code-review": ("v3", "final holistic", "verify", "Historical contracts grant no current route"),
+            "ci-maintenance": ("verify", "historical records"),
             "verify": ("v3", "successful-explanation-v3.md", "branch-ready"),
-            "pr": ("v3", "Verify report", "competing authoritative rationale"),
+            "pr": ("Verify report", "competing authoritative rationale", "Historical rationale grants no current PR authority"),
         }
         for skill_name, phrases in expectations.items():
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
@@ -9007,7 +9017,7 @@ class FinalVerificationPackageParityM4Tests(unittest.TestCase):
 
     def test_scoped_verify_does_not_load_final_impact_or_explanation_resources(self) -> None:
         body = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
-        scoped = body.split("### Inactive v3 final-readiness profile", 1)[1].split("## Execution authority", 1)[0]
+        scoped = body.split("### V3 final-readiness profile", 1)[1].split("## Execution authority", 1)[0]
         self.assertIn("Scoped verification loads none of those resources", scoped)
         self.assertNotIn("VP0-scoped` | yes", body)
         self.assertIn("only after an active v3 final-readiness attempt has succeeded", body)
@@ -9057,7 +9067,8 @@ class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
             (ROOT / path).read_text(encoding="utf-8")
             for path in ("CONSTITUTION.md", "AGENTS.md", "docs/workflows.md")
         )
-        self.assertIn("stage-owned-change-local-v2", combined)
+        self.assertIn("stage-owned-change-local-v3", combined)
+        self.assertIn("last coherent released v2 package", combined)
         self.assertNotIn("New changes remain v1 until M5", combined)
 
 
