@@ -10,6 +10,7 @@
 | `code-review-m1-r2` | `code-review` | `r2` | corrected M1 diff `f4cc4570..17067726` | `reviews/code-review-m1-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r3` | `code-review` | `r3` | corrected M2 diff `839c84bb..9cad1d9f` | `reviews/code-review-m2-r3.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r3` | `code-review` | `r3` | corrected M3 diff `f2c69a20..4285c4de` | `reviews/code-review-m3-r3.md` | `clean-with-notes` | 0 | `recorded` |
+| `design-review-r2` | `design-review` | `r2` | design package `architecture`, `spec`, `adr-impact-aware-final-verification` | `reviews/design-review-r2.md` | `approved` | 0 | `recorded` |
 
 ## Package review occurrence
 
@@ -19,6 +20,16 @@ Round: r1
 Status: approved
 Material findings: none
 Record: reviews/design-review-r1.md
+Recording status: recorded
+
+### Review entry: design-review-r2
+
+Review ID: design-review-r2
+Stage: design-review
+Round: r2
+Status: approved
+Material findings: none
+Record: reviews/design-review-r2.md
 Recording status: recorded
 
 ### Review entry: delivery-review-r1
