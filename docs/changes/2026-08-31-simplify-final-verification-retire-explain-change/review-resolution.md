@@ -13,11 +13,12 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m4-r1
+Review closeout: delivery-review-r2
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `delivery-review-r2`
 - Findings resolved: 12
-- Unresolved findings: 2
-- Current result: Code Review M4 R1 found two material package-coherence and fail-closed authority defects; M4 requires bounded correction and rereview before M5.
+- Unresolved findings: 4
+- Current result: Delivery Review R2 found stale Design authority and a circular/unproved M5-M6 bootstrap sequence; plan correction and Delivery Review R3 are required in addition to the open M4 implementation findings.
 
 ## Resolution Overview
 
@@ -37,6 +38,8 @@ Review closeout: code-review-m4-r1
 | FV-M3-CR3 | accepted | resolved | R3 confirmed every R2 counterexample fails through public transaction and authority probes. |
 | FV-M4-CR1 | accepted | open | Contract-key Verify's explanation prerequisites and handoffs so v3 has no pre-Verify explanation dependency in canonical or staged adapter packages. |
 | FV-M4-CR2 | accepted | open | Reject duplicate governed mapping keys at every depth before selecting the registered primary plan or any nested authority value. |
+| FV-DLR2-01 | accepted | open | Bind the revised plan to current approved Design Review R2 rather than superseded R1. |
+| FV-DLR2-02 | accepted | open | Make M5 candidate assembly, exact v2 closeout tooling, and post-M6 activation a directly provable non-circular sequence. |
 
 ## Finding Details
 
@@ -301,3 +304,39 @@ Safe resolution path: correct the shared parser or boundary parser, add direct r
 Follow-up: Code Review M4 R2 after bounded implementation correction.
 Validation target: TG-17, BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001.
 Validation evidence: pending correction and rereview.
+
+### delivery-review-r2
+
+#### FV-DLR2-01
+
+Finding ID: FV-DLR2-01
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Decision owner: plan author
+Decision needed: none; update the plan's exact approved Design authority.
+Chosen action: replace current `design-review-r1` authority references with `design-review-r2` and return the new plan revision for Delivery Review.
+Rationale: R1 approved superseded compatibility machinery and cannot authorize the revised sole-current-v3 plan.
+Required outcome: every current upstream Design reference in the plan and Delivery package matches settled `design-review-r2`.
+Safe resolution path: revise only plan-owned authority references, record the plan revision through the lifecycle CLI after Design settlement, and request Delivery Review R3.
+Follow-up: Delivery Review R3.
+Validation target: package upstream identity and requirement-to-delivery authority trace.
+Validation evidence: pending plan correction and rereview.
+
+#### FV-DLR2-02
+
+Finding ID: FV-DLR2-02
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Decision owner: plan author
+Decision needed: none; allocate the already-approved closeout-before-activation boundary without circular prerequisites.
+Chosen action: treat M5 as non-authoritative candidate assembly, bind M6 to one immutable trusted v2 tool/package and direct closeout proof, and defer the universal completion/activation record until after M6.
+Rationale: the current M5 completion dependency includes this still-open change, while M6 depends on M5 and lacks an executable identity for the removed v2 runtime.
+Required outcome: M5 can start without claiming this change complete; M6 can provably close the exact v2 record after source retirement; public activation occurs only after zero nonterminal pre-v3 changes are revalidated.
+Safe resolution path: revise dependencies, TGs, evidence expectations, commands, tool identities, integrity checks, and recovery boundaries, then request Delivery Review R3.
+Follow-up: Delivery Review R3.
+Validation target: FV-R7, FV-AC12, BND-AUTH-001, BND-RECOVERY-001, BND-COMPAT-001, TG-23, TG-26, TG-FINAL-03.
+Validation evidence: pending plan correction and rereview.

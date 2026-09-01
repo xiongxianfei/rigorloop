@@ -42,6 +42,20 @@ Material findings: none
 Record: reviews/delivery-review-r1.md
 Recording status: recorded
 
+### Review entry
+
+Review ID: delivery-review-r2
+Stage: delivery-review
+Round: r2
+Status: changes-requested
+Detailed record: reviews/delivery-review-r2.md
+Resolution: review-resolution.md#delivery-review-r2
+Material findings: FV-DLR2-01, FV-DLR2-02
+Finding ID: FV-DLR2-01
+Finding ID: FV-DLR2-02
+Open findings: FV-DLR2-01, FV-DLR2-02
+Recording status: recorded
+
 ## Detailed review entries
 
 ### Review entry
