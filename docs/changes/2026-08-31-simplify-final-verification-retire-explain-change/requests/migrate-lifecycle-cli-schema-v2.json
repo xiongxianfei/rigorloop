@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "migrate",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:4c9ef874a1efc147042fd36cc8f65c1037e955ee2c386cfe9ab1a9c2538a6baa",
+  "source_schema_version": 1,
+  "stage_authority": "workflow"
+}

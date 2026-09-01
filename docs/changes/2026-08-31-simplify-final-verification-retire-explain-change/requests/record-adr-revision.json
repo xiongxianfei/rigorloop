@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:d2e269bcd415d8d399e33cb573f6efc9adb0ade545f876874d1cda2530082d3b",
+  "artifact_id": "adr-impact-aware-final-verification",
+  "artifact_kind": "adr",
+  "artifact_role": "supporting",
+  "artifact_path": "docs/adr/ADR-20260831-impact-aware-final-verification.md",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/architecture-authoring.md",
+  "stage_authority": "architecture"
+}
