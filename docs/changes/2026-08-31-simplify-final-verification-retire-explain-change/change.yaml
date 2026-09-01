@@ -41,19 +41,19 @@ artifact_states:
     role: primary
 review_packages:
   delivery:
-    authority: withheld
+    authority: granted
     correction_targets: []
     findings: []
     members:
       plan: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
     outcome: approved
     package_kind: delivery
-    review_id: delivery-review-r1
-    review_round: r1
-    status: review-required
-    upstream_review_id: design-review-r1
+    review_id: delivery-review-r3
+    review_round: r3
+    status: approved
+    upstream_review_id: design-review-r2
   design:
-    authority: withheld
+    authority: granted
     correction_targets: []
     findings: []
     members:
@@ -62,18 +62,18 @@ review_packages:
       spec: specs/impact-aware-final-verification.md
     outcome: approved
     package_kind: design
-    review_id: design-review-r1
-    review_round: r1
-    status: review-required
+    review_id: design-review-r2
+    review_round: r2
+    status: approved
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M4
+    current_milestone: M5
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -104,16 +104,15 @@ workflow_state:
         state: closed
       M4:
         kind: implementation
-        state: review-requested
+        state: closed
       M5:
         kind: implementation
-        state: planned
+        state: implementing
       M6:
         kind: lifecycle-closeout
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M4
       - M5
 workflow: {}
 artifacts: {}
@@ -122,7 +121,7 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r1.md
+  latest_review: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r3.md
   review_log: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
   reviewed_artifact: review-package:delivery
   status: clean
@@ -217,28 +216,48 @@ lifecycle_cli:
         milestone_state: review-requested
         next_stage: code-review
       status: returned
-  milestones: {}
+  milestones:
+    M4:
+      completion_fingerprint: b124cce54db5d9ad1afdc8c260988acd8578bfb2f557da788b9aff1a921dbe9f
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m4-v3-package-parity.md
+      evidence_sha256: bbc03a86c8a7f4f22615c80a56d8656a38b4de306364c24e8f6f64437440651a
+      milestone_id: M4
+      review_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m4-r2.md
+      review_evidence_sha256: d8af323cb4d87404aef380b1a53e833bf03261c9ffea580980233f00b40cf823
+      review_id: code-review-m4-r2
+      review_log_entry_sha256: 88fb52ffd6ff6447110c0686447b3fbff26d7f641606e7a3f1b5867af4af3d81
+      review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m4-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
   package_reviews:
     delivery:
       correction_targets: []
-      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r1.md
-      evidence_sha256: 171ad8229c3309b23f50ec24b54a6717010cc226f283377666f92cf3aea21ac3
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r3.md
+      evidence_sha256: 0e4bca97987a65019bb84e43334fbac86162ef0f1deff35df3b7da905768b3b3
       findings: []
       members:
         plan: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
       outcome: approved
       package_kind: delivery
-      review_id: delivery-review-r1
+      review_id: delivery-review-r3
       review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
-      review_log_sha256: 8d9e1594b3a91c38e4ecdad4ad9e74df56766eacba86bb3edbbe045361702388
+      review_log_sha256: bb0c8a0f83fc5093913240315f6439bd1af2c89af223708915fa9d2b85dfee96
       reviewer_authority: delivery-review
-      round: r1
+      round: r3
       stage_authority: delivery-review
-      upstream_review_id: design-review-r1
+      upstream_review_id: design-review-r2
     design:
       correction_targets: []
-      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/design-review-r1.md
-      evidence_sha256: 44d294a2d9ba173d4ec06e7f36e2ecd44c0237e18a2761c6fb2e2b464243c9b0
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/design-review-r2.md
+      evidence_sha256: d985f7dd3fffb105626223c62b44d7e8b90b7168632b9d35f5e6e9aec850ac93
       findings: []
       members:
         adr-impact-aware-final-verification: docs/adr/ADR-20260831-impact-aware-final-verification.md
@@ -246,11 +265,11 @@ lifecycle_cli:
         spec: specs/impact-aware-final-verification.md
       outcome: approved
       package_kind: design
-      review_id: design-review-r1
+      review_id: design-review-r2
       review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
-      review_log_sha256: 70ecaaf04a33ff6434e42299b9623b5fdd4f6c68c193e34940f2e3b93e997f3e
+      review_log_sha256: 682a37dcbb8be34fe89b0ee489168822593f3e441345eee79061400e3089b2b3
       reviewer_authority: design-review
-      round: r1
+      round: r2
       stage_authority: design-review
       upstream_review_id: proposal-review-r1
   resolutions: {}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "operation": "record-package-review",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:b39632b05a9df81943ef44f4f9e19554adc161b03afce986c5ad542493ff0d63",
+  "package_kind": "delivery",
+  "members": {
+    "plan": "docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md"
+  },
+  "upstream_review_id": "design-review-r2",
+  "review_id": "delivery-review-r3",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r3.md",
+  "stage_authority": "delivery-review"
+}
