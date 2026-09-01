@@ -12,11 +12,15 @@ from typing import Any
 
 LIFECYCLE_CONTRACT_V1 = "stage-owned-change-local-v1"
 LIFECYCLE_CONTRACT_V2 = "stage-owned-change-local-v2"
+LIFECYCLE_CONTRACT_V3 = "stage-owned-change-local-v3"
 LEGACY_UNVERSIONED_CONTRACT = "legacy-unversioned"
 LIFECYCLE_ACTIVATION_MANIFEST_PATH = Path("specs/lifecycle-contract-activation.yaml")
 LIFECYCLE_ACTIVATION_SCHEMA_PATH = Path("schemas/lifecycle-contract-activation.schema.json")
-LIFECYCLE_CONTRACT_VALUES = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2})
+FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH = Path("specs/final-verification-contract-activation.yaml")
+FINAL_VERIFICATION_ACTIVATION_SCHEMA_PATH = Path("schemas/final-verification-contract-activation.schema.json")
+LIFECYCLE_CONTRACT_VALUES = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3})
 PRIOR_CONTRACT_CLASSES = frozenset({LIFECYCLE_CONTRACT_V1, LEGACY_UNVERSIONED_CONTRACT})
+FINAL_VERIFICATION_PRIOR_CONTRACT_CLASSES = frozenset({LIFECYCLE_CONTRACT_V2})
 ACTIVATION_STATES = frozenset({"preactivation", "active"})
 WORKFLOW_LIFECYCLE_STATES = frozenset({"active", "paused", "completed", "cancelled"})
 POST_DELIVERY_STAGES = frozenset(
@@ -83,6 +87,48 @@ def validate_lifecycle_activation_manifest(manifest: Any) -> list[str]:
         errors.append("activation manifest changes contain a duplicate change_id")
     if any(left.encode("utf-8") >= right.encode("utf-8") for left, right in zip(ids, ids[1:])):
         errors.append("activation manifest changes must use strict raw UTF-8 byte order")
+    return errors
+
+
+def validate_final_verification_activation_manifest(manifest: Any) -> list[str]:
+    if not isinstance(manifest, dict) or set(manifest) != _MANIFEST_FIELDS:
+        return ["final verification activation manifest must contain exactly schema_version, state, activating_source_revision, and changes"]
+    errors: list[str] = []
+    if manifest.get("schema_version") != 1:
+        errors.append(f"final verification activation manifest schema_version: unknown_value {manifest.get('schema_version')}")
+    state = manifest.get("state")
+    if state not in ACTIVATION_STATES:
+        errors.append(f"final verification activation manifest state: unknown_value {state}")
+    changes = manifest.get("changes")
+    if not isinstance(changes, list):
+        return [*errors, "final verification activation manifest changes must be an array"]
+    for index, entry in enumerate(changes):
+        if not isinstance(entry, dict) or set(entry) != _MANIFEST_ENTRY_FIELDS:
+            errors.append(f"final verification activation manifest changes[{index}] must contain exactly change_id and contract_class")
+            continue
+        if entry.get("contract_class") not in FINAL_VERIFICATION_PRIOR_CONTRACT_CLASSES:
+            errors.append(f"final verification activation manifest changes[{index}].contract_class: unknown_value {entry.get('contract_class')}")
+    if errors:
+        return errors
+    revision = manifest.get("activating_source_revision")
+    if state == "preactivation":
+        if revision is not None:
+            errors.append("preactivation final verification manifest activating_source_revision must be null")
+        if changes:
+            errors.append("preactivation final verification manifest changes must be empty")
+    elif not isinstance(revision, str) or re.fullmatch(r"[0-9a-f]{40}", revision) is None:
+        errors.append("active final verification manifest activating_source_revision must be a 40-character lowercase Git revision")
+    ids: list[str] = []
+    for index, entry in enumerate(changes):
+        change_id = entry.get("change_id")
+        if not isinstance(change_id, str) or _SAFE_CHANGE_ID.fullmatch(change_id) is None:
+            errors.append(f"final verification activation manifest changes[{index}].change_id must be one safe identifier")
+        else:
+            ids.append(change_id)
+    if len(set(ids)) != len(ids):
+        errors.append("final verification activation manifest changes contain a duplicate change_id")
+    if any(left.encode("utf-8") >= right.encode("utf-8") for left, right in zip(ids, ids[1:])):
+        errors.append("final verification activation manifest changes must use strict raw UTF-8 byte order")
     return errors
 
 
@@ -204,7 +250,46 @@ def _has_active_test_spec_state(change: dict[str, Any]) -> bool:
     return isinstance(review_members, dict) and "test-spec" in review_members
 
 
-def classify_lifecycle_contract(change_id: str, change: dict[str, Any], manifest: Any) -> dict[str, str]:
+def _has_active_explain_change_state(change: dict[str, Any]) -> bool:
+    workflow_state = change.get("workflow_state")
+    if isinstance(workflow_state, dict) and (
+        workflow_state.get("current_stage") == "explain-change"
+        or workflow_state.get("next_stage") == "explain-change"
+    ):
+        return True
+    states = change.get("artifact_states")
+    if isinstance(states, dict) and any(
+        isinstance(entry, dict)
+        and entry.get("kind") == "explain-change"
+        and entry.get("lifecycle_state") not in {"abandoned", "archived", "superseded"}
+        for entry in states.values()
+    ):
+        return True
+    artifacts = change.get("artifacts")
+    if isinstance(artifacts, dict) and any(key in artifacts for key in {"explain-change", "explain_change"}):
+        return True
+    coordination = change.get("lifecycle_cli")
+    if not isinstance(coordination, dict):
+        return False
+    registered = coordination.get("artifacts")
+    if isinstance(registered, dict) and any(
+        isinstance(entry, dict) and entry.get("artifact_kind") == "explain-change"
+        for entry in registered.values()
+    ):
+        return True
+    validations = coordination.get("validations")
+    return isinstance(validations, dict) and any(
+        isinstance(entry, dict) and entry.get("stage_authority") == "explain-change"
+        for entry in validations.values()
+    )
+
+
+def classify_lifecycle_contract(
+    change_id: str,
+    change: dict[str, Any],
+    manifest: Any,
+    final_verification_manifest: Any | None = None,
+) -> dict[str, str]:
     has_explicit_contract = "lifecycle_contract" in change
     explicit = change.get("lifecycle_contract")
     if has_explicit_contract and explicit not in LIFECYCLE_CONTRACT_VALUES:
@@ -213,10 +298,39 @@ def classify_lifecycle_contract(change_id: str, change: dict[str, Any], manifest
     manifest_errors = validate_lifecycle_activation_manifest(manifest)
     if manifest_errors:
         raise ValueError(manifest_errors[0])
+    if final_verification_manifest is None:
+        final_verification_manifest = {
+            "schema_version": 1,
+            "state": "preactivation",
+            "activating_source_revision": None,
+            "changes": [],
+        }
+    final_manifest_errors = validate_final_verification_activation_manifest(final_verification_manifest)
+    if final_manifest_errors:
+        raise ValueError(final_manifest_errors[0])
     contract_class = explicit if has_explicit_contract else LEGACY_UNVERSIONED_CONTRACT
+    if contract_class == LIFECYCLE_CONTRACT_V3:
+        if _has_active_explain_change_state(change):
+            raise ValueError("v3 lifecycle contract carries active explain-change state")
+        return {
+            "contract_class": contract_class,
+            "activation_state": final_verification_manifest["state"],
+            "authority": "active" if final_verification_manifest["state"] == "active" else "inactive",
+        }
     if contract_class == LIFECYCLE_CONTRACT_V2:
         if _has_active_test_spec_state(change):
             raise ValueError("v2 lifecycle contract carries active test-spec state")
+        if final_verification_manifest["state"] == "active":
+            entry = next((item for item in final_verification_manifest["changes"] if item["change_id"] == change_id), None)
+            if entry is None:
+                raise ValueError(f"prior-contract change {change_id} is not present in the final verification activation manifest")
+            if entry["contract_class"] != contract_class:
+                raise ValueError(f"prior-contract change {change_id} does not match final verification activation manifest class {entry['contract_class']}")
+            return {
+                "contract_class": contract_class,
+                "activation_state": final_verification_manifest["state"],
+                "authority": "prior-compatible",
+            }
         return {
             "contract_class": contract_class,
             "activation_state": manifest["state"],

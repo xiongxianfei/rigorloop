@@ -25,6 +25,7 @@ from change_metadata_semantics import (
 )
 from artifact_lifecycle_contracts import (
     classify_lifecycle_contract,
+    validate_final_verification_activation_manifest,
     validate_lifecycle_activation_manifest,
     validate_lifecycle_activation_prerequisites,
 )
@@ -2332,6 +2333,74 @@ class LifecycleContractClassificationTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         fixture_path = ROOT / "packages/rigorloop/test/fixtures/lifecycle/contract-classification-v1.json"
         cls.fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        final_fixture_path = ROOT / "packages/rigorloop/test/fixtures/lifecycle/final-verification-contract-classification-v1.json"
+        cls.final_fixture = json.loads(final_fixture_path.read_text(encoding="utf-8"))
+
+    def test_final_verification_preactivation_keeps_v3_inactive_and_v2_active(self) -> None:
+        current_manifest = self.fixture["active_manifest"]
+        final_manifest = self.final_fixture["preactivation_manifest"]
+        self.assertEqual(validate_final_verification_activation_manifest(final_manifest), [])
+        self.assertEqual(
+            classify_lifecycle_contract("new-v3", {"lifecycle_contract": "stage-owned-change-local-v3"}, current_manifest, final_manifest),
+            {"contract_class": "stage-owned-change-local-v3", "activation_state": "preactivation", "authority": "inactive"},
+        )
+        self.assertEqual(
+            classify_lifecycle_contract("new-v2", {"lifecycle_contract": "stage-owned-change-local-v2"}, current_manifest, final_manifest),
+            {"contract_class": "stage-owned-change-local-v2", "activation_state": "active", "authority": "active"},
+        )
+
+    def test_active_final_verification_manifest_binds_exact_v2_records(self) -> None:
+        current_manifest = self.fixture["active_manifest"]
+        final_manifest = self.final_fixture["active_manifest"]
+        self.assertEqual(validate_final_verification_activation_manifest(final_manifest), [])
+        self.assertEqual(
+            classify_lifecycle_contract("v2", {"lifecycle_contract": "stage-owned-change-local-v2"}, current_manifest, final_manifest)["authority"],
+            "prior-compatible",
+        )
+        with self.assertRaisesRegex(ValueError, "not present in the final verification activation manifest"):
+            classify_lifecycle_contract("unlisted-v2", {"lifecycle_contract": "stage-owned-change-local-v2"}, current_manifest, final_manifest)
+
+    def test_final_verification_unknown_class_and_v3_explain_change_fail_first(self) -> None:
+        final_manifest = copy.deepcopy(self.final_fixture["active_manifest"])
+        final_manifest["changes"][0]["contract_class"] = "stage-owned-change-local-v1"
+        final_manifest["changes"].append(copy.deepcopy(final_manifest["changes"][0]))
+        self.assertRegex(
+            validate_final_verification_activation_manifest(final_manifest)[0],
+            "unknown_value.*stage-owned-change-local-v1",
+        )
+        for change in (
+            {"lifecycle_contract": "stage-owned-change-local-v3", "workflow_state": {"current_stage": "explain-change"}},
+            {"lifecycle_contract": "stage-owned-change-local-v3", "artifacts": {"explain_change": "docs/changes/example/explain-change.md"}},
+        ):
+            with self.assertRaisesRegex(ValueError, "v3 lifecycle contract carries active explain-change state"):
+                classify_lifecycle_contract(
+                    "new-v3",
+                    change,
+                    self.fixture["active_manifest"],
+                    self.final_fixture["preactivation_manifest"],
+                )
+
+    def test_v3_metadata_semantics_reject_explain_change_authority(self) -> None:
+        change = {
+            "lifecycle_contract": "stage-owned-change-local-v3",
+            "artifact_states": {},
+            "review_packages": {},
+            "workflow_state": {
+                "lifecycle_state": "active",
+                "current_stage": "explain-change",
+                "next_stage": "verify",
+                "blocker": None,
+                "evidence": [],
+            },
+            "lifecycle_cli": {
+                "validations": {
+                    "old-explanation": {"stage_authority": "explain-change"},
+                },
+            },
+        }
+        errors = validate_stage_owned_lifecycle_metadata(change)
+        self.assertTrue(any(error.startswith("workflow_state.current_stage: unknown_value") for error in errors))
+        self.assertTrue(any("stage_authority: unknown_value explain-change" in error for error in errors))
 
     def test_manifest_classifies_exact_prior_records(self) -> None:
         manifest = self.fixture["active_manifest"]

@@ -6,7 +6,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from artifact_lifecycle_contracts import LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2
+from artifact_lifecycle_contracts import LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3
 
 
 REVIEW_GATE_INDEPENDENCE_LEVELS = {"L1", "L2", "L3"}
@@ -335,12 +335,16 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
     if not isinstance(data, dict):
         return []
     contract = data.get("lifecycle_contract")
-    if contract not in {None, LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}:
-        return [f"lifecycle_contract: unknown_value; expected one of {LIFECYCLE_CONTRACT_V1}, {LIFECYCLE_CONTRACT_V2}"]
-    if contract not in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}:
+    supported_contracts = {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3}
+    if contract not in {None, *supported_contracts}:
+        return [f"lifecycle_contract: unknown_value; expected one of {', '.join(sorted(supported_contracts))}"]
+    if contract not in supported_contracts:
         return []
-    allowed_artifact_kinds = ARTIFACT_KINDS - ({"test-spec"} if contract == LIFECYCLE_CONTRACT_V2 else set())
-    allowed_workflow_stages = WORKFLOW_STAGES - ({"test-spec", "test-spec-review"} if contract == LIFECYCLE_CONTRACT_V2 else set())
+    allowed_artifact_kinds = ARTIFACT_KINDS - ({"test-spec"} if contract in {LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3} else set())
+    disallowed_stages = {"test-spec", "test-spec-review"} if contract in {LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3} else set()
+    if contract == LIFECYCLE_CONTRACT_V3:
+        disallowed_stages.add("explain-change")
+    allowed_workflow_stages = WORKFLOW_STAGES - disallowed_stages
     errors: list[str] = []
     states = data.get("artifact_states")
     workflow_state = data.get("workflow_state")
@@ -478,7 +482,7 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                         and ((entry.get("kind") in {"architecture", "spec"} and entry.get("role") == "primary") or (entry.get("kind") == "adr" and entry.get("role") == "supporting"))
                     }
                 elif package_kind == "delivery":
-                    delivery_kinds = {"plan"} if contract == LIFECYCLE_CONTRACT_V2 else {"plan", "test-spec"}
+                    delivery_kinds = {"plan"} if contract in {LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3} else {"plan", "test-spec"}
                     expected_member_ids = {
                         artifact_id for artifact_id, entry in states.items()
                         if isinstance(entry, dict) and entry.get("kind") in delivery_kinds and entry.get("role") == "primary"
@@ -527,7 +531,7 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                 if sorted(correction_targets) != expected_targets:
                     errors.append(f"{base}.correction_targets: must exactly match affected artifacts")
 
-    if contract == LIFECYCLE_CONTRACT_V2:
+    if contract in {LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3}:
         lifecycle_cli = data.get("lifecycle_cli")
         if isinstance(lifecycle_cli, dict):
             registrations = lifecycle_cli.get("artifacts")
@@ -540,6 +544,16 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                 for artifact_id, review in reviews.items():
                     if isinstance(review, dict) and review.get("stage_authority") == "test-spec-review":
                         errors.append(f"lifecycle_cli.reviews.{artifact_id}.stage_authority: unknown_value test-spec-review")
+            if contract == LIFECYCLE_CONTRACT_V3:
+                if isinstance(registrations, dict):
+                    for artifact_id, registration in registrations.items():
+                        if isinstance(registration, dict) and registration.get("artifact_kind") == "explain-change":
+                            errors.append(f"lifecycle_cli.artifacts.{artifact_id}.artifact_kind: unknown_value explain-change")
+                validations = lifecycle_cli.get("validations")
+                if isinstance(validations, dict):
+                    for validation_id, validation in validations.items():
+                        if isinstance(validation, dict) and validation.get("stage_authority") == "explain-change":
+                            errors.append(f"lifecycle_cli.validations.{validation_id}.stage_authority: unknown_value explain-change")
 
     if _exact_keys(
         workflow_state, "workflow_state",

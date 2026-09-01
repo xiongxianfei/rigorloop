@@ -11,7 +11,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from artifact_lifecycle_contracts import ARCHITECTURE_CONTRACT, validate_lifecycle_activation_manifest
+from artifact_lifecycle_contracts import (
+    ARCHITECTURE_CONTRACT,
+    validate_final_verification_activation_manifest,
+    validate_lifecycle_activation_manifest,
+)
 from artifact_lifecycle_validation import validate_release_evidence_checklist, validate_repository
 from lifecycle_state_sync import CLEAN_ADVANCE_GATES
 from lifecycle_state_sync import evaluate_authoring_autoprogression_route
@@ -5362,6 +5366,18 @@ class LifecycleActivationManifestTests(unittest.TestCase):
         self.assertEqual(set(manifest), set(schema["required"]))
         self.assertEqual(schema["properties"]["state"]["enum"], ["preactivation", "active"])
         self.assertEqual(schema["properties"]["changes"]["items"]["properties"]["contract_class"]["enum"], ["stage-owned-change-local-v1", "legacy-unversioned"])
+
+    def test_tracked_final_verification_preactivation_manifest_matches_schema_model(self) -> None:
+        import json
+        manifest = json.loads((ROOT / "specs/final-verification-contract-activation.yaml").read_text(encoding="utf-8"))
+        schema = json.loads((ROOT / "schemas/final-verification-contract-activation.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(validate_final_verification_activation_manifest(manifest), [])
+        self.assertEqual(set(manifest), set(schema["required"]))
+        self.assertEqual(schema["properties"]["state"]["enum"], ["preactivation", "active"])
+        self.assertEqual(
+            schema["properties"]["changes"]["items"]["properties"]["contract_class"]["const"],
+            "stage-owned-change-local-v2",
+        )
 
     def write_contract_repository(self, manifest: dict, change_yaml: str) -> Path:
         import json

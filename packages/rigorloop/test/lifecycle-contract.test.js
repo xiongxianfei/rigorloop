@@ -6,14 +6,18 @@ import { test } from "node:test";
 import {
   LIFECYCLE_CONTRACT_V1,
   LIFECYCLE_CONTRACT_V2,
+  LIFECYCLE_CONTRACT_V3,
   LIFECYCLE_OPERATIONS,
   PROVENANCE_EXCLUDED_FIELDS,
   canonicalJson,
+  allowedArtifactKinds,
+  allowedNextStages,
   classifyLifecycleContract,
   lifecycleRevision,
   parseLifecycleYaml,
   serializeLifecycleYaml,
   validateLifecycleActivationManifest,
+  validateFinalVerificationActivationManifest,
   validateLifecycleRequest,
 } from "../dist/lib/lifecycle-contract.js";
 import { LIFECYCLE_OPERATIONS as OBSERVABLE_LIFECYCLE_OPERATIONS } from "../dist/lib/diagnostic-event.js";
@@ -25,6 +29,60 @@ const validChange = fixture.valid_yaml;
 const classificationFixture = JSON.parse(
   readFileSync(join(import.meta.dirname, "fixtures", "lifecycle", "contract-classification-v1.json"), "utf8"),
 );
+const finalVerificationClassificationFixture = JSON.parse(
+  readFileSync(join(import.meta.dirname, "fixtures", "lifecycle", "final-verification-contract-classification-v1.json"), "utf8"),
+);
+
+test("final verification activation keeps v3 inactive while v2 remains active", () => {
+  const currentManifest = classificationFixture.active_manifest;
+  const finalManifest = finalVerificationClassificationFixture.preactivation_manifest;
+  assert.deepEqual(validateFinalVerificationActivationManifest(finalManifest), []);
+  assert.deepEqual(
+    classifyLifecycleContract("new-v3", { lifecycle_contract: LIFECYCLE_CONTRACT_V3 }, currentManifest, finalManifest),
+    { contract_class: LIFECYCLE_CONTRACT_V3, activation_state: "preactivation", authority: "inactive" },
+  );
+  assert.deepEqual(
+    classifyLifecycleContract("new-v2", { lifecycle_contract: LIFECYCLE_CONTRACT_V2 }, currentManifest, finalManifest),
+    { contract_class: LIFECYCLE_CONTRACT_V2, activation_state: "active", authority: "active" },
+  );
+  assert.deepEqual(allowedNextStages({ lifecycle_contract: LIFECYCLE_CONTRACT_V3 }, "code-review"), []);
+  assert.deepEqual(allowedArtifactKinds({ lifecycle_contract: LIFECYCLE_CONTRACT_V3 }), []);
+});
+
+test("active final verification manifest binds exact v2 records and activates v3", () => {
+  const currentManifest = classificationFixture.active_manifest;
+  const finalManifest = finalVerificationClassificationFixture.active_manifest;
+  assert.deepEqual(validateFinalVerificationActivationManifest(finalManifest), []);
+  assert.equal(
+    classifyLifecycleContract("new-v3", { lifecycle_contract: LIFECYCLE_CONTRACT_V3 }, currentManifest, finalManifest).authority,
+    "active",
+  );
+  assert.deepEqual(
+    classifyLifecycleContract("v2", { lifecycle_contract: LIFECYCLE_CONTRACT_V2 }, currentManifest, finalManifest),
+    { contract_class: LIFECYCLE_CONTRACT_V2, activation_state: "active", authority: "prior-compatible" },
+  );
+  assert.throws(
+    () => classifyLifecycleContract("unlisted-v2", { lifecycle_contract: LIFECYCLE_CONTRACT_V2 }, currentManifest, finalManifest),
+    /not present in the final verification activation manifest/,
+  );
+});
+
+test("final verification manifest and v3 explain-change values fail closed", () => {
+  const currentManifest = classificationFixture.active_manifest;
+  const finalManifest = structuredClone(finalVerificationClassificationFixture.active_manifest);
+  finalManifest.changes[0].contract_class = "stage-owned-change-local-v1";
+  finalManifest.changes.push(structuredClone(finalManifest.changes[0]));
+  assert.match(validateFinalVerificationActivationManifest(finalManifest)[0], /unknown_value.*stage-owned-change-local-v1/);
+  for (const change of [
+    { lifecycle_contract: LIFECYCLE_CONTRACT_V3, workflow_state: { current_stage: "explain-change" } },
+    { lifecycle_contract: LIFECYCLE_CONTRACT_V3, artifacts: { explain_change: "docs/changes/example/explain-change.md" } },
+  ]) {
+    assert.throws(
+      () => classifyLifecycleContract("new-v3", change, currentManifest, finalVerificationClassificationFixture.preactivation_manifest),
+      /v3 lifecycle contract carries active explain-change state/,
+    );
+  }
+});
 
 test("contract activation manifest classifies v2 and exact prior records", () => {
   const manifest = classificationFixture.active_manifest;
