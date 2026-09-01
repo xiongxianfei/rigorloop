@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
-import { parseLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
+import { parseLifecycleYaml, serializeLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
 import {
   changeBytes,
   lifecycleRevision as packageLifecycleRevision,
@@ -272,6 +272,8 @@ test("governed member revision invalidates approved package without package hash
   });
   assert.equal(executeLifecycleCli(["settle-review-package", "--request", settle], { cwd: root }).exitCode, 0);
 
+  setWorkflowStage(root, "spec");
+
   const revised = "# Revised specification\n";
   writeFileSync(join(root, "specs/example.md"), revised, "utf8");
   const evidencePath = "docs/changes/example/evidence/spec-revision.md";
@@ -477,6 +479,58 @@ test("delivery package binds the approved design revision and settles independen
   const settled = executeLifecycleCli(["settle-review-package", "--request", deliverySettle, "--format", "json"], { cwd: root });
   assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
   assert.match(changeBytes(root), /review_packages:[\s\S]*delivery:[\s\S]*authority: granted/);
+});
+
+test("downstream workflow can recover exact review-required design and delivery packages", async () => {
+  const { root, changeRoot } = await packageRepository({ lifecycleContract: "stage-owned-change-local-v2" });
+  const recordAndSettle = (context, kind, round = "r1") => {
+    const review = writePackageReview(root, context, { kind, round });
+    const recorded = executeLifecycleCli(["record-package-review", "--request", writePackageRequest(root, `${kind}-${round}-record`, {
+      schema_version: 1, operation: "record-package-review", change_id: "example",
+      expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: kind,
+      review_id: review.reviewId, upstream_review_id: review.packageFacts.upstream_review_id,
+      members: review.packageFacts.members, evidence_path: review.reviewPath, stage_authority: `${kind}-review`,
+    }), "--format", "json"], { cwd: root });
+    assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
+    const settled = executeLifecycleCli(["settle-review-package", "--request", writePackageRequest(root, `${kind}-${round}-settle`, {
+      schema_version: 1, operation: "settle-review-package", change_id: "example",
+      expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: kind,
+      review_id: review.reviewId, stage_authority: `${kind}-review`,
+    }), "--format", "json"], { cwd: root });
+    assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
+    return review;
+  };
+
+  recordAndSettle(packageContext(root), "design");
+  setWorkflowStage(root, "delivery-review");
+  recordAndSettle(packageContext(root, "delivery-review"), "delivery");
+  setWorkflowStage(root, "code-review");
+
+  const specText = "# Specification\n\nRevised after delivery review.\n";
+  writeFileSync(join(root, "specs", "example.md"), specText, "utf8");
+  const changePath = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  change.artifact_states.spec.lifecycle_state = "review-required";
+  delete change.artifact_states.spec.review;
+  change.lifecycle_cli.artifacts.spec.artifact_sha256 = createHash("sha256").update(specText).digest("hex");
+  change.review_packages.design.status = "review-required";
+  change.review_packages.design.authority = "withheld";
+  writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+
+  const designContext = packageContext(root, "design-review");
+  assert.equal(designContext.result.context.permitted_registration_operation, "record-package-review");
+  const designReview = recordAndSettle(designContext, "design", "r2");
+  let recovered = parseLifecycleYaml(changeBytes(root));
+  assert.equal(recovered.workflow_state.current_stage, "code-review");
+  assert.equal(recovered.review_packages.design.review_id, designReview.reviewId);
+  assert.equal(recovered.review_packages.delivery.status, "review-required");
+
+  const deliveryContext = packageContext(root, "delivery-review");
+  const deliveryReview = recordAndSettle(deliveryContext, "delivery", "r2");
+  recovered = parseLifecycleYaml(changeBytes(root));
+  assert.equal(recovered.workflow_state.current_stage, "code-review");
+  assert.equal(recovered.review_packages.delivery.review_id, deliveryReview.reviewId);
+  assert.equal(recovered.review_packages.delivery.authority, "granted");
 });
 
 test("package review rejects unknown finding scope and ignores ungoverned direct edits", async () => {

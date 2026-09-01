@@ -148,6 +148,17 @@ function expectedAuthorAuthority(kind) {
   return kind === "adr" ? "architecture" : kind;
 }
 
+function packageReviewStageIsCurrentOrRecoverable(change, packageKind, context, expectedAuthority) {
+  const currentStage = change.workflow_state?.current_stage;
+  if (currentStage === expectedAuthority) return true;
+  const projection = change.review_packages?.[packageKind];
+  if (change.lifecycle_cli?.active_correction || context.status !== "review-required" || projection?.status !== "review-required" || projection?.authority !== "withheld") return false;
+  const stageOrder = correctionStageOrder(change);
+  const currentIndex = stageOrder.indexOf(currentStage);
+  const reviewIndex = stageOrder.indexOf(expectedAuthority);
+  return reviewIndex >= 0 && currentIndex > reviewIndex;
+}
+
 function migrateArtifactRegistrations(root, change) {
   const registrations = {};
   for (const [artifactId, entry] of Object.entries(change.artifact_states ?? {})) {
@@ -655,6 +666,8 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     if (state.active_correction) {
       const atDestination = next.workflow_state?.current_stage === state.active_correction.destination_stage;
       if (!atDestination) throw operationError("RL_CORRECTION_ROUTE_INVALID", "routed destination revision is not current", "correction-destination", [String(next.workflow_state?.current_stage), state.active_correction.destination_stage]);
+    } else if (next.workflow_state?.current_stage !== expectedAuthorAuthority(request.artifact_kind)) {
+      throw operationError("RL_OPERATION_NOT_PERMITTED", "Artifact revision is not current for its authoring stage.", "artifact-authoring-stage", [String(next.workflow_state?.current_stage), expectedAuthorAuthority(request.artifact_kind)], "route-correction");
     }
     const authored = safeFile(root, request.artifact_path);
     const evidence = safeFile(root, request.evidence_path);
@@ -797,7 +810,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const context = reviewPackageContext(root, next, request.package_kind);
     if (context.errors.length) throw Object.assign(new Error(context.errors[0].summary), { code: context.errors[0].code, diagnostic: context.errors[0] });
     if (request.upstream_review_id !== context.upstream_review_id || canonicalJson(request.members) !== canonicalJson(context.members)) throw operationError("RL_STALE_EVIDENCE", "Package review request does not bind the current member map and upstream review ID.", "review-package-request-identity", [request.package_kind, request.upstream_review_id, String(context.upstream_review_id)]);
-    if (next.workflow_state?.current_stage !== expectedAuthority) throw operationError("RL_OPERATION_NOT_PERMITTED", "Package review recording is not current for its reviewing stage.", "review-package-stage", [String(next.workflow_state?.current_stage), expectedAuthority]);
+    if (!packageReviewStageIsCurrentOrRecoverable(next, request.package_kind, context, expectedAuthority)) throw operationError("RL_OPERATION_NOT_PERMITTED", "Package review recording is not current for its reviewing stage.", "review-package-stage", [String(next.workflow_state?.current_stage), expectedAuthority]);
     const registration = readPackageReview(root, next, request, context);
     const existing = state.package_reviews[request.package_kind];
     if (existing && canonicalJson(existing) === canonicalJson(registration)) return { status: "already-recorded", candidate: change };
@@ -819,7 +832,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const context = reviewPackageContext(root, next, request.package_kind);
     if (context.errors.length) throw Object.assign(new Error(context.errors[0].summary), { code: context.errors[0].code, diagnostic: context.errors[0] });
     if (request.review_id !== registered.review_id || registered.upstream_review_id !== context.upstream_review_id || canonicalJson(registered.members) !== canonicalJson(context.members)) throw operationError("RL_STALE_EVIDENCE", "Registered package review or settlement request does not bind current package facts.", "review-package-freshness", [request.package_kind, request.review_id, registered.review_id], "record-package-review");
-    if (registered.stage_authority !== request.stage_authority || next.workflow_state?.current_stage !== expectedAuthority) throw operationError("RL_OPERATION_NOT_PERMITTED", "Package settlement is not current for its registered review authority.", "review-package-stage", [String(next.workflow_state?.current_stage), request.stage_authority]);
+    if (registered.stage_authority !== request.stage_authority || !packageReviewStageIsCurrentOrRecoverable(next, request.package_kind, context, expectedAuthority)) throw operationError("RL_OPERATION_NOT_PERMITTED", "Package settlement is not current for its registered review authority.", "review-package-stage", [String(next.workflow_state?.current_stage), request.stage_authority]);
     const currentReview = readPackageReview(root, next, { ...request, evidence_path: registered.evidence_path }, context);
     if (canonicalJson(currentReview) !== canonicalJson(registered)) throw operationError("RL_STALE_EVIDENCE", "Registered package review evidence changed before settlement.", "review-package-review-freshness", [registered.review_id], "record-package-review");
     if (request.review_id === registered.review_id && existingProjection && canonicalJson(existingProjection) === canonicalJson(desiredProjection)) return { status: "already-recorded", candidate: change };
