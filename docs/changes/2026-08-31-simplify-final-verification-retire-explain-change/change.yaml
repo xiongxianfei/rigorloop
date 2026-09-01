@@ -68,12 +68,12 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M2
+    current_milestone: M3
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -98,10 +98,10 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: closed
       M3:
         kind: implementation
-        state: planned
+        state: implementing
       M4:
         kind: implementation
         state: planned
@@ -113,7 +113,6 @@ workflow_state:
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M2
       - M3
       - M4
       - M5
@@ -192,6 +191,26 @@ lifecycle_cli:
       review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m1-r2.md
       review_recording_status: recorded
       review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M2:
+      completion_fingerprint: 490ea58f6599d6b873fc1fd35c6e3b52b95b25a54d3dcb84c248c310daa82bdf
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m2-impact-evidence-protocol.md
+      evidence_sha256: 9a34ebbc2f324c818b91c7884bb2c8ef4559b7a7f4175171f946a58c7144c4e7
+      milestone_id: M2
+      review_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m2-r3.md
+      review_evidence_sha256: 23c8fc9cbf0faf83f05e58075b6c7b867a8da087880abe64675521734b648279
+      review_id: code-review-m2-r3
+      review_log_entry_sha256: 80fcbf03900d23ee2ff9baea3cfa32bf3ce00a38d7488b5db9d2d05db2bf22fd
+      review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m2-r3.md
+      review_recording_status: recorded
+      review_round: r3
       review_stage: code-review
       stage_authority: workflow
   package_reviews:
