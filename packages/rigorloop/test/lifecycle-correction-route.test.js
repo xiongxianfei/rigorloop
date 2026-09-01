@@ -600,6 +600,26 @@ Authoring result: complete
   assert.equal(change.artifact_states.spec.lifecycle_state, "review-required");
 });
 
+test("artifact revision is rejected outside its current authoring stage without a correction route", async () => {
+  const { root, changeRoot } = await fixture();
+  const original = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
+  const revisedSpec = "# Example spec\n\nUnauthorized downstream revision.\n";
+  writeFileSync(join(root, "specs", "example.md"), revisedSpec, "utf8");
+  const evidencePath = "docs/changes/example/evidence/unrouted-spec-revision.md";
+  writeFileSync(join(root, evidencePath), `Artifact path: specs/example.md\nArtifact identity: sha256:${sha(revisedSpec)}\nAuthoring result: complete\n`, "utf8");
+  const priorChange = readFileSync(join(changeRoot, "change.yaml"), "utf8");
+
+  const revised = execute(root, "record-artifact-revision", {
+    schema_version: 1, operation: "record-artifact-revision", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    artifact_id: "spec", artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md", evidence_path: evidencePath,
+    prior_artifact_sha256: original.lifecycle_cli.artifacts.spec.artifact_sha256, stage_authority: "spec",
+  });
+
+  assert.notEqual(revised.exitCode, 0);
+  assert.equal(revised.result.errors[0].code, "RL_OPERATION_NOT_PERMITTED");
+  assert.equal(readFileSync(join(changeRoot, "change.yaml"), "utf8"), priorChange);
+});
+
 test("route rejects lateral, missing-milestone, conflicting, and stale requests without mutation", async () => {
   for (const scenario of ["lateral", "missing-milestone", "conflicting", "stale"]) {
     const { root, changeRoot } = await fixture();
