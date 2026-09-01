@@ -2,7 +2,7 @@
 
 ## Purpose / big picture
 
-Replace the standalone `explain-change -> verify` closeout sequence with one impact-aware final Verify stage that generates the durable explanation only on success. The implementation will add `stage-owned-change-local-v3` behind a compatibility boundary, make the approved Delivery plan the initial evidence map, permit only affirmatively justified reuse of impact-sensitive evidence, preserve policy freshness and always-current checks, keep Verify read-only toward implementation, and publish the new lifecycle only after the complete runtime, governance, skill, validator, adapter, and historical-compatibility package agrees.
+Replace the standalone `explain-change -> verify` closeout sequence with one impact-aware final Verify stage that generates the durable explanation only on success. The implementation will make `stage-owned-change-local-v3` the sole current executable contract, make the approved Delivery plan the initial evidence map, permit only affirmatively justified reuse of impact-sensitive evidence, preserve policy freshness and always-current checks, keep Verify read-only toward implementation, and publish the new lifecycle only after the complete runtime, governance, skill, validator, adapter, and historical-read package agrees.
 
 ## Current Handoff Summary
 
@@ -27,7 +27,11 @@ Canonical public skills are authored only under `skills/`. The current `verify`,
 
 `docs/project-map.md` predates the current v2 consolidated-gate contract and still inventories standalone test-spec ownership, so this plan does not rely on its lifecycle counts or stage topology. The observed runtime and current governed artifacts above provide the bounded orientation basis; project-map refresh is not required to sequence this scoped protocol change.
 
-This change is self-hosting under v2. Implementation may assemble and test a coherent v3 publication candidate, but public v3 activation occurs only after this change completes its registered v2 closeout and every other pre-v3 v2 change is complete or handled by separately approved validated policy. The last coherent v2 package remains the authority used for this change's `explain-change -> verify -> pr` closeout. Publication or release is not claimed by implementation or Delivery Review.
+This change is self-hosting under v2. Implementation may assemble and test a coherent v3 publication candidate, but public v3 activation occurs only after this change and every other nonterminal pre-v3 change is complete or explicitly closed. The last coherent released v2 package remains the bounded authority used for this change's `explain-change -> verify -> pr` closeout. The activated current runtime has no v1/v2 progression branch or compatibility allowlist. Publication or release is not claimed by implementation or Delivery Review.
+
+### Latest-contract simplicity amendment
+
+The current executable product follows one contract: v3. Completed v1/v2 records and release archives remain readable history, not inputs to a current progression checker. M1 and M3 compatibility machinery is an interim preactivation scaffold; M5 removes its executable legacy branches instead of freezing an ongoing v2 allowlist. M4 authors Verify for v3 alone and proves historical readability separately from execution authority.
 
 ## Non-goals
 
@@ -148,14 +152,14 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
 - Dependencies:
   - accepted M2 implementation and Code Review;
   - existing lifecycle request, transaction, correction-route, workflow automation, and PR readiness boundaries.
-- Implementation scope: Add the inactive v3 `code-review -> verify -> pr` route, remove an explain-change prerequisite from v3 only, route blockers to exact owners without Verify repair, and make PR consume the current successful Verify explanation and basis. Preserve exact v2 behavior for manifest-listed changes.
+- Implementation scope: Add the inactive v3 `code-review -> verify -> pr` route, remove an explain-change prerequisite from v3, route blockers to exact owners without Verify repair, and make PR consume the current successful Verify explanation and basis. Preserve the released v2 package during preactivation; its runtime branches are removed from the current package in M5.
 - Files/components likely touched:
   - `packages/rigorloop/dist/lib/lifecycle-contract.js`, lifecycle stage routing, read context, operations, and status;
   - `scripts/workflow_automation.py`, `scripts/workflow_automation_policy.py`, `scripts/workflow_automation_state.py`, `scripts/workflow_code_state.py`, and `scripts/lifecycle_state_sync.py`;
   - `skills/workflow/`, `skills/pr/`, `skills/code-review/`, and `skills/ci-maintenance/` contract-keyed guidance;
   - public-path lifecycle, automation, code-state, and PR fixtures.
 - Required verification:
-  - TG-10 — Prove v3 has no explain-change stage, artifact, prerequisite, transition, correction destination, or automation target, while exact v2 records retain their old route.
+  - TG-10 — Prove v3 has no explain-change stage, artifact, prerequisite, transition, correction destination, or automation target; historical v2 evidence does not grant current progression.
   - TG-11 — Route specification, architecture, plan-allocation, implementation, review, CI/environment, and evidence-acquisition blockers to their owners without Verify mutation or silent continuation.
   - TG-12 — Re-enter Verify after correction and rereview, reconsider every evidence item, and preserve only affirmatively current evidence.
   - TG-13 — Prove Verify alone owns `branch-ready`, Workflow alone owns routing, and PR alone owns PR-body/opening readiness.
@@ -174,7 +178,7 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
   - `python scripts/test-workflow-code-state.py`
   - `python scripts/test-review-artifact-validator.py`
 - Expected observable result: Inactive v3 fixtures route directly from final review and triggered stages to Verify and then PR, with exact owner correction and no leakage into v2.
-- Completion criteria: Runtime reads and mutations agree on both graphs; every owner route is direct and fail-closed; PR accepts only current successful Verify authority; v2 continuation remains unchanged.
+- Completion criteria: Runtime reads and mutations agree on the v3 graph; every owner route is direct and fail-closed; PR accepts only current successful Verify authority; released v2 evidence remains unchanged and non-current.
 - Required evidence: `docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-v3-routing-and-pr.md`
 - Review handoff: Code Review of graph closure, dual-contract isolation, correction authority, replay behavior, and exact PR consumption.
 - Optional commit boundary: `M3: connect verify to v3 routing and PR`
@@ -187,14 +191,14 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
 ### M4. Assemble canonical governance, skill, validator, and adapter parity
 
 - Milestone kind: implementation
-- Engineering purpose: Make every current authored and generated surface capable of expressing one coherent v3 package before the activation slice removes the old public entrypoint.
+- Engineering purpose: Make every staged authored and generated surface express one coherent v3-only package before the activation slice removes the old public entrypoint.
 - Requirements: FV-R1-FV-R3, FV-R19, FV-R22-FV-R30, FV-R35-FV-R38; BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001; INT-002-INT-004.
 - Architecture responsibility: progressive Verify package; current-versus-historical inventory; canonical-to-generated package boundary; governance and validator coherence.
 - Dependencies:
   - accepted M3 implementation and Code Review;
   - stable v3 runtime, result, and route contracts;
   - canonical skill resource maps and adapter generation pipeline.
-- Implementation scope: Update current governance, workflow specs, canonical skills, resources, templates, schemas, selectors, validators, fixtures, adapter metadata, and release checks for contract-keyed v3 behavior. Stage explain-change retirement but preserve the last coherent v2 package and historical archives until M5.
+- Implementation scope: Update current governance, workflow specs, canonical skills, resources, templates, schemas, selectors, validators, fixtures, adapter metadata, and release checks for v3-only current behavior. Stage explain-change retirement while preserving the last coherent released v2 package and historical archives until M5.
 - Files/components likely touched:
   - `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md`, current workflow and skill-family specs, and relevant architecture indexes;
   - `skills/verify/`, `skills/workflow/`, `skills/pr/`, `skills/code-review/`, `skills/ci-maintenance/`, and staged `skills/explain-change/` retirement inventory;
@@ -208,7 +212,7 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
 - Evidence expectations: Closed active-surface inventory, skill validation, boundary validator tests, documentation audit, temporary adapter generation and clean-install validation, parity/drift checks, and proof that historical paths were untouched.
 - Implementation steps:
   - Add failing current-versus-historical inventory, resource-loading, boundary-validator, adapter, and mixed-package assertions first.
-  - Update canonical governance and skills with contract-keyed wording and one Verify-owned explanation surface.
+  - Update canonical governance and skills with v3-only wording and one Verify-owned explanation surface; historical release content is not copied into the current skill.
   - Repair the boundary-first validator to recognize active v2 plan-owned proof without accepting unknown contract values or creating a test spec.
   - Stage adapter descriptors and generate only temporary candidate archives; do not hand-edit generated skill bodies.
   - Keep activation gated on complete parity and the exact pre-v3 change inventory.
@@ -222,7 +226,7 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
   - `python scripts/test-adapter-distribution.py`
   - `python scripts/validate-documentation-prose.py --mode audit --path CONSTITUTION.md --path AGENTS.md --path docs/workflows.md --path specs/rigorloop-workflow.md`
 - Expected observable result: A complete v3 candidate can be built and validated from canonical sources while current released v2 and historical evidence remain coherent.
-- Completion criteria: Active-surface inventory is closed; validator and skill unknown values fail before consistency; v2 plan-only boundary proof validates; all mapped resources resolve; supported generated candidates agree; no historical record or release archive changes.
+- Completion criteria: Active-surface inventory is closed; validator and skill unknown values fail before consistency; stage-owned plan proof validates through one recursive duplicate-safe YAML parser; all mapped resources resolve; supported generated candidates agree; no historical record or release archive changes.
 - Required evidence: `docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m4-v3-package-parity.md`
 - Review handoff: Code Review of authority wording, progressive disclosure, validator correctness, canonical/generated parity, and historical scope.
 - Optional commit boundary: `M4: assemble impact-aware verify package parity`
@@ -235,32 +239,30 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
 ### M5. Assemble the atomic v3 publication candidate
 
 - Milestone kind: implementation
-- Engineering purpose: Freeze the compatibility inventory, switch the current source package to v3, and retire the standalone entrypoint in one final implementation slice whose complete diff can receive holistic Code Review and v2 closeout before public release activation.
+- Engineering purpose: Switch the current source package to v3 only, retire the standalone entrypoint and executable v1/v2 branches, and assemble one final implementation slice whose complete diff can receive holistic Code Review and v2 closeout before public release activation.
 - Requirements: FV-R1-FV-R7, FV-R35, FV-R37, FV-R38; all eight boundary IDs; INT-001-INT-004.
-- Architecture responsibility: coherent v3 publication boundary; exact historical compatibility; standalone skill retirement; generated package and rollback parity.
+- Architecture responsibility: coherent v3 publication boundary; historical readability without progression; standalone skill retirement; generated package and rollback parity.
 - Dependencies:
   - accepted M1-M4 implementations and Code Reviews;
-  - every pre-v3 v2 change inventoried by exact ID;
-  - every nonterminal pre-v3 change complete or covered by separately approved validated policy;
+  - every nonterminal pre-v3 change complete or explicitly closed;
   - reproducible canonical and generated parity with no unresolved material findings.
-- Implementation scope: Freeze the pre-v3 inventory, switch new-change and active selectors to v3, remove `skills/explain-change/` and its current publication entries, update the current adapter manifest and release candidate, and prove the complete local publication candidate. Do not publish, tag, release, or reinterpret this change's v2 record.
+- Implementation scope: Prove the pre-v3 completion gate, switch new-change and active selectors to v3, remove executable v1/v2 compatibility branches, remove `skills/explain-change/` and its current publication entries, update the current adapter manifest and release candidate, and prove the complete local publication candidate. Do not publish, tag, release, or reinterpret historical records.
 - Files/components likely touched:
-  - frozen v3 activation evidence and current schema/runtime selectors;
+  - v3 activation evidence and current schema/runtime selectors;
   - new-change scaffolding and active lifecycle graph;
   - `skills/explain-change/` removal and current skill inventory;
   - current adapter manifest, release metadata, release validation, and integrated activation fixtures.
 - Required verification:
   - TG-19 — A newly scaffolded v3 change reaches final Verify and PR without creating, requiring, routing, or publishing standalone explain-change state.
-  - TG-20 — Exact manifest-listed v1/v2 historical records remain readable without mutation, while unlisted, mismatched, unknown, and mixed records fail closed.
+  - TG-20 — Historical v1/v2 records remain readable without mutation or current progression authority, while non-v3 progression, mismatched, unknown, and mixed records fail closed.
   - TG-21 — Current canonical and generated packages omit standalone explain-change, include complete Verify resources, and reject mixed old/new inventories.
   - TG-22 — Narrow unaffected, unknown-impact, fresh-required, failed correction, interrupted report, tail drift, and exact PR-consumption scenarios pass through public integrated paths.
   - TG-23 — A coherent rollback is possible before first public v3 use; after v3 use, tests reject silent default rollback and require forward-compatible recovery.
-- Evidence expectations: Public new-change and final-route fixtures, frozen inventory validation, complete package parity, historical-read proof, mixed-package rejection, temporary supported-adapter archives, and broad smoke at the reviewed candidate revision.
+- Evidence expectations: Public new-change and final-route fixtures, pre-v3 completion validation, complete package parity, historical-read/non-progression proof, mixed-package rejection, temporary supported-adapter archives, and broad smoke at the reviewed candidate revision.
 - Implementation steps:
-  - Run the inventory and publication prerequisites without mutation and stop on any incomplete prior change or parity gap.
-  - Freeze the exact sorted v2 compatibility inventory and validate every class and entry.
-  - Switch current source selectors and new-change scaffolding to v3 while removing the standalone authored and published entrypoint in the same slice.
-  - Run integrated current-v3, historical-v1/v2, mixed-package, impact/freshness, correction, report-tail, PR, rollback, and clean-install scenarios.
+  - Run the completion and publication prerequisites without mutation and stop on any incomplete prior change or parity gap.
+  - Switch current source selectors and new-change scaffolding to v3 while removing v1/v2 progression branches and the standalone authored and published entrypoint in the same slice.
+  - Run integrated current-v3, historical-read/non-progression, mixed-package, impact/freshness, correction, report-tail, PR, rollback, and clean-install scenarios.
   - Preserve release publication as an external later action; this milestone creates no release or deployment claim.
 - Validation commands:
   - `npm test --prefix packages/rigorloop`
@@ -272,13 +274,13 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
   - `python scripts/test-skill-validator.py`
   - `python scripts/test-adapter-distribution.py`
   - `bash scripts/ci.sh --mode broad-smoke`
-- Expected observable result: The reviewed repository candidate expresses one v3 contract, exact historical compatibility, one final Verify explanation, and no standalone current explain-change package.
-- Completion criteria: Frozen inventory, public v3 flow, impact/freshness semantics, correction ownership, closed evidence tail, historical reads, current package retirement, unknown/mixed rejection, generated parity, and rollback boundary all pass at one reviewed revision.
+- Expected observable result: The reviewed repository candidate expresses one executable v3 contract, readable non-executable history, one final Verify explanation, and no standalone current explain-change package.
+- Completion criteria: Pre-v3 completion, public v3 flow, impact/freshness semantics, correction ownership, closed evidence tail, historical reads without progression, current package retirement, unknown/mixed rejection, generated parity, and rollback boundary all pass at one reviewed revision.
 - Required evidence: `docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-v3-publication-candidate.md`
 - Review handoff: Final implementation-milestone Code Review of activation atomicity, exact compatibility, current entrypoint removal, evidence applicability, identity tail, and generated parity.
 - Optional commit boundary: `M5: assemble v3 final verification publication candidate`
 - Risks:
-  - The cutover could strand an unlisted v2 change or publish one mixed adapter.
+  - The cutover could strand an unfinished pre-v3 change or publish one mixed adapter.
   - Removing the canonical skill could be mistaken for permission to skip this change's registered v2 closeout.
 - Rollback/recovery:
   - Before public v3 use, restore the last coherent v2 graph, skill inventory, manifest, and generated package together. After v3 use, preserve v3 records and ship a forward-compatible correction.
@@ -342,11 +344,11 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
 - Evidence expectations: End-to-end public-path lifecycle and report fixtures, final holistic review, replay/drift tests, and PR negative-path evidence.
 - Non-applicability: Milestone-local proof is insufficient because the result spans review, correction, Verify recording, lifecycle identity, and PR consumption.
 
-### TG-FINAL-03. V3 activation and historical compatibility
+### TG-FINAL-03. V3 activation and historical readability
 
 - Covers: FV-R1-FV-R7, FV-R28, FV-R31-FV-R35; M1, M3, M5, M6; BND-STATE-001, BND-COMPAT-001; INT-004.
-- Demonstrate: Current v3 has no standalone stage or skill; exact manifest-listed historical records remain readable; unknown, unlisted, mismatched, mixed, and active-explain v3 inputs fail closed; this change completes v2 before public v3 activation; rollback is coherent only before first v3 use.
-- Evidence expectations: Frozen inventory validation, current and historical lifecycle fixtures, package inventory checks, current-change closeout identity, and rollback/forward-recovery tests.
+- Demonstrate: Current v3 has no standalone stage, skill, or legacy progression branch; historical records remain readable without current authority; non-v3 progression, unknown, mismatched, mixed, and active-explain v3 inputs fail closed; this change completes through the released v2 package before public v3 activation; rollback is coherent only before first v3 use.
+- Evidence expectations: Completion-gate validation, current and historical-read fixtures, package inventory checks, current-change closeout identity, and rollback/forward-recovery tests.
 - Non-applicability: Milestone-local proof is insufficient because compatibility and activation span runtime, records, skills, schemas, and release publication.
 
 ### TG-FINAL-04. Canonical, generated, and validator parity
@@ -373,10 +375,10 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
   - Recovery: Keep universal outcome and authority rules inline and load final-impact and explanation guidance only for final readiness.
 - Risk: Runtime, validators, docs, skills, or adapters publish mixed stage graphs.
   - Recovery: Build v3 behind preactivation, close the current-surface inventory, and switch only in the atomic M5 candidate.
-- Risk: Historical compatibility reopens retired authority.
-  - Recovery: Require exact manifest membership and contract class, keep historical paths read-only, and reject unknown or mixed state before consistency checks.
-- Risk: The implementing v2 change is reinterpreted during cutover.
-  - Recovery: Bind it to the frozen v2 inventory, use the last coherent v2 package through M6, and forbid public activation before its closeout.
+- Risk: Historical readability is mistaken for current authority.
+  - Recovery: Keep historical paths read-only and reject every non-v3 progression, unknown, or mixed state before consistency checks.
+- Risk: The implementing v2 change is stranded or reinterpreted during cutover.
+  - Recovery: Complete it through the last coherent released v2 package in M6 and forbid public activation before its closeout; do not add it to current v3 authority.
 - Risk: Report self-reference or post-review drift invalidates the reviewed subject.
   - Recovery: Omit report commit identity, register report content, close the allowed evidence tail, and stale any product or governing drift.
 
@@ -385,7 +387,7 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
 - Accepted proposal, approved Design package `design-review-r1`, and exact primary-plan Delivery Review approval.
 - M1 classification precedes v3 semantics; M2 evidence semantics precede routing; M3 routing precedes package authority wording; M4 parity precedes M5 cutover candidate; M6 follows all implementation Code Reviews.
 - Each implementation milestone receives direct proof and independent Code Review before its dependent milestone begins.
-- M5 blocks unless the exact pre-v3 v2 inventory is complete or covered by separately approved validated policy.
+- M5 blocks unless every nonterminal pre-v3 change is complete or explicitly closed.
 - This change remains v2 through M6. Public v3 release activation is a separately authorized action after completion and must recheck inventory, candidate identity, generated parity, and rollback conditions.
 - No new test-spec artifact is created. Verification groups in this plan are the v2 Delivery evidence map.
 - Generated skills and adapter archives derive from canonical sources and are not hand edited.
@@ -399,6 +401,7 @@ This change is self-hosting under v2. Implementation may assemble and test a coh
 | 2026-09-01 | Separate semantic evidence reuse from execution caching. | A cached execution and a durable applicability judgment prove different facts. | Treat cache hits as final pass evidence; rerun every prior check solely because revision changed. |
 | 2026-09-01 | Keep this change on v2 through closeout and defer public v3 release activation until afterward. | The approved design forbids reinterpreting the implementing change and requires historical compatibility at cutover. | Self-migrate the in-flight record; activate before final v2 evidence; rewrite historical state. |
 | 2026-09-01 | Use six milestones and four change-level groups. | Classification, evidence semantics, routing, publication surfaces, cutover, and closeout have different rollback and review boundaries, while the four integrated claims span them. | One broad implementation milestone; one milestone per file family; milestone-only proof. |
+| 2026-09-01 | Keep only v3 executable in the current package; preserve v1/v2 as readable release history. | Historical readability does not justify compatibility branches in every current checker and skill. | Frozen v2 continuation allowlist; contract-keyed current Verify prose; historical migration. |
 
 ## Readiness
 
