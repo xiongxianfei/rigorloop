@@ -68,10 +68,10 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: delivery-review
+  current_stage: code-review
   evidence: []
   lifecycle_state: active
-  next_stage: delivery-review
+  next_stage: code-review
   planned_work:
     current_milestone: M1
     final_closeout:
@@ -95,7 +95,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: planned
+        state: review-requested
       M2:
         kind: implementation
         state: planned

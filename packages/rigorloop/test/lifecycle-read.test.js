@@ -19,6 +19,11 @@ async function repository(changeIds = ["example"], overrides = {}) {
     `${JSON.stringify({ schema_version: 1, state: "preactivation", activating_source_revision: null, changes: [] }, null, 2)}\n`,
     "utf8",
   );
+  writeFileSync(
+    join(root, "specs", "final-verification-contract-activation.yaml"),
+    `${JSON.stringify({ schema_version: 1, state: "preactivation", activating_source_revision: null, changes: [] }, null, 2)}\n`,
+    "utf8",
+  );
   for (const changeId of changeIds) {
     const changeRoot = join(root, "docs", "changes", changeId);
     mkdirSync(changeRoot, { recursive: true });
@@ -249,6 +254,24 @@ test("preactivation reader keeps v1 current and blocks explicit v2", async () =>
   const v2Execution = executeLifecycleCli(["validate", "--change", "example", "--format", "json"], { cwd: v2 });
   assert.equal(v2Execution.exitCode, 4);
   assert.equal(v2Execution.result.errors[0].code, "RL_INCOMPATIBLE_VERSION");
+});
+
+test("final verification preactivation keeps current v2 active and blocks explicit v3", async () => {
+  const fixturePath = join(import.meta.dirname, "fixtures", "lifecycle", "contract-classification-v1.json");
+  const activeV2Manifest = JSON.parse(readFileSync(fixturePath, "utf8")).active_manifest;
+
+  const v2 = await repository(["new-v2"], { lifecycle_contract: "stage-owned-change-local-v2" });
+  writeFileSync(join(v2, "specs", "lifecycle-contract-activation.yaml"), `${JSON.stringify(activeV2Manifest, null, 2)}\n`, "utf8");
+  const v2Execution = executeLifecycleCli(["validate", "--change", "new-v2", "--format", "json"], { cwd: v2 });
+  assert.equal(v2Execution.exitCode, 0);
+  assert.equal(v2Execution.result.effective_state.lifecycle_contract.authority, "active");
+
+  const v3 = await repository(["new-v3"], { lifecycle_contract: "stage-owned-change-local-v3" });
+  writeFileSync(join(v3, "specs", "lifecycle-contract-activation.yaml"), `${JSON.stringify(activeV2Manifest, null, 2)}\n`, "utf8");
+  const v3Execution = executeLifecycleCli(["validate", "--change", "new-v3", "--format", "json"], { cwd: v3 });
+  assert.equal(v3Execution.exitCode, 4);
+  assert.equal(v3Execution.result.errors[0].code, "RL_INCOMPATIBLE_VERSION");
+  assert.match(v3Execution.result.errors[0].summary, /v3 is not active/);
 });
 
 test("active manifest requires exact prior-contract membership", async () => {

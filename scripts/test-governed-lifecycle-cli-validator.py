@@ -142,5 +142,42 @@ class WrapperExecutionTests(unittest.TestCase):
                 ["activation inventory mismatch: missing=['new'], extra=[], class_mismatch=[]"],
             )
 
+    def test_final_verification_manifest_unknown_class_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "specs").mkdir()
+            manifest = {
+                "schema_version": 1,
+                "state": "active",
+                "activating_source_revision": "a" * 40,
+                "changes": [{"change_id": "old", "contract_class": "stage-owned-change-local-v1"}],
+            }
+            (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
+            self.assertRegex(
+                MODULE.final_verification_manifest_errors(root)[0],
+                r"unknown_value stage-owned-change-local-v1",
+            )
+
+    def test_active_final_verification_inventory_rejects_unfrozen_v2(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "specs").mkdir()
+            (root / "docs" / "changes" / "old-v2").mkdir(parents=True)
+            (root / "docs" / "changes" / "old-v2" / "change.yaml").write_text(
+                "lifecycle_contract: stage-owned-change-local-v2\n",
+                encoding="utf-8",
+            )
+            manifest = {
+                "schema_version": 1,
+                "state": "active",
+                "activating_source_revision": "a" * 40,
+                "changes": [],
+            }
+            (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
+            self.assertEqual(
+                MODULE.final_verification_manifest_errors(root),
+                ["final verification activation inventory mismatch: missing=['old-v2'], extra=[], class_mismatch=[]"],
+            )
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

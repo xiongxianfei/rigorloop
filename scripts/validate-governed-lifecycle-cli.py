@@ -10,13 +10,16 @@ import sys
 from pathlib import Path
 
 from artifact_lifecycle_contracts import (
+    FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH,
     LEGACY_UNVERSIONED_CONTRACT,
     LIFECYCLE_ACTIVATION_MANIFEST_PATH,
     LIFECYCLE_CONTRACT_V1,
     LIFECYCLE_CONTRACT_V2,
+    LIFECYCLE_CONTRACT_V3,
     parse_lifecycle_activation_manifest,
     validate_lifecycle_activation_manifest,
     validate_lifecycle_activation_prerequisites,
+    validate_final_verification_activation_manifest,
 )
 
 
@@ -79,7 +82,7 @@ def governed_records(root: Path = ROOT) -> list[tuple[str, Path]]:
     records = []
     for path in sorted((root / "docs" / "changes").glob("*/change.yaml")):
         text = path.read_text(encoding="utf-8")
-        if any(f"lifecycle_contract: {contract}" in text for contract in (LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2)):
+        if any(f"lifecycle_contract: {contract}" in text for contract in (LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3)):
             records.append((path.parent.name, path))
     return records
 
@@ -105,7 +108,8 @@ def activation_inventory_errors(root: Path = ROOT, *, loader=None) -> list[str]:
             contract = LIFECYCLE_CONTRACT_V2
         else:
             contract = LEGACY_UNVERSIONED_CONTRACT
-        actual_classes[path.parent.name] = contract
+        if contract in {LIFECYCLE_CONTRACT_V1, LEGACY_UNVERSIONED_CONTRACT}:
+            actual_classes[path.parent.name] = contract
 
     frozen_classes = {entry["change_id"]: entry["contract_class"] for entry in manifest["changes"]}
     if frozen_classes != actual_classes:
@@ -124,11 +128,40 @@ def activation_inventory_errors(root: Path = ROOT, *, loader=None) -> list[str]:
         loader = runpy.run_path(str(ROOT / "scripts" / "validate-change-metadata.py"))["load_yaml"]
     records = {}
     for path in paths:
+        if path.parent.name not in actual_classes:
+            continue
         if actual_classes[path.parent.name] == LEGACY_UNVERSIONED_CONTRACT:
             records[path.parent.name] = {"workflow_state": {"lifecycle_state": "completed"}}
         else:
             records[path.parent.name] = loader(path)
     return validate_lifecycle_activation_prerequisites(manifest, records)
+
+
+def final_verification_manifest_errors(root: Path = ROOT) -> list[str]:
+    """Validate the inactive or active v3 activation boundary."""
+    manifest_path = root / FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH
+    try:
+        manifest = parse_lifecycle_activation_manifest(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        return [f"final verification activation manifest unreadable: {exc}"]
+    errors = validate_final_verification_activation_manifest(manifest)
+    if errors or manifest.get("state") != "active":
+        return errors
+    actual_v2 = {
+        path.parent.name: LIFECYCLE_CONTRACT_V2
+        for path in sorted((root / "docs" / "changes").glob("*/change.yaml"), key=lambda item: item.parent.name.encode("utf-8"))
+        if f"lifecycle_contract: {LIFECYCLE_CONTRACT_V2}" in path.read_text(encoding="utf-8")
+    }
+    frozen_v2 = {entry["change_id"]: entry["contract_class"] for entry in manifest["changes"]}
+    if frozen_v2 == actual_v2:
+        return []
+    missing = sorted(set(actual_v2) - set(frozen_v2), key=lambda item: item.encode("utf-8"))
+    extra = sorted(set(frozen_v2) - set(actual_v2), key=lambda item: item.encode("utf-8"))
+    changed = sorted(
+        (change_id for change_id in set(actual_v2) & set(frozen_v2) if actual_v2[change_id] != frozen_v2[change_id]),
+        key=lambda item: item.encode("utf-8"),
+    )
+    return [f"final verification activation inventory mismatch: missing={missing}, extra={extra}, class_mismatch={changed}"]
 
 
 def result_codes(payload: dict) -> list[str]:
@@ -184,7 +217,8 @@ def build_report(records: list[tuple[str, Path]], *, runner=subprocess.run, root
 def main(*, records=None, runner=subprocess.run, root: Path = ROOT, output=sys.stdout) -> int:
     report = build_report(governed_records(root) if records is None else records, runner=runner, root=root)
     report["activation_errors"] = activation_inventory_errors(root)
-    if report["activation_errors"]:
+    report["final_verification_activation_errors"] = final_verification_manifest_errors(root)
+    if report["activation_errors"] or report["final_verification_activation_errors"]:
         report["status"] = "failed"
     print(json.dumps(report, indent=2, sort_keys=True), file=output)
     return 0 if report["status"] == "passed" else 1

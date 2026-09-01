@@ -1,0 +1,19 @@
+{
+  "active_manifest": {
+    "schema_version": 1,
+    "state": "active",
+    "activating_source_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "changes": [
+      {
+        "change_id": "v2",
+        "contract_class": "stage-owned-change-local-v2"
+      }
+    ]
+  },
+  "preactivation_manifest": {
+    "schema_version": 1,
+    "state": "preactivation",
+    "activating_source_revision": null,
+    "changes": []
+  }
+}

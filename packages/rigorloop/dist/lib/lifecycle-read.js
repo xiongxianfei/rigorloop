@@ -3,9 +3,12 @@ import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 
 import {
+  FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH,
   LIFECYCLE_ACTIVATION_MANIFEST_PATH,
   LIFECYCLE_CONTRACT_V1,
   LIFECYCLE_CONTRACT_V2,
+  LIFECYCLE_CONTRACT_V3,
+  PREACTIVATION_FINAL_VERIFICATION_MANIFEST,
   PREACTIVATION_LIFECYCLE_MANIFEST,
   allowedArtifactKinds,
   allowedCorrectionDestinations,
@@ -298,9 +301,15 @@ export function interpretGovernedChange(root, selected) {
     const manifest = existsSync(manifestPath) && lstatSync(manifestPath).isFile()
       ? parseLifecycleYaml(readFileSync(manifestPath, "utf8"))
       : PREACTIVATION_LIFECYCLE_MANIFEST;
-    lifecycleContract = classifyLifecycleContract(selected.id, change, manifest);
+    const finalManifestPath = join(root, ...FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH.split("/"));
+    const finalManifest = existsSync(finalManifestPath) && lstatSync(finalManifestPath).isFile()
+      ? parseLifecycleYaml(readFileSync(finalManifestPath, "utf8"))
+      : PREACTIVATION_FINAL_VERIFICATION_MANIFEST;
+    lifecycleContract = classifyLifecycleContract(selected.id, change, manifest, finalManifest);
     if (lifecycleContract.contract_class === LIFECYCLE_CONTRACT_V2 && lifecycleContract.activation_state !== "active") {
       errors.push(diagnostic("RL_INCOMPATIBLE_VERSION", "Lifecycle contract v2 is not active.", "lifecycle-contract-activation", null, [selected.id]));
+    } else if (lifecycleContract.contract_class === LIFECYCLE_CONTRACT_V3 && lifecycleContract.activation_state !== "active") {
+      errors.push(diagnostic("RL_INCOMPATIBLE_VERSION", "Lifecycle contract v3 is not active.", "lifecycle-contract-activation", null, [selected.id]));
     } else if (lifecycleContract.contract_class !== LIFECYCLE_CONTRACT_V1 && lifecycleContract.activation_state !== "active") {
       errors.push(diagnostic("RL_UNSUPPORTED_SCHEMA", "Unversioned lifecycle records are not supported by the preactivation CLI reader.", "lifecycle-contract", null, [selected.id]));
     }
