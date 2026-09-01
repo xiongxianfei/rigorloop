@@ -4,8 +4,8 @@
 
 Stage: explain-change
 Status: current
-Final diff identity: `f4cc4570d4492665b5f2a8315b80b06bfd0ed6e6..c93e38340170c9c0e336bb6e3e253469ec4380ac`, binary diff SHA-256 `b656d3d8f71e6a434ec7469b0a136503cd756792e8eb76665a345c0f60a5487d`
-Final review identity: `code-review-final-r1`, reviewed subject `c93e38340170c9c0e336bb6e3e253469ec4380ac`, recording revision `0409d0c54b054f61312e2c70b94103053637c35b`
+Final diff identity: `f4cc4570d4492665b5f2a8315b80b06bfd0ed6e6..9c364d6162a32a03ac63d81093e728fd0e41b0bc`, binary diff SHA-256 `5aa61b918d81bb232997c91918457c85a88a66372968981b9a4214e30f79786d`
+Final review identity: `code-review-final-r1` plus targeted PR-preflight rereviews `code-review-pr-preflight-r2`, `r4`, `r6`, and `r8`; latest reviewed correction `2365031f`, recording revision `b77057b1e5be548b7012aa4c94ac6b221fd62599`
 
 ## Summary
 
@@ -25,7 +25,7 @@ The approved direction moves explanation generation into successful final Verify
 - Design Review `design-review-r2` approved the exact architecture, specification, and ADR package. The architecture makes `verify-report.md` the v3 success artifact; the specification defines FV-R1 through FV-R38, eight boundary classes, four selected interactions, and FV-AC1 through FV-AC14.
 - Delivery Review `delivery-review-r3` approved the plan-only package and six milestones. It bound this change's closeout to immutable v2 source revision `585c2beecea0ddda0ae11ed8f0b1a53b24310052` before any later v3 activation.
 - M1 established lifecycle classification, activation-manifest validation, and historical compatibility. M2 implemented impact, applicability, freshness, execution-proof, result, and evidence-tail contracts. M3 implemented correction ownership and PR consumption. M4 aligned canonical skills, governance, validators, templates, and generated candidates. M5 selected v3 as the sole current executable candidate, removed the standalone skill, and aligned public and adapter guidance.
-- Code Reviews M1 through M5 resolved all 18 material findings. Final holistic Code Review `code-review-final-r1` reviewed `f4cc4570..c93e3834`, found no material issue, and confirmed the candidate remains preactivation with no release or historical mutation.
+- Code Reviews M1 through M5 resolved 18 material findings. Final holistic Code Review `code-review-final-r1` reviewed `f4cc4570..c93e3834`, found no material issue, and confirmed the candidate remains preactivation with no release or historical mutation. PR integration then exposed four clusters of stale current-behavior test fixtures. Findings FV-M6-CR1 through FV-M6-CR4 were corrected without changing production code and independently approved by targeted rereviews R2, R4, R6, and R8.
 
 ## Diff rationale by area
 
@@ -37,7 +37,8 @@ The approved direction moves explanation generation into successful final Verify
 | Canonical `verify`, `workflow`, `pr`, and sibling stage skills | Remove current pre-Verify explanation dependencies and add progressive final-impact, applicability, and success-only explanation resources. | The final explanation belongs to the exact evidence basis that established readiness. | FV-R1-FV-R3, FV-R26-FV-R30, FV-R35-FV-R37. | M4 package-parity evidence and skill/build validation. |
 | `skills/explain-change/` and current inventories | Remove the standalone authored package and its current adapter manifest entry. | V3 must have no governed explanation stage or separately settled explanation artifact. | FV-R1-FV-R3, FV-R28, FV-R35. | Absence and mixed-package regressions; historical archive audit. |
 | Adapter generation and public guidance | Generate the OpenCode alias declaration from the canonical tuple, package complete Verify resources, and describe candidate metadata separately from immutable releases. | Human and generated entrypoints must expose the same non-authoritative candidate graph. | FV-R35, FV-R37; FV-AC11, FV-AC14. | M5 R2 direct generated probe; 155 adapter tests; root README route regression. |
-| Change-local reviews, resolutions, and evidence | Record milestone reviews, two Design/Delivery revisions, 18 resolved findings, final holistic review, and immutable-v2 closeout constraints. | The implementing v2 change must finish coherently before v3 can ever be activated. | FV-R7, TG-24-TG-27. | Closed review validation; final holistic review `code-review-final-r1`. |
+| Current workflow test fixtures | Select v3 for current query/state fixtures, use the current Verify completion rule, accept the review-only pre-Verify tail, reject retired policy selectors, and preserve separately identified historical-read cases. | Tests must exercise the sole current contract instead of requiring production to retain retired v1/v2 stages or selectors. | FV-R1-FV-R7, FV-R28, FV-R35, FV-R37-FV-R38. | PR-preflight reviews R2/R4/R6/R8; focused suites 26, 19, 20, and 70 tests; PR gate 28/28. |
+| Change-local reviews, resolutions, and evidence | Record milestone reviews, two Design/Delivery revisions, 22 resolved findings, final holistic review, targeted correction rereviews, and immutable-v2 closeout constraints. | The implementing v2 change must finish coherently before v3 can ever be activated. | FV-R7, TG-24-TG-27. | Closed review validation; final holistic review and PR-preflight rereviews. |
 
 ## Tests added or changed
 
@@ -49,6 +50,7 @@ The approved direction moves explanation generation into successful final Verify
 | TG-15-TG-18 | Canonical and generated skill parity, progressive resource loading, historical compatibility, and mixed-package rejection. | Skill, build, and adapter package validation. |
 | TG-19-TG-23 | Current v3 scaffold and public route, historical read-only behavior, package retirement, complete candidate scenarios, and preactivation inventory. | Public CLI, documentation, adapter, and broad-smoke validation. |
 | TG-24-TG-27 | Complete requirement trace, cross-milestone validation, immutable-v2 bootstrap hashes, review closeout, and release-isolation checks. | Final holistic Code Review and M6 closeout evidence. |
+| FV-M6-CR1-FV-M6-CR4 | Current query, evidence-tail, policy, and state fixtures agree with the v3-only runtime while explicit historical cases remain bounded. | PR integration and focused regression suites. |
 
 ## Validation evidence available before final verify
 
@@ -59,13 +61,14 @@ The approved direction moves explanation generation into successful final Verify
 | Lifecycle CLI conformance and governed validation | Passed; no activation, final-activation, or legacy-progression error. | `0409d0c54b054f61312e2c70b94103053637c35b` |
 | Metadata, Workflow, cache, and boundary suites | 107 metadata, 78 Workflow, 25 cache, and 69 boundary tests passed. | `0409d0c54b054f61312e2c70b94103053637c35b` |
 | Skill, generated-skill, and adapter validation | 376 skill tests, 8 build tests, generated drift check, and 155 adapter tests passed during M5 review; final broad smoke revalidated selected current surfaces. | `0409d0c54b054f61312e2c70b94103053637c35b` |
-| Review closeout and artifact lifecycle | 19 reviews, 18 resolved findings, no open finding; change metadata and explicit-path lifecycle validation passed. | `0409d0c54b054f61312e2c70b94103053637c35b` |
+| Review closeout and artifact lifecycle | 28 reviews, 22 resolved findings, no open finding; change metadata and review closeout validation passed. | `9c364d6162a32a03ac63d81093e728fd0e41b0bc` |
 | Bound v2 archive, skill, and CLI hashes | Exact plan-bound archive and three file hashes passed. | `0409d0c54b054f61312e2c70b94103053637c35b` |
 | Activation/release/history audit | Activation manifest remains preactivation; no release archive, tag, publication record, release note, or historical explanation changed. | `0409d0c54b054f61312e2c70b94103053637c35b` |
+| `bash scripts/ci.sh --mode pr --base 066d973c4e230639aefda753d1f52dea4d730d28 --head HEAD --jobs 4` | Passed all 28 selected direct product and governance checks; merge simulation was conflict-free. | `9c364d6162a32a03ac63d81093e728fd0e41b0bc` |
 
 ## Review resolution summary
 
-All 18 material findings are accepted and resolved, with no `needs-decision` disposition or open review-log finding. The findings tightened parsed lifecycle classification, manifest ordering, evidence-surface closure, execution proof, report identity and tail shape, cross-language conformance, v3 route ownership, public package parity, and the M6 immutable-v2 closeout boundary. See `review-resolution.md` for the durable dispositions and validation evidence.
+All 22 material findings are accepted and resolved, with no `needs-decision` disposition or open review-log finding. The findings tightened parsed lifecycle classification, manifest ordering, evidence-surface closure, execution proof, report identity and tail shape, cross-language conformance, v3 route ownership, public package parity, the M6 immutable-v2 closeout boundary, and the separation of current-v3 fixtures from historical compatibility coverage. See `review-resolution.md` for the durable dispositions and validation evidence.
 
 ## Alternatives rejected
 
@@ -88,8 +91,8 @@ M6 still requires final Verify, dual read-back through the bound archived CLI an
 ## Workflow handback
 
 Explanation status: current
-Explanation basis: final diff `f4cc4570d4492665b5f2a8315b80b06bfd0ed6e6..c93e38340170c9c0e336bb6e3e253469ec4380ac`, final review `code-review-final-r1`, recording revision `0409d0c54b054f61312e2c70b94103053637c35b`
-Validation-evidence cutoff: `0409d0c54b054f61312e2c70b94103053637c35b`
+Explanation basis: final diff `f4cc4570d4492665b5f2a8315b80b06bfd0ed6e6..9c364d6162a32a03ac63d81093e728fd0e41b0bc`, final holistic review `code-review-final-r1`, targeted correction rereviews through `code-review-pr-preflight-r8`
+Validation-evidence cutoff: `9c364d6162a32a03ac63d81093e728fd0e41b0bc`
 Open explain-change blockers: none
 Control returned to workflow: yes
 Next-stage decision owner: workflow
