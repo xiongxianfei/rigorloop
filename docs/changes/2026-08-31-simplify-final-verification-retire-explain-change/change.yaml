@@ -73,7 +73,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M3
+    current_milestone: M4
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -101,7 +101,7 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: review-requested
+        state: closed
       M4:
         kind: implementation
         state: planned
@@ -113,7 +113,6 @@ workflow_state:
         state: planned
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M3
       - M4
       - M5
 workflow: {}
@@ -255,6 +254,26 @@ lifecycle_cli:
       review_open_findings: []
       review_outcome: clean-with-notes
       review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m2-r3.md
+      review_recording_status: recorded
+      review_round: r3
+      review_stage: code-review
+      stage_authority: workflow
+    M3:
+      completion_fingerprint: 536cca3a0cf3ed44492eef7ce65f13de28198574508573780547655786498b9b
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-v3-routing-and-pr.md
+      evidence_sha256: f4e0a7a7dabc0e268ebf6114a7f283b36f2e59a87a13733635e864c08050b226
+      milestone_id: M3
+      review_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m3-r3.md
+      review_evidence_sha256: a933f134c0b2fd872b715282b1f403812b1eb3fa449332fb390054a791dbb544
+      review_id: code-review-m3-r3
+      review_log_entry_sha256: 9ba317e4e68d9c8fd8b177504b2e9df8a30ac8132ba4c29df602c956b606ed40
+      review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m3-r3.md
       review_recording_status: recorded
       review_round: r3
       review_stage: code-review

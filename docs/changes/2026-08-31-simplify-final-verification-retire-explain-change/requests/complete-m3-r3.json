@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:cc11da0090f6f88ff91050a49bd3029390b82dabc08f4fe710260a22e7be86fa",
+  "milestone_id": "M3",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-v3-routing-and-pr.md",
+  "review_evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m3-r3.md",
+  "stage_authority": "workflow"
+}
