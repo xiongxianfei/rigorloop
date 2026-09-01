@@ -168,6 +168,15 @@ const V1_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "ad
 const V2_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan"]);
 const V1_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
 const V2_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
+const VERIFICATION_CORRECTION_OWNERS = Object.freeze({
+  "system-requirement-gap": "spec",
+  "technical-realization-gap": "architecture",
+  "verification-allocation-gap": "plan",
+  "implementation-defect": "implement",
+  "stale-or-incomplete-review": "code-review",
+  "ci-or-environment-gap": "ci-maintenance",
+  "external-evidence-gap": "external-evidence-acquisition",
+});
 const REQUEST_CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec"]);
 
 function rawUtf8Compare(left, right) {
@@ -376,6 +385,12 @@ export function correctionStageOrder(change) {
 
 export function allowedCorrectionDestinations(change) {
   return new Set(correctionStageOrder(change).filter((stage) => ["proposal", "spec", "architecture", "design-review", "plan", "test-spec"].includes(stage)));
+}
+
+export function verificationCorrectionOwner(findingKind) {
+  const owner = VERIFICATION_CORRECTION_OWNERS[findingKind];
+  if (!owner) throw invalid(`verification_finding_kind: unknown_value ${String(findingKind)}`);
+  return owner;
 }
 
 function invalid(message) {

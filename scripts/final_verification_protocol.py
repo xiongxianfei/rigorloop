@@ -534,3 +534,48 @@ def tail_disposition(tail: Any, change_id: str, verified_subject_revision: str) 
         if path not in {report_path, change_field}:
             return "stale"
     return "current"
+
+
+def _verified_authoritative_references(result: dict[str, Any], report_path: str) -> list[str]:
+    references = {report_path, result["basis"]["delivery_plan_id"]}
+    for item in [*result["evidence"], *result["always_current"]]:
+        proof = item.get("proof")
+        if isinstance(proof, dict) and isinstance(proof.get("evidence_path"), str):
+            references.add(proof["evidence_path"])
+    return sorted(references)
+
+
+def evaluate_pr_handoff(
+    *,
+    tail: Any,
+    change_id: str,
+    verified_subject_revision: str,
+    current_basis: Any,
+    explanation: Any,
+    authoritative_references: Any,
+) -> dict[str, Any]:
+    """Consume the exact current successful Verify result without inventing PR authority."""
+
+    if tail_disposition(tail, change_id, verified_subject_revision) != "current":
+        return {"ready": False, "reason": "verify-result-not-current"}
+    try:
+        result = parse_verify_report(tail["report_content"])
+    except (ValueError, json.JSONDecodeError):
+        return {"ready": False, "reason": "verify-result-incomplete"}
+    if current_basis != result["basis"]:
+        return {"ready": False, "reason": "verify-basis-mismatch"}
+    if explanation != result["explanation"]:
+        return {"ready": False, "reason": "competing-rationale"}
+    expected_references = _verified_authoritative_references(result, tail["report_path"])
+    if (
+        not isinstance(authoritative_references, list)
+        or len(authoritative_references) != len(set(authoritative_references))
+        or sorted(authoritative_references) != expected_references
+    ):
+        return {"ready": False, "reason": "authoritative-reference-mismatch"}
+    return {
+        "ready": True,
+        "reason": "current-successful-verify-result",
+        "explanation": result["explanation"],
+        "basis": result["basis"],
+    }
