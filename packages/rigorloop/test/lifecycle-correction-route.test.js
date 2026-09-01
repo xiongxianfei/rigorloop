@@ -8,6 +8,7 @@ import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
 import { parseLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
+import { evaluateLifecycleOperation } from "../dist/lib/lifecycle-operations.js";
 import { packageContext, packageRepository, setWorkflowStage, writePackageReview } from "./helpers/lifecycle-package-fixture.js";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
@@ -609,4 +610,96 @@ test("route rejects unknown findings and non-destination revision without mutati
   });
   assert.equal(rejected.result.errors[0].code, "RL_CORRECTION_ROUTE_INVALID");
   assert.deepEqual(readFileSync(join(changeRoot, "change.yaml")), before);
+});
+
+test("code review correction routes through implementation and returns to rereview", async () => {
+  const { root, changeRoot } = await fixture();
+  const changePath = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  change.workflow_state.current_stage = "code-review";
+  change.workflow_state.next_stage = "code-review";
+  change.workflow_state.planned_work.milestones.M2.state = "review-requested";
+  writeFileSync(changePath, `${JSON.stringify(change, null, 2)}\n`, "utf8");
+  const current = status(root).lifecycle_revision;
+  const routeEvidence = "docs/changes/example/evidence/implementation-route.md";
+  writeFileSync(join(root, routeEvidence), `Change ID: example\nSource stage: code-review\nDestination artifact: implement\nReason: upstream-proof-gap\nFinding IDs: F-CODE\nReturn stage: code-review\nLifecycle revision: ${current}\n`, "utf8");
+  const routed = execute(root, "route-correction", {
+    schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: current,
+    source_stage: "code-review", destination_stage: "implement", destination_artifact_id: "implement", reason: "upstream-proof-gap",
+    evidence_path: routeEvidence, finding_ids: ["F-CODE"], return_stage: "code-review", milestone_id: "M2", stage_authority: "workflow",
+  });
+  assert.equal(routed.exitCode, 0, JSON.stringify(routed.result));
+  assert.equal(status(root).effective_state.current_stage, "implement");
+  assert.deepEqual(status(root).permitted_operations, ["return-correction"]);
+
+  const route = parseLifecycleYaml(readFileSync(changePath, "utf8")).lifecycle_cli.active_correction;
+  const returnRevision = status(root).lifecycle_revision;
+  const returnEvidence = "docs/changes/example/evidence/implementation-return.md";
+  writeFileSync(join(root, returnEvidence), `Change ID: example\nRoute ID: ${route.route_id}\nLifecycle revision: ${returnRevision}\nDestination stage: implement\nCorrection result: complete\nRequired next stage: code-review\n`, "utf8");
+  const returned = execute(root, "return-correction", {
+    schema_version: 1, operation: "return-correction", change_id: "example", expected_lifecycle_revision: returnRevision,
+    route_id: route.route_id, evidence_path: returnEvidence, stage_authority: "workflow",
+  });
+  assert.equal(returned.exitCode, 0, JSON.stringify(returned.result));
+  assert.equal(status(root).effective_state.current_stage, "code-review");
+  const after = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  assert.equal(after.workflow_state.planned_work.milestones.M2.state, "review-requested");
+  assert.equal(after.lifecycle_cli.correction_history[route.route_id].status, "returned");
+});
+
+test("v3 verify correction transaction enforces every exact owner and rereview boundary", async () => {
+  const { root, changeRoot } = await fixture();
+  const change = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
+  change.lifecycle_contract = "stage-owned-change-local-v3";
+  change.workflow_state.planned_work.current_milestone = "none";
+  change.workflow_state.planned_work.remaining_implementation_milestones = [];
+  change.workflow_state.planned_work.milestones.M2.state = "closed";
+  for (const [id, kind, path] of [
+    ["architecture", "architecture", "docs/architecture/example.md"],
+    ["plan", "plan", "docs/plans/example.md"],
+  ]) {
+    mkdirSync(join(root, ...path.split("/").slice(0, -1)), { recursive: true });
+    const content = `# ${kind}\n`;
+    writeFileSync(join(root, path), content, "utf8");
+    change.artifact_states[id] = { kind, path, role: "primary", lifecycle_state: kind === "plan" ? "active" : "approved" };
+    change.lifecycle_cli.artifacts[id] = { artifact_kind: kind, artifact_role: "primary", artifact_path: path, artifact_sha256: sha(content), stage_authority: kind };
+  }
+  const routes = {
+    "system-requirement-gap": ["spec", "design-review"],
+    "technical-realization-gap": ["architecture", "design-review"],
+    "verification-allocation-gap": ["plan", "delivery-review"],
+    "implementation-defect": ["implement", "code-review"],
+    "stale-or-incomplete-review": ["code-review", "code-review"],
+    "ci-or-environment-gap": ["ci-maintenance", "verify"],
+    "external-evidence-gap": ["external-evidence-acquisition", "verify"],
+  };
+  for (const [reason, [owner, returnStage]] of Object.entries(routes)) {
+    const revision = `sha256:${"a".repeat(64)}`;
+    const evidencePath = `docs/changes/example/evidence/v3-${reason}.md`;
+    writeFileSync(join(root, evidencePath), `Change ID: example\nSource stage: verify\nDestination artifact: ${owner}\nReason: ${reason}\nFinding IDs: F-CODE\nReturn stage: ${returnStage}\nLifecycle revision: ${revision}\n`, "utf8");
+    const requestBody = {
+      schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: revision,
+      source_stage: "verify", destination_stage: owner, destination_artifact_id: owner, reason,
+      evidence_path: evidencePath, finding_ids: ["F-CODE"], return_stage: returnStage, stage_authority: "workflow",
+    };
+    const result = evaluateLifecycleOperation({ root, change, request: requestBody });
+    assert.equal(result.status, "routed", reason);
+    assert.equal(result.candidate.workflow_state.current_stage, owner, reason);
+    assert.equal(result.candidate.lifecycle_cli.active_correction.destination_kind, ["implement", "code-review", "ci-maintenance", "external-evidence-acquisition"].includes(owner) ? "stage" : undefined, reason);
+    assert.throws(
+      () => evaluateLifecycleOperation({ root, change, request: { ...requestBody, destination_stage: "verify", destination_artifact_id: "verify" } }),
+      /unknown_value|exact owner/,
+      reason,
+    );
+  }
+  const unknownEvidence = "docs/changes/example/evidence/v3-unknown.md";
+  writeFileSync(join(root, unknownEvidence), `Change ID: example\nSource stage: verify\nDestination artifact: spec\nReason: future-gap\nFinding IDs: F-CODE\nReturn stage: design-review\nLifecycle revision: sha256:${"a".repeat(64)}\n`, "utf8");
+  assert.throws(
+    () => evaluateLifecycleOperation({ root, change, request: {
+      schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+      source_stage: "verify", destination_stage: "spec", destination_artifact_id: "spec", reason: "future-gap",
+      evidence_path: unknownEvidence, finding_ids: ["F-CODE"], return_stage: "design-review", stage_authority: "workflow",
+    } }),
+    /unknown_value future-gap/,
+  );
 });

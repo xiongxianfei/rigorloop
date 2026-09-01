@@ -144,7 +144,8 @@ const OPERATION_CONTRACTS = Object.freeze({
 });
 
 const REPAIR_CONDITIONS = new Set(["reconcile-interrupted-replace", "clear-orphaned-lock"]);
-const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
+const VERIFICATION_CORRECTION_REASONS = new Set(["system-requirement-gap", "technical-realization-gap", "verification-allocation-gap", "implementation-defect", "stale-or-incomplete-review", "ci-or-environment-gap", "external-evidence-gap"]);
+const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input", ...VERIFICATION_CORRECTION_REASONS]);
 const V1_STAGE_TRANSITIONS = Object.freeze({
   proposal: ["proposal-review"],
   "proposal-review": ["architecture"],
@@ -168,6 +169,7 @@ const V1_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "ad
 const V2_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan"]);
 const V1_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
 const V2_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
+const V3_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "ci-maintenance", "external-evidence-acquisition", "verify", "pr"]);
 const VERIFICATION_CORRECTION_OWNERS = Object.freeze({
   "system-requirement-gap": "spec",
   "technical-realization-gap": "architecture",
@@ -177,7 +179,7 @@ const VERIFICATION_CORRECTION_OWNERS = Object.freeze({
   "ci-or-environment-gap": "ci-maintenance",
   "external-evidence-gap": "external-evidence-acquisition",
 });
-const REQUEST_CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec"]);
+const REQUEST_CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec", "implement", "code-review", "ci-maintenance", "external-evidence-acquisition"]);
 
 function rawUtf8Compare(left, right) {
   return Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8"));
@@ -379,12 +381,16 @@ export function allowedArtifactKinds(change) {
 
 export function correctionStageOrder(change) {
   const version = lifecycleContractVersion(change);
-  if (version === LIFECYCLE_CONTRACT_V3) return [];
+  if (version === LIFECYCLE_CONTRACT_V3) return V3_CORRECTION_STAGES;
   return version === LIFECYCLE_CONTRACT_V2 ? V2_CORRECTION_STAGES : V1_CORRECTION_STAGES;
 }
 
 export function allowedCorrectionDestinations(change) {
-  return new Set(correctionStageOrder(change).filter((stage) => ["proposal", "spec", "architecture", "design-review", "plan", "test-spec"].includes(stage)));
+  const version = lifecycleContractVersion(change);
+  const destinations = ["proposal", "spec", "architecture", "design-review", "plan", "test-spec"];
+  if (version === LIFECYCLE_CONTRACT_V3) destinations.push("implement", "code-review", "ci-maintenance", "external-evidence-acquisition");
+  else destinations.push("implement");
+  return new Set(correctionStageOrder(change).filter((stage) => destinations.includes(stage)));
 }
 
 export function verificationCorrectionOwner(findingKind) {

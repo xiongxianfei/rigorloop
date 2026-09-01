@@ -62,6 +62,7 @@ from workflow_automation_policy import (
     project_proposal_review_result,
     target_completion_predicate,
     stage_policy_by_stage_for_contract,
+    verification_correction_owner,
 )
 from workflow_automation_state import (
     _canonical_review_occurrence,
@@ -337,6 +338,7 @@ class ImplementationRouteDecision:
     status: str
     next_stage: str | None = None
     next_milestone_id: str | None = None
+    return_stage: str | None = None
     pause_reason: str | None = None
     automatic_repair: bool = False
     external_action_performed: bool = False
@@ -415,8 +417,10 @@ def require_complete_ordered_evidence_tail(
 
     if lifecycle_contract == LIFECYCLE_CONTRACT_V3:
         if (
-            canonical.tail_state not in {"review-recorded", "complete"}
+            canonical.tail_state != "review-recorded"
             or canonical.final_review_recording_revision is None
+            or canonical.explanation_recording_revision is not None
+            or canonical.handoff_revision is not None
         ):
             raise AutomationContractError(
                 "verification basis ordered final-review evidence tail is incomplete"
@@ -1184,6 +1188,7 @@ def evaluate_non_public_implementation_route(
     final_review_clean: bool | None = None,
     explanation_current: bool | None = None,
     verification_passed: bool | None = None,
+    verification_finding_kind: str | None = None,
     ci_maintenance_required: bool = False,
     lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> ImplementationRouteDecision:
@@ -1354,6 +1359,23 @@ def evaluate_non_public_implementation_route(
     ):
         return pause("explanation-not-current")
     if verification_passed is not True:
+        if lifecycle_contract == LIFECYCLE_CONTRACT_V3 and verification_finding_kind is not None:
+            owner = verification_correction_owner(verification_finding_kind)
+            return_stage = {
+                "spec": "design-review",
+                "architecture": "design-review",
+                "plan": "delivery-review",
+                "implement": "code-review",
+                "code-review": "code-review",
+                "ci-maintenance": "verify",
+                "external-evidence-acquisition": "verify",
+            }[owner]
+            return ImplementationRouteDecision(
+                "correction-loop",
+                owner,
+                return_stage=return_stage,
+                automatic_repair=False,
+            )
         return pause("verification-failed")
     return ImplementationRouteDecision(
         "target-reached",
@@ -2364,6 +2386,7 @@ def coordinate_non_public_implementation_stage(
             if "verification_passed" in facts
             else None
         ),
+        verification_finding_kind=facts.get("verification_finding_kind"),
         ci_maintenance_required=ci_maintenance_required,
         lifecycle_contract=lifecycle_contract,
     )
@@ -2969,6 +2992,7 @@ def evaluate_public_implementation_route(
     final_review_clean: bool | None = None,
     explanation_current: bool | None = None,
     verification_passed: bool | None = None,
+    verification_finding_kind: str | None = None,
     ci_maintenance_required: bool = False,
     lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> ImplementationRouteDecision:
@@ -2997,6 +3021,7 @@ def evaluate_public_implementation_route(
         final_review_clean=final_review_clean,
         explanation_current=explanation_current,
         verification_passed=verification_passed,
+        verification_finding_kind=verification_finding_kind,
         ci_maintenance_required=ci_maintenance_required,
         lifecycle_contract=lifecycle_contract,
     )

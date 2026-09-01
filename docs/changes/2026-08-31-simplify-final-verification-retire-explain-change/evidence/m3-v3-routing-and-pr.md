@@ -58,3 +58,10 @@ Validation result: passed
 ## Review handoff
 
 Review the v3 policy as an inactive candidate, not as current public authority. Confirm that there is no v3 explanation target or prerequisite, that all correction kinds fail closed to one non-Verify owner, that v1/v2 semantics did not change, and that PR cannot substitute prose or introduce an authority not already present in the current successful Verify result.
+
+## Code Review M3 R1 correction
+
+- `FV-M3-CR1`: v3 readiness now accepts exactly `tail_state: review-recorded` with a final-review recording and no explanation or handoff revision. A legacy `complete` S-R-E tail is rejected for v3 and remains mandatory for v1/v2.
+- `FV-M3-CR2`: the closed owner classifier is now consumed by both the Workflow automation route and the lifecycle correction transaction. The transaction supports artifact, implementation, review, CI, and external-acquisition owners, binds the exact finding kind to its sole owner, rejects Verify as an owner, and records the required rereview/return boundary.
+- The repaired stage-destination transaction was used to route this change's own M3 R1 findings from Code Review to M3 implementation under the current v2 contract. This removed the recording blocker identified by the reviewer without changing the v2 final `explain-change -> verify` route.
+- Correction validation reran the complete M3 command set plus focused final-verification and metadata suites; all passed.
