@@ -83,7 +83,19 @@ Detailed record: reviews/code-review-pr-preflight-r1.md
 Resolution: review-resolution.md#code-review-pr-preflight-r1
 Material findings: FV-M6-CR1
 Finding ID: FV-M6-CR1
-Open findings: FV-M6-CR1
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-pr-preflight-r2
+Stage: code-review
+Round: r2
+Status: clean-with-notes
+Detailed record: reviews/code-review-pr-preflight-r2.md
+Resolution: review-resolution.md#code-review-pr-preflight-r2
+Material findings: None
+Open findings: None
 Recording status: recorded
 
 ### Review entry

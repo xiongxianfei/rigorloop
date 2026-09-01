@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -17,11 +17,13 @@ Review closeout: code-review-m4-r2
 Review closeout: code-review-m5-r1
 Review closeout: delivery-review-r2
 Review closeout: delivery-review-r3
+Review closeout: code-review-pr-preflight-r1
+Review closeout: code-review-pr-preflight-r2
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-pr-preflight-r1`
-- Findings resolved: 18
-- Unresolved findings: 1
-- Current result: PR-preflight exposed one current-fixture drift finding after Verify. `FV-M6-CR1` requires bounded implementation correction, rereview, and repeated Verify before PR handoff.
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-pr-preflight-r1`, `code-review-pr-preflight-r2`
+- Findings resolved: 19
+- Unresolved findings: 0
+- Current result: FV-M6-CR1 is resolved by the bounded v3/current-policy fixture correction and clean targeted rereview. Final verification and PR-mode validation remain downstream obligations.
 
 ## Resolution Overview
 
@@ -43,7 +45,7 @@ Review closeout: delivery-review-r3
 | FV-M4-CR2 | accepted | resolved | The shared parsed-YAML mapper rejects duplicate governed keys at every depth before selecting the registered primary plan or any nested authority value. |
 | FV-M5-CR1 | accepted | resolved | The root README now exposes only the v3 graph and success-only Verify explanation ownership, backed by a focused semantic regression. |
 | FV-M5-CR2 | accepted | resolved | Generated OpenCode guidance derives its alias declaration from the canonical tuple, and adapter support prose distinguishes candidate metadata from immutable release archives. |
-| FV-M6-CR1 | accepted | open | Current query-helper fixtures still select v1 and retired Verify completion wording, contradicting the v3-only candidate and invalidating PR-preflight evidence. |
+| FV-M6-CR1 | accepted | resolved | Query-helper current fixtures now select v3 and the exact current Verify completion policy; focused and structural proof pass. |
 | FV-DLR2-01 | accepted | resolved | The plan now binds Design Review R2 consistently at every current upstream authority point. |
 | FV-DLR2-02 | accepted | resolved | M5 is non-authoritative with one exact exception; M6 binds and proves the immutable v2 closeout snapshot; activation follows only after M6. |
 
@@ -361,7 +363,7 @@ No material findings.
 
 Finding ID: FV-M6-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: bounded candidate correction implementer
 Owning stage: review-resolution
 Decision owner: bounded candidate correction implementer
@@ -372,7 +374,11 @@ Required outcome: all 26 focused tests and the authoritative PR-mode command pas
 Safe resolution path: apply the five-line test-only correction recorded in `reviews/code-review-pr-preflight-r1.md`, rerun focused and PR validation, obtain independent targeted rereview, and repeat Verify before PR handoff.
 Follow-up: Code Review PR Preflight R2 and repeated Verify after bounded correction.
 Validation target: FV-R5, FV-R6, FV-R26, FV-R28, FV-R37, BND-STATE-001, BND-COMPAT-001, INT-004.
-Validation evidence: pending correction and rereview.
+Validation evidence: Code Review PR Preflight R2 inspected `7df37686..8263ab2f`; the exact five semantic fixture changes match the required outcome, the explicit read-only guard remains, production code is untouched, all 26 focused tests pass, review structure and change metadata validate, and the exact-range diff check passes.
+
+### code-review-pr-preflight-r2
+
+No material findings.
 
 ### code-review-m5-r1
 
