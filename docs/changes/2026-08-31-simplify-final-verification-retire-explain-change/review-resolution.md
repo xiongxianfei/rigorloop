@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -19,11 +19,13 @@ Review closeout: delivery-review-r2
 Review closeout: delivery-review-r3
 Review closeout: code-review-pr-preflight-r1
 Review closeout: code-review-pr-preflight-r2
+Review closeout: code-review-pr-preflight-r3
+Review closeout: code-review-pr-preflight-r4
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-pr-preflight-r1`, `code-review-pr-preflight-r2`, `code-review-pr-preflight-r3`
-- Findings resolved: 19
-- Unresolved findings: 1
-- Current result: FV-M6-CR2 records stale workflow-code-state expectations that invert the v3 review-only evidence tail and historical explanation non-authority. A bounded test-only correction and targeted rereview are required.
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-pr-preflight-r1`, `code-review-pr-preflight-r2`, `code-review-pr-preflight-r3`, `code-review-pr-preflight-r4`
+- Findings resolved: 20
+- Unresolved findings: 0
+- Current result: FV-M6-CR2 is resolved by the bounded workflow-tail test correction and clean targeted rereview. Final verification and PR-mode validation remain downstream obligations.
 
 ## Resolution Overview
 
@@ -46,7 +48,7 @@ Review closeout: code-review-pr-preflight-r2
 | FV-M5-CR1 | accepted | resolved | The root README now exposes only the v3 graph and success-only Verify explanation ownership, backed by a focused semantic regression. |
 | FV-M5-CR2 | accepted | resolved | Generated OpenCode guidance derives its alias declaration from the canonical tuple, and adapter support prose distinguishes candidate metadata from immutable release archives. |
 | FV-M6-CR1 | accepted | resolved | Query-helper current fixtures now select v3 and the exact current Verify completion policy; focused and structural proof pass. |
-| FV-M6-CR2 | accepted | open | Workflow-code-state tests still reject the valid v3 review-only tail and grant Verify authority to the historical review-to-explanation tail. |
+| FV-M6-CR2 | accepted | resolved | Workflow-code-state tests now accept the valid v3 review-only tail and reject historical review-to-explanation tails as current Verify authority. |
 | FV-DLR2-01 | accepted | resolved | The plan now binds Design Review R2 consistently at every current upstream authority point. |
 | FV-DLR2-02 | accepted | resolved | M5 is non-authoritative with one exact exception; M6 binds and proves the immutable v2 closeout snapshot; activation follows only after M6. |
 
@@ -387,7 +389,7 @@ No material findings.
 
 Finding ID: FV-M6-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: bounded candidate correction implementer
 Owning stage: review-resolution
 Decision owner: bounded candidate correction implementer
@@ -398,7 +400,11 @@ Required outcome: the 19-test focused suite proves review-only v3 acceptance and
 Safe resolution path: apply the assertion-only correction described in `reviews/code-review-pr-preflight-r3.md`, rerun focused and structural validation, and return for targeted rereview.
 Follow-up: Code Review PR Preflight R4 after bounded correction.
 Validation target: FV-R1, FV-R3, FV-R28, FV-R31, BND-STATE-001, BND-TEMPORAL-001, BND-COMPAT-001, INT-003.
-Validation evidence: pending correction and rereview.
+Validation evidence: Code Review PR Preflight R4 inspected `046cb30a..4bb71a68`; only the five required assertion outcomes, two truthful test names, and bounded implementation evidence changed. Production workflow/code-state files are untouched, all 19 focused tests pass, review structure and change metadata validate, and the exact-range diff check passes.
+
+### code-review-pr-preflight-r4
+
+No material findings.
 
 ### code-review-m5-r1
 

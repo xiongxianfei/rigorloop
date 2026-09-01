@@ -1,0 +1,31 @@
+schema_version: 1
+review_id: code-review-pr-preflight-r4
+review_stage: code-review
+review_target: commit:4bb71a68
+base_revision: 046cb30a
+head_revision: 4bb71a68
+native_review_status: clean-with-notes
+review_gate_outcome: blocked
+independence_level: L1
+author_context_id: fv-m6-cr2-bounded-correction
+reviewer_context_id: independent-pr-preflight-code-review-r4
+context_separation_mechanism: exact-diff-and-counterexample-first-rereview
+risk_tier: medium
+risk_tier_triggers:
+  - evidence-tail-authority
+  - lifecycle-compatibility
+governing_artifacts:
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-pr-preflight-r3.md
+formal_criteria:
+  - code-review-v1
+  - requirement-to-delivery-model-v1
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - correction-diff-inspected
+  - focused-proof-passed
+  - finding-closeout-recorded
+second_review_requirement: satisfied-by-this-rereview
