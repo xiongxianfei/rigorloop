@@ -21,7 +21,7 @@ TUI examples:
 - `/code-review Review the current diff against the approved artifacts.`
 - `/pr Prepare the verified change for pull request review.`
 
-The generated aliases are limited to `proposal`, `proposal-review`, `spec`, `spec-review`, `plan`, `plan-review`, `test-spec`, `implement`, `code-review`, and `pr`. Other portable skills remain available from `.opencode/skills/` but do not receive command aliases.
+The generated aliases are limited to {command_aliases}. Other portable skills remain available from `.opencode/skills/` but do not receive command aliases.
 
 One-shot example:
 

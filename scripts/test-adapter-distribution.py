@@ -5282,6 +5282,34 @@ release_gate:
             self.assertNotIn("/verify", text)
             self.assertIn("opencode run --command proposal", text)
             self.assertIn("Do not use Codex `$skill` syntax", text)
+            declared_aliases = ", ".join(
+                f"`{alias}`" for alias in OPENCODE_COMMAND_ALIASES
+            )
+            self.assertIn(
+                f"The generated aliases are limited to {declared_aliases}.",
+                text,
+            )
+            for retired_alias in ("spec-review", "plan-review", "test-spec"):
+                self.assertNotIn(f"`{retired_alias}`", text)
+
+    def test_readme_exposes_only_the_current_v3_delivery_route(self) -> None:
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> verify -> pr",
+            text,
+        )
+        self.assertIn(
+            "writes the final explanation only in a successful Verify report",
+            text,
+        )
+        for retired_entrypoint in (
+            "explain-change",
+            "spec-review",
+            "plan-review",
+            "test-spec",
+        ):
+            self.assertNotIn(retired_entrypoint, text)
 
     def test_readme_distinguishes_claude_and_opencode_invocation_forms(self) -> None:
         text = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -5361,6 +5389,10 @@ release_gate:
         self.assertIn("`.codex/skills/`", text)
         self.assertIn("ignored local runtime install directory", text)
         self.assertIn("not a public adapter install source", text)
+        self.assertIn("describes the non-authoritative", text)
+        self.assertIn("candidate metadata, not a publication or activation record", text)
+        self.assertIn("Published v1/v2 release archives remain immutable", text)
+        self.assertNotIn("continues to describe the released v2 package", text)
         self.assertNotIn("copy that adapter package root's contents", text)
         self.assertNotIn("tracked adapter skill bodies under `dist/adapters/**/skills` remain available", text)
 

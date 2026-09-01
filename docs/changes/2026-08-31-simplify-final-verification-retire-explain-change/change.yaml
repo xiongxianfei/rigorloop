@@ -68,7 +68,7 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
@@ -107,7 +107,7 @@ workflow_state:
         state: closed
       M5:
         kind: implementation
-        state: review-requested
+        state: implementing
       M6:
         kind: lifecycle-closeout
         state: planned
@@ -128,6 +128,27 @@ review:
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
+  active_correction:
+    destination_artifact_id: implement
+    destination_kind: stage
+    destination_stage: implement
+    evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-r1-correction-route.md
+    evidence_sha256: 99ddca2b7c2baf640a4a37c8df88463738478ef0e99c540e75a7dcb1d5dd075a
+    prior_lifecycle_revision: sha256:a079fe663fbbc276c6a87a30d693d0f84c6c29679515cce6976026205d2ff208
+    reason: upstream-proof-gap
+    return_stage: code-review
+    route_id: route-f68a2810f9d66fc3f6f9359ec760e341aed83fc5e2be3de98aa9829340dd94d0
+    source_snapshot:
+      blocker: null
+      current_stage: code-review
+      finding_ids:
+        - FV-M5-CR1
+        - FV-M5-CR2
+      lifecycle_state: active
+      milestone_id: M5
+      milestone_state: review-requested
+      next_stage: code-review
+    status: active
   artifacts:
     adr-impact-aware-final-verification:
       artifact_kind: adr

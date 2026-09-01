@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -19,9 +19,9 @@ Review closeout: delivery-review-r2
 Review closeout: delivery-review-r3
 
 - Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`
-- Findings resolved: 16
-- Unresolved findings: 2
-- Current result: Code Review M5 R1 found two public-package coherence defects. Runtime and core validation pass, but root and generated adapter guidance still advertise retired or contradictory current entrypoints.
+- Findings resolved: 18
+- Unresolved findings: 0
+- Current result: Both M5 R1 public-package coherence findings are resolved. Root and generated adapter guidance now match the sole v3 route and exact candidate inventory; Code Review M5 R2 is required.
 
 ## Resolution Overview
 
@@ -41,8 +41,8 @@ Review closeout: delivery-review-r3
 | FV-M3-CR3 | accepted | resolved | R3 confirmed every R2 counterexample fails through public transaction and authority probes. |
 | FV-M4-CR1 | accepted | resolved | Verify and current handoffs are v3-only; historical v1/v2 records grant no current progression authority. |
 | FV-M4-CR2 | accepted | resolved | The shared parsed-YAML mapper rejects duplicate governed keys at every depth before selecting the registered primary plan or any nested authority value. |
-| FV-M5-CR1 | accepted | open | Align the public root README with the sole current v3 graph and success-only Verify explanation ownership. |
-| FV-M5-CR2 | accepted | open | Align generated OpenCode alias guidance and adapter support documentation with the exact v3 candidate inventory. |
+| FV-M5-CR1 | accepted | resolved | The root README now exposes only the v3 graph and success-only Verify explanation ownership, backed by a focused semantic regression. |
+| FV-M5-CR2 | accepted | resolved | Generated OpenCode guidance derives its alias declaration from the canonical tuple, and adapter support prose distinguishes candidate metadata from immutable release archives. |
 | FV-DLR2-01 | accepted | resolved | The plan now binds Design Review R2 consistently at every current upstream authority point. |
 | FV-DLR2-02 | accepted | resolved | M5 is non-authoritative with one exact exception; M6 binds and proves the immutable v2 closeout snapshot; activation follows only after M6. |
 
@@ -360,7 +360,7 @@ No material findings.
 
 Finding ID: FV-M5-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M5 implementer
 Owning stage: review-resolution
 Decision owner: M5 implementer
@@ -371,13 +371,13 @@ Required outcome: current README guidance contains no standalone explain-change,
 Safe resolution path: update only current guidance, preserve explicitly historical references, add a semantic route regression, rerun M5 validation, and return for Code Review M5 R2.
 Follow-up: Code Review M5 R2 after bounded implementation correction.
 Validation target: FV-R1, FV-R2, FV-R3, FV-R35, FV-R37, FV-AC11, TG-19, TG-21, BND-STATE-001, BND-COMPOSE-001, BND-COMPAT-001, INT-004.
-Validation evidence: pending bounded M5 correction and independent R2 review.
+Validation evidence: The focused README regression rejects standalone explain-change, test-spec, spec-review, and plan-review entrypoints and requires the exact v3 chain plus success-only Verify explanation wording. `python scripts/test-adapter-distribution.py` passed 155 tests, `python scripts/test-skill-validator.py` passed 376 tests, `python scripts/test-build-skills.py` passed 8 tests, `python scripts/build-skills.py --check` passed, `python scripts/test-review-artifact-validator.py` passed 110 tests, `git diff --check` passed, and `bash scripts/ci.sh --mode broad-smoke` passed 12 checks in 436 seconds.
 
 #### FV-M5-CR2
 
 Finding ID: FV-M5-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M5 implementer
 Owning stage: review-resolution
 Decision owner: M5 implementer
@@ -388,4 +388,4 @@ Required outcome: generated entrypoints enumerate the exact current alias set, s
 Safe resolution path: derive or correct the alias declaration, clarify candidate versus release authority in `dist/adapters/README.md`, add package-level semantic parity tests, rerun all adapter checks, and return for Code Review M5 R2.
 Follow-up: Code Review M5 R2 after bounded implementation correction.
 Validation target: FV-R35, FV-R37, FV-AC11, FV-AC14, TG-21, TG-23, BND-COMPOSE-001, BND-COMPAT-001, INT-004.
-Validation evidence: pending bounded M5 correction and independent R2 review.
+Validation evidence: The OpenCode entrypoint renderer now supplies the alias sentence from `OPENCODE_COMMAND_ALIASES`; the generated-package regression compares the complete declaration and rejects retired aliases. Adapter support tests require non-authoritative candidate metadata, immutable v1/v2 release archives, and no released-v2 manifest claim. `python scripts/test-adapter-distribution.py` passed all 155 tests in 337.172 seconds; the skill, generated-skill, review-artifact, formatting, and 12-check broad-smoke gates also passed.

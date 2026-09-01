@@ -64,11 +64,18 @@ Validation result: passed
 - `python scripts/test-artifact-lifecycle-validator.py` — passed: 165 tests.
 - `python scripts/test-workflow-automation.py` — passed: 78 tests.
 - `python scripts/test-skill-validator.py` — passed: 376 tests.
-- `python scripts/test-adapter-distribution.py` — passed: 154 tests in 378.228 seconds.
+- `python scripts/test-adapter-distribution.py` — passed: 155 tests in 337.172 seconds, including exact generated OpenCode alias declaration, root v3 route, and candidate-versus-release support-guide regressions.
 - `python scripts/test-build-skills.py` — passed: 8 tests after correcting the stale v2 generated-skill expectation found by broad smoke.
 - `python scripts/test-review-artifact-validator.py` — passed: 110 tests after removing the retired skill file dependency found by broad smoke.
-- `bash scripts/ci.sh --mode broad-smoke` — passed: 11 checks in 454 seconds.
+- `bash scripts/ci.sh --mode broad-smoke` — passed after correction closeout: 12 checks in 436 seconds.
 - `git diff --check` — passed.
+
+## Code Review M5 R1 correction
+
+- FV-M5-CR1: the root README now presents the sole current v3 graph, removes retired standalone test-spec, artifact-review, and explain-change entrypoints, and identifies the successful Verify report as the owner of the final explanation and evidence basis.
+- FV-M5-CR2: OpenCode entrypoint alias prose is rendered from the canonical alias tuple, while `dist/adapters/README.md` identifies the tracked manifest as non-authoritative candidate metadata and preserves released v1/v2 archives as immutable history.
+- Focused regressions bind the public README route, success-only explanation wording, generated alias declaration, retired-alias absence, candidate status, and historical-release boundary.
+- The full adapter suite passed 155 tests; skill validation, generated-skill checking, review-artifact validation, `git diff --check`, and the 12-check broad-smoke gate also passed before the M5 R2 handoff.
 
 ## Recovery boundary
 

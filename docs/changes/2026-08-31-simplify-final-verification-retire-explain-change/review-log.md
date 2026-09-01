@@ -168,5 +168,5 @@ Resolution: review-resolution.md#code-review-m5-r1
 Material findings: FV-M5-CR1, FV-M5-CR2
 Finding ID: FV-M5-CR1
 Finding ID: FV-M5-CR2
-Open findings: FV-M5-CR1, FV-M5-CR2
+Open findings: None
 Recording status: recorded
