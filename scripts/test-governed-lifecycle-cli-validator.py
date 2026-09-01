@@ -179,5 +179,113 @@ class WrapperExecutionTests(unittest.TestCase):
                 ["final verification activation inventory mismatch: missing=['old-v2'], extra=[], class_mismatch=[]"],
             )
 
+    def test_quoted_v2_is_included_in_final_verification_inventory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "specs").mkdir()
+            (root / "docs" / "changes" / "quoted-v2").mkdir(parents=True)
+            (root / "docs" / "changes" / "quoted-v2" / "change.yaml").write_text(
+                'change_id: quoted-v2\nlifecycle_contract: "stage-owned-change-local-v2"\n',
+                encoding="utf-8",
+            )
+            manifest = {
+                "schema_version": 1,
+                "state": "active",
+                "activating_source_revision": "a" * 40,
+                "changes": [],
+            }
+            (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
+            self.assertEqual(
+                MODULE.final_verification_manifest_errors(root),
+                ["final verification activation inventory mismatch: missing=['quoted-v2'], extra=[], class_mismatch=[]"],
+            )
+
+    def test_comments_do_not_select_a_lifecycle_contract(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "specs").mkdir()
+            (root / "docs" / "changes" / "comment-only").mkdir(parents=True)
+            (root / "docs" / "changes" / "comment-only" / "change.yaml").write_text(
+                "change_id: comment-only\n# lifecycle_contract: stage-owned-change-local-v2\n",
+                encoding="utf-8",
+            )
+            manifest = {
+                "schema_version": 1,
+                "state": "active",
+                "activating_source_revision": "a" * 40,
+                "changes": [],
+            }
+            (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
+            self.assertEqual(MODULE.final_verification_manifest_errors(root), [])
+            self.assertEqual(MODULE.governed_records(root), [])
+
+    def test_quoted_v3_is_discovered_as_governed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "docs" / "changes" / "quoted-v3").mkdir(parents=True)
+            path = root / "docs" / "changes" / "quoted-v3" / "change.yaml"
+            path.write_text(
+                "change_id: quoted-v3\nlifecycle_contract: 'stage-owned-change-local-v3'\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(MODULE.governed_records(root), [("quoted-v3", path)])
+
+    def test_final_verification_manifest_ordering_fails_before_inventory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "specs").mkdir()
+            manifest = {
+                "schema_version": 1,
+                "state": "active",
+                "activating_source_revision": "a" * 40,
+                "changes": [
+                    {"change_id": "z-v2", "contract_class": "stage-owned-change-local-v2"},
+                    {"change_id": "a-v2", "contract_class": "stage-owned-change-local-v2"},
+                ],
+            }
+            (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
+            self.assertRegex(
+                MODULE.final_verification_manifest_errors(root)[0],
+                r"raw UTF-8 byte order",
+            )
+
+    def test_final_verification_manifest_duplicate_fails_before_inventory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "specs").mkdir()
+            entry = {"change_id": "same-v2", "contract_class": "stage-owned-change-local-v2"}
+            manifest = {
+                "schema_version": 1,
+                "state": "active",
+                "activating_source_revision": "a" * 40,
+                "changes": [entry, dict(entry)],
+            }
+            (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
+            self.assertRegex(
+                MODULE.final_verification_manifest_errors(root)[0],
+                r"duplicate change_id",
+            )
+
+    def test_unknown_parsed_contract_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "specs").mkdir()
+            (root / "docs" / "changes" / "future").mkdir(parents=True)
+            (root / "docs" / "changes" / "future" / "change.yaml").write_text(
+                'change_id: future\nlifecycle_contract: "stage-owned-change-local-v9"\n',
+                encoding="utf-8",
+            )
+            manifest = {
+                "schema_version": 1,
+                "state": "active",
+                "activating_source_revision": "a" * 40,
+                "changes": [],
+            }
+            (root / "specs" / "final-verification-contract-activation.yaml").write_text(json.dumps(manifest), encoding="utf-8")
+            self.assertRegex(
+                MODULE.final_verification_manifest_errors(root)[0],
+                r"lifecycle_contract: unknown_value stage-owned-change-local-v9",
+            )
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

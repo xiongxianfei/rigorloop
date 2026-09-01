@@ -37,6 +37,16 @@ During the full M1 pass, the governed wrapper exposed that the original activati
 - `python scripts/validate-governed-lifecycle-cli.py` — passed for 34 governed records with only the two approved baseline warnings.
 - `git diff --check` — passed.
 
+## Code Review M1 R1 correction
+
+- Findings addressed: `FV-M1-CR1`, `FV-M1-CR2`.
+- Test-first evidence: three new wrapper regressions failed before the correction. A quoted v2 record was omitted from the final-verification inventory, a comment containing the unquoted contract text incorrectly selected v2, and a quoted v3 record was omitted from governed-record discovery. The new Node and Python duplicate/ordering tests passed immediately, proving the validator behavior existed but lacked direct coverage.
+- Semantic inventory correction: `scripts/validate-governed-lifecycle-cli.py` now loads every tracked `change.yaml` with the repository's existing safe YAML parser, distinguishes an absent discriminator from an explicit value, rejects unknown or unreadable metadata, and builds governed, v1/unversioned, and v2 inventories from one parsed mapping. Quotes, spacing, comments, unrelated scalar text, filenames, and other raw representation details no longer select the lifecycle contract.
+- Direct ordering proof: Node, Python, and public-wrapper regressions now cover duplicate IDs, raw-UTF-8-unsorted IDs, and unknown-value precedence for the final-verification activation manifest.
+- Boundary preservation: the manifest remains preactivation; v3 routing remains unavailable; v2 creation and routing are unchanged; historical records were not rewritten; M2-M5 surfaces are unchanged because neither finding requires downstream behavior.
+- Corrected validation: the planned Node suite passed 71 tests; change-metadata validation passed 87 tests; artifact-lifecycle validation passed 167 tests; governed-wrapper validation passed 16 tests; `git diff --check` passed.
+- Repository wrapper observation: `python scripts/validate-governed-lifecycle-cli.py` correctly reported only this change as a failure because Code Review R1's two findings remain open in `review-log.md`. Both activation inventories were valid, and the two established baseline warnings were unchanged. R2 must close the findings before the aggregate wrapper can return success for this change.
+
 ## Identity and compatibility boundaries
 
 - Contract choice is based only on the explicit discriminator and exact manifest membership. Tests prove dates, filenames, artifact presence, Git state, network facts, and author assertions do not select a contract.
