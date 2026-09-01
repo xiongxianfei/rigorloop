@@ -59,5 +59,19 @@ Finding ID: FV-M2-CR2
 Finding ID: FV-M2-CR3
 Finding ID: FV-M2-CR4
 Finding ID: FV-M2-CR5
-Open findings: FV-M2-CR1, FV-M2-CR2, FV-M2-CR3, FV-M2-CR4, FV-M2-CR5
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: r2
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: FV-M2-CR6, FV-M2-CR7
+Finding ID: FV-M2-CR6
+Finding ID: FV-M2-CR7
+Open findings: FV-M2-CR6, FV-M2-CR7
 Recording status: recorded
