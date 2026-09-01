@@ -16,6 +16,7 @@ import {
   canonicalJson,
   classifyLifecycleContract,
   correctionStageOrder,
+  lifecycleContractVersion,
   lifecycleRevision,
   parseLifecycleYaml,
 } from "./lifecycle-contract.js";
@@ -193,6 +194,7 @@ function coordinationErrors(root, change) {
     const evidenceCurrent = absolute && existsSync(absolute) && lstatSync(absolute).isFile() && hashFile(absolute) === route.evidence_sha256;
     const allowedCurrentStages = new Set([route.destination_stage]);
     const snapshot = route.source_snapshot;
+    const verificationRoute = lifecycleContractVersion(change) === LIFECYCLE_CONTRACT_V3 && snapshot?.current_stage === "verify";
     if (route.status !== "active") errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction has an unknown status.", "active-correction-route", null, [String(route.status)]));
     if (!CORRECTION_REASONS.has(route.reason) || !correctionDestinations.has(route.destination_stage)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction has an unknown reason or destination stage.", "active-correction-route", null, [String(route.reason), String(route.destination_stage)]));
     if (packageDestination) {
@@ -203,7 +205,7 @@ function coordinationErrors(root, change) {
     const destinationAbsolute = repositoryPath(root, destination?.path);
     if (!packageDestination && !stageDestination && change.workflow_state?.current_stage !== route.destination_stage && (!destinationAbsolute || !existsSync(destinationAbsolute) || hashFile(destinationAbsolute) !== registration?.artifact_sha256)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination registration is stale.", "active-correction-route", null, [String(route.destination_artifact_id)]));
     if (!evidenceCurrent) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction evidence is missing or stale.", "active-correction-evidence", null, [String(route.evidence_path)]));
-    if (!snapshot || (!stageDestination && snapshot.current_stage !== route.return_stage) || !Object.hasOwn(snapshot, "blocker") || !Array.isArray(snapshot.finding_ids)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction source snapshot is incomplete or contradictory.", "active-correction-snapshot", null, [String(route.route_id)]));
+    if (!snapshot || (!stageDestination && !verificationRoute && snapshot.current_stage !== route.return_stage) || !Object.hasOwn(snapshot, "blocker") || !Array.isArray(snapshot.finding_ids)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction source snapshot is incomplete or contradictory.", "active-correction-snapshot", null, [String(route.route_id)]));
     if (!allowedCurrentStages.has(change.workflow_state?.current_stage) || change.workflow_state?.blocker !== null) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Workflow routing contradicts the active correction.", "active-correction-routing", null, [String(change.workflow_state?.current_stage), String(change.workflow_state?.blocker)]));
   }
   errors.push(...validateStoredReviewPackages(change));
