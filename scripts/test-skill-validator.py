@@ -8970,12 +8970,16 @@ class FinalVerificationProtocolM2Tests(unittest.TestCase):
         body = (ROOT / "skills/verify/references/evidence-applicability-v3.md").read_text(encoding="utf-8")
         for phrase in ("`always-current`", "`fresh-required`", "`impact-sensitive`", "cache hit", "not an actual run"):
             self.assertIn(phrase, body)
+        for phrase in ("`actual-run` uses `command`", "`hosted-observation` uses `hosted`", "`reused-pass` uses `prior-evidence`"):
+            self.assertIn(phrase, body)
 
     def test_explanation_guidance_is_success_only_and_identity_safe(self) -> None:
         body = (ROOT / "skills/verify/references/successful-explanation-v3.md").read_text(encoding="utf-8")
         self.assertIn("must omit the explanation", body)
         self.assertIn("must not embed its own Git commit identity", body)
         self.assertIn("identical complete registered replay is idempotent", body)
+        self.assertIn("lifecycle_cli.validations.verify-result", body)
+        self.assertIn("unknown trailing bytes invalidate it", body)
 
 
 class RetireStandaloneTestSpecM5Tests(unittest.TestCase):

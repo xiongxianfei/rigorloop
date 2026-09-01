@@ -35,6 +35,17 @@ Validation result: passed
 
 The first focused Python run failed during module loading because `final_verification_protocol` did not exist. After adding the deterministic structural validator, the focused Python protocol suite passed. The packaged JavaScript module was then added to prevent runtime/validator contract drift, with a parallel focused suite covering the same safety partitions.
 
+Code Review M2 R1 then exposed five unsupported success paths. Adversarial tests were added before the correction: the focused Python suite failed 8 tests and passed 7, while the focused Node suite failed 2 tests and passed 5. The implementation was then refined until both suites passed, including direct cross-language comparison of complete ordered error results.
+
+## Code Review M2 R1 correction
+
+- Proved surfaces are closed, unique, and mapped to classified impact entries before freshness or applicability may authorize a decision.
+- Evidence and always-current entries use exact shapes and execution-kind-specific proof: command execution, hosted observation, prior evidence, cache key, or null for not-run.
+- A current evidence-only tail is an exact two-member parsed structure: the final report and `change.yaml#lifecycle_cli.validations.verify-result`. The registration binds the selector, report path and digest, verified subject revision, and Verify authority.
+- Report read-back consumes the whole file, rejects trailing bytes or malformed fencing, recomputes the digest, parses JSON, and checks outcome, readiness, and subject identity.
+- JavaScript and Python agree on duplicate always-current detection and trimmed non-empty explanation content through a direct conformance matrix.
+- Every successful basis member now conforms to its canonical repository identity, revision, digest, safe-ID, review-ID, or repository-relative plan-path type before readiness can be granted.
+
 ## Protocol and boundary evidence
 
 - TG-05: successful results require one normalized repository and branch basis plus one governed change, verified subject, final review, Design package, Delivery plan, and final-diff identity. Each authority has a closed current/stale/missing/conflicting/ambiguous state. Early inconclusive results may record null unresolved identities and cannot grant readiness.
@@ -48,12 +59,19 @@ The first focused Python run failed during module loading because `final_verific
 
 ## Validation evidence
 
-- `npm test --prefix packages/rigorloop` — passed, including six new packaged-runtime protocol tests.
-- `python scripts/test-change-metadata-validator.py` — passed, including twelve new protocol tests.
+- `npm test --prefix packages/rigorloop` — passed, including seven packaged-runtime protocol tests and the R1 adversarial corrections.
+- `python scripts/test-change-metadata-validator.py` — passed, including sixteen protocol tests and direct JavaScript/Python result conformance.
 - `python scripts/test-artifact-lifecycle-validator.py` — passed, 167 tests.
 - `python scripts/test-validation-cache.py` — passed, 25 tests, including cache/result separation.
 - `python scripts/test-skill-validator.py` — passed, 382 tests, including four new v3 resource/profile tests.
 - `git diff --check` — passed.
+
+Focused correction evidence:
+
+- `node --test packages/rigorloop/test/final-verification-protocol.test.js` — passed, 7 tests.
+- `python scripts/test-change-metadata-validator.py FinalVerificationProtocolTests` — passed, 16 tests.
+- `python scripts/test-skill-validator.py FinalVerificationProtocolM2Tests` — passed, 4 tests.
+- `python -m py_compile scripts/final_verification_protocol.py` — passed.
 
 ## Review handoff
 

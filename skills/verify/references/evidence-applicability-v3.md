@@ -13,6 +13,16 @@ Freshness is exactly one of `always-current`, `fresh-required`, or `impact-sensi
 
 Run or directly observe every `rerun`, `newly-required`, `fresh-required`, and `always-current` obligation. Record exact commands and observed results. A cache hit is an inner-loop execution optimization; it is not an actual run, semantic reuse decision, new pass, hosted observation, or readiness proof.
 
+Bind each execution to exactly one proof shape:
+
+- `actual-run` uses `command`: exact argv plus a repository-relative evidence path and SHA-256 identity;
+- `hosted-observation` uses `hosted`: provider, run ID, check name, subject revision, evidence path, and SHA-256 identity;
+- `reused-pass` uses `prior-evidence`: prior evidence path and SHA-256 identity plus its subject revision;
+- `cache-hit` uses only a cache-key identity and never satisfies required final execution;
+- `not-run` carries no readiness proof.
+
+An execution label, configured command, cache record, or caller assertion without its matching proof shape is insufficient.
+
 Always-current checks cover current change and repository identity; reviewed subject and review identity; lifecycle and package consistency; review closeout; unresolved blocker state; final diff classification; required artifact and evidence existence; and complete Verify-result consistency.
 
 Re-evaluate every obligation after correction. Unaffected evidence is neither automatically discarded nor automatically retained.
