@@ -15,7 +15,7 @@ Review closeout: code-review-m3-r2
 - Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`
 - Findings resolved: 10
 - Unresolved findings: 2
-- Current result: Code Review M3 R2 confirmed FV-M3-CR1 resolved and classified FV-M3-CR2 as failed-remediation under `FV-M3-CR3` because required rereview and v2 isolation remain incomplete.
+- Current result: The bounded M3 R2 correction now enforces required rereview and v1/v2 isolation through the public transaction path; FV-M3-CR2 and FV-M3-CR3 remain open pending Code Review M3 R3 confirmation.
 
 ## Resolution Overview
 
@@ -31,8 +31,8 @@ Review closeout: code-review-m3-r2
 | FV-M2-CR6 | accepted | resolved | JavaScript and Python now require arrays for all three collections on every outcome and share malformed-collection diagnostics. |
 | FV-M2-CR7 | accepted | resolved | Both runtimes and the exported applicability evaluators reject non-boolean evidence facts before semantic interpretation. |
 | FV-M3-CR1 | accepted | resolved | V3 accepts only the S-R review-recorded tail; legacy S-R-E remains required only by v1/v2. |
-| FV-M3-CR2 | accepted | open | Owner routing is executable, but artifact corrections can bypass consolidated rereview and verification-only reasons leak into v2. |
-| FV-M3-CR3 | accepted | open | R2 reproduced the incomplete CR2 outcome through public/composed v2 and v3 transaction probes. |
+| FV-M3-CR2 | accepted | open | Public owner routing and return boundaries are corrected and await independent R3 confirmation. |
+| FV-M3-CR3 | accepted | open | The reproduced rereview escape and legacy reason leakage are corrected and await independent R3 confirmation. |
 
 ## Finding Details
 
@@ -237,7 +237,7 @@ Required outcome: all seven finding kinds route to exactly one non-Verify owner;
 Safe resolution path: integrate routing and add public/request-path matrices while preserving v1/v2 correction behavior.
 Follow-up: Code Review M3 R2 after implementation correction.
 Validation target: FV-R23-FV-R25, FV-R30, TG-11, TG-12, BND-AUTH-001, BND-RECOVERY-001, INT-002.
-Validation evidence: R2 confirmed owner selection is executable and all planned suites pass, but direct composed probes showed a v3 spec correction returns to Verify without Design Review and a v2 request accepts and routes the verification-only `implementation-defect` reason. The committed owner matrix calls the internal route evaluator and does not exercise public return or v2 isolation. Code Review M3 R3 is required after correction.
+Validation evidence: The correction keys the seven verification-only reasons to v3 Verify routes, sends v3 artifact returns to their declared Design or Delivery Review stage, and permits artifact revision only inside the exact active v3 correction route. A public CLI matrix routes and returns all seven owners, proves spec/architecture/plan and implementation stop at required review boundaries, rejects unknown/wrong/Verify owners without mutation, and rejects all seven reasons under both v1 and v2. The 89-pass/2-skip lifecycle suite and every planned M3 command passed. Code Review M3 R3 remains required for closure.
 
 ### code-review-m3-r2
 
@@ -256,4 +256,4 @@ Required outcome: public v3 correction transactions reach every exact owner and 
 Safe resolution path: key correction vocabularies and return behavior by lifecycle contract and source, then add public route-and-return matrices for all owners and legacy rejection cases.
 Follow-up: Code Review M3 R3 after bounded implementation correction.
 Validation target: FV-R23-FV-R25, FV-R30, TG-11, TG-12, BND-AUTH-001, BND-RECOVERY-001, BND-COMPAT-001, INT-002.
-Validation evidence: v2 public-request/evaluator probe returned `routed` for `implementation-defect`; v3 spec route/return probe returned to Verify with no Design Review. All planned suites passed but did not cover these composed boundaries.
+Validation evidence: The public transaction now rejects every verification-only reason under v1/v2 before ordinary-route consistency, while v3 binds each reason to one owner and exact return stage. Artifact corrections register only within their active v3 owner route and return to Design or Delivery Review rather than the Verify snapshot. Public route/return and no-mutation matrices pass for all named cases; the complete planned M3 validation set also passes. Independent Code Review M3 R3 is pending.

@@ -65,3 +65,11 @@ Review the v3 policy as an inactive candidate, not as current public authority. 
 - `FV-M3-CR2`: the closed owner classifier is now consumed by both the Workflow automation route and the lifecycle correction transaction. The transaction supports artifact, implementation, review, CI, and external-acquisition owners, binds the exact finding kind to its sole owner, rejects Verify as an owner, and records the required rereview/return boundary.
 - The repaired stage-destination transaction was used to route this change's own M3 R1 findings from Code Review to M3 implementation under the current v2 contract. This removed the recording blocker identified by the reviewer without changing the v2 final `explain-change -> verify` route.
 - Correction validation reran the complete M3 command set plus focused final-verification and metadata suites; all passed.
+
+## Code Review M3 R2 correction
+
+- `FV-M3-CR2` and `FV-M3-CR3`: verification-only correction reasons are now valid only for v3 routes whose source is Verify. Public v1 and v2 requests reject all seven reasons as unknown without changing `change.yaml`.
+- V3 owner corrections now clear the completed Verify-attempt blocker and return to the route's mandatory boundary: specification and architecture corrections stop at Design Review, plan-allocation corrections stop at Delivery Review, implementation corrections stop at Code Review, and CI/external-evidence corrections return to Verify for a fresh attempt. Artifact corrections no longer restore the pre-correction Verify snapshot.
+- A v3 spec, architecture, or plan revision is registerable only while its exact Workflow-owned artifact correction route is active; v3 does not otherwise reopen general artifact creation or revision authority.
+- A public CLI matrix exercises route and return for all seven owners. Separate public requests prove unknown finding kinds, wrong owners, and Verify-as-owner fail without lifecycle mutation.
+- Correction validation passed the complete M3 command set: 89 Node lifecycle tests with 2 historical skips, 78 workflow-automation tests, 20 automation-policy tests, 70 automation-state tests, 19 code-state tests, and 110 review-validator tests. The 10-test final-verification protocol suite, 106-test change-metadata validator suite, and `git diff --check` also passed.

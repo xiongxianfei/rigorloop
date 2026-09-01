@@ -496,8 +496,9 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       const expectedOwner = verificationCorrectionOwner(request.reason);
       if (request.destination_stage !== expectedOwner) throw operationError("RL_CORRECTION_ROUTE_INVALID", "verification correction destination does not match its exact owner", "verification-correction-owner", [request.reason, request.destination_stage, expectedOwner]);
       if (request.return_stage !== VERIFICATION_RETURN_STAGES[expectedOwner]) throw operationError("RL_CORRECTION_ROUTE_INVALID", "verification correction return stage does not enforce required rereview", "verification-correction-return", [request.destination_stage, request.return_stage, VERIFICATION_RETURN_STAGES[expectedOwner]]);
-    } else if (request.return_stage !== request.source_stage) {
-      throw operationError("RL_CORRECTION_ROUTE_INVALID", "ordinary correction return stage must match its source stage", "correction-source", [request.source_stage, request.return_stage]);
+    } else {
+      if (VERIFICATION_CORRECTION_REASONS.has(request.reason)) throw operationError("RL_CORRECTION_ROUTE_INVALID", `correction reason: unknown_value ${String(request.reason)}`, "correction-reason", [String(request.reason)]);
+      if (request.return_stage !== request.source_stage) throw operationError("RL_CORRECTION_ROUTE_INVALID", "ordinary correction return stage must match its source stage", "correction-source", [request.source_stage, request.return_stage]);
     }
     const stageOrder = correctionStageOrder(next);
     const sourceIndex = stageOrder.indexOf(request.source_stage);
@@ -601,17 +602,18 @@ export function evaluateLifecycleOperation({ root, change, request }) {
       if (!baseMatches || !authorityMatches) throw operationError("RL_CORRECTION_ROUTE_INVALID", "return evidence does not bind the exact route and owning-stage result", "correction-return-evidence", [request.evidence_path]);
     }
     const snapshot = route.source_snapshot;
-    next.workflow_state.current_stage = stageDestination ? route.return_stage : snapshot.current_stage;
-    next.workflow_state.next_stage = stageDestination ? route.return_stage : snapshot.next_stage;
+    const verificationReturn = lifecycleContractVersion(next) === LIFECYCLE_CONTRACT_V3 && snapshot.current_stage === "verify";
+    next.workflow_state.current_stage = stageDestination || verificationReturn ? route.return_stage : snapshot.current_stage;
+    next.workflow_state.next_stage = stageDestination || verificationReturn ? route.return_stage : snapshot.next_stage;
     next.workflow_state.lifecycle_state = snapshot.lifecycle_state;
-    next.workflow_state.blocker = snapshot.blocker;
+    next.workflow_state.blocker = verificationReturn ? null : snapshot.blocker;
     if (next.workflow_state.planned_work) {
       next.workflow_state.planned_work.current_milestone = snapshot.milestone_id;
       if (snapshot.milestone_id && next.workflow_state.planned_work.milestones?.[snapshot.milestone_id]) next.workflow_state.planned_work.milestones[snapshot.milestone_id].state = stageDestination && route.destination_stage === "implement" ? "review-requested" : snapshot.milestone_state;
     }
     state.correction_history[route.route_id] = { ...route, status: "returned", return_evidence_path: evidence.path, return_evidence_sha256: evidence.sha256 };
     delete state.active_correction;
-    return { status: "returned", candidate: next, operationResult: { route_id: route.route_id, restored_stage: snapshot.current_stage, restored_next_stage: snapshot.next_stage, restored_milestone_id: snapshot.milestone_id, return_evidence_path: evidence.path } };
+    return { status: "returned", candidate: next, operationResult: { route_id: route.route_id, restored_stage: next.workflow_state.current_stage, restored_next_stage: next.workflow_state.next_stage, restored_milestone_id: snapshot.milestone_id, return_evidence_path: evidence.path } };
   }
 
   if (request.operation === "withdraw-artifact-registration") {
@@ -644,7 +646,11 @@ export function evaluateLifecycleOperation({ root, change, request }) {
   }
 
   if (request.operation === "record-artifact-revision") {
-    if (!allowedArtifactKinds(next).includes(request.artifact_kind)) throw operationError("RL_INVALID_REQUEST", `artifact_kind: unknown_value ${String(request.artifact_kind)}`, "artifact-kind", [String(request.artifact_kind)]);
+    const routedV3ArtifactRevision = lifecycleContractVersion(next) === LIFECYCLE_CONTRACT_V3
+      && state.active_correction?.destination_artifact_id === request.artifact_id
+      && state.active_correction?.destination_stage === request.artifact_kind
+      && !STAGE_CORRECTION_DESTINATIONS.has(request.artifact_kind);
+    if (!allowedArtifactKinds(next).includes(request.artifact_kind) && !routedV3ArtifactRevision) throw operationError("RL_INVALID_REQUEST", `artifact_kind: unknown_value ${String(request.artifact_kind)}`, "artifact-kind", [String(request.artifact_kind)]);
     if (state.active_correction && state.active_correction.destination_artifact_id !== request.artifact_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "only the routed destination artifact may be revised", "correction-destination", [request.artifact_id, state.active_correction.destination_artifact_id]);
     if (state.active_correction) {
       const atDestination = next.workflow_state?.current_stage === state.active_correction.destination_stage;
