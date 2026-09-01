@@ -6335,6 +6335,52 @@ Open findings: None
                 verification_authorized=True,
                 lifecycle_contract="stage-owned-change-local-v3",
             )
+        expected_routes = {
+            "system-requirement-gap": ("spec", "design-review"),
+            "technical-realization-gap": ("architecture", "design-review"),
+            "verification-allocation-gap": ("plan", "delivery-review"),
+            "implementation-defect": ("implement", "code-review"),
+            "stale-or-incomplete-review": ("code-review", "code-review"),
+            "ci-or-environment-gap": ("ci-maintenance", "verify"),
+            "external-evidence-gap": ("external-evidence-acquisition", "verify"),
+        }
+        for finding_kind, expected in expected_routes.items():
+            routed_finding = evaluate_non_public_implementation_route(
+                current_stage="verify",
+                target_stage="verify",
+                target_milestone_id=None,
+                capability_kind="verification",
+                capability_status="active",
+                invocation_context="non-public-test-harness",
+                occurrence_kind="final",
+                active_plan=closed_plan,
+                verification_passed=False,
+                verification_finding_kind=finding_kind,
+                verification_authorized=True,
+                final_review_clean=True,
+                lifecycle_contract="stage-owned-change-local-v3",
+            )
+            self.assertEqual(
+                (routed_finding.status, routed_finding.next_stage, routed_finding.return_stage),
+                ("correction-loop", *expected),
+            )
+            self.assertFalse(routed_finding.automatic_repair)
+        with self.assertRaisesRegex(ValueError, "unknown_value"):
+            evaluate_non_public_implementation_route(
+                current_stage="verify",
+                target_stage="verify",
+                target_milestone_id=None,
+                capability_kind="verification",
+                capability_status="active",
+                invocation_context="non-public-test-harness",
+                occurrence_kind="final",
+                active_plan=closed_plan,
+                verification_passed=False,
+                verification_finding_kind="future-gap",
+                verification_authorized=True,
+                final_review_clean=True,
+                lifecycle_contract="stage-owned-change-local-v3",
+            )
 
     def test_verify_git_probe_allowlist_is_exact_and_root_bound(self) -> None:
         repository_root = Path("/canonical/repository")

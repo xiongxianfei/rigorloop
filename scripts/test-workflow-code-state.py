@@ -38,6 +38,21 @@ class GitCodeStateProviderTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(AutomationContractError, "incomplete"):
             require_complete_ordered_evidence_tail(state)
+        legacy_complete = CanonicalCodeState(
+            anchor_identity="sha256:anchor",
+            base_revision="base",
+            reviewed_revision="reviewed",
+            entries=(CodeStateEntry("M", "fixture.py", "sha256:fixture"),),
+            final_review_recording_revision="review-recording",
+            explanation_recording_revision="explanation-recording",
+            handoff_revision="explanation-recording",
+            tail_state="complete",
+        )
+        with self.assertRaisesRegex(AutomationContractError, "incomplete"):
+            require_complete_ordered_evidence_tail(
+                legacy_complete, lifecycle_contract="stage-owned-change-local-v3"
+            )
+        require_complete_ordered_evidence_tail(legacy_complete)
 
     class TestOnlyProvider:
         test_only = True

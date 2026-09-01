@@ -23,7 +23,7 @@ import { reviewPackageContext, validateStoredReviewPackages } from "./lifecycle-
 import { stageIsComplete } from "./lifecycle-stage-routing.js";
 
 const REVIEW_STAGES = new Set(["proposal-review", "design-review", "delivery-review", "code-review"]);
-const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
+const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input", "system-requirement-gap", "technical-realization-gap", "verification-allocation-gap", "implementation-defect", "stale-or-incomplete-review", "ci-or-environment-gap", "external-evidence-gap"]);
 const DOWNSTREAM_AUTHORITY_STAGES = new Set(["implement", "code-review", "explain-change", "verify", "pr"]);
 
 function diagnostic(code, summary, invariant, correctiveOperation = null, identities = []) {
@@ -186,6 +186,7 @@ function coordinationErrors(root, change) {
   if (route) {
     const correctionDestinations = allowedCorrectionDestinations(change);
     const packageDestination = route.destination_artifact_id === "design" && route.destination_stage === "design-review";
+    const stageDestination = route.destination_kind === "stage";
     const destination = change.artifact_states?.[route.destination_artifact_id];
     const registration = state.artifacts?.[route.destination_artifact_id];
     const absolute = repositoryPath(root, route.evidence_path);
@@ -198,11 +199,11 @@ function coordinationErrors(root, change) {
       const design = change.review_packages?.design;
       const sourceReview = state.package_reviews?.delivery;
       if (!route.prior_package_review_id || !design || route.source_review_id !== sourceReview?.review_id || route.prior_package_review_id !== sourceReview?.upstream_review_id) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active package correction destination is missing or mismatched.", "active-correction-route", null, [String(route.destination_artifact_id)]));
-    } else if (!destination || registration?.artifact_path !== destination.path) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination is missing or mismatched.", "active-correction-route", null, [String(route.destination_artifact_id)]));
+    } else if (!stageDestination && (!destination || registration?.artifact_path !== destination.path)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination is missing or mismatched.", "active-correction-route", null, [String(route.destination_artifact_id)]));
     const destinationAbsolute = repositoryPath(root, destination?.path);
-    if (!packageDestination && change.workflow_state?.current_stage !== route.destination_stage && (!destinationAbsolute || !existsSync(destinationAbsolute) || hashFile(destinationAbsolute) !== registration?.artifact_sha256)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination registration is stale.", "active-correction-route", null, [String(route.destination_artifact_id)]));
+    if (!packageDestination && !stageDestination && change.workflow_state?.current_stage !== route.destination_stage && (!destinationAbsolute || !existsSync(destinationAbsolute) || hashFile(destinationAbsolute) !== registration?.artifact_sha256)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination registration is stale.", "active-correction-route", null, [String(route.destination_artifact_id)]));
     if (!evidenceCurrent) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction evidence is missing or stale.", "active-correction-evidence", null, [String(route.evidence_path)]));
-    if (!snapshot || snapshot.current_stage !== route.return_stage || !Object.hasOwn(snapshot, "blocker") || !Array.isArray(snapshot.finding_ids)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction source snapshot is incomplete or contradictory.", "active-correction-snapshot", null, [String(route.route_id)]));
+    if (!snapshot || (!stageDestination && snapshot.current_stage !== route.return_stage) || !Object.hasOwn(snapshot, "blocker") || !Array.isArray(snapshot.finding_ids)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction source snapshot is incomplete or contradictory.", "active-correction-snapshot", null, [String(route.route_id)]));
     if (!allowedCurrentStages.has(change.workflow_state?.current_stage) || change.workflow_state?.blocker !== null) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Workflow routing contradicts the active correction.", "active-correction-routing", null, [String(change.workflow_state?.current_stage), String(change.workflow_state?.blocker)]));
   }
   errors.push(...validateStoredReviewPackages(change));
@@ -228,6 +229,7 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
       if (registered?.review_id !== route.prior_package_review_id) return ["settle-review-package"];
       return ["record-package-review"];
     }
+    if (stage === route.destination_stage && route.destination_kind === "stage") return ["return-correction"];
     if (stage === route.destination_stage && coordination.artifacts?.[route.destination_artifact_id]?.artifact_sha256 !== route.prior_artifact_sha256) return ["return-correction"];
     if (stage === route.destination_stage) return ["record-artifact-revision"];
   }
@@ -254,7 +256,9 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
   const staleCorrectionIsRoutable = staleIdentities.length === 0
     || (blockerCodes.has("RL_UNRESOLVED_MATERIAL_FINDING") && staleIdentities.every((artifactId) => eligibleDestinationIds.includes(artifactId)));
   const routeCompatibleBlockers = staleCorrectionIsRoutable && blockers.every((blocker) => ["RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_STALE_EVIDENCE"].includes(blocker.code));
-  if (coordination?.schema_version === 2 && !coordination.active_correction && (eligibleDestinationIds.length || upstreamPackageCorrection) && routeCompatibleBlockers && (["review-resolution", "code-review", "verify"].includes(stage) || blockers.length)) operations.push("route-correction");
+  const stageCorrectionAvailable = stage === "code-review" && activeMilestone(change) && onlyOpenFindings;
+  const verificationCorrectionAvailable = change.lifecycle_contract === LIFECYCLE_CONTRACT_V3 && stage === "verify" && onlyOpenFindings;
+  if (coordination?.schema_version === 2 && !coordination.active_correction && (eligibleDestinationIds.length || upstreamPackageCorrection || stageCorrectionAvailable || verificationCorrectionAvailable) && routeCompatibleBlockers && (["review-resolution", "code-review", "verify"].includes(stage) || blockers.length)) operations.push("route-correction");
 
   if (blockers.some((blocker) => blocker.code !== "RL_UNRESOLVED_MATERIAL_FINDING")) return operations;
   if (["design-review", "delivery-review"].includes(stage)) {
