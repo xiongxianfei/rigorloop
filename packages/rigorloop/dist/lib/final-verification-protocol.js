@@ -25,6 +25,8 @@ const REMOTE_ID = /^remote:sha256:[0-9a-f]{64}$/;
 const BRANCH = /^(?:[A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9._/-]*[A-Za-z0-9])$/;
 const EVIDENCE_FIELDS = new Set(["evidence_id", "proved_surfaces", "freshness", "existing_result", "authority_current", "identity_current", "environment_current", "conflicting", "new_obligation", "decision", "decision_rationale", "execution", "observed_result", "cache_hit", "proof"]);
 const ALWAYS_CURRENT_FIELDS = new Set(["check_id", "execution", "observed_result", "proof"]);
+const APPLICABILITY_BOOLEAN_FIELDS = ["authority_current", "identity_current", "environment_current", "conflicting", "new_obligation"];
+const EVIDENCE_BOOLEAN_FIELDS = [...APPLICABILITY_BOOLEAN_FIELDS, "cache_hit"];
 
 function sameFields(value, fields) {
   return value && !Array.isArray(value) && typeof value === "object"
@@ -116,6 +118,9 @@ export function evaluateEvidenceDecision(obligation, impacts) {
     if (!bySurface.has(surface)) throw new Error(`proved_surfaces: unclassified ${String(surface)}`);
   }
   if (!FRESHNESS_CLASSES.has(obligation.freshness)) throw new Error(`freshness: unknown_value ${String(obligation.freshness)}`);
+  for (const field of APPLICABILITY_BOOLEAN_FIELDS) {
+    if (typeof obligation[field] !== "boolean") throw new Error(`${field}: expected boolean`);
+  }
   if (obligation.new_obligation === true) return "newly-required";
   if (obligation.freshness === "always-current" || obligation.freshness === "fresh-required") return "rerun";
   const relevant = obligation.proved_surfaces.map((surface) => bySurface.get(surface));
@@ -169,6 +174,7 @@ export function validateFinalVerificationResult(result) {
   }
   if (!sameFields(result.basis_status, BASIS_STATUS_FIELDS)) errors.push(`basis_status fields: expected exactly ${JSON.stringify([...BASIS_STATUS_FIELDS].sort())}`);
 
+  if (!Array.isArray(result.impact)) errors.push("impact: expected array");
   const impacts = Array.isArray(result.impact) ? result.impact : [];
   if (result.outcome === "successful" && !impacts.length) errors.push("impact: expected at least one classified surface");
   const surfaces = new Set();
@@ -180,6 +186,7 @@ export function validateFinalVerificationResult(result) {
     if (item.state === "unaffected" && !nonEmptyStrings(item.affirmative_evidence)) errors.push(`impact[${index}].unaffected: affirmative_evidence required`);
   });
 
+  if (!Array.isArray(result.evidence)) errors.push("evidence: expected array");
   const evidence = Array.isArray(result.evidence) ? result.evidence : [];
   if (result.outcome === "successful" && !evidence.length) errors.push("evidence: expected at least one obligation");
   const evidenceIds = new Set();
@@ -197,6 +204,14 @@ export function validateFinalVerificationResult(result) {
       if (!surfaces.has(surface)) errors.push(`evidence[${index}].proved_surfaces[${surfaceIndex}]: unclassified ${String(surface)}`);
     }
     if (typeof item.decision_rationale !== "string" || !item.decision_rationale.trim()) errors.push(`evidence[${index}].decision_rationale: required`);
+    let invalidBoolean = false;
+    for (const field of EVIDENCE_BOOLEAN_FIELDS) {
+      if (typeof item[field] !== "boolean") {
+        errors.push(`evidence[${index}].${field}: expected boolean`);
+        invalidBoolean = true;
+      }
+    }
+    if (invalidBoolean) return;
     try {
       const expected = evaluateEvidenceDecision(item, impacts);
       if (item.decision !== expected) errors.push(`evidence[${index}].decision: expected ${expected} from applicability inputs`);
@@ -210,6 +225,7 @@ export function validateFinalVerificationResult(result) {
     errors.push(...validateProof(item.proof, item.execution, `evidence[${index}]`));
   });
 
+  if (!Array.isArray(result.always_current)) errors.push("always_current: expected array");
   const current = Array.isArray(result.always_current) ? result.always_current : [];
   const currentIds = new Set();
   current.forEach((item, index) => {

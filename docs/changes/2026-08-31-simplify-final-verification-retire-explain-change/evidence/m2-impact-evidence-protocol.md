@@ -37,6 +37,8 @@ The first focused Python run failed during module loading because `final_verific
 
 Code Review M2 R1 then exposed five unsupported success paths. Adversarial tests were added before the correction: the focused Python suite failed 8 tests and passed 7, while the focused Node suite failed 2 tests and passed 5. The implementation was then refined until both suites passed, including direct cross-language comparison of complete ordered error results.
 
+Code Review M2 R2 found a remaining malformed-collection parity gap and acceptance of non-boolean evidence facts. Tests were again added first: the focused Python run reported 43 failing subtests and the Node run reported 2 failing tests. After correction, the validators require arrays on every outcome, validate all six evidence facts as JSON booleans before semantic interpretation, and compare the expanded malformed-input matrix across languages.
+
 ## Code Review M2 R1 correction
 
 - Proved surfaces are closed, unique, and mapped to classified impact entries before freshness or applicability may authorize a decision.
@@ -45,6 +47,8 @@ Code Review M2 R1 then exposed five unsupported success paths. Adversarial tests
 - Report read-back consumes the whole file, rejects trailing bytes or malformed fencing, recomputes the digest, parses JSON, and checks outcome, readiness, and subject identity.
 - JavaScript and Python agree on duplicate always-current detection and trimmed non-empty explanation content through a direct conformance matrix.
 - Every successful basis member now conforms to its canonical repository identity, revision, digest, safe-ID, review-ID, or repository-relative plan-path type before readiness can be granted.
+- `impact`, `evidence`, and `always_current` must be arrays for every result outcome; malformed collections are never normalized to empty collections, while explicit empty arrays remain valid for applicable early non-success results.
+- `authority_current`, `identity_current`, `environment_current`, `conflicting`, `new_obligation`, and `cache_hit` accept only JSON booleans. Applicability helpers independently reject malformed semantic inputs so direct callers cannot bypass result validation.
 
 ## Protocol and boundary evidence
 
@@ -59,8 +63,8 @@ Code Review M2 R1 then exposed five unsupported success paths. Adversarial tests
 
 ## Validation evidence
 
-- `npm test --prefix packages/rigorloop` — passed, including seven packaged-runtime protocol tests and the R1 adversarial corrections.
-- `python scripts/test-change-metadata-validator.py` — passed, including sixteen protocol tests and direct JavaScript/Python result conformance.
+- `npm test --prefix packages/rigorloop` — passed, 324 tests with 2 skips, including nine packaged-runtime protocol tests and the R1/R2 adversarial corrections.
+- `python scripts/test-change-metadata-validator.py` — passed, 105 tests, including eighteen protocol tests and expanded direct JavaScript/Python result conformance.
 - `python scripts/test-artifact-lifecycle-validator.py` — passed, 167 tests.
 - `python scripts/test-validation-cache.py` — passed, 25 tests, including cache/result separation.
 - `python scripts/test-skill-validator.py` — passed, 382 tests, including four new v3 resource/profile tests.
@@ -68,8 +72,8 @@ Code Review M2 R1 then exposed five unsupported success paths. Adversarial tests
 
 Focused correction evidence:
 
-- `node --test packages/rigorloop/test/final-verification-protocol.test.js` — passed, 7 tests.
-- `python scripts/test-change-metadata-validator.py FinalVerificationProtocolTests` — passed, 16 tests.
+- `node --test packages/rigorloop/test/final-verification-protocol.test.js` — passed, 9 tests.
+- `python scripts/test-change-metadata-validator.py FinalVerificationProtocolTests` — passed, 18 tests.
 - `python scripts/test-skill-validator.py FinalVerificationProtocolM2Tests` — passed, 4 tests.
 - `python -m py_compile scripts/final_verification_protocol.py` — passed.
 
