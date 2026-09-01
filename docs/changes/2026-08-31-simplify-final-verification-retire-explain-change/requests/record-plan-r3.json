@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:a8ad92e77180acb1889594890b828eee02d20aca111b192cc372d24f7c4dbb04",
+  "artifact_id": "plan",
+  "artifact_kind": "plan",
+  "artifact_role": "primary",
+  "artifact_path": "docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/plan-authoring-r3.md",
+  "prior_artifact_sha256": "e1c93abe4a47ee06615b974dc3c90d575246116c89ab4596ffce80e465f0f959",
+  "stage_authority": "plan"
+}

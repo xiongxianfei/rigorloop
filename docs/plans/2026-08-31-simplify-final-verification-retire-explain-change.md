@@ -16,7 +16,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 - Spec: `specs/impact-aware-final-verification.md`
 - Architecture: `docs/architecture/2026-08-31-impact-aware-final-verification.md`
 - ADR: `docs/adr/ADR-20260831-impact-aware-final-verification.md`
-- Approved Design package: `design-review-r1`
+- Approved Design package: `design-review-r2`
 - Prior-contract test spec: none; this is a `stage-owned-change-local-v2` change and the approved plan owns verification allocation.
 
 ## Context and orientation
@@ -27,7 +27,7 @@ Canonical public skills are authored only under `skills/`. The current `verify`,
 
 `docs/project-map.md` predates the current v2 consolidated-gate contract and still inventories standalone test-spec ownership, so this plan does not rely on its lifecycle counts or stage topology. The observed runtime and current governed artifacts above provide the bounded orientation basis; project-map refresh is not required to sequence this scoped protocol change.
 
-This change is self-hosting under v2. Implementation may assemble and test a coherent v3 publication candidate, but public v3 activation occurs only after this change and every other nonterminal pre-v3 change is complete or explicitly closed. The last coherent released v2 package remains the bounded authority used for this change's `explain-change -> verify -> pr` closeout. The activated current runtime has no v1/v2 progression branch or compatibility allowlist. Publication or release is not claimed by implementation or Delivery Review.
+This change is self-hosting under v2. Implementation may assemble and test a coherent v3 publication candidate, but public v3 activation occurs only after this change and every other nonterminal pre-v3 change is complete or explicitly closed. M6 uses the immutable reviewed v2 source snapshot `585c2beecea0ddda0ae11ed8f0b1a53b24310052` for this change's bounded `explain-change -> verify -> pr` closeout. The activated current runtime has no v1/v2 progression branch or compatibility allowlist. Publication or release is not claimed by implementation or Delivery Review.
 
 ### Latest-contract simplicity amendment
 
@@ -63,7 +63,7 @@ The current executable product follows one contract: v3. Completed v1/v2 records
 - Requirements: FV-R4-FV-R7, FV-R28, FV-R31-FV-R35, FV-R37, FV-R38; BND-STATE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001; INT-003, INT-004.
 - Architecture responsibility: lifecycle and compatibility interpreter; frozen pre-v3 v2 inventory; `S -> R -> V` identity boundary; atomic activation and rollback boundary.
 - Dependencies:
-  - approved Design package `design-review-r1`;
+  - approved Design package `design-review-r2`;
   - current v2 and manifest-bound v1/unversioned readers;
   - existing lifecycle transaction, schema, and activation-manifest behavior.
 - Implementation scope: Introduce v3 as an inactive, closed contract; define frozen v2 compatibility evidence and fail-closed classification; preserve current v2 scaffolding and routing until M5. Do not remove the standalone skill or activate v3 in this milestone.
@@ -198,7 +198,7 @@ The current executable product follows one contract: v3. Completed v1/v2 records
   - accepted M3 implementation and Code Review;
   - stable v3 runtime, result, and route contracts;
   - canonical skill resource maps and adapter generation pipeline.
-- Implementation scope: Update current governance, workflow specs, canonical skills, resources, templates, schemas, selectors, validators, fixtures, adapter metadata, and release checks for v3-only current behavior. Stage explain-change retirement while preserving the last coherent released v2 package and historical archives until M5.
+- Implementation scope: Update current governance, workflow specs, canonical skills, resources, templates, schemas, selectors, validators, fixtures, adapter metadata, and release checks for v3-only current behavior. Stage explain-change retirement while preserving the hash-bound reviewed v2 snapshot and historical archives until M5.
 - Files/components likely touched:
   - `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md`, current workflow and skill-family specs, and relevant architecture indexes;
   - `skills/verify/`, `skills/workflow/`, `skills/pr/`, `skills/code-review/`, `skills/ci-maintenance/`, and staged `skills/explain-change/` retirement inventory;
@@ -244,9 +244,10 @@ The current executable product follows one contract: v3. Completed v1/v2 records
 - Architecture responsibility: coherent v3 publication boundary; historical readability without progression; standalone skill retirement; generated package and rollback parity.
 - Dependencies:
   - accepted M1-M4 implementations and Code Reviews;
-  - every nonterminal pre-v3 change complete or explicitly closed;
+  - every other nonterminal pre-v3 change complete or explicitly closed;
+  - this implementing v2 change remains the one explicit preactivation exception through M6;
   - reproducible canonical and generated parity with no unresolved material findings.
-- Implementation scope: Prove the pre-v3 completion gate, switch new-change and active selectors to v3, remove executable v1/v2 compatibility branches, remove `skills/explain-change/` and its current publication entries, update the current adapter manifest and release candidate, and prove the complete local publication candidate. Do not publish, tag, release, or reinterpret historical records.
+- Implementation scope: Prove the bounded preactivation inventory with this change as the sole explicit exception; switch candidate selectors to v3; remove executable v1/v2 compatibility branches and `skills/explain-change/` from the candidate; update candidate adapter metadata; and prove the complete local candidate. Do not create activation evidence, publish, tag, release, mutate historical records, or grant the candidate current authority.
 - Files/components likely touched:
   - v3 activation evidence and current schema/runtime selectors;
   - new-change scaffolding and active lifecycle graph;
@@ -257,10 +258,10 @@ The current executable product follows one contract: v3. Completed v1/v2 records
   - TG-20 — Historical v1/v2 records remain readable without mutation or current progression authority, while non-v3 progression, mismatched, unknown, and mixed records fail closed.
   - TG-21 — Current canonical and generated packages omit standalone explain-change, include complete Verify resources, and reject mixed old/new inventories.
   - TG-22 — Narrow unaffected, unknown-impact, fresh-required, failed correction, interrupted report, tail drift, and exact PR-consumption scenarios pass through public integrated paths.
-  - TG-23 — A coherent rollback is possible before first public v3 use; after v3 use, tests reject silent default rollback and require forward-compatible recovery.
-- Evidence expectations: Public new-change and final-route fixtures, pre-v3 completion validation, complete package parity, historical-read/non-progression proof, mixed-package rejection, temporary supported-adapter archives, and broad smoke at the reviewed candidate revision.
+  - TG-23 — The candidate creates no activation evidence, recognizes this exact implementing change as the sole allowed pre-v3 exception, and retains coherent discard/restore recovery; post-activation tests reject silent default rollback and require forward-compatible recovery.
+- Evidence expectations: Public new-change and final-route fixtures, bounded preactivation-inventory validation, absence of activation evidence, complete package parity, historical-read/non-progression proof, mixed-package rejection, temporary supported-adapter archives, and broad smoke at the reviewed candidate revision.
 - Implementation steps:
-  - Run the completion and publication prerequisites without mutation and stop on any incomplete prior change or parity gap.
+  - Run the non-mutating candidate prerequisites and stop on any incomplete pre-v3 change other than this exact implementing change or on any parity gap.
   - Switch current source selectors and new-change scaffolding to v3 while removing v1/v2 progression branches and the standalone authored and published entrypoint in the same slice.
   - Run integrated current-v3, historical-read/non-progression, mixed-package, impact/freshness, correction, report-tail, PR, rollback, and clean-install scenarios.
   - Preserve release publication as an external later action; this milestone creates no release or deployment claim.
@@ -275,7 +276,7 @@ The current executable product follows one contract: v3. Completed v1/v2 records
   - `python scripts/test-adapter-distribution.py`
   - `bash scripts/ci.sh --mode broad-smoke`
 - Expected observable result: The reviewed repository candidate expresses one executable v3 contract, readable non-executable history, one final Verify explanation, and no standalone current explain-change package.
-- Completion criteria: Pre-v3 completion, public v3 flow, impact/freshness semantics, correction ownership, closed evidence tail, historical reads without progression, current package retirement, unknown/mixed rejection, generated parity, and rollback boundary all pass at one reviewed revision.
+- Completion criteria: The non-authoritative v3 candidate, impact/freshness semantics, correction ownership, closed evidence tail, historical reads without progression, candidate package retirement, unknown/mixed rejection, generated parity, and rollback boundary all pass at one reviewed revision; no activation record exists.
 - Required evidence: `docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-v3-publication-candidate.md`
 - Review handoff: Final implementation-milestone Code Review of activation atomicity, exact compatibility, current entrypoint removal, evidence applicability, identity tail, and generated parity.
 - Optional commit boundary: `M5: assemble v3 final verification publication candidate`
@@ -283,7 +284,7 @@ The current executable product follows one contract: v3. Completed v1/v2 records
   - The cutover could strand an unfinished pre-v3 change or publish one mixed adapter.
   - Removing the canonical skill could be mistaken for permission to skip this change's registered v2 closeout.
 - Rollback/recovery:
-  - Before public v3 use, restore the last coherent v2 graph, skill inventory, manifest, and generated package together. After v3 use, preserve v3 records and ship a forward-compatible correction.
+  - Before activation, discard the non-authoritative candidate and restore the reviewed v2 source snapshot. After any later v3 use, preserve v3 records and ship a forward-compatible correction.
 
 ### M6. Complete v2 lifecycle closeout before release activation
 
@@ -295,7 +296,8 @@ The current executable product follows one contract: v3. Completed v1/v2 records
   - M1-M5 implementation milestones closed with required Code Review evidence;
   - no unresolved material findings or open review resolution;
   - complete current-v3 candidate and historical-v2 validation evidence;
-  - access to the last coherent v2 skill/runtime package for this record's registered closeout.
+  - immutable reviewed v2 source snapshot `585c2beecea0ddda0ae11ed8f0b1a53b24310052`, whose deterministic Git archive SHA-256 is `d12bca65240cd19f71f2d438a736fb89e6d9504e51b1e8e1a488c1f97c78465c`;
+  - archived `skills/explain-change/SKILL.md` SHA-256 `912b3941bfc8e8077fb3fe416869ea530657423eec423bc85235213d9887110f`, archived `skills/verify/SKILL.md` SHA-256 `7acc2efd8a91408b5e3c2cb77f8f56447af095b14c9ee8cd8a2ebae5dfcfa6ce`, and archived lifecycle CLI SHA-256 `0faba4bfc7478c3575b560e2067794a25a4587039a3d31ab8b179ab16e557c7a`.
 - Implementation scope: No product implementation. Assemble final holistic review, current v2 explain-change evidence, final Verify evidence, and PR handoff for this change. Publication, tagging, release, deployment, and post-v3 migration remain outside this milestone.
 - Files/components likely touched:
   - `docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/explain-change.md` under this record's v2 contract;
@@ -303,22 +305,25 @@ The current executable product follows one contract: v3. Completed v1/v2 records
 - Required verification:
   - TG-24 — Trace every FV requirement and applicable boundary through milestone, TG, concrete proof, reviewed implementation, and current evidence.
   - TG-25 — Re-run integrated v3, historical compatibility, package parity, report-tail, failure/recovery, and exact PR handoff checks against the final reviewed candidate.
-  - TG-26 — Prove this change remains v2 throughout closeout and no release-activation evidence predates its successful Verify result.
+  - TG-26 — Prove this change remains v2 throughout closeout; the exact archived skill and CLI bytes match the bound hashes; lifecycle mutations and read-back use that extracted snapshot against this repository; and no release-activation evidence predates successful Verify.
   - TG-27 — Prove the repository diff contains no mutable lifecycle state in the plan, no unresolved findings, no stale authoritative artifact, and no unsupported hosted-CI or release claim.
-- Evidence expectations: Final holistic Code Review receipt, closed resolution when triggered, v2 explain-change artifact, exact commands and results in Verify evidence, lifecycle validators, and PR handoff evidence without release claims.
+- Evidence expectations: Final holistic Code Review receipt, closed resolution when triggered, archive identity and hash checks, extracted-snapshot invocation evidence, v2 explain-change artifact, exact lifecycle mutation/read-back commands and results, current lifecycle validators, and PR handoff evidence without release claims.
 - Implementation steps:
   - Resolve or disposition every implementation-review finding through its owning stage and required rereview.
   - Run final holistic Code Review over the complete M1-M5 diff and cross-milestone interactions.
-  - Invoke the registered v2 explain-change stage from the last coherent v2 package and bind it to the reviewed subject.
-  - Run final Verify using the current v2 contract and approved plan commands; prepare PR handoff only if branch readiness passes.
-  - Leave any public v3 release to a separately authorized post-completion release action that rechecks the activation preconditions.
+  - Export `585c2beecea0ddda0ae11ed8f0b1a53b24310052` with `git archive` into a fresh temporary directory, verify the archive and three bound-file hashes above before reading or executing it, and do not install it over current canonical sources.
+  - Invoke the extracted v2 explain-change and Verify instructions against the exact final reviewed subject. Use only the extracted lifecycle CLI for their lifecycle mutations, then read back the resulting state with both the extracted CLI and current read-only validators; any interpretation mismatch blocks closeout.
+  - Prepare PR handoff only if the archived v2 Verify grants branch readiness and current read-back agrees.
+  - Leave universal zero-nonterminal-pre-v3 proof, activation-record creation, publication, and release to a separately authorized post-M6 action.
 - Validation commands:
+  - `bash -c 'test "$(git archive --format=tar 585c2beecea0ddda0ae11ed8f0b1a53b24310052 | sha256sum | cut -d" " -f1)" = d12bca65240cd19f71f2d438a736fb89e6d9504e51b1e8e1a488c1f97c78465c'`
+  - `bash -c 'test "$(git show 585c2beecea0ddda0ae11ed8f0b1a53b24310052:skills/explain-change/SKILL.md | sha256sum | cut -d" " -f1)" = 912b3941bfc8e8077fb3fe416869ea530657423eec423bc85235213d9887110f && test "$(git show 585c2beecea0ddda0ae11ed8f0b1a53b24310052:skills/verify/SKILL.md | sha256sum | cut -d" " -f1)" = 7acc2efd8a91408b5e3c2cb77f8f56447af095b14c9ee8cd8a2ebae5dfcfa6ce && test "$(git show 585c2beecea0ddda0ae11ed8f0b1a53b24310052:packages/rigorloop/dist/bin/rigorloop.js | sha256sum | cut -d" " -f1)" = 0faba4bfc7478c3575b560e2067794a25a4587039a3d31ab8b179ab16e557c7a'`
   - `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-31-simplify-final-verification-retire-explain-change`
   - `python scripts/validate-change-metadata.py docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/change.yaml`
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/impact-aware-final-verification.md --path docs/architecture/2026-08-31-impact-aware-final-verification.md --path docs/adr/ADR-20260831-impact-aware-final-verification.md --path docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md --path docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/change.yaml`
   - `bash scripts/ci.sh --mode broad-smoke`
 - Expected observable result: Current evidence proves the coherent v3 candidate while this change completes its immutable v2 route and makes no premature release or v3 readiness claim.
-- Completion criteria: All implementation milestones and reviews are closed; every change-level group passes; v2 explanation and verification are current; PR handoff is authorized by its owner; release activation remains gated on completed pre-v3 inventory.
+- Completion criteria: All implementation milestones and reviews are closed; every change-level group passes; the hash-bound archived v2 explanation, verification, lifecycle mutation, and dual read-back evidence are current; PR handoff is authorized by its owner; no activation evidence exists.
 - Required evidence: Final holistic review receipt, closed review resolution when triggered, v2 explain-change artifact, conditional CI evidence, Verify report, and PR handoff evidence.
 - Review handoff: Registered v2 `explain-change`, then `verify`, then `pr`; a separately authorized release action may evaluate v3 activation afterward.
 - Optional commit boundary: `closeout: verify v3 publication candidate under v2`
@@ -326,7 +331,7 @@ The current executable product follows one contract: v3. Completed v1/v2 records
   - A contributor could mistake a validated candidate for a published v3 release.
   - The retired current skill source could obscure the last coherent v2 closeout procedure.
 - Rollback/recovery:
-  - Keep closeout not-ready, restore or invoke the exact last coherent v2 package for this record, route any defect to its owning milestone, and rerun only invalidated evidence and review.
+  - Keep closeout not-ready if any snapshot hash, extracted invocation, lifecycle mutation, or dual read-back check fails; route the defect to its owning milestone and rerun only invalidated evidence and review. Do not substitute another historical package without revising and rereviewing this plan.
 
 ## Change-level verification
 
@@ -347,8 +352,8 @@ The current executable product follows one contract: v3. Completed v1/v2 records
 ### TG-FINAL-03. V3 activation and historical readability
 
 - Covers: FV-R1-FV-R7, FV-R28, FV-R31-FV-R35; M1, M3, M5, M6; BND-STATE-001, BND-COMPAT-001; INT-004.
-- Demonstrate: Current v3 has no standalone stage, skill, or legacy progression branch; historical records remain readable without current authority; non-v3 progression, unknown, mismatched, mixed, and active-explain v3 inputs fail closed; this change completes through the released v2 package before public v3 activation; rollback is coherent only before first v3 use.
-- Evidence expectations: Completion-gate validation, current and historical-read fixtures, package inventory checks, current-change closeout identity, and rollback/forward-recovery tests.
+- Demonstrate: The M5 candidate has no standalone stage, skill, legacy progression branch, or activation evidence; historical records remain readable without current authority; non-v3 progression, unknown, mismatched, mixed, and active-explain v3 inputs fail closed; M6 closes this change through the exact hash-bound v2 snapshot; only the later release action proves zero nonterminal pre-v3 changes and activates; rollback is coherent only before first v3 use.
+- Evidence expectations: Bounded candidate-inventory validation, archive and bound-file hashes, extracted v2 mutation plus dual read-back proof, current and historical-read fixtures, package inventory checks, absence of premature activation evidence, post-M6 zero-nonterminal proof, and rollback/forward-recovery tests.
 - Non-applicability: Milestone-local proof is insufficient because compatibility and activation span runtime, records, skills, schemas, and release publication.
 
 ### TG-FINAL-04. Canonical, generated, and validator parity
@@ -378,17 +383,17 @@ The current executable product follows one contract: v3. Completed v1/v2 records
 - Risk: Historical readability is mistaken for current authority.
   - Recovery: Keep historical paths read-only and reject every non-v3 progression, unknown, or mixed state before consistency checks.
 - Risk: The implementing v2 change is stranded or reinterpreted during cutover.
-  - Recovery: Complete it through the last coherent released v2 package in M6 and forbid public activation before its closeout; do not add it to current v3 authority.
+  - Recovery: Complete it through the exact hash-bound reviewed v2 snapshot in M6 and forbid public activation before its closeout; do not add it to current v3 authority.
 - Risk: Report self-reference or post-review drift invalidates the reviewed subject.
   - Recovery: Omit report commit identity, register report content, close the allowed evidence tail, and stale any product or governing drift.
 
 ## Dependencies
 
-- Accepted proposal, approved Design package `design-review-r1`, and exact primary-plan Delivery Review approval.
+- Accepted proposal, approved Design package `design-review-r2`, and exact primary-plan Delivery Review approval.
 - M1 classification precedes v3 semantics; M2 evidence semantics precede routing; M3 routing precedes package authority wording; M4 parity precedes M5 cutover candidate; M6 follows all implementation Code Reviews.
 - Each implementation milestone receives direct proof and independent Code Review before its dependent milestone begins.
-- M5 blocks unless every nonterminal pre-v3 change is complete or explicitly closed.
-- This change remains v2 through M6. Public v3 release activation is a separately authorized action after completion and must recheck inventory, candidate identity, generated parity, and rollback conditions.
+- M5 blocks unless every nonterminal pre-v3 change other than this exact implementing change is complete or explicitly closed. It produces no activation evidence.
+- This change remains v2 through M6 and closes with the hash-bound reviewed snapshot above. A separately authorized post-M6 release action must then prove zero nonterminal pre-v3 changes, recheck candidate identity and generated parity, create the activation record, and publish atomically.
 - No new test-spec artifact is created. Verification groups in this plan are the v2 Delivery evidence map.
 - Generated skills and adapter archives derive from canonical sources and are not hand edited.
 

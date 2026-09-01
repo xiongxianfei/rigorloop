@@ -17,7 +17,7 @@ artifact_states:
     path: docs/architecture/2026-08-31-impact-aware-final-verification.md
     role: primary
   plan:
-    authoring_evidence: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/plan-authoring-r2.md
+    authoring_evidence: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/plan-authoring-r3.md
     kind: plan
     lifecycle_state: review-required
     path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
@@ -150,9 +150,9 @@ lifecycle_cli:
       artifact_kind: plan
       artifact_path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
       artifact_role: primary
-      artifact_sha256: e1c93abe4a47ee06615b974dc3c90d575246116c89ab4596ffce80e465f0f959
-      authoring_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/plan-authoring-r2.md
-      authoring_evidence_sha256: 4b06a32844ae1556af541c36e19d5b3ee93143a98ccac2191ea070c144dedf1a
+      artifact_sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
+      authoring_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/plan-authoring-r3.md
+      authoring_evidence_sha256: 400580020f6bdc626d72197a06df1ed205e0c33540bc5fc2cca621ec4ebb69e9
       stage_authority: plan
     proposal:
       artifact_kind: proposal
