@@ -27,3 +27,19 @@ Status: approved
 Material findings: none
 Record: reviews/delivery-review-r1.md
 Recording status: recorded
+
+## Detailed review entries
+
+### Review entry
+
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: r1
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: FV-M1-CR1, FV-M1-CR2
+Finding ID: FV-M1-CR1
+Finding ID: FV-M1-CR2
+Open findings: FV-M1-CR1, FV-M1-CR2
+Recording status: recorded
