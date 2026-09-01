@@ -8,4 +8,6 @@ Bind the explanation to the exact reviewed product subject, final Code Review, D
 
 The report must not embed its own Git commit identity. After the reviewed subject, only the report and its matching Verify-owned lifecycle validation registration may form the evidence tail. Product, requirement, architecture, plan, dependency, generated-product, unrelated-documentation, identity, policy, evidence, or review drift makes the prior result stale.
 
+Read back the exact whole report; unknown trailing bytes invalidate it. A current tail contains exactly the report and `change.yaml#lifecycle_cli.validations.verify-result`. The registration binds the report path and SHA-256 content identity, verified subject revision, and `verify` authority. Missing, duplicate, singleton, mismatched, malformed, or additional tail state grants no readiness.
+
 An identical complete registered replay is idempotent. Any changed basis or content is a new attempt and requires re-evaluation. Report write or registration failure leaves no current readiness authority.

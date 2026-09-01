@@ -2597,8 +2597,8 @@ class LifecycleContractClassificationTests(unittest.TestCase):
 class FinalVerificationProtocolTests(unittest.TestCase):
     def basis(self) -> dict[str, str]:
         return {
-            "repository_identity": "github.com/example/project",
-            "remote_identity": "origin:github.com/example/project",
+            "repository_identity": "repo:sha256:" + "1" * 64,
+            "remote_identity": "remote:sha256:" + "2" * 64,
             "base_branch": "main",
             "base_revision": "d" * 40,
             "merge_base_revision": "e" * 40,
@@ -2656,9 +2656,25 @@ class FinalVerificationProtocolTests(unittest.TestCase):
                 "execution": "reused-pass",
                 "observed_result": "pass",
                 "cache_hit": False,
+                "proof": {
+                    "kind": "prior-evidence",
+                    "evidence_path": "docs/changes/example/evidence/tg-06.md",
+                    "evidence_sha256": "sha256:" + "3" * 64,
+                    "subject_revision": "a" * 40,
+                },
             }],
             "always_current": [
-                {"check_id": check_id, "execution": "actual-run", "observed_result": "pass"}
+                {
+                    "check_id": check_id,
+                    "execution": "actual-run",
+                    "observed_result": "pass",
+                    "proof": {
+                        "kind": "command",
+                        "command": ["python", "scripts/validate-change-metadata.py", "docs/changes/example/change.yaml"],
+                        "evidence_path": "docs/changes/example/evidence/always-current.md",
+                        "evidence_sha256": "sha256:" + "4" * 64,
+                    },
+                }
                 for check_id in (
                     "current-change-and-repository-identity",
                     "reviewed-subject-and-review-identity",
@@ -2697,6 +2713,7 @@ class FinalVerificationProtocolTests(unittest.TestCase):
             ("basis-status", {**self.successful_result(), "basis_status": {**self.successful_result()["basis_status"], "final_diff": "probably-current"}}, "basis_status.final_diff: unknown_value probably-current"),
             ("ci-status", {**self.successful_result(), "ci_status": "probably-passed"}, "ci_status: unknown_value probably-passed"),
             ("always-current-check", {**self.successful_result(), "always_current": [{**self.successful_result()["always_current"][0], "check_id": "probably-current"}, *self.successful_result()["always_current"][1:]]}, "always_current[0].check_id: unknown_value probably-current"),
+            ("proof-kind", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "proof": {"kind": "asserted"}}]}, "evidence[0].proof.kind: unknown_value asserted"),
         )
         for name, result, expected in cases:
             with self.subTest(name=name):
@@ -2705,7 +2722,7 @@ class FinalVerificationProtocolTests(unittest.TestCase):
     def test_target_basis_requires_exact_singleton_identities(self) -> None:
         result = self.successful_result()
         result["basis"] = {**self.basis(), "final_review_id": ["r1", "r2"]}
-        self.assertIn("basis.final_review_id: expected exactly one non-empty scalar identity", validate_final_verification_result(result))
+        self.assertIn("basis.final_review_id: invalid canonical identity", validate_final_verification_result(result))
 
         stale = self.successful_result()
         stale["basis_status"]["final_review"] = "stale"
@@ -2736,6 +2753,21 @@ class FinalVerificationProtocolTests(unittest.TestCase):
         self.assertEqual(evaluate_evidence_decision(self.obligation(new_obligation=True), impacts), "newly-required")
         self.assertEqual(evaluate_evidence_decision(self.obligation(proved_surfaces=["runtime-behavior", "generated-output"]), impacts), "rerun")
 
+    def test_proved_surfaces_are_closed_unique_and_mapped_before_freshness(self) -> None:
+        for proved_surfaces, expected in (
+            (["magic-surface"], "evidence[0].proved_surfaces[0]: unknown_value magic-surface"),
+            (["runtime-behavior", "runtime-behavior"], "evidence[0].proved_surfaces: duplicate runtime-behavior"),
+            (["generated-output"], "evidence[0].proved_surfaces[0]: unclassified generated-output"),
+        ):
+            result = self.successful_result()
+            result["evidence"][0].update({"freshness": "fresh-required", "decision": "rerun", "execution": "actual-run", "proved_surfaces": proved_surfaces, "proof": {
+                "kind": "command", "command": ["npm", "test"], "evidence_path": "docs/changes/example/evidence/test.md", "evidence_sha256": "sha256:" + "5" * 64,
+            }})
+            with self.subTest(proved_surfaces=proved_surfaces):
+                self.assertIn(expected, validate_final_verification_result(result))
+        with self.assertRaisesRegex(ValueError, "unknown_value magic-surface"):
+            evaluate_evidence_decision(self.obligation(freshness="fresh-required", proved_surfaces=["magic-surface"]), self.impact())
+
     def test_cache_hit_cannot_satisfy_required_execution(self) -> None:
         result = self.successful_result()
         result["evidence"] = [{
@@ -2745,6 +2777,7 @@ class FinalVerificationProtocolTests(unittest.TestCase):
             "execution": "cache-hit",
             "observed_result": "pass",
             "cache_hit": True,
+            "proof": {"kind": "cache", "cache_key": "sha256:" + "6" * 64},
         }]
         self.assertIn("evidence[0].execution: rerun requires actual-run or hosted-observation", validate_final_verification_result(result))
 
@@ -2781,6 +2814,23 @@ class FinalVerificationProtocolTests(unittest.TestCase):
         result["report_commit_identity"] = "f" * 40
         self.assertIn("result: Verify report must not embed its own Git commit identity", validate_final_verification_result(result))
 
+        with self.assertRaisesRegex(ValueError, "trailing or malformed content"):
+            parse_verify_report(rendered + "trailing\n")
+
+    def test_execution_kinds_require_exact_proof_identity(self) -> None:
+        for target, index in (("evidence", 0), ("always_current", 0)):
+            result = self.successful_result()
+            result[target][index]["proof"] = None
+            with self.subTest(target=target):
+                self.assertTrue(any("proof" in error for error in validate_final_verification_result(result)))
+
+        hosted = self.successful_result()
+        hosted["always_current"][0].update({"execution": "hosted-observation", "proof": {
+            "kind": "hosted", "provider": "github-actions", "run_id": "12345", "check_name": "test", "subject_revision": "a" * 40,
+            "evidence_path": "docs/changes/example/evidence/hosted.md", "evidence_sha256": "sha256:" + "7" * 64,
+        }})
+        self.assertEqual(validate_final_verification_result(hosted), [])
+
     def test_report_write_and_registration_failure_grant_no_authority(self) -> None:
         for failure in ("report-write-failure", "registration-failure"):
             result = self.successful_result()
@@ -2795,11 +2845,103 @@ class FinalVerificationProtocolTests(unittest.TestCase):
         self.assertEqual(replay_disposition(result, changed), "changed-basis")
 
     def test_tail_drift_allows_only_verify_owned_paths_and_fields(self) -> None:
-        self.assertEqual(tail_disposition(["docs/changes/example/verify-report.md", "docs/changes/example/change.yaml#validation_events.verify"], "example"), "current")
+        report = render_verify_report(self.successful_result())
+        report_sha = "sha256:" + hashlib.sha256(report.encode()).hexdigest()
+        tail = {
+            "changed_paths": ["docs/changes/example/verify-report.md", "docs/changes/example/change.yaml#lifecycle_cli.validations.verify-result"],
+            "report_path": "docs/changes/example/verify-report.md",
+            "report_content": report,
+            "report_sha256": report_sha,
+            "registration": {
+                "selector": "lifecycle_cli.validations.verify-result",
+                "evidence_path": "docs/changes/example/verify-report.md",
+                "evidence_sha256": report_sha,
+                "verified_subject_revision": "a" * 40,
+                "stage_authority": "verify",
+            },
+        }
+        self.assertEqual(tail_disposition(tail, "example", "a" * 40), "current")
         for path in ("src/product.py", "specs/feature.md", "docs/plans/feature.md", "package-lock.json", "docs/unrelated.md"):
             with self.subTest(path=path):
-                self.assertEqual(tail_disposition([path], "example"), "stale")
-        self.assertEqual(tail_disposition(["docs/changes/other/verify-report.md"], "example"), "stale")
+                changed = copy.deepcopy(tail)
+                changed["changed_paths"].append(path)
+                self.assertEqual(tail_disposition(changed, "example", "a" * 40), "stale")
+        for mutate in (
+            lambda value: value.update({"changed_paths": []}),
+            lambda value: value.update({"changed_paths": [value["report_path"]]}),
+            lambda value: value.update({"changed_paths": ["docs/changes/example/change.yaml#lifecycle_cli.validations.verify-result"]}),
+            lambda value: value.update({"changed_paths": [value["report_path"], value["report_path"]]}),
+            lambda value: value["registration"].update({"evidence_sha256": "sha256:" + "0" * 64}),
+            lambda value: value["registration"].update({"verified_subject_revision": "f" * 40}),
+            lambda value: value["registration"].update({"selector": "validation_events.verify"}),
+        ):
+            changed = copy.deepcopy(tail)
+            mutate(changed)
+            self.assertEqual(tail_disposition(changed, "example", "a" * 40), "incomplete")
+
+    def test_success_rejects_duplicate_checks_empty_explanation_and_malformed_basis(self) -> None:
+        duplicate = self.successful_result()
+        duplicate["always_current"].append(copy.deepcopy(duplicate["always_current"][0]))
+        self.assertIn("always_current[8].check_id: duplicate current-change-and-repository-identity", validate_final_verification_result(duplicate))
+        for value in ("   ", ["valid", "   "]):
+            result = self.successful_result()
+            result["explanation"]["what_changed"] = value
+            self.assertIn("successful result explanation fields must be non-empty", validate_final_verification_result(result))
+        for field, value in (
+            ("repository_identity", "github.com/example/project"),
+            ("remote_identity", "origin"),
+            ("base_branch", "refs/../main"),
+            ("head_branch", "feature.lock"),
+            ("base_revision", "not-a-revision"),
+            ("merge_base_revision", "abc"),
+            ("verified_subject_revision", "x"),
+            ("governed_change_id", 12),
+            ("final_review_id", "review/r1"),
+            ("design_package_id", "design r1"),
+            ("delivery_plan_id", "../plan.md"),
+            ("final_diff_sha256", "not-a-digest"),
+        ):
+            result = self.successful_result()
+            result["basis"][field] = value
+            with self.subTest(field=field):
+                self.assertTrue(any(error.startswith(f"basis.{field}:") for error in validate_final_verification_result(result)))
+
+    def test_javascript_and_python_result_conformance_matches(self) -> None:
+        cases = [self.successful_result()]
+        duplicate = self.successful_result()
+        duplicate["always_current"].append(copy.deepcopy(duplicate["always_current"][0]))
+        cases.append(duplicate)
+        whitespace = self.successful_result()
+        whitespace["explanation"]["what_changed"] = ["valid", "   "]
+        cases.append(whitespace)
+        unknown_surface = self.successful_result()
+        unknown_surface["evidence"][0]["proved_surfaces"] = ["magic-surface"]
+        cases.append(unknown_surface)
+        malformed_basis = self.successful_result()
+        malformed_basis["basis"]["verified_subject_revision"] = "not-a-revision"
+        cases.append(malformed_basis)
+        missing_proof = self.successful_result()
+        missing_proof["always_current"][0]["proof"] = None
+        cases.append(missing_proof)
+
+        node_source = """
+import { validateFinalVerificationResult } from './packages/rigorloop/dist/lib/final-verification-protocol.js';
+let input = '';
+for await (const chunk of process.stdin) input += chunk;
+process.stdout.write(JSON.stringify(JSON.parse(input).map(validateFinalVerificationResult)));
+"""
+        completed = subprocess.run(
+            ["node", "--input-type=module", "--eval", node_source],
+            input=json.dumps(cases),
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            check=True,
+        )
+        self.assertEqual(
+            json.loads(completed.stdout),
+            [validate_final_verification_result(case) for case in cases],
+        )
 
 
 if __name__ == "__main__":

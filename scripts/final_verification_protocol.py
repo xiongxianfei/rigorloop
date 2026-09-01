@@ -9,6 +9,9 @@ affirmative evidence.
 from __future__ import annotations
 
 import json
+import hashlib
+import re
+from pathlib import PurePosixPath
 from typing import Any
 
 
@@ -35,6 +38,7 @@ EVIDENCE_RESULTS = {"pass", "fail", "blocked", "missing", "conflicting", "unknow
 EXECUTION_KINDS = {"actual-run", "hosted-observation", "reused-pass", "cache-hit", "not-run"}
 CI_STATUSES = {"passed", "failed", "pending", "unavailable", "not-required"}
 AUTHORITY_STATUSES = {"current", "stale", "missing", "conflicting", "ambiguous"}
+PROOF_KINDS = {"command", "hosted", "prior-evidence", "cache"}
 
 BASIS_FIELDS = {
     "repository_identity",
@@ -94,18 +98,27 @@ EXPLANATION_FIELDS = {
 }
 ACTUAL_EXECUTIONS = {"actual-run", "hosted-observation"}
 REPORT_MARKER = "```json final-verification-v3\n"
-TAIL_REPORT_SUFFIX = "/verify-report.md"
-TAIL_CHANGE_FIELD = "/change.yaml#validation_events.verify"
+REPORT_PREFIX = "# Verify report\n\n" + REPORT_MARKER
+REPORT_SUFFIX = "\n```\n"
+SAFE_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+REVISION_RE = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
+DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+REPOSITORY_ID_RE = re.compile(r"^repo:sha256:[0-9a-f]{64}$")
+REMOTE_ID_RE = re.compile(r"^remote:sha256:[0-9a-f]{64}$")
+BRANCH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*[A-Za-z0-9]$|^[A-Za-z0-9]$")
+EVIDENCE_FIELDS = {
+    "evidence_id", "proved_surfaces", "freshness", "existing_result",
+    "authority_current", "identity_current", "environment_current", "conflicting",
+    "new_obligation", "decision", "decision_rationale", "execution",
+    "observed_result", "cache_hit", "proof",
+}
+ALWAYS_CURRENT_FIELDS = {"check_id", "execution", "observed_result", "proof"}
 
 
 def _unknown(prefix: str, value: Any, allowed: set[str]) -> list[str]:
     if not isinstance(value, str) or value not in allowed:
         return [f"{prefix}: unknown_value {value}"]
     return []
-
-
-def _nonempty_scalar(value: Any) -> bool:
-    return isinstance(value, (str, int)) and not isinstance(value, bool) and str(value).strip() != ""
 
 
 def _nonempty_strings(value: Any) -> bool:
@@ -124,8 +137,106 @@ def _contains_self_commit_identity(value: Any) -> bool:
     return False
 
 
+def _repository_path(value: Any, suffix: str | None = None) -> bool:
+    if not isinstance(value, str) or not value or "\\" in value or value.startswith("/"):
+        return False
+    path = PurePosixPath(value)
+    if value != path.as_posix() or any(part in {"", ".", ".."} for part in path.parts):
+        return False
+    return suffix is None or value.endswith(suffix)
+
+
+def _branch(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and BRANCH_RE.fullmatch(value) is not None
+        and ".." not in value
+        and "//" not in value
+        and "@{" not in value
+        and not value.endswith(".lock")
+    )
+
+
+def _validate_basis_identity(field: str, value: Any) -> bool:
+    if field == "repository_identity":
+        return isinstance(value, str) and REPOSITORY_ID_RE.fullmatch(value) is not None
+    if field == "remote_identity":
+        return isinstance(value, str) and REMOTE_ID_RE.fullmatch(value) is not None
+    if field in {"base_revision", "merge_base_revision", "verified_subject_revision"}:
+        return isinstance(value, str) and REVISION_RE.fullmatch(value) is not None
+    if field in {"base_branch", "head_branch"}:
+        return _branch(value)
+    if field in {"governed_change_id", "final_review_id", "design_package_id"}:
+        return isinstance(value, str) and SAFE_ID_RE.fullmatch(value) is not None
+    if field == "delivery_plan_id":
+        return _repository_path(value, ".md") and value.startswith("docs/plans/")
+    if field == "final_diff_sha256":
+        return isinstance(value, str) and DIGEST_RE.fullmatch(value) is not None
+    return False
+
+
+def _validate_proof(proof: Any, execution: Any, prefix: str) -> list[str]:
+    if execution == "not-run" and proof is None:
+        return []
+    if not isinstance(proof, dict):
+        return [f"{prefix}.proof: required mapping for {execution}"]
+    kind = proof.get("kind")
+    errors = _unknown(f"{prefix}.proof.kind", kind, PROOF_KINDS)
+    if errors:
+        return errors
+    expected_kind = {
+        "actual-run": "command",
+        "hosted-observation": "hosted",
+        "reused-pass": "prior-evidence",
+        "cache-hit": "cache",
+    }.get(execution)
+    if expected_kind is None:
+        return [f"{prefix}.proof: execution {execution} must not carry readiness proof"]
+    if kind != expected_kind:
+        return [f"{prefix}.proof.kind: expected {expected_kind} for {execution}"]
+    shapes = {
+        "command": {"kind", "command", "evidence_path", "evidence_sha256"},
+        "hosted": {"kind", "provider", "run_id", "check_name", "subject_revision", "evidence_path", "evidence_sha256"},
+        "prior-evidence": {"kind", "evidence_path", "evidence_sha256", "subject_revision"},
+        "cache": {"kind", "cache_key"},
+    }
+    if set(proof) != shapes[kind]:
+        errors.append(f"{prefix}.proof: invalid {kind} proof fields")
+        return errors
+    if kind == "command" and not _nonempty_strings(proof.get("command")):
+        errors.append(f"{prefix}.proof.command: expected exact non-empty argv")
+    if kind == "hosted":
+        for field in ("provider", "run_id", "check_name"):
+            if not isinstance(proof.get(field), str) or not proof[field].strip():
+                errors.append(f"{prefix}.proof.{field}: required")
+    if kind in {"hosted", "prior-evidence"} and (
+        not isinstance(proof.get("subject_revision"), str)
+        or REVISION_RE.fullmatch(proof["subject_revision"]) is None
+    ):
+        errors.append(f"{prefix}.proof.subject_revision: expected immutable Git revision")
+    if kind in {"command", "hosted", "prior-evidence"}:
+        if not _repository_path(proof.get("evidence_path")):
+            errors.append(f"{prefix}.proof.evidence_path: expected normalized repository-relative path")
+        if not isinstance(proof.get("evidence_sha256"), str) or DIGEST_RE.fullmatch(proof["evidence_sha256"]) is None:
+            errors.append(f"{prefix}.proof.evidence_sha256: expected sha256 identity")
+    if kind == "cache" and (not isinstance(proof.get("cache_key"), str) or DIGEST_RE.fullmatch(proof["cache_key"]) is None):
+        errors.append(f"{prefix}.proof.cache_key: expected sha256 identity")
+    return errors
+
+
 def evaluate_evidence_decision(obligation: dict[str, Any], impacts: list[dict[str, Any]]) -> str:
     """Select the conservative decision from already-asserted semantic facts."""
+    proved_surfaces = obligation.get("proved_surfaces")
+    if not _nonempty_strings(proved_surfaces):
+        raise ValueError("proved_surfaces: expected non-empty closed surface list")
+    if len(set(proved_surfaces)) != len(proved_surfaces):
+        raise ValueError("proved_surfaces: duplicate surface")
+    by_surface = {item.get("surface"): item for item in impacts}
+    for surface in proved_surfaces:
+        if surface not in IMPACT_SURFACES:
+            raise ValueError(f"proved_surfaces: unknown_value {surface}")
+        if surface not in by_surface:
+            raise ValueError(f"proved_surfaces: unclassified {surface}")
     freshness = obligation.get("freshness")
     if freshness not in FRESHNESS_CLASSES:
         raise ValueError(f"freshness: unknown_value {freshness}")
@@ -134,10 +245,6 @@ def evaluate_evidence_decision(obligation: dict[str, Any], impacts: list[dict[st
     if freshness in {"always-current", "fresh-required"}:
         return "rerun"
 
-    by_surface = {item.get("surface"): item for item in impacts}
-    proved_surfaces = obligation.get("proved_surfaces")
-    if not _nonempty_strings(proved_surfaces):
-        return "rerun"
     relevant = [by_surface.get(surface) for surface in proved_surfaces]
     if any(item is None or item.get("state") != "unaffected" or not _nonempty_strings(item.get("affirmative_evidence")) for item in relevant):
         return "rerun"
@@ -177,6 +284,13 @@ def validate_final_verification_result(result: Any) -> list[str]:
             errors.extend(_unknown(f"evidence[{index}].existing_result", item.get("existing_result"), EVIDENCE_RESULTS))
             errors.extend(_unknown(f"evidence[{index}].observed_result", item.get("observed_result"), EVIDENCE_RESULTS))
             errors.extend(_unknown(f"evidence[{index}].execution", item.get("execution"), EXECUTION_KINDS))
+            proved_surfaces = item.get("proved_surfaces")
+            if isinstance(proved_surfaces, list):
+                for surface_index, surface in enumerate(proved_surfaces):
+                    errors.extend(_unknown(f"evidence[{index}].proved_surfaces[{surface_index}]", surface, IMPACT_SURFACES))
+            proof = item.get("proof")
+            if isinstance(proof, dict):
+                errors.extend(_unknown(f"evidence[{index}].proof.kind", proof.get("kind"), PROOF_KINDS))
     always_current = result.get("always_current")
     if isinstance(always_current, list):
         for index, item in enumerate(always_current):
@@ -185,6 +299,9 @@ def validate_final_verification_result(result: Any) -> list[str]:
             errors.extend(_unknown(f"always_current[{index}].check_id", item.get("check_id"), ALWAYS_CURRENT_CHECKS))
             errors.extend(_unknown(f"always_current[{index}].execution", item.get("execution"), EXECUTION_KINDS))
             errors.extend(_unknown(f"always_current[{index}].observed_result", item.get("observed_result"), EVIDENCE_RESULTS))
+            proof = item.get("proof")
+            if isinstance(proof, dict):
+                errors.extend(_unknown(f"always_current[{index}].proof.kind", proof.get("kind"), PROOF_KINDS))
     errors.extend(_unknown("ci_status", result.get("ci_status"), CI_STATUSES))
     if errors:
         return errors
@@ -201,10 +318,10 @@ def validate_final_verification_result(result: Any) -> list[str]:
         errors.append(f"basis fields: expected exactly {sorted(BASIS_FIELDS)}")
     else:
         for field in sorted(BASIS_FIELDS):
-            if result.get("outcome") == "successful" and not _nonempty_scalar(basis[field]):
-                errors.append(f"basis.{field}: expected exactly one non-empty scalar identity")
-            elif result.get("outcome") != "successful" and basis[field] is not None and not _nonempty_scalar(basis[field]):
-                errors.append(f"basis.{field}: expected one non-empty scalar identity or null")
+            if result.get("outcome") == "successful" and not _validate_basis_identity(field, basis[field]):
+                errors.append(f"basis.{field}: invalid canonical identity")
+            elif result.get("outcome") != "successful" and basis[field] is not None and not _validate_basis_identity(field, basis[field]):
+                errors.append(f"basis.{field}: expected canonical identity or null")
     if not isinstance(basis_status, dict) or set(basis_status) != BASIS_STATUS_FIELDS:
         errors.append(f"basis_status fields: expected exactly {sorted(BASIS_STATUS_FIELDS)}")
 
@@ -233,14 +350,25 @@ def validate_final_verification_result(result: Any) -> list[str]:
         if not isinstance(item, dict):
             errors.append(f"evidence[{index}]: expected mapping")
             continue
+        if set(item) != EVIDENCE_FIELDS:
+            errors.append(f"evidence[{index}] fields: expected closed evidence entry")
         evidence_id = item.get("evidence_id")
-        if not _nonempty_scalar(evidence_id):
-            errors.append(f"evidence[{index}].evidence_id: required")
+        if not isinstance(evidence_id, str) or SAFE_ID_RE.fullmatch(evidence_id) is None:
+            errors.append(f"evidence[{index}].evidence_id: expected safe identifier")
         elif evidence_id in seen_evidence:
             errors.append(f"evidence[{index}].evidence_id: duplicate {evidence_id}")
         seen_evidence.add(evidence_id)
-        if not _nonempty_strings(item.get("proved_surfaces")):
+        proved_surfaces = item.get("proved_surfaces")
+        if not _nonempty_strings(proved_surfaces):
             errors.append(f"evidence[{index}].proved_surfaces: expected non-empty list")
+            proved_surfaces = []
+        seen_proved: set[str] = set()
+        for surface_index, surface in enumerate(proved_surfaces):
+            if surface in seen_proved:
+                errors.append(f"evidence[{index}].proved_surfaces: duplicate {surface}")
+            seen_proved.add(surface)
+            if surface not in seen_surfaces:
+                errors.append(f"evidence[{index}].proved_surfaces[{surface_index}]: unclassified {surface}")
         if not isinstance(item.get("decision_rationale"), str) or not item["decision_rationale"].strip():
             errors.append(f"evidence[{index}].decision_rationale: required")
         try:
@@ -259,6 +387,7 @@ def validate_final_verification_result(result: Any) -> list[str]:
             errors.append(f"evidence[{index}].execution: reuse requires reused-pass")
         if item.get("cache_hit") is True and execution in ACTUAL_EXECUTIONS:
             errors.append(f"evidence[{index}].cache_hit: cannot represent actual execution")
+        errors.extend(_validate_proof(item.get("proof"), execution, f"evidence[{index}]"))
 
     if not isinstance(always_current, list) or (result.get("outcome") == "successful" and not always_current):
         errors.append("always_current: expected at least one check")
@@ -268,6 +397,8 @@ def validate_final_verification_result(result: Any) -> list[str]:
         if not isinstance(item, dict):
             errors.append(f"always_current[{index}]: expected mapping")
             continue
+        if set(item) != ALWAYS_CURRENT_FIELDS:
+            errors.append(f"always_current[{index}] fields: expected closed always-current entry")
         check_id = item.get("check_id")
         if check_id in actual_always_current:
             errors.append(f"always_current[{index}].check_id: duplicate {check_id}")
@@ -276,6 +407,7 @@ def validate_final_verification_result(result: Any) -> list[str]:
             errors.append(f"always_current[{index}].execution: requires actual-run or hosted-observation")
         if item.get("observed_result") != "pass" and result.get("outcome") == "successful":
             errors.append(f"always_current[{index}].observed_result: success requires pass")
+        errors.extend(_validate_proof(item.get("proof"), item.get("execution"), f"always_current[{index}]"))
     if result.get("outcome") == "successful" and actual_always_current != ALWAYS_CURRENT_CHECKS:
         errors.append(f"always_current check_ids: expected exactly {sorted(ALWAYS_CURRENT_CHECKS)}")
 
@@ -293,7 +425,13 @@ def validate_final_verification_result(result: Any) -> list[str]:
             errors.append("successful result requires CI passed or not-required")
         if not isinstance(explanation, dict) or set(explanation) != EXPLANATION_FIELDS:
             errors.append(f"successful result explanation fields: expected exactly {sorted(EXPLANATION_FIELDS)}")
-        elif any(not value for value in explanation.values()):
+        elif any(
+            not (
+                (isinstance(value, str) and bool(value.strip()))
+                or _nonempty_strings(value)
+            )
+            for value in explanation.values()
+        ):
             errors.append("successful result explanation fields must be non-empty")
         for index, item in enumerate(evidence):
             if item.get("observed_result") != "pass":
@@ -317,9 +455,9 @@ def render_verify_report(result: dict[str, Any]) -> str:
 
 
 def parse_verify_report(text: str) -> dict[str, Any]:
-    if text.count(REPORT_MARKER) != 1:
-        raise ValueError("verify report must contain exactly one final-verification-v3 payload")
-    payload = text.split(REPORT_MARKER, 1)[1].split("\n```", 1)[0]
+    if not text.startswith(REPORT_PREFIX) or not text.endswith(REPORT_SUFFIX) or text.count(REPORT_MARKER) != 1:
+        raise ValueError("verify report has trailing or malformed content")
+    payload = text[len(REPORT_PREFIX):-len(REPORT_SUFFIX)]
     result = json.loads(payload)
     errors = validate_final_verification_result(result)
     if errors:
@@ -338,13 +476,41 @@ def replay_disposition(previous: dict[str, Any], candidate: dict[str, Any]) -> s
     return "new-attempt"
 
 
-def tail_disposition(changed_paths: list[str], change_id: str) -> str:
+def tail_disposition(tail: Any, change_id: str, verified_subject_revision: str) -> str:
+    if not isinstance(tail, dict):
+        return "incomplete"
     report_path = f"docs/changes/{change_id}/verify-report.md"
-    change_field = f"docs/changes/{change_id}/change.yaml#validation_events.verify"
+    selector = "lifecycle_cli.validations.verify-result"
+    change_field = f"docs/changes/{change_id}/change.yaml#{selector}"
+    changed_paths = tail.get("changed_paths")
+    if not isinstance(changed_paths, list) or len(changed_paths) != 2 or set(changed_paths) != {report_path, change_field}:
+        if isinstance(changed_paths, list) and any(path not in {report_path, change_field} for path in changed_paths):
+            return "stale"
+        return "incomplete"
+    if tail.get("report_path") != report_path or not isinstance(tail.get("report_content"), str):
+        return "incomplete"
+    report_identity = "sha256:" + hashlib.sha256(tail["report_content"].encode()).hexdigest()
+    if tail.get("report_sha256") != report_identity:
+        return "incomplete"
+    try:
+        report = parse_verify_report(tail["report_content"])
+    except (ValueError, json.JSONDecodeError):
+        return "incomplete"
+    registration = tail.get("registration")
+    expected_registration = {
+        "selector": selector,
+        "evidence_path": report_path,
+        "evidence_sha256": report_identity,
+        "verified_subject_revision": verified_subject_revision,
+        "stage_authority": "verify",
+    }
+    if registration != expected_registration:
+        return "incomplete"
+    if report.get("basis", {}).get("verified_subject_revision") != verified_subject_revision:
+        return "incomplete"
+    if report.get("outcome") != "successful" or report.get("branch_ready") is not True:
+        return "incomplete"
     for path in changed_paths:
-        if path == report_path:
-            continue
-        if path == change_field:
-            continue
-        return "stale"
+        if path not in {report_path, change_field}:
+            return "stale"
     return "current"
