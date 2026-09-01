@@ -8,6 +8,7 @@
 | `design-review-r1` | `design-review` | `r1` | design package `architecture`, `spec`, `adr-impact-aware-final-verification` | `reviews/design-review-r1.md` | `approved` | 0 | `recorded` |
 | `proposal-review-r1` | `proposal-review` | `r1` | proposal at `sha256:afe3f484143c53b1f95e7edbe47bf5fdbafe797b8c504bed58c5d69bae0118d4` | `reviews/proposal-review-r1.md` | `approved` | 0 | `recorded` |
 | `code-review-m1-r2` | `code-review` | `r2` | corrected M1 diff `f4cc4570..17067726` | `reviews/code-review-m1-r2.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m2-r3` | `code-review` | `r3` | corrected M2 diff `839c84bb..9cad1d9f` | `reviews/code-review-m2-r3.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Package review occurrence
 
@@ -73,5 +74,5 @@ Resolution: review-resolution.md#code-review-m2-r2
 Material findings: FV-M2-CR6, FV-M2-CR7
 Finding ID: FV-M2-CR6
 Finding ID: FV-M2-CR7
-Open findings: FV-M2-CR6, FV-M2-CR7
+Open findings: None
 Recording status: recorded

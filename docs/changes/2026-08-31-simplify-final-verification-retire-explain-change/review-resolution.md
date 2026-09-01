@@ -2,17 +2,18 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m2-r3
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
 - Findings resolved: 9
-- Unresolved findings: 0; two M2 R2 resolutions await Code Review M2 R3 closeout.
-- Current result: The accepted Code Review M2 R2 collection-shape and boolean-fact corrections are implemented and validated; Code Review M2 R3 must independently confirm closeout.
+- Unresolved findings: 0
+- Current result: Code Review M2 R3 independently confirmed all seven M2 findings resolved; the complete corrected M2 slice is clean and remains inactive pending later milestones.
 
 ## Resolution Overview
 
@@ -192,3 +193,7 @@ Safe resolution path: add explicit type validation and a shared boolean conforma
 Follow-up: Code Review M2 R3 after bounded implementation correction.
 Validation target: FV-R14-FV-R17, FV-R21, FV-R26, TG-07-TG-09, BND-INPUT-001, BND-COMPOSE-001, BND-ENV-001.
 Validation evidence: both validators reject strings, numbers, null, mappings, and lists for all six evidence facts, while accepting actual true/false values. The exported applicability evaluators also reject malformed applicability booleans directly. The cache-separation fixture now supplies structurally valid boolean facts and still proves cache hits cannot satisfy required execution. Focused suites and all five planned M2 commands passed.
+
+### code-review-m2-r3
+
+No material findings.
