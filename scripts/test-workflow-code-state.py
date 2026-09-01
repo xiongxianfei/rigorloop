@@ -36,8 +36,7 @@ class GitCodeStateProviderTests(unittest.TestCase):
         require_complete_ordered_evidence_tail(
             state, lifecycle_contract="stage-owned-change-local-v3"
         )
-        with self.assertRaisesRegex(AutomationContractError, "incomplete"):
-            require_complete_ordered_evidence_tail(state)
+        require_complete_ordered_evidence_tail(state)
         legacy_complete = CanonicalCodeState(
             anchor_identity="sha256:anchor",
             base_revision="base",
@@ -52,7 +51,8 @@ class GitCodeStateProviderTests(unittest.TestCase):
             require_complete_ordered_evidence_tail(
                 legacy_complete, lifecycle_contract="stage-owned-change-local-v3"
             )
-        require_complete_ordered_evidence_tail(legacy_complete)
+        with self.assertRaisesRegex(AutomationContractError, "incomplete"):
+            require_complete_ordered_evidence_tail(legacy_complete)
 
     class TestOnlyProvider:
         test_only = True
@@ -210,7 +210,7 @@ class GitCodeStateProviderTests(unittest.TestCase):
         with self.assertRaisesRegex(CodeStateError, "final-review recording paths"):
             self.provider(root, reviewed).snapshot(root)
 
-    def test_snapshot_accepts_ordered_review_and_explanation_commits(self) -> None:
+    def test_snapshot_rejects_ordered_review_and_explanation_commits_for_v3(self) -> None:
         root, _base = self.make_repository()
         self.write(root, "scripts/modified.py", "value = 2\n")
         reviewed = self.commit(root, "reviewed")
@@ -261,7 +261,8 @@ class GitCodeStateProviderTests(unittest.TestCase):
         )
         self.assertEqual(snapshot.handoff_revision, explanation_recording)
         self.assertEqual(snapshot.tail_state, "complete")
-        require_complete_ordered_evidence_tail(snapshot)
+        with self.assertRaisesRegex(AutomationContractError, "incomplete"):
+            require_complete_ordered_evidence_tail(snapshot)
 
         verify_path = "docs/changes/2026-07-20-example/verify-report.md"
         self.write(root, verify_path, "Stage: verify\nStatus: passed\n")
@@ -286,9 +287,10 @@ class GitCodeStateProviderTests(unittest.TestCase):
         self.assertEqual(post_verify.tail_state, "complete")
         self.assertEqual(post_verify.handoff_revision, explanation_recording)
         self.assertEqual(post_verify.identity, snapshot.identity)
-        require_complete_ordered_evidence_tail(post_verify)
+        with self.assertRaisesRegex(AutomationContractError, "incomplete"):
+            require_complete_ordered_evidence_tail(post_verify)
 
-    def test_snapshot_accepts_exact_review_only_partial_tail(self) -> None:
+    def test_snapshot_accepts_exact_review_only_tail(self) -> None:
         root, _base = self.make_repository()
         self.write(root, "scripts/modified.py", "value = 2\n")
         reviewed = self.commit(root, "reviewed")
@@ -322,11 +324,7 @@ class GitCodeStateProviderTests(unittest.TestCase):
             final_review_recording,
         )
         self.assertIsNone(snapshot.explanation_recording_revision)
-        with self.assertRaisesRegex(
-            AutomationContractError,
-            "ordered final-review evidence tail is incomplete",
-        ):
-            require_complete_ordered_evidence_tail(snapshot)
+        require_complete_ordered_evidence_tail(snapshot)
 
     def test_snapshot_rejects_unknown_change_field_in_review_commit(self) -> None:
         root, _base = self.make_repository()
