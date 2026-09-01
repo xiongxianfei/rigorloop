@@ -1,0 +1,82 @@
+schema_version: 1
+review_id: code-review-lifecycle-deadlock-r1
+review_stage: code-review
+review_target: commit:6fdd7ac2
+base_revision: 56beba62
+head_revision: 6fdd7ac2
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: lifecycle-deadlock-fix-6fdd7ac2
+reviewer_context_id: independent-lifecycle-deadlock-review-r1
+context_separation_mechanism: fresh-assumption-diff-first-review
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-authority
+  - recovery-routing
+  - package-settlement
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/rigorloop-workflow.md
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - requirement-to-delivery-model-v1
+  - boundary-first-review-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/rigorloop-workflow.md
+    revision: 6fdd7ac2
+    sha256: a41bf2d29033c08b2e643bd5362dae30b8f178c7855ce32654947a7db4fa3648
+  - path: specs/impact-aware-final-verification.md
+    revision: 6fdd7ac2
+    sha256: e4b3e73689520925f3ff03f71338f2ffafb05428a0063937be7116947e5237d6
+  - path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+    revision: 6fdd7ac2
+    sha256: e0762dcd0608dfe5d4987abd889167dde340de383007eaeac9772b753696677a
+  - path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    revision: 6fdd7ac2
+    sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
+  - path: commit:56beba62..6fdd7ac2.diff
+    revision: 6fdd7ac2
+    sha256: d9a40c7ee9b7c6c7deb7f52a97e12ff08201021055eac4d240769ebc1de87a0f
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+clean_review_sufficiency:
+  target_identity: commit:6fdd7ac2
+  inspected_authority: current lifecycle contract, package authority model, correction routing, and active M4 context
+  risk_classes: lifecycle-authority, recovery-routing, package-settlement, transaction-safety
+  adversarial_hypotheses: downstream authoring bypass, upstream recovery, unknown-stage recovery, approved-package overwrite, stale package settlement, active-correction overlap
+  direct_proofs: public changed tests, adjacent lifecycle suites, byte-preserving negative probes, and source inspection
+  challenged_validation: the positive recovery test was supplemented with upstream, unknown-stage, and granted-package negative public-CLI probes
+  uncertain_surfaces: future correction-order and package-projection changes remain outside this commit
+  confidence: high
+  no_finding_rationale: recovery is strictly downstream and withheld-review-required only, while unauthorized authoring and non-recovery states fail without mutation
+second_review_requirement: satisfied-by-independent-r1
+risk_map:
+  affected_behavior: artifact revision stage authority and downstream package review recovery
+  highest_impact_failure_modes: silent downstream authoring, package authority overwrite, stale evidence settlement, correction overlap, or stage mutation
+  changed_boundaries: authoring transaction entry, package review stage predicate, design-to-delivery invalidation, and state preservation
+  evidence_expected: exact positive recovery, unauthorized authoring rejection, negative stage/state probes, identity and transaction regressions
+  direct_inspection_areas: lifecycle operation evaluator, correction stage order, package context, changed tests, and adjacent transaction tests
+  intentionally_out_of_scope: actual active-change package settlement, M4 closeout, M5 implementation, activation, and final verification
+  applicable_risk_classes:
+    - lifecycle-authority
+    - recovery-routing
+    - package-settlement
+    - transaction-safety
+  non_applicable_risk_classes:
+    - network-access
+    - credential-handling
+  falsifiable_questions:
+    - Can an artifact author revise outside its current stage without a correction route?
+    - Can an upstream, unknown, or already-authorized package use downstream recovery?
+    - Can recovery bypass exact member, upstream review, evidence, or authority checks?
+    - Does recovery mutate the current workflow stage?
