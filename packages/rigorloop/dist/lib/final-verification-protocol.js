@@ -293,4 +293,25 @@ export function tailDisposition(tail, changeId, verifiedSubjectRevision) {
   if (report.basis?.verified_subject_revision !== verifiedSubjectRevision || report.outcome !== "successful" || report.branch_ready !== true) return "incomplete";
   return "current";
 }
+
+function verifiedAuthoritativeReferences(result, reportPath) {
+  const references = new Set([reportPath, result.basis.delivery_plan_id]);
+  for (const item of [...result.evidence, ...result.always_current]) {
+    if (item.proof && typeof item.proof.evidence_path === "string") references.add(item.proof.evidence_path);
+  }
+  return [...references].sort();
+}
+
+export function evaluatePrHandoff({ tail, change_id, verified_subject_revision, current_basis, explanation, authoritative_references }) {
+  if (tailDisposition(tail, change_id, verified_subject_revision) !== "current") return { ready: false, reason: "verify-result-not-current" };
+  let result;
+  try { result = parseVerifyReport(tail.report_content); } catch { return { ready: false, reason: "verify-result-incomplete" }; }
+  if (JSON.stringify(stableValue(current_basis)) !== JSON.stringify(stableValue(result.basis))) return { ready: false, reason: "verify-basis-mismatch" };
+  if (JSON.stringify(stableValue(explanation)) !== JSON.stringify(stableValue(result.explanation))) return { ready: false, reason: "competing-rationale" };
+  const expectedReferences = verifiedAuthoritativeReferences(result, tail.report_path);
+  if (!Array.isArray(authoritative_references) || new Set(authoritative_references).size !== authoritative_references.length || JSON.stringify([...authoritative_references].sort()) !== JSON.stringify(expectedReferences)) {
+    return { ready: false, reason: "authoritative-reference-mismatch" };
+  }
+  return { ready: true, reason: "current-successful-verify-result", explanation: result.explanation, basis: result.basis };
+}
 import { createHash } from "node:crypto";

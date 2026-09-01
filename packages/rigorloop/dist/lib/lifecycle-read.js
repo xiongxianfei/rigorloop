@@ -401,6 +401,21 @@ function artifactForStage(stage, change = null) {
 }
 
 export function contextForStage(interpreted, stage) {
+  if (interpreted.change?.lifecycle_contract === LIFECYCLE_CONTRACT_V3 && stage === "explain-change") {
+    const issue = diagnostic("RL_INVALID_REQUEST", `stage: unknown_value ${String(stage)}`, "workflow-stage", null, [String(stage)]);
+    return {
+      exact_change: interpreted.change_id,
+      operation: stage,
+      target_artifact: null,
+      settled_upstream_inputs: [],
+      review_round: null,
+      authorized_output_path: null,
+      blockers: [issue],
+      errors: [issue],
+      lifecycle_revision: interpreted.lifecycle_revision,
+      permitted_registration_operation: null,
+    };
+  }
   if (String(stage).replace(/-review$/, "") === "test-spec" && !allowedArtifactKinds(interpreted.change).includes("test-spec")) {
     const issue = diagnostic("RL_INVALID_REQUEST", `stage: unknown_value ${String(stage)}`, "workflow-stage", null, [String(stage)]);
     return {

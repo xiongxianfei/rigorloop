@@ -24,6 +24,21 @@ from workflow_automation import (
 
 
 class GitCodeStateProviderTests(unittest.TestCase):
+    def test_v3_review_recording_is_the_complete_pre_verify_tail(self) -> None:
+        state = CanonicalCodeState(
+            anchor_identity="sha256:anchor",
+            base_revision="base",
+            reviewed_revision="reviewed",
+            entries=(CodeStateEntry("M", "fixture.py", "sha256:fixture"),),
+            final_review_recording_revision="review-recording",
+            tail_state="review-recorded",
+        )
+        require_complete_ordered_evidence_tail(
+            state, lifecycle_contract="stage-owned-change-local-v3"
+        )
+        with self.assertRaisesRegex(AutomationContractError, "incomplete"):
+            require_complete_ordered_evidence_tail(state)
+
     class TestOnlyProvider:
         test_only = True
 

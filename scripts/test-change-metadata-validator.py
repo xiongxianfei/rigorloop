@@ -30,6 +30,7 @@ from artifact_lifecycle_contracts import (
     validate_lifecycle_activation_prerequisites,
 )
 from final_verification_protocol import (
+    evaluate_pr_handoff,
     evaluate_evidence_decision,
     parse_verify_report,
     render_verify_report,
@@ -2878,6 +2879,44 @@ class FinalVerificationProtocolTests(unittest.TestCase):
             changed = copy.deepcopy(tail)
             mutate(changed)
             self.assertEqual(tail_disposition(changed, "example", "a" * 40), "incomplete")
+
+    def test_pr_handoff_consumes_exact_successful_verify_authority(self) -> None:
+        result = self.successful_result()
+        report = render_verify_report(result)
+        report_sha = "sha256:" + hashlib.sha256(report.encode()).hexdigest()
+        tail = {
+            "changed_paths": ["docs/changes/example/verify-report.md", "docs/changes/example/change.yaml#lifecycle_cli.validations.verify-result"],
+            "report_path": "docs/changes/example/verify-report.md",
+            "report_content": report,
+            "report_sha256": report_sha,
+            "registration": {
+                "selector": "lifecycle_cli.validations.verify-result",
+                "evidence_path": "docs/changes/example/verify-report.md",
+                "evidence_sha256": report_sha,
+                "verified_subject_revision": "a" * 40,
+                "stage_authority": "verify",
+            },
+        }
+        references = sorted({
+            tail["report_path"],
+            result["basis"]["delivery_plan_id"],
+            *(item["proof"]["evidence_path"] for item in [*result["evidence"], *result["always_current"]]),
+        })
+        inputs = {
+            "tail": tail,
+            "change_id": "example",
+            "verified_subject_revision": "a" * 40,
+            "current_basis": result["basis"],
+            "explanation": result["explanation"],
+            "authoritative_references": references,
+        }
+        self.assertTrue(evaluate_pr_handoff(**inputs)["ready"])
+        competing = copy.deepcopy(inputs)
+        competing["explanation"]["why"] = "competing"
+        self.assertEqual(evaluate_pr_handoff(**competing)["reason"], "competing-rationale")
+        new_reference = copy.deepcopy(inputs)
+        new_reference["authoritative_references"].append("docs/new-authority.md")
+        self.assertEqual(evaluate_pr_handoff(**new_reference)["reason"], "authoritative-reference-mismatch")
 
     def test_success_rejects_duplicate_checks_empty_explanation_and_malformed_basis(self) -> None:
         duplicate = self.successful_result()

@@ -19,6 +19,7 @@ import {
   validateLifecycleActivationManifest,
   validateFinalVerificationActivationManifest,
   validateLifecycleRequest,
+  verificationCorrectionOwner,
 } from "../dist/lib/lifecycle-contract.js";
 import { LIFECYCLE_OPERATIONS as OBSERVABLE_LIFECYCLE_OPERATIONS } from "../dist/lib/diagnostic-event.js";
 
@@ -82,6 +83,27 @@ test("final verification manifest and v3 explain-change values fail closed", () 
       /v3 lifecycle contract carries active explain-change state/,
     );
   }
+});
+
+test("verification findings map to exact owners and unknown kinds fail closed", () => {
+  assert.deepEqual(Object.fromEntries([
+    "system-requirement-gap",
+    "technical-realization-gap",
+    "verification-allocation-gap",
+    "implementation-defect",
+    "stale-or-incomplete-review",
+    "ci-or-environment-gap",
+    "external-evidence-gap",
+  ].map((kind) => [kind, verificationCorrectionOwner(kind)])), {
+    "system-requirement-gap": "spec",
+    "technical-realization-gap": "architecture",
+    "verification-allocation-gap": "plan",
+    "implementation-defect": "implement",
+    "stale-or-incomplete-review": "code-review",
+    "ci-or-environment-gap": "ci-maintenance",
+    "external-evidence-gap": "external-evidence-acquisition",
+  });
+  assert.throws(() => verificationCorrectionOwner("maybe"), /unknown_value maybe/);
 });
 
 test("final verification manifest rejects duplicate and raw UTF-8-unsorted entries", () => {

@@ -29,6 +29,7 @@ from workflow_automation_policy import (
     public_target_stages_for_contract,
     stage_policy_by_stage_for_contract,
     transition_rules_for_contract,
+    verification_correction_owner,
     evaluate_transition,
     is_immediate_predecessor,
     validate_policy_registry,
@@ -36,6 +37,32 @@ from workflow_automation_policy import (
 
 
 class WorkflowAutomationPolicyTests(unittest.TestCase):
+    def test_v3_policy_routes_review_directly_to_verify_and_omits_explain_change(self) -> None:
+        targets = public_target_stages_for_contract("stage-owned-change-local-v3")
+        self.assertNotIn(WorkflowStage.TEST_SPEC, targets)
+        self.assertNotIn(WorkflowStage.EXPLAIN_CHANGE, targets)
+        policies = stage_policy_by_stage_for_contract("stage-owned-change-local-v3")
+        self.assertNotIn("explain-change", policies)
+        self.assertNotIn("explain-change", policies["verify"].required_input_identities)
+        edges = {(rule.from_position, rule.operation) for rule in transition_rules_for_contract("stage-owned-change-local-v3")}
+        self.assertIn((WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW, WorkflowStage.VERIFY), edges)
+        self.assertNotIn((WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW, WorkflowStage.EXPLAIN_CHANGE), edges)
+
+    def test_verification_correction_owners_are_closed_and_verify_never_owns_repair(self) -> None:
+        expected = {
+            "system-requirement-gap": "spec",
+            "technical-realization-gap": "architecture",
+            "verification-allocation-gap": "plan",
+            "implementation-defect": "implement",
+            "stale-or-incomplete-review": "code-review",
+            "ci-or-environment-gap": "ci-maintenance",
+            "external-evidence-gap": "external-evidence-acquisition",
+        }
+        self.assertEqual({kind: verification_correction_owner(kind) for kind in expected}, expected)
+        self.assertNotIn("verify", expected.values())
+        with self.assertRaisesRegex(ValueError, "unknown_value"):
+            verification_correction_owner("maybe")
+
     def test_v2_policy_removes_test_spec_and_routes_plan_to_delivery_review(self) -> None:
         targets = public_target_stages_for_contract("stage-owned-change-local-v2")
         self.assertNotIn(WorkflowStage.TEST_SPEC, targets)

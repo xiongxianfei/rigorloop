@@ -56,6 +56,13 @@ REASON_CODES = (
     "plan-index-sync-pending",
     "external-completion-event-pending",
 )
+LIFECYCLE_CONTRACTS = frozenset(
+    {
+        "stage-owned-change-local-v1",
+        "stage-owned-change-local-v2",
+        "stage-owned-change-local-v3",
+    }
+)
 PLAN_LIFECYCLE_STATES = frozenset({"active", "blocked", "done", "superseded"})
 LIVE_INDEX_STATES = frozenset({"active", "blocked"})
 REVIEW_STATUS_PATTERN = re.compile(
@@ -1078,6 +1085,11 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
     profile_state = data.get("profile_state")
     phase = data.get("phase")
     durable_authorization = data.get("durable_authorization")
+    lifecycle_contract = data.get("lifecycle_contract", "stage-owned-change-local-v1")
+
+    if lifecycle_contract not in LIFECYCLE_CONTRACTS:
+        return _implementation_stop("paused", f"lifecycle-contract-unknown_value:{lifecycle_contract}")
+    is_v3 = lifecycle_contract == "stage-owned-change-local-v3"
 
     if not isinstance(profile_state, str):
         profile_state = "off"
@@ -1125,7 +1137,7 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
         return _implementation_stop(profile_state, "plan-not-synchronized")
     if data.get("milestones_ordered") is not True:
         return _implementation_stop(profile_state, "milestones-not-ordered")
-    if data.get("test_spec_inputs_complete") is not True:
+    if not is_v3 and data.get("test_spec_inputs_complete") is not True:
         return _implementation_stop(profile_state, "test-spec-inputs-incomplete")
     if data.get("working_tree_baseline") != "recorded":
         return _implementation_stop(profile_state, "working-tree-baseline-missing")
@@ -1144,12 +1156,15 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
         return _implementation_continue("active", "audit-only")
 
     settlement = data.get("test_spec_settlement")
-    if not _is_settled_test_spec(settlement):
-        return _implementation_stop(profile_state, "test-spec-settlement-incomplete")
-    if not _approved_recorded_test_spec_review(data.get("test_spec_review")):
-        return _implementation_stop(profile_state, "implementation-without-test-spec-review")
+    if not is_v3:
+        if not _is_settled_test_spec(settlement):
+            return _implementation_stop(profile_state, "test-spec-settlement-incomplete")
+        if not _approved_recorded_test_spec_review(data.get("test_spec_review")):
+            return _implementation_stop(profile_state, "implementation-without-test-spec-review")
 
     current_stage = data.get("current_stage")
+    if is_v3 and current_stage == "explain-change":
+        return _implementation_stop(profile_state, "stage-unknown_value:explain-change")
     if current_stage == "first-code-review-precheck":
         settled_identities = _settlement_identities(settlement)
         current_identities = data.get("current_input_identities")
@@ -1164,12 +1179,14 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
 
     if current_stage == "final-clean-code-review" or _all_milestones_closed(data.get("milestones")):
         if phase == "B":
-            return _implementation_stop("active", "phase-boundary-explain-change")
+            return _implementation_stop(
+                "active", "phase-boundary-verify" if is_v3 else "phase-boundary-explain-change"
+            )
         if not _promotion_evidence_complete(data.get("promotion_evidence")):
             return _implementation_stop("active", "promotion-evidence-missing")
         if not _final_holistic_review_complete(data.get("final_holistic_review")):
             return _implementation_stop("active", "final-holistic-review-missing")
-        return _implementation_continue("active", "explain-change")
+        return _implementation_continue("active", "verify" if is_v3 else "explain-change")
 
     route = _next_milestone_route(data.get("milestones"))
     if route is None:

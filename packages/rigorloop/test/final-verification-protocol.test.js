@@ -4,6 +4,7 @@ import test from "node:test";
 
 import {
   evaluateEvidenceDecision,
+  evaluatePrHandoff,
   parseVerifyReport,
   renderVerifyReport,
   replayDisposition,
@@ -102,6 +103,20 @@ test("success round trips, replay is idempotent, and drift stales", () => {
   assert.equal(tailDisposition({ ...tail, registration: { ...tail.registration, evidence_sha256: `sha256:${"0".repeat(64)}` } }, "example", "a".repeat(40)), "incomplete");
   result.report_commit_identity = "f".repeat(40);
   assert.ok(validateFinalVerificationResult(result).includes("result: Verify report must not embed its own Git commit identity"));
+});
+
+test("PR consumes only the exact current Verify explanation, basis, and references", () => {
+  const result = success();
+  const report = renderVerifyReport(result);
+  const reportSha = `sha256:${createHash("sha256").update(report).digest("hex")}`;
+  const tail = { changed_paths: ["docs/changes/example/verify-report.md", "docs/changes/example/change.yaml#lifecycle_cli.validations.verify-result"], report_path: "docs/changes/example/verify-report.md", report_content: report, report_sha256: reportSha, registration: { selector: "lifecycle_cli.validations.verify-result", evidence_path: "docs/changes/example/verify-report.md", evidence_sha256: reportSha, verified_subject_revision: "a".repeat(40), stage_authority: "verify" } };
+  const references = [tail.report_path, result.basis.delivery_plan_id, result.evidence[0].proof.evidence_path, result.always_current[0].proof.evidence_path].sort();
+  const input = { tail, change_id: "example", verified_subject_revision: "a".repeat(40), current_basis: result.basis, explanation: result.explanation, authoritative_references: references };
+  assert.equal(evaluatePrHandoff(input).ready, true);
+  assert.equal(evaluatePrHandoff({ ...input, current_basis: { ...result.basis, final_review_id: "code-review-r2" } }).reason, "verify-basis-mismatch");
+  assert.equal(evaluatePrHandoff({ ...input, explanation: { ...result.explanation, why: "A competing story" } }).reason, "competing-rationale");
+  assert.equal(evaluatePrHandoff({ ...input, authoritative_references: [...references, "docs/new-authority.md"] }).reason, "authoritative-reference-mismatch");
+  assert.equal(evaluatePrHandoff({ ...input, tail: { ...tail, changed_paths: ["src/product.js"] } }).reason, "verify-result-not-current");
 });
 
 test("review counterexamples fail closed", () => {

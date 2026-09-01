@@ -48,6 +48,8 @@ from validate_workflow_automation import (
 from workflow_automation_policy import (
     CAPABILITY_MUTATION_CATEGORIES,
     LIFECYCLE_CONTRACT_V1,
+    LIFECYCLE_CONTRACT_V2,
+    LIFECYCLE_CONTRACT_V3,
     PUBLIC_TARGET_STAGES,
     STAGE_POLICY_BY_STAGE,
     AuthorizationClass,
@@ -406,8 +408,20 @@ def _canonical_final_code_identity(
 
 def require_complete_ordered_evidence_tail(
     canonical: CanonicalCodeState,
+    *,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> None:
     """Require the exact derived final-review-to-handoff tail for verify."""
+
+    if lifecycle_contract == LIFECYCLE_CONTRACT_V3:
+        if (
+            canonical.tail_state not in {"review-recorded", "complete"}
+            or canonical.final_review_recording_revision is None
+        ):
+            raise AutomationContractError(
+                "verification basis ordered final-review evidence tail is incomplete"
+            )
+        return
 
     if (
         canonical.tail_state != "complete"
@@ -427,10 +441,17 @@ def resolve_verification_readiness(
     basis: Mapping[str, Any],
     basis_paths: Mapping[str, Any],
     code_state_provider: CodeStateProvider | None = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
 ) -> VerificationReadiness:
     """Resolve verification authority only from current repository evidence."""
 
     required = CAPABILITY_BASIS_FIELDS[CapabilityKind.VERIFICATION.value]
+    if lifecycle_contract == LIFECYCLE_CONTRACT_V3:
+        required = required - {"explanation_inputs_identity"}
+    elif lifecycle_contract not in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}:
+        raise AutomationContractError(
+            f"lifecycle_contract: unknown_value {lifecycle_contract}"
+        )
     if set(basis) != set(required) or set(basis_paths) != set(required):
         raise AutomationContractError("verification basis evidence is incomplete")
     artifacts: dict[str, Path] = {}
@@ -506,7 +527,7 @@ def resolve_verification_readiness(
             reviewed_revision=review_fields["Reviewed commit"],
             final_review_id=review_fields["Review ID"],
             lifecycle_evidence_paths=frozenset(
-                {
+                set() if lifecycle_contract == LIFECYCLE_CONTRACT_V3 else {
                     artifacts["explanation_inputs_identity"]
                     .relative_to(repository_root.resolve())
                     .as_posix()
@@ -518,7 +539,9 @@ def resolve_verification_readiness(
         raise AutomationContractError(
             "verification basis canonical code-state anchor is invalid"
         ) from error
-    require_complete_ordered_evidence_tail(canonical)
+    require_complete_ordered_evidence_tail(
+        canonical, lifecycle_contract=lifecycle_contract
+    )
     final_code_identity = _canonical_final_code_identity(
         branch_state_path=artifacts["branch_state_identity"],
         canonical=canonical,
@@ -541,34 +564,35 @@ def resolve_verification_readiness(
     ):
         raise AutomationContractError("verification basis final review is not clean")
 
-    try:
-        explanation = parse_stage_evidence_fields(
-            artifacts["explanation_inputs_identity"],
-            required_fields={
-                "Stage",
-                "Status",
-                "Final diff identity",
-                "Final review identity",
-                "Reviewed subject revision",
-                "Explanation basis",
-                "Validation-evidence cutoff",
-            },
-        )
-    except StateContractError as error:
-        raise AutomationContractError(
-            "verification basis explanation is incomplete"
-        ) from error
-    if (
-        explanation.get("Stage") != "explain-change"
-        or explanation.get("Status") != "current"
-        or explanation.get("Final diff identity")
-        != final_code_identity
-        or explanation.get("Final review identity")
-        != identities["final_code_review_identity"]
-        or explanation.get("Reviewed subject revision")
-        != canonical.reviewed_revision
-    ):
-        raise AutomationContractError("verification basis explanation is not current")
+    if lifecycle_contract != LIFECYCLE_CONTRACT_V3:
+        try:
+            explanation = parse_stage_evidence_fields(
+                artifacts["explanation_inputs_identity"],
+                required_fields={
+                    "Stage",
+                    "Status",
+                    "Final diff identity",
+                    "Final review identity",
+                    "Reviewed subject revision",
+                    "Explanation basis",
+                    "Validation-evidence cutoff",
+                },
+            )
+        except StateContractError as error:
+            raise AutomationContractError(
+                "verification basis explanation is incomplete"
+            ) from error
+        if (
+            explanation.get("Stage") != "explain-change"
+            or explanation.get("Status") != "current"
+            or explanation.get("Final diff identity")
+            != final_code_identity
+            or explanation.get("Final review identity")
+            != identities["final_code_review_identity"]
+            or explanation.get("Reviewed subject revision")
+            != canonical.reviewed_revision
+        ):
+            raise AutomationContractError("verification basis explanation is not current")
     for name, expected_stage, expected_status in (
         ("promotion_evidence_identity", "promotion", "valid"),
         ("verification_commands_identity", "verification-commands", "current"),
@@ -590,7 +614,9 @@ def resolve_verification_readiness(
             raise AutomationContractError(
                 f"verification basis evidence is invalid: {name}"
             )
-    return VerificationReadiness(identities, True, True)
+    return VerificationReadiness(
+        identities, True, lifecycle_contract != LIFECYCLE_CONTRACT_V3
+    )
 
 
 @dataclass(frozen=True)
@@ -1303,17 +1329,29 @@ def evaluate_non_public_implementation_route(
         if not verification_authorized:
             return pause("verification-authorization-required")
         return ImplementationRouteDecision(
-            "continue", WorkflowStage.EXPLAIN_CHANGE.value
+            "continue",
+            (
+                WorkflowStage.VERIFY.value
+                if lifecycle_contract == LIFECYCLE_CONTRACT_V3
+                else WorkflowStage.EXPLAIN_CHANGE.value
+            ),
         )
     if not verification_authorized:
         return pause("verification-authorization-required")
     if current_stage == WorkflowStage.EXPLAIN_CHANGE.value:
+        if lifecycle_contract == LIFECYCLE_CONTRACT_V3:
+            raise AutomationContractError(
+                "unknown implementation integration stage: explain-change"
+            )
         if explanation_current is not True:
             return pause("explanation-not-current")
         return ImplementationRouteDecision("continue", WorkflowStage.VERIFY.value)
     if final_review_clean is not True:
         return pause("final-holistic-review-not-clean")
-    if explanation_current is not True:
+    if (
+        lifecycle_contract != LIFECYCLE_CONTRACT_V3
+        and explanation_current is not True
+    ):
         return pause("explanation-not-current")
     if verification_passed is not True:
         return pause("verification-failed")

@@ -5673,6 +5673,24 @@ Open findings: None
                     code_state_provider=code_state_provider,
                 )
 
+        v3_basis = dict(basis)
+        v3_paths = dict(paths)
+        del v3_basis["explanation_inputs_identity"]
+        del v3_paths["explanation_inputs_identity"]
+        with patch.object(
+            workflow_automation_module,
+            "resolve_canonical_code_state",
+            return_value=incomplete_tail,
+        ):
+            v3_readiness = resolve_verification_readiness(
+                repository_root=root,
+                basis=v3_basis,
+                basis_paths=v3_paths,
+                code_state_provider=code_state_provider,
+                lifecycle_contract="stage-owned-change-local-v3",
+            )
+        self.assertFalse(v3_readiness.explanation_current)
+
         explanation_file = root / explanation_path
         original_explanation = explanation_file.read_text(encoding="utf-8")
         explanation_file.write_text(
@@ -6261,6 +6279,62 @@ Open findings: None
         )
         self.assertEqual((passed.status, passed.next_stage), ("target-reached", "pr"))
         self.assertFalse(passed.external_action_performed)
+
+    def test_v3_routes_final_review_directly_to_verify_without_explanation_prerequisite(self) -> None:
+        closed_plan = ActivePlanContext.from_text(
+            plan_text(
+                current="M3. Later Slice",
+                current_state="closed",
+                remaining="M3",
+                next_stage="final-holistic-code-review",
+                milestone_two_state="closed",
+                milestone_three_state="closed",
+            ),
+            plan_identity="sha256:closed-plan",
+        )
+        routed = evaluate_non_public_implementation_route(
+            current_stage="final-holistic-code-review",
+            target_stage="verify",
+            target_milestone_id=None,
+            capability_kind="implementation",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            occurrence_kind="final",
+            active_plan=closed_plan,
+            review_outcome="approved",
+            review_resolution_closed=True,
+            verification_authorized=True,
+            lifecycle_contract="stage-owned-change-local-v3",
+        )
+        self.assertEqual((routed.status, routed.next_stage), ("continue", "verify"))
+        passed = evaluate_non_public_implementation_route(
+            current_stage="verify",
+            target_stage="verify",
+            target_milestone_id=None,
+            capability_kind="verification",
+            capability_status="active",
+            invocation_context="non-public-test-harness",
+            occurrence_kind="final",
+            active_plan=closed_plan,
+            verification_passed=True,
+            verification_authorized=True,
+            final_review_clean=True,
+            lifecycle_contract="stage-owned-change-local-v3",
+        )
+        self.assertEqual((passed.status, passed.next_stage), ("target-reached", "pr"))
+        with self.assertRaisesRegex(AutomationContractError, "explain-change"):
+            evaluate_non_public_implementation_route(
+                current_stage="explain-change",
+                target_stage="verify",
+                target_milestone_id=None,
+                capability_kind="verification",
+                capability_status="active",
+                invocation_context="non-public-test-harness",
+                occurrence_kind="final",
+                active_plan=closed_plan,
+                verification_authorized=True,
+                lifecycle_contract="stage-owned-change-local-v3",
+            )
 
     def test_verify_git_probe_allowlist_is_exact_and_root_bound(self) -> None:
         repository_root = Path("/canonical/repository")

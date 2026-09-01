@@ -564,6 +564,7 @@ STAGE_POLICIES: tuple[StagePolicy, ...] = (
 
 LIFECYCLE_CONTRACT_V1 = "stage-owned-change-local-v1"
 LIFECYCLE_CONTRACT_V2 = "stage-owned-change-local-v2"
+LIFECYCLE_CONTRACT_V3 = "stage-owned-change-local-v3"
 V2_PUBLIC_TARGET_STAGES = PUBLIC_TARGET_STAGES - {WorkflowStage.TEST_SPEC}
 V2_PUBLIC_TARGET_SEQUENCE = tuple(stage for stage in PUBLIC_TARGET_SEQUENCE if stage != WorkflowStage.TEST_SPEC)
 _V2_REMOVED_RULES = {
@@ -598,12 +599,65 @@ def _v2_policy(policy: StagePolicy) -> StagePolicy:
 V2_STAGE_POLICIES = tuple(_v2_policy(policy) for policy in STAGE_POLICIES if policy.stage != WorkflowStage.TEST_SPEC)
 V2_STAGE_POLICY_BY_STAGE = MappingProxyType({policy.stage.value: policy for policy in V2_STAGE_POLICIES})
 
+_V3_REMOVED_RULES = {
+    (WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW, WorkflowStage.EXPLAIN_CHANGE),
+    (WorkflowPosition.EXPLAIN_CHANGE, WorkflowStage.VERIFY),
+}
+_V3_REVIEW_TO_VERIFY = TransitionRule(
+    from_position=WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW,
+    to_position=WorkflowPosition.VERIFY,
+    operation=WorkflowStage.VERIFY,
+    allowed_targets=frozenset({WorkflowStage.VERIFY}),
+    guard=TransitionGuard.ALWAYS,
+)
+V3_PUBLIC_TARGET_STAGES = V2_PUBLIC_TARGET_STAGES - {WorkflowStage.EXPLAIN_CHANGE}
+V3_PUBLIC_TARGET_SEQUENCE = tuple(stage for stage in V2_PUBLIC_TARGET_SEQUENCE if stage != WorkflowStage.EXPLAIN_CHANGE)
+V3_TRANSITION_RULES = tuple(
+    rule for rule in V2_TRANSITION_RULES
+    if (rule.from_position, rule.operation) not in _V3_REMOVED_RULES
+    and rule.from_position != WorkflowPosition.EXPLAIN_CHANGE
+) + (_V3_REVIEW_TO_VERIFY,)
+
+
+def _v3_policy(policy: StagePolicy) -> StagePolicy:
+    incoming = frozenset(rule for rule in V3_TRANSITION_RULES if rule.operation == policy.stage)
+    outgoing = frozenset(rule for rule in V3_TRANSITION_RULES if rule.from_position == WorkflowPosition(policy.stage.value))
+    inputs = policy.required_input_identities - {"explain-change"}
+    if policy.stage == WorkflowStage.VERIFY:
+        inputs = frozenset({"plan", "final-code-review", "verification-commands"})
+    return replace(policy, predecessor_rule=incoming, required_input_identities=inputs, next_stage_calculation=outgoing)
+
+
+V3_STAGE_POLICIES = tuple(_v3_policy(policy) for policy in V2_STAGE_POLICIES if policy.stage != WorkflowStage.EXPLAIN_CHANGE)
+V3_STAGE_POLICY_BY_STAGE = MappingProxyType({policy.stage.value: policy for policy in V3_STAGE_POLICIES})
+
+VERIFICATION_CORRECTION_OWNERS = MappingProxyType({
+    "system-requirement-gap": "spec",
+    "technical-realization-gap": "architecture",
+    "verification-allocation-gap": "plan",
+    "implementation-defect": "implement",
+    "stale-or-incomplete-review": "code-review",
+    "ci-or-environment-gap": "ci-maintenance",
+    "external-evidence-gap": "external-evidence-acquisition",
+})
+
+
+def verification_correction_owner(finding_kind: str) -> str:
+    """Return the sole owning route; Verify records the finding but never repairs it."""
+
+    owner = VERIFICATION_CORRECTION_OWNERS.get(finding_kind)
+    if owner is None:
+        raise ValueError(f"verification_finding_kind: unknown_value {finding_kind}")
+    return owner
+
 
 def public_target_stages_for_contract(contract: str) -> frozenset[WorkflowStage]:
     if contract == LIFECYCLE_CONTRACT_V1:
         return PUBLIC_TARGET_STAGES
     if contract == LIFECYCLE_CONTRACT_V2:
         return V2_PUBLIC_TARGET_STAGES
+    if contract == LIFECYCLE_CONTRACT_V3:
+        return V3_PUBLIC_TARGET_STAGES
     raise ValueError(f"lifecycle_contract: unknown_value {contract}")
 
 
@@ -612,6 +666,8 @@ def stage_policy_by_stage_for_contract(contract: str) -> Mapping[str, StagePolic
         return STAGE_POLICY_BY_STAGE
     if contract == LIFECYCLE_CONTRACT_V2:
         return V2_STAGE_POLICY_BY_STAGE
+    if contract == LIFECYCLE_CONTRACT_V3:
+        return V3_STAGE_POLICY_BY_STAGE
     raise ValueError(f"lifecycle_contract: unknown_value {contract}")
 
 
@@ -620,6 +676,8 @@ def transition_rules_for_contract(contract: str) -> tuple[TransitionRule, ...]:
         return TRANSITION_RULES
     if contract == LIFECYCLE_CONTRACT_V2:
         return V2_TRANSITION_RULES
+    if contract == LIFECYCLE_CONTRACT_V3:
+        return V3_TRANSITION_RULES
     raise ValueError(f"lifecycle_contract: unknown_value {contract}")
 
 
