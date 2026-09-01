@@ -2,18 +2,19 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m2-r3
+Review closeout: code-review-m3-r1
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`
 - Findings resolved: 9
-- Unresolved findings: 0
-- Current result: Code Review M2 R3 independently confirmed all seven M2 findings resolved; the complete corrected M2 slice is clean and remains inactive pending later milestones.
+- Unresolved findings: 2
+- Current result: Code Review M3 R1 found legacy explain-change tail leakage into v3 readiness and non-executable Verify correction-owner routing.
 
 ## Resolution Overview
 
@@ -28,6 +29,8 @@ Review closeout: code-review-m2-r3
 | FV-M2-CR5 | accepted | resolved | Successful readiness now requires canonical repository, branch, revision, digest, safe-ID, review-ID, and plan-path identities. |
 | FV-M2-CR6 | accepted | resolved | JavaScript and Python now require arrays for all three collections on every outcome and share malformed-collection diagnostics. |
 | FV-M2-CR7 | accepted | resolved | Both runtimes and the exported applicability evaluators reject non-boolean evidence facts before semantic interpretation. |
+| FV-M3-CR1 | accepted | open | Reject the legacy S-R-E tail from v3 readiness while preserving it for v1/v2. |
+| FV-M3-CR2 | accepted | open | Integrate every Verify finding kind with one executable Workflow-owned correction route. |
 
 ## Finding Details
 
@@ -197,3 +200,39 @@ Validation evidence: both validators reject strings, numbers, null, mappings, an
 ### code-review-m2-r3
 
 No material findings.
+
+### code-review-m3-r1
+
+#### FV-M3-CR1
+
+Finding ID: FV-M3-CR1
+Disposition: accepted
+Status: open
+Owner: M3 implementer
+Owning stage: review-resolution
+Decision owner: M3 implementer
+Decision needed: none; enforce the approved v3 S-R-V boundary.
+Chosen action: reject every v3 pre-Verify state containing an explanation recording or handoff revision while retaining the legacy complete-tail requirement for v1/v2.
+Rationale: removing the stage graph edge is insufficient if readiness still consumes its durable evidence commit.
+Required outcome: v3 accepts exactly S-R before Verify; S-R-E fails for v3 and remains required for v1/v2.
+Safe resolution path: tighten the contract-keyed tail guard and add direct object plus repository-backed compatibility tests.
+Follow-up: Code Review M3 R2 after implementation correction.
+Validation target: FV-R1, FV-R2, FV-R28, FV-R31-FV-R34, TG-10, TG-12, BND-STATE-001, BND-TEMPORAL-001, INT-003.
+Validation evidence: pending implementation correction and focused rerun.
+
+#### FV-M3-CR2
+
+Finding ID: FV-M3-CR2
+Disposition: accepted
+Status: open
+Owner: M3 implementer
+Owning stage: review-resolution
+Decision owner: M3 implementer
+Decision needed: none under the approved owner map; route to Design only if external-evidence acquisition cannot be represented without a new lifecycle decision.
+Chosen action: compose the closed owner classifier with an executable contract-keyed Workflow correction transaction and rereview return boundary.
+Rationale: an unused lookup table identifies ownership but does not route a failed Verify attempt or enforce no-repair authority.
+Required outcome: all seven finding kinds route to exactly one non-Verify owner; wrong, unknown, and Verify-owned routes fail without mutation; corrections return through required review and Verify.
+Safe resolution path: integrate routing and add public/request-path matrices while preserving v1/v2 correction behavior.
+Follow-up: Code Review M3 R2 after implementation correction.
+Validation target: FV-R23-FV-R25, FV-R30, TG-11, TG-12, BND-AUTH-001, BND-RECOVERY-001, INT-002.
+Validation evidence: pending implementation correction and focused rerun.
