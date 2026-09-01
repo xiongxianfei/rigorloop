@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -18,10 +18,10 @@ Review closeout: code-review-m5-r1
 Review closeout: delivery-review-r2
 Review closeout: delivery-review-r3
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m5-r1`, `delivery-review-r2`, `delivery-review-r3`, `code-review-pr-preflight-r1`
 - Findings resolved: 18
-- Unresolved findings: 0
-- Current result: Both M5 R1 public-package coherence findings are resolved. Root and generated adapter guidance now match the sole v3 route and exact candidate inventory; Code Review M5 R2 is required.
+- Unresolved findings: 1
+- Current result: PR-preflight exposed one current-fixture drift finding after Verify. `FV-M6-CR1` requires bounded implementation correction, rereview, and repeated Verify before PR handoff.
 
 ## Resolution Overview
 
@@ -43,6 +43,7 @@ Review closeout: delivery-review-r3
 | FV-M4-CR2 | accepted | resolved | The shared parsed-YAML mapper rejects duplicate governed keys at every depth before selecting the registered primary plan or any nested authority value. |
 | FV-M5-CR1 | accepted | resolved | The root README now exposes only the v3 graph and success-only Verify explanation ownership, backed by a focused semantic regression. |
 | FV-M5-CR2 | accepted | resolved | Generated OpenCode guidance derives its alias declaration from the canonical tuple, and adapter support prose distinguishes candidate metadata from immutable release archives. |
+| FV-M6-CR1 | accepted | open | Current query-helper fixtures still select v1 and retired Verify completion wording, contradicting the v3-only candidate and invalidating PR-preflight evidence. |
 | FV-DLR2-01 | accepted | resolved | The plan now binds Design Review R2 consistently at every current upstream authority point. |
 | FV-DLR2-02 | accepted | resolved | M5 is non-authoritative with one exact exception; M6 binds and proves the immutable v2 closeout snapshot; activation follows only after M6. |
 
@@ -353,6 +354,25 @@ Validation evidence: Delivery Review R3 reproduced the bound archive, explain-ch
 ### delivery-review-r3
 
 No material findings.
+
+### code-review-pr-preflight-r1
+
+#### FV-M6-CR1
+
+Finding ID: FV-M6-CR1
+Disposition: accepted
+Status: open
+Owner: bounded candidate correction implementer
+Owning stage: review-resolution
+Decision owner: bounded candidate correction implementer
+Decision needed: none; the approved current v3 contract and policy determine the correction.
+Chosen action: update only the stale query-helper test fixture identities, completion strings, and matching v3 expectation.
+Rationale: current-behavior fixtures must exercise the sole executable v3 contract and exact successful Verify completion semantics; retaining v1 in these fixtures no longer tests a supported current path.
+Required outcome: all 26 focused tests and the authoritative PR-mode command pass without weakening v1/v2 non-progression or changing production query behavior.
+Safe resolution path: apply the five-line test-only correction recorded in `reviews/code-review-pr-preflight-r1.md`, rerun focused and PR validation, obtain independent targeted rereview, and repeat Verify before PR handoff.
+Follow-up: Code Review PR Preflight R2 and repeated Verify after bounded correction.
+Validation target: FV-R5, FV-R6, FV-R26, FV-R28, FV-R37, BND-STATE-001, BND-COMPAT-001, INT-004.
+Validation evidence: pending correction and rereview.
 
 ### code-review-m5-r1
 
