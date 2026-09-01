@@ -47,6 +47,7 @@ Workflow completion claims require evidence from the relevant standard workflow 
 - Per-change chain:
   - Current workflow: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
   - Active routing creates new governed changes with `stage-owned-change-local-v2`; plan owns verification allocation and Delivery Review approves the exact plan-only package. Manifest-bound `stage-owned-change-local-v1` changes may continue only from their registered post-delivery package.
+  - Final-verification v3 is in preactivation. Its staged final route is `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`; Verify generates the final explanation only on success. Activation switches new changes to `stage-owned-change-local-v3` and freezes exact prior-compatible v2 identities atomically.
   - Architecture and specification remain separately authored and reconcile before `design-review`. Delivery Review jointly assesses implementation sequencing and verification adequacy in the plan.
   - `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` remain readable historical evidence only. They are retired public progression entrypoints and are not aliases for `design-review` or `delivery-review`.
   - For milestone-based plans, the `implement -> code-review -> review-resolution when triggered` segment repeats for each in-scope implementation milestone. Final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
@@ -351,7 +352,8 @@ If this project customizes artifact locations, update the registry and this tabl
 | Formal review records | `docs/changes/<change-id>/reviews/<stage>-r<n>.md`; default location only; exact receipt/root rules are owned by the formal review recording contract | review skills | Formal lifecycle review. |
 | Review log | `docs/changes/<change-id>/review-log.md` | review skills | Formal lifecycle review. |
 | Review resolution | `docs/changes/<change-id>/review-resolution.md` when findings or blocking outcomes require disposition | `review-resolution` | Material findings, blocking outcomes, accepted dispositions, or another governing trigger. |
-| Explain change | `docs/changes/<change-id>/explain-change.md` | `explain-change` | Final rationale for non-trivial change. |
+| Explain change | `docs/changes/<change-id>/explain-change.md` | `explain-change` | Final rationale before Verify for v1/v2; historical under v3. |
+| Verify result (v3) | `docs/changes/<change-id>/verify-report.md` or the contract-selected Verify result path | `verify` | Readiness evidence and success-only final explanation. |
 | Verify report | `docs/changes/<change-id>/verify-report.md` when required | `verify` | Verify stage requires a standalone report. |
 | PR handoff | Pull request body | `pr` | PR stage. |
 | Learn session | `docs/learn/sessions/YYYY-MM-DD-slug.md` | `learn` | Learn session reaches Frame. |
@@ -448,7 +450,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.
 - In workflow-managed standard workflow milestone-based plans, first-pass `clean-with-notes` on a non-final implementation milestone closes the reviewed milestone and continues to the next in-scope implementation milestone.
 - In workflow-managed standard workflow milestone-based plans, first-pass `clean-with-notes` on the final implementation milestone reaches final closeout only when no in-scope implementation milestone remains open or unresolved.
-- Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.
+- Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions. Under v3, that review and any triggered CI maintenance route directly to Verify.
 - In workflow-managed standard workflow runs, first-pass `changes-requested` continues to `review-resolution`, and first-pass `blocked` or `inconclusive` stops.
 - If stable plan intent and change-local planned-work state do not identify the reviewed milestone or remaining in-scope implementation milestones consistently, stop and route the mismatch to `plan` and `workflow` instead of inferring final-closeout readiness.
 - Clean reviews require checklist coverage plus no-finding rationale. Positive notes are optional and only useful when they add specific evidence-backed context.

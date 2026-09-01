@@ -8982,6 +8982,37 @@ class FinalVerificationProtocolM2Tests(unittest.TestCase):
         self.assertIn("unknown trailing bytes invalidate it", body)
 
 
+class FinalVerificationPackageParityM4Tests(unittest.TestCase):
+    def test_current_governance_distinguishes_active_v2_from_inactive_v3(self) -> None:
+        for path in ("CONSTITUTION.md", "AGENTS.md", "docs/workflows.md", "specs/rigorloop-workflow.md"):
+            body = (ROOT / path).read_text(encoding="utf-8")
+            with self.subTest(path=path):
+                self.assertIn("stage-owned-change-local-v2", body)
+                self.assertIn("stage-owned-change-local-v3", body)
+                self.assertIn("preactivation", body.lower())
+
+    def test_v3_capable_stage_skills_agree_on_verify_owned_explanation_and_handoff(self) -> None:
+        expectations = {
+            "workflow": ("v3", "ci-maintenance", "verify", "pr", "explain-change"),
+            "code-review": ("v3", "final holistic", "verify", "explain-change"),
+            "ci-maintenance": ("v3", "verify", "explain-change"),
+            "verify": ("v3", "successful-explanation-v3.md", "branch-ready"),
+            "pr": ("v3", "Verify report", "competing authoritative rationale"),
+        }
+        for skill_name, phrases in expectations.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                for phrase in phrases:
+                    self.assertIn(phrase, body)
+
+    def test_scoped_verify_does_not_load_final_impact_or_explanation_resources(self) -> None:
+        body = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
+        scoped = body.split("### Inactive v3 final-readiness profile", 1)[1].split("## Execution authority", 1)[0]
+        self.assertIn("Scoped verification loads none of those resources", scoped)
+        self.assertNotIn("VP0-scoped` | yes", body)
+        self.assertIn("only after an active v3 final-readiness attempt has succeeded", body)
+
+
 class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
     """RTS TS-013 and TS-017 active publication contract."""
 

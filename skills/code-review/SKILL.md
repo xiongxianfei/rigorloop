@@ -201,7 +201,7 @@ Progress means work that has happened so far. Readiness means the next stage tha
 - `blocked` stops for the named decision or constraint.
 - `inconclusive` stops for missing evidence and does not enter resolution.
 - A clean non-final milestone closes only that milestone and hands off to the next in-scope implementation milestone.
-- A clean final milestone may enter final closeout only when no implementation milestone or required resolution remains open. Final closeout runs triggered CI maintenance, final holistic code-review, explain-change, verify, and PR in workflow-owned order; it never jumps directly from milestone review to verify.
+- A clean final milestone may enter final closeout only when no implementation milestone or required resolution remains open. Final closeout always requires final holistic Code Review and any triggered CI maintenance. V1/v2 then run `explain-change`, `verify`, and PR; v3 runs `verify` and PR, with the final explanation produced only by successful Verify. Milestone review never substitutes for final holistic review or jumps directly to final verification.
 
 The review output must name the reviewed milestone, native status, milestone closeout, required resolution, remaining milestones, next stage, and final closeout readiness with reason. Code-review writes that evidence; workflow consumes it and changes lifecycle state.
 

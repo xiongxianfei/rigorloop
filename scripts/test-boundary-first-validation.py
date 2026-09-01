@@ -441,6 +441,83 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
                         else "BFR-MARKER-AUTHORITY",
                     )
 
+    def test_v2_and_v3_stage_owned_specs_use_the_registered_primary_plan_for_proof(self) -> None:
+        stage_owned = valid_feature().replace(
+            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
+            "## Owning change record\n\n"
+            "`docs/changes/example/change.yaml`\n\n"
+            "boundary_contract: boundary-first-v1",
+        )
+        for contract in ("stage-owned-change-local-v2", "stage-owned-change-local-v3"):
+            with self.subTest(contract=contract), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                copy_activation_surfaces(root)
+                change_root = root / "docs/changes/example"
+                change_root.mkdir(parents=True)
+                plan_path = root / "docs/plans/example.md"
+                plan_path.parent.mkdir(parents=True)
+                plan_path.write_text(
+                    "# Plan\n\n## Verification allocation\n\n"
+                    "FIX-R001 is allocated to automated proof for BND-INPUT-001.\n",
+                    encoding="utf-8",
+                )
+                (root / "specs/example.md").write_text(stage_owned, encoding="utf-8")
+                change_root.joinpath("change.yaml").write_text(
+                    "change_id: example\n"
+                    f'lifecycle_contract: "{contract}"\n'
+                    "artifact_states:\n"
+                    "  plan:\n"
+                    "    kind: plan\n"
+                    "    path: docs/plans/example.md\n"
+                    "    role: primary\n"
+                    "    lifecycle_state: active\n",
+                    encoding="utf-8",
+                )
+                self.assertEqual(
+                    validate_changed_spec(root, "specs/example.md"),
+                    (),
+                )
+
+                plan_path.write_text(
+                    "# Plan\n\n## Verification allocation\n\nFIX-R001 only.\n",
+                    encoding="utf-8",
+                )
+                self.assertEqual(
+                    validate_changed_spec(root, "specs/example.md")[0].code,
+                    "BFR-PLAN-PROOF-INCOMPLETE",
+                )
+
+    def test_composed_example_requirements_may_span_the_union_of_cited_boundaries(self) -> None:
+        text = valid_feature().replace(
+            "| state-lifecycle | not-applicable | - | - | No state exists. |",
+            "| state-lifecycle | applicable | FIX-R002 | BND-STATE-001 | - |",
+        ).replace(
+            "Boundary model scope: FIX-R001",
+            "Boundary model scope: FIX-R001, FIX-R002",
+        ).replace(
+            "| BND-INPUT-001 | input-domain | FIX-R001 | present, missing, unknown | known values only | accept, reject | FIX-R001 |",
+            "| BND-INPUT-001 | input-domain | FIX-R001 | present, missing, unknown | known values only | accept, reject | FIX-R001 |\n"
+            "| BND-STATE-001 | state-lifecycle | FIX-R002 | initial, complete | completion is monotonic | continue, stop | FIX-R002 |",
+        ).replace(
+            "No interaction selected: Only one boundary is applicable.",
+            "| Interaction ID | Governing requirement IDs | Boundary IDs | Hazard | Required composed outcome |\n"
+            "| --- | --- | --- | --- | --- |\n"
+            "| INT-001 | FIX-R001, FIX-R002 | BND-INPUT-001, BND-STATE-001 | Input and state disagree. | Stop safely. |",
+        ).replace(
+            "| FIX-E001 | illustration | FIX-R001 | BND-INPUT-001 | - | - |",
+            "| FIX-E001 | illustration | FIX-R001, FIX-R002 | BND-INPUT-001, BND-STATE-001 | - | - |",
+        )
+        self.assertEqual(validate_feature_record(text), ())
+
+        uncovered = text.replace(
+            "FIX-R001, FIX-R002 | BND-INPUT-001, BND-STATE-001 | - | - |",
+            "FIX-R003 | BND-INPUT-001, BND-STATE-001 | - | - |",
+        )
+        self.assertIn(
+            "BFR-EXAMPLE-OWNER-MISMATCH",
+            {issue.code for issue in validate_feature_record(uncovered)},
+        )
+
     def test_fenced_record_and_malformed_separator_fail_closed(self) -> None:
         fenced = "```md\n" + valid_feature() + "\n```\n"
         self.assertIn(
