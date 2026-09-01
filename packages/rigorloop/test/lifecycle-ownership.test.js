@@ -7,11 +7,13 @@ import { join } from "node:path";
 import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
+import { writeActiveV3Manifests } from "./helpers/lifecycle-package-fixture.js";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 
 async function repository() {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-ownership-"));
+  writeActiveV3Manifests(root);
   mkdirSync(join(root, "docs", "changes", "canonical"), { recursive: true });
   mkdirSync(join(root, "docs", "changes", "example", "evidence"), { recursive: true });
   mkdirSync(join(root, "docs", "architecture"), { recursive: true });
@@ -22,7 +24,7 @@ async function repository() {
 title: Canonical
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   architecture:
     kind: architecture
@@ -54,7 +56,7 @@ lifecycle_cli:
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states: {}
 workflow_state:
   lifecycle_state: active

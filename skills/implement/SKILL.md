@@ -143,7 +143,7 @@ If a formal workflow-managed delivery package lacks recorded, approved, current 
 
 ### Change-local evidence
 
-For ordinary non-trivial work, maintain `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, normally `docs/changes/<change-id>/explain-change.md` unless an approved equivalent applies.
+For ordinary non-trivial work, maintain `docs/changes/<change-id>/change.yaml` plus stage-owned implementation evidence. Successful final Verify records the durable change explanation in `verify-report.md`.
 When creating a root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`.
 Do not broaden this requirement to isolated manual work that does not claim complete workflow delivery.
 Keep `review-resolution.md` and `verify-report.md` conditional on their governing triggers.

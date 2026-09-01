@@ -14,7 +14,7 @@ Prove that the requested scope, current evidence, implementation, tests, and gov
 
 Trace current evidence backward through implementation and allocated work to governing SRs and the approved proposal direction.
 
-Perform either a bounded evidence check or a final readiness assessment without taking ownership from authoring, review, workflow, or PR stages. Final verification validates the reviewed final change pack before PR and creates the final explanation only after successful final readiness.
+Perform either a bounded evidence check or a final readiness assessment without taking ownership from authoring, review, workflow, or PR stages. Final verification validates the reviewed final change pack before PR and creates the final durable explanation. It generates the final explanation only after successful final readiness.
 
 Final verification is scoped evidence and must not own artifact settlement, milestone state, or routing. For planned work, use `change.yaml` to assess current state and treat the plan and upstream artifacts as read-only.
 

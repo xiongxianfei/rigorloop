@@ -9,7 +9,7 @@ import { test } from "node:test";
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
 import { parseLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
 import { evaluateLifecycleOperation } from "../dist/lib/lifecycle-operations.js";
-import { packageContext, packageRepository, setWorkflowStage, writePackageReview } from "./helpers/lifecycle-package-fixture.js";
+import { packageContext, packageRepository, setWorkflowStage, writeActiveV3Manifests, writePackageReview } from "./helpers/lifecycle-package-fixture.js";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 
@@ -20,6 +20,7 @@ async function fixture() {
   mkdirSync(join(changeRoot, "reviews"), { recursive: true });
   mkdirSync(join(root, "requests"), { recursive: true });
   mkdirSync(join(root, "specs"), { recursive: true });
+  writeActiveV3Manifests(root);
   const spec = "# Example spec\n\nVersion one.\n";
   writeFileSync(join(root, "specs", "example.md"), spec, "utf8");
   writeFileSync(join(changeRoot, "review-log.md"), "Review ID: code-review-r1\nMaterial findings: F-CODE\nOpen findings: F-CODE\n", "utf8");
@@ -27,7 +28,7 @@ async function fixture() {
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   spec:
     kind: spec
@@ -266,8 +267,8 @@ test("delivery upstream-direction and blocked findings route through the design 
   }
 });
 
-test("v2 delivery verification findings route to plan and cannot route to test-spec", async () => {
-  const { root, changeRoot } = await packageRepository({ stage: "design-review", lifecycleContract: "stage-owned-change-local-v2" });
+test("delivery verification findings route to plan and cannot route to retired test-spec", async () => {
+  const { root, changeRoot } = await packageRepository({ stage: "design-review" });
   const design = writePackageReview(root, packageContext(root), { outcome: "approved" });
   assert.equal(execute(root, "record-package-review", {
     schema_version: 1, operation: "record-package-review", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
@@ -325,7 +326,7 @@ Source stage: verify
 Destination artifact: spec
 Reason: upstream-proof-gap
 Finding IDs: F-CODE
-Return stage: verify
+Return stage: design-review
 Lifecycle revision: ${initialRevision}
 `, "utf8");
   const routed = execute(root, "route-correction", {
@@ -339,7 +340,7 @@ Lifecycle revision: ${initialRevision}
     reason: "upstream-proof-gap",
     evidence_path: routeEvidence,
     finding_ids: ["F-CODE"],
-    return_stage: "verify",
+    return_stage: "design-review",
     milestone_id: "M2",
     stage_authority: "workflow",
   });
@@ -451,7 +452,7 @@ Source stage: verify
 Destination artifact: spec
 Reason: upstream-proof-gap
 Finding IDs: F-CODE
-Return stage: verify
+Return stage: design-review
 Lifecycle revision: ${initialRevision}
 `, "utf8");
   assert.equal(execute(root, "route-correction", {
@@ -525,9 +526,9 @@ test("workflow can route and register an already-authored upstream correction", 
   writeFileSync(join(root, emptyFindingEvidence), `Change ID: example
 Source stage: verify
 Destination artifact: spec
-Reason: upstream-stale-input
+Reason: system-requirement-gap
 Finding IDs: none
-Return stage: verify
+Return stage: design-review
 Lifecycle revision: ${beforeRoute.lifecycle_revision}
 `, "utf8");
   const rejected = execute(root, "route-correction", {
@@ -538,10 +539,10 @@ Lifecycle revision: ${beforeRoute.lifecycle_revision}
     source_stage: "verify",
     destination_stage: "spec",
     destination_artifact_id: "spec",
-    reason: "upstream-stale-input",
+    reason: "system-requirement-gap",
     evidence_path: emptyFindingEvidence,
     finding_ids: [],
-    return_stage: "verify",
+    return_stage: "design-review",
     milestone_id: "M2",
     stage_authority: "workflow",
   });
@@ -552,9 +553,9 @@ Lifecycle revision: ${beforeRoute.lifecycle_revision}
   writeFileSync(join(root, routeEvidence), `Change ID: example
 Source stage: verify
 Destination artifact: spec
-Reason: upstream-stale-input
+Reason: system-requirement-gap
 Finding IDs: F-CODE
-Return stage: verify
+Return stage: design-review
 Lifecycle revision: ${beforeRoute.lifecycle_revision}
 `, "utf8");
   const routed = execute(root, "route-correction", {
@@ -565,10 +566,10 @@ Lifecycle revision: ${beforeRoute.lifecycle_revision}
     source_stage: "verify",
     destination_stage: "spec",
     destination_artifact_id: "spec",
-    reason: "upstream-stale-input",
+    reason: "system-requirement-gap",
     evidence_path: routeEvidence,
     finding_ids: ["F-CODE"],
-    return_stage: "verify",
+    return_stage: "design-review",
     milestone_id: "M2",
     stage_authority: "workflow",
   });
@@ -626,11 +627,11 @@ test("route rejects lateral, missing-milestone, conflicting, and stale requests 
     const initial = status(root).lifecycle_revision;
     const routeEvidence = "docs/changes/example/evidence/correction-route.md";
     const destinationStage = scenario === "lateral" ? "verify" : "spec";
-    writeFileSync(join(root, routeEvidence), `Change ID: example\nSource stage: verify\nDestination artifact: spec\nReason: upstream-proof-gap\nFinding IDs: F-CODE\nReturn stage: verify\nLifecycle revision: ${initial}\n`, "utf8");
+    writeFileSync(join(root, routeEvidence), `Change ID: example\nSource stage: verify\nDestination artifact: spec\nReason: system-requirement-gap\nFinding IDs: F-CODE\nReturn stage: design-review\nLifecycle revision: ${initial}\n`, "utf8");
     const body = {
       schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: scenario === "stale" ? `sha256:${"0".repeat(64)}` : initial,
-      source_stage: "verify", destination_stage: destinationStage, destination_artifact_id: "spec", reason: "upstream-proof-gap",
-      evidence_path: routeEvidence, finding_ids: ["F-CODE"], return_stage: "verify", ...(scenario === "missing-milestone" ? {} : { milestone_id: "M2" }), stage_authority: "workflow",
+      source_stage: "verify", destination_stage: destinationStage, destination_artifact_id: "spec", reason: "system-requirement-gap",
+      evidence_path: routeEvidence, finding_ids: ["F-CODE"], return_stage: "design-review", ...(scenario === "missing-milestone" ? {} : { milestone_id: "M2" }), stage_authority: "workflow",
     };
     const before = readFileSync(join(changeRoot, "change.yaml"));
     const first = execute(root, "route-correction", body);
@@ -638,8 +639,8 @@ test("route rejects lateral, missing-milestone, conflicting, and stale requests 
       assert.equal(first.exitCode, 0, JSON.stringify(first.result));
       const routedBytes = readFileSync(join(changeRoot, "change.yaml"));
       const conflictEvidence = "docs/changes/example/evidence/conflicting-route.md";
-      writeFileSync(join(root, conflictEvidence), `Change ID: example\nSource stage: verify\nDestination artifact: spec\nReason: upstream-contract-gap\nFinding IDs: F-CODE\nReturn stage: verify\nLifecycle revision: ${status(root).lifecycle_revision}\n`, "utf8");
-      const conflict = execute(root, "route-correction", { ...body, expected_lifecycle_revision: status(root).lifecycle_revision, reason: "upstream-contract-gap", evidence_path: conflictEvidence });
+      writeFileSync(join(root, conflictEvidence), `Change ID: example\nSource stage: verify\nDestination artifact: spec\nReason: technical-realization-gap\nFinding IDs: F-CODE\nReturn stage: architecture\nLifecycle revision: ${status(root).lifecycle_revision}\n`, "utf8");
+      const conflict = execute(root, "route-correction", { ...body, expected_lifecycle_revision: status(root).lifecycle_revision, reason: "technical-realization-gap", evidence_path: conflictEvidence });
       assert.equal(conflict.result.errors[0].code, "RL_CORRECTION_ROUTE_INVALID");
       assert.deepEqual(readFileSync(join(changeRoot, "change.yaml")), routedBytes);
       continue;
@@ -654,11 +655,11 @@ test("route rejects unknown findings and non-destination revision without mutati
   const before = readFileSync(join(changeRoot, "change.yaml"));
   const current = status(root).lifecycle_revision;
   const routeEvidence = "docs/changes/example/evidence/bad-route.md";
-  writeFileSync(join(root, routeEvidence), `Change ID: example\nSource stage: verify\nDestination artifact: spec\nReason: upstream-proof-gap\nFinding IDs: NOT-OPEN\nReturn stage: verify\nLifecycle revision: ${current}\n`, "utf8");
+  writeFileSync(join(root, routeEvidence), `Change ID: example\nSource stage: verify\nDestination artifact: spec\nReason: system-requirement-gap\nFinding IDs: NOT-OPEN\nReturn stage: design-review\nLifecycle revision: ${current}\n`, "utf8");
   const rejected = execute(root, "route-correction", {
     schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: current,
-    source_stage: "verify", destination_stage: "spec", destination_artifact_id: "spec", reason: "upstream-proof-gap",
-    evidence_path: routeEvidence, finding_ids: ["NOT-OPEN"], return_stage: "verify", milestone_id: "M2", stage_authority: "workflow",
+    source_stage: "verify", destination_stage: "spec", destination_artifact_id: "spec", reason: "system-requirement-gap",
+    evidence_path: routeEvidence, finding_ids: ["NOT-OPEN"], return_stage: "design-review", milestone_id: "M2", stage_authority: "workflow",
   });
   assert.equal(rejected.result.errors[0].code, "RL_CORRECTION_ROUTE_INVALID");
   assert.deepEqual(readFileSync(join(changeRoot, "change.yaml")), before);
@@ -831,8 +832,7 @@ test("public v1 and v2 correction requests reject every v3-only Verify finding k
         source_stage: "verify", destination_stage: "spec", destination_artifact_id: "spec", reason,
         evidence_path: evidencePath, finding_ids: ["F-CODE"], return_stage: "verify", milestone_id: "M2", stage_authority: "workflow",
       });
-      assert.equal(rejected.result.errors[0].code, "RL_CORRECTION_ROUTE_INVALID", `${contract}: ${reason}`);
-      assert.match(rejected.result.errors[0].summary, /unknown_value/, `${contract}: ${reason}`);
+      assert.equal(rejected.result.errors[0].code, "RL_INCOMPATIBLE_VERSION", `${contract}: ${reason}`);
       assert.deepEqual(readFileSync(join(changeRoot, "change.yaml")), before, `${contract}: ${reason}`);
     }
   }

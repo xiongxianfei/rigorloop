@@ -29,7 +29,7 @@ from workflow_automation_policy import (
     OccurrenceKind,
     ProposalReviewProjection,
     PUBLIC_TARGET_STAGES,
-    LIFECYCLE_CONTRACT_V1,
+    LIFECYCLE_CONTRACT_V3,
     RetryPolicy,
     STAGE_POLICY_BY_STAGE,
     TransitionContext,
@@ -808,7 +808,6 @@ CAPABILITY_STAGES = {
             WorkflowStage.SPEC.value,
             WorkflowStage.DESIGN_REVIEW.value,
             WorkflowStage.PLAN.value,
-            WorkflowStage.TEST_SPEC.value,
             WorkflowStage.DELIVERY_REVIEW.value,
         }
     ),
@@ -821,9 +820,7 @@ CAPABILITY_STAGES = {
         }
     ),
     CapabilityKind.IMPLEMENTATION_CORRECTION.value: frozenset({WorkflowStage.REVIEW_RESOLUTION.value}),
-    CapabilityKind.VERIFICATION.value: frozenset(
-        {WorkflowStage.EXPLAIN_CHANGE.value, WorkflowStage.VERIFY.value}
-    ),
+    CapabilityKind.VERIFICATION.value: frozenset({WorkflowStage.VERIFY.value}),
 }
 
 CAPABILITY_BASIS_FIELDS = {
@@ -858,8 +855,6 @@ CAPABILITY_BASIS_FIELDS = {
         {
             "plan_identity",
             "plan_review_identity",
-            "test_spec_identity",
-            "test_spec_review_identity",
             "milestone_identity",
             "affected_paths_identity",
             "mutation_categories_identity",
@@ -880,7 +875,6 @@ CAPABILITY_BASIS_FIELDS = {
             "closed_milestones_identity",
             "final_code_review_identity",
             "promotion_evidence_identity",
-            "explanation_inputs_identity",
             "branch_state_identity",
             "verification_commands_identity",
         }
@@ -1098,7 +1092,7 @@ def _validate_operation_within_target(
     target_label: str,
     from_position: Any = None,
     transition_evidence: Any = None,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> list[str]:
     stage = capability.get("stage")
     if not isinstance(stage, dict) or not isinstance(target, dict):
@@ -2079,7 +2073,7 @@ def validate_workflow_automation(
     automation: Any,
     *,
     top_level_change_id: str | None = None,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> list[str]:
     """Return deterministic errors for one unified automation subsection."""
 

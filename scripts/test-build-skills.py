@@ -57,7 +57,7 @@ class BuildSkillsTests(unittest.TestCase):
         self.assertNotIn("`plan`, `test-spec`, `delivery-review`", workflow_automation)
         self.assertNotIn("-> test-spec", workflow_skeleton)
         self.assertNotIn("test_spec:", workflow_skeleton)
-        self.assertIn("Governed plan authoring is available only for v2", plan_authoring)
+        self.assertIn("Governed plan authoring is available only for v3", plan_authoring)
         self.assertNotIn("handoff: `test-spec`", plan_authoring)
 
     def test_proposal_stage_packages_preserve_canonical_resources(self) -> None:

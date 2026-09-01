@@ -2,7 +2,7 @@ const CHANGE_ID_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 const CLASSIFICATION_PATTERN = /^[a-z][a-z0-9-]{0,63}$/;
 const VALID_RISKS = new Set(["low", "medium", "high"]);
 const VALID_PROFILES = new Set(["standard", "minimal"]);
-const DEFAULT_LIFECYCLE_CONTRACT = "stage-owned-change-local-v2";
+const DEFAULT_LIFECYCLE_CONTRACT = "stage-owned-change-local-v3";
 
 function result(ok, code, message) {
   return ok ? { ok: true } : { ok: false, code, message };

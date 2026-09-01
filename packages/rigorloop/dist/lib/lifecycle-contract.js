@@ -23,7 +23,6 @@ export const PREACTIVATION_FINAL_VERIFICATION_MANIFEST = Object.freeze({
 
 const LIFECYCLE_CONTRACT_VALUES = new Set([LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3]);
 const PRIOR_CONTRACT_CLASSES = new Set([LIFECYCLE_CONTRACT_V1, LEGACY_UNVERSIONED_CONTRACT]);
-const FINAL_VERIFICATION_PRIOR_CONTRACT_CLASSES = new Set([LIFECYCLE_CONTRACT_V2]);
 const ACTIVATION_STATES = new Set(["preactivation", "active"]);
 const MANIFEST_FIELDS = new Set(["schema_version", "state", "activating_source_revision", "changes"]);
 const MANIFEST_ENTRY_FIELDS = new Set(["change_id", "contract_class"]);
@@ -125,7 +124,7 @@ const REVIEW_AUTHORITIES = Object.freeze([
 ]);
 
 const OPERATION_CONTRACTS = Object.freeze({
-  "record-artifact-revision": { required: ["artifact_id", "artifact_kind", "artifact_role", "artifact_path", "evidence_path", "stage_authority"], authorities: ["proposal", "spec", "architecture", "plan", "test-spec"] },
+  "record-artifact-revision": { required: ["artifact_id", "artifact_kind", "artifact_role", "artifact_path", "evidence_path", "stage_authority"], authorities: ["proposal", "spec", "architecture", "plan"] },
   "record-review": { required: ["artifact_id", "evidence_path", "stage_authority"], authorities: REVIEW_AUTHORITIES },
   "record-validation": { required: ["artifact_id", "evidence_path", "subject_path", "stage_authority"], authorities: ["implement", "verify", "ci-maintenance"] },
   "record-finding-resolution": { required: ["artifact_id", "evidence_path", "finding_id", "stage_authority"], authorities: ["review-resolution"] },
@@ -146,17 +145,7 @@ const OPERATION_CONTRACTS = Object.freeze({
 const REPAIR_CONDITIONS = new Set(["reconcile-interrupted-replace", "clear-orphaned-lock"]);
 const VERIFICATION_CORRECTION_REASONS = new Set(["system-requirement-gap", "technical-realization-gap", "verification-allocation-gap", "implementation-defect", "stale-or-incomplete-review", "ci-or-environment-gap", "external-evidence-gap"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input", ...VERIFICATION_CORRECTION_REASONS]);
-const V1_STAGE_TRANSITIONS = Object.freeze({
-  proposal: ["proposal-review"],
-  "proposal-review": ["architecture"],
-  architecture: ["spec"],
-  spec: ["design-review"],
-  "design-review": ["plan"],
-  plan: ["test-spec"],
-  "test-spec": ["delivery-review"],
-  "delivery-review": ["implement"],
-});
-const V2_STAGE_TRANSITIONS = Object.freeze({
+const V3_STAGE_TRANSITIONS = Object.freeze({
   proposal: ["proposal-review"],
   "proposal-review": ["architecture"],
   architecture: ["spec"],
@@ -165,10 +154,7 @@ const V2_STAGE_TRANSITIONS = Object.freeze({
   plan: ["delivery-review"],
   "delivery-review": ["implement"],
 });
-const V1_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan", "test-spec"]);
-const V2_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan"]);
-const V1_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
-const V2_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
+const V3_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan"]);
 const V3_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "ci-maintenance", "external-evidence-acquisition", "verify", "pr"]);
 const VERIFICATION_CORRECTION_OWNERS = Object.freeze({
   "system-requirement-gap": "spec",
@@ -179,7 +165,7 @@ const VERIFICATION_CORRECTION_OWNERS = Object.freeze({
   "ci-or-environment-gap": "ci-maintenance",
   "external-evidence-gap": "external-evidence-acquisition",
 });
-const REQUEST_CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec", "implement", "code-review", "ci-maintenance", "external-evidence-acquisition"]);
+const REQUEST_CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "implement", "code-review", "ci-maintenance", "external-evidence-acquisition"]);
 
 function rawUtf8Compare(left, right) {
   return Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8"));
@@ -241,38 +227,13 @@ export function validateFinalVerificationActivationManifest(manifest) {
   if (!ACTIVATION_STATES.has(manifest.state)) errors.push(`final verification activation manifest state: unknown_value ${String(manifest.state)}`);
   if (!Array.isArray(manifest.changes)) return [...errors, "final verification activation manifest changes must be an array"];
 
-  for (const [index, entry] of manifest.changes.entries()) {
-    if (!exactFields(entry, MANIFEST_ENTRY_FIELDS)) {
-      errors.push(`final verification activation manifest changes[${index}] must contain only change_id and contract_class`);
-      continue;
-    }
-    if (!FINAL_VERIFICATION_PRIOR_CONTRACT_CLASSES.has(entry.contract_class)) {
-      errors.push(`final verification activation manifest changes[${index}].contract_class: unknown_value ${String(entry.contract_class)}`);
-    }
-  }
+  if (manifest.changes.length !== 0) errors.push("final verification activation manifest changes must be empty; historical records are not an executable allowlist");
   if (errors.length) return errors;
 
   if (manifest.state === "preactivation") {
     if (manifest.activating_source_revision !== null) errors.push("preactivation final verification manifest activating_source_revision must be null");
-    if (manifest.changes.length !== 0) errors.push("preactivation final verification manifest changes must be empty");
   } else if (typeof manifest.activating_source_revision !== "string" || !/^[0-9a-f]{40}$/.test(manifest.activating_source_revision)) {
     errors.push("active final verification manifest activating_source_revision must be a 40-character lowercase Git revision");
-  }
-
-  const ids = [];
-  for (const [index, entry] of manifest.changes.entries()) {
-    if (typeof entry.change_id !== "string" || !SAFE_CHANGE_ID.test(entry.change_id)) {
-      errors.push(`final verification activation manifest changes[${index}].change_id must be one safe identifier`);
-    } else {
-      ids.push(entry.change_id);
-    }
-  }
-  if (new Set(ids).size !== ids.length) errors.push("final verification activation manifest changes contain a duplicate change_id");
-  for (let index = 1; index < ids.length; index += 1) {
-    if (rawUtf8Compare(ids[index - 1], ids[index]) >= 0) {
-      errors.push("final verification activation manifest changes must use strict raw UTF-8 byte order");
-      break;
-    }
   }
   return errors;
 }
@@ -281,17 +242,6 @@ function lifecycleContractError(code, message) {
   const error = new Error(`${code}: ${message}`);
   error.code = code;
   return error;
-}
-
-function hasActiveTestSpecState(change) {
-  const activeStages = new Set(["test-spec", "test-spec-review"]);
-  if (activeStages.has(change.workflow_state?.current_stage) || activeStages.has(change.workflow_state?.next_stage)) return true;
-  if (Object.values(change.artifact_states ?? {}).some((entry) => entry?.kind === "test-spec" && !["abandoned", "archived", "superseded"].includes(entry?.lifecycle_state))) return true;
-  if (Object.keys(change.review_packages?.delivery?.members ?? {}).includes("test-spec")) return true;
-  if (Object.values(change.lifecycle_cli?.artifacts ?? {}).some((entry) => entry?.artifact_kind === "test-spec")) return true;
-  if (Object.values(change.lifecycle_cli?.reviews ?? {}).some((entry) => entry?.stage_authority === "test-spec-review")) return true;
-  if (Object.keys(change.lifecycle_cli?.package_reviews?.delivery?.members ?? {}).includes("test-spec")) return true;
-  return false;
 }
 
 function hasActiveExplainChangeState(change) {
@@ -327,69 +277,39 @@ export function classifyLifecycleContract(
       authority: finalVerificationManifest.state === "active" ? "active" : "inactive",
     };
   }
-  if (contractClass === LIFECYCLE_CONTRACT_V2) {
-    if (hasActiveTestSpecState(change)) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", "v2 lifecycle contract carries active test-spec state");
-    if (finalVerificationManifest.state === "active") {
-      const entry = finalVerificationManifest.changes.find((candidate) => candidate.change_id === changeId);
-      if (!entry) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", `prior-contract change ${changeId} is not present in the final verification activation manifest`);
-      if (entry.contract_class !== contractClass) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", `prior-contract change ${changeId} does not match final verification activation manifest class ${entry.contract_class}`);
-      return {
-        contract_class: contractClass,
-        activation_state: finalVerificationManifest.state,
-        authority: "prior-compatible",
-      };
-    }
-    return {
-      contract_class: contractClass,
-      activation_state: manifest.state,
-      authority: manifest.state === "active" ? "active" : "inactive",
-    };
-  }
-
-  if (manifest.state === "active") {
-    const entry = manifest.changes.find((candidate) => candidate.change_id === changeId);
-    if (!entry) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", `prior-contract change ${changeId} is not present in the activation manifest`);
-    if (entry.contract_class !== contractClass) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", `prior-contract change ${changeId} does not match activation manifest class ${entry.contract_class}`);
-  }
   return {
     contract_class: contractClass,
-    activation_state: manifest.state,
-    authority: manifest.state === "active" ? "prior-compatible" : "preactivation",
+    activation_state: "historical",
+    authority: "historical",
   };
 }
 
 export function lifecycleContractVersion(change) {
   const contract = change?.lifecycle_contract;
-  if (contract === undefined || contract === LIFECYCLE_CONTRACT_V1) return LIFECYCLE_CONTRACT_V1;
-  if (contract === LIFECYCLE_CONTRACT_V2) return LIFECYCLE_CONTRACT_V2;
   if (contract === LIFECYCLE_CONTRACT_V3) return LIFECYCLE_CONTRACT_V3;
-  return LIFECYCLE_CONTRACT_V1;
+  return null;
 }
 
 export function allowedNextStages(change, sourceStage) {
   const version = lifecycleContractVersion(change);
-  if (version === LIFECYCLE_CONTRACT_V3) return [];
-  const transitions = version === LIFECYCLE_CONTRACT_V2 ? V2_STAGE_TRANSITIONS : V1_STAGE_TRANSITIONS;
-  return transitions[sourceStage] ?? [];
+  return version === LIFECYCLE_CONTRACT_V3 ? V3_STAGE_TRANSITIONS[sourceStage] ?? [] : [];
 }
 
 export function allowedArtifactKinds(change) {
   const version = lifecycleContractVersion(change);
-  if (version === LIFECYCLE_CONTRACT_V3) return [];
-  return version === LIFECYCLE_CONTRACT_V2 ? V2_ARTIFACT_KINDS : V1_ARTIFACT_KINDS;
+  return version === LIFECYCLE_CONTRACT_V3 ? V3_ARTIFACT_KINDS : [];
 }
 
 export function correctionStageOrder(change) {
   const version = lifecycleContractVersion(change);
-  if (version === LIFECYCLE_CONTRACT_V3) return V3_CORRECTION_STAGES;
-  return version === LIFECYCLE_CONTRACT_V2 ? V2_CORRECTION_STAGES : V1_CORRECTION_STAGES;
+  return version === LIFECYCLE_CONTRACT_V3 ? V3_CORRECTION_STAGES : [];
 }
 
 export function allowedCorrectionDestinations(change) {
   const version = lifecycleContractVersion(change);
-  const destinations = ["proposal", "spec", "architecture", "design-review", "plan", "test-spec"];
-  if (version === LIFECYCLE_CONTRACT_V3) destinations.push("implement", "code-review", "ci-maintenance", "external-evidence-acquisition");
-  else destinations.push("implement");
+  const destinations = version === LIFECYCLE_CONTRACT_V3
+    ? ["proposal", "spec", "architecture", "design-review", "plan", "implement", "code-review", "ci-maintenance", "external-evidence-acquisition"]
+    : [];
   return new Set(correctionStageOrder(change).filter((stage) => destinations.includes(stage)));
 }
 
@@ -573,7 +493,7 @@ export function validateLifecycleRequest(request) {
       return { ok: false, errors: [requestError(`${field} must be a normalized repository-relative path`)] };
     }
   }
-  if (request.artifact_kind !== undefined && !["proposal", "spec", "architecture", "adr", "plan", "test-spec"].includes(request.artifact_kind)) {
+  if (request.artifact_kind !== undefined && !["proposal", "spec", "architecture", "adr", "plan"].includes(request.artifact_kind)) {
     return { ok: false, errors: [requestError(`unknown artifact_kind ${String(request.artifact_kind)}`)] };
   }
   if (request.artifact_role !== undefined && !["primary", "supporting"].includes(request.artifact_role)) {

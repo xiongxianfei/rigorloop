@@ -6,7 +6,7 @@ Load this reference once when one or more specialized predicates are true. The p
 
 Apply when `vision_exception_context` is true. Classify the outcome as `revise proposal`, `revise vision`, or `record explicit exception`.
 
-An explicit exception names the approving owner or owning stage, evidence for the conflict, why proposal revision is not chosen, why vision revision is not chosen, where the exception is recorded, and whether it is one-time or establishes a future vision-revision trigger. Require proposal disclosure in `Impact and major trade-offs` and `Decision requested`, and record the outcome in review evidence; for non-trivial changes recommend carrying the rationale into `explain-change.md`.
+An explicit exception names the approving owner or owning stage, evidence for the conflict, why proposal revision is not chosen, why vision revision is not chosen, where the exception is recorded, and whether it is one-time or establishes a future vision-revision trigger. Require proposal disclosure in `Impact and major trade-offs` and `Decision requested`, record the outcome in review evidence, and carry non-trivial rationale into the successful final Verify report.
 
 ## Standing artifact gate
 

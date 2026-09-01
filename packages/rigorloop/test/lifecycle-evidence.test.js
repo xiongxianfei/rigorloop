@@ -14,6 +14,7 @@ import {
   packageContext,
   packageRepository,
   setWorkflowStage,
+  writeActiveV3Manifests,
   writePackageReview,
   writeRequest as writePackageRequest,
 } from "./helpers/lifecycle-package-fixture.js";
@@ -24,6 +25,7 @@ async function fixture(openFindings = "none", reviewOutcome = "approved") {
   mkdirSync(join(changeRoot, "reviews"), { recursive: true });
   mkdirSync(join(changeRoot, "evidence"), { recursive: true });
   mkdirSync(join(root, "requests"), { recursive: true });
+  writeActiveV3Manifests(root);
   mkdirSync(join(root, "docs", "proposals"), { recursive: true });
   const proposal = "# Example proposal\n";
   writeFileSync(join(root, "docs", "proposals", "example.md"), proposal, "utf8");
@@ -37,7 +39,7 @@ async function fixture(openFindings = "none", reviewOutcome = "approved") {
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   proposal:
     kind: proposal
@@ -461,7 +463,7 @@ test("delivery package binds the approved design revision and settles independen
   setWorkflowStage(root, "delivery-review");
   const deliveryContext = packageContext(root, "delivery-review");
   assert.equal(deliveryContext.exitCode, 0, JSON.stringify(deliveryContext.result));
-  assert.deepEqual(deliveryContext.result.context.review_package.members, { plan: "docs/plans/example.md", "test-spec": "specs/example.test.md" });
+  assert.deepEqual(deliveryContext.result.context.review_package.members, { plan: "docs/plans/example.md" });
   assert.equal(deliveryContext.result.context.review_package.upstream_review_id, designReview.reviewId);
   const deliveryReview = writePackageReview(root, deliveryContext, { kind: "delivery" });
   const deliveryRecord = writePackageRequest(root, "delivery-record", {
@@ -482,7 +484,7 @@ test("delivery package binds the approved design revision and settles independen
 });
 
 test("downstream workflow can recover exact review-required design and delivery packages", async () => {
-  const { root, changeRoot } = await packageRepository({ lifecycleContract: "stage-owned-change-local-v2" });
+  const { root, changeRoot } = await packageRepository();
   const recordAndSettle = (context, kind, round = "r1") => {
     const review = writePackageReview(root, context, { kind, round });
     const recorded = executeLifecycleCli(["record-package-review", "--request", writePackageRequest(root, `${kind}-${round}-record`, {

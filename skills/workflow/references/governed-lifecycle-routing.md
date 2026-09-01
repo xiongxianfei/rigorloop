@@ -6,9 +6,9 @@ Read this procedure only when a valid current governed change record must be int
 
 ## Governed identity and evidence
 
-Require the exact change identity and a readable `docs/changes/<change-id>/change.yaml`; read the complete `change.yaml` before state-changing routing. While final-verification v3 is in preactivation, the released bootstrap package requires `lifecycle_contract: stage-owned-change-local-v2` for new work. After coherent v3 activation, require `stage-owned-change-local-v3` for every current route and reject non-v3 progression. Historical records remain readable without mutation authority.
+Require the exact change identity and a readable `docs/changes/<change-id>/change.yaml`; read the complete `change.yaml` before state-changing routing. Require `stage-owned-change-local-v3` for every current route and reject non-v3 progression. Historical records remain readable without mutation authority.
 
-For every new governed change, create the single contract selected by the active lifecycle manifests without requiring another parameter: v2 during preactivation and v3 after coherent activation. Do not migrate manifest-bound prior-contract records in place; read-only historical inspection never creates the marker or changes it.
+For every new governed change, create v3 without requiring another parameter. Do not migrate prior-contract records in place; read-only historical inspection never creates or changes lifecycle state.
 
 Derive routing only from current artifact settlement, the active plan identity, stage-owned evidence, review resolution, and workflow-owned transition receipts. File existence alone is not settlement. Stop on missing, stale, mismatched, contradictory, or illegal evidence, including failed available change-metadata validation.
 
@@ -43,7 +43,7 @@ Use `lifecycle-closeout` for milestones or sections that track downstream gates 
 
 ## Final holistic review and closeout
 
-Milestone-local review is not final holistic review. Before `explain-change` or `verify`, require final holistic code-review evidence for the complete final diff and cross-milestone interactions.
+Milestone-local review is not final holistic review. Before `verify`, require final holistic code-review evidence for the complete final diff and cross-milestone interactions.
 
 After final holistic review is clean, route triggered CI maintenance and then current v3 directly to `verify`, which generates the final explanation only on success. Historical contracts select no route. Verification failure returns a blocker and Workflow routes it to the exact owner; it does not silently authorize Verify repair. `verify` may establish branch readiness. `pr` remains a separate boundary.
 

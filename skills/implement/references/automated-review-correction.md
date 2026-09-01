@@ -20,7 +20,7 @@ Do not load this reference for `IP0-isolated` or `IP1-planned`.
 ## Armed authority
 
 Implementation authority may execute the current approved milestone and reviewer-declared bounded corrections.
-It does not authorize `explain-change`, `verify`, `pr`, publication, release, deployment, credentials, or external mutation.
+It does not authorize `verify`, `pr`, publication, release, deployment, credentials, or external mutation.
 
 Keep milestone state and handoff procedure owned by `planned-milestone-implementation.md`.
 This reference may cite that procedure but must not redefine it.
@@ -75,7 +75,7 @@ Pause when a finding is unclassified, requires substantive governing-artifact ch
 
 Clean milestone promotion requires the normalized review outcome, independence manifest, phase receipts, clean sufficiency receipt, applicable fidelity receipt, risk-tier gates, and no unresolved findings.
 
-Before Phase C can enter `explain-change` or `verify`, require final holistic code-review evidence for the complete cross-milestone diff.
+Before Phase C can enter `verify`, require final holistic code-review evidence for the complete cross-milestone diff.
 
 Pause on missing or stale identity, missing promotion evidence, blocked or inconclusive review, owner decisions, non-shrinking correction, validation failure, user pause/cancel, or any request to cross the PR boundary.
 Never change the reviewer's native verdict to continue automation.

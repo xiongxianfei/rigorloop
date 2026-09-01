@@ -8,6 +8,7 @@ import test from "node:test";
 import { projectConciseResult, projectDetailedResult, renderResult, RESULT_FORMATS } from "../dist/lib/result-renderer.js";
 import { executeLifecycleCli, repairStateChanged } from "../dist/lib/lifecycle-cli.js";
 import { runLifecycleTransaction } from "../dist/lib/lifecycle-transaction.js";
+import { writeActiveV3Manifests } from "./helpers/lifecycle-package-fixture.js";
 
 const compatibilityFixturePath = join(import.meta.dirname, "fixtures", "observability", "v0.4.x-output-compatibility-v1.json");
 
@@ -15,6 +16,7 @@ function compatibilityProject(kind) {
   const project = mkdtempSync(join(tmpdir(), "rigorloop-compatibility-"));
   if (kind === "empty-lifecycle") mkdirSync(join(project, "docs", "changes"), { recursive: true });
   if (kind === "governed") {
+    writeActiveV3Manifests(project);
     mkdirSync(join(project, "docs", "changes", "example"), { recursive: true });
     mkdirSync(join(project, "specs"), { recursive: true });
     writeFileSync(join(project, "specs", "example.md"), "# Example\n");
@@ -22,7 +24,7 @@ function compatibilityProject(kind) {
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   spec:
     kind: spec

@@ -427,6 +427,9 @@ function requireLogEntry(root, changeId, reviewId) {
 }
 
 export function evaluateLifecycleOperation({ root, change, request }) {
+  if (lifecycleContractVersion(change) !== LIFECYCLE_CONTRACT_V3) {
+    throw operationError("RL_INCOMPATIBLE_VERSION", "Historical non-v3 records are readable but cannot be progressed by the current lifecycle runtime.", "lifecycle-contract-authority", [String(change?.lifecycle_contract ?? "legacy-unversioned")]);
+  }
   const next = structuredClone(change);
   const state = coordination(next);
   next.lifecycle_cli = state;
@@ -774,7 +777,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const log = requireLogEntry(root, change.change_id, review.review_id);
     if (review.review_log_sha256 !== log.sha256) throw operationError("RL_STALE_EVIDENCE", "review log changed after registration", "review-log-freshness", [review.review_id], "record-review");
     const desired = review.outcome === "approved" || review.outcome === "clean-with-notes"
-      ? ({ proposal: "accepted", spec: "approved", architecture: "approved", plan: "active", "test-spec": "active", adr: "accepted" }[target.kind] ?? "approved")
+      ? ({ proposal: "accepted", spec: "approved", architecture: "approved", plan: "active", adr: "accepted" }[target.kind] ?? "approved")
       : review.outcome === "changes-requested" ? "revision-required" : "blocked";
     const openFindings = review.findings.filter((findingId) => state.resolutions[findingId]?.artifact_id !== request.artifact_id).sort();
     if ((review.outcome === "approved" || review.outcome === "clean-with-notes") && openFindings.length) {
