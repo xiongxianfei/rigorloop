@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -11,11 +11,12 @@ Review closeout: code-review-m2-r2
 Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
+Review closeout: code-review-m3-r3
 
-- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`
-- Findings resolved: 10
-- Unresolved findings: 2
-- Current result: The bounded M3 R2 correction now enforces required rereview and v1/v2 isolation through the public transaction path; FV-M3-CR2 and FV-M3-CR3 remain open pending Code Review M3 R3 confirmation.
+- Reviews covered: `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`
+- Findings resolved: 12
+- Unresolved findings: none
+- Current result: Code Review M3 R3 independently confirmed FV-M3-CR2 and FV-M3-CR3 resolved; the complete corrected M3 slice is clean with M4 and M5 still planned.
 
 ## Resolution Overview
 
@@ -31,8 +32,8 @@ Review closeout: code-review-m3-r2
 | FV-M2-CR6 | accepted | resolved | JavaScript and Python now require arrays for all three collections on every outcome and share malformed-collection diagnostics. |
 | FV-M2-CR7 | accepted | resolved | Both runtimes and the exported applicability evaluators reject non-boolean evidence facts before semantic interpretation. |
 | FV-M3-CR1 | accepted | resolved | V3 accepts only the S-R review-recorded tail; legacy S-R-E remains required only by v1/v2. |
-| FV-M3-CR2 | accepted | open | Public owner routing and return boundaries are corrected and await independent R3 confirmation. |
-| FV-M3-CR3 | accepted | open | The reproduced rereview escape and legacy reason leakage are corrected and await independent R3 confirmation. |
+| FV-M3-CR2 | accepted | resolved | Public v3 owner routing is executable through exact review boundaries and v1/v2 reject verification-only reasons. |
+| FV-M3-CR3 | accepted | resolved | R3 confirmed every R2 counterexample fails through public transaction and authority probes. |
 
 ## Finding Details
 
@@ -226,7 +227,7 @@ Validation evidence: `python scripts/test-workflow-code-state.py` passed 19 test
 
 Finding ID: FV-M3-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M3 implementer
 Owning stage: review-resolution
 Decision owner: M3 implementer
@@ -237,7 +238,7 @@ Required outcome: all seven finding kinds route to exactly one non-Verify owner;
 Safe resolution path: integrate routing and add public/request-path matrices while preserving v1/v2 correction behavior.
 Follow-up: Code Review M3 R2 after implementation correction.
 Validation target: FV-R23-FV-R25, FV-R30, TG-11, TG-12, BND-AUTH-001, BND-RECOVERY-001, INT-002.
-Validation evidence: The correction keys the seven verification-only reasons to v3 Verify routes, sends v3 artifact returns to their declared Design or Delivery Review stage, and permits artifact revision only inside the exact active v3 correction route. A public CLI matrix routes and returns all seven owners, proves spec/architecture/plan and implementation stop at required review boundaries, rejects unknown/wrong/Verify owners without mutation, and rejects all seven reasons under both v1 and v2. The 89-pass/2-skip lifecycle suite and every planned M3 command passed. Code Review M3 R3 remains required for closure.
+Validation evidence: Code Review M3 R3 reran the 89-pass/2-skip lifecycle suite and every planned M3 command. Public matrices confirmed all seven exact route-and-return outcomes, legacy rejection, blocker clearing, and invalid-owner no-mutation behavior; active-route probes rejected non-routed and mismatched v3 artifact revisions.
 
 ### code-review-m3-r2
 
@@ -245,7 +246,7 @@ Validation evidence: The correction keys the seven verification-only reasons to 
 
 Finding ID: FV-M3-CR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M3 implementer
 Owning stage: review-resolution
 Decision owner: M3 implementer
@@ -256,4 +257,8 @@ Required outcome: public v3 correction transactions reach every exact owner and 
 Safe resolution path: key correction vocabularies and return behavior by lifecycle contract and source, then add public route-and-return matrices for all owners and legacy rejection cases.
 Follow-up: Code Review M3 R3 after bounded implementation correction.
 Validation target: FV-R23-FV-R25, FV-R30, TG-11, TG-12, BND-AUTH-001, BND-RECOVERY-001, BND-COMPAT-001, INT-002.
-Validation evidence: The public transaction now rejects every verification-only reason under v1/v2 before ordinary-route consistency, while v3 binds each reason to one owner and exact return stage. Artifact corrections register only within their active v3 owner route and return to Design or Delivery Review rather than the Verify snapshot. Public route/return and no-mutation matrices pass for all named cases; the complete planned M3 validation set also passes. Independent Code Review M3 R3 is pending.
+Validation evidence: Code Review M3 R3 directly confirmed v1/v2 rejection without mutation, all seven public v3 owner returns, consolidated review stops, cleared Verify blocker, invalid-owner no-mutation, unchanged legacy suites, and exact active-route-only artifact revision authority.
+
+### code-review-m3-r3
+
+No material findings.
