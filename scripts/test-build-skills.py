@@ -41,22 +41,18 @@ class BuildSkillsTests(unittest.TestCase):
 
         self.assertEqual(result, 0)
         self.assertTrue((output_dir / "proposal" / "SKILL.md").is_file())
-        self.assertTrue((output_dir / "workflow" / "SKILL.md").is_file())
-        self.assertTrue((output_dir / "workflow" / "assets" / "workflows-skeleton.md").is_file())
+        self.assertTrue((output_dir / "route" / "SKILL.md").is_file())
+        self.assertFalse((output_dir / "workflow").exists())
+        self.assertFalse((output_dir / "route" / "assets" / "workflows-skeleton.md").exists())
         self.assertFalse(self.build_skills.collect_drift(self.build_skills.CANONICAL_SKILLS_DIR, output_dir))
 
-        workflow_automation = (
-            output_dir / "workflow" / "references" / "bounded-workflow-automation.md"
-        ).read_text(encoding="utf-8")
-        workflow_skeleton = (
-            output_dir / "workflow" / "assets" / "workflows-skeleton.md"
+        route_automation = (
+            output_dir / "route" / "references" / "bounded-workflow-automation.md"
         ).read_text(encoding="utf-8")
         plan_authoring = (
             output_dir / "plan" / "references" / "governed-plan-authoring.md"
         ).read_text(encoding="utf-8")
-        self.assertNotIn("`plan`, `test-spec`, `delivery-review`", workflow_automation)
-        self.assertNotIn("-> test-spec", workflow_skeleton)
-        self.assertNotIn("test_spec:", workflow_skeleton)
+        self.assertNotIn("`plan`, `test-spec`, `delivery-review`", route_automation)
         self.assertIn("Governed plan authoring is available only for v3", plan_authoring)
         self.assertNotIn("handoff: `test-spec`", plan_authoring)
 

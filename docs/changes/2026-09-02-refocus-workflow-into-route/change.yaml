@@ -98,7 +98,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: planned
+        state: review-requested
       M3:
         kind: implementation
         state: planned

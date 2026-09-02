@@ -1003,6 +1003,35 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
             msg=f"stdout:\n{cli_result.stdout}\nstderr:\n{cli_result.stderr}",
         )
 
+    def test_clean_review_not_required_resolution_coexists_with_prior_resolution(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="review-artifact-clean-after-findings-"))
+        self.addCleanupTree(root)
+        self.write_closure_fixture(root)
+        write_text(
+            root / "reviews" / "code-review-r2.md",
+            review_text(
+                review_id="code-review-r2",
+                stage="code-review",
+                status="approved",
+            ).replace("Round: 1", "Round: 2"),
+        )
+        with (root / "review-log.md").open("a", encoding="utf-8") as handle:
+            handle.write(
+                """
+
+                ### Review entry
+                Review ID: code-review-r2
+                Stage: code-review
+                Round: 2
+                Status: approved
+                Detailed record: reviews/code-review-r2.md
+                Resolution: not-required
+                Material findings: none
+                Open findings: none
+                """
+            )
+        self.assertPasses(root)
+
     def test_review_log_parser_preserves_source_order_across_record_formats(
         self,
     ) -> None:
@@ -3276,7 +3305,7 @@ Validation target: Run tests.
         ]
         for path in [
             "specs/rigorloop-workflow.md",
-            "docs/workflows.md",
+            "skills/route/SKILL.md",
             "CONSTITUTION.md",
             "AGENTS.md",
         ]:
@@ -3313,7 +3342,7 @@ Validation target: Run tests.
         for term in ["counts by disposition", "review-resolution.md", "needs-decision", "duplicate every detailed finding"]:
             self.assertIn(term, pr)
 
-        workflow = read_repo_file("skills/workflow/SKILL.md")
+        workflow = read_repo_file("skills/route/SKILL.md")
         for term in ["partially-accepted", "needs-decision", "Closeout status: closed", "review-resolution.md"]:
             self.assertIn(term, workflow)
 

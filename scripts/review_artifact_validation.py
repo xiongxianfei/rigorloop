@@ -3412,7 +3412,7 @@ def _validate_review_relationships(
                     review_id=entry.review_id,
                 )
             )
-        if entry.resolution is not None:
+        if entry.resolution is not None and entry.resolution != "not-required":
             expected_resolution = f"review-resolution.md#{entry.review_id}"
             if entry.resolution != expected_resolution:
                 findings.append(
@@ -3434,6 +3434,18 @@ def _validate_review_relationships(
                         review_id=entry.review_id,
                     )
                 )
+        elif entry.resolution == "not-required" and (
+            entry.material_finding_ids or entry.open_finding_ids
+        ):
+            findings.append(
+                ValidationFinding(
+                    path=entry.path,
+                    line=entry.line,
+                    mode=mode,
+                    message="Resolution not-required is valid only for a review with no material or open findings",
+                    review_id=entry.review_id,
+                )
+            )
         for label, entry_value, review_value in (
             ("Stage", entry.stage, review.stage),
             ("Round", entry.round, review.round),

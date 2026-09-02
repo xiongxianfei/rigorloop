@@ -32,7 +32,7 @@ Do not use to author architecture, specification, or ADR content; review impleme
 - upstream: one architecture, one specification, applicable ADRs, accepted proposal evidence, and the accepted Proposal Review ID
 - downstream: plan authoring, author-owned correction, upstream proposal reconsideration, or isolated stop
 - summary: Decide whether the exact design package is coherent and feasible.
-- ownership: Write Design Review evidence and settle only the exact design package. Workflow owns routing.
+- ownership: Write Design Review evidence and settle only the exact design package. Route owns semantic routing.
 - must_not_claim: component authorship, implementation authority, implementation correctness, final verification, branch readiness, or PR readiness
 
 The reviewer does not edit architecture, specification, ADRs, proposal content, or routing state. Approval is package authority, never component-only approval.
@@ -82,7 +82,7 @@ Each finding records a stable Finding ID, Severity, Location, Evidence, Required
 
 ## Isolation and recording
 
-A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to workflow after settlement.
+A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to route after settlement.
 
 Every formal result must be recorded or explicitly blocked. Clean review uses a lightweight receipt and review-log entry. Material or blocking results use a detailed record and `review-resolution.md` when disposition is required. Do not create an empty `review-resolution.md` solely for a clean result.
 

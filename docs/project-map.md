@@ -8,13 +8,12 @@ It does not replace the normative source-of-truth order in `CONSTITUTION.md`, th
 
 This map orients readers to repository structure and boundaries. It does not own workflow stage order, exact lifecycle artifact placement, or current milestone state.
 
-Observed basis: direct inspection of `README.md`, `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md`, `docs/architecture/system/architecture.md`, selected specs, schemas, scripts, workflows, tests, adapter support files, and repository layout.
+Observed basis: direct inspection of `README.md`, `CONSTITUTION.md`, `AGENTS.md`, `rigorloop workflow-context`, `docs/architecture/system/architecture.md`, selected specs, schemas, scripts, workflows, tests, adapter support files, and repository layout.
 
 ## Map Metadata
 
-- Last updated: 2026-07-28
-- Observed basis: current repository tree plus the stage-owned lifecycle
-  governance update.
+- Last updated: 2026-09-02
+- Observed basis: current repository tree plus the route and CLI workflow-context cutover.
 - Covered areas: repository layout, governance and workflow surfaces, lifecycle artifacts, canonical skills, validation and generation scripts, adapter support, release evidence, token-cost evidence, tests, CI, and known architecture-orientation risks.
 - Known gaps: this map summarizes the canonical architecture package but does not duplicate it; narrow changes still need the governing spec, active plan, matching test spec, and touched files.
 - Refresh trigger: refresh or bypass this map with a no-map rationale when the relied-on area is absent, contradicted by current repository paths, or materially affected by recent changes.
@@ -25,7 +24,7 @@ RigorLoop is a repository-local workflow kit, not a deployed service. Its main p
 
 Observed major containers:
 
-- Governance and workflow guidance: `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md`.
+- Governance and workflow guidance: `CONSTITUTION.md`, `AGENTS.md`, the current workflow spec, and CLI workflow context.
 - Lifecycle artifacts: proposals, specs, test specs, architecture, ADRs, plans, review records, change metadata, explain-change records, and verify reports under `docs/` and `specs/`.
 - Canonical skills: stage and support skills under `skills/<skill>/SKILL.md`.
 - Validation and generation scripts: Python and shell tooling under `scripts/`.
@@ -35,7 +34,8 @@ Observed major containers:
 
 ```mermaid
 flowchart LR
-  Contributor[Contributor or agent] --> Governance[CONSTITUTION.md / AGENTS.md / docs/workflows.md]
+  Contributor[Contributor or agent] --> Governance[CONSTITUTION.md / AGENTS.md / workflow spec]
+  Contributor --> Context[rigorloop workflow-context]
   Contributor --> Lifecycle[docs/ and specs/ lifecycle artifacts]
   Lifecycle --> Skills[skills/*/SKILL.md]
   Skills --> Scripts[scripts validators and generators]
@@ -52,7 +52,7 @@ flowchart LR
 | `AGENTS.md` | Concise agent operating guide that points to governing artifacts and repository defaults. |
 | `README.md` | Public project overview, quick start, adapter-install summary, and validation-command orientation. |
 | `VISION.md` | Canonical project vision used by proposals and README generated vision block. |
-| `docs/workflows.md` | Short operational workflow summary, artifact-location map, follow-up ownership table, and validation guidance. |
+| `rigorloop workflow-context` | Read-only deterministic project and selected-change workflow facts, including resolved artifact locations and provenance. |
 | `docs/project-map.md` | Living repository orientation map. It orients; it does not own deferred execution. |
 | `docs/proposals/` | Date-prefixed proposal artifacts. |
 | `specs/` | Behavior contracts and matching `.test.md` test specs. `specs/README.md` states that specs are for behavior-changing work that benefits from explicit contracts. |
@@ -65,7 +65,7 @@ flowchart LR
 | `docs/follow-ups.md` | Optional unowned cross-change follow-up surface when routing rules require it. |
 | `docs/releases/<version>/` | Authored release metadata and release notes. |
 | `docs/reports/` | Adapter artifact metadata, token-cost release reports, run evidence, and optimization reports. |
-| `skills/` | Only authored skill source. There are 23 skill directories at this map revision. |
+| `skills/` | Only authored skill source, including the public `route` skill. |
 | `.codex/skills/` | Ignored local runtime state; not an authored source. |
 | `scripts/` | Repository-owned validators, selectors, generators, release checks, benchmark tooling, and tests. |
 | `scripts/adapter_templates/` | Thin adapter entrypoint templates for Codex, Claude Code, and opencode. |
@@ -81,7 +81,7 @@ flowchart LR
 RigorLoop has no long-running server, request router, database worker, or deployed runtime in this repository. Runtime behavior is command-driven:
 
 1. Contributors and agents read governing artifacts using the source-of-truth order in `CONSTITUTION.md`.
-2. Non-trivial changes move through the workflow chain documented in `docs/workflows.md` and `specs/rigorloop-workflow.md`.
+2. Non-trivial changes move through the workflow chain documented in `specs/rigorloop-workflow.md`; route consumes CLI context for deterministic project facts.
 3. Canonical stage skills under `skills/` guide individual lifecycle actions.
 4. Repository-owned scripts validate artifacts, select checks, generate adapter output, measure token cost, and verify release evidence.
 5. GitHub Actions call repository scripts instead of duplicating validation logic.
@@ -101,7 +101,7 @@ Important command entry points:
 
 The repository data model is artifact-based:
 
-- Governance data: Markdown in `CONSTITUTION.md`, `AGENTS.md`, `VISION.md`, and `docs/workflows.md`.
+- Governance data: Markdown in `CONSTITUTION.md`, `AGENTS.md`, `VISION.md`, and current workflow specifications.
 - Lifecycle state: `docs/changes/<change-id>/change.yaml` owns mutable artifact settlement, planned-work progress, blockers, routing, and final closeout.
 - Governed intent: proposals, specs, test specs, architecture records, ADRs, and plan bodies remain stable stage-owned content linked to their owning change record.
 - Plan state: `docs/plan.md` is navigation and concrete `docs/plans/*.md` files carry stable milestone definitions and execution intent; current handoff state lives in change metadata.
@@ -201,7 +201,7 @@ python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/<t
 - Concrete plan bodies live under `docs/plans/`; `docs/plan.md` is navigation only.
 - Formal lifecycle reviews create durable change-local review evidence.
 - `review-resolution.md` is conditional and reserved for material findings or blocking outcomes that require dispositions.
-- `docs/workflows.md` owns the artifact-location map and follow-up routing summary.
+- The CLI owns deterministic workflow-context and artifact-location resolution; `route` owns semantic routing decisions.
 - `project-map` orients and may record risks/open questions, but it does not own deferred execution or act as a backlog.
 - Architecture work uses the canonical architecture package and ADRs for durable design decisions.
 - Validation output should be selected and bounded; broad smoke runs only when an authoritative trigger requires it.
@@ -215,7 +215,7 @@ python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/<t
 
 ## Risk Areas
 
-- Many workflow concepts are distributed across `CONSTITUTION.md`, `docs/workflows.md`, `specs/rigorloop-workflow.md`, stage skills, and historical change artifacts. The source-of-truth order reduces conflict risk, but stale lower-priority guidance remains possible.
+- Workflow policy spans `CONSTITUTION.md`, `specs/rigorloop-workflow.md`, stage skills, and historical change artifacts; deterministic project facts are centralized in CLI context. The source-of-truth order reduces conflict risk, but stale lower-priority guidance remains possible.
 - Current plan and handoff state is centralized in change metadata. Reviewers still compare it with stable plan intent and stage-owned evidence, but plans and indexes are not writable state projections.
 - Adapter release behavior has moved across compatibility windows (`v0.1.1`, `v0.1.2`, `v0.1.3`). Current rules are documented, but older plans and historical artifacts may describe prior tracked adapter package behavior.
 - Some validators use lightweight custom parsers for Markdown or YAML-like files. This keeps dependencies low but raises maintenance risk when artifact shapes grow.

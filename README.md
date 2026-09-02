@@ -47,13 +47,13 @@ npx rigorloop --help
 Recommended first pass:
 
 1. Run `init` for one agent adapter.
-2. Read the [short workflow summary](docs/workflows.md).
+2. Run `npx rigorloop workflow-context` to inspect deterministic project workflow facts.
 3. Start your first real change with `proposal`.
 4. Move through review gates only when the durable artifacts are current.
 
 Read the [normative workflow contract](specs/rigorloop-workflow.md) when you need to customize the lifecycle or resolve a process question.
 
-Key paths: [workflow](docs/workflows.md) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
+Key paths: [workflow contract](specs/rigorloop-workflow.md) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
 
 ## Recommended Use
 
@@ -81,7 +81,7 @@ For smaller focused tasks, you can invoke an individual skill directly. Treat th
 ## Starting a new repository
 
 Use `init` to install agent support.
-It does not replace the standing guide artifacts that make a repository understandable.
+It does not replace the standing governance and orientation artifacts that make a repository understandable.
 
 ```bash
 npx @xiongxianfei/rigorloop@latest init codex
@@ -94,7 +94,7 @@ For a new repository, use this order:
    - `vision` creates or updates `VISION.md` for project direction and fit checks.
    - `constitution` creates or updates `CONSTITUTION.md` for source-of-truth and governance rules.
    - `project-map` creates or updates `docs/project-map.md` when repository orientation is needed.
-   - `workflow` creates or refreshes `docs/workflows.md` for the project-local workflow and artifact-location map.
+   - `route` uses `rigorloop workflow-context` for deterministic project-local workflow information and retains semantic routing judgment.
    - `docs/plan.md` starts as the small active/blocked/recent-work index.
 3. Start the first real change with the per-change lifecycle described above.
 
@@ -107,7 +107,7 @@ Do not rewrite durable guides just for symmetry.
 | --- | --- |
 | Understand project direction | [VISION.md](VISION.md) |
 | Understand governance and source-of-truth order | [CONSTITUTION.md](CONSTITUTION.md) |
-| Find workflow stages and artifact paths | [docs/workflows.md](docs/workflows.md) |
+| Find workflow stages and artifact paths | Run `rigorloop workflow-context`; read [the workflow contract](specs/rigorloop-workflow.md) for policy |
 | Orient to repository structure | [docs/project-map.md](docs/project-map.md) |
 | See active, blocked, and recent work | [docs/plan.md](docs/plan.md) |
 | Use one lifecycle stage | [skills/](skills/) |
@@ -142,7 +142,7 @@ RigorLoop treats automation as change-local authorization, not a project-wide de
 Select the exact stage where automation should stop:
 
 ```text
-$workflow auto: <target-stage>
+$route auto: <target-stage>
 ```
 
 Supported targets are:
@@ -155,7 +155,7 @@ plan, delivery-review, implement, code-review, verify
 The mechanism persists one `bounded-review-fix` run under `workflow.automation`.
 The target is a destination, not blanket consent: authoring, implementation, and verification use separate authorization boundaries, and only a current effective capability authorizes one concrete stage operation.
 
-Use `$workflow auto: status` for a read-only status projection and `$workflow auto: off` to durably cancel the run while preserving receipts.
+Use `$route auto: status` for a read-only status projection and `$route auto: off` to durably cancel the run while preserving receipts.
 
 Repeated `implement` and `code-review` targets bind the current plan milestone before persistence and never silently rebind on resume.
 A final `verify` target may be selected early, but verification authority is created only after implementation closeout, final review, promotion, branch-state, and verification-input evidence is concrete.
@@ -173,7 +173,7 @@ Automation always stops before PR creation, push, publication, release, deployme
 - Automatic workflow never merges, releases, deploys, publishes, or performs destructive Git actions by default.
 - `pr` is still the human-visible external boundary; open it only when readiness checks pass.
 
-For the complete contract, read [docs/workflows.md](docs/workflows.md) and [specs/workflow-stage-autoprogression.md](specs/workflow-stage-autoprogression.md).
+For the complete contract, read [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md) and [specs/workflow-stage-autoprogression.md](specs/workflow-stage-autoprogression.md).
 
 ## Worked Example
 
@@ -332,7 +332,7 @@ Do not use Codex `$skill` syntax for Claude Code or OpenCode. Claude Code one-sh
 
 ## Learn More / Contribute
 
-- Workflow detail: [docs/workflows.md](docs/workflows.md) and [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md)
+- Workflow detail: [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md); inspect project facts with `rigorloop workflow-context`
 - Artifact and skill docs: [specs/README.md](specs/README.md) and [skills/](skills/)
 - Report problems or feature ideas: [bug report template](.github/ISSUE_TEMPLATE/bug.yml) and [feature request template](.github/ISSUE_TEMPLATE/feature.yml)
 - Review PR expectations before contributing: [.github/pull_request_template.md](.github/pull_request_template.md)
@@ -345,7 +345,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 
 - Standing artifacts: `VISION.md` and `CONSTITUTION.md`
 - Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
-- Workflow infrastructure: specs, workflow summaries, affected root guidance, affected skills, and generated outputs
+- Workflow infrastructure: specs, CLI workflow context, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
 - Per-change chain: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`
 - Periodic learning: `learn`
@@ -356,7 +356,7 @@ Do not rely on `docs/project-map.md` when it is absent, stale, contradicted, or 
 
 Users may manually invoke individual skills for focused output. A manual skill invocation is isolated by default and does not imply that the full workflow is complete.
 
-The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md). The short operational summary lives in [docs/workflows.md](docs/workflows.md).
+The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md). Deterministic project-local workflow facts come from `rigorloop workflow-context`; semantic routing belongs to `route`.
 
 ## What This Repository Contains
 

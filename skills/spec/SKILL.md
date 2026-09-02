@@ -27,7 +27,7 @@ Resolve placement from identity, metadata, contracts, guidance, then defaults. A
 
 ## Project-local evidence
 
-Public skills use customer-project mode by default and project-local artifacts when present, including `docs/workflows.md` for local routing or placement. Do not require RigorLoop repository-internal artifacts in customer projects; use portable defaults or block on ambiguity.
+Public skills use customer-project mode by default and project-local artifacts when present. Consume authoritative CLI workflow context for governed routing or placement. Do not require RigorLoop repository-internal artifacts in customer projects; use portable defaults without governed claims or block on ambiguity.
 
 ## Invocation profiles and governed signals
 

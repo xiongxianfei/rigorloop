@@ -657,7 +657,7 @@ Planned validation rule: proposal-exact-append
         if public_authorization:
             start_public_run(
                 store,
-                "$workflow auto: spec",
+                "$route auto: spec",
                 run_id="run-correction",
                 actor="user",
                 occurred_at="2026-07-22T00:00:00Z",
@@ -790,28 +790,34 @@ Planned validation rule: proposal-exact-append
             },
         }
 
-    def test_target_command_normalization_is_closed_and_legacy_is_adapter_only(self) -> None:
-        current = normalize_command("$workflow auto: code-review")
+    def test_target_command_normalization_is_closed_and_old_public_forms_are_rejected(self) -> None:
+        current = normalize_command("$route auto: code-review")
         self.assertEqual((current.action, current.target_stage, current.legacy), ("target", "code-review", False))
 
-        legacy = normalize_command("workflow auto-through: verify")
-        self.assertEqual((legacy.action, legacy.target_stage, legacy.legacy), ("target", "verify", True))
-        self.assertEqual(normalize_command("workflow auto: status").action, "status")
-        self.assertEqual(normalize_command("workflow auto-through: off").action, "off")
-        legacy_target = resolve_command_target(
-            "workflow auto-through: verify",
+        target = normalize_command("route auto: verify")
+        self.assertEqual((target.action, target.target_stage, target.legacy), ("target", "verify", False))
+        self.assertEqual(normalize_command("route auto: status").action, "status")
+        self.assertEqual(normalize_command("$route auto: off").action, "off")
+        resolved_target = resolve_command_target(
+            "$route auto: verify",
             bound_at="2026-07-22T00:00:00Z",
         )
-        self.assertEqual(legacy_target["stage"], "verify")
-        self.assertEqual(legacy_target["occurrence"]["kind"], "final")
+        self.assertEqual(resolved_target["stage"], "verify")
+        self.assertEqual(resolved_target["occurrence"]["kind"], "final")
 
-        for command in ("workflow auto: future", "workflow auto-through: spec", "auto: verify"):
+        for command in (
+            "route auto: future",
+            "$workflow auto: spec",
+            "workflow auto-through: verify",
+            "route auto-through: spec",
+            "auto: verify",
+        ):
             with self.subTest(command=command), self.assertRaises(AutomationContractError):
                 normalize_command(command)
 
     def test_public_routes_enter_only_through_the_unified_engine_adapter(self) -> None:
         authoring = evaluate_public_authoring_route(
-            command="$workflow auto: design-review",
+            command="$route auto: design-review",
             current_stage="spec",
             capability_kind="post-proposal-authoring",
             capability_status="active",
@@ -829,7 +835,7 @@ Planned validation rule: proposal-exact-append
             plan_identity="sha256:plan-v1",
         )
         implementation = evaluate_public_implementation_route(
-            command="$workflow auto: code-review",
+            command="$route auto: code-review",
             current_stage="implement",
             capability_kind="implementation",
             capability_status="active",
@@ -849,7 +855,7 @@ Planned validation rule: proposal-exact-append
         )
 
         legacy = evaluate_public_implementation_route(
-            command="workflow auto-through: verify",
+            command="route auto: verify",
             current_stage="verify",
             capability_kind="verification",
             capability_status="active",
@@ -878,7 +884,7 @@ Planned validation rule: proposal-exact-append
 
         status = execute_public_control_command(
             store,
-            "$workflow auto: status",
+            "$route auto: status",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
         )
@@ -888,7 +894,7 @@ Planned validation rule: proposal-exact-append
 
         cancelled = execute_public_control_command(
             store,
-            "workflow auto-through: off",
+            "route auto: off",
             actor="user",
             occurred_at="2026-07-24T00:01:00Z",
         )
@@ -899,7 +905,7 @@ Planned validation rule: proposal-exact-append
 
         repeated = execute_public_control_command(
             store,
-            "$workflow auto: off",
+            "$route auto: off",
             actor="user",
             occurred_at="2026-07-24T00:02:00Z",
         )
@@ -925,7 +931,7 @@ Planned validation rule: proposal-exact-append
 
         started = start_public_run(
             store,
-            "workflow auto-through: delivery-review",
+            "route auto: delivery-review",
             run_id="run-public-001",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
@@ -980,7 +986,7 @@ Planned validation rule: proposal-exact-append
         ):
             start_public_run(
                 store,
-                "$workflow auto: verify",
+                "$route auto: verify",
                 run_id="run-public-002",
                 actor="user",
                 occurred_at="2026-07-24T00:01:00Z",
@@ -1010,7 +1016,7 @@ Planned validation rule: proposal-exact-append
         verify_store = WorkflowAutomationStateStore(verify_path)
         start_public_run(
             verify_store,
-            "workflow auto-through: verify",
+            "route auto: verify",
             run_id="run-public-verify",
             actor="user",
             occurred_at="2026-07-24T00:03:00Z",
@@ -1053,7 +1059,7 @@ Planned validation rule: proposal-exact-append
         }
         start_public_run(
             basis_store,
-            "workflow auto-through: verify",
+            "route auto: verify",
             run_id="run-public-basis",
             actor="user",
             occurred_at="2026-07-24T00:04:00Z",
@@ -1095,7 +1101,7 @@ Planned validation rule: proposal-exact-append
         ):
             workflow_automation_module.authorize_public_run(
                 verify_store,
-                "$workflow auto: verify",
+                "$route auto: verify",
                 authorization_id="authorization-verification-incomplete",
                 authorization_class="verification",
                 actor="user",
@@ -1104,11 +1110,11 @@ Planned validation rule: proposal-exact-append
             )
         with self.assertRaisesRegex(
             AutomationContractError,
-            "legacy verify adapter must not infer authoring authority",
+            "unknown workflow automation command",
         ):
             workflow_automation_module.authorize_public_run(
                 verify_store,
-                "workflow auto-through: verify",
+                "$workflow auto: verify",
                 authorization_id="authorization-authoring-inferred",
                 authorization_class="authoring",
                 actor="user",
@@ -1131,7 +1137,7 @@ Planned validation rule: proposal-exact-append
         ) = self.write_verification_readiness_evidence(verify_store)
         authorized = workflow_automation_module.authorize_public_run(
             verify_store,
-            "$workflow auto: verify",
+            "$route auto: verify",
             authorization_id="authorization-verification-current",
             authorization_class="verification",
             actor="user",
@@ -1183,7 +1189,7 @@ Planned validation rule: proposal-exact-append
         before = path.read_bytes()
         status = execute_public_control_command(
             store,
-            "workflow auto-through: status",
+            "route auto: status",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
         )
@@ -1192,7 +1198,7 @@ Planned validation rule: proposal-exact-append
 
         cancelled = execute_public_control_command(
             store,
-            "workflow auto-through: off",
+            "route auto: off",
             actor="user",
             occurred_at="2026-07-24T00:01:00Z",
         )
@@ -1243,7 +1249,7 @@ Planned validation rule: proposal-exact-append
         ):
             result = execute_public_control_command(
                 store,
-                "workflow auto-through: off",
+                "route auto: off",
                 actor="user",
                 occurred_at="2026-07-24T00:01:00Z",
             )
@@ -1282,7 +1288,7 @@ Planned validation rule: proposal-exact-append
 
         result = execute_public_control_command(
             store,
-            "workflow auto-through: off",
+            "route auto: off",
             actor="user",
             occurred_at="2026-07-24T00:01:00Z",
         )
@@ -1323,7 +1329,7 @@ Planned validation rule: proposal-exact-append
         )
         start_public_run(
             store,
-            "$workflow auto: delivery-review",
+            "$route auto: delivery-review",
             run_id="run-public-resume",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
@@ -1362,7 +1368,7 @@ Planned validation rule: proposal-exact-append
 
         result = workflow_automation_module.resume_public_run(
             store,
-            "$workflow auto: delivery-review",
+            "$route auto: delivery-review",
             repository_root=root,
             stage="spec",
             occurrence={"kind": "singleton"},
@@ -1417,7 +1423,7 @@ Planned validation rule: proposal-exact-append
         store = WorkflowAutomationStateStore(change, repository_root=root)
         start_public_run(
             store,
-            "$workflow auto: verify",
+            "$route auto: verify",
             run_id="run-verification-boundary",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
@@ -1431,7 +1437,7 @@ Planned validation rule: proposal-exact-append
 
         result = workflow_automation_module.resume_public_run(
             store,
-            "$workflow auto: verify",
+            "$route auto: verify",
             repository_root=root,
             stage="verify",
         )
@@ -1457,7 +1463,7 @@ Planned validation rule: proposal-exact-append
         )
         workflow_automation_module.authorize_public_run(
             store,
-            "$workflow auto: verify",
+            "$route auto: verify",
             authorization_id="authorization-verification-later",
             authorization_class="verification",
             actor="user",
@@ -1502,7 +1508,7 @@ Planned validation rule: proposal-exact-append
         )
         start_public_run(
             store,
-            "$workflow auto: delivery-review",
+            "$route auto: delivery-review",
             run_id="run-public-drift",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
@@ -1527,7 +1533,7 @@ Planned validation rule: proposal-exact-append
         ):
             workflow_automation_module.resume_public_run(
                 store,
-                "$workflow auto: delivery-review",
+                "$route auto: delivery-review",
                 repository_root=root,
                 stage="spec",
                 occurrence={"kind": "singleton"},
@@ -1600,7 +1606,7 @@ Planned validation rule: proposal-exact-append
         store = WorkflowAutomationStateStore(path, repository_root=root)
         start_public_run(
             store,
-            "$workflow auto: verify",
+            "$route auto: verify",
             run_id="run-public-unbacked-verify",
             actor="user",
             occurred_at="2026-07-24T00:00:00Z",
@@ -1624,7 +1630,7 @@ Planned validation rule: proposal-exact-append
         ):
             workflow_automation_module.authorize_public_run(
                 store,
-                "$workflow auto: verify",
+                "$route auto: verify",
                 authorization_id="authorization-verification-unbacked",
                 authorization_class="verification",
                 actor="user",
@@ -1696,7 +1702,7 @@ Planned validation rule: proposal-exact-append
                 )
                 start_public_run(
                     store,
-                    "$workflow auto: verify",
+                    "$route auto: verify",
                     run_id=f"run-public-{name}",
                     actor="user",
                     occurred_at="2026-07-24T00:00:00Z",
@@ -1725,7 +1731,7 @@ Planned validation rule: proposal-exact-append
                 ):
                     workflow_automation_module.authorize_public_run(
                         store,
-                        "$workflow auto: verify",
+                        "$route auto: verify",
                         authorization_id=f"authorization-{name}",
                         authorization_class="verification",
                         actor="user",
@@ -1813,7 +1819,7 @@ Planned validation rule: proposal-exact-append
                     )
                     start_public_run(
                         store,
-                        "$workflow auto: delivery-review",
+                        "$route auto: delivery-review",
                         run_id="run-deterministic",
                         actor="user",
                         occurred_at="2026-07-24T00:00:00Z",
@@ -1858,7 +1864,7 @@ Planned validation rule: proposal-exact-append
                         try:
                             workflow_automation_module.resume_public_run(
                                 store,
-                                "$workflow auto: delivery-review",
+                                "$route auto: delivery-review",
                                 repository_root=root,
                                 stage="spec",
                                 occurrence={"kind": "singleton"},
@@ -1952,7 +1958,7 @@ Planned validation rule: proposal-exact-append
                         }
                     result = workflow_automation_module.resume_public_run(
                         store,
-                        "$workflow auto: delivery-review",
+                        "$route auto: delivery-review",
                         repository_root=root,
                         stage="spec",
                         occurrence={"kind": "singleton"},
@@ -2070,7 +2076,7 @@ Planned validation rule: proposal-exact-append
                     elif name == "cancellation":
                         start_public_run(
                             store,
-                            "$workflow auto: spec",
+                            "$route auto: spec",
                             run_id="run-cancel",
                             actor="user",
                             occurred_at="2026-07-24T00:00:00Z",
@@ -2085,14 +2091,14 @@ Planned validation rule: proposal-exact-append
                         )
                         result = execute_public_control_command(
                             store,
-                            "$workflow auto: off",
+                            "$route auto: off",
                             actor="user",
                             occurred_at="2026-07-24T00:01:00Z",
                         )
                     elif name == "migration":
                         result = start_public_run(
                             store,
-                            "workflow auto-through: verify",
+                            "route auto: verify",
                             run_id="run-migration",
                             actor="user",
                             occurred_at="2026-07-24T00:00:00Z",
@@ -2108,7 +2114,7 @@ Planned validation rule: proposal-exact-append
                     elif name == "missing-authority":
                         start_public_run(
                             store,
-                            "$workflow auto: verify",
+                            "$route auto: verify",
                             run_id="run-missing-authority",
                             actor="user",
                             occurred_at="2026-07-24T00:00:00Z",
@@ -2123,7 +2129,7 @@ Planned validation rule: proposal-exact-append
                         )
                         result = workflow_automation_module.resume_public_run(
                             store,
-                            "$workflow auto: verify",
+                            "$route auto: verify",
                             repository_root=root,
                             stage="verify",
                         )
@@ -2154,7 +2160,7 @@ Planned validation rule: proposal-exact-append
                             request.pop(field)
                         result = workflow_automation_module.resume_public_run(
                             store,
-                            "$workflow auto: spec",
+                            "$route auto: spec",
                             repository_root=root,
                             **request,
                         )
@@ -2173,7 +2179,7 @@ Planned validation rule: proposal-exact-append
                         )
                         start_public_run(
                             store,
-                            "$workflow auto: verify",
+                            "$route auto: verify",
                             run_id="run-final-success",
                             actor="user",
                             occurred_at="2026-07-24T00:00:00Z",
@@ -2228,7 +2234,7 @@ Planned validation rule: proposal-exact-append
 
                         result = workflow_automation_module.resume_public_run(
                             store,
-                            "$workflow auto: verify",
+                            "$route auto: verify",
                             repository_root=root,
                             verification_basis_paths=basis_paths,
                             code_state_provider=provider,
@@ -2263,7 +2269,7 @@ Planned validation rule: proposal-exact-append
                     status_before = path.read_bytes()
                     status = execute_public_control_command(
                         store,
-                        "$workflow auto: status",
+                        "$route auto: status",
                         actor="user",
                         occurred_at="2026-07-24T00:02:00Z",
                     )
@@ -4479,7 +4485,7 @@ Planned validation rule: proposal-exact-append
 
         result = workflow_automation_module.resume_public_run(
             store=store,
-            command="$workflow auto: spec",
+            command="$route auto: spec",
             repository_root=store.repository_root,
             stage="proposal",
             capability_id="cap-correction-transaction",
@@ -4658,7 +4664,7 @@ Planned validation rule: proposal-exact-append
             ):
                 workflow_automation_module.resume_public_run(
                     store,
-                    "$workflow auto: spec",
+                    "$route auto: spec",
                     repository_root=root,
                     **public_request,
                 )
@@ -4720,7 +4726,7 @@ Planned validation rule: proposal-exact-append
         ):
             result = workflow_automation_module.resume_public_run(
                 store,
-                "$workflow auto: spec",
+                "$route auto: spec",
                 repository_root=root,
                 **public_request,
             )
@@ -5197,7 +5203,7 @@ Validation evidence: pending
 
         result = workflow_automation_module.resume_public_run(
             store=store,
-            command="$workflow auto: code-review",
+            command="$route auto: code-review",
             repository_root=store.repository_root,
             stage="review-resolution",
             capability_id="cap-implementation-correction-m2-r1",
@@ -5523,7 +5529,7 @@ Validation evidence: pending
 
         result = workflow_automation_module.resume_public_run(
             store=store,
-            command="$workflow auto: verify",
+            command="$route auto: verify",
             repository_root=store.repository_root,
             stage="implement",
             capability_id="capability-implementation-M2",
@@ -5696,7 +5702,7 @@ Open findings: None
 
         result = workflow_automation_module.resume_public_run(
             store=store,
-            command="$workflow auto: verify",
+            command="$route auto: verify",
             repository_root=store.repository_root,
             stage="code-review",
             capability_id="capability-code-review-M2",
@@ -6224,7 +6230,7 @@ Open findings: None
                 )
             result = workflow_automation_module.resume_public_run(
                 store=store,
-                command="$workflow auto: verify",
+                command="$route auto: verify",
                 repository_root=store.repository_root,
                 verification_basis_paths=verification_basis_paths,
                 code_state_provider=code_state_provider,

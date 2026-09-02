@@ -94,7 +94,7 @@ Stop when trigger, scope, evidence, identity, path, confirmation, owner, authori
 
 ## Claims this skill must not make
 
-Do not claim new workflow policy or any authoritative artifact is accepted merely because learning was recorded. This skill does not prove destination approval, implementation, release, workflow completion, verification, branch readiness, PR readiness, CI status, or lifecycle closeout. Route through `workflow` when another governed stage is required.
+Do not claim new workflow policy or any authoritative artifact is accepted merely because learning was recorded. This skill does not prove destination approval, implementation, release, workflow completion, verification, branch readiness, PR readiness, CI status, or lifecycle closeout. Route through the `route` skill when another governed stage is required.
 
 ## Expected output
 

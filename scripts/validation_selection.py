@@ -284,7 +284,7 @@ AUTHORITATIVE_ARTIFACT_PREFIXES = (
     "scripts/",
     "templates/",
 )
-AUTHORITATIVE_ARTIFACT_FILES = frozenset({"AGENTS.md", "CONSTITUTION.md", "VISION.md", "docs/plan.md", "docs/workflows.md"})
+AUTHORITATIVE_ARTIFACT_FILES = frozenset({"AGENTS.md", "CONSTITUTION.md", "VISION.md", "docs/plan.md"})
 
 
 @dataclass(frozen=True)

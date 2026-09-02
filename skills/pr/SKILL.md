@@ -21,7 +21,7 @@ Do not implement, review, verify, settle lifecycle state, merge, release, or fab
 
 ## Project-local evidence
 
-Public skills operate in customer-project mode by default. Use project-local artifacts when present, including `docs/workflows.md`. Do not require RigorLoop repository-internal specs, docs, reports, or governance files. Use portable defaults where safe and block on ambiguity.
+Public skills operate in customer-project mode by default. Use project-local artifacts and authoritative CLI workflow context when governed. Do not require RigorLoop repository-internal files. Use safe portable defaults without governed claims; block on ambiguity.
 
 ## Inputs to read
 

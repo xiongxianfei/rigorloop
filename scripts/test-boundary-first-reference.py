@@ -34,7 +34,7 @@ resources:
     source: specs/references/boundary-first-method-v1.md
     target: references/boundary-first-method-v1.md
     consumers:
-      - workflow
+      - route
       - spec
       - design-review
       - plan
@@ -96,7 +96,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self.assertEqual(
             GOVERNED_SKILLS,
             (
-                "workflow",
+                "route",
                 "spec",
                 "design-review",
                 "plan",
@@ -158,7 +158,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 b"contract_version: boundary-first-v1",
                 b"contract_version: boundary-first-v2",
             ).replace(
-                b"      - workflow\n",
+                b"      - route\n",
                 b"      - future-stage\n",
                 1,
             )
@@ -353,7 +353,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
     def test_check_reports_missing_stale_and_unexpected_projections(self) -> None:
         _, root = self.make_repository()
         project_reference(root, mode="write")
-        missing = root / "skills" / "workflow" / PROJECTED_REFERENCE
+        missing = root / "skills" / "route" / PROJECTED_REFERENCE
         missing.unlink()
         stale = root / "skills" / "spec" / PROJECTED_REFERENCE
         stale.write_bytes(b"stale")
@@ -373,7 +373,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self.assertEqual(
             result.errors,
             (
-                "BFR-PROJECTION-MISSING: skills/workflow/references/"
+                "BFR-PROJECTION-MISSING: skills/route/references/"
                 "boundary-first-method-v1.md",
                 "BFR-PROJECTION-STALE: skills/spec/references/"
                 "boundary-first-method-v1.md",
@@ -389,7 +389,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         project_reference(root, mode="write")
         extras = (
             root
-            / "skills/workflow/references/boundary-first-method-v2.md",
+            / "skills/route/references/boundary-first-method-v2.md",
             root
             / "skills/spec/references/nested/boundary-first-extra.md",
             root
@@ -412,13 +412,13 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
     def test_check_rejects_symlink_projection(self) -> None:
         _, root = self.make_repository()
         project_reference(root, mode="write")
-        target = root / "skills" / "workflow" / PROJECTED_REFERENCE
+        target = root / "skills" / "route" / PROJECTED_REFERENCE
         target.unlink()
         target.symlink_to(root / CANONICAL_REFERENCE)
 
         with self.assertRaisesRegex(
             ProjectionContractError,
-            "BFR-PATH-SYMLINK: skills/workflow/references/"
+            "BFR-PATH-SYMLINK: skills/route/references/"
             "boundary-first-method-v1.md",
         ):
             project_reference(root, mode="check")
@@ -428,21 +428,21 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         outside = self.make_outside_directory()
         sentinel = outside / PROJECTED_REFERENCE.name
         sentinel.write_bytes(b"outside sentinel")
-        references = root / "skills" / "workflow" / "references"
+        references = root / "skills" / "route" / "references"
         references.symlink_to(outside, target_is_directory=True)
 
         for mode in ("check", "write"):
             with self.subTest(mode=mode):
                 with self.assertRaisesRegex(
                     ProjectionContractError,
-                    "BFR-PATH-SYMLINK: skills/workflow/references",
+                    "BFR-PATH-SYMLINK: skills/route/references",
                 ):
                     project_reference(root, mode=mode)
                 self.assertEqual(sentinel.read_bytes(), b"outside sentinel")
 
     def test_invalid_late_source_preflight_performs_no_partial_write(self) -> None:
         _, root = self.make_repository()
-        existing = root / "skills/workflow" / PROJECTED_REFERENCE
+        existing = root / "skills/route" / PROJECTED_REFERENCE
         existing.parent.mkdir(parents=True)
         existing.write_bytes(b"original")
         (
@@ -642,8 +642,8 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             b"Boundary model version: boundary-first-v1\n"
         )
         outside = self.make_outside_directory()
-        references = root / "skills/workflow/references"
-        displaced = root / "skills/workflow/references-displaced"
+        references = root / "skills/route/references"
+        displaced = root / "skills/route/references-displaced"
         calls = 0
 
         def swap_then_fail(
@@ -673,7 +673,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         for relative in paths:
             if relative.parts[:3] == (
                 "skills",
-                "workflow",
+                "route",
                 "references",
             ):
                 continue
@@ -786,12 +786,12 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                         (
                             root
                             / "skills"
-                            / "workflow"
+                            / "route"
                             / PROJECTED_REFERENCE
                         ).unlink()
                         expected_errors.append(
                             "BFR-PROJECTION-MISSING: "
-                            "skills/workflow/references/"
+                            "skills/route/references/"
                             "boundary-first-method-v1.md"
                         )
 
@@ -816,7 +816,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         target = outside / "other-guidance.md"
         target.write_text("# unrelated\n", encoding="utf-8")
         skill_link = (
-            root / "skills/workflow/references/other-guidance.md"
+            root / "skills/route/references/other-guidance.md"
         )
         skill_link.symlink_to(target)
         canonical_link = root / "specs/references/other-guidance.md"

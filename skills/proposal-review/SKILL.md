@@ -20,7 +20,7 @@ Judge whether the proposal responsibly refines the incoming RR into an IR-level 
 - upstream: proposal artifact plus user intent when available
 - downstream: proposal revision, accepted proposal, or isolated stop before architecture and specification
 - summary: Review proposal direction, scope, risk, and feasibility as one decision.
-- ownership: Write review evidence and, with exact formal authority, settle only the matching proposal entry. Workflow owns routing and continuation.
+- ownership: Write review evidence and, with exact formal authority, settle only the matching proposal entry. Route owns semantic routing and continuation.
 - must_not_claim: spec completion, implementation review, final verification, branch readiness, PR readiness, or automatic downstream handoff
 
 Do not edit the proposal unless the user explicitly requests a combined review-and-revision action. Record the first-pass review before any separately authorized correction.
@@ -56,7 +56,7 @@ Read the complete proposal and original intent first. Add only evidence the prop
 
 ## Project-local evidence
 
-Public skills operate in customer-project mode by default. Use project-local evidence and portable defaults; do not require RigorLoop repository-internal files outside this repository. Consult `docs/workflows.md` for project-local routing or placement and block on ambiguity.
+Public skills operate in customer-project mode by default. Use project-local evidence and portable defaults; do not require RigorLoop repository-internal files outside this repository. Consume authoritative CLI workflow context for governed routing or placement and block on ambiguity.
 
 ## Evidence access
 
@@ -69,7 +69,7 @@ Default evidence:
 Conditional evidence:
 
 - linked specs, ADRs, plans, or learn sessions when the proposal relies on them
-- `docs/workflows.md` when workflow behavior or artifact placement is proposed
+- authoritative CLI workflow context when governed workflow behavior or artifact placement is proposed
 - code only when the proposal depends on current implementation reality
 
 Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set. Expand further only when bounded evidence is incomplete, contradictory, or insufficient.

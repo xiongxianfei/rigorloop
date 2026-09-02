@@ -1743,6 +1743,8 @@ def _stage_owned_plan_proof_issues(
     artifact_states = change.get("artifact_states")
     plan = artifact_states.get("plan") if isinstance(artifact_states, dict) else None
     if not isinstance(plan, dict) or plan.get("kind") != "plan" or plan.get("role") != "primary":
+        if contract == "stage-owned-change-local-v3":
+            return ()
         return (
             _issue(
                 "BFR-PLAN-PROOF-MISSING",
