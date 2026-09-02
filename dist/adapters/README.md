@@ -26,6 +26,6 @@ Historical note: v0.1.2 kept repository-tree adapter packages during the compati
 
 ## Migration notes
 
-The workflow routing skill has been renamed from `workflow` to `route`. Use `route` for routing and bounded automation. Current archives do not install `workflow` as an alias; an obsolete installed `workflow` package must be removed before installing the current route package. Stable lifecycle authority values and `workflow.automation` state remain compatible and are not renamed.
+The workflow routing skill has been renamed from `workflow` to `route`. Use `route` for routing and bounded automation. The v0.5.1 candidate archives do not install `workflow` as an alias. Exact lockfile-managed installs can be replaced by normal `init --write-state`; unmanaged or drifted installs stop with state-specific recovery guidance. Stable lifecycle authority values and `workflow.automation` state remain compatible and are not renamed.
 
 The CI workflow authoring/review skill has been renamed from `ci` to `ci-maintenance`. Use `ci-maintenance` for direct skill invocation. Existing direct `ci` invocations should be updated; this adapter release does not install `ci` as a compatibility alias.
