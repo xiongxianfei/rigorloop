@@ -2,17 +2,17 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: proposal-review-r1
 
-- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`
+- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`
 - Findings resolved: 5
-- Unresolved findings: 0
-- Current result: M1 Code Review R3 found the complete corrected workflow-context slice clean with no remaining material findings.
+- Unresolved findings: 2
+- Current result: M2 Code Review R1 requests removal of remaining current guide dependencies and semantic old-public-actor references before M3.
 
 ## Resolution Overview
 
@@ -23,6 +23,8 @@ Review closeout: proposal-review-r1
 | RFR-M1-CR3 | accepted | resolved | Exact reads are isolated and TG-05 failure, retry, interruption, and freshness proof is complete. |
 | RFR-M1-CR4 | accepted | resolved | Human output exposes candidate count, truncation, and exact-selection guidance. |
 | RFR-M1-CR5 | accepted | resolved | Unexpected read and interrupted public invocation tests prove non-mutation directly. |
+| RFR-M2-CR1 | accepted | open | Remove current stage-skill guide fallbacks and retire remaining callable guide/map validators. |
+| RFR-M2-CR2 | accepted | open | Name route, not workflow, wherever current skill prose identifies the semantic routing actor. |
 
 ## Finding Details
 
@@ -117,3 +119,37 @@ Validation evidence: Code Review M1 R3 confirmed the direct read-fault result co
 ### code-review-m1-r3
 
 No material findings.
+
+### code-review-m2-r1
+
+#### RFR-M2-CR1
+
+Finding ID: RFR-M2-CR1
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Decision owner: none
+Decision needed: none
+Chosen action: Remove current workflow-guide fallbacks and retire current guide/map validation behavior while preserving portable placement and historical evidence.
+Rationale: Passing a narrow exact-path scan does not satisfy the approved prohibition on current guide consultation or parsing.
+Required outcome: Current skills and validators have no guide authority, lookup, parsing, or fallback behavior, and a semantic reintroduction fixture fails.
+Follow-up: Apply the bounded M2 correction and run Code Review M2 R2.
+Validation target: RT-R19, RT-R21, RT-R25, RT-R33, TG-09, TG-10.
+Validation evidence: pending M2 correction and rereview.
+
+#### RFR-M2-CR2
+
+Finding ID: RFR-M2-CR2
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Decision owner: none
+Decision needed: none
+Chosen action: Replace semantic public-actor uses of workflow with route and add bounded negative coverage without renaming stable protocol vocabulary.
+Rationale: The current package cannot expose two names for the same semantic routing actor after the clean rename.
+Required outcome: Current public skill prose consistently identifies route as the semantic actor and explicitly allowed workflow protocol/history contexts remain unchanged.
+Follow-up: Apply the bounded M2 correction and run Code Review M2 R2.
+Validation target: RT-R1, RT-R26-RT-R29, RT-R33, BND-AUTH-001, TG-08, TG-09.
+Validation evidence: pending M2 correction and rereview.
