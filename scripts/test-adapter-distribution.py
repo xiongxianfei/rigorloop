@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import importlib.util
 import hashlib
+import json
 import os
 import sys
 import shutil
@@ -81,6 +82,25 @@ class AdapterDistributionTests(unittest.TestCase):
 
     def fixture(self, name: str) -> Path:
         return FIXTURES / name
+
+    def test_v0_5_1_bundled_candidate_metadata_matches_generated_route_only_archives(self) -> None:
+        version = "v0.5.1"
+        bundled = json.loads(
+            (ROOT / "packages" / "rigorloop" / "dist" / "metadata" / f"adapter-artifacts-{version}.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        with tempfile.TemporaryDirectory(prefix="route-candidate-") as temp_dir:
+            output = Path(temp_dir)
+            archives = build_adapter_archives(version, output)
+            generated = adapter_distribution_module._local_release_candidate_metadata(version, output)
+
+            self.assertEqual(bundled, generated)
+            for archive_path in archives:
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = set(archive.namelist())
+                self.assertTrue(any("/route/SKILL.md" in name for name in names))
+                self.assertFalse(any("/workflow/" in name for name in names))
 
     def test_staged_v3_archives_omit_explain_change_and_package_complete_verify_resources(self) -> None:
         self.assertNotIn("explain-change", STAGED_V3_ADAPTER_SKILLS)

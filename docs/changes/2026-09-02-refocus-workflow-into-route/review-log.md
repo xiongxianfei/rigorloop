@@ -1,6 +1,6 @@
 # Review log
 
-Open findings: RFR-M3-CR1, RFR-M3-CR2
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -14,7 +14,7 @@ Resolution: review-resolution.md#code-review-m3-r1
 Material findings: RFR-M3-CR1, RFR-M3-CR2
 Finding ID: RFR-M3-CR1
 Finding ID: RFR-M3-CR2
-Open findings: RFR-M3-CR1, RFR-M3-CR2
+Open findings: none
 Recording status: recorded
 
 ### Review entry

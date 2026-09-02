@@ -116,7 +116,7 @@ review:
   review_log: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
   reviewed_artifact: milestone:M3@658a6a05
   status: changes-requested
-  unresolved_items: 2
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -181,6 +181,29 @@ lifecycle_cli:
           - RFR-M2-CR2
         lifecycle_state: active
         milestone_id: M2
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-4e469a45c97b4c34cfd9f87474a3f6693989d5269d4716921878cbd457e6072f:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m3-r1-correction-route.md
+      evidence_sha256: 18880990a4ec9e3930224e412fffa3a550bbb0118cfb9b0eb424836fc518f91a
+      prior_lifecycle_revision: sha256:84d27d6320ef0d78535deb4b9e21e03fb46b6f1c3b4af32f6f2bc25678f452a6
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m3-r1-correction-return.md
+      return_evidence_sha256: 2731e5d6e9558ac6afcbbba64956fb5ca94de17ce02628789ff047e9a958d4ed
+      return_stage: code-review
+      route_id: route-4e469a45c97b4c34cfd9f87474a3f6693989d5269d4716921878cbd457e6072f
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-M3-CR1
+          - RFR-M3-CR2
+        lifecycle_state: active
+        milestone_id: M3
         milestone_state: review-requested
         next_stage: code-review
       status: returned
@@ -365,6 +388,22 @@ lifecycle_cli:
       evidence_sha256: 4acf9b28e55ea4813c3931f1301d4d50c64fb22b8da1157dbfd0f2778f4bd2f2
       finding_id: RFR-M2-CR2
       owner: M2 implementer
+      stage_authority: review-resolution
+    RFR-M3-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 273dfd7542dad7cbc79abbeb6d4667090996cd503b65ea7455bde2927d6356d5
+      finding_id: RFR-M3-CR1
+      owner: M3 implementer
+      stage_authority: review-resolution
+    RFR-M3-CR2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 273dfd7542dad7cbc79abbeb6d4667090996cd503b65ea7455bde2927d6356d5
+      finding_id: RFR-M3-CR2
+      owner: M3 implementer
       stage_authority: review-resolution
   reviews:
     proposal:
