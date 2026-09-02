@@ -1,6 +1,18 @@
 # Review log
 
-Open findings: RFR-M1-CR2, RFR-M1-CR3, RFR-M1-CR4, RFR-M1-CR5
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r3
+Stage: code-review
+Round: r3
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r3.md
+Resolution: review-resolution.md#code-review-m1-r3
+Material findings: none
+Open findings: none
 Recording status: recorded
 
 ### Review entry
