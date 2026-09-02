@@ -5,15 +5,16 @@
 Closeout status: open
 
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: proposal-review-r1
 
-- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
+- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`
 - Findings resolved: 9
 - Unresolved findings: 0
-- Current result: Both M3 Code Review R1 findings are implemented with fresh validation; M3 Code Review R2 remains required.
+- Current result: M3 Code Review R2 independently closed both R1 findings with no new material findings; final holistic Code Review remains required after milestone closeout.
 
 ## Resolution Overview
 
@@ -194,3 +195,7 @@ Required outcome: The supported remediation preserves unrelated targets, reaches
 Follow-up: Apply the bounded M3 correction and run Code Review M3 R2.
 Validation target: RT-R27, RT-R28, RT-R30, TG-13, TG-16, BND-RECOVERY-001.
 Validation evidence: CLI tests prove the `--write-state` instruction, exact managed replacement, unrelated-target preservation, coherent route-only result, and rollback restoring the prior target, manifest, and lockfile; the full 367-test package suite and broad smoke pass.
+
+### code-review-m3-r2
+
+No material findings. R2 independently confirmed both M3 R1 findings are resolved and the complete M3 validation allocation passes.
