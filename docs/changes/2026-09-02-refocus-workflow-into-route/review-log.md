@@ -26,7 +26,7 @@ Resolution: review-resolution.md#code-review-m1-r2
 Material findings: RFR-M1-CR4, RFR-M1-CR5
 Finding ID: RFR-M1-CR4
 Finding ID: RFR-M1-CR5
-Open findings: RFR-M1-CR4, RFR-M1-CR5
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -41,7 +41,7 @@ Material findings: RFR-M1-CR1, RFR-M1-CR2, RFR-M1-CR3
 Finding ID: RFR-M1-CR1
 Finding ID: RFR-M1-CR2
 Finding ID: RFR-M1-CR3
-Open findings: RFR-M1-CR1, RFR-M1-CR2, RFR-M1-CR3
+Open findings: none
 Recording status: recorded
 
 ### Review entry
