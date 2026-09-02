@@ -277,6 +277,7 @@ export function workflowContextHuman(result) {
   if (result.change_id) lines.push(`Change: ${result.change_id}`);
   if (result.lifecycle_revision) lines.push(`Lifecycle revision: ${result.lifecycle_revision}`);
   if (result.current_stage) lines.push(`Current stage: ${result.current_stage}`);
+  if (Number.isSafeInteger(result.candidate_total_count)) lines.push(`Candidate count: ${result.candidate_total_count}${result.candidates_truncated ? ` (showing ${result.candidates.length}; use --change <id> for exact context)` : ""}`);
   if (result.candidates.length) lines.push(`Candidates: ${result.candidates.map((item) => `${item.change_id} (${item.current_stage})`).join(", ")}`);
   for (const location of result.locations ?? []) lines.push(`Location ${location.artifact_kind}: ${location.path ?? location.path_template} [${location.provenance}]`);
   for (const blocker of result.blockers) lines.push(`Blocker: ${blocker.code} (${blocker.blocking_invariant})`);
@@ -290,6 +291,7 @@ function executeWorkflowContextUnsafe(args, options = {}) {
     const execution = errorResult("project", parsed.error, null, 4);
     return { ...execution, format: parsed.format, human: workflowContextHuman(execution.result) };
   }
+  if (typeof options.beforeRepositoryRead === "function") options.beforeRepositoryRead();
   const root = repositoryRoot(options.cwd ?? process.cwd());
   if (!root) {
     const execution = errorResult(parsed.change ? "change" : "project", diagnostic("RL_CONTEXT_REPOSITORY_NOT_FOUND", "workflow-context-repository"));

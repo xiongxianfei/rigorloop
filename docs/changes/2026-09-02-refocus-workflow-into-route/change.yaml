@@ -68,7 +68,7 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
@@ -95,7 +95,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: implementing
       M2:
         kind: implementation
         state: planned
@@ -121,6 +121,29 @@ review:
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
+  active_correction:
+    destination_artifact_id: implement
+    destination_kind: stage
+    destination_stage: implement
+    evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-r2-correction-route.md
+    evidence_sha256: 107511a8cd17e44bb4bfb3fd3cad59707b3606c1c5ce21a2e551c88d778691f5
+    prior_lifecycle_revision: sha256:b47cfc613146707c2d4eff076bfed5a30be551f9776c056d1e56086c9d5e54d3
+    reason: upstream-proof-gap
+    return_stage: code-review
+    route_id: route-7f7f6b2eb367e7179483e20891aebf756c6cdbcbb0164fc612cefa1f3285120a
+    source_snapshot:
+      blocker: null
+      current_stage: code-review
+      finding_ids:
+        - RFR-M1-CR2
+        - RFR-M1-CR3
+        - RFR-M1-CR4
+        - RFR-M1-CR5
+      lifecycle_state: active
+      milestone_id: M1
+      milestone_state: review-requested
+      next_stage: code-review
+    status: active
   artifacts:
     adr-route-context-and-skill-identity:
       artifact_kind: adr
@@ -223,7 +246,15 @@ lifecycle_cli:
       round: r1
       stage_authority: design-review
       upstream_review_id: proposal-review-r1
-  resolutions: {}
+  resolutions:
+    RFR-M1-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: aad37f239fae191423f2bba891eb3254b3bfc749511505eea8188aeec334d54e
+      finding_id: RFR-M1-CR1
+      owner: M1 implementer
+      stage_authority: review-resolution
   reviews:
     proposal:
       artifact_path: docs/proposals/2026-09-02-refocus-workflow-into-route.md

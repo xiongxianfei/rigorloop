@@ -1,6 +1,20 @@
 # Review log
 
-Open findings: RFR-M1-CR1, RFR-M1-CR2, RFR-M1-CR3
+Open findings: RFR-M1-CR2, RFR-M1-CR3, RFR-M1-CR4, RFR-M1-CR5
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: r2
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: RFR-M1-CR4, RFR-M1-CR5
+Finding ID: RFR-M1-CR4
+Finding ID: RFR-M1-CR5
+Open findings: RFR-M1-CR4, RFR-M1-CR5
 Recording status: recorded
 
 ### Review entry

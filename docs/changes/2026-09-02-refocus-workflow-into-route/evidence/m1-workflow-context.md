@@ -15,7 +15,7 @@ Validation result: passed
 - Artifacts changed: `packages/rigorloop/dist/bin/rigorloop.js`; `packages/rigorloop/dist/lib/workflow-context.js`; `packages/rigorloop/dist/lib/lifecycle-read.js`; `packages/rigorloop/dist/lib/cli-observability.js`; `packages/rigorloop/test/workflow-context.test.js`; `packages/rigorloop/test/cli-invocation-observability.test.js`; `packages/rigorloop/README.md`; `schemas/rigorloop-workflow-v1.schema.json`.
 - Tests added or updated: Project and exact-change phases; zero, one, several, and more-than-limit active candidates; bounded milestones, package members, budgets, receipts, diagnostics, and automation; distinct review-stage ownership and wrong-owner rejection; malformed unrelated exact selection; lifecycle-value and path redaction; complete governed/config tree identity; identical retry; normalized non-file configuration failure; and stale revision after mutation.
 - Validation performed: focused workflow-context test; plan-selected Node test set; complete package test suite; change-metadata validator tests; JSON schema parse; direct repository invocation; `git diff --check`.
-- Validation result: all required commands passed after correction. The plan-selected run passed 174 tests; the complete package run passed 358 tests with 2 pre-existing skips; change-metadata validation passed 107 tests; schema parsing, direct invocation, and whitespace validation passed.
+- Validation result: all required commands passed after the R2 correction. The plan-selected run passed 176 tests; the complete package run passed 360 tests with 2 pre-existing skips; change-metadata validation passed 107 tests; schema parsing, direct invocation, and whitespace validation passed.
 - Open blockers: none.
 - Next stage: code-review.
 - Claim limitations: M1 does not rename the public skill, remove `docs/workflows.md`, migrate current governance, generate adapters, publish a release, close the milestone, establish branch readiness, or establish final verification readiness.
@@ -33,7 +33,7 @@ Validation result: passed
 
 ## Test-first record
 
-The first focused test run failed because `packages/rigorloop/dist/lib/workflow-context.js` did not exist. The implementation was then added until the new project, change, configuration, path, privacy, rendering, and read-only tests passed. Code Review M1 R1 then exposed three preventable first-pass misses. Correction regressions initially failed for collapsed review ownership, unbounded projections, and unsafe current-stage output; implementation was changed only after those failures were observed.
+The first focused test run failed because `packages/rigorloop/dist/lib/workflow-context.js` did not exist. The implementation was then added until the new project, change, configuration, path, privacy, rendering, and read-only tests passed. Code Review M1 R1 then exposed three preventable first-pass misses. Correction regressions initially failed for collapsed review ownership, unbounded projections, and unsafe current-stage output. Code Review M1 R2 found that human truncation and direct read-fault/interruption proof were still incomplete; their new regressions failed before the formatter and narrow pre-read proof seam were added.
 
 ## Boundary and interaction proof
 
@@ -41,7 +41,7 @@ The first focused test run failed because `packages/rigorloop/dist/lib/workflow-
 - TG-02, BND-STATE-001, and BND-AUTH-001: change phase composes the existing lifecycle interpreter and returns the exact revision, stage, registered artifacts, review packages, milestone state, blockers, permitted operations, and bounded automation without selecting semantic ownership. Proposal Review, Design Review, Delivery Review, and Code Review each retain a separate configured record kind and owner.
 - TG-03, BND-INPUT-001, BND-RECOVERY-001, and INT-002: bundled defaults plus a tracked override use closed versions, keys, kinds, entry fields, owners, and variables; invalid, incomplete, duplicate, escaped, absolute, or symlink-dependent locations fail closed with no guide or guessed fallback.
 - TG-04 and BND-ENV-001: human and JSON views originate from one result object; variable collections are capped at 32 entries, emitted paths are repository-relative, automation fields are allowlisted, and invalid registered paths or lifecycle stages are omitted without echoing private values.
-- TG-05, BND-TEMPORAL-001, BND-RECOVERY-001, and INT-005: exact lookup reads only its requested change, unexpected read failures normalize to `RL_CONTEXT_READ_FAILED`, and direct tests compare the complete governed/config tree across success, ambiguity, rejected configuration, identical retry, and non-file configuration failure. Mutation produces a different lifecycle revision, proving prior dependent context stale.
+- TG-05, BND-TEMPORAL-001, BND-RECOVERY-001, and INT-005: exact lookup reads only its requested change, a deterministic pre-read fault directly reaches `RL_CONTEXT_READ_FAILED`, and a terminated public invocation blocks on an unchanged FIFO configuration input without altering governed state. Direct tests compare the complete governed/config tree across success, ambiguity, rejected configuration, identical retry, and read failure. Mutation produces a different lifecycle revision, proving prior dependent context stale.
 
 ## Unaffected surfaces
 
@@ -54,10 +54,10 @@ The first focused test run failed because `packages/rigorloop/dist/lib/workflow-
 
 ```text
 node --test packages/rigorloop/test/cli.test.js packages/rigorloop/test/lifecycle-read.test.js packages/rigorloop/test/result-renderer.test.js packages/rigorloop/test/workflow-context.test.js
-PASS: 174 tests
+PASS: 176 tests
 
 npm test --prefix packages/rigorloop
-PASS: 358 passed, 2 skipped, 0 failed
+PASS: 360 passed, 2 skipped, 0 failed
 
 python scripts/test-change-metadata-validator.py
 PASS: 107 tests
