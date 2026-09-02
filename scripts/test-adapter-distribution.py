@@ -931,22 +931,22 @@ release_gate:
         self.assertEqual(ADAPTERS["codex"].package_root.as_posix(), "dist/adapters/codex")
         self.assertEqual(ADAPTERS["codex"].entrypoint.as_posix(), "AGENTS.md")
         self.assertEqual(
-            ADAPTERS["codex"].skill_path("workflow").as_posix(),
-            ".agents/skills/workflow/SKILL.md",
+            ADAPTERS["codex"].skill_path("route").as_posix(),
+            ".agents/skills/route/SKILL.md",
         )
 
         self.assertEqual(ADAPTERS["claude"].package_root.as_posix(), "dist/adapters/claude")
         self.assertEqual(ADAPTERS["claude"].entrypoint.as_posix(), "CLAUDE.md")
         self.assertEqual(
-            ADAPTERS["claude"].skill_path("workflow").as_posix(),
-            ".claude/skills/workflow/SKILL.md",
+            ADAPTERS["claude"].skill_path("route").as_posix(),
+            ".claude/skills/route/SKILL.md",
         )
 
         self.assertEqual(ADAPTERS["opencode"].package_root.as_posix(), "dist/adapters/opencode")
         self.assertEqual(ADAPTERS["opencode"].entrypoint.as_posix(), "AGENTS.md")
         self.assertEqual(
-            ADAPTERS["opencode"].skill_path("workflow").as_posix(),
-            ".opencode/skills/workflow/SKILL.md",
+            ADAPTERS["opencode"].skill_path("route").as_posix(),
+            ".opencode/skills/route/SKILL.md",
         )
 
     def test_build_adapter_archives_creates_required_release_archives(self) -> None:
@@ -1024,29 +1024,27 @@ release_gate:
 
             self.assertEqual([], validate_adapter_archives("v0.1.5", output_dir, skills_root=root / "skills"))
 
-    def test_adapter_archives_include_workflow_skeleton_when_workflow_is_packaged(self) -> None:
+    def test_adapter_archives_include_route_resources_without_retired_guide_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "release-output"
             build_adapter_archives("v0.1.3", output_dir, skills_root=ROOT / "skills")
 
             packaged_adapters: list[str] = []
-            expected_text = (ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md").read_text(
-                encoding="utf-8"
-            )
+            expected_text = (ROOT / "skills" / "route" / "references" / "governed-lifecycle-routing.md").read_text(encoding="utf-8")
             for adapter in SUPPORTED_ADAPTERS:
                 config = ADAPTERS[adapter]
-                skill_entry = config.skill_path("workflow").as_posix()
-                asset_entry = (
-                    config.skill_root / "workflow" / "assets" / "workflows-skeleton.md"
-                ).as_posix()
+                skill_entry = config.skill_path("route").as_posix()
+                resource_entry = (config.skill_root / "route" / "references" / "governed-lifecycle-routing.md").as_posix()
                 archive_path = output_dir / adapter_archive_name(adapter, "v0.1.3")
                 with zipfile.ZipFile(archive_path) as archive:
                     names = set(archive.namelist())
                     if skill_entry not in names:
                         continue
                     packaged_adapters.append(adapter)
-                    self.assertIn(asset_entry, names)
-                    self.assertEqual(archive.read(asset_entry).decode("utf-8"), expected_text)
+                    self.assertIn(resource_entry, names)
+                    self.assertEqual(archive.read(resource_entry).decode("utf-8"), expected_text)
+                    self.assertNotIn((config.skill_root / "route" / "assets" / "workflows-skeleton.md").as_posix(), names)
+                    self.assertNotIn((config.skill_root / "route" / "references" / "workflow-guide-authoring.md").as_posix(), names)
 
             self.assertTrue(packaged_adapters)
             self.assertEqual([], validate_adapter_archives("v0.1.3", output_dir, skills_root=ROOT / "skills"))
@@ -1276,14 +1274,14 @@ release_gate:
             version = "v0.3.6"
             build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
             archive_path = output_dir / adapter_archive_name("claude", version)
-            workflow_root = (
-                ADAPTERS["claude"].skill_root / "workflow"
+            route_root = (
+                ADAPTERS["claude"].skill_root / "route"
             ).as_posix() + "/"
             with zipfile.ZipFile(archive_path) as archive:
                 retained = {
                     name: archive.read(name)
                     for name in archive.namelist()
-                    if not name.startswith(workflow_root)
+                    if not name.startswith(route_root)
                 }
             with zipfile.ZipFile(archive_path, "w") as archive:
                 for name, content in sorted(retained.items()):
@@ -1293,12 +1291,12 @@ release_gate:
                 version,
                 output_dir,
                 skills_root=ROOT / "skills",
-                skill_names=("workflow",),
+                skill_names=("route",),
             )
 
         self.assertTrue(
             any(
-                "clean-install skill root missing: claude/workflow" in error
+                "clean-install skill root missing: claude/route" in error
                 for error in errors
             ),
             errors,
@@ -1313,7 +1311,7 @@ release_gate:
             build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
             cases = {
                 "mixed_unknown": (
-                    ("workflow", "does-not-exist"),
+                    ("route", "does-not-exist"),
                     "clean-install selected skill is unknown or has no mapped "
                     "resources: does-not-exist",
                 ),
@@ -1323,8 +1321,8 @@ release_gate:
                     "resources: Workflow",
                 ),
                 "duplicate": (
-                    ("workflow", "workflow"),
-                    "clean-install selected skill repeated: workflow",
+                    ("route", "route"),
+                    "clean-install selected skill repeated: route",
                 ),
             }
             for name, (skill_names, expected) in cases.items():
@@ -1358,7 +1356,7 @@ release_gate:
                     version,
                     "--clean-install-smoke",
                     "--skill",
-                    "workflow",
+                    "route",
                     "--skill",
                     "does-not-exist",
                 ],
@@ -1406,7 +1404,7 @@ release_gate:
 
     def test_boundary_first_archive_drift_reports_exact_layer_and_hashes(self) -> None:
         cases = (
-            ("workflow", "references/boundary-first-method-v1.md"),
+            ("route", "references/boundary-first-method-v1.md"),
             ("spec", "references/boundary-first-feature-authoring-v1.md"),
         )
         for skill_name, relative_resource in cases:
@@ -2074,8 +2072,8 @@ release_gate:
         for token in (
             "$Proposal",
             "$PROPOSAL",
-            "$Workflow",
-            "$WORKFLOW",
+            "$Route",
+            "$ROUTE",
             "$plan",
             "$PLAN",
             "$proposal-review",
@@ -2186,7 +2184,7 @@ release_gate:
             "Invoke `$plan`; then read `$HOME`.",
             "Invoke `$plan`; the fallback costs $5.",
             r"Invoke `$plan`; document \$value.",
-            "Invoke `$workflow auto: status`; let `$plan + 1$` denote input.",
+            "Invoke `$route auto: status`; let `$plan + 1$` denote input.",
             "Invoke `$plan` -> then read `$HOME`.",
             "Invoke `$plan` - then read `$HOME`.",
             "Invoke `$plan` -> budget $5.",
@@ -2230,15 +2228,15 @@ release_gate:
         self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
         self.assertEqual(report.reason, "")
 
-    def test_workflow_explicit_adapter_invocation_equivalents_remain_portable(
+    def test_route_explicit_adapter_invocation_equivalents_remain_portable(
         self,
     ) -> None:
-        report = evaluate_skill(ROOT / "skills" / "workflow")
+        report = evaluate_skill(ROOT / "skills" / "route")
 
         self.assertTrue(report.portable, report.reason)
         self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
 
-    def test_workflow_invocation_checks_preserve_variables_and_paths(self) -> None:
+    def test_route_invocation_checks_preserve_variables_and_paths(self) -> None:
         additions = (
             "Read the shell variable `$project`.",
             "Let `$x$` denote the input.",
@@ -2270,12 +2268,12 @@ release_gate:
             "Document `docs-/workflow`.",
             "Do not treat `/worKflow` as a published command.",
         )
-        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source = ROOT / "skills" / "route" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")
 
         for addition in additions:
             with self.subTest(addition=addition), tempfile.TemporaryDirectory() as tmp:
-                target = Path(tmp) / "workflow"
+                target = Path(tmp) / "route"
                 shutil.copytree(source.parent, target)
                 (target / "SKILL.md").write_text(
                     source_text + f"\n{addition}\n",
@@ -2286,20 +2284,20 @@ release_gate:
 
                 self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
 
-    def test_workflow_slash_commands_end_at_phrase_terminators(self) -> None:
+    def test_route_slash_commands_end_at_phrase_terminators(self) -> None:
         additions = (
-            "Run /workflow\nThen continue.",
-            "Run /workflow\r\nThen continue.",
-            "Run `/workflow` before continuing.",
-            "Run /workflow, then continue.",
-            "Run /workflow. Then continue.",
+            "Run /route\nThen continue.",
+            "Run /route\r\nThen continue.",
+            "Run `/route` before continuing.",
+            "Run /route, then continue.",
+            "Run /route. Then continue.",
         )
-        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source = ROOT / "skills" / "route" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")
 
         for addition in additions:
             with self.subTest(addition=addition), tempfile.TemporaryDirectory() as tmp:
-                target = Path(tmp) / "workflow"
+                target = Path(tmp) / "route"
                 shutil.copytree(source.parent, target)
                 (target / "SKILL.md").write_text(
                     source_text + f"\n{addition}\n",
@@ -2311,22 +2309,22 @@ release_gate:
                 self.assertEqual(report.included_adapters, ("codex",))
                 self.assertIn("Codex-specific $skill invocation", report.reason)
 
-    def test_workflow_invocation_equivalence_uses_narrow_static_scope(
+    def test_route_invocation_equivalence_uses_narrow_static_scope(
         self,
     ) -> None:
         mutations = {
             "codex_skill": lambda text: text.replace(
-                "$workflow auto: <argument>",
+                "$route auto: <argument>",
                 "$broken auto: <argument>",
                 1,
             ),
             "claude_skill": lambda text: text.replace(
-                "/workflow auto: <argument>",
+                "/route auto: <argument>",
                 "/broken auto: <argument>",
                 1,
             ),
             "opencode_skill": lambda text: text.replace(
-                "installed `workflow` skill with `auto: <argument>`",
+                "installed `route` skill with `auto: <argument>`",
                 "installed `broken` skill with `auto: <argument>`",
                 1,
             ),
@@ -2335,27 +2333,27 @@ release_gate:
                 "Here `<argument>` is `<stage>`, `status`, or `off`.",
                 1,
             ),
-            "bare_codex": lambda text: text + "\nUse `$workflow`.\n",
-            "non_auto_codex": lambda text: text + "\nUse `$workflow manual`.\n",
-            "case_codex": lambda text: text + "\nUse `$Workflow auto: <argument>`.\n",
+            "bare_codex": lambda text: text + "\nUse `$route`.\n",
+            "non_auto_codex": lambda text: text + "\nUse `$route manual`.\n",
+            "case_codex": lambda text: text + "\nUse `$Route auto: <argument>`.\n",
             "wrong_claude_argument": lambda text: text
-            + "\nUse `/workflow auto: <wrong>`.\n",
+            + "\nUse `/route auto: <wrong>`.\n",
             "case_claude": lambda text: text
-            + "\nUse `/Workflow auto: <argument>`.\n",
+            + "\nUse `/Route auto: <argument>`.\n",
             "wrong_opencode_argument": lambda text: text
-            + "\nOpenCode invokes installed `workflow` with `auto: <wrong>`.\n",
+            + "\nOpenCode invokes installed `route` with `auto: <wrong>`.\n",
             "case_opencode": lambda text: text
-            + "\nOpenCode invokes installed `Workflow` with `auto: <argument>`.\n",
+            + "\nOpenCode invokes installed `Route` with `auto: <argument>`.\n",
             "plain_codex": lambda text: text
-            + "\nUse $workflow manual to continue.\n",
+            + "\nUse $route manual to continue.\n",
             "html_codex": lambda text: text
-            + "\nUse <code>$workflow manual</code> to continue.\n",
+            + "\nUse <code>$route manual</code> to continue.\n",
             "plain_claude": lambda text: text
-            + "\nClaude users run /workflow manual to continue.\n",
+            + "\nClaude users run /route manual to continue.\n",
             "whitespace_claude": lambda text: text
-            + "\nClaude users run ` /workflow auto: <wrong>`.\n",
+            + "\nClaude users run ` /route auto: <wrong>`.\n",
             "plain_opencode": lambda text: text
-            + "\nOpenCode invokes workflow with auto: wrong.\n",
+            + "\nOpenCode invokes route with auto: wrong.\n",
             "composed_opencode": lambda text: text
             + "\nOpenCode invokes installed `broken` skill with "
             + "`manual: <argument>`.\n",
@@ -2364,13 +2362,13 @@ release_gate:
             "codex_labeled_html": lambda text: text
             + "\nCodex uses <code>broken manual</code>.\n",
             "codex_entity": lambda text: text
-            + "\nCodex uses &#36;workflow manual.\n",
+            + "\nCodex uses &#36;route manual.\n",
             "claude_call": lambda text: text
             + "\nFor Claude, call /broken auto: wrong.\n",
             "opencode_execute": lambda text: text
-            + "\nOpenCode executes workflow with auto: wrong.\n",
+            + "\nOpenCode executes route with auto: wrong.\n",
             "opencode_command": lambda text: text
-            + "\nOpenCode command: workflow auto: wrong.\n",
+            + "\nOpenCode command: route auto: wrong.\n",
             "html_split_codex": lambda text: text
             + "\nCo<em>dex</em> executes broken manual.\n",
             "html_split_claude": lambda text: text
@@ -2443,13 +2441,13 @@ release_gate:
             "khmer_inherent_vowel_split_opencode": lambda text: text
             + "\nOpen\u17b4Code command: broken manual.\n",
             "literal_argument_sentinel": lambda text: text.replace(
-                "Claude uses `/workflow auto: <argument>`",
-                "Claude uses `/workflow auto: \uf000argument\uf001`",
+                "Claude uses `/route auto: <argument>`",
+                "Claude uses `/route auto: \uf000argument\uf001`",
                 1,
             ),
             "encoded_argument_sentinel": lambda text: text.replace(
-                "Claude uses `/workflow auto: <argument>`",
-                "Claude uses `/workflow auto: &#xF000;argument&#xF001;`",
+                "Claude uses `/route auto: <argument>`",
+                "Claude uses `/route auto: &#xF000;argument&#xF001;`",
                 1,
             ),
             "encoded_opencode_sentinel": lambda text: text.replace(
@@ -2463,18 +2461,18 @@ release_gate:
                 1,
             ),
             "claude_zero_width_identity": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/work\u200bflow auto: <argument>`",
+                "`/route auto: <argument>`",
+                "`/rou\u200bte auto: <argument>`",
                 1,
             ),
             "claude_private_use_identity": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/work\uf000flow auto: <argument>`",
+                "`/route auto: <argument>`",
+                "`/rou\uf000te auto: <argument>`",
                 1,
             ),
             "opencode_zero_width_identity": lambda text: text.replace(
-                "installed `workflow` skill",
-                "installed `work\u200bflow` skill",
+                "installed `route` skill",
+                "installed `rou\u200bte` skill",
                 1,
             ),
             "opencode_zero_width_operation": lambda text: text.replace(
@@ -2483,23 +2481,23 @@ release_gate:
                 1,
             ),
             "claude_uppercase_placeholder": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/workflow auto: <ARGUMENT>`",
+                "`/route auto: <argument>`",
+                "`/route auto: <ARGUMENT>`",
                 1,
             ),
             "claude_spaced_placeholder": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/workflow auto: <argument >`",
+                "`/route auto: <argument>`",
+                "`/route auto: <argument >`",
                 1,
             ),
             "claude_self_closing_placeholder": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/workflow auto: <argument/>`",
+                "`/route auto: <argument>`",
+                "`/route auto: <argument/>`",
                 1,
             ),
             "claude_encoded_placeholder": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/workflow auto: &lt;argument&gt;`",
+                "`/route auto: <argument>`",
+                "`/route auto: &lt;argument&gt;`",
                 1,
             ),
             "opencode_uppercase_placeholder": lambda text: text.replace(
@@ -2513,23 +2511,23 @@ release_gate:
                 1,
             ),
             "nested_claude_placeholder": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/workflow auto: <custom><argument></custom>`",
+                "`/route auto: <argument>`",
+                "`/route auto: <custom><argument></custom>`",
                 1,
             ),
             "claude_nbsp_separator": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/workflow\u00a0auto: <argument>`",
+                "`/route auto: <argument>`",
+                "`/route\u00a0auto: <argument>`",
                 1,
             ),
             "claude_em_space_separator": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/workflow\u2003auto: <argument>`",
+                "`/route auto: <argument>`",
+                "`/route\u2003auto: <argument>`",
                 1,
             ),
             "claude_tab_separator": lambda text: text.replace(
-                "`/workflow auto: <argument>`",
-                "`/workflow\tauto: <argument>`",
+                "`/route auto: <argument>`",
+                "`/route\tauto: <argument>`",
                 1,
             ),
             "opencode_nbsp_separator": lambda text: text.replace(
@@ -2546,53 +2544,53 @@ release_gate:
             "slash_mongolian_variation": lambda text: text
             + "\nUse /work\u180bflow manual.\n",
             "codex_status_suffix": lambda text: text.replace(
-                "`$workflow auto: status`",
-                "`$workflow auto: status-now`",
+                "`$route auto: status`",
+                "`$route auto: status-now`",
                 1,
             ),
             "codex_status_trailing_argument": lambda text: text.replace(
-                "`$workflow auto: status`",
-                "`$workflow auto: status extra`",
+                "`$route auto: status`",
+                "`$route auto: status extra`",
                 1,
             ),
             "codex_off_prefix": lambda text: text.replace(
-                "`$workflow auto: off`",
-                "`$workflow auto: office`",
+                "`$route auto: off`",
+                "`$route auto: office`",
                 1,
             ),
             "codex_target_suffix": lambda text: text.replace(
-                "`$workflow auto: <target-stage>`",
-                "`$workflow auto: <target-stage>-extra`",
+                "`$route auto: <target-stage>`",
+                "`$route auto: <target-stage>-extra`",
                 1,
             ),
             "codex_command_prefix": lambda text: text.replace(
-                "`$workflow auto: status`",
-                "`x$workflow auto: status`",
+                "`$route auto: status`",
+                "`x$route auto: status`",
                 1,
             ),
             "codex_status_html_suffix": lambda text: text.replace(
-                "`$workflow auto: status`",
-                "`$workflow auto: status<em>-now</em>`",
+                "`$route auto: status`",
+                "`$route auto: status<em>-now</em>`",
                 1,
             ),
             "codex_status_adjacent_suffix": lambda text: text.replace(
-                "`$workflow auto: status`",
-                "`$workflow auto: status`-now",
+                "`$route auto: status`",
+                "`$route auto: status`-now",
                 1,
             ),
             "codex_off_adjacent_suffix": lambda text: text.replace(
-                "`$workflow auto: off`",
-                "`$workflow auto: off`-now",
+                "`$route auto: off`",
+                "`$route auto: off`-now",
                 1,
             ),
             "codex_target_adjacent_suffix": lambda text: text.replace(
-                "`$workflow auto: <target-stage>`",
-                "`$workflow auto: <target-stage>`-extra",
+                "`$route auto: <target-stage>`",
+                "`$route auto: <target-stage>`-extra",
                 1,
             ),
             "codex_status_adjacent_argument": lambda text: text.replace(
-                "`$workflow auto: status` is read-only",
-                "`$workflow auto: status` extra is read-only",
+                "`$route auto: status` is read-only",
+                "`$route auto: status` extra is read-only",
                 1,
             ),
             "equivalence_block_suffix": lambda text: text.replace(
@@ -2646,11 +2644,11 @@ release_gate:
             "codex_status_adjacent_argument",
             "equivalence_block_suffix",
         }
-        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source = ROOT / "skills" / "route" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")
         for name, mutate in mutations.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
-                target = Path(tmp) / "workflow"
+                target = Path(tmp) / "route"
                 shutil.copytree(source.parent, target)
                 skill_file = target / "SKILL.md"
                 skill_file.write_text(
@@ -2669,7 +2667,7 @@ release_gate:
                 else:
                     self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
 
-    def test_workflow_benign_visible_boundaries_remain_portable(self) -> None:
+    def test_route_benign_visible_boundaries_remain_portable(self) -> None:
         additions = (
             "Encode XML before parsing.",
             "Encode X509 certificates consistently.",
@@ -2691,11 +2689,11 @@ release_gate:
             "An unrelated /workéflow token is illustrative.",
             "An unrelated /work☃flow token is illustrative.",
         )
-        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source = ROOT / "skills" / "route" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")
         for addition in additions:
             with self.subTest(addition=addition), tempfile.TemporaryDirectory() as tmp:
-                target = Path(tmp) / "workflow"
+                target = Path(tmp) / "route"
                 shutil.copytree(source.parent, target)
                 (target / "SKILL.md").write_text(
                     source_text + f"\n{addition}\n",
@@ -5278,7 +5276,7 @@ release_gate:
             self.assertIn("thin command aliases", text)
             for command in ("/proposal", "/spec", "/implement", "/code-review", "/pr"):
                 self.assertIn(command, text)
-            self.assertNotIn("/workflow", text)
+            self.assertNotIn("/route", text)
             self.assertNotIn("/verify", text)
             self.assertIn("opencode run --command proposal", text)
             self.assertIn("Do not use Codex `$skill` syntax", text)
@@ -5327,7 +5325,7 @@ release_gate:
     def test_public_docs_describe_adapter_support_and_generated_boundaries(self) -> None:
         docs = {
             "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
-            "docs/workflows.md": (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"),
+            "dist/adapters/README.md": (ROOT / "dist" / "adapters" / "README.md").read_text(encoding="utf-8"),
             "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
             "release-notes.md": (
                 ROOT / "docs" / "releases" / "v0.1.0" / "release-notes.md"
@@ -5390,8 +5388,10 @@ release_gate:
         self.assertIn("ignored local runtime install directory", text)
         self.assertIn("not a public adapter install source", text)
         self.assertIn("describes the non-authoritative", text)
-        self.assertIn("candidate metadata, not a publication or activation record", text)
-        self.assertIn("Published v1/v2 release archives remain immutable", text)
+        self.assertIn("candidate metadata, not a publication record", text)
+        self.assertIn("Published historical release archives remain immutable", text)
+        self.assertIn("current candidate installs `route`", text)
+        self.assertIn("omits the obsolete `workflow` alias and guide-only resources", text)
         self.assertNotIn("continues to describe the released v2 package", text)
         self.assertNotIn("copy that adapter package root's contents", text)
         self.assertNotIn("tracked adapter skill bodies under `dist/adapters/**/skills` remain available", text)
@@ -5400,7 +5400,6 @@ release_gate:
         docs = {
             "CONSTITUTION.md": (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8"),
             "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
-            "docs/workflows.md": (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"),
         }
 
         for path, text in docs.items():
@@ -5863,13 +5862,13 @@ release_gate:
             errors,
         )
 
-    def test_workflows_records_adapter_artifact_metadata_location(self) -> None:
-        text = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+    def test_adapter_readme_records_adapter_artifact_metadata_location(self) -> None:
+        text = (ROOT / "dist" / "adapters" / "README.md").read_text(encoding="utf-8")
 
-        self.assertIn("`docs/workflows.md` is the project-local user-facing artifact-location map", text)
+        self.assertNotIn("docs/workflows.md", text)
         self.assertIn("Adapter artifact metadata", text)
-        self.assertIn("`docs/reports/adapter-artifacts/releases/`", text)
-        self.assertIn("does not define full artifact schemas", text)
+        self.assertIn("`docs/reports/adapter-artifacts/releases/<version>.yaml`", text)
+        self.assertIn("support matrix", text)
 
     def test_v0_1_1_release_notes_document_transition_contract(self) -> None:
         text = (ROOT / "docs" / "releases" / "v0.1.1" / "release-notes.md").read_text(
@@ -5885,7 +5884,6 @@ release_gate:
     def test_contributor_docs_keep_codex_runtime_local_and_untracked(self) -> None:
         docs = {
             "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
-            "docs/workflows.md": (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"),
             "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
             "CONSTITUTION.md": (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8"),
         }

@@ -4,9 +4,9 @@
 
 `dist/adapters/manifest.yaml` is the tracked adapter support matrix. It records adapter support and opencode command aliases; it must not contain generated skill bodies.
 
-During final-verification v3 preactivation, `dist/adapters/manifest.yaml` describes the non-authoritative Codex, Claude Code, and opencode candidate inventory. That candidate omits standalone `test-spec` and `explain-change`, uses the consolidated review aliases, and includes every mapped impact, applicability, successful-explanation, and Verify-report resource.
+`dist/adapters/manifest.yaml` describes the non-authoritative Codex, Claude Code, and opencode candidate inventory. The current candidate installs `route`, omits the obsolete `workflow` alias and guide-only resources, and includes every resource mapped from canonical route source.
 
-The tracked manifest is candidate metadata, not a publication or activation record. Published v1/v2 release archives remain immutable historical packages and are never rewritten; the v3 candidate becomes authoritative only through the separately governed atomic activation and release process.
+The tracked manifest is candidate metadata, not a publication record. Published historical release archives remain immutable and are never rewritten; publication remains a separately governed release operation.
 
 For `v0.1.3` and later, public adapter installation uses GitHub release archives. The repository keeps adapter metadata and install guidance under `dist/adapters/`; generated public adapter skill bodies are not tracked source.
 
@@ -25,5 +25,7 @@ Historical note: v0.1.2 kept repository-tree adapter packages during the compati
 `.codex/skills/` is an ignored local runtime install directory and not a public adapter install source. Use the Codex release archive for public Codex adapter output, and keep `.codex/skills/` untracked if you copy skills there for local runtime use.
 
 ## Migration notes
+
+The workflow routing skill has been renamed from `workflow` to `route`. Use `route` for routing and bounded automation. Current archives do not install `workflow` as an alias; an obsolete installed `workflow` package must be removed before installing the current route package. Stable lifecycle authority values and `workflow.automation` state remain compatible and are not renamed.
 
 The CI workflow authoring/review skill has been renamed from `ci` to `ci-maintenance`. Use `ci-maintenance` for direct skill invocation. Existing direct `ci` invocations should be updated; this adapter release does not install `ci` as a compatibility alias.
