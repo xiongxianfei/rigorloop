@@ -13,6 +13,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from lifecycle_state_sync import evaluate_implementation_autoprogression_route
+
 from workflow_automation_policy import (
     STAGE_POLICY_BY_STAGE,
     project_proposal_review_result,
@@ -85,6 +87,37 @@ def synchronized_evidence() -> dict[str, object]:
 
 
 class WorkflowAutomationStateTests(unittest.TestCase):
+    def test_v3_phase_boundary_targets_verify_and_rejects_explain_change(self) -> None:
+        fixture = {
+            "profile": "implementation-through-verify",
+            "profile_state": "armed",
+            "phase": "B",
+            "durable_authorization": "persisted",
+            "invocation_context": "workflow-managed",
+            "current_stage": "final-clean-code-review",
+            "authoring_gates": "completed",
+            "plan_review_status": "approved",
+            "plan_review_recording": "recorded",
+            "plan_synchronized": True,
+            "milestones_ordered": True,
+            "working_tree_baseline": "recorded",
+            "unrelated_dirty_state": "absent",
+            "required_commands_approved": True,
+            "governing_findings_open": False,
+            "artifact_placement_unambiguous": True,
+            "workflow_state_synchronized": True,
+            "milestones": [{"id": "M1", "state": "closed"}],
+            "lifecycle_contract": "stage-owned-change-local-v3",
+        }
+        result = evaluate_implementation_autoprogression_route(fixture)
+        self.assertEqual(result.stop_reason, "phase-boundary-verify")
+        fixture["current_stage"] = "explain-change"
+        result = evaluate_implementation_autoprogression_route(fixture)
+        self.assertEqual(result.stop_reason, "stage-unknown_value:explain-change")
+        fixture["lifecycle_contract"] = "future-v9"
+        result = evaluate_implementation_autoprogression_route(fixture)
+        self.assertIn("unknown_value", result.stop_reason)
+
     def test_stage_native_verifier_registry_covers_internal_m5_stages(self) -> None:
         self.assertEqual(
             STAGE_NATIVE_VERIFIER_STAGES,
@@ -96,14 +129,12 @@ class WorkflowAutomationStateTests(unittest.TestCase):
                     "spec",
                     "design-review",
                     "plan",
-                    "test-spec",
                     "delivery-review",
                     "implement",
                     "code-review",
                     "review-resolution",
                     "ci-maintenance",
                     "final-holistic-code-review",
-                    "explain-change",
                     "verify",
                 }
             ),
@@ -293,7 +324,7 @@ Open findings: None
         path.write_text(dump_yaml(document), encoding="utf-8")
         return WorkflowAutomationStateStore(path), path
 
-    def package_review_completion_fixture(self, kind: str, *, lifecycle_contract: str = "stage-owned-change-local-v1"):
+    def package_review_completion_fixture(self, kind: str, *, lifecycle_contract: str = "stage-owned-change-local-v3"):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         root = Path(temp.name)
@@ -305,7 +336,11 @@ Open findings: None
         members = (
             {"architecture": "docs/architecture/example.md", "spec": "specs/example.md"}
             if kind == "design"
-            else ({"plan": "docs/plans/example.md"} if lifecycle_contract == "stage-owned-change-local-v2" else {"plan": "docs/plans/example.md", "test-spec": "specs/example.test.md"})
+            else (
+                {"plan": "docs/plans/example.md", "test-spec": "specs/example.test.md"}
+                if lifecycle_contract == "stage-owned-change-local-v1"
+                else {"plan": "docs/plans/example.md"}
+            )
         )
         for member_path in members.values():
             member = root / member_path
@@ -2570,7 +2605,9 @@ class StageOwnedChangeStateStoreTests(unittest.TestCase):
                 "stage": "verify",
                 "occurrence": {"kind": "final"},
                 "bound_at": "2026-07-29T00:00:00Z",
-                "completion": {"rule": "fresh verification passes"},
+                "completion": {
+                    "rule": "verification passes and the final explanation is recorded"
+                },
             },
             "status": "active",
             "current_stage": "spec",
@@ -2598,7 +2635,7 @@ class StageOwnedChangeStateStoreTests(unittest.TestCase):
         )
         self.assertTrue(result.mutated)
         current = store.read()
-        self.assertEqual(current.document["lifecycle_contract"], "stage-owned-change-local-v1")
+        self.assertEqual(current.document["lifecycle_contract"], "stage-owned-change-local-v3")
         again = store.migrate(
             artifact_states=artifacts,
             workflow_state=state,

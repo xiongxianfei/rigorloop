@@ -63,11 +63,11 @@ Use `explore` and `research` as on-demand support when ambiguity, option expansi
 
 Once proposal, spec, and architecture are already settled, execution usually proceeds through:
 
-`plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`
+`plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`
 
-New governed changes use `stage-owned-change-local-v2` and a plan-only Delivery Review package. `stage-owned-change-local-v1` changes frozen in `specs/lifecycle-contract-activation.yaml` continue only from their registered post-delivery package; historical test-spec artifacts remain readable but authorize no new test-spec work.
+Successful Verify owns the final durable explanation. `stage-owned-change-local-v3` is the sole current executable contract after coherent activation; historical v1/v2 records remain readable but grant no current progression authority. The implementing final-verification change alone closes under its last coherent released v2 package before activation.
 
-The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves the exact contract-selected package. V1 uses plan plus test specification; v2 uses the plan only and judges verification allocation with implementation readiness. Earlier evidence for the implementing consolidated-gates change remains historical under its approved pre-cutover plan; it is not a current progression route.
+The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves the plan and its verification allocation. Earlier package shapes remain historical evidence, not current progression routes.
 
 For milestone-based plans, repeat implementation and code-review for each in-scope implementation milestone. A clean non-final milestone review routes to the next implementation milestone; final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
 

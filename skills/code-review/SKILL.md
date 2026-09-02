@@ -201,7 +201,7 @@ Progress means work that has happened so far. Readiness means the next stage tha
 - `blocked` stops for the named decision or constraint.
 - `inconclusive` stops for missing evidence and does not enter resolution.
 - A clean non-final milestone closes only that milestone and hands off to the next in-scope implementation milestone.
-- A clean final milestone may enter final closeout only when no implementation milestone or required resolution remains open. Final closeout runs triggered CI maintenance, final holistic code-review, explain-change, verify, and PR in workflow-owned order; it never jumps directly from milestone review to verify.
+- A clean final milestone may enter final closeout only when no implementation milestone or required resolution remains open. Final closeout always requires final holistic Code Review and any triggered CI maintenance, then current v3 routes to `verify` and PR; only successful Verify produces the final explanation. Historical contracts grant no current route. Milestone review never substitutes for final holistic review or jumps directly to final verification.
 
 The review output must name the reviewed milestone, native status, milestone closeout, required resolution, remaining milestones, next stage, and final closeout readiness with reason. Code-review writes that evidence; workflow consumes it and changes lifecycle state.
 
@@ -220,7 +220,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 

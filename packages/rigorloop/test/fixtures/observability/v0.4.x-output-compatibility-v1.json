@@ -193,7 +193,7 @@
         },
         "planned_change_metadata": {
           "path": "docs/changes/example-change/change.yaml",
-          "content": "change_id: \"example-change\"\ntitle: \"Example change\"\nclassification: \"default\"\nrisk: \"medium\"\nlifecycle_contract: stage-owned-change-local-v2\nartifact_states: {}\nworkflow_state:\n  lifecycle_state: active\n  current_stage: proposal\n  next_stage: proposal\n  blocker: null\n  evidence: []\nworkflow: {}\nartifacts: {}\nrequirements: []\ntests: []\nvalidation: []\nchanged_files: []\nreview:\n  status: \"pending\"\n  unresolved_items: 0\n"
+          "content": "change_id: \"example-change\"\ntitle: \"Example change\"\nclassification: \"default\"\nrisk: \"medium\"\nlifecycle_contract: stage-owned-change-local-v3\nartifact_states: {}\nworkflow_state:\n  lifecycle_state: active\n  current_stage: proposal\n  next_stage: proposal\n  blocker: null\n  evidence: []\nworkflow: {}\nartifacts: {}\nrequirements: []\ntests: []\nvalidation: []\nchanged_files: []\nreview:\n  status: \"pending\"\n  unresolved_items: 0\n"
         }
       },
       "stderr": ""
@@ -227,7 +227,7 @@
     },
     "lifecycle-status-human-success": {
       "exit_code": 0,
-      "stdout": "RigorLoop lifecycle status: success\nChange: example\nLifecycle revision: sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone",
+      "stdout": "RigorLoop lifecycle status: success\nChange: example\nLifecycle revision: sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone",
       "stderr": ""
     },
     "lifecycle-status-json-success": {
@@ -238,7 +238,7 @@
         "operation": "status",
         "status": "success",
         "change_id": "example",
-        "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+        "lifecycle_revision": "sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac",
         "effective_state": {
           "recorded_state": {
             "spec": "approved"
@@ -248,9 +248,9 @@
           },
           "effective_state": "current",
           "lifecycle_contract": {
-            "contract_class": "stage-owned-change-local-v1",
-            "activation_state": "preactivation",
-            "authority": "preactivation"
+            "contract_class": "stage-owned-change-local-v3",
+            "activation_state": "active",
+            "authority": "active"
           },
           "current_stage": "implement",
           "active_artifact": "plan",
@@ -389,7 +389,7 @@
     },
     "lifecycle-context-human-success": {
       "exit_code": 0,
-      "stdout": "RigorLoop lifecycle context: success\nChange: example\nLifecycle revision: sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nPermitted operations: record-validation, complete-milestone\nContext operation: code-review\nTarget artifact: none\nSettled upstream inputs: none\nReview round: r1\nAuthorized output path: none\nPermitted registration operation: record-review",
+      "stdout": "RigorLoop lifecycle context: success\nChange: example\nLifecycle revision: sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nPermitted operations: record-validation, complete-milestone\nContext operation: code-review\nTarget artifact: none\nSettled upstream inputs: none\nReview round: r1\nAuthorized output path: none\nPermitted registration operation: record-review",
       "stderr": ""
     },
     "lifecycle-context-json-success": {
@@ -400,7 +400,7 @@
         "operation": "context",
         "status": "success",
         "change_id": "example",
-        "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+        "lifecycle_revision": "sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac",
         "effective_state": {
           "recorded_state": {
             "spec": "approved"
@@ -410,9 +410,9 @@
           },
           "effective_state": "current",
           "lifecycle_contract": {
-            "contract_class": "stage-owned-change-local-v1",
-            "activation_state": "preactivation",
-            "authority": "preactivation"
+            "contract_class": "stage-owned-change-local-v3",
+            "activation_state": "active",
+            "authority": "active"
           },
           "current_stage": "implement",
           "active_artifact": "plan",
@@ -515,7 +515,7 @@
           "review_round": "r1",
           "authorized_output_path": null,
           "blockers": [],
-          "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+          "lifecycle_revision": "sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac",
           "permitted_registration_operation": "record-review",
           "downstream_package_authority": {
             "status": "not-current",
@@ -537,7 +537,7 @@
     },
     "lifecycle-context-human-failure": {
       "exit_code": 0,
-      "stdout": "RigorLoop lifecycle context: success\nChange: example\nLifecycle revision: sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nPermitted operations: record-validation, complete-milestone\nContext operation: unknown-stage\nTarget artifact: none\nSettled upstream inputs: none\nReview round: not-applicable\nAuthorized output path: none\nPermitted registration operation: none",
+      "stdout": "RigorLoop lifecycle context: success\nChange: example\nLifecycle revision: sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nPermitted operations: record-validation, complete-milestone\nContext operation: unknown-stage\nTarget artifact: none\nSettled upstream inputs: none\nReview round: not-applicable\nAuthorized output path: none\nPermitted registration operation: none",
       "stderr": ""
     },
     "lifecycle-context-json-failure": {
@@ -548,7 +548,7 @@
         "operation": "context",
         "status": "success",
         "change_id": "example",
-        "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+        "lifecycle_revision": "sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac",
         "effective_state": {
           "recorded_state": {
             "spec": "approved"
@@ -558,9 +558,9 @@
           },
           "effective_state": "current",
           "lifecycle_contract": {
-            "contract_class": "stage-owned-change-local-v1",
-            "activation_state": "preactivation",
-            "authority": "preactivation"
+            "contract_class": "stage-owned-change-local-v3",
+            "activation_state": "active",
+            "authority": "active"
           },
           "current_stage": "implement",
           "active_artifact": "plan",
@@ -663,7 +663,7 @@
           "review_round": null,
           "authorized_output_path": null,
           "blockers": [],
-          "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+          "lifecycle_revision": "sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac",
           "permitted_registration_operation": null
         }
       },
@@ -671,7 +671,7 @@
     },
     "lifecycle-validate-human-success": {
       "exit_code": 0,
-      "stdout": "RigorLoop lifecycle validate: success\nChange: example\nLifecycle revision: sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone\nRepository validation: valid",
+      "stdout": "RigorLoop lifecycle validate: success\nChange: example\nLifecycle revision: sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone\nRepository validation: valid",
       "stderr": ""
     },
     "lifecycle-validate-json-success": {
@@ -682,7 +682,7 @@
         "operation": "validate",
         "status": "success",
         "change_id": "example",
-        "lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
+        "lifecycle_revision": "sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac",
         "effective_state": {
           "recorded_state": {
             "spec": "approved"
@@ -692,9 +692,9 @@
           },
           "effective_state": "current",
           "lifecycle_contract": {
-            "contract_class": "stage-owned-change-local-v1",
-            "activation_state": "preactivation",
-            "authority": "preactivation"
+            "contract_class": "stage-owned-change-local-v3",
+            "activation_state": "active",
+            "authority": "active"
           },
           "current_stage": "implement",
           "active_artifact": "plan",
@@ -843,7 +843,7 @@
     },
     "lifecycle-mutation-human-success": {
       "exit_code": 0,
-      "stdout": "RigorLoop lifecycle migrate: success\nChange: example\nLifecycle revision: sha256:040b48dacdf90c1a6b7b0571c28ae9a3f3cefe828afebb630ae8b2f0ad458c82\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone\nMutation: planned; docs/changes/example/change.yaml",
+      "stdout": "RigorLoop lifecycle migrate: success\nChange: example\nLifecycle revision: sha256:4a69f80f5b237e7e7478401603bae4738bf1ec1d7a26f4244d0aea1865be5c02\nEffective state: current\nCurrent stage: implement\nActive artifact: plan\nActive milestone: M1\nArtifact spec: approved; evidence current; specs/example.md\nPermitted operations: record-validation, complete-milestone\nMutation: planned; docs/changes/example/change.yaml",
       "stderr": ""
     },
     "lifecycle-mutation-json-success": {
@@ -854,7 +854,7 @@
         "operation": "migrate",
         "status": "success",
         "change_id": "example",
-        "lifecycle_revision": "sha256:040b48dacdf90c1a6b7b0571c28ae9a3f3cefe828afebb630ae8b2f0ad458c82",
+        "lifecycle_revision": "sha256:4a69f80f5b237e7e7478401603bae4738bf1ec1d7a26f4244d0aea1865be5c02",
         "effective_state": {
           "recorded_state": {
             "spec": "approved"
@@ -864,9 +864,9 @@
           },
           "effective_state": "current",
           "lifecycle_contract": {
-            "contract_class": "stage-owned-change-local-v1",
-            "activation_state": "preactivation",
-            "authority": "preactivation"
+            "contract_class": "stage-owned-change-local-v3",
+            "activation_state": "active",
+            "authority": "active"
           },
           "current_stage": "implement",
           "active_artifact": "plan",
@@ -964,8 +964,8 @@
         "mutation": {
           "status": "planned",
           "changed_path": "docs/changes/example/change.yaml",
-          "prior_lifecycle_revision": "sha256:63ad923c1992ec283100193ca228ed08a7f07fa9996f075d968a1ec5c0b9c50c",
-          "resulting_lifecycle_revision": "sha256:040b48dacdf90c1a6b7b0571c28ae9a3f3cefe828afebb630ae8b2f0ad458c82"
+          "prior_lifecycle_revision": "sha256:27f2d45c3f33e11ac7fb6996db386d3b912c2053123fd03eb6562fab0c58bcac",
+          "resulting_lifecycle_revision": "sha256:4a69f80f5b237e7e7478401603bae4738bf1ec1d7a26f4244d0aea1865be5c02"
         }
       },
       "stderr": ""

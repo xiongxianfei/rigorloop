@@ -10,10 +10,12 @@ import { classifyCommand } from "../dist/lib/cli-observability.js";
 import { lifecycleTerminalClass } from "../dist/lib/lifecycle-cli.js";
 import { findInvocationEvents } from "../dist/lib/log-inspection.js";
 import { runObservedCli } from "../dist/lib/cli-observability.js";
+import { writeActiveV3Manifests } from "./helpers/lifecycle-package-fixture.js";
 
 function root() { return mkdtempSync(join(tmpdir(), "rigorloop-invocation-")); }
 
 function writeGovernedFixture(project) {
+  writeActiveV3Manifests(project);
   const changeRoot = join(project, "docs", "changes", "example");
   const specRoot = join(project, "specs");
   mkdirSync(changeRoot, { recursive: true });
@@ -23,7 +25,7 @@ function writeGovernedFixture(project) {
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   spec:
     kind: spec
@@ -54,6 +56,7 @@ review:
 }
 
 function writeLifecycleMutationFixture(project) {
+  writeActiveV3Manifests(project);
   const changeRoot = join(project, "docs", "changes", "example");
   mkdirSync(join(changeRoot, "evidence"), { recursive: true });
   mkdirSync(join(project, "requests"), { recursive: true });
@@ -64,12 +67,12 @@ function writeLifecycleMutationFixture(project) {
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states: {}
 workflow_state:
   lifecycle_state: active
   current_stage: spec
-  next_stage: spec-review
+  next_stage: design-review
   blocker: null
   evidence: []
 `, "utf8");

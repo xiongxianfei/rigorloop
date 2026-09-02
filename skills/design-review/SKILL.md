@@ -19,7 +19,7 @@ Approve or reject one explicit design package and preserve precise finding owner
 
 ## When to use
 
-Use after architecture and specification have been reconciled and before plan or test-specification authoring relies on them.
+Use after architecture and specification have been reconciled and before plan authoring relies on them.
 
 ## When not to use
 
@@ -30,7 +30,7 @@ Do not use to author architecture, specification, or ADR content; review impleme
 - role_name: design-review
 - stage: review
 - upstream: one architecture, one specification, applicable ADRs, accepted proposal evidence, and the accepted Proposal Review ID
-- downstream: plan and test-specification authoring, author-owned correction, upstream proposal reconsideration, or isolated stop
+- downstream: plan authoring, author-owned correction, upstream proposal reconsideration, or isolated stop
 - summary: Decide whether the exact design package is coherent and feasible.
 - ownership: Write Design Review evidence and settle only the exact design package. Workflow owns routing.
 - must_not_claim: component authorship, implementation authority, implementation correctness, final verification, branch readiness, or PR readiness
@@ -49,7 +49,7 @@ Stop when: membership, upstream authority, evidence, independence, or lifecycle 
 
 Do not claim: implementation authorization, final readiness, or approval of only one member.
 
-Next stage: workflow may route an approved package to plan and test-specification authoring; otherwise route named corrections or stop.
+Next stage: workflow may route an approved package to plan authoring; otherwise route named corrections or stop.
 
 ## Inputs to read
 
@@ -68,7 +68,7 @@ Evaluate all of the following as one decision:
 5. Applicable ADRs are included and agree with the architecture and specification.
 6. Contradictions are resolved enough for safe delivery planning.
 
-Use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Only `approved` authorizes plan and test-specification authoring. Every other outcome grants no progression authority.
+Use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Only `approved` authorizes plan authoring. Every other outcome grants no progression authority.
 
 ## Findings and ownership
 
@@ -98,7 +98,7 @@ Produce the package identity, upstream review ID, outcome, findings, correction 
 
 ## Handoff
 
-An approved workflow-managed review returns to workflow for plan and test-specification authoring. `changes-requested` routes each named artifact-local or cross-artifact correction to its owning authoring stage. `blocked` routes only to the named upstream owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
+An approved workflow-managed review returns to workflow for plan authoring. `changes-requested` routes each named artifact-local or cross-artifact correction to its owning authoring stage. `blocked` routes only to the named upstream owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
 
 ## Stop conditions
 

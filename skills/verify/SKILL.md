@@ -1,7 +1,7 @@
 ---
 name: verify
 description: >
-  Run final verification after durable change rationale exists and before PR handoff. Use to verify artifact-code-test coherence,
+  Run final verification and produce durable change rationale only on success before PR handoff. Use to verify artifact-code-test coherence,
   requirement coverage, validation commands, CI readiness, drift, release safety, and scoped direct validation checks.
 argument-hint: [feature name, branch, plan path, spec path, or verification scope]
 ---
@@ -14,13 +14,13 @@ Prove that the requested scope, current evidence, implementation, tests, and gov
 
 Trace current evidence backward through implementation and allocated work to governing SRs and the approved proposal direction.
 
-Perform either a bounded evidence check or a final readiness assessment without taking ownership from authoring, review, workflow, or PR stages. Final verification validates the final change pack after `explain-change` and before PR.
+Perform either a bounded evidence check or a final readiness assessment without taking ownership from authoring, review, workflow, or PR stages. Final verification validates the reviewed final change pack before PR and creates the final durable explanation. It generates the final explanation only after successful final readiness.
 
 Final verification is scoped evidence and must not own artifact settlement, milestone state, or routing. For planned work, use `change.yaml` to assess current state and treat the plan and upstream artifacts as read-only.
 
 ## When to use
 
-Use this skill for an explicit validation surface, a direct branch-readiness assessment, or governed final verification after implementation, review closeout, triggered CI maintenance, and durable change rationale are complete.
+Use this skill for an explicit validation surface, a direct branch-readiness assessment, or governed final verification after implementation, review closeout, and triggered CI maintenance are complete.
 
 ## When not to use
 
@@ -59,6 +59,10 @@ Loaded procedure and execution authority are independent:
 
 Use execution mode `isolated` for direct checks and direct branch-readiness assessments. Use `governed-final` only when current governed evidence establishes final `verify` for the same change. Never infer the mode from conversational wording.
 
+### V3 final-readiness profile
+
+V3 is the only current executable final-readiness contract. Final readiness loads impact analysis and evidence applicability; successful results then load explanation guidance and use the v3 report skeleton. Failed or inconclusive attempts emit no final explanation. Scoped verification loads none of those resources. Historical v1/v2 records remain readable evidence but grant no current progression authority.
+
 ## Execution authority
 
 An `isolated` result does not mutate lifecycle state, perform governed recording unless explicitly authorized by an existing contract, or invoke `pr`. It may name `pr` only as a possible next stage.
@@ -69,11 +73,11 @@ Under armed workflow automation, use fresh actual-run evidence for correctness-b
 
 ## Inputs to read
 
-Read only evidence needed for the classified outcome. This may include the relevant spec and test spec, architecture or ADR, plan and `change.yaml`, actual diff, tests, validation output, observed CI, review and review-resolution evidence, explain-change artifact, release metadata, generated artifacts, project instructions, and CI definitions.
+Read only evidence needed for the classified outcome. This may include the relevant spec, architecture or ADR, plan and `change.yaml`, actual diff, tests, validation output, observed CI, review and review-resolution evidence, release metadata, generated artifacts, project instructions, and CI definitions.
 
 For placement, prefer the explicit target; current change or plan metadata; governing schema; project workflow guide; then a safe portable default. Block when authority remains ambiguous. For planned records, bounded queries may orient the read, but escalate to full `change.yaml` for whole-record review, disputed or unsupported state, or forensic reconstruction.
 
-For work governed by consolidated gates, require the current accepted proposal evidence, approved Design Review ID and exact member map, approved Delivery Review ID and exact member map, implementation and Code Review evidence, current explanation, and current validation results. A review-required, partial, stale, or historical-only package blocks final readiness. This evidence requirement does not merge Verify with any earlier gate.
+For work governed by consolidated gates, require the current accepted proposal evidence, approved Design Review ID and exact member map, approved Delivery Review ID and exact member map, implementation and Code Review evidence, and current validation results. A review-required, partial, stale, or historical-only package blocks final readiness. This evidence requirement does not merge Verify with any earlier gate.
 
 ## Evidence truthfulness
 
@@ -140,7 +144,7 @@ Do not substitute commands, unresolved names, or prose for these fields. Missing
 ## Handoff
 
 - Normal next stage: return a clean governed-final result to `workflow` for handoff to `pr`.
-- Conditional next stages: route missing or stale rationale to `explain-change`, CI-infrastructure gaps to `ci-maintenance`, verification-allocation gaps to `plan`, and behavior-contract gaps to `spec`.
+- Conditional next stages: route CI-infrastructure gaps to `ci-maintenance`, verification-allocation gaps to `plan`, behavior-contract gaps to `spec`, and other failures to their exact owning stage. Verify never repairs and continues.
 - Direct requests remain isolated unless explicitly broadened; stop when blockers remain.
 
 ## Stop conditions
@@ -189,7 +193,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
@@ -202,6 +206,10 @@ Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure
 - READ `references/requirement-to-delivery-model.md` when tracing final evidence backward to implementation, requirements, and proposal direction.
 - READ `references/branch-readiness-verification.md` for `branch-readiness` or `workflow-final-verification` after exact target resolution.
 - READ `references/boundary-first-method-v1.md` when the final approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient for verification.
+- READ `references/final-impact-analysis-v3.md` only for an active v3 final-readiness attempt after exact target resolution.
+- READ `references/evidence-applicability-v3.md` only for an active v3 final-readiness attempt after impact classification.
+- READ `references/successful-explanation-v3.md` only after an active v3 final-readiness attempt has succeeded.
+- COPY `assets/verify-report-v3-skeleton.md` only when recording an active v3 final-readiness result.
 
 Conditional references specialize their activation context; they cannot override this file or each other's owned contract. A contradiction is a package defect and stops dependent work.
 

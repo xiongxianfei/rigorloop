@@ -50,12 +50,12 @@ REASON_CODES = (
     "implementation-milestones-open",
     "milestone-review-pending",
     "review-findings-open",
-    "explain-change-pending",
     "verify-pending",
     "pr-handoff-pending",
     "plan-index-sync-pending",
     "external-completion-event-pending",
 )
+LIFECYCLE_CONTRACT = "stage-owned-change-local-v3"
 PLAN_LIFECYCLE_STATES = frozenset({"active", "blocked", "done", "superseded"})
 LIVE_INDEX_STATES = frozenset({"active", "blocked"})
 REVIEW_STATUS_PATTERN = re.compile(
@@ -375,8 +375,6 @@ REVIEW_FIX_PROFILE_TARGET_STAGES = (
     "architecture-review",
     "plan",
     "plan-review",
-    "test-spec",
-    "test-spec-review",
 )
 REVIEW_FIX_PROFILE_STATES = {
     "off",
@@ -728,7 +726,7 @@ def _profile_route_from_current_stage(stage: str, architecture_assessment: objec
     if stage == "plan":
         return "plan-review"
     if stage == "plan-review":
-        return "test-spec"
+        return "implement"
     return None
 
 
@@ -757,7 +755,7 @@ def _profile_route_from_completed_stages(completed_stages: object, architecture_
         return "plan"
     if "plan-review" not in completed_set:
         return "plan-review"
-    return "test-spec"
+    return "implement"
 
 
 def evaluate_authoring_autoprogression_route(data: dict[str, object]) -> AuthoringAutoprogressionRoute:
@@ -840,9 +838,9 @@ def evaluate_authoring_autoprogression_route(data: dict[str, object]) -> Authori
     else:
         return _stop(profile_state, "ambiguous-workflow-state")
 
-    if next_stage in {"test-spec", "implement", "code-review", "explain-change", "verify", "pr"}:
-        if next_stage == "test-spec" and current_stage == "plan-review" and latest_review_status == "approved":
-            return _continue("completed", "test-spec")
+    if next_stage in {"implement", "code-review", "verify", "pr"}:
+        if next_stage == "implement" and current_stage == "plan-review" and latest_review_status == "approved":
+            return _continue("completed", "implement")
         return _stop(profile_state, "out-of-scope-stage")
 
     return _continue("active", next_stage)
@@ -871,10 +869,6 @@ def _review_fix_next_stage(current_stage: str, architecture_assessment: object) 
         return "plan", None
     if current_stage == "plan":
         return "plan-review", None
-    if current_stage == "plan-review":
-        return "test-spec", None
-    if current_stage == "test-spec":
-        return "test-spec-review", None
     return None, "ambiguous-workflow-state"
 
 
@@ -988,45 +982,6 @@ def evaluate_review_fix_autoprogression_route(data: dict[str, object]) -> Author
     return _continue("active", next_stage)
 
 
-def _is_settled_test_spec(settlement: object) -> bool:
-    if not isinstance(settlement, dict):
-        return False
-    return (
-        settlement.get("status") in {"active", "settled"}
-        and settlement.get("requirements_covered") is True
-        and settlement.get("acceptance_covered") is True
-        and settlement.get("negative_boundary_cases") is True
-        and settlement.get("uncovered_gaps") == "none"
-        and settlement.get("needs_decision") is False
-        and settlement.get("validation_commands_named") is True
-        and settlement.get("contradicts_governing") is False
-        and settlement.get("structural_validation") == "pass"
-        and settlement.get("workflow_state_synchronized") is True
-        and isinstance(settlement.get("input_identities"), dict)
-    )
-
-
-def _settlement_identities(settlement: object) -> dict[str, object] | None:
-    if not isinstance(settlement, dict):
-        return None
-    identities = settlement.get("input_identities")
-    if not isinstance(identities, dict):
-        return None
-    return identities
-
-
-def _approved_recorded_test_spec_review(value: object) -> bool:
-    if not isinstance(value, dict):
-        return False
-    return (
-        value.get("review_status") == "approved"
-        and value.get("recording_status") == "recorded"
-        and value.get("implementation_handoff") == "allowed"
-        and value.get("open_blockers") in {0, None}
-        and value.get("open_findings") in {0, None}
-    )
-
-
 def _promotion_evidence_complete(value: object) -> bool:
     if not isinstance(value, dict):
         return False
@@ -1078,6 +1033,10 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
     profile_state = data.get("profile_state")
     phase = data.get("phase")
     durable_authorization = data.get("durable_authorization")
+    lifecycle_contract = data.get("lifecycle_contract", LIFECYCLE_CONTRACT)
+
+    if lifecycle_contract != LIFECYCLE_CONTRACT:
+        return _implementation_stop("paused", f"lifecycle-contract-unknown_value:{lifecycle_contract}")
 
     if not isinstance(profile_state, str):
         profile_state = "off"
@@ -1125,8 +1084,6 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
         return _implementation_stop(profile_state, "plan-not-synchronized")
     if data.get("milestones_ordered") is not True:
         return _implementation_stop(profile_state, "milestones-not-ordered")
-    if data.get("test_spec_inputs_complete") is not True:
-        return _implementation_stop(profile_state, "test-spec-inputs-incomplete")
     if data.get("working_tree_baseline") != "recorded":
         return _implementation_stop(profile_state, "working-tree-baseline-missing")
     if data.get("unrelated_dirty_state") not in {"absent", "excluded"}:
@@ -1143,18 +1100,10 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
     if phase == "A":
         return _implementation_continue("active", "audit-only")
 
-    settlement = data.get("test_spec_settlement")
-    if not _is_settled_test_spec(settlement):
-        return _implementation_stop(profile_state, "test-spec-settlement-incomplete")
-    if not _approved_recorded_test_spec_review(data.get("test_spec_review")):
-        return _implementation_stop(profile_state, "implementation-without-test-spec-review")
-
     current_stage = data.get("current_stage")
+    if current_stage == "explain-change":
+        return _implementation_stop(profile_state, "stage-unknown_value:explain-change")
     if current_stage == "first-code-review-precheck":
-        settled_identities = _settlement_identities(settlement)
-        current_identities = data.get("current_input_identities")
-        if not isinstance(current_identities, dict) or current_identities != settled_identities:
-            return _implementation_stop(profile_state, "settlement-identity-mismatch")
         route = _next_milestone_route(data.get("milestones"))
         if route is None:
             return _implementation_stop(profile_state, "milestone-state-ambiguous")
@@ -1164,12 +1113,12 @@ def evaluate_implementation_autoprogression_route(data: dict[str, object]) -> Im
 
     if current_stage == "final-clean-code-review" or _all_milestones_closed(data.get("milestones")):
         if phase == "B":
-            return _implementation_stop("active", "phase-boundary-explain-change")
+            return _implementation_stop("active", "phase-boundary-verify")
         if not _promotion_evidence_complete(data.get("promotion_evidence")):
             return _implementation_stop("active", "promotion-evidence-missing")
         if not _final_holistic_review_complete(data.get("final_holistic_review")):
             return _implementation_stop("active", "final-holistic-review-missing")
-        return _implementation_continue("active", "explain-change")
+        return _implementation_continue("active", "verify")
 
     route = _next_milestone_route(data.get("milestones"))
     if route is None:

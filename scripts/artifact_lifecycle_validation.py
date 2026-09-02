@@ -12,9 +12,11 @@ from pathlib import Path
 from typing import Any
 
 from artifact_lifecycle_contracts import (
+    FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH,
     LIFECYCLE_ACTIVATION_MANIFEST_PATH,
     LIFECYCLE_CONTRACT_V1,
     LIFECYCLE_CONTRACT_V2,
+    LIFECYCLE_CONTRACT_V3,
     SIMPLIFIED_PROPOSAL_CUTOVER_DATE,
     SIMPLIFIED_PROPOSAL_FORBIDDEN_SECTIONS,
     SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION,
@@ -24,6 +26,7 @@ from artifact_lifecycle_contracts import (
     classify_lifecycle_contract,
     parse_lifecycle_activation_manifest,
     validate_lifecycle_activation_manifest,
+    validate_final_verification_activation_manifest,
 )
 from change_metadata_semantics import STAGE_OWNED_CONTRACT, validate_stage_owned_lifecycle_metadata
 from lifecycle_state_sync import (
@@ -872,7 +875,7 @@ def _extract_change_yaml_refs(root: Path, path: Path, tracked_revision: str | No
         data = _parse_change_yaml_text(text)
     except Exception:
         data = None
-    if isinstance(data, dict) and data.get("lifecycle_contract") in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}:
+    if isinstance(data, dict) and data.get("lifecycle_contract") in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3}:
         states = data.get("artifact_states")
         if isinstance(states, dict):
             for entry in states.values():
@@ -1993,17 +1996,52 @@ def validate_repository(
         "activating_source_revision": None,
         "changes": [],
     }
+    final_verification_manifest: Any | None = None
+    final_verification_manifest_valid = False
+    final_verification_manifest_path = root_resolved / FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH
+    final_verification_manifest_present = _path_exists(
+        root_resolved,
+        final_verification_manifest_path,
+        scope.tracked_revision,
+    )
+    if final_verification_manifest_present:
+        try:
+            final_verification_manifest = parse_lifecycle_activation_manifest(
+                _read_repo_text(root_resolved, final_verification_manifest_path, scope.tracked_revision)
+            )
+            final_manifest_errors = validate_final_verification_activation_manifest(final_verification_manifest)
+        except ValueError as exc:
+            final_manifest_errors = [str(exc)]
+        if final_manifest_errors:
+            for message in final_manifest_errors:
+                blocking_findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=final_verification_manifest_path,
+                        artifact_class="change_metadata",
+                        status=None,
+                        message=message,
+                    )
+                )
+        else:
+            final_verification_manifest_valid = True
+    classification_final_manifest = final_verification_manifest if final_verification_manifest_valid else {
+        "schema_version": 1,
+        "state": "preactivation",
+        "activating_source_revision": None,
+        "changes": [],
+    }
 
     for path in scope.change_yaml_paths:
         metadata_error_messages: set[str] = set()
         if compose_change_metadata:
             metadata_parser = _load_change_metadata_parser()
             try:
-                metadata_kwargs = (
-                    {"activation_manifest": activation_manifest}
-                    if activation_manifest is not None
-                    else {}
-                )
+                metadata_kwargs = {}
+                if activation_manifest is not None:
+                    metadata_kwargs["activation_manifest"] = activation_manifest
+                if final_verification_manifest is not None:
+                    metadata_kwargs["final_verification_manifest"] = final_verification_manifest
                 metadata_errors = metadata_parser.validate_file(path, **metadata_kwargs)
             except (FileNotFoundError, metadata_parser.MetadataValidationError) as exc:
                 metadata_errors = [f"invalid change metadata: {exc}"]
@@ -2044,8 +2082,8 @@ def validate_repository(
             continue
         if (
             isinstance(metadata, dict)
-            and not activation_manifest_present
-            and metadata.get("lifecycle_contract") == LIFECYCLE_CONTRACT_V2
+            and metadata.get("lifecycle_contract") == LIFECYCLE_CONTRACT_V3
+            and not final_verification_manifest_present
         ):
             blocking_findings.append(
                 ValidationFinding(
@@ -2053,7 +2091,7 @@ def validate_repository(
                     path=path,
                     artifact_class="change_metadata",
                     status=None,
-                    message="v2 lifecycle contract requires the tracked activation manifest",
+                    message="v3 lifecycle contract requires the tracked final verification activation manifest",
                 )
             )
             continue
@@ -2065,7 +2103,21 @@ def validate_repository(
                         change_id,
                         metadata,
                         classification_manifest,
+                        classification_final_manifest,
                     )
+                    if (
+                        lifecycle_classification["contract_class"] == LIFECYCLE_CONTRACT_V3
+                        and lifecycle_classification["authority"] == "inactive"
+                    ):
+                        blocking_findings.append(
+                            ValidationFinding(
+                                severity="block",
+                                path=path,
+                                artifact_class="change_metadata",
+                                status=None,
+                                message="v3 lifecycle contract is not active",
+                            )
+                        )
                 except ValueError as exc:
                     message = str(exc)
                     if message not in metadata_error_messages:
@@ -2082,7 +2134,7 @@ def validate_repository(
 
         is_stage_owned = (
             lifecycle_classification is not None
-            and lifecycle_classification["contract_class"] in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2}
+            and lifecycle_classification["contract_class"] in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3}
         ) or (
             lifecycle_classification is None
             and not activation_manifest_present

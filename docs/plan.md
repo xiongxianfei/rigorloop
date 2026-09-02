@@ -27,6 +27,7 @@ Current blockers are not recorded in this index.
 
 - [2026-08-30 Lightweight Requirement-to-Delivery Model](plans/2026-08-30-lightweight-requirement-delivery-model.md)
 - [2026-08-31 Retire the Standalone Test-Spec Stage](plans/2026-08-31-retire-standalone-test-spec-stage.md)
+- [2026-08-31 Simplify Final Verification and Retire Explain Change](plans/2026-08-31-simplify-final-verification-retire-explain-change.md)
 
 ## Done (recent)
 

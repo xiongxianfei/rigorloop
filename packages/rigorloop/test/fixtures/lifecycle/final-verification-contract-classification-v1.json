@@ -1,0 +1,14 @@
+{
+  "active_manifest": {
+    "schema_version": 1,
+    "state": "active",
+    "activating_source_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "changes": []
+  },
+  "preactivation_manifest": {
+    "schema_version": 1,
+    "state": "preactivation",
+    "activating_source_revision": null,
+    "changes": []
+  }
+}

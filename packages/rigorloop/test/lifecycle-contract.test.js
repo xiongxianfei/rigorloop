@@ -6,15 +6,20 @@ import { test } from "node:test";
 import {
   LIFECYCLE_CONTRACT_V1,
   LIFECYCLE_CONTRACT_V2,
+  LIFECYCLE_CONTRACT_V3,
   LIFECYCLE_OPERATIONS,
   PROVENANCE_EXCLUDED_FIELDS,
   canonicalJson,
+  allowedArtifactKinds,
+  allowedNextStages,
   classifyLifecycleContract,
   lifecycleRevision,
   parseLifecycleYaml,
   serializeLifecycleYaml,
   validateLifecycleActivationManifest,
+  validateFinalVerificationActivationManifest,
   validateLifecycleRequest,
+  verificationCorrectionOwner,
 } from "../dist/lib/lifecycle-contract.js";
 import { LIFECYCLE_OPERATIONS as OBSERVABLE_LIFECYCLE_OPERATIONS } from "../dist/lib/diagnostic-event.js";
 
@@ -25,6 +30,91 @@ const validChange = fixture.valid_yaml;
 const classificationFixture = JSON.parse(
   readFileSync(join(import.meta.dirname, "fixtures", "lifecycle", "contract-classification-v1.json"), "utf8"),
 );
+const finalVerificationClassificationFixture = JSON.parse(
+  readFileSync(join(import.meta.dirname, "fixtures", "lifecycle", "final-verification-contract-classification-v1.json"), "utf8"),
+);
+
+test("final verification preactivation keeps v3 inactive and non-v3 historical", () => {
+  const currentManifest = classificationFixture.active_manifest;
+  const finalManifest = finalVerificationClassificationFixture.preactivation_manifest;
+  assert.deepEqual(validateFinalVerificationActivationManifest(finalManifest), []);
+  assert.deepEqual(
+    classifyLifecycleContract("new-v3", { lifecycle_contract: LIFECYCLE_CONTRACT_V3 }, currentManifest, finalManifest),
+    { contract_class: LIFECYCLE_CONTRACT_V3, activation_state: "preactivation", authority: "inactive" },
+  );
+  assert.deepEqual(
+    classifyLifecycleContract("new-v2", { lifecycle_contract: LIFECYCLE_CONTRACT_V2 }, currentManifest, finalManifest),
+    { contract_class: LIFECYCLE_CONTRACT_V2, activation_state: "historical", authority: "historical" },
+  );
+  assert.deepEqual(allowedNextStages({ lifecycle_contract: LIFECYCLE_CONTRACT_V3 }, "proposal"), ["proposal-review"]);
+  assert.deepEqual(allowedArtifactKinds({ lifecycle_contract: LIFECYCLE_CONTRACT_V3 }), ["proposal", "spec", "architecture", "adr", "plan"]);
+  assert.deepEqual(allowedNextStages({ lifecycle_contract: LIFECYCLE_CONTRACT_V2 }, "proposal"), []);
+  assert.deepEqual(allowedArtifactKinds({ lifecycle_contract: LIFECYCLE_CONTRACT_V2 }), []);
+});
+
+test("active final verification manifest activates v3 without a historical allowlist", () => {
+  const currentManifest = classificationFixture.active_manifest;
+  const finalManifest = finalVerificationClassificationFixture.active_manifest;
+  assert.deepEqual(validateFinalVerificationActivationManifest(finalManifest), []);
+  assert.equal(
+    classifyLifecycleContract("new-v3", { lifecycle_contract: LIFECYCLE_CONTRACT_V3 }, currentManifest, finalManifest).authority,
+    "active",
+  );
+  assert.deepEqual(
+    classifyLifecycleContract("v2", { lifecycle_contract: LIFECYCLE_CONTRACT_V2 }, currentManifest, finalManifest),
+    { contract_class: LIFECYCLE_CONTRACT_V2, activation_state: "historical", authority: "historical" },
+  );
+  assert.deepEqual(
+    classifyLifecycleContract("unlisted-v2", { lifecycle_contract: LIFECYCLE_CONTRACT_V2 }, currentManifest, finalManifest),
+    { contract_class: LIFECYCLE_CONTRACT_V2, activation_state: "historical", authority: "historical" },
+  );
+});
+
+test("final verification manifest and v3 explain-change values fail closed", () => {
+  const currentManifest = classificationFixture.active_manifest;
+  const finalManifest = structuredClone(finalVerificationClassificationFixture.active_manifest);
+  finalManifest.changes.push({ change_id: "old", contract_class: "stage-owned-change-local-v1" });
+  assert.match(validateFinalVerificationActivationManifest(finalManifest)[0], /changes must be empty/);
+  for (const change of [
+    { lifecycle_contract: LIFECYCLE_CONTRACT_V3, workflow_state: { current_stage: "explain-change" } },
+    { lifecycle_contract: LIFECYCLE_CONTRACT_V3, artifacts: { explain_change: "docs/changes/example/explain-change.md" } },
+  ]) {
+    assert.throws(
+      () => classifyLifecycleContract("new-v3", change, currentManifest, finalVerificationClassificationFixture.preactivation_manifest),
+      /v3 lifecycle contract carries active explain-change state/,
+    );
+  }
+});
+
+test("verification findings map to exact owners and unknown kinds fail closed", () => {
+  assert.deepEqual(Object.fromEntries([
+    "system-requirement-gap",
+    "technical-realization-gap",
+    "verification-allocation-gap",
+    "implementation-defect",
+    "stale-or-incomplete-review",
+    "ci-or-environment-gap",
+    "external-evidence-gap",
+  ].map((kind) => [kind, verificationCorrectionOwner(kind)])), {
+    "system-requirement-gap": "spec",
+    "technical-realization-gap": "architecture",
+    "verification-allocation-gap": "plan",
+    "implementation-defect": "implement",
+    "stale-or-incomplete-review": "code-review",
+    "ci-or-environment-gap": "ci-maintenance",
+    "external-evidence-gap": "external-evidence-acquisition",
+  });
+  assert.throws(() => verificationCorrectionOwner("maybe"), /unknown_value maybe/);
+});
+
+test("final verification manifest rejects every historical progression allowlist entry", () => {
+  const active = finalVerificationClassificationFixture.active_manifest;
+  for (const contractClass of [LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, "future-v9"]) {
+    const candidate = structuredClone(active);
+    candidate.changes.push({ change_id: "old", contract_class: contractClass });
+    assert.match(validateFinalVerificationActivationManifest(candidate)[0], /changes must be empty/);
+  }
+});
 
 test("contract activation manifest classifies v2 and exact prior records", () => {
   const manifest = classificationFixture.active_manifest;
@@ -34,10 +124,10 @@ test("contract activation manifest classifies v2 and exact prior records", () =>
   assert.equal(classifyLifecycleContract("legacy", {}, manifest).contract_class, "legacy-unversioned");
 });
 
-test("contract activation manifest rejects missing mismatch duplicate and unsorted entries", () => {
+test("legacy activation manifest remains structurally validated but grants no current progression", () => {
   const manifest = classificationFixture.active_manifest;
-  assert.throws(() => classifyLifecycleContract("missing", { lifecycle_contract: LIFECYCLE_CONTRACT_V1 }, manifest), /not present in the activation manifest/);
-  assert.throws(() => classifyLifecycleContract("legacy", { lifecycle_contract: LIFECYCLE_CONTRACT_V1 }, manifest), /does not match/);
+  assert.equal(classifyLifecycleContract("missing", { lifecycle_contract: LIFECYCLE_CONTRACT_V1 }, manifest).authority, "historical");
+  assert.equal(classifyLifecycleContract("legacy", { lifecycle_contract: LIFECYCLE_CONTRACT_V1 }, manifest).authority, "historical");
   const duplicate = structuredClone(manifest);
   duplicate.changes.splice(1, 0, structuredClone(duplicate.changes[0]));
   assert.match(validateLifecycleActivationManifest(duplicate)[0], /duplicate/);
@@ -69,21 +159,22 @@ test("unknown_value activation state fails before manifest consistency checks", 
   assert.match(validateLifecycleActivationManifest(manifest)[0], /state: unknown_value published/);
 });
 
-test("v2 contract rejects active standalone test-spec state", () => {
-  assert.throws(
-    () => classifyLifecycleContract("new-v2", {
+test("v2 contract remains readable history regardless of retired stage state", () => {
+  for (const change of [
+    {
       lifecycle_contract: LIFECYCLE_CONTRACT_V2,
       workflow_state: { current_stage: "test-spec" },
-    }, classificationFixture.active_manifest),
-    /active test-spec state/,
-  );
-  assert.throws(
-    () => classifyLifecycleContract("new-v2", {
+    },
+    {
       lifecycle_contract: LIFECYCLE_CONTRACT_V2,
       lifecycle_cli: { reviews: { "test-spec": { stage_authority: "test-spec-review" } } },
-    }, classificationFixture.active_manifest),
-    /active test-spec state/,
-  );
+    },
+  ]) {
+    assert.deepEqual(
+      classifyLifecycleContract("new-v2", change, classificationFixture.active_manifest),
+      { contract_class: LIFECYCLE_CONTRACT_V2, activation_state: "historical", authority: "historical" },
+    );
+  }
 });
 
 test("contract classification ignores heuristic dates stages artifacts git and network facts", () => {
@@ -154,7 +245,7 @@ const operationRequests = {
   "initialize-approved-plan": { artifact_id: "plan", stage_authority: "plan" },
   "start-milestone": { milestone_id: "M1", stage_authority: "workflow" },
   "complete-milestone": { milestone_id: "M1", evidence_path: "evidence/m1.md", stage_authority: "workflow" },
-  "route-correction": { source_stage: "verify", destination_stage: "test-spec", destination_artifact_id: "test-spec", reason: "upstream-proof-gap", evidence_path: "evidence/correction-route.md", finding_ids: ["F-1"], return_stage: "verify", stage_authority: "workflow" },
+  "route-correction": { source_stage: "verify", destination_stage: "spec", destination_artifact_id: "spec", reason: "system-requirement-gap", evidence_path: "evidence/correction-route.md", finding_ids: ["F-1"], return_stage: "verify", stage_authority: "workflow" },
   "return-correction": { route_id: "route-1", evidence_path: "evidence/correction-return.md", stage_authority: "workflow" },
   "withdraw-artifact-registration": { artifact_id: "architecture", artifact_path: "docs/architecture/example.md", canonical_owner_change_id: "canonical-change", reason: "duplicate-registration", evidence_path: "evidence/withdrawal.md", stage_authority: "workflow" },
   migrate: { source_schema_version: 1, stage_authority: "workflow" },

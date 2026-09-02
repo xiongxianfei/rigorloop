@@ -143,7 +143,7 @@ If a formal workflow-managed delivery package lacks recorded, approved, current 
 
 ### Change-local evidence
 
-For ordinary non-trivial work, maintain `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, normally `docs/changes/<change-id>/explain-change.md` unless an approved equivalent applies.
+For ordinary non-trivial work, maintain `docs/changes/<change-id>/change.yaml` plus stage-owned implementation evidence. Successful final Verify records the durable change explanation in `verify-report.md`.
 When creating a root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`.
 Do not broaden this requirement to isolated manual work that does not claim complete workflow delivery.
 Keep `review-resolution.md` and `verify-report.md` conditional on their governing triggers.
@@ -224,7 +224,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Manifest-bound v1 continuation follows its registered downstream package and never starts new test-spec authoring. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 

@@ -7,17 +7,19 @@ import { test } from "node:test";
 import { createHash } from "node:crypto";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
+import { writeActiveV3Manifests } from "./helpers/lifecycle-package-fixture.js";
 
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-artifact-revision-"));
   mkdirSync(join(root, "docs", "changes", "example", "evidence"), { recursive: true });
   mkdirSync(join(root, "requests"), { recursive: true });
   mkdirSync(join(root, "specs"), { recursive: true });
+  writeActiveV3Manifests(root);
   writeFileSync(join(root, "docs", "changes", "example", "change.yaml"), `change_id: example
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states: {}
 workflow_state:
   lifecycle_state: active

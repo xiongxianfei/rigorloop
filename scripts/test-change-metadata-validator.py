@@ -25,8 +25,18 @@ from change_metadata_semantics import (
 )
 from artifact_lifecycle_contracts import (
     classify_lifecycle_contract,
+    validate_final_verification_activation_manifest,
     validate_lifecycle_activation_manifest,
     validate_lifecycle_activation_prerequisites,
+)
+from final_verification_protocol import (
+    evaluate_pr_handoff,
+    evaluate_evidence_decision,
+    parse_verify_report,
+    render_verify_report,
+    replay_disposition,
+    tail_disposition,
+    validate_final_verification_result,
 )
 
 
@@ -310,6 +320,19 @@ review:
             msg=f"expected '{target}' to fail",
         )
         self.assertIn(expected_text, combined_output)
+
+    def test_nested_duplicate_mapping_key_fails(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="change-metadata-duplicate-key-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            content = VALID_BASIC_FIXTURE.read_text(encoding="utf-8")
+            target.write_text(
+                content.replace(
+                    "review:\n  status: resolved\n",
+                    "review:\n  status: resolved\n  status: pending\n",
+                ),
+                encoding="utf-8",
+            )
+            self.assertPathFails(target, "duplicate mapping key 'status'")
 
     def valid_implementation_named_record_workflow(self, *, extra_container: str = "") -> str:
         extra = f"{extra_container}\n" if extra_container else ""
@@ -973,14 +996,17 @@ review:
             change_id = "2026-06-24-policy-fixture"
             change_root = repo_root / "docs" / "changes" / change_id
             change_root.mkdir(parents=True)
-            target = self.write_policy_fixture(
-                change_root,
-                workflow_block="""review:
-  status: clean
-  reviewed_artifact: docs/example.md
-  review_log: docs/changes/2026-06-24-policy-fixture/review-log.md
-  unresolved_items: 0
-""",
+            target = self.write_policy_fixture(change_root, workflow_block="")
+            target.write_text(
+                target.read_text(encoding="utf-8").replace(
+                    "review:\n  status: pending\n  unresolved_items: 0\n",
+                    "review:\n"
+                    "  status: clean\n"
+                    "  reviewed_artifact: docs/example.md\n"
+                    "  review_log: docs/changes/2026-06-24-policy-fixture/review-log.md\n"
+                    "  unresolved_items: 0\n",
+                ),
+                encoding="utf-8",
             )
             self.assertPathPasses(target)
             result = run_query_change_record(repo_root, change_id, "summary")
@@ -1947,7 +1973,7 @@ Validation target: Metadata summary counts derive zero open findings.
 class StageOwnedLifecycleMetadataTests(unittest.TestCase):
     def valid_record(self) -> dict:
         return {
-            "lifecycle_contract": "stage-owned-change-local-v1",
+            "lifecycle_contract": "stage-owned-change-local-v3",
             "artifact_states": {
                 "proposal": {
                     "kind": "proposal",
@@ -2016,24 +2042,14 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
         }
         self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
 
-    def test_v2_retired_test_spec_values_fail_closed(self) -> None:
+    def test_v2_test_spec_values_remain_readable_history(self) -> None:
         record = self.valid_record()
         record["lifecycle_contract"] = "stage-owned-change-local-v2"
-        record["artifact_states"]["test-spec"] = {
-            "kind": "test-spec",
-            "path": "specs/example.test.md",
-            "role": "primary",
-            "lifecycle_state": "review-required",
-            "authoring_evidence": "docs/changes/example/evidence/test-spec-authoring.md",
-        }
         record["workflow_state"]["current_stage"] = "test-spec-review"
         record["lifecycle_cli"] = {
             "reviews": {"test-spec": {"stage_authority": "test-spec-review"}}
         }
-        errors = validate_stage_owned_lifecycle_metadata(record)
-        self.assertTrue(any("artifact_states.test-spec.kind: unknown_value" in error for error in errors), errors)
-        self.assertTrue(any("workflow_state.current_stage: unknown_value" in error for error in errors), errors)
-        self.assertTrue(any("stage_authority: unknown_value test-spec-review" in error for error in errors), errors)
+        self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
 
     def test_new_primary_plan_allows_review_required_without_planned_work(self) -> None:
         record = self.valid_record()
@@ -2112,22 +2128,12 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
             "lifecycle_state": "review-required",
             "authoring_evidence": "docs/changes/example/evidence/plan-authoring.md",
         }
-        record["artifact_states"]["test-spec"] = {
-            "kind": "test-spec",
-            "path": "specs/example.test.md",
-            "role": "primary",
-            "lifecycle_state": "review-required",
-            "authoring_evidence": "docs/changes/example/evidence/test-spec-authoring.md",
-        }
         record["review_packages"] = {
             "delivery": {
                 "authority": "granted",
                 "correction_targets": [],
                 "findings": [],
-                "members": {
-                    "plan": "docs/plans/example.md",
-                    "test-spec": "specs/example.test.md",
-                },
+                "members": {"plan": "docs/plans/example.md"},
                 "outcome": "approved",
                 "package_kind": "delivery",
                 "review_id": "delivery-review-r1",
@@ -2140,10 +2146,7 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
             "package_reviews": {
                 "delivery": {
                     "evidence_path": "docs/changes/example/reviews/delivery-review-r1.md",
-                    "members": {
-                        "plan": "docs/plans/example.md",
-                        "test-spec": "specs/example.test.md",
-                    },
+                    "members": {"plan": "docs/plans/example.md"},
                     "outcome": "approved",
                     "review_id": "delivery-review-r1",
                     "round": "r1",
@@ -2332,6 +2335,86 @@ class LifecycleContractClassificationTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         fixture_path = ROOT / "packages/rigorloop/test/fixtures/lifecycle/contract-classification-v1.json"
         cls.fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        final_fixture_path = ROOT / "packages/rigorloop/test/fixtures/lifecycle/final-verification-contract-classification-v1.json"
+        cls.final_fixture = json.loads(final_fixture_path.read_text(encoding="utf-8"))
+
+    def test_final_verification_preactivation_keeps_v3_inactive_and_v2_historical(self) -> None:
+        current_manifest = self.fixture["active_manifest"]
+        final_manifest = self.final_fixture["preactivation_manifest"]
+        self.assertEqual(validate_final_verification_activation_manifest(final_manifest), [])
+        self.assertEqual(
+            classify_lifecycle_contract("new-v3", {"lifecycle_contract": "stage-owned-change-local-v3"}, current_manifest, final_manifest),
+            {"contract_class": "stage-owned-change-local-v3", "activation_state": "preactivation", "authority": "inactive"},
+        )
+        self.assertEqual(
+            classify_lifecycle_contract("new-v2", {"lifecycle_contract": "stage-owned-change-local-v2"}, current_manifest, final_manifest),
+            {"contract_class": "stage-owned-change-local-v2", "activation_state": "historical", "authority": "historical"},
+        )
+
+    def test_active_final_verification_manifest_keeps_v2_records_historical(self) -> None:
+        current_manifest = self.fixture["active_manifest"]
+        final_manifest = self.final_fixture["active_manifest"]
+        self.assertEqual(validate_final_verification_activation_manifest(final_manifest), [])
+        self.assertEqual(
+            classify_lifecycle_contract("v2", {"lifecycle_contract": "stage-owned-change-local-v2"}, current_manifest, final_manifest)["authority"],
+            "historical",
+        )
+        self.assertEqual(
+            classify_lifecycle_contract("unlisted-v2", {"lifecycle_contract": "stage-owned-change-local-v2"}, current_manifest, final_manifest)["authority"],
+            "historical",
+        )
+
+    def test_final_verification_unknown_class_and_v3_explain_change_fail_first(self) -> None:
+        final_manifest = copy.deepcopy(self.final_fixture["active_manifest"])
+        final_manifest["changes"] = [{"change_id": "old", "contract_class": "stage-owned-change-local-v1"}]
+        self.assertRegex(
+            validate_final_verification_activation_manifest(final_manifest)[0],
+            "changes must be empty",
+        )
+        for change in (
+            {"lifecycle_contract": "stage-owned-change-local-v3", "workflow_state": {"current_stage": "explain-change"}},
+            {"lifecycle_contract": "stage-owned-change-local-v3", "artifacts": {"explain_change": "docs/changes/example/explain-change.md"}},
+        ):
+            with self.assertRaisesRegex(ValueError, "v3 lifecycle contract carries active explain-change state"):
+                classify_lifecycle_contract(
+                    "new-v3",
+                    change,
+                    self.fixture["active_manifest"],
+                    self.final_fixture["preactivation_manifest"],
+                )
+
+    def test_final_verification_manifest_rejects_any_historical_allowlist_entry(self) -> None:
+        active = self.final_fixture["active_manifest"]
+        populated = copy.deepcopy(active)
+        populated["changes"] = [
+            {"change_id": "old-v2", "contract_class": "stage-owned-change-local-v2"},
+        ]
+        self.assertRegex(
+            validate_final_verification_activation_manifest(populated)[0],
+            "changes must be empty",
+        )
+
+    def test_v3_metadata_semantics_reject_explain_change_authority(self) -> None:
+        change = {
+            "lifecycle_contract": "stage-owned-change-local-v3",
+            "artifact_states": {},
+            "review_packages": {},
+            "workflow_state": {
+                "lifecycle_state": "active",
+                "current_stage": "explain-change",
+                "next_stage": "verify",
+                "blocker": None,
+                "evidence": [],
+            },
+            "lifecycle_cli": {
+                "validations": {
+                    "old-explanation": {"stage_authority": "explain-change"},
+                },
+            },
+        }
+        errors = validate_stage_owned_lifecycle_metadata(change)
+        self.assertTrue(any(error.startswith("workflow_state.current_stage: unknown_value") for error in errors))
+        self.assertTrue(any("stage_authority: unknown_value explain-change" in error for error in errors))
 
     def test_manifest_classifies_exact_prior_records(self) -> None:
         manifest = self.fixture["active_manifest"]
@@ -2340,22 +2423,15 @@ class LifecycleContractClassificationTests(unittest.TestCase):
         self.assertEqual(classify_lifecycle_contract("v1", {"lifecycle_contract": "stage-owned-change-local-v1"}, manifest)["contract_class"], "stage-owned-change-local-v1")
         self.assertEqual(classify_lifecycle_contract("legacy", {}, manifest)["contract_class"], "legacy-unversioned")
 
-    def test_manifest_rejects_missing_mismatch_and_v2_test_spec_state(self) -> None:
+    def test_legacy_activation_manifest_does_not_grant_historical_progression(self) -> None:
         manifest = self.fixture["active_manifest"]
-        with self.assertRaisesRegex(ValueError, "not present in the activation manifest"):
-            classify_lifecycle_contract("missing", {"lifecycle_contract": "stage-owned-change-local-v1"}, manifest)
-        with self.assertRaisesRegex(ValueError, "does not match"):
-            classify_lifecycle_contract("legacy", {"lifecycle_contract": "stage-owned-change-local-v1"}, manifest)
-        with self.assertRaisesRegex(ValueError, "active test-spec state"):
-            classify_lifecycle_contract("new-v2", {
-                "lifecycle_contract": "stage-owned-change-local-v2",
-                "workflow_state": {"current_stage": "test-spec"},
-            }, manifest)
-        with self.assertRaisesRegex(ValueError, "active test-spec state"):
-            classify_lifecycle_contract("new-v2", {
-                "lifecycle_contract": "stage-owned-change-local-v2",
-                "lifecycle_cli": {"reviews": {"test-spec": {"stage_authority": "test-spec-review"}}},
-            }, manifest)
+        for change_id, change in (
+            ("missing", {"lifecycle_contract": "stage-owned-change-local-v1"}),
+            ("legacy", {"lifecycle_contract": "stage-owned-change-local-v1"}),
+            ("new-v2", {"lifecycle_contract": "stage-owned-change-local-v2", "workflow_state": {"current_stage": "test-spec"}}),
+            ("new-v2", {"lifecycle_contract": "stage-owned-change-local-v2", "lifecycle_cli": {"reviews": {"test-spec": {"stage_authority": "test-spec-review"}}}}),
+        ):
+            self.assertEqual(classify_lifecycle_contract(change_id, change, manifest)["authority"], "historical")
 
     def test_unknown_value_contract_fails_before_manifest_consistency(self) -> None:
         with self.assertRaisesRegex(ValueError, "unknown_value.*future-v9"):
@@ -2366,7 +2442,7 @@ class LifecycleContractClassificationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, case["error"]):
             classify_lifecycle_contract(case["change_id"], case["change"], self.fixture["active_manifest"])
 
-    def test_public_validator_rejects_v2_active_test_spec_state(self) -> None:
+    def test_public_validator_reads_v2_active_test_spec_state_as_history(self) -> None:
         validator = load_validator_module()
         with tempfile.TemporaryDirectory(prefix="change-metadata-v2-contract-") as temp_dir:
             target = Path(temp_dir) / "change.yaml"
@@ -2380,7 +2456,7 @@ class LifecycleContractClassificationTests(unittest.TestCase):
                 target,
                 activation_manifest=self.fixture["active_manifest"],
             )
-        self.assertIn("v2 lifecycle contract carries active test-spec state", errors)
+        self.assertNotIn("v2 lifecycle contract carries active test-spec state", errors)
 
     def test_unknown_value_activation_state_fails_before_consistency(self) -> None:
         manifest = copy.deepcopy(self.fixture["active_manifest"])
@@ -2491,6 +2567,481 @@ class LifecycleContractClassificationTests(unittest.TestCase):
         self.assertEqual(
             validate_lifecycle_activation_prerequisites(manifest, records),
             ["prior-contract change v1 current_stage: unknown_value future-stage"],
+        )
+
+
+class FinalVerificationProtocolTests(unittest.TestCase):
+    def basis(self) -> dict[str, str]:
+        return {
+            "repository_identity": "repo:sha256:" + "1" * 64,
+            "remote_identity": "remote:sha256:" + "2" * 64,
+            "base_branch": "main",
+            "base_revision": "d" * 40,
+            "merge_base_revision": "e" * 40,
+            "head_branch": "proposal/example",
+            "governed_change_id": "2026-08-31-example",
+            "verified_subject_revision": "a" * 40,
+            "final_review_id": "code-review-r1",
+            "design_package_id": "design-review-r1",
+            "delivery_plan_id": "docs/plans/2026-08-31-example.md",
+            "final_diff_sha256": "sha256:" + "b" * 64,
+        }
+
+    def impact(self, state: str = "unaffected") -> list[dict[str, object]]:
+        return [{
+            "surface": "runtime-behavior",
+            "state": state,
+            "rationale": "The reviewed metadata-only tail cannot alter runtime inputs.",
+            "affirmative_evidence": ["TG-06:runtime-input-boundary"],
+        }]
+
+    def obligation(self, **updates: object) -> dict[str, object]:
+        value: dict[str, object] = {
+            "evidence_id": "TG-06-runtime",
+            "proved_surfaces": ["runtime-behavior"],
+            "freshness": "impact-sensitive",
+            "existing_result": "pass",
+            "authority_current": True,
+            "identity_current": True,
+            "environment_current": True,
+            "conflicting": False,
+            "new_obligation": False,
+        }
+        value.update(updates)
+        return value
+
+    def successful_result(self) -> dict[str, object]:
+        return {
+            "protocol_version": 3,
+            "outcome": "successful",
+            "basis": self.basis(),
+            "basis_status": {
+                "repository": "current",
+                "governed_change": "current",
+                "verified_subject": "current",
+                "final_review": "current",
+                "design_package": "current",
+                "delivery_plan": "current",
+                "final_diff": "current",
+            },
+            "impact": self.impact(),
+            "evidence": [{
+                **self.obligation(),
+                "decision": "reuse",
+                "decision_rationale": "Affirmative non-impact proof preserves this passing result.",
+                "execution": "reused-pass",
+                "observed_result": "pass",
+                "cache_hit": False,
+                "proof": {
+                    "kind": "prior-evidence",
+                    "evidence_path": "docs/changes/example/evidence/tg-06.md",
+                    "evidence_sha256": "sha256:" + "3" * 64,
+                    "subject_revision": "a" * 40,
+                },
+            }],
+            "always_current": [
+                {
+                    "check_id": check_id,
+                    "execution": "actual-run",
+                    "observed_result": "pass",
+                    "proof": {
+                        "kind": "command",
+                        "command": ["python", "scripts/validate-change-metadata.py", "docs/changes/example/change.yaml"],
+                        "evidence_path": "docs/changes/example/evidence/always-current.md",
+                        "evidence_sha256": "sha256:" + "4" * 64,
+                    },
+                }
+                for check_id in (
+                    "current-change-and-repository-identity",
+                    "reviewed-subject-and-review-identity",
+                    "lifecycle-and-package-consistency",
+                    "review-closeout",
+                    "unresolved-blocker-state",
+                    "final-diff-classification",
+                    "required-artifact-and-evidence-existence",
+                    "complete-verify-result-consistency",
+                )
+            ],
+            "ci_status": "not-required",
+            "blockers": [],
+            "residual_risks": ["Semantic non-impact judgment remains reviewable."],
+            "branch_ready": True,
+            "explanation": {
+                "what_changed": "Added the inactive final-verification protocol.",
+                "why": "Enable impact-aware evidence selection.",
+                "requirements_and_design": "Implements FV-R8 through FV-R22.",
+                "important_choices": "Uses conservative structural checks.",
+                "supporting_evidence": ["TG-06-runtime"],
+                "limitations": ["The v3 public route remains inactive."],
+                "residual_risks": ["Semantic decisions require review."],
+            },
+        }
+
+    def test_closed_vocabulary_unknown_values_fail_before_consistency(self) -> None:
+        cases = (
+            ("impact-surface", {**self.successful_result(), "impact": [{**self.impact()[0], "surface": "magic-surface"}]}, "impact[0].surface: unknown_value magic-surface"),
+            ("impact", {**self.successful_result(), "impact": self.impact("future-impact")}, "impact[0].state: unknown_value future-impact"),
+            ("freshness", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "freshness": "eventually-fresh"}]}, "evidence[0].freshness: unknown_value eventually-fresh"),
+            ("decision", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "decision": "skip"}]}, "evidence[0].decision: unknown_value skip"),
+            ("evidence-result", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "observed_result": "mostly-pass"}]}, "evidence[0].observed_result: unknown_value mostly-pass"),
+            ("execution", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "execution": "assumed-run"}]}, "evidence[0].execution: unknown_value assumed-run"),
+            ("outcome", {**self.successful_result(), "outcome": "mostly-successful"}, "outcome: unknown_value mostly-successful"),
+            ("basis-status", {**self.successful_result(), "basis_status": {**self.successful_result()["basis_status"], "final_diff": "probably-current"}}, "basis_status.final_diff: unknown_value probably-current"),
+            ("ci-status", {**self.successful_result(), "ci_status": "probably-passed"}, "ci_status: unknown_value probably-passed"),
+            ("always-current-check", {**self.successful_result(), "always_current": [{**self.successful_result()["always_current"][0], "check_id": "probably-current"}, *self.successful_result()["always_current"][1:]]}, "always_current[0].check_id: unknown_value probably-current"),
+            ("proof-kind", {**self.successful_result(), "evidence": [{**self.successful_result()["evidence"][0], "proof": {"kind": "asserted"}}]}, "evidence[0].proof.kind: unknown_value asserted"),
+        )
+        for name, result, expected in cases:
+            with self.subTest(name=name):
+                self.assertEqual(validate_final_verification_result(result)[0], expected)
+
+    def test_target_basis_requires_exact_singleton_identities(self) -> None:
+        result = self.successful_result()
+        result["basis"] = {**self.basis(), "final_review_id": ["r1", "r2"]}
+        self.assertIn("basis.final_review_id: invalid canonical identity", validate_final_verification_result(result))
+
+        stale = self.successful_result()
+        stale["basis_status"]["final_review"] = "stale"
+        self.assertIn("successful result requires every basis authority current", validate_final_verification_result(stale))
+
+    def test_unaffected_requires_affirmative_evidence_not_filename(self) -> None:
+        result = self.successful_result()
+        result["impact"] = [{
+            "surface": "repository-metadata",
+            "state": "unaffected",
+            "rationale": ".gitignore file extension",
+            "affirmative_evidence": [],
+        }]
+        self.assertIn("impact[0].unaffected: affirmative_evidence required", validate_final_verification_result(result))
+
+    def test_unknown_impact_broadens_and_freshness_overrides_reuse(self) -> None:
+        self.assertEqual(evaluate_evidence_decision(self.obligation(), self.impact("unknown")), "rerun")
+        self.assertEqual(evaluate_evidence_decision(self.obligation(freshness="fresh-required"), self.impact()), "rerun")
+        self.assertEqual(evaluate_evidence_decision(self.obligation(freshness="always-current"), self.impact()), "rerun")
+
+    def test_new_obligation_and_multi_surface_impact_select_execution(self) -> None:
+        impacts = self.impact() + [{
+            "surface": "generated-output",
+            "state": "affected",
+            "rationale": "Generator input changed.",
+            "affirmative_evidence": [],
+        }]
+        self.assertEqual(evaluate_evidence_decision(self.obligation(new_obligation=True), impacts), "newly-required")
+        self.assertEqual(evaluate_evidence_decision(self.obligation(proved_surfaces=["runtime-behavior", "generated-output"]), impacts), "rerun")
+
+    def test_proved_surfaces_are_closed_unique_and_mapped_before_freshness(self) -> None:
+        for proved_surfaces, expected in (
+            (["magic-surface"], "evidence[0].proved_surfaces[0]: unknown_value magic-surface"),
+            (["runtime-behavior", "runtime-behavior"], "evidence[0].proved_surfaces: duplicate runtime-behavior"),
+            (["generated-output"], "evidence[0].proved_surfaces[0]: unclassified generated-output"),
+        ):
+            result = self.successful_result()
+            result["evidence"][0].update({"freshness": "fresh-required", "decision": "rerun", "execution": "actual-run", "proved_surfaces": proved_surfaces, "proof": {
+                "kind": "command", "command": ["npm", "test"], "evidence_path": "docs/changes/example/evidence/test.md", "evidence_sha256": "sha256:" + "5" * 64,
+            }})
+            with self.subTest(proved_surfaces=proved_surfaces):
+                self.assertIn(expected, validate_final_verification_result(result))
+        with self.assertRaisesRegex(ValueError, "unknown_value magic-surface"):
+            evaluate_evidence_decision(self.obligation(freshness="fresh-required", proved_surfaces=["magic-surface"]), self.impact())
+
+    def test_cache_hit_cannot_satisfy_required_execution(self) -> None:
+        result = self.successful_result()
+        result["evidence"] = [{
+            **self.obligation(freshness="fresh-required"),
+            "decision": "rerun",
+            "decision_rationale": "Policy requires fresh evidence.",
+            "execution": "cache-hit",
+            "observed_result": "pass",
+            "cache_hit": True,
+            "proof": {"kind": "cache", "cache_key": "sha256:" + "6" * 64},
+        }]
+        self.assertIn("evidence[0].execution: rerun requires actual-run or hosted-observation", validate_final_verification_result(result))
+
+    def test_non_success_omits_explanation_and_readiness(self) -> None:
+        for outcome in ("failed", "inconclusive", "interrupted"):
+            result = self.successful_result()
+            result.update({"outcome": outcome, "branch_ready": False, "blockers": ["owner: plan"], "explanation": None})
+            self.assertEqual(validate_final_verification_result(result), [], outcome)
+            result["explanation"] = self.successful_result()["explanation"]
+            self.assertIn(f"{outcome} result must omit explanation", validate_final_verification_result(result))
+
+    def test_early_inconclusive_result_may_record_unresolved_inputs(self) -> None:
+        result = self.successful_result()
+        result.update({
+            "outcome": "inconclusive",
+            "basis": {field: None for field in self.basis()},
+            "basis_status": {field: "missing" for field in result["basis_status"]},
+            "impact": [],
+            "evidence": [],
+            "always_current": [],
+            "blockers": ["owner: workflow; exact target unresolved"],
+            "branch_ready": False,
+            "explanation": None,
+        })
+        self.assertEqual(validate_final_verification_result(result), [])
+
+    def test_success_serializes_and_reads_back_without_self_commit_identity(self) -> None:
+        result = self.successful_result()
+        rendered = render_verify_report(result)
+        self.assertEqual(parse_verify_report(rendered), result)
+        self.assertNotIn("report_commit", rendered)
+        self.assertEqual(validate_final_verification_result(result), [])
+
+        result["report_commit_identity"] = "f" * 40
+        self.assertIn("result: Verify report must not embed its own Git commit identity", validate_final_verification_result(result))
+
+        with self.assertRaisesRegex(ValueError, "trailing or malformed content"):
+            parse_verify_report(rendered + "trailing\n")
+
+    def test_execution_kinds_require_exact_proof_identity(self) -> None:
+        for target, index in (("evidence", 0), ("always_current", 0)):
+            result = self.successful_result()
+            result[target][index]["proof"] = None
+            with self.subTest(target=target):
+                self.assertTrue(any("proof" in error for error in validate_final_verification_result(result)))
+
+        hosted = self.successful_result()
+        hosted["always_current"][0].update({"execution": "hosted-observation", "proof": {
+            "kind": "hosted", "provider": "github-actions", "run_id": "12345", "check_name": "test", "subject_revision": "a" * 40,
+            "evidence_path": "docs/changes/example/evidence/hosted.md", "evidence_sha256": "sha256:" + "7" * 64,
+        }})
+        self.assertEqual(validate_final_verification_result(hosted), [])
+
+    def test_report_write_and_registration_failure_grant_no_authority(self) -> None:
+        for failure in ("report-write-failure", "registration-failure"):
+            result = self.successful_result()
+            result.update({"outcome": "inconclusive", "branch_ready": False, "blockers": [failure], "explanation": None})
+            self.assertEqual(validate_final_verification_result(result), [], failure)
+
+    def test_identical_replay_is_idempotent_and_changed_basis_is_new(self) -> None:
+        result = self.successful_result()
+        self.assertEqual(replay_disposition(result, parse_verify_report(render_verify_report(result))), "identical-replay")
+        changed = copy.deepcopy(result)
+        changed["basis"]["final_diff_sha256"] = "sha256:" + "c" * 64
+        self.assertEqual(replay_disposition(result, changed), "changed-basis")
+
+    def test_tail_drift_allows_only_verify_owned_paths_and_fields(self) -> None:
+        report = render_verify_report(self.successful_result())
+        report_sha = "sha256:" + hashlib.sha256(report.encode()).hexdigest()
+        tail = {
+            "changed_paths": ["docs/changes/example/verify-report.md", "docs/changes/example/change.yaml#lifecycle_cli.validations.verify-result"],
+            "report_path": "docs/changes/example/verify-report.md",
+            "report_content": report,
+            "report_sha256": report_sha,
+            "registration": {
+                "selector": "lifecycle_cli.validations.verify-result",
+                "evidence_path": "docs/changes/example/verify-report.md",
+                "evidence_sha256": report_sha,
+                "verified_subject_revision": "a" * 40,
+                "stage_authority": "verify",
+            },
+        }
+        self.assertEqual(tail_disposition(tail, "example", "a" * 40), "current")
+        for path in ("src/product.py", "specs/feature.md", "docs/plans/feature.md", "package-lock.json", "docs/unrelated.md"):
+            with self.subTest(path=path):
+                changed = copy.deepcopy(tail)
+                changed["changed_paths"].append(path)
+                self.assertEqual(tail_disposition(changed, "example", "a" * 40), "stale")
+        for mutate in (
+            lambda value: value.update({"changed_paths": []}),
+            lambda value: value.update({"changed_paths": [value["report_path"]]}),
+            lambda value: value.update({"changed_paths": ["docs/changes/example/change.yaml#lifecycle_cli.validations.verify-result"]}),
+            lambda value: value.update({"changed_paths": [value["report_path"], value["report_path"]]}),
+            lambda value: value["registration"].update({"evidence_sha256": "sha256:" + "0" * 64}),
+            lambda value: value["registration"].update({"verified_subject_revision": "f" * 40}),
+            lambda value: value["registration"].update({"selector": "validation_events.verify"}),
+        ):
+            changed = copy.deepcopy(tail)
+            mutate(changed)
+            self.assertEqual(tail_disposition(changed, "example", "a" * 40), "incomplete")
+
+    def test_pr_handoff_consumes_exact_successful_verify_authority(self) -> None:
+        result = self.successful_result()
+        report = render_verify_report(result)
+        report_sha = "sha256:" + hashlib.sha256(report.encode()).hexdigest()
+        tail = {
+            "changed_paths": ["docs/changes/example/verify-report.md", "docs/changes/example/change.yaml#lifecycle_cli.validations.verify-result"],
+            "report_path": "docs/changes/example/verify-report.md",
+            "report_content": report,
+            "report_sha256": report_sha,
+            "registration": {
+                "selector": "lifecycle_cli.validations.verify-result",
+                "evidence_path": "docs/changes/example/verify-report.md",
+                "evidence_sha256": report_sha,
+                "verified_subject_revision": "a" * 40,
+                "stage_authority": "verify",
+            },
+        }
+        references = sorted({
+            tail["report_path"],
+            result["basis"]["delivery_plan_id"],
+            *(item["proof"]["evidence_path"] for item in [*result["evidence"], *result["always_current"]]),
+        })
+        inputs = {
+            "tail": tail,
+            "change_id": "example",
+            "verified_subject_revision": "a" * 40,
+            "current_basis": result["basis"],
+            "explanation": result["explanation"],
+            "authoritative_references": references,
+        }
+        self.assertTrue(evaluate_pr_handoff(**inputs)["ready"])
+        competing = copy.deepcopy(inputs)
+        competing["explanation"]["why"] = "competing"
+        self.assertEqual(evaluate_pr_handoff(**competing)["reason"], "competing-rationale")
+        new_reference = copy.deepcopy(inputs)
+        new_reference["authoritative_references"].append("docs/new-authority.md")
+        self.assertEqual(evaluate_pr_handoff(**new_reference)["reason"], "authoritative-reference-mismatch")
+
+    def test_success_rejects_duplicate_checks_empty_explanation_and_malformed_basis(self) -> None:
+        duplicate = self.successful_result()
+        duplicate["always_current"].append(copy.deepcopy(duplicate["always_current"][0]))
+        self.assertIn("always_current[8].check_id: duplicate current-change-and-repository-identity", validate_final_verification_result(duplicate))
+        for value in ("   ", ["valid", "   "]):
+            result = self.successful_result()
+            result["explanation"]["what_changed"] = value
+            self.assertIn("successful result explanation fields must be non-empty", validate_final_verification_result(result))
+        for field, value in (
+            ("repository_identity", "github.com/example/project"),
+            ("remote_identity", "origin"),
+            ("base_branch", "refs/../main"),
+            ("head_branch", "feature.lock"),
+            ("base_revision", "not-a-revision"),
+            ("merge_base_revision", "abc"),
+            ("verified_subject_revision", "x"),
+            ("governed_change_id", 12),
+            ("final_review_id", "review/r1"),
+            ("design_package_id", "design r1"),
+            ("delivery_plan_id", "../plan.md"),
+            ("final_diff_sha256", "not-a-digest"),
+        ):
+            result = self.successful_result()
+            result["basis"][field] = value
+            with self.subTest(field=field):
+                self.assertTrue(any(error.startswith(f"basis.{field}:") for error in validate_final_verification_result(result)))
+
+    def test_collection_shapes_are_required_for_every_outcome(self) -> None:
+        for field in ("impact", "evidence", "always_current"):
+            for value in (None, "items", {"item": True}, 1):
+                result = self.successful_result()
+                result.update({
+                    "outcome": "inconclusive",
+                    "branch_ready": False,
+                    "blockers": ["owner: workflow"],
+                    "explanation": None,
+                    field: value,
+                })
+                with self.subTest(field=field, value=value):
+                    self.assertIn(f"{field}: expected array", validate_final_verification_result(result))
+
+        result = self.successful_result()
+        for field in ("impact", "evidence", "always_current"):
+            empty = copy.deepcopy(result)
+            empty[field] = []
+            with self.subTest(success_empty=field):
+                self.assertNotEqual(validate_final_verification_result(empty), [])
+
+        inconclusive = self.successful_result()
+        inconclusive.update({
+            "outcome": "inconclusive",
+            "branch_ready": False,
+            "blockers": ["owner: workflow"],
+            "explanation": None,
+            "impact": [],
+            "evidence": [],
+            "always_current": [],
+        })
+        self.assertEqual(validate_final_verification_result(inconclusive), [])
+
+    def test_evidence_facts_require_json_booleans(self) -> None:
+        fields = (
+            "authority_current",
+            "identity_current",
+            "environment_current",
+            "conflicting",
+            "new_obligation",
+            "cache_hit",
+        )
+        for field in fields:
+            for value in ("yes", 1, None, {}, []):
+                result = self.successful_result()
+                result["evidence"][0][field] = value
+                with self.subTest(field=field, value=value):
+                    self.assertIn(
+                        f"evidence[0].{field}: expected boolean",
+                        validate_final_verification_result(result),
+                    )
+
+        for field in fields:
+            for value in (True, False):
+                result = self.successful_result()
+                result["evidence"][0][field] = value
+                with self.subTest(valid_field=field, value=value):
+                    self.assertFalse(any(
+                        error == f"evidence[0].{field}: expected boolean"
+                        for error in validate_final_verification_result(result)
+                    ))
+        with self.assertRaisesRegex(ValueError, "authority_current: expected boolean"):
+            evaluate_evidence_decision(self.obligation(authority_current="yes"), self.impact())
+
+    def test_javascript_and_python_result_conformance_matches(self) -> None:
+        cases = [self.successful_result()]
+        duplicate = self.successful_result()
+        duplicate["always_current"].append(copy.deepcopy(duplicate["always_current"][0]))
+        cases.append(duplicate)
+        whitespace = self.successful_result()
+        whitespace["explanation"]["what_changed"] = ["valid", "   "]
+        cases.append(whitespace)
+        unknown_surface = self.successful_result()
+        unknown_surface["evidence"][0]["proved_surfaces"] = ["magic-surface"]
+        cases.append(unknown_surface)
+        malformed_basis = self.successful_result()
+        malformed_basis["basis"]["verified_subject_revision"] = "not-a-revision"
+        cases.append(malformed_basis)
+        missing_proof = self.successful_result()
+        missing_proof["always_current"][0]["proof"] = None
+        cases.append(missing_proof)
+        for field in ("impact", "evidence", "always_current"):
+            for value in (None, "items", {"item": True}, 1):
+                malformed_collection = self.successful_result()
+                malformed_collection.update({
+                    "outcome": "inconclusive",
+                    "branch_ready": False,
+                    "blockers": ["owner: workflow"],
+                    "explanation": None,
+                    field: value,
+                })
+                cases.append(malformed_collection)
+        for field in (
+            "authority_current",
+            "identity_current",
+            "environment_current",
+            "conflicting",
+            "new_obligation",
+            "cache_hit",
+        ):
+            for value in ("yes", 1, None, {}, []):
+                malformed_boolean = self.successful_result()
+                malformed_boolean["evidence"][0][field] = value
+                cases.append(malformed_boolean)
+
+        node_source = """
+import { validateFinalVerificationResult } from './packages/rigorloop/dist/lib/final-verification-protocol.js';
+let input = '';
+for await (const chunk of process.stdin) input += chunk;
+process.stdout.write(JSON.stringify(JSON.parse(input).map(validateFinalVerificationResult)));
+"""
+        completed = subprocess.run(
+            ["node", "--input-type=module", "--eval", node_source],
+            input=json.dumps(cases),
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+            check=True,
+        )
+        self.assertEqual(
+            json.loads(completed.stdout),
+            [validate_final_verification_result(case) for case in cases],
         )
 
 

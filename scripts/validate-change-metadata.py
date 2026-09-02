@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from artifact_lifecycle_contracts import (
+    FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH,
     LIFECYCLE_ACTIVATION_MANIFEST_PATH,
     classify_lifecycle_contract,
     parse_lifecycle_activation_manifest,
@@ -32,6 +33,7 @@ from validate_workflow_automation import (
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schemas" / "change.schema.json"
 ACTIVATION_MANIFEST_PATH = ROOT / LIFECYCLE_ACTIVATION_MANIFEST_PATH
+FINAL_VERIFICATION_MANIFEST_PATH = ROOT / FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH
 _LOAD_TRACKED_ACTIVATION_MANIFEST = object()
 CANONICAL_ARTIFACT_KEYS = {
     "adr",
@@ -320,6 +322,10 @@ def parse_yaml_mapping(lines: list[Line], index: int, indent: int) -> tuple[dict
                 f"line {line.lineno}: unexpected list item where mapping entry was expected"
             )
         key, remainder = split_mapping_entry(line.text, line.lineno)
+        if key in data:
+            raise MetadataValidationError(
+                f"line {line.lineno}: duplicate mapping key '{key}'"
+            )
         index += 1
         if remainder:
             data[key] = parse_scalar(remainder)
@@ -521,6 +527,7 @@ def validate_metadata_semantics(
     metadata_path: Path | None = None,
     *,
     activation_manifest: Any = _LOAD_TRACKED_ACTIVATION_MANIFEST,
+    final_verification_manifest: Any = _LOAD_TRACKED_ACTIVATION_MANIFEST,
 ) -> list[str]:
     if not isinstance(data, dict):
         return []
@@ -533,6 +540,13 @@ def validate_metadata_semantics(
             )
         except (OSError, ValueError) as exc:
             return [f"activation manifest: {exc}"]
+    if final_verification_manifest is _LOAD_TRACKED_ACTIVATION_MANIFEST:
+        try:
+            final_verification_manifest = parse_lifecycle_activation_manifest(
+                FINAL_VERIFICATION_MANIFEST_PATH.read_text(encoding="utf-8")
+            )
+        except (OSError, ValueError) as exc:
+            return [f"final verification activation manifest: {exc}"]
     change_id = data.get("change_id")
     if isinstance(change_id, str):
         try:
@@ -550,7 +564,12 @@ def validate_metadata_semantics(
                     "activating_source_revision": None,
                     "changes": [],
                 }
-            classify_lifecycle_contract(change_id, data, classification_manifest)
+            classify_lifecycle_contract(
+                change_id,
+                data,
+                classification_manifest,
+                final_verification_manifest,
+            )
         except ValueError as exc:
             return [str(exc)]
     errors.extend(validate_stage_owned_lifecycle_metadata(data))
@@ -562,7 +581,7 @@ def validate_metadata_semantics(
                 validate_workflow_automation(
                     automation,
                     top_level_change_id=data.get("change_id"),
-                    lifecycle_contract=data.get("lifecycle_contract", "stage-owned-change-local-v1"),
+                    lifecycle_contract=data.get("lifecycle_contract", "stage-owned-change-local-v3"),
                 )
             )
             if (
@@ -2169,6 +2188,7 @@ def validate_file(
     path: Path,
     *,
     activation_manifest: Any = _LOAD_TRACKED_ACTIVATION_MANIFEST,
+    final_verification_manifest: Any = _LOAD_TRACKED_ACTIVATION_MANIFEST,
 ) -> list[str]:
     data = load_yaml(path)
     if is_measurement_file(path):
@@ -2181,6 +2201,7 @@ def validate_file(
         data,
         path,
         activation_manifest=activation_manifest,
+        final_verification_manifest=final_verification_manifest,
     )
     return [*schema_errors, *semantic_errors]
 

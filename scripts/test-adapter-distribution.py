@@ -30,14 +30,14 @@ from adapter_distribution import (  # noqa: E402
     AdapterDriftEntry,
     OPENCODE_COMMAND_ALIASES,
     POST_CUTOVER_ADAPTER_SKILLS,
-    STAGED_V2_ADAPTER_SKILLS,
-    STAGED_V2_OPENCODE_COMMAND_ALIASES,
+    STAGED_V3_ADAPTER_SKILLS,
+    STAGED_V3_OPENCODE_COMMAND_ALIASES,
     RETIRED_PROGRESSION_SKILLS,
     ReleaseValidationProfile,
     SUPPORTED_ADAPTERS,
     adapter_archive_name,
     build_adapter_archives,
-    build_staged_v2_adapter_archives,
+    build_staged_v3_adapter_archives,
     build_required_benchmark_context,
     collect_adapter_drift,
     collect_adapter_drift_entries,
@@ -52,7 +52,7 @@ from adapter_distribution import (  # noqa: E402
     render_manifest_yaml,
     sync_adapter_output,
     validate_adapter_archives,
-    validate_staged_v2_adapter_archives,
+    validate_staged_v3_adapter_archives,
     validate_adapter_artifact_metadata,
     validate_adapter_output,
     validate_clean_install_smoke,
@@ -82,81 +82,49 @@ class AdapterDistributionTests(unittest.TestCase):
     def fixture(self, name: str) -> Path:
         return FIXTURES / name
 
-    def test_staged_v2_archives_omit_test_spec_and_package_plan_methods(self) -> None:
-        self.assertNotIn("test-spec", POST_CUTOVER_ADAPTER_SKILLS)
-        self.assertNotIn("test-spec", OPENCODE_COMMAND_ALIASES)
-        self.assertNotIn("test-spec", STAGED_V2_ADAPTER_SKILLS)
-        self.assertNotIn("test-spec", STAGED_V2_OPENCODE_COMMAND_ALIASES)
-        with tempfile.TemporaryDirectory(prefix="staged-v2-adapters-") as temp_dir:
+    def test_staged_v3_archives_omit_explain_change_and_package_complete_verify_resources(self) -> None:
+        self.assertNotIn("explain-change", STAGED_V3_ADAPTER_SKILLS)
+        self.assertNotIn("explain-change", STAGED_V3_OPENCODE_COMMAND_ALIASES)
+        with tempfile.TemporaryDirectory(prefix="staged-v3-adapters-") as temp_dir:
             output = Path(temp_dir)
-            archives = build_staged_v2_adapter_archives("v0.1.5", output)
-            self.assertEqual(validate_staged_v2_adapter_archives("v0.1.5", output), [])
-            self.assertEqual(
-                validate_clean_install_smoke(
-                    "v0.1.5",
-                    output,
-                    skill_names=("plan",),
-                    command_aliases=STAGED_V2_OPENCODE_COMMAND_ALIASES,
-                ),
-                [],
-            )
+            archives = build_staged_v3_adapter_archives("v0.1.6", output)
+            self.assertEqual(validate_staged_v3_adapter_archives("v0.1.6", output), [])
             required = {
-                "boundary-and-negative-verification.md",
-                "state-machine-verification.md",
-                "concurrency-and-retry-verification.md",
-                "migration-and-compatibility-verification.md",
-                "failure-and-recovery-verification.md",
-                "security-and-authority-verification.md",
-                "cross-milestone-integration-verification.md",
-                "manual-and-operational-evidence.md",
+                "final-impact-analysis-v3.md",
+                "evidence-applicability-v3.md",
+                "successful-explanation-v3.md",
+                "verify-report-v3-skeleton.md",
             }
             for archive_path in archives:
                 with zipfile.ZipFile(archive_path) as archive:
                     names = set(archive.namelist())
-                    automation_entry = next(
-                        name
-                        for name in names
-                        if name.endswith(
-                            "/workflow/references/bounded-workflow-automation.md"
-                        )
-                    )
-                    skeleton_entry = next(
-                        name
-                        for name in names
-                        if name.endswith("/workflow/assets/workflows-skeleton.md")
-                    )
-                    plan_authoring_entry = next(
-                        name
-                        for name in names
-                        if name.endswith(
-                            "/plan/references/governed-plan-authoring.md"
-                        )
-                    )
-                    automation = archive.read(automation_entry).decode("utf-8")
-                    skeleton = archive.read(skeleton_entry).decode("utf-8")
-                    plan_authoring = archive.read(plan_authoring_entry).decode(
-                        "utf-8"
-                    )
-                self.assertFalse(any("/test-spec/" in name for name in names))
-                self.assertTrue(all(any(name.endswith(f"/plan/references/{item}") for name in names) for item in required))
-                self.assertNotIn("`plan`, `test-spec`, `delivery-review`", automation)
-                self.assertNotIn("-> test-spec", skeleton)
-                self.assertNotIn("test_spec:", skeleton)
-                self.assertIn(
-                    "Governed plan authoring is available only for v2",
-                    plan_authoring,
+                    verify_entry = next(name for name in names if name.endswith("/verify/SKILL.md"))
+                    verify_body = archive.read(verify_entry).decode("utf-8")
+                self.assertFalse(any("/explain-change/" in name for name in names))
+                self.assertTrue(
+                    all(any(name.endswith(f"/verify/{'assets' if item.endswith('skeleton.md') else 'references'}/{item}") for name in names) for item in required)
                 )
-                self.assertNotIn("handoff: `test-spec`", plan_authoring)
+                for forbidden in (
+                    "after `explain-change`",
+                    "explain-change artifact",
+                    "current explanation",
+                    "rationale to `explain-change`",
+                ):
+                    self.assertNotIn(forbidden, verify_body)
+                self.assertIn(
+                    "final explanation only after successful final readiness",
+                    verify_body,
+                )
 
-    def test_staged_v2_archive_validation_rejects_extra_retired_entrypoint(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="staged-v2-mixed-") as temp_dir:
+    def test_staged_v3_archive_validation_rejects_mixed_explain_change_entrypoint(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="staged-v3-mixed-") as temp_dir:
             output = Path(temp_dir)
-            archives = build_staged_v2_adapter_archives("v0.1.5", output)
+            archives = build_staged_v3_adapter_archives("v0.1.6", output)
             target = archives[0]
             with zipfile.ZipFile(target, "a") as archive:
-                archive.writestr(".agents/skills/test-spec/SKILL.md", "retired")
-            errors = validate_staged_v2_adapter_archives("v0.1.5", output)
-            self.assertTrue(any("unexpected entries" in error and "test-spec" in error for error in errors))
+                archive.writestr(".agents/skills/explain-change/SKILL.md", "retired")
+            errors = validate_staged_v3_adapter_archives("v0.1.6", output)
+            self.assertTrue(any("unexpected entries" in error and "explain-change" in error for error in errors))
 
     def copy_fixture_skills(self, target: Path, names: tuple[str, ...]) -> Path:
         skills_root = target / "skills"
@@ -5314,6 +5282,34 @@ release_gate:
             self.assertNotIn("/verify", text)
             self.assertIn("opencode run --command proposal", text)
             self.assertIn("Do not use Codex `$skill` syntax", text)
+            declared_aliases = ", ".join(
+                f"`{alias}`" for alias in OPENCODE_COMMAND_ALIASES
+            )
+            self.assertIn(
+                f"The generated aliases are limited to {declared_aliases}.",
+                text,
+            )
+            for retired_alias in ("spec-review", "plan-review", "test-spec"):
+                self.assertNotIn(f"`{retired_alias}`", text)
+
+    def test_readme_exposes_only_the_current_v3_delivery_route(self) -> None:
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> verify -> pr",
+            text,
+        )
+        self.assertIn(
+            "writes the final explanation only in a successful Verify report",
+            text,
+        )
+        for retired_entrypoint in (
+            "explain-change",
+            "spec-review",
+            "plan-review",
+            "test-spec",
+        ):
+            self.assertNotIn(retired_entrypoint, text)
 
     def test_readme_distinguishes_claude_and_opencode_invocation_forms(self) -> None:
         text = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -5393,6 +5389,10 @@ release_gate:
         self.assertIn("`.codex/skills/`", text)
         self.assertIn("ignored local runtime install directory", text)
         self.assertIn("not a public adapter install source", text)
+        self.assertIn("describes the non-authoritative", text)
+        self.assertIn("candidate metadata, not a publication or activation record", text)
+        self.assertIn("Published v1/v2 release archives remain immutable", text)
+        self.assertNotIn("continues to describe the released v2 package", text)
         self.assertNotIn("copy that adapter package root's contents", text)
         self.assertNotIn("tracked adapter skill bodies under `dist/adapters/**/skills` remain available", text)
 
