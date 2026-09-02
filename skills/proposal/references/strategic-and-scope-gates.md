@@ -32,7 +32,7 @@ Classify each item with one `scope budget treatment`: `core to this proposal`, `
 
 ## Follow-up routing
 
-Route deferred work through the follow-up ownership model rather than chat-only notes or `project-map` ownership. Preserve this boundary: workflow routes, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.
+Route deferred work through the follow-up ownership model rather than chat-only notes or `project-map` ownership. Preserve this boundary: route selects semantic ownership, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.
 
 ## Completion
 

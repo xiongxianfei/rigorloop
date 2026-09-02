@@ -44,7 +44,7 @@ Conversational wording, resource availability, or an automation command does not
 
 ## Project-local evidence
 
-Public skills operate in customer-project mode by default. Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, `docs/workflows.md`, proposals, specs, architecture, plans, tests, CI, and source. Do not require RigorLoop repository-internal specs or docs in customer projects. Use portable defaults where safe, and block on ambiguity.
+Public skills operate in customer-project mode by default. Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, proposals, specs, architecture, plans, tests, CI, and source. For governed placement and lifecycle facts, consume authoritative CLI workflow context. Do not require RigorLoop repository-internal specs or docs in customer projects. Use portable defaults where safe without claiming governed placement, and block on ambiguity.
 
 ## Inputs to read
 
@@ -81,7 +81,7 @@ New and substantively revised plan bodies contain stable execution intent only. 
 
 Use the explicit user path or change ID, then change metadata and reviewed artifact path, then the project workflow guide, and finally the portable default `docs/plans/YYYY-MM-DD-slug.md`. Stop on unresolved ambiguity. Maintain `docs/plan.md` with relative clickable links; never overwrite an older initiative plan.
 
-Plan surfaces are distinct: `docs/workflows.md` maps project-local workflow and paths; `docs/plan.md` is navigation; `docs/plans/YYYY-MM-DD-slug.md` is the stable plan body; `docs/changes/<change-id>/change.yaml` owns mutable lifecycle and milestone state; and `docs/changes/<change-id>/` stores stage-owned evidence. In `docs/plan.md`, use clickable relative Markdown links such as `[Title](plans/YYYY-MM-DD-slug.md)`.
+Plan surfaces are distinct: authoritative CLI context resolves governed workflow paths; `docs/plan.md` is navigation; `docs/plans/YYYY-MM-DD-slug.md` is the stable plan body; `docs/changes/<change-id>/change.yaml` owns mutable lifecycle and milestone state; and `docs/changes/<change-id>/` stores stage-owned evidence. In `docs/plan.md`, use clickable relative Markdown links such as `[Title](plans/YYYY-MM-DD-slug.md)`.
 
 ## Operating sequence
 

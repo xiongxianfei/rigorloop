@@ -2,7 +2,7 @@
 
 ## Load condition
 
-Read this procedure for an explicit `$workflow auto: <argument>` command or a valid active or resumable automation run. `<argument>` is a supported target stage, `status`, or `off`.
+Read this procedure for an explicit `$route auto: <argument>` command or a valid active or resumable automation run. `<argument>` is a supported target stage, `status`, or `off`.
 
 Automation is one target-driven `bounded-review-fix` mechanism under `workflow.automation`. The requested target is the complete automation boundary. Do not add a second authorization, selector, capability, or inferred continuation parameter.
 
@@ -12,7 +12,7 @@ Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`
 
 An explicit target command creates `automation_command_context`; it does not by itself create `armed_automation_context`. Durable automation must be bound to the exact governed change identity, target, occurrence when a stage repeats, canonical position source, and current authorization.
 
-`$workflow auto: status` is read-only. `$workflow auto: off` durably cancels an existing unified run and preserves transition evidence. When neither a governed record nor a matching run exists, `status` and `off` return `no-active-run`; this creates no governed or automation state.
+`$route auto: status` is read-only. `$route auto: off` durably cancels an existing unified run and preserves transition evidence. When neither a governed record nor a matching run exists, `status` and `off` return `no-active-run`; this creates no governed or automation state.
 
 Direct review invocations do not activate, resume, or advance automation. Manual skill invocations stay isolated unless an authorized workflow-managed context invokes them.
 
@@ -42,9 +42,9 @@ The mechanism never opens a PR, pushes, publishes, releases, deploys, merges, pe
 
 Authoring follows the governed stage order. Every formal review is recorded before automation-driven downstream action. Automated review must reset context to the reviewed artifact, governing requirements, review criteria, and relevant recorded findings rather than rely on hidden authoring reasoning.
 
-Workflow-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet. It must withhold validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
+Route-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet. It must withhold validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
 
-Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`. The requirement-fidelity gate is additive with the independent adversarial review gate; both receipts must pass when both contracts apply. Requirement-fidelity review starts from the relevant spec clause, then decomposition, expected surfaces, implementation diff, validator assertions, validation evidence, and prior findings.
+Route-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`. The requirement-fidelity gate is additive with the independent adversarial review gate; both receipts must pass when both contracts apply. Requirement-fidelity review starts from the relevant spec clause, then decomposition, expected surfaces, implementation diff, validator assertions, validation evidence, and prior findings.
 
 A first-pass material result must be recorded before any review-driven fix. `blocked`, `inconclusive`, owner decisions, or open `needs-decision` stop. A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.
 

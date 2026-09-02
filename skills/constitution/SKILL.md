@@ -31,7 +31,7 @@ Read, if present:
 - `CONSTITUTION.md`
 - `README.md`
 - `CONTRIBUTING.md`
-- `docs/workflows.md`
+- authoritative CLI workflow context when governed
 - `docs/project-map.md`
 - existing specs under `specs/`
 - CI workflows under `.github/workflows/`

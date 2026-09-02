@@ -487,6 +487,32 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
                     "BFR-PLAN-PROOF-INCOMPLETE",
                 )
 
+    def test_v3_stage_owned_spec_before_plan_registration_is_valid(self) -> None:
+        stage_owned = valid_feature().replace(
+            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
+            "## Owning change record\n\n"
+            "`docs/changes/example/change.yaml`\n\n"
+            "boundary_contract: boundary-first-v1",
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            change_root = root / "docs/changes/example"
+            change_root.mkdir(parents=True)
+            (root / "specs/example.md").write_text(stage_owned, encoding="utf-8")
+            change_root.joinpath("change.yaml").write_text(
+                "change_id: example\n"
+                'lifecycle_contract: "stage-owned-change-local-v3"\n'
+                "artifact_states:\n"
+                "  spec:\n"
+                "    kind: spec\n"
+                "    path: specs/example.md\n"
+                "    role: primary\n"
+                "    lifecycle_state: authoring\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(validate_changed_spec(root, "specs/example.md"), ())
+
     def test_registered_plan_authority_rejects_duplicate_mapping_keys_recursively(self) -> None:
         stage_owned = valid_feature().replace(
             "## Status\n\napproved\nboundary_contract: boundary-first-v1",
@@ -1236,7 +1262,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
         source = ROOT / "specs" / "boundary-first-activation.yaml"
         for field, value, expected in (
             ("contract_version", "boundary-first-v2", "BFR-UNKNOWN-CONTRACT-VERSION"),
-            ("governed_skills", ["workflow", "future"], "BFR-UNKNOWN-GOVERNED-SKILL"),
+            ("governed_skills", ["route", "future"], "BFR-UNKNOWN-GOVERNED-SKILL"),
         ):
             with self.subTest(field=field), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)

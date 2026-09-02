@@ -22,7 +22,7 @@ Turn a problem or selected direction into a concise direction-approval artifact:
 
 ## Project-local evidence
 
-Public skills use customer-project mode by default and project-local artifacts when present, including `docs/workflows.md` for local routing or placement. Do not require RigorLoop repository-internal artifacts in customer projects; use portable defaults or block on ambiguity.
+Public skills use customer-project mode by default and project-local artifacts when present. Consume authoritative CLI workflow context for governed routing or placement. Do not require RigorLoop repository-internal artifacts in customer projects; use portable defaults without governed claims or block on ambiguity.
 
 ## Evidence access
 
@@ -38,7 +38,7 @@ Conditional evidence:
 - `AGENTS.md` when present
 - `docs/project-map.md` when architecture or repository orientation matters
 - existing specs or ADRs when the proposal changes their direction
-- `docs/workflows.md` when artifact placement or workflow routing matters
+- authoritative CLI workflow context when governed artifact placement or workflow routing matters
 - code only when current behavior is part of the decision
 - exploration, research, issues, incidents, or user feedback when the proposal relies on them
 

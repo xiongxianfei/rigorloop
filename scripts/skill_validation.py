@@ -23,7 +23,6 @@ ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_SKILLS_DIR = ROOT / "skills"
 GENERATED_SKILLS_DIR = ROOT / ".codex" / "skills"
 SKILL_SCHEMA_PATH = ROOT / "schemas" / "skill.schema.json"
-WORKFLOWS_DOC_PATH = ROOT / "docs" / "workflows.md"
 REQUIREMENT_DELIVERY_MODEL_SOURCE = ROOT / "templates" / "shared" / "requirement-to-delivery-model.md"
 REQUIREMENT_DELIVERY_MODEL_CONSUMERS = frozenset(
     {
@@ -1031,7 +1030,6 @@ def validate_spec_review_canonical_contract(skill_path: Path) -> list[str]:
 
     return errors
 INSTALLED_SKILL_PLAN_SURFACE_PATHS = (
-    "docs/workflows.md",
     "docs/plan.md",
     "docs/plans/YYYY-MM-DD-slug.md",
     "docs/changes/<change-id>/change.yaml",
@@ -1950,7 +1948,7 @@ def validate_installed_skill_plan_surface_contract(
     ]
     if missing:
         errors.append(
-            f"{path}: installed-skill plan surface contract must distinguish docs/workflows.md, docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/"
+            f"{path}: installed-skill plan surface contract must distinguish docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/"
         )
     if skill_name == "plan" and INSTALLED_SKILL_PLAN_INDEX_LINK_EXAMPLE not in body:
         errors.append(
@@ -3715,17 +3713,11 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     errors.extend(validate_project_map_canonical_contract(path, metadata, body))
     if skill_name and _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
         errors.extend(validate_requirement_delivery_model_copy(path, skill_name))
-        workflow_text = (
-            WORKFLOWS_DOC_PATH.read_text(encoding="utf-8")
-            if WORKFLOWS_DOC_PATH.is_file()
-            else None
-        )
         errors.extend(
             validate_installed_skill_artifact_placement_contract(
                 path,
                 skill_name,
                 body,
-                workflow_text=workflow_text,
             )
         )
         if skill_name == "plan":
@@ -3738,25 +3730,6 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
             )
         if skill_name == "spec-review":
             errors.extend(validate_spec_review_canonical_contract(path))
-        if skill_name == "workflow" and workflow_text is not None:
-            stage_skill_texts: dict[str, str] = {}
-            for stage_skill_name in ("plan", "proposal-review", "spec-review"):
-                stage_skill_path = (
-                    CANONICAL_SKILLS_DIR / stage_skill_name / "SKILL.md"
-                )
-                if stage_skill_path.is_file():
-                    stage_skill_texts[stage_skill_name] = stage_skill_path.read_text(
-                        encoding="utf-8"
-                    )
-            errors.extend(
-                validate_workflow_artifact_map_contract(
-                    WORKFLOWS_DOC_PATH,
-                    workflow_text,
-                    workflow_skill_text=body,
-                    stage_skill_texts=stage_skill_texts,
-                )
-            )
-
     return errors, skill_name
 
 

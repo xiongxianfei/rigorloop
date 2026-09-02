@@ -14,7 +14,7 @@ Clean formal review writes one receipt and `review-log.md` entry without empty r
 
 After writing the review and log, run `rigorloop lifecycle context proposal-review --change <change-id> --format json`. Submit `record-review` with its lifecycle revision, exact proposal ID, review path, and `stage_authority: proposal-review`; refresh context and submit `settle-artifact` for the same target and authority. The CLI validates identity, round, findings, freshness, and authority and derives the result.
 
-Never edit settlement fields. Preserve a successfully recorded review when settlement blocks. `already-recorded` is identical success. Settlement never advances routing; workflow owns continuation.
+Never edit settlement fields. Preserve a successfully recorded review when settlement blocks. `already-recorded` is identical success. Settlement never advances routing; route owns continuation.
 
 ## Workflow-managed automated review
 

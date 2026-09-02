@@ -22,7 +22,7 @@ Do not expand scope, silently alter the contract, or claim success without direc
 - must_not_claim: review passed, clean review, branch readiness, PR readiness, final verification, final closeout readiness, or derived artifact currency without owning proof.
 
 For planned initiatives, treat the plan and upstream artifacts as read-only.
-Write implementation, tests, and implementation evidence only; workflow owns milestone and routing state.
+Write implementation, tests, and implementation evidence only; route owns milestone and routing state.
 
 ## Quick operating guide
 
@@ -64,7 +64,7 @@ Do not use for defect investigation, artifact authoring or review, final verific
 ## Project-local evidence
 
 Public skills operate in customer-project mode by default.
-Use relevant project-local artifacts such as `AGENTS.md`, `CONSTITUTION.md`, approved specs, the active plan and test spec, architecture records, review resolution, `docs/workflows.md`, code, tests, and CI commands.
+Use relevant project-local artifacts such as `AGENTS.md`, `CONSTITUTION.md`, approved specs, the active plan and test spec, architecture records, review resolution, code, tests, and CI commands. For governed placement and lifecycle facts, consume authoritative CLI workflow context.
 Do not require RigorLoop repository-internal artifacts in customer projects; use safe portable defaults and block on ambiguity.
 
 ## Inputs to read
@@ -144,7 +144,7 @@ If a formal workflow-managed delivery package lacks recorded, approved, current 
 ### Change-local evidence
 
 For ordinary non-trivial work, maintain `docs/changes/<change-id>/change.yaml` plus stage-owned implementation evidence. Successful final Verify records the durable change explanation in `verify-report.md`.
-When creating a root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`.
+When creating a root in governed mode, use the CLI-resolved location. In portable mode, use `YYYY-MM-DD-slug` without claiming governed placement.
 Do not broaden this requirement to isolated manual work that does not claim complete workflow delivery.
 Keep `review-resolution.md` and `verify-report.md` conditional on their governing triggers.
 
@@ -171,7 +171,7 @@ Produce tests or proof first where feasible, implementation changes, validation 
 
 - Normal next stage: `code-review` for the implemented milestone or isolated slice.
 - Conditional next stages: stop for a spec, architecture, owner-decision, permission, or validation blocker; return to the same milestone for accepted review corrections; continue to another milestone only after workflow records clean review.
-- Route planned stage transitions through `workflow`.
+- Route planned stage transitions through the `route` skill.
 
 ## Stop conditions
 

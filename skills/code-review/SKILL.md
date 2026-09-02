@@ -32,7 +32,7 @@ Do not use for proposal, spec, architecture, plan, final verification, or PR app
 - upstream: implementation diff, review-requested milestone, governing artifacts, tests, and validation evidence
 - downstream: review-resolution, next implementation milestone, or final closeout sequence
 - summary: Perform independent implementation review, record the first-pass status and findings, close clean milestones, or route findings to review-resolution.
-- ownership: Write review evidence only. Workflow owns milestone and routing state; code-review does not edit implementation, plans, artifact settlement, or change-local routing.
+- ownership: Write review evidence only. Route owns milestone and routing state; code-review does not edit implementation, plans, artifact settlement, or change-local routing.
 - must_not_claim: branch readiness, PR readiness, final verification, CI success, implementation fixes, or derived-artifact currency without separate owning evidence
 
 It must not edit implementation, the plan, artifact settlement, milestone state, or routing.

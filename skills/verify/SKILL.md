@@ -28,13 +28,13 @@ Do not use it to replace code-review, settle upstream artifacts, repair implemen
 
 ## Workflow role
 
-`verify` evaluates evidence and records only verify-owned results. The `workflow` skill owns lifecycle progression, and `pr` owns PR preparation and opening. A successful workflow-managed verification hands off to `pr`; it never invokes `pr` itself.
+`verify` evaluates evidence and records only verify-owned results. The `route` skill owns semantic lifecycle progression, and `pr` owns PR preparation and opening. A successful workflow-managed verification hands off to `pr`; it never invokes `pr` itself.
 
 Run `ci-maintenance` first when hosted workflow automation, validation automation, or related platform configuration must change.
 
 ## Project-local evidence
 
-Public skills operate in customer-project mode by default. Use project-local instructions, specs, plans, change records, code, tests, validation, and `docs/workflows.md` when present and relevant. Do not require RigorLoop repository-internal specs, docs, reports, or governance files in customer projects. Use portable defaults where safe and block on ambiguity.
+Public skills operate in customer-project mode by default. Use project-local instructions, specs, plans, change records, code, tests, validation, and authoritative CLI workflow context when governed. Do not require RigorLoop repository-internal specs, docs, reports, or governance files in customer projects. Use portable defaults where safe without claiming governed placement, and block on ambiguity.
 
 ## Requested outcome and target
 
