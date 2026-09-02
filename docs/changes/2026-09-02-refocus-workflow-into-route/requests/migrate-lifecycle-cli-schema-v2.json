@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "migrate",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:af54d0e1c93e333557229705cb97dca9751e23a34a7f7c6418e10ce03a0eef01",
+  "source_schema_version": 1,
+  "stage_authority": "workflow"
+}

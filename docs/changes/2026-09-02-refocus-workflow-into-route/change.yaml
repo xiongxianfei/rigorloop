@@ -4,6 +4,24 @@ classification: default
 risk: medium
 lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
+  adr-route-context-and-skill-identity:
+    authoring_evidence: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md
+    kind: adr
+    lifecycle_state: review-required
+    path: docs/adr/ADR-20260902-route-context-and-skill-identity.md
+    role: supporting
+  architecture:
+    authoring_evidence: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-09-02-refocus-workflow-into-route.md
+    role: primary
+  plan:
+    authoring_evidence: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/plan-authoring.md
+    kind: plan
+    lifecycle_state: review-required
+    path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+    role: primary
   proposal:
     kind: proposal
     lifecycle_state: accepted
@@ -15,12 +33,80 @@ artifact_states:
       record: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/proposal-review-r1.md
       round: r1
     role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/spec-authoring.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/refocus-workflow-into-route.md
+    role: primary
+review_packages:
+  delivery:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      plan: docs/plans/2026-09-02-refocus-workflow-into-route.md
+    outcome: approved
+    package_kind: delivery
+    review_id: delivery-review-r1
+    review_round: r1
+    status: approved
+    upstream_review_id: design-review-r1
+  design:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      adr-route-context-and-skill-identity: docs/adr/ADR-20260902-route-context-and-skill-identity.md
+      architecture: docs/architecture/2026-09-02-refocus-workflow-into-route.md
+      spec: specs/refocus-workflow-into-route.md
+    outcome: approved
+    package_kind: design
+    review_id: design-review-r1
+    review_round: r1
+    status: approved
+    upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: proposal-review
+  current_stage: code-review
   evidence: []
   lifecycle_state: active
-  next_stage: proposal-review
+  next_stage: code-review
+  planned_work:
+    current_milestone: M1
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+    initialization_basis:
+      review_id: delivery-review-r1
+      review_record: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/delivery-review-r1.md
+      review_round: r1
+      reviewed_artifact_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+    latest_review:
+      artifact_id: none
+      evidence: []
+      milestone_id: none
+      occurrence: none
+      round: none
+      stage: none
+      status: not-started
+    milestones:
+      M1:
+        kind: implementation
+        state: review-requested
+      M2:
+        kind: implementation
+        state: planned
+      M3:
+        kind: implementation
+        state: planned
+    plan_artifact_id: plan
+    remaining_implementation_milestones:
+      - M1
+      - M2
+      - M3
 workflow: {}
 artifacts: {}
 requirements: []
@@ -28,14 +114,38 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/proposal-review-r1.md
+  latest_review: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/delivery-review-r1.md
   review_log: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
-  reviewed_artifact: docs/proposals/2026-09-02-refocus-workflow-into-route.md
+  reviewed_artifact: review-package:delivery
   status: clean
   unresolved_items: 0
 lifecycle_cli:
-  schema_version: 1
+  schema_version: 2
   artifacts:
+    adr-route-context-and-skill-identity:
+      artifact_kind: adr
+      artifact_path: docs/adr/ADR-20260902-route-context-and-skill-identity.md
+      artifact_role: supporting
+      artifact_sha256: f09d242c3d65fc4fd8fcc412d30a880554786fa4b22edd1ec6fff9c329773d5c
+      authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md
+      authoring_evidence_sha256: 8bb03fc3d1df8ae2500d3bf9301b3890e805b44d08e239eb6b6c29b6ec33b8e3
+      stage_authority: architecture
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-09-02-refocus-workflow-into-route.md
+      artifact_role: primary
+      artifact_sha256: 9fc1bd38151f710c036a6466661927c28681f83fe90cea5a8ffcbcb8d7a06a73
+      authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md
+      authoring_evidence_sha256: 8bb03fc3d1df8ae2500d3bf9301b3890e805b44d08e239eb6b6c29b6ec33b8e3
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+      artifact_role: primary
+      artifact_sha256: 825e74a85b56a43db8f8a47191882794d95dd27cf65ffe0e968358b7203b162d
+      authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/plan-authoring.md
+      authoring_evidence_sha256: a1d500641d33986f1ceccc02032d672a60bdfd34b0ec06714098a2cac45d40a2
+      stage_authority: plan
     proposal:
       artifact_kind: proposal
       artifact_path: docs/proposals/2026-09-02-refocus-workflow-into-route.md
@@ -44,9 +154,51 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/proposal-authoring.md
       authoring_evidence_sha256: 3fc8eb634d3288db3cfa154a568c103725be8a5a1fee563e4c8b131f1fcc9e7a
       stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/refocus-workflow-into-route.md
+      artifact_role: primary
+      artifact_sha256: a664f27e23e3052fd11fd5e3595a4c4a4d99329ef32470617115cc8bfa780826
+      authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/spec-authoring.md
+      authoring_evidence_sha256: 346e7d93a747cec91fd972d2445f82f622b7d4d04095a326b68d9bdd36dc3cdd
+      stage_authority: spec
   correction_history: {}
   milestones: {}
-  package_reviews: {}
+  package_reviews:
+    delivery:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/delivery-review-r1.md
+      evidence_sha256: 137c9ee9e31be0ed3be755b981457d23f633882cb8c3438ebe3ff05677df738a
+      findings: []
+      members:
+        plan: docs/plans/2026-09-02-refocus-workflow-into-route.md
+      outcome: approved
+      package_kind: delivery
+      review_id: delivery-review-r1
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_log_sha256: 26d8d989ca3d1c934efd86a1ad35087ce2302c89e10cc400f1c74bbb14eaa951
+      reviewer_authority: delivery-review
+      round: r1
+      stage_authority: delivery-review
+      upstream_review_id: design-review-r1
+    design:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/design-review-r1.md
+      evidence_sha256: 33da84940effc7f5681882f79a3c7c08acb2d684bfe5e321e0c3472eed89e395
+      findings: []
+      members:
+        adr-route-context-and-skill-identity: docs/adr/ADR-20260902-route-context-and-skill-identity.md
+        architecture: docs/architecture/2026-09-02-refocus-workflow-into-route.md
+        spec: specs/refocus-workflow-into-route.md
+      outcome: approved
+      package_kind: design
+      review_id: design-review-r1
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_log_sha256: caf1e0bcecefa993f861b27b112f3e73d10c44ea8c1c77052b20d3d0034e5502
+      reviewer_authority: design-review
+      round: r1
+      stage_authority: design-review
+      upstream_review_id: proposal-review-r1
   resolutions: {}
   reviews:
     proposal:
@@ -60,5 +212,13 @@ lifecycle_cli:
       review_log_sha256: f22626cfd13331c33c277162feaeb52fb72dcf6795bb113604525236c0860c3b
       round: r1
       stage_authority: proposal-review
-  validations: {}
+  validations:
+    plan:
+      artifact_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+      artifact_sha256: 825e74a85b56a43db8f8a47191882794d95dd27cf65ffe0e968358b7203b162d
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-workflow-context.md
+      evidence_sha256: d45d1743049fde855bd0363b628ea6b8cde2f10e0f277b93785bec6293c24a17
+      stage_authority: implement
+      subject_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+      subject_sha256: 825e74a85b56a43db8f8a47191882794d95dd27cf65ffe0e968358b7203b162d
   withdrawals: {}

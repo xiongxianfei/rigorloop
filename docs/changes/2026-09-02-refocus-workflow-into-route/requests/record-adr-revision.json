@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:7569ee81c57041a959c4bedd799d70be4011fc61479ee13cf9818ce6c958ac19",
+  "artifact_id": "adr-route-context-and-skill-identity",
+  "artifact_kind": "adr",
+  "artifact_role": "supporting",
+  "artifact_path": "docs/adr/ADR-20260902-route-context-and-skill-identity.md",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md",
+  "stage_authority": "architecture"
+}

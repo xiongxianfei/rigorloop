@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "operation": "record-package-review",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:1f9785efb50b07a02b7a446fa67c6f3d8c27e3543c38fcfd8518882846cd76d6",
+  "package_kind": "design",
+  "members": {
+    "architecture": "docs/architecture/2026-09-02-refocus-workflow-into-route.md",
+    "spec": "specs/refocus-workflow-into-route.md",
+    "adr-route-context-and-skill-identity": "docs/adr/ADR-20260902-route-context-and-skill-identity.md"
+  },
+  "upstream_review_id": "proposal-review-r1",
+  "review_id": "design-review-r1",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/reviews/design-review-r1.md",
+  "stage_authority": "design-review"
+}

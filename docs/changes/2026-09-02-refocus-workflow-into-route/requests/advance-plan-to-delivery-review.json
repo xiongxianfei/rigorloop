@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "advance-stage",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:50281d01fa1b310eb09e3bea742175901a9067dc6055be45e4d99ece9b13b0bb",
+  "source_stage": "plan",
+  "destination_stage": "delivery-review",
+  "stage_authority": "workflow"
+}

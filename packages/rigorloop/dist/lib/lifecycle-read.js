@@ -98,15 +98,18 @@ function readCandidate(candidate) {
   }
 }
 
+export function discoverGovernedChanges(root) {
+  return changeCandidates(root).map(readCandidate);
+}
+
 export function selectGovernedChange(root, requestedId) {
-  const candidates = changeCandidates(root);
+  const candidates = discoverGovernedChanges(root);
   if (requestedId) {
     const selected = candidates.find((entry) => entry.id === requestedId);
     if (!selected) return { error: diagnostic("RL_CHANGE_NOT_FOUND", `Governed change ${requestedId} was not found.`, "change-selection", null, [requestedId]) };
-    return readCandidate(selected);
+    return selected;
   }
-  const readable = candidates.map(readCandidate);
-  const active = readable.filter((entry) => !entry.error && entry.change?.workflow_state?.lifecycle_state === "active");
+  const active = candidates.filter((entry) => !entry.error && entry.change?.workflow_state?.lifecycle_state === "active");
   if (active.length === 0) return { error: diagnostic("RL_CHANGE_NOT_FOUND", "No active governed change was found.", "change-selection") };
   if (active.length > 1) return { error: diagnostic("RL_AMBIGUOUS_CHANGE", "Multiple active governed changes require --change.", "change-selection", null, active.map((entry) => entry.id)) };
   return active[0];

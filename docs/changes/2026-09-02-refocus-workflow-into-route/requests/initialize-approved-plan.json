@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "initialize-approved-plan",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:b9b87be2f4f0add3d2aef198d5b86521574f91e7d1e30f76fe541b2cdc95f6e6",
+  "artifact_id": "plan",
+  "stage_authority": "plan"
+}

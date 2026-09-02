@@ -150,6 +150,7 @@ Usage:
   rigorloop version
   rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
+  rigorloop workflow-context [--change <id>] [--format human|json]
   rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json]
   rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json]
   rigorloop logs path [--format human|json]
@@ -160,6 +161,7 @@ Commands:
   init codex|claude|opencode
                           Initialize verified target support.
   new-change              Plan a change metadata scaffold.
+  workflow-context        Report read-only project or exact-change workflow facts.
   lifecycle               Inspect, validate, and perform guarded governed lifecycle operations.
   logs                    Show the local log path or inspect one exact invocation.
 `;
@@ -2161,6 +2163,17 @@ async function handleInit(flags, initArgs = []) {
 async function dispatchMain(rawArgs, invocation) {
   try {
     if (rawArgs[0] === "logs") return handleLogs(rawArgs.slice(1), invocation);
+    if (rawArgs[0] === "workflow-context") {
+      const { executeWorkflowContext } = await import("../lib/workflow-context.js");
+      const execution = executeWorkflowContext(rawArgs.slice(1));
+      activeOutput.terminalClass = execution.exitCode === 0 ? "success" : execution.exitCode === 2 || execution.exitCode === 4 ? "expected-rejection" : "internal-error";
+      activeOutput.deferredRender = () => execution.format === "json"
+        ? { stdout: `${JSON.stringify(execution.result, null, 2)}\n`, stderr: "" }
+        : execution.exitCode === 0
+          ? { stdout: execution.human, stderr: "" }
+          : { stdout: "", stderr: execution.human };
+      return execution.exitCode;
+    }
     if (rawArgs[0] === "lifecycle") {
       const { executeLifecycleCli, lifecycleTerminalClass } = await import("../lib/lifecycle-cli.js");
       const execution = executeLifecycleCli(rawArgs.slice(1));
