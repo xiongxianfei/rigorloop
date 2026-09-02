@@ -8,6 +8,7 @@ import {
   PREACTIVATION_FINAL_VERIFICATION_MANIFEST,
   PREACTIVATION_LIFECYCLE_MANIFEST,
   classifyLifecycleContract,
+  correctionStageOrder,
   parseLifecycleYaml,
 } from "./lifecycle-contract.js";
 import { discoverGovernedChanges, findRepositoryRoot, interpretGovernedChange, selectGovernedChange } from "./lifecycle-read.js";
@@ -20,6 +21,7 @@ const SAFE_IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const SAFE_CHANGE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
 const TEMPLATE_VARIABLES = new Set(["change-id", "date", "slug", "review-round", "stage", "milestone-id"]);
 const ENTRY_FIELDS = new Set(["path_template", "owner"]);
+const MAX_PROJECTED_ITEMS = 32;
 
 export const BUNDLED_WORKFLOW_DEFAULTS = Object.freeze({
   schema_version: 1,
@@ -30,7 +32,10 @@ export const BUNDLED_WORKFLOW_DEFAULTS = Object.freeze({
     architecture: Object.freeze({ path_template: "docs/architecture/<change-id>.md", owner: "architecture" }),
     adr: Object.freeze({ path_template: "docs/adr", owner: "architecture" }),
     plan: Object.freeze({ path_template: "docs/plans/<change-id>.md", owner: "plan" }),
-    "review-records": Object.freeze({ path_template: "docs/changes/<change-id>/reviews", owner: "code-review" }),
+    "proposal-review-record": Object.freeze({ path_template: "docs/changes/<change-id>/reviews/proposal-review-<review-round>.md", owner: "proposal-review" }),
+    "design-review-record": Object.freeze({ path_template: "docs/changes/<change-id>/reviews/design-review-<review-round>.md", owner: "design-review" }),
+    "delivery-review-record": Object.freeze({ path_template: "docs/changes/<change-id>/reviews/delivery-review-<review-round>.md", owner: "delivery-review" }),
+    "code-review-record": Object.freeze({ path_template: "docs/changes/<change-id>/reviews/code-review-<review-round>.md", owner: "code-review" }),
     "review-resolution": Object.freeze({ path_template: "docs/changes/<change-id>/review-resolution.md", owner: "review-resolution" }),
     "implementation-evidence": Object.freeze({ path_template: "docs/changes/<change-id>/evidence", owner: "implement" }),
     "verification-report": Object.freeze({ path_template: "docs/changes/<change-id>/verify-report.md", owner: "verify" }),
@@ -46,7 +51,7 @@ function diagnostic(code, invariant, source = null, artifactKind = null, identit
     blocking_invariant: invariant,
     ...(source ? { source } : {}),
     ...(artifactKind ? { artifact_kind: artifactKind } : {}),
-    relevant_identities: identities.filter((value) => SAFE_IDENTIFIER.test(String(value))),
+    relevant_identities: identities.map(String).filter((value) => SAFE_IDENTIFIER.test(value)).slice(0, MAX_PROJECTED_ITEMS),
   };
 }
 
@@ -138,7 +143,13 @@ function resolveLocations(root, effective, changeId = null) {
     let path = entry.path_template;
     if (changeId) {
       path = path.replace(/<([^>]+)>/g, (match, name) => variables[name] ?? match);
-      if (/<[^>]+>/.test(path)) return { error: diagnostic("RL_CONTEXT_LOCATION_UNRESOLVED", "workflow-context-template-resolution", entry.provenance === "repository-override" ? CONFIG_PATH : "bundled-default", artifactKind, [artifactKind]) };
+      if (/<[^>]+>/.test(path)) {
+        if (/<review-round>/.test(path) && artifactKind.endsWith("-review-record")) {
+          locations.push({ artifact_kind: artifactKind, owner: entry.owner, path_template: entry.path_template, path: null, requires: ["review-round"], provenance: entry.provenance });
+          continue;
+        }
+        return { error: diagnostic("RL_CONTEXT_LOCATION_UNRESOLVED", "workflow-context-template-resolution", entry.provenance === "repository-override" ? CONFIG_PATH : "bundled-default", artifactKind, [artifactKind]) };
+      }
       if (!safeRepositoryPath(root, path)) return { error: diagnostic("RL_CONTEXT_PATH_UNSAFE", "workflow-context-path", entry.provenance === "repository-override" ? CONFIG_PATH : "bundled-default", artifactKind, [artifactKind]) };
       const prior = paths.get(path);
       if (prior) return { error: diagnostic("RL_CONTEXT_LOCATION_CONFLICT", "workflow-context-location-ownership", entry.provenance === "repository-override" ? CONFIG_PATH : "bundled-default", artifactKind, [prior, artifactKind]) };
@@ -153,8 +164,17 @@ function boundedDiagnostic(item) {
   return {
     code: item.code,
     blocking_invariant: item.blocking_invariant,
-    relevant_identities: (item.relevant_identities ?? []).map(String).filter((value) => SAFE_IDENTIFIER.test(value)),
-    corrective_operation: item.corrective_operation ?? null,
+    relevant_identities: (item.relevant_identities ?? []).map(String).filter((value) => SAFE_IDENTIFIER.test(value)).slice(0, MAX_PROJECTED_ITEMS),
+    corrective_operation: SAFE_IDENTIFIER.test(String(item.corrective_operation ?? "")) ? item.corrective_operation : null,
+  };
+}
+
+function boundedDiagnostics(items) {
+  const projected = items.map(boundedDiagnostic);
+  return {
+    items: projected.slice(0, MAX_PROJECTED_ITEMS),
+    total_count: projected.length,
+    truncated: projected.length > MAX_PROJECTED_ITEMS,
   };
 }
 
@@ -165,31 +185,49 @@ function boundedAutomation(automation) {
     if (typeof automation[field] === "string" && SAFE_IDENTIFIER.test(automation[field])) result[field] = automation[field];
   }
   if (automation.budgets && typeof automation.budgets === "object" && !Array.isArray(automation.budgets)) {
-    result.budgets = Object.fromEntries(Object.entries(automation.budgets).filter(([key, value]) => SAFE_IDENTIFIER.test(key) && Number.isSafeInteger(value) && value >= 0));
+    const budgets = Object.entries(automation.budgets).filter(([key, value]) => SAFE_IDENTIFIER.test(key) && Number.isSafeInteger(value) && value >= 0).sort(([left], [right]) => left.localeCompare(right));
+    result.budgets = Object.fromEntries(budgets.slice(0, MAX_PROJECTED_ITEMS));
+    result.budget_total_count = budgets.length;
+    result.budgets_truncated = budgets.length > MAX_PROJECTED_ITEMS;
   }
-  if (Array.isArray(automation.receipts)) result.receipts = automation.receipts.filter((value) => typeof value === "string" && SAFE_IDENTIFIER.test(value));
+  if (Array.isArray(automation.receipts)) {
+    const receipts = automation.receipts.filter((value) => typeof value === "string" && SAFE_IDENTIFIER.test(value));
+    result.receipts = receipts.slice(0, MAX_PROJECTED_ITEMS);
+    result.receipt_total_count = receipts.length;
+    result.receipts_truncated = receipts.length > MAX_PROJECTED_ITEMS;
+  }
   return Object.keys(result).length ? result : null;
 }
 
 function projectPackages(root, reviewPackages) {
-  return Object.fromEntries(Object.entries(reviewPackages).map(([kind, value]) => [kind, {
-    members: Object.fromEntries(Object.entries(value.members ?? {}).map(([id, path]) => [id, safeRepositoryPath(root, path) ? path : null])),
-    upstream_review_id: value.upstream_review_id,
-    status: value.status,
-    authority: value.authority,
-    blockers: (value.blockers ?? []).map(boundedDiagnostic),
-    errors: (value.errors ?? []).map(boundedDiagnostic),
-    next_permitted_operation: value.next_permitted_operation,
-  }]));
+  return Object.fromEntries(Object.entries(reviewPackages).filter(([kind]) => SAFE_IDENTIFIER.test(kind)).sort(([left], [right]) => left.localeCompare(right)).slice(0, MAX_PROJECTED_ITEMS).map(([kind, value]) => {
+    const members = Object.entries(value.members ?? {}).filter(([id]) => SAFE_IDENTIFIER.test(id)).sort(([left], [right]) => left.localeCompare(right));
+    return [kind, {
+    members: Object.fromEntries(members.slice(0, MAX_PROJECTED_ITEMS).map(([id, path]) => [id, safeRepositoryPath(root, path) ? path : null])),
+    member_total_count: members.length,
+    members_truncated: members.length > MAX_PROJECTED_ITEMS,
+    upstream_review_id: SAFE_IDENTIFIER.test(String(value.upstream_review_id ?? "")) ? value.upstream_review_id : null,
+    status: SAFE_IDENTIFIER.test(String(value.status ?? "")) ? value.status : null,
+    authority: SAFE_IDENTIFIER.test(String(value.authority ?? "")) ? value.authority : null,
+    blockers: boundedDiagnostics(value.blockers ?? []).items,
+    errors: boundedDiagnostics(value.errors ?? []).items,
+    next_permitted_operation: SAFE_IDENTIFIER.test(String(value.next_permitted_operation ?? "")) ? value.next_permitted_operation : null,
+  }]; }));
 }
 
 function projectMilestones(change) {
   const planned = change.workflow_state?.planned_work;
   if (!planned) return { current_milestone: null, remaining_implementation_milestones: [], milestones: {} };
+  const milestones = Object.entries(planned.milestones ?? {}).filter(([id]) => SAFE_IDENTIFIER.test(id)).sort(([left], [right]) => left.localeCompare(right));
+  const remaining = (planned.remaining_implementation_milestones ?? []).filter((id) => typeof id === "string" && SAFE_IDENTIFIER.test(id));
   return {
-    current_milestone: planned.current_milestone ?? null,
-    remaining_implementation_milestones: planned.remaining_implementation_milestones ?? [],
-    milestones: Object.fromEntries(Object.entries(planned.milestones ?? {}).map(([id, value]) => [id, { kind: value.kind, state: value.state }])),
+    current_milestone: SAFE_IDENTIFIER.test(String(planned.current_milestone ?? "")) ? planned.current_milestone : null,
+    remaining_implementation_milestones: remaining.slice(0, MAX_PROJECTED_ITEMS),
+    remaining_total_count: remaining.length,
+    remaining_truncated: remaining.length > MAX_PROJECTED_ITEMS,
+    milestones: Object.fromEntries(milestones.slice(0, MAX_PROJECTED_ITEMS).map(([id, value]) => [id, { kind: SAFE_IDENTIFIER.test(String(value.kind ?? "")) ? value.kind : null, state: SAFE_IDENTIFIER.test(String(value.state ?? "")) ? value.state : null }])),
+    total_count: milestones.length,
+    truncated: milestones.length > MAX_PROJECTED_ITEMS,
   };
 }
 
@@ -246,7 +284,7 @@ export function workflowContextHuman(result) {
   return `${lines.join("\n")}\n`;
 }
 
-export function executeWorkflowContext(args, options = {}) {
+function executeWorkflowContextUnsafe(args, options = {}) {
   const parsed = parseArgs(args);
   if (parsed.error) {
     const execution = errorResult("project", parsed.error, null, 4);
@@ -281,13 +319,14 @@ export function executeWorkflowContext(args, options = {}) {
     }
     const active = discovered.filter((candidate) => candidate.change?.workflow_state?.lifecycle_state === "active");
     const interpreted = active.map((candidate) => interpretGovernedChange(root, candidate));
-    const candidates = interpreted.map((item) => ({ change_id: item.change_id, current_stage: item.effective_state.current_stage, lifecycle_state: item.change.workflow_state.lifecycle_state, effective_state: item.effective_state.effective_state, blocker_codes: [...new Set([...item.blockers, ...item.errors].map((entry) => entry.code))] })).sort((left, right) => left.change_id.localeCompare(right.change_id));
+    const allCandidates = interpreted.map((item) => ({ change_id: item.change_id, current_stage: SAFE_IDENTIFIER.test(String(item.effective_state.current_stage ?? "")) ? item.effective_state.current_stage : null, lifecycle_state: SAFE_IDENTIFIER.test(String(item.change.workflow_state.lifecycle_state ?? "")) ? item.change.workflow_state.lifecycle_state : null, effective_state: SAFE_IDENTIFIER.test(String(item.effective_state.effective_state ?? "")) ? item.effective_state.effective_state : null, blocker_codes: [...new Set([...item.blockers, ...item.errors].map((entry) => entry.code).filter((value) => SAFE_IDENTIFIER.test(String(value))))].slice(0, MAX_PROJECTED_ITEMS) })).sort((left, right) => left.change_id.localeCompare(right.change_id));
+    const candidates = allCandidates.slice(0, MAX_PROJECTED_ITEMS);
     const lifecycleContract = projectContract.lifecycle_contract;
-    const selection = { state: candidates.length === 0 ? "none" : candidates.length === 1 ? "single-candidate" : "ambiguous", selected_change: null };
+    const selection = { state: allCandidates.length === 0 ? "none" : allCandidates.length === 1 ? "single-candidate" : "ambiguous", selected_change: null };
     const projectBlockers = [];
-    if (candidates.length > 1) projectBlockers.push(diagnostic("RL_CONTEXT_SELECTION_AMBIGUOUS", "workflow-context-selection", null, null, candidates.map((item) => item.change_id)));
+    if (allCandidates.length > 1) projectBlockers.push(diagnostic("RL_CONTEXT_SELECTION_AMBIGUOUS", "workflow-context-selection", null, null, allCandidates.map((item) => item.change_id)));
     if (interpreted.some((item) => item.errors.length)) projectBlockers.push(diagnostic("RL_CONTEXT_CHANGE_INVALID", "workflow-context-change-input", null, null, interpreted.filter((item) => item.errors.length).map((item) => item.change_id)));
-    const result = baseResult("project", { status: projectBlockers.length ? "blocked" : "success", configuration: loaded.configuration, lifecycle_contract: lifecycleContract, selection, candidates, locations: resolved.locations, blockers: projectBlockers, errors: projectBlockers });
+    const result = baseResult("project", { status: projectBlockers.length ? "blocked" : "success", configuration: loaded.configuration, lifecycle_contract: lifecycleContract, selection, candidates, candidate_total_count: allCandidates.length, candidates_truncated: allCandidates.length > MAX_PROJECTED_ITEMS, locations: resolved.locations, blockers: projectBlockers, errors: projectBlockers });
     const exitCode = projectBlockers.length ? 2 : 0;
     return { result, exitCode, format: parsed.format, human: workflowContextHuman(result) };
   }
@@ -297,8 +336,13 @@ export function executeWorkflowContext(args, options = {}) {
     return { ...execution, format: parsed.format, human: workflowContextHuman(execution.result) };
   }
   const interpreted = interpretGovernedChange(root, selected);
-  const errors = interpreted.errors.map(boundedDiagnostic);
-  const blockers = interpreted.blockers.map(boundedDiagnostic);
+  const currentStage = interpreted.effective_state.current_stage;
+  const projectionErrors = correctionStageOrder(interpreted.change).includes(currentStage) ? [] : [diagnostic("RL_CONTEXT_PROJECTION_INVALID", "workflow-context-closed-identifier")];
+  const errorProjection = boundedDiagnostics([...interpreted.errors, ...projectionErrors]);
+  const blockerProjection = boundedDiagnostics(interpreted.blockers);
+  const warningProjection = boundedDiagnostics(interpreted.warnings);
+  const errors = errorProjection.items;
+  const blockers = blockerProjection.items;
   const result = baseResult("change", {
     status: errors.length ? "error" : "success",
     configuration: loaded.configuration,
@@ -307,17 +351,35 @@ export function executeWorkflowContext(args, options = {}) {
     candidates: [],
     change_id: interpreted.change_id,
     lifecycle_revision: interpreted.lifecycle_revision,
-    current_stage: interpreted.effective_state.current_stage,
-    artifacts: interpreted.artifacts.map((item) => ({ artifact_id: item.artifact_id, path: safeRepositoryPath(root, item.path) ? item.path : null, sha256: item.sha256, recorded_state: item.recorded_state, evidence_state: item.evidence_state })),
+    current_stage: projectionErrors.length ? null : currentStage,
+    artifacts: interpreted.artifacts.filter((item) => SAFE_IDENTIFIER.test(String(item.artifact_id))).slice(0, MAX_PROJECTED_ITEMS).map((item) => ({ artifact_id: item.artifact_id, path: safeRepositoryPath(root, item.path) ? item.path : null, sha256: /^([0-9a-f]{64}|sha256:[0-9a-f]{64})$/.test(String(item.sha256 ?? "")) ? item.sha256 : null, recorded_state: SAFE_IDENTIFIER.test(String(item.recorded_state ?? "")) ? item.recorded_state : null, evidence_state: SAFE_IDENTIFIER.test(String(item.evidence_state ?? "")) ? item.evidence_state : null })),
+    artifact_total_count: interpreted.artifacts.length,
+    artifacts_truncated: interpreted.artifacts.length > MAX_PROJECTED_ITEMS,
     locations: resolved.locations,
     packages: projectPackages(root, interpreted.review_packages),
     milestones: projectMilestones(interpreted.change),
     blockers,
-    permitted_operations: interpreted.permitted_operations,
+    blocker_total_count: blockerProjection.total_count,
+    blockers_truncated: blockerProjection.truncated,
+    permitted_operations: interpreted.permitted_operations.filter((value) => SAFE_IDENTIFIER.test(String(value))).slice(0, MAX_PROJECTED_ITEMS),
     automation: boundedAutomation(interpreted.change.workflow?.automation),
-    warnings: interpreted.warnings.map(boundedDiagnostic),
+    warnings: warningProjection.items,
+    warning_total_count: warningProjection.total_count,
+    warnings_truncated: warningProjection.truncated,
     errors,
+    error_total_count: errorProjection.total_count,
+    errors_truncated: errorProjection.truncated,
   });
   const exitCode = errors.length ? 3 : 0;
   return { result, exitCode, format: parsed.format, human: workflowContextHuman(result) };
+}
+
+export function executeWorkflowContext(args, options = {}) {
+  try {
+    return executeWorkflowContextUnsafe(args, options);
+  } catch {
+    const parsed = parseArgs(args);
+    const execution = errorResult(parsed.change ? "change" : "project", diagnostic("RL_CONTEXT_READ_FAILED", "workflow-context-filesystem"));
+    return { ...execution, format: parsed.format, human: workflowContextHuman(execution.result) };
+  }
 }

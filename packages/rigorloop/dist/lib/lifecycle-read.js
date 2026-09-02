@@ -103,12 +103,13 @@ export function discoverGovernedChanges(root) {
 }
 
 export function selectGovernedChange(root, requestedId) {
-  const candidates = discoverGovernedChanges(root);
   if (requestedId) {
-    const selected = candidates.find((entry) => entry.id === requestedId);
-    if (!selected) return { error: diagnostic("RL_CHANGE_NOT_FOUND", `Governed change ${requestedId} was not found.`, "change-selection", null, [requestedId]) };
-    return selected;
+    if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(requestedId)) return { error: diagnostic("RL_CHANGE_NOT_FOUND", "The requested governed change was not found.", "change-selection") };
+    const path = join(root, "docs", "changes", requestedId, "change.yaml");
+    if (!existsSync(path) || !lstatSync(path).isFile() || lstatSync(path).isSymbolicLink()) return { error: diagnostic("RL_CHANGE_NOT_FOUND", `Governed change ${requestedId} was not found.`, "change-selection", null, [requestedId]) };
+    return readCandidate({ id: requestedId, path });
   }
+  const candidates = discoverGovernedChanges(root);
   const active = candidates.filter((entry) => !entry.error && entry.change?.workflow_state?.lifecycle_state === "active");
   if (active.length === 0) return { error: diagnostic("RL_CHANGE_NOT_FOUND", "No active governed change was found.", "change-selection") };
   if (active.length > 1) return { error: diagnostic("RL_AMBIGUOUS_CHANGE", "Multiple active governed changes require --change.", "change-selection", null, active.map((entry) => entry.id)) };
