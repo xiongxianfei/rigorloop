@@ -18,6 +18,17 @@ PRIMARY_GUIDE_LINKS = (
     "skills/",
 )
 
+RETIRED_GUIDE_FALLBACK = re.compile(
+    r"\b(?:project(?:-local)?\s+)?workflow guide\b",
+    re.IGNORECASE,
+)
+RETIRED_SEMANTIC_ACTOR = re.compile(
+    r"\b(?:return(?:s|ing)?(?:\s+control)?\s+to|report(?:s|ing)?(?:\s+[^.\n]{0,80})?\s+to)\s+`?workflow`?\b"
+    r"|(?<!\w)`?workflow`?(?:,\s+which)?\s+(?:owns|chooses|routes|records|may\s+(?:route|coordinate))\b"
+    r"|\b(?:through|to|for)\s+`?workflow`?\s+for\s+(?:routing|progression|handoff|coordination)\b",
+    re.IGNORECASE,
+)
+
 
 @dataclass(frozen=True)
 class ValidationResult:
@@ -68,6 +79,20 @@ def validate(repo: Path) -> ValidationResult:
     ):
         if retired.exists():
             messages.append(f"ROUTE-GUIDE-005: retired guide resource remains: {retired.relative_to(repo)}")
+
+    skills_root = repo / "skills"
+    for path in sorted(skills_root.rglob("*.md")) if skills_root.is_dir() else ():
+        text = _read(path)
+        if RETIRED_GUIDE_FALLBACK.search(text):
+            messages.append(
+                "ROUTE-GUIDE-009: current skill surface restores the retired semantic "
+                f"workflow-guide fallback: {path.relative_to(repo)}"
+            )
+        if RETIRED_SEMANTIC_ACTOR.search(text):
+            messages.append(
+                "ROUTE-GUIDE-010: current skill surface names workflow instead of route "
+                f"as the semantic routing actor: {path.relative_to(repo)}"
+            )
 
     current_surfaces = (
         repo / "AGENTS.md",

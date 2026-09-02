@@ -30,7 +30,7 @@ Produce a session record after Frame, justified topic guidance, owner-bound rout
 ## Handoff
 
 - Normal next stage: none; record the session or route result and stop.
-- Conditional next stages: send owner-bound work to the applicable skill or process; use `workflow` for governed routing.
+- Conditional next stages: send owner-bound work to the applicable skill or process; use `route` for governed routing.
 
 ## Operations and profiles
 

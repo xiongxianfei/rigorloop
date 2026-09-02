@@ -43,13 +43,13 @@ Use this skill to: review one exact architecture/specification package and its p
 
 Read first: `change.yaml`, `context design-review`, every member path shown there, the accepted proposal evidence, and relevant prior findings.
 
-Produce: one recorded package outcome, precise findings or a no-finding rationale, and an isolated or workflow-owned handoff.
+Produce: one recorded package outcome, precise findings or a no-finding rationale, and an isolated or route-owned handoff.
 
 Stop when: membership, upstream authority, evidence, independence, or lifecycle identity is missing, unsafe, stale, or contradictory.
 
 Do not claim: implementation authorization, final readiness, or approval of only one member.
 
-Next stage: workflow may route an approved package to plan authoring; otherwise route named corrections or stop.
+Next stage: `route` may send an approved package to plan authoring; otherwise route named corrections or stop.
 
 ## Inputs to read
 
@@ -82,7 +82,7 @@ Each finding records a stable Finding ID, Severity, Location, Evidence, Required
 
 ## Isolation and recording
 
-A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to route after settlement.
+A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to `route` after settlement.
 
 Every formal result must be recorded or explicitly blocked. Clean review uses a lightweight receipt and review-log entry. Material or blocking results use a detailed record and `review-resolution.md` when disposition is required. Do not create an empty `review-resolution.md` solely for a clean result.
 
@@ -98,7 +98,7 @@ Produce the package identity, upstream review ID, outcome, findings, correction 
 
 ## Handoff
 
-An approved workflow-managed review returns to workflow for plan authoring. `changes-requested` routes each named artifact-local or cross-artifact correction to its owning authoring stage. `blocked` routes only to the named upstream owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
+An approved workflow-managed review returns to `route` for plan authoring. `changes-requested` routes each named artifact-local or cross-artifact correction to its owning authoring stage. `blocked` routes only to the named upstream owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
 
 ## Stop conditions
 

@@ -170,7 +170,7 @@ Produce tests or proof first where feasible, implementation changes, validation 
 ## Handoff
 
 - Normal next stage: `code-review` for the implemented milestone or isolated slice.
-- Conditional next stages: stop for a spec, architecture, owner-decision, permission, or validation blocker; return to the same milestone for accepted review corrections; continue to another milestone only after workflow records clean review.
+- Conditional next stages: stop for a spec, architecture, owner-decision, permission, or validation blocker; return to the same milestone for accepted review corrections; continue to another milestone only after `route` confirms a recorded clean review.
 - Route planned stage transitions through the `route` skill.
 
 ## Stop conditions

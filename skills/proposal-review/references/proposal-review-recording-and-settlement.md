@@ -20,7 +20,7 @@ Never edit settlement fields. Preserve a successfully recorded review when settl
 
 For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any automation-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
 
-Use neutral packet and ordered receipts; corrections require separate authority, named surfaces, named proof, and rereview. Pause on owner decisions, scope expansion, stale identity, new finding classes, non-shrinking correction, or exhausted bounds. Return control to workflow without redefining settlement or continuation.
+Use neutral packet and ordered receipts; corrections require separate authority, named surfaces, named proof, and rereview. Pause on owner decisions, scope expansion, stale identity, new finding classes, non-shrinking correction, or exhausted bounds. Return control to `route` without redefining settlement or continuation.
 
 ## Resource failure
 

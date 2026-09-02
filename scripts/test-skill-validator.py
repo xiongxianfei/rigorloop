@@ -5556,7 +5556,7 @@ and result format.
 
             handoff = extract_markdown_block(body, "Handoff")
             with self.subTest(skill=skill_name, surface="handoff"):
-                self.assertIn("workflow", handoff)
+                self.assertTrue("workflow" in handoff or "`route`" in handoff)
                 self.assertNotIn("specs/rigorloop-workflow.md", handoff)
                 self.assertIn("Normal next stage", handoff)
                 self.assertIn("Conditional next stages", handoff)
@@ -5614,112 +5614,6 @@ and result format.
             for term in forbidden_terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertNotIn(term, body)
-
-    def retired_project_artifact_location_m1_workflows_doc_contains_artifact_map(self) -> None:
-        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        artifact_locations = extract_markdown_block(workflows, "Artifact locations")
-
-        required_terms = [
-            "The table defines default locations and owning skills.",
-            "It does not define full artifact schemas",
-            "For exact shapes, use the governing spec, schema, or reference",
-            "Project vision",
-            "Workflow guide",
-            "Proposals",
-            "Specs",
-            "Architecture",
-            "ADRs",
-            "Plans",
-            "Plan index",
-            "Change root",
-            "Change metadata",
-            "Formal review records",
-            "Review log",
-            "Review resolution",
-            "Verify report",
-            "Reports",
-            "default location only",
-            "formal review recording",
-            "when findings or blocking outcomes require disposition",
-            "when required",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, artifact_locations)
-
-    def retired_workflow_map_m1_workflows_doc_contains_canonical_artifact_registry(self) -> None:
-        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        registry = extract_markdown_block(workflows, "Artifact registry")
-
-        required_terms = [
-            "canonical fenced YAML artifact registry",
-            "```yaml",
-            "artifact_locations:",
-            "proposal:",
-            "path: docs/proposals/YYYY-MM-DD-slug.md",
-            "spec:",
-            "path: specs/slug.md",
-            "plan_index:",
-            "path: docs/plan.md",
-            "change_plan:",
-            "path: docs/plans/YYYY-MM-DD-slug.md",
-            "change_metadata:",
-            "path: docs/changes/<change-id>/change.yaml",
-            "formal_review_record:",
-            "path: docs/changes/<change-id>/reviews/<stage>-r<n>.md",
-            "review_log:",
-            "path: docs/changes/<change-id>/review-log.md",
-            "review_resolution:",
-            "path: docs/changes/<change-id>/review-resolution.md",
-            "verify_report:",
-            "path: docs/changes/<change-id>/verify-report.md",
-            "pr_handoff:",
-            "external_surface: pull_request_body",
-            "learn_session:",
-            "path: docs/learn/sessions/YYYY-MM-DD-slug.md",
-            "required_when:",
-            "owner:",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, registry)
-
-        self.assertNotIn(
-            "docs/changes/<change-id>/plan.md",
-            registry,
-            "workflow registry must not make change-pack plan.md a canonical plan-body path",
-        )
-
-    def retired_workflow_map_m1_workflow_skill_default_paths_match_change_pack_contract(
-        self,
-    ) -> None:
-        workflow = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
-        defaults = extract_markdown_block(workflow, "Default artifact paths")
-
-        required_terms = [
-            "docs/workflows.md",
-            "docs/plan.md",
-            "docs/proposals/YYYY-MM-DD-slug.md",
-            "specs/slug.md",
-            "docs/plans/YYYY-MM-DD-slug.md",
-            "docs/changes/<change-id>/change.yaml",
-            "docs/changes/<change-id>/reviews/<stage>-r<n>.md",
-            "docs/changes/<change-id>/review-log.md",
-            "docs/changes/<change-id>/review-resolution.md",
-            "docs/changes/<change-id>/verify-report.md",
-            "docs/learn/sessions/YYYY-MM-DD-slug.md",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, defaults)
-
-        forbidden_terms = [
-            "docs/changes/<change-id>/plan.md",
-            "docs/explain/YYYY-MM-DD-slug.md",
-        ]
-        for term in forbidden_terms:
-            with self.subTest(term=term):
-                self.assertNotIn(term, defaults)
 
     def test_workflow_change_root_creation_uses_dated_change_id_convention(self) -> None:
         workflow_spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
@@ -5816,7 +5710,7 @@ and result format.
             adr_errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_registry_shape_errors(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_registry_shape_errors(self) -> None:
         workflows = """
         # Workflows
 
@@ -5854,7 +5748,7 @@ and result format.
             errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_duplicate_registry_keys(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_duplicate_registry_keys(self) -> None:
         workflows = """
         # Workflows
 
@@ -5899,7 +5793,7 @@ and result format.
             errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_ambiguous_placement(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_ambiguous_placement(self) -> None:
         workflows = """
         # Workflows
 
@@ -5939,7 +5833,7 @@ and result format.
             errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_table_and_path_drift(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_table_and_path_drift(self) -> None:
         workflows = """
         # Workflows
 
@@ -5996,7 +5890,7 @@ and result format.
             errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_unknown_artifact_input(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_unknown_artifact_input(self) -> None:
         errors = skill_validation.validate_workflow_artifact_map_lookup(
             {"proposal": {"path": "docs/proposals/YYYY-MM-DD-slug.md"}},
             ["proposal", "release_attestation"],
@@ -6414,7 +6308,7 @@ and result format.
             errors,
         )
 
-    def test_installed_skill_artifact_placement_contract_helper_checks_workflow_map_sync(
+    def retired_installed_skill_artifact_placement_contract_helper_checks_workflow_map_sync(
         self,
     ) -> None:
         body = textwrap.dedent(
@@ -7030,6 +6924,18 @@ class RouteSkillCutoverContractTests(unittest.TestCase):
         self.assertIn("stage_authority: workflow", self.skill)
         self.assertIn("workflow.automation", self.skill)
         self.assertNotIn("docs/workflows.md", self.skill)
+
+    def test_current_skill_validator_has_no_retired_guide_parser(self) -> None:
+        validator = (ROOT / "scripts" / "skill_validation.py").read_text(encoding="utf-8")
+        for retired in (
+            "def validate_workflow_artifact_map_lookup",
+            "def validate_workflow_artifact_map_contract",
+            "def validate_workflow_guide_skeleton_contract",
+            "WORKFLOW_GUIDE_SKELETON_REQUIRED_METADATA",
+            "WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES",
+        ):
+            with self.subTest(retired=retired):
+                self.assertNotIn(retired, validator)
 
 
 class VerifySkillSimplificationContractTests(unittest.TestCase):
@@ -8864,7 +8770,7 @@ class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
 
         self.assertIn("Governed plan authoring is available only for v3", reference)
         self.assertIn("Historical non-v3 work never re-enters plan authoring", reference)
-        self.assertIn("stop and return the context to Workflow", reference)
+        self.assertIn("stop and return the context to `route`", reference)
         self.assertIn("handoff: `delivery-review`", reference)
         self.assertNotIn("handoff: `test-spec`", reference)
 
