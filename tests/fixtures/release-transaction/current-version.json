@@ -1,9 +1,9 @@
 {
   "npm_dist_tag": "latest",
   "npm_package": "@xiongxianfei/rigorloop",
-  "package_version": "0.4.1",
-  "release_profile": "docs/releases/profiles/v0.4.1.yaml",
-  "release_tag": "v0.4.1",
+  "package_version": "0.5.0",
+  "release_profile": "docs/releases/profiles/v0.5.0.yaml",
+  "release_tag": "v0.5.0",
   "schema_version": "release-current-version-fixture-v1",
   "targets": [
     "codex",

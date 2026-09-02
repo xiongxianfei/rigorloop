@@ -68,25 +68,24 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: verify
+  current_stage: pr
   evidence:
     - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-invocation-code-review-final-r1.yaml
     - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-final-r1.md
     - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/explain-change.md
     - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/verify-report.md
     - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-v2-dual-readback.md
-  lifecycle_state: active
-  next_stage: verify
+  lifecycle_state: completed
+  next_stage: none
   planned_work:
-    current_milestone: M6
+    current_milestone: none
     final_closeout:
       evidence:
         - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/verify-report.md
         - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-v2-dual-readback.md
-      readiness: not-ready
+      readiness: ready
       reasons:
-        - lifecycle-gates-open
-        - pr-handoff-pending
+        - ready
     initialization_basis:
       review_id: delivery-review-r1
       review_record: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r1.md
@@ -120,7 +119,7 @@ workflow_state:
         state: closed
       M6:
         kind: lifecycle-closeout
-        state: review-requested
+        state: closed
     plan_artifact_id: plan
     remaining_implementation_milestones: []
 workflow: {}
