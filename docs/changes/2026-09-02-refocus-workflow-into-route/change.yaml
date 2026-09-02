@@ -68,7 +68,7 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
@@ -95,7 +95,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: implementing
       M2:
         kind: implementation
         state: planned
@@ -121,6 +121,28 @@ review:
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 2
+  active_correction:
+    destination_artifact_id: implement
+    destination_kind: stage
+    destination_stage: implement
+    evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-r1-correction-route.md
+    evidence_sha256: a93561e040fd1c6737081f7ddb5ca1c60de96d91fd4b1dbd4d9b99495873b4c2
+    prior_lifecycle_revision: sha256:2b7a97caa10adf91a9c533bf77c9e7c1aa38fb3859eb3c27619192c7d72ec6d3
+    reason: upstream-proof-gap
+    return_stage: code-review
+    route_id: route-7ca766c633915ffaf21406090b6278a7b1ca5931bc6dda095f9ea77496bfaf13
+    source_snapshot:
+      blocker: null
+      current_stage: code-review
+      finding_ids:
+        - RFR-M1-CR1
+        - RFR-M1-CR2
+        - RFR-M1-CR3
+      lifecycle_state: active
+      milestone_id: M1
+      milestone_state: review-requested
+      next_stage: code-review
+    status: active
   artifacts:
     adr-route-context-and-skill-identity:
       artifact_kind: adr
