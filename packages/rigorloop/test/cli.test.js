@@ -28,7 +28,7 @@ const packageRoot = resolve(import.meta.dirname, "..");
 const packageJsonPath = join(packageRoot, "package.json");
 const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
 const cliPath = join(packageRoot, packageJson.bin.rigorloop);
-const publicPackageVersion = "0.4.1";
+const publicPackageVersion = "0.5.0";
 const publicReleaseTag = `v${publicPackageVersion}`;
 const publicMetadataFile = `adapter-artifacts-${publicReleaseTag}.json`;
 const publicArchiveFile = `rigorloop-adapter-codex-${publicReleaseTag}.zip`;
@@ -365,7 +365,7 @@ function validLockfile(overrides = {}) {
 
 rigorloop:
   package: "@xiongxianfei/rigorloop"
-  version: "0.4.1"
+  version: "0.5.0"
 
 manifest:
   path: "rigorloop.yaml"
@@ -374,9 +374,9 @@ manifest:
 generated:
   adapters:
     - adapter: ${adapter}
-      release: "v0.4.1"
+      release: "v0.5.0"
       source: ${source}
-      archive: "rigorloop-adapter-codex-v0.4.1.zip"
+      archive: "rigorloop-adapter-codex-v0.5.0.zip"
       archive_sha256: "2222222222222222222222222222222222222222222222222222222222222222"
       installed_root: ".agents/skills"
       tree_hash_algorithm: ${treeHashAlgorithm}
@@ -390,7 +390,7 @@ function validV2Lockfile() {
 
 rigorloop:
   package: "@xiongxianfei/rigorloop"
-  version: "0.4.1"
+  version: "0.5.0"
 
 manifest:
   path: "rigorloop.yaml"
@@ -399,9 +399,9 @@ manifest:
 generated:
   adapters:
     - adapter: opencode
-      release: "v0.4.1"
+      release: "v0.5.0"
       source: release-archive
-      archive: "rigorloop-adapter-opencode-v0.4.1.zip"
+      archive: "rigorloop-adapter-opencode-v0.5.0.zip"
       archive_sha256: "2222222222222222222222222222222222222222222222222222222222222222"
       tree_hash_algorithm: rigorloop-tree-hash-v1
       installed_roots:
@@ -415,9 +415,9 @@ generated:
           tree_sha256: "4444444444444444444444444444444444444444444444444444444444444444"
           file_count: 5
     - adapter: codex
-      release: "v0.4.1"
+      release: "v0.5.0"
       source: release-archive
-      archive: "rigorloop-adapter-codex-v0.4.1.zip"
+      archive: "rigorloop-adapter-codex-v0.5.0.zip"
       archive_sha256: "5555555555555555555555555555555555555555555555555555555555555555"
       installed_root: ".agents/skills"
       tree_hash_algorithm: rigorloop-tree-hash-v1
@@ -428,7 +428,7 @@ generated:
 
 function lockfileWithUnknownMapping(section) {
   if (section === "rigorloop") {
-    return validLockfile().replace("  version: \"0.4.1\"\n", "  version: \"0.4.1\"\n  future:\n    value: true\n");
+    return validLockfile().replace("  version: \"0.5.0\"\n", "  version: \"0.5.0\"\n  future:\n    value: true\n");
   }
   if (section === "manifest") {
     return validLockfile().replace('  sha256: "1111111111111111111111111111111111111111111111111111111111111111"\n', '  sha256: "1111111111111111111111111111111111111111111111111111111111111111"\n  future:\n    value: true\n');
@@ -552,7 +552,7 @@ test("T1 package metadata exposes one public binary and publishable runtime poli
   assert.deepEqual(packageJson.dependencies ?? {}, { yaml: "2.9.0" });
 });
 
-test("TNP-005 package version maps to bundled v0.4.1 adapter metadata", () => {
+test("TNP-005 package version maps to bundled v0.5.0 adapter metadata", () => {
   const metadataPath = join(packageRoot, "dist", "metadata", publicMetadataFile);
   const releaseIndexPath = join(packageRoot, "dist", "metadata", "releases.json");
   assert.equal(existsSync(metadataPath), true);
@@ -571,8 +571,8 @@ test("TNP-005 package version maps to bundled v0.4.1 adapter metadata", () => {
   const artifact = metadata.artifacts.find((entry) => entry.adapter === "codex");
   assert.equal(artifact.archive, publicArchiveFile);
   assert.equal(artifact.install_root, ".agents/skills");
-  assert.equal(artifact.tree_sha256, "a5d09e71bfe3c7234a1f9a6c31595b80d68bfe5e403981699aa6aef4540dc5db");
-  assert.equal(artifact.file_count, 75);
+  assert.equal(artifact.tree_sha256, "49628a41ae6ee66a881dbe9e7fb78e1a7f8f354a57e267d11eee75317add0fa6");
+  assert.equal(artifact.file_count, 99);
   assert.equal(
     artifact.url,
     `https://github.com/xiongxianfei/rigorloop/releases/download/${publicReleaseTag}/${publicArchiveFile}`,
@@ -602,9 +602,9 @@ test("TMAI-001 descriptor registry defines the exact supported adapter set", () 
     skills: ".opencode/skills",
     commands: ".opencode/commands",
   });
-  assert.equal(adapterDescriptor("codex").archiveName("v0.4.1"), "rigorloop-adapter-codex-v0.4.1.zip");
-  assert.equal(adapterDescriptor("claude").archiveName("v0.4.1"), "rigorloop-adapter-claude-v0.4.1.zip");
-  assert.equal(adapterDescriptor("opencode").archiveName("v0.4.1"), "rigorloop-adapter-opencode-v0.4.1.zip");
+  assert.equal(adapterDescriptor("codex").archiveName("v0.5.0"), "rigorloop-adapter-codex-v0.5.0.zip");
+  assert.equal(adapterDescriptor("claude").archiveName("v0.5.0"), "rigorloop-adapter-claude-v0.5.0.zip");
+  assert.equal(adapterDescriptor("opencode").archiveName("v0.5.0"), "rigorloop-adapter-opencode-v0.5.0.zip");
   assert.equal(adapterDescriptor("cursor"), undefined);
 });
 
@@ -1133,7 +1133,7 @@ test("T3 version output reports package identity", () => {
 
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /@xiongxianfei\/rigorloop/);
-  assert.match(result.stdout, /0\.4\.1/);
+  assert.match(result.stdout, /0\.5\.0/);
 });
 
 test("T4 unknown commands return usage errors", () => {
@@ -1199,9 +1199,9 @@ test("TTNI-CLI-003 removed adapter syntax fails before mutation", () => {
 
 test("TMAI-001 dry-run selects descriptors for all supported adapters", () => {
   const cases = [
-    ["codex", ".agents/skills", "rigorloop-adapter-codex-v0.4.1.zip"],
-    ["claude", ".claude/skills", "rigorloop-adapter-claude-v0.4.1.zip"],
-    ["opencode", ".opencode/skills", "rigorloop-adapter-opencode-v0.4.1.zip"],
+    ["codex", ".agents/skills", "rigorloop-adapter-codex-v0.5.0.zip"],
+    ["claude", ".claude/skills", "rigorloop-adapter-claude-v0.5.0.zip"],
+    ["opencode", ".opencode/skills", "rigorloop-adapter-opencode-v0.5.0.zip"],
   ];
 
   for (const [adapter, root, archive] of cases) {
@@ -1423,8 +1423,8 @@ test("TMAI-009 wrong local archive for selected adapter fails before extraction"
   fixture.metadata.artifacts.push({
     ...fixture.metadata.artifacts[0],
     adapter: "claude",
-    archive: "rigorloop-adapter-claude-v0.4.1.zip",
-    url: expectedArchiveUrl({ releaseTag: "v0.4.1", archive: "rigorloop-adapter-claude-v0.4.1.zip" }),
+    archive: "rigorloop-adapter-claude-v0.5.0.zip",
+    url: expectedArchiveUrl({ releaseTag: "v0.5.0", archive: "rigorloop-adapter-claude-v0.5.0.zip" }),
     install_root: ".claude/skills",
   });
   const result = runCliWithBundledMetadata(
@@ -1445,14 +1445,14 @@ test("T15 network mode uses bundled metadata before downloading the official arc
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
-  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({
     metadata: fixture.metadata,
     release: {
       source_repository: "xiongxianfei/rigorloop",
-      release_tag: "v0.4.1",
-      bundled_metadata: "adapter-artifacts-v0.4.1.json",
+      release_tag: "v0.5.0",
+      bundled_metadata: "adapter-artifacts-v0.5.0.json",
       bundled_metadata_sha256: sha256(Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8")),
     },
   });
@@ -1492,7 +1492,7 @@ test("TMAI-029 network mode downloads official archives for every supported adap
           };
     const fixture = fixtureArchive(cwd, options);
     const archiveBytes = readFileSync(fixture.archivePath);
-    const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+    const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
     fixture.metadata.artifacts[0].url = officialUrl;
     const packageFixture = fixturePackage({ metadata: fixture.metadata });
     const result = runCli(["init", adapter, "--write-state", "--json"], {
@@ -1512,7 +1512,7 @@ test("TMAI-029 network mode downloads official archives for every supported adap
 test("TMAI-029 network failure reports bounded proxy diagnostics in JSON", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
-  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({ metadata: fixture.metadata });
   const result = runCli(["init", "codex", "--write-state", "--json"], {
@@ -1532,7 +1532,7 @@ test("TMAI-029 network failure reports bounded proxy diagnostics in JSON", () =>
   assert.equal(output.status, "blocked");
   assert.equal(output.blockers[0].code, "release-download-failed");
   assert.equal(output.diagnostics.adapter, "codex");
-  assert.equal(output.diagnostics.release, "v0.4.1");
+  assert.equal(output.diagnostics.release, "v0.5.0");
   assert.equal(output.diagnostics.archive_url, officialUrl);
   assert.equal(output.diagnostics.download_failure_class, "dns");
   assert.match(output.diagnostics.node_env_proxy_status, /^(enabled|disabled|unsupported|unknown)$/);
@@ -1545,7 +1545,7 @@ test("TMAI-029 network failure reports bounded proxy diagnostics in JSON", () =>
 test("TMAI-030 proxy diagnostic enums and env-var allowlist are stable", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
-  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({ metadata: fixture.metadata });
   const result = runCli(["init", "codex", "--write-state", "--json"], {
@@ -1582,7 +1582,7 @@ test("TMAI-030 proxy diagnostic enums and env-var allowlist are stable", () => {
 test("CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
-  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({ metadata: fixture.metadata });
   const result = spawnSync(
@@ -1623,7 +1623,7 @@ test("CR-M4-R1-F1 node_env_proxy_status reports enabled with --use-env-proxy", (
 test("TMAI-031 human proxy failure output is actionable and redacted", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
-  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({ metadata: fixture.metadata });
   const result = runCli(["init", "codex", "--write-state"], {
@@ -1638,7 +1638,7 @@ test("TMAI-031 human proxy failure output is actionable and redacted", () => {
   assert.equal(result.status, 2);
   assert.equal(result.stdout, "");
   assert.match(result.stderr, /adapter codex/);
-  assert.match(result.stderr, /release v0\.4\.1/);
+  assert.match(result.stderr, /release v0\.5\.0/);
   assert.match(result.stderr, /failure class proxy/);
   assert.match(result.stderr, new RegExp(officialUrl.replaceAll(".", "\\.")));
   assert.match(result.stderr, /--from-archive/);
@@ -1650,7 +1650,7 @@ test("TMAI-032 proxy diagnostics do not mask archive verification failures", () 
   const fixture = fixtureArchive(cwd);
   const wrongArchiveBytes = Buffer.from(readFileSync(fixture.archivePath));
   wrongArchiveBytes[wrongArchiveBytes.length - 1] = wrongArchiveBytes[wrongArchiveBytes.length - 1] ^ 0xff;
-  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({ metadata: fixture.metadata });
   const result = runCli(["init", "codex", "--write-state", "--json"], {
@@ -1674,14 +1674,14 @@ test("TMAI-032 proxy diagnostics do not mask archive verification failures", () 
 test("T15 network mode rejects non-official archive URLs before fetch", () => {
   const cases = [
     ["data URL", "data:application/octet-stream;base64,AAAA"],
-    ["wrong host", "https://example.com/rigorloop-adapter-codex-v0.4.1.zip"],
-    ["wrong owner", "https://github.com/other/rigorloop/releases/download/v0.4.1/rigorloop-adapter-codex-v0.4.1.zip"],
-    ["wrong release", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.2/rigorloop-adapter-codex-v0.4.1.zip"],
-    ["wrong archive", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.4.1/other.zip"],
-    ["query", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.4.1/rigorloop-adapter-codex-v0.4.1.zip?download=1"],
-    ["hash", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.4.1/rigorloop-adapter-codex-v0.4.1.zip#fragment"],
-    ["http", "http://github.com/xiongxianfei/rigorloop/releases/download/v0.4.1/rigorloop-adapter-codex-v0.4.1.zip"],
-    ["raw", "https://raw.githubusercontent.com/xiongxianfei/rigorloop/v0.4.1/rigorloop-adapter-codex-v0.4.1.zip"],
+    ["wrong host", "https://example.com/rigorloop-adapter-codex-v0.5.0.zip"],
+    ["wrong owner", "https://github.com/other/rigorloop/releases/download/v0.5.0/rigorloop-adapter-codex-v0.5.0.zip"],
+    ["wrong release", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.1.2/rigorloop-adapter-codex-v0.5.0.zip"],
+    ["wrong archive", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.0/other.zip"],
+    ["query", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.0/rigorloop-adapter-codex-v0.5.0.zip?download=1"],
+    ["hash", "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.0/rigorloop-adapter-codex-v0.5.0.zip#fragment"],
+    ["http", "http://github.com/xiongxianfei/rigorloop/releases/download/v0.5.0/rigorloop-adapter-codex-v0.5.0.zip"],
+    ["raw", "https://raw.githubusercontent.com/xiongxianfei/rigorloop/v0.5.0/rigorloop-adapter-codex-v0.5.0.zip"],
   ];
 
   for (const [name, url] of cases) {
@@ -1699,17 +1699,17 @@ test("T15 network mode rejects non-official archive URLs before fetch", () => {
 });
 
 test("T15 official archive URL helper accepts only exact release archive URLs", () => {
-  const releaseTag = "v0.4.1";
+  const releaseTag = "v0.5.0";
   for (const adapter of supportedAdapterNames()) {
     const archive = adapterDescriptor(adapter).archiveName(releaseTag);
     const officialUrl = expectedArchiveUrl({ releaseTag, archive });
-    assert.equal(officialUrl, `https://github.com/xiongxianfei/rigorloop/releases/download/v0.4.1/${archive}`);
+    assert.equal(officialUrl, `https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.0/${archive}`);
     assert.deepEqual(validateOfficialArchiveUrl({ url: officialUrl, releaseTag, archive }), { ok: true });
   }
-  const archive = "rigorloop-adapter-codex-v0.4.1.zip";
+  const archive = "rigorloop-adapter-codex-v0.5.0.zip";
   assert.equal(
     validateOfficialArchiveUrl({
-      url: "https://github.com/xiongxianfei/rigorloop/releases/download/v0.4.1/rigorloop-adapter-codex-v0.4.1.zip?download=1",
+      url: "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.0/rigorloop-adapter-codex-v0.5.0.zip?download=1",
       releaseTag,
       archive,
     }).code,
@@ -1726,8 +1726,8 @@ test("T16 bundled metadata hash verification uses the bundled release index", ()
     metadata: fixture.metadata,
     release: {
       source_repository: "xiongxianfei/rigorloop",
-      release_tag: "v0.4.1",
-      bundled_metadata: "adapter-artifacts-v0.4.1.json",
+      release_tag: "v0.5.0",
+      bundled_metadata: "adapter-artifacts-v0.5.0.json",
       bundled_metadata_sha256: "0".repeat(64),
     },
   });
@@ -1750,8 +1750,8 @@ test("T16 bundled metadata bytes are verified before parsing", () => {
     metadata: "not-json",
     release: {
       source_repository: "xiongxianfei/rigorloop",
-      release_tag: "v0.4.1",
-      bundled_metadata: "adapter-artifacts-v0.4.1.json",
+      release_tag: "v0.5.0",
+      bundled_metadata: "adapter-artifacts-v0.5.0.json",
       bundled_metadata_sha256: "0".repeat(64),
     },
   });
@@ -1772,9 +1772,9 @@ test("T16 missing metadata trust root blocks network install", () => {
     releaseIndex: {
       schema_version: 1,
       releases: {
-        "v0.4.1": {
+        "v0.5.0": {
           source_repository: "xiongxianfei/rigorloop",
-          bundled_metadata: "adapter-artifacts-v0.4.1.json",
+          bundled_metadata: "adapter-artifacts-v0.5.0.json",
         },
       },
     },
@@ -1795,14 +1795,14 @@ test("T16 runtime release metadata environment override is ignored", () => {
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
-  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({
     metadata: fixture.metadata,
     release: {
       source_repository: "xiongxianfei/rigorloop",
-      release_tag: "v0.4.1",
-      bundled_metadata: "adapter-artifacts-v0.4.1.json",
+      release_tag: "v0.5.0",
+      bundled_metadata: "adapter-artifacts-v0.5.0.json",
       bundled_metadata_sha256: sha256(Buffer.from(JSON.stringify(fixture.metadata, null, 2), "utf8")),
     },
   });
@@ -1877,9 +1877,9 @@ test("T19 missing bundled metadata blocks local archive install", () => {
       bytes: Buffer.from("# Proposal\n", "utf8"),
     },
   ]);
-  writeFileSync(join(cwd, "rigorloop-adapter-codex-v0.4.1.zip"), archive);
+  writeFileSync(join(cwd, "rigorloop-adapter-codex-v0.5.0.zip"), archive);
   const packageFixture = fixturePackage({ metadata: false });
-  const result = runCli(["init", "codex", "--write-state", "--from-archive", "./rigorloop-adapter-codex-v0.4.1.zip", "--json"], {
+  const result = runCli(["init", "codex", "--write-state", "--from-archive", "./rigorloop-adapter-codex-v0.5.0.zip", "--json"], {
     cwd,
     cliPath: packageFixture.cliPath,
   });
@@ -1962,19 +1962,19 @@ test("TTNI-STATE-003 default init preserves valid unrelated state byte-for-byte"
   const manifest = `schema_version: 2
 rigorloop:
   package: "@xiongxianfei/rigorloop"
-  package_version: "0.4.1"
+  package_version: "0.5.0"
 targets:
   - target: codex
     install_root: ".agents/skills"
     source:
       type: release-archive
-      release: "v0.4.1"
+      release: "v0.5.0"
 `;
   const lockfile = serializeLockfile({
     schema_version: 3,
     rigorloop: {
       package: "@xiongxianfei/rigorloop",
-      version: "0.4.1",
+      version: "0.5.0",
     },
     manifest: {
       path: "rigorloop.yaml",
@@ -1984,9 +1984,9 @@ targets:
       targets: [
         {
           target: "codex",
-          release: "v0.4.1",
+          release: "v0.5.0",
           source: "release-archive",
-          archive: "rigorloop-adapter-codex-v0.4.1.zip",
+          archive: "rigorloop-adapter-codex-v0.5.0.zip",
           archive_sha256: "2".repeat(64),
           installed_root: ".agents/skills",
           tree_hash_algorithm: "rigorloop-tree-hash-v1",
@@ -2040,19 +2040,19 @@ test("TTNI-STATE-005 default init blocks overlapping managed root conflict befor
   const manifest = `schema_version: 2
 rigorloop:
   package: "@xiongxianfei/rigorloop"
-  package_version: "0.4.1"
+  package_version: "0.5.0"
 targets:
   - target: claude
     install_root: ".agents/skills"
     source:
       type: release-archive
-      release: "v0.4.1"
+      release: "v0.5.0"
 `;
   const lockfile = serializeLockfile({
     schema_version: 3,
     rigorloop: {
       package: "@xiongxianfei/rigorloop",
-      version: "0.4.1",
+      version: "0.5.0",
     },
     manifest: {
       path: "rigorloop.yaml",
@@ -2062,9 +2062,9 @@ targets:
       targets: [
         {
           target: "claude",
-          release: "v0.4.1",
+          release: "v0.5.0",
           source: "release-archive",
-          archive: "rigorloop-adapter-claude-v0.4.1.zip",
+          archive: "rigorloop-adapter-claude-v0.5.0.zip",
           archive_sha256: "2".repeat(64),
           installed_root: ".agents/skills",
           tree_hash_algorithm: "rigorloop-tree-hash-v1",
@@ -2094,19 +2094,19 @@ test("TTNI-MIG-001 default init preserves legacy adapter state byte-for-byte", (
   const manifest = `schema_version: 1
 rigorloop:
   package: "@xiongxianfei/rigorloop"
-  package_version: "0.4.1"
+  package_version: "0.5.0"
 adapters:
   - name: claude
     install_root: ".claude/skills"
     source:
       type: release-archive
-      release: "v0.4.1"
+      release: "v0.5.0"
 `;
   const lockfile = serializeLockfile({
     schema_version: 2,
     rigorloop: {
       package: "@xiongxianfei/rigorloop",
-      version: "0.4.1",
+      version: "0.5.0",
     },
     manifest: {
       path: "rigorloop.yaml",
@@ -2116,9 +2116,9 @@ adapters:
       adapters: [
         {
           adapter: "claude",
-          release: "v0.4.1",
+          release: "v0.5.0",
           source: "release-archive",
-          archive: "rigorloop-adapter-claude-v0.4.1.zip",
+          archive: "rigorloop-adapter-claude-v0.5.0.zip",
           archive_sha256: "2".repeat(64),
           installed_root: ".claude/skills",
           tree_hash_algorithm: "rigorloop-tree-hash-v1",
@@ -2184,11 +2184,11 @@ test("T20 actual init writes minimum manifest, Codex install root, and lockfile"
   const manifest = readProjectFile(cwd, "rigorloop.yaml");
   assert.match(manifest, /schema_version: 2/);
   assert.match(manifest, /package: "@xiongxianfei\/rigorloop"/);
-  assert.match(manifest, /package_version: "0\.4\.1"/);
+  assert.match(manifest, /package_version: "0\.5\.0"/);
   assert.match(manifest, /target: codex/);
   assert.match(manifest, /install_root: ".agents\/skills"/);
   assert.match(manifest, /type: local-archive/);
-  assert.match(manifest, /archive: "rigorloop-adapter-codex-v0\.4\.1\.zip"/);
+  assert.match(manifest, /archive: "rigorloop-adapter-codex-v0\.5\.0\.zip"/);
 });
 
 test("T24 write plan represents parent and leaf directory states before mutation", () => {
@@ -2226,13 +2226,13 @@ test("T21 existing manifest handling is non-destructive", () => {
   const existingManifest = `schema_version: 1
 rigorloop:
   package: "@xiongxianfei/rigorloop"
-  package_version: "0.4.1"
+  package_version: "0.5.0"
 adapters:
   - name: codex
     install_root: ".agents/skills"
     source:
       type: local-archive
-      archive: "./rigorloop-adapter-codex-v0.4.1.zip"
+      archive: "./rigorloop-adapter-codex-v0.5.0.zip"
 `;
   writeFileSync(join(validProject, "rigorloop.yaml"), existingManifest);
   const validFixture = fixtureArchive(validProject);
@@ -2262,13 +2262,13 @@ test("TMAI-018 adding an adapter preserves existing valid manifest entries", () 
   const existingManifest = `schema_version: 1
 rigorloop:
   package: "@xiongxianfei/rigorloop"
-  package_version: "0.4.1"
+  package_version: "0.5.0"
 adapters:
   - name: codex
     install_root: ".agents/skills"
     source:
       type: local-archive
-      archive: "rigorloop-adapter-codex-v0.4.1.zip"
+      archive: "rigorloop-adapter-codex-v0.5.0.zip"
 `;
   writeFileSync(join(cwd, "rigorloop.yaml"), existingManifest);
   const fixture = fixtureArchive(cwd, { adapter: "claude", installRoot: ".claude/skills" });
@@ -2294,18 +2294,18 @@ test("TMAI-019 duplicate selected manifest entries block before mutation", () =>
     `schema_version: 1
 rigorloop:
   package: "@xiongxianfei/rigorloop"
-  package_version: "0.4.1"
+  package_version: "0.5.0"
 adapters:
   - name: claude
     install_root: ".claude/skills"
     source:
       type: release-archive
-      release: "v0.4.1"
+      release: "v0.5.0"
   - name: claude
     install_root: ".claude/skills"
     source:
       type: release-archive
-      release: "v0.4.1"
+      release: "v0.5.0"
 `,
   );
   const fixture = fixtureArchive(cwd, { adapter: "claude", installRoot: ".claude/skills" });
@@ -2325,23 +2325,23 @@ adapters:
 
 test("T22 local archive mode plans local-archive manifest source", () => {
   const cwd = tempProject();
-  writeFileSync(join(cwd, "rigorloop-adapter-codex-v0.4.1.zip"), "placeholder archive fixture\n");
-  const result = runCli(["init", "codex", "--write-state", "--from-archive", "./rigorloop-adapter-codex-v0.4.1.zip", "--dry-run", "--json"], {
+  writeFileSync(join(cwd, "rigorloop-adapter-codex-v0.5.0.zip"), "placeholder archive fixture\n");
+  const result = runCli(["init", "codex", "--write-state", "--from-archive", "./rigorloop-adapter-codex-v0.5.0.zip", "--dry-run", "--json"], {
     cwd,
   });
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
   assert.match(output.planned_manifest.content, /type: local-archive/);
-  assert.match(output.planned_manifest.content, /archive: "rigorloop-adapter-codex-v0\.4\.1\.zip"/);
+  assert.match(output.planned_manifest.content, /archive: "rigorloop-adapter-codex-v0\.5\.0\.zip"/);
   assert.equal(output.planned_lockfile.generated.targets[0].source, "local-archive");
-  assert.equal(output.planned_lockfile.generated.targets[0].archive, "rigorloop-adapter-codex-v0.4.1.zip");
-  assert.deepEqual(listProject(cwd), ["rigorloop-adapter-codex-v0.4.1.zip"]);
+  assert.equal(output.planned_lockfile.generated.targets[0].archive, "rigorloop-adapter-codex-v0.5.0.zip");
+  assert.deepEqual(listProject(cwd), ["rigorloop-adapter-codex-v0.5.0.zip"]);
 
   const actualProject = tempProject();
   const actualFixture = fixtureArchive(actualProject);
   const actual = runCliWithBundledMetadata(
-    ["init", "codex", "--write-state", "--from-archive", "./rigorloop-adapter-codex-v0.4.1.zip"],
+    ["init", "codex", "--write-state", "--from-archive", "./rigorloop-adapter-codex-v0.5.0.zip"],
     actualProject,
     actualFixture.metadata,
   );
@@ -2349,7 +2349,7 @@ test("T22 local archive mode plans local-archive manifest source", () => {
   assert.equal(actual.status, 0, actual.stderr);
   const manifest = readProjectFile(actualProject, "rigorloop.yaml");
   assert.match(manifest, /type: local-archive/);
-  assert.match(manifest, /archive: "rigorloop-adapter-codex-v0\.4\.1\.zip"/);
+  assert.match(manifest, /archive: "rigorloop-adapter-codex-v0\.5\.0\.zip"/);
 });
 
 test("T23 generated manifest avoids forbidden claims and validation commands", () => {
@@ -2618,7 +2618,7 @@ test("TLF-012 network install writes a complete lockfile after verification", ()
   const cwd = tempProject();
   const fixture = fixtureArchive(cwd);
   const archiveBytes = readFileSync(fixture.archivePath);
-  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({ metadata: fixture.metadata });
   const result = runCli(["init", "codex", "--write-state", "--json"], {
@@ -2638,10 +2638,10 @@ test("TLF-012 network install writes a complete lockfile after verification", ()
   assert.equal(parsed.lockfile.schema_version, 3);
   const entry = parsed.lockfile.generated.targets[0];
   assert.equal(parsed.lockfile.rigorloop.package, "@xiongxianfei/rigorloop");
-  assert.equal(parsed.lockfile.rigorloop.version, "0.4.1");
+  assert.equal(parsed.lockfile.rigorloop.version, "0.5.0");
   assert.equal(parsed.lockfile.manifest.path, "rigorloop.yaml");
   assert.equal(parsed.lockfile.manifest.sha256, sha256NormalizedText(readProjectFile(cwd, "rigorloop.yaml")));
-  assert.equal(entry.release, "v0.4.1");
+  assert.equal(entry.release, "v0.5.0");
   assert.equal(entry.source, "release-archive");
   assert.equal(entry.archive, fixture.archiveName);
   assert.equal(entry.archive_sha256, fixture.metadata.artifacts[0].sha256);
@@ -3096,7 +3096,7 @@ test("TLF-013 and TLF-014 local archive install writes portable local-archive lo
   assert.equal(parsed.lockfile.schema_version, 3);
   const entry = parsed.lockfile.generated.targets[0];
   assert.equal(entry.source, "local-archive");
-  assert.equal(entry.release, "v0.4.1");
+  assert.equal(entry.release, "v0.5.0");
   assert.equal(entry.archive, fixture.archiveName);
   assert.equal(entry.archive_sha256, fixture.metadata.artifacts[0].sha256);
   assert.doesNotMatch(lockfile, new RegExp(absoluteArchivePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
@@ -3216,7 +3216,7 @@ test("TLF-015 reinstall through a different source mode updates the Codex lockfi
   assert.equal(actual.status, 0, actual.stderr);
   const firstLockfile = readProjectFile(existingProject, "rigorloop.lock");
   const archiveBytes = readFileSync(fixture.archivePath);
-  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.4.1", archive: fixture.archiveName });
+  const officialUrl = expectedArchiveUrl({ releaseTag: "v0.5.0", archive: fixture.archiveName });
   fixture.metadata.artifacts[0].url = officialUrl;
   const packageFixture = fixturePackage({ metadata: fixture.metadata });
   const rerun = runCli(["init", "codex", "--write-state", "--json"], {
@@ -3324,7 +3324,7 @@ test("TLF-001 valid lockfile fixture parses and serializes deterministically", (
   assert.equal(parsed.ok, true);
   assert.equal(parsed.lockfile.schema_version, 1);
   assert.equal(parsed.lockfile.rigorloop.package, "@xiongxianfei/rigorloop");
-  assert.equal(parsed.lockfile.rigorloop.version, "0.4.1");
+  assert.equal(parsed.lockfile.rigorloop.version, "0.5.0");
   assert.equal(parsed.lockfile.manifest.path, "rigorloop.yaml");
   assert.equal(parsed.lockfile.generated.adapters[0].adapter, "codex");
   assert.equal(parsed.lockfile.generated.adapters[0].tree_hash_algorithm, "rigorloop-tree-hash-v1");
@@ -3381,7 +3381,7 @@ test("TLF-007 missing required lockfile fields are invalid config", () => {
 test("TLF-005 and TLF-006 unsupported lockfile shape blocks before mutation", () => {
   const cases = [
     ["unknown top-level", `${validLockfile()}\nfuture:\n  value: true\n`],
-    ["unknown nested", validLockfile().replace("  version: \"0.4.1\"\n", "  version: \"0.4.1\"\n  future: true\n")],
+    ["unknown nested", validLockfile().replace("  version: \"0.5.0\"\n", "  version: \"0.5.0\"\n  future: true\n")],
     ["unknown rigorloop mapping", lockfileWithUnknownMapping("rigorloop")],
     ["unknown manifest mapping", lockfileWithUnknownMapping("manifest")],
     ["unknown generated mapping", lockfileWithUnknownMapping("generated")],
