@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:989c35f5378435bb9c109d84adeb22ff44ee4b540e8db32cf00fa6ac721dd2ab",
+  "artifact_id": "proposal",
+  "stage_authority": "proposal-review"
+}

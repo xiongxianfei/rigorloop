@@ -3309,10 +3309,6 @@ Validation target: Run tests.
         ]:
             self.assertIn(term, verify)
 
-        explain_change = read_repo_file("skills/explain-change/SKILL.md")
-        for term in ["review-resolution.md", "concise", "link", "duplicate transcript"]:
-            self.assertIn(term, explain_change)
-
         pr = read_repo_file("skills/pr/SKILL.md")
         for term in ["counts by disposition", "review-resolution.md", "needs-decision", "duplicate every detailed finding"]:
             self.assertIn(term, pr)

@@ -48,7 +48,7 @@ Workflow-managed automated `code-review` uses the requirement-fidelity gate when
 
 A first-pass material result must be recorded before any review-driven fix. `blocked`, `inconclusive`, owner decisions, or open `needs-decision` stop. A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.
 
-Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.
+Before `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.
 
 ## Bounded correction
 

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:1dd782051ad89a5830bcae62e491ea965b005a3fda28c7d979dfe246f6feb7d7",
+  "milestone_id": "M5",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-v3-publication-candidate.md",
+  "review_evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m5-r2.md",
+  "stage_authority": "workflow"
+}

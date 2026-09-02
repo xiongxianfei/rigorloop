@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "operation": "record-package-review",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:66f8850df4e99c49180c6f8c61b95706c9de99aac7de820f8e087e759f1e56b8",
+  "package_kind": "design",
+  "members": {
+    "architecture": "docs/architecture/2026-08-31-impact-aware-final-verification.md",
+    "spec": "specs/impact-aware-final-verification.md",
+    "adr-impact-aware-final-verification": "docs/adr/ADR-20260831-impact-aware-final-verification.md"
+  },
+  "upstream_review_id": "proposal-review-r1",
+  "review_id": "design-review-r1",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/design-review-r1.md",
+  "stage_authority": "design-review"
+}

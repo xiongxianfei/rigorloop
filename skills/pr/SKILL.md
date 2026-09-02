@@ -29,6 +29,8 @@ Resolve repository, remote, branches, verification evidence, handoff, tree, diff
 
 For work governed by consolidated gates, consume verify-owned confirmation of the accepted proposal evidence, approved Design Review ID and exact member map, and approved Delivery Review ID and exact member map. Do not reconstruct package authority from historical individual reviews, and do not reperform Design Review or Delivery Review during PR preparation.
 
+The exact successful Verify report owns the final explanation, verification basis, and authority. Reject missing, stale, new, or competing authoritative rationale. Historical rationale grants no current PR authority.
+
 An explicit change ID, workflow change identity, owning-change field, or governed pointer is a signal even when invalid. governed signal: `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. Only the first uses `PR0-portable`; the second loads `PR1-governed`; malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous signals stop without portable fallback. Loading grants no authority.
 
 ## Closed classifications
@@ -144,4 +146,4 @@ Start with:
 - Next stage: <human review | owning stage | none>
 ```
 
-Then provide the operation result, readiness booleans, hosted-CI state, actual mutation, actual PR state, URL or limitation, readiness checks, title, composed body, risks, reviewer focus, and exact observed validation and CI evidence.
+Then provide the result, readiness, mutation, PR and CI state, URL, title, body, risks, reviewer focus, and observed evidence.

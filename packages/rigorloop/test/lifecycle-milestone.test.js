@@ -8,9 +8,11 @@ import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
 import { parseLifecycleYaml, serializeLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
+import { writeActiveV3Manifests } from "./helpers/lifecycle-package-fixture.js";
 
 async function fixture(m2State = "planned", reviewStatus = "not-started", currentStage = "implement") {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-lifecycle-milestone-"));
+  writeActiveV3Manifests(root);
   const changeRoot = join(root, "docs", "changes", "example");
   mkdirSync(join(changeRoot, "evidence"), { recursive: true });
   mkdirSync(join(changeRoot, "reviews"), { recursive: true });
@@ -20,7 +22,7 @@ async function fixture(m2State = "planned", reviewStatus = "not-started", curren
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states: {}
 workflow_state:
   lifecycle_state: active

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:9f4f5ee02fdca8f6def9bb9e3bad3d37b6ac8c71a0020f15c0fd28a7370e87f8",
+  "milestone_id": "M2",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m2-impact-evidence-protocol.md",
+  "stage_authority": "workflow"
+}

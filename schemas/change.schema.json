@@ -21,7 +21,8 @@
       "type": "string",
       "enum": [
         "stage-owned-change-local-v1",
-        "stage-owned-change-local-v2"
+        "stage-owned-change-local-v2",
+        "stage-owned-change-local-v3"
       ]
     },
     "artifact_states": {
@@ -762,6 +763,37 @@
             "properties": {
               "current_stage": {"not": {"enum": ["test-spec", "test-spec-review"]}},
               "next_stage": {"not": {"enum": ["test-spec", "test-spec-review"]}}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_contract": {"const": "stage-owned-change-local-v3"}
+        },
+        "required": ["lifecycle_contract"]
+      },
+      "then": {
+        "properties": {
+          "artifact_states": {
+            "additionalProperties": {
+              "not": {
+                "properties": {"kind": {"const": "explain-change"}},
+                "required": ["kind"]
+              }
+            }
+          },
+          "artifacts": {
+            "propertyNames": {
+              "not": {"enum": ["explain-change", "explain_change"]}
+            }
+          },
+          "workflow_state": {
+            "properties": {
+              "current_stage": {"not": {"const": "explain-change"}},
+              "next_stage": {"not": {"const": "explain-change"}}
             }
           }
         }

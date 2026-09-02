@@ -8,11 +8,13 @@ import { test } from "node:test";
 
 import { executeLifecycleCli } from "../dist/lib/lifecycle-cli.js";
 import { parseLifecycleYaml } from "../dist/lib/lifecycle-contract.js";
+import { writeActiveV3Manifests } from "./helpers/lifecycle-package-fixture.js";
 
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 
 async function fixture(currentStage = "verify") {
   const root = await mkdtemp(join(tmpdir(), "rigorloop-withdrawal-"));
+  writeActiveV3Manifests(root);
   const canonicalRoot = join(root, "docs", "changes", "canonical");
   const duplicateRoot = join(root, "docs", "changes", "duplicate");
   mkdirSync(canonicalRoot, { recursive: true });
@@ -26,7 +28,7 @@ async function fixture(currentStage = "verify") {
 title: ${id}
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   architecture:
     kind: architecture

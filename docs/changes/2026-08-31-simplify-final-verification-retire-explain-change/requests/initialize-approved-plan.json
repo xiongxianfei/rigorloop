@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "initialize-approved-plan",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:b869546fa6cbe17ef5021f56c198c904154a50edfaba3b4f665a9f994190e98b",
+  "artifact_id": "plan",
+  "stage_authority": "plan"
+}

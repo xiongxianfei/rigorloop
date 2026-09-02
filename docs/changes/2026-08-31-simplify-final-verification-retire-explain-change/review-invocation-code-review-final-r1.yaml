@@ -1,0 +1,105 @@
+schema_version: 1
+review_id: code-review-final-r1
+review_stage: code-review
+review_target: commit:c93e38340170c9c0e336bb6e3e253469ec4380ac
+base_revision: f4cc4570d4492665b5f2a8315b80b06bfd0ed6e6
+head_revision: c93e38340170c9c0e336bb6e3e253469ec4380ac
+native_review_status: clean-with-notes
+review_gate_outcome: blocked
+independence_level: L1
+author_context_id: complete-m1-m5-candidate-c93e3834
+reviewer_context_id: independent-final-holistic-code-review-r1
+context_separation_mechanism: fresh-assumption-diff-first-holistic-review
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-activation
+  - publication-authority
+  - generated-package-parity
+  - evidence-identity
+  - compatibility
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - docs/proposals/2026-08-31-simplify-final-verification-retire-explain-change.md
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/adr/ADR-20260831-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-final-holistic-v1
+  - requirement-to-delivery-model-v1
+  - boundary-first-review-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: docs/proposals/2026-08-31-simplify-final-verification-retire-explain-change.md
+    revision: c93e3834
+    sha256: afe3f484143c53b1f95e7edbe47bf5fdbafe797b8c504bed58c5d69bae0118d4
+  - path: specs/impact-aware-final-verification.md
+    revision: c93e3834
+    sha256: e4b3e73689520925f3ff03f71338f2ffafb05428a0063937be7116947e5237d6
+  - path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+    revision: c93e3834
+    sha256: e0762dcd0608dfe5d4987abd889167dde340de383007eaeac9772b753696677a
+  - path: docs/adr/ADR-20260831-impact-aware-final-verification.md
+    revision: c93e3834
+    sha256: a27977586ef4c3f9929cd5d31ec21c34f0b45c5804614bdb02cf6117e74691c9
+  - path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    revision: c93e3834
+    sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m1-v3-classification.md
+    revision: c93e3834
+    sha256: 698eb61bfe9b636b4c7a1761cbdce79f40a72584ef1d97109fe35a514cc6c7d8
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m2-impact-evidence-protocol.md
+    revision: c93e3834
+    sha256: 9a34ebbc2f324c818b91c7884bb2c8ef4559b7a7f4175171f946a58c7144c4e7
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-v3-routing-and-pr.md
+    revision: c93e3834
+    sha256: f4e0a7a7dabc0e268ebf6114a7f283b36f2e59a87a13733635e864c08050b226
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m4-v3-package-parity.md
+    revision: c93e3834
+    sha256: bbc03a86c8a7f4f22615c80a56d8656a38b4de306364c24e8f6f64437440651a
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-v3-publication-candidate.md
+    revision: c93e3834
+    sha256: 464810f9368e0cc62ed727ec83caecc3d095b4b93627be41e59ea3998fd1a69a
+  - path: commit:f4cc4570..c93e3834.diff
+    revision: c93e3834
+    sha256: b656d3d8f71e6a434ec7469b0a136503cd756792e8eb76665a345c0f60a5487d
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - milestone-review-release
+  - verdict-recorded
+clean_review_sufficiency:
+  target_identity: commit:c93e38340170c9c0e336bb6e3e253469ec4380ac
+  inspected_authority: proposal-review-r1, design-review-r2, delivery-review-r3, M1-M6
+  risk_classes: lifecycle-activation, publication-authority, generated-package-parity, evidence-identity, compatibility
+  adversarial_hypotheses: legacy route leakage, unsafe evidence reuse, freshness bypass, cache-as-proof, Verify repair, partial success, self-referential tail, wrong correction owner, stale PR basis, mixed package, premature activation, or historical mutation
+  direct_proofs: complete diff inspection, all milestone review reconciliation, fresh Node/Python/public-path suites, broad smoke, archive integrity, explicit paths, and history audit
+  challenged_validation: milestone evidence was reused only as traceability; final behavioral conclusions use fresh final-subject tests and generated-package checks
+  uncertain_surfaces: hosted CI, historical-v2 Verify outcome, PR handoff, activation, publication, release, and deployment remain out of scope
+  confidence: high
+  no_finding_rationale: every requirement, boundary, interaction, prior finding, and cross-milestone composition has current proof with no unresolved implementation defect
+second_review_requirement: satisfied-by-independent-milestone-rereviews-and-final-holistic-review
+risk_map:
+  affected_behavior: lifecycle selection and routing, evidence applicability, result identity, correction ownership, success-only explanation, PR consumption, public skills, adapters, and compatibility
+  highest_impact_failure_modes: unsafe reuse, false readiness, pre-success explanation, legacy progression, authority bypass, mixed publication, premature activation, or historical mutation
+  changed_boundaries: runtime and repository classifiers, evidence protocol, workflow routing, correction transactions, Verify report tail, PR consumer, canonical skills, generated packages, and public guidance
+  evidence_expected: complete FV and AC trace, eight-boundary and four-interaction closure, fresh integrated proof, exact package authority, resolved findings, preactivation identity, and unchanged history
+  direct_inspection_areas: full implementation diff, milestone evidence and reviews, resolution ledger, current runtime, validators, workflow, skills, adapters, activation manifest, and release/history paths
+  intentionally_out_of_scope: explain-change execution, Verify execution, PR preparation/opening, activation, publication, release, deployment, and lifecycle mutation
+  applicable_risk_classes:
+    - lifecycle-activation
+    - publication-authority
+    - generated-package-parity
+    - evidence-identity
+    - compatibility
+  non_applicable_risk_classes:
+    - credential-handling
+    - deployment-mutation
+  falsifiable_questions:
+    - Can any current public or runtime path progress v1/v2 or require standalone explanation before Verify?
+    - Can unknown impact, freshness, decision, proof, outcome, or owner values support readiness?
+    - Can cache, partial output, report drift, or competing PR rationale bypass exact evidence authority?
+    - Can canonical and generated candidates disagree or activate before historical-v2 closeout?

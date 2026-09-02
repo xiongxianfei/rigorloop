@@ -69,7 +69,6 @@ LIFECYCLE_STAGE_CLASSES = {
     "proposal": "proposal",
     "architecture": "architecture",
     "spec": "spec",
-    "test-spec": "test-spec",
 }
 STAGE_NATIVE_VERIFIER_STAGES = frozenset(
     set(FORMAL_REVIEW_INPUT_IDENTITIES)
@@ -82,7 +81,6 @@ STAGE_NATIVE_VERIFIER_STAGES = frozenset(
         "review-resolution",
         "ci-maintenance",
         "final-holistic-code-review",
-        "explain-change",
         "verify",
     }
 )
@@ -888,29 +886,6 @@ def _verify_implementation_stage_completion(
             "review_log_identity": review_log_identity,
         }, None
 
-    if stage_name == "explain-change":
-        try:
-            fields = parse_stage_evidence_fields(
-                resolved_evidence["explain-change"][1],
-                required_fields={
-                    "Stage",
-                    "Status",
-                    "Final diff identity",
-                    "Final review identity",
-                    "Reviewed subject revision",
-                    "Explanation basis",
-                    "Validation-evidence cutoff",
-                },
-            )
-        except StateContractError:
-            return None, "stage-native-explanation-invalid"
-        if (
-            fields.get("Stage") != "explain-change"
-            or fields.get("Status") != "current"
-        ):
-            return None, "stage-native-explanation-invalid"
-        return {"explanation_current": "true"}, None
-
     if stage_name == "verify":
         try:
             report = parse_stage_evidence_fields(
@@ -975,13 +950,7 @@ def _package_members(document: dict[str, Any], kind: str) -> dict[str, str] | No
         plan = members_for("plan", "primary")
         if len(plan) != 1:
             return None
-        if document.get("lifecycle_contract") == "stage-owned-change-local-v2":
-            selected = [plan[0]]
-        else:
-            test_spec = members_for("test-spec", "primary")
-            if len(test_spec) != 1:
-                return None
-            selected = [plan[0], test_spec[0]]
+        selected = [plan[0]]
     if any(not isinstance(entry.get("path"), str) for _, entry in selected):
         return None
     return {artifact_id: entry["path"] for artifact_id, entry in selected}
@@ -1224,7 +1193,6 @@ def _verify_transition_completion(
         "review-resolution",
         "ci-maintenance",
         "final-holistic-code-review",
-        "explain-change",
         "verify",
     }:
         stage_facts, error = _verify_implementation_stage_completion(
@@ -2052,7 +2020,7 @@ class WorkflowAutomationStateStore:
             errors = validate_workflow_automation(
                 automation,
                 top_level_change_id=document.get("change_id"),
-                lifecycle_contract=document.get("lifecycle_contract", "stage-owned-change-local-v1"),
+                lifecycle_contract=document.get("lifecycle_contract", "stage-owned-change-local-v3"),
             )
             if errors:
                 raise AutomationStateContractError(
@@ -2096,7 +2064,7 @@ class WorkflowAutomationStateStore:
         errors = validate_workflow_automation(
             automation,
             top_level_change_id=snapshot.document.get("change_id"),
-            lifecycle_contract=snapshot.document.get("lifecycle_contract", "stage-owned-change-local-v1"),
+            lifecycle_contract=snapshot.document.get("lifecycle_contract", "stage-owned-change-local-v3"),
         )
         if errors:
             raise StateContractError("invalid replacement automation state: " + "; ".join(errors))

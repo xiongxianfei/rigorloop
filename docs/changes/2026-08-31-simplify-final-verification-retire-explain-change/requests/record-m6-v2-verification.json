@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-validation",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:d5ce50a092eeef98c25e663969811d227cafb2fbe3c046f065d7846608608503",
+  "artifact_id": "plan",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/verify-report.md",
+  "subject_path": "docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md",
+  "stage_authority": "verify"
+}

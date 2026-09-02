@@ -47,7 +47,7 @@ from validate_workflow_automation import (
 )
 from workflow_automation_policy import (
     CAPABILITY_MUTATION_CATEGORIES,
-    LIFECYCLE_CONTRACT_V1,
+    LIFECYCLE_CONTRACT_V3,
     PUBLIC_TARGET_STAGES,
     STAGE_POLICY_BY_STAGE,
     AuthorizationClass,
@@ -60,6 +60,7 @@ from workflow_automation_policy import (
     project_proposal_review_result,
     target_completion_predicate,
     stage_policy_by_stage_for_contract,
+    verification_correction_owner,
 )
 from workflow_automation_state import (
     _canonical_review_occurrence,
@@ -101,7 +102,6 @@ PRE_PLAN_SEQUENCE = (
     "spec",
     "design-review",
     "plan",
-    "test-spec",
     "delivery-review",
 )
 REVIEW_POSITIONS = frozenset(
@@ -120,7 +120,6 @@ CANONICAL_BASIS_FIELDS = {
     "spec": ("spec_identity",),
     "design-review": ("design_review_identity",),
     "plan": ("plan_identity",),
-    "test-spec": ("test_spec_identity",),
     "delivery-review": ("delivery_review_identity",),
 }
 
@@ -335,6 +334,7 @@ class ImplementationRouteDecision:
     status: str
     next_stage: str | None = None
     next_milestone_id: str | None = None
+    return_stage: str | None = None
     pause_reason: str | None = None
     automatic_repair: bool = False
     external_action_performed: bool = False
@@ -344,7 +344,6 @@ class ImplementationRouteDecision:
 class VerificationReadiness:
     basis_identities: Mapping[str, str]
     final_review_clean: bool
-    explanation_current: bool
 
 
 def _canonical_final_code_identity(
@@ -406,15 +405,17 @@ def _canonical_final_code_identity(
 
 def require_complete_ordered_evidence_tail(
     canonical: CanonicalCodeState,
+    *,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> None:
     """Require the exact derived final-review-to-handoff tail for verify."""
 
     if (
-        canonical.tail_state != "complete"
+        lifecycle_contract != LIFECYCLE_CONTRACT_V3
+        or canonical.tail_state != "review-recorded"
         or canonical.final_review_recording_revision is None
-        or canonical.explanation_recording_revision is None
-        or canonical.handoff_revision
-        != canonical.explanation_recording_revision
+        or canonical.explanation_recording_revision is not None
+        or canonical.handoff_revision is not None
     ):
         raise AutomationContractError(
             "verification basis ordered final-review evidence tail is incomplete"
@@ -427,10 +428,17 @@ def resolve_verification_readiness(
     basis: Mapping[str, Any],
     basis_paths: Mapping[str, Any],
     code_state_provider: CodeStateProvider | None = None,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> VerificationReadiness:
     """Resolve verification authority only from current repository evidence."""
 
-    required = CAPABILITY_BASIS_FIELDS[CapabilityKind.VERIFICATION.value]
+    if lifecycle_contract != LIFECYCLE_CONTRACT_V3:
+        raise AutomationContractError(
+            f"lifecycle_contract: unknown_value {lifecycle_contract}"
+        )
+    required = CAPABILITY_BASIS_FIELDS[CapabilityKind.VERIFICATION.value] - {
+        "explanation_inputs_identity"
+    }
     if set(basis) != set(required) or set(basis_paths) != set(required):
         raise AutomationContractError("verification basis evidence is incomplete")
     artifacts: dict[str, Path] = {}
@@ -505,20 +513,16 @@ def resolve_verification_readiness(
             change_id=next(iter(change_ids)),
             reviewed_revision=review_fields["Reviewed commit"],
             final_review_id=review_fields["Review ID"],
-            lifecycle_evidence_paths=frozenset(
-                {
-                    artifacts["explanation_inputs_identity"]
-                    .relative_to(repository_root.resolve())
-                    .as_posix()
-                }
-            ),
+            lifecycle_evidence_paths=frozenset(),
             test_provider=code_state_provider,
         )
     except (CodeStateError, ValueError) as error:
         raise AutomationContractError(
             "verification basis canonical code-state anchor is invalid"
         ) from error
-    require_complete_ordered_evidence_tail(canonical)
+    require_complete_ordered_evidence_tail(
+        canonical, lifecycle_contract=lifecycle_contract
+    )
     final_code_identity = _canonical_final_code_identity(
         branch_state_path=artifacts["branch_state_identity"],
         canonical=canonical,
@@ -541,34 +545,6 @@ def resolve_verification_readiness(
     ):
         raise AutomationContractError("verification basis final review is not clean")
 
-    try:
-        explanation = parse_stage_evidence_fields(
-            artifacts["explanation_inputs_identity"],
-            required_fields={
-                "Stage",
-                "Status",
-                "Final diff identity",
-                "Final review identity",
-                "Reviewed subject revision",
-                "Explanation basis",
-                "Validation-evidence cutoff",
-            },
-        )
-    except StateContractError as error:
-        raise AutomationContractError(
-            "verification basis explanation is incomplete"
-        ) from error
-    if (
-        explanation.get("Stage") != "explain-change"
-        or explanation.get("Status") != "current"
-        or explanation.get("Final diff identity")
-        != final_code_identity
-        or explanation.get("Final review identity")
-        != identities["final_code_review_identity"]
-        or explanation.get("Reviewed subject revision")
-        != canonical.reviewed_revision
-    ):
-        raise AutomationContractError("verification basis explanation is not current")
     for name, expected_stage, expected_status in (
         ("promotion_evidence_identity", "promotion", "valid"),
         ("verification_commands_identity", "verification-commands", "current"),
@@ -590,7 +566,7 @@ def resolve_verification_readiness(
             raise AutomationContractError(
                 f"verification basis evidence is invalid: {name}"
             )
-    return VerificationReadiness(identities, True, True)
+    return VerificationReadiness(identities, True)
 
 
 @dataclass(frozen=True)
@@ -1156,10 +1132,10 @@ def evaluate_non_public_implementation_route(
     review_resolution_status: str | None = None,
     verification_authorized: bool = False,
     final_review_clean: bool | None = None,
-    explanation_current: bool | None = None,
     verification_passed: bool | None = None,
+    verification_finding_kind: str | None = None,
     ci_maintenance_required: bool = False,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> ImplementationRouteDecision:
     """Route one verified M5 stage while the integration remains non-public."""
 
@@ -1181,7 +1157,6 @@ def evaluate_non_public_implementation_route(
         WorkflowStage.REVIEW_RESOLUTION.value,
         WorkflowStage.CI_MAINTENANCE.value,
         WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value,
-        WorkflowStage.EXPLAIN_CHANGE.value,
         WorkflowStage.VERIFY.value,
     }:
         raise AutomationContractError(
@@ -1302,20 +1277,29 @@ def evaluate_non_public_implementation_route(
             return pause("review-resolution-open")
         if not verification_authorized:
             return pause("verification-authorization-required")
-        return ImplementationRouteDecision(
-            "continue", WorkflowStage.EXPLAIN_CHANGE.value
-        )
+        return ImplementationRouteDecision("continue", WorkflowStage.VERIFY.value)
     if not verification_authorized:
         return pause("verification-authorization-required")
-    if current_stage == WorkflowStage.EXPLAIN_CHANGE.value:
-        if explanation_current is not True:
-            return pause("explanation-not-current")
-        return ImplementationRouteDecision("continue", WorkflowStage.VERIFY.value)
     if final_review_clean is not True:
         return pause("final-holistic-review-not-clean")
-    if explanation_current is not True:
-        return pause("explanation-not-current")
     if verification_passed is not True:
+        if verification_finding_kind is not None:
+            owner = verification_correction_owner(verification_finding_kind)
+            return_stage = {
+                "spec": "design-review",
+                "architecture": "design-review",
+                "plan": "delivery-review",
+                "implement": "code-review",
+                "code-review": "code-review",
+                "ci-maintenance": "verify",
+                "external-evidence-acquisition": "verify",
+            }[owner]
+            return ImplementationRouteDecision(
+                "correction-loop",
+                owner,
+                return_stage=return_stage,
+                automatic_repair=False,
+            )
         return pause("verification-failed")
     return ImplementationRouteDecision(
         "target-reached",
@@ -1853,8 +1837,7 @@ _AUTHORING_NEXT_STAGE = {
     WorkflowStage.ARCHITECTURE.value: WorkflowStage.SPEC.value,
     WorkflowStage.SPEC.value: WorkflowStage.DESIGN_REVIEW.value,
     WorkflowStage.DESIGN_REVIEW.value: WorkflowStage.PLAN.value,
-    WorkflowStage.PLAN.value: WorkflowStage.TEST_SPEC.value,
-    WorkflowStage.TEST_SPEC.value: WorkflowStage.DELIVERY_REVIEW.value,
+    WorkflowStage.PLAN.value: WorkflowStage.DELIVERY_REVIEW.value,
 }
 _AUTHORING_REVIEW_STAGES = frozenset(
     {
@@ -1873,7 +1856,7 @@ def evaluate_non_public_authoring_route(
     invocation_context: str,
     review_outcome: str | None = None,
     architecture_applicability: str | None = None,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> AuthoringRouteDecision:
     """Evaluate M4 authoring progression without exposing a public route."""
 
@@ -1918,15 +1901,13 @@ def evaluate_non_public_authoring_route(
             "paused", pause_reason="implementation-authorization-required"
         )
     next_stage = _AUTHORING_NEXT_STAGE.get(current_stage)
-    if lifecycle_contract != LIFECYCLE_CONTRACT_V1 and current_stage == WorkflowStage.PLAN.value:
-        next_stage = WorkflowStage.DELIVERY_REVIEW.value
     if next_stage is None:
         raise AutomationContractError(f"authoring route is undefined for stage: {current_stage}")
     return AuthoringRouteDecision("continue", next_stage)
 
 
 def _change_lifecycle_contract(document: Mapping[str, Any]) -> str:
-    contract = document.get("lifecycle_contract", LIFECYCLE_CONTRACT_V1)
+    contract = document.get("lifecycle_contract", LIFECYCLE_CONTRACT_V3)
     try:
         stage_policy_by_stage_for_contract(contract)
     except ValueError as error:
@@ -2214,10 +2195,7 @@ def coordinate_non_public_implementation_stage(
     except StateContractError as error:
         raise AutomationContractError(str(error)) from error
     verification_readiness: VerificationReadiness | None = None
-    if coordination.get("stage") in {
-        WorkflowStage.EXPLAIN_CHANGE.value,
-        WorkflowStage.VERIFY.value,
-    }:
+    if coordination.get("stage") == WorkflowStage.VERIFY.value:
         basis = coordination.get("basis")
         if (
             not isinstance(basis, Mapping)
@@ -2312,20 +2290,12 @@ def coordinate_non_public_implementation_stage(
                 else None
             )
         ),
-        explanation_current=(
-            facts.get("explanation_current") == "true"
-            if "explanation_current" in facts
-            else (
-                verification_readiness.explanation_current
-                if verification_readiness is not None
-                else None
-            )
-        ),
         verification_passed=(
             facts.get("verification_passed") == "true"
             if "verification_passed" in facts
             else None
         ),
+        verification_finding_kind=facts.get("verification_finding_kind"),
         ci_maintenance_required=ci_maintenance_required,
         lifecycle_contract=lifecycle_contract,
     )
@@ -2790,7 +2760,7 @@ def coordinate_public_implementation_correction(
     )
 
 
-def normalize_command(command: str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> NormalizedCommand:
+def normalize_command(command: str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V3) -> NormalizedCommand:
     """Normalize current and supported legacy forms without persisting state."""
 
     if not isinstance(command, str):
@@ -2812,7 +2782,7 @@ def normalize_command(command: str, *, lifecycle_contract: str = LIFECYCLE_CONTR
     return NormalizedCommand("target", value, is_legacy)
 
 
-def _target_stage(stage: str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> WorkflowStage:
+def _target_stage(stage: str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V3) -> WorkflowStage:
     try:
         parsed = WorkflowStage(stage)
     except (TypeError, ValueError) as exc:
@@ -2835,7 +2805,7 @@ def bind_target(
     bound_at: str,
     plan: ActivePlanContext | None = None,
     requested_occurrence: str | None = None,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> dict[str, Any]:
     """Bind one complete structured target before run or authority persistence."""
 
@@ -2871,7 +2841,7 @@ def resolve_command_target(
     *,
     bound_at: str,
     plan: ActivePlanContext | None = None,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> dict[str, Any]:
     """Normalize a target command and bind its complete occurrence envelope."""
 
@@ -2894,7 +2864,7 @@ def evaluate_public_authoring_route(
     capability_status: str,
     review_outcome: str | None = None,
     architecture_applicability: str | None = None,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> AuthoringRouteDecision:
     """Route one public authoring operation through the unified engine."""
 
@@ -2929,10 +2899,10 @@ def evaluate_public_implementation_route(
     review_resolution_status: str | None = None,
     verification_authorized: bool = False,
     final_review_clean: bool | None = None,
-    explanation_current: bool | None = None,
     verification_passed: bool | None = None,
+    verification_finding_kind: str | None = None,
     ci_maintenance_required: bool = False,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> ImplementationRouteDecision:
     """Route one public implementation operation through the unified engine."""
 
@@ -2957,8 +2927,8 @@ def evaluate_public_implementation_route(
         review_resolution_status=review_resolution_status,
         verification_authorized=verification_authorized,
         final_review_clean=final_review_clean,
-        explanation_current=explanation_current,
         verification_passed=verification_passed,
+        verification_finding_kind=verification_finding_kind,
         ci_maintenance_required=ci_maintenance_required,
         lifecycle_contract=lifecycle_contract,
     )
@@ -3849,8 +3819,6 @@ def _resolve_pre_plan(evidence: PrePlanEvidence) -> CanonicalPosition:
         raise AutomationContractError("contradictory proposal-review evidence")
     if "plan" in observed and evidence.review_outcomes.get("design-review") != "approved":
         raise AutomationContractError("contradictory design-review evidence")
-    if "delivery-review" in observed and "test-spec" not in observed:
-        raise AutomationContractError("contradictory delivery-review evidence")
     if "architecture" in observed and not evidence.review_resolution_closed:
         raise AutomationContractError("required review resolution is not closed")
 
@@ -3883,8 +3851,7 @@ def _resolve_plan(plan: ActivePlanContext) -> CanonicalPosition:
             WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW.value: WorkflowPosition.CODE_REVIEW.value,
             WorkflowStage.CI_MAINTENANCE.value: WorkflowPosition.CODE_REVIEW.value,
             WorkflowStage.REVIEW_RESOLUTION.value: WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW.value,
-            WorkflowStage.EXPLAIN_CHANGE.value: WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW.value,
-            WorkflowStage.VERIFY.value: WorkflowPosition.EXPLAIN_CHANGE.value,
+            WorkflowStage.VERIFY.value: WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW.value,
             "pr": WorkflowPosition.VERIFY.value,
         }
         position = final_predecessors.get(plan.handoff.next_stage)
@@ -3900,10 +3867,9 @@ def _resolve_plan(plan: ActivePlanContext) -> CanonicalPosition:
     current = candidates[0]
     state = current.state
     authoring_position = (
-        {
-            WorkflowStage.TEST_SPEC.value: WorkflowPosition.PLAN.value,
-            WorkflowStage.DELIVERY_REVIEW.value: WorkflowPosition.TEST_SPEC.value,
-        }.get(plan.handoff.next_stage)
+        {WorkflowStage.DELIVERY_REVIEW.value: WorkflowPosition.PLAN.value}.get(
+            plan.handoff.next_stage
+        )
         if state == "planned"
         else None
     )

@@ -29,6 +29,7 @@ from workflow_automation_policy import (
     public_target_stages_for_contract,
     stage_policy_by_stage_for_contract,
     transition_rules_for_contract,
+    verification_correction_owner,
     evaluate_transition,
     is_immediate_predecessor,
     validate_policy_registry,
@@ -36,35 +37,60 @@ from workflow_automation_policy import (
 
 
 class WorkflowAutomationPolicyTests(unittest.TestCase):
-    def test_v2_policy_removes_test_spec_and_routes_plan_to_delivery_review(self) -> None:
-        targets = public_target_stages_for_contract("stage-owned-change-local-v2")
-        self.assertNotIn(WorkflowStage.TEST_SPEC, targets)
-        policies = stage_policy_by_stage_for_contract("stage-owned-change-local-v2")
-        self.assertNotIn("test-spec", policies)
-        self.assertEqual(policies["delivery-review"].required_input_identities, frozenset({"design-review", "plan"}))
-        edges = {(rule.from_position, rule.operation) for rule in transition_rules_for_contract("stage-owned-change-local-v2")}
-        self.assertIn((WorkflowPosition.PLAN, WorkflowStage.DELIVERY_REVIEW), edges)
-        self.assertNotIn((WorkflowPosition.PLAN, WorkflowStage.TEST_SPEC), edges)
-        transition = evaluate_transition(
-            TransitionContext(
-                WorkflowPosition.PLAN,
-                WorkflowStage.DELIVERY_REVIEW,
-                WorkflowStage.DELIVERY_REVIEW,
-            ),
-            lifecycle_contract="stage-owned-change-local-v2",
-        )
-        self.assertTrue(transition.allowed, transition.errors)
-        with self.assertRaisesRegex(ValueError, "unknown_value"):
-            public_target_stages_for_contract("future-v9")
-        with self.assertRaisesRegex(ValueError, "unknown_value"):
-            evaluate_transition(
-                TransitionContext(
-                    WorkflowPosition.PLAN,
-                    WorkflowStage.DELIVERY_REVIEW,
-                    WorkflowStage.DELIVERY_REVIEW,
-                ),
-                lifecycle_contract="future-v9",
+    def test_v3_policy_routes_review_directly_to_verify_and_omits_explain_change(self) -> None:
+        targets = public_target_stages_for_contract("stage-owned-change-local-v3")
+        target_values = {stage.value for stage in targets}
+        self.assertNotIn("test-spec", target_values)
+        self.assertNotIn("explain-change", target_values)
+        policies = stage_policy_by_stage_for_contract("stage-owned-change-local-v3")
+        self.assertNotIn("explain-change", policies)
+        self.assertNotIn("explain-change", policies["verify"].required_input_identities)
+        edges = {(rule.from_position, rule.operation) for rule in transition_rules_for_contract("stage-owned-change-local-v3")}
+        self.assertIn((WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW, WorkflowStage.VERIFY), edges)
+        self.assertFalse(
+            any(
+                position == WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW
+                and operation.value == "explain-change"
+                for position, operation in edges
             )
+        )
+
+    def test_verification_correction_owners_are_closed_and_verify_never_owns_repair(self) -> None:
+        expected = {
+            "system-requirement-gap": "spec",
+            "technical-realization-gap": "architecture",
+            "verification-allocation-gap": "plan",
+            "implementation-defect": "implement",
+            "stale-or-incomplete-review": "code-review",
+            "ci-or-environment-gap": "ci-maintenance",
+            "external-evidence-gap": "external-evidence-acquisition",
+        }
+        self.assertEqual({kind: verification_correction_owner(kind) for kind in expected}, expected)
+        self.assertNotIn("verify", expected.values())
+        with self.assertRaisesRegex(ValueError, "unknown_value"):
+            verification_correction_owner("maybe")
+
+    def test_retired_and_unknown_contracts_fail_closed(self) -> None:
+        context = TransitionContext(
+            WorkflowPosition.PLAN,
+            WorkflowStage.DELIVERY_REVIEW,
+            WorkflowStage.DELIVERY_REVIEW,
+        )
+        for contract in (
+            "stage-owned-change-local-v1",
+            "stage-owned-change-local-v2",
+            "future-v9",
+        ):
+            with self.subTest(contract=contract):
+                for selector in (
+                    public_target_stages_for_contract,
+                    stage_policy_by_stage_for_contract,
+                    transition_rules_for_contract,
+                ):
+                    with self.assertRaisesRegex(ValueError, "unknown_value"):
+                        selector(contract)
+                with self.assertRaisesRegex(ValueError, "unknown_value"):
+                    evaluate_transition(context, lifecycle_contract=contract)
 
     def test_registry_has_exactly_one_complete_policy_per_stage(self) -> None:
         expected = set(PUBLIC_TARGET_STAGES) | set(INTERNAL_STAGES)
@@ -87,21 +113,29 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
 
     def test_consolidated_authoring_sequence_is_exact(self) -> None:
         self.assertEqual(
-            PUBLIC_TARGET_SEQUENCE[:8],
+            PUBLIC_TARGET_SEQUENCE,
             (
                 WorkflowStage.PROPOSAL_REVIEW,
                 WorkflowStage.ARCHITECTURE,
                 WorkflowStage.SPEC,
                 WorkflowStage.DESIGN_REVIEW,
                 WorkflowStage.PLAN,
-                WorkflowStage.TEST_SPEC,
                 WorkflowStage.DELIVERY_REVIEW,
                 WorkflowStage.IMPLEMENT,
+                WorkflowStage.CODE_REVIEW,
+                WorkflowStage.VERIFY,
             ),
         )
         self.assertEqual(WorkflowStage("design-review"), WorkflowStage.DESIGN_REVIEW)
         self.assertEqual(WorkflowStage("delivery-review"), WorkflowStage.DELIVERY_REVIEW)
-        for retired in ("spec-review", "architecture-review", "plan-review", "test-spec-review"):
+        for retired in (
+            "spec-review",
+            "architecture-review",
+            "plan-review",
+            "test-spec",
+            "test-spec-review",
+            "explain-change",
+        ):
             with self.assertRaises(ValueError):
                 WorkflowStage(retired)
 
@@ -438,11 +472,10 @@ class WorkflowAutomationPolicyTests(unittest.TestCase):
             WorkflowStage.CI_MAINTENANCE,
         }:
             self.assertEqual(occurrences[stage], OccurrenceKind.SINGLETON)
-        for stage in {
-            WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW,
-            WorkflowStage.EXPLAIN_CHANGE,
-        }:
-            self.assertEqual(occurrences[stage], OccurrenceKind.FINAL)
+        self.assertEqual(
+            occurrences[WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW],
+            OccurrenceKind.FINAL,
+        )
 
     def test_review_resolution_policy_bounds_every_correction_mutation_category(self) -> None:
         policy = next(

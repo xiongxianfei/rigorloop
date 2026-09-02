@@ -6,7 +6,7 @@ Load this procedure only after `SKILL.md` classifies `branch-readiness` or `work
 
 Resolve the repository and branch or commit, then bind all evidence to exactly one governed change or explicit evidence root. For a governed-final run, confirm the same change is currently at final `verify` and all in-scope implementation milestones are closed.
 
-Require the applicable governing spec and proof map, architecture or explicit no-architecture assessment, stable plan, current change state, final reviewed diff, review closeout, current explain-change rationale, and named validation commands. Missing, ambiguous, mismatched, or local-only governing authority blocks final readiness.
+Require the applicable governing spec and proof map, architecture or explicit no-architecture assessment, stable plan, current change state, final reviewed diff, review closeout, and named validation commands. Missing, ambiguous, mismatched, or local-only governing authority blocks final readiness.
 
 ## Final evidence composition
 
@@ -25,7 +25,7 @@ Targeted proof alone is insufficient when changes can affect shared infrastructu
 
 ## Lifecycle and review closeout
 
-For governed final verification, confirm the current change record, stable plan, milestone state, formal review evidence, and any review resolution agree. Every material finding must have final disposition and required validation; no open or `needs-decision` finding may remain. Confirm architecture assessment and triggered CI-maintenance are settled, and the explain-change artifact describes the final reviewed diff.
+For governed final verification, confirm the current change record, stable plan, milestone state, formal review evidence, and any review resolution agree. Every material finding must have final disposition and required validation; no open or `needs-decision` finding may remain. Confirm architecture assessment and triggered CI-maintenance are settled. Generate the final explanation only in a successful Verify report.
 
 For a direct branch-readiness assessment, evaluate the same applicable evidence set but do not mutate lifecycle state or perform workflow-owned settlement.
 

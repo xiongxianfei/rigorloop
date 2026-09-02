@@ -1,0 +1,73 @@
+schema_version: 1
+review_id: code-review-m3-r1
+review_stage: code-review
+review_target: commit:e0530499
+base_revision: f2c69a20b89399b12b41ee7565113a32bd4dd30e
+head_revision: e0530499
+native_review_status: changes-requested
+review_gate_outcome: review-resolution
+independence_level: L1
+author_context_id: implement-m3-e0530499
+reviewer_context_id: independent-code-review-m3-r1
+context_separation_mechanism: fresh-assumption-diff-first-review
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-routing
+  - authority-boundary
+  - compatibility
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/adr/ADR-20260831-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - requirement-to-delivery-model-v1
+  - boundary-first-review-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/impact-aware-final-verification.md
+    revision: e0530499
+    sha256: 3aa7aeb6e8b3fd97ef033f5e01da12b313fa65f562934ff67d24f58eac4857e6
+  - path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+    revision: e0530499
+    sha256: 3a1062b8f1b16ba66df128f7e341d5e4253ed48dc089e4f293307d38c06fa74a
+  - path: docs/adr/ADR-20260831-impact-aware-final-verification.md
+    revision: e0530499
+    sha256: fec451d080cce96f197a8c68512233f1306031ad5feb124d448e2391f1e3abb0
+  - path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    revision: e0530499
+    sha256: be59397c12da69495be71c353585ab858642d00704fc1b156a40c5921dacef52
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-v3-routing-and-pr.md
+    revision: e0530499
+    sha256: 67361b978bda54824f171d0566e65f88de5065c0c6a53d393ad9e44a3686b6b5
+  - path: commit:e0530499.diff
+    revision: e0530499
+    sha256: 7d7be8603238787321f4de167bb34dbaaf24e7fb0bbf91bf8c3963ae8d80a6a4
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+risk_map:
+  affected_behavior: v3 lifecycle graph, Verify correction ownership, pre-Verify evidence tail, and PR consumption
+  highest_impact_failure_modes: legacy explain-change leakage, owner mapping without executable routing, Verify repair authority, v2 regression, or stale PR rationale acceptance
+  changed_boundaries: contract-keyed routing, S-R-V temporal identity, correction recovery, and Verify-to-PR authority
+  evidence_expected: direct v1/v2/v3 graph tests, invalid explain-change tail proof, executable owner routes, no-repair proof, and exact PR negative paths
+  direct_inspection_areas: transition construction, canonical code-state acceptance, correction operation consumers, PR handoff comparator, and public compatibility fixtures
+  intentionally_out_of_scope: published-skill removal, generated adapter parity, activation, and release cutover
+  applicable_risk_classes:
+    - lifecycle-authority
+    - temporal-identity
+    - recovery-routing
+    - compatibility
+  non_applicable_risk_classes:
+    - network-access
+    - credential-handling
+  falsifiable_questions:
+    - Can v3 Verify accept any legacy explain-change evidence commit after final review?
+    - Can every Verify finding kind actually enter its sole owner route without Verify mutation?
+    - Can PR accept changed basis, explanation, tail, or authoritative references?

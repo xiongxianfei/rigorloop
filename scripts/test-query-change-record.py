@@ -179,7 +179,7 @@ changed_files:
           kind: final
         bound_at: 2026-07-22T00:00:00Z
         completion:
-          rule: fresh verification passes
+          rule: verification passes and the final explanation is recorded
       stop_reason: verification-authorization-required
     parent_authorizations: {}
     effective_capabilities: {}
@@ -197,7 +197,7 @@ changed_files:
                 "title": "Stage-owned query fixture",
                 "classification": "workflow-governance",
                 "risk": "medium",
-                "lifecycle_contract": "stage-owned-change-local-v1",
+                "lifecycle_contract": "stage-owned-change-local-v3",
                 "artifact_states": {
                     "proposal": {
                         "kind": "proposal",
@@ -243,7 +243,9 @@ changed_files:
                             "stage": "verify",
                             "occurrence": {"kind": "final"},
                             "bound_at": "2026-07-29T00:00:00Z",
-                            "completion": {"rule": "fresh verification passes"},
+                            "completion": {
+                                "rule": "verification passes and the final explanation is recorded"
+                            },
                         },
                         "status": "active",
                         "current_stage": "spec",
@@ -446,7 +448,7 @@ validation_summary:
         payload = parse_json(result)
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
-        self.assertEqual(payload["metadata_shape"], "stage-owned-change-local-v1")
+        self.assertEqual(payload["metadata_shape"], "stage-owned-change-local-v3")
         self.assertEqual(
             payload["artifact_paths"],
             ["docs/proposals/stage-owned-query.md"],
@@ -478,7 +480,7 @@ validation_summary:
 
         result = query.workflow_state_slice(
             {
-                "lifecycle_contract": "stage-owned-change-local-v1",
+                "lifecycle_contract": "stage-owned-change-local-v3",
                 "workflow_state": {"planned_work": planned_work},
             }
         )

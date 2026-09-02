@@ -73,7 +73,6 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "constitution",
     "delivery-review",
     "design-review",
-    "explain-change",
     "explore",
     "implement",
     "learn",
@@ -92,12 +91,8 @@ RETIRED_PROGRESSION_SKILLS = frozenset(
     {"spec-review", "architecture-review", "plan-review", "test-spec-review"}
 )
 POST_CUTOVER_ADAPTER_SKILLS = PUBLISHED_SKILL_INVOCATION_NAMES
-STAGED_V2_ADAPTER_SKILLS = tuple(
-    name for name in POST_CUTOVER_ADAPTER_SKILLS if name != "test-spec"
-)
-STAGED_V2_OPENCODE_COMMAND_ALIASES = tuple(
-    name for name in OPENCODE_COMMAND_ALIASES if name != "test-spec"
-)
+STAGED_V3_ADAPTER_SKILLS = POST_CUTOVER_ADAPTER_SKILLS
+STAGED_V3_OPENCODE_COMMAND_ALIASES = OPENCODE_COMMAND_ALIASES
 CODEX_SKILL_INVOCATION_PATTERN = re.compile(
     r"\$(?:"
     + "|".join(
@@ -1304,6 +1299,7 @@ def render_entrypoint_template(
     *,
     version: str,
     adapter: AdapterConfig,
+    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
 ) -> str:
     """Render one authored thin adapter entrypoint template."""
 
@@ -1313,6 +1309,7 @@ def render_entrypoint_template(
         package_root=adapter.package_root.as_posix(),
         skill_root=adapter.skill_root.as_posix(),
         version=version,
+        command_aliases=", ".join(f"`{alias}`" for alias in command_aliases),
     )
 
 
@@ -1355,6 +1352,7 @@ def _expected_adapter_files_from_reports(
             template_path,
             version=version,
             adapter=config,
+            command_aliases=command_aliases,
         )
 
         for report in reports:
@@ -1901,36 +1899,55 @@ def build_adapter_archives(
     return tuple(archives)
 
 
-def _staged_v2_adapter_files(
+def _staged_adapter_files(
     version: str,
+    skill_names: tuple[str, ...],
+    command_aliases: tuple[str, ...],
+    label: str,
     *,
     skills_root: Path = CANONICAL_SKILLS_DIR,
     template_root: Path = ADAPTER_TEMPLATE_ROOT,
 ) -> dict[Path, str]:
     reports = _validated_skill_reports(skills_root)
     by_name = {report.name: report for report in reports}
-    missing = sorted(set(STAGED_V2_ADAPTER_SKILLS) - set(by_name))
+    missing = sorted(set(skill_names) - set(by_name))
     if missing:
-        raise ValueError(f"staged v2 adapter inventory missing canonical skills: {', '.join(missing)}")
-    selected = tuple(by_name[name] for name in STAGED_V2_ADAPTER_SKILLS)
+        raise ValueError(f"{label} adapter inventory missing canonical skills: {', '.join(missing)}")
+    selected = tuple(by_name[name] for name in skill_names)
     return _expected_adapter_files_from_reports(
         version,
         selected,
         template_root=template_root,
-        command_aliases=STAGED_V2_OPENCODE_COMMAND_ALIASES,
+        command_aliases=command_aliases,
     )
 
 
-def build_staged_v2_adapter_archives(
+def _staged_v3_adapter_files(
+    version: str,
+    *,
+    skills_root: Path = CANONICAL_SKILLS_DIR,
+    template_root: Path = ADAPTER_TEMPLATE_ROOT,
+) -> dict[Path, str]:
+    return _staged_adapter_files(
+        version,
+        STAGED_V3_ADAPTER_SKILLS,
+        STAGED_V3_OPENCODE_COMMAND_ALIASES,
+        "staged v3",
+        skills_root=skills_root,
+        template_root=template_root,
+    )
+
+
+def build_staged_v3_adapter_archives(
     version: str,
     output_dir: Path,
     *,
     skills_root: Path = CANONICAL_SKILLS_DIR,
     template_root: Path = ADAPTER_TEMPLATE_ROOT,
 ) -> tuple[Path, ...]:
-    """Build the inactive v2 adapter candidate without changing tracked output."""
+    """Build the inactive v3 adapter candidate without changing tracked output."""
 
-    expected = _staged_v2_adapter_files(
+    expected = _staged_v3_adapter_files(
         version, skills_root=skills_root, template_root=template_root
     )
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1948,17 +1965,17 @@ def build_staged_v2_adapter_archives(
     return tuple(archives)
 
 
-def validate_staged_v2_adapter_archives(
+def validate_staged_v3_adapter_archives(
     version: str,
     root: Path,
     *,
     skills_root: Path = CANONICAL_SKILLS_DIR,
     template_root: Path = ADAPTER_TEMPLATE_ROOT,
 ) -> list[str]:
-    """Validate exact inactive-v2 archive contents and reject mixed packages."""
+    """Validate exact inactive-v3 archive contents and reject mixed packages."""
 
     try:
-        expected = _staged_v2_adapter_files(
+        expected = _staged_v3_adapter_files(
             version, skills_root=skills_root, template_root=template_root
         )
     except ValueError as exc:
@@ -1968,7 +1985,7 @@ def validate_staged_v2_adapter_archives(
         adapter = ADAPTERS[adapter_name]
         archive_path = root / adapter_archive_name(adapter_name, version)
         if not archive_path.is_file():
-            errors.append(f"missing staged v2 adapter archive: {adapter_name}: {archive_path}")
+            errors.append(f"missing staged v3 adapter archive: {adapter_name}: {archive_path}")
             continue
         expected_files = {
             relative_path.as_posix(): text.encode("utf-8")
@@ -1983,17 +2000,17 @@ def validate_staged_v2_adapter_archives(
                 unexpected = sorted(set(names) - set(expected_names))
                 if missing:
                     errors.append(
-                        f"staged v2 adapter archive missing entries: {adapter_name}: {', '.join(missing[:10])}"
+                        f"staged v3 adapter archive missing entries: {adapter_name}: {', '.join(missing[:10])}"
                     )
                 if unexpected:
                     errors.append(
-                        f"staged v2 adapter archive unexpected entries: {adapter_name}: {', '.join(unexpected[:10])}"
+                        f"staged v3 adapter archive unexpected entries: {adapter_name}: {', '.join(unexpected[:10])}"
                     )
                 for name in sorted(set(names) & set(expected_names)):
                     if archive.read(name) != expected_files[name]:
-                        errors.append(f"staged v2 adapter archive stale entry: {adapter_name}: {name}")
+                        errors.append(f"staged v3 adapter archive stale entry: {adapter_name}: {name}")
         except zipfile.BadZipFile:
-            errors.append(f"invalid staged v2 adapter archive: {adapter_name}: {archive_path}")
+            errors.append(f"invalid staged v3 adapter archive: {adapter_name}: {archive_path}")
     return _dedupe_errors(errors)
 
 

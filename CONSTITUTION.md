@@ -99,7 +99,7 @@ For lifecycle-managed artifacts, `Next artifacts` preserves planned next steps w
 
 Change-local artifacts under `docs/changes/<change-id>/` SHOULD stay concise and MUST link back to approved top-level artifacts instead of becoming a second long-form source of truth.
 
-For non-trivial changes, the baseline change-local artifact pack MUST include `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. New work SHOULD default to `docs/changes/<change-id>/explain-change.md`, while approved legacy top-level `docs/explain/*.md` artifacts remain valid until migrated or retired.
+For non-trivial changes, the baseline change-local artifact pack MUST include `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. V1 and v2 work SHOULD default to `docs/changes/<change-id>/explain-change.md`; after coherent v3 activation, the successful Verify report owns the final durable explanation instead. Approved legacy top-level `docs/explain/*.md` artifacts and completed explain-change records remain historical evidence until migrated or retired by an applicable contract.
 
 Architecture-affecting changes MUST update the relevant architecture document or ADR in the same change.
 
@@ -141,7 +141,7 @@ Synchronization happens within the PR that performs the lifecycle transition, be
 
 For lifecycle-managed proposals, specs, test specs, architecture documents, and ADRs, `verify` MUST block on stale or inconsistent artifacts that are touched, referenced, generated, or authoritative for the changed area, and it MUST report unrelated stale baseline artifacts as warnings instead of blockers.
 
-Before draft PR text exists, `verify` MUST use pre-PR handoff surfaces such as `docs/changes/<change-id>/change.yaml`, explain-change artifacts, stable plan intent, and other touched or referenced authoritative artifacts. Final PR text MUST NOT introduce new authoritative artifact references without rerunning `verify`.
+Before draft PR text exists, `verify` MUST use pre-PR handoff surfaces such as `docs/changes/<change-id>/change.yaml`, the current contract's durable rationale surface, stable plan intent, and other touched or referenced authoritative artifacts. V1 and v2 use the explain-change artifact; v3 produces the explanation only inside a successful Verify report. Final PR text MUST NOT introduce new authoritative artifact references without rerunning `verify`.
 
 Until repository-specific release checks replace the current conservative template behavior, contributors MUST treat `scripts/release-verify.sh` and `release.yml` as non-authoritative for broader completion claims.
 
@@ -149,7 +149,7 @@ Until repository-specific release checks replace the current conservative templa
 
 The following consolidated package-gate rules are current.
 
-Delivery authority is lifecycle-contract keyed. New governed changes MUST use `stage-owned-change-local-v2` and one exact plan-only Delivery Review package in which the plan owns verification allocation. `stage-owned-change-local-v1` changes frozen in `specs/lifecycle-contract-activation.yaml` MAY continue only from their registered post-delivery package. Historical prior-contract artifacts remain readable and MUST NOT authorize new test-spec work.
+After coherent activation, `stage-owned-change-local-v3` MUST be the only current executable contract. Historical v1/v2 records and artifacts remain readable but MUST NOT authorize current progression or new test-spec work. The implementing final-verification change MAY close through its last coherent released v2 package before activation; that bootstrap is not a reusable compatibility branch.
 
 `proposal-review` MUST evaluate proposal direction, scope, and embedded feasibility before design work for governed changes.
 
@@ -161,7 +161,7 @@ Architecture, specification, and plan authorship remain separate. Historical reg
 
 `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` are retired as progression entrypoints. Historical evidence remains readable but does not grant package authority.
 
-`code-review`, `explain-change`, and `verify` MUST happen before non-trivial changes are considered ready for PR.
+The current workflow requires `code-review` and `verify`; only successful Verify produces the final explanation and `branch-ready` evidence consumed by PR. Historical v1/v2 records do not select a current route. The bounded implementing-change bootstrap uses the released v2 closeout only before v3 activation.
 
 After a PR is open, a user-authorized CI repair MAY preserve those completed gates when it only restores already-approved behavior and does not change their decision basis. Such a repair uses existing commands and authority; a substantive or ambiguous correction returns to the earliest affected owning stage.
 
@@ -175,7 +175,7 @@ Every supported formal lifecycle review MUST create durable review evidence or r
 
 A detailed change-local review record MUST be preserved for every material finding before review-driven fixes or downstream routing proceed. For isolated or review-only requests, the record is required even when no downstream handoff follows.
 
-When material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `explain-change`, `verify`, and `pr` until resolved or explicitly deferred by an authorized owner.
+When material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `verify` and `pr` until resolved or explicitly deferred by an authorized owner. Verify creates the final rationale only after success.
 
 Clean required formal reviews with no material findings MUST still create a clean review receipt or report blocked recording. A clean review receipt proves the review happened; it does not by itself settle the reviewed artifact's lifecycle status. A no-material detailed review record requires `review-log.md` but MUST NOT create an empty `review-resolution.md` solely because `reviews/` exists.
 
@@ -211,7 +211,7 @@ Agents MUST keep chat-only reasoning subordinate to tracked repository artifacts
 
 ## Manual skill invocation
 
-Users may manually invoke individual skills such as `verify`, `code-review`, `explain-change`, or `pr` for focused tasks.
+Users may manually invoke individual current skills such as `verify`, `code-review`, or `pr` for focused tasks. Standalone `explain-change` remains invocable only from the released preactivation v2 package; the current v3 package has no standalone explanation stage or historical-contract execution branch.
 
 A manual skill invocation may produce useful output, but it is isolated by default and does not claim that omitted upstream or downstream workflow stages have completed.
 

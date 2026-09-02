@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:934eec5beb6cb53b0fca3664300c08ec90a3c50a84c94044a54018ef31474710",
+  "artifact_id": "proposal",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/proposal-review-r1.md",
+  "stage_authority": "proposal-review"
+}

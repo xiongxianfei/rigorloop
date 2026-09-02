@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "settle-review-package",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:51f4e6913450dd45d06dae3feb298220b9423b77bd414d7a1d3c89ec4bb274f5",
+  "package_kind": "delivery",
+  "review_id": "delivery-review-r1",
+  "stage_authority": "delivery-review"
+}

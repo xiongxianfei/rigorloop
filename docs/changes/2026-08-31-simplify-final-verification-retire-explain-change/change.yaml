@@ -1,0 +1,439 @@
+change_id: 2026-08-31-simplify-final-verification-retire-explain-change
+title: Simplify Final Verification and Retire Explain Change
+classification: default
+risk: medium
+lifecycle_contract: stage-owned-change-local-v2
+artifact_states:
+  adr-impact-aware-final-verification:
+    authoring_evidence: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/adr-authoring-r2.md
+    kind: adr
+    lifecycle_state: review-required
+    path: docs/adr/ADR-20260831-impact-aware-final-verification.md
+    role: supporting
+  architecture:
+    authoring_evidence: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/architecture-authoring-r2.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+    role: primary
+  plan:
+    authoring_evidence: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/plan-authoring-r3.md
+    kind: plan
+    lifecycle_state: review-required
+    path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    role: primary
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-08-31-simplify-final-verification-retire-explain-change.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r1
+      outcome: approved
+      record: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/proposal-review-r1.md
+      round: r1
+    role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/spec-authoring-r2.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/impact-aware-final-verification.md
+    role: primary
+review_packages:
+  delivery:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      plan: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    outcome: approved
+    package_kind: delivery
+    review_id: delivery-review-r3
+    review_round: r3
+    status: approved
+    upstream_review_id: design-review-r2
+  design:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      adr-impact-aware-final-verification: docs/adr/ADR-20260831-impact-aware-final-verification.md
+      architecture: docs/architecture/2026-08-31-impact-aware-final-verification.md
+      spec: specs/impact-aware-final-verification.md
+    outcome: approved
+    package_kind: design
+    review_id: design-review-r2
+    review_round: r2
+    status: approved
+    upstream_review_id: proposal-review-r1
+workflow_state:
+  blocker: null
+  current_stage: verify
+  evidence:
+    - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/explain-change.md
+    - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/verify-report.md
+    - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-v2-dual-readback.md
+  lifecycle_state: active
+  next_stage: verify
+  planned_work:
+    current_milestone: M6
+    final_closeout:
+      evidence:
+        - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/verify-report.md
+        - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-v2-dual-readback.md
+      readiness: not-ready
+      reasons:
+        - lifecycle-gates-open
+        - pr-handoff-pending
+    initialization_basis:
+      review_id: delivery-review-r1
+      review_record: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r1.md
+      review_round: r1
+      reviewed_artifact_path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    latest_review:
+      artifact_id: code-review-final-r1
+      evidence:
+        - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-invocation-code-review-final-r1.yaml
+        - docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-final-r1.md
+      milestone_id: none
+      occurrence: final
+      round: r1
+      stage: code-review
+      status: approved
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+      M4:
+        kind: implementation
+        state: closed
+      M5:
+        kind: implementation
+        state: closed
+      M6:
+        kind: lifecycle-closeout
+        state: review-requested
+    plan_artifact_id: plan
+    remaining_implementation_milestones: []
+workflow: {}
+artifacts:
+  explain_change: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/explain-change.md
+  verify_report: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/verify-report.md
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-pr-preflight-r8.md
+  review_log: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+  reviewed_artifact: code-review-pr-preflight-r8
+  status: clean-with-notes
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 2
+  artifacts:
+    adr-impact-aware-final-verification:
+      artifact_kind: adr
+      artifact_path: docs/adr/ADR-20260831-impact-aware-final-verification.md
+      artifact_role: supporting
+      artifact_sha256: a27977586ef4c3f9929cd5d31ec21c34f0b45c5804614bdb02cf6117e74691c9
+      authoring_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/adr-authoring-r2.md
+      authoring_evidence_sha256: 080ebf05d1a08c7f5affba4d526345ae95bcbf4a66f5274164d985445372c4d9
+      stage_authority: architecture
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+      artifact_role: primary
+      artifact_sha256: e0762dcd0608dfe5d4987abd889167dde340de383007eaeac9772b753696677a
+      authoring_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/architecture-authoring-r2.md
+      authoring_evidence_sha256: 7b0a96fa74cb8298eb272447d29b7c775960374b661b8accf9779123694763bb
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+      artifact_role: primary
+      artifact_sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
+      authoring_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/plan-authoring-r3.md
+      authoring_evidence_sha256: 400580020f6bdc626d72197a06df1ed205e0c33540bc5fc2cca621ec4ebb69e9
+      stage_authority: plan
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-08-31-simplify-final-verification-retire-explain-change.md
+      artifact_role: primary
+      artifact_sha256: afe3f484143c53b1f95e7edbe47bf5fdbafe797b8c504bed58c5d69bae0118d4
+      authoring_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/proposal-authoring.md
+      authoring_evidence_sha256: fdf4c212b6bb7b7f0332b5f969f0e6f4d3ce37dc99714eac1875410fa00c17e6
+      stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/impact-aware-final-verification.md
+      artifact_role: primary
+      artifact_sha256: e4b3e73689520925f3ff03f71338f2ffafb05428a0063937be7116947e5237d6
+      authoring_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/spec-authoring-r2.md
+      authoring_evidence_sha256: 950da0893e731b7900534323f2f0d6a8e6b46958d0b77e6966144f96df26cf26
+      stage_authority: spec
+  correction_history:
+    route-12695a83e4df2e3638de5cce1b6d969bea8240e3f2ff49d0d926e2ae29805098:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-r1-correction-route.md
+      evidence_sha256: 30372450eb8b6a6521347ec029b5c3bf4da64a2b4bd463979f0781fe0d601b8e
+      prior_lifecycle_revision: sha256:d71305992d594299e4a3e02139958184f803668f2d4a2e128822301e2a18fc64
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-r1-correction-return.md
+      return_evidence_sha256: b5d765856663a1e298a0461ff1123e2f75ee93e4642f48c4475d6dac9bdf649c
+      return_stage: code-review
+      route_id: route-12695a83e4df2e3638de5cce1b6d969bea8240e3f2ff49d0d926e2ae29805098
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - FV-M3-CR1
+          - FV-M3-CR2
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-164ffbafe47a29098b6e493cfa57f492d0f70610fb58ce0165a1c38729974668:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-workflow-tail-correction-route.md
+      evidence_sha256: b6ce99831f6cc2602d12d8222017c0016e7c6f0c3aeea5c230b095de1100186d
+      prior_lifecycle_revision: sha256:6aa1086be3cd004b6a76b63e76884452278499ce84d676e41ea1a1f8013bc1d4
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-workflow-tail-correction-return.md
+      return_evidence_sha256: 7ae6e6eca4fdc2f2b7c473c38c14ec13afec30ea200f7fb8de34e1775c53d4a8
+      return_stage: verify
+      route_id: route-164ffbafe47a29098b6e493cfa57f492d0f70610fb58ce0165a1c38729974668
+      source_snapshot:
+        blocker: null
+        current_stage: verify
+        finding_ids:
+          - FV-M6-CR2
+        lifecycle_state: active
+        milestone_id: M6
+        milestone_state: review-requested
+        next_stage: verify
+      status: returned
+    route-b8ed4433e1c03c2cd2928fece127562b226ec04da5b85102285fb2d7435987ce:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-pr-preflight-correction-route.md
+      evidence_sha256: 820626f32f72a0fa5f3da055644a65e4171f2a87bc0924f9e522622957088cfa
+      prior_lifecycle_revision: sha256:806ef36a6d98a580218b28678344f8fccca1831390dd68d5471650d952ef2da7
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-pr-preflight-correction-return.md
+      return_evidence_sha256: 3c9edf454ec90c4918ebec3fb46975cf8d4fced77f55c1be0094da7b794d3cee
+      return_stage: verify
+      route_id: route-b8ed4433e1c03c2cd2928fece127562b226ec04da5b85102285fb2d7435987ce
+      source_snapshot:
+        blocker: null
+        current_stage: verify
+        finding_ids:
+          - FV-M6-CR1
+        lifecycle_state: active
+        milestone_id: M6
+        milestone_state: planned
+        next_stage: pr
+      status: returned
+    route-c326bbc6fbe9dae96806ae94198c4fb4732970347420c15719f90c0e42846dfb:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-r2-correction-route.md
+      evidence_sha256: aa2112f5d529bb48b6b2cee06a7c4529c65bd0b06c0a592cf53511fa9e33a480
+      prior_lifecycle_revision: sha256:0db0531b5daa236087bea2494b943abffe4f9d2da2d19f00e9be67c2b7a9a5a5
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-r2-correction-return.md
+      return_evidence_sha256: 6f0097822962fb4e0906a6e98321fef25002d0c2b98ccc7cadbf637bae33b061
+      return_stage: code-review
+      route_id: route-c326bbc6fbe9dae96806ae94198c4fb4732970347420c15719f90c0e42846dfb
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - FV-M3-CR2
+          - FV-M3-CR3
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-cf16aba0c51eaf3c98028fbae803d630924a5888cea768a14bf6efe677b9d494:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-state-test-correction-route.md
+      evidence_sha256: e1b1ef84d15733b7123a6d47d7f388f68b0b7919e5c521289c22b849ccd4da32
+      prior_lifecycle_revision: sha256:1f606ffe55a8548bc46ede9bebb58da62393208a5df26501524bf98d46f345fb
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-state-test-correction-return.md
+      return_evidence_sha256: 6e4345d60aa27d40c07ea74cd573b3b20ea5aaf3c04f78a2fd9f1b1dc84f8f48
+      return_stage: verify
+      route_id: route-cf16aba0c51eaf3c98028fbae803d630924a5888cea768a14bf6efe677b9d494
+      source_snapshot:
+        blocker: null
+        current_stage: verify
+        finding_ids:
+          - FV-M6-CR4
+        lifecycle_state: active
+        milestone_id: M6
+        milestone_state: review-requested
+        next_stage: verify
+      status: returned
+    route-f68a2810f9d66fc3f6f9359ec760e341aed83fc5e2be3de98aa9829340dd94d0:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-r1-correction-route.md
+      evidence_sha256: 99ddca2b7c2baf640a4a37c8df88463738478ef0e99c540e75a7dcb1d5dd075a
+      prior_lifecycle_revision: sha256:a079fe663fbbc276c6a87a30d693d0f84c6c29679515cce6976026205d2ff208
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-r1-correction-return.md
+      return_evidence_sha256: a15145b3b9ccb6e6e9084a14b600058bd8059cb66e445b4123762429d4d1b2e9
+      return_stage: code-review
+      route_id: route-f68a2810f9d66fc3f6f9359ec760e341aed83fc5e2be3de98aa9829340dd94d0
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - FV-M5-CR1
+          - FV-M5-CR2
+        lifecycle_state: active
+        milestone_id: M5
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-f736d29dd7e784557142941593b12aead48703c4d062d3b62ea99976a9abdce3:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-policy-test-correction-route.md
+      evidence_sha256: 54f1bf8387ef2809b37eda42c040c2996cf8fad8d8d389adfe8dbb383f8733f1
+      prior_lifecycle_revision: sha256:44b907e8664b19accca8c797040c1916a2df18e5448ee0436611b5a937fbfd46
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m6-policy-test-correction-return.md
+      return_evidence_sha256: 2296c04ccebf06641e5cc2e40ecaf657ed7138111943f3e8d95121dbd51989e2
+      return_stage: verify
+      route_id: route-f736d29dd7e784557142941593b12aead48703c4d062d3b62ea99976a9abdce3
+      source_snapshot:
+        blocker: null
+        current_stage: verify
+        finding_ids:
+          - FV-M6-CR3
+        lifecycle_state: active
+        milestone_id: M6
+        milestone_state: review-requested
+        next_stage: verify
+      status: returned
+  milestones:
+    M4:
+      completion_fingerprint: b124cce54db5d9ad1afdc8c260988acd8578bfb2f557da788b9aff1a921dbe9f
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m4-v3-package-parity.md
+      evidence_sha256: bbc03a86c8a7f4f22615c80a56d8656a38b4de306364c24e8f6f64437440651a
+      milestone_id: M4
+      review_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m4-r2.md
+      review_evidence_sha256: d8af323cb4d87404aef380b1a53e833bf03261c9ffea580980233f00b40cf823
+      review_id: code-review-m4-r2
+      review_log_entry_sha256: 88fb52ffd6ff6447110c0686447b3fbff26d7f641606e7a3f1b5867af4af3d81
+      review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m4-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M5:
+      completion_fingerprint: f2e287448f4760744161c923f177ba9d56da506bf6c333b03448842f72f8a89a
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-v3-publication-candidate.md
+      evidence_sha256: 464810f9368e0cc62ed727ec83caecc3d095b4b93627be41e59ea3998fd1a69a
+      milestone_id: M5
+      review_evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m5-r2.md
+      review_evidence_sha256: 67c94951c05c92b8677078e6c8b009308aa68f1bc72fccea483dc1e5b96592f3
+      review_id: code-review-m5-r2
+      review_log_entry_sha256: c980055908ba53137f40f57178cec6c0c6ecaa2c1679146b47c52182a02886ae
+      review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/code-review-m5-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+  package_reviews:
+    delivery:
+      correction_targets: []
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/delivery-review-r3.md
+      evidence_sha256: 0e4bca97987a65019bb84e43334fbac86162ef0f1deff35df3b7da905768b3b3
+      findings: []
+      members:
+        plan: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+      outcome: approved
+      package_kind: delivery
+      review_id: delivery-review-r3
+      review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+      review_log_sha256: bb0c8a0f83fc5093913240315f6439bd1af2c89af223708915fa9d2b85dfee96
+      reviewer_authority: delivery-review
+      round: r3
+      stage_authority: delivery-review
+      upstream_review_id: design-review-r2
+    design:
+      correction_targets: []
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/design-review-r2.md
+      evidence_sha256: d985f7dd3fffb105626223c62b44d7e8b90b7168632b9d35f5e6e9aec850ac93
+      findings: []
+      members:
+        adr-impact-aware-final-verification: docs/adr/ADR-20260831-impact-aware-final-verification.md
+        architecture: docs/architecture/2026-08-31-impact-aware-final-verification.md
+        spec: specs/impact-aware-final-verification.md
+      outcome: approved
+      package_kind: design
+      review_id: design-review-r2
+      review_log_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/review-log.md
+      review_log_sha256: 682a37dcbb8be34fe89b0ee489168822593f3e441345eee79061400e3089b2b3
+      reviewer_authority: design-review
+      round: r2
+      stage_authority: design-review
+      upstream_review_id: proposal-review-r1
+  resolutions: {}
+  reviews:
+    proposal:
+      artifact_path: docs/proposals/2026-08-31-simplify-final-verification-retire-explain-change.md
+      artifact_sha256: afe3f484143c53b1f95e7edbe47bf5fdbafe797b8c504bed58c5d69bae0118d4
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/reviews/proposal-review-r1.md
+      evidence_sha256: b72f787044bff9125d6c42f041416ff605b85a5f729d7541fe8f578966ac8e5c
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r1
+      review_log_sha256: 2ba1edcbb7ada8e4143a603ca344c51c9fcd3deb64d5fd9ced4a2c310f10e889
+      round: r1
+      stage_authority: proposal-review
+  validations:
+    plan:
+      artifact_path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+      artifact_sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
+      evidence_path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/verify-report.md
+      evidence_sha256: 2275a5f80734e2546188c0a8279ce321bb4b1993a8611ccc43e95dc70244e127
+      stage_authority: verify
+      subject_path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+      subject_sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
+  withdrawals: {}

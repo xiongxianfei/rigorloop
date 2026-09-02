@@ -1,0 +1,85 @@
+schema_version: 1
+review_id: code-review-m3-r3
+review_stage: code-review
+review_target: commit:4285c4de
+base_revision: f2c69a20b89399b12b41ee7565113a32bd4dd30e
+head_revision: 4285c4de
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: implement-m3-correction-4285c4de
+reviewer_context_id: independent-code-review-m3-r3
+context_separation_mechanism: fresh-assumption-diff-first-rereview
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-routing
+  - authority-boundary
+  - compatibility
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/adr/ADR-20260831-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-rereview-v1
+  - requirement-to-delivery-model-v1
+  - boundary-first-review-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/impact-aware-final-verification.md
+    revision: 4285c4de
+    sha256: 3aa7aeb6e8b3fd97ef033f5e01da12b313fa65f562934ff67d24f58eac4857e6
+  - path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+    revision: 4285c4de
+    sha256: 3a1062b8f1b16ba66df128f7e341d5e4253ed48dc089e4f293307d38c06fa74a
+  - path: docs/adr/ADR-20260831-impact-aware-final-verification.md
+    revision: 4285c4de
+    sha256: fec451d080cce96f197a8c68512233f1306031ad5feb124d448e2391f1e3abb0
+  - path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    revision: 4285c4de
+    sha256: be59397c12da69495be71c353585ab858642d00704fc1b156a40c5921dacef52
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m3-v3-routing-and-pr.md
+    revision: 4285c4de
+    sha256: f4e0a7a7dabc0e268ebf6114a7f283b36f2e59a87a13733635e864c08050b226
+  - path: commit:4285c4de.diff
+    revision: 4285c4de
+    sha256: e93c1fc3c6c464540aa601b467e54522be20ed090f8dc6e684abf803bc68399a
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-finding-release
+  - verdict-recorded
+clean_review_sufficiency:
+  target_identity: commit:4285c4de
+  inspected_authority: design-review-r1, delivery-review-r1, M3
+  risk_classes: lifecycle-authority, recovery-routing, temporal-identity, compatibility
+  adversarial_hypotheses: legacy reason leakage, review-boundary bypass, invalid owner mutation, unbounded artifact revision
+  direct_proofs: public all-owner matrix, legacy rejection matrix, no-mutation matrix, active-route authority probe
+  challenged_validation: internal evaluator coverage was expanded to public CLI route-and-return transactions
+  uncertain_surfaces: M4 publication and M5 activation remain out of scope
+  confidence: high
+  no_finding_rationale: all prior counterexamples fail and all required public outcomes pass
+second_review_requirement: satisfied-by-r3
+risk_map:
+  affected_behavior: v3 correction routing, return boundaries, blocker state, artifact revision authority, and legacy isolation
+  highest_impact_failure_modes: bypassed rereview, v2 leakage, Verify repair authority, invalid-owner mutation, or unbounded authoring
+  changed_boundaries: public request, transaction storage, correction return, authoring authority, and contract selection
+  evidence_expected: seven public routes and returns, legacy rejection, invalid no-mutation, exact active-route revision, and full M3 validation
+  direct_inspection_areas: request validation, transaction evaluator, return operation, lifecycle reader, public tests, and compatibility fixtures
+  intentionally_out_of_scope: skill publication, adapter generation, activation, and release cutover
+  applicable_risk_classes:
+    - lifecycle-authority
+    - recovery-routing
+    - temporal-identity
+    - compatibility
+  non_applicable_risk_classes:
+    - network-access
+    - credential-handling
+  falsifiable_questions:
+    - Can v1 or v2 accept any v3-only Verify reason?
+    - Can a v3 correction return to Verify before its required review boundary?
+    - Can a non-routed v3 artifact revision acquire authority?

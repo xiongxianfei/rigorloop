@@ -4,16 +4,24 @@ import { isAlias, isMap, isScalar, isSeq, parseAllDocuments, stringify } from "y
 
 export const LIFECYCLE_CONTRACT_V1 = "stage-owned-change-local-v1";
 export const LIFECYCLE_CONTRACT_V2 = "stage-owned-change-local-v2";
+export const LIFECYCLE_CONTRACT_V3 = "stage-owned-change-local-v3";
 export const LEGACY_UNVERSIONED_CONTRACT = "legacy-unversioned";
 export const LIFECYCLE_ACTIVATION_MANIFEST_PATH = "specs/lifecycle-contract-activation.yaml";
+export const FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH = "specs/final-verification-contract-activation.yaml";
 export const PREACTIVATION_LIFECYCLE_MANIFEST = Object.freeze({
   schema_version: 1,
   state: "preactivation",
   activating_source_revision: null,
   changes: Object.freeze([]),
 });
+export const PREACTIVATION_FINAL_VERIFICATION_MANIFEST = Object.freeze({
+  schema_version: 1,
+  state: "preactivation",
+  activating_source_revision: null,
+  changes: Object.freeze([]),
+});
 
-const LIFECYCLE_CONTRACT_VALUES = new Set([LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2]);
+const LIFECYCLE_CONTRACT_VALUES = new Set([LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3]);
 const PRIOR_CONTRACT_CLASSES = new Set([LIFECYCLE_CONTRACT_V1, LEGACY_UNVERSIONED_CONTRACT]);
 const ACTIVATION_STATES = new Set(["preactivation", "active"]);
 const MANIFEST_FIELDS = new Set(["schema_version", "state", "activating_source_revision", "changes"]);
@@ -116,7 +124,7 @@ const REVIEW_AUTHORITIES = Object.freeze([
 ]);
 
 const OPERATION_CONTRACTS = Object.freeze({
-  "record-artifact-revision": { required: ["artifact_id", "artifact_kind", "artifact_role", "artifact_path", "evidence_path", "stage_authority"], authorities: ["proposal", "spec", "architecture", "plan", "test-spec"] },
+  "record-artifact-revision": { required: ["artifact_id", "artifact_kind", "artifact_role", "artifact_path", "evidence_path", "stage_authority"], authorities: ["proposal", "spec", "architecture", "plan"] },
   "record-review": { required: ["artifact_id", "evidence_path", "stage_authority"], authorities: REVIEW_AUTHORITIES },
   "record-validation": { required: ["artifact_id", "evidence_path", "subject_path", "stage_authority"], authorities: ["implement", "verify", "ci-maintenance"] },
   "record-finding-resolution": { required: ["artifact_id", "evidence_path", "finding_id", "stage_authority"], authorities: ["review-resolution"] },
@@ -135,18 +143,9 @@ const OPERATION_CONTRACTS = Object.freeze({
 });
 
 const REPAIR_CONDITIONS = new Set(["reconcile-interrupted-replace", "clear-orphaned-lock"]);
-const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
-const V1_STAGE_TRANSITIONS = Object.freeze({
-  proposal: ["proposal-review"],
-  "proposal-review": ["architecture"],
-  architecture: ["spec"],
-  spec: ["design-review"],
-  "design-review": ["plan"],
-  plan: ["test-spec"],
-  "test-spec": ["delivery-review"],
-  "delivery-review": ["implement"],
-});
-const V2_STAGE_TRANSITIONS = Object.freeze({
+const VERIFICATION_CORRECTION_REASONS = new Set(["system-requirement-gap", "technical-realization-gap", "verification-allocation-gap", "implementation-defect", "stale-or-incomplete-review", "ci-or-environment-gap", "external-evidence-gap"]);
+const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input", ...VERIFICATION_CORRECTION_REASONS]);
+const V3_STAGE_TRANSITIONS = Object.freeze({
   proposal: ["proposal-review"],
   "proposal-review": ["architecture"],
   architecture: ["spec"],
@@ -155,11 +154,18 @@ const V2_STAGE_TRANSITIONS = Object.freeze({
   plan: ["delivery-review"],
   "delivery-review": ["implement"],
 });
-const V1_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan", "test-spec"]);
-const V2_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan"]);
-const V1_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "test-spec", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
-const V2_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "explain-change", "verify", "pr"]);
-const REQUEST_CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "test-spec"]);
+const V3_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan"]);
+const V3_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "ci-maintenance", "external-evidence-acquisition", "verify", "pr"]);
+const VERIFICATION_CORRECTION_OWNERS = Object.freeze({
+  "system-requirement-gap": "spec",
+  "technical-realization-gap": "architecture",
+  "verification-allocation-gap": "plan",
+  "implementation-defect": "implement",
+  "stale-or-incomplete-review": "code-review",
+  "ci-or-environment-gap": "ci-maintenance",
+  "external-evidence-gap": "external-evidence-acquisition",
+});
+const REQUEST_CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "design-review", "plan", "implement", "code-review", "ci-maintenance", "external-evidence-acquisition"]);
 
 function rawUtf8Compare(left, right) {
   return Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8"));
@@ -214,75 +220,103 @@ export function validateLifecycleActivationManifest(manifest) {
   return errors;
 }
 
+export function validateFinalVerificationActivationManifest(manifest) {
+  const errors = [];
+  if (!exactFields(manifest, MANIFEST_FIELDS)) return ["final verification activation manifest must contain only schema_version, state, activating_source_revision, and changes"];
+  if (manifest.schema_version !== 1) errors.push(`final verification activation manifest schema_version: unknown_value ${String(manifest.schema_version)}`);
+  if (!ACTIVATION_STATES.has(manifest.state)) errors.push(`final verification activation manifest state: unknown_value ${String(manifest.state)}`);
+  if (!Array.isArray(manifest.changes)) return [...errors, "final verification activation manifest changes must be an array"];
+
+  if (manifest.changes.length !== 0) errors.push("final verification activation manifest changes must be empty; historical records are not an executable allowlist");
+  if (errors.length) return errors;
+
+  if (manifest.state === "preactivation") {
+    if (manifest.activating_source_revision !== null) errors.push("preactivation final verification manifest activating_source_revision must be null");
+  } else if (typeof manifest.activating_source_revision !== "string" || !/^[0-9a-f]{40}$/.test(manifest.activating_source_revision)) {
+    errors.push("active final verification manifest activating_source_revision must be a 40-character lowercase Git revision");
+  }
+  return errors;
+}
+
 function lifecycleContractError(code, message) {
   const error = new Error(`${code}: ${message}`);
   error.code = code;
   return error;
 }
 
-function hasActiveTestSpecState(change) {
-  const activeStages = new Set(["test-spec", "test-spec-review"]);
-  if (activeStages.has(change.workflow_state?.current_stage) || activeStages.has(change.workflow_state?.next_stage)) return true;
-  if (Object.values(change.artifact_states ?? {}).some((entry) => entry?.kind === "test-spec" && !["abandoned", "archived", "superseded"].includes(entry?.lifecycle_state))) return true;
-  if (Object.keys(change.review_packages?.delivery?.members ?? {}).includes("test-spec")) return true;
-  if (Object.values(change.lifecycle_cli?.artifacts ?? {}).some((entry) => entry?.artifact_kind === "test-spec")) return true;
-  if (Object.values(change.lifecycle_cli?.reviews ?? {}).some((entry) => entry?.stage_authority === "test-spec-review")) return true;
-  if (Object.keys(change.lifecycle_cli?.package_reviews?.delivery?.members ?? {}).includes("test-spec")) return true;
+function hasActiveExplainChangeState(change) {
+  if (change.workflow_state?.current_stage === "explain-change" || change.workflow_state?.next_stage === "explain-change") return true;
+  if (Object.values(change.artifact_states ?? {}).some((entry) => entry?.kind === "explain-change" && !["abandoned", "archived", "superseded"].includes(entry?.lifecycle_state))) return true;
+  if (["explain-change", "explain_change"].some((key) => Object.hasOwn(change.artifacts ?? {}, key))) return true;
+  if (Object.values(change.lifecycle_cli?.artifacts ?? {}).some((entry) => entry?.artifact_kind === "explain-change")) return true;
+  if (Object.values(change.lifecycle_cli?.validations ?? {}).some((entry) => entry?.stage_authority === "explain-change")) return true;
   return false;
 }
 
-export function classifyLifecycleContract(changeId, change, manifest = PREACTIVATION_LIFECYCLE_MANIFEST) {
+export function classifyLifecycleContract(
+  changeId,
+  change,
+  manifest = PREACTIVATION_LIFECYCLE_MANIFEST,
+  finalVerificationManifest = PREACTIVATION_FINAL_VERIFICATION_MANIFEST,
+) {
   const explicit = change?.lifecycle_contract;
   if (explicit !== undefined && !LIFECYCLE_CONTRACT_VALUES.has(explicit)) {
     throw lifecycleContractError("RL_UNSUPPORTED_SCHEMA", `lifecycle_contract: unknown_value ${String(explicit)}`);
   }
   const manifestErrors = validateLifecycleActivationManifest(manifest);
   if (manifestErrors.length) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", manifestErrors[0]);
+  const finalManifestErrors = validateFinalVerificationActivationManifest(finalVerificationManifest);
+  if (finalManifestErrors.length) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", finalManifestErrors[0]);
 
   const contractClass = explicit ?? LEGACY_UNVERSIONED_CONTRACT;
-  if (contractClass === LIFECYCLE_CONTRACT_V2) {
-    if (hasActiveTestSpecState(change)) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", "v2 lifecycle contract carries active test-spec state");
+  if (contractClass === LIFECYCLE_CONTRACT_V3) {
+    if (hasActiveExplainChangeState(change)) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", "v3 lifecycle contract carries active explain-change state");
     return {
       contract_class: contractClass,
-      activation_state: manifest.state,
-      authority: manifest.state === "active" ? "active" : "inactive",
+      activation_state: finalVerificationManifest.state,
+      authority: finalVerificationManifest.state === "active" ? "active" : "inactive",
     };
-  }
-
-  if (manifest.state === "active") {
-    const entry = manifest.changes.find((candidate) => candidate.change_id === changeId);
-    if (!entry) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", `prior-contract change ${changeId} is not present in the activation manifest`);
-    if (entry.contract_class !== contractClass) throw lifecycleContractError("RL_INCOMPATIBLE_VERSION", `prior-contract change ${changeId} does not match activation manifest class ${entry.contract_class}`);
   }
   return {
     contract_class: contractClass,
-    activation_state: manifest.state,
-    authority: manifest.state === "active" ? "prior-compatible" : "preactivation",
+    activation_state: "historical",
+    authority: "historical",
   };
 }
 
 export function lifecycleContractVersion(change) {
   const contract = change?.lifecycle_contract;
-  if (contract === undefined || contract === LIFECYCLE_CONTRACT_V1) return LIFECYCLE_CONTRACT_V1;
-  if (contract === LIFECYCLE_CONTRACT_V2) return LIFECYCLE_CONTRACT_V2;
-  return LIFECYCLE_CONTRACT_V1;
+  if (contract === LIFECYCLE_CONTRACT_V3) return LIFECYCLE_CONTRACT_V3;
+  return null;
 }
 
 export function allowedNextStages(change, sourceStage) {
-  const transitions = lifecycleContractVersion(change) === LIFECYCLE_CONTRACT_V2 ? V2_STAGE_TRANSITIONS : V1_STAGE_TRANSITIONS;
-  return transitions[sourceStage] ?? [];
+  const version = lifecycleContractVersion(change);
+  return version === LIFECYCLE_CONTRACT_V3 ? V3_STAGE_TRANSITIONS[sourceStage] ?? [] : [];
 }
 
 export function allowedArtifactKinds(change) {
-  return lifecycleContractVersion(change) === LIFECYCLE_CONTRACT_V2 ? V2_ARTIFACT_KINDS : V1_ARTIFACT_KINDS;
+  const version = lifecycleContractVersion(change);
+  return version === LIFECYCLE_CONTRACT_V3 ? V3_ARTIFACT_KINDS : [];
 }
 
 export function correctionStageOrder(change) {
-  return lifecycleContractVersion(change) === LIFECYCLE_CONTRACT_V2 ? V2_CORRECTION_STAGES : V1_CORRECTION_STAGES;
+  const version = lifecycleContractVersion(change);
+  return version === LIFECYCLE_CONTRACT_V3 ? V3_CORRECTION_STAGES : [];
 }
 
 export function allowedCorrectionDestinations(change) {
-  return new Set(correctionStageOrder(change).filter((stage) => ["proposal", "spec", "architecture", "design-review", "plan", "test-spec"].includes(stage)));
+  const version = lifecycleContractVersion(change);
+  const destinations = version === LIFECYCLE_CONTRACT_V3
+    ? ["proposal", "spec", "architecture", "design-review", "plan", "implement", "code-review", "ci-maintenance", "external-evidence-acquisition"]
+    : [];
+  return new Set(correctionStageOrder(change).filter((stage) => destinations.includes(stage)));
+}
+
+export function verificationCorrectionOwner(findingKind) {
+  const owner = VERIFICATION_CORRECTION_OWNERS[findingKind];
+  if (!owner) throw invalid(`verification_finding_kind: unknown_value ${String(findingKind)}`);
+  return owner;
 }
 
 function invalid(message) {
@@ -459,7 +493,7 @@ export function validateLifecycleRequest(request) {
       return { ok: false, errors: [requestError(`${field} must be a normalized repository-relative path`)] };
     }
   }
-  if (request.artifact_kind !== undefined && !["proposal", "spec", "architecture", "adr", "plan", "test-spec"].includes(request.artifact_kind)) {
+  if (request.artifact_kind !== undefined && !["proposal", "spec", "architecture", "adr", "plan"].includes(request.artifact_kind)) {
     return { ok: false, errors: [requestError(`unknown artifact_kind ${String(request.artifact_kind)}`)] };
   }
   if (request.artifact_role !== undefined && !["primary", "supporting"].includes(request.artifact_role)) {

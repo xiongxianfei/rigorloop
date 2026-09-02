@@ -8,7 +8,7 @@ and mechanically checkable.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, fields, replace
+from dataclasses import dataclass, field, fields
 from enum import Enum
 from types import MappingProxyType
 from typing import Any, Iterable, Mapping
@@ -25,14 +25,12 @@ class WorkflowStage(ClosedStringEnum):
     SPEC = "spec"
     DESIGN_REVIEW = "design-review"
     PLAN = "plan"
-    TEST_SPEC = "test-spec"
     DELIVERY_REVIEW = "delivery-review"
     IMPLEMENT = "implement"
     CODE_REVIEW = "code-review"
     REVIEW_RESOLUTION = "review-resolution"
     CI_MAINTENANCE = "ci-maintenance"
     FINAL_HOLISTIC_CODE_REVIEW = "final-holistic-code-review"
-    EXPLAIN_CHANGE = "explain-change"
     VERIFY = "verify"
 
 
@@ -44,14 +42,12 @@ class WorkflowPosition(ClosedStringEnum):
     SPEC = "spec"
     DESIGN_REVIEW = "design-review"
     PLAN = "plan"
-    TEST_SPEC = "test-spec"
     DELIVERY_REVIEW = "delivery-review"
     IMPLEMENT = "implement"
     CODE_REVIEW = "code-review"
     REVIEW_RESOLUTION = "review-resolution"
     CI_MAINTENANCE = "ci-maintenance"
     FINAL_HOLISTIC_CODE_REVIEW = "final-holistic-code-review"
-    EXPLAIN_CHANGE = "explain-change"
     VERIFY = "verify"
     PR = "pr"
 
@@ -229,7 +225,6 @@ PUBLIC_TARGET_STAGES = frozenset(
         WorkflowStage.SPEC,
         WorkflowStage.DESIGN_REVIEW,
         WorkflowStage.PLAN,
-        WorkflowStage.TEST_SPEC,
         WorkflowStage.DELIVERY_REVIEW,
         WorkflowStage.IMPLEMENT,
         WorkflowStage.CODE_REVIEW,
@@ -242,7 +237,6 @@ INTERNAL_STAGES = frozenset(
         WorkflowStage.PROPOSAL,
         WorkflowStage.REVIEW_RESOLUTION,
         WorkflowStage.CI_MAINTENANCE,
-        WorkflowStage.EXPLAIN_CHANGE,
         WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW,
     }
 )
@@ -254,7 +248,6 @@ PUBLIC_TARGET_SEQUENCE = (
     WorkflowStage.SPEC,
     WorkflowStage.DESIGN_REVIEW,
     WorkflowStage.PLAN,
-    WorkflowStage.TEST_SPEC,
     WorkflowStage.DELIVERY_REVIEW,
     WorkflowStage.IMPLEMENT,
     WorkflowStage.CODE_REVIEW,
@@ -362,10 +355,8 @@ TRANSITION_RULES: tuple[TransitionRule, ...] = (
     _transition(WorkflowPosition.DESIGN_REVIEW, WorkflowStage.ARCHITECTURE, WorkflowStage.DESIGN_REVIEW, T.PACKAGE_CORRECTION),
     _transition(WorkflowPosition.DESIGN_REVIEW, WorkflowStage.SPEC, WorkflowStage.DESIGN_REVIEW, T.PACKAGE_CORRECTION),
     _transition(WorkflowPosition.DESIGN_REVIEW, WorkflowStage.PLAN, WorkflowStage.PLAN),
-    _transition(WorkflowPosition.PLAN, WorkflowStage.TEST_SPEC, WorkflowStage.TEST_SPEC),
-    _transition(WorkflowPosition.TEST_SPEC, WorkflowStage.DELIVERY_REVIEW, WorkflowStage.DELIVERY_REVIEW),
+    _transition(WorkflowPosition.PLAN, WorkflowStage.DELIVERY_REVIEW, WorkflowStage.DELIVERY_REVIEW),
     _transition(WorkflowPosition.DELIVERY_REVIEW, WorkflowStage.PLAN, WorkflowStage.DELIVERY_REVIEW, T.PACKAGE_CORRECTION),
-    _transition(WorkflowPosition.DELIVERY_REVIEW, WorkflowStage.TEST_SPEC, WorkflowStage.DELIVERY_REVIEW, T.PACKAGE_CORRECTION),
     _transition(WorkflowPosition.DELIVERY_REVIEW, WorkflowStage.IMPLEMENT, WorkflowStage.IMPLEMENT),
     _transition(
         WorkflowPosition.IMPLEMENT,
@@ -419,10 +410,9 @@ TRANSITION_RULES: tuple[TransitionRule, ...] = (
     ),
     _transition(
         WorkflowPosition.FINAL_HOLISTIC_CODE_REVIEW,
-        WorkflowStage.EXPLAIN_CHANGE,
+        WorkflowStage.VERIFY,
         WorkflowStage.VERIFY,
     ),
-    _transition(WorkflowPosition.EXPLAIN_CHANGE, WorkflowStage.VERIFY, WorkflowStage.VERIFY),
     _terminal_transition(WorkflowPosition.VERIFY, WorkflowPosition.PR),
 )
 
@@ -550,76 +540,53 @@ STAGE_POLICIES: tuple[StagePolicy, ...] = (
     _policy(S.ARCHITECTURE, (W.PROPOSAL_REVIEW, W.DESIGN_REVIEW), "architecture", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "accepted proposal review or design correction is current", ("proposal", "proposal-review"), "architecture design envelope is current", ("architecture",), (W.SPEC,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
     _policy(S.SPEC, (W.ARCHITECTURE, W.DESIGN_REVIEW), "spec", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "architecture design envelope or design correction is current", ("proposal-review", "architecture"), "specification is current and design-reviewable", ("spec",), (W.DESIGN_REVIEW,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
     _policy(S.DESIGN_REVIEW, (W.SPEC,), "design-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "design member map and proposal review are current", ("proposal-review", "architecture", "spec", "applicable-adrs"), "current design package review is recorded", ("design-review",), (W.ARCHITECTURE, W.SPEC, W.PLAN), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
-    _policy(S.PLAN, (W.DESIGN_REVIEW, W.DELIVERY_REVIEW), "plan", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "approved design package or delivery correction is current", ("design-review", "architecture", "spec"), "valid active plan handoff is established", ("plan", "current-handoff-summary"), (W.TEST_SPEC,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
-    _policy(S.TEST_SPEC, (W.PLAN, W.DELIVERY_REVIEW), "test-spec", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "plan, approved design, or delivery correction identities are current", ("plan", "design-review", "spec"), "active test spec is authored", ("test-spec",), (W.DELIVERY_REVIEW,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
-    _policy(S.DELIVERY_REVIEW, (W.TEST_SPEC,), "delivery-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "delivery member map and design review are current", ("design-review", "plan", "test-spec"), "current delivery package review is recorded", ("delivery-review",), (W.PLAN, W.TEST_SPEC, W.IMPLEMENT), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
-    _policy(S.IMPLEMENT, (W.DELIVERY_REVIEW, W.CODE_REVIEW), "implement", O.MILESTONE, A.IMPLEMENTATION, C.IMPLEMENTATION, M.PRODUCTION_CODE, P.REQUIRED, "bound plan milestone and delivery package are current", ("design-review", "delivery-review", "plan", "test-spec", "milestone"), "bound implementation exists, validation passes, and plan requests review", ("implementation-diff", "validation", "plan-handoff"), (W.CODE_REVIEW,), R.MANUAL_RECOVERY, X.NONE, B.TARGET_AWARE),
+    _policy(S.PLAN, (W.DESIGN_REVIEW, W.DELIVERY_REVIEW), "plan", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.DOWNSTREAM_AUTHORING_ARTIFACTS, P.REQUIRED, "approved design package or delivery correction is current", ("design-review", "architecture", "spec"), "valid active plan handoff is established", ("plan", "current-handoff-summary"), (W.DELIVERY_REVIEW,), R.RECONCILE_ONLY, X.NONE, B.TARGET_AWARE),
+    _policy(S.DELIVERY_REVIEW, (W.PLAN,), "delivery-review", O.SINGLETON, A.AUTHORING, C.POST_PROPOSAL_AUTHORING, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "delivery plan and design review are current", ("design-review", "plan"), "current delivery package review is recorded", ("delivery-review",), (W.PLAN, W.IMPLEMENT), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_UNSATISFIED_GATE),
+    _policy(S.IMPLEMENT, (W.DELIVERY_REVIEW, W.CODE_REVIEW), "implement", O.MILESTONE, A.IMPLEMENTATION, C.IMPLEMENTATION, M.PRODUCTION_CODE, P.REQUIRED, "bound plan milestone and delivery package are current", ("design-review", "delivery-review", "plan", "milestone"), "bound implementation exists, validation passes, and plan requests review", ("implementation-diff", "validation", "plan-handoff"), (W.CODE_REVIEW,), R.MANUAL_RECOVERY, X.NONE, B.TARGET_AWARE),
     _policy(S.CODE_REVIEW, (W.IMPLEMENT, W.REVIEW_RESOLUTION), "code-review", O.MILESTONE, A.IMPLEMENTATION, C.IMPLEMENTATION, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "bound milestone is review-requested", ("plan", "milestone", "implementation-diff", "validation"), "milestone review is approved and resolution is closed", ("code-review", "review-resolution", "plan-handoff"), (W.IMPLEMENT, W.REVIEW_RESOLUTION, W.CI_MAINTENANCE, W.FINAL_HOLISTIC_CODE_REVIEW), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
     _policy(S.REVIEW_RESOLUTION, (W.CODE_REVIEW, W.FINAL_HOLISTIC_CODE_REVIEW), "review-resolution", O.SINGLETON, A.IMPLEMENTATION, C.IMPLEMENTATION_CORRECTION, frozenset({M.TESTS, M.PRODUCTION_CODE, M.CHANGE_LOCAL_REVIEW_EVIDENCE, M.CHANGE_LOCAL_EVIDENCE}), P.TRIGGERED, "accepted implementation findings require resolution", ("review", "finding-set", "plan"), "required findings have final dispositions and evidence", ("review-resolution",), (W.CODE_REVIEW, W.FINAL_HOLISTIC_CODE_REVIEW), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
-    _policy(S.CI_MAINTENANCE, (W.CODE_REVIEW,), "ci-maintenance", O.SINGLETON, A.IMPLEMENTATION, C.IMPLEMENTATION, M.TESTS, P.TRIGGERED, "approved implementation scope requires CI maintenance", ("plan", "test-spec", "implementation-scope"), "required CI proof is current", ("ci-configuration", "ci-validation"), (W.FINAL_HOLISTIC_CODE_REVIEW,), R.MANUAL_RECOVERY, X.NONE, B.PAUSE_ON_FAILURE),
-    _policy(S.FINAL_HOLISTIC_CODE_REVIEW, (W.CODE_REVIEW, W.CI_MAINTENANCE, W.REVIEW_RESOLUTION), "code-review", O.FINAL, A.IMPLEMENTATION, C.IMPLEMENTATION, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "all milestone reviews and resolution are closed", ("plan", "milestone-reviews", "review-resolution"), "final holistic code review is clean", ("final-code-review",), (W.REVIEW_RESOLUTION, W.EXPLAIN_CHANGE), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
-    _policy(S.EXPLAIN_CHANGE, (W.FINAL_HOLISTIC_CODE_REVIEW,), "explain-change", O.FINAL, A.VERIFICATION, C.VERIFICATION, M.VERIFICATION_EVIDENCE, P.REQUIRED, "verification basis is concrete", ("plan", "final-code-review", "implementation-diff"), "durable explanation is current", ("explain-change",), (W.VERIFY,), R.RECONCILE_ONLY, X.NONE, B.PAUSE_ON_FAILURE),
-    _policy(S.VERIFY, (W.EXPLAIN_CHANGE,), "verify", O.FINAL, A.VERIFICATION, C.VERIFICATION, M.VERIFICATION_EVIDENCE, P.REQUIRED, "all closeout evidence and verification inputs are current", ("plan", "final-code-review", "explain-change", "verification-commands"), "fresh verification passes", ("verify-report", "validation"), (W.PR,), R.MANUAL_RECOVERY, X.NO_AUTOMATIC_REPAIR, B.STOP_BEFORE_PR),
+    _policy(S.CI_MAINTENANCE, (W.CODE_REVIEW,), "ci-maintenance", O.SINGLETON, A.IMPLEMENTATION, C.IMPLEMENTATION, M.TESTS, P.TRIGGERED, "approved implementation scope requires CI maintenance", ("plan", "implementation-scope"), "required CI proof is current", ("ci-configuration", "ci-validation"), (W.FINAL_HOLISTIC_CODE_REVIEW,), R.MANUAL_RECOVERY, X.NONE, B.PAUSE_ON_FAILURE),
+    _policy(S.FINAL_HOLISTIC_CODE_REVIEW, (W.CODE_REVIEW, W.CI_MAINTENANCE, W.REVIEW_RESOLUTION), "code-review", O.FINAL, A.IMPLEMENTATION, C.IMPLEMENTATION, M.CHANGE_LOCAL_REVIEW_EVIDENCE, P.REQUIRED, "all milestone reviews and resolution are closed", ("plan", "milestone-reviews", "review-resolution"), "final holistic code review is clean", ("final-code-review",), (W.REVIEW_RESOLUTION, W.VERIFY), R.RECONCILE_ONLY, X.REVIEWER_OWNED, B.PAUSE_ON_UNSATISFIED_GATE),
+    _policy(S.VERIFY, (W.FINAL_HOLISTIC_CODE_REVIEW,), "verify", O.FINAL, A.VERIFICATION, C.VERIFICATION, M.VERIFICATION_EVIDENCE, P.REQUIRED, "all closeout evidence and verification inputs are current", ("plan", "final-code-review", "verification-commands"), "verification passes and the final explanation is recorded", ("verify-report", "validation"), (W.PR,), R.MANUAL_RECOVERY, X.NO_AUTOMATIC_REPAIR, B.STOP_BEFORE_PR),
 )
 
-LIFECYCLE_CONTRACT_V1 = "stage-owned-change-local-v1"
-LIFECYCLE_CONTRACT_V2 = "stage-owned-change-local-v2"
-V2_PUBLIC_TARGET_STAGES = PUBLIC_TARGET_STAGES - {WorkflowStage.TEST_SPEC}
-V2_PUBLIC_TARGET_SEQUENCE = tuple(stage for stage in PUBLIC_TARGET_SEQUENCE if stage != WorkflowStage.TEST_SPEC)
-_V2_REMOVED_RULES = {
-    (WorkflowPosition.PLAN, WorkflowStage.TEST_SPEC),
-    (WorkflowPosition.TEST_SPEC, WorkflowStage.DELIVERY_REVIEW),
-    (WorkflowPosition.DELIVERY_REVIEW, WorkflowStage.TEST_SPEC),
-}
-_V2_PLAN_TO_DELIVERY = TransitionRule(
-    from_position=WorkflowPosition.PLAN,
-    to_position=WorkflowPosition.DELIVERY_REVIEW,
-    operation=WorkflowStage.DELIVERY_REVIEW,
-    allowed_targets=frozenset(V2_PUBLIC_TARGET_SEQUENCE[V2_PUBLIC_TARGET_SEQUENCE.index(WorkflowStage.DELIVERY_REVIEW):]),
-    guard=TransitionGuard.ALWAYS,
-)
-V2_TRANSITION_RULES = tuple(
-    replace(rule, allowed_targets=rule.allowed_targets - {WorkflowStage.TEST_SPEC})
-    for rule in TRANSITION_RULES
-    if (rule.from_position, rule.operation) not in _V2_REMOVED_RULES
-    and rule.from_position != WorkflowPosition.TEST_SPEC
-) + (_V2_PLAN_TO_DELIVERY,)
+LIFECYCLE_CONTRACT_V3 = "stage-owned-change-local-v3"
+
+VERIFICATION_CORRECTION_OWNERS = MappingProxyType({
+    "system-requirement-gap": "spec",
+    "technical-realization-gap": "architecture",
+    "verification-allocation-gap": "plan",
+    "implementation-defect": "implement",
+    "stale-or-incomplete-review": "code-review",
+    "ci-or-environment-gap": "ci-maintenance",
+    "external-evidence-gap": "external-evidence-acquisition",
+})
 
 
-def _v2_policy(policy: StagePolicy) -> StagePolicy:
-    incoming = frozenset(rule for rule in V2_TRANSITION_RULES if rule.operation == policy.stage)
-    outgoing = frozenset(rule for rule in V2_TRANSITION_RULES if rule.from_position == WorkflowPosition(policy.stage.value))
-    inputs = policy.required_input_identities - {"test-spec"}
-    if policy.stage == WorkflowStage.DELIVERY_REVIEW:
-        inputs = frozenset({"design-review", "plan"})
-    return replace(policy, predecessor_rule=incoming, required_input_identities=inputs, next_stage_calculation=outgoing)
+def verification_correction_owner(finding_kind: str) -> str:
+    """Return the sole owning route; Verify records the finding but never repairs it."""
 
-
-V2_STAGE_POLICIES = tuple(_v2_policy(policy) for policy in STAGE_POLICIES if policy.stage != WorkflowStage.TEST_SPEC)
-V2_STAGE_POLICY_BY_STAGE = MappingProxyType({policy.stage.value: policy for policy in V2_STAGE_POLICIES})
+    owner = VERIFICATION_CORRECTION_OWNERS.get(finding_kind)
+    if owner is None:
+        raise ValueError(f"verification_finding_kind: unknown_value {finding_kind}")
+    return owner
 
 
 def public_target_stages_for_contract(contract: str) -> frozenset[WorkflowStage]:
-    if contract == LIFECYCLE_CONTRACT_V1:
+    if contract == LIFECYCLE_CONTRACT_V3:
         return PUBLIC_TARGET_STAGES
-    if contract == LIFECYCLE_CONTRACT_V2:
-        return V2_PUBLIC_TARGET_STAGES
     raise ValueError(f"lifecycle_contract: unknown_value {contract}")
 
 
 def stage_policy_by_stage_for_contract(contract: str) -> Mapping[str, StagePolicy]:
-    if contract == LIFECYCLE_CONTRACT_V1:
+    if contract == LIFECYCLE_CONTRACT_V3:
         return STAGE_POLICY_BY_STAGE
-    if contract == LIFECYCLE_CONTRACT_V2:
-        return V2_STAGE_POLICY_BY_STAGE
     raise ValueError(f"lifecycle_contract: unknown_value {contract}")
 
 
 def transition_rules_for_contract(contract: str) -> tuple[TransitionRule, ...]:
-    if contract == LIFECYCLE_CONTRACT_V1:
+    if contract == LIFECYCLE_CONTRACT_V3:
         return TRANSITION_RULES
-    if contract == LIFECYCLE_CONTRACT_V2:
-        return V2_TRANSITION_RULES
     raise ValueError(f"lifecycle_contract: unknown_value {contract}")
 
 
@@ -740,7 +707,6 @@ def validate_policy_registry(policies: Iterable[StagePolicy]) -> list[str]:
     milestone_stages = {WorkflowStage.IMPLEMENT, WorkflowStage.CODE_REVIEW}
     final_stages = {
         WorkflowStage.FINAL_HOLISTIC_CODE_REVIEW,
-        WorkflowStage.EXPLAIN_CHANGE,
         WorkflowStage.VERIFY,
     }
     for policy in records:
@@ -802,7 +768,7 @@ def is_immediate_predecessor(
     from_position: WorkflowPosition,
     to_stage: WorkflowStage,
     *,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> bool:
     """Check structural adjacency without granting transition permission."""
 
@@ -812,7 +778,7 @@ def is_immediate_predecessor(
     )
 
 
-def can_operation_fit_target(operation: WorkflowStage, target: WorkflowStage, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> bool:
+def can_operation_fit_target(operation: WorkflowStage, target: WorkflowStage, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V3) -> bool:
     """Return whether an operation can fit a parent target structurally.
 
     Parent authorization validation has no concrete transition predecessor and
@@ -827,7 +793,7 @@ def can_operation_fit_target(operation: WorkflowStage, target: WorkflowStage, *,
     )
 
 
-def target_completion_predicate(stage: WorkflowStage | str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V1) -> dict[str, str]:
+def target_completion_predicate(stage: WorkflowStage | str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V3) -> dict[str, str]:
     """Project the one canonical public-target completion predicate."""
 
     stage_name = stage.value if isinstance(stage, WorkflowStage) else stage
@@ -1005,7 +971,7 @@ def _evaluate_occurrence(
 def evaluate_transition(
     context: TransitionContext,
     *,
-    lifecycle_contract: str = LIFECYCLE_CONTRACT_V1,
+    lifecycle_contract: str = LIFECYCLE_CONTRACT_V3,
 ) -> TransitionEvaluation:
     """Evaluate one exact transition rule against target and predicate context."""
 

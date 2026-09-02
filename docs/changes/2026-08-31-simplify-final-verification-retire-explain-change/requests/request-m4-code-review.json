@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:ec0c337fb26e31b49525b72aafaedfc0934378a9ee5cea797a790e7358ef2d9a",
+  "milestone_id": "M4",
+  "evidence_path": "docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m4-v3-package-parity.md",
+  "stage_authority": "workflow"
+}

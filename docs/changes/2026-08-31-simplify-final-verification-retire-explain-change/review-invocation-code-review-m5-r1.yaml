@@ -1,0 +1,75 @@
+schema_version: 1
+review_id: code-review-m5-r1
+review_stage: code-review
+review_target: commit:85ec0825
+base_revision: 60136823
+head_revision: 85ec0825
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: implement-m5-85ec0825
+reviewer_context_id: independent-code-review-m5-r1
+context_separation_mechanism: fresh-assumption-diff-first-review
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-activation
+  - publication-authority
+  - generated-package-parity
+  - compatibility
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/adr/ADR-20260831-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - requirement-to-delivery-model-v1
+  - boundary-first-review-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/impact-aware-final-verification.md
+    revision: 85ec0825
+    sha256: e4b3e73689520925f3ff03f71338f2ffafb05428a0063937be7116947e5237d6
+  - path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+    revision: 85ec0825
+    sha256: e0762dcd0608dfe5d4987abd889167dde340de383007eaeac9772b753696677a
+  - path: docs/adr/ADR-20260831-impact-aware-final-verification.md
+    revision: 85ec0825
+    sha256: a27977586ef4c3f9929cd5d31ec21c34f0b45c5804614bdb02cf6117e74691c9
+  - path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    revision: 85ec0825
+    sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-v3-publication-candidate.md
+    revision: 85ec0825
+    sha256: 787b9adfea1efec52f3f2eb258d0c123499599d2661bc6f79c5d9d3a204b56cd
+  - path: commit:60136823..17140ccb.diff
+    revision: 17140ccb
+    sha256: b78fcb6eaa6d54da92c45b23f9464fe410e8f8755512a91c730890de3c5864cb
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+risk_map:
+  affected_behavior: current lifecycle selection, public stage inventory, historical reads, Verify ownership, adapter publication candidate, and activation boundary
+  highest_impact_failure_modes: mixed current route, revived legacy progression, premature activation, missing Verify resource, false adapter entrypoint, or historical mutation
+  changed_boundaries: runtime selector, workflow automation, canonical skills, adapter manifest, generated archives, and public guidance
+  evidence_expected: public v3 graph, read-only history, retired-stage rejection, exact corrections, success-only explanation, all-adapter parity, preactivation identity, and no historical mutation
+  direct_inspection_areas: lifecycle runtime/readers, current docs, skill inventory, adapter templates and archives, activation manifest, release paths, and public tests
+  intentionally_out_of_scope: M6 closeout, release activation, publication, tagging, deployment, and final Verify
+  applicable_risk_classes:
+    - lifecycle-activation
+    - publication-authority
+    - generated-package-parity
+    - compatibility
+  non_applicable_risk_classes:
+    - credentials
+    - external-network
+  falsifiable_questions:
+    - Does any current public surface route through explain-change or a retired review stage?
+    - Can v1 or v2 receive current progression authority?
+    - Do generated adapter entrypoints truthfully describe their actual current skills and aliases?
+    - Did M5 create activation, release, or historical mutation evidence?

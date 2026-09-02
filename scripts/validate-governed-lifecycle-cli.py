@@ -10,13 +10,15 @@ import sys
 from pathlib import Path
 
 from artifact_lifecycle_contracts import (
+    FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH,
     LEGACY_UNVERSIONED_CONTRACT,
     LIFECYCLE_ACTIVATION_MANIFEST_PATH,
     LIFECYCLE_CONTRACT_V1,
-    LIFECYCLE_CONTRACT_V2,
+    LIFECYCLE_CONTRACT_V3,
     parse_lifecycle_activation_manifest,
     validate_lifecycle_activation_manifest,
     validate_lifecycle_activation_prerequisites,
+    validate_final_verification_activation_manifest,
 )
 
 
@@ -39,6 +41,51 @@ BASELINE_WARNINGS = {
 RETIRED_PROGRESSION_STAGES = frozenset({
     "spec-review", "architecture-review", "plan-review", "test-spec-review",
 })
+GOVERNED_CONTRACTS = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V3, "stage-owned-change-local-v2"})
+_DEFAULT_METADATA_LOADER = None
+
+
+def change_metadata_loader():
+    """Load the repository's safe YAML parser once for semantic contract discovery."""
+    global _DEFAULT_METADATA_LOADER
+    if _DEFAULT_METADATA_LOADER is None:
+        scripts_dir = str(ROOT / "scripts")
+        if scripts_dir not in sys.path:
+            sys.path.insert(0, scripts_dir)
+        _DEFAULT_METADATA_LOADER = runpy.run_path(
+            str(ROOT / "scripts" / "validate-change-metadata.py")
+        )["load_yaml"]
+    return _DEFAULT_METADATA_LOADER
+
+
+def parsed_change_inventory(root: Path = ROOT, *, loader=None) -> tuple[dict[str, dict], list[str]]:
+    """Return semantic lifecycle classes for every tracked change record."""
+    load = loader or change_metadata_loader()
+    records: dict[str, dict] = {}
+    errors: list[str] = []
+    paths = sorted(
+        (root / "docs" / "changes").glob("*/change.yaml"),
+        key=lambda path: path.parent.name.encode("utf-8"),
+    )
+    for path in paths:
+        change_id = path.parent.name
+        try:
+            metadata = load(path)
+        except Exception as exc:
+            errors.append(f"change metadata {change_id} unreadable: {exc}")
+            continue
+        if not isinstance(metadata, dict):
+            errors.append(f"change metadata {change_id} must be a mapping")
+            continue
+        if "lifecycle_contract" in metadata:
+            contract = metadata.get("lifecycle_contract")
+            if contract not in GOVERNED_CONTRACTS:
+                errors.append(f"change metadata {change_id} lifecycle_contract: unknown_value {contract}")
+                continue
+        else:
+            contract = LEGACY_UNVERSIONED_CONTRACT
+        records[change_id] = {"path": path, "metadata": metadata, "contract": contract}
+    return records, errors
 
 
 def legacy_progression_dependency(path: Path) -> list[str]:
@@ -76,12 +123,12 @@ def baseline_matches(change_id: str, payload: dict) -> bool:
 
 
 def governed_records(root: Path = ROOT) -> list[tuple[str, Path]]:
-    records = []
-    for path in sorted((root / "docs" / "changes").glob("*/change.yaml")):
-        text = path.read_text(encoding="utf-8")
-        if any(f"lifecycle_contract: {contract}" in text for contract in (LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2)):
-            records.append((path.parent.name, path))
-    return records
+    records, _ = parsed_change_inventory(root)
+    return [
+        (change_id, entry["path"])
+        for change_id, entry in records.items()
+        if entry["contract"] in GOVERNED_CONTRACTS
+    ]
 
 
 def activation_inventory_errors(root: Path = ROOT, *, loader=None) -> list[str]:
@@ -95,17 +142,14 @@ def activation_inventory_errors(root: Path = ROOT, *, loader=None) -> list[str]:
     if errors or manifest.get("state") != "active":
         return errors or ["activation manifest state must be active"]
 
-    paths = sorted((root / "docs" / "changes").glob("*/change.yaml"), key=lambda path: path.parent.name.encode("utf-8"))
-    actual_classes = {}
-    for path in paths:
-        text = path.read_text(encoding="utf-8")
-        if f"lifecycle_contract: {LIFECYCLE_CONTRACT_V1}" in text:
-            contract = LIFECYCLE_CONTRACT_V1
-        elif f"lifecycle_contract: {LIFECYCLE_CONTRACT_V2}" in text:
-            contract = LIFECYCLE_CONTRACT_V2
-        else:
-            contract = LEGACY_UNVERSIONED_CONTRACT
-        actual_classes[path.parent.name] = contract
+    inventory, inventory_errors = parsed_change_inventory(root, loader=loader)
+    if inventory_errors:
+        return inventory_errors
+    actual_classes = {
+        change_id: entry["contract"]
+        for change_id, entry in inventory.items()
+        if entry["contract"] in {LIFECYCLE_CONTRACT_V1, LEGACY_UNVERSIONED_CONTRACT}
+    }
 
     frozen_classes = {entry["change_id"]: entry["contract_class"] for entry in manifest["changes"]}
     if frozen_classes != actual_classes:
@@ -117,18 +161,26 @@ def activation_inventory_errors(root: Path = ROOT, *, loader=None) -> list[str]:
         )
         return [f"activation inventory mismatch: missing={missing}, extra={extra}, class_mismatch={changed}"]
 
-    if loader is None:
-        scripts_dir = str(ROOT / "scripts")
-        if scripts_dir not in sys.path:
-            sys.path.insert(0, scripts_dir)
-        loader = runpy.run_path(str(ROOT / "scripts" / "validate-change-metadata.py"))["load_yaml"]
     records = {}
-    for path in paths:
-        if actual_classes[path.parent.name] == LEGACY_UNVERSIONED_CONTRACT:
-            records[path.parent.name] = {"workflow_state": {"lifecycle_state": "completed"}}
+    for change_id, entry in inventory.items():
+        if change_id not in actual_classes:
+            continue
+        if actual_classes[change_id] == LEGACY_UNVERSIONED_CONTRACT:
+            records[change_id] = {"workflow_state": {"lifecycle_state": "completed"}}
         else:
-            records[path.parent.name] = loader(path)
+            records[change_id] = entry["metadata"]
     return validate_lifecycle_activation_prerequisites(manifest, records)
+
+
+def final_verification_manifest_errors(root: Path = ROOT, *, loader=None) -> list[str]:
+    """Validate the inactive or active v3 activation boundary."""
+    manifest_path = root / FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH
+    try:
+        manifest = parse_lifecycle_activation_manifest(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        return [f"final verification activation manifest unreadable: {exc}"]
+    errors = validate_final_verification_activation_manifest(manifest)
+    return errors
 
 
 def result_codes(payload: dict) -> list[str]:
@@ -184,7 +236,8 @@ def build_report(records: list[tuple[str, Path]], *, runner=subprocess.run, root
 def main(*, records=None, runner=subprocess.run, root: Path = ROOT, output=sys.stdout) -> int:
     report = build_report(governed_records(root) if records is None else records, runner=runner, root=root)
     report["activation_errors"] = activation_inventory_errors(root)
-    if report["activation_errors"]:
+    report["final_verification_activation_errors"] = final_verification_manifest_errors(root)
+    if report["activation_errors"] or report["final_verification_activation_errors"]:
         report["status"] = "failed"
     print(json.dumps(report, indent=2, sort_keys=True), file=output)
     return 0 if report["status"] == "passed" else 1

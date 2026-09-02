@@ -1,0 +1,87 @@
+schema_version: 1
+review_id: code-review-m5-r2
+review_stage: code-review
+review_target: commit:96af0c70ce1622a41eb93b5c48429d62c38fda79
+base_revision: 60136823
+head_revision: 96af0c70ce1622a41eb93b5c48429d62c38fda79
+native_review_status: clean-with-notes
+review_gate_outcome: blocked
+independence_level: L1
+author_context_id: implement-m5-correction-5ec4095c
+reviewer_context_id: independent-code-review-m5-r2
+context_separation_mechanism: fresh-assumption-diff-first-rereview
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-activation
+  - publication-authority
+  - generated-package-parity
+  - compatibility
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/adr/ADR-20260831-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-rereview-v1
+  - requirement-to-delivery-model-v1
+  - boundary-first-review-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/impact-aware-final-verification.md
+    revision: 96af0c70
+    sha256: e4b3e73689520925f3ff03f71338f2ffafb05428a0063937be7116947e5237d6
+  - path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+    revision: 96af0c70
+    sha256: e0762dcd0608dfe5d4987abd889167dde340de383007eaeac9772b753696677a
+  - path: docs/adr/ADR-20260831-impact-aware-final-verification.md
+    revision: 96af0c70
+    sha256: a27977586ef4c3f9929cd5d31ec21c34f0b45c5804614bdb02cf6117e74691c9
+  - path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    revision: 96af0c70
+    sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m5-v3-publication-candidate.md
+    revision: 96af0c70
+    sha256: 464810f9368e0cc62ed727ec83caecc3d095b4b93627be41e59ea3998fd1a69a
+  - path: commit:60136823..96af0c70.diff
+    revision: 96af0c70
+    sha256: b1c3ad2090e9c88a500d2e4e05dbb29c51a7c472f902b7767372af726e6a27f1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-finding-release
+  - verdict-recorded
+clean_review_sufficiency:
+  target_identity: commit:96af0c70ce1622a41eb93b5c48429d62c38fda79
+  inspected_authority: design-review-r2, delivery-review-r3, M5
+  risk_classes: lifecycle-activation, publication-authority, generated-package-parity, compatibility
+  adversarial_hypotheses: stale root route, premature explanation, alias declaration drift, released-versus-candidate confusion, premature activation, or historical mutation
+  direct_proofs: exact README scan, generated OpenCode archive probe, full adapter suite, activation diff check, and historical-path audit
+  challenged_validation: author evidence was supplemented by independent focused tests, actual generated-file comparison, and the complete adapter distribution suite
+  uncertain_surfaces: M6 historical-v2 closeout, final holistic review, activation, publication, and release remain out of scope
+  confidence: high
+  no_finding_rationale: both R1 counterexamples are resolved and the complete effective M5 candidate remains coherent at its public and generated boundaries
+second_review_requirement: satisfied-by-r2
+risk_map:
+  affected_behavior: public lifecycle guidance, generated OpenCode entrypoint aliases, adapter candidate metadata, and historical-release wording
+  highest_impact_failure_modes: mixed current route, pre-Verify explanation, false generated alias inventory, premature activation claim, or historical archive mutation
+  changed_boundaries: root public documentation, generated entrypoint composition, adapter support metadata, and correction evidence
+  evidence_expected: exact v3 route, success-only explanation, canonical/generated alias equality, non-authoritative candidate wording, preactivation identity, and unchanged history
+  direct_inspection_areas: README, adapter template and renderer, generated file map, adapter support guide, activation manifest, release paths, and M5 evidence
+  intentionally_out_of_scope: M6 closeout, activation record, publication, release, final Verify, and PR
+  applicable_risk_classes:
+    - lifecycle-activation
+    - publication-authority
+    - generated-package-parity
+    - compatibility
+  non_applicable_risk_classes:
+    - network-access
+    - credential-handling
+  falsifiable_questions:
+    - Does any current public README route through a retired stage or standalone explanation artifact?
+    - Can a non-successful Verify attempt own the final explanation?
+    - Does the generated OpenCode entrypoint declare exactly the aliases actually generated from the canonical tuple?
+    - Does candidate support prose claim publication authority or mutate historical releases?

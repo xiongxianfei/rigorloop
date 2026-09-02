@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "start-milestone",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:46e575f744ff2e3921fa7795daf5b51f9386290b8315147542365e3597ad81d1",
+  "milestone_id": "M1",
+  "stage_authority": "workflow"
+}

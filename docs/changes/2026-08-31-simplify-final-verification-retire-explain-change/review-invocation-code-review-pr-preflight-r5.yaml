@@ -1,0 +1,34 @@
+schema_version: 1
+review_id: code-review-pr-preflight-r5
+review_stage: code-review
+review_target: commit:0dd08612
+base_revision: 0dd08612
+head_revision: 0dd08612
+native_review_status: changes-requested
+review_gate_outcome: blocked
+independence_level: L1
+author_context_id: post-r4-pr-preflight-policy-test
+reviewer_context_id: independent-pr-preflight-code-review-r5
+context_separation_mechanism: focused-failure-reproduction-production-comparison-and-sibling-scan
+risk_tier: elevated
+risk_tier_triggers:
+  - executable-contract-selection
+  - retired-stage-vocabulary
+  - lifecycle-compatibility
+governing_artifacts:
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-v1
+  - requirement-to-delivery-model-v1
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - failure-reproduced
+  - complete-test-file-inspected
+  - sibling-direct-reference-scan-completed
+  - consolidated-correction-probed
+  - finding-recorded
+second_review_requirement: required-after-correction

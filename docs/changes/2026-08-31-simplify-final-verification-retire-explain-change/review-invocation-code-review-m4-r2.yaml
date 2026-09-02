@@ -1,0 +1,87 @@
+schema_version: 1
+review_id: code-review-m4-r2
+review_stage: code-review
+review_target: commit:64bd8791
+base_revision: 585c2beecea0ddda0ae11ed8f0b1a53b24310052
+head_revision: 64bd879137b9
+native_review_status: clean-with-notes
+review_gate_outcome: blocked
+independence_level: L1
+author_context_id: implement-m4-correction-64bd8791
+reviewer_context_id: independent-code-review-m4-r2
+context_separation_mechanism: fresh-assumption-diff-first-rereview
+risk_tier: elevated
+risk_tier_triggers:
+  - publication-authority
+  - semantic-validation
+  - generated-package-parity
+  - compatibility
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/impact-aware-final-verification.md
+  - docs/architecture/2026-08-31-impact-aware-final-verification.md
+  - docs/adr/ADR-20260831-impact-aware-final-verification.md
+  - docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+formal_criteria:
+  - code-review-rereview-v1
+  - requirement-to-delivery-model-v1
+  - boundary-first-review-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/impact-aware-final-verification.md
+    revision: 64bd8791
+    sha256: e4b3e73689520925f3ff03f71338f2ffafb05428a0063937be7116947e5237d6
+  - path: docs/architecture/2026-08-31-impact-aware-final-verification.md
+    revision: 64bd8791
+    sha256: e0762dcd0608dfe5d4987abd889167dde340de383007eaeac9772b753696677a
+  - path: docs/adr/ADR-20260831-impact-aware-final-verification.md
+    revision: 64bd8791
+    sha256: a27977586ef4c3f9929cd5d31ec21c34f0b45c5804614bdb02cf6117e74691c9
+  - path: docs/plans/2026-08-31-simplify-final-verification-retire-explain-change.md
+    revision: 64bd8791
+    sha256: 5bdf89552ab9a0f88988c62f5d9ae57dae8e12a184d18bb678fc73254fa81514
+  - path: docs/changes/2026-08-31-simplify-final-verification-retire-explain-change/evidence/m4-v3-package-parity.md
+    revision: 64bd8791
+    sha256: bbc03a86c8a7f4f22615c80a56d8656a38b4de306364c24e8f6f64437440651a
+  - path: commit:585c2beecea0ddda0ae11ed8f0b1a53b24310052..64bd8791.diff
+    revision: 64bd8791
+    sha256: 535e82b60c0c9b8961fc7439622bec7164fd0bbbef87cfc0889a60410f10156c
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-finding-release
+  - verdict-recorded
+clean_review_sufficiency:
+  target_identity: commit:64bd8791
+  inspected_authority: design-review-r2, delivery-review-r3, M4
+  risk_classes: publication-authority, semantic-validation, generated-package-parity, compatibility
+  adversarial_hypotheses: pre-Verify explanation dependency, reusable legacy route, nested last-wins authority, mixed adapter inventory, historical archive mutation
+  direct_proofs: canonical semantic scan, three-adapter archive inspection, recursive duplicate reversal matrix, corrected single-review fixture, historical-path audit
+  challenged_validation: passing package tests were supplemented by direct parser probes and source-level duplicate-scanner inspection
+  uncertain_surfaces: M5 candidate assembly, M6 v2 closeout, activation, and final holistic review remain out of scope
+  confidence: high
+  no_finding_rationale: both R1 counterexamples fail and the complete corrected M4 slice satisfies the revised package contract
+second_review_requirement: satisfied-by-r2
+risk_map:
+  affected_behavior: v3 skill routing, success-only explanation ownership, boundary-proof authority, adapter candidate assembly, and historical compatibility
+  highest_impact_failure_modes: impossible Verify prerequisite, legacy route leakage, ambiguous nested plan authority, mixed adapter inventory, or archive mutation
+  changed_boundaries: canonical skill composition, governed plan proof, staged adapter packaging, lifecycle authority wording, and compatibility
+  evidence_expected: no pre-Verify rationale input, one current v3 route, recursive duplicate rejection, all-three-candidate parity, and unchanged historical archives
+  direct_inspection_areas: Verify prerequisites and handoff, Workflow current route, change-metadata parser, boundary proof consumer, staged archives, and changed-path scope
+  intentionally_out_of_scope: M5 candidate assembly, M6 bootstrap closeout, public activation, and final branch verification
+  applicable_risk_classes:
+    - publication-authority
+    - semantic-composition
+    - generated-package-parity
+    - compatibility
+  non_applicable_risk_classes:
+    - network-access
+    - credential-handling
+  falsifiable_questions:
+    - Can current Verify require a standalone explanation before it runs?
+    - Can any current skill route progress a historical v1 or v2 record?
+    - Can duplicate nested change metadata select a plan in either order?
+    - Can any generated v3 adapter omit a Verify resource or contain explain-change?

@@ -28,7 +28,7 @@ each prior or discovered issue as `resolved`, `still-present`,
 
 Clean automated reviews require a clean-review sufficiency receipt containing target identity, independence level, inspected authority, risk classes, adversarial hypotheses, direct proofs or reproductions, challenged validation, uncertain surfaces, confidence, and no-finding rationale. A clean automated review may advance only when the manifest, phase receipts, clean receipt, risk-tier escalation, unresolved-finding, and second-review gates are satisfied.
 
-A final holistic code review is required before `explain-change` or `verify`.
+A final holistic code review is required before `verify`.
 It covers the complete final diff, cross-milestone interactions, governing
 proposal, spec, test spec, architecture, plan, resolutions, final validation
 selection, generated or derived artifacts, and cross-milestone scope. It is

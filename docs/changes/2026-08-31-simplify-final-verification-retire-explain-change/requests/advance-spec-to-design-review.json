@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "advance-stage",
+  "change_id": "2026-08-31-simplify-final-verification-retire-explain-change",
+  "expected_lifecycle_revision": "sha256:37f73640d112cbf8ec16bff2c22d3113ce9275d264448ee468e948e675edca7e",
+  "source_stage": "spec",
+  "destination_stage": "design-review",
+  "stage_authority": "workflow"
+}

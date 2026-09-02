@@ -11,7 +11,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from artifact_lifecycle_contracts import ARCHITECTURE_CONTRACT, validate_lifecycle_activation_manifest
+from artifact_lifecycle_contracts import (
+    ARCHITECTURE_CONTRACT,
+    validate_final_verification_activation_manifest,
+    validate_lifecycle_activation_manifest,
+)
 from artifact_lifecycle_validation import validate_release_evidence_checklist, validate_repository
 from lifecycle_state_sync import CLEAN_ADVANCE_GATES
 from lifecycle_state_sync import evaluate_authoring_autoprogression_route
@@ -27,6 +31,15 @@ VALIDATOR = ROOT / "scripts" / "validate-artifact-lifecycle.py"
 FIXTURES = ROOT / "tests" / "fixtures" / "artifact-lifecycle"
 REVIEW_FIXTURES = ROOT / "tests" / "fixtures" / "review-artifacts"
 CHANGE_METADATA_FIXTURES = ROOT / "tests" / "fixtures" / "change-metadata"
+
+
+def write_v3_activation_manifest(root: Path) -> None:
+    manifest = root / "specs" / "final-verification-contract-activation.yaml"
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_text(
+        '{"schema_version":1,"state":"preactivation","activating_source_revision":null,"changes":[]}\n',
+        encoding="utf-8",
+    )
 
 
 def copy_fixture(relative_path: str) -> Path:
@@ -99,6 +112,7 @@ def write_stage_owned_proposal(
     lifecycle_state: str = "review-required",
     embedded_status: str | None = None,
 ) -> tuple[Path, Path]:
+    write_v3_activation_manifest(root)
     proposal = root / "docs" / "proposals" / f"{change_id}.md"
     change_record = root / "docs" / "changes" / change_id / "change.yaml"
     proposal.parent.mkdir(parents=True, exist_ok=True)
@@ -154,7 +168,7 @@ Ready for proposal-review.
         )
     )
     change_record.write_text(
-        f"""lifecycle_contract: stage-owned-change-local-v1
+        f"""lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   proposal:
     kind: {artifact_kind}
@@ -184,6 +198,8 @@ def write_simplified_proposal(
     governed: bool = False,
     lifecycle_state: str = "review-required",
 ) -> tuple[Path, Path | None]:
+    if governed:
+        write_v3_activation_manifest(root)
     proposal = root / "docs" / "proposals" / f"{change_id}.md"
     proposal.parent.mkdir(parents=True, exist_ok=True)
     impact_section = (
@@ -249,7 +265,7 @@ Approve this direction to proceed to Design.
         )
     )
     change_record.write_text(
-        f"""lifecycle_contract: stage-owned-change-local-v1
+        f"""lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   proposal:
     kind: proposal
@@ -656,7 +672,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         next_stage: str = "code-review M2",
         final_closeout_readiness: str = "not ready",
         readiness: str = "- See `Current Handoff Summary`.\n- Readiness is not Done.",
-        reason: str = "implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none",
+        reason: str = "implementation-milestones-open, milestone-review-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none",
         change_id: str = "2026-06-23-workflow-state-fixture",
         plan_index_state: str | None = None,
         plan_index_next_stage: str | None = None,
@@ -874,7 +890,7 @@ Terminal disposition: none
 - Remaining in-scope implementation milestones: M1
 - Next stage: {next_stage}
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: milestone-review-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -1006,7 +1022,7 @@ No blocked plans.
             current_milestone_state="review-requested",
             review_status="review-requested; stage=test-spec-review; round=r1",
             next_stage="test-spec-review",
-            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none",
+            reason="implementation-milestones-open, milestone-review-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none",
         )
         result, messages = self.validate_workflow_state_fixture(test_spec_review_root)
         self.assertFalse(result.blocking_findings, msg=messages)
@@ -1424,7 +1440,7 @@ review:
             current_milestone_state="resolution-needed",
             review_status="changes-requested; stage=code-review; round=r1",
             next_stage="review-resolution / implement M2 fixes",
-            reason="implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=WSS-F1",
+            reason="implementation-milestones-open, review-findings-open, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=WSS-F1",
         )
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
@@ -1441,7 +1457,7 @@ review:
             current_milestone_state="resolution-needed",
             review_status="changes-requested; stage=code-review; round=r1",
             next_stage="review-resolution / implement M2 fixes",
-            reason="implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
+            reason="implementation-milestones-open, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
         )
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
@@ -1456,7 +1472,7 @@ review:
             fixture_root,
             include_open_review_finding=False,
             review_unresolved_items=0,
-            reason="implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — The review is closed and later closeout gates remain.",
+            reason="implementation-milestones-open, milestone-review-pending, review-findings-open, verify-pending, pr-handoff-pending — The review is closed and later closeout gates remain.",
         )
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
@@ -1485,7 +1501,7 @@ review:
                 current_milestone_state="resolution-needed",
                 review_status="changes-requested; stage=code-review; round=r1",
                 next_stage="review-resolution / implement M2 fixes",
-                reason=f"implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — {detail}",
+                reason=f"implementation-milestones-open, review-findings-open, verify-pending, pr-handoff-pending — {detail}",
             )
 
             result, messages = self.validate_workflow_state_fixture(fixture_root)
@@ -1500,7 +1516,7 @@ review:
             fixture_root,
             include_open_review_finding=False,
             review_unresolved_items=0,
-            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
+            reason="implementation-milestones-open, milestone-review-pending, verify-pending, pr-handoff-pending — WSS-F1 remains open and later closeout gates remain.",
         )
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
@@ -1515,7 +1531,7 @@ review:
             fixture_root,
             include_open_review_finding=False,
             review_unresolved_items=0,
-            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review_state=open; open_count=1; open_items=WSS item",
+            reason="implementation-milestones-open, milestone-review-pending, verify-pending, pr-handoff-pending — review_state=open; open_count=1; open_items=WSS item",
         )
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
@@ -1530,7 +1546,7 @@ review:
             fixture_root,
             include_open_review_finding=False,
             review_unresolved_items=0,
-            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none",
+            reason="implementation-milestones-open, milestone-review-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none",
         )
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
@@ -1544,7 +1560,7 @@ review:
             fixture_root,
             include_open_review_finding=False,
             review_unresolved_items=0,
-            reason="implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — M2 awaits review and later closeout gates remain.",
+            reason="implementation-milestones-open, milestone-review-pending, verify-pending, pr-handoff-pending — M2 awaits review and later closeout gates remain.",
         )
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
@@ -1967,7 +1983,7 @@ No blocked plans.
                 current_stage="plan-review",
                 latest_review_status="approved",
             ),
-            next_stage="test-spec",
+            next_stage="implement",
             profile_state="completed",
         )
 
@@ -1977,7 +1993,7 @@ No blocked plans.
             "profile": "bounded-review-fix",
             "profile_state": "armed",
             "durable_authorization": "persisted",
-            "target_stage": "test-spec-review",
+            "target_stage": "plan-review",
             "current_stage": "proposal",
             "latest_review_status": "approved",
             "proposal_gate": {
@@ -2113,16 +2129,6 @@ No blocked plans.
             profile_state="completed",
         )
         self.assertReviewFixRoute(
-            self.review_fix_fixture(current_stage="plan-review", target_stage="test-spec-review"),
-            next_stage="test-spec",
-            profile_state="active",
-        )
-        self.assertReviewFixRoute(
-            self.review_fix_fixture(current_stage="test-spec-review", target_stage="test-spec-review"),
-            stop_reason="target-reached",
-            profile_state="completed",
-        )
-        self.assertReviewFixRoute(
             self.review_fix_fixture(current_stage="plan-review", target_stage="plan-review"),
             stop_reason="target-reached",
             profile_state="completed",
@@ -2218,25 +2224,18 @@ No blocked plans.
         )
 
     def implementation_profile_fixture(self, **overrides: object) -> dict[str, object]:
-        identities = {
-            "spec": "spec@abc123",
-            "architecture": "architecture@abc123",
-            "plan": "plan@abc123",
-            "test_spec": "test-spec@abc123",
-        }
         fixture: dict[str, object] = {
             "profile": "implementation-through-verify",
             "profile_state": "armed",
             "phase": "B",
             "durable_authorization": "persisted",
             "invocation_context": "workflow-managed",
-            "current_stage": "test-spec-settlement",
+            "current_stage": "implement",
             "authoring_gates": "completed",
             "plan_review_status": "approved",
             "plan_review_recording": "recorded",
             "plan_synchronized": True,
             "milestones_ordered": True,
-            "test_spec_inputs_complete": True,
             "working_tree_baseline": "recorded",
             "unrelated_dirty_state": "absent",
             "required_commands_approved": True,
@@ -2244,27 +2243,6 @@ No blocked plans.
             "artifact_placement_unambiguous": True,
             "workflow_state_synchronized": True,
             "promotion_evidence": None,
-            "test_spec_settlement": {
-                "status": "active",
-                "requirements_covered": True,
-                "acceptance_covered": True,
-                "negative_boundary_cases": True,
-                "uncovered_gaps": "none",
-                "needs_decision": False,
-                "validation_commands_named": True,
-                "contradicts_governing": False,
-                "structural_validation": "pass",
-                "workflow_state_synchronized": True,
-                "input_identities": identities,
-            },
-            "test_spec_review": {
-                "review_status": "approved",
-                "recording_status": "recorded",
-                "implementation_handoff": "allowed",
-                "open_blockers": 0,
-                "open_findings": 0,
-            },
-            "current_input_identities": identities,
             "milestones": [
                 {"id": "M1", "state": "closed"},
                 {"id": "M2", "state": "planned"},
@@ -2449,7 +2427,6 @@ No blocked plans.
         activation_stop_cases: list[tuple[str, dict[str, object], str]] = [
             ("unsynchronized-plan", {"plan_synchronized": False}, "plan-not-synchronized"),
             ("unordered-milestones", {"milestones_ordered": False}, "milestones-not-ordered"),
-            ("incomplete-test-spec-inputs", {"test_spec_inputs_complete": False}, "test-spec-inputs-incomplete"),
             ("missing-commands", {"required_commands_approved": False}, "commands-not-approved"),
             ("open-governing-findings", {"governing_findings_open": True}, "governing-findings-open"),
             ("ambiguous-placement", {"artifact_placement_unambiguous": False}, "artifact-placement-ambiguous"),
@@ -2917,7 +2894,7 @@ No blocked plans.
                     {"id": "M2", "state": "closed"},
                 ],
             ),
-            stop_reason="phase-boundary-explain-change",
+            stop_reason="phase-boundary-verify",
             profile_state="active",
         )
         self.assertImplementationRoute(
@@ -2965,89 +2942,18 @@ No blocked plans.
                     {"id": "M2", "state": "closed"},
                 ],
             ),
-            next_stage="explain-change",
+            next_stage="verify",
             profile_state="active",
         )
 
-    def test_implementation_profile_test_spec_settlement_blocks_incomplete_contracts(self) -> None:
-        cases: list[tuple[str, str, object]] = [
-            ("draft-status", "status", "draft"),
-            ("missing-requirement-coverage", "requirements_covered", False),
-            ("missing-acceptance-coverage", "acceptance_covered", False),
-            ("missing-negative-boundary-cases", "negative_boundary_cases", False),
-            ("uncovered-gaps", "uncovered_gaps", "R1"),
-            ("needs-decision", "needs_decision", True),
-            ("missing-validation-commands", "validation_commands_named", False),
-            ("upstream-contradiction", "contradicts_governing", True),
-            ("structural-validation-fail", "structural_validation", "fail"),
-            ("state-sync-fail", "workflow_state_synchronized", False),
-            ("missing-identities", "input_identities", None),
-        ]
-        for name, field, value in cases:
-            with self.subTest(name=name):
-                settlement = dict(self.implementation_profile_fixture()["test_spec_settlement"])  # type: ignore[arg-type]
-                settlement[field] = value
-                self.assertImplementationRoute(
-                    self.implementation_profile_fixture(test_spec_settlement=settlement),
-                    stop_reason="test-spec-settlement-incomplete",
-                )
-
-    def test_implementation_profile_blocks_without_approved_recorded_test_spec_review(self) -> None:
-        cases = [
-            ("missing-review", None),
-            (
-                "not-approved",
-                {
-                    "review_status": "changes-requested",
-                    "recording_status": "recorded",
-                    "implementation_handoff": "not-allowed",
-                    "open_blockers": 1,
-                },
-            ),
-            (
-                "not-recorded",
-                {
-                    "review_status": "approved",
-                    "recording_status": "blocked",
-                    "implementation_handoff": "allowed",
-                    "open_blockers": 0,
-                },
-            ),
-        ]
-        for name, review_evidence in cases:
-            with self.subTest(name=name):
-                self.assertImplementationRoute(
-                    self.implementation_profile_fixture(test_spec_review=review_evidence),
-                    stop_reason="implementation-without-test-spec-review",
-                )
-
-    def test_implementation_profile_first_review_rechecks_settlement_identities(self) -> None:
-        changed_identities = {
-            "spec": "spec@abc123",
-            "architecture": "architecture@abc123",
-            "plan": "plan@changed",
-            "test_spec": "test-spec@abc123",
-        }
+    def test_implementation_profile_ignores_retired_test_spec_inputs(self) -> None:
         self.assertImplementationRoute(
             self.implementation_profile_fixture(
-                current_stage="first-code-review-precheck",
-                current_input_identities=changed_identities,
-                milestones=[
-                    {"id": "M1", "state": "closed"},
-                    {"id": "M2", "state": "review-requested"},
-                ],
+                test_spec_inputs_complete=False,
+                test_spec_settlement=None,
+                test_spec_review=None,
             ),
-            stop_reason="settlement-identity-mismatch",
-        )
-        self.assertImplementationRoute(
-            self.implementation_profile_fixture(
-                current_stage="first-code-review-precheck",
-                milestones=[
-                    {"id": "M1", "state": "closed"},
-                    {"id": "M2", "state": "review-requested"},
-                ],
-            ),
-            next_stage="code-review M2",
+            next_stage="implement M2",
             profile_state="active",
         )
 
@@ -5363,6 +5269,15 @@ class LifecycleActivationManifestTests(unittest.TestCase):
         self.assertEqual(schema["properties"]["state"]["enum"], ["preactivation", "active"])
         self.assertEqual(schema["properties"]["changes"]["items"]["properties"]["contract_class"]["enum"], ["stage-owned-change-local-v1", "legacy-unversioned"])
 
+    def test_tracked_final_verification_preactivation_manifest_matches_schema_model(self) -> None:
+        import json
+        manifest = json.loads((ROOT / "specs/final-verification-contract-activation.yaml").read_text(encoding="utf-8"))
+        schema = json.loads((ROOT / "schemas/final-verification-contract-activation.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(validate_final_verification_activation_manifest(manifest), [])
+        self.assertEqual(set(manifest), set(schema["required"]))
+        self.assertEqual(schema["properties"]["state"]["enum"], ["preactivation", "active"])
+        self.assertEqual(schema["properties"]["changes"]["maxItems"], 0)
+
     def write_contract_repository(self, manifest: dict, change_yaml: str) -> Path:
         import json
 
@@ -5376,7 +5291,7 @@ class LifecycleActivationManifestTests(unittest.TestCase):
         change_path.write_text(change_yaml, encoding="utf-8")
         return root
 
-    def test_public_validator_rejects_v2_active_test_spec_state(self) -> None:
+    def test_public_validator_reads_historical_v2_test_spec_state(self) -> None:
         root = self.write_contract_repository(
             self.manifest,
             """change_id: new-v2
@@ -5390,10 +5305,9 @@ workflow_state:
             mode="explicit-paths",
             paths=["docs/changes/new-v2/change.yaml"],
         )
-        messages = "\n".join(finding.message for finding in result.blocking_findings)
-        self.assertIn("v2 lifecycle contract carries active test-spec state", messages)
+        self.assertFalse(result.blocking_findings)
 
-    def test_public_validator_enforces_active_manifest_membership(self) -> None:
+    def test_public_validator_reads_historical_v1_without_manifest_membership(self) -> None:
         root = self.write_contract_repository(
             self.manifest,
             """change_id: new-v2
@@ -5405,8 +5319,7 @@ lifecycle_contract: stage-owned-change-local-v1
             mode="explicit-paths",
             paths=["docs/changes/new-v2/change.yaml"],
         )
-        messages = "\n".join(finding.message for finding in result.blocking_findings)
-        self.assertIn("prior-contract change new-v2 is not present in the activation manifest", messages)
+        self.assertFalse(result.blocking_findings)
 
     def test_public_validator_rejects_invalid_activation_manifest(self) -> None:
         invalid = dict(self.manifest)
@@ -5425,7 +5338,7 @@ lifecycle_contract: stage-owned-change-local-v2
         messages = "\n".join(finding.message for finding in result.blocking_findings)
         self.assertIn("activation manifest state: unknown_value published", messages)
 
-    def test_public_validator_rejects_v2_when_activation_manifest_is_missing(self) -> None:
+    def test_public_validator_reads_historical_v2_without_activation_manifest(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="lifecycle-contract-missing-manifest-"))
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
         change_path = root / "docs" / "changes" / "new-v2" / "change.yaml"
@@ -5441,8 +5354,7 @@ lifecycle_contract: stage-owned-change-local-v2
             mode="explicit-paths",
             paths=["docs/changes/new-v2/change.yaml"],
         )
-        messages = "\n".join(finding.message for finding in result.blocking_findings)
-        self.assertIn("v2 lifecycle contract requires the tracked activation manifest", messages)
+        self.assertFalse(result.blocking_findings)
 
 
 if __name__ == "__main__":
