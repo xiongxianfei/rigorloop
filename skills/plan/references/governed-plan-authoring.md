@@ -2,7 +2,7 @@
 
 Load this reference only after the parent resolves one exact governed change with plan authority. The parent owns plan quality; this reference owns authoring registration and the existing one-time initialization exception.
 
-Governed plan authoring is available only for v3. Historical non-v3 work never re-enters plan authoring. If plan context identifies a historical contract, stop and return the context to Workflow rather than authoring or routing.
+Governed plan authoring is available only for v3. Historical non-v3 work never re-enters plan authoring. If plan context identifies a historical contract, stop and return the context to `route` rather than authoring or routing.
 
 ## CLI-bound authoring
 

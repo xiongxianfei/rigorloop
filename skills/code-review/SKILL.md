@@ -81,7 +81,7 @@ When this skill creates or updates generated or generator-shaped Markdown:
 
 ## Artifact placement
 
-Use the explicit user path first, then the active change record, plan, reviewed artifact, or current metadata. If placement remains unclear, consult the project workflow guide, then governing specs or schemas for exact shape. Use a portable default only when no project-local owner exists; block on remaining ambiguity. Do not broad-search authoritative documents merely to find paths.
+Use the explicit user path first, then authoritative CLI workflow context, the active change record, plan, reviewed artifact, or current metadata, followed by governing specs or schemas for exact shape. Use a portable default only when no project-local owner exists; block on remaining ambiguity. Do not broad-search authoritative documents merely to find paths.
 
 ## Operating sequence
 
@@ -90,7 +90,7 @@ Use the explicit user path first, then the active change record, plan, reviewed 
 3. Inspect tests and direct proof for public, sibling, helper, failure, recovery, compatibility, generated, and external paths that can change the outcome.
 4. Challenge whether the selected checks and validation evidence are relevant and sufficient; do not confuse passing checks with compliance.
 5. Apply every checklist item, choose one native status, and record findings or an evidence-backed no-finding rationale before any fix begins.
-6. Record the formal review, then report the milestone-aware handoff to workflow. Rereview every changed implementation after resolution.
+6. Record the formal review, then report the milestone-aware handoff to `route`. Rereview every changed implementation after resolution.
 
 ## First-pass checklist coverage
 
@@ -191,7 +191,7 @@ Progress means work that has happened so far. Readiness means the next stage tha
 ## Handoff
 
 - Direct or review-only `code-review` requests remain isolated by default.
-- Normal next stage: report the review outcome to workflow, which routes from change-local state.
+- Normal next stage: report the review outcome to `route`, which routes from change-local state.
 - Conditional next stages: review-resolution, the next implementation milestone, final closeout, or a stop.
 
 ## Status and milestone handoff

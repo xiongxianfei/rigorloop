@@ -98,7 +98,7 @@ Treat the plan and upstream artifacts as read-only.
 ## Handoff
 
 - Normal next stage: open or reuse the PR when all three readiness gates pass.
-- Conditional next stages: return through workflow to fresh verify, review resolution, implementation, or an owning artifact stage; stop on external or authority blockers.
+- Conditional next stages: return through `route` to fresh verify, review resolution, implementation, or an owning artifact stage; stop on external or authority blockers.
 
 ## Stop conditions
 

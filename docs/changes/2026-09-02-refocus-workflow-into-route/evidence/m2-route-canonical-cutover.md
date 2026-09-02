@@ -110,6 +110,34 @@ Additional focused proof passed:
 
 M2 does not update adapter descriptors, generated release packages, installer diagnostics, release metadata, or public release claims. Those distribution and migration surfaces remain M3 scope. No external system was mutated and no release was published.
 
+## Code Review R1 correction
+
+Code Review M2 R1 identified two related completeness gaps in the canonical cutover. The correction:
+
+- removes remaining workflow-guide placement fallbacks from current stage skills and uses authoritative CLI context instead;
+- deletes the retired guide/map parser constants and callable validation functions from `scripts/skill_validation.py` and retires their active tests;
+- consistently names `route` as the semantic routing actor across current skill packages and references while preserving stable protocol identifiers and generic workflow terminology;
+- expands `scripts/validate-guide-system.py` across canonical skill Markdown with `ROUTE-GUIDE-009` for semantic guide fallback and `ROUTE-GUIDE-010` for the retired semantic actor;
+- adds direct negative fixtures for both prohibited reintroductions and a source regression proving the retired parser cannot return.
+
+The corrected validation results are:
+
+- `python scripts/test-skill-validator.py` — 352 tests passed.
+- `python scripts/test-workflow-automation.py` — 78 tests passed.
+- `python scripts/test-workflow-automation-state.py` — 70 tests passed.
+- `python scripts/test-select-validation.py` — 154 tests passed.
+- `python scripts/test-guide-system-validator.py` — 8 tests passed.
+- `python scripts/test-boundary-first-validation.py` — 70 tests passed.
+- `python scripts/test-boundary-first-reference.py` — 28 tests passed.
+- `python scripts/test-review-artifact-validator.py` — 111 tests passed.
+- `python scripts/validate-skills.py` — 20 canonical skill files validated.
+- `python scripts/build-skills.py --check` — temporary generated-skill parity passed.
+- `python scripts/test-validation-cache.py` — 25 tests passed.
+- `python scripts/validate-guide-system.py` — current route and contributor-guide alignment passed.
+- `git diff --check` — passed.
+
+The correction is ready for Code Review M2 R2. It does not begin M3 or change release scope.
+
 ## Handoff
 
 - Review target: M2 canonical cutover and validator changes.

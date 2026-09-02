@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-finding-resolution",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:8baf0775ef0f6546221627cae9ed86e7c3a0c8a6c33cdc2812c619e15bbce6ce",
+  "artifact_id": "plan",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md",
+  "finding_id": "RFR-M2-CR1",
+  "stage_authority": "review-resolution"
+}

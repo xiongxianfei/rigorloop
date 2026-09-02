@@ -10,9 +10,9 @@ Review closeout: code-review-m1-r3
 Review closeout: proposal-review-r1
 
 - Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`
-- Findings resolved: 5
-- Unresolved findings: 2
-- Current result: M2 Code Review R1 requests removal of remaining current guide dependencies and semantic old-public-actor references before M3.
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: Both M2 Code Review R1 findings are resolved in the implementation correction and await Code Review M2 R2 closeout.
 
 ## Resolution Overview
 
@@ -23,8 +23,8 @@ Review closeout: proposal-review-r1
 | RFR-M1-CR3 | accepted | resolved | Exact reads are isolated and TG-05 failure, retry, interruption, and freshness proof is complete. |
 | RFR-M1-CR4 | accepted | resolved | Human output exposes candidate count, truncation, and exact-selection guidance. |
 | RFR-M1-CR5 | accepted | resolved | Unexpected read and interrupted public invocation tests prove non-mutation directly. |
-| RFR-M2-CR1 | accepted | open | Remove current stage-skill guide fallbacks and retire remaining callable guide/map validators. |
-| RFR-M2-CR2 | accepted | open | Name route, not workflow, wherever current skill prose identifies the semantic routing actor. |
+| RFR-M2-CR1 | accepted | resolved | Removed current stage-skill guide fallbacks and retired remaining callable guide/map validators. |
+| RFR-M2-CR2 | accepted | resolved | Current skill prose names route wherever it identifies the semantic routing actor. |
 
 ## Finding Details
 
@@ -126,7 +126,7 @@ No material findings.
 
 Finding ID: RFR-M2-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Decision owner: none
@@ -136,13 +136,13 @@ Rationale: Passing a narrow exact-path scan does not satisfy the approved prohib
 Required outcome: Current skills and validators have no guide authority, lookup, parsing, or fallback behavior, and a semantic reintroduction fixture fails.
 Follow-up: Apply the bounded M2 correction and run Code Review M2 R2.
 Validation target: RT-R19, RT-R21, RT-R25, RT-R33, TG-09, TG-10.
-Validation evidence: pending M2 correction and rereview.
+Validation evidence: The M2 R1 correction removes the guide/map parser constants and callable functions from `scripts/skill_validation.py`; replaces stage fallback text with authoritative CLI context; adds `ROUTE-GUIDE-009`; and passes `python scripts/test-guide-system-validator.py`, `python scripts/test-skill-validator.py`, and all M2 plan validation commands. Code Review M2 R2 remains required for closeout.
 
 #### RFR-M2-CR2
 
 Finding ID: RFR-M2-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Decision owner: none
@@ -152,4 +152,4 @@ Rationale: The current package cannot expose two names for the same semantic rou
 Required outcome: Current public skill prose consistently identifies route as the semantic actor and explicitly allowed workflow protocol/history contexts remain unchanged.
 Follow-up: Apply the bounded M2 correction and run Code Review M2 R2.
 Validation target: RT-R1, RT-R26-RT-R29, RT-R33, BND-AUTH-001, TG-08, TG-09.
-Validation evidence: pending M2 correction and rereview.
+Validation evidence: The M2 R1 correction replaces semantic old-public-actor wording across current skill packages while preserving `stage_authority: workflow`, `workflow.automation`, workflow-managed operation labels, and generic CI workflow vocabulary; adds `ROUTE-GUIDE-010`; and passes the complete M2 validation set. Code Review M2 R2 remains required for closeout.

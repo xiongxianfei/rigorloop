@@ -40,7 +40,7 @@ Classify the invocation before writing.
 - Governed planning requires v2, settled prerequisites, plan-owned authority, and a deterministic plan path. Load `references/governed-plan-authoring.md` and select exactly one operation: `create-primary-plan`, `revise-primary-plan`, or `initialize-approved-plan`. Hand the exact plan directly to Delivery Review.
 - Boundary-first procedure is additive. Load its reference only under the mapped trigger.
 
-Conversational wording, resource availability, or an automation command does not establish governed authority. Missing, stale, conflicting, or ambiguous authority stops before dependent writes. Manual and workflow-managed execution use the same plan-owned write boundary; only workflow may coordinate later stages or routing.
+Conversational wording, resource availability, or an automation command does not establish governed authority. Missing, stale, conflicting, or ambiguous authority stops before dependent writes. Manual and workflow-managed execution use the same plan-owned write boundary; only `route` may coordinate later stages or routing.
 
 ## Project-local evidence
 
@@ -79,7 +79,7 @@ New and substantively revised plan bodies contain stable execution intent only. 
 
 ## Artifact placement
 
-Use the explicit user path or change ID, then change metadata and reviewed artifact path, then the project workflow guide, and finally the portable default `docs/plans/YYYY-MM-DD-slug.md`. Stop on unresolved ambiguity. Maintain `docs/plan.md` with relative clickable links; never overwrite an older initiative plan.
+Use the explicit user path or change ID, then authoritative CLI workflow context, change metadata, reviewed artifact path, and governing schemas, followed by the portable default `docs/plans/YYYY-MM-DD-slug.md`. Stop on unresolved ambiguity. Maintain `docs/plan.md` with relative clickable links; never overwrite an older initiative plan.
 
 Plan surfaces are distinct: authoritative CLI context resolves governed workflow paths; `docs/plan.md` is navigation; `docs/plans/YYYY-MM-DD-slug.md` is the stable plan body; `docs/changes/<change-id>/change.yaml` owns mutable lifecycle and milestone state; and `docs/changes/<change-id>/` stores stage-owned evidence. In `docs/plan.md`, use clickable relative Markdown links such as `[Title](plans/YYYY-MM-DD-slug.md)`.
 
@@ -171,7 +171,7 @@ Produce or update the stable plan body, its navigation link when needed, plan-ow
 
 Normal next stage: `delivery-review`. Manifest-bound v1 work continues only from its already registered post-delivery package.
 
-Conditional next stages: return to `spec` or `architecture` for a blocking upstream gap, or to `workflow` for governed migration or coordination. Plan never marks Delivery Review clean or initializes routing.
+Conditional next stages: return to `spec` or `architecture` for a blocking upstream gap, or to `route` for governed migration or coordination. Plan never marks Delivery Review clean or initializes routing.
 
 ## Output skeleton
 

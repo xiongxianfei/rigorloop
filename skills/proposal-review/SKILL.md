@@ -172,7 +172,7 @@ For an isolated review with material findings, the final review output must stat
 
 ## Isolation and handoff
 
-Direct and review-only requests remain isolated. `advisory-durable` never settles or reports formal eligibility; `formal-lifecycle` settles only the exact same-change proposal entry after recording and never advances workflow. Only `formal-lifecycle/workflow-managed-automated` uses automation procedure before returning control to workflow.
+Direct and review-only requests remain isolated. `advisory-durable` never settles or reports formal eligibility; `formal-lifecycle` settles only the exact same-change proposal entry after recording and never advances workflow. Only `formal-lifecycle/workflow-managed-automated` uses automation procedure before returning control to `route`.
 
 Direct or review-only `proposal-review` requests remain isolated by default.
 

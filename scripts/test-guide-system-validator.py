@@ -80,6 +80,18 @@ class RouteGuideValidatorTests(unittest.TestCase):
         agents.write_text(agents.read_text(encoding="utf-8") + "\nUse docs/workflows.md.\n", encoding="utf-8")
         self.assertTrue(any("ROUTE-GUIDE-006" in item for item in validator.validate(self.repo).messages))
 
+    def test_current_skill_cannot_restore_semantic_workflow_guide_fallback(self) -> None:
+        skill = self.repo / "skills/example/SKILL.md"
+        skill.parent.mkdir(parents=True)
+        skill.write_text("Resolve placement from the project workflow guide.\n", encoding="utf-8")
+        self.assertTrue(any("ROUTE-GUIDE-009" in item for item in validator.validate(self.repo).messages))
+
+    def test_current_skill_cannot_name_workflow_as_semantic_actor(self) -> None:
+        skill = self.repo / "skills/example/SKILL.md"
+        skill.parent.mkdir(parents=True)
+        skill.write_text("Return control to workflow, which chooses continuation.\n", encoding="utf-8")
+        self.assertTrue(any("ROUTE-GUIDE-010" in item for item in validator.validate(self.repo).messages))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
