@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:8f270d8091438c0117affd400111a8f2f75289896b71aa084cdd2d1235827f19",
+  "milestone_id": "M3",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m3-adapter-and-release-parity.md",
+  "stage_authority": "workflow"
+}

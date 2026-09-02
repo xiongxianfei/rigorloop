@@ -29,7 +29,7 @@ BENCHMARK_MANIFEST = BENCHMARK_ROOT / "manifest.yaml"
 BENCHMARK_FIXTURE = BENCHMARK_ROOT / "fixtures" / "minimal-public-project"
 ARCHITECTURE_REVIEW_FIXTURE = BENCHMARK_ROOT / "fixtures" / "minimal-public-project-architecture-review"
 EXPECTED_REQUIRED_CORE_BENCHMARKS = {
-    "workflow-route": "workflow",
+    "workflow-route": "route",
     "proposal-short": "proposal",
     "plan-handoff": "plan",
     "implement-handoff": "implement",
@@ -500,7 +500,7 @@ class CodexJsonlAnalyzerTests(unittest.TestCase):
         path = self.write_jsonl(
             {
                 "tool": "functions.exec_command",
-                "args": {"cmd": "cat dist/adapters/codex/.agents/skills/workflow/SKILL.md"},
+                "args": {"cmd": "cat dist/adapters/codex/.agents/skills/route/SKILL.md"},
                 "output": "x\n" * 120,
             },
         )
@@ -514,7 +514,7 @@ class CodexJsonlAnalyzerTests(unittest.TestCase):
                 "--run-id",
                 "generated-check",
                 "--justified-read",
-                "dist/adapters/codex/.agents/skills/workflow/SKILL.md",
+                "dist/adapters/codex/.agents/skills/route/SKILL.md",
                 "--justification",
                 "generated-output validation",
             )
@@ -614,7 +614,6 @@ class BenchmarkFixtureTests(unittest.TestCase):
             "AGENTS.md",
             "VISION.md",
             "README.md",
-            "docs/workflows.md",
             "docs/changes/.gitkeep",
             "src/example.txt",
         ]
@@ -664,7 +663,6 @@ class BenchmarkFixtureTests(unittest.TestCase):
             "AGENTS.md",
             "VISION.md",
             "README.md",
-            "docs/workflows.md",
             "docs/architecture/system/architecture.md",
             "docs/architecture/system/diagrams/context.mmd",
             "docs/architecture/system/diagrams/container.mmd",

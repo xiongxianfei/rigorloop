@@ -1232,6 +1232,35 @@ function existingStateSafetyBlocker(descriptor, artifact) {
   return undefined;
 }
 
+function obsoleteWorkflowSkillBlocker(descriptor, entries = []) {
+  const installRoot = descriptor.primaryInstallRoot();
+  const obsoletePath = `${installRoot}/workflow`;
+  const replacementPath = `${installRoot}/route`;
+  const archiveHasObsolete = entries.some(
+    (entry) => entry.name === obsoletePath || entry.name.startsWith(`${obsoletePath}/`),
+  );
+  const archiveHasReplacement = entries.some(
+    (entry) => entry.name === replacementPath || entry.name.startsWith(`${replacementPath}/`),
+  );
+  const installedObsolete = pathState(resolve(process.cwd(), obsoletePath)) !== "absent";
+  const installedReplacement = pathState(resolve(process.cwd(), replacementPath)) !== "absent";
+
+  if (!archiveHasObsolete && !installedObsolete) {
+    return undefined;
+  }
+
+  const mixed = archiveHasReplacement || installedReplacement;
+  return {
+    code: mixed ? "mixed-route-workflow-skills" : "obsolete-workflow-skill",
+    message: mixed
+      ? `Current ${descriptor.displayName} skill inventory contains both obsolete workflow and replacement route packages.`
+      : `Current ${descriptor.displayName} skill inventory contains the obsolete workflow package.`,
+    path: obsoletePath,
+    replacement: "route",
+    next_action: `Remove ${obsoletePath}, then install and invoke route. Persisted workflow.automation state does not require migration.`,
+  };
+}
+
 function firstLockfileDriftBlocker() {
   for (const entry of currentLockfileEntries()) {
     const blocker = lockfileDriftBlocker(entry);
@@ -1979,6 +2008,10 @@ async function handleInit(flags, initArgs = []) {
   if (plan.blockers.length > 0 && !deferrableRootBlockers) {
     return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
   }
+  const obsoleteInstalledSkill = obsoleteWorkflowSkillBlocker(descriptor);
+  if (obsoleteInstalledSkill) {
+    return writeBlockedResult(flags, plan, obsoleteInstalledSkill.message, [obsoleteInstalledSkill]);
+  }
   if (flags.dryRun) {
     const stateSafety = existingStateSafetyBlocker(descriptor);
     if (stateSafety) {
@@ -1997,6 +2030,10 @@ async function handleInit(flags, initArgs = []) {
     }
   }
   if (archiveWork.entries) {
+    const obsoleteArchiveSkill = obsoleteWorkflowSkillBlocker(descriptor, archiveWork.entries);
+    if (obsoleteArchiveSkill) {
+      return writeBlockedResult(flags, plan, obsoleteArchiveSkill.message, [obsoleteArchiveSkill]);
+    }
     const conflict = generatedOutputConflictBlocker(archiveWork.entries);
     if (conflict) {
       return writeBlockedResult(flags, plan, conflict.message, [conflict], "mutation_conflict");

@@ -56,7 +56,7 @@ rigorloop logs path [--format human|json]
 rigorloop logs show <invocation-id> [--format human|json]
 ```
 
-Governed lifecycle mutations use request files so operation intent and the expected lifecycle revision remain reviewable. Existing version-1 coordination remains readable; run the explicit `migrate` operation before `route-correction`, `return-correction`, or `withdraw-artifact-registration`. Authoring skills continue to use `record-artifact-revision`; workflow alone owns correction routing, return, and safe duplicate-registration withdrawal.
+Governed lifecycle mutations use request files so operation intent and the expected lifecycle revision remain reviewable. Existing version-1 coordination remains readable; run the explicit `migrate` operation before `route-correction`, `return-correction`, or `withdraw-artifact-registration`. Authoring skills continue to use `record-artifact-revision`; route alone owns correction routing, return, and safe duplicate-registration withdrawal through the stable lifecycle `workflow` authority role.
 
 `workflow-context` is read-only. Without `--change` it reports the effective workflow configuration and up to 32 sorted active-change candidates without selecting one; count and truncation fields show when exact `--change` selection is required. With an exact change ID it reports deterministic lifecycle, artifact, package, milestone, blocker, operation, and bounded automation facts. Collections are capped at 32 entries and expose count/truncation metadata where caller-controlled size can vary. Formal review locations retain separate proposal-review, design-review, delivery-review, and code-review ownership; their templates identify `<review-round>` as a required authoring input instead of assigning the shared review directory to one owner. An optional repository-root `rigorloop.workflow.yaml` may override supported bundled artifact locations; invalid or unsafe configuration fails closed.
 
@@ -69,6 +69,8 @@ Use `--no-file-log` or `RIGORLOOP_FILE_LOG=off` to disable file logging. Set `--
 Existing v0.4.x output defaults and `--json` remain unchanged. Agents can opt into compact results with `--format concise-json` or `--format concise-human`; complete results remain available with `--format detailed-json`. Local logs are diagnostics only and never authorize lifecycle transitions.
 
 ## Target Init
+
+Current adapter archives install the `route` skill and do not provide a `workflow` alias. If init reports an obsolete installed `workflow` package, remove that package and rerun init; persisted `workflow.automation` state remains compatible.
 
 Initialize target support from the verified official release archive:
 

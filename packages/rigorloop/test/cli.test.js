@@ -1224,6 +1224,77 @@ test("TMAI-001 dry-run selects descriptors for all supported adapters", () => {
   }
 });
 
+test("RT-R30 init rejects obsolete workflow skill installations for every target", () => {
+  const cases = [
+    ["codex", ".agents/skills"],
+    ["claude", ".claude/skills"],
+    ["opencode", ".opencode/skills"],
+  ];
+
+  for (const [adapter, root] of cases) {
+    const cwd = tempProject();
+    const obsoleteSkill = join(cwd, root, "workflow");
+    mkdirSync(obsoleteSkill, { recursive: true });
+    writeFileSync(join(obsoleteSkill, "SKILL.md"), "# Obsolete workflow\n");
+    const before = listProject(cwd);
+
+    const result = runCli(["init", adapter, "--dry-run", "--json"], { cwd });
+
+    assert.equal(result.status, 2, `${adapter}: ${result.stderr}`);
+    const output = parseJsonResult(result);
+    assert.equal(output.status, "blocked", adapter);
+    assert.equal(output.blockers[0].code, "obsolete-workflow-skill", adapter);
+    assert.equal(output.blockers[0].replacement, "route", adapter);
+    assert.match(output.blockers[0].next_action, /remove .*workflow.*install and invoke route/i, adapter);
+    assert.deepEqual(listProject(cwd), before, adapter);
+    assert.equal(readProjectFile(cwd, `${root}/workflow/SKILL.md`), "# Obsolete workflow\n", adapter);
+  }
+});
+
+test("RT-R30 init rejects a mixed installed route and workflow inventory", () => {
+  const cwd = tempProject();
+  for (const skill of ["route", "workflow"]) {
+    const skillRoot = join(cwd, ".agents", "skills", skill);
+    mkdirSync(skillRoot, { recursive: true });
+    writeFileSync(join(skillRoot, "SKILL.md"), `# ${skill}\n`);
+  }
+  const before = listProject(cwd);
+
+  const result = runCli(["init", "codex", "--dry-run", "--json"], { cwd });
+
+  assert.equal(result.status, 2);
+  const output = parseJsonResult(result);
+  assert.equal(output.blockers[0].code, "mixed-route-workflow-skills");
+  assert.equal(output.blockers[0].replacement, "route");
+  assert.deepEqual(listProject(cwd), before);
+});
+
+test("RT-R30 init rejects an archive containing the obsolete workflow package", () => {
+  const cwd = tempProject();
+  const fixture = fixtureArchive(cwd, {
+    entries: [
+      {
+        name: ".agents/skills/workflow/SKILL.md",
+        bytes: Buffer.from("# Obsolete workflow\n", "utf8"),
+      },
+    ],
+  });
+  const before = listProject(cwd);
+
+  const result = runCliWithBundledMetadata(
+    ["init", "codex", "--from-archive", `./${fixture.archiveName}`, "--json"],
+    cwd,
+    fixture.metadata,
+  );
+
+  assert.equal(result.status, 2);
+  const output = parseJsonResult(result);
+  assert.equal(output.blockers[0].code, "obsolete-workflow-skill");
+  assert.equal(output.blockers[0].replacement, "route");
+  assert.deepEqual(listProject(cwd), before);
+  assert.equal(existsSync(join(cwd, ".agents", "skills")), false);
+});
+
 test("T6 JSON envelope is stable and stdout contains JSON only", () => {
   const cwd = tempProject();
   const result = runCli(["init", "codex", "--write-state", "--dry-run", "--json"], { cwd });

@@ -85,7 +85,7 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "spec",
     "verify",
     "vision",
-    "workflow",
+    "route",
 )
 RETIRED_PROGRESSION_SKILLS = frozenset(
     {"spec-review", "architecture-review", "plan-review", "test-spec-review"}
@@ -102,8 +102,8 @@ CODEX_SKILL_INVOCATION_PATTERN = re.compile(
     + r")",
     re.IGNORECASE | re.ASCII,
 )
-CLAUDE_WORKFLOW_INVOCATION_PATTERN = re.compile(
-    r"(?<![\w./-])/(?ai:workflow)"
+CLAUDE_ROUTE_INVOCATION_PATTERN = re.compile(
+    r"(?<![\w./-])/(?ai:route)"
     r"(?=$|[ \t\r\n`\"',;:!?)}\]]|\.(?:$|[ \t\r\n]))",
 )
 PAIRED_DOLLAR_MATH_SUFFIX_PATTERN = re.compile(
@@ -424,14 +424,14 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
 
 
 def _documents_cross_adapter_skill_invocation(text: str) -> bool:
-    """Recognize the exact workflow invocation-equivalence contract."""
+    """Recognize the exact route invocation-equivalence contract."""
 
     expected_codex_code_spans = Counter(
         (
-            "$workflow auto: <argument>",
-            "$workflow auto: <target-stage>",
-            "$workflow auto: status",
-            "$workflow auto: off",
+            "$route auto: <argument>",
+            "$route auto: <target-stage>",
+            "$route auto: status",
+            "$route auto: off",
         )
     )
     actual_codex_code_spans = Counter(
@@ -451,22 +451,22 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
 
     expected_block = (
         "- Adapter invocation equivalents preserve the same arguments: Codex uses "
-        "`$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and "
-        "OpenCode invokes the installed `workflow` skill with `auto: <argument>`. "
+        "`$route auto: <argument>`, Claude uses `/route auto: <argument>`, and "
+        "OpenCode invokes the installed `route` skill with `auto: <argument>`. "
         "Here `<argument>` is `<target-stage>`, `status`, or `off`.\n"
     )
     if equivalence_blocks[0] != expected_block:
         return False
     command_blocks = re.findall(
-        r"(?ms)^- `\$workflow auto: (?:<target-stage>|status)`.*?(?=^- |\Z)",
+        r"(?ms)^- `\$route auto: (?:<target-stage>|status)`.*?(?=^- |\Z)",
         text,
     )
     expected_command_blocks = (
-        "- `$workflow auto: <target-stage>` selects a structured target. Supported "
+        "- `$route auto: <target-stage>` selects a structured target. Supported "
         "targets are `proposal-review`, `architecture`, `spec`, `design-review`, "
         "`plan`, `delivery-review`, `implement`, `code-review`, and "
         "`verify`.\n",
-        "- `$workflow auto: status` is read-only. `$workflow auto: off` durably "
+        "- `$route auto: status` is read-only. `$route auto: off` durably "
         "cancels the unified run and preserves transition evidence.\n",
     )
     if tuple(command_blocks) != expected_command_blocks:
@@ -476,7 +476,7 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         remaining_source = remaining_source.replace(approved_block, "", 1)
     if _has_codex_skill_invocation(remaining_source):
         return False
-    if CLAUDE_WORKFLOW_INVOCATION_PATTERN.search(remaining_source):
+    if CLAUDE_ROUTE_INVOCATION_PATTERN.search(remaining_source):
         return False
     return True
 
