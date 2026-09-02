@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:cc83556801139af43c359a4f6c2501ef78e5c9bcaa850a47ea7d4ff8e60150e1",
+  "artifact_id": "proposal",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/reviews/proposal-review-r1.md",
+  "stage_authority": "proposal-review"
+}

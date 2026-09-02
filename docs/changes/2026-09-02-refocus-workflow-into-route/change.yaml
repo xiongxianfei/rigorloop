@@ -1,0 +1,64 @@
+change_id: 2026-09-02-refocus-workflow-into-route
+title: Refocus Workflow into the Route Skill
+classification: default
+risk: medium
+lifecycle_contract: stage-owned-change-local-v3
+artifact_states:
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-09-02-refocus-workflow-into-route.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r1
+      outcome: approved
+      record: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/proposal-review-r1.md
+      round: r1
+    role: primary
+workflow_state:
+  blocker: null
+  current_stage: proposal-review
+  evidence: []
+  lifecycle_state: active
+  next_stage: proposal-review
+workflow: {}
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/proposal-review-r1.md
+  review_log: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+  reviewed_artifact: docs/proposals/2026-09-02-refocus-workflow-into-route.md
+  status: clean
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 1
+  artifacts:
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-09-02-refocus-workflow-into-route.md
+      artifact_role: primary
+      artifact_sha256: ae77a786e9a26720df5b820873bb2061a5a3e858f85e291d38b94411cd586c41
+      authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/proposal-authoring.md
+      authoring_evidence_sha256: 3fc8eb634d3288db3cfa154a568c103725be8a5a1fee563e4c8b131f1fcc9e7a
+      stage_authority: proposal
+  correction_history: {}
+  milestones: {}
+  package_reviews: {}
+  resolutions: {}
+  reviews:
+    proposal:
+      artifact_path: docs/proposals/2026-09-02-refocus-workflow-into-route.md
+      artifact_sha256: ae77a786e9a26720df5b820873bb2061a5a3e858f85e291d38b94411cd586c41
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/proposal-review-r1.md
+      evidence_sha256: 399373f74f3a3832ad0c95977e778d8a051ce092c6471b1a87b757f25b20fce8
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r1
+      review_log_sha256: f22626cfd13331c33c277162feaeb52fb72dcf6795bb113604525236c0860c3b
+      round: r1
+      stage_authority: proposal-review
+  validations: {}
+  withdrawals: {}

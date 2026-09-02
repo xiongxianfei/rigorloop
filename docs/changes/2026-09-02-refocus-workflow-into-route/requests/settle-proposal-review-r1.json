@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:6ad277653afab5af60966e7fafdf4d160e908fc0234cc261631dd4461a7aeebc",
+  "artifact_id": "proposal",
+  "stage_authority": "proposal-review"
+}
