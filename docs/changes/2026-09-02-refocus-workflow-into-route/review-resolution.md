@@ -2,17 +2,18 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
+Review closeout: code-review-m2-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: proposal-review-r1
 
-- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`
+- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: Both M2 Code Review R1 findings are resolved in the implementation correction and await Code Review M2 R2 closeout.
+- Current result: Code Review M2 R2 is clean; all recorded findings are resolved and M2 is ready for route-owned closeout.
 
 ## Resolution Overview
 
@@ -153,3 +154,7 @@ Required outcome: Current public skill prose consistently identifies route as th
 Follow-up: Apply the bounded M2 correction and run Code Review M2 R2.
 Validation target: RT-R1, RT-R26-RT-R29, RT-R33, BND-AUTH-001, TG-08, TG-09.
 Validation evidence: The M2 R1 correction replaces semantic old-public-actor wording across current skill packages while preserving `stage_authority: workflow`, `workflow.automation`, workflow-managed operation labels, and generic CI workflow vocabulary; adds `ROUTE-GUIDE-010`; and passes the complete M2 validation set. Code Review M2 R2 remains required for closeout.
+
+### code-review-m2-r2
+
+No material findings. R2 independently confirmed both M2 R1 findings are resolved and the complete M2 validation allocation passes.
