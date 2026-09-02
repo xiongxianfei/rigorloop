@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
-import { mkdirSync, readFileSync, readdirSync, symlinkSync, writeFileSync } from "node:fs";
+import { spawn, spawnSync } from "node:child_process";
+import { lstatSync, mkdirSync, readFileSync, readdirSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
 
@@ -22,7 +22,7 @@ function snapshot(root) {
   return readFileSync(join(root, "docs", "changes", "example", "change.yaml"), "utf8");
 }
 
-function governedSnapshot(root) {
+function governedSnapshot(root, includeConfig = true) {
   const files = [];
   function visit(directory, prefix = "") {
     for (const entry of readdirSync(directory, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
@@ -32,7 +32,7 @@ function governedSnapshot(root) {
     }
   }
   visit(join(root, "docs", "changes"));
-  try { files.push(["rigorloop.workflow.yaml", readFileSync(join(root, "rigorloop.workflow.yaml")).toString("base64")]); } catch {}
+  if (includeConfig) try { files.push(["rigorloop.workflow.yaml", readFileSync(join(root, "rigorloop.workflow.yaml")).toString("base64")]); } catch {}
   return files;
 }
 
@@ -163,6 +163,12 @@ test("project candidates are capped and report truncation without semantic selec
   assert.equal(execution.result.selection.state, "ambiguous");
   assert.equal(execution.result.selection.selected_change, null);
   assert.ok(JSON.stringify(execution.result).length < 16_384);
+
+  const human = runPublic(root, ["--format", "human"]);
+  const humanOutput = `${human.stdout}${human.stderr}`;
+  assert.equal(human.status, 2);
+  assert.match(humanOutput, /Candidate count: 41/);
+  assert.match(humanOutput, /showing 32; use --change <id>/);
 });
 
 test("change projections cap milestone, package-member, budget, and receipt collections", async () => {
@@ -270,6 +276,44 @@ test("non-file configuration is a normalized read failure and does not mutate go
   assert.equal(execution.exitCode, 2);
   assert.equal(execution.result.errors[0].code, "RL_CONTEXT_PATH_UNSAFE");
   assert.deepEqual(governedSnapshot(root), before);
+});
+
+test("unexpected repository read failure is normalized without exposing or mutating state", async () => {
+  const { root } = await packageRepository({ stage: "implement" });
+  const before = governedSnapshot(root);
+
+  const execution = executeWorkflowContext(["--change", "example", "--format", "json"], {
+    cwd: root,
+    beforeRepositoryRead() { throw new Error("/private/host/read-failure"); },
+  });
+
+  assert.equal(execution.exitCode, 2);
+  assert.equal(execution.result.errors[0].code, "RL_CONTEXT_READ_FAILED");
+  assert.doesNotMatch(JSON.stringify(execution.result), /private\/host/);
+  assert.deepEqual(governedSnapshot(root), before);
+});
+
+test("interrupted public workflow context leaves governed state and its blocking input unchanged", { skip: process.platform === "win32" }, async () => {
+  const { root } = await packageRepository({ stage: "implement" });
+  const configPath = join(root, "rigorloop.workflow.yaml");
+  const before = governedSnapshot(root, false);
+  const fifo = spawnSync("mkfifo", [configPath]);
+  assert.equal(fifo.status, 0);
+
+  const child = spawn(process.execPath, [cli, "workflow-context", "--change", "example", "--format", "json"], {
+    cwd: root,
+    env: { ...process.env, RIGORLOOP_FILE_LOG: "off", RIGORLOOP_CONSOLE_LOG_LEVEL: "off" },
+    stdio: "ignore",
+  });
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  child.kill("SIGTERM");
+  const [code, signal] = await new Promise((resolve) => child.once("exit", (...values) => resolve(values)));
+
+  assert.equal(code, null);
+  assert.equal(signal, "SIGTERM");
+  assert.equal(lstatSync(configPath).isFIFO(), true);
+  assert.deepEqual(governedSnapshot(root, false), before);
+  unlinkSync(configPath);
 });
 
 test("valid repository overrides replace defaults with explicit provenance", async () => {
