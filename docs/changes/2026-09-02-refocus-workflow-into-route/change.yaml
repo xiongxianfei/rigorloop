@@ -68,12 +68,12 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M2
+    current_milestone: M3
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -98,13 +98,12 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: closed
       M3:
         kind: implementation
-        state: planned
+        state: implementing
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M2
       - M3
 workflow: {}
 artifacts: {}
@@ -253,6 +252,26 @@ lifecycle_cli:
       review_record_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m1-r3.md
       review_recording_status: recorded
       review_round: r3
+      review_stage: code-review
+      stage_authority: workflow
+    M2:
+      completion_fingerprint: df600b7f2e29eb201a8ca8fc848ff8d9d3b324e6ab854f46ca51e1ea873586f8
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m2-route-canonical-cutover.md
+      evidence_sha256: 6b028c117dc8f42a069a78f9088eb147132f5dc5c3267c7d28c0827481f2e04c
+      milestone_id: M2
+      review_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m2-r2.md
+      review_evidence_sha256: cec3a4f6cfadcdc9075f9825a35219169ed0f196372f7cce8c5d9125ae677203
+      review_id: code-review-m2-r2
+      review_log_entry_sha256: e8d6b174adc51a4a7f5c3a7edc377cd86ff225cbd84f35e1731f392f71ae59d5
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m2-r2.md
+      review_recording_status: recorded
+      review_round: r2
       review_stage: code-review
       stage_authority: workflow
   package_reviews:
