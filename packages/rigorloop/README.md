@@ -49,6 +49,7 @@ rigorloop --help
 rigorloop version
 rigorloop init codex|claude|opencode [--write-state] [--from-archive <path>] [--dry-run] [--json]
 rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
+rigorloop workflow-context [--change <id>] [--format human|json]
 rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json|concise-human|concise-json|detailed-json]
 rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json|concise-human|concise-json|detailed-json]
 rigorloop logs path [--format human|json]
@@ -56,6 +57,8 @@ rigorloop logs show <invocation-id> [--format human|json]
 ```
 
 Governed lifecycle mutations use request files so operation intent and the expected lifecycle revision remain reviewable. Existing version-1 coordination remains readable; run the explicit `migrate` operation before `route-correction`, `return-correction`, or `withdraw-artifact-registration`. Authoring skills continue to use `record-artifact-revision`; workflow alone owns correction routing, return, and safe duplicate-registration withdrawal.
+
+`workflow-context` is read-only. Without `--change` it reports the effective workflow configuration and bounded active-change candidates without selecting one. With an exact change ID it reports deterministic lifecycle, artifact, package, milestone, blocker, operation, and bounded automation facts. An optional repository-root `rigorloop.workflow.yaml` may override supported bundled artifact locations; invalid or unsafe configuration fails closed.
 
 ## Local CLI logs and concise results
 
