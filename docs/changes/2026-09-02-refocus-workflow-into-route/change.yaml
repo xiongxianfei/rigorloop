@@ -73,7 +73,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M3
+    current_milestone: none
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -85,13 +85,14 @@ workflow_state:
       review_round: r1
       reviewed_artifact_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
     latest_review:
-      artifact_id: none
-      evidence: []
-      milestone_id: none
-      occurrence: none
-      round: none
-      stage: none
-      status: not-started
+      artifact_id: plan
+      evidence:
+        - docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m3-r2.md
+      milestone_id: M3
+      occurrence: milestone
+      round: r2
+      stage: code-review
+      status: approved
     milestones:
       M1:
         kind: implementation
@@ -101,10 +102,9 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: review-requested
+        state: closed
     plan_artifact_id: plan
-    remaining_implementation_milestones:
-      - M3
+    remaining_implementation_milestones: []
 workflow: {}
 artifacts: {}
 requirements: []
@@ -293,6 +293,26 @@ lifecycle_cli:
       review_open_findings: []
       review_outcome: clean-with-notes
       review_record_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m2-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M3:
+      completion_fingerprint: f824a7e2c32fa56060dc7431883b12664e0d8fe434b3a6b65f64e045039dee29
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m3-adapter-and-release-parity.md
+      evidence_sha256: e486e08f69605540d129ddf20e17ab99cf5af1b41f6379e060e08204d3e0b066
+      milestone_id: M3
+      review_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m3-r2.md
+      review_evidence_sha256: 208d816f964dfb6e48b5a416b1d95cde251567d164d8bcb9dfb1f63c2bf2892b
+      review_id: code-review-m3-r2
+      review_log_entry_sha256: eb7e7397ebdbc3f4b5b479cc3a84ccb6578195d409e1b7fc1fb6c4b0eed8b208
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m3-r2.md
       review_recording_status: recorded
       review_round: r2
       review_stage: code-review
