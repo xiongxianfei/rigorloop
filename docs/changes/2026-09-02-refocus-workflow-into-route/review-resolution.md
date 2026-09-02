@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m1-r1
@@ -10,10 +10,10 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: proposal-review-r1
 
-- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
 - Findings resolved: 7
-- Unresolved findings: 0
-- Current result: Code Review M2 R2 is clean; all recorded findings are resolved and M2 is ready for route-owned closeout.
+- Unresolved findings: 2
+- Current result: M3 Code Review R1 requests coherent unpublished release identity and an executable lockfile-managed migration path before final closeout.
 
 ## Resolution Overview
 
@@ -26,6 +26,8 @@ Review closeout: proposal-review-r1
 | RFR-M1-CR5 | accepted | resolved | Unexpected read and interrupted public invocation tests prove non-mutation directly. |
 | RFR-M2-CR1 | accepted | resolved | Removed current stage-skill guide fallbacks and retired remaining callable guide/map validators. |
 | RFR-M2-CR2 | accepted | resolved | Current skill prose names route wherever it identifies the semantic routing actor. |
+| RFR-M3-CR1 | accepted | open | Bind the route-only package and installer to a new unpublished release identity rather than immutable v0.5.0. |
+| RFR-M3-CR2 | accepted | open | Provide and prove an executable remediation for lockfile-managed obsolete installations. |
 
 ## Finding Details
 
@@ -158,3 +160,37 @@ Validation evidence: The M2 R1 correction replaces semantic old-public-actor wor
 ### code-review-m2-r2
 
 No material findings. R2 independently confirmed both M2 R1 findings are resolved and the complete M2 validation allocation passes.
+
+### code-review-m3-r1
+
+#### RFR-M3-CR1
+
+Finding ID: RFR-M3-CR1
+Disposition: accepted
+Status: open
+Owner: M3 implementer
+Owning stage: review-resolution
+Decision owner: none
+Decision needed: none
+Chosen action: Create one coherent unpublished post-v0.5.0 package and adapter candidate whose bundled metadata, generated route archives, docs, and installer preflight agree.
+Rationale: Published v0.5.0 is immutable and explicitly excluded the workflow-to-route implementation; reusing its identity makes the changed CLI reject its own selected archives.
+Required outcome: Real bundled candidate metadata selects a route-only archive, published v0.5.0 remains unchanged, documentation makes candidate status accurate, and no publication occurs.
+Follow-up: Apply the bounded M3 correction and run Code Review M3 R2.
+Validation target: RT-R29-RT-R32, TG-13-TG-15, BND-COMPAT-001.
+Validation evidence: pending M3 correction and rereview.
+
+#### RFR-M3-CR2
+
+Finding ID: RFR-M3-CR2
+Disposition: accepted
+Status: open
+Owner: M3 implementer
+Owning stage: review-resolution
+Decision owner: none
+Decision needed: none
+Chosen action: Make obsolete-package recovery state-aware and prove the complete migration for both unmanaged and lockfile-managed installs.
+Rationale: Removing only the obsolete skill invalidates a managed root hash, so the documented rerun cannot complete under current safety checks.
+Required outcome: The supported remediation preserves unrelated targets, reaches one coherent route package, remains retry-safe after interruption, and does not rewrite lifecycle automation state.
+Follow-up: Apply the bounded M3 correction and run Code Review M3 R2.
+Validation target: RT-R27, RT-R28, RT-R30, TG-13, TG-16, BND-RECOVERY-001.
+Validation evidence: pending M3 correction and rereview.
