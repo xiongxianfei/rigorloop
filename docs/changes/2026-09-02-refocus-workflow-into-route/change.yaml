@@ -522,4 +522,10 @@ lifecycle_cli:
       stage_authority: implement
       subject_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
       subject_sha256: 825e74a85b56a43db8f8a47191882794d95dd27cf65ffe0e968358b7203b162d
+    verify-result:
+      selector: lifecycle_cli.validations.verify-result
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/verify-report.md
+      evidence_sha256: sha256:115f85b3189d2af7b7c3fce0327da1c4e70401f2c1e9949a5af093a90cf779d1
+      verified_subject_revision: 184b9330de4fc2b1c398354c53fbee2148944675
+      stage_authority: verify
   withdrawals: {}
