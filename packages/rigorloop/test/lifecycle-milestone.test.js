@@ -183,6 +183,9 @@ test("final review receipt authorizes code-review to verify and is idempotent", 
   const { reviewPath, reviewedRevision } = prepareFinalReview(root, changeRoot);
   const operation = { schema_version: 1, operation: "record-final-review", change_id: "example", expected_lifecycle_revision: revision(root), evidence_path: reviewPath, reviewed_revision: reviewedRevision, stage_authority: "workflow" };
 
+  const pending = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(pending.result.permitted_operations.includes("record-final-review"), true);
+
   const recorded = executeLifecycleCli(["record-final-review", "--request", request(root, "record-final-review", operation), "--format", "json"], { cwd: root });
 
   assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));

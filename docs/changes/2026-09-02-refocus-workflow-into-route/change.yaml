@@ -299,6 +299,28 @@ lifecycle_cli:
         milestone_state: review-requested
         next_stage: code-review
       status: returned
+    route-d06ea669e8385fa7b9eaa786c8a0e488b19677145a21dc772fca7229466573f7:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r3-correction-route.md
+      evidence_sha256: 7a8042ecca8c4fae34a952c664626ad813bc621d7774d372a6ff26e79aa40e40
+      prior_lifecycle_revision: sha256:9e1c20be513fb564dfbb7029c32b3b31b30b0352fe5743ee52eeeb44990a1b7c
+      reason: implementation-defect
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r3-correction-return.md
+      return_evidence_sha256: be5a87ac35e397e3ec3c33cfa8dc11dd6d0fe0b6d5d630c8034af9cb4cc55669
+      return_stage: code-review
+      route_id: route-d06ea669e8385fa7b9eaa786c8a0e488b19677145a21dc772fca7229466573f7
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-FINAL-CR3
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: code-review
+      status: returned
   milestones:
     M1:
       completion_fingerprint: dec375723c3286bce7ad0cfc3917138d515a2b40e5aeeb9547d721266e9b7bdf
