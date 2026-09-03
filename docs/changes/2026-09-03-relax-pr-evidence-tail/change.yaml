@@ -17,10 +17,10 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: proposal-review
+  current_stage: architecture
   evidence: []
   lifecycle_state: active
-  next_stage: proposal-review
+  next_stage: architecture
 workflow: {}
 artifacts: {}
 requirements: []
