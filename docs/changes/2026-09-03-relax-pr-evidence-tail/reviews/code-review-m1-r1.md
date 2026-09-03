@@ -49,13 +49,13 @@ M1 correctly replaces the direct-child topology proxy with a closed cumulative s
 
 ## Finding PRTAIL-M1-CR1
 
-- Finding ID: PRTAIL-M1-CR1
-- Severity: major
-- Location: `skills/pr/SKILL.md:30`, `skills/pr/SKILL.md:61`, `skills/pr/SKILL.md:83`, `skills/pr/SKILL.md:87`, and `skills/pr/SKILL.md:106`
-- Evidence: The focused specification supersedes only the one-commit/direct-child clauses and requires every other retry, body, result, authority, and claim requirement to remain current. M1 removed the explicit malformed/stale/conflicting/duplicated/unsafe/escaped governed-signal partition, reduced R37 from retry state reconciliation to duplicate avoidance, removed R4's statement that procedure owns body applicability and adequacy, collapsed R40's exact `pr-body-ready`/`pr-open-ready` and post-read-back URL outputs into generic “readiness” and “URL,” and weakened “current owning evidence” to “owning evidence.” Passing literal tests do not prove those retained semantic properties.
-- Required outcome: Restore the unaffected governed-signal, retry-reconciliation, body-policy ownership, exact result-field, and current-owning-evidence clauses while retaining the proportional suffix rule and existing package-size contract.
-- Safe resolution path: Accept this finding, route M1 to Implementation, add exact preservation assertions before correction, restore the affected clauses with only semantically neutral compaction elsewhere, rerun every M1 command and package-size check, update M1 evidence, and return the same milestone for Code Review R2.
-- needs-decision rationale: none; the approved focused specification and prior PR contract already determine the required outcome.
+Finding ID: PRTAIL-M1-CR1
+Severity: major
+Location: `skills/pr/SKILL.md:30`, `skills/pr/SKILL.md:61`, `skills/pr/SKILL.md:83`, `skills/pr/SKILL.md:87`, and `skills/pr/SKILL.md:106`
+Evidence: The focused specification supersedes only the one-commit/direct-child clauses and requires every other retry, body, result, authority, and claim requirement to remain current. M1 removed the explicit malformed/stale/conflicting/duplicated/unsafe/escaped governed-signal partition, reduced R37 from retry state reconciliation to duplicate avoidance, removed R4's statement that procedure owns body applicability and adequacy, collapsed R40's exact `pr-body-ready`/`pr-open-ready` and post-read-back URL outputs into generic “readiness” and “URL,” and weakened “current owning evidence” to “owning evidence.” Passing literal tests do not prove those retained semantic properties.
+Required outcome: Restore the unaffected governed-signal, retry-reconciliation, body-policy ownership, exact result-field, and current-owning-evidence clauses while retaining the proportional suffix rule and existing package-size contract.
+Safe resolution path: Accept this finding, route M1 to Implementation, add exact preservation assertions before correction, restore the affected clauses with only semantically neutral compaction elsewhere, rerun every M1 command and package-size check, update M1 evidence, and return the same milestone for Code Review R2.
+needs-decision rationale: none; the approved focused specification and prior PR contract already determine the required outcome.
 
 ## Checklist coverage
 

@@ -80,10 +80,10 @@ workflow_state:
     latest_review:
       artifact_id: plan
       evidence:
-        - docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-final-r1.md
+        - docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-final-r2.md
       milestone_id: none
       occurrence: final
-      round: r1
+      round: r2
       stage: code-review
       status: approved
     milestones:
@@ -165,6 +165,27 @@ lifecycle_cli:
         milestone_id: null
         milestone_state: null
         next_stage: delivery-review
+      status: returned
+    route-5a3c0fb86ae1f5ff3b4ccaaa8a73ca57c098d754914120ae176a37f18cbb6c3a:
+      destination_artifact_id: code-review
+      destination_kind: stage
+      destination_stage: code-review
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/final-review-evidence-correction-route.md
+      evidence_sha256: 11650a8c92d21374e56e83ba3b92b68b9b1c4bc1453b8aa7775168b65c0fdf59
+      prior_lifecycle_revision: sha256:bf27379ba8da7d2c87a79dea9373b7dbbd089f5e12f85d6a50c41332e4459e8a
+      reason: stale-or-incomplete-review
+      return_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/final-review-evidence-correction-return.md
+      return_evidence_sha256: bb7f4fdafd506e60bf22595eba05bb106cfe8345a75d1a416077c9b2f4b754dd
+      return_stage: code-review
+      route_id: route-5a3c0fb86ae1f5ff3b4ccaaa8a73ca57c098d754914120ae176a37f18cbb6c3a
+      source_snapshot:
+        blocker: null
+        current_stage: verify
+        finding_ids: []
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: verify
       status: returned
     route-751371d200c6226c8c0aefeb542a883f28fc246ee653a00e76013391ce5bab2d:
       destination_artifact_id: implement
@@ -282,14 +303,14 @@ lifecycle_cli:
       stage_authority: review-resolution
   reviews:
     final-code-review:
-      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-final-r1.md
-      evidence_sha256: d256e27a68613bbbc5a6954d4ae316878d249116bcb1a95710d3faf303752da4
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-final-r2.md
+      evidence_sha256: da63d1334ac6234472c3b4a1dacc9fd39963c8b02150d1793579e7c4fd272ec4
       outcome: approved
-      review_id: code-review-final-r1
+      review_id: code-review-final-r2
       review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
-      review_log_sha256: 881e2e1dfb492ae9ed083c7dae42680e769fd832dbe1bcde882ad51ceb26bb0f
-      reviewed_revision: 9ade638a46030c409e0c160d4230001620845301
-      round: r1
+      review_log_sha256: d018683948b46700a9586a3ba49f27bf33284fac613e14ebc70c6734007bcce0
+      reviewed_revision: 9ade638ae857c2952b8748cc20333aa238e6052f
+      round: r2
       stage_authority: code-review
     proposal:
       artifact_path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md

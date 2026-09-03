@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:bf27379ba8da7d2c87a79dea9373b7dbbd089f5e12f85d6a50c41332e4459e8a",
+  "source_stage": "verify",
+  "destination_stage": "code-review",
+  "destination_artifact_id": "code-review",
+  "reason": "stale-or-incomplete-review",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/final-review-evidence-correction-route.md",
+  "finding_ids": [],
+  "return_stage": "code-review",
+  "stage_authority": "workflow"
+}

@@ -4,7 +4,10 @@
 
 Closeout status: closed
 
-Review closeout: code-review-m1-r1 and delivery-review-r1
+Review closeout: delivery-review-r2
+Review closeout: code-review-m1-r2
+Review closeout: code-review-m2-r1
+Review closeout: code-review-final-r2
 
 - Reviews covered: `code-review-m1-r1` and `delivery-review-r1`
 - Findings resolved: 2
@@ -25,6 +28,7 @@ Review closeout: code-review-m1-r1 and delivery-review-r1
 #### PRTAIL-M1-CR1
 
 Finding ID: PRTAIL-M1-CR1
+Review ID: code-review-m1-r1
 Disposition: accepted
 Status: resolved
 Owner: implementation author
@@ -39,11 +43,24 @@ Follow-up: Code Review M1 R2 after bounded correction.
 Validation target: focused retention assertions, full skill validation, generated local build, focused spec boundary validation, size check, and whitespace validation.
 Validation evidence: The new preservation test failed before correction and now passes. All 365 skill-validator tests, canonical validation, temporary generated-skill validation, focused boundary validation, and whitespace validation pass; the governed PR package is 11,746 bytes and 1,536 words.
 
+### code-review-m1-r2
+
+No material findings. R2 confirmed PRTAIL-M1-CR1 is resolved, the proportional rule and unaffected safeguards coexist, and M1 is clean for milestone closeout.
+
+### code-review-m2-r1
+
+No material findings. R1 confirmed exact canonical-to-adapter semantics, current v0.5.1 metadata identity, historical preservation, and M2 milestone closeout.
+
+### code-review-final-r2
+
+No material findings. R2 corrected the review-evidence structure and exact reviewed revision, then confirmed the complete M1-M2 branch remains coherent and clean for Verify handoff.
+
 ### delivery-review-r1
 
 #### PRTAIL-DLR1
 
 Finding ID: PRTAIL-DLR1
+Review ID: delivery-review-r1
 Disposition: accepted
 Status: resolved
 Owner: plan author
