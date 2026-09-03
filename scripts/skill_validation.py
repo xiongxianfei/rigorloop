@@ -38,6 +38,9 @@ REQUIREMENT_DELIVERY_MODEL_CONSUMERS = frozenset(
     }
 )
 REQUIREMENT_DELIVERY_MODEL_TARGET = Path("references/requirement-to-delivery-model.md")
+DISCOVERY_SUPPORT_SOURCE = ROOT / "templates" / "shared" / "discovery-support.md"
+DISCOVERY_SUPPORT_CONSUMERS = frozenset({"explore", "research"})
+DISCOVERY_SUPPORT_TARGET = Path("references/discovery-support.md")
 
 
 @dataclass(frozen=True)
@@ -100,6 +103,31 @@ def validate_requirement_delivery_model_copy(
         return [f"{local_path}: mapped requirement-to-delivery reference is missing"]
     if local_path.read_bytes() != canonical_path.read_bytes():
         return [f"{local_path}: mapped requirement-to-delivery reference differs from canonical source"]
+    return []
+
+
+def validate_discovery_support_copy(
+    local_path: Path,
+    skill_name: str,
+    *,
+    canonical_path: Path | None = None,
+) -> list[str]:
+    """Require each closed discovery consumer to carry the shared bytes."""
+
+    if skill_name not in DISCOVERY_SUPPORT_CONSUMERS:
+        allowed = ", ".join(sorted(DISCOVERY_SUPPORT_CONSUMERS))
+        return [
+            f"{local_path}: unknown discovery support consumer '{skill_name}'; "
+            f"expected one of {allowed}"
+        ]
+    if canonical_path is None:
+        canonical_path = DISCOVERY_SUPPORT_SOURCE
+    if not canonical_path.is_file():
+        return [f"{canonical_path}: discovery-support canonical reference is missing"]
+    if not local_path.is_file():
+        return [f"{local_path}: mapped discovery-support reference is missing"]
+    if local_path.read_bytes() != canonical_path.read_bytes():
+        return [f"{local_path}: mapped discovery-support reference differs from canonical source"]
     return []
 
 
@@ -3313,6 +3341,13 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     errors.extend(validate_project_map_canonical_contract(path, metadata, body))
     if skill_name and _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
         errors.extend(validate_requirement_delivery_model_copy(path, skill_name))
+        if skill_name in DISCOVERY_SUPPORT_CONSUMERS:
+            errors.extend(
+                validate_discovery_support_copy(
+                    path.parent / DISCOVERY_SUPPORT_TARGET,
+                    skill_name,
+                )
+            )
         errors.extend(
             validate_installed_skill_artifact_placement_contract(
                 path,

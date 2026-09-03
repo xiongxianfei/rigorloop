@@ -571,8 +571,8 @@ test("TNP-005 package version maps to bundled route-only v0.5.1 adapter metadata
   const artifact = metadata.artifacts.find((entry) => entry.adapter === "codex");
   assert.equal(artifact.archive, publicArchiveFile);
   assert.equal(artifact.install_root, ".agents/skills");
-  assert.equal(artifact.tree_sha256, "fde15c5524cb6c54091f838271ce8ec02ecb7bd7ee697e1c4ed0506c59a86c05");
-  assert.equal(artifact.file_count, 97);
+  assert.equal(artifact.tree_sha256, "8cc76c257ba0a33f4daa4c75aab305155c53c99588331ae5b0f6582629a41f67");
+  assert.equal(artifact.file_count, 105);
   assert.equal(
     artifact.url,
     `https://github.com/xiongxianfei/rigorloop/releases/download/${publicReleaseTag}/${publicArchiveFile}`,
