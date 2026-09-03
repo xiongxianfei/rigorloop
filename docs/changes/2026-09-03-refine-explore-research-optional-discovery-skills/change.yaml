@@ -303,4 +303,10 @@ lifecycle_cli:
       stage_authority: implement
       subject_path: docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md
       subject_sha256: 24f3acd041bdd46b56a5a45007f71ee38d9244d4ed07f48d2317718484d3c3fb
+    verify-result:
+      selector: lifecycle_cli.validations.verify-result
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/verify-report.md
+      evidence_sha256: sha256:03349a20a4db09d9be7f5ee2fcd82f73de685da2cdbb45999e04367ba2f6240e
+      verified_subject_revision: 5b51a5bdbdd4ae4a453e21c829bf3c20d0f3baf8
+      stage_authority: verify
   withdrawals: {}
