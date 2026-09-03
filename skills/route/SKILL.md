@@ -54,7 +54,7 @@ Classify whether the work is a bug, feature, refactor, migration, documentation 
 
 Do not use this skill as a substitute for the stage skill that owns the current artifact or proof. If the user requests only one stage output, invoke that skill in isolation.
 
-Use `explore` or `research` only when option expansion or current evidence is needed. Use `bugfix` for work that begins with a failure, regression, incident, or unexpected behavior. Use `learn` only when periodic or explicit learning triggers apply.
+Use `explore` or `research` only under the optional discovery routing rules below. Use `bugfix` for work that begins with a failure, regression, incident, or unexpected behavior. Use `learn` only when periodic or explicit learning triggers apply.
 
 A direct individual-skill request is isolated by default. It does not activate, resume, settle, or advance a governed workflow unless the user explicitly requests workflow continuation or valid workflow-managed state already requires it.
 
@@ -81,6 +81,19 @@ Use a broader-section read when a narrow excerpt cannot establish the semantic r
 ## Outputs
 
 Produce a routing decision, authoritative current-stage assessment, blockers or assumptions, and the next valid skill or stop condition. Do not replace the downstream artifact.
+
+## Optional discovery routing
+
+Explore expands the decision space. Research reduces decision-relevant uncertainty. Neither skill owns the supported decision.
+
+- Select Explore when the option space is materially unclear: the real problem, user value, scope, or materially different directions remain unsettled; the request assumes a solution too early; the decision is difficult to reverse; or the owning stage cannot proceed without clearer alternatives.
+- Select Research when a material decision depends on an uncertain fact: platform or dependency behavior, compatibility, migration, a current standard or rule, or a scale, performance, security, or operational claim needs evidence.
+- Select both, in that order, when Explore identifies bounded research questions and those research questions could materially change the option comparison.
+- Select neither when direction and decision-relevant facts are sufficiently clear for the owning stage to proceed.
+
+Do not auto-run Explore or Research. A standalone discovery artifact requires an explicit invocation or higher authority that specifically requires the support work. A small incidental fact check or option consideration inside an owning stage does not create a discovery artifact and must not be reported as completion of Explore or Research.
+
+Either skill may support Proposal, Design, Delivery, Implementation, Verify, or another named decision owner. The artifact names that owner and recommends a handoff; the owning stage must explicitly adopt any conclusion that changes its governed decision. A discovery artifact does not approve the direction, does not edit the owner's artifact, does not settle a package, and does not advance lifecycle state. If support work contradicts an approved decision, return the contradiction to the stage that owns that decision rather than silently changing it.
 
 ## Invocation classification
 
