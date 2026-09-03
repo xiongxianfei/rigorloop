@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-finding-resolution",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:7de55c68f5da7fae191d50efb1e4d79bcac4738c9513c1ba198b1581da4c9a64",
+  "artifact_id": "plan",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/review-resolution.md",
+  "finding_id": "PRTAIL-DLR1",
+  "stage_authority": "review-resolution"
+}
