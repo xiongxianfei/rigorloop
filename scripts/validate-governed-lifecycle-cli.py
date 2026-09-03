@@ -33,6 +33,10 @@ BASELINE_WARNINGS = {
             "BFA-M2-R9-001",
         ],
     },
+    "2026-08-24-governed-lifecycle-cli": {
+        "blocker_codes": ["RL_STALE_EVIDENCE"],
+        "finding_ids": [],
+    },
     "2026-08-25-cli-observability-token-efficient-results": {
         "blocker_codes": ["RL_STALE_EVIDENCE"],
         "finding_ids": [],
