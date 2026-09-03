@@ -29,10 +29,10 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: spec
+  current_stage: design-review
   evidence: []
   lifecycle_state: active
-  next_stage: spec
+  next_stage: design-review
 workflow: {}
 artifacts: {}
 requirements: []
