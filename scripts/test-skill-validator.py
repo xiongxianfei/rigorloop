@@ -6998,6 +6998,7 @@ class PRSkillSimplificationTests(unittest.TestCase):
         self.asset = (self.root / "assets" / "pr-body-skeleton.md").read_text(encoding="utf-8")
         self.verify_skill = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
         self.verify_reference = (ROOT / "skills" / "verify" / "references" / "branch-readiness-verification.md").read_text(encoding="utf-8")
+        self.verify_explanation = (ROOT / "skills" / "verify" / "references" / "successful-explanation-v3.md").read_text(encoding="utf-8")
 
     def test_package_inventory_and_resource_map_are_exact(self) -> None:
         self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-pr-readiness.md"])
@@ -7017,6 +7018,7 @@ class PRSkillSimplificationTests(unittest.TestCase):
             "PR state": ("absent", "open", "draft", "closed", "merged", "ambiguous"),
             "operation result": ("opened", "draft-opened", "updated", "reused", "prepared-not-opened", "blocked"),
             "hosted-CI state": ("passed", "failed", "pending", "unavailable", "unobserved", "not-applicable"),
+            "evidence suffix": ("none", "evidence-only", "invalidating"),
         }
         for name, allowed in vocabularies.items():
             with self.subTest(vocabulary=name):
@@ -7065,9 +7067,12 @@ class PRSkillSimplificationTests(unittest.TestCase):
         self.assertIn("Legacy, prose-only, command-only", self.skill)
         self.assertIn("preparation", self.skill)
 
-    def test_evidence_tail_external_sequence_and_readback_are_exact(self) -> None:
+    def test_evidence_suffix_external_sequence_and_readback_are_exact(self) -> None:
         for phrase in (
-            "exactly one direct-child verify-owned evidence commit",
+            "cumulative final change",
+            "any commit count or direct-parent topology",
+            "current attributable final-review, workflow, and Verify evidence",
+            "path, file name, commit message, or author identity alone",
             "Immediately before push",
             "After push and before PR mutation",
             "Immediately before PR mutation",
@@ -7076,6 +7081,28 @@ class PRSkillSimplificationTests(unittest.TestCase):
             "pr-open-ready: false",
         ):
             self.assertIn(phrase.lower(), self.skill.lower())
+        self.assertNotIn("exactly one direct-child verify-owned evidence commit", self.skill)
+
+    def test_evidence_suffix_rejects_protected_mixed_stale_and_cross_change_content(self) -> None:
+        for phrase in (
+            "implementation, tests, specifications, architecture, plans, dependencies, configuration",
+            "generated product output",
+            "public documentation",
+            "another governed change",
+            "mixed",
+            "unknown",
+            "stale",
+            "non-ancestor",
+        ):
+            self.assertIn(phrase.lower(), (self.skill + self.reference).lower())
+
+    def test_verify_result_pair_stays_exact_but_pr_may_consume_prior_evidence(self) -> None:
+        for phrase in (
+            "exactly the report and `change.yaml#lifecycle_cli.validations.verify-result`",
+            "final-review and workflow evidence",
+            "do not become part of the Verify result registration",
+        ):
+            self.assertIn(phrase.lower(), self.verify_explanation.lower())
 
     def test_hosted_ci_result_and_claim_contracts_are_explicit(self) -> None:
         for phrase in (

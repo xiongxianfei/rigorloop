@@ -1,11 +1,13 @@
 # Governed PR readiness
 
-Load for a governed candidate. This read-only reference owns bounded readiness aggregation; `SKILL.md` owns actions and results.
+For governed work, this read-only reference aggregates readiness; `SKILL.md` owns actions.
 
-Confirm the change pack matches invocation, branch, verify basis, and pointers. Invalid authority stops without portable fallback.
+Confirm the change pack matches invocation, branch, Verify basis, and pointers; invalid authority stops.
 
-Inspect plan, review resolution, Verify/state-sync, release-sensitive, migration, and external completion. Use only the exact successful Verify explanation and basis; historical rationale grants no current authority. Expand only for conflicts; presence is not proof.
+Inspect plan, review resolution, Verify/state-sync, release-sensitive, migration, and external completion. Use the successful Verify result; historical rationale grants no authority. Presence is not proof.
 
-Return evidence identities, blockers and owners, and governed body data. Missing, stale, open, failing, or mismatched evidence blocks.
+Classify the cumulative subject-to-handoff diff from exact current lifecycle, review-closeout, and Verify identities. Evidence-only permits attributable final review, workflow, and Verify evidence. Implementation, tests, specifications, architecture, plans, dependencies, configuration, generated product output, public documentation, another governed change, mutable non-lifecycle content, mixed or unknown paths, and stale or conflicting identities are invalidating. Paths and commit metadata grant no authority; block before mutation and route to the owner.
 
-This reference must not mutate lifecycle, plan, review, workflow, automation, release, publication, Git, or PR state. It grants no push, refresh, state transition, or continuation authority.
+Return classification, evidence, blockers, owners, and body data; invalid evidence blocks.
+
+It must not mutate lifecycle, plan, review, workflow, release, publication, Git, or PR state, and grants no push or continuation authority.
