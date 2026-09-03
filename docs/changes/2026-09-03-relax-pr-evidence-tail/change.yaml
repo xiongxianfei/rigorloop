@@ -49,10 +49,10 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: plan
+  current_stage: delivery-review
   evidence: []
   lifecycle_state: active
-  next_stage: plan
+  next_stage: delivery-review
 workflow: {}
 artifacts: {}
 requirements: []
