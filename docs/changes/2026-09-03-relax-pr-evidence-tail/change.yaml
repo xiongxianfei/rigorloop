@@ -71,7 +71,7 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: delivery-review
+  current_stage: plan
   evidence: []
   lifecycle_state: active
   next_stage: delivery-review
@@ -89,6 +89,27 @@ review:
   unresolved_items: 1
 lifecycle_cli:
   schema_version: 2
+  active_correction:
+    destination_artifact_id: plan
+    destination_stage: plan
+    evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/delivery-review-r1-plan-route.md
+    evidence_sha256: 98a8289257c1da317c3bf94ac6bc539d17339ea4fdfff7a31095b8ff35f22a00
+    prior_artifact_sha256: 915acbd2c90e67ac6cdd23c53d389e358666da846bc3b792a362323e0a98274f
+    prior_lifecycle_revision: sha256:2a15876a8b4e6b31d3c95829a73258736d874d2ed7605a389f0dbbf6aff86694
+    reason: upstream-planning-gap
+    return_stage: delivery-review
+    route_id: route-42b9e90320b1c4cb35f0f6624d115039d1b501402b5b38cf7788a7d0ce56c8e9
+    source_review_id: delivery-review-r1
+    source_snapshot:
+      blocker: null
+      current_stage: delivery-review
+      finding_ids:
+        - PRTAIL-DLR1
+      lifecycle_state: active
+      milestone_id: null
+      milestone_state: null
+      next_stage: delivery-review
+    status: active
   artifacts:
     architecture:
       artifact_kind: architecture
