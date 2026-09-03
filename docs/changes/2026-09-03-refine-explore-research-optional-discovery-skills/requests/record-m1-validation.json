@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-validation",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:17b371babd4125ecbc0686a54d8797a19ccbd9368e9a28391b66ba29c7b9cff8",
+  "artifact_id": "plan",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m1-canonical-discovery-packages.md",
+  "subject_path": "docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md",
+  "stage_authority": "implement"
+}

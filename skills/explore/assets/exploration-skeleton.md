@@ -1,8 +1,6 @@
 <!-- Template: exploration-skeleton-v1 -->
 <!-- Skill: explore -->
 <!-- Template status: normative -->
-<!-- Maintained alongside: skills/explore/SKILL.md -->
-
 ## Topic and decision supported
 
 <problem or decision, intended owner or change, and affected users, systems, or workflows>

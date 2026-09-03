@@ -1,6 +1,18 @@
 # Review log
 
-Open findings: none
+Open findings: ER-M1-CR1
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: r1
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: ER-M1-CR1
+Open findings: ER-M1-CR1
 Recording status: recorded
 
 ### Review entry

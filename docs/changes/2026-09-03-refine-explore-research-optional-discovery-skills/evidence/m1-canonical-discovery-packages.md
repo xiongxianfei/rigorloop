@@ -1,5 +1,10 @@
 # M1 implementation evidence: Canonical optional discovery packages
 
+Milestone: M1
+Subject path: docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md
+Subject identity: sha256:24f3acd041bdd46b56a5a45007f71ee38d9244d4ed07f48d2317718484d3c3fb
+Validation result: passed
+
 ## Result
 
 ## Core result
@@ -33,10 +38,12 @@ Before production changes, `python scripts/test-skill-validator.py -k OptionalDi
 ## Validation results
 
 - `python scripts/test-skill-validator.py -k OptionalDiscoverySkillContractTests` — passed, 6 tests.
-- `python scripts/test-skill-validator.py` — passed, 358 tests.
+- `python scripts/test-skill-validator.py` — passed initially with 358 tests and after the review correction with 359 tests.
 - `python scripts/validate-skills.py` — passed, 20 canonical skills.
 - `python scripts/build-skills.py --check` — passed using temporary generated output.
 - `git diff --check` — passed.
+
+After Code Review R1 recorded ER-M1-CR1, a new package-wide public-text hygiene test failed on the canonical `skills/explore/SKILL.md` and `skills/research/SKILL.md` path comments embedded in the two artifact assets. The comments were removed, the focused seven-test discovery suite passed, and the complete skill-validator suite passed with 359 tests. Canonical validation, generated local-skill validation, review structure validation, and whitespace validation also passed after the correction.
 
 ## Changed and unaffected surfaces
 
