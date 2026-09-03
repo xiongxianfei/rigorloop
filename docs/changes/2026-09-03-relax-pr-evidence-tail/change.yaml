@@ -1,0 +1,43 @@
+change_id: 2026-09-03-relax-pr-evidence-tail
+title: Relax PR Evidence Tail Topology
+classification: workflow
+risk: medium
+lifecycle_contract: stage-owned-change-local-v3
+artifact_states:
+  proposal:
+    authoring_evidence: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/proposal-authoring.md
+    kind: proposal
+    lifecycle_state: review-required
+    path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
+    role: primary
+workflow_state:
+  blocker: null
+  current_stage: proposal
+  evidence: []
+  lifecycle_state: active
+  next_stage: proposal
+workflow: {}
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  status: pending
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 1
+  artifacts:
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
+      artifact_role: primary
+      artifact_sha256: 6d3dce8f02deab6b62b7da5f195fc5b8835607547571ccb7159b4c319eb7e43d
+      authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/proposal-authoring.md
+      authoring_evidence_sha256: baf28c97ca6f6e03b7f9082254c9f4f2d7ee43ca8dabb6ed7cc9dce46b26dafe
+      stage_authority: proposal
+  milestones: {}
+  package_reviews: {}
+  resolutions: {}
+  reviews: {}
+  validations: {}

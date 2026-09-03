@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:b95c8da206d6d9755ce16be05652c0f221a577622d5a4515099ffeffcbfc1e37",
+  "artifact_id": "proposal",
+  "artifact_kind": "proposal",
+  "artifact_role": "primary",
+  "artifact_path": "docs/proposals/2026-09-03-relax-pr-evidence-tail.md",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/proposal-authoring.md",
+  "stage_authority": "proposal"
+}
