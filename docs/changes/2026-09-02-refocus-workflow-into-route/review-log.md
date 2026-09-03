@@ -1,6 +1,19 @@
 # Review log
 
-Open findings: RFR-FINAL-CR1
+Open findings: RFR-FINAL-CR2
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-final-r2
+Stage: code-review
+Round: r2
+Status: changes-requested
+Detailed record: reviews/code-review-final-r2.md
+Resolution: review-resolution.md#code-review-final-r2
+Material findings: RFR-FINAL-CR2
+Finding ID: RFR-FINAL-CR2
+Open findings: RFR-FINAL-CR2
 Recording status: recorded
 
 ### Review entry
@@ -13,7 +26,7 @@ Detailed record: reviews/code-review-final-r1.md
 Resolution: review-resolution.md#code-review-final-r1
 Material findings: RFR-FINAL-CR1
 Finding ID: RFR-FINAL-CR1
-Open findings: RFR-FINAL-CR1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
