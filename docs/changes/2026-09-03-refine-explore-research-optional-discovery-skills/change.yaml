@@ -66,7 +66,7 @@ workflow_state:
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M2
+    current_milestone: M3
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -91,13 +91,12 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: implementing
+        state: closed
       M3:
         kind: implementation
-        state: planned
+        state: implementing
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M2
       - M3
 workflow: {}
 artifacts: {}
@@ -188,6 +187,26 @@ lifecycle_cli:
       review_record_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m1-r2.md
       review_recording_status: recorded
       review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M2:
+      completion_fingerprint: bc463f0bffa39d080220672c8df48c3f49442c6b3f40a51bd601440306d92ad5
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m2-routing-and-guidance.md
+      evidence_sha256: 5e7cdbb622f16e7b012e001619fad412b7d1ac91611d73ef4c0bf12c998f2155
+      milestone_id: M2
+      review_evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m2-r1.md
+      review_evidence_sha256: 1278c1793904be6a9f53060e3e8c9830cab7f691243c84a27d3aa28f30ffa16d
+      review_id: code-review-m2-r1
+      review_log_entry_sha256: d3e1770ab40be717bb603d848b45c3558dcaf64500fc2101c67b859583e27200
+      review_log_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m2-r1.md
+      review_recording_status: recorded
+      review_round: r1
       review_stage: code-review
       stage_authority: workflow
   package_reviews:

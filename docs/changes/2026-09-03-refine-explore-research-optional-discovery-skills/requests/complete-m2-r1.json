@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:205feaa984d4019406b63a4e5fc5bbf52258d422b18bab00996975195db78241",
+  "milestone_id": "M2",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m2-routing-and-guidance.md",
+  "review_evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m2-r1.md",
+  "stage_authority": "workflow"
+}
