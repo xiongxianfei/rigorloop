@@ -553,6 +553,8 @@ R15b. The following shared blocks MUST remain deferred until a later approved ch
 
 R15c. `generated-output-handling` is contributor-maintenance guidance, not a v1 shared block. Do not keep an unused `templates/shared/generated-output-handling.md` source unless a later approved change adopts it for an actual contributor-facing consumer.
 
+R15d. The later approved `discovery-support` shared block MUST carry the stable supporting-artifact, authority, stopping, contradiction, and handoff rules used by `explore` and `research`. Both consuming packages MUST carry verbatim skill-local copies while remaining independently installable.
+
 R16. Evidence-reading guidance in normalized skills MUST prefer targeted evidence before broad reads.
 
 R16a. Normalized skills SHOULD start from summaries, stable IDs, headings, targeted sections, check IDs, file paths, counts, or line citations.

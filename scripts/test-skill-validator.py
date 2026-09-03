@@ -8784,5 +8784,92 @@ class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
         self.assertNotIn("New changes remain v1 until M5", combined)
 
 
+class OptionalDiscoverySkillContractTests(unittest.TestCase):
+    """ER-R1-ER-R22 and ER-R27-ER-R34 canonical package contract."""
+
+    def test_explore_uses_proportional_standalone_option_discovery(self) -> None:
+        body = (ROOT / "skills/explore/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("docs/explorations/YYYY-MM-DD-slug.md", body)
+        self.assertIn("enough materially distinct options", body)
+        self.assertIn("explicit invocation", body)
+        self.assertIn("decision owner", body)
+        self.assertNotIn("Generate at least five options", body)
+        self.assertNotIn("docs/proposals/YYYY-MM-DD-slug.explore.md", body)
+        self.assertNotIn("inline exploration report", body)
+
+    def test_research_uses_bounded_standalone_evidence(self) -> None:
+        body = (ROOT / "skills/research/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("docs/research/YYYY-MM-DD-slug.md", body)
+        self.assertIn("bounded", body)
+        self.assertIn("explicit invocation", body)
+        self.assertIn("confidence", body)
+        self.assertIn("decision owner", body)
+        self.assertNotIn("compact research section", body)
+        self.assertNotIn("research artifact path or concise report", body)
+
+    def test_discovery_packages_are_self_contained_and_share_exact_policy(self) -> None:
+        canonical = (ROOT / "templates/shared/discovery-support.md").read_bytes()
+        expected_resources = {
+            "explore": {
+                "assets/exploration-skeleton.md",
+                "references/discovery-support.md",
+                "references/option-discovery-methods.md",
+                "references/high-impact-decision-method.md",
+            },
+            "research": {
+                "assets/research-skeleton.md",
+                "references/discovery-support.md",
+                "references/source-and-repository-method.md",
+                "references/experiment-and-confidence-method.md",
+            },
+        }
+        for skill_name, resources in expected_resources.items():
+            skill_dir = ROOT / "skills" / skill_name
+            body = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    canonical,
+                    (skill_dir / "references/discovery-support.md").read_bytes(),
+                )
+                for resource in resources:
+                    self.assertTrue((skill_dir / resource).is_file(), resource)
+                    self.assertIn(resource, body)
+                self.assertIn("## Resource map", body)
+                self.assertIn("## Stop conditions", body)
+                self.assertIn("## Claims this skill must not make", body)
+
+    def test_discovery_shared_policy_is_admitted_by_skill_contract(self) -> None:
+        contract = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
+        self.assertIn("`discovery-support`", contract)
+
+    def test_canonical_validation_rejects_discovery_shared_policy_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical = root / "discovery-support.md"
+            canonical.write_text("canonical\n", encoding="utf-8")
+            local = root / "local.md"
+            local.write_text("drifted\n", encoding="utf-8")
+            errors = skill_validation.validate_discovery_support_copy(
+                local,
+                "explore",
+                canonical_path=canonical,
+            )
+        self.assertTrue(any("differs from canonical source" in error for error in errors))
+
+    def test_canonical_validation_rejects_unknown_discovery_skill_name(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            canonical = root / "discovery-support.md"
+            canonical.write_text("canonical\n", encoding="utf-8")
+            local = root / "local.md"
+            local.write_text("canonical\n", encoding="utf-8")
+            errors = skill_validation.validate_discovery_support_copy(
+                local,
+                "unknown-discovery-skill",
+                canonical_path=canonical,
+            )
+        self.assertTrue(any("unknown discovery support consumer" in error for error in errors))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
