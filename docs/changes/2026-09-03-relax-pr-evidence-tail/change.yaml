@@ -167,6 +167,28 @@ lifecycle_cli:
         milestone_state: null
         next_stage: delivery-review
       status: returned
+    route-751371d200c6226c8c0aefeb542a883f28fc246ee653a00e76013391ce5bab2d:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m1-r1-correction-route.md
+      evidence_sha256: 0eda4d023b0ff38977c3c90bc7fcfc07e1fcbe2283d56df0fa9648c6b1fe66b5
+      prior_lifecycle_revision: sha256:5570a6d6244293ea8b8b8137b183e3590d38f2f8bd8e269debaf0c3ee7b7488b
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m1-r1-correction-return.md
+      return_evidence_sha256: 297162456c1191b56efac0a9d3f94d8e0bf9e0f899299d042b1c04cf238ce578
+      return_stage: code-review
+      route_id: route-751371d200c6226c8c0aefeb542a883f28fc246ee653a00e76013391ce5bab2d
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - PRTAIL-M1-CR1
+        lifecycle_state: active
+        milestone_id: M1
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
   milestones: {}
   package_reviews:
     delivery:
@@ -210,6 +232,14 @@ lifecycle_cli:
       evidence_sha256: e194b6d26c68f160ddda292d6413240f1051d581567dccb8084135fa9e4bba72
       finding_id: PRTAIL-DLR1
       owner: plan author
+      stage_authority: review-resolution
+    PRTAIL-M1-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-resolution.md
+      evidence_sha256: c27925f8e59d9ffb556bab04c1341915ac8de184e908ed9573ca51c7639952cf
+      finding_id: PRTAIL-M1-CR1
+      owner: implementation author
       stage_authority: review-resolution
   reviews:
     proposal:

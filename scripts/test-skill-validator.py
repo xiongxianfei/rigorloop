@@ -7083,6 +7083,16 @@ class PRSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase.lower(), self.skill.lower())
         self.assertNotIn("exactly one direct-child verify-owned evidence commit", self.skill)
 
+    def test_unaffected_signal_retry_body_output_and_claim_contracts_are_preserved(self) -> None:
+        for phrase in (
+            "malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous signals stop without portable fallback",
+            "Retry reconciles state",
+            "Procedure owns applicability and adequacy",
+            "requested intent, operation, actual external mutation, actual PR state, readiness booleans, hosted-CI state, blockers, claim limitations, and post-read-back URL",
+            "without current owning evidence",
+        ):
+            self.assertIn(phrase, self.skill)
+
     def test_evidence_suffix_rejects_protected_mixed_stale_and_cross_change_content(self) -> None:
         for phrase in (
             "implementation, tests, specifications, architecture, plans, dependencies, configuration",

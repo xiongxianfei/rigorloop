@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:5570a6d6244293ea8b8b8137b183e3590d38f2f8bd8e269debaf0c3ee7b7488b",
+  "source_stage": "code-review",
+  "destination_stage": "implement",
+  "destination_artifact_id": "implement",
+  "reason": "upstream-proof-gap",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m1-r1-correction-route.md",
+  "finding_ids": [
+    "PRTAIL-M1-CR1"
+  ],
+  "return_stage": "code-review",
+  "milestone_id": "M1",
+  "stage_authority": "workflow"
+}

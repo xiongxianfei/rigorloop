@@ -21,12 +21,14 @@ Before the canonical skill changes, the focused `PRSkillSimplificationTests` fai
 
 ## Validation results
 
-- `python scripts/test-skill-validator.py` — passed, 364 tests.
+- `python scripts/test-skill-validator.py` — passed initially with 364 tests and after review correction with 365 tests.
 - `python scripts/validate-skills.py` — passed, 20 canonical skills.
 - `python scripts/build-skills.py --check` — passed with temporary generated output.
 - `python scripts/validate-boundary-first.py --check --path specs/relax-pr-evidence-tail.md` — passed.
 - `git diff --check` — passed.
-- `wc -c -w skills/pr/SKILL.md skills/pr/references/governed-pr-readiness.md` — 11,746 bytes and 1,545 words combined, within the existing package limit.
+- `wc -c -w skills/pr/SKILL.md skills/pr/references/governed-pr-readiness.md` — 11,746 bytes and 1,536 words combined, within the existing package limit.
+
+Code Review R1 recorded PRTAIL-M1-CR1 because compacting for the package ceiling removed unaffected governed-signal, retry-reconciliation, body-policy, exact result-field, and current-evidence clauses. A new focused preservation test failed before correction. The exact clauses were restored, semantically neutral reference wording was tightened, and the complete M1 validation set passed with 365 tests. The final package remains 11,746 bytes and is now 1,536 words.
 
 ## Contract evidence
 

@@ -5,6 +5,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: r1
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: PRTAIL-M1-CR1
+Open findings: none
+Finding ID: PRTAIL-M1-CR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: delivery-review-r2
 Stage: delivery-review
 Round: r2
