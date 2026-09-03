@@ -29,7 +29,7 @@ Review closeout: proposal-review-r1
 | RFR-M2-CR2 | accepted | resolved | Current skill prose names route wherever it identifies the semantic routing actor. |
 | RFR-M3-CR1 | accepted | resolved | The unpublished v0.5.1 package metadata is bound to generated route-only archives while immutable v0.5.0 remains unchanged. |
 | RFR-M3-CR2 | accepted | resolved | Normal `init --write-state` safely replaces only an exact lockfile-managed workflow target and rolls back failed replacement. |
-| RFR-FINAL-CR1 | needs-decision | open | V3 lacks an identity-bound final holistic review completion and correction route after all implementation milestones close. |
+| RFR-FINAL-CR1 | accepted | open | Implement the minimal identity-bound final holistic review completion and correction route after all implementation milestones close. |
 
 ## Finding Details
 
@@ -206,13 +206,13 @@ No material findings. R2 independently confirmed both M3 R1 findings are resolve
 #### RFR-FINAL-CR1
 
 Finding ID: RFR-FINAL-CR1
-Disposition: needs-decision
+Disposition: accepted
 Status: open
-Owner: workflow lifecycle implementation
+Owner: implement
 Owning stage: review-resolution
-Decision owner: change owner
-Decision needed: Accept the bounded lifecycle correction as required integration work for this first v3 example, or move it to a prerequisite change and keep this proposal blocked before Verify.
-Chosen action: none pending decision
+Decision owner: none
+Decision needed: none
+Chosen action: Add one route-recorded final-review receipt, consume it for `code-review -> verify`, and allow final-occurrence implementation correction without a fabricated milestone.
 Rationale: The route implementation correctly consumes authoritative CLI context, but the current v3 coordination model cannot represent the final holistic review authority that its own stage graph requires. Silently editing workflow state or treating the plan's Delivery Review as final Code Review would violate stage ownership.
 Required outcome: Record exact final-review identity and outcome, reject stale or non-clean evidence, support an implementation correction route with no active milestone, and permit the clean `code-review -> verify` transition through the CLI.
 Follow-up: After disposition, implement the bounded lifecycle correction under the owning stage and rerun final holistic Code Review.

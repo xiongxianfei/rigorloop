@@ -85,14 +85,13 @@ workflow_state:
       review_round: r1
       reviewed_artifact_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
     latest_review:
-      artifact_id: plan
-      evidence:
-        - docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m3-r2.md
-      milestone_id: M3
-      occurrence: milestone
-      round: r2
-      stage: code-review
-      status: approved
+      artifact_id: none
+      evidence: []
+      milestone_id: none
+      occurrence: none
+      round: none
+      stage: none
+      status: not-started
     milestones:
       M1:
         kind: implementation
@@ -182,6 +181,28 @@ lifecycle_cli:
         lifecycle_state: active
         milestone_id: M2
         milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-225eff1036c8d2aa2e28ce7f63f619e6f4f9d25adca65025a29c882008947a87:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r1-correction-route.md
+      evidence_sha256: ca2ed739bc3211951a5103728525fc3dcc4850a07b1b07ec61e477f9a75c023a
+      prior_lifecycle_revision: sha256:57ffd0832e8920b1d0a86e1b0e4750e3eabb69cfe336254a3407354a9b3945de
+      reason: implementation-defect
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r1-correction-return.md
+      return_evidence_sha256: fe4bbfec962596b6e6256564bacdab489f98bea0990a5b1487b1b7ddb9177af9
+      return_stage: code-review
+      route_id: route-225eff1036c8d2aa2e28ce7f63f619e6f4f9d25adca65025a29c882008947a87
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-FINAL-CR1
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
         next_stage: code-review
       status: returned
     route-4e469a45c97b4c34cfd9f87474a3f6693989d5269d4716921878cbd457e6072f:

@@ -185,6 +185,14 @@ function coordinationErrors(root, change) {
     if (!receiptEvidence || !existsSync(receiptEvidence) || !lstatSync(receiptEvidence).isFile() || hashFile(receiptEvidence) !== receipt?.evidence_sha256) errors.push(diagnostic("RL_INVALID_REQUEST", "Withdrawal receipt evidence is missing or stale.", "withdrawal-history", null, [withdrawalId, String(receipt?.evidence_path)]));
     if (state.artifacts?.[receipt?.artifact_id]?.artifact_path === receipt?.artifact_path) errors.push(diagnostic("RL_INVALID_REQUEST", "A withdrawn registration is still active.", "withdrawal-history", null, [withdrawalId, String(receipt?.artifact_id)]));
   }
+  const finalReview = state.reviews?.["final-code-review"];
+  if (finalReview) {
+    const evidence = repositoryPath(root, finalReview.evidence_path);
+    const log = repositoryPath(root, finalReview.review_log_path);
+    if (finalReview.stage_authority !== "code-review" || finalReview.outcome !== "approved" || !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(finalReview.reviewed_revision ?? "") || !evidence || !existsSync(evidence) || !lstatSync(evidence).isFile() || hashFile(evidence) !== finalReview.evidence_sha256 || !log || !existsSync(log) || !lstatSync(log).isFile() || hashFile(log) !== finalReview.review_log_sha256) {
+      errors.push(diagnostic("RL_STALE_EVIDENCE", "Final Code Review evidence is missing, stale, or contradictory.", "final-review-evidence", "record-final-review", ["final-code-review"]));
+    }
+  }
   const route = state.active_correction;
   if (route) {
     const correctionDestinations = allowedCorrectionDestinations(change);
@@ -261,7 +269,8 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
   const staleCorrectionIsRoutable = staleIdentities.length === 0
     || (blockerCodes.has("RL_UNRESOLVED_MATERIAL_FINDING") && staleIdentities.every((artifactId) => eligibleDestinationIds.includes(artifactId)));
   const routeCompatibleBlockers = staleCorrectionIsRoutable && blockers.every((blocker) => ["RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_STALE_EVIDENCE"].includes(blocker.code));
-  const stageCorrectionAvailable = stage === "code-review" && activeMilestone(change) && onlyOpenFindings;
+  const finalCodeReviewCorrectionAvailable = stage === "code-review" && change.workflow_state?.planned_work?.current_milestone === "none" && (change.workflow_state?.planned_work?.remaining_implementation_milestones?.length ?? 0) === 0 && onlyOpenFindings;
+  const stageCorrectionAvailable = stage === "code-review" && (activeMilestone(change) || finalCodeReviewCorrectionAvailable) && onlyOpenFindings;
   const verificationCorrectionAvailable = change.lifecycle_contract === LIFECYCLE_CONTRACT_V3 && stage === "verify" && onlyOpenFindings;
   if (coordination?.schema_version === 2 && !coordination.active_correction && (eligibleDestinationIds.length || upstreamPackageCorrection || stageCorrectionAvailable || verificationCorrectionAvailable) && routeCompatibleBlockers && (["review-resolution", "code-review", "verify"].includes(stage) || blockers.length)) operations.push("route-correction");
 
@@ -278,7 +287,7 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
   if (blockers.length > 0) return [...operations, ...(onlyOpenFindings ? ["record-finding-resolution"] : [])];
   if (stageIsComplete(root, change, stage) && allowedNextStages(change, stage).length > 0) operations.push("advance-stage");
   if (authoringStages.includes(stage) && ["authoring", "revision-required"].includes(target?.lifecycle_state)) operations.push("record-artifact-revision");
-  if (REVIEW_STAGES.has(stage) && !operations.includes("advance-stage")) operations.push(registeredReview ? "settle-artifact" : "record-review");
+  if (REVIEW_STAGES.has(stage) && stage !== "code-review" && !operations.includes("advance-stage")) operations.push(registeredReview ? "settle-artifact" : "record-review");
   if (stage === "review-resolution") operations.push("record-finding-resolution");
   if (["implement", "verify", "ci-maintenance"].includes(stage)) operations.push("record-validation");
   const milestone = activeMilestone(change);
@@ -286,6 +295,7 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
   if (stage === "implement" && milestoneState === "planned") operations.push("start-milestone");
   if (stage === "implement" && milestoneState === "implementing") operations.push("complete-milestone");
   if (stage === "code-review" && milestoneState === "review-requested") operations.push("complete-milestone");
+  if (stage === "code-review" && !milestone && !operations.includes("advance-stage")) operations.push("record-final-review");
   return operations;
 }
 
@@ -506,7 +516,7 @@ export function contextForStage(interpreted, stage) {
     authorized_output_path: target?.path ?? null,
     blockers: interpreted.blockers,
     lifecycle_revision: interpreted.lifecycle_revision,
-    permitted_registration_operation: routeAvailable ? null : interpreted.permitted_operations.includes("initialize-approved-plan") ? "initialize-approved-plan" : interpreted.permitted_operations.includes("advance-stage") ? "advance-stage" : REVIEW_STAGES.has(stage) ? "record-review" : stage === "review-resolution" ? "record-finding-resolution" : authoringStages.includes(stage) ? "record-artifact-revision" : ["implement", "verify", "ci-maintenance"].includes(stage) ? "record-validation" : null,
+    permitted_registration_operation: routeAvailable ? null : interpreted.permitted_operations.includes("initialize-approved-plan") ? "initialize-approved-plan" : interpreted.permitted_operations.includes("advance-stage") ? "advance-stage" : stage === "code-review" && currentStage === "code-review" ? (interpreted.permitted_operations.includes("record-final-review") ? "record-final-review" : interpreted.permitted_operations.includes("complete-milestone") ? "complete-milestone" : null) : REVIEW_STAGES.has(stage) ? "record-review" : stage === "review-resolution" ? "record-finding-resolution" : authoringStages.includes(stage) ? "record-artifact-revision" : ["implement", "verify", "ci-maintenance"].includes(stage) ? "record-validation" : null,
     ...(routeAvailable ? { route_required: { code: "RL_WORKFLOW_ROUTE_REQUIRED", current_stage: currentStage, requested_stage: stage, route_owner: "workflow", finding_ids: interpreted.effective_state.unresolved_findings }, available_after_workflow_route: "record-artifact-revision" } : {}),
     ...(DOWNSTREAM_AUTHORITY_STAGES.has(stage) ? { downstream_package_authority: interpreted.effective_state.downstream_package_authority } : {}),
   };
