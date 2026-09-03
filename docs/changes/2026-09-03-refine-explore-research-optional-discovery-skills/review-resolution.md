@@ -4,6 +4,7 @@ Closeout status: closed
 
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m3-r1
 
 ## Finding details
 
@@ -33,3 +34,7 @@ No material findings. R2 confirmed ER-M1-CR1 is resolved and M1 is clean for mil
 ### code-review-m2-r1
 
 No material findings. R1 confirmed the optional discovery routing matrix, explicit invocation boundary, owner adoption, contradiction handoff, and current guidance are coherent; M2 is clean for milestone closeout.
+
+### code-review-m3-r1
+
+No material findings. R1 confirmed complete supported-adapter resources, byte parity, clean installation, current-candidate metadata, historical immutability, and failure coverage; M3 is clean for milestone closeout.

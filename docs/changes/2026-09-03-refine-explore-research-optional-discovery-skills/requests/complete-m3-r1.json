@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:fa47f99a4b57766e77adb4bd67b53141f5e8d5bd2e99562ebd4ddc1a6c6e76fd",
+  "milestone_id": "M3",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m3-adapter-parity.md",
+  "review_evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m3-r1.md",
+  "stage_authority": "workflow"
+}
