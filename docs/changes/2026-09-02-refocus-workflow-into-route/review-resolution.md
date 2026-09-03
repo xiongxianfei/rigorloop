@@ -11,10 +11,10 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: proposal-review-r1
 
-- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-final-r1`, `code-review-final-r2`
-- Findings resolved: 10
+- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-final-r1`, `code-review-final-r2`, `code-review-final-r3`
+- Findings resolved: 11
 - Unresolved findings: 1
-- Current result: Final holistic Code Review R2 confirms the v3 final-review route exists, but finds two missing fail-closed predicates in its direct mutation boundary.
+- Current result: Final holistic Code Review R3 confirms the mutation guards but finds that the `none` milestone sentinel suppresses final-review operation advertisement.
 
 ## Resolution Overview
 
@@ -30,7 +30,8 @@ Review closeout: proposal-review-r1
 | RFR-M3-CR1 | accepted | resolved | The unpublished v0.5.1 package metadata is bound to generated route-only archives while immutable v0.5.0 remains unchanged. |
 | RFR-M3-CR2 | accepted | resolved | Normal `init --write-state` safely replaces only an exact lockfile-managed workflow target and rolls back failed replacement. |
 | RFR-FINAL-CR1 | accepted | resolved | Final holistic review now has an identity-bound receipt, correction route, and Code Review to Verify transition. |
-| RFR-FINAL-CR2 | accepted | open | Enforce global open-finding and exact final-correction predicates on direct mutations. |
+| RFR-FINAL-CR2 | accepted | resolved | Direct final-review mutations now enforce global open-finding and exact correction predicates. |
+| RFR-FINAL-CR3 | accepted | open | Normalize the no-active-milestone sentinel so route can discover final-review registration. |
 
 ## Finding Details
 
@@ -226,7 +227,7 @@ Validation evidence: Code Review Final R2 inspected `7609dd9f..60049128`; focuse
 
 Finding ID: RFR-FINAL-CR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: review-resolution
 Decision owner: none
@@ -236,4 +237,22 @@ Rationale: Direct lifecycle mutations must enforce their authority predicates in
 Required outcome: Final receipt registration and advancement reject globally open findings, and only an exact final `implementation-defect -> implement -> code-review` route may omit a milestone after all implementation work is closed.
 Follow-up: Apply the bounded predicate correction and run Final Code Review R3.
 Validation target: direct negative lifecycle tests for unrelated open findings, ordinary correction reasons without a milestone, and contradictory remaining-work state.
-Validation evidence: pending Final Code Review R3.
+Validation evidence: Final Code Review R3 inspected `a7168698..3613ef03`; all three direct negative regressions and the full relevant validation set pass.
+
+### code-review-final-r3
+
+#### RFR-FINAL-CR3
+
+Finding ID: RFR-FINAL-CR3
+Disposition: accepted
+Status: open
+Owner: implement
+Owning stage: review-resolution
+Decision owner: none
+Decision needed: none
+Chosen action: Normalize `current_milestone: none` in the existing read helper and add one direct permitted-operation regression.
+Rationale: Route must be able to discover the final-review operation through authoritative CLI context.
+Required outcome: Closed final implementation work with no receipt advertises `record-final-review`.
+Follow-up: Apply the one-helper correction and run Final Code Review R4.
+Validation target: focused final-review lifecycle context test.
+Validation evidence: pending Final Code Review R4.

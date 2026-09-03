@@ -111,9 +111,9 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-final-r2.md
+  latest_review: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-final-r3.md
   review_log: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
-  reviewed_artifact: branch:600491280ae861f01d3af8d85124dc9345febe10
+  reviewed_artifact: branch:3613ef038bce333d798cd20faf5b34686d0fc932
   status: changes-requested
   unresolved_items: 1
 lifecycle_cli:
