@@ -31,7 +31,7 @@ Read, if present:
 - `CONSTITUTION.md`
 - `README.md`
 - `CONTRIBUTING.md`
-- `docs/workflows.md`
+- authoritative CLI workflow context when governed
 - `docs/project-map.md`
 - existing specs under `specs/`
 - CI workflows under `.github/workflows/`
@@ -84,7 +84,7 @@ Avoid vague advice such as “write good tests” unless accompanied by concrete
 2. Identify gaps that caused or could cause poor agent decisions.
 3. Draft or update the constitution with concise, enforceable rules.
 4. Add examples only when they clarify a rule.
-5. Cross-link to workflow and artifact locations.
+5. Cross-link to routing and artifact locations.
 6. Keep project-specific rules separate from temporary feature details.
 7. If a rule conflicts with existing practice, call out the conflict and recommend a resolution.
 

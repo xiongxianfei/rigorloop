@@ -1,19 +1,19 @@
 ---
-name: workflow
+name: route
 description: >
-  Orchestrate the full spec-driven, test-driven agentic development lifecycle. Use when starting, resuming, auditing, or routing work through the standard RigorLoop workflow. This skill assesses workflow state, enforces artifact order, and keeps exploration, specification, architecture, planning, tests, implementation, review, rationale, verification, PR, and learning connected.
+  Route, resume, audit, and orchestrate bounded RigorLoop workflow execution using authoritative CLI context. Use when starting or continuing governed work, interpreting blockers or findings, selecting correction ownership, or managing bounded workflow automation.
 argument-hint: [feature, bug, project goal, issue number, or current workflow state]
 ---
 
-# Agentic workflow orchestrator
+# Semantic workflow router
 
 You are the lifecycle orchestrator. Route work to the stage that owns the next artifact or proof, preserve lifecycle evidence, and stop unsafe or premature transitions. Do not replace a specialized stage skill.
 
 ## Quick operating guide
 
-Use this skill to: route, resume, or audit the standard workflow without replacing the specialized stage skill.
+Use this skill to: route, resume, audit, or automate the standard workflow without replacing the specialized stage skill.
 
-Read first: the request, repository instructions, and the narrowest authoritative lifecycle evidence needed to classify the invocation. For a governed change, inspect its current `change.yaml` and settled stage evidence before routing. Use broader-section or full-file reading only when bounded evidence is insufficient.
+Read first: the request and repository instructions. For governed work, consume `rigorloop workflow-context`; inspect semantic engineering evidence only after the CLI has resolved deterministic project and lifecycle facts.
 
 Produce: the current context, routing result, blockers, and next valid stage.
 
@@ -38,7 +38,9 @@ Repeat `implement -> code-review -> review-resolution when triggered` for each i
 
 The compact canonical chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`. Architecture and specification remain separate authoring stages reconciled before Design Review; plan owns verification allocation and is reviewed for implementation and verification readiness by Delivery Review. Retired stage records are historical evidence only and grant no progression authority.
 
-Routing has one current executable contract: `stage-owned-change-local-v3`. The exact primary plan owns verification allocation; final closeout routes from final holistic Code Review through triggered review resolution and `ci-maintenance`, then directly to `verify` and `pr`. Successful Verify owns the final explanation; Workflow owns correction routing. Historical v1/v2 records grant no current route. The implementing final-verification change alone uses its last coherent released v2 package as a bounded preactivation closeout bootstrap.
+Routing has one current executable contract: `stage-owned-change-local-v3`. The exact primary plan owns verification allocation; final closeout routes from final holistic Code Review through triggered review resolution and `ci-maintenance`, then directly to `verify` and `pr`. Successful Verify owns the final explanation; route exercises the stable workflow authority for correction routing. Historical v1/v2 records grant no current route. The implementing final-verification change alone uses its last coherent released v2 package as a bounded preactivation closeout bootstrap.
+
+The rename does not rewrite protocol state: route continues to use `stage_authority: workflow`, and existing `workflow.automation` occurrences remain authoritative with their exact target, occurrence, budgets, receipts, pause or cancellation state, and lifecycle-revision safeguards.
 
 After a PR is open, a user-authorized bounded PR CI repair is an isolated correction, not a new profile or another pass through the chain. Preserve current review, explanation, verification, and lifecycle evidence only when the correction restores already-approved behavior without changing their decision basis. Otherwise route to the earliest affected owning stage.
 
@@ -64,15 +66,17 @@ Read only what the routing decision needs:
 
 - the user request and invocation context;
 - repository governance and workflow instructions;
-- the current change record and cited stage-owned evidence when governed state matters;
+- authoritative CLI workflow context when governed state matters;
 - stable upstream artifacts and the active plan when relevant;
 - git, validation, CI, or external evidence only when the route depends on it.
 
-Resolve path and state discovery in this order: an exact user-provided path or change ID; the active handoff or plan identity; `change.yaml` and stage-owned evidence; the `docs/workflows.md` artifact-location map; portable defaults; then targeted discovery. A higher-priority source wins. If a conflict is discovered, do not silently blend sources.
+For governed routing, request project-phase `rigorloop workflow-context` when exact change identity is not authoritative, then request change-phase context for the selected exact change. Stop on unresolved candidate ambiguity. Use the returned lifecycle revision, artifacts, locations, blockers, permitted operations, and automation projection; do not reconstruct them from prose, filenames, prior chat, remembered state, or guessed paths. Refresh the complete change-phase context after any lifecycle mutation or observed identity drift.
 
-Unknown artifact types and unknown lifecycle stages are blockers. If a project guide is silent, use a safe owning-skill portable default. If none exists, request an explicit path or workflow-map update rather than guessing from naming, prior chat, or a learn session.
+Unknown artifact types and unknown lifecycle stages are blockers. In portable mode, an explicit safe target or published portable default may be used, but it grants no governed lifecycle state or project-local customization claim. If neither is available, request an explicit path rather than guessing.
 
 Use bounded evidence before broad reads, but do not under-read. Expand when evidence is missing, stale, contradictory, or insufficient. Read a complete file when the whole file is the review target or surrounding context can change the conclusion.
+
+Use a broader-section read when a narrow excerpt cannot establish the semantic route safely.
 
 ## Outputs
 
@@ -80,15 +84,14 @@ Produce a routing decision, authoritative current-stage assessment, blockers or 
 
 ## Invocation classification
 
-Classify the four predicates below from authoritative evidence. Automation command forms are portable across supported adapters:
+Classify the three predicates below from authoritative evidence. Automation command forms are portable across supported adapters:
 
-- Adapter invocation equivalents preserve the same arguments: Codex uses `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and OpenCode invokes the installed `workflow` skill with `auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or `off`.
-- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `verify`.
-- `$workflow auto: status` is read-only. `$workflow auto: off` durably cancels the unified run and preserves transition evidence.
+- Adapter invocation equivalents preserve the same arguments: Codex uses `$route auto: <argument>`, Claude uses `/route auto: <argument>`, and OpenCode invokes the installed `route` skill with `auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or `off`.
+- `$route auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `verify`.
+- `$route auto: status` is read-only. `$route auto: off` durably cancels the unified run and preserves transition evidence.
 - `governed_change_context`: a valid current governed change record exists.
 - `automation_command_context`: the invocation is an explicit automation command, including a pre-persistence target bootstrap.
 - `armed_automation_context`: valid durable automation authorization or an active run exists for the same governed change.
-- `workflow_guide_authoring_context`: the invocation creates or substantially refreshes the project workflow guide.
 
 Conversational wording alone does not establish governed or armed automation authority. An explicit target command establishes command context, not an armed run.
 
@@ -96,15 +99,13 @@ Use exactly these assemblies:
 
 | Assembly | Evidence | Load |
 | --- | --- | --- |
-| `WP0-generic-routing` | no governed, automation, or guide trigger | `SKILL.md` |
+| `WP0-generic-routing` | no governed or automation trigger | `SKILL.md` |
 | `WP1-governed` | governed only | governed lifecycle reference |
 | `WP2-governed-automated` | governed plus command or armed automation | governed and automation references |
-| `WP3-guide-authoring` | guide authoring only | guide reference and skeleton |
-| `WP4-governed-guide-authoring` | governed plus guide authoring | governed and guide resources |
 | `WPB-automation-bootstrap` | new target command without a governed record | automation reference, then governed reference after identity validation and reclassification |
 | `WPS-stateless-automation-command` | `status` or `off` without a governed record or active run | automation reference; no state creation |
 
-Active automation and workflow-guide authoring are mutually exclusive in one invocation. Stop if guide authoring is requested while automation is active or resumable. Active or resumable automation without a valid governed identity also stops.
+Active or resumable automation without a valid governed identity stops.
 
 Every predicate combination must match exactly one assembly row. Any other combination, or any combination matching more than one row, stops as invalid invocation context before resource-dependent interpretation or mutation.
 
@@ -112,9 +113,7 @@ Every predicate combination must match exactly one assembly row. Any other combi
 
 - READ `references/governed-lifecycle-routing.md` when current governed state must be interpreted, audited, resumed, settled, or mutated; after a successful automation bootstrap, load it before persisting automation state.
 - READ `references/bounded-workflow-automation.md` for an explicit automation target, status, or cancellation command; an active or resumable automation run; automation bootstrap; packets; receipts; correction loops; or target promotion.
-- READ `references/workflow-guide-authoring.md` when creating or substantially refreshing project-local `docs/workflows.md`.
 - READ `references/boundary-first-method-v1.md` when an approved boundary, interaction, or proof ID is missing, stale, unknown, ambiguous, conflicting, or insufficient for routing.
-- COPY `assets/workflows-skeleton.md` only with the guide-authoring reference when creating a new project-local `docs/workflows.md` or fully rewriting a stale workflow guide. Do not emit unfilled placeholders.
 
 When a trigger is false, do not load its resource. After classification and before resource-dependent interpretation or action, confirm every required reference and asset is present and readable. When a required resource is missing, unreadable, contradictory, or from a mixed package version, stop before the governed action. A contradiction among packaged resources is a package defect. The common path is intentionally insufficient to reconstruct conditional procedure: stop rather than invent, recall, or partially reconstruct it.
 
@@ -140,7 +139,7 @@ Route the method, locate governing artifacts, and stop on missing applicable own
 ## Lifecycle overview
 
 - Standing artifacts: project vision and constitution.
-- Living references: project map and workflow guidance.
+- Living references: project map and CLI-derived workflow context.
 - Workflow infrastructure: governance, stage skills, and derived skill-package output.
 - On-demand support: `explore`, `research`, `architecture`, `ci-maintenance`, and `learn` when triggered.
 - Per-change chain: the standard sequence above, including ci-maintenance when triggered.
@@ -150,11 +149,11 @@ Stage-obligation values are `mandatory`, `conditional`, `on-demand`, and `period
 
 ## Universal ownership and safety
 
-The user owns product intent and destructive or external authority. Each authoring stage owns its artifact and matching authoring transition. Review peers own their review evidence and matching settlement. Implementation and evidence stages own only their scoped outputs. Workflow owns routing and later planned-work transitions. New primary plans reach Delivery Review without live work; after the delivery package is approved, plan owns the one-time initialization of missing `planned_work`, and workflow owns every later transition.
+The user owns product intent and destructive or external authority. Each authoring stage owns its artifact and matching authoring transition. Review peers own their review evidence and matching settlement. Implementation and evidence stages own only their scoped outputs. Route owns semantic routing and later planned-work decisions while using `stage_authority: workflow` for workflow-owned mutations. New primary plans reach Delivery Review without live work; after the delivery package is approved, plan owns the one-time initialization of missing `planned_work`, and route owns every later transition.
 
 Do not update an upstream artifact as workflow bookkeeping. Do not infer completion from file existence. Review readiness is not verification readiness, and verification readiness is not PR readiness.
 
-The workflow skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas merely because it routes them. It may create or refresh the project workflow guide through its mapped procedure.
+The route skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas merely because it routes them. A CLI-resolved path or structurally permitted operation never transfers stage authority.
 
 Stop and surface the smallest concrete blocker when:
 
@@ -175,9 +174,9 @@ Use targeted proof first. Run broad smoke only when an authoritative `broad_smok
 
 - Normal next stage: the next valid specialized skill or stop condition for the standard workflow state.
 - Conditional next stages: `explore`, `research`, `architecture`, `ci-maintenance`, or `learn` when triggered; review, explanation, verification, and PR only when workflow state permits them.
-- The `workflow` skill owns routing; the receiving skill owns its artifact or proof.
+- The `route` skill owns semantic routing; the receiving skill owns its artifact or proof.
 
-Route deferred work to the durable artifact that can act on it, following `docs/workflows.md`. Do not put deferred execution work in `project-map`.
+Route deferred work to the durable artifact that can act on it using authoritative CLI context. Do not put deferred execution work in `project-map`.
 
 ## Stop conditions
 
@@ -199,13 +198,11 @@ Formal material findings require evidence, required outcome, and safe resolution
 
 `verify` owns branch-ready. `pr` owns PR-body and PR-open readiness. This mechanism never opens a PR, pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
 
-## Customer-project workflow guide
+## Customer-project routing
 
-The workflow skill creates or refreshes the project workflow guide through the mapped authoring reference. It may create or refresh the project-local `docs/workflows.md` when RigorLoop is being adopted, artifact locations are missing, or routing depends on local workflow guidance.
+Do not require RigorLoop repository-internal specs or docs to be present. Governed use requires authoritative CLI context. Portable use may rely on an explicit safe target or the published defaults below but cannot claim governed placement or project customization.
 
-Do not require RigorLoop repository-internal specs or docs to be present. Use project-local guidance when available; otherwise use portable defaults and block on ambiguity. For ordinary routing with a current guide, reference the guide rather than rewrite it.
-
-For a missing formal change root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`.
+For a missing formal change root in portable mode, use `YYYY-MM-DD-slug`.
 
 Treat `docs/changes/<change-id>/plan.md` as a non-canonical historical or rejected plan-body path.
 
@@ -217,7 +214,6 @@ Use repository conventions first. Portable defaults are:
 AGENTS.md
 CONSTITUTION.md
 docs/project-map.md
-docs/workflows.md
 docs/proposals/YYYY-MM-DD-slug.md
 docs/architecture/YYYY-MM-DD-slug.md
 docs/adr/YYYY-MM-DD-slug.md
@@ -261,7 +257,7 @@ Start with:
 ```md
 ## Result
 
-- Skill: workflow
+- Skill: route
 - Status:
 - Artifacts changed:
 - Open blockers:

@@ -47,6 +47,7 @@ test("final verification preactivation keeps v3 inactive and non-v3 historical",
     { contract_class: LIFECYCLE_CONTRACT_V2, activation_state: "historical", authority: "historical" },
   );
   assert.deepEqual(allowedNextStages({ lifecycle_contract: LIFECYCLE_CONTRACT_V3 }, "proposal"), ["proposal-review"]);
+  assert.deepEqual(allowedNextStages({ lifecycle_contract: LIFECYCLE_CONTRACT_V3 }, "code-review"), ["verify"]);
   assert.deepEqual(allowedArtifactKinds({ lifecycle_contract: LIFECYCLE_CONTRACT_V3 }), ["proposal", "spec", "architecture", "adr", "plan"]);
   assert.deepEqual(allowedNextStages({ lifecycle_contract: LIFECYCLE_CONTRACT_V2 }, "proposal"), []);
   assert.deepEqual(allowedArtifactKinds({ lifecycle_contract: LIFECYCLE_CONTRACT_V2 }), []);
@@ -203,6 +204,7 @@ test("closed lifecycle operation vocabulary rejects an unknown operation", () =>
     "initialize-approved-plan",
     "start-milestone",
     "complete-milestone",
+    "record-final-review",
     "route-correction",
     "return-correction",
     "withdraw-artifact-registration",
@@ -245,6 +247,7 @@ const operationRequests = {
   "initialize-approved-plan": { artifact_id: "plan", stage_authority: "plan" },
   "start-milestone": { milestone_id: "M1", stage_authority: "workflow" },
   "complete-milestone": { milestone_id: "M1", evidence_path: "evidence/m1.md", stage_authority: "workflow" },
+  "record-final-review": { evidence_path: "reviews/code-review-final-r1.md", reviewed_revision: "a".repeat(40), stage_authority: "workflow" },
   "route-correction": { source_stage: "verify", destination_stage: "spec", destination_artifact_id: "spec", reason: "system-requirement-gap", evidence_path: "evidence/correction-route.md", finding_ids: ["F-1"], return_stage: "verify", stage_authority: "workflow" },
   "return-correction": { route_id: "route-1", evidence_path: "evidence/correction-return.md", stage_authority: "workflow" },
   "withdraw-artifact-registration": { artifact_id: "architecture", artifact_path: "docs/architecture/example.md", canonical_owner_change_id: "canonical-change", reason: "duplicate-registration", evidence_path: "evidence/withdrawal.md", stage_authority: "workflow" },

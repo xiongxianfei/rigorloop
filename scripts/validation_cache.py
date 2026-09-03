@@ -120,8 +120,8 @@ _SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 _UNSAFE_PATH_CHARS = set("*?[")
 
 _DEFAULT_POLICY_FILES = (
+    "AGENTS.md",
     "CONSTITUTION.md",
-    "docs/workflows.md",
     "specs/plan-index-lifecycle-ownership.md",
 )
 _LOCAL_CACHE_FILE = "validation-cache.json"

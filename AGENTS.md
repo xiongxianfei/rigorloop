@@ -16,8 +16,7 @@ When instructions conflict, follow this order:
 4. Approved architecture or ADR docs when relevant
 5. Active execution plan file in `docs/plans/`
 6. Matching test spec in `specs/`
-7. `docs/workflows.md`
-8. This file
+7. This file
 
 Do not silently blend conflicting higher-priority instructions. Call out the conflict, explain the impact, and follow the highest-priority source that already implies the answer.
 
@@ -45,7 +44,7 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Material review findings are always recorded with evidence, required outcome, and safe resolution or `needs-decision` rationale. All material findings require detailed change-local review records and `review-resolution.md` dispositions `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`; `needs-decision` keeps `Closeout status: open`, while `Closeout status: closed` requires final dispositions, validation evidence, and no `review-log.md` open findings.
 - Isolation stops downstream handoff, not recording. Isolated review-only material findings still require detailed change-local review records. Clean review receipts prove the review happened but do not settle artifact lifecycle/status; no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 - Validator closed-vocabulary checks must fail closed before consistency checks. For constants such as `*_OUTCOMES`, `*_FIELDS`, `*_KINDS`, and similar closed sets, unknown values must produce an explicit validation error unless the code documents why fall-through is intentional. The pattern `if value in CONSTANT: check_consistency(value)` is a defect when unknown values can pass silently. Every new closed-vocabulary validator constant should have an unknown-value regression test, preferably with `unknown_value` or `not_in_vocabulary` in the test name.
-- Keep `AGENTS.md` practical. Move workflow detail to `docs/workflows.md` and feature-specific detail to `specs/`.
+- Keep `AGENTS.md` practical. Keep workflow contracts in `specs/`, deterministic project-local workflow facts behind `rigorloop workflow-context`, and feature-specific detail in the matching spec.
 
 ## Planning and workflow
 
@@ -53,7 +52,7 @@ Use a plan first for work that is multi-file, risky, ambiguous, architecture-aff
 
 For the lifecycle contract, follow `specs/rigorloop-workflow.md`.
 
-Use `docs/workflows.md` for the short operational summary.
+Use `rigorloop workflow-context` for deterministic project-local workflow information. Use the `route` skill for semantic routing decisions.
 
 The `vision` skill is upstream of the per-change workflow, not a normal lifecycle stage. Use it at project genesis or when proposal review or learning surfaces a vision-level conflict.
 
@@ -100,7 +99,7 @@ Before implementing behavior-changing work, follow the source-of-truth order fro
 3. approved architecture or ADR docs when they are relevant to the change
 4. `docs/plan.md`, then the active plan file in `docs/plans/`
 5. the matching test spec in `specs/<feature>.test.md` only for a manifest-bound v1 continuation
-6. `docs/workflows.md` when the task touches an existing flow or release process
+6. authoritative CLI workflow context when the task touches an existing governed flow or release process
 7. the files you expect to modify
 
 If the work changes externally observable behavior and no relevant spec exists, create or request the missing spec before coding the contract into the implementation.
@@ -117,7 +116,7 @@ If the work changes externally observable behavior and no relevant spec exists, 
 - Mutable proposal, spec, test-spec, architecture, ADR, and plan lifecycle state lives in the owning `docs/changes/<change-id>/change.yaml`.
 - Governed artifacts contain one stable pointer to their owning change record and keep stable intent, planning history, and explicitly historical evidence.
 - Authoring skills may change only their own governed content and matching authoring-state transition. The sole narrow exception is that `plan` initializes missing `workflow_state.planned_work` exactly once from an approved Delivery Review package containing that primary plan; it never initializes an unreviewed draft or replaces or updates existing planned work. Review peers may change only their own review evidence and the matching package or artifact settlement transition.
-- Workflow owns routing. Downstream and support skills treat upstream governed artifacts and lifecycle state as read-only and route corrections to the owning stage.
+- Route owns semantic routing and uses the stable workflow authority for lifecycle mutations. Downstream and support skills treat upstream governed artifacts and lifecycle state as read-only and route corrections to the owning stage.
 - Keep `Next artifacts` as planning history while an artifact is active. Use `Follow-on artifacts` or `Closeout` for actual downstream artifacts or final disposition. If a `Follow-on artifacts` section appears before real follow-ons exist, it must say `None yet`.
 - A superseded artifact's change-local state and owning closeout evidence must identify its replacement.
 - `verify` blocks on stale touched, referenced, generated, or authoritative lifecycle-managed artifacts and warns on unrelated stale baseline debt.

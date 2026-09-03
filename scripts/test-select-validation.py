@@ -3871,9 +3871,9 @@ raise SystemExit({exit_code})
             "--mode",
             "explicit",
             "--path",
-            "docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md",
+            "docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-resolution.md",
             "--path",
-            "docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml",
+            "docs/changes/2026-08-31-retire-standalone-test-spec-stage/change.yaml",
         )
         output = result.stdout + result.stderr
 
@@ -3885,7 +3885,7 @@ raise SystemExit({exit_code})
         self.assertIn("Phase: focused", output)
         self.assertIn("Selected CI phase timing summary:", output)
         self.assertIn(
-            "python scripts/validate-review-artifacts.py docs/changes/2026-04-25-test-layering-and-change-scoped-validation/",
+            "python scripts/validate-review-artifacts.py docs/changes/2026-08-31-retire-standalone-test-spec-stage/",
             output,
         )
         self.assertIn(
@@ -3893,11 +3893,11 @@ raise SystemExit({exit_code})
             output,
         )
         self.assertIn(
-            "--path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md",
+            "--path docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-resolution.md",
             output,
         )
         self.assertIn(
-            "--path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml",
+            "--path docs/changes/2026-08-31-retire-standalone-test-spec-stage/change.yaml",
             output,
         )
 
@@ -5496,29 +5496,6 @@ raise SystemExit(3)
                 "skills.validate",
                 "broad_smoke.repo",
             ],
-            "docs/workflows.md": [
-                "targeted proof",
-                "broad smoke",
-                "Validation owner surfaces",
-                "contributor-facing validation guidance",
-                "hosted acceptance",
-                "concise local validation reminders",
-                "change-specific validation requirements",
-                "finding-specific validation requirements",
-                "release-specific validation requirements",
-                "scripts/select-validation.py",
-                "scripts/ci.sh --mode explicit",
-                "scripts/ci.sh --mode broad-smoke",
-                "--jobs",
-                "--jobs 1",
-                "--timeout",
-                "--fail-fast",
-                "--verbose",
-                "skills.validate",
-                "review_artifacts.validate",
-                "broad_smoke.repo",
-                "does not imply broad smoke",
-            ],
             "skills/implement/SKILL.md": [
                 "targeted proof",
                 "broad smoke",
@@ -5541,12 +5518,11 @@ raise SystemExit(3)
                 "project's broad validation command",
                 "broad_smoke_required",
             ],
-            "skills/workflow/SKILL.md": [
+            "skills/route/SKILL.md": [
                 "targeted proof",
                 "broad smoke",
-                "manual proof",
                 "broad_smoke.sources",
-                "verify-report.md",
+                "workflow-context",
             ],
         }
 

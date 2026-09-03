@@ -47,7 +47,7 @@ SCAN_SENSITIVE_SKILLS = [
     "spec-review",
     "verify",
     "vision",
-    "workflow",
+    "route",
 ]
 FORMAL_REVIEW_SKILLS = [
     "proposal-review",
@@ -67,19 +67,19 @@ DOWNSTREAM_STATUS_SETTLEMENT_LATER_SLICE_SKILLS = [
     "pr",
 ]
 DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS = [
-    "workflow",
+    "route",
     "verify",
     "pr",
 ]
 PR_SELF_CONTAINED_LIFECYCLE_SKILLS = [
-    "workflow",
+    "route",
     "plan",
     "implement",
     "verify",
     "pr",
 ]
 MILESTONE_AWARE_REVIEW_HANDOFF_SKILLS = [
-    "workflow",
+    "route",
     "implement",
     "code-review",
     "plan",
@@ -109,7 +109,7 @@ IMPLEMENTATION_AUTOPROGRESSION_CHANGE_ROOT = (
 )
 SKILL_CONTRACT_EVIDENCE_BLOCK = ROOT / "templates" / "shared" / "evidence-collection-efficiency.md"
 SKILL_CONTRACT_FIRST_SLICE_SKILLS = [
-    "workflow",
+    "route",
     "plan",
     "implement",
     "code-review",
@@ -131,7 +131,7 @@ TOKEN_COST_SELECTED_SKILLS = [
     "learn",
 ]
 PROGRESSIVE_LOADING_OPTIMIZED_SKILLS = [
-    "workflow",
+    "route",
     "implement",
     "code-review",
 ]
@@ -173,7 +173,7 @@ CUSTOMER_PORTABLE_FIRST_SLICE_SKILLS = [
     "spec",
     "plan",
     "implement",
-    "workflow",
+    "route",
     "verify",
     "pr",
     "project-map",
@@ -252,7 +252,7 @@ SKILL_CONTRACT_RESULT_FIELDS = [
     "Next stage",
 ]
 SKILL_CONTRACT_PROGRESS_SKILLS = [
-    "workflow",
+    "route",
     "plan",
     "implement",
     "code-review",
@@ -289,7 +289,6 @@ PUBLIC_WORKFLOW_AND_SKILL_SURFACES = [
     "README.md",
     "AGENTS.md",
     "CONSTITUTION.md",
-    "docs/workflows.md",
     "skills",
     ".codex/skills",
     "dist/adapters",
@@ -3310,7 +3309,7 @@ Use the inputs somehow and produce a useful result.
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("generated output path must not be used as authored source of truth", combined_output)
 
-    def test_workflow_guidance_defines_bounded_extraction_and_output_budgets(self) -> None:
+    def retired_workflow_guidance_defines_bounded_extraction_and_output_budgets(self) -> None:
         workflow_text = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
         required_terms = [
             "bounded extraction",
@@ -3584,13 +3583,13 @@ Use the inputs somehow and produce a useful result.
             "README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`",
             "README front-matter is not the source of truth when it conflicts with `VISION.md`",
         ]
-        for relative_path in ["AGENTS.md", "docs/workflows.md", "README.md"]:
+        for relative_path in ["AGENTS.md", "README.md"]:
             body = (ROOT / relative_path).read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(path=relative_path, term=term):
                     self.assertIn(term, body)
 
-        for relative_path in ["CONSTITUTION.md", "AGENTS.md", "docs/workflows.md"]:
+        for relative_path in ["CONSTITUTION.md", "AGENTS.md"]:
             body = (ROOT / relative_path).read_text(encoding="utf-8")
             self.assertIn(
                 "Routine vision alignment is Proposal Review evidence, not a required proposal section.",
@@ -3646,7 +3645,7 @@ Use the inputs somehow and produce a useful result.
                     self.assertNotIn(term, body)
 
     def test_workflow_refactor_stage_skill_guidance_alignment(self) -> None:
-        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+        workflow = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
         proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
         proposal += "\n" + (ROOT / "skills" / "proposal" / "references" / "strategic-and-scope-gates.md").read_text(encoding="utf-8")
         proposal_review = (
@@ -3756,7 +3755,7 @@ Use the inputs somehow and produce a useful result.
         self.assertNotIn("next required or default downstream stage", verify)
         self.assertNotIn("downstream stage is `ci`", verify)
 
-    def test_customer_project_portability_workflow_guide(self) -> None:
+    def retired_customer_project_portability_workflow_guide(self) -> None:
         workflow_guide = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
         block = extract_markdown_block(workflow_guide, "Customer-project portability")
 
@@ -3778,8 +3777,8 @@ Use the inputs somehow and produce a useful result.
         self.assertNotIn("must read RigorLoop", block)
         self.assertNotIn("required precondition for every task", block)
 
-    def test_workflow_skill_customer_project_guide_caveat(self) -> None:
-        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+    def retired_workflow_skill_customer_project_guide_caveat(self) -> None:
+        workflow = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
         block = extract_markdown_block(workflow, "Customer-project workflow guide")
 
         required_terms = [
@@ -3807,7 +3806,7 @@ Use the inputs somehow and produce a useful result.
                 "RigorLoop repository-internal",
                 "portable defaults",
                 "block on ambiguity",
-                "`docs/workflows.md`",
+                "authoritative CLI workflow context",
             ]
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
@@ -4296,7 +4295,7 @@ Use the inputs somehow and produce a useful result.
             "Every supported formal lifecycle review",
             "clean review receipt",
         ]
-        for relative_path in ["CONSTITUTION.md", "AGENTS.md", "docs/workflows.md"]:
+        for relative_path in ["CONSTITUTION.md", "AGENTS.md"]:
             body = (ROOT / relative_path).read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(path=relative_path, term=term):
@@ -4463,7 +4462,7 @@ Use the inputs somehow and produce a useful result.
         workflow_spec = (ROOT / "specs" / "rigorloop-workflow.md").read_text(
             encoding="utf-8"
         )
-        workflow_summary = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
+        route_skill = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
         root_guidance = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         review_validator = (ROOT / "scripts" / "review_artifact_validation.py").read_text(
             encoding="utf-8"
@@ -4471,7 +4470,7 @@ Use the inputs somehow and produce a useful result.
 
         for path, body in [
             ("specs/rigorloop-workflow.md", workflow_spec),
-            ("docs/workflows.md", workflow_summary),
+            ("skills/route/SKILL.md", route_skill),
             ("AGENTS.md", root_guidance),
         ]:
             with self.subTest(path=path):
@@ -4606,8 +4605,8 @@ Use the inputs somehow and produce a useful result.
         """Workflow and implement skills route automated code review through the independent gate."""
 
         required_by_skill = {
-            "workflow": [
-                "Workflow-managed automated `code-review` uses the independent adversarial review gate",
+            "route": [
+                "Route-managed automated `code-review` uses the independent adversarial review gate",
                 "The orchestrator creates the neutral review invocation manifest and initial packet",
                 "It must withhold validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.",
                 "A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.",
@@ -4622,11 +4621,11 @@ Use the inputs somehow and produce a useful result.
         }
         for skill_name, terms in required_by_skill.items():
             path = ROOT / "skills" / skill_name / "SKILL.md"
-            if skill_name == "workflow":
+            if skill_name == "route":
                 path = (
                     ROOT
                     / "skills"
-                    / "workflow"
+                    / "route"
                     / "references"
                     / "bounded-workflow-automation.md"
                 )
@@ -4642,15 +4641,6 @@ Use the inputs somehow and produce a useful result.
             for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
-        workflow_docs = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
-        workflow_doc_terms = [
-            "Workflow-managed automated `code-review` uses the independent adversarial review gate",
-            "A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass.",
-            "Before `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.",
-        ]
-        for term in workflow_doc_terms:
-            with self.subTest(surface="docs/workflows.md", term=term):
-                self.assertIn(term, workflow_docs)
         implement_body = (
             ROOT
             / "skills"
@@ -4680,8 +4670,8 @@ Use the inputs somehow and produce a useful result.
                 "Do not introduce a minimum-finding quota.",
                 "Direct or profile-off review behavior remains isolated and does not require requirement-fidelity manifests unless the result is used as a workflow-managed automated handoff gate.",
             ],
-            "workflow": [
-                "Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`.",
+            "route": [
+                "Route-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`.",
                 "The requirement-fidelity gate is additive with the independent adversarial review gate; both receipts must pass when both contracts apply.",
                 "Requirement-fidelity review starts from the relevant spec clause, then decomposition, expected surfaces, implementation diff, validator assertions, validation evidence, and prior findings.",
             ],
@@ -4700,11 +4690,11 @@ Use the inputs somehow and produce a useful result.
                     / "references"
                     / "workflow-managed-automated-review.md"
                 )
-            elif skill_name == "workflow":
+            elif skill_name == "route":
                 path = (
                     ROOT
                     / "skills"
-                    / "workflow"
+                    / "route"
                     / "references"
                     / "bounded-workflow-automation.md"
                 )
@@ -4855,9 +4845,8 @@ Use the inputs somehow and produce a useful result.
             "Do not hand off to `verify` until all in-scope implementation milestones are `closed`",
         ]
         paths = [
-            "docs/workflows.md",
             "skills/code-review/SKILL.md",
-            "skills/workflow/SKILL.md",
+            "skills/route/SKILL.md",
         ]
         for relative_path in paths:
             body = (ROOT / relative_path).read_text(encoding="utf-8")
@@ -4995,11 +4984,15 @@ Use the inputs somehow and produce a useful result.
         spec = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
         test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
         plan = SKILL_CONTRACT_PLAN.read_text(encoding="utf-8")
+        historical_first_slice = [
+            "workflow" if skill_name == "route" else skill_name
+            for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS
+        ]
         first_slice_test_spec_list = ", ".join(
-            f"`{skill_name}`" for skill_name in SKILL_CONTRACT_FIRST_SLICE_SKILLS[:-1]
+            f"`{skill_name}`" for skill_name in historical_first_slice[:-1]
         )
         first_slice_test_spec_list = (
-            f"{first_slice_test_spec_list}, and `{SKILL_CONTRACT_FIRST_SLICE_SKILLS[-1]}`"
+            f"{first_slice_test_spec_list}, and `{historical_first_slice[-1]}`"
         )
 
         self.assertIn(
@@ -5011,7 +5004,8 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(surface="spec", skill=skill_name):
                 self.assertIn(f"`skills/{skill_name}/SKILL.md`", spec)
             with self.subTest(surface="plan", skill=skill_name):
-                self.assertIn(f"skills/{skill_name}/SKILL.md", plan)
+                historical_name = "workflow" if skill_name == "route" else skill_name
+                self.assertIn(f"skills/{historical_name}/SKILL.md", plan)
 
         self.assertIn("The `ci-maintenance` skill MUST be treated as the skill entrypoint", spec)
         self.assertIn("The baseline normalization first slice MUST NOT normalize every skill.", spec)
@@ -5038,7 +5032,7 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(term=term):
                 self.assertIn(term, plan)
 
-    def test_skill_contract_m2_summary_surfaces_keep_source_split(self) -> None:
+    def retired_skill_contract_m2_summary_surfaces_keep_source_split(self) -> None:
         workflow_spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
         workflows_doc = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
         agents = SKILL_CONTRACT_AGENTS.read_text(encoding="utf-8")
@@ -5079,7 +5073,7 @@ Use the inputs somehow and produce a useful result.
         self.assertNotIn("## Required core sections", agents)
         self.assertNotIn("## Shared-block source of truth", agents)
 
-    def test_single_authored_first_slice_docs_and_ignore_policy(self) -> None:
+    def retired_single_authored_first_slice_docs_and_ignore_policy(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         workflows_doc = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
         agents = SKILL_CONTRACT_AGENTS.read_text(encoding="utf-8")
@@ -5314,7 +5308,7 @@ and result format.
         body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(encoding="utf-8")
         assert_progressive_loading_code_review_protected_contracts(self, body)
 
-    def test_progressive_loading_workflow_migration_and_report_surfaces_exist(self) -> None:
+    def retired_progressive_loading_workflow_migration_and_report_surfaces_exist(self) -> None:
         workflows = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
         report = (
             ROOT
@@ -5401,7 +5395,7 @@ and result format.
             "Closed enum: scope budget treatment",
             "keep the result inside `Scope and non-goals` rather than adding a level-two section.",
             "Route deferred work through the follow-up ownership model rather than chat-only notes or `project-map` ownership.",
-            "workflow routes, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.",
+            "route selects semantic ownership, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.",
             "Do not search generated adapter output for authored skill truth.",
             "Do not add generated public adapter skill bodies back to tracked source.",
         ]
@@ -5428,7 +5422,7 @@ and result format.
             with self.subTest(term=term):
                 self.assertIn(term, proposal_review)
 
-    def test_cost_bounded_rigor_m1_workflows_bounded_evidence_guidance(self) -> None:
+    def retired_cost_bounded_rigor_m1_workflows_bounded_evidence_guidance(self) -> None:
         workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
         evidence = extract_markdown_block(workflows, "Efficient Evidence Collection")
 
@@ -5458,7 +5452,7 @@ and result format.
             with self.subTest(skill=skill_name, forbidden="full workflow sequence"):
                 self.assertNotIn("Default evidence sequence for path or state discovery:", body)
 
-    def test_stage_evidence_access_contract_guidance(self) -> None:
+    def retired_stage_evidence_access_contract_guidance(self) -> None:
         workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
         evidence = extract_markdown_block(workflows, "Stage Evidence Access")
 
@@ -5493,7 +5487,7 @@ and result format.
                 "Conditional evidence:",
                 "`docs/project-map.md` when architecture or repository orientation matters",
                 "existing specs or ADRs when the proposal changes their direction",
-                "`docs/workflows.md` when artifact placement or workflow routing matters",
+                "authoritative CLI workflow context when governed artifact placement or workflow routing matters",
                 "code only when current behavior is part of the decision",
                 "Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.",
             ],
@@ -5505,7 +5499,7 @@ and result format.
                 "`VISION.md` or `CONSTITUTION.md` when standing gates or vision fit matter",
                 "Conditional evidence:",
                 "linked specs, ADRs, plans, or learn sessions when the proposal relies on them",
-                "`docs/workflows.md` when workflow behavior or artifact placement is proposed",
+                "authoritative CLI workflow context when governed workflow behavior or artifact placement is proposed",
                 "code only when the proposal depends on current implementation reality",
                 "Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.",
             ],
@@ -5562,7 +5556,7 @@ and result format.
 
             handoff = extract_markdown_block(body, "Handoff")
             with self.subTest(skill=skill_name, surface="handoff"):
-                self.assertIn("workflow", handoff)
+                self.assertTrue("workflow" in handoff or "`route`" in handoff)
                 self.assertNotIn("specs/rigorloop-workflow.md", handoff)
                 self.assertIn("Normal next stage", handoff)
                 self.assertIn("Conditional next stages", handoff)
@@ -5621,158 +5615,38 @@ and result format.
                 with self.subTest(skill=skill_name, term=term):
                     self.assertNotIn(term, body)
 
-    def test_project_artifact_location_m1_workflows_doc_contains_artifact_map(self) -> None:
-        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        artifact_locations = extract_markdown_block(workflows, "Artifact locations")
-
-        required_terms = [
-            "The table defines default locations and owning skills.",
-            "It does not define full artifact schemas",
-            "For exact shapes, use the governing spec, schema, or reference",
-            "Project vision",
-            "Workflow guide",
-            "Proposals",
-            "Specs",
-            "Architecture",
-            "ADRs",
-            "Plans",
-            "Plan index",
-            "Change root",
-            "Change metadata",
-            "Formal review records",
-            "Review log",
-            "Review resolution",
-            "Verify report",
-            "Reports",
-            "default location only",
-            "formal review recording",
-            "when findings or blocking outcomes require disposition",
-            "when required",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, artifact_locations)
-
-    def test_workflow_map_m1_workflows_doc_contains_canonical_artifact_registry(self) -> None:
-        workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        registry = extract_markdown_block(workflows, "Artifact registry")
-
-        required_terms = [
-            "canonical fenced YAML artifact registry",
-            "```yaml",
-            "artifact_locations:",
-            "proposal:",
-            "path: docs/proposals/YYYY-MM-DD-slug.md",
-            "spec:",
-            "path: specs/slug.md",
-            "plan_index:",
-            "path: docs/plan.md",
-            "change_plan:",
-            "path: docs/plans/YYYY-MM-DD-slug.md",
-            "change_metadata:",
-            "path: docs/changes/<change-id>/change.yaml",
-            "formal_review_record:",
-            "path: docs/changes/<change-id>/reviews/<stage>-r<n>.md",
-            "review_log:",
-            "path: docs/changes/<change-id>/review-log.md",
-            "review_resolution:",
-            "path: docs/changes/<change-id>/review-resolution.md",
-            "verify_report:",
-            "path: docs/changes/<change-id>/verify-report.md",
-            "pr_handoff:",
-            "external_surface: pull_request_body",
-            "learn_session:",
-            "path: docs/learn/sessions/YYYY-MM-DD-slug.md",
-            "required_when:",
-            "owner:",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, registry)
-
-        self.assertNotIn(
-            "docs/changes/<change-id>/plan.md",
-            registry,
-            "workflow registry must not make change-pack plan.md a canonical plan-body path",
-        )
-
-    def test_workflow_map_m1_workflow_skill_default_paths_match_change_pack_contract(
-        self,
-    ) -> None:
-        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
-        defaults = extract_markdown_block(workflow, "Default artifact paths")
-
-        required_terms = [
-            "docs/workflows.md",
-            "docs/plan.md",
-            "docs/proposals/YYYY-MM-DD-slug.md",
-            "specs/slug.md",
-            "docs/plans/YYYY-MM-DD-slug.md",
-            "docs/changes/<change-id>/change.yaml",
-            "docs/changes/<change-id>/reviews/<stage>-r<n>.md",
-            "docs/changes/<change-id>/review-log.md",
-            "docs/changes/<change-id>/review-resolution.md",
-            "docs/changes/<change-id>/verify-report.md",
-            "docs/learn/sessions/YYYY-MM-DD-slug.md",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, defaults)
-
-        forbidden_terms = [
-            "docs/changes/<change-id>/plan.md",
-            "docs/explain/YYYY-MM-DD-slug.md",
-        ]
-        for term in forbidden_terms:
-            with self.subTest(term=term):
-                self.assertNotIn(term, defaults)
-
     def test_workflow_change_root_creation_uses_dated_change_id_convention(self) -> None:
         workflow_spec = SKILL_CONTRACT_WORKFLOW_SPEC.read_text(encoding="utf-8")
-        workflow_docs = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        workflow_skill = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
+        route_skill = (ROOT / "skills" / "route" / "SKILL.md").read_text(
             encoding="utf-8"
         )
         implement_skill = (ROOT / "skills" / "implement" / "SKILL.md").read_text(
             encoding="utf-8"
         )
 
-        for surface_name, surface_text in [
-            ("specs/rigorloop-workflow.md", workflow_spec),
-            ("docs/workflows.md", workflow_docs),
-        ]:
+        for surface_name, surface_text in [("specs/rigorloop-workflow.md", workflow_spec)]:
             with self.subTest(surface=surface_name, term="YYYY-MM-DD-slug"):
                 self.assertIn("YYYY-MM-DD-slug", surface_text)
             with self.subTest(surface=surface_name, term="legacy"):
                 self.assertIn("legacy", surface_text.lower())
 
-        required_workflows_doc_terms = [
-            "Change ID convention",
-            "Select or confirm this ID before writing `docs/changes/<change-id>/`",
-            "project-local current date",
-            "lowercase hyphen-separated slug",
-        ]
-        for term in required_workflows_doc_terms:
-            with self.subTest(surface="docs/workflows.md", term=term):
-                self.assertIn(term, workflow_docs)
-
         for term in [
-            "follow the `<change-id>` convention in `docs/workflows.md`",
-            "if no project-local workflow guide exists, use `YYYY-MM-DD-slug`",
+            "For governed routing, request project-phase `rigorloop workflow-context`",
+            "For a missing formal change root in portable mode, use `YYYY-MM-DD-slug`.",
         ]:
-            with self.subTest(surface="skills/workflow/SKILL.md", term=term):
-                self.assertIn(term, workflow_skill)
+            with self.subTest(surface="skills/route/SKILL.md", term=term):
+                self.assertIn(term, route_skill)
 
         for term in [
-            "follow the `<change-id>` convention in `docs/workflows.md`",
-            "if no project-local workflow guide exists, use `YYYY-MM-DD-slug`",
+            "When creating a root in governed mode, use the CLI-resolved location.",
+            "In portable mode, use `YYYY-MM-DD-slug` without claiming governed placement.",
         ]:
             with self.subTest(surface="skills/implement/SKILL.md", term=term):
                 self.assertIn(term, implement_skill)
 
-    def test_workflow_map_m2_validator_accepts_current_registry_and_tables(self) -> None:
+    def retired_workflow_map_m2_validator_accepts_current_registry_and_tables(self) -> None:
         workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
-        workflow_skill = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
+        workflow_skill = (ROOT / "skills" / "route" / "SKILL.md").read_text(
             encoding="utf-8"
         )
         stage_skills = {
@@ -5789,7 +5663,7 @@ and result format.
 
         self.assertEqual(errors, [])
 
-    def test_workflow_map_m2_validator_requires_architecture_registry_entries(
+    def retired_workflow_map_m2_validator_requires_architecture_registry_entries(
         self,
     ) -> None:
         workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
@@ -5836,7 +5710,7 @@ and result format.
             adr_errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_registry_shape_errors(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_registry_shape_errors(self) -> None:
         workflows = """
         # Workflows
 
@@ -5874,7 +5748,7 @@ and result format.
             errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_duplicate_registry_keys(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_duplicate_registry_keys(self) -> None:
         workflows = """
         # Workflows
 
@@ -5919,7 +5793,7 @@ and result format.
             errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_ambiguous_placement(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_ambiguous_placement(self) -> None:
         workflows = """
         # Workflows
 
@@ -5959,7 +5833,7 @@ and result format.
             errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_table_and_path_drift(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_table_and_path_drift(self) -> None:
         workflows = """
         # Workflows
 
@@ -6016,7 +5890,7 @@ and result format.
             errors,
         )
 
-    def test_workflow_map_m2_validator_rejects_unknown_artifact_input(self) -> None:
+    def retired_workflow_map_m2_validator_rejects_unknown_artifact_input(self) -> None:
         errors = skill_validation.validate_workflow_artifact_map_lookup(
             {"proposal": {"path": "docs/proposals/YYYY-MM-DD-slug.md"}},
             ["proposal", "release_attestation"],
@@ -6029,7 +5903,7 @@ and result format.
             ],
         )
 
-    def test_project_artifact_location_m1_workflows_doc_names_source_rank(self) -> None:
+    def retired_project_artifact_location_m1_workflows_doc_names_source_rank(self) -> None:
         workflows = SKILL_CONTRACT_WORKFLOWS_DOC.read_text(encoding="utf-8")
         source_rank = extract_markdown_block(workflows, "Artifact-location source rank")
 
@@ -6048,13 +5922,13 @@ and result format.
             with self.subTest(term=term):
                 self.assertIn(term, source_rank)
 
-    def test_project_artifact_location_m1_workflow_skill_refreshes_guide_on_defined_triggers(
+    def retired_project_artifact_location_m1_workflow_skill_refreshes_guide_on_defined_triggers(
         self,
     ) -> None:
         workflow = (
             ROOT
             / "skills"
-            / "workflow"
+            / "route"
             / "references"
             / "workflow-guide-authoring.md"
         ).read_text(encoding="utf-8")
@@ -6075,8 +5949,8 @@ and result format.
             with self.subTest(term=term):
                 self.assertIn(term, workflow)
 
-    def test_workflow_guide_skeleton_m1_asset_and_resource_map_exist(self) -> None:
-        workflow_dir = ROOT / "skills" / "workflow"
+    def retired_workflow_guide_skeleton_m1_asset_and_resource_map_exist(self) -> None:
+        workflow_dir = ROOT / "skills" / "route"
         workflow = (workflow_dir / "SKILL.md").read_text(encoding="utf-8")
         skeleton = workflow_dir / "assets" / "workflows-skeleton.md"
 
@@ -6089,16 +5963,16 @@ and result format.
         self.assertIn("fully rewriting a stale workflow guide", resource_map)
         self.assertIn("Do not emit unfilled placeholders.", resource_map)
 
-    def test_workflow_guide_skeleton_m1_contains_required_structure(self) -> None:
+    def retired_workflow_guide_skeleton_m1_contains_required_structure(self) -> None:
         skeleton = (
-            ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md"
+            ROOT / "skills" / "route" / "assets" / "workflows-skeleton.md"
         ).read_text(encoding="utf-8")
 
         required_terms = [
             "<!-- Template: workflows-skeleton -->",
             "<!-- Skill: workflow -->",
             "<!-- Template status: normative -->",
-            "<!-- Maintained alongside: skills/workflow/SKILL.md -->",
+            "<!-- Maintained alongside: skills/route/SKILL.md -->",
             "## Status",
             "## Source rank",
             "## Lifecycle graph",
@@ -6131,10 +6005,10 @@ and result format.
             with self.subTest(source_rank=term):
                 self.assertIn(term, skeleton)
 
-    def test_workflow_guide_skeleton_m1_stays_structural(self) -> None:
-        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+    def retired_workflow_guide_skeleton_m1_stays_structural(self) -> None:
+        workflow = (ROOT / "skills" / "route" / "SKILL.md").read_text(encoding="utf-8")
         skeleton = (
-            ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md"
+            ROOT / "skills" / "route" / "assets" / "workflows-skeleton.md"
         ).read_text(encoding="utf-8")
 
         self.assertNotIn("| Artifact type       | Canonical path", workflow)
@@ -6155,8 +6029,8 @@ and result format.
             with self.subTest(term=term):
                 self.assertNotIn(term, skeleton)
 
-    def test_workflow_guide_skeleton_m2_composes_workflow_map_validation(self) -> None:
-        path = ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md"
+    def retired_workflow_guide_skeleton_m2_composes_workflow_map_validation(self) -> None:
+        path = ROOT / "skills" / "route" / "assets" / "workflows-skeleton.md"
         skeleton = path.read_text(encoding="utf-8")
 
         self.assertEqual(
@@ -6434,7 +6308,7 @@ and result format.
             errors,
         )
 
-    def test_installed_skill_artifact_placement_contract_helper_checks_workflow_map_sync(
+    def retired_installed_skill_artifact_placement_contract_helper_checks_workflow_map_sync(
         self,
     ) -> None:
         body = textwrap.dedent(
@@ -6501,7 +6375,7 @@ and result format.
         )
 
         self.assertIn(
-            "skills/plan/SKILL.md: installed-skill plan surface contract must distinguish docs/workflows.md, docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/",
+            "skills/plan/SKILL.md: installed-skill plan surface contract must distinguish docs/plan.md, docs/plans/YYYY-MM-DD-slug.md, docs/changes/<change-id>/change.yaml, and docs/changes/<change-id>/",
             errors,
         )
         self.assertIn(
@@ -6516,7 +6390,6 @@ and result format.
             """\
             # Plan
 
-            Consult the workflow map at `docs/workflows.md`.
             Update the plan index at `docs/plan.md`.
             Update the plan body at `docs/plans/YYYY-MM-DD-slug.md`.
             Use change metadata at `docs/changes/<change-id>/change.yaml`.
@@ -6825,18 +6698,18 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                 self.assertIn("workflow", normalized.lower())
                 self.assertRegex(normalized.lower(), r"(never|does not).*routing")
 
-    def test_workflow_defines_bounded_change_record_mutation(self) -> None:
+    def test_route_defines_bounded_change_record_mutation(self) -> None:
         body = (
             ROOT
             / "skills"
-            / "workflow"
+            / "route"
             / "references"
             / "governed-lifecycle-routing.md"
         ).read_text(encoding="utf-8")
         for phrase in (
-            "read the complete `change.yaml`",
+            "`rigorloop workflow-context --change <change-id>`",
             "`stage-owned-change-local-v3`",
-            "Derive routing only from",
+            "Use CLI-projected artifact settlement",
             "Update only",
             "preserve `artifact_states`",
             "`planned_work` only when a primary",
@@ -6846,7 +6719,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, body)
 
-    def test_plan_initializes_planned_work_once_and_workflow_owns_later_updates(self) -> None:
+    def test_plan_initializes_planned_work_once_and_route_owns_later_updates(self) -> None:
         plan_body = (ROOT / "skills" / "plan" / "SKILL.md").read_text(
             encoding="utf-8"
         )
@@ -6860,7 +6733,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         workflow_body = (
             ROOT
             / "skills"
-            / "workflow"
+            / "route"
             / "references"
             / "governed-lifecycle-routing.md"
         ).read_text(encoding="utf-8")
@@ -6872,14 +6745,14 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             "`latest_review.status: not-started`",
             "`final_closeout.readiness: not-ready`",
             "must not replace or update existing `planned_work`",
-            "workflow owns every later `planned_work` transition",
+            "route owns every later `planned_work` decision",
         ):
             with self.subTest(surface="plan", phrase=phrase):
                 self.assertIn(phrase, plan_body)
 
         for phrase in (
             "Plan owns only the one-time deterministic initialization",
-            "workflow owns every later `planned_work` transition",
+            "route owns every later `planned_work` decision",
         ):
             with self.subTest(surface="workflow", phrase=phrase):
                 self.assertIn(phrase, workflow_body)
@@ -6925,19 +6798,19 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                 with self.subTest(asset=asset_path, phrase=phrase):
                     self.assertNotIn(phrase, text)
 
-    def test_workflow_uses_one_target_and_evidence_first_recovery(self) -> None:
+    def test_route_uses_one_target_and_evidence_first_recovery(self) -> None:
         body = (
             ROOT
             / "skills"
-            / "workflow"
+            / "route"
             / "references"
             / "bounded-workflow-automation.md"
         ).read_text(encoding="utf-8")
         required = (
             "one target-driven",
             "The requested target is the complete automation boundary.",
-            "`$workflow auto: status` is read-only.",
-            "`$workflow auto: off` durably cancels",
+            "`$route auto: status` is read-only.",
+            "`$route auto: off` durably cancels",
             "Resume uses tracked artifact and review evidence.",
             "Direct review invocations do not activate, resume, or advance automation",
             "verify failure",
@@ -6950,11 +6823,11 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             with self.subTest(retired=retired):
                 self.assertNotIn(retired, body.lower())
 
-    def test_workflow_activates_stage_owned_contract_without_another_parameter(self) -> None:
+    def test_route_activates_stage_owned_contract_without_another_parameter(self) -> None:
         body = (
             ROOT
             / "skills"
-            / "workflow"
+            / "route"
             / "references"
             / "governed-lifecycle-routing.md"
         ).read_text(encoding="utf-8")
@@ -6970,44 +6843,45 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
 
 
 
-class WorkflowSkillSimplificationContractTests(unittest.TestCase):
+class RouteSkillCutoverContractTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.root = ROOT / "skills" / "workflow"
+        self.root = ROOT / "skills" / "route"
         self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
 
-    def test_workflow_simplification_maps_exact_conditional_resources(self) -> None:
+    def test_route_maps_only_routing_conditional_resources(self) -> None:
         expected = {
             "references/governed-lifecycle-routing.md": "READ",
             "references/bounded-workflow-automation.md": "READ",
-            "references/workflow-guide-authoring.md": "READ",
             "references/boundary-first-method-v1.md": "READ",
-            "assets/workflows-skeleton.md": "COPY",
         }
         for relative_path, verb in expected.items():
             with self.subTest(resource=relative_path):
                 self.assertTrue((self.root / relative_path).is_file())
                 self.assertIn(f"- {verb} `{relative_path}`", self.skill)
 
-    def test_workflow_simplification_declares_exact_predicates_and_assemblies(self) -> None:
+        self.assertFalse((self.root / "references/workflow-guide-authoring.md").exists())
+        self.assertFalse((self.root / "assets/workflows-skeleton.md").exists())
+
+    def test_route_declares_exact_predicates_and_assemblies(self) -> None:
         for predicate in (
             "governed_change_context",
             "automation_command_context",
             "armed_automation_context",
-            "workflow_guide_authoring_context",
         ):
             self.assertIn(predicate, self.skill)
+        self.assertNotIn("workflow_guide_authoring_context", self.skill)
         for assembly in (
             "WP0-generic-routing",
             "WP1-governed",
             "WP2-governed-automated",
-            "WP3-guide-authoring",
-            "WP4-governed-guide-authoring",
             "WPB-automation-bootstrap",
             "WPS-stateless-automation-command",
         ):
             self.assertIn(assembly, self.skill)
+        self.assertNotIn("WP3-guide-authoring", self.skill)
+        self.assertNotIn("WP4-governed-guide-authoring", self.skill)
 
-    def test_workflow_simplification_keeps_universal_stops_inline(self) -> None:
+    def test_route_keeps_universal_stops_inline(self) -> None:
         for phrase in (
             "Conversational wording alone does not establish",
             "Unknown artifact types and unknown lifecycle stages are blockers",
@@ -7015,14 +6889,12 @@ class WorkflowSkillSimplificationContractTests(unittest.TestCase):
             "After classification and before resource-dependent interpretation or action",
             "contradiction among packaged resources",
             "stop rather than invent, recall, or partially reconstruct",
-            "Active automation and workflow-guide authoring",
         ):
             self.assertIn(phrase, self.skill)
 
-    def test_workflow_simplification_references_have_non_overlapping_owners(self) -> None:
+    def test_route_references_have_non_overlapping_owners(self) -> None:
         governed = (self.root / "references" / "governed-lifecycle-routing.md").read_text(encoding="utf-8")
         automation = (self.root / "references" / "bounded-workflow-automation.md").read_text(encoding="utf-8")
-        guide = (self.root / "references" / "workflow-guide-authoring.md").read_text(encoding="utf-8")
         self.assertIn("Architecture and specification are both mandatory", governed)
         self.assertNotIn("architecture-required", governed)
         self.assertNotIn("architecture-not-required", governed)
@@ -7030,10 +6902,8 @@ class WorkflowSkillSimplificationContractTests(unittest.TestCase):
         self.assertIn("Stage transitions and settlement", governed)
         self.assertIn("asks governed lifecycle procedure", automation)
         self.assertIn("must not redefine stage order", automation)
-        self.assertIn("renders established routing policy", guide)
-        self.assertIn("must not own source precedence", guide)
 
-    def test_workflow_simplification_bootstrap_and_stateless_paths_are_explicit(self) -> None:
+    def test_route_bootstrap_and_stateless_paths_are_explicit(self) -> None:
         automation = (self.root / "references" / "bounded-workflow-automation.md").read_text(encoding="utf-8")
         bootstrap_steps = (
             "Recognize the explicit target command",
@@ -7049,15 +6919,23 @@ class WorkflowSkillSimplificationContractTests(unittest.TestCase):
         self.assertIn("no-active-run", automation)
         self.assertIn("creates no governed or automation state", automation)
 
-    def test_workflow_simplification_skeleton_stays_structural(self) -> None:
-        skeleton = (self.root / "assets" / "workflows-skeleton.md").read_text(encoding="utf-8")
-        for forbidden in (
-            "governed_change_context",
-            "armed_automation_context",
-            "WPB-automation-bootstrap",
-            "no-active-run",
+    def test_route_consumes_cli_context_and_preserves_protocol_authority(self) -> None:
+        self.assertIn("rigorloop workflow-context", self.skill)
+        self.assertIn("stage_authority: workflow", self.skill)
+        self.assertIn("workflow.automation", self.skill)
+        self.assertNotIn("docs/workflows.md", self.skill)
+
+    def test_current_skill_validator_has_no_retired_guide_parser(self) -> None:
+        validator = (ROOT / "scripts" / "skill_validation.py").read_text(encoding="utf-8")
+        for retired in (
+            "def validate_workflow_artifact_map_lookup",
+            "def validate_workflow_artifact_map_contract",
+            "def validate_workflow_guide_skeleton_contract",
+            "WORKFLOW_GUIDE_SKELETON_REQUIRED_METADATA",
+            "WORKFLOW_ARTIFACT_REQUIRED_REGISTRY_ENTRIES",
         ):
-            self.assertNotIn(forbidden, skeleton)
+            with self.subTest(retired=retired):
+                self.assertNotIn(retired, validator)
 
 
 class VerifySkillSimplificationContractTests(unittest.TestCase):
@@ -7325,7 +7203,7 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
             "approved current Delivery Review package",
             "record-artifact-revision",
             "Never replace existing work",
-            "workflow owns every later `planned_work` transition",
+            "route owns every later `planned_work` decision under the stable workflow authority",
         ):
             self.assertIn(phrase, self.reference)
         self.assertIn("Load this reference only", self.reference)
@@ -7523,7 +7401,7 @@ class ProposalSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase.lower(), self.governed.lower())
 
     def test_governed_retry_and_authorized_reset_fail_closed(self) -> None:
-        for phrase in ("unsupported partial authoring", "workflow owns recovery", "without adoption", "never edit lifecycle fields directly"):
+        for phrase in ("unsupported partial authoring", "route owns recovery", "without adoption", "never edit lifecycle fields directly"):
             self.assertIn(phrase.lower(), self.governed.lower())
 
     def test_specialized_predicates_and_scope_budget_vocabulary_are_closed(self) -> None:
@@ -7793,6 +7671,9 @@ class LearnSkillSimplificationLedgerTests(unittest.TestCase):
         self.assertFalse(any("assess" in row["operation"] for row in callers))
         for caller in callers:
             source = ROOT / caller["source_path"]
+            if caller["source_path"] == "docs/workflows.md":
+                self.assertFalse(source.exists(), "retired workflow guide must remain absent")
+                continue
             self.assertTrue(source.is_file(), caller["source_path"])
             self.assertIn(caller["source_phrase"], source.read_text(encoding="utf-8"))
         self.assertEqual(len(fixture["legacy_dispositions"]), 6)
@@ -8449,27 +8330,19 @@ class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
                     self.assertIn(term, body)
 
     def test_post_cutover_inventory_retires_old_reviews_without_aliases(self) -> None:
-        workflow = (ROOT / "docs/workflows.md").read_text(encoding="utf-8")
-        post_cutover_inventory = (
-            "Supported targets are "
-            "`proposal-review`, `architecture`, `spec`, `design-review`, "
-            "`plan`, `delivery-review`, `implement`, "
-            "`code-review`, and `verify`; retired artifact-review and standalone test-spec targets are "
-            "not admitted."
-        )
+        route = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
         self.assertIn(
             "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement",
-            workflow,
+            route,
         )
-        self.assertIn(post_cutover_inventory, workflow)
-        self.assertIn("not aliases for `design-review` or `delivery-review`", workflow)
+        self.assertIn("Supported targets are", route)
         for retired_target in (
             "spec-review",
             "architecture-review",
             "plan-review",
             "test-spec-review",
         ):
-            self.assertNotIn(f"`{retired_target}`", post_cutover_inventory)
+            self.assertNotIn(f"`{retired_target}`", route)
 
     def test_downstream_skills_consume_package_authority_without_merging_gates(self) -> None:
         for skill_name in ("code-review", "verify", "pr"):
@@ -8722,14 +8595,14 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
         self.assertNotIn("one execution plan, one test specification", body)
 
     def test_active_workflow_declares_v3_and_historical_prior_contracts(self) -> None:
-        body = (ROOT / "skills/workflow/SKILL.md").read_text(encoding="utf-8")
+        body = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
         self.assertIn("stage-owned-change-local-v3", body)
         self.assertIn("plan -> delivery-review", body)
         self.assertIn("Historical v1/v2 records grant no current route", body)
         self.assertIn("bounded preactivation closeout bootstrap", body)
 
     def test_verification_allocation_gaps_route_to_plan_without_legacy_progression(self) -> None:
-        for skill_name in ("spec", "plan", "workflow"):
+        for skill_name in ("spec", "plan", "route"):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
                 encoding="utf-8"
             )
@@ -8755,7 +8628,7 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
         for relative in (
             "CONSTITUTION.md",
             "AGENTS.md",
-            "docs/workflows.md",
+            "skills/route/SKILL.md",
             "specs/rigorloop-workflow.md",
         ):
             body = (ROOT / relative).read_text(encoding="utf-8")
@@ -8772,7 +8645,7 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
         template = (ROOT / "templates/shared/boundary-first-compact-scan.md").read_text(encoding="utf-8")
         for phrase in required:
             self.assertIn(phrase, template)
-        for skill_name in ("workflow", "spec", "plan", "implement", "code-review"):
+        for skill_name in ("route", "spec", "plan", "implement", "code-review"):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             with self.subTest(skill=skill_name):
                 for phrase in required:
@@ -8784,7 +8657,7 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
     def test_active_guidance_preserves_downstream_gates_and_history(self) -> None:
         combined = "\n".join(
             (ROOT / path).read_text(encoding="utf-8")
-            for path in ("CONSTITUTION.md", "AGENTS.md", "docs/workflows.md")
+            for path in ("CONSTITUTION.md", "AGENTS.md", "skills/route/SKILL.md")
         )
         lowered = combined.lower()
         self.assertIn("code-review", lowered)
@@ -8831,7 +8704,7 @@ class FinalVerificationProtocolM2Tests(unittest.TestCase):
 
 class FinalVerificationPackageParityM4Tests(unittest.TestCase):
     def test_current_governance_selects_only_v3_for_executable_authority(self) -> None:
-        for path in ("CONSTITUTION.md", "AGENTS.md", "docs/workflows.md", "specs/rigorloop-workflow.md"):
+        for path in ("CONSTITUTION.md", "AGENTS.md", "skills/route/SKILL.md", "specs/rigorloop-workflow.md"):
             body = (ROOT / path).read_text(encoding="utf-8")
             with self.subTest(path=path):
                 self.assertIn("stage-owned-change-local-v3", body)
@@ -8850,7 +8723,7 @@ class FinalVerificationPackageParityM4Tests(unittest.TestCase):
 
     def test_v3_capable_stage_skills_agree_on_verify_owned_explanation_and_handoff(self) -> None:
         expectations = {
-            "workflow": ("v3", "ci-maintenance", "verify", "pr", "Historical v1/v2 records grant no current route"),
+            "route": ("v3", "ci-maintenance", "verify", "pr", "Historical v1/v2 records grant no current route"),
             "code-review": ("v3", "final holistic", "verify", "Historical contracts grant no current route"),
             "ci-maintenance": ("verify", "historical records"),
             "verify": ("v3", "successful-explanation-v3.md", "branch-ready"),
@@ -8878,25 +8751,17 @@ class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
         self.assertFalse((ROOT / "skills/test-spec-review").exists())
 
     def test_active_workflow_is_plan_centered(self) -> None:
-        body = (ROOT / "skills/workflow/SKILL.md").read_text(encoding="utf-8")
+        body = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
         self.assertIn("plan -> delivery-review -> implement", body)
         self.assertNotIn("plan -> test-spec -> delivery-review", body)
 
     def test_conditional_workflow_resources_are_plan_centered(self) -> None:
         automation = (
-            ROOT / "skills/workflow/references/bounded-workflow-automation.md"
+            ROOT / "skills/route/references/bounded-workflow-automation.md"
         ).read_text(encoding="utf-8")
-        skeleton = (
-            ROOT / "skills/workflow/assets/workflows-skeleton.md"
-        ).read_text(encoding="utf-8")
-
         self.assertIn("`plan`, `delivery-review`", automation)
         self.assertNotIn("`plan`, `test-spec`, `delivery-review`", automation)
-        self.assertIn("-> plan\n-> delivery-review", skeleton)
-        self.assertNotIn("-> test-spec", skeleton)
-        self.assertNotIn("test_spec:", skeleton)
-        self.assertNotIn("owner: test-spec", skeleton)
-        self.assertNotIn("| Test specs |", skeleton)
+        self.assertFalse((ROOT / "skills/route/assets/workflows-skeleton.md").exists())
 
     def test_governed_plan_authoring_is_v3_only_and_history_fails_closed(self) -> None:
         reference = (
@@ -8905,14 +8770,14 @@ class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
 
         self.assertIn("Governed plan authoring is available only for v3", reference)
         self.assertIn("Historical non-v3 work never re-enters plan authoring", reference)
-        self.assertIn("stop and return the context to Workflow", reference)
+        self.assertIn("stop and return the context to `route`", reference)
         self.assertIn("handoff: `delivery-review`", reference)
         self.assertNotIn("handoff: `test-spec`", reference)
 
     def test_active_governance_has_no_preactivation_default(self) -> None:
         combined = "\n".join(
             (ROOT / path).read_text(encoding="utf-8")
-            for path in ("CONSTITUTION.md", "AGENTS.md", "docs/workflows.md")
+            for path in ("CONSTITUTION.md", "AGENTS.md", "skills/route/SKILL.md")
         )
         self.assertIn("stage-owned-change-local-v3", combined)
         self.assertIn("last coherent released v2 package", combined)

@@ -55,9 +55,9 @@ After implementation:
 
 Create the implementation handoff commit with subject `M<n>: <implemented milestone outcome>` and include validation in its body or referenced evidence.
 
-When required proof passes, report the milestone as ready for workflow to transition to `review-requested` and route to `code-review`.
+When required proof passes, report the milestone as ready for `route` to transition to `review-requested` and send it to `code-review`.
 The milestone becomes `closed` only after clean review and required resolution.
-A clean non-final review returns workflow to the next in-scope implementation milestone; a clean final milestone enters final closeout rather than direct verification.
+A clean non-final review lets `route` select the next in-scope implementation milestone; a clean final milestone enters final closeout rather than direct verification.
 
 ## Accepted correction return
 

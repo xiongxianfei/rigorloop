@@ -1,5 +1,7 @@
 # Guide System Source-of-Truth Alignment
 
+> Historical contract: superseded for current RigorLoop packages by `specs/refocus-workflow-into-route.md`. Current routing ignores the retired workflow guide and obtains deterministic project-local facts from CLI workflow context.
+
 ## Status
 
 approved

@@ -28,13 +28,13 @@ Do not use it to replace code-review, settle upstream artifacts, repair implemen
 
 ## Workflow role
 
-`verify` evaluates evidence and records only verify-owned results. The `workflow` skill owns lifecycle progression, and `pr` owns PR preparation and opening. A successful workflow-managed verification hands off to `pr`; it never invokes `pr` itself.
+`verify` evaluates evidence and records only verify-owned results. The `route` skill owns semantic lifecycle progression, and `pr` owns PR preparation and opening. A successful workflow-managed verification hands off to `pr`; it never invokes `pr` itself.
 
 Run `ci-maintenance` first when hosted workflow automation, validation automation, or related platform configuration must change.
 
 ## Project-local evidence
 
-Public skills operate in customer-project mode by default. Use project-local instructions, specs, plans, change records, code, tests, validation, and `docs/workflows.md` when present and relevant. Do not require RigorLoop repository-internal specs, docs, reports, or governance files in customer projects. Use portable defaults where safe and block on ambiguity.
+Public skills operate in customer-project mode by default. Use project-local instructions, specs, plans, change records, code, tests, validation, and authoritative CLI workflow context when governed. Do not require RigorLoop repository-internal specs, docs, reports, or governance files in customer projects. Use portable defaults where safe without claiming governed placement, and block on ambiguity.
 
 ## Requested outcome and target
 
@@ -67,7 +67,7 @@ V3 is the only current executable final-readiness contract. Final readiness load
 
 An `isolated` result does not mutate lifecycle state, perform governed recording unless explicitly authorized by an existing contract, or invoke `pr`. It may name `pr` only as a possible next stage.
 
-In `governed-final`, perform only verify-owned recording, then return the result to `workflow` for progression. Verification authority is separate from implementation, correction, lifecycle-transition, and PR authority.
+In `governed-final`, perform only verify-owned recording, then return the result to `route` for progression. Verification authority is separate from implementation, correction, lifecycle-transition, and PR authority.
 
 Under armed workflow automation, use fresh actual-run evidence for correctness-bearing, security-sensitive, release-sensitive, lifecycle, review-closeout, metadata, generated-output, and required test-suite checks. `cache hits` may support only informational sub-checks when current and identified. A `verify failure` pauses automation and `does not trigger automatic repair`. A pass reports `pr` next and records that human authorization for `pr` is required.
 
@@ -75,7 +75,7 @@ Under armed workflow automation, use fresh actual-run evidence for correctness-b
 
 Read only evidence needed for the classified outcome. This may include the relevant spec, architecture or ADR, plan and `change.yaml`, actual diff, tests, validation output, observed CI, review and review-resolution evidence, release metadata, generated artifacts, project instructions, and CI definitions.
 
-For placement, prefer the explicit target; current change or plan metadata; governing schema; project workflow guide; then a safe portable default. Block when authority remains ambiguous. For planned records, bounded queries may orient the read, but escalate to full `change.yaml` for whole-record review, disputed or unsupported state, or forensic reconstruction.
+For placement, prefer the explicit target; authoritative CLI workflow context; current change or plan metadata; governing schema; then a safe portable default. Block when authority remains ambiguous. For planned records, bounded queries may orient the read, but escalate to full `change.yaml` for whole-record review, disputed or unsupported state, or forensic reconstruction.
 
 For work governed by consolidated gates, require the current accepted proposal evidence, approved Design Review ID and exact member map, approved Delivery Review ID and exact member map, implementation and Code Review evidence, and current validation results. A review-required, partial, stale, or historical-only package blocks final readiness. This evidence requirement does not merge Verify with any earlier gate.
 
@@ -143,7 +143,7 @@ Do not substitute commands, unresolved names, or prose for these fields. Missing
 
 ## Handoff
 
-- Normal next stage: return a clean governed-final result to `workflow` for handoff to `pr`.
+- Normal next stage: return a clean governed-final result to `route` for handoff to `pr`.
 - Conditional next stages: route CI-infrastructure gaps to `ci-maintenance`, verification-allocation gaps to `plan`, behavior-contract gaps to `spec`, and other failures to their exact owning stage. Verify never repairs and continues.
 - Direct requests remain isolated unless explicitly broadened; stop when blockers remain.
 

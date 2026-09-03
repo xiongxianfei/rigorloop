@@ -32,7 +32,7 @@ Do not use to author the plan, repair specification behavior, redesign architect
 - upstream: one exact primary plan and the approved Design Review ID
 - downstream: implementation, author-owned correction, upstream design reconsideration, or isolated stop
 - summary: Decide whether the exact delivery package can implement and prove the approved design.
-- ownership: Write Delivery Review evidence and settle only the exact delivery package. Workflow owns routing.
+- ownership: Write Delivery Review evidence and settle only the exact delivery package. Route owns semantic routing.
 - must_not_claim: plan or specification authorship, implementation completion, code-review, final verification, branch readiness, or PR readiness
 
 The reviewer does not edit the execution plan, design package, implementation, or routing state. Approval judges the plan's sequence and verification together; it is never a partial sequencing-only or proof-only approval.
@@ -43,13 +43,13 @@ Use this skill to: review one exact primary-plan package against the approved de
 
 Read first: `change.yaml`, `context delivery-review`, the exact primary plan, the approved Design Review ID and member map, and relevant prior findings.
 
-Produce: one recorded package outcome, precise findings or a no-finding rationale, and an isolated or workflow-owned handoff.
+Produce: one recorded package outcome, precise findings or a no-finding rationale, and an isolated or route-owned handoff.
 
 Stop when: membership, upstream authority, evidence, independence, or lifecycle identity is missing, unsafe, stale, or contradictory.
 
 Do not claim: implementation completion, code correctness, or final readiness.
 
-Next stage: workflow may route an approved package to implementation; otherwise route named corrections or stop.
+Next stage: `route` may send an approved package to implementation; otherwise route named corrections or stop.
 
 ## Inputs to read
 
@@ -83,7 +83,7 @@ Each finding records a stable Finding ID, Severity, Location, Evidence, Required
 
 ## Isolation and recording
 
-A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to workflow after settlement.
+A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to `route` after settlement.
 
 Every formal result must be recorded or explicitly blocked. Clean review uses a lightweight receipt and review-log entry. Material or blocking results use a detailed record and `review-resolution.md` when disposition is required. Do not create an empty `review-resolution.md` solely for a clean result.
 
@@ -99,7 +99,7 @@ Produce the package identity, upstream review ID, traceability judgment, outcome
 
 ## Handoff
 
-An approved workflow-managed review returns to workflow for implementation. `changes-requested` routes plan allocation gaps to `plan` and behavioral or design gaps to their named upstream owner. `blocked` routes only to the named design owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
+An approved workflow-managed review returns to `route` for implementation. `changes-requested` routes plan allocation gaps to `plan` and behavioral or design gaps to their named upstream owner. `blocked` routes only to the named design owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
 
 ## Stop conditions
 

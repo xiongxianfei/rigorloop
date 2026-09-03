@@ -47,7 +47,7 @@ The consolidated-gates implementing change completes under the pre-cutover claus
 
 This spec defines the externally observable workflow contract for the first RigorLoop starter-kit release. The goal is to make AI-assisted software delivery explicit, reviewable, and auditable for individual contributors and maintainers while allowing users to request isolated individual skill outputs without implying full workflow completion.
 
-This amendment updates the workflow contract around explicit artifact categories, stable stage-obligation metadata, living-reference handling, workflow-handoff ownership, the final learn artifact model, PR-self-contained lifecycle completion, one recommended standard workflow, isolated manual skill invocation, final `explain-change -> verify -> pr` ordering, and project-portable published skill surfaces. It keeps `specs/rigorloop-workflow.md` as the canonical workflow definition and keeps `docs/workflows.md` as the short operational summary.
+This contract now incorporates the route cutover: `route` is the sole current semantic routing skill, deterministic project-local workflow facts come from `rigorloop workflow-context`, and the retired workflow guide has no current lifecycle, placement, or routing authority. Earlier amendment text remains historical context where later requirements supersede it.
 
 This amendment also clarifies that isolated formal review requests stop downstream handoff but do not suppress durable recording. Every material finding is recorded, and all material findings require change-local review files.
 
@@ -292,7 +292,7 @@ R6. The workflow contract MUST document workflow categories using the following 
 | --- | --- | --- | --- | --- | --- |
 | Standing artifacts | `VISION.md`, `CONSTITUTION.md` | Created once near project genesis or governance adoption. | Revised deliberately when project identity or governing principles change. | Absence gates differ by artifact and are defined in `R6a`. | All proposal, spec, workflow, and review stages. |
 | Living references | `docs/project-map.md` | Created when repository structure is not obvious enough for safe architecture or planning. | Refreshed or bypassed with a no-map rationale before reliance when absent, known-stale, contradicted, or missing the relied-on area. | Detailed freshness markers, calendar thresholds, and revision workflow are deferred to a focused project-map lifecycle change. | Architecture, plan, code-review, and onboarding-heavy work. |
-| Workflow infrastructure | `specs/rigorloop-workflow.md`, `docs/workflows.md`, affected root operating guidance, affected stage skills, and generated skill or adapter outputs when canonical skills change. | Created and maintained as workflow governance. | Revised when stage order, routing, handoff, obligation, or category policy changes. | Unresolved drift across affected operating and governance surfaces blocks workflow-change readiness. | Every lifecycle stage. |
+| Workflow infrastructure | `specs/rigorloop-workflow.md`, CLI workflow-context configuration, affected root operating guidance, affected stage skills, and generated skill or adapter outputs when canonical skills change. | Created and maintained as workflow governance. | Revised when stage order, routing, handoff, obligation, or category policy changes. | Unresolved drift across affected operating and governance surfaces blocks workflow-change readiness. | Every lifecycle stage. |
 | On-demand artifacts | `explore`, `research`. | Created only when the problem warrants durable option expansion or external evidence. | Revised when their assumptions or findings are materially outdated. | Absence is not a blocker unless the current work depends on unresolved options or uncertain facts. | Proposal, spec, architecture, and plan when their decisions depend on the artifact. |
 | Per-change chain | `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution -> ci-maintenance -> explain-change -> verify -> pr`, with conditional stages governed by obligation metadata. | Created or run according to stage-obligation metadata. | Updated as the change moves through the lifecycle. | Missing required or triggered actions block downstream readiness. | The current change and PR package. |
 | Periodic artifacts | `learn`. | Run on cadence, after incidents, contributor observations, repeated findings, failed release or adapter smoke, accepted postmortem actions, or explicit maintainer request. When a session reaches Frame, create or update `docs/learn/sessions/YYYY-MM-DD-<slug>.md`. | Revised by adding or updating session records, curated topic guidance, or affected action-owning artifacts, not by changing lifecycle state. | Absence does not block ordinary PRs. Triggered `learn` blocks only when a higher-priority artifact makes it blocking; if a trigger is closed before a session runs, the scheduled follow-up, deferral, or no-learn rationale must be recorded in a tracked or review-visible surface. | Future proposals, specs, workflow updates, skill refinements, ADRs, and action-owning artifacts. |
@@ -308,7 +308,7 @@ R6b. `docs/project-map.md` MUST be treated as a living reference. Consumers MUST
 
 R6c. This workflow refactor MUST NOT define calendar thresholds, freshness markers, or the full project-map revision workflow.
 
-R6d. Workflow-governance changes MUST keep affected operating and governance guidance aligned. Affected surfaces MAY include `CONSTITUTION.md`, `AGENTS.md`, `README.md` when it contains workflow, contribution, or operating guidance, `docs/workflows.md`, `specs/rigorloop-workflow.md`, affected stage skills, generated `.codex/skills/`, and generated public adapters under `dist/adapters/` when canonical skills change.
+R6d. Workflow-governance changes MUST keep affected operating and governance guidance aligned. Affected surfaces MAY include `CONSTITUTION.md`, `AGENTS.md`, `README.md` when it contains workflow, contribution, or operating guidance, CLI workflow-context configuration, `specs/rigorloop-workflow.md`, affected stage skills, generated `.codex/skills/`, and generated public adapters under `dist/adapters/` when canonical skills change.
 
 R6da. A workflow-governance change MUST NOT be ready for downstream handoff until each affected surface is updated, explicitly marked unaffected with rationale, or recorded as deferred with owner and follow-up.
 
@@ -326,23 +326,11 @@ R6h. Bootstrap proposals under `R6f` or `R6g` MUST identify the bootstrap except
 
 R6i. When architecture is required, the `architecture` stage MUST produce or update the architecture package defined by `specs/architecture-package-method.md` before planning continues. This workflow spec owns only stage-level routing and handoff for that method; the focused architecture package method spec owns the C4, arc42, ADR, template, and package lifecycle contract.
 
-R6j. The `workflow` skill MUST own creation and refresh of `docs/workflows.md` when requested or when adopting RigorLoop into a project. The skill MUST NOT create or rewrite a local workflow spec unless the user explicitly requests workflow-contract authoring.
+R6j. The `route` skill MUST consume `rigorloop workflow-context` for deterministic governed workflow facts and retain semantic routing judgment. It MUST NOT create, refresh, parse, or consult the retired workflow guide.
 
-R6k. When `docs/workflows.md` is created or refreshed by the `workflow` skill, it MUST include:
-- a source-of-truth note;
-- one standard workflow;
-- manual skill invocation and isolation behavior;
-- stage obligation meanings;
-- ordered workflow sequence;
-- milestone-based implementation and review loop;
-- `review-resolution` trigger;
-- `ci-maintenance` boundary;
-- `explain-change -> verify -> pr` final order;
-- verify and PR ownership;
-- learn trigger summary;
-- skill index.
+R6k. CLI workflow context MUST expose deterministic project and exact-change facts with source provenance. Route MUST interpret engineering meaning and select a structurally permitted owner or stop; the CLI MUST NOT make that semantic choice.
 
-R6l. `docs/workflows.md` MUST remain a readable workflow guide and MUST NOT become a competing workflow spec.
+R6l. A retained historical workflow guide is ordinary documentation without current RigorLoop authority and requires no migration.
 
 R6m. When an active plan is affected by the transition to `explain-change -> verify -> pr`, the plan MUST record a transition note in its current handoff, readiness, or progress section.
 
@@ -850,7 +838,7 @@ R12be. Canonical formal review skills MUST include one identical `## Isolation a
 
 R12bf. New `review-resolution.md` records MUST remain scan-first for humans while preserving validator-readable field labels for each material finding.
 
-R12bg. The material-finding recording trigger MUST NOT be implemented until affected governance and operating guidance are updated or explicitly marked unaffected with rationale. `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` MUST use the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
+R12bg. The material-finding recording trigger MUST NOT be implemented until affected governance and operating guidance are updated or explicitly marked unaffected with rationale. `CONSTITUTION.md`, `AGENTS.md`, and current review skills MUST use the same rule: every material finding is recorded, all material findings require change-local review files, and isolation stops handoff rather than recording.
 
 R12b. Routine non-material review notes MAY remain in PR body, the explain-change artifact, or another contributor-visible review surface when they do not require material finding disposition.
 
@@ -927,7 +915,7 @@ R20a. This workflow contract MAY leave exact repository layout details for metho
 
 R20b. Published skill text MUST be project-portable. It MAY reference portable project surfaces such as:
 - `AGENTS.md`;
-- `docs/workflows.md`;
+- authoritative CLI workflow context when governed;
 - `VISION.md`;
 - `docs/changes/<change-id>/`;
 - `docs/plans/<plan>.md`;
@@ -953,7 +941,7 @@ R20e. Internal RigorLoop repository details MAY remain in repository specs, test
 
 R20f. Static validation MUST fail when public workflow or skill surfaces contain current-route references to case-insensitive hyphen or space variants of `fast lane`, `full lane`, `full-feature lane`, `mini-spec`, `small-change lane`, `tiny low-risk`, `low-risk lane`, `high-risk lane`, `proportional evidence`, unconditional `verify -> explain-change`, unconditional `code-review -> verify` for milestone-based work, or public skill references to RigorLoop-internal paths or commands.
 
-R20g. Static validation MUST prove that public workflow or skill surfaces contain `standard workflow`, manual skill invocation isolation, `explain-change -> verify -> pr`, `ci-maintenance -> explain-change -> verify -> pr` when CI maintenance is triggered, and `docs/workflows.md` as the workflow guide created or refreshed by the `workflow` skill.
+R20g. Static validation MUST prove that current public workflow and skill surfaces contain the standard v3 workflow, manual skill invocation isolation, successful Verify-owned explanation generation, `route` as semantic router, and CLI context as the deterministic workflow-information source.
 
 R20h. Static validation for this change MUST remain phrase-based and MUST NOT become semantic prose scoring.
 
@@ -1025,7 +1013,7 @@ R28. The workflow MUST apply the boundary-first method according to
 R29. Boundary-first responsibility MUST remain in the existing lifecycle
 stages and MUST NOT create a separate boundary-review stage.
 
-R29a. `workflow` MUST route adopting changes through the governing feature
+R29a. `route` MUST route adopting changes through the governing feature
 spec, boundary record, proof map, active plan, and required independent review
 gates and MUST stop when an applicable owner is missing.
 
@@ -1142,7 +1130,7 @@ mechanism.
 - Generated distribution content remains rebuildable derived output.
 - Every mandatory or triggered blocking stage has contributor-visible evidence.
 - Stage-obligation values remain stable and machine-checkable: `mandatory`, `conditional`, `on-demand`, and `periodic`.
-- `specs/rigorloop-workflow.md` remains the canonical workflow definition, while `docs/workflows.md` remains a summary.
+- `specs/rigorloop-workflow.md` remains the canonical workflow definition, while `rigorloop workflow-context` exposes deterministic project-local workflow facts.
 - Skill handoff sections summarize local preconditions, outputs, failure modes, and brief next-stage pointers without duplicating the full workflow contract.
 - RigorLoop uses one recommended standard workflow, not separate fast-lane, full-lane, tiny, low-risk, or high-risk routes.
 - Manual skill invocations are allowed but remain isolated by default.
@@ -1360,7 +1348,7 @@ mechanism.
 - A contributor can identify tracked artifacts for review-recording purposes.
 - An isolated review output with material findings exposes handoff status, material Finding IDs, required record path, record-before-fixing or reconstruction status, and owner-decision status.
 - Isolated material-review output makes clear that material findings require change-local review files even when downstream handoff stops.
-- `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` teach the broad rule that every material finding requires a detailed change-local review file.
+- `CONSTITUTION.md`, `AGENTS.md`, and current review skills teach the broad rule that every material finding requires a detailed change-local review file.
 - Formal review skills contain a byte-identical `## Isolation and Recording` block copied from a canonical template.
 - A reviewer can understand a new `review-resolution.md` closeout state in 30 seconds and audit any individual material finding in 2 minutes.
 - A new scan-first `review-resolution.md` remains valid under structural and closeout validation.
@@ -1378,7 +1366,7 @@ mechanism.
 - A reviewer can verify that `explain-change` does not claim final `verify`, `branch-ready`, PR-ready, or CI-final status.
 - A reviewer can verify that final `verify` validates the presence and currency of the required explain-change artifact.
 - A reviewer can distinguish portable published skill surfaces from RigorLoop repository-internal surfaces.
-- A workflow guide created or refreshed by the `workflow` skill includes the required sections without becoming a competing workflow spec.
+- Route consumes CLI workflow context without becoming another stage's artifact owner.
 - An affected active plan records the short transition note before using final `explain-change -> verify -> pr`.
 - `RLW-AC-A1`: A contributor can identify when `authoring-through-plan-review` is off, armed, active, paused, or completed.
 - `RLW-AC-A2`: A contributor can tell that `auto-through: plan-review` maps to `autoprogression.profile: authoring-through-plan-review`.

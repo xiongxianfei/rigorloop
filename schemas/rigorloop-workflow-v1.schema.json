@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rigorloop.dev/schemas/rigorloop-workflow-v1.schema.json",
+  "title": "RigorLoop project workflow configuration v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_locations"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "artifact_locations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "change-record": { "$ref": "#/$defs/location" },
+        "proposal": { "$ref": "#/$defs/location" },
+        "spec": { "$ref": "#/$defs/location" },
+        "architecture": { "$ref": "#/$defs/location" },
+        "adr": { "$ref": "#/$defs/location" },
+        "plan": { "$ref": "#/$defs/location" },
+        "proposal-review-record": { "$ref": "#/$defs/location" },
+        "design-review-record": { "$ref": "#/$defs/location" },
+        "delivery-review-record": { "$ref": "#/$defs/location" },
+        "code-review-record": { "$ref": "#/$defs/location" },
+        "review-resolution": { "$ref": "#/$defs/location" },
+        "implementation-evidence": { "$ref": "#/$defs/location" },
+        "verification-report": { "$ref": "#/$defs/location" }
+      }
+    }
+  },
+  "$defs": {
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path_template"],
+      "properties": {
+        "path_template": { "type": "string", "minLength": 1 },
+        "owner": {
+          "enum": ["workflow", "proposal", "spec", "architecture", "plan", "proposal-review", "design-review", "delivery-review", "code-review", "review-resolution", "implement", "verify"]
+        }
+      }
+    }
+  }
+}

@@ -43,6 +43,6 @@ Before returning `branch-ready`, record the normalized `verification_basis` owne
 
 In `isolated` mode, report the assessment and stop. Do not write workflow state or invoke `pr`.
 
-In `governed-final` mode, write only verify-owned evidence required by the existing project contract, then return the verdict to `workflow`. A clean result names `pr` as the next stage but does not prepare, open, or authorize it.
+In `governed-final` mode, write only verify-owned evidence required by the existing project contract, then return the verdict to `route`. A clean result names `pr` as the next stage but does not prepare, open, or authorize it.
 
 If this reference becomes unavailable or contradicts `SKILL.md`, stop under the package-integrity rule in `SKILL.md`.

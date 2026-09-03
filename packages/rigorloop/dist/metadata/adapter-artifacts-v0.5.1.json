@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "release": {
+    "version": "v0.5.1",
+    "source_repository": "xiongxianfei/rigorloop",
+    "source_commit": "local-release-candidate",
+    "release_tag": "v0.5.1",
+    "published_at": "local-release-candidate"
+  },
+  "metadata": {
+    "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/adapter-artifacts-v0.5.1.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "artifacts": [
+    {
+      "adapter": "codex",
+      "archive": "rigorloop-adapter-codex-v0.5.1.zip",
+      "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/rigorloop-adapter-codex-v0.5.1.zip",
+      "sha256": "3f395ec70831054da4cf409cce524f1ce0ab1f03df9eaec6c0f5223e5f3e503d",
+      "size_bytes": 188015,
+      "tree_hash_algorithm": "rigorloop-tree-hash-v1",
+      "install_root": ".agents/skills",
+      "tree_sha256": "fde15c5524cb6c54091f838271ce8ec02ecb7bd7ee697e1c4ed0506c59a86c05",
+      "file_count": 97
+    },
+    {
+      "adapter": "claude",
+      "archive": "rigorloop-adapter-claude-v0.5.1.zip",
+      "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/rigorloop-adapter-claude-v0.5.1.zip",
+      "sha256": "1c075252dceede9337807980aeb13c37a90000f520e3d3a1c89a6482133d5951",
+      "size_bytes": 187306,
+      "tree_hash_algorithm": "rigorloop-tree-hash-v1",
+      "install_root": ".claude/skills",
+      "tree_sha256": "4f8244bad07b8174bb7b164cbb97054ccc4aca67c3ca91b874b8c8c64ecada30",
+      "file_count": 97
+    },
+    {
+      "adapter": "opencode",
+      "archive": "rigorloop-adapter-opencode-v0.5.1.zip",
+      "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/rigorloop-adapter-opencode-v0.5.1.zip",
+      "sha256": "aae5e27b76e680ef7e5296b3789921bd72d14ec75b1433a8211cfc28d5077857",
+      "size_bytes": 190244,
+      "tree_hash_algorithm": "rigorloop-tree-hash-v1",
+      "install_roots": {
+        "skills": ".opencode/skills",
+        "commands": ".opencode/commands"
+      },
+      "root_hashes": {
+        "skills": {
+          "tree_sha256": "4f8244bad07b8174bb7b164cbb97054ccc4aca67c3ca91b874b8c8c64ecada30",
+          "file_count": 97
+        },
+        "commands": {
+          "tree_sha256": "f7366be1b02d4f1929f234f7791035fe199b2b3b5338efca422d6850ecfa395b",
+          "file_count": 10
+        }
+      },
+      "command_aliases": {
+        "opencode": {
+          "count": 10,
+          "paths": [
+            ".opencode/commands/proposal.md",
+            ".opencode/commands/proposal-review.md",
+            ".opencode/commands/architecture.md",
+            ".opencode/commands/spec.md",
+            ".opencode/commands/design-review.md",
+            ".opencode/commands/plan.md",
+            ".opencode/commands/delivery-review.md",
+            ".opencode/commands/implement.md",
+            ".opencode/commands/code-review.md",
+            ".opencode/commands/pr.md"
+          ]
+        }
+      }
+    }
+  ],
+  "validation": {
+    "command": "python scripts/validate-adapters.py --root <release-output-dir> --version v0.5.1",
+    "result": "pass"
+  }
+}

@@ -80,8 +80,7 @@ from workflow_code_state import (
 )
 
 
-CURRENT_COMMAND_RE = re.compile(r"^workflow\s+auto:\s*(?P<value>[a-z][a-z-]*)$")
-LEGACY_COMMAND_RE = re.compile(r"^workflow\s+auto-through:\s*(?P<value>[a-z][a-z-]*)$")
+CURRENT_COMMAND_RE = re.compile(r"^route\s+auto:\s*(?P<value>[a-z][a-z-]*)$")
 MILESTONE_HEADER_RE = re.compile(r"^###\s+(?P<id>M[0-9]+)\.\s+(?P<title>.+?)\s*$")
 MILESTONE_STATE_RE = re.compile(r"^-\s+Milestone state:\s*(?P<state>[a-z-]+)\s*$")
 RFC3339_UTC_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$")
@@ -2761,7 +2760,7 @@ def coordinate_public_implementation_correction(
 
 
 def normalize_command(command: str, *, lifecycle_contract: str = LIFECYCLE_CONTRACT_V3) -> NormalizedCommand:
-    """Normalize current and supported legacy forms without persisting state."""
+    """Normalize the current route command without persisting state."""
 
     if not isinstance(command, str):
         raise AutomationContractError("workflow command must be text")
@@ -2769,11 +2768,10 @@ def normalize_command(command: str, *, lifecycle_contract: str = LIFECYCLE_CONTR
     if normalized.startswith("$"):
         normalized = normalized[1:].strip()
     current = CURRENT_COMMAND_RE.fullmatch(normalized)
-    legacy = LEGACY_COMMAND_RE.fullmatch(normalized)
-    if current is None and legacy is None:
+    if current is None:
         raise AutomationContractError("unknown workflow automation command")
-    value = (current or legacy).group("value")  # type: ignore[union-attr]
-    is_legacy = legacy is not None
+    value = current.group("value")
+    is_legacy = False
     if value in {"status", "off"}:
         return NormalizedCommand(value, legacy=is_legacy)
     public_values = {stage.value for stage in public_target_stages_for_contract(lifecycle_contract)}

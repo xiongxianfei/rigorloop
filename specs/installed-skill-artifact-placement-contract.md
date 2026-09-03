@@ -1,5 +1,7 @@
 # Installed-Skill Artifact Placement Contract
 
+> Current amendment: `specs/refocus-workflow-into-route.md` supersedes every workflow-guide lookup and synchronization requirement below. Governed placement comes from CLI workflow context; portable defaults remain safe fallbacks without governed claims.
+
 ## Status
 
 approved

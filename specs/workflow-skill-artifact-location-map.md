@@ -1,5 +1,7 @@
 # Workflow Skill Artifact-Location Map
 
+> Historical contract: superseded for current RigorLoop packages by `specs/refocus-workflow-into-route.md`. The artifact-location map and its guide-authoring behavior are retired.
+
 ## Status
 
 approved

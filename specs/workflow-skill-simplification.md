@@ -1,5 +1,7 @@
 # Workflow Skill Simplification
 
+> Current amendment: `specs/refocus-workflow-into-route.md` renames this public skill to `route` and removes its guide-authoring predicate, assemblies, reference, asset, and fallback. The routing and bounded-automation portions below remain historical design context where compatible.
+
 ## Owning change record
 
 `docs/changes/2026-08-11-workflow-skill-simplification/change.yaml`

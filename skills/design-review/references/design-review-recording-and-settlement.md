@@ -16,4 +16,4 @@ An exact replay is idempotent. Stale lifecycle revision, changed member map, wro
 
 ## Isolation
 
-Settlement does not advance routing. A direct invocation stops after recording and any authorized settlement. Workflow-managed execution returns control to workflow, which alone chooses continuation or correction routes.
+Settlement does not advance routing. A direct invocation stops after recording and any authorized settlement. Workflow-managed execution returns control to `route`, which alone chooses continuation or correction routes.

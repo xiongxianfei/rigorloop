@@ -140,7 +140,7 @@ Cross-cutting glossary entries appear in the Glossary section. Slice terminology
 
 This spec uses two rollout labels:
 
-- `baseline normalization first slice`: the historical skill-contract optimization slice covering `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`.
+- `baseline normalization first slice`: the historical skill-contract optimization slice that originally covered the then-current workflow skill plus `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`.
 - `published-skill design pilot`: the R27 through R36 amendment slice covering `proposal`, `proposal-review`, validator changes needed for the pilot, and generated adapter validation for changed skills.
 - `assets-first plan pilot`: the R37 through R45 amendment slice covering `skills/plan/SKILL.md`, exactly three normative assets under `skills/plan/assets/`, validator and adapter proof for packaged assets, token-cost measurement, and plan behavior-parity evidence.
 - `published-skill resource integrity pilot`: the R46 through R55 amendment slice covering generic mapped-resource integrity rules, bounded legacy-reference migration lint, raw-byte parity, packed clean-install proof, and architecture-skill pilot evidence.
@@ -163,7 +163,7 @@ But it must not claim review passed, branch-ready, PR-ready, or ready-for-final-
 ### Example E2: non-baseline-slice skill is not blocked immediately
 
 Given `skills/proposal/SKILL.md` has not yet been normalized
-When the baseline normalization first slice normalizes `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`
+When the baseline normalization first slice normalizes its historical routing skill plus `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`
 Then the baseline normalization first slice remains valid
 And `proposal` is normalized in the later core-lifecycle wave.
 
@@ -330,7 +330,7 @@ R1a. `specs/skill-contract.md` MUST own standard skill shape, claim boundaries, 
 
 R1b. `specs/rigorloop-workflow.md` MUST continue to own stage order, stage obligation, handoff, and downstream-blocking semantics.
 
-R1c. `docs/workflows.md` and `AGENTS.md` MAY summarize this contract but MUST NOT override it.
+R1c. `AGENTS.md` MAY summarize this contract but MUST NOT override it. Deterministic governed workflow facts come from CLI workflow context.
 
 R1d. `skills/*/SKILL.md` MUST implement local operating guidance that is consistent with this spec after each skill is normalized.
 
@@ -370,11 +370,11 @@ R3c. Normalization MUST NOT flatten useful domain-specific sections into generic
 
 R3d. Published skill text MUST NOT include repository-maintainer-only source, generation, packaging, selector-path, or shared-block implementation instructions.
 
-R3e. Published skill text MUST NOT direct end users to this repository's internal spec path for full routing rules. It MUST route full workflow questions through the `workflow` skill or another user-facing workflow instruction surface.
+R3e. Published skill text MUST NOT direct end users to this repository's internal spec path for full routing rules. It MUST route full workflow questions through the `route` skill or another user-facing workflow instruction surface.
 
 R3f. Published skill text MAY reference portable project surfaces such as:
 - `AGENTS.md`;
-- `docs/workflows.md`;
+- authoritative CLI workflow context when governed;
 - `VISION.md`;
 - `docs/changes/<change-id>/`;
 - `docs/plans/<plan>.md`;
@@ -435,7 +435,7 @@ R7a. Periodic, on-demand, and support skills include `learn`, `explore`, `resear
 ### Baseline normalization first slice (R8-R26)
 
 R8. The baseline normalization first slice MUST normalize only these canonical skills:
-- `skills/workflow/SKILL.md`
+- `skills/route/SKILL.md`
 - `skills/plan/SKILL.md`
 - `skills/implement/SKILL.md`
 - `skills/code-review/SKILL.md`
@@ -510,7 +510,7 @@ R12. Skill handoff sections MUST stay local.
 
 R12a. A normalized skill's `Handoff` section MUST name the normal next stage, conditional next stages, and stop conditions that are local to the skill.
 
-R12b. A normalized published skill MUST route full workflow questions through the `workflow` skill or another user-facing workflow instruction surface instead of pointing to this repository's internal workflow spec path.
+R12b. A normalized published skill MUST route full workflow questions through the `route` skill or another user-facing workflow instruction surface instead of pointing to this repository's internal workflow spec path.
 
 R12c. A skill MUST NOT imply automatic downstream continuation when the governing workflow treats the invocation as isolated.
 
@@ -581,7 +581,7 @@ R19. A new skill SHOULD be added only when it owns a distinct artifact, gate, re
 
 R19a. Contributors SHOULD NOT add a skill for one-off helper behavior, a tiny formatting rule, or a checklist that belongs inside an existing skill.
 
-R19b. `docs/workflows.md` and `AGENTS.md` MAY summarize the minimum viable skill rule.
+R19b. `AGENTS.md` MAY summarize the minimum viable skill rule; deterministic governed workflow facts come from CLI workflow context.
 
 R19c. Detailed examples and templates for creating skills SHOULD live in skill-creator guidance, such as `templates/skill.md` or `docs/skills/creating-skills.md`.
 
@@ -937,7 +937,7 @@ R55e. The architecture pilot MUST preserve architecture trigger behavior, arc42 
 R56. The portable boundary-first method MUST conform to
 `specs/boundary-first-proof-model.md`.
 
-R56a. The governed published skills MUST be exactly `workflow`, `spec`,
+R56a. The governed published skills MUST be exactly `route`, `spec`,
 `spec-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`,
 `implement`, `code-review`, and `verify`.
 
@@ -1015,7 +1015,7 @@ Inputs:
 - accepted test-spec contract normalization proposal;
 - accepted published skill resource integrity with architecture-skill pilot proposal;
 - workflow contract in `specs/rigorloop-workflow.md`;
-- contributor summaries in `docs/workflows.md` and `AGENTS.md`;
+- contributor summaries in `AGENTS.md` and authoritative CLI workflow context;
 - skill validator and generated-output drift validation scripts.
 
 Outputs:
@@ -1189,7 +1189,7 @@ This change has no user-interface surface. The relevant user experience is contr
 8. If a contributor proposes a new optional skill named in Phase 4, that proposal still must prove artifact or gate ownership before the skill is added.
 9. If a skill has no packaged resources, it does not need a `Resource map` or "No bundled resources" statement.
 10. If a skill ships a packaged script but the script is rarely used, the `Resource map` still must name the script and its load condition.
-11. If a project-local `docs/workflows.md` exists in a customer project, a published skill may consult it when relevant; that does not authorize requiring this repository's maintainer-only workflow docs in customer projects.
+11. If a historical workflow guide exists in a customer project, current published skills ignore it for lifecycle, placement, and routing authority; governed use consumes CLI context and portable use relies only on explicit safe targets or published defaults.
 12. If a prompt fixture suggests a competing skill, the expected evidence is that the changed skill's `description` contains a near-miss boundary or that transcript review records the routing issue; it is not automatic CI proof of model selection.
 13. If the published-skill design pilot audit finds a candidate for retirement, it is a follow-on decision and does not change adapter contents in the pilot.
 14. If a body `When to use` section is useful after a skill has loaded, it may summarize scope or competing skills, but missing routing details in `description` remain a defect.

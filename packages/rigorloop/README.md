@@ -23,7 +23,7 @@ npx @xiongxianfei/rigorloop@latest init opencode
 Use a pinned version when you want reproducible setup:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.5.0 init codex
+npx @xiongxianfei/rigorloop@0.5.1 init codex
 ```
 
 Install as a project-local development dependency:
@@ -49,13 +49,16 @@ rigorloop --help
 rigorloop version
 rigorloop init codex|claude|opencode [--write-state] [--from-archive <path>] [--dry-run] [--json]
 rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
+rigorloop workflow-context [--change <id>] [--format human|json]
 rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json|concise-human|concise-json|detailed-json]
 rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json|concise-human|concise-json|detailed-json]
 rigorloop logs path [--format human|json]
 rigorloop logs show <invocation-id> [--format human|json]
 ```
 
-Governed lifecycle mutations use request files so operation intent and the expected lifecycle revision remain reviewable. Existing version-1 coordination remains readable; run the explicit `migrate` operation before `route-correction`, `return-correction`, or `withdraw-artifact-registration`. Authoring skills continue to use `record-artifact-revision`; workflow alone owns correction routing, return, and safe duplicate-registration withdrawal.
+Governed lifecycle mutations use request files so operation intent and the expected lifecycle revision remain reviewable. Existing version-1 coordination remains readable; run the explicit `migrate` operation before `route-correction`, `return-correction`, or `withdraw-artifact-registration`. Authoring skills continue to use `record-artifact-revision`; route alone owns correction routing, return, and safe duplicate-registration withdrawal through the stable lifecycle `workflow` authority role.
+
+`workflow-context` is read-only. Without `--change` it reports the effective workflow configuration and up to 32 sorted active-change candidates without selecting one; count and truncation fields show when exact `--change` selection is required. With an exact change ID it reports deterministic lifecycle, artifact, package, milestone, blocker, operation, and bounded automation facts. Collections are capped at 32 entries and expose count/truncation metadata where caller-controlled size can vary. Formal review locations retain separate proposal-review, design-review, delivery-review, and code-review ownership; their templates identify `<review-round>` as a required authoring input instead of assigning the shared review directory to one owner. An optional repository-root `rigorloop.workflow.yaml` may override supported bundled artifact locations; invalid or unsafe configuration fails closed.
 
 ## Local CLI logs and concise results
 
@@ -67,26 +70,28 @@ Existing v0.4.x output defaults and `--json` remain unchanged. Agents can opt in
 
 ## Target Init
 
-Initialize target support from the verified official release archive:
+Version 0.5.1 is an unpublished candidate. Its bundled metadata describes route-only candidate archives and makes no claim that those archives or the npm package are publicly available yet. For an exact lockfile-managed install, rerun `init` with `--write-state` to replace `workflow` with `route`; unmanaged or drifted installs remain blocked with state-specific recovery guidance. Persisted `workflow.automation` state remains compatible.
+
+After v0.5.1 is published, initialize target support from its verified official release archive:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.5.0 init codex --json
-npx @xiongxianfei/rigorloop@0.5.0 init claude --json
-npx @xiongxianfei/rigorloop@0.5.0 init opencode --json
+npx @xiongxianfei/rigorloop@0.5.1 init codex --json
+npx @xiongxianfei/rigorloop@0.5.1 init claude --json
+npx @xiongxianfei/rigorloop@0.5.1 init opencode --json
 ```
 
 Preview the write plan without mutating files:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.5.0 init opencode --dry-run --json
+npx @xiongxianfei/rigorloop@0.5.1 init opencode --dry-run --json
 ```
 
-Use `--from-archive` when you already downloaded the matching official archive, or when Node `fetch()` cannot reach GitHub from your network:
+Use `--from-archive` with a matching generated candidate during local validation, or with the official archive after publication:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.5.0 init codex --from-archive ./rigorloop-adapter-codex-v0.5.0.zip --json
-npx @xiongxianfei/rigorloop@0.5.0 init claude --from-archive ./rigorloop-adapter-claude-v0.5.0.zip --json
-npx @xiongxianfei/rigorloop@0.5.0 init opencode --from-archive ./rigorloop-adapter-opencode-v0.5.0.zip --json
+npx @xiongxianfei/rigorloop@0.5.1 init codex --from-archive ./rigorloop-adapter-codex-v0.5.1.zip --json
+npx @xiongxianfei/rigorloop@0.5.1 init claude --from-archive ./rigorloop-adapter-claude-v0.5.1.zip --json
+npx @xiongxianfei/rigorloop@0.5.1 init opencode --from-archive ./rigorloop-adapter-opencode-v0.5.1.zip --json
 ```
 
 Default init installs verified target support without writing `rigorloop.yaml` or `rigorloop.lock`. Use `--write-state` when you want RigorLoop-managed project state files. The command verifies the selected archive before extraction and verifies the installed tree before reporting success. Runtime roots are target-specific:
@@ -104,13 +109,13 @@ Network installs use Node `fetch()`. If download fails in a proxied environment,
 Create a new change metadata scaffold:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.5.0 new-change my-change --title "Describe the change" --json
+npx @xiongxianfei/rigorloop@0.5.1 new-change my-change --title "Describe the change" --json
 ```
 
 Preview the scaffold first:
 
 ```bash
-npx @xiongxianfei/rigorloop@0.5.0 new-change my-change --title "Describe the change" --dry-run --json
+npx @xiongxianfei/rigorloop@0.5.1 new-change my-change --title "Describe the change" --dry-run --json
 ```
 
 `new-change` creates `docs/changes/<change-id>/change.yaml`. It does not claim that proposal, spec, review, verification, or PR readiness is complete.

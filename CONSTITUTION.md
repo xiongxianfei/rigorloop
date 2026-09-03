@@ -15,14 +15,13 @@ External runtime instructions still outrank repository artifacts. Within the rep
 3. approved architecture and ADR documents under `docs/architecture/` and `docs/adr/`
 4. active execution plans under `docs/plans/`
 5. matching test specs in `specs/*.test.md` for manifest-bound v1 continuation
-6. workflow summaries such as `docs/workflows.md`
-7. `AGENTS.md`
-8. code, scripts, schemas, and tracked fixtures
-9. chat history and prior informal discussion
+6. `AGENTS.md`
+7. code, scripts, schemas, and tracked fixtures
+8. chat history and prior informal discussion
 
 Rules derived from a lower-priority artifact MUST NOT silently override a higher-priority artifact.
 
-`AGENTS.md` and `docs/workflows.md` are operating guides. They SHOULD summarize and point to the governing artifacts above, not compete with them.
+`AGENTS.md` is the concise operating guide. Deterministic project-local workflow facts come from `rigorloop workflow-context`; neither surface competes with the governing artifacts above.
 
 For project vision and proposal-fit questions, the source-of-truth order is:
 
@@ -91,7 +90,7 @@ For planned initiatives, `docs/plan.md` MUST remain a navigation index and concr
 
 For current workflow-managed changes, `docs/changes/<change-id>/change.yaml` MUST be the sole owner of mutable artifact lifecycle state, current milestone state, current review state, blockers, next stage, and final-closeout readiness. Plans and other governed artifacts MUST keep stable intent and MUST NOT carry mutable workflow status or execution progress.
 
-Authoring skills MUST write only their own governed artifacts and matching authoring-state transitions. As the sole narrow exception, `plan` initializes missing `workflow_state.planned_work` exactly once from an exact clean-reviewed primary plan revision; it MUST NOT initialize an unreviewed draft or replace or update existing planned work. Plan review MUST record clean judgment before initialization and MUST settle the plan only on an identical retry after matching initialization. Review peers MUST write their own review evidence and only the matching artifact settlement transition. `workflow` MUST coordinate the reviewed-plan transaction, write routing state and every later planned-work transition, and MUST NOT derive milestones or manufacture review settlement. Downstream and support skills MUST treat upstream governed artifacts and state as read-only and route required corrections to the owning stage.
+Authoring skills MUST write only their own governed artifacts and matching authoring-state transitions. As the sole narrow exception, `plan` initializes missing `workflow_state.planned_work` exactly once from an exact clean-reviewed primary plan revision; it MUST NOT initialize an unreviewed draft or replace or update existing planned work. Plan review MUST record clean judgment before initialization and MUST settle the plan only on an identical retry after matching initialization. Review peers MUST write their own review evidence and only the matching artifact settlement transition. `route` MUST coordinate the reviewed-plan transaction, write routing state and every later planned-work transition under the stable `stage_authority: workflow` protocol role, and MUST NOT derive milestones or manufacture review settlement. Downstream and support skills MUST treat upstream governed artifacts and state as read-only and route required corrections to the owning stage.
 
 Historical pre-adoption artifacts MAY retain embedded status as historical evidence. A current lifecycle stage MUST NOT update that embedded status or resume a retired writable state model; resumed nonterminal work MUST first migrate to the current change-local contract.
 
@@ -187,7 +186,7 @@ For the current stage-owned lifecycle contract, a formal review MUST record dura
 
 Behavior changes MUST update the relevant spec, test spec, docs, fixtures, or examples in the same change when those artifacts exist.
 
-Workflow or governance changes MUST update affected operating and governance guidance, including `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` when their guidance is affected. If an affected surface is intentionally unchanged, contributors MUST record it as unaffected with rationale or defer it with owner and follow-up in a contributor-visible tracked or review-visible surface.
+Workflow or governance changes MUST update affected operating and governance guidance, including `CONSTITUTION.md`, `AGENTS.md`, authoritative CLI workflow context, and current stage skills when their guidance is affected. If an affected surface is intentionally unchanged, contributors MUST record it as unaffected with rationale or defer it with owner and follow-up in a contributor-visible tracked or review-visible surface.
 
 Architecture or boundary changes MUST update the relevant architecture document or ADR.
 
@@ -211,7 +210,7 @@ Agents MUST keep chat-only reasoning subordinate to tracked repository artifacts
 
 ## Manual skill invocation
 
-Users may manually invoke individual current skills such as `verify`, `code-review`, or `pr` for focused tasks. Standalone `explain-change` remains invocable only from the released preactivation v2 package; the current v3 package has no standalone explanation stage or historical-contract execution branch.
+Users may manually invoke individual current skills such as `route`, `verify`, `code-review`, or `pr` for focused tasks. Standalone `explain-change` remains invocable only from the released preactivation v2 package; the current v3 package has no standalone explanation stage or historical-contract execution branch.
 
 A manual skill invocation may produce useful output, but it is isolated by default and does not claim that omitted upstream or downstream workflow stages have completed.
 

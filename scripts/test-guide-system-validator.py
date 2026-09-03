@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Regression tests for guide-system validation."""
+"""Regression tests for current route and contributor-guide validation."""
 
 from __future__ import annotations
 
 import importlib.util
+import shutil
 import sys
 import tempfile
 import unittest
@@ -17,231 +18,79 @@ VALIDATOR = ROOT / "scripts" / "validate-guide-system.py"
 def load_validator():
     spec = importlib.util.spec_from_file_location("validate_guide_system", VALIDATOR)
     if spec is None or spec.loader is None:
-        raise RuntimeError("could not load guide-system validator")
+        raise RuntimeError("could not load route guide validator")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
 
-class GuideSystemValidatorTests(unittest.TestCase):
-    maxDiff = None
+validator = load_validator()
 
+
+class RouteGuideValidatorTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.temp_dir = tempfile.TemporaryDirectory(prefix="guide-system-validator-")
-        self.repo = Path(self.temp_dir.name)
-        self.write_valid_repo()
+        self.temp = tempfile.TemporaryDirectory(prefix="route-guide-validator-")
+        self.repo = Path(self.temp.name)
+        for path in (
+            "README.md",
+            "AGENTS.md",
+            "CONSTITUTION.md",
+            "docs/project-map.md",
+            "docs/plan.md",
+            "specs/rigorloop-workflow.md",
+            "specs/skill-contract.md",
+            "skills/route/SKILL.md",
+        ):
+            source = ROOT / path
+            target = self.repo / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
 
     def tearDown(self) -> None:
-        self.temp_dir.cleanup()
+        self.temp.cleanup()
 
-    def write(self, relative: str, text: str) -> None:
-        path = self.repo / relative
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding="utf-8")
+    def test_current_repository_contract_passes(self) -> None:
+        self.assertEqual(validator.validate(self.repo).messages, ())
 
-    def write_valid_repo(self) -> None:
-        self.write(
-            "README.md",
-            """# RigorLoop
+    def test_retained_historical_guide_is_ignored_only_outside_current_path(self) -> None:
+        historical = self.repo / "docs/history/workflows.md"
+        historical.parent.mkdir(parents=True, exist_ok=True)
+        historical.write_text("# Historical workflow guide\n", encoding="utf-8")
+        self.assertEqual(validator.validate(self.repo).messages, ())
 
-## Where to go next
+    def test_current_workflow_guide_fails(self) -> None:
+        (self.repo / "docs/workflows.md").write_text("# Workflow guide\n", encoding="utf-8")
+        self.assertTrue(any("ROUTE-GUIDE-003" in item for item in validator.validate(self.repo).messages))
 
-| Need | Read |
-|---|---|
-| Understand project direction | [VISION.md](VISION.md) |
-| Understand governance | [CONSTITUTION.md](CONSTITUTION.md) |
-| See workflow and artifact paths | [docs/workflows.md](docs/workflows.md) |
-| Orient to repository structure | [docs/project-map.md](docs/project-map.md) |
-| See current work | [docs/plan.md](docs/plan.md) |
-| Use a specific workflow stage | [skills/](skills/) |
-""",
-        )
-        self.write("VISION.md", "# Vision\n")
-        self.write("CONSTITUTION.md", "# Constitution\n")
-        self.write("docs/workflows.md", (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8"))
-        self.write(
-            "docs/project-map.md",
-            """# Project map
+    def test_old_or_mixed_skill_inventory_fails(self) -> None:
+        old = self.repo / "skills/workflow/SKILL.md"
+        old.parent.mkdir(parents=True)
+        old.write_text("---\nname: workflow\n---\n", encoding="utf-8")
+        self.assertTrue(any("ROUTE-GUIDE-004" in item for item in validator.validate(self.repo).messages))
 
-This map orients readers to repository structure and boundaries. It does not own
-workflow stage order, exact lifecycle artifact placement, or current milestone state.
-""",
-        )
-        self.write(
-            "docs/plan.md",
-            """# Plan
+    def test_guide_only_route_resource_fails(self) -> None:
+        retired = self.repo / "skills/route/references/workflow-guide-authoring.md"
+        retired.parent.mkdir(parents=True, exist_ok=True)
+        retired.write_text("retired\n", encoding="utf-8")
+        self.assertTrue(any("ROUTE-GUIDE-005" in item for item in validator.validate(self.repo).messages))
 
-`docs/plan.md` is a navigation index to stable plan bodies and owning change
-records. Mutable state lives in the owning `change.yaml`.
+    def test_current_surface_cannot_restore_retired_authority(self) -> None:
+        agents = self.repo / "AGENTS.md"
+        agents.write_text(agents.read_text(encoding="utf-8") + "\nUse docs/workflows.md.\n", encoding="utf-8")
+        self.assertTrue(any("ROUTE-GUIDE-006" in item for item in validator.validate(self.repo).messages))
 
-## Current plan references
+    def test_current_skill_cannot_restore_semantic_workflow_guide_fallback(self) -> None:
+        skill = self.repo / "skills/example/SKILL.md"
+        skill.parent.mkdir(parents=True)
+        skill.write_text("Resolve placement from the project workflow guide.\n", encoding="utf-8")
+        self.assertTrue(any("ROUTE-GUIDE-009" in item for item in validator.validate(self.repo).messages))
 
-None.
-
-## Done (recent)
-
-None.
-
-## Historical replacements
-
-None.
-""",
-        )
-        self.write(
-            "docs/learn/sessions/2026-06-18-example.md",
-            "# Learn session\n\nHistorical rationale only.\n",
-        )
-        self.write(
-            "skills/workflow/SKILL.md",
-            """# Workflow
-
-Use project-local guidance when present. Use `docs/plans/YYYY-MM-DD-slug.md`
-for the detailed plan body and `docs/plan.md` for the lifecycle index.
-`docs/changes/<change-id>/plan.md` is non-canonical unless a future approved
-workflow-map contract changes the path.
-""",
-        )
-        self.write(
-            "skills/workflow/assets/workflows-skeleton.md",
-            (ROOT / "skills" / "workflow" / "assets" / "workflows-skeleton.md").read_text(
-                encoding="utf-8"
-            ),
-        )
-        self.write(
-            "skills/plan/SKILL.md",
-            """# Plan
-
-Plan index: `docs/plan.md`.
-Plan body: `docs/plans/YYYY-MM-DD-slug.md`.
-""",
-        )
-
-    def result(self):
-        validator = load_validator()
-        return validator.validate(self.repo)
-
-    def assertFailsWith(self, check_id: str) -> None:
-        result = self.result()
-        self.assertFalse(result.ok, result.messages)
-        self.assertTrue(
-            any(message.startswith(f"{check_id}:") for message in result.messages),
-            result.messages,
-        )
-
-    def test_valid_fixture_passes(self) -> None:
-        result = self.result()
-        self.assertTrue(result.ok, result.messages)
-
-    def test_missing_readme_guide_link_fails(self) -> None:
-        self.write(
-            "README.md",
-            """# RigorLoop
-
-## Where to go next
-
-[VISION.md](VISION.md)
-""",
-        )
-
-        self.assertFailsWith("GUIDE-001")
-
-    def test_workflow_guide_missing_ownership_fails(self) -> None:
-        self.write("docs/workflows.md", "# Workflow guide\n\n## Artifact locations\n")
-
-        self.assertFailsWith("GUIDE-002")
-
-    def test_project_map_cannot_own_workflow_stage_order(self) -> None:
-        self.write(
-            "docs/project-map.md",
-            "# Project map\n\nThis file owns workflow stage order and artifact placement.\n",
-        )
-
-        self.assertFailsWith("GUIDE-004")
-
-    def test_plan_index_rejects_plan_body_headings(self) -> None:
-        self.write(
-            "docs/plan.md",
-            """# Plan
-
-## Active
-
-## Blocked
-
-## Done (recent)
-
-## Current plan references
-
-## Historical replacements
-
-## Milestones
-""",
-        )
-
-        self.assertFailsWith("GUIDE-005")
-
-    def test_learn_session_cannot_be_live_routing_authority(self) -> None:
-        self.write(
-            "docs/learn/sessions/2026-06-18-example.md",
-            "# Learn session\n\nThis session is live routing authority for plan placement.\n",
-        )
-
-        self.assertFailsWith("GUIDE-006")
-
-    def test_workflow_skill_plan_path_contradiction_fails(self) -> None:
-        self.write(
-            "skills/workflow/SKILL.md",
-            "# Workflow\n\nDetailed plans belong in `docs/changes/<change-id>/plan.md`.\n",
-        )
-
-        self.assertFailsWith("GUIDE-007")
-
-    def test_artifact_registry_is_not_duplicated_outside_workflows(self) -> None:
-        self.write(
-            "docs/project-map.md",
-            """# Project map
-
-This map orients readers to repository structure and boundaries. It does not own
-workflow stage order, exact lifecycle artifact placement, or current milestone state.
-
-```yaml
-artifact_locations:
-  proposal:
-    path: docs/proposals/<change-id>.md
-```
-""",
-        )
-
-        self.assertFailsWith("GUIDE-008")
-
-    def test_workflow_registry_table_mismatch_is_reported_by_workflow_map_validator(self) -> None:
-        workflows = (self.repo / "docs/workflows.md").read_text(encoding="utf-8")
-        self.write(
-            "docs/workflows.md",
-            workflows.replace(
-                "| Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |",
-                "| Proposals | `docs/proposals/WRONG.md` | `proposal` | Proposal stage. |",
-            ),
-        )
-
-        result = self.result()
-
-        self.assertFalse(result.ok, result.messages)
-        self.assertTrue(
-            any(
-                message.startswith("GUIDE-008:")
-                and "workflow map contract failed" in message
-                and "artifact table row Proposals" in message
-                for message in result.messages
-            ),
-            result.messages,
-        )
-
-    def test_guide_validator_does_not_define_required_registry_entry_list(self) -> None:
-        validator_source = VALIDATOR.read_text(encoding="utf-8")
-
-        self.assertNotIn('("proposal:", "change_plan:", "formal_review_record:", "plan_index:")', validator_source)
-        self.assertNotIn("artifact registry is missing required entry", validator_source)
+    def test_current_skill_cannot_name_workflow_as_semantic_actor(self) -> None:
+        skill = self.repo / "skills/example/SKILL.md"
+        skill.parent.mkdir(parents=True)
+        skill.write_text("Return control to workflow, which chooses continuation.\n", encoding="utf-8")
+        self.assertTrue(any("ROUTE-GUIDE-010" in item for item in validator.validate(self.repo).messages))
 
 
 if __name__ == "__main__":
