@@ -12,10 +12,10 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: proposal
+  current_stage: proposal-review
   evidence: []
   lifecycle_state: active
-  next_stage: proposal
+  next_stage: proposal-review
 workflow: {}
 artifacts: {}
 requirements: []
@@ -36,8 +36,10 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/proposal-authoring.md
       authoring_evidence_sha256: baf28c97ca6f6e03b7f9082254c9f4f2d7ee43ca8dabb6ed7cc9dce46b26dafe
       stage_authority: proposal
+  correction_history: {}
   milestones: {}
   package_reviews: {}
   resolutions: {}
   reviews: {}
   validations: {}
+  withdrawals: {}
