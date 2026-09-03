@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "initialize-approved-plan",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:ba4aea9bdd0326462a212d529157476de030932ace2a8568c6e49f3bac433dbd",
+  "artifact_id": "plan",
+  "stage_authority": "plan"
+}

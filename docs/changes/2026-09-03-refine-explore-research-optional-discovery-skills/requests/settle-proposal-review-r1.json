@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:52fdd854cd3db9c1a00f5f4856932a61ef856b016fdad65c7a0e13b087a1257e",
+  "artifact_id": "proposal",
+  "stage_authority": "proposal-review"
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:c1d8bd24a56fda49fa11cfa7d9776c7426d6c262e5b0e229ce91a6dd204b58f9",
+  "artifact_id": "plan",
+  "artifact_kind": "plan",
+  "artifact_role": "primary",
+  "artifact_path": "docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/plan-authoring.md",
+  "stage_authority": "plan"
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:392887e742dc1bc09ce4d8032a1f126356141353de610db41e74dff15e1de425",
+  "artifact_id": "proposal",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/proposal-review-r1.md",
+  "stage_authority": "proposal-review"
+}
