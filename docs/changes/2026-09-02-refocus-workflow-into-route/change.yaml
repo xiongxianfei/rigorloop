@@ -112,11 +112,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m3-r2.md
+  latest_review: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-final-r1.md
   review_log: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
-  reviewed_artifact: milestone:M3@56019130
-  status: clean-with-notes
-  unresolved_items: 0
+  reviewed_artifact: branch:a7beee8d
+  status: changes-requested
+  unresolved_items: 1
 lifecycle_cli:
   schema_version: 2
   artifacts:

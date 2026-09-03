@@ -11,10 +11,10 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: proposal-review-r1
 
-- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`
+- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-final-r1`
 - Findings resolved: 9
-- Unresolved findings: 0
-- Current result: M3 Code Review R2 independently closed both R1 findings with no new material findings; final holistic Code Review remains required after milestone closeout.
+- Unresolved findings: 1
+- Current result: Final holistic Code Review R1 found that the active v3 CLI cannot record final-review completion or advance the first v3 example from Code Review to Verify.
 
 ## Resolution Overview
 
@@ -29,6 +29,7 @@ Review closeout: proposal-review-r1
 | RFR-M2-CR2 | accepted | resolved | Current skill prose names route wherever it identifies the semantic routing actor. |
 | RFR-M3-CR1 | accepted | resolved | The unpublished v0.5.1 package metadata is bound to generated route-only archives while immutable v0.5.0 remains unchanged. |
 | RFR-M3-CR2 | accepted | resolved | Normal `init --write-state` safely replaces only an exact lockfile-managed workflow target and rolls back failed replacement. |
+| RFR-FINAL-CR1 | needs-decision | open | V3 lacks an identity-bound final holistic review completion and correction route after all implementation milestones close. |
 
 ## Finding Details
 
@@ -199,3 +200,21 @@ Validation evidence: CLI tests prove the `--write-state` instruction, exact mana
 ### code-review-m3-r2
 
 No material findings. R2 independently confirmed both M3 R1 findings are resolved and the complete M3 validation allocation passes.
+
+### code-review-final-r1
+
+#### RFR-FINAL-CR1
+
+Finding ID: RFR-FINAL-CR1
+Disposition: needs-decision
+Status: open
+Owner: workflow lifecycle implementation
+Owning stage: review-resolution
+Decision owner: change owner
+Decision needed: Accept the bounded lifecycle correction as required integration work for this first v3 example, or move it to a prerequisite change and keep this proposal blocked before Verify.
+Chosen action: none pending decision
+Rationale: The route implementation correctly consumes authoritative CLI context, but the current v3 coordination model cannot represent the final holistic review authority that its own stage graph requires. Silently editing workflow state or treating the plan's Delivery Review as final Code Review would violate stage ownership.
+Required outcome: Record exact final-review identity and outcome, reject stale or non-clean evidence, support an implementation correction route with no active milestone, and permit the clean `code-review -> verify` transition through the CLI.
+Follow-up: After disposition, implement the bounded lifecycle correction under the owning stage and rerun final holistic Code Review.
+Validation target: FV-R1, FV-R8, TG-FINAL-01, TG-FINAL-03, final-review identity and correction-route tests.
+Validation evidence: Current exact-change `workflow-context` reports all milestones closed and no blockers but withholds `advance-stage`; source inspection shows `stageIsComplete` has no code-review completion representation.
