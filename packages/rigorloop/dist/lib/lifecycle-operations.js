@@ -4,7 +4,7 @@ import { join, relative, resolve, sep } from "node:path";
 
 import { LIFECYCLE_CONTRACT_V3, allowedArtifactKinds, allowedCorrectionDestinations, canonicalJson, correctionStageOrder, lifecycleContractVersion, parseLifecycleYaml, verificationCorrectionOwner } from "./lifecycle-contract.js";
 import { packageProjection, readPackageReview, reviewPackageContext } from "./lifecycle-packages.js";
-import { stageTransitionDecision } from "./lifecycle-stage-routing.js";
+import { openReviewFindingIds, stageTransitionDecision } from "./lifecycle-stage-routing.js";
 
 const REVIEW_OUTCOMES = new Set(["approved", "changes-requested", "blocked", "inconclusive", "clean-with-notes"]);
 const RESOLUTION_DISPOSITIONS = new Set(["accepted", "rejected", "deferred", "partially-accepted", "needs-decision"]);
@@ -414,6 +414,8 @@ function finalReview(root, change, request) {
   }
   if (findings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "final review contains material findings", "final-review-findings", findings);
   const log = requireLogEntry(root, change.change_id, reviewId);
+  const globalOpenFindings = openReviewFindingIds(log.text);
+  if (globalOpenFindings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "final review log contains open findings", "final-review-findings", globalOpenFindings);
   const logFacts = reviewLogFacts(log, reviewId);
   const expectedRecord = `docs/changes/${change.change_id}/${logFacts.record}`;
   const missingFindingState = logFacts.format === "prose" ? logFacts.findings === null || logFacts.openFindings === null : logFacts.findings === null;
@@ -530,15 +532,25 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     if (workflow.current_stage !== request.source_stage) throw operationError("RL_CORRECTION_ROUTE_INVALID", "route source must match current workflow stage", "correction-source", [String(workflow.current_stage), request.source_stage]);
     if (!allowedCorrectionDestinations(next).has(request.destination_stage)) throw operationError("RL_CORRECTION_ROUTE_INVALID", `correction destination: unknown_value ${String(request.destination_stage)}`, "correction-destination", [String(request.destination_stage)]);
     const verificationRoute = lifecycleContractVersion(next) === LIFECYCLE_CONTRACT_V3 && request.source_stage === "verify";
-    const finalCodeReviewRoute = lifecycleContractVersion(next) === LIFECYCLE_CONTRACT_V3 && request.source_stage === "code-review" && next.workflow_state?.planned_work?.current_milestone === "none";
+    const finalPlanned = next.workflow_state?.planned_work;
+    const finalImplementationMilestones = Object.values(finalPlanned?.milestones ?? {}).filter((milestone) => milestone?.kind === "implementation");
+    const finalCodeReviewReady = lifecycleContractVersion(next) === LIFECYCLE_CONTRACT_V3
+      && request.source_stage === "code-review"
+      && finalPlanned?.current_milestone === "none"
+      && finalImplementationMilestones.length > 0
+      && finalImplementationMilestones.every((milestone) => milestone.state === "closed")
+      && Array.isArray(finalPlanned?.remaining_implementation_milestones)
+      && finalPlanned.remaining_implementation_milestones.length === 0;
+    const finalImplementationCorrection = finalCodeReviewReady
+      && request.reason === "implementation-defect"
+      && request.destination_stage === "implement"
+      && request.return_stage === "code-review";
     if (verificationRoute) {
       if (!VERIFICATION_CORRECTION_REASONS.has(request.reason)) throw operationError("RL_CORRECTION_ROUTE_INVALID", `verification correction reason: unknown_value ${String(request.reason)}`, "verification-correction-kind", [String(request.reason)]);
       const expectedOwner = verificationCorrectionOwner(request.reason);
       if (request.destination_stage !== expectedOwner) throw operationError("RL_CORRECTION_ROUTE_INVALID", "verification correction destination does not match its exact owner", "verification-correction-owner", [request.reason, request.destination_stage, expectedOwner]);
       if (request.return_stage !== VERIFICATION_RETURN_STAGES[expectedOwner]) throw operationError("RL_CORRECTION_ROUTE_INVALID", "verification correction return stage does not enforce required rereview", "verification-correction-return", [request.destination_stage, request.return_stage, VERIFICATION_RETURN_STAGES[expectedOwner]]);
-    } else if (finalCodeReviewRoute && request.reason === "implementation-defect") {
-      if (request.destination_stage !== "implement" || request.return_stage !== "code-review") throw operationError("RL_CORRECTION_ROUTE_INVALID", "final code-review implementation correction must return through code-review", "final-review-correction", [request.destination_stage, request.return_stage]);
-    } else {
+    } else if (!finalImplementationCorrection) {
       if (VERIFICATION_CORRECTION_REASONS.has(request.reason)) throw operationError("RL_CORRECTION_ROUTE_INVALID", `correction reason: unknown_value ${String(request.reason)}`, "correction-reason", [String(request.reason)]);
       if (request.return_stage !== request.source_stage) throw operationError("RL_CORRECTION_ROUTE_INVALID", "ordinary correction return stage must match its source stage", "correction-source", [request.source_stage, request.return_stage]);
     }
@@ -557,7 +569,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const stageDestination = STAGE_CORRECTION_DESTINATIONS.has(request.destination_stage);
     if (stageDestination) {
       if (request.destination_artifact_id !== request.destination_stage) throw operationError("RL_CORRECTION_ROUTE_INVALID", "stage correction destination identity must equal its owner stage", "correction-destination", [request.destination_artifact_id, request.destination_stage]);
-      if (request.destination_stage === "implement" && !verificationRoute && !finalCodeReviewRoute && !request.milestone_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "implementation correction requires the current milestone identity", "correction-source", [String(request.milestone_id)]);
+      if (request.destination_stage === "implement" && !verificationRoute && !finalImplementationCorrection && !request.milestone_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "implementation correction requires the current milestone identity", "correction-source", [String(request.milestone_id)]);
     } else if (packageDestination) {
       const design = next.review_packages?.design;
       if (request.destination_stage !== "design-review" || design?.status !== "approved" || design?.authority !== "granted" || design.review_id !== packageReview.upstream_review_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "delivery upstream correction must target its current approved design package", "correction-destination", [request.destination_stage, request.destination_artifact_id, String(design?.review_id)]);
@@ -607,7 +619,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     workflow.next_stage = request.return_stage;
     workflow.blocker = null;
     if (stageDestination && request.destination_stage === "implement" && request.milestone_id) planned.milestones[request.milestone_id].state = "implementing";
-    if (finalCodeReviewRoute) {
+    if (finalImplementationCorrection) {
       delete state.reviews["final-code-review"];
       planned.latest_review = resetLatestReview();
     }

@@ -13,6 +13,11 @@ function expectedReviewAuthority(kind) {
   return kind === "proposal" ? "proposal-review" : null;
 }
 
+export function openReviewFindingIds(text) {
+  return [...text.matchAll(/^Open findings:\s*(.+)$/gm)]
+    .flatMap((match) => match[1].trim().toLowerCase() === "none" ? [] : match[1].split(",").map((value) => value.trim().replace(/`/g, "")).filter(Boolean));
+}
+
 export function stageIsComplete(root, change, stage) {
   if (["design-review", "delivery-review"].includes(stage)) {
     const packageKind = stage.replace(/-review$/, "");
@@ -37,11 +42,12 @@ export function stageIsComplete(root, change, stage) {
     const logPath = review?.review_log_path;
     const safeLogPath = typeof logPath === "string" && !logPath.startsWith("/") && !logPath.includes("\\") && !logPath.split("/").some((part) => !part || part === "." || part === "..");
     const logExists = safeLogPath && existsSync(join(root, logPath)) && lstatSync(join(root, logPath)).isFile();
-    const logCurrent = logExists && createHash("sha256").update(readFileSync(join(root, logPath))).digest("hex") === review.review_log_sha256;
+    const logText = logExists ? readFileSync(join(root, logPath), "utf8") : "";
+    const logCurrent = logExists && createHash("sha256").update(logText).digest("hex") === review.review_log_sha256;
     const implementationMilestones = Object.values(planned.milestones ?? {}).filter((milestone) => milestone?.kind === "implementation");
     return implementationMilestones.length > 0 && implementationMilestones.every((milestone) => milestone.state === "closed")
       && Array.isArray(planned.remaining_implementation_milestones) && planned.remaining_implementation_milestones.length === 0
-      && review?.stage_authority === "code-review" && review?.outcome === "approved" && /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(review?.reviewed_revision ?? "") && evidenceCurrent && logCurrent
+      && review?.stage_authority === "code-review" && review?.outcome === "approved" && /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(review?.reviewed_revision ?? "") && evidenceCurrent && logCurrent && openReviewFindingIds(logText).length === 0
       && projection?.artifact_id === "plan" && projection?.occurrence === "final" && projection?.milestone_id === "none"
       && projection?.stage === "code-review" && projection?.status === "approved" && projection?.round === review.round
       && Array.isArray(projection?.evidence) && projection.evidence.length === 1 && projection.evidence[0] === review.evidence_path;
