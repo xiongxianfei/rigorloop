@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "settle-review-package",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:c6b5887006fad9682e62a4d9652dc90cecf052a8b8d691e3cfc876a1c0a0142c",
+  "package_kind": "design",
+  "review_id": "design-review-r1",
+  "stage_authority": "design-review"
+}

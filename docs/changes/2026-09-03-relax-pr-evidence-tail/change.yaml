@@ -27,6 +27,20 @@ artifact_states:
     lifecycle_state: review-required
     path: specs/relax-pr-evidence-tail.md
     role: primary
+review_packages:
+  design:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      architecture: docs/architecture/2026-09-03-relax-pr-evidence-tail.md
+      spec: specs/relax-pr-evidence-tail.md
+    outcome: approved
+    package_kind: design
+    review_id: design-review-r1
+    review_round: r1
+    status: approved
+    upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
   current_stage: design-review
@@ -40,13 +54,13 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/proposal-review-r1.md
+  latest_review: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/design-review-r1.md
   review_log: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
-  reviewed_artifact: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
+  reviewed_artifact: review-package:design
   status: clean
   unresolved_items: 0
 lifecycle_cli:
-  schema_version: 1
+  schema_version: 2
   artifacts:
     architecture:
       artifact_kind: architecture
@@ -74,7 +88,24 @@ lifecycle_cli:
       stage_authority: spec
   correction_history: {}
   milestones: {}
-  package_reviews: {}
+  package_reviews:
+    design:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/design-review-r1.md
+      evidence_sha256: ff96e0cc67b0a9403eb50f3e9dbf8d63ef8868d72b0e7a233d18adf3fe58fa49
+      findings: []
+      members:
+        architecture: docs/architecture/2026-09-03-relax-pr-evidence-tail.md
+        spec: specs/relax-pr-evidence-tail.md
+      outcome: approved
+      package_kind: design
+      review_id: design-review-r1
+      review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+      review_log_sha256: caf1e0bcecefa993f861b27b112f3e73d10c44ea8c1c77052b20d3d0034e5502
+      reviewer_authority: design-review
+      round: r1
+      stage_authority: design-review
+      upstream_review_id: proposal-review-r1
   resolutions: {}
   reviews:
     proposal:

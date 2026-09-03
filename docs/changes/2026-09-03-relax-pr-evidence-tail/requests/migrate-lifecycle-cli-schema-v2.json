@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "migrate",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:99408266b3335d407d5f7ee85ecd6c0cd47908904cc8980eb93d61205d980ae2",
+  "source_schema_version": 1,
+  "stage_authority": "workflow"
+}
