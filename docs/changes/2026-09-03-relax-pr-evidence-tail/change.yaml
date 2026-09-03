@@ -323,5 +323,13 @@ lifecycle_cli:
       review_log_sha256: 6a51105d3a4e4441e2c18b32c188ccb0ada413ed15293e4500159be59e6870a1
       round: r1
       stage_authority: proposal-review
-  validations: {}
+  validations:
+    plan:
+      artifact_path: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+      artifact_sha256: 9b762060e3022f6d0310ad8197ff363c92228c3bb89ff3d92d59935541bf4494
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/verify-report.md
+      evidence_sha256: d08a72fa12aab739dae488b8367db8583ecbe65ae4f83d090faad9f7d6657571
+      stage_authority: verify
+      subject_path: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+      subject_sha256: 9b762060e3022f6d0310ad8197ff363c92228c3bb89ff3d92d59935541bf4494
   withdrawals: {}

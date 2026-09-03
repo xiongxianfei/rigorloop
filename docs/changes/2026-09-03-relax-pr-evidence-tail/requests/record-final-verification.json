@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-validation",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:b0f75333f2bd1582179d390a2be906f1a9652ca2672d95917d224880525b5ee2",
+  "artifact_id": "plan",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/verify-report.md",
+  "subject_path": "docs/plans/2026-09-03-relax-pr-evidence-tail.md",
+  "stage_authority": "verify"
+}
