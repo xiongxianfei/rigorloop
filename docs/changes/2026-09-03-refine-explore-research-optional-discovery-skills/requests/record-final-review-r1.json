@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-final-review",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:c47438470353284b0dc4faf5268924dd4bd84b584c4a37da9b637d115f74d502",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-final-r1.md",
+  "reviewed_revision": "5b51a5bdbdd4ae4a453e21c829bf3c20d0f3baf8",
+  "stage_authority": "workflow"
+}

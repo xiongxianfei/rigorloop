@@ -80,9 +80,9 @@ workflow_state:
     latest_review:
       artifact_id: plan
       evidence:
-        - docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m3-r1.md
-      milestone_id: M3
-      occurrence: milestone
+        - docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-final-r1.md
+      milestone_id: none
+      occurrence: final
       round: r1
       stage: code-review
       status: approved
@@ -273,6 +273,16 @@ lifecycle_cli:
       owner: M1 implementer
       stage_authority: review-resolution
   reviews:
+    final-code-review:
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-final-r1.md
+      evidence_sha256: 2db79add3cea19d1504d03aeaf6a517efb6327a5c645f878fa738a5dcf147320
+      outcome: approved
+      review_id: code-review-final-r1
+      review_log_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-log.md
+      review_log_sha256: 8fa49b5d7492c7867397cb91125b4f577f9ddf428763c607841f2fd5aa7d328f
+      reviewed_revision: 5b51a5bdbdd4ae4a453e21c829bf3c20d0f3baf8
+      round: r1
+      stage_authority: code-review
     proposal:
       artifact_path: docs/proposals/2026-09-03-refine-explore-research-optional-discovery-skills.md
       artifact_sha256: 05244a94120b937ee98ee3bcfa09a0930f3e8bbbb6398e4c5f3e73bf33029e97
