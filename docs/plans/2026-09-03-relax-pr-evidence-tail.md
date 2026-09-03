@@ -20,7 +20,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 
 ## Context and orientation
 
-The public rule is authored in `skills/pr/SKILL.md`, with governed readiness detail under `skills/pr/references/`. Verify's own exact two-file result registration remains defined by `skills/verify/references/successful-explanation-v3.md`; that narrower Verify-result tail must be distinguished from the broader PR-consumed evidence suffix. `specs/pr-skill-simplification.md` still contains the superseded direct-child wording and must be reconciled with the approved focused delta in `specs/relax-pr-evidence-tail.md`.
+The public rule is authored in `skills/pr/SKILL.md`, with governed readiness detail under `skills/pr/references/`. Verify's own exact two-file result registration remains defined by `skills/verify/references/successful-explanation-v3.md`; that narrower Verify-result tail must be distinguished from the broader PR-consumed evidence suffix. The approved `specs/relax-pr-evidence-tail.md` is the current authority for the exact clauses it explicitly supersedes in `specs/pr-skill-simplification.md`; unaffected prior requirements remain current without mutating that older change's governed artifact.
 
 Focused public-contract regressions live in `scripts/test-skill-validator.py`. Supported adapter packages derive from canonical `skills/` through existing build and distribution tooling. Candidate release metadata under `packages/rigorloop/dist/metadata/` may require deterministic checksum refresh when canonical archive bytes change; generated adapter skill bodies are not authored or hand edited.
 
@@ -36,9 +36,9 @@ Focused public-contract regressions live in `scripts/test-skill-validator.py`. S
 
 | Requirement and boundary scope | Owning milestone or evidence |
 | --- | --- |
-| R1-R21, R24; BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001; INT-001-INT-004 | M1 canonical contract, coupled Verify distinction, fail-closed regressions, and current-spec reconciliation |
+| R1-R21, R24; BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001; INT-001, INT-002, INT-003, INT-004 | M1 canonical contract, coupled Verify distinction, fail-closed regressions, and superseding-spec consumption |
 | R22-R23; BND-COMPOSE-001, BND-COMPAT-001; INT-001, INT-004 | M2 generated candidate, adapter, and release-metadata parity |
-| R1-R24; all eight boundary IDs; INT-001-INT-004 | TG-FINAL-01 and TG-FINAL-02 complete-change proof |
+| R1-R24; all eight boundary IDs; INT-001, INT-002, INT-003, INT-004 | TG-FINAL-01 and TG-FINAL-02 complete-change proof |
 
 ## Milestones
 
@@ -46,15 +46,14 @@ Focused public-contract regressions live in `scripts/test-skill-validator.py`. S
 
 - Milestone kind: implementation
 - Engineering purpose: Establish the complete safety predicate and its negative cases in canonical source before refreshing derived package identities.
-- Requirements: R1-R21, R24; all eight boundary IDs; INT-001-INT-004.
+- Requirements: R1-R21, R24; all eight boundary IDs; INT-001, INT-002, INT-003, INT-004.
 - Architecture responsibility: Verify basis consumer, evidence-suffix classifier, product-boundary guard, authority and current-state checks, recovery routing, and unchanged external-operation guard.
 - Dependencies:
   - approved Design package `design-review-r1`;
   - current successful Verify basis and governed-readiness concepts;
   - canonical `skills/` source ownership.
-- Implementation scope: Reconcile the active PR specification, replace the fixed direct-child rule in the canonical PR skill and governed readiness guidance, clarify that Verify's exact result registration is narrower than PR's cumulative evidence suffix, and update focused public-contract tests. Do not change executable lifecycle state, external mutation behavior, or generated adapter bodies.
+- Implementation scope: Consume the approved focused specification alongside unaffected prior PR requirements, replace the fixed direct-child rule in the canonical PR skill and governed readiness guidance, clarify that Verify's exact result registration is narrower than PR's cumulative evidence suffix, and update focused public-contract tests. Do not mutate the older governed PR specification, executable lifecycle state, external mutation behavior, or generated adapter bodies.
 - Files/components likely touched:
-  - `specs/pr-skill-simplification.md`;
   - `skills/pr/SKILL.md` and `skills/pr/references/governed-pr-readiness.md`;
   - `skills/verify/references/successful-explanation-v3.md`;
   - `scripts/test-skill-validator.py`.
@@ -66,7 +65,7 @@ Focused public-contract regressions live in `scripts/test-skill-validator.py`. S
 - Evidence expectations: Focused literal and mutation-style contract tests cover the closed vocabulary, unknown rejection, cumulative rather than per-commit judgment, allowed evidence categories, protected/mixed/stale/cross-change negatives, Verify-result distinction, and unchanged external protections.
 - Implementation steps:
   - Update or add failing focused assertions for the proportional rule and unknown-value fail-closed behavior.
-  - Reconcile the older active PR spec with the approved focused delta without duplicating or weakening the detailed boundary contract.
+  - Treat the approved focused delta as current for its enumerated superseded clauses and retain unaffected requirements from the older PR contract as read-only input.
   - Update the canonical PR procedure and governed readiness reference with content-and-authority classification.
   - Clarify the coupled Verify reference so its exact report-registration result is not misread as limiting the complete PR evidence suffix to one commit or two paths.
   - Run focused canonical validation and inspect remaining current direct-child wording.
@@ -78,13 +77,13 @@ Focused public-contract regressions live in `scripts/test-skill-validator.py`. S
 - Expected observable result: The published canonical contract accepts any current evidence-only descendant suffix and rejects every protected, mixed, unknown, stale, or unattributable suffix before external mutation.
 - Completion criteria: TG-01 through TG-04 pass; no current canonical PR requirement retains a fixed commit-count or direct-parent restriction; the Verify-result registration remains exact; external safeguards remain intact.
 - Required evidence: `docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m1-proportional-pr-contract.md`
-- Review handoff: Code Review of the exact safety predicate, allowed evidence authority, negative partitions, current-spec coherence, Verify distinction, and unchanged external protections.
+- Review handoff: Code Review of the exact safety predicate, allowed evidence authority, negative partitions, superseding-spec consumption, Verify distinction, and unchanged external protections.
 - Optional commit boundary: `M1: implement proportional PR evidence suffix`
 - Risks:
   - Broadening the suffix wording could accidentally trust paths or commit metadata instead of current governed authority.
   - Aligning Verify wording could weaken its exact report-registration integrity.
 - Rollback/recovery:
-  - Revert the complete M1 slice together; do not leave the active specification, PR skill, Verify reference, and tests on mixed rules.
+  - Revert the complete M1 implementation slice together; do not leave the PR skill, Verify reference, and tests on mixed rules.
 
 ### M2. Prove generated adapter and candidate-metadata parity
 
@@ -133,7 +132,7 @@ Focused public-contract regressions live in `scripts/test-skill-validator.py`. S
 
 ### TG-FINAL-01. Post-review drift safety
 
-- Covers: R1-R21, R24; M1; all eight boundary IDs; INT-001-INT-004.
+- Covers: R1-R21, R24; M1; all eight boundary IDs; INT-001, INT-002, INT-003, INT-004.
 - Demonstrate: Current final state rather than commit topology controls readiness; any number of attributable evidence commits may proceed, while every protected, mixed, stale, cross-change, unknown, or non-ancestor outcome blocks without lifecycle mutation or external write.
 - Evidence expectations: Closed outcome matrix, current-authority checks, same-revision and multi-commit examples, negative mutations, unchanged Verify ownership, and external-operation clause inspection.
 - Non-applicability: Milestone-local proof is sufficient for implementation mechanics but final verification must relate the revised contract to the exact reviewed branch and current lifecycle evidence.
@@ -178,7 +177,7 @@ Focused public-contract regressions live in `scripts/test-skill-validator.py`. S
 | --- | --- | --- | --- |
 | 2026-09-03 | Separate canonical safety-contract work from generated candidate parity. | The second slice depends on reviewed canonical bytes and has an independent metadata rollback boundary. | One mixed milestone; one milestone per edited file. |
 | 2026-09-03 | Keep Verify's exact result tail and name the broader PR comparison an evidence suffix. | This relaxes only the PR topology proxy without weakening successful Verify registration. | Broaden Verify's own result registration; retain ambiguous shared terminology. |
-| 2026-09-03 | Reconcile the older active PR spec while retaining the focused delta as the approved change contract. | Leaving two current normative rules would create mixed-package ambiguity. | Update only skill prose; delete historical rationale or the focused delta. |
+| 2026-09-03 | Consume the focused delta as current authority for its enumerated superseded clauses without editing the older governed PR spec. | This preserves change-local artifact ownership while keeping unaffected prior requirements current. | Cross-change spec mutation; duplicate the complete prior contract into the focused delta. |
 
 ## Readiness
 
