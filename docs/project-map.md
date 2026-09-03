@@ -12,9 +12,9 @@ Observed basis: direct inspection of `README.md`, `CONSTITUTION.md`, `AGENTS.md`
 
 ## Map Metadata
 
-- Last updated: 2026-09-02
-- Observed basis: current repository tree plus the route and CLI workflow-context cutover.
-- Covered areas: repository layout, governance and workflow surfaces, lifecycle artifacts, canonical skills, validation and generation scripts, adapter support, release evidence, token-cost evidence, tests, CI, and known architecture-orientation risks.
+- Last updated: 2026-09-03
+- Observed basis: current repository tree plus the route and CLI workflow-context cutover and optional Explore/Research artifact roots.
+- Covered areas: repository layout, governance and workflow surfaces, lifecycle and optional discovery artifacts, canonical skills, validation and generation scripts, adapter support, release evidence, token-cost evidence, tests, CI, and known architecture-orientation risks.
 - Known gaps: this map summarizes the canonical architecture package but does not duplicate it; narrow changes still need the governing spec, active plan, matching test spec, and touched files.
 - Refresh trigger: refresh or bypass this map with a no-map rationale when the relied-on area is absent, contradicted by current repository paths, or materially affected by recent changes.
 
@@ -25,7 +25,7 @@ RigorLoop is a repository-local workflow kit, not a deployed service. Its main p
 Observed major containers:
 
 - Governance and workflow guidance: `CONSTITUTION.md`, `AGENTS.md`, the current workflow spec, and CLI workflow context.
-- Lifecycle artifacts: proposals, specs, test specs, architecture, ADRs, plans, review records, change metadata, explain-change records, and verify reports under `docs/` and `specs/`.
+- Lifecycle artifacts and optional support: proposals, specs, test specs, architecture, ADRs, plans, review records, change metadata, and verify reports under `docs/` and `specs/`; explicitly invoked Explore and Research outputs live separately under `docs/explorations/` and `docs/research/` and do not own lifecycle decisions.
 - Canonical skills: stage and support skills under `skills/<skill>/SKILL.md`.
 - Validation and generation scripts: Python and shell tooling under `scripts/`.
 - Adapter support surface: tracked install guidance and manifest under `dist/adapters/`; generated adapter bodies are release output for `v0.1.3` and later.
@@ -55,6 +55,8 @@ flowchart LR
 | `rigorloop workflow-context` | Read-only deterministic project and selected-change workflow facts, including resolved artifact locations and provenance. |
 | `docs/project-map.md` | Living repository orientation map. It orients; it does not own deferred execution. |
 | `docs/proposals/` | Date-prefixed proposal artifacts. |
+| `docs/explorations/` | Standalone, explicitly invoked Explore artifacts that expand a decision space and hand options to a named owner without approving them. |
+| `docs/research/` | Standalone, explicitly invoked Research artifacts that reduce bounded decision uncertainty and hand sourced findings to a named owner without approving them. |
 | `specs/` | Behavior contracts and matching `.test.md` test specs. `specs/README.md` states that specs are for behavior-changing work that benefits from explicit contracts. |
 | `docs/architecture/system/` | Canonical current architecture package and C4 Mermaid diagrams. |
 | `docs/architecture/*.md` | Historical or legacy architecture records retained after normalization. |
@@ -104,6 +106,7 @@ The repository data model is artifact-based:
 - Governance data: Markdown in `CONSTITUTION.md`, `AGENTS.md`, `VISION.md`, and current workflow specifications.
 - Lifecycle state: `docs/changes/<change-id>/change.yaml` owns mutable artifact settlement, planned-work progress, blockers, routing, and final closeout.
 - Governed intent: proposals, specs, test specs, architecture records, ADRs, and plan bodies remain stable stage-owned content linked to their owning change record.
+- Optional discovery support: Explore artifacts under `docs/explorations/` and Research artifacts under `docs/research/` record options or evidence for a named owning stage; the owner must adopt any conclusion that changes its governed decision.
 - Plan state: `docs/plan.md` is navigation and concrete `docs/plans/*.md` files carry stable milestone definitions and execution intent; current handoff state lives in change metadata.
 - Change metadata: YAML-like `docs/changes/<change-id>/change.yaml`, validated against `schemas/change.schema.json` plus semantic checks in `scripts/change_metadata_semantics.py`.
 - Review data: `docs/changes/<change-id>/reviews/*.md`, `review-log.md`, and conditional `review-resolution.md`, parsed by `scripts/review_artifact_validation.py`.

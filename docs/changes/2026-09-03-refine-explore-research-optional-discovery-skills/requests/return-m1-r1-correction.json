@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "return-correction",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:57b755a35079411185ebd42e4905e2555abae0c1a1d94eb2f91acca7c753398e",
+  "route_id": "route-554ef8d60a708cd574beaf52f25dfe1289d9ea394440c0c6d6318e07eed469b0",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m1-r1-correction-return.md",
+  "stage_authority": "workflow"
+}

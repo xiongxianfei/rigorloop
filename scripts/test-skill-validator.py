@@ -8887,6 +8887,48 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
             )
         self.assertTrue(any("unknown discovery support consumer" in error for error in errors))
 
+    def test_route_distinguishes_explore_research_both_and_neither(self) -> None:
+        route = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
+        expected = {
+            "Explore": "the option space is materially unclear",
+            "Research": "a material decision depends on an uncertain fact",
+            "both": "research questions could materially change the option comparison",
+            "neither": "direction and decision-relevant facts are sufficiently clear",
+        }
+        for route_case, phrase in expected.items():
+            with self.subTest(route_case=route_case):
+                self.assertIn(phrase, route)
+
+    def test_current_guidance_agrees_on_explicit_optional_discovery_handoff(self) -> None:
+        surfaces = {
+            "workflow": ROOT / "specs/rigorloop-workflow.md",
+            "agents": ROOT / "AGENTS.md",
+            "readme": ROOT / "README.md",
+            "project-map": ROOT / "docs/project-map.md",
+        }
+        bodies = {
+            name: path.read_text(encoding="utf-8")
+            for name, path in surfaces.items()
+        }
+        for name, body in bodies.items():
+            with self.subTest(surface=name, rule="optional"):
+                self.assertIn("Explore", body)
+                self.assertIn("Research", body)
+        self.assertIn("docs/explorations/YYYY-MM-DD-slug.md", bodies["workflow"])
+        self.assertIn("docs/research/YYYY-MM-DD-slug.md", bodies["workflow"])
+        self.assertIn("explicit invocation", bodies["workflow"])
+        self.assertIn("owning stage", bodies["workflow"])
+        self.assertIn("docs/explorations/", bodies["project-map"])
+        self.assertIn("docs/research/", bodies["project-map"])
+
+    def test_route_keeps_incidental_discovery_artifact_free_and_owner_bounded(self) -> None:
+        route = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("incidental fact check", route)
+        self.assertIn("does not create a discovery artifact", route)
+        self.assertIn("must explicitly adopt", route)
+        self.assertIn("does not approve", route)
+        self.assertIn("does not advance lifecycle state", route)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

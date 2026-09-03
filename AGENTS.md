@@ -58,7 +58,7 @@ The `vision` skill is upstream of the per-change workflow, not a normal lifecycl
 
 `docs/project-map.md`, when present, is a living reference. Do not rely on it when it is absent, known-stale, contradicted, or missing the relied-on area unless you refresh it or record a no-map rationale.
 
-Use `explore` and `research` as on-demand support when ambiguity, option expansion, or current external facts affect the decision. `learn` is periodic or explicitly invoked; after Frame it records a tracked session under `docs/learn/sessions/`, while pre-session trigger closeout may schedule a follow-up, defer capture, or record an explicit no-learn rationale in a tracked or review-visible surface.
+Use Explore (`explore`) to expand a materially unclear decision space and Research (`research`) to reduce bounded decision-relevant uncertainty. Use both when Explore exposes factual questions that could change the option comparison, and neither when direction and relevant facts are sufficiently clear. Both are optional: an explicit invocation creates a standalone artifact under `docs/explorations/` or `docs/research/`, while a small incidental check does not. Neither approves or mutates the owning stage; Proposal, Design, Delivery, Implementation, Verify, or another named owner must adopt any conclusion that changes its decision. `learn` is periodic or explicitly invoked; after Frame it records a tracked session under `docs/learn/sessions/`, while pre-session trigger closeout may schedule a follow-up, defer capture, or record an explicit no-learn rationale in a tracked or review-visible surface.
 
 Once proposal, spec, and architecture are already settled, execution usually proceeds through:
 

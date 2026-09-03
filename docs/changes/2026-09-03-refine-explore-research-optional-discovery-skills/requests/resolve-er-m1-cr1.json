@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-finding-resolution",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:3d6d05b3dd28035c2277a2ae5f871d8de814dec4d14c9148efc0809f24437ddf",
+  "artifact_id": "plan",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-resolution.md",
+  "finding_id": "ER-M1-CR1",
+  "stage_authority": "review-resolution"
+}

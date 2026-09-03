@@ -1,6 +1,8 @@
 # Review resolution
 
-Closeout status: open
+Closeout status: closed
+
+Review closeout: code-review-m1-r2
 
 ## Finding details
 
@@ -22,3 +24,7 @@ Follow-up: Apply the bounded M1 correction and run Code Review M1 R2.
 Validation target: ER-R34, TG-04, and direct package-wide public-text hygiene regression.
 Validation evidence: The new package-wide hygiene test failed on both asset comments before correction, then passed; the 359-test full skill-validator suite, canonical skill validation, generated local-skill validation, review structure validation, and `git diff --check` all passed.
 Rationale: The finding is directly required by ER-R34 and needs no product or design decision.
+
+### code-review-m1-r2
+
+No material findings. R2 confirmed ER-M1-CR1 is resolved and M1 is clean for milestone closeout.
