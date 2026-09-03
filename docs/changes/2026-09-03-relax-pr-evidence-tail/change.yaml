@@ -1,0 +1,335 @@
+change_id: 2026-09-03-relax-pr-evidence-tail
+title: Relax PR Evidence Tail Topology
+classification: workflow
+risk: medium
+lifecycle_contract: stage-owned-change-local-v3
+artifact_states:
+  architecture:
+    authoring_evidence: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/architecture-authoring.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-09-03-relax-pr-evidence-tail.md
+    role: primary
+  plan:
+    authoring_evidence: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/plan-correction-r1.md
+    kind: plan
+    lifecycle_state: review-required
+    path: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+    role: primary
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r1
+      outcome: approved
+      record: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/proposal-review-r1.md
+      round: r1
+    role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/spec-authoring.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/relax-pr-evidence-tail.md
+    role: primary
+review_packages:
+  delivery:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      plan: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+    outcome: approved
+    package_kind: delivery
+    review_id: delivery-review-r2
+    review_round: r2
+    status: approved
+    upstream_review_id: design-review-r1
+  design:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      architecture: docs/architecture/2026-09-03-relax-pr-evidence-tail.md
+      spec: specs/relax-pr-evidence-tail.md
+    outcome: approved
+    package_kind: design
+    review_id: design-review-r1
+    review_round: r1
+    status: approved
+    upstream_review_id: proposal-review-r1
+workflow_state:
+  blocker: null
+  current_stage: verify
+  evidence: []
+  lifecycle_state: active
+  next_stage: verify
+  planned_work:
+    current_milestone: none
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+    initialization_basis:
+      review_id: delivery-review-r2
+      review_record: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/delivery-review-r2.md
+      review_round: r2
+      reviewed_artifact_path: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+    latest_review:
+      artifact_id: plan
+      evidence:
+        - docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-final-r2.md
+      milestone_id: none
+      occurrence: final
+      round: r2
+      stage: code-review
+      status: approved
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+    plan_artifact_id: plan
+    remaining_implementation_milestones: []
+workflow: {}
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/delivery-review-r2.md
+  review_log: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+  reviewed_artifact: review-package:delivery
+  status: clean
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 2
+  artifacts:
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-09-03-relax-pr-evidence-tail.md
+      artifact_role: primary
+      artifact_sha256: 81fd2ae8664cae24f0ae697f2cd47aac4dfdf7b6458fdc6752c3f8786257f32d
+      authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/architecture-authoring.md
+      authoring_evidence_sha256: 453b0c733dfea0dca2cc07af43059f04cb38377db48aeb06bebae46cd7abb6cd
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+      artifact_role: primary
+      artifact_sha256: 9b762060e3022f6d0310ad8197ff363c92228c3bb89ff3d92d59935541bf4494
+      authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/plan-correction-r1.md
+      authoring_evidence_sha256: 2171b6135a81fcc63f4dc67dba78df407c6f45b0b2de85f5fb18838a14d7506e
+      stage_authority: plan
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
+      artifact_role: primary
+      artifact_sha256: 6d3dce8f02deab6b62b7da5f195fc5b8835607547571ccb7159b4c319eb7e43d
+      authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/proposal-authoring.md
+      authoring_evidence_sha256: baf28c97ca6f6e03b7f9082254c9f4f2d7ee43ca8dabb6ed7cc9dce46b26dafe
+      stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/relax-pr-evidence-tail.md
+      artifact_role: primary
+      artifact_sha256: 0331f71c48d1476427e9024a0fd5e3bbc49772814a52ee1f6086b35dd3d37f58
+      authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/spec-authoring.md
+      authoring_evidence_sha256: ac67b884e0680e11787580fdd753d6b4ff8f8997add06b19c84f0c4c5c001e3f
+      stage_authority: spec
+  correction_history:
+    route-42b9e90320b1c4cb35f0f6624d115039d1b501402b5b38cf7788a7d0ce56c8e9:
+      destination_artifact_id: plan
+      destination_stage: plan
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/delivery-review-r1-plan-route.md
+      evidence_sha256: 98a8289257c1da317c3bf94ac6bc539d17339ea4fdfff7a31095b8ff35f22a00
+      prior_artifact_sha256: 915acbd2c90e67ac6cdd23c53d389e358666da846bc3b792a362323e0a98274f
+      prior_lifecycle_revision: sha256:2a15876a8b4e6b31d3c95829a73258736d874d2ed7605a389f0dbbf6aff86694
+      reason: upstream-planning-gap
+      return_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/delivery-review-r1-plan-return.md
+      return_evidence_sha256: 7da9c3961335212d7507ed7d7c018490728cdb5394bab77e668aa8b334441405
+      return_stage: delivery-review
+      route_id: route-42b9e90320b1c4cb35f0f6624d115039d1b501402b5b38cf7788a7d0ce56c8e9
+      source_review_id: delivery-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: delivery-review
+        finding_ids:
+          - PRTAIL-DLR1
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: delivery-review
+      status: returned
+    route-5a3c0fb86ae1f5ff3b4ccaaa8a73ca57c098d754914120ae176a37f18cbb6c3a:
+      destination_artifact_id: code-review
+      destination_kind: stage
+      destination_stage: code-review
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/final-review-evidence-correction-route.md
+      evidence_sha256: 11650a8c92d21374e56e83ba3b92b68b9b1c4bc1453b8aa7775168b65c0fdf59
+      prior_lifecycle_revision: sha256:bf27379ba8da7d2c87a79dea9373b7dbbd089f5e12f85d6a50c41332e4459e8a
+      reason: stale-or-incomplete-review
+      return_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/final-review-evidence-correction-return.md
+      return_evidence_sha256: bb7f4fdafd506e60bf22595eba05bb106cfe8345a75d1a416077c9b2f4b754dd
+      return_stage: code-review
+      route_id: route-5a3c0fb86ae1f5ff3b4ccaaa8a73ca57c098d754914120ae176a37f18cbb6c3a
+      source_snapshot:
+        blocker: null
+        current_stage: verify
+        finding_ids: []
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: verify
+      status: returned
+    route-751371d200c6226c8c0aefeb542a883f28fc246ee653a00e76013391ce5bab2d:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m1-r1-correction-route.md
+      evidence_sha256: 0eda4d023b0ff38977c3c90bc7fcfc07e1fcbe2283d56df0fa9648c6b1fe66b5
+      prior_lifecycle_revision: sha256:5570a6d6244293ea8b8b8137b183e3590d38f2f8bd8e269debaf0c3ee7b7488b
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m1-r1-correction-return.md
+      return_evidence_sha256: 297162456c1191b56efac0a9d3f94d8e0bf9e0f899299d042b1c04cf238ce578
+      return_stage: code-review
+      route_id: route-751371d200c6226c8c0aefeb542a883f28fc246ee653a00e76013391ce5bab2d
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - PRTAIL-M1-CR1
+        lifecycle_state: active
+        milestone_id: M1
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+  milestones:
+    M1:
+      completion_fingerprint: b444ce7e2b82e5ceb0e527548b763cc51f2e148cd07efe717fa470ea4e9c5558
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m1-proportional-pr-contract.md
+      evidence_sha256: 283e8cb29bd5f82fbc671c9967a496af65ff3b40e5bf170142759a65102fb99a
+      milestone_id: M1
+      review_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-m1-r2.md
+      review_evidence_sha256: eb9af322d021f833bdb3f417062b77a6eeeb29612946860d3eaa9e4ff017f15f
+      review_id: code-review-m1-r2
+      review_log_entry_sha256: 19e00be4462d81f9e78858255eab02b3f1c677b14282f15529fdbfe8f701014d
+      review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-m1-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M2:
+      completion_fingerprint: 1016bd453cca8c8055d970f221e02cdd7b8fef5506d795e40e840af2b9ce893b
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m2-adapter-parity.md
+      evidence_sha256: 12c224e7c290d23aa30795ebad572313bb95414eb1d21756d03a7f663835b3a6
+      milestone_id: M2
+      review_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-m2-r1.md
+      review_evidence_sha256: 6f1bc9894455c0fe96448fcef54fbe5f7a681c0df552fa990566bb524cf54b46
+      review_id: code-review-m2-r1
+      review_log_entry_sha256: d0985ae7a6344302a24efa6a51219815596e155ddb0e739a0ab3bf386596a4f0
+      review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-m2-r1.md
+      review_recording_status: recorded
+      review_round: r1
+      review_stage: code-review
+      stage_authority: workflow
+  package_reviews:
+    delivery:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/delivery-review-r2.md
+      evidence_sha256: 70585fc316392b985e620665bc896ee2e496f76346b1d75a7f8f99d285cb886c
+      findings: []
+      members:
+        plan: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+      outcome: approved
+      package_kind: delivery
+      review_id: delivery-review-r2
+      review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+      review_log_sha256: 14af70826920ec0163dc82d2ceec11a82924880e93aa95e5b59891a041e87a3a
+      reviewer_authority: delivery-review
+      round: r2
+      stage_authority: delivery-review
+      upstream_review_id: design-review-r1
+    design:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/design-review-r1.md
+      evidence_sha256: ff96e0cc67b0a9403eb50f3e9dbf8d63ef8868d72b0e7a233d18adf3fe58fa49
+      findings: []
+      members:
+        architecture: docs/architecture/2026-09-03-relax-pr-evidence-tail.md
+        spec: specs/relax-pr-evidence-tail.md
+      outcome: approved
+      package_kind: design
+      review_id: design-review-r1
+      review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+      review_log_sha256: caf1e0bcecefa993f861b27b112f3e73d10c44ea8c1c77052b20d3d0034e5502
+      reviewer_authority: design-review
+      round: r1
+      stage_authority: design-review
+      upstream_review_id: proposal-review-r1
+  resolutions:
+    PRTAIL-DLR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-resolution.md
+      evidence_sha256: e194b6d26c68f160ddda292d6413240f1051d581567dccb8084135fa9e4bba72
+      finding_id: PRTAIL-DLR1
+      owner: plan author
+      stage_authority: review-resolution
+    PRTAIL-M1-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-resolution.md
+      evidence_sha256: c27925f8e59d9ffb556bab04c1341915ac8de184e908ed9573ca51c7639952cf
+      finding_id: PRTAIL-M1-CR1
+      owner: implementation author
+      stage_authority: review-resolution
+  reviews:
+    final-code-review:
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-final-r2.md
+      evidence_sha256: da63d1334ac6234472c3b4a1dacc9fd39963c8b02150d1793579e7c4fd272ec4
+      outcome: approved
+      review_id: code-review-final-r2
+      review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+      review_log_sha256: d018683948b46700a9586a3ba49f27bf33284fac613e14ebc70c6734007bcce0
+      reviewed_revision: 9ade638ae857c2952b8748cc20333aa238e6052f
+      round: r2
+      stage_authority: code-review
+    proposal:
+      artifact_path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
+      artifact_sha256: 6d3dce8f02deab6b62b7da5f195fc5b8835607547571ccb7159b4c319eb7e43d
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/proposal-review-r1.md
+      evidence_sha256: 79ec2614183a78b3339a2d52700bf579a9343f19cd16718f8c66daf6d6ae303e
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r1
+      review_log_sha256: 6a51105d3a4e4441e2c18b32c188ccb0ada413ed15293e4500159be59e6870a1
+      round: r1
+      stage_authority: proposal-review
+  validations:
+    plan:
+      artifact_path: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+      artifact_sha256: 9b762060e3022f6d0310ad8197ff363c92228c3bb89ff3d92d59935541bf4494
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/verify-report.md
+      evidence_sha256: d08a72fa12aab739dae488b8367db8583ecbe65ae4f83d090faad9f7d6657571
+      stage_authority: verify
+      subject_path: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+      subject_sha256: 9b762060e3022f6d0310ad8197ff363c92228c3bb89ff3d92d59935541bf4494
+  withdrawals: {}

@@ -168,8 +168,22 @@ class AdapterDistributionTests(unittest.TestCase):
             for archive_path in archives:
                 with zipfile.ZipFile(archive_path) as archive:
                     names = set(archive.namelist())
+                    pr_entry = next(name for name in names if name.endswith("/pr/SKILL.md"))
+                    verify_entry = next(
+                        name for name in names
+                        if name.endswith("/verify/references/successful-explanation-v3.md")
+                    )
+                    pr_body = archive.read(pr_entry).decode("utf-8")
+                    verify_explanation = archive.read(verify_entry).decode("utf-8")
                 self.assertTrue(any("/route/SKILL.md" in name for name in names))
                 self.assertFalse(any("/workflow/" in name for name in names))
+                self.assertIn("evidence suffix: `none`, `evidence-only`, `invalidating`", pr_body)
+                self.assertIn("any commit count or direct-parent topology", pr_body)
+                self.assertNotIn("exactly one direct-child verify-owned evidence commit", pr_body)
+                self.assertIn(
+                    "do not become part of the Verify result registration",
+                    verify_explanation,
+                )
 
     def test_staged_v3_archives_omit_explain_change_and_package_complete_verify_resources(self) -> None:
         self.assertNotIn("explain-change", STAGED_V3_ADAPTER_SKILLS)

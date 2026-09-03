@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:d7be95a3443e63a027b1e21c5a4db0287b5dedf56e16aa65e82ed8e6fe5bd096",
+  "artifact_id": "plan",
+  "artifact_kind": "plan",
+  "artifact_role": "primary",
+  "artifact_path": "docs/plans/2026-09-03-relax-pr-evidence-tail.md",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/plan-correction-r1.md",
+  "prior_artifact_sha256": "915acbd2c90e67ac6cdd23c53d389e358666da846bc3b792a362323e0a98274f",
+  "stage_authority": "plan"
+}

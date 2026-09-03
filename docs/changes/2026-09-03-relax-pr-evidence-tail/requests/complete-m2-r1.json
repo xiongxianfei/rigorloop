@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:2219ce293117f09021bb028d01bedff42326e3cc85ef06fc3d247dfe89b010e4",
+  "milestone_id": "M2",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m2-adapter-parity.md",
+  "review_evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-m2-r1.md",
+  "stage_authority": "workflow"
+}

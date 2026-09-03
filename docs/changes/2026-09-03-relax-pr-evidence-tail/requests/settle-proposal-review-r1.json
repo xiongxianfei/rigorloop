@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:e55405715fbd6af3d0d2ce799ff20ed16504fc4b8c122764490e2441656d54e4",
+  "artifact_id": "proposal",
+  "stage_authority": "proposal-review"
+}

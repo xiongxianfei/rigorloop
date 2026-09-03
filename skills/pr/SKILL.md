@@ -1,7 +1,7 @@
 ---
 name: pr
 description: >
-  Prepare a completed, verified change for pull request review. Use when the branch is ready or nearly ready and the agent should summarize the real diff, validation evidence, spec compliance, risks, and reviewer notes.
+  Prepare a verified pull request from actual diff and evidence.
 argument-hint: [branch, feature name, plan path, or PR request]
 ---
 
@@ -9,11 +9,11 @@ argument-hint: [branch, feature name, plan path, or PR request]
 
 ## Purpose
 
-Open one evidence-grounded pull request when ready. `verify` owns `branch-ready`; this skill owns `pr-body-ready` and `pr-open-ready` and has no downstream continuation.
+Open one evidence-grounded pull request. `verify` owns `branch-ready`; this skill owns `pr-body-ready` and `pr-open-ready`. No downstream continuation.
 
 ## When to use
 
-Use after `verify`, or for a nearly ready direct PR request.
+Use after `verify` or for a nearly ready direct PR request.
 
 ## When not to use
 
@@ -25,13 +25,9 @@ Public skills operate in customer-project mode by default. Use project-local art
 
 ## Inputs to read
 
-Resolve repository, remote, branches, verification evidence, handoff, tree, diff, and matching PR. Never summarize from memory.
+Resolve repository, remote, branches, evidence, handoff, diff, and matching PR; never use memory. For consolidated gates, consume verify-owned accepted Proposal evidence, approved Design Review ID and exact member map, and approved Delivery Review ID and exact member map. Never reconstruct or reperform those reviews. The exact successful Verify report owns explanation, basis, and authority. Reject missing, stale, new, or competing authoritative rationale. Historical rationale grants no current PR authority.
 
-For work governed by consolidated gates, consume verify-owned confirmation of the accepted proposal evidence, approved Design Review ID and exact member map, and approved Delivery Review ID and exact member map. Do not reconstruct package authority from historical individual reviews, and do not reperform Design Review or Delivery Review during PR preparation.
-
-The exact successful Verify report owns the final explanation, verification basis, and authority. Reject missing, stale, new, or competing authoritative rationale. Historical rationale grants no current PR authority.
-
-An explicit change ID, workflow change identity, owning-change field, or governed pointer is a signal even when invalid. governed signal: `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. Only the first uses `PR0-portable`; the second loads `PR1-governed`; malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous signals stop without portable fallback. Loading grants no authority.
+Any explicit change, workflow, owning-change, or governed pointer is a signal. governed signal: `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. The first uses `PR0-portable`; the second loads `PR1-governed`; malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous signals stop without portable fallback. Loading grants no authority.
 
 ## Closed classifications
 
@@ -43,7 +39,8 @@ Classify each independent axis exactly. Unknown values fail before consistency c
 - branch relation: `absent`, `same`, `remote-ancestor-of-local`, `local-ancestor-of-remote`, `diverged`, `ambiguous`;
 - PR state: `absent`, `open`, `draft`, `closed`, `merged`, `ambiguous`;
 - operation result: `opened`, `draft-opened`, `updated`, `reused`, `prepared-not-opened`, `blocked`;
-- hosted-CI state: `passed`, `failed`, `pending`, `unavailable`, `unobserved`, `not-applicable`.
+- hosted-CI state: `passed`, `failed`, `pending`, `unavailable`, `unobserved`, `not-applicable`;
+- evidence suffix: `none`, `evidence-only`, `invalidating`.
 
 Explicit `pr` defaults to `open`; the other intents require current authority. `prepare-only` performs no push, PR creation, refresh, publication, draft conversion, or other external mutation and returns `prepared-not-opened` with `actual_external_mutation: none`. A blocker does not reclassify intent; report requested intent, actual operation, blocker, and actual mutation.
 
@@ -53,7 +50,7 @@ Submission intent does not grant refresh or PR-state transition authority. Defau
 
 Consume and revalidate verify-owned `verification_basis`: immutable `repository_identity`, `remote_identity`, `base_branch`, `base_revision`, `merge_base_revision`, `head_branch`, and `verified_subject_revision`. Do not reconstruct it from commands, names, Git state, or prose. Legacy, prose-only, command-only, missing, stale, unresolved, conflicting, or ambiguous evidence supports preparation only; it blocks opening and routes to verify.
 
-Subject equals handoff unless exactly one direct-child verify-owned evidence commit changes only final verify evidence and matching verify-owned change-record or state-sync fields. Any other change invalidates opening readiness.
+Require the verified subject to equal or precede the local handoff; a non-ancestor blocks. Classify their cumulative final change as `none`, `evidence-only`, or `invalidating`. Evidence-only permits any commit count or direct-parent topology only for current attributable final-review, workflow, and Verify evidence. Path, file name, commit message, or author identity alone grants no authority. Protected, mixed, unknown, stale, cross-change, or unattributable content invalidates opening and routes to its owner for review and fresh Verify.
 
 Before mutation, require scoped commits, safe tree and diff, no secrets or debug residue, intentional generated files and migrations, and every operation identity.
 
@@ -106,7 +103,7 @@ Stop on unresolved target or authority, stale verification, unsafe branch relati
 
 ## Claims this skill must not make
 
-Do not claim implementation passed, review passed, tests passed, verification passed, CI passed, generated currency, branch readiness, or lifecycle completion without current owning evidence. This skill must not mutate `change.yaml`, workflow routing, artifact settlement, plan state, review state, merge state, release state, or publication state.
+Do not claim implementation passed, review passed, tests passed, verification passed, CI passed, generated currency, branch readiness, or lifecycle completion without current owning evidence. This skill must not mutate `change.yaml`, workflow, artifact, plan, review, merge, release, or publication state.
 
 Progress means work that has happened so far. Readiness means the next stage that can happen. Closeout means the current artifact or stage satisfied its checklist. Done means final lifecycle state after required gates are complete. Readiness is not Done.
 
@@ -146,4 +143,4 @@ Start with:
 - Next stage: <human review | owning stage | none>
 ```
 
-Then provide the result, readiness, mutation, PR and CI state, URL, title, body, risks, reviewer focus, and observed evidence.
+Then provide readiness, mutation, PR and CI state, content, risks, reviewer focus, and evidence.

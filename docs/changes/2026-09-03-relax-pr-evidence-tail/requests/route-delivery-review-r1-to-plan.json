@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:2a15876a8b4e6b31d3c95829a73258736d874d2ed7605a389f0dbbf6aff86694",
+  "source_stage": "delivery-review",
+  "destination_stage": "plan",
+  "destination_artifact_id": "plan",
+  "reason": "upstream-planning-gap",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/delivery-review-r1-plan-route.md",
+  "finding_ids": [
+    "PRTAIL-DLR1"
+  ],
+  "return_stage": "delivery-review",
+  "stage_authority": "workflow"
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:6ed042f28ea6ffcf1c93fca78447c05e461b37e89f57bd99f7b6dd5909b91e78",
+  "artifact_id": "proposal",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/proposal-review-r1.md",
+  "stage_authority": "proposal-review"
+}

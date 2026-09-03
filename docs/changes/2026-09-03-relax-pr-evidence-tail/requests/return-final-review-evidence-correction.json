@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "return-correction",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:62b75ff8d752b3a15a3491ddcc593ecabc325aa66c3a29f9b5aaf7cb14874058",
+  "route_id": "route-5a3c0fb86ae1f5ff3b4ccaaa8a73ca57c098d754914120ae176a37f18cbb6c3a",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/final-review-evidence-correction-return.md",
+  "stage_authority": "workflow"
+}

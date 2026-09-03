@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "settle-review-package",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:a243141d88c6a58c0844794c1dcb78adbe15f6b441fffe9296ea7e56fd1ae562",
+  "package_kind": "delivery",
+  "review_id": "delivery-review-r1",
+  "stage_authority": "delivery-review"
+}

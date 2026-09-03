@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:03981cc4bfd763f1c3307112ce7d07dd49543f8d571fabd48dc5b60987391bf3",
+  "artifact_id": "architecture",
+  "artifact_kind": "architecture",
+  "artifact_role": "primary",
+  "artifact_path": "docs/architecture/2026-09-03-relax-pr-evidence-tail.md",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/architecture-authoring.md",
+  "stage_authority": "architecture"
+}

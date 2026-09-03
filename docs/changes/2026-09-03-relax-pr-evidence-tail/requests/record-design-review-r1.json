@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "operation": "record-package-review",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:1b55ca746492aad1f8fc8e25e17c8c937bb1f9c7595ac959eb59c7edf809eb0f",
+  "package_kind": "design",
+  "members": {
+    "architecture": "docs/architecture/2026-09-03-relax-pr-evidence-tail.md",
+    "spec": "specs/relax-pr-evidence-tail.md"
+  },
+  "upstream_review_id": "proposal-review-r1",
+  "review_id": "design-review-r1",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/design-review-r1.md",
+  "stage_authority": "design-review"
+}

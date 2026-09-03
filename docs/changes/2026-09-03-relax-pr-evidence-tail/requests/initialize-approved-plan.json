@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "initialize-approved-plan",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:cd3724623cc9d463ed4a89d6c89657700d938755d4cfd385545ab15b2e47da65",
+  "artifact_id": "plan",
+  "stage_authority": "plan"
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:175a89295cda5d7426af569545ac104c60f1e781fc8dbbbb14dce5ffe4c3f52a",
+  "milestone_id": "M1",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m1-proportional-pr-contract.md",
+  "review_evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-m1-r2.md",
+  "stage_authority": "workflow"
+}

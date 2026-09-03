@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:47914d8c5678026aa5640ded4b8a3d4e4dc80905493c84844da0aa648d623e64",
+  "artifact_id": "plan",
+  "artifact_kind": "plan",
+  "artifact_role": "primary",
+  "artifact_path": "docs/plans/2026-09-03-relax-pr-evidence-tail.md",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/plan-authoring.md",
+  "stage_authority": "plan"
+}
