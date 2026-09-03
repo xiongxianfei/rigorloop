@@ -38,7 +38,7 @@
     },
     "v0.5.1": {
       "bundled_metadata": "adapter-artifacts-v0.5.1.json",
-      "bundled_metadata_sha256": "a84e8dab4fff75bf74b310e17aea24428bd6cb547a340674a3956b95d23e7df7",
+      "bundled_metadata_sha256": "894ebde3c8b920e7d8ffc8e2ba6918dd74a60ab98d7182dbaf7587f7a4fed3ad",
       "release_tag": "v0.5.1",
       "source_repository": "xiongxianfei/rigorloop"
     }

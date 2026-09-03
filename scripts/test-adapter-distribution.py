@@ -83,6 +83,75 @@ class AdapterDistributionTests(unittest.TestCase):
     def fixture(self, name: str) -> Path:
         return FIXTURES / name
 
+    def test_optional_discovery_packages_have_archive_and_clean_install_parity(self) -> None:
+        version = "v0.4.0"
+        expected_resources = {
+            "explore": {
+                "assets/exploration-skeleton.md",
+                "references/discovery-support.md",
+                "references/option-discovery-methods.md",
+                "references/high-impact-decision-method.md",
+            },
+            "research": {
+                "assets/research-skeleton.md",
+                "references/discovery-support.md",
+                "references/source-and-repository-method.md",
+                "references/experiment-and-confidence-method.md",
+            },
+        }
+        shared_policy = (ROOT / "templates/shared/discovery-support.md").read_bytes()
+        forbidden = (
+            b"skills/explore/SKILL.md",
+            b"skills/research/SKILL.md",
+            b"templates/shared",
+            b"dist/adapters",
+        )
+
+        with tempfile.TemporaryDirectory(prefix="discovery-adapters-") as temp_dir:
+            output = Path(temp_dir)
+            archives = build_adapter_archives(version, output)
+            self.assertEqual(validate_adapter_archives(version, output), [])
+            self.assertEqual(
+                validate_clean_install_smoke(
+                    version,
+                    output,
+                    skill_names=("explore", "research"),
+                ),
+                [],
+            )
+
+            self.assertEqual(len(archives), len(SUPPORTED_ADAPTERS))
+            for archive_path in archives:
+                adapter_name = archive_path.name.removeprefix("rigorloop-adapter-").removesuffix(
+                    f"-{version}.zip"
+                )
+                config = ADAPTERS[adapter_name]
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = set(archive.namelist())
+                    for skill_name, resources in expected_resources.items():
+                        prefix = (config.skill_root / skill_name).as_posix()
+                        expected_entries = {
+                            f"{prefix}/SKILL.md",
+                            *(f"{prefix}/{resource}" for resource in resources),
+                        }
+                        with self.subTest(adapter=adapter_name, skill=skill_name):
+                            self.assertTrue(expected_entries <= names)
+                            self.assertEqual(
+                                archive.read(f"{prefix}/references/discovery-support.md"),
+                                shared_policy,
+                            )
+                            package_bytes = b"\n".join(
+                                archive.read(name)
+                                for name in sorted(expected_entries)
+                            )
+                            self.assertFalse(any(item in package_bytes for item in forbidden))
+                            expected_path = (
+                                b"docs/explorations/YYYY-MM-DD-slug.md"
+                                if skill_name == "explore"
+                                else b"docs/research/YYYY-MM-DD-slug.md"
+                            )
+                            self.assertIn(expected_path, package_bytes)
+
     def test_v0_5_1_bundled_candidate_metadata_matches_generated_route_only_archives(self) -> None:
         version = "v0.5.1"
         bundled = json.loads(
