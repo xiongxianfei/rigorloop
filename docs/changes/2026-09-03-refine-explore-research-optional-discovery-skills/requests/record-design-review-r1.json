@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "operation": "record-package-review",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:bbe6053a0e3bb224dd9f536588d3dd52955d3ac1434af5dcb7d56a6d7a949411",
+  "package_kind": "design",
+  "members": {
+    "architecture": "docs/architecture/2026-09-03-refine-explore-research-optional-discovery-skills.md",
+    "spec": "specs/refine-explore-research-optional-discovery-skills.md"
+  },
+  "upstream_review_id": "proposal-review-r1",
+  "review_id": "design-review-r1",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/design-review-r1.md",
+  "stage_authority": "design-review"
+}

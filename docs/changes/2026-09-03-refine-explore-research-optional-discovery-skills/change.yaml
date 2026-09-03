@@ -1,0 +1,312 @@
+change_id: 2026-09-03-refine-explore-research-optional-discovery-skills
+title: Refine Explore and Research as Optional Discovery Skills
+classification: default
+risk: medium
+lifecycle_contract: stage-owned-change-local-v3
+artifact_states:
+  architecture:
+    authoring_evidence: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/architecture-authoring.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-09-03-refine-explore-research-optional-discovery-skills.md
+    role: primary
+  plan:
+    authoring_evidence: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/plan-authoring.md
+    kind: plan
+    lifecycle_state: review-required
+    path: docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md
+    role: primary
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-09-03-refine-explore-research-optional-discovery-skills.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r1
+      outcome: approved
+      record: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/proposal-review-r1.md
+      round: r1
+    role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/spec-authoring.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/refine-explore-research-optional-discovery-skills.md
+    role: primary
+review_packages:
+  delivery:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      plan: docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md
+    outcome: approved
+    package_kind: delivery
+    review_id: delivery-review-r1
+    review_round: r1
+    status: approved
+    upstream_review_id: design-review-r2
+  design:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      architecture: docs/architecture/2026-09-03-refine-explore-research-optional-discovery-skills.md
+      spec: specs/refine-explore-research-optional-discovery-skills.md
+    outcome: approved
+    package_kind: design
+    review_id: design-review-r2
+    review_round: r2
+    status: approved
+    upstream_review_id: proposal-review-r1
+workflow_state:
+  blocker: null
+  current_stage: verify
+  evidence: []
+  lifecycle_state: active
+  next_stage: verify
+  planned_work:
+    current_milestone: none
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+    initialization_basis:
+      review_id: delivery-review-r1
+      review_record: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/delivery-review-r1.md
+      review_round: r1
+      reviewed_artifact_path: docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md
+    latest_review:
+      artifact_id: plan
+      evidence:
+        - docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-final-r1.md
+      milestone_id: none
+      occurrence: final
+      round: r1
+      stage: code-review
+      status: approved
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    plan_artifact_id: plan
+    remaining_implementation_milestones: []
+workflow: {}
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/delivery-review-r1.md
+  review_log: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-log.md
+  reviewed_artifact: review-package:delivery
+  status: clean
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 2
+  artifacts:
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-09-03-refine-explore-research-optional-discovery-skills.md
+      artifact_role: primary
+      artifact_sha256: 1d1f20e8ea4d4e868121130644174322971e8479dd7fb121bd0ad16d4526e34a
+      authoring_evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/architecture-authoring.md
+      authoring_evidence_sha256: 5e3559d15cda4b509be5b325e75bd1ab6649da17aa1f943b4fd4d3858c86f024
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md
+      artifact_role: primary
+      artifact_sha256: 24f3acd041bdd46b56a5a45007f71ee38d9244d4ed07f48d2317718484d3c3fb
+      authoring_evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/plan-authoring.md
+      authoring_evidence_sha256: 346fdb16e6068d7886d9caaaca4803b051736c75e5487e7f960437578b7b032d
+      stage_authority: plan
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-09-03-refine-explore-research-optional-discovery-skills.md
+      artifact_role: primary
+      artifact_sha256: 05244a94120b937ee98ee3bcfa09a0930f3e8bbbb6398e4c5f3e73bf33029e97
+      authoring_evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/proposal-authoring.md
+      authoring_evidence_sha256: 3b69f84065f34f22ca0f624de9981f99372795cc86fee64d3c8af16cc1091409
+      stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/refine-explore-research-optional-discovery-skills.md
+      artifact_role: primary
+      artifact_sha256: d870c06717513ddd0952a559ce1af21dbafb165148d9af6e52d53e936d6e216e
+      authoring_evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/spec-authoring.md
+      authoring_evidence_sha256: e7d89c7c9fcbd50cfbcec45bf638084b76e0de7e7f594f2ac85c1d1fd5ccce58
+      stage_authority: spec
+  correction_history:
+    route-554ef8d60a708cd574beaf52f25dfe1289d9ea394440c0c6d6318e07eed469b0:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m1-r1-correction-route.md
+      evidence_sha256: 6d29b5241848276e43a557d8b0e9f93735e925d8bfad055d2ff4d065d9476d72
+      prior_lifecycle_revision: sha256:5858baf2d43639af3ed2e66336a03280b9cdf1fff8df8ef3c5105c4a630626ee
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m1-r1-correction-return.md
+      return_evidence_sha256: 581bf6d9a15045ed684c37450e6f5f2cf3a7e55e3e440ff963c7d728f978ea7d
+      return_stage: code-review
+      route_id: route-554ef8d60a708cd574beaf52f25dfe1289d9ea394440c0c6d6318e07eed469b0
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - ER-M1-CR1
+        lifecycle_state: active
+        milestone_id: M1
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+  milestones:
+    M1:
+      completion_fingerprint: 634e55dbcb57b113998b9ef6441af4be75385485ca2fbb8778b7dcdffad95c80
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m1-canonical-discovery-packages.md
+      evidence_sha256: 4fdb01016682118d2245dfc9b630a02bd2328e2d60b7be2d7583bcde4bcbd62d
+      milestone_id: M1
+      review_evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m1-r2.md
+      review_evidence_sha256: 78cc32b3281f9879bdf6c94a39eac6d722cc61fa190c7457ec874dcf96186aab
+      review_id: code-review-m1-r2
+      review_log_entry_sha256: c72cbd103b7a03158f512280c2479d6f38430ba065323943908ca9e9ec830c95
+      review_log_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m1-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M2:
+      completion_fingerprint: bc463f0bffa39d080220672c8df48c3f49442c6b3f40a51bd601440306d92ad5
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m2-routing-and-guidance.md
+      evidence_sha256: 5e7cdbb622f16e7b012e001619fad412b7d1ac91611d73ef4c0bf12c998f2155
+      milestone_id: M2
+      review_evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m2-r1.md
+      review_evidence_sha256: 1278c1793904be6a9f53060e3e8c9830cab7f691243c84a27d3aa28f30ffa16d
+      review_id: code-review-m2-r1
+      review_log_entry_sha256: d3e1770ab40be717bb603d848b45c3558dcaf64500fc2101c67b859583e27200
+      review_log_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m2-r1.md
+      review_recording_status: recorded
+      review_round: r1
+      review_stage: code-review
+      stage_authority: workflow
+    M3:
+      completion_fingerprint: 61468c813b81dc713587f19616b7e26a5f1a8a6305e258de8e3ead5450e82373
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m3-adapter-parity.md
+      evidence_sha256: aeee39c58ddb4c53946d3449f1436f050f0ca3750c3808846c61427d1079f6b2
+      milestone_id: M3
+      review_evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m3-r1.md
+      review_evidence_sha256: 660a38aea4f2a90b94fa63e3c0e41bffc0c8d02b6f302fcbc5945caf946abe26
+      review_id: code-review-m3-r1
+      review_log_entry_sha256: b6cf1c1cb9b71b4426dd9716dc18ee86a567d827af9c3fce63500dec548fca11
+      review_log_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-m3-r1.md
+      review_recording_status: recorded
+      review_round: r1
+      review_stage: code-review
+      stage_authority: workflow
+  package_reviews:
+    delivery:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/delivery-review-r1.md
+      evidence_sha256: 41b3ec6b49d8a1b12938e7383123319e42acf9aa63c3a9f5f2ea86c07397aa23
+      findings: []
+      members:
+        plan: docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md
+      outcome: approved
+      package_kind: delivery
+      review_id: delivery-review-r1
+      review_log_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-log.md
+      review_log_sha256: 26d8d989ca3d1c934efd86a1ad35087ce2302c89e10cc400f1c74bbb14eaa951
+      reviewer_authority: delivery-review
+      round: r1
+      stage_authority: delivery-review
+      upstream_review_id: design-review-r2
+    design:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/design-review-r2.md
+      evidence_sha256: d92a937683667970a76deffe97b2b2381581c111fd7931c9611d46614eaeccce
+      findings: []
+      members:
+        architecture: docs/architecture/2026-09-03-refine-explore-research-optional-discovery-skills.md
+        spec: specs/refine-explore-research-optional-discovery-skills.md
+      outcome: approved
+      package_kind: design
+      review_id: design-review-r2
+      review_log_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-log.md
+      review_log_sha256: 83cd29e6accf8e81e7a37e94ac4ca7053a673d728606a54661ebe26ea20eabd5
+      reviewer_authority: design-review
+      round: r2
+      stage_authority: design-review
+      upstream_review_id: proposal-review-r1
+  resolutions:
+    ER-M1-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-resolution.md
+      evidence_sha256: 76c9a2f4c8de55b70e505c3252f3635445a6961a3820758d0a2fdf6264a98e0f
+      finding_id: ER-M1-CR1
+      owner: M1 implementer
+      stage_authority: review-resolution
+  reviews:
+    final-code-review:
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/code-review-final-r1.md
+      evidence_sha256: 2db79add3cea19d1504d03aeaf6a517efb6327a5c645f878fa738a5dcf147320
+      outcome: approved
+      review_id: code-review-final-r1
+      review_log_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/review-log.md
+      review_log_sha256: 8fa49b5d7492c7867397cb91125b4f577f9ddf428763c607841f2fd5aa7d328f
+      reviewed_revision: 5b51a5bdbdd4ae4a453e21c829bf3c20d0f3baf8
+      round: r1
+      stage_authority: code-review
+    proposal:
+      artifact_path: docs/proposals/2026-09-03-refine-explore-research-optional-discovery-skills.md
+      artifact_sha256: 05244a94120b937ee98ee3bcfa09a0930f3e8bbbb6398e4c5f3e73bf33029e97
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/reviews/proposal-review-r1.md
+      evidence_sha256: b2b8966f71d8f68b44b5848ce58db789eeb7c068bf73742798868e2f9e0c8758
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r1
+      review_log_sha256: 6a51105d3a4e4441e2c18b32c188ccb0ada413ed15293e4500159be59e6870a1
+      round: r1
+      stage_authority: proposal-review
+  validations:
+    plan:
+      artifact_path: docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md
+      artifact_sha256: 24f3acd041bdd46b56a5a45007f71ee38d9244d4ed07f48d2317718484d3c3fb
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m1-canonical-discovery-packages.md
+      evidence_sha256: 4f6ac14031ef53796c80e212e1a322fd35cdf8c41c50dc3d693808000cb80495
+      stage_authority: implement
+      subject_path: docs/plans/2026-09-03-refine-explore-research-optional-discovery-skills.md
+      subject_sha256: 24f3acd041bdd46b56a5a45007f71ee38d9244d4ed07f48d2317718484d3c3fb
+    verify-result:
+      selector: lifecycle_cli.validations.verify-result
+      evidence_path: docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/verify-report.md
+      evidence_sha256: sha256:03349a20a4db09d9be7f5ee2fcd82f73de685da2cdbb45999e04367ba2f6240e
+      verified_subject_revision: 5b51a5bdbdd4ae4a453e21c829bf3c20d0f3baf8
+      stage_authority: verify
+  withdrawals: {}

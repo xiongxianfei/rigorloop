@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:6e10378644f8efd8131e005a2a35dd8eb727e55d83d8f53bc0b2bfbc528fdf8a",
+  "milestone_id": "M1",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m1-canonical-discovery-packages.md",
+  "stage_authority": "workflow"
+}

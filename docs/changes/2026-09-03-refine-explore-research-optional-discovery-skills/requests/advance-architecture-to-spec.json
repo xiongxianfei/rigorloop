@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "advance-stage",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:347f834d524c64e7e7bb91985301cf587e8c79f783ddf705846480904efcaaa0",
+  "source_stage": "architecture",
+  "destination_stage": "spec",
+  "stage_authority": "workflow"
+}

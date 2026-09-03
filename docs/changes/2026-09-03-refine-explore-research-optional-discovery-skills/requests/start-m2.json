@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "start-milestone",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:e6977cf3f463804d5cfd4b1d1307d13c3765f478c0b10c82b42c915c36fba92a",
+  "milestone_id": "M2",
+  "stage_authority": "workflow"
+}

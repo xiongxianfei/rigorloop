@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:376879f39ea5eeccdda36e5f26565f3241688cdd2a83886ecf343f408c892063",
+  "artifact_id": "proposal",
+  "artifact_kind": "proposal",
+  "artifact_role": "primary",
+  "artifact_path": "docs/proposals/2026-09-03-refine-explore-research-optional-discovery-skills.md",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/proposal-authoring.md",
+  "stage_authority": "proposal"
+}

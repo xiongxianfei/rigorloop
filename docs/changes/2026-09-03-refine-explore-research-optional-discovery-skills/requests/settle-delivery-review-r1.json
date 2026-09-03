@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "settle-review-package",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:e91e7ef134d4c288d3db585c1aee903523539b140003ba979bc2f4859389bb64",
+  "package_kind": "delivery",
+  "review_id": "delivery-review-r1",
+  "stage_authority": "delivery-review"
+}

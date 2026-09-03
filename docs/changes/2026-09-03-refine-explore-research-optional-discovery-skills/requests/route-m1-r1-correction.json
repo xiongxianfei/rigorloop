@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-09-03-refine-explore-research-optional-discovery-skills",
+  "expected_lifecycle_revision": "sha256:5858baf2d43639af3ed2e66336a03280b9cdf1fff8df8ef3c5105c4a630626ee",
+  "source_stage": "code-review",
+  "destination_stage": "implement",
+  "destination_artifact_id": "implement",
+  "reason": "upstream-proof-gap",
+  "evidence_path": "docs/changes/2026-09-03-refine-explore-research-optional-discovery-skills/evidence/m1-r1-correction-route.md",
+  "finding_ids": [
+    "ER-M1-CR1"
+  ],
+  "return_stage": "code-review",
+  "milestone_id": "M1",
+  "stage_authority": "workflow"
+}

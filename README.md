@@ -350,7 +350,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 - Per-change chain: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`
 - Periodic learning: `learn`
 
-`explore` and `research` run only when ambiguity, options, or current external facts matter. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.
+Explore (`explore`) expands a materially unclear decision space; Research (`research`) reduces bounded uncertainty about facts that can change a decision. Use both when the option comparison depends on unanswered research questions, and neither when direction and relevant facts are already clear. They are optional supporting skills: an explicit invocation writes a standalone artifact under `docs/explorations/` or `docs/research/`, and the owning stage must adopt any conclusion that affects its decision. Neither skill approves a direction or advances the lifecycle. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.
 
 Do not rely on `docs/project-map.md` when it is absent, stale, contradicted, or missing the relied-on area; refresh it or record a no-map rationale first.
 
