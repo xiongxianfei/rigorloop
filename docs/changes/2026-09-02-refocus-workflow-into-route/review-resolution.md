@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
+Review closeout: code-review-final-r4
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m1-r1
@@ -11,10 +12,10 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: proposal-review-r1
 
-- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-final-r1`, `code-review-final-r2`, `code-review-final-r3`
-- Findings resolved: 11
-- Unresolved findings: 1
-- Current result: Final holistic Code Review R3 confirms the mutation guards but finds that the `none` milestone sentinel suppresses final-review operation advertisement.
+- Reviews covered: `proposal-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-final-r1`, `code-review-final-r2`, `code-review-final-r3`, `code-review-final-r4`
+- Findings resolved: 12
+- Unresolved findings: 0
+- Current result: Final holistic Code Review R4 is clean; all implementation milestones and material findings are closed.
 
 ## Resolution Overview
 
@@ -31,7 +32,7 @@ Review closeout: proposal-review-r1
 | RFR-M3-CR2 | accepted | resolved | Normal `init --write-state` safely replaces only an exact lockfile-managed workflow target and rolls back failed replacement. |
 | RFR-FINAL-CR1 | accepted | resolved | Final holistic review now has an identity-bound receipt, correction route, and Code Review to Verify transition. |
 | RFR-FINAL-CR2 | accepted | resolved | Direct final-review mutations now enforce global open-finding and exact correction predicates. |
-| RFR-FINAL-CR3 | accepted | open | Normalize the no-active-milestone sentinel so route can discover final-review registration. |
+| RFR-FINAL-CR3 | accepted | resolved | The read model now advertises final-review registration when the active milestone sentinel is `none`. |
 
 ## Finding Details
 
@@ -245,7 +246,7 @@ Validation evidence: Final Code Review R3 inspected `a7168698..3613ef03`; all th
 
 Finding ID: RFR-FINAL-CR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: review-resolution
 Decision owner: none
@@ -255,4 +256,8 @@ Rationale: Route must be able to discover the final-review operation through aut
 Required outcome: Closed final implementation work with no receipt advertises `record-final-review`.
 Follow-up: Apply the one-helper correction and run Final Code Review R4.
 Validation target: focused final-review lifecycle context test.
-Validation evidence: pending Final Code Review R4.
+Validation evidence: Final Code Review R4 inspected `e0cb652e..184b9330`; authoritative status advertisement and the full focused and package suites pass.
+
+### code-review-final-r4
+
+No material findings. R4 independently confirmed RFR-FINAL-CR3 is resolved and the final holistic implementation is clean.
