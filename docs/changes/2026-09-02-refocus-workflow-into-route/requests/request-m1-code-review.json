@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:6202cd2fdaa1505b85748d97d847c24e0d8d933c66c433a399b7cd725832d8a7",
+  "milestone_id": "M1",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-workflow-context.md",
+  "stage_authority": "workflow"
+}

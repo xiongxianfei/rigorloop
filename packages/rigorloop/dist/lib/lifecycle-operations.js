@@ -4,7 +4,7 @@ import { join, relative, resolve, sep } from "node:path";
 
 import { LIFECYCLE_CONTRACT_V3, allowedArtifactKinds, allowedCorrectionDestinations, canonicalJson, correctionStageOrder, lifecycleContractVersion, parseLifecycleYaml, verificationCorrectionOwner } from "./lifecycle-contract.js";
 import { packageProjection, readPackageReview, reviewPackageContext } from "./lifecycle-packages.js";
-import { stageTransitionDecision } from "./lifecycle-stage-routing.js";
+import { openReviewFindingIds, stageTransitionDecision } from "./lifecycle-stage-routing.js";
 
 const REVIEW_OUTCOMES = new Set(["approved", "changes-requested", "blocked", "inconclusive", "clean-with-notes"]);
 const RESOLUTION_DISPOSITIONS = new Set(["accepted", "rejected", "deferred", "partially-accepted", "needs-decision"]);
@@ -398,6 +398,33 @@ function milestoneReview(root, change, request) {
   };
 }
 
+function finalReview(root, change, request) {
+  const evidence = safeFile(root, request.evidence_path);
+  const reviewId = metadata(evidence.text, "Review ID");
+  const rawRound = metadata(evidence.text, "Round");
+  const round = /^\d+$/.test(rawRound ?? "") ? `r${rawRound}` : rawRound;
+  const stage = metadata(evidence.text, "Stage");
+  const occurrence = metadata(evidence.text, "Reviewed occurrence");
+  const reviewedRevision = metadata(evidence.text, "Reviewed revision");
+  const outcome = reviewOutcome(evidence.text);
+  const recording = metadata(evidence.text, "Recording status");
+  const findings = findingSet(metadata(evidence.text, "Material findings"));
+  if (!reviewId || !/^r\d+$/.test(round ?? "") || stage !== "code-review" || occurrence !== "final" || reviewedRevision !== request.reviewed_revision || !["approved", "clean-with-notes"].includes(outcome) || recording !== "recorded") {
+    throw operationError("RL_OPERATION_NOT_PERMITTED", "final review completion requires exact recorded clean final code-review evidence", "final-review", [String(reviewId), String(occurrence), String(reviewedRevision), String(outcome)], "record-final-review");
+  }
+  if (findings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "final review contains material findings", "final-review-findings", findings);
+  const log = requireLogEntry(root, change.change_id, reviewId);
+  const globalOpenFindings = openReviewFindingIds(log.text);
+  if (globalOpenFindings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "final review log contains open findings", "final-review-findings", globalOpenFindings);
+  const logFacts = reviewLogFacts(log, reviewId);
+  const expectedRecord = `docs/changes/${change.change_id}/${logFacts.record}`;
+  const missingFindingState = logFacts.format === "prose" ? logFacts.findings === null || logFacts.openFindings === null : logFacts.findings === null;
+  if (logFacts.reviewId !== reviewId || logFacts.stage !== stage || logFacts.round !== round || logFacts.outcome !== outcome || (logFacts.record !== evidence.path && expectedRecord !== evidence.path) || logFacts.recording !== recording || missingFindingState || !noFindings(logFacts.findings) || !noFindings(logFacts.openFindings)) {
+    throw operationError("RL_OPERATION_NOT_PERMITTED", "final review receipt contradicts its canonical review-log occurrence", "review-log-consistency", [reviewId], "record-final-review");
+  }
+  return { evidence, log, outcome: "approved", reviewId, reviewedRevision, round, stage };
+}
+
 function expectedReviewAuthority(kind) {
   return kind === "proposal" ? "proposal-review" : null;
 }
@@ -505,12 +532,25 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     if (workflow.current_stage !== request.source_stage) throw operationError("RL_CORRECTION_ROUTE_INVALID", "route source must match current workflow stage", "correction-source", [String(workflow.current_stage), request.source_stage]);
     if (!allowedCorrectionDestinations(next).has(request.destination_stage)) throw operationError("RL_CORRECTION_ROUTE_INVALID", `correction destination: unknown_value ${String(request.destination_stage)}`, "correction-destination", [String(request.destination_stage)]);
     const verificationRoute = lifecycleContractVersion(next) === LIFECYCLE_CONTRACT_V3 && request.source_stage === "verify";
+    const finalPlanned = next.workflow_state?.planned_work;
+    const finalImplementationMilestones = Object.values(finalPlanned?.milestones ?? {}).filter((milestone) => milestone?.kind === "implementation");
+    const finalCodeReviewReady = lifecycleContractVersion(next) === LIFECYCLE_CONTRACT_V3
+      && request.source_stage === "code-review"
+      && finalPlanned?.current_milestone === "none"
+      && finalImplementationMilestones.length > 0
+      && finalImplementationMilestones.every((milestone) => milestone.state === "closed")
+      && Array.isArray(finalPlanned?.remaining_implementation_milestones)
+      && finalPlanned.remaining_implementation_milestones.length === 0;
+    const finalImplementationCorrection = finalCodeReviewReady
+      && request.reason === "implementation-defect"
+      && request.destination_stage === "implement"
+      && request.return_stage === "code-review";
     if (verificationRoute) {
       if (!VERIFICATION_CORRECTION_REASONS.has(request.reason)) throw operationError("RL_CORRECTION_ROUTE_INVALID", `verification correction reason: unknown_value ${String(request.reason)}`, "verification-correction-kind", [String(request.reason)]);
       const expectedOwner = verificationCorrectionOwner(request.reason);
       if (request.destination_stage !== expectedOwner) throw operationError("RL_CORRECTION_ROUTE_INVALID", "verification correction destination does not match its exact owner", "verification-correction-owner", [request.reason, request.destination_stage, expectedOwner]);
       if (request.return_stage !== VERIFICATION_RETURN_STAGES[expectedOwner]) throw operationError("RL_CORRECTION_ROUTE_INVALID", "verification correction return stage does not enforce required rereview", "verification-correction-return", [request.destination_stage, request.return_stage, VERIFICATION_RETURN_STAGES[expectedOwner]]);
-    } else {
+    } else if (!finalImplementationCorrection) {
       if (VERIFICATION_CORRECTION_REASONS.has(request.reason)) throw operationError("RL_CORRECTION_ROUTE_INVALID", `correction reason: unknown_value ${String(request.reason)}`, "correction-reason", [String(request.reason)]);
       if (request.return_stage !== request.source_stage) throw operationError("RL_CORRECTION_ROUTE_INVALID", "ordinary correction return stage must match its source stage", "correction-source", [request.source_stage, request.return_stage]);
     }
@@ -529,7 +569,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const stageDestination = STAGE_CORRECTION_DESTINATIONS.has(request.destination_stage);
     if (stageDestination) {
       if (request.destination_artifact_id !== request.destination_stage) throw operationError("RL_CORRECTION_ROUTE_INVALID", "stage correction destination identity must equal its owner stage", "correction-destination", [request.destination_artifact_id, request.destination_stage]);
-      if (request.destination_stage === "implement" && !verificationRoute && !request.milestone_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "implementation correction requires the current milestone identity", "correction-source", [String(request.milestone_id)]);
+      if (request.destination_stage === "implement" && !verificationRoute && !finalImplementationCorrection && !request.milestone_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "implementation correction requires the current milestone identity", "correction-source", [String(request.milestone_id)]);
     } else if (packageDestination) {
       const design = next.review_packages?.design;
       if (request.destination_stage !== "design-review" || design?.status !== "approved" || design?.authority !== "granted" || design.review_id !== packageReview.upstream_review_id) throw operationError("RL_CORRECTION_ROUTE_INVALID", "delivery upstream correction must target its current approved design package", "correction-destination", [request.destination_stage, request.destination_artifact_id, String(design?.review_id)]);
@@ -579,6 +619,10 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     workflow.next_stage = request.return_stage;
     workflow.blocker = null;
     if (stageDestination && request.destination_stage === "implement" && request.milestone_id) planned.milestones[request.milestone_id].state = "implementing";
+    if (finalImplementationCorrection) {
+      delete state.reviews["final-code-review"];
+      planned.latest_review = resetLatestReview();
+    }
     return { status: "routed", candidate: next, operationResult: { route_id: routeId, source_stage: request.source_stage, destination_stage: request.destination_stage, destination_artifact_id: request.destination_artifact_id, reason: request.reason, finding_ids: [...request.finding_ids].sort(), return_stage: request.return_stage, evidence_path: evidence.path, source_snapshot: { current_stage: state.active_correction.source_snapshot.current_stage, next_stage: state.active_correction.source_snapshot.next_stage, lifecycle_state: state.active_correction.source_snapshot.lifecycle_state, blocker: state.active_correction.source_snapshot.blocker, milestone_id: state.active_correction.source_snapshot.milestone_id, milestone_state: state.active_correction.source_snapshot.milestone_state } } };
   }
 
@@ -852,6 +896,32 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     next.review.status = registered.outcome === "approved" ? "clean" : registered.outcome;
     next.review.unresolved_items = registered.findings.length;
     return { status: "settled", candidate: next, operationResult: { package_kind: request.package_kind, members: context.members, upstream_review_id: context.upstream_review_id, review_id: registered.review_id, outcome: registered.outcome, authority: desiredProjection.authority } };
+  }
+
+  if (request.operation === "record-final-review") {
+    requireSchema2(state);
+    const planned = next.workflow_state?.planned_work;
+    const implementationMilestones = Object.values(planned?.milestones ?? {}).filter((milestone) => milestone?.kind === "implementation");
+    if (next.workflow_state?.current_stage !== "code-review" || !planned || planned.current_milestone !== "none" || planned.remaining_implementation_milestones?.length !== 0 || !implementationMilestones.length || implementationMilestones.some((milestone) => milestone.state !== "closed")) {
+      throw operationError("RL_OPERATION_NOT_PERMITTED", "final review can be recorded only after every implementation milestone closes", "final-review-readiness", [String(next.workflow_state?.current_stage), String(planned?.current_milestone)]);
+    }
+    const review = finalReview(root, next, request);
+    const registration = {
+      evidence_path: review.evidence.path,
+      evidence_sha256: review.evidence.sha256,
+      outcome: review.outcome,
+      review_id: review.reviewId,
+      review_log_path: review.log.path,
+      review_log_sha256: review.log.sha256,
+      reviewed_revision: review.reviewedRevision,
+      round: review.round,
+      stage_authority: "code-review",
+    };
+    const projection = { artifact_id: "plan", evidence: [review.evidence.path], milestone_id: "none", occurrence: "final", round: review.round, stage: "code-review", status: "approved" };
+    if (canonicalJson(state.reviews["final-code-review"]) === canonicalJson(registration) && canonicalJson(planned.latest_review) === canonicalJson(projection)) return { status: "already-recorded", candidate: change };
+    state.reviews["final-code-review"] = registration;
+    planned.latest_review = projection;
+    return { status: "recorded", candidate: next, operationResult: { review_id: review.reviewId, reviewed_revision: review.reviewedRevision, occurrence: "final" } };
   }
 
   if (request.operation === "start-milestone") {

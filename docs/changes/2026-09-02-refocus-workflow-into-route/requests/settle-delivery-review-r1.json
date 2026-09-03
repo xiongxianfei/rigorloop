@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "settle-review-package",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:80fb4e48e03df1c39698e2b9a5d500faff570efcf651a53183aeb0490d2c1faa",
+  "package_kind": "delivery",
+  "review_id": "delivery-review-r1",
+  "stage_authority": "delivery-review"
+}

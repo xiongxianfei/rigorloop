@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "complete-milestone",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:8e01a9c8484614811e9e1a4ce0d32c39e2d6891423ad9d9951000c50b3815450",
+  "milestone_id": "M2",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m2-route-canonical-cutover.md",
+  "review_evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m2-r2.md",
+  "stage_authority": "workflow"
+}

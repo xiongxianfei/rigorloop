@@ -40,6 +40,7 @@ export const LIFECYCLE_OPERATIONS = Object.freeze([
   "initialize-approved-plan",
   "start-milestone",
   "complete-milestone",
+  "record-final-review",
   "route-correction",
   "return-correction",
   "withdraw-artifact-registration",
@@ -112,6 +113,7 @@ const OPERATION_FIELDS = Object.freeze({
   "initialize-approved-plan": ["artifact_id", "stage_authority"],
   "start-milestone": ["milestone_id", "stage_authority"],
   "complete-milestone": ["milestone_id", "evidence_path", "review_evidence_path", "stage_authority"],
+  "record-final-review": ["evidence_path", "reviewed_revision", "stage_authority"],
   "route-correction": ["source_stage", "destination_stage", "destination_artifact_id", "reason", "evidence_path", "finding_ids", "return_stage", "milestone_id", "stage_authority"],
   "return-correction": ["route_id", "evidence_path", "stage_authority"],
   "withdraw-artifact-registration": ["artifact_id", "artifact_path", "canonical_owner_change_id", "reason", "evidence_path", "stage_authority"],
@@ -135,6 +137,7 @@ const OPERATION_CONTRACTS = Object.freeze({
   "initialize-approved-plan": { required: ["artifact_id", "stage_authority"], authorities: ["plan"] },
   "start-milestone": { required: ["milestone_id", "stage_authority"], authorities: ["workflow"] },
   "complete-milestone": { required: ["milestone_id", "evidence_path", "stage_authority"], authorities: ["workflow"] },
+  "record-final-review": { required: ["evidence_path", "reviewed_revision", "stage_authority"], authorities: ["workflow"] },
   "route-correction": { required: ["source_stage", "destination_stage", "destination_artifact_id", "reason", "evidence_path", "finding_ids", "return_stage", "stage_authority"], authorities: ["workflow"] },
   "return-correction": { required: ["route_id", "evidence_path", "stage_authority"], authorities: ["workflow"] },
   "withdraw-artifact-registration": { required: ["artifact_id", "artifact_path", "canonical_owner_change_id", "reason", "evidence_path", "stage_authority"], authorities: ["workflow"] },
@@ -153,6 +156,7 @@ const V3_STAGE_TRANSITIONS = Object.freeze({
   "design-review": ["plan"],
   plan: ["delivery-review"],
   "delivery-review": ["implement"],
+  "code-review": ["verify"],
 });
 const V3_ARTIFACT_KINDS = Object.freeze(["proposal", "spec", "architecture", "adr", "plan"]);
 const V3_CORRECTION_STAGES = Object.freeze(["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "ci-maintenance", "external-evidence-acquisition", "verify", "pr"]);
@@ -465,6 +469,9 @@ export function validateLifecycleRequest(request) {
     if (request[field] !== undefined && (typeof request[field] !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(request[field]))) {
       return { ok: false, errors: [requestError(`${field} must be one safe identifier`)] };
     }
+  }
+  if (request.reviewed_revision !== undefined && (typeof request.reviewed_revision !== "string" || !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(request.reviewed_revision))) {
+    return { ok: false, errors: [requestError("reviewed_revision must be a 40- or 64-character lowercase hex revision")] };
   }
   if (request.finding_ids !== undefined && (!Array.isArray(request.finding_ids) || request.finding_ids.some((value) => typeof value !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value)) || new Set(request.finding_ids).size !== request.finding_ids.length)) {
     return { ok: false, errors: [requestError("finding_ids must be a unique array of safe identifiers")] };

@@ -57,7 +57,7 @@ skills:
   vision:
     portable: true
     adapters: [codex, claude, opencode]
-  workflow:
+  route:
     portable: true
     adapters: [codex, claude, opencode]
 command_aliases:

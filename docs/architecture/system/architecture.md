@@ -1,5 +1,7 @@
 # RigorLoop Canonical System Architecture
 
+Current route amendment: `route` is the sole public semantic workflow router, `rigorloop workflow-context` supplies deterministic project-local facts, and `docs/workflows.md` and the former public `workflow` package have no current authority. Stable `stage_authority: workflow` and `workflow.automation` identifiers remain protocol state, not public skill names.
+
 ## Owning change record
 
 `docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml`
@@ -425,14 +427,14 @@ It is separate from `Architecture`: project maps describe observed repository re
 
 | Container | Responsibility | Technology / source |
 | --- | --- | --- |
-| Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
+| Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md` and `AGENTS.md`, with deterministic project-local facts exposed by `rigorloop workflow-context` |
 | Lifecycle artifacts and ADRs | Carry stable proposal, spec, architecture, ADR, plan, and test-spec intent plus their durable review and decision history | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, and `docs/plans/` |
 | Project maps | Carry living current-state repository orientation, map metadata, cited evidence, inference and unknown labels, root/area registration, risks, and open questions | Markdown in `docs/project-map.md` and `docs/project-map/` |
 | Token-cost benchmark fixtures and reports | Carry executable benchmark prompts, clean downstream fixtures, raw or sanitized run evidence, analyzer summaries, and longitudinal token-friendliness reports | Markdown/YAML/JSONL under `benchmarks/token-cost/` and `docs/reports/token-cost/` |
 | RigorLoop CLI package | Provides the `rigorloop` binary, project scaffolding, change metadata scaffolding, stable human/JSON command envelopes, bundled adapter metadata, verified adapter archive installation for supported adapters, proxy-safe download diagnostics, and durable lockfile writes for verified generated adapter output | Node/npm package under `packages/rigorloop`, published as `@xiongxianfei/rigorloop` only through the approved npm publication boundary |
 | Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
 | Change-local lifecycle and evidence | Sole mutable owner of governed artifact lifecycle, workflow routing, planned-work state, blockers, closeout readiness, the selected automation target, and evidence links; also owns review, resolution, explanation, validation, verification, and historical evidence | Markdown/YAML in `docs/changes/<change-id>/`, centered on `change.yaml` |
-| Workflow automation orchestration semantics | Defines public `$workflow auto: <stage>`, status, off, pause, and stage-handoff semantics without implementing a separate state machine or owning stage settlement | Markdown in the mapped `skills/workflow/` package: universal policy in `SKILL.md` plus governed lifecycle, bounded automation, and guide-authoring references |
+| Workflow automation orchestration semantics | Defines public `$route auto: <stage>`, status, off, pause, and stage-handoff semantics without implementing a separate state machine or owning stage settlement | Markdown in the mapped `skills/route/` package: universal policy in `SKILL.md` plus governed lifecycle, bounded automation, and boundary references |
 | Workflow lifecycle support | Validates structured targets, current prerequisites, fixed stage write boundaries, closed transitions, evidence consistency, and prospective migration without becoming a second normative workflow or claiming writer attribution | Published skills plus repository-owned validation and generation scripts |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
 | Canonical skills and adapter templates | Source instructions, packaged skill-local resources, workflow stages, and thin adapter entrypoints | Markdown in `skills/`, skill-local resources under each skill root, templates in `scripts/adapter_templates/` |
@@ -602,19 +604,17 @@ A change-local rule-disposition ledger maps every behaviorally significant curre
 
 Existing Gate A proves package structure, closed resource mappings, containment, presence, placeholders, and narrow forbidden claims. Gate B proves the same complete package across supported generated and packed adapter targets, including relative paths and raw-byte identity for untransformed resources. For `code-review`, deterministic install proof also materializes every supported target into a temporary tree and compares mapped-resource inventory, relative paths, and raw-byte identity; additional installer logic may add bounded filesystem checks. Semantic review separately proves that relocated rules keep their owner and meaning; no target-agent execution or transcript grading participates in acceptance.
 
-### Level 2 White-Box: Workflow Skill Package
+### Level 2 White-Box: Route Skill Package
 
-The published `workflow` capability is one governed package with five bounded parts:
+The published `route` capability is one governed package with four bounded parts:
 
 - canonical `SKILL.md` owns universal classification, source precedence, unknown-artifact behavior, lifecycle outline, isolation, high-level state ownership, stop and claim boundaries, resource triggers, and result or handoff policy;
 - `references/governed-lifecycle-routing.md` owns governed identity interpretation, lifecycle and architecture-assessment applicability, settlement, stage transitions, milestone and review-resolution return, final review, closeout, and contradictory-state procedure;
 - `references/bounded-workflow-automation.md` owns automation commands, target and occurrence, authorization identity, status, pause, resume, cancellation, packets, receipts, budgets, correction cycles, and automation-specific promotion procedure;
-- `references/workflow-guide-authoring.md` owns project workflow-guide creation, refresh, skeleton use, customization recording, and migration notes; and
-- `references/boundary-first-method-v1.md` and `assets/workflows-skeleton.md` retain their existing shared-method and structural-layout responsibilities.
+- `references/boundary-first-method-v1.md` retains its shared-method responsibility.
 
 Conditional disclosure does not delegate workflow authority.
 Automation consumes governed transition decisions and cannot redefine stage order, applicability, settlement, architecture assessment, final review, or closeout.
-Guide authoring renders established routing rules and cannot redefine source precedence or lifecycle policy.
 Any contradiction between the universal file and mapped references is a package defect rather than a local precedence choice.
 
 Invocation assembly is authority-bound.
@@ -692,7 +692,7 @@ Deterministic compatibility validators reject unknown values before consistency 
 4. Every supported formal lifecycle review records change-local review evidence or reports blocked recording. Clean no-finding reviews use lightweight receipts; material findings use detailed review records.
 5. `review-log.md` indexes clean receipts and detailed review records so review events are discoverable without chat history.
 6. `review-resolution.md` closes material findings only after final dispositions, actions, rationale, and validation evidence are recorded. Clean no-finding reviews do not create empty `review-resolution.md` solely because a receipt exists.
-7. `$workflow auto: <target>` records one structured repository-local target.
+7. `$route auto: <target>` records one structured repository-local target.
    It does not pre-set future readiness or create another authorization layer.
 8. Before each invocation, workflow reads the matching settled artifact state,
    current `workflow_state`, stage-owned evidence, and exact artifact or
@@ -831,7 +831,7 @@ Legal temporary states are limited to authoring/revision/blocked without `planne
 
 ### Workflow package loading and simplification flow
 
-1. Every invocation enters canonical `skills/workflow/SKILL.md` and receives universal classification, authority, isolation, stop, claim, resource-trigger, and handoff policy.
+1. Every invocation enters canonical `skills/route/SKILL.md` and receives universal classification, authority, isolation, stop, claim, resource-trigger, and handoff policy.
 2. Classification selects exactly one valid assembly or an explicit stop outcome from current governed, command, armed, and guide-authoring evidence.
 3. Governed reads or transitions load `references/governed-lifecycle-routing.md`; read-only use does not imply mutation authority.
 4. Stateless `status` or `off` loads only automation procedure and creates no state. A new target enters transient bootstrap, validates governed identity, reclassifies, loads governed procedure, and only then persists authorization or run state.
@@ -1121,7 +1121,7 @@ No retirement slice may remove them until old-versus-replacement proof and rollb
 
 For `code-review`, `SKILL.md`, the boundary reference, the conditional automation reference, and both structural assets deploy as one package revision. Generated targets may not mix old inline procedure with a new reference or vice versa. Every supported target, including a pure-copy install, is materialized into a temporary tree and checked for mapped-resource inventory, relative paths, and raw-byte identity. The proof ends at filesystem identity and never invokes Codex, Claude Code, opencode, or another model runtime.
 
-For `workflow`, `SKILL.md`, the boundary reference, the governed lifecycle reference, the bounded automation reference, the guide-authoring reference, and the workflow-guide skeleton deploy as one package revision. Generated, archived, and installed targets may not mix old inline procedure with new conditional references or combine resources from different package versions. Existing mapped-resource inventory, containment, relative-path, and raw-byte parity checks remain the deterministic deployment proof; semantic assembly and ownership remain review evidence. The proof ends before any target runtime starts or receives a prompt.
+For `route`, `SKILL.md`, the boundary reference, the governed lifecycle reference, and the bounded automation reference deploy as one package revision. Generated, archived, and installed targets may not mix old inline procedure with new conditional references or combine resources from different package versions. Existing mapped-resource inventory, containment, relative-path, and raw-byte parity checks remain the deterministic deployment proof; semantic assembly and ownership remain review evidence. The proof ends before any target runtime starts or receives a prompt.
 
 The main execution and publication boundaries are:
 

@@ -14,13 +14,13 @@ Clean formal review writes one receipt and `review-log.md` entry without empty r
 
 After writing the review and log, run `rigorloop lifecycle context proposal-review --change <change-id> --format json`. Submit `record-review` with its lifecycle revision, exact proposal ID, review path, and `stage_authority: proposal-review`; refresh context and submit `settle-artifact` for the same target and authority. The CLI validates identity, round, findings, freshness, and authority and derives the result.
 
-Never edit settlement fields. Preserve a successfully recorded review when settlement blocks. `already-recorded` is identical success. Settlement never advances routing; workflow owns continuation.
+Never edit settlement fields. Preserve a successfully recorded review when settlement blocks. `already-recorded` is identical success. Settlement never advances routing; route owns continuation.
 
 ## Workflow-managed automated review
 
 For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any automation-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
 
-Use neutral packet and ordered receipts; corrections require separate authority, named surfaces, named proof, and rereview. Pause on owner decisions, scope expansion, stale identity, new finding classes, non-shrinking correction, or exhausted bounds. Return control to workflow without redefining settlement or continuation.
+Use neutral packet and ordered receipts; corrections require separate authority, named surfaces, named proof, and rereview. Pause on owner decisions, scope expansion, stale identity, new finding classes, non-shrinking correction, or exhausted bounds. Return control to `route` without redefining settlement or continuation.
 
 ## Resource failure
 

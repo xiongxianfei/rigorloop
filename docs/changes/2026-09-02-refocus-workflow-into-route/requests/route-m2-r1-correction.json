@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:34b7aab4a9468b281d612e6b6417f76f4b53482370f24bdcd944ae1038448277",
+  "source_stage": "code-review",
+  "destination_stage": "implement",
+  "destination_artifact_id": "implement",
+  "reason": "upstream-proof-gap",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m2-r1-correction-route.md",
+  "finding_ids": [
+    "RFR-M2-CR1",
+    "RFR-M2-CR2"
+  ],
+  "return_stage": "code-review",
+  "milestone_id": "M2",
+  "stage_authority": "workflow"
+}

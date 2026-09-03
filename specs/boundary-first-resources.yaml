@@ -5,7 +5,7 @@ resources:
     source: specs/references/boundary-first-method-v1.md
     target: references/boundary-first-method-v1.md
     consumers:
-      - workflow
+      - route
       - spec
       - design-review
       - plan

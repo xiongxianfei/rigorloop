@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:fea8b098c534579c2fab174663328cbc5e5b7850800984884091df9e9211ea33",
+  "artifact_id": "architecture",
+  "artifact_kind": "architecture",
+  "artifact_role": "primary",
+  "artifact_path": "docs/architecture/2026-09-02-refocus-workflow-into-route.md",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md",
+  "stage_authority": "architecture"
+}

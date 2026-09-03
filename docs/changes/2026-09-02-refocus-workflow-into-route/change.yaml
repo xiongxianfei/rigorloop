@@ -4,6 +4,24 @@ classification: default
 risk: medium
 lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
+  adr-route-context-and-skill-identity:
+    authoring_evidence: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md
+    kind: adr
+    lifecycle_state: review-required
+    path: docs/adr/ADR-20260902-route-context-and-skill-identity.md
+    role: supporting
+  architecture:
+    authoring_evidence: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-09-02-refocus-workflow-into-route.md
+    role: primary
+  plan:
+    authoring_evidence: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/plan-authoring.md
+    kind: plan
+    lifecycle_state: review-required
+    path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+    role: primary
   proposal:
     kind: proposal
     lifecycle_state: accepted
@@ -15,12 +33,78 @@ artifact_states:
       record: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/proposal-review-r1.md
       round: r1
     role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/spec-authoring.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/refocus-workflow-into-route.md
+    role: primary
+review_packages:
+  delivery:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      plan: docs/plans/2026-09-02-refocus-workflow-into-route.md
+    outcome: approved
+    package_kind: delivery
+    review_id: delivery-review-r1
+    review_round: r1
+    status: approved
+    upstream_review_id: design-review-r1
+  design:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      adr-route-context-and-skill-identity: docs/adr/ADR-20260902-route-context-and-skill-identity.md
+      architecture: docs/architecture/2026-09-02-refocus-workflow-into-route.md
+      spec: specs/refocus-workflow-into-route.md
+    outcome: approved
+    package_kind: design
+    review_id: design-review-r1
+    review_round: r1
+    status: approved
+    upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: proposal-review
+  current_stage: verify
   evidence: []
   lifecycle_state: active
-  next_stage: proposal-review
+  next_stage: verify
+  planned_work:
+    current_milestone: none
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+    initialization_basis:
+      review_id: delivery-review-r1
+      review_record: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/delivery-review-r1.md
+      review_round: r1
+      reviewed_artifact_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+    latest_review:
+      artifact_id: plan
+      evidence:
+        - docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-final-r4.md
+      milestone_id: none
+      occurrence: final
+      round: r4
+      stage: code-review
+      status: approved
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    plan_artifact_id: plan
+    remaining_implementation_milestones: []
 workflow: {}
 artifacts: {}
 requirements: []
@@ -28,14 +112,38 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/proposal-review-r1.md
+  latest_review: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-final-r4.md
   review_log: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
-  reviewed_artifact: docs/proposals/2026-09-02-refocus-workflow-into-route.md
+  reviewed_artifact: branch:184b9330de4fc2b1c398354c53fbee2148944675
   status: clean
   unresolved_items: 0
 lifecycle_cli:
-  schema_version: 1
+  schema_version: 2
   artifacts:
+    adr-route-context-and-skill-identity:
+      artifact_kind: adr
+      artifact_path: docs/adr/ADR-20260902-route-context-and-skill-identity.md
+      artifact_role: supporting
+      artifact_sha256: f09d242c3d65fc4fd8fcc412d30a880554786fa4b22edd1ec6fff9c329773d5c
+      authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md
+      authoring_evidence_sha256: 8bb03fc3d1df8ae2500d3bf9301b3890e805b44d08e239eb6b6c29b6ec33b8e3
+      stage_authority: architecture
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-09-02-refocus-workflow-into-route.md
+      artifact_role: primary
+      artifact_sha256: 9fc1bd38151f710c036a6466661927c28681f83fe90cea5a8ffcbcb8d7a06a73
+      authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/architecture-authoring.md
+      authoring_evidence_sha256: 8bb03fc3d1df8ae2500d3bf9301b3890e805b44d08e239eb6b6c29b6ec33b8e3
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+      artifact_role: primary
+      artifact_sha256: 825e74a85b56a43db8f8a47191882794d95dd27cf65ffe0e968358b7203b162d
+      authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/plan-authoring.md
+      authoring_evidence_sha256: a1d500641d33986f1ceccc02032d672a60bdfd34b0ec06714098a2cac45d40a2
+      stage_authority: plan
     proposal:
       artifact_kind: proposal
       artifact_path: docs/proposals/2026-09-02-refocus-workflow-into-route.md
@@ -44,11 +152,356 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/proposal-authoring.md
       authoring_evidence_sha256: 3fc8eb634d3288db3cfa154a568c103725be8a5a1fee563e4c8b131f1fcc9e7a
       stage_authority: proposal
-  correction_history: {}
-  milestones: {}
-  package_reviews: {}
-  resolutions: {}
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/refocus-workflow-into-route.md
+      artifact_role: primary
+      artifact_sha256: a664f27e23e3052fd11fd5e3595a4c4a4d99329ef32470617115cc8bfa780826
+      authoring_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/spec-authoring.md
+      authoring_evidence_sha256: 346e7d93a747cec91fd972d2445f82f622b7d4d04095a326b68d9bdd36dc3cdd
+      stage_authority: spec
+  correction_history:
+    route-0797b4c0215d1ae0e202accdd4dda718830b4bbcbd1690a0320cecb4c71254e8:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m2-r1-correction-route.md
+      evidence_sha256: df47fd20a7977e4bfbf85da46ccd85fd7b27227c472b06304d3d04c9a1482795
+      prior_lifecycle_revision: sha256:34b7aab4a9468b281d612e6b6417f76f4b53482370f24bdcd944ae1038448277
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m2-r1-correction-return.md
+      return_evidence_sha256: 9db693b6a0bc22be56f84ce706fbc61550cb8bed2de7036847b8cc7910f440b3
+      return_stage: code-review
+      route_id: route-0797b4c0215d1ae0e202accdd4dda718830b4bbcbd1690a0320cecb4c71254e8
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-M2-CR1
+          - RFR-M2-CR2
+        lifecycle_state: active
+        milestone_id: M2
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-225eff1036c8d2aa2e28ce7f63f619e6f4f9d25adca65025a29c882008947a87:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r1-correction-route.md
+      evidence_sha256: ca2ed739bc3211951a5103728525fc3dcc4850a07b1b07ec61e477f9a75c023a
+      prior_lifecycle_revision: sha256:57ffd0832e8920b1d0a86e1b0e4750e3eabb69cfe336254a3407354a9b3945de
+      reason: implementation-defect
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r1-correction-return.md
+      return_evidence_sha256: fe4bbfec962596b6e6256564bacdab489f98bea0990a5b1487b1b7ddb9177af9
+      return_stage: code-review
+      route_id: route-225eff1036c8d2aa2e28ce7f63f619e6f4f9d25adca65025a29c882008947a87
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-FINAL-CR1
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: code-review
+      status: returned
+    route-288302d5bd56f5d59badfda9f72049daefdd0bdc0e10e469c6bff96fd49b314c:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r2-correction-route.md
+      evidence_sha256: 803e61e4a6da331608f937293159a44aa854bc0edb7f8807bc4f04e7988e5cb4
+      prior_lifecycle_revision: sha256:3eac4af636fb3a61163e99ad7e1d68d4fe73e7036b89253b7043d6e09eec070b
+      reason: implementation-defect
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r2-correction-return.md
+      return_evidence_sha256: b21c148a2fa4995dc405b5d79b3926c66670db9e83aa3574d9a43dac15c4d0e6
+      return_stage: code-review
+      route_id: route-288302d5bd56f5d59badfda9f72049daefdd0bdc0e10e469c6bff96fd49b314c
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-FINAL-CR2
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: code-review
+      status: returned
+    route-4e469a45c97b4c34cfd9f87474a3f6693989d5269d4716921878cbd457e6072f:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m3-r1-correction-route.md
+      evidence_sha256: 18880990a4ec9e3930224e412fffa3a550bbb0118cfb9b0eb424836fc518f91a
+      prior_lifecycle_revision: sha256:84d27d6320ef0d78535deb4b9e21e03fb46b6f1c3b4af32f6f2bc25678f452a6
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m3-r1-correction-return.md
+      return_evidence_sha256: 2731e5d6e9558ac6afcbbba64956fb5ca94de17ce02628789ff047e9a958d4ed
+      return_stage: code-review
+      route_id: route-4e469a45c97b4c34cfd9f87474a3f6693989d5269d4716921878cbd457e6072f
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-M3-CR1
+          - RFR-M3-CR2
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-7ca766c633915ffaf21406090b6278a7b1ca5931bc6dda095f9ea77496bfaf13:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-r1-correction-route.md
+      evidence_sha256: a93561e040fd1c6737081f7ddb5ca1c60de96d91fd4b1dbd4d9b99495873b4c2
+      prior_lifecycle_revision: sha256:2b7a97caa10adf91a9c533bf77c9e7c1aa38fb3859eb3c27619192c7d72ec6d3
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-r1-correction-return.md
+      return_evidence_sha256: c8ea30bbb20b337cf2a97bf2885bf951bc7b23a832c85de4ec0f4e56c24d5496
+      return_stage: code-review
+      route_id: route-7ca766c633915ffaf21406090b6278a7b1ca5931bc6dda095f9ea77496bfaf13
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-M1-CR1
+          - RFR-M1-CR2
+          - RFR-M1-CR3
+        lifecycle_state: active
+        milestone_id: M1
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-7f7f6b2eb367e7179483e20891aebf756c6cdbcbb0164fc612cefa1f3285120a:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-r2-correction-route.md
+      evidence_sha256: 107511a8cd17e44bb4bfb3fd3cad59707b3606c1c5ce21a2e551c88d778691f5
+      prior_lifecycle_revision: sha256:b47cfc613146707c2d4eff076bfed5a30be551f9776c056d1e56086c9d5e54d3
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-r2-correction-return.md
+      return_evidence_sha256: 7a178a0e59268b64080ffc725f7cb3038e1d57677f38b157f4ea762d4aa38b3b
+      return_stage: code-review
+      route_id: route-7f7f6b2eb367e7179483e20891aebf756c6cdbcbb0164fc612cefa1f3285120a
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-M1-CR2
+          - RFR-M1-CR3
+          - RFR-M1-CR4
+          - RFR-M1-CR5
+        lifecycle_state: active
+        milestone_id: M1
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-d06ea669e8385fa7b9eaa786c8a0e488b19677145a21dc772fca7229466573f7:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r3-correction-route.md
+      evidence_sha256: 7a8042ecca8c4fae34a952c664626ad813bc621d7774d372a6ff26e79aa40e40
+      prior_lifecycle_revision: sha256:9e1c20be513fb564dfbb7029c32b3b31b30b0352fe5743ee52eeeb44990a1b7c
+      reason: implementation-defect
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r3-correction-return.md
+      return_evidence_sha256: be5a87ac35e397e3ec3c33cfa8dc11dd6d0fe0b6d5d630c8034af9cb4cc55669
+      return_stage: code-review
+      route_id: route-d06ea669e8385fa7b9eaa786c8a0e488b19677145a21dc772fca7229466573f7
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-FINAL-CR3
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: code-review
+      status: returned
+  milestones:
+    M1:
+      completion_fingerprint: dec375723c3286bce7ad0cfc3917138d515a2b40e5aeeb9547d721266e9b7bdf
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-workflow-context.md
+      evidence_sha256: 86b674abad9f4e916841daf33e1da9ecb2c64d3bcaf6568b1917363fe40e8577
+      milestone_id: M1
+      review_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m1-r3.md
+      review_evidence_sha256: 51cdf4347fa03e664d7953afb7ab5cad4a4c65e98560c8000cf083a946033834
+      review_id: code-review-m1-r3
+      review_log_entry_sha256: 80ecb482ef9544c4d0e3564ba12c0c363c92cbd2eb4d3cca7b3906c54ef6b7a2
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m1-r3.md
+      review_recording_status: recorded
+      review_round: r3
+      review_stage: code-review
+      stage_authority: workflow
+    M2:
+      completion_fingerprint: df600b7f2e29eb201a8ca8fc848ff8d9d3b324e6ab854f46ca51e1ea873586f8
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m2-route-canonical-cutover.md
+      evidence_sha256: 6b028c117dc8f42a069a78f9088eb147132f5dc5c3267c7d28c0827481f2e04c
+      milestone_id: M2
+      review_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m2-r2.md
+      review_evidence_sha256: cec3a4f6cfadcdc9075f9825a35219169ed0f196372f7cce8c5d9125ae677203
+      review_id: code-review-m2-r2
+      review_log_entry_sha256: e8d6b174adc51a4a7f5c3a7edc377cd86ff225cbd84f35e1731f392f71ae59d5
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m2-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+    M3:
+      completion_fingerprint: f824a7e2c32fa56060dc7431883b12664e0d8fe434b3a6b65f64e045039dee29
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m3-adapter-and-release-parity.md
+      evidence_sha256: e486e08f69605540d129ddf20e17ab99cf5af1b41f6379e060e08204d3e0b066
+      milestone_id: M3
+      review_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m3-r2.md
+      review_evidence_sha256: 208d816f964dfb6e48b5a416b1d95cde251567d164d8bcb9dfb1f63c2bf2892b
+      review_id: code-review-m3-r2
+      review_log_entry_sha256: eb7e7397ebdbc3f4b5b479cc3a84ccb6578195d409e1b7fc1fb6c4b0eed8b208
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-m3-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
+  package_reviews:
+    delivery:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/delivery-review-r1.md
+      evidence_sha256: 137c9ee9e31be0ed3be755b981457d23f633882cb8c3438ebe3ff05677df738a
+      findings: []
+      members:
+        plan: docs/plans/2026-09-02-refocus-workflow-into-route.md
+      outcome: approved
+      package_kind: delivery
+      review_id: delivery-review-r1
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_log_sha256: 26d8d989ca3d1c934efd86a1ad35087ce2302c89e10cc400f1c74bbb14eaa951
+      reviewer_authority: delivery-review
+      round: r1
+      stage_authority: delivery-review
+      upstream_review_id: design-review-r1
+    design:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/design-review-r1.md
+      evidence_sha256: 33da84940effc7f5681882f79a3c7c08acb2d684bfe5e321e0c3472eed89e395
+      findings: []
+      members:
+        adr-route-context-and-skill-identity: docs/adr/ADR-20260902-route-context-and-skill-identity.md
+        architecture: docs/architecture/2026-09-02-refocus-workflow-into-route.md
+        spec: specs/refocus-workflow-into-route.md
+      outcome: approved
+      package_kind: design
+      review_id: design-review-r1
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_log_sha256: caf1e0bcecefa993f861b27b112f3e73d10c44ea8c1c77052b20d3d0034e5502
+      reviewer_authority: design-review
+      round: r1
+      stage_authority: design-review
+      upstream_review_id: proposal-review-r1
+  resolutions:
+    RFR-M1-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: aad37f239fae191423f2bba891eb3254b3bfc749511505eea8188aeec334d54e
+      finding_id: RFR-M1-CR1
+      owner: M1 implementer
+      stage_authority: review-resolution
+    RFR-M1-CR2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 2686eb28b8bb20a22699333da8cbdc5563b032a22b60a40df8e627bb4e5e9ebd
+      finding_id: RFR-M1-CR2
+      owner: M1 implementer
+      stage_authority: review-resolution
+    RFR-M1-CR3:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 2686eb28b8bb20a22699333da8cbdc5563b032a22b60a40df8e627bb4e5e9ebd
+      finding_id: RFR-M1-CR3
+      owner: M1 implementer
+      stage_authority: review-resolution
+    RFR-M1-CR4:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 2686eb28b8bb20a22699333da8cbdc5563b032a22b60a40df8e627bb4e5e9ebd
+      finding_id: RFR-M1-CR4
+      owner: M1 implementer
+      stage_authority: review-resolution
+    RFR-M1-CR5:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 2686eb28b8bb20a22699333da8cbdc5563b032a22b60a40df8e627bb4e5e9ebd
+      finding_id: RFR-M1-CR5
+      owner: M1 implementer
+      stage_authority: review-resolution
+    RFR-M2-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 4acf9b28e55ea4813c3931f1301d4d50c64fb22b8da1157dbfd0f2778f4bd2f2
+      finding_id: RFR-M2-CR1
+      owner: M2 implementer
+      stage_authority: review-resolution
+    RFR-M2-CR2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 4acf9b28e55ea4813c3931f1301d4d50c64fb22b8da1157dbfd0f2778f4bd2f2
+      finding_id: RFR-M2-CR2
+      owner: M2 implementer
+      stage_authority: review-resolution
+    RFR-M3-CR1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 273dfd7542dad7cbc79abbeb6d4667090996cd503b65ea7455bde2927d6356d5
+      finding_id: RFR-M3-CR1
+      owner: M3 implementer
+      stage_authority: review-resolution
+    RFR-M3-CR2:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-resolution.md
+      evidence_sha256: 273dfd7542dad7cbc79abbeb6d4667090996cd503b65ea7455bde2927d6356d5
+      finding_id: RFR-M3-CR2
+      owner: M3 implementer
+      stage_authority: review-resolution
   reviews:
+    final-code-review:
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-final-r4.md
+      evidence_sha256: 5ae919597bb08b49f629f749c3bfaba6a6104b4ca3db8b4e536a76eb2ae4684a
+      outcome: approved
+      review_id: code-review-final-r4
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_log_sha256: 4a66ba104d3513aa78b9c36b7db911b3136a3fedd0fa9c65195a78d575105712
+      reviewed_revision: 184b9330de4fc2b1c398354c53fbee2148944675
+      round: r4
+      stage_authority: code-review
     proposal:
       artifact_path: docs/proposals/2026-09-02-refocus-workflow-into-route.md
       artifact_sha256: ae77a786e9a26720df5b820873bb2061a5a3e858f85e291d38b94411cd586c41
@@ -60,5 +513,19 @@ lifecycle_cli:
       review_log_sha256: f22626cfd13331c33c277162feaeb52fb72dcf6795bb113604525236c0860c3b
       round: r1
       stage_authority: proposal-review
-  validations: {}
+  validations:
+    plan:
+      artifact_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+      artifact_sha256: 825e74a85b56a43db8f8a47191882794d95dd27cf65ffe0e968358b7203b162d
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-workflow-context.md
+      evidence_sha256: d45d1743049fde855bd0363b628ea6b8cde2f10e0f277b93785bec6293c24a17
+      stage_authority: implement
+      subject_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
+      subject_sha256: 825e74a85b56a43db8f8a47191882794d95dd27cf65ffe0e968358b7203b162d
+    verify-result:
+      selector: lifecycle_cli.validations.verify-result
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/verify-report.md
+      evidence_sha256: sha256:115f85b3189d2af7b7c3fce0327da1c4e70401f2c1e9949a5af093a90cf779d1
+      verified_subject_revision: 184b9330de4fc2b1c398354c53fbee2148944675
+      stage_authority: verify
   withdrawals: {}

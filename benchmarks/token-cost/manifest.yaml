@@ -33,10 +33,10 @@ prompts:
     path: prompts/workflow-route.md
     tool: codex
     fixture: fixtures/minimal-public-project
-    expected_skill: workflow
+    expected_skill: route
     expected_result: pass
     tags:
-      - workflow
+      - route
       - routing
       - short-output
   - id: proposal-short

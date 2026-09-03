@@ -90,6 +90,6 @@ receipt and escalation gate. Pause when the manifest is missing or stale, the
 neutral packet leaks forbidden context, phase order is violated, independence
 is insufficient for the selected risk tier, a required second review is absent,
 findings remain unresolved, fidelity proof is incomplete, or correction exceeds
-its declared boundary. Report the precise failed gate to workflow. This
+its declared boundary. Report the precise failed gate to `route`. This
 procedure does not redefine the parent skill's native statuses, downstream
 authority, recording obligations, or universal stop conditions.

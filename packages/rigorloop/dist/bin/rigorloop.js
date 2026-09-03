@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
 import { basename, dirname, join, resolve } from "node:path";
@@ -150,6 +150,7 @@ Usage:
   rigorloop version
   rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
+  rigorloop workflow-context [--change <id>] [--format human|json]
   rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json]
   rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json]
   rigorloop logs path [--format human|json]
@@ -160,6 +161,7 @@ Commands:
   init codex|claude|opencode
                           Initialize verified target support.
   new-change              Plan a change metadata scaffold.
+  workflow-context        Report read-only project or exact-change workflow facts.
   lifecycle               Inspect, validate, and perform guarded governed lifecycle operations.
   logs                    Show the local log path or inspect one exact invocation.
 `;
@@ -1230,6 +1232,93 @@ function existingStateSafetyBlocker(descriptor, artifact) {
   return undefined;
 }
 
+function obsoleteWorkflowSkillBlocker(descriptor, entries = []) {
+  const installRoot = descriptor.primaryInstallRoot();
+  const obsoletePath = `${installRoot}/workflow`;
+  const replacementPath = `${installRoot}/route`;
+  const archiveHasObsolete = entries.some(
+    (entry) => entry.name === obsoletePath || entry.name.startsWith(`${obsoletePath}/`),
+  );
+  const archiveHasReplacement = entries.some(
+    (entry) => entry.name === replacementPath || entry.name.startsWith(`${replacementPath}/`),
+  );
+  const installedObsolete = pathState(resolve(process.cwd(), obsoletePath)) !== "absent";
+  const installedReplacement = pathState(resolve(process.cwd(), replacementPath)) !== "absent";
+
+  if (!archiveHasObsolete && !installedObsolete) {
+    return undefined;
+  }
+
+  const mixed = archiveHasReplacement || installedReplacement;
+  return {
+    code: mixed ? "mixed-route-workflow-skills" : "obsolete-workflow-skill",
+    message: mixed
+      ? `Current ${descriptor.displayName} skill inventory contains both obsolete workflow and replacement route packages.`
+      : `Current ${descriptor.displayName} skill inventory contains the obsolete workflow package.`,
+    path: obsoletePath,
+    replacement: "route",
+    next_action: `Remove ${obsoletePath}, then install and invoke route. Persisted workflow.automation state does not require migration.`,
+  };
+}
+
+function managedObsoleteWorkflowInstall(descriptor) {
+  const installRoot = descriptor.primaryInstallRoot();
+  const obsoletePath = `${installRoot}/workflow`;
+  const replacementPath = `${installRoot}/route`;
+  if (
+    pathState(resolve(process.cwd(), obsoletePath)) === "absent" ||
+    pathState(resolve(process.cwd(), replacementPath)) !== "absent"
+  ) {
+    return undefined;
+  }
+  const lockfileEntry = currentLockfileEntry(descriptor);
+  if (!lockfileEntry || lockfileDriftBlocker(lockfileEntry)) {
+    return undefined;
+  }
+  return { lockfileEntry, roots: lockfileEntryRoots(lockfileEntry) };
+}
+
+function archiveReplacesWorkflowWithRoute(descriptor, entries) {
+  const installRoot = descriptor.primaryInstallRoot();
+  const obsoletePath = `${installRoot}/workflow`;
+  const replacementPath = `${installRoot}/route`;
+  return (
+    entries.some((entry) => entry.name.startsWith(`${replacementPath}/`)) &&
+    !entries.some((entry) => entry.name === obsoletePath || entry.name.startsWith(`${obsoletePath}/`))
+  );
+}
+
+function snapshotManagedPaths(paths) {
+  const snapshot = [];
+  function visit(relativePath) {
+    const absolutePath = resolve(process.cwd(), relativePath);
+    const stat = statSync(absolutePath);
+    if (stat.isDirectory()) {
+      snapshot.push({ path: relativePath, kind: "directory" });
+      for (const name of readdirSync(absolutePath).sort()) {
+        visit(`${relativePath}/${name}`);
+      }
+    } else if (stat.isFile()) {
+      snapshot.push({ path: relativePath, kind: "file", bytes: readFileSync(absolutePath) });
+    }
+  }
+  for (const path of paths) {
+    visit(path);
+  }
+  return snapshot;
+}
+
+function restoreManagedPaths(snapshot) {
+  for (const entry of snapshot) {
+    if (entry.kind === "directory") {
+      mkdirSync(resolve(process.cwd(), entry.path), { recursive: true });
+    } else {
+      mkdirSync(dirname(resolve(process.cwd(), entry.path)), { recursive: true });
+      writeFileSync(resolve(process.cwd(), entry.path), entry.bytes);
+    }
+  }
+}
+
 function firstLockfileDriftBlocker() {
   for (const entry of currentLockfileEntries()) {
     const blocker = lockfileDriftBlocker(entry);
@@ -1977,6 +2066,20 @@ async function handleInit(flags, initArgs = []) {
   if (plan.blockers.length > 0 && !deferrableRootBlockers) {
     return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
   }
+  const managedObsoleteInstall = managedObsoleteWorkflowInstall(descriptor);
+  const obsoleteInstalledSkill = obsoleteWorkflowSkillBlocker(descriptor);
+  if (obsoleteInstalledSkill && !(flags.writeState && !flags.dryRun && managedObsoleteInstall)) {
+    if (managedObsoleteInstall) {
+      obsoleteInstalledSkill.next_action = flags.writeState
+        ? "Run init without --dry-run and keep --write-state to replace this exact lockfile-managed target with route."
+        : "Rerun init with --write-state to replace this exact lockfile-managed target with route.";
+    } else {
+      const selectedEntry = currentLockfileEntry(descriptor);
+      const selectedDrift = lockfileDriftBlocker(selectedEntry);
+      if (selectedDrift) obsoleteInstalledSkill.next_action = selectedDrift.next_action;
+    }
+    return writeBlockedResult(flags, plan, obsoleteInstalledSkill.message, [obsoleteInstalledSkill]);
+  }
   if (flags.dryRun) {
     const stateSafety = existingStateSafetyBlocker(descriptor);
     if (stateSafety) {
@@ -1994,8 +2097,18 @@ async function handleInit(flags, initArgs = []) {
       return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
     }
   }
+  const managedWorkflowMigration = Boolean(
+    flags.writeState &&
+      managedObsoleteInstall &&
+      archiveWork.entries &&
+      archiveReplacesWorkflowWithRoute(descriptor, archiveWork.entries),
+  );
   if (archiveWork.entries) {
-    const conflict = generatedOutputConflictBlocker(archiveWork.entries);
+    const obsoleteArchiveSkill = obsoleteWorkflowSkillBlocker(descriptor, archiveWork.entries);
+    if (obsoleteArchiveSkill && !managedWorkflowMigration) {
+      return writeBlockedResult(flags, plan, obsoleteArchiveSkill.message, [obsoleteArchiveSkill]);
+    }
+    const conflict = managedWorkflowMigration ? undefined : generatedOutputConflictBlocker(archiveWork.entries);
     if (conflict) {
       return writeBlockedResult(flags, plan, conflict.message, [conflict], "mutation_conflict");
     }
@@ -2013,11 +2126,25 @@ async function handleInit(flags, initArgs = []) {
         drift.code === "overwrite-refused" ? "mutation_conflict" : "blocked",
       );
     }
-    const installedTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor, { allowMissingOrEmpty: true });
-    if (installedTree.error) {
-      return writeValidationErrorResult(flags, plan, installedTree.error);
+    if (managedWorkflowMigration) {
+      plan.actions.push({
+        type: "replace",
+        path: descriptor.primaryInstallRoot(),
+        status: flags.dryRun ? "planned" : "pending",
+        reason: `Replace exact lockfile-managed ${descriptor.displayName} workflow package with route.`,
+      });
+      plan.artifacts.push({
+        path: descriptor.primaryInstallRoot(),
+        kind: "adapter-root",
+        status: flags.dryRun ? "planned" : "pending",
+      });
+    } else {
+      const installedTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor, { allowMissingOrEmpty: true });
+      if (installedTree.error) {
+        return writeValidationErrorResult(flags, plan, installedTree.error);
+      }
+      addArchiveActions(plan, archiveWork.entries, descriptor);
     }
-    addArchiveActions(plan, archiveWork.entries, descriptor);
   }
 
   if (archiveWork.blocker) {
@@ -2030,7 +2157,53 @@ async function handleInit(flags, initArgs = []) {
     return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
   }
 
-  if (!flags.dryRun) {
+  if (!flags.dryRun && managedWorkflowMigration) {
+    const managedRoots = managedObsoleteInstall.roots;
+    const rootSnapshot = snapshotManagedPaths(managedRoots);
+    const manifestPath = resolve(process.cwd(), "rigorloop.yaml");
+    const lockfilePath = resolve(process.cwd(), LOCKFILE_PATH);
+    const priorManifest = existsSync(manifestPath) ? readFileSync(manifestPath) : undefined;
+    const priorLockfile = readFileSync(lockfilePath);
+    try {
+      for (const root of managedRoots) {
+        rmSync(resolve(process.cwd(), root), { recursive: true });
+      }
+      writeArchiveEntries(archiveWork.entries, descriptor);
+      const verifiedInstalledTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor);
+      if (verifiedInstalledTree.error) {
+        throw Object.assign(new Error(verifiedInstalledTree.error.message), { validationError: verifiedInstalledTree.error });
+      }
+      writeFileSync(manifestPath, plan.manifest, "utf8");
+      const lockfile = lockfileForVerifiedInstall(
+        plan.info,
+        plan.source,
+        plan.manifest,
+        archiveWork.artifact,
+        verifiedInstalledTree.rootHashes,
+        descriptor,
+      );
+      writeFileSync(lockfilePath, serializeLockfile(lockfile), "utf8");
+      plan.planned_lockfile = lockfile;
+      for (const action of plan.actions.filter((action) => action.status === "pending")) action.status = "done";
+      for (const artifact of plan.artifacts.filter((artifact) => artifact.status === "pending")) artifact.status = "updated";
+    } catch (error) {
+      for (const root of managedRoots) {
+        rmSync(resolve(process.cwd(), root), { recursive: true, force: true });
+      }
+      restoreManagedPaths(rootSnapshot);
+      if (priorManifest === undefined) rmSync(manifestPath, { force: true });
+      else writeFileSync(manifestPath, priorManifest);
+      writeFileSync(lockfilePath, priorLockfile);
+      return writeValidationErrorResult(
+        flags,
+        plan,
+        error.validationError ?? {
+          code: "managed-migration-failed",
+          message: `Managed workflow-to-route migration failed and the prior target was restored: ${error.message}`,
+        },
+      );
+    }
+  } else if (!flags.dryRun) {
     const manifestAction = flags.writeState ? plan.actions.find((action) => action.path === "rigorloop.yaml") : undefined;
     const directoryActions = plan.actions.filter((action) => action.type === "create-dir" && action.status === "pending");
     for (const directoryAction of directoryActions) {
@@ -2161,6 +2334,17 @@ async function handleInit(flags, initArgs = []) {
 async function dispatchMain(rawArgs, invocation) {
   try {
     if (rawArgs[0] === "logs") return handleLogs(rawArgs.slice(1), invocation);
+    if (rawArgs[0] === "workflow-context") {
+      const { executeWorkflowContext } = await import("../lib/workflow-context.js");
+      const execution = executeWorkflowContext(rawArgs.slice(1));
+      activeOutput.terminalClass = execution.exitCode === 0 ? "success" : execution.exitCode === 2 || execution.exitCode === 4 ? "expected-rejection" : "internal-error";
+      activeOutput.deferredRender = () => execution.format === "json"
+        ? { stdout: `${JSON.stringify(execution.result, null, 2)}\n`, stderr: "" }
+        : execution.exitCode === 0
+          ? { stdout: execution.human, stderr: "" }
+          : { stdout: "", stderr: execution.human };
+      return execution.exitCode;
+    }
     if (rawArgs[0] === "lifecycle") {
       const { executeLifecycleCli, lifecycleTerminalClass } = await import("../lib/lifecycle-cli.js");
       const execution = executeLifecycleCli(rawArgs.slice(1));

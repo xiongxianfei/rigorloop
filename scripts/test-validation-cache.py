@@ -302,8 +302,8 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         self.assertEqual(
             paths,
             [
+                "AGENTS.md",
                 "CONSTITUTION.md",
-                "docs/workflows.md",
                 "specs/plan-index-lifecycle-ownership.md",
                 "specs/validation-idempotency-and-cache-hit-safety.md",
             ],
@@ -977,7 +977,7 @@ class ValidationCacheIdentityTests(unittest.TestCase):
         self.assertIsNone(validation_cache.find_local_cache_hit(cache_dir, helper_context).record)
 
         self.write_file("scripts/helper.py", "VALUE = 1\n")
-        self.write_file("docs/workflows.md", "changed workflow policy\n")
+        self.write_file("AGENTS.md", "changed workflow policy\n")
         policy_changed = validation_cache.build_lifecycle_cache_identity(self.temp_root, command)
         policy_context = context.with_updates(policy_hash=policy_changed.policy.manifest_hash)
         self.assertIsNone(validation_cache.find_local_cache_hit(cache_dir, policy_context).record)

@@ -9,7 +9,7 @@ import { clearOrphanedLifecycleLock, inspectLifecycleLock, inspectLifecycleRecov
 import { renderResult, RESULT_FORMATS } from "./result-renderer.js";
 
 const RESULT_FIELDS = ["schema_version", "command", "operation", "status", "change_id", "lifecycle_revision", "effective_state", "blockers", "permitted_operations", "artifacts", "warnings", "errors"];
-const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "record-package-review", "settle-review-package", "advance-stage", "initialize-approved-plan", "start-milestone", "complete-milestone", "route-correction", "return-correction", "withdraw-artifact-registration", "migrate", "repair"]);
+const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "record-package-review", "settle-review-package", "advance-stage", "initialize-approved-plan", "start-milestone", "complete-milestone", "record-final-review", "route-correction", "return-correction", "withdraw-artifact-registration", "migrate", "repair"]);
 const REPAIR_CHANGED_STATUSES = new Set(["cleared-orphaned-lock", "restored-prior", "committed-candidate", "abandoned-prepared"]);
 const REPAIR_UNCHANGED_STATUSES = new Set(["already-clear", "nothing-to-reconcile"]);
 const UNSAFE_RECOVERY_CODES = new Set(["RL_RECOVERY_REQUIRED", "RL_REPAIR_UNSAFE"]);

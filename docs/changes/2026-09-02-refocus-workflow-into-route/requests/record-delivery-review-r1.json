@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "operation": "record-package-review",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:1f53efb37928a6907fb993d31983b98c0b6e2c569032eeb25d08079b0fa62d0c",
+  "package_kind": "delivery",
+  "members": {
+    "plan": "docs/plans/2026-09-02-refocus-workflow-into-route.md"
+  },
+  "upstream_review_id": "design-review-r1",
+  "review_id": "delivery-review-r1",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/reviews/delivery-review-r1.md",
+  "stage_authority": "delivery-review"
+}

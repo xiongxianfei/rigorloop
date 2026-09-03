@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "start-milestone",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:7dacbba38663eaadf9bfc70889d9d6bc8433d6e8503c4900bf63ae7c5e3fc063",
+  "milestone_id": "M2",
+  "stage_authority": "workflow"
+}

@@ -41,6 +41,19 @@ class BaselineWarningTests(unittest.TestCase):
         payload["effective_state"]["unresolved_findings"].append("NEW-FINDING")
         self.assertFalse(MODULE.baseline_matches("2026-08-05-activate-boundary-first-v1-v0-3-7", payload))
 
+    def test_historical_cli_change_allows_only_known_stale_evidence(self):
+        change_id = "2026-08-24-governed-lifecycle-cli"
+        payload = {
+            "status": "blocked",
+            "errors": [],
+            "blockers": [{"code": "RL_STALE_EVIDENCE"}],
+            "effective_state": {"unresolved_findings": []},
+        }
+        self.assertTrue(MODULE.baseline_matches(change_id, payload))
+
+        payload["blockers"].append({"code": "RL_OPERATION_NOT_PERMITTED"})
+        self.assertFalse(MODULE.baseline_matches(change_id, payload))
+
 
 class WrapperExecutionTests(unittest.TestCase):
     class Result:

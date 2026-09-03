@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-validation",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:b2db5c9a5de3e82068a69495ab157853993dc07fa3e40b3b78b0e12f7f620503",
+  "artifact_id": "plan",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m1-workflow-context.md",
+  "subject_path": "docs/plans/2026-09-02-refocus-workflow-into-route.md",
+  "stage_authority": "implement"
+}

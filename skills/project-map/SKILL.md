@@ -36,13 +36,13 @@ If a required reference is missing, unreadable, escaped from the package, contra
 
 ## Customer-project orientation
 
-Public skills operate in customer-project mode by default. Treat `AGENTS.md`, `CONSTITUTION.md`, `docs/`, and `specs/` as optional project-local orientation inputs whose absence is normal. Do not search for RigorLoop originals in customer projects. Use `docs/workflows.md` and other project-local guidance when relevant, portable defaults when safe, and block on ambiguity.
+Public skills operate in customer-project mode by default. Treat `AGENTS.md`, `CONSTITUTION.md`, `docs/`, and `specs/` as optional project-local orientation inputs whose absence is normal. Do not search for RigorLoop originals in customer projects. Use authoritative CLI workflow context for governed placement, portable defaults when safe without claiming governed placement, and block on ambiguity.
 
 ## Invocation classification
 
 Classify operation as exactly `create`, `refresh`, or `audit`, and classify map scope as exactly `repository` or `area:<slug>` before broad repository reading.
 
-Resolve the target through this order: explicit user path; current metadata or active workflow context; the `docs/workflows.md` artifact map; portable default; then stop. Defaults are `docs/project-map.md` and `docs/project-map/<area>.md`. `project-map` owns content; workflow guidance owns placement policy.
+Resolve the target through this order: explicit user path checked against governance; authoritative CLI workflow context when governed; portable default; then stop. Defaults are `docs/project-map.md` and `docs/project-map/<area>.md`. `project-map` owns content; CLI context resolves governed placement without transferring content authority.
 
 Apply these target-state rules without implicit reclassification:
 
@@ -129,7 +129,7 @@ Use Mermaid only to clarify flows or boundaries. Tie nodes to observed component
 
 Downstream skills may use a current map for orientation. They must inspect source directly when it is stale or partial, scope is unreviewed, evidence conflicts, exact architecture or security behavior matters, paths disappeared, or a relied-on claim is inferred or unknown.
 
-Recommend `explore` for uncertainty, `proposal` for direction, `architecture` for future design, `workflow` for routing, or `none`. Isolated invocation never starts it automatically.
+Recommend `explore` for uncertainty, `proposal` for direction, `architecture` for future design, `route` for routing, or `none`. Isolated invocation never starts it automatically.
 
 ## Follow-up boundary
 

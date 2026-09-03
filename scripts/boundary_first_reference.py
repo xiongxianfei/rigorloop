@@ -12,14 +12,14 @@ from typing import Mapping
 METHOD_VERSION = "boundary-first-v1"
 RESOURCE_MANIFEST = Path("specs/boundary-first-resources.yaml")
 RESOURCE_MANIFEST_SHA256 = (
-    "8f255f2706fd18081921bb4725fd24715dddb9d61e0cc17cc36ec8cc4289ff71"
+    "eaa2572df6f1cde304fffbf3df146462ef038ca597e7fce2ad94bbde2c9465bf"
 )
 CANONICAL_REFERENCE = Path(
     "specs/references/boundary-first-method-v1.md"
 )
 PROJECTED_REFERENCE = Path("references/boundary-first-method-v1.md")
 GOVERNED_SKILLS = (
-    "workflow",
+    "route",
     "spec",
     "design-review",
     "plan",

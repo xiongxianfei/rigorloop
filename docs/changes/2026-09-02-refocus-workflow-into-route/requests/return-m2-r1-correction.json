@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "return-correction",
+  "change_id": "2026-09-02-refocus-workflow-into-route",
+  "expected_lifecycle_revision": "sha256:4b4af1a91f95f1dcd7b73bfe22bfcfb64d106333d2aa10399be016cf2f6eb3c5",
+  "route_id": "route-0797b4c0215d1ae0e202accdd4dda718830b4bbcbd1690a0320cecb4c71254e8",
+  "evidence_path": "docs/changes/2026-09-02-refocus-workflow-into-route/evidence/m2-r1-correction-return.md",
+  "stage_authority": "workflow"
+}

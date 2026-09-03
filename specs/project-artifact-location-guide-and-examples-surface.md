@@ -1,5 +1,7 @@
 # Project Artifact Location Guide and Fixture Ownership
 
+> Historical contract: superseded for current RigorLoop packages by `specs/refocus-workflow-into-route.md`. CLI workflow context now owns governed location resolution, and the retired workflow guide has no current authority.
+
 ## Status
 
 approved
