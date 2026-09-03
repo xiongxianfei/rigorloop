@@ -11,7 +11,7 @@ artifact_states:
     path: docs/architecture/2026-09-03-relax-pr-evidence-tail.md
     role: primary
   plan:
-    authoring_evidence: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/plan-authoring.md
+    authoring_evidence: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/plan-correction-r1.md
     kind: plan
     lifecycle_state: review-required
     path: docs/plans/2026-09-03-relax-pr-evidence-tail.md
@@ -54,7 +54,7 @@ review_packages:
     package_kind: delivery
     review_id: delivery-review-r1
     review_round: r1
-    status: changes-requested
+    status: review-required
     upstream_review_id: design-review-r1
   design:
     authority: granted
@@ -123,9 +123,9 @@ lifecycle_cli:
       artifact_kind: plan
       artifact_path: docs/plans/2026-09-03-relax-pr-evidence-tail.md
       artifact_role: primary
-      artifact_sha256: 915acbd2c90e67ac6cdd23c53d389e358666da846bc3b792a362323e0a98274f
-      authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/plan-authoring.md
-      authoring_evidence_sha256: 3cea14e0c26274552b525f56302bf436bf666f3e36a3d9176ce24f25b1b5b774
+      artifact_sha256: 9b762060e3022f6d0310ad8197ff363c92228c3bb89ff3d92d59935541bf4494
+      authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/plan-correction-r1.md
+      authoring_evidence_sha256: 2171b6135a81fcc63f4dc67dba78df407c6f45b0b2de85f5fb18838a14d7506e
       stage_authority: plan
     proposal:
       artifact_kind: proposal
