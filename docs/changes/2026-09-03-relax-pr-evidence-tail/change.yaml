@@ -4,6 +4,12 @@ classification: workflow
 risk: medium
 lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
+  architecture:
+    authoring_evidence: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/architecture-authoring.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-09-03-relax-pr-evidence-tail.md
+    role: primary
   proposal:
     kind: proposal
     lifecycle_state: accepted
@@ -36,6 +42,14 @@ review:
 lifecycle_cli:
   schema_version: 1
   artifacts:
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-09-03-relax-pr-evidence-tail.md
+      artifact_role: primary
+      artifact_sha256: 81fd2ae8664cae24f0ae697f2cd47aac4dfdf7b6458fdc6752c3f8786257f32d
+      authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/architecture-authoring.md
+      authoring_evidence_sha256: 453b0c733dfea0dca2cc07af43059f04cb38377db48aeb06bebae46cd7abb6cd
+      stage_authority: architecture
     proposal:
       artifact_kind: proposal
       artifact_path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
