@@ -23,10 +23,10 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: architecture
+  current_stage: spec
   evidence: []
   lifecycle_state: active
-  next_stage: architecture
+  next_stage: spec
 workflow: {}
 artifacts: {}
 requirements: []
