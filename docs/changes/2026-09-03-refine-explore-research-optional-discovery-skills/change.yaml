@@ -61,10 +61,10 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: verify
   evidence: []
   lifecycle_state: active
-  next_stage: code-review
+  next_stage: verify
   planned_work:
     current_milestone: none
     final_closeout:
