@@ -85,13 +85,14 @@ workflow_state:
       review_round: r1
       reviewed_artifact_path: docs/plans/2026-09-02-refocus-workflow-into-route.md
     latest_review:
-      artifact_id: none
-      evidence: []
+      artifact_id: plan
+      evidence:
+        - docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-final-r4.md
       milestone_id: none
-      occurrence: none
-      round: none
-      stage: none
-      status: not-started
+      occurrence: final
+      round: r4
+      stage: code-review
+      status: approved
     milestones:
       M1:
         kind: implementation
@@ -491,6 +492,16 @@ lifecycle_cli:
       owner: M3 implementer
       stage_authority: review-resolution
   reviews:
+    final-code-review:
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/reviews/code-review-final-r4.md
+      evidence_sha256: 5ae919597bb08b49f629f749c3bfaba6a6104b4ca3db8b4e536a76eb2ae4684a
+      outcome: approved
+      review_id: code-review-final-r4
+      review_log_path: docs/changes/2026-09-02-refocus-workflow-into-route/review-log.md
+      review_log_sha256: 4a66ba104d3513aa78b9c36b7db911b3136a3fedd0fa9c65195a78d575105712
+      reviewed_revision: 184b9330de4fc2b1c398354c53fbee2148944675
+      round: r4
+      stage_authority: code-review
     proposal:
       artifact_path: docs/proposals/2026-09-02-refocus-workflow-into-route.md
       artifact_sha256: ae77a786e9a26720df5b820873bb2061a5a3e858f85e291d38b94411cd586c41
