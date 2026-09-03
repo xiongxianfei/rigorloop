@@ -151,7 +151,8 @@ function openFindings(root, changeId) {
 }
 
 function activeMilestone(change) {
-  return change.workflow_state?.planned_work?.current_milestone ?? null;
+  const milestone = change.workflow_state?.planned_work?.current_milestone ?? null;
+  return milestone === "none" ? null : milestone;
 }
 
 function expectedAuthorAuthority(kind) {
