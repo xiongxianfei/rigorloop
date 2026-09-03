@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "start-milestone",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:f930fa0bb1007ac8f65d12c573fc802254a40b1590c43d3309ac4263d5ee0855",
+  "milestone_id": "M2",
+  "stage_authority": "workflow"
+}

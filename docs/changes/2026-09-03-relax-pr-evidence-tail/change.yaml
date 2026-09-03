@@ -61,12 +61,12 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: implement
   evidence: []
   lifecycle_state: active
   next_stage: code-review
   planned_work:
-    current_milestone: M1
+    current_milestone: M2
     final_closeout:
       evidence: []
       readiness: not-ready
@@ -88,13 +88,12 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: closed
       M2:
         kind: implementation
-        state: planned
+        state: implementing
     plan_artifact_id: plan
     remaining_implementation_milestones:
-      - M1
       - M2
 workflow: {}
 artifacts: {}
@@ -189,7 +188,27 @@ lifecycle_cli:
         milestone_state: review-requested
         next_stage: code-review
       status: returned
-  milestones: {}
+  milestones:
+    M1:
+      completion_fingerprint: b444ce7e2b82e5ceb0e527548b763cc51f2e148cd07efe717fa470ea4e9c5558
+      completion_schema_version: 1
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/m1-proportional-pr-contract.md
+      evidence_sha256: 283e8cb29bd5f82fbc671c9967a496af65ff3b40e5bf170142759a65102fb99a
+      milestone_id: M1
+      review_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-m1-r2.md
+      review_evidence_sha256: eb9af322d021f833bdb3f417062b77a6eeeb29612946860d3eaa9e4ff017f15f
+      review_id: code-review-m1-r2
+      review_log_entry_sha256: 19e00be4462d81f9e78858255eab02b3f1c677b14282f15529fdbfe8f701014d
+      review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+      review_material_findings: []
+      review_mode: supplied
+      review_open_findings: []
+      review_outcome: clean-with-notes
+      review_record_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-m1-r2.md
+      review_recording_status: recorded
+      review_round: r2
+      review_stage: code-review
+      stage_authority: workflow
   package_reviews:
     delivery:
       correction_targets: []
