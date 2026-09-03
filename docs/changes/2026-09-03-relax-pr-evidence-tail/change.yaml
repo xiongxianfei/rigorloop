@@ -5,10 +5,15 @@ risk: medium
 lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   proposal:
-    authoring_evidence: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/proposal-authoring.md
     kind: proposal
-    lifecycle_state: review-required
+    lifecycle_state: accepted
     path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r1
+      outcome: approved
+      record: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/proposal-review-r1.md
+      round: r1
     role: primary
 workflow_state:
   blocker: null
@@ -23,7 +28,10 @@ tests: []
 validation: []
 changed_files: []
 review:
-  status: pending
+  latest_review: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/proposal-review-r1.md
+  review_log: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+  reviewed_artifact: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
+  status: clean
   unresolved_items: 0
 lifecycle_cli:
   schema_version: 1
@@ -40,6 +48,17 @@ lifecycle_cli:
   milestones: {}
   package_reviews: {}
   resolutions: {}
-  reviews: {}
+  reviews:
+    proposal:
+      artifact_path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
+      artifact_sha256: 6d3dce8f02deab6b62b7da5f195fc5b8835607547571ccb7159b4c319eb7e43d
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/proposal-review-r1.md
+      evidence_sha256: 79ec2614183a78b3339a2d52700bf579a9343f19cd16718f8c66daf6d6ae303e
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r1
+      review_log_sha256: 6a51105d3a4e4441e2c18b32c188ccb0ada413ed15293e4500159be59e6870a1
+      round: r1
+      stage_authority: proposal-review
   validations: {}
   withdrawals: {}
