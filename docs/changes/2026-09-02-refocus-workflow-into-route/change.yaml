@@ -205,6 +205,28 @@ lifecycle_cli:
         milestone_state: null
         next_stage: code-review
       status: returned
+    route-288302d5bd56f5d59badfda9f72049daefdd0bdc0e10e469c6bff96fd49b314c:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r2-correction-route.md
+      evidence_sha256: 803e61e4a6da331608f937293159a44aa854bc0edb7f8807bc4f04e7988e5cb4
+      prior_lifecycle_revision: sha256:3eac4af636fb3a61163e99ad7e1d68d4fe73e7036b89253b7043d6e09eec070b
+      reason: implementation-defect
+      return_evidence_path: docs/changes/2026-09-02-refocus-workflow-into-route/evidence/final-r2-correction-return.md
+      return_evidence_sha256: b21c148a2fa4995dc405b5d79b3926c66670db9e83aa3574d9a43dac15c4d0e6
+      return_stage: code-review
+      route_id: route-288302d5bd56f5d59badfda9f72049daefdd0bdc0e10e469c6bff96fd49b314c
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - RFR-FINAL-CR2
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: code-review
+      status: returned
     route-4e469a45c97b4c34cfd9f87474a3f6693989d5269d4716921878cbd457e6072f:
       destination_artifact_id: implement
       destination_kind: stage

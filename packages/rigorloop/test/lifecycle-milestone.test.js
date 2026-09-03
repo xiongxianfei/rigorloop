@@ -136,7 +136,7 @@ Material findings: ${findings}
 `, "utf8");
   writeFileSync(join(changeRoot, "review-log.md"), `# Review log
 
-Open findings: ${overrides.openFindings ?? findings}
+Open findings: ${overrides.globalOpenFindings ?? overrides.openFindings ?? findings}
 Recording status: recorded
 
 ### Review entry
@@ -148,7 +148,7 @@ Status: ${outcome}
 Detailed record: reviews/${reviewId}.md
 Resolution: ${findings === "none" ? "not-required" : "review-resolution.md#code-review-final-r2"}
 Material findings: ${findings}
-${findings !== "none" ? `Finding ID: ${findings}\n` : ""}Open findings: ${overrides.openFindings ?? findings}
+${findings !== "none" ? `Finding ID: ${findings}\n` : ""}Open findings: ${overrides.entryOpenFindings ?? overrides.openFindings ?? findings}
 Recording status: recorded
 `, "utf8");
   return { reviewId, reviewPath, reviewedRevision };
@@ -239,6 +239,19 @@ test("final review registration rejects milestone-local and non-clean evidence",
   }
 });
 
+test("final review registration rejects an unrelated globally open finding", async () => {
+  const { root, changeRoot } = await fixture("planned", "not-started", "code-review");
+  const { reviewPath, reviewedRevision } = prepareFinalReview(root, changeRoot, { globalOpenFindings: "F-OTHER", entryOpenFindings: "none" });
+  const before = readFileSync(join(changeRoot, "change.yaml"), "utf8");
+  const operation = { schema_version: 1, operation: "record-final-review", change_id: "example", expected_lifecycle_revision: revision(root), evidence_path: reviewPath, reviewed_revision: reviewedRevision, stage_authority: "workflow" };
+
+  const result = executeLifecycleCli(["record-final-review", "--request", request(root, "reject-open-finding-final-review", operation), "--format", "json"], { cwd: root });
+
+  assert.notEqual(result.exitCode, 0);
+  assert.equal(result.result.errors[0].code, "RL_UNRESOLVED_MATERIAL_FINDING");
+  assert.equal(readFileSync(join(changeRoot, "change.yaml"), "utf8"), before);
+});
+
 test("final code-review finding routes to implementation without a fabricated milestone", async () => {
   const { root, changeRoot } = await fixture("planned", "not-started", "code-review");
   prepareFinalReview(root, changeRoot, { outcome: "changes-requested", findings: "F-FINAL", openFindings: "F-FINAL" });
@@ -261,6 +274,37 @@ Lifecycle revision: ${lifecycle}
   assert.equal(state.workflow_state.current_stage, "implement");
   assert.equal(state.workflow_state.planned_work.current_milestone, "none");
   assert.deepEqual(state.workflow_state.planned_work.remaining_implementation_milestones, []);
+});
+
+test("milestone-free final correction rejects ordinary reasons and contradictory remaining work", async () => {
+  for (const [name, reason, mutate] of [
+    ["ordinary-reason", "upstream-proof-gap", () => {}],
+    ["remaining-work", "implementation-defect", (change) => { change.workflow_state.planned_work.remaining_implementation_milestones = ["M3"]; }],
+  ]) {
+    const { root, changeRoot } = await fixture("planned", "not-started", "code-review");
+    prepareFinalReview(root, changeRoot, { outcome: "changes-requested", findings: "F-FINAL", openFindings: "F-FINAL" });
+    const changePath = join(changeRoot, "change.yaml");
+    const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+    mutate(change);
+    writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+    const lifecycle = revision(root);
+    const evidencePath = `docs/changes/example/evidence/${name}.md`;
+    writeFileSync(join(root, evidencePath), `Change ID: example
+Source stage: code-review
+Destination artifact: implement
+Reason: ${reason}
+Finding IDs: F-FINAL
+Return stage: code-review
+Lifecycle revision: ${lifecycle}
+`, "utf8");
+    const operation = { schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: lifecycle, source_stage: "code-review", destination_stage: "implement", destination_artifact_id: "implement", reason, evidence_path: evidencePath, finding_ids: ["F-FINAL"], return_stage: "code-review", stage_authority: "workflow" };
+    const before = readFileSync(changePath, "utf8");
+
+    const result = executeLifecycleCli(["route-correction", "--request", request(root, `reject-${name}`, operation), "--format", "json"], { cwd: root });
+
+    assert.notEqual(result.exitCode, 0, name);
+    assert.equal(readFileSync(changePath, "utf8"), before, name);
+  }
 });
 
 test("complete milestone hands validated implementation to code review before settlement", async () => {
