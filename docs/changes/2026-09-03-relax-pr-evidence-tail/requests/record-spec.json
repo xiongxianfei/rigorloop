@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:17bbb81d70524038fb85be0ca0baeeef638a6f85f754d1b326c2297a40e20460",
+  "artifact_id": "spec",
+  "artifact_kind": "spec",
+  "artifact_role": "primary",
+  "artifact_path": "specs/relax-pr-evidence-tail.md",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/spec-authoring.md",
+  "stage_authority": "spec"
+}

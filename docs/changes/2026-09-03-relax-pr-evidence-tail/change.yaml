@@ -21,6 +21,12 @@ artifact_states:
       record: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/proposal-review-r1.md
       round: r1
     role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/spec-authoring.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/relax-pr-evidence-tail.md
+    role: primary
 workflow_state:
   blocker: null
   current_stage: spec
@@ -58,6 +64,14 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/proposal-authoring.md
       authoring_evidence_sha256: baf28c97ca6f6e03b7f9082254c9f4f2d7ee43ca8dabb6ed7cc9dce46b26dafe
       stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/relax-pr-evidence-tail.md
+      artifact_role: primary
+      artifact_sha256: 0331f71c48d1476427e9024a0fd5e3bbc49772814a52ee1f6086b35dd3d37f58
+      authoring_evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/evidence/spec-authoring.md
+      authoring_evidence_sha256: ac67b884e0680e11787580fdd753d6b4ff8f8997add06b19c84f0c4c5c001e3f
+      stage_authority: spec
   correction_history: {}
   milestones: {}
   package_reviews: {}
