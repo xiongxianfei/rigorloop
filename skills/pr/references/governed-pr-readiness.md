@@ -1,11 +1,13 @@
 # Governed PR readiness
 
-Load for a governed candidate. This read-only reference owns bounded readiness aggregation; `SKILL.md` owns actions and results.
+Read-only; `SKILL.md` owns actions/results.
 
-Confirm the change pack matches invocation, branch, verify basis, and pointers. Invalid authority stops without portable fallback.
+Match change pack to invocation, branch, Verify basis, and pointers; invalid authority stops.
 
-Inspect plan, review resolution, Verify/state-sync, release-sensitive, migration, and external completion. Use only the exact successful Verify explanation and basis; historical rationale grants no current authority. Expand only for conflicts; presence is not proof.
+Inspect plan, review resolution, Verify/state-sync, release-sensitive, migration, and external completion. Historical rationale grants no authority.
 
-Return evidence identities, blockers and owners, and governed body data. Missing, stale, open, failing, or mismatched evidence blocks.
+Classify the cumulative diff from current lifecycle, review, and Verify identities. Evidence-only permits current attributable final review, workflow, and Verify evidence. Implementation, tests, specifications, architecture, plans, dependencies, configuration, generated product output, public documentation, another governed change, mutable non-lifecycle content, mixed or unknown paths, and stale or conflicting identities are invalidating. Paths/metadata grant no authority; block and route to owner.
 
-This reference must not mutate lifecycle, plan, review, workflow, automation, release, publication, Git, or PR state. It grants no push, refresh, state transition, or continuation authority.
+Return classification, evidence, blockers, owners, and body data.
+
+It must not mutate lifecycle, plan, review, workflow, release, publication, Git, or PR state; no push/continuation authority.
