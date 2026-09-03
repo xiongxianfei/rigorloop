@@ -1,7 +1,7 @@
 ---
 name: pr
 description: >
-  Prepare a verified change for pull request review from its diff and evidence.
+  Prepare a verified pull request from actual diff and evidence.
 argument-hint: [branch, feature name, plan path, or PR request]
 ---
 
@@ -27,7 +27,7 @@ Public skills operate in customer-project mode by default. Use project-local art
 
 Resolve repository, remote, branches, evidence, handoff, diff, and matching PR; never use memory. For consolidated gates, consume verify-owned accepted Proposal evidence, approved Design Review ID and exact member map, and approved Delivery Review ID and exact member map. Never reconstruct or reperform those reviews. The exact successful Verify report owns explanation, basis, and authority. Reject missing, stale, new, or competing authoritative rationale. Historical rationale grants no current PR authority.
 
-Any explicit change, workflow, owning-change, or governed pointer is a signal. governed signal: `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. The first uses `PR0-portable`; the second loads `PR1-governed`; the last stops without fallback. Loading grants no authority.
+Any explicit change, workflow, owning-change, or governed pointer is a signal. governed signal: `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. The first uses `PR0-portable`; the second loads `PR1-governed`; malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous signals stop without portable fallback. Loading grants no authority.
 
 ## Closed classifications
 
@@ -58,7 +58,7 @@ Before mutation, require scoped commits, safe tree and diff, no secrets or debug
 
 `remote-ancestor-of-local` means remote is a strict ancestor of the local handoff revision and permits normal fast-forward push after reread. `local-ancestor-of-remote` means remote contains work absent locally and blocks. `absent` may create; `same` does not push; `diverged` or `ambiguous` stops. The skill must not force-push, delete, overwrite, rewrite, or replace remote.
 
-Resolve PR state for exact repository, host, head, and base. Create absent once; reuse adequate open or draft unchanged. Closed, merged, multiple, mismatched, or ambiguous state stops. Retry must never create a duplicate matching PR.
+Resolve PR state for exact repository, host, head, and base. Create absent once; reuse adequate open or draft unchanged. Closed, merged, multiple, mismatched, or ambiguous state stops. Retry reconciles state and must never create a duplicate matching PR.
 
 Refresh supports title replacement or explicitly authorized whole-body replacement. It must not parse or mutate Markdown sections, add hidden managed markers, or infer ownership. Existing body bytes remain unchanged without full-replacement authority.
 
@@ -80,11 +80,11 @@ Report a successful external write truthfully after later identity drift, but se
 
 ## Body, result, and claims
 
-Use the asset's applicable groups; unresolved data or placeholders block.
+Compose the asset's core plus applicable governed and impact groups. Procedure owns applicability and adequacy; unresolved data or placeholders block.
 
 ## Outputs
 
-Report intent, operation, actual external mutation, actual PR state, readiness, hosted CI, blockers, claim limitations, and URL.
+Report requested intent, operation, actual external mutation, actual PR state, readiness booleans, hosted-CI state, blockers, claim limitations, and post-read-back URL.
 
 ## Review closeout
 
@@ -103,7 +103,7 @@ Stop on unresolved target or authority, stale verification, unsafe branch relati
 
 ## Claims this skill must not make
 
-Do not claim implementation passed, review passed, tests passed, verification passed, CI passed, generated currency, branch readiness, or lifecycle completion without owning evidence. This skill must not mutate `change.yaml`, workflow, artifact, plan, review, merge, release, or publication state.
+Do not claim implementation passed, review passed, tests passed, verification passed, CI passed, generated currency, branch readiness, or lifecycle completion without current owning evidence. This skill must not mutate `change.yaml`, workflow, artifact, plan, review, merge, release, or publication state.
 
 Progress means work that has happened so far. Readiness means the next stage that can happen. Closeout means the current artifact or stage satisfied its checklist. Done means final lifecycle state after required gates are complete. Readiness is not Done.
 
