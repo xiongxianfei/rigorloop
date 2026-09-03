@@ -8842,6 +8842,23 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
         contract = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
         self.assertIn("`discovery-support`", contract)
 
+    def test_every_discovery_package_file_omits_maintainer_only_details(self) -> None:
+        forbidden = {
+            "canonical skill path": re.compile(r"\bskills/(?:explore|research)/SKILL\.md\b"),
+            "shared template path": re.compile(r"\btemplates/shared\b"),
+            "adapter package path": re.compile(r"\bdist/adapters\b"),
+            "selector constraint": re.compile(r"\bselector[- ]path constraints\b", re.IGNORECASE),
+            "shared-copy mechanics": re.compile(r"\bshared[- ]block implementation\b", re.IGNORECASE),
+        }
+        for skill_name in ("explore", "research"):
+            for path in sorted((ROOT / "skills" / skill_name).rglob("*")):
+                if not path.is_file():
+                    continue
+                body = path.read_text(encoding="utf-8")
+                for label, pattern in forbidden.items():
+                    with self.subTest(skill=skill_name, path=path.name, pattern=label):
+                        self.assertIsNone(pattern.search(body))
+
     def test_canonical_validation_rejects_discovery_shared_policy_drift(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

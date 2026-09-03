@@ -1,8 +1,6 @@
 <!-- Template: research-skeleton-v1 -->
 <!-- Skill: research -->
 <!-- Template status: normative -->
-<!-- Maintained alongside: skills/research/SKILL.md -->
-
 ## Topic and decision supported
 
 <supported decision, intended owner or change, and material uncertainty>
