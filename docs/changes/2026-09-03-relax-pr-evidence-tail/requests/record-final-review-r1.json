@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-final-review",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:b157b62f4cc1f5ff6a9621a66dd991c356f47f495313d946e8c9743983ca747e",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-final-r1.md",
+  "reviewed_revision": "9ade638a46030c409e0c160d4230001620845301",
+  "stage_authority": "workflow"
+}

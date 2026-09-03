@@ -61,10 +61,10 @@ review_packages:
     upstream_review_id: proposal-review-r1
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: verify
   evidence: []
   lifecycle_state: active
-  next_stage: code-review
+  next_stage: verify
   planned_work:
     current_milestone: none
     final_closeout:
@@ -80,9 +80,9 @@ workflow_state:
     latest_review:
       artifact_id: plan
       evidence:
-        - docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-m2-r1.md
-      milestone_id: M2
-      occurrence: milestone
+        - docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-final-r1.md
+      milestone_id: none
+      occurrence: final
       round: r1
       stage: code-review
       status: approved
@@ -281,6 +281,16 @@ lifecycle_cli:
       owner: implementation author
       stage_authority: review-resolution
   reviews:
+    final-code-review:
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/code-review-final-r1.md
+      evidence_sha256: d256e27a68613bbbc5a6954d4ae316878d249116bcb1a95710d3faf303752da4
+      outcome: approved
+      review_id: code-review-final-r1
+      review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+      review_log_sha256: 881e2e1dfb492ae9ed083c7dae42680e769fd832dbe1bcde882ad51ceb26bb0f
+      reviewed_revision: 9ade638a46030c409e0c160d4230001620845301
+      round: r1
+      stage_authority: code-review
     proposal:
       artifact_path: docs/proposals/2026-09-03-relax-pr-evidence-tail.md
       artifact_sha256: 6d3dce8f02deab6b62b7da5f195fc5b8835607547571ccb7159b4c319eb7e43d

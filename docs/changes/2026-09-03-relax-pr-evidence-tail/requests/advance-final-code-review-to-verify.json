@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "advance-stage",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:f64ab1e5a240bdfd3e38a15ed7354e0d34dccec77b91174bd3a9e2ea4b5ced90",
+  "source_stage": "code-review",
+  "destination_stage": "verify",
+  "stage_authority": "workflow"
+}
