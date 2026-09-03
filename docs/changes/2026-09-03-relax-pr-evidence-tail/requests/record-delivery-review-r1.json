@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "operation": "record-package-review",
+  "change_id": "2026-09-03-relax-pr-evidence-tail",
+  "expected_lifecycle_revision": "sha256:1235792b618a0dc90a8a5035ab37314d15bf186c536f254102274de0cc3003d6",
+  "package_kind": "delivery",
+  "members": {
+    "plan": "docs/plans/2026-09-03-relax-pr-evidence-tail.md"
+  },
+  "upstream_review_id": "design-review-r1",
+  "review_id": "delivery-review-r1",
+  "evidence_path": "docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/delivery-review-r1.md",
+  "stage_authority": "delivery-review"
+}

@@ -34,6 +34,28 @@ artifact_states:
     path: specs/relax-pr-evidence-tail.md
     role: primary
 review_packages:
+  delivery:
+    authority: withheld
+    correction_targets:
+      - plan
+    findings:
+      - affected_artifact_ids:
+          - plan
+        evidence: The plan assigns M1 to edit `specs/pr-skill-simplification.md`, whose stable owning change record is `docs/changes/2026-08-16-pr-skill-simplification/change.yaml`. The approved current specification `specs/relax-pr-evidence-tail.md` already states that it supersedes only the prior contract's direct-child definitions, R28, the multi-commit portion of R29, INT-003 wording, EC7 assumption, AC-PRSIM-002, and equivalent prose while retaining every other requirement. Editing the older governed artifact through this change is therefore both unnecessary and contrary to stage-owned, change-local artifact authority.
+        finding_id: PRTAIL-DLR1
+        owning_stages:
+          - plan
+        required_outcome: Remove the older governed specification from M1 mutation scope and describe the focused delta as the current superseding authority consumed alongside the unaffected prior PR contract.
+        safe_resolution_path: The plan owner should revise only this primary plan, preserve the approved Design package and all implementation proof, register the new plan revision through governed authoring, and return the exact revised Delivery package for R2.
+        scope: artifact-local
+    members:
+      plan: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+    outcome: changes-requested
+    package_kind: delivery
+    review_id: delivery-review-r1
+    review_round: r1
+    status: changes-requested
+    upstream_review_id: design-review-r1
   design:
     authority: granted
     correction_targets: []
@@ -60,11 +82,11 @@ tests: []
 validation: []
 changed_files: []
 review:
-  latest_review: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/design-review-r1.md
+  latest_review: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/delivery-review-r1.md
   review_log: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
-  reviewed_artifact: review-package:design
-  status: clean
-  unresolved_items: 0
+  reviewed_artifact: review-package:delivery
+  status: changes-requested
+  unresolved_items: 1
 lifecycle_cli:
   schema_version: 2
   artifacts:
@@ -103,6 +125,32 @@ lifecycle_cli:
   correction_history: {}
   milestones: {}
   package_reviews:
+    delivery:
+      correction_targets:
+        - plan
+      evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/delivery-review-r1.md
+      evidence_sha256: 391115242715e8cc7babcf0611927eb2c858c36d78113c93c4233551c848f1e2
+      findings:
+        - affected_artifact_ids:
+            - plan
+          evidence: The plan assigns M1 to edit `specs/pr-skill-simplification.md`, whose stable owning change record is `docs/changes/2026-08-16-pr-skill-simplification/change.yaml`. The approved current specification `specs/relax-pr-evidence-tail.md` already states that it supersedes only the prior contract's direct-child definitions, R28, the multi-commit portion of R29, INT-003 wording, EC7 assumption, AC-PRSIM-002, and equivalent prose while retaining every other requirement. Editing the older governed artifact through this change is therefore both unnecessary and contrary to stage-owned, change-local artifact authority.
+          finding_id: PRTAIL-DLR1
+          owning_stages:
+            - plan
+          required_outcome: Remove the older governed specification from M1 mutation scope and describe the focused delta as the current superseding authority consumed alongside the unaffected prior PR contract.
+          safe_resolution_path: The plan owner should revise only this primary plan, preserve the approved Design package and all implementation proof, register the new plan revision through governed authoring, and return the exact revised Delivery package for R2.
+          scope: artifact-local
+      members:
+        plan: docs/plans/2026-09-03-relax-pr-evidence-tail.md
+      outcome: changes-requested
+      package_kind: delivery
+      review_id: delivery-review-r1
+      review_log_path: docs/changes/2026-09-03-relax-pr-evidence-tail/review-log.md
+      review_log_sha256: fa9aec82b37846735caef244355bd3c9d1dae702427f5476ff4cc5fed1c67aae
+      reviewer_authority: delivery-review
+      round: r1
+      stage_authority: delivery-review
+      upstream_review_id: design-review-r1
     design:
       correction_targets: []
       evidence_path: docs/changes/2026-09-03-relax-pr-evidence-tail/reviews/design-review-r1.md

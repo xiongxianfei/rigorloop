@@ -1,6 +1,19 @@
 # Review log
 
-Open findings: none
+Open findings: PRTAIL-DLR1
+Recording status: recorded
+
+### Review entry
+
+Review ID: delivery-review-r1
+Stage: delivery-review
+Round: r1
+Status: changes-requested
+Detailed record: reviews/delivery-review-r1.md
+Resolution: review-resolution.md#delivery-review-r1
+Material findings: PRTAIL-DLR1
+Open findings: PRTAIL-DLR1
+Finding ID: PRTAIL-DLR1
 Recording status: recorded
 
 ### Review entry
