@@ -4246,9 +4246,10 @@ Use the inputs somehow and produce a useful result.
             "Every formal lifecycle review result must be recorded or explicitly blocked.",
             "`Recording status: recorded`",
             "`Recording status: blocked`",
-            "For a clean review, create the lightweight review receipt required by the formal review recording spec",
-            "Do not create an empty `review-resolution.md` solely for a clean review.",
-            "For material findings or blocking outcomes, create the required detailed review record",
+            "For `compact-current-state-v1`, update the target's stable current review record through the CLI.",
+            "Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.",
+            "For registered historical contracts, create the lightweight clean receipt or detailed review record",
+            "only resolved decisions that continue to constrain the change belong in `material-decisions.md`",
             "Material findings must include:",
             "For an isolated review with material findings",
             "the final review output must state:",
@@ -4285,18 +4286,16 @@ Use the inputs somehow and produce a useful result.
 
     def test_governance_guidance_uses_broad_material_finding_rule(self) -> None:
         required_terms = [
-            "Material review findings",
-            "always",
-            "All material findings require",
-            "change-local review",
-            "Isolation",
-            "handoff",
-            "not recording",
-            "Every supported formal lifecycle review",
-            "clean review receipt",
+            "compact-current-state-v1",
+            "stable current review",
+            "material-decisions.md",
+            "evidence.yaml",
+            "without git",
+            "without pr",
+            "registered historical",
         ]
         for relative_path in ["CONSTITUTION.md", "AGENTS.md"]:
-            body = (ROOT / relative_path).read_text(encoding="utf-8")
+            body = (ROOT / relative_path).read_text(encoding="utf-8").lower()
             for term in required_terms:
                 with self.subTest(path=relative_path, term=term):
                     self.assertIn(term, body)
@@ -8704,10 +8703,11 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
 
 
 class FinalVerificationProtocolM2Tests(unittest.TestCase):
-    def test_verify_v3_resources_are_progressive_and_current(self) -> None:
+    def test_verify_v3_resources_are_progressive_and_compatibility_scoped(self) -> None:
         skill = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
         self.assertIn("V3 final-readiness profile", skill)
-        self.assertIn("only current executable final-readiness contract", skill)
+        self.assertIn("executable final-readiness compatibility contract", skill)
+        self.assertIn("Compact verification follows the current-state contract", skill)
         self.assertIn("Scoped verification loads none of those resources", skill)
         for path in (
             "references/final-impact-analysis-v3.md",
@@ -8811,13 +8811,14 @@ class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
         self.assertIn("handoff: `delivery-review`", reference)
         self.assertNotIn("handoff: `test-spec`", reference)
 
-    def test_active_governance_has_no_preactivation_default(self) -> None:
+    def test_active_governance_declares_compact_preactivation_compatibility(self) -> None:
         combined = "\n".join(
             (ROOT / path).read_text(encoding="utf-8")
             for path in ("CONSTITUTION.md", "AGENTS.md", "skills/route/SKILL.md")
         )
         self.assertIn("stage-owned-change-local-v3", combined)
-        self.assertIn("last coherent released v2 package", combined)
+        self.assertIn("compact-current-state-v1", combined)
+        self.assertIn("bounded preactivation closeout bootstrap", combined)
         self.assertNotIn("New changes remain v1 until M5", combined)
 
 

@@ -13,6 +13,10 @@ Turn a problem or selected direction into a concise direction-approval artifact:
 
 ## Workflow role
 
+### Compact current-state contract
+
+For `compact-current-state-v1`, consume the bounded CLI projection and only its required paths. Author the proposal in its canonical location, update no lifecycle file directly, and submit the transient authoring operation through the CLI. The CLI is a consistency tool, not a permission principal. The proposal becomes review-ready; its stable current review record settles the adjacent gate. Do not create routine request, authoring-evidence, review-log, or correction-receipt artifacts.
+
 - role_name: proposal
 - stage: authoring
 - upstream: user request, exploration, research, issue, or incident

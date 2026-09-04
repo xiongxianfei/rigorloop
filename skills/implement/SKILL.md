@@ -14,6 +14,10 @@ Do not expand scope, silently alter the contract, or claim success without direc
 
 ## Workflow role
 
+### Compact current-state contract
+
+For `compact-current-state-v1`, consume the bounded CLI projection and only its required approved artifacts, stable current review records, material decisions, and current evidence. Record implementation proof as current entries in `evidence.yaml` through a transient CLI operation, including subject identity, method, result, scope, provenance, and freshness. Never edit lifecycle coordination directly or create routine request, milestone receipt, authoring-evidence, raw-output, or correction-return artifacts.
+
 - role_name: implement
 - stage: execution
 - upstream: approved Design Review package, approved Delivery Review package, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
@@ -146,7 +150,7 @@ If a formal workflow-managed delivery package lacks recorded, approved, current 
 For ordinary non-trivial work, maintain `docs/changes/<change-id>/change.yaml` plus stage-owned implementation evidence. Successful final Verify records the durable change explanation in `verify-report.md`.
 When creating a root in governed mode, use the CLI-resolved location. In portable mode, use `YYYY-MM-DD-slug` without claiming governed placement.
 Do not broaden this requirement to isolated manual work that does not claim complete workflow delivery.
-Keep `review-resolution.md` and `verify-report.md` conditional on their governing triggers.
+For registered historical contracts, keep `review-resolution.md` and `verify-report.md` conditional on their governing triggers. For compact changes, use the current evidence and success-only Verify surfaces described above.
 
 ## Operating sequence
 

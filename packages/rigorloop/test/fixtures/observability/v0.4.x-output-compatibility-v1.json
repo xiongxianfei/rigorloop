@@ -193,7 +193,7 @@
         },
         "planned_change_metadata": {
           "path": "docs/changes/example-change/change.yaml",
-          "content": "change_id: \"example-change\"\ntitle: \"Example change\"\nclassification: \"default\"\nrisk: \"medium\"\nlifecycle_contract: stage-owned-change-local-v3\nartifact_states: {}\nworkflow_state:\n  lifecycle_state: active\n  current_stage: proposal\n  next_stage: proposal\n  blocker: null\n  evidence: []\nworkflow: {}\nartifacts: {}\nrequirements: []\ntests: []\nvalidation: []\nchanged_files: []\nreview:\n  status: \"pending\"\n  unresolved_items: 0\n"
+          "content": "schema: compact-change-v1\nchange_id: example-change\ntitle: \"Example change\"\nlifecycle_contract: compact-current-state-v1\nlifecycle_revision: sha256:626776e679043a38e52fda3f2d0a5d36d0af7f742bebb5c29b45d625a586fd26\ncurrent_stage: proposal\nartifacts: {}\nreviews: {}\nactive_work: null\nopen_findings: {}\nmaterial_decisions: {}\nevidence: {}\nblockers: []\nremaining_work: {}\nreadiness: not-ready\n"
         }
       },
       "stderr": ""

@@ -1,0 +1,916 @@
+change_id: 2026-09-03-compact-current-state-change-record
+title: Adopt a Compact Current-State Change Record
+classification: default
+risk: medium
+lifecycle_contract: stage-owned-change-local-v3
+artifact_states:
+  adr-compact-current-state-transaction:
+    authoring_evidence: docs/changes/2026-09-03-compact-current-state-change-record/evidence/adr-correction-design-r12.md
+    kind: adr
+    lifecycle_state: review-required
+    path: docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md
+    role: supporting
+  architecture:
+    authoring_evidence: docs/changes/2026-09-03-compact-current-state-change-record/evidence/architecture-correction-design-r12.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/2026-09-03-compact-current-state-change-record.md
+    role: primary
+  plan:
+    authoring_evidence: docs/changes/2026-09-03-compact-current-state-change-record/evidence/plan-correction-delivery-r9.md
+    kind: plan
+    lifecycle_state: review-required
+    path: docs/plans/2026-09-03-compact-current-state-change-record.md
+    role: primary
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-09-03-compact-current-state-change-record.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r7
+      outcome: approved
+      record: docs/changes/2026-09-03-compact-current-state-change-record/reviews/proposal-review-r7.md
+      round: r7
+    role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-09-03-compact-current-state-change-record/evidence/spec-registration-design-r13.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/compact-current-state-change-record.md
+    role: primary
+review_packages:
+  delivery:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      plan: docs/plans/2026-09-03-compact-current-state-change-record.md
+    outcome: approved
+    package_kind: delivery
+    review_id: delivery-review-r10
+    review_round: r10
+    status: approved
+    upstream_review_id: design-review-r13
+  design:
+    authority: granted
+    correction_targets: []
+    findings: []
+    members:
+      adr-compact-current-state-transaction: docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md
+      architecture: docs/architecture/2026-09-03-compact-current-state-change-record.md
+      spec: specs/compact-current-state-change-record.md
+    outcome: approved
+    package_kind: design
+    review_id: design-review-r13
+    review_round: r13
+    status: approved
+    upstream_review_id: proposal-review-r7
+workflow_state:
+  blocker: null
+  current_stage: implement
+  evidence: []
+  lifecycle_state: active
+  next_stage: code-review
+  planned_work:
+    current_milestone: none
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+    initialization_basis:
+      review_id: delivery-review-r2
+      review_record: docs/changes/2026-09-03-compact-current-state-change-record/reviews/delivery-review-r2.md
+      review_round: r2
+      reviewed_artifact_path: docs/plans/2026-09-03-compact-current-state-change-record.md
+    latest_review:
+      artifact_id: plan
+      evidence:
+        - docs/changes/2026-09-03-compact-current-state-change-record/reviews/code-review-M5-r2.md
+      milestone_id: M5
+      occurrence: milestone
+      round: r2
+      stage: code-review
+      status: approved
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+      M4:
+        kind: implementation
+        state: closed
+      M5:
+        kind: implementation
+        state: closed
+    plan_artifact_id: plan
+    remaining_implementation_milestones: []
+workflow: {}
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  latest_review: docs/changes/2026-09-03-compact-current-state-change-record/reviews/delivery-review-r10.md
+  review_log: docs/changes/2026-09-03-compact-current-state-change-record/review-log.md
+  reviewed_artifact: review-package:delivery
+  status: clean
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 2
+  artifacts:
+    adr-compact-current-state-transaction:
+      artifact_kind: adr
+      artifact_path: docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md
+      artifact_role: supporting
+      artifact_sha256: 21a14c77e78109b70214f28fec5bd976892213b0cb77324fc83566247664c715
+      authoring_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/adr-correction-design-r12.md
+      authoring_evidence_sha256: 1c6bde6e13d5e5934c072d9b1569fd4bc4edd3710b740e0fc2cfaaef5ebdf283
+      stage_authority: architecture
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-09-03-compact-current-state-change-record.md
+      artifact_role: primary
+      artifact_sha256: a317d1ff3a24c08198efed1c3f3c72f25db4705aaa45434dfa19780583d95979
+      authoring_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/architecture-correction-design-r12.md
+      authoring_evidence_sha256: a581bbc94f47aa8dc3fa6d6f56f2a53c7dc6df2305d381987fab0c295669c611
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-09-03-compact-current-state-change-record.md
+      artifact_role: primary
+      artifact_sha256: 28af3d25ee0989e8aaba9a959fddb342064f96229820fa56be5f2459af929d2d
+      authoring_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/plan-correction-delivery-r9.md
+      authoring_evidence_sha256: 411c69bc73536c2b1c6e82a7a5a95792c3969af6fe8ec684d4aaa7af309900d9
+      stage_authority: plan
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-09-03-compact-current-state-change-record.md
+      artifact_role: primary
+      artifact_sha256: 59bd55d48dd065ca78e112c4442c25bfe3a88980c6505b67426466acf4147d88
+      authoring_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/proposal-review-outcome-bootstrap-refinement.md
+      authoring_evidence_sha256: e0744931b8b645f15c63a56b6142cbf2cb99ba353d8ca375018d7b90d51d672c
+      stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/compact-current-state-change-record.md
+      artifact_role: primary
+      artifact_sha256: fb0a17528b0a5653c383ad8aef55b40e06eeaface7a968a9fdd0d46dd04f92e6
+      authoring_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/spec-registration-design-r13.md
+      authoring_evidence_sha256: 1e813c2d593532665041531015d87db5cb84bb8a5c592272e7f69c0ecc57bd1f
+      stage_authority: spec
+  correction_history:
+    route-00914fb01d6aa0f5ca29edcc932890f670c716f917f989f6031aa96e6a461873:
+      destination_artifact_id: proposal
+      destination_stage: proposal
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-proposal-eligibility-correction-route.md
+      evidence_sha256: 028dec83acbf60ec1159e854d1cc98f49a65a078313e5afbb353cafe580b0f6e
+      prior_artifact_sha256: a624830dce34f96427044039c33c32dc9f37da26268c89603e35b75df5e0708f
+      prior_lifecycle_revision: sha256:946fe4631a17077a0fa8082360d6c71679415c2582ab2dcac378686a2aa80324
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/proposal-scoped-operation-eligibility-correction-return.md
+      return_evidence_sha256: 6a9ffad34a68f0854689cb628d90b5014316966dd1ba5351162dae5c76af9b0d
+      return_stage: design-review
+      route_id: route-00914fb01d6aa0f5ca29edcc932890f670c716f917f989f6031aa96e6a461873
+      source_review_id: design-review-r6
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-M3-CR2
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: design-review
+      status: returned
+    route-08125b609b3b933fa1ee60745fb0b10506b5cb05cf54963db139fa98c4e67ed2:
+      destination_artifact_id: architecture
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r12-architecture-correction-route.md
+      evidence_sha256: 071fae72f3a3842ef129ca88c060df83b72ebea8d198a1f8e5bba78d4d23086c
+      prior_artifact_sha256: 0f6041b49165f6f54363d86dfa803327b5ebe63fae6926830e3d93a82cfefc82
+      prior_lifecycle_revision: sha256:ff6dfedcd723ff2b715de4d221cfcb0f9b37823b72b6e73ef0c9f76829eec465
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r12-architecture-correction-return.md
+      return_evidence_sha256: e47534a992a1dfe1335b351ca2ce4f44d6384cf99e82ff50d0f2bc6390d960e3
+      return_stage: design-review
+      route_id: route-08125b609b3b933fa1ee60745fb0b10506b5cb05cf54963db139fa98c4e67ed2
+      source_review_id: design-review-r12
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-DR12-1
+          - CCSR-DR12-2
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: design-review
+      status: returned
+    route-20bc58db40f1e79f6d3619c8611e2158ad15eb4951ae3aaaf5b0785c9305caf8:
+      destination_artifact_id: architecture
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r1-architecture-correction-route.md
+      evidence_sha256: db3a010c802b4b49dda88e65c602e959379b34f4cfcf5daaee28e007b95f5182
+      prior_artifact_sha256: 9852fac0000028419386e2b9bbff05e81851b8c76fe11f48e51f5ea6685b465b
+      prior_lifecycle_revision: sha256:0ae1aa9f82f5d534c0da06fce9289d5eb53aa361b502841ceec511857e20c1d0
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r1-architecture-correction-return.md
+      return_evidence_sha256: 36a945c51a04347a79ad2ad211fb42e0e607bbad11bf5aba2aece6e2cd19c805
+      return_stage: design-review
+      route_id: route-20bc58db40f1e79f6d3619c8611e2158ad15eb4951ae3aaaf5b0785c9305caf8
+      source_review_id: design-review-r5
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-M3-CR1
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: design-review
+      status: returned
+    route-3498e84d8380168231169ceefd0982bbee21a792d03cb9eceb3a8bfcd3296297:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r1-spec-route.md
+      evidence_sha256: fb46c5d27431fdc8cc8866c40889c1b02119ad6eea7ff24a8cbced41a921e4b3
+      prior_artifact_sha256: 72891ff14bbe0c6380f43004bf05900f7227105b1bf53aaabc491038ed965f35
+      prior_lifecycle_revision: sha256:4e3808e680c042e746b8ae667be46e72ffd0e7b75750a0b542b47926a635219e
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r1-spec-return.md
+      return_evidence_sha256: 21cd11df0a9219795878b319e61dc98932a7853d8ba556e7481ef57ccd12af6e
+      return_stage: design-review
+      route_id: route-3498e84d8380168231169ceefd0982bbee21a792d03cb9eceb3a8bfcd3296297
+      source_review_id: design-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-DR1
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: design-review
+      status: returned
+    route-443b9a8459354cc88167e31632f1f67850464d4aaa5f52ce307bc497f44e8971:
+      destination_artifact_id: proposal
+      destination_stage: proposal
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/final-review-proposal-outcome-model-correction-route.md
+      evidence_sha256: 2fda513636590ffc8d75f1523af0d5bf7f58d7e3151df62d9237949423672efa
+      prior_artifact_sha256: 0581449f61c8aa4ea059fad9407d079b9e146d7e8b00ab3e2018f29f78db8844
+      prior_lifecycle_revision: sha256:324bdd4be0305028db9c050db26f6ef65cbd4a568224761828fb295db4949170
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/final-review-proposal-outcome-model-correction-return.md
+      return_evidence_sha256: 5ea3ecd702ab21cd32808dec65241be4ea269c054f8c9e62f7fca17d6d5071c4
+      return_stage: code-review
+      route_id: route-443b9a8459354cc88167e31632f1f67850464d4aaa5f52ce307bc497f44e8971
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids: []
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: code-review
+      status: returned
+    route-47469c48354f4fea5a795ce6de255ea229ec0e9edba5161c4283d1ab933af0d9:
+      destination_artifact_id: adr-compact-current-state-transaction
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r1-adr-correction-route.md
+      evidence_sha256: d241641ae45b347129234750231d753e905ea77d8b7aa05d5926826ffcf1a527
+      prior_artifact_sha256: 2b7411e0e1807b856547994eb1bf1003d98e0d4908212ee64fcdc6abb5d3d530
+      prior_lifecycle_revision: sha256:669381d4fe32ae746b56ed8cd3a1b501ce4d10c94c692c411e541e457b5cd648
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r1-adr-correction-return.md
+      return_evidence_sha256: 6f52b38cde55b277ef9bd84fcc29e49c738eee26e091791d7c859ffd08ee8e27
+      return_stage: design-review
+      route_id: route-47469c48354f4fea5a795ce6de255ea229ec0e9edba5161c4283d1ab933af0d9
+      source_review_id: design-review-r5
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-M3-CR1
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: design-review
+      status: returned
+    route-47e1c88cee9d45954e12f986e906384dfb7799612aae59a9366cee5696e36409:
+      destination_artifact_id: adr-compact-current-state-transaction
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r12-adr-correction-route.md
+      evidence_sha256: 66a51ae56d14a971daf7eba1f2343d51feef5f42a3b4c38d1c9cede4ebb22286
+      prior_artifact_sha256: 0aa7ef816b59de9e54d84cff699703205d10ddc55d8dcaf4931144e33c76c9f5
+      prior_lifecycle_revision: sha256:fa7bbae0d24ed5160f6f60c41f3545a1126cd4cf99c8b093e9abe16adcc5c737
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r12-adr-correction-return.md
+      return_evidence_sha256: c967168db6e2c030fe655f6b2bc7e12440c7c33cfd7a596e16130c8871f27d4c
+      return_stage: design-review
+      route_id: route-47e1c88cee9d45954e12f986e906384dfb7799612aae59a9366cee5696e36409
+      source_review_id: design-review-r12
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-DR12-1
+          - CCSR-DR12-2
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: design-review
+      status: returned
+    route-4b7e0dfd6c8fc3bbac0cfcd0302d8e17ca9b884466867f6b1abe3835d1f5fe30:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r13-spec-registration-route.md
+      evidence_sha256: a975d4b731e6e6fc0bc31a9174632da2f90f243354cb85d21780a53ee7548079
+      prior_artifact_sha256: 0d18eddc80f28c176c1509618322e24e034434c7ffe37ea7dbd8c1725a7f1745
+      prior_lifecycle_revision: sha256:aa9417bffbda02a2a88a0fd83d4a5d7f42b6409e8b42753576769d2c9ac31c60
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r13-spec-registration-return.md
+      return_evidence_sha256: b0fee53bb35ace0fc43bfa5dcd9d16de5f4477a6b846e05e8e871436118004a3
+      return_stage: design-review
+      route_id: route-4b7e0dfd6c8fc3bbac0cfcd0302d8e17ca9b884466867f6b1abe3835d1f5fe30
+      source_review_id: design-review-r13
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-DR12-2
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: design-review
+      status: returned
+    route-4e7bc88eb465c5596cbe87377cf6bf46e314ac969ab5f4eca76602ae084ba09f:
+      destination_artifact_id: plan
+      destination_stage: plan
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/delivery-r9-plan-correction-route.md
+      evidence_sha256: 4182505ce9a1ad7f95eaa1e462cc48d60362f2332e91632386c32d5c1fc8f22c
+      prior_artifact_sha256: 0c18ba75e3139f28415889279a453f2769b963dc37dd5d96da565fda2da7f67e
+      prior_lifecycle_revision: sha256:d9f3d7925c92b2546ce221c99fa9bde5e082c2362796f2c7734a22b2446a6b40
+      reason: upstream-planning-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/delivery-r9-plan-correction-return.md
+      return_evidence_sha256: 29b5d10b8e2e28923fa227da1b2589db2da0f59aeaf5491a5f0b125bdd35b91b
+      return_stage: delivery-review
+      route_id: route-4e7bc88eb465c5596cbe87377cf6bf46e314ac969ab5f4eca76602ae084ba09f
+      source_review_id: delivery-review-r9
+      source_snapshot:
+        blocker: null
+        current_stage: delivery-review
+        finding_ids:
+          - CCSR-DLR9-1
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: delivery-review
+      status: returned
+    route-5508df4d30e4e90f11a355eb0e895bc59ecb8bb29a0d18092c7be7b179ba885a:
+      destination_artifact_id: plan
+      destination_stage: plan
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m1-r1-plan-correction-route.md
+      evidence_sha256: a94f9e254cedab31eb8b84c4c7a0f45bb9bd609f1518a53732b807b2b6932b1b
+      prior_artifact_sha256: a9809d144a292541affb790777e5c8b65474b325dd9c3d2fb6606d90d4d4b53b
+      prior_lifecycle_revision: sha256:7cacf2459c6b64a709e0548ea585d8edb8ebd2c81c0c7cebb11c2331c9510d10
+      reason: upstream-planning-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m1-r1-plan-correction-return.md
+      return_evidence_sha256: 5b0a55ccb1aa937e77f1b434c3c83754ff50447fbb78cdbad4094d45b0381f49
+      return_stage: delivery-review
+      route_id: route-5508df4d30e4e90f11a355eb0e895bc59ecb8bb29a0d18092c7be7b179ba885a
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids:
+          - CCSR-M1-CR3
+        lifecycle_state: active
+        milestone_id: M1
+        milestone_state: implementing
+        next_stage: implement
+      status: returned
+    route-558e8f04401d8d2fd67922a777560b654c09c749f3403f880dcdb92251d60523:
+      destination_artifact_id: proposal
+      destination_stage: proposal
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r1-proposal-correction-route.md
+      evidence_sha256: 7360f00b57d631cfd5a1975f5df09cdf307796a24be408bfdd90d4114fa0375f
+      prior_artifact_sha256: 48ded0afde808cbb6a528ef2a4d2c5ed9db27818b0233e4500392534b5e2198a
+      prior_lifecycle_revision: sha256:f7603df7372fed25943b9247252531cad6e3204d6bf55fd61ead13b0e875a35f
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r1-proposal-correction-return.md
+      return_evidence_sha256: 7b19d78fa93a41a9c7d954bea149e382cebc2bbffa93f472bdf1a4a3e7ff79c9
+      return_stage: implement
+      route_id: route-558e8f04401d8d2fd67922a777560b654c09c749f3403f880dcdb92251d60523
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids:
+          - CCSR-M3-CR1
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: code-review
+      status: returned
+    route-5a77b419ea157e1825370fdddf95769e187a3c2aaba7fb5731df8c8d115bb1ab:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r8-spec-correction-route.md
+      evidence_sha256: 591af5dc2839e2186e7c593f0fecc13f5f33d7853849227ca22f117c953b0bc4
+      prior_artifact_sha256: 941e9e21ace58a5a33fce458cc8b6df71c2048b03a85c3c9014e2b4ba206119f
+      prior_lifecycle_revision: sha256:4eae0c68f983809932f49fa5ef0f93da0090d98e10cf1a6381532fe242654baa
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r8-spec-correction-return.md
+      return_evidence_sha256: e489e50be20989e7f986fa2fa65e964c4e30ea9169717234a00a8875f7869a81
+      return_stage: design-review
+      route_id: route-5a77b419ea157e1825370fdddf95769e187a3c2aaba7fb5731df8c8d115bb1ab
+      source_review_id: design-review-r8
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-DR8-1
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: design-review
+      status: returned
+    route-719ddf22feda90c14697d3aa34991984ee08b8a962cc8de65cc0d6df2353077b:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r2-spec-route.md
+      evidence_sha256: 08a49cb83ab5920d94af4505a919d3883b57ba976d9c20bce68c22f2b656e3a0
+      prior_artifact_sha256: 202d7d396e9bad706cd99cea80d8e85c2b52ba24bf6293e8739c40d1333a970c
+      prior_lifecycle_revision: sha256:b5223826025bf2d89c7a625e72a93ab899b2cb23554948c5837a12c7a03cb51b
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r2-spec-return.md
+      return_evidence_sha256: 6828260f4f276cd4f156bedba737ca78bdd276c7a41a72adea91568daa9c8c8b
+      return_stage: design-review
+      route_id: route-719ddf22feda90c14697d3aa34991984ee08b8a962cc8de65cc0d6df2353077b
+      source_review_id: design-review-r2
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-DR2
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: design-review
+      status: returned
+    route-73763e93d9da58ecc9b5d6ee39780a24ef84b8428c70c0907f7bac9549aecebe:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r12-spec-correction-route.md
+      evidence_sha256: 901cd57c89515b74d80944dc61278d963e4bb67215a2720c2badd4584946df87
+      prior_artifact_sha256: 1ef428c5a0205134fc1b636b58cafbe8365cbaf728e4e0c6b5a5e68598e3ef48
+      prior_lifecycle_revision: sha256:b8a94e21afdd7d5af14d4182a8252ef73e42f08a7f9a153e5fa27f87e2602c18
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r12-spec-correction-return.md
+      return_evidence_sha256: 3e618848ad7aa1181695e09e58591957c7afc4047684f9e6721ba00a95d52cf0
+      return_stage: design-review
+      route_id: route-73763e93d9da58ecc9b5d6ee39780a24ef84b8428c70c0907f7bac9549aecebe
+      source_review_id: design-review-r12
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-DR12-1
+          - CCSR-DR12-2
+        lifecycle_state: active
+        milestone_id: none
+        milestone_state: null
+        next_stage: design-review
+      status: returned
+    route-7a59a205b4a34d6aae3ec270a3539175350a2f7ebb9eee3fca88618c6f09960b:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r5-implementation-correction-route.md
+      evidence_sha256: 2f1020437b77aea4c661d738aca703f1f4789ad884ab1aa548a6201acb6d15b1
+      prior_lifecycle_revision: sha256:a0ab601955f1015e482f2f689bb84ec80b9ea67b511af4eb34ca8b9ad4f7805b
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r5-implementation-correction-return.md
+      return_evidence_sha256: 3d4fefc94a6fd44264196a7318e3ad656dd0219d6f40393f0205e564fab195e2
+      return_stage: code-review
+      route_id: route-7a59a205b4a34d6aae3ec270a3539175350a2f7ebb9eee3fca88618c6f09960b
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - CCSR-M3-CR6
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-801ec21e34e85a8168dfa2ff31333d6e856c1787f993d9d1cdc637386896b631:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m1-r1-spec-correction-route.md
+      evidence_sha256: 8ea9b6a5e3ad6eb36a3177ca70e5de3a692e02b9797ffd34c1195d83b678b24a
+      prior_artifact_sha256: ccd69d69e0942b3e057e0d3cf17eaa02aa6b08459e756344044c8a24838a8ceb
+      prior_lifecycle_revision: sha256:27f0562b7cc4e0434928bd70efd8d32db071faefbaafdb0a8276f43b52496e23
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m1-r1-spec-correction-return.md
+      return_evidence_sha256: c621a92c5bf1068a8a28a4e65a82a737fc8b3d1869dfc9885f4982caf181b1b7
+      return_stage: implement
+      route_id: route-801ec21e34e85a8168dfa2ff31333d6e856c1787f993d9d1cdc637386896b631
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids:
+          - CCSR-M1-CR1
+        lifecycle_state: active
+        milestone_id: M1
+        milestone_state: implementing
+        next_stage: code-review
+      status: returned
+    route-80cb6da82b8d69d26a7035bf5b67f8baf21515d8dd6a6bcd476bcd69e3d529a2:
+      destination_artifact_id: proposal
+      destination_stage: proposal
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r3-proposal-correction-route.md
+      evidence_sha256: e990893cee1ae04022f310a2398ad9a8dbade6ebe351a19ee1cf7b3661dcf78a
+      prior_artifact_sha256: 34a32874cc80fd571ffff81c5bfc219396c04009df7762e9c282d9c1a09afa05
+      prior_lifecycle_revision: sha256:918a914c555e83fdd93b85228ef36247240df0929cb3376bf1f00f3badd926c1
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r3-proposal-correction-return.md
+      return_evidence_sha256: 8904d8026c0e16b6f9a912047d158daef50c81e6fbf87bc290cde626b16fdbee
+      return_stage: implement
+      route_id: route-80cb6da82b8d69d26a7035bf5b67f8baf21515d8dd6a6bcd476bcd69e3d529a2
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids:
+          - CCSR-M3-CR2
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: code-review
+      status: returned
+    route-8b1eba446d545a42b2ee134cb7deca5195c806d7251488115d649bcf9e18ccc3:
+      destination_artifact_id: plan
+      destination_stage: plan
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/delivery-review-r1-plan-route.md
+      evidence_sha256: 2e101a6977b1b0d4d0b597abd3f44ef56a124031e99f0d2934de897de44b4cee
+      prior_artifact_sha256: 1cc011586e8dd7546a36c3a63898b5bcce360d782c8a4259786ab089f3712d02
+      prior_lifecycle_revision: sha256:491592a6e6c7a43de15d65b87fb8edda718d08ab46d452e8bb871626991f0a8a
+      reason: upstream-planning-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/delivery-review-r1-plan-return.md
+      return_evidence_sha256: bb11a1ddb0b79b114c80a4b2b932e9bc31272951ccb29123e7d5c4fb90f6c140
+      return_stage: delivery-review
+      route_id: route-8b1eba446d545a42b2ee134cb7deca5195c806d7251488115d649bcf9e18ccc3
+      source_review_id: delivery-review-r1
+      source_snapshot:
+        blocker: null
+        current_stage: delivery-review
+        finding_ids:
+          - CCSR-DLR1
+        lifecycle_state: active
+        milestone_id: null
+        milestone_state: null
+        next_stage: delivery-review
+      status: returned
+    route-8be2ab799d3b36d9e24147ac79df71a858523b91ef3fb2b6c3560469bc39edef:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r4-implementation-correction-route.md
+      evidence_sha256: c6ca6c178077490509569d061c280ddd9faed8521b843c53fc689a79ba45c0d6
+      prior_lifecycle_revision: sha256:3f8beba74778a954e241e6900e0f5e789e5445f1dc66e9f04fa00864adc121f7
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r4-implementation-correction-return.md
+      return_evidence_sha256: 899086be75edfecb6be04e67836f989442879120c840933c5780f62900d72e12
+      return_stage: code-review
+      route_id: route-8be2ab799d3b36d9e24147ac79df71a858523b91ef3fb2b6c3560469bc39edef
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - CCSR-M3-CR3
+          - CCSR-M3-CR4
+          - CCSR-M3-CR5
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-9179a7e937f4a06fe111203a2ffac60e3afe13369e80dab69027d3be6789bb05:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r7-spec-correction-route.md
+      evidence_sha256: debf42eda7834358de139b42792973a27ecc5357fc6a842bf1ebac069127fa92
+      prior_artifact_sha256: f5d5cb43a06369e852a5486871bfd831becf22dfdab04b87b22cec8d615e0c14
+      prior_lifecycle_revision: sha256:a5d4059c047315be41cd6ea0667399abf1ef4d697582e3b5c39200314d0f11a1
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r7-spec-correction-return.md
+      return_evidence_sha256: 7e507cbca534727e5676be1cf65ce1d8c851724bc82563fc1aa4ed044034ca0a
+      return_stage: design-review
+      route_id: route-9179a7e937f4a06fe111203a2ffac60e3afe13369e80dab69027d3be6789bb05
+      source_review_id: design-review-r7
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-DR7-1
+          - CCSR-DR7-2
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: design-review
+      status: returned
+    route-9b4084b8cf936c817e664c1dda36459c16384801095690cb88383fee1535f656:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r6-spec-correction-route.md
+      evidence_sha256: c5a66727d1bd92a013373786a388d464b4fd6c28b306558efece9848cee814eb
+      prior_artifact_sha256: 4968701745819f720bc39c9ed938c54e1b874c2020b46584420f3a267067fbda
+      prior_lifecycle_revision: sha256:625af00b321015bc0bc64a90ab734cae1ed5c14a93be50b30b82f2fff6ce3a28
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r6-spec-correction-return.md
+      return_evidence_sha256: 478567edc020a4ac8dac0749be4e68ed78f680e2809ab9c13deb9397d3d7b21d
+      return_stage: design-review
+      route_id: route-9b4084b8cf936c817e664c1dda36459c16384801095690cb88383fee1535f656
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - CCSR-M3-CR7
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+    route-af0f0faff65f0eb52e9c545ac72ac6d4648f559405c025824c1bb3699f231e81:
+      destination_artifact_id: spec
+      destination_stage: spec
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r1-spec-correction-route.md
+      evidence_sha256: 3b405802411c3ac62e4bf892df31b9bde564569fd7f958cd5ecfd8caee379413
+      prior_artifact_sha256: 5199f17dc08e54ff58b2c81002885d6b0ac538f35466533d9cd5b02d8eed810d
+      prior_lifecycle_revision: sha256:63690fc5105ad25285b4f2b880f14f1c717e8d8d0b7441edb3942369cc7b61fa
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m3-r1-spec-correction-return.md
+      return_evidence_sha256: d3baa72554bf30b8608b8184fff0e5ac8267aafc1e37016ba42ee41e077315dc
+      return_stage: design-review
+      route_id: route-af0f0faff65f0eb52e9c545ac72ac6d4648f559405c025824c1bb3699f231e81
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids:
+          - CCSR-M3-CR1
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: code-review
+      status: returned
+    route-b72614e8c7ef33c5c732b85910b4428d4556764cc465f681959b406858e012ee:
+      destination_artifact_id: plan
+      destination_stage: plan
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/delivery-r7-plan-correction-route.md
+      evidence_sha256: c1527ee39b2e8fd41adc7f868d53b2ec061dde43a0f67eb105e5516f3e51b744
+      prior_artifact_sha256: 8af7b60641ae5d61aeea742302667ade9374c618060d769a7e5dae8193f97ce2
+      prior_lifecycle_revision: sha256:197e6d9c773b584bc50a57d972f08c9b522ef4ed1823bbaca3f65963d9da8fd5
+      reason: upstream-planning-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/delivery-r7-plan-correction-return.md
+      return_evidence_sha256: 8cd0598a63bd221e4e82a15e94a00fb74111fe61fda6866e0313e18afb63557e
+      return_stage: delivery-review
+      route_id: route-b72614e8c7ef33c5c732b85910b4428d4556764cc465f681959b406858e012ee
+      source_review_id: delivery-review-r7
+      source_snapshot:
+        blocker: null
+        current_stage: delivery-review
+        finding_ids:
+          - CCSR-DLR7-1
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: review-requested
+        next_stage: delivery-review
+      status: returned
+    route-ce85fcd70cf1cae92e30f1710cc412ec743e6ce4df35cd30ce4704c1a8679635:
+      destination_artifact_id: architecture
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r10-architecture-correction-route.md
+      evidence_sha256: 61b8f43f9d471712d540688ffcba2d19033198be8aab954216efbbcbeeb03af8
+      prior_artifact_sha256: 6fcc1f504a10ab8150baff77b6e5c05e5f5afbba5466e29cf8b86743ab3b9760
+      prior_lifecycle_revision: sha256:13ce2ac10c6800e8ef073bbc68036dab33fd885f603cac079db2abcf42f3d31d
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r10-architecture-correction-return.md
+      return_evidence_sha256: 9ac8eccf2a3d658b5ac3b54461905b7265f21d632caea29b102706bf707627bb
+      return_stage: design-review
+      route_id: route-ce85fcd70cf1cae92e30f1710cc412ec743e6ce4df35cd30ce4704c1a8679635
+      source_review_id: design-review-r10
+      source_snapshot:
+        blocker: null
+        current_stage: design-review
+        finding_ids:
+          - CCSR-DR10-1
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: review-requested
+        next_stage: design-review
+      status: returned
+    route-dd5b4a880411da9f74fc4e629d05cfcf22bf4fe7eaaf318009a00dd4b2541d49:
+      destination_artifact_id: implement
+      destination_kind: stage
+      destination_stage: implement
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m5-r1-implementation-correction-route.md
+      evidence_sha256: 77aecb56d27f1b0c690f47e16d5f98cf9611eb6946ad9331181cd8f5fe87f735
+      prior_lifecycle_revision: sha256:0d3e6258f7db50b71e1c7f819f8be6e1a60c2fbd911f0e3457c99af12d5377fe
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/evidence/m5-r1-implementation-correction-return.md
+      return_evidence_sha256: c369ab929151ccaf07c78c75757ca1fbcdbdf9c53cf4ed186a94a1cca615cab7
+      return_stage: code-review
+      route_id: route-dd5b4a880411da9f74fc4e629d05cfcf22bf4fe7eaaf318009a00dd4b2541d49
+      source_snapshot:
+        blocker: null
+        current_stage: code-review
+        finding_ids:
+          - CCSR-M5-CR1
+        lifecycle_state: active
+        milestone_id: M5
+        milestone_state: review-requested
+        next_stage: code-review
+      status: returned
+  milestones: {}
+  package_reviews:
+    delivery:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/reviews/delivery-review-r10.md
+      evidence_sha256: 4a68530e8184393454c876c28e56bed69a5f8188891ea076bac018c9064baeed
+      findings: []
+      members:
+        plan: docs/plans/2026-09-03-compact-current-state-change-record.md
+      outcome: approved
+      package_kind: delivery
+      review_id: delivery-review-r10
+      review_log_path: docs/changes/2026-09-03-compact-current-state-change-record/review-log.md
+      review_log_sha256: d5937d387ac5c4ed53ccce9c32643e65c38f215ab6be931a6f91ab283be5e3c4
+      reviewer_authority: delivery-review
+      round: r10
+      stage_authority: delivery-review
+      upstream_review_id: design-review-r13
+    design:
+      correction_targets: []
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/reviews/design-review-r13.md
+      evidence_sha256: 27e5b423381f7e4f3a2f42fee0b35afa8d6d15a086216bde2f905f79d22f4086
+      findings: []
+      members:
+        adr-compact-current-state-transaction: docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md
+        architecture: docs/architecture/2026-09-03-compact-current-state-change-record.md
+        spec: specs/compact-current-state-change-record.md
+      outcome: approved
+      package_kind: design
+      review_id: design-review-r13
+      review_log_path: docs/changes/2026-09-03-compact-current-state-change-record/review-log.md
+      review_log_sha256: 645d8650a07a044cf7c4416b08bd2f924905887401b28bf6724f95b58ac042d7
+      reviewer_authority: design-review
+      round: r13
+      stage_authority: design-review
+      upstream_review_id: proposal-review-r7
+  resolutions:
+    CCSR-DLR7-1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: 331ff6a5e6ad533d05932cde0cfd5ae960508145b1bddd3c9c9e77d728ebda15
+      evidence_sha256: 7cf497307e71ecfe37126f0811c69c12ccea841a20ccecaf0341f0558181718e
+      finding_id: CCSR-DLR7-1
+      owner: plan author
+      stage_authority: review-resolution
+    CCSR-DLR9-1:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: d6188fd98d62491c9100d694138774699065323dbbf4790d74b84677b719591d
+      evidence_sha256: 13eaa7bb33c1265a0e20b4978515f4c4092da8b8c92f93fe70a7bc69788f3fc0
+      finding_id: CCSR-DLR9-1
+      owner: plan author
+      stage_authority: review-resolution
+    CCSR-DR10-1:
+      artifact_id: architecture
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: f3b65ce9d553af4282e4bb570bb5e10dfd4f001ca4720f753b101600371052a9
+      evidence_sha256: ae4c8d1a5de10130cf4daceba3a00c2ea801e59e2c7c10afec69662465717ca6
+      finding_id: CCSR-DR10-1
+      owner: architecture author
+      stage_authority: review-resolution
+    CCSR-DR12-1:
+      artifact_id: architecture
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: b31299d931da43ff0e19afbb0c3213dca8e5571b000e8f2e4f4c3ddd19eb5b58
+      evidence_sha256: ae4c8d1a5de10130cf4daceba3a00c2ea801e59e2c7c10afec69662465717ca6
+      finding_id: CCSR-DR12-1
+      owner: architecture and specification authors
+      stage_authority: review-resolution
+    CCSR-DR12-2:
+      artifact_id: architecture
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: e03b62ec36875977583b17ac95b0ed9f008e3247e959db9c35ca959c010f82d2
+      evidence_sha256: ae4c8d1a5de10130cf4daceba3a00c2ea801e59e2c7c10afec69662465717ca6
+      finding_id: CCSR-DR12-2
+      owner: architecture and specification authors
+      stage_authority: review-resolution
+    CCSR-DR7-1:
+      artifact_id: spec
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: c6f8196ccf6eb303b76aa7e1822dcb86990e47b953295c85831f779569e39e2e
+      evidence_sha256: ae4c8d1a5de10130cf4daceba3a00c2ea801e59e2c7c10afec69662465717ca6
+      finding_id: CCSR-DR7-1
+      owner: specification author
+      stage_authority: review-resolution
+    CCSR-DR7-2:
+      artifact_id: spec
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: d938c3f364561a70b611246a164a6763814e38e5531baa41d72c94bf9751e30a
+      evidence_sha256: ae4c8d1a5de10130cf4daceba3a00c2ea801e59e2c7c10afec69662465717ca6
+      finding_id: CCSR-DR7-2
+      owner: specification author
+      stage_authority: review-resolution
+    CCSR-DR8-1:
+      artifact_id: spec
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: a420012363c302871f130f20a0bbd5a3c5d02b5e84fb527c097204c18fd4a58c
+      evidence_sha256: ae4c8d1a5de10130cf4daceba3a00c2ea801e59e2c7c10afec69662465717ca6
+      finding_id: CCSR-DR8-1
+      owner: specification author
+      stage_authority: review-resolution
+    CCSR-M3-CR2:
+      artifact_id: proposal
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: 9f1049384463ee95093f8be82eb7bb7a92ab3146cb5265beeb166c85017a4f30
+      evidence_sha256: ae4c8d1a5de10130cf4daceba3a00c2ea801e59e2c7c10afec69662465717ca6
+      finding_id: CCSR-M3-CR2
+      owner: proposal, design, delivery, and implementation authors
+      stage_authority: review-resolution
+    CCSR-M3-CR3:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: 7454035dff630b8b7bb5c1dcf0417b21bbfd382a3d3cc5e0359c5f0009feeb17
+      evidence_sha256: 7cf497307e71ecfe37126f0811c69c12ccea841a20ccecaf0341f0558181718e
+      finding_id: CCSR-M3-CR3
+      owner: implementation author
+      stage_authority: review-resolution
+    CCSR-M3-CR4:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: b96d00170c1dad406da9386c871aedc4cdffe94633d7b134d4dd3bddbc608e90
+      evidence_sha256: 7cf497307e71ecfe37126f0811c69c12ccea841a20ccecaf0341f0558181718e
+      finding_id: CCSR-M3-CR4
+      owner: implementation author
+      stage_authority: review-resolution
+    CCSR-M3-CR5:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: af2eed78c47e4e8248545d0c1bbc86a8342f90067f5e74e7f5511a390db1f23d
+      evidence_sha256: 7cf497307e71ecfe37126f0811c69c12ccea841a20ccecaf0341f0558181718e
+      finding_id: CCSR-M3-CR5
+      owner: implementation author
+      stage_authority: review-resolution
+    CCSR-M3-CR6:
+      artifact_id: plan
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: e0e895965e0ed03a5fd0f09f88139ebd0863b07386812f0b6c48a6609c91be81
+      evidence_sha256: 7cf497307e71ecfe37126f0811c69c12ccea841a20ccecaf0341f0558181718e
+      finding_id: CCSR-M3-CR6
+      owner: implementation author
+      stage_authority: review-resolution
+    CCSR-M3-CR7:
+      artifact_id: spec
+      disposition: accepted
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md
+      evidence_section_sha256: 73401e418be54bea1894bcdcaf6d3ae6491a7cc9839d5dbd6bed5d53b95f4ae2
+      evidence_sha256: ae4c8d1a5de10130cf4daceba3a00c2ea801e59e2c7c10afec69662465717ca6
+      finding_id: CCSR-M3-CR7
+      owner: specification author
+      stage_authority: review-resolution
+  reviews:
+    proposal:
+      artifact_path: docs/proposals/2026-09-03-compact-current-state-change-record.md
+      artifact_sha256: 59bd55d48dd065ca78e112c4442c25bfe3a88980c6505b67426466acf4147d88
+      evidence_path: docs/changes/2026-09-03-compact-current-state-change-record/reviews/proposal-review-r7.md
+      evidence_sha256: 80a6598649e5544ce7af82fc97e66c61ef69ccb4693e6caa6bfdc1736901d744
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r7
+      review_log_sha256: 599bd550a79ff52874a204cb3fec1f5396a8719d34b1ce437eafdadd39007558
+      round: r7
+      stage_authority: proposal-review
+  validations: {}
+  withdrawals: {}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:c5ba4b5f8a98a39cb4633f57cb50786949c10b1091513306e87f69d66214dd64",
+  "artifact_id": "spec",
+  "artifact_kind": "spec",
+  "artifact_role": "primary",
+  "artifact_path": "specs/compact-current-state-change-record.md",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/evidence/spec-correction-r1.md",
+  "prior_artifact_sha256": "72891ff14bbe0c6380f43004bf05900f7227105b1bf53aaabc491038ed965f35",
+  "stage_authority": "spec"
+}

@@ -92,6 +92,8 @@ def change_yaml_path(repo_root: Path, change_id: str) -> Path:
 
 
 def metadata_shape(data: dict[str, Any]) -> str:
+    if data.get("lifecycle_contract") == "compact-current-state-v1":
+        return "compact-current-state-v1"
     if data.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
         return STAGE_OWNED_CONTRACT
     if data.get("schema_version") == 2 and "validation_events" in data:
@@ -251,6 +253,29 @@ def artifact_paths(data: dict[str, Any]) -> list[str]:
 
 
 def review_state(data: dict[str, Any], change_id: str) -> dict[str, Any]:
+    if data.get("lifecycle_contract") == "compact-current-state-v1":
+        reviews = data.get("reviews")
+        open_findings = data.get("open_findings")
+        current = {
+            target_id: {
+                "path": entry.get("path"),
+                "review_id": entry.get("review_id"),
+                "outcome": entry.get("outcome"),
+            }
+            for target_id, entry in (reviews.items() if isinstance(reviews, dict) else [])
+            if isinstance(target_id, str) and isinstance(entry, dict)
+        }
+        return {
+            "status": "current",
+            "unresolved_items": len(open_findings) if isinstance(open_findings, dict) else 0,
+            "current_reviews": current,
+            "detail_pointers": {
+                "reviews": f"docs/changes/{change_id}/reviews/",
+                "material_decisions": f"docs/changes/{change_id}/material-decisions.md",
+                "evidence": f"docs/changes/{change_id}/evidence.yaml",
+                "verify_report": f"docs/changes/{change_id}/verify-report.md",
+            },
+        }
     review = data.get("review")
     state: dict[str, Any] = {
         "status": "unknown",
@@ -372,6 +397,13 @@ def validation_slice(event: dict[str, Any]) -> dict[str, Any]:
 
 def open_blockers(data: dict[str, Any]) -> list[str]:
     blockers: list[str] = []
+    if data.get("lifecycle_contract") == "compact-current-state-v1":
+        compact_blockers = data.get("blockers")
+        if isinstance(compact_blockers, list):
+            blockers.extend(
+                item.get("code") for item in compact_blockers
+                if isinstance(item, dict) and isinstance(item.get("code"), str)
+            )
     if data.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
         workflow_state = data.get("workflow_state")
         blocker = (
@@ -529,6 +561,20 @@ def query_summary(change_id: str, metadata_path: Path, data: dict[str, Any], rep
     state = workflow_state_slice(data)
     if state is not None:
         result["workflow_state"] = state
+    if data.get("lifecycle_contract") == "compact-current-state-v1":
+        result["detail_pointers"] = {
+            "change_metadata": repo_relative(metadata_path, repo_root),
+            "reviews": f"docs/changes/{change_id}/reviews/",
+            "material_decisions": f"docs/changes/{change_id}/material-decisions.md",
+            "evidence": f"docs/changes/{change_id}/evidence.yaml",
+            "verify_report": f"docs/changes/{change_id}/verify-report.md",
+        }
+        result["lifecycle_revision"] = data.get("lifecycle_revision")
+        result["current_stage"] = data.get("current_stage")
+        result["active_work"] = data.get("active_work")
+        result["remaining_work"] = data.get("remaining_work")
+        result["material_decisions"] = data.get("material_decisions")
+        result["evidence"] = data.get("evidence")
     return result
 
 

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "advance-stage",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:46f48829f90003208546e3b07d70a9a49dbabfb1daa9d4ad40c0883b0f343655",
+  "source_stage": "architecture",
+  "destination_stage": "spec",
+  "stage_authority": "workflow"
+}

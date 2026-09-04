@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rigorloop.dev/schemas/compact-current-state-v1.schema.json",
+  "title": "RigorLoop compact current-state v1 records",
+  "$comment": "UTF-8 byte limits, mapping-key identity and order, cross-file membership and identity, lifecycle-revision, lifecycle-derived operation eligibility, responsibility metadata, freshness, transaction-relative recovery paths, and other semantic invariants are enforced by the compact contract validator. Authority-named durable fields are provenance labels, not caller authentication or permission.",
+  "oneOf": [
+    { "$ref": "#/$defs/change" },
+    { "$ref": "#/$defs/review" },
+    { "$ref": "#/$defs/decisions" },
+    { "$ref": "#/$defs/evidence" },
+    { "$ref": "#/$defs/verify" },
+    { "$ref": "#/$defs/operationEnvelope" },
+    { "$ref": "#/$defs/result" },
+    { "$ref": "#/$defs/recovery" }
+  ],
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "text": { "type": "string", "minLength": 1, "maxLength": 16384 },
+    "path": { "type": "string", "minLength": 1, "maxLength": 1024, "pattern": "^(?!/)(?!.*(?:^|/)(?:\\.|\\.\\.)(?:/|$))(?!.*//)(?!.*\\\\)(?!.*\\/$).+$" },
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "timestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "stage": { "enum": ["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "ci-maintenance", "verify", "pr"] },
+    "authority": { "enum": ["proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "review-resolution", "ci-maintenance", "verify", "pr", "workflow"] },
+    "operation": { "enum": ["record-artifact", "advance-stage", "replace-review", "settle-review", "resolve-finding", "upsert-decision", "remove-decision", "route-correction", "return-correction", "advance-milestone", "update-evidence", "invalidate-evidence", "record-verify", "recover"] },
+    "subject": {
+      "type": "object", "additionalProperties": false,
+      "required": ["subject_id", "path", "identity"],
+      "properties": { "subject_id": { "$ref": "#/$defs/id" }, "path": { "$ref": "#/$defs/path" }, "identity": { "$ref": "#/$defs/digest" } }
+    },
+    "artifactRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_id", "kind", "role", "path", "identity", "owner", "status"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/id" }, "kind": { "enum": ["proposal", "architecture", "adr", "spec", "plan"] }, "role": { "enum": ["primary", "supporting"] },
+        "path": { "$ref": "#/$defs/path" }, "identity": { "$ref": "#/$defs/digest" }, "owner": { "$ref": "#/$defs/authority" },
+        "status": { "enum": ["authoring", "review-required", "accepted", "approved", "active", "revision-required", "blocked", "superseded"] }
+      }
+    },
+    "reviewRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target_id", "path", "identity", "review_id", "outcome", "reviewer_authority", "status"],
+      "properties": {
+        "target_id": { "$ref": "#/$defs/id" }, "path": { "$ref": "#/$defs/path" }, "identity": { "$ref": "#/$defs/digest" }, "review_id": { "$ref": "#/$defs/id" },
+        "outcome": { "enum": ["approved", "changes-requested", "blocked", "inconclusive"] }, "reviewer_authority": { "$ref": "#/$defs/authority" }, "status": { "enum": ["current", "review-required", "blocked"] }
+      }
+    },
+    "finding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["finding_id", "affected_surfaces", "severity", "blocking_effect", "owner", "required_next_action", "disposition", "evidence"],
+      "properties": {
+        "finding_id": { "$ref": "#/$defs/id" }, "affected_surfaces": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+        "severity": { "enum": ["critical", "major", "minor", "note"] }, "blocking_effect": { "enum": ["blocks-progression", "advisory"] }, "owner": { "$ref": "#/$defs/authority" },
+        "required_next_action": { "$ref": "#/$defs/text" }, "disposition": { "const": "open" }, "evidence": { "$ref": "#/$defs/text" }
+      }
+    },
+    "findingRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["finding_id", "review_target_id", "review_path", "review_identity", "owner", "severity", "blocking_effect"],
+      "properties": {
+        "finding_id": { "$ref": "#/$defs/id" }, "review_target_id": { "$ref": "#/$defs/id" }, "review_path": { "$ref": "#/$defs/path" }, "review_identity": { "$ref": "#/$defs/digest" },
+        "owner": { "$ref": "#/$defs/authority" }, "severity": { "enum": ["critical", "major", "minor", "note"] }, "blocking_effect": { "enum": ["blocks-progression", "advisory"] }
+      }
+    },
+    "decisionRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision_id", "path", "identity", "applicability"],
+      "properties": { "decision_id": { "$ref": "#/$defs/id" }, "path": { "$ref": "#/$defs/path" }, "identity": { "$ref": "#/$defs/digest" }, "applicability": { "enum": ["applicable", "retained-pending-decision"] } }
+    },
+    "evidenceRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_id", "manifest_path", "manifest_identity", "freshness"],
+      "properties": { "evidence_id": { "$ref": "#/$defs/id" }, "manifest_path": { "$ref": "#/$defs/path" }, "manifest_identity": { "$ref": "#/$defs/digest" }, "freshness": { "enum": ["current", "stale"] } }
+    },
+    "diagnostic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["code", "summary", "invariant", "scope", "operation", "identities", "next_operation"],
+      "properties": { "code": { "$ref": "#/$defs/id" }, "summary": { "$ref": "#/$defs/text" }, "invariant": { "$ref": "#/$defs/id" }, "scope": { "enum": ["progression", "operation"] }, "operation": { "oneOf": [{ "$ref": "#/$defs/operation" }, { "type": "null" }] }, "identities": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }, "next_operation": { "oneOf": [{ "$ref": "#/$defs/operation" }, { "type": "null" }] } },
+      "oneOf": [{ "properties": { "scope": { "const": "progression" }, "operation": { "type": "null" } } }, { "properties": { "scope": { "const": "operation" }, "operation": { "$ref": "#/$defs/operation" } } }]
+    },
+    "remainingWork": {
+      "type": "object", "additionalProperties": false,
+      "required": ["work_id", "kind", "owner", "required_action", "status"],
+      "properties": { "work_id": { "$ref": "#/$defs/id" }, "kind": { "enum": ["milestone", "task"] }, "owner": { "$ref": "#/$defs/authority" }, "required_action": { "$ref": "#/$defs/text" }, "status": { "enum": ["pending", "blocked"] } }
+    },
+    "activeMilestone": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "milestone_id", "status", "owner"],
+      "properties": { "kind": { "const": "milestone" }, "milestone_id": { "$ref": "#/$defs/id" }, "status": { "enum": ["planned", "implementing", "review-required"] }, "owner": { "$ref": "#/$defs/authority" } }
+    },
+    "activeCorrection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "finding_ids", "source_stage", "destination_stage", "return_stage", "owner", "reason", "return_condition", "expected_review_target", "status"],
+      "properties": {
+        "kind": { "const": "correction" }, "finding_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "source_stage": { "$ref": "#/$defs/stage" }, "destination_stage": { "$ref": "#/$defs/stage" },
+        "return_stage": { "$ref": "#/$defs/stage" }, "owner": { "$ref": "#/$defs/authority" }, "reason": { "$ref": "#/$defs/id" }, "return_condition": { "$ref": "#/$defs/text" }, "expected_review_target": { "$ref": "#/$defs/id" }, "status": { "enum": ["authoring", "review-required", "blocked"] }
+      }
+    },
+    "correctionInput": {
+      "type": "object", "additionalProperties": false,
+      "required": ["finding_ids", "source_stage", "destination_stage", "return_stage", "owner", "reason", "return_condition", "expected_review_target"],
+      "properties": { "finding_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "source_stage": { "$ref": "#/$defs/stage" }, "destination_stage": { "$ref": "#/$defs/stage" }, "return_stage": { "$ref": "#/$defs/stage" }, "owner": { "$ref": "#/$defs/authority" }, "reason": { "$ref": "#/$defs/id" }, "return_condition": { "$ref": "#/$defs/text" }, "expected_review_target": { "$ref": "#/$defs/id" } }
+    },
+    "change": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "change_id", "title", "lifecycle_contract", "lifecycle_revision", "current_stage", "artifacts", "reviews", "active_work", "open_findings", "material_decisions", "evidence", "blockers", "remaining_work", "readiness"],
+      "properties": {
+        "schema": { "const": "compact-change-v1" }, "change_id": { "$ref": "#/$defs/id" }, "title": { "$ref": "#/$defs/text" }, "lifecycle_contract": { "const": "compact-current-state-v1" }, "lifecycle_revision": { "$ref": "#/$defs/digest" }, "current_stage": { "$ref": "#/$defs/stage" },
+        "artifacts": { "type": "object", "additionalProperties": { "$ref": "#/$defs/artifactRef" } }, "reviews": { "type": "object", "additionalProperties": { "$ref": "#/$defs/reviewRef" } },
+        "active_work": { "oneOf": [{ "$ref": "#/$defs/activeMilestone" }, { "$ref": "#/$defs/activeCorrection" }, { "type": "null" }] }, "open_findings": { "type": "object", "additionalProperties": { "$ref": "#/$defs/findingRef" } },
+        "material_decisions": { "type": "object", "additionalProperties": { "$ref": "#/$defs/decisionRef" } }, "evidence": { "type": "object", "additionalProperties": { "$ref": "#/$defs/evidenceRef" } },
+        "blockers": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } }, "remaining_work": { "type": "object", "additionalProperties": { "$ref": "#/$defs/remainingWork" } }, "readiness": { "enum": ["not-ready", "blocked", "ready-for-review", "verified"] }
+      }
+    },
+    "review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "review_id", "target", "round", "subjects", "reviewer_authority", "outcome", "recording_status", "open_findings", "material_decisions", "limitations", "recorded_at"],
+      "properties": {
+        "schema": { "const": "compact-review-v1" }, "review_id": { "$ref": "#/$defs/id" }, "target": { "type": "object", "additionalProperties": false, "required": ["target_id", "target_kind"], "properties": { "target_id": { "$ref": "#/$defs/id" }, "target_kind": { "enum": ["proposal", "design-package", "delivery-package", "milestone", "final-code"] } } },
+        "round": { "type": "integer", "minimum": 1 }, "subjects": { "type": "object", "additionalProperties": { "$ref": "#/$defs/subject" } }, "reviewer_authority": { "enum": ["proposal-review", "design-review", "delivery-review", "code-review"] },
+        "outcome": { "enum": ["approved", "changes-requested", "blocked", "inconclusive"] }, "recording_status": { "enum": ["recorded", "blocked"] }, "open_findings": { "type": "object", "additionalProperties": { "$ref": "#/$defs/finding" } },
+        "material_decisions": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "limitations": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }, "recorded_at": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "decision": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision_id", "source", "decision", "rationale", "affected_surfaces", "owner", "applicability", "applicable_since"],
+      "properties": {
+        "decision_id": { "$ref": "#/$defs/id" }, "source": { "type": "object", "additionalProperties": false, "required": ["kind", "id"], "properties": { "kind": { "enum": ["finding", "issue"] }, "id": { "$ref": "#/$defs/id" } } },
+        "decision": { "$ref": "#/$defs/text" }, "rationale": { "$ref": "#/$defs/text" }, "affected_surfaces": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }, "owner": { "$ref": "#/$defs/authority" }, "applicability": { "enum": ["applicable", "retained-pending-decision"] }, "applicable_since": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "decisions": {
+      "type": "object", "additionalProperties": false, "required": ["schema", "decisions"],
+      "properties": { "schema": { "const": "compact-decisions-v1" }, "decisions": { "type": "object", "minProperties": 1, "additionalProperties": { "$ref": "#/$defs/decision" } } }
+    },
+    "detailLocation": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "value"],
+      "properties": { "kind": { "enum": ["repository", "external", "machine-local"] }, "value": { "$ref": "#/$defs/text" } }
+    },
+    "evidenceEntry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_id", "verifies", "subjects", "method", "outcome", "surfaces", "freshness", "invalidating_dependencies", "producer_authority", "detail_location", "required_rerun"],
+      "properties": {
+        "evidence_id": { "$ref": "#/$defs/id" }, "verifies": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "subjects": { "type": "object", "additionalProperties": { "$ref": "#/$defs/subject" } }, "method": { "$ref": "#/$defs/text" },
+        "outcome": { "enum": ["passed", "failed", "inconclusive", "not-run"] }, "surfaces": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "freshness": { "enum": ["current", "stale"] },
+        "invalidating_dependencies": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/dependencyRef" } }, "producer_authority": { "$ref": "#/$defs/authority" }, "detail_location": { "oneOf": [{ "$ref": "#/$defs/detailLocation" }, { "type": "null" }] }, "required_rerun": { "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] }
+      }
+    },
+    "dependencyRef": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "id", "identity"],
+      "properties": { "kind": { "enum": ["subject", "artifact", "review", "decision"] }, "id": { "$ref": "#/$defs/id" }, "identity": { "$ref": "#/$defs/digest" } }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false, "required": ["schema", "evidence"],
+      "properties": { "schema": { "const": "compact-evidence-v1" }, "evidence": { "type": "object", "minProperties": 1, "additionalProperties": { "$ref": "#/$defs/evidenceEntry" } } }
+    },
+    "verify": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "verification_id", "subjects", "verdict", "impact", "evidence_reused", "evidence_rerun", "limitations", "residual_risks", "explanation", "handoff", "recorded_at"],
+      "properties": {
+        "schema": { "const": "compact-verify-v1" }, "verification_id": { "$ref": "#/$defs/id" }, "subjects": { "type": "object", "additionalProperties": { "$ref": "#/$defs/subject" } }, "verdict": { "const": "passed" }, "impact": { "enum": ["low", "standard", "high", "critical"] },
+        "evidence_reused": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "evidence_rerun": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "limitations": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }, "residual_risks": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+        "explanation": { "$ref": "#/$defs/text" }, "handoff": { "enum": ["ready", "ready-with-limitations"] }, "recorded_at": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "expectedFile": {
+      "type": "object", "additionalProperties": false, "required": ["path", "state", "identity"],
+      "properties": { "path": { "$ref": "#/$defs/path" }, "state": { "enum": ["absent", "present"] }, "identity": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] } }
+    },
+    "contentInput": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "identity", "source", "content", "source_path"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" }, "identity": { "$ref": "#/$defs/digest" }, "source": { "enum": ["inline", "path"] }, "content": { "type": ["string", "null"] }, "source_path": { "oneOf": [{ "$ref": "#/$defs/path" }, { "type": "null" }] }
+      },
+      "oneOf": [
+        { "properties": { "source": { "const": "inline" }, "content": { "type": "string" }, "source_path": { "type": "null" } } },
+        { "properties": { "source": { "const": "path" }, "content": { "type": "null" }, "source_path": { "$ref": "#/$defs/path" } } }
+      ]
+    },
+    "findingResolution": {
+      "type": "object", "additionalProperties": false, "required": ["finding_id", "disposition", "materiality", "decision_id"],
+      "properties": { "finding_id": { "$ref": "#/$defs/id" }, "disposition": { "enum": ["accepted", "rejected", "deferred", "partially-accepted"] }, "materiality": { "enum": ["material", "non-material"] }, "decision_id": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] } },
+      "oneOf": [{ "properties": { "materiality": { "const": "material" }, "decision_id": { "$ref": "#/$defs/id" } } }, { "properties": { "materiality": { "const": "non-material" }, "decision_id": { "type": "null" } } }]
+    },
+    "recordArtifactPayload": {
+      "type": "object", "additionalProperties": false, "required": ["artifact", "content"],
+      "properties": { "artifact": { "$ref": "#/$defs/artifactRef" }, "content": { "$ref": "#/$defs/contentInput" } }
+    },
+    "advanceStagePayload": {
+      "type": "object", "additionalProperties": false, "required": ["from_stage", "to_stage"],
+      "properties": { "from_stage": { "$ref": "#/$defs/stage" }, "to_stage": { "$ref": "#/$defs/stage" } }
+    },
+    "replaceReviewPayload": {
+      "type": "object", "additionalProperties": false, "required": ["target_id", "prior_review_identity", "review", "resolutions"],
+      "properties": { "target_id": { "$ref": "#/$defs/id" }, "prior_review_identity": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] }, "review": { "$ref": "#/$defs/contentInput" }, "resolutions": { "type": "object", "additionalProperties": { "$ref": "#/$defs/findingResolution" } } }
+    },
+    "settleReviewPayload": {
+      "type": "object", "additionalProperties": false, "required": ["target_id", "review_id", "outcome"],
+      "properties": { "target_id": { "$ref": "#/$defs/id" }, "review_id": { "$ref": "#/$defs/id" }, "outcome": { "enum": ["approved", "changes-requested", "blocked", "inconclusive"] } }
+    },
+    "resolveFindingPayload": {
+      "type": "object", "additionalProperties": false, "required": ["resolution", "review", "decisions"],
+      "properties": { "resolution": { "$ref": "#/$defs/findingResolution" }, "review": { "$ref": "#/$defs/contentInput" }, "decisions": { "oneOf": [{ "$ref": "#/$defs/contentInput" }, { "type": "null" }] } }
+    },
+    "upsertDecisionPayload": {
+      "type": "object", "additionalProperties": false, "required": ["decision_id", "decisions"],
+      "properties": { "decision_id": { "$ref": "#/$defs/id" }, "decisions": { "$ref": "#/$defs/contentInput" } }
+    },
+    "removeDecisionPayload": {
+      "type": "object", "additionalProperties": false, "required": ["decision_id"],
+      "properties": { "decision_id": { "$ref": "#/$defs/id" } }
+    },
+    "routeCorrectionPayload": {
+      "type": "object", "additionalProperties": false, "required": ["correction"],
+      "properties": { "correction": { "$ref": "#/$defs/correctionInput" } }
+    },
+    "returnCorrectionPayload": {
+      "type": "object", "additionalProperties": false, "required": ["finding_ids", "return_stage", "satisfied_condition"],
+      "properties": { "finding_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "return_stage": { "$ref": "#/$defs/stage" }, "satisfied_condition": { "$ref": "#/$defs/text" } }
+    },
+    "advanceMilestonePayload": {
+      "type": "object", "additionalProperties": false, "required": ["milestone_id", "from_status", "to_status"],
+      "properties": { "milestone_id": { "$ref": "#/$defs/id" }, "from_status": { "oneOf": [{ "enum": ["planned", "implementing", "review-required"] }, { "type": "null" }] }, "to_status": { "enum": ["planned", "implementing", "review-required", "closed"] } }
+    },
+    "updateEvidencePayload": {
+      "type": "object", "additionalProperties": false, "required": ["evidence_ids", "evidence"],
+      "properties": { "evidence_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "evidence": { "$ref": "#/$defs/contentInput" } }
+    },
+    "invalidateEvidencePayload": {
+      "type": "object", "additionalProperties": false, "required": ["evidence_ids", "reason", "evidence"],
+      "properties": { "evidence_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "reason": { "$ref": "#/$defs/text" }, "evidence": { "oneOf": [{ "$ref": "#/$defs/contentInput" }, { "type": "null" }] } }
+    },
+    "recordVerifyPayload": {
+      "type": "object", "additionalProperties": false, "required": ["verification_id", "report", "evidence_ids"],
+      "properties": { "verification_id": { "$ref": "#/$defs/id" }, "report": { "$ref": "#/$defs/contentInput" }, "evidence_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } } }
+    },
+    "recoverPayload": {
+      "type": "object", "additionalProperties": false, "required": ["transaction_id", "expected_recovery_identity", "action"],
+      "properties": { "transaction_id": { "$ref": "#/$defs/id" }, "expected_recovery_identity": { "$ref": "#/$defs/digest" }, "action": { "enum": ["restore-prior", "accept-candidate"] } }
+    },
+    "operationEnvelope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "operation", "change_id", "expected_lifecycle_revision", "expected_files", "payload"],
+      "properties": { "schema": { "const": "compact-operation-v1" }, "operation": { "$ref": "#/$defs/operation" }, "change_id": { "$ref": "#/$defs/id" }, "expected_lifecycle_revision": { "$ref": "#/$defs/digest" }, "expected_files": { "type": "object", "additionalProperties": { "$ref": "#/$defs/expectedFile" } }, "payload": { "type": "object" } },
+      "allOf": [
+        { "if": { "properties": { "operation": { "const": "record-artifact" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/recordArtifactPayload" } } } },
+        { "if": { "properties": { "operation": { "const": "advance-stage" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/advanceStagePayload" } } } },
+        { "if": { "properties": { "operation": { "const": "replace-review" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/replaceReviewPayload" } } } },
+        { "if": { "properties": { "operation": { "const": "settle-review" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/settleReviewPayload" } } } },
+        { "if": { "properties": { "operation": { "const": "resolve-finding" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/resolveFindingPayload" } } } },
+        { "if": { "properties": { "operation": { "const": "upsert-decision" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/upsertDecisionPayload" } } } },
+        { "if": { "properties": { "operation": { "const": "remove-decision" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/removeDecisionPayload" } } } },
+        { "if": { "properties": { "operation": { "const": "route-correction" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/routeCorrectionPayload" } } } },
+        { "if": { "properties": { "operation": { "const": "return-correction" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/returnCorrectionPayload" } } } },
+        { "if": { "properties": { "operation": { "const": "advance-milestone" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/advanceMilestonePayload" } } } },
+        { "if": { "properties": { "operation": { "const": "update-evidence" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/updateEvidencePayload" } } } },
+        { "if": { "properties": { "operation": { "const": "invalidate-evidence" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/invalidateEvidencePayload" } } } },
+        { "if": { "properties": { "operation": { "const": "record-verify" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/recordVerifyPayload" } } } },
+        { "if": { "properties": { "operation": { "const": "recover" } }, "required": ["operation"] }, "then": { "properties": { "payload": { "$ref": "#/$defs/recoverPayload" } } } }
+      ]
+    },
+    "projection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["view", "change_id", "lifecycle_contract", "lifecycle_revision", "current_stage", "artifacts", "reviews", "open_findings", "material_decisions", "evidence", "active_work", "progression_status", "blockers", "remaining_work", "permitted_operations", "requested_operation", "operation_eligibility", "required_paths"],
+      "properties": {
+        "view": { "enum": ["summary", "reviews", "open-findings", "material-decisions", "evidence", "remaining-work", "verification", "skill-context"] }, "change_id": { "$ref": "#/$defs/id" }, "lifecycle_contract": { "const": "compact-current-state-v1" }, "lifecycle_revision": { "$ref": "#/$defs/digest" }, "current_stage": { "$ref": "#/$defs/stage" }, "artifacts": { "type": "object", "additionalProperties": { "$ref": "#/$defs/artifactRef" } }, "reviews": { "type": "object", "additionalProperties": { "$ref": "#/$defs/reviewRef" } },
+        "open_findings": { "type": "object", "additionalProperties": { "$ref": "#/$defs/findingRef" } }, "material_decisions": { "type": "object", "additionalProperties": { "$ref": "#/$defs/decisionRef" } }, "evidence": { "type": "object", "additionalProperties": { "$ref": "#/$defs/evidenceRef" } }, "active_work": { "oneOf": [{ "$ref": "#/$defs/activeMilestone" }, { "$ref": "#/$defs/activeCorrection" }, { "type": "null" }] },
+        "progression_status": { "enum": ["blocked", "ready"] }, "blockers": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } }, "remaining_work": { "type": "object", "additionalProperties": { "$ref": "#/$defs/remainingWork" } }, "permitted_operations": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/operation" } }, "requested_operation": { "oneOf": [{ "$ref": "#/$defs/operation" }, { "type": "null" }] }, "operation_eligibility": { "oneOf": [{ "$ref": "#/$defs/operationEligibility" }, { "type": "null" }] }, "required_paths": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/path" } }
+      }
+    },
+    "operationEligibility": {
+      "type": "object", "additionalProperties": false, "required": ["operation", "status", "blockers"],
+      "properties": { "operation": { "$ref": "#/$defs/operation" }, "status": { "enum": ["permitted", "prohibited"] }, "blockers": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } } }
+    },
+    "result": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "status", "change_id", "prior_lifecycle_revision", "resulting_lifecycle_revision", "affected_paths", "bytes_changed", "blockers", "errors", "next_operation", "projection"],
+      "properties": {
+        "schema": { "const": "compact-result-v1" }, "status": { "enum": ["success", "already-applied", "rejected", "busy", "recovery-required"] }, "change_id": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }, "prior_lifecycle_revision": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] }, "resulting_lifecycle_revision": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] },
+        "affected_paths": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/path" } }, "bytes_changed": { "type": "boolean" }, "blockers": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } }, "errors": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } }, "next_operation": { "oneOf": [{ "$ref": "#/$defs/operation" }, { "type": "null" }] }, "projection": { "oneOf": [{ "$ref": "#/$defs/projection" }, { "type": "null" }] }
+      },
+      "allOf": [{ "if": { "properties": { "projection": { "type": "object" } }, "required": ["projection"] }, "then": { "properties": { "status": { "const": "success" }, "prior_lifecycle_revision": { "type": "null" }, "resulting_lifecycle_revision": { "type": "null" }, "affected_paths": { "maxItems": 0 }, "bytes_changed": { "const": false } } } }]
+    },
+    "recoveryFile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "prior_state", "prior_identity", "prior_content", "candidate_state", "candidate_identity", "candidate_content", "replacement_status"],
+      "properties": { "path": { "$ref": "#/$defs/path" }, "prior_state": { "enum": ["absent", "present"] }, "prior_identity": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] }, "prior_content": { "oneOf": [{ "$ref": "#/$defs/path" }, { "type": "null" }] }, "candidate_state": { "enum": ["absent", "present"] }, "candidate_identity": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] }, "candidate_content": { "oneOf": [{ "$ref": "#/$defs/path" }, { "type": "null" }] }, "replacement_status": { "enum": ["pending", "replaced"] } }
+    },
+    "recovery": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "transaction_id", "change_id", "phase", "prior_lifecycle_revision", "candidate_lifecycle_revision", "affected_files"],
+      "properties": { "schema": { "const": "compact-recovery-v1" }, "transaction_id": { "$ref": "#/$defs/id" }, "change_id": { "$ref": "#/$defs/id" }, "phase": { "enum": ["prepared", "replacing", "persisted"] }, "prior_lifecycle_revision": { "$ref": "#/$defs/digest" }, "candidate_lifecycle_revision": { "$ref": "#/$defs/digest" }, "affected_files": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/recoveryFile" } } }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rigorloop.dev/schemas/compact-current-state-activation.schema.json",
+  "title": "RigorLoop Compact Current-State Activation Matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract", "state", "components", "supported_adapters"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "contract": { "const": "compact-current-state-v1" },
+    "state": { "enum": ["withheld", "active"] },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapters", "canonical-guidance", "cli", "documentation", "fixtures", "node-validator", "python-validator", "schemas", "skills", "templates"],
+      "properties": {
+        "adapters": { "const": "compact-current-state-v1" },
+        "canonical-guidance": { "const": "compact-current-state-v1" },
+        "cli": { "const": "compact-current-state-v1" },
+        "documentation": { "const": "compact-current-state-v1" },
+        "fixtures": { "const": "compact-current-state-v1" },
+        "node-validator": { "const": "compact-current-state-v1" },
+        "python-validator": { "const": "compact-current-state-v1" },
+        "schemas": { "const": "compact-current-state-v1" },
+        "skills": { "const": "compact-current-state-v1" },
+        "templates": { "const": "compact-current-state-v1" }
+      }
+    },
+    "supported_adapters": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "claude" },
+        { "const": "codex" },
+        { "const": "opencode" }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    }
+  }
+}

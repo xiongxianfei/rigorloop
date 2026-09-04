@@ -506,6 +506,97 @@ Material findings: F-SPEC
   assert.deepEqual(status(root).permitted_operations, ["record-review"]);
 });
 
+test("settled Proposal correction can return after its exact approved review", async () => {
+  const { root, changeRoot } = await packageRepository({ stage: "design-review" });
+  const changePath = join(changeRoot, "change.yaml");
+  const proposalPath = "docs/proposals/example.md";
+  const originalProposal = readFileSync(join(root, proposalPath), "utf8");
+
+  const designReview = writePackageReview(root, packageContext(root), { outcome: "approved" });
+  assert.equal(execute(root, "record-package-review", {
+    schema_version: 1, operation: "record-package-review", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    package_kind: "design", review_id: designReview.reviewId, upstream_review_id: designReview.packageFacts.upstream_review_id,
+    members: designReview.packageFacts.members, evidence_path: designReview.reviewPath, stage_authority: "design-review",
+  }).exitCode, 0);
+  assert.equal(execute(root, "settle-review-package", {
+    schema_version: 1, operation: "settle-review-package", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    package_kind: "design", review_id: designReview.reviewId, stage_authority: "design-review",
+  }).exitCode, 0);
+
+  let change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  change.workflow_state = {
+    lifecycle_state: "active", current_stage: "implement", next_stage: "code-review", blocker: null, evidence: [],
+    planned_work: {
+      current_milestone: "M2", remaining_implementation_milestones: ["M2"],
+      milestones: { M2: { kind: "implementation", state: "implementing" } },
+    },
+  };
+  writeFileSync(changePath, `${JSON.stringify(change, null, 2)}\n`, "utf8");
+  writeFileSync(join(changeRoot, "review-log.md"), `${readFileSync(join(changeRoot, "review-log.md"), "utf8")}\nReview ID: code-review-r1\nMaterial findings: F-CODE\nOpen findings: F-CODE\n`, "utf8");
+
+  const routeRevision = status(root).lifecycle_revision;
+  const routeEvidence = "docs/changes/example/evidence/proposal-route.md";
+  writeFileSync(join(root, routeEvidence), `Change ID: example\nSource stage: implement\nDestination artifact: proposal\nReason: upstream-contract-gap\nFinding IDs: F-CODE\nReturn stage: implement\nLifecycle revision: ${routeRevision}\n`, "utf8");
+  assert.equal(execute(root, "route-correction", {
+    schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: routeRevision,
+    source_stage: "implement", destination_stage: "proposal", destination_artifact_id: "proposal", reason: "upstream-contract-gap",
+    evidence_path: routeEvidence, finding_ids: ["F-CODE"], return_stage: "implement", milestone_id: "M2", stage_authority: "workflow",
+  }).exitCode, 0);
+
+  const revisedProposal = "# Proposal\n\nCorrected direction.\n";
+  writeFileSync(join(root, proposalPath), revisedProposal, "utf8");
+  const authoringEvidence = "docs/changes/example/evidence/proposal-revision.md";
+  writeFileSync(join(root, authoringEvidence), `Artifact path: ${proposalPath}\nArtifact identity: sha256:${sha(revisedProposal)}\nAuthoring result: complete\n`, "utf8");
+  assert.equal(execute(root, "record-artifact-revision", {
+    schema_version: 1, operation: "record-artifact-revision", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    artifact_id: "proposal", artifact_kind: "proposal", artifact_role: "primary", artifact_path: proposalPath,
+    evidence_path: authoringEvidence, prior_artifact_sha256: sha(originalProposal), stage_authority: "proposal",
+  }).exitCode, 0);
+
+  const reviewPath = "docs/changes/example/reviews/proposal-review-r2.md";
+  const review = `Review ID: proposal-review-r2\nStage: proposal-review\nRound: r2\nStatus: approved\nReviewed artifact path: ${proposalPath}\nReviewed artifact identity: sha256:${sha(revisedProposal)}\nMaterial findings: none\n`;
+  writeFileSync(join(root, reviewPath), review, "utf8");
+  writeFileSync(join(changeRoot, "review-log.md"), `${readFileSync(join(changeRoot, "review-log.md"), "utf8")}\n### Review entry\n\nReview ID: proposal-review-r2\nMaterial findings: none\nOpen findings: none\n`, "utf8");
+  assert.equal(execute(root, "record-review", {
+    schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    artifact_id: "proposal", evidence_path: reviewPath, stage_authority: "proposal-review",
+  }).exitCode, 0);
+  assert.equal(execute(root, "settle-artifact", {
+    schema_version: 1, operation: "settle-artifact", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    artifact_id: "proposal", stage_authority: "proposal-review",
+  }).exitCode, 0);
+  assert.equal(parseLifecycleYaml(readFileSync(changePath, "utf8")).review_packages.design.status, "review-required");
+
+  change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  const activeRoute = change.lifecycle_cli.active_correction;
+  const registration = change.lifecycle_cli.artifacts.proposal;
+  const returnRevision = status(root).lifecycle_revision;
+  const returnEvidence = "docs/changes/example/evidence/proposal-return.md";
+  writeFileSync(join(root, returnEvidence), `Change ID: example\nRoute ID: ${activeRoute.route_id}\nLifecycle revision: ${returnRevision}\nDestination artifact: proposal\nArtifact path: ${proposalPath}\nArtifact identity: sha256:${sha(revisedProposal)}\nAuthoring evidence path: ${registration.authoring_evidence_path}\nAuthoring evidence identity: sha256:${registration.authoring_evidence_sha256}\n`, "utf8");
+  const returned = execute(root, "return-correction", {
+    schema_version: 1, operation: "return-correction", change_id: "example", expected_lifecycle_revision: returnRevision,
+    route_id: activeRoute.route_id, evidence_path: returnEvidence, stage_authority: "workflow",
+  });
+
+  assert.equal(returned.exitCode, 0, JSON.stringify(returned.result));
+  assert.equal(returned.result.operation_result.restored_stage, "design-review");
+  assert.equal(parseLifecycleYaml(readFileSync(changePath, "utf8")).lifecycle_cli.active_correction, undefined);
+
+  writeFileSync(join(root, "specs/example.md"), "# Specification\n\nUnregistered Design refinement.\n", "utf8");
+  const rerouteStatus = status(root);
+  const rerouteRevision = rerouteStatus.lifecycle_revision;
+  assert.equal(rerouteStatus.permitted_operations.includes("route-correction"), true, JSON.stringify(rerouteStatus));
+  const rerouteEvidence = "docs/changes/example/evidence/proposal-reroute.md";
+  writeFileSync(join(root, rerouteEvidence), `Change ID: example\nSource stage: design-review\nDestination artifact: proposal\nReason: upstream-contract-gap\nFinding IDs: F-CODE\nReturn stage: design-review\nLifecycle revision: ${rerouteRevision}\n`, "utf8");
+  const rerouted = execute(root, "route-correction", {
+    schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: rerouteRevision,
+    source_stage: "design-review", destination_stage: "proposal", destination_artifact_id: "proposal", reason: "upstream-contract-gap",
+    evidence_path: rerouteEvidence, finding_ids: ["F-CODE"], return_stage: "design-review", milestone_id: "M2", stage_authority: "workflow",
+  });
+  assert.equal(rerouted.exitCode, 0, JSON.stringify(rerouted.result));
+  assert.equal(status(root).effective_state.current_stage, "proposal");
+});
+
 test("workflow can route and register an already-authored upstream correction", async () => {
   const { root, changeRoot } = await fixture();
   const original = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
@@ -599,6 +690,65 @@ Authoring result: complete
   change = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
   assert.equal(change.lifecycle_cli.artifacts.spec.artifact_sha256, sha(revisedSpec));
   assert.equal(change.artifact_states.spec.lifecycle_state, "review-required");
+});
+
+test("implementation can route a finding to a current approved design-package member", async () => {
+  const { root, changeRoot } = await packageRepository({ stage: "implement" });
+  const changePath = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  change.workflow_state.planned_work = {
+    plan_artifact_id: "plan",
+    current_milestone: "M1",
+    remaining_implementation_milestones: ["M1"],
+    milestones: { M1: { kind: "implementation", state: "implementing" } },
+    latest_review: {},
+    final_closeout: { readiness: "not-ready", reasons: ["implementation-milestones-open"], evidence: [] },
+    initialization_basis: { review_id: "delivery-review-r1", review_round: "r1", review_record: "docs/changes/example/reviews/delivery-review-r1.md", reviewed_artifact_path: "docs/plans/example.md" },
+  };
+  change.review_packages = {
+    design: { package_kind: "design", review_id: "design-review-r1", upstream_review_id: "proposal-review-r1", members: { architecture: "docs/architecture/example.md", spec: "specs/example.md", "adr-cache": "docs/adr/ADR-cache.md" }, findings: [], correction_targets: [], outcome: "approved", status: "approved", authority: "granted", review_round: "r1" },
+  };
+  const designReviewPath = "docs/changes/example/reviews/design-review-r1.md";
+  const designReview = "Review ID: design-review-r1\nStage: design-review\nRound: r1\nReviewer authority: design-review\nPackage kind: design\nPackage members: architecture=docs/architecture/example.md, spec=specs/example.md, adr-cache=docs/adr/ADR-cache.md\nUpstream review ID: proposal-review-r1\nStatus: approved\nMaterial findings: none\nCorrection targets: none\nRecording status: recorded\n";
+  const reviewLog = "Review ID: design-review-r1\nStage: design-review\nStatus: approved\nMaterial findings: none\nOpen findings: none\nRecording status: recorded\n\nReview ID: code-review-m1-r1\nMaterial findings: F-SPEC\nOpen findings: F-SPEC\n";
+  writeFileSync(join(root, designReviewPath), designReview, "utf8");
+  change.lifecycle_cli.package_reviews.design = { package_kind: "design", review_id: "design-review-r1", upstream_review_id: "proposal-review-r1", members: { architecture: "docs/architecture/example.md", spec: "specs/example.md", "adr-cache": "docs/adr/ADR-cache.md" }, findings: [], correction_targets: [], outcome: "approved", round: "r1", evidence_path: designReviewPath, evidence_sha256: sha(designReview), review_log_path: "docs/changes/example/review-log.md", review_log_sha256: sha(reviewLog.trimEnd()), stage_authority: "design-review" };
+  writeFileSync(changePath, `${JSON.stringify(change, null, 2)}\n`, "utf8");
+  writeFileSync(join(changeRoot, "review-log.md"), reviewLog, "utf8");
+
+  const revision = status(root).lifecycle_revision;
+  const evidencePath = "docs/changes/example/evidence/implementation-spec-route.md";
+  writeFileSync(join(root, evidencePath), `Change ID: example\nSource stage: implement\nDestination artifact: spec\nReason: upstream-contract-gap\nFinding IDs: F-SPEC\nReturn stage: design-review\nLifecycle revision: ${revision}\n`, "utf8");
+  const routed = execute(root, "route-correction", {
+    schema_version: 1, operation: "route-correction", change_id: "example", expected_lifecycle_revision: revision,
+    source_stage: "implement", destination_stage: "spec", destination_artifact_id: "spec", reason: "upstream-contract-gap",
+    evidence_path: evidencePath, finding_ids: ["F-SPEC"], return_stage: "design-review", milestone_id: "M1", stage_authority: "workflow",
+  });
+  assert.equal(routed.exitCode, 0, JSON.stringify(routed.result));
+  assert.equal(status(root).effective_state.current_stage, "spec");
+
+  const correctedSpec = "# Specification\n\nCorrected projection contract.\n";
+  writeFileSync(join(root, "specs", "example.md"), correctedSpec, "utf8");
+  const authoringEvidence = "docs/changes/example/evidence/implementation-spec-authoring.md";
+  writeFileSync(join(root, authoringEvidence), `Artifact path: specs/example.md\nArtifact identity: sha256:${sha(correctedSpec)}\nAuthoring result: complete\n`, "utf8");
+  const recorded = execute(root, "record-artifact-revision", {
+    schema_version: 1, operation: "record-artifact-revision", change_id: "example", expected_lifecycle_revision: status(root).lifecycle_revision,
+    artifact_id: "spec", artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md", evidence_path: authoringEvidence,
+    prior_artifact_sha256: change.lifecycle_cli.artifacts.spec.artifact_sha256, stage_authority: "spec",
+  });
+  assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
+  const activeRoute = parseLifecycleYaml(readFileSync(changePath, "utf8")).lifecycle_cli.active_correction;
+  const returnRevision = status(root).lifecycle_revision;
+  const returnEvidence = "docs/changes/example/evidence/implementation-spec-return.md";
+  writeFileSync(join(root, returnEvidence), `Change ID: example\nRoute ID: ${activeRoute.route_id}\nLifecycle revision: ${returnRevision}\nDestination artifact: spec\nArtifact path: specs/example.md\nArtifact identity: sha256:${sha(correctedSpec)}\nAuthoring evidence path: ${authoringEvidence}\nAuthoring evidence identity: sha256:${sha(readFileSync(join(root, authoringEvidence)))}\n`, "utf8");
+  const returned = execute(root, "return-correction", {
+    schema_version: 1, operation: "return-correction", change_id: "example", expected_lifecycle_revision: returnRevision,
+    route_id: activeRoute.route_id, evidence_path: returnEvidence, stage_authority: "workflow",
+  });
+  assert.equal(returned.exitCode, 0, JSON.stringify(returned.result));
+  const afterReturn = status(root);
+  assert.equal(afterReturn.effective_state.current_stage, "design-review");
+  assert.deepEqual(afterReturn.permitted_operations, ["record-package-review"], JSON.stringify(afterReturn));
 });
 
 test("artifact revision is rejected outside its current authoring stage without a correction route", async () => {

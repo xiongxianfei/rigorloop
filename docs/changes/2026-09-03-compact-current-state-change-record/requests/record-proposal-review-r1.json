@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:c9907bf9f835871e29d7f64d5a2cef28d59ca866fe939d0e2208c8d7d37dd108",
+  "artifact_id": "proposal",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/reviews/proposal-review-r1.md",
+  "stage_authority": "proposal-review"
+}

@@ -11,3 +11,6 @@ node_modules/
 
 # Local validation cache state
 .rigorloop-validation-cache/
+
+# Machine-local compact transaction and recovery state
+.rigorloop/transactions/

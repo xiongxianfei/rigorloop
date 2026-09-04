@@ -309,9 +309,12 @@ function fixturePackage(options = {}) {
   copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-read.js"), join(root, "dist", "lib", "lifecycle-read.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-operations.js"), join(root, "dist", "lib", "lifecycle-operations.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-transaction.js"), join(root, "dist", "lib", "lifecycle-transaction.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "compact-activation.js"), join(root, "dist", "lib", "compact-activation.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "compact-contract.js"), join(root, "dist", "lib", "compact-contract.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "new-change.js"), join(root, "dist", "lib", "new-change.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "new-change-filesystem.js"), join(root, "dist", "lib", "new-change-filesystem.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "official-archive-url.js"), join(root, "dist", "lib", "official-archive-url.js"));
+  copyFileSync(join(packageRoot, "dist", "metadata", "compact-current-state-activation.json"), join(root, "dist", "metadata", "compact-current-state-activation.json"));
 
   if (options.metadata !== false) {
     const metadata = options.metadata ?? JSON.parse(readFileSync(join(packageRoot, "dist", "metadata", metadataFile), "utf8"));
@@ -571,7 +574,7 @@ test("TNP-005 package version maps to bundled route-only v0.5.1 adapter metadata
   const artifact = metadata.artifacts.find((entry) => entry.adapter === "codex");
   assert.equal(artifact.archive, publicArchiveFile);
   assert.equal(artifact.install_root, ".agents/skills");
-  assert.equal(artifact.tree_sha256, "5b82fdc6409ddf8981969c7cb0b9da9657ad7bb4889324bcd0a3081dfe10128f");
+  assert.equal(artifact.tree_sha256, "9186086ef5010680de12f670e72cabc577055cbf8d71cbb30ce9763549d77c86");
   assert.equal(artifact.file_count, 105);
   assert.equal(
     artifact.url,
@@ -736,28 +739,29 @@ test("TNC-006 generated change metadata defaults and field order are determinist
       .filter((line) => /^[a-z_]+:/.test(line))
       .map((line) => line.split(":")[0]),
     [
+      "schema",
       "change_id",
       "title",
-      "classification",
-      "risk",
       "lifecycle_contract",
-      "artifact_states",
-      "workflow_state",
-      "workflow",
+      "lifecycle_revision",
+      "current_stage",
       "artifacts",
-      "requirements",
-      "tests",
-      "validation",
-      "changed_files",
-      "review",
+      "reviews",
+      "active_work",
+      "open_findings",
+      "material_decisions",
+      "evidence",
+      "blockers",
+      "remaining_work",
+      "readiness",
     ],
   );
-  assert.match(metadata, /^change_id: "docs-typo"\n/);
-  assert.match(metadata, /\nclassification: "default"\n/);
-  assert.match(metadata, /\nrisk: "medium"\n/);
+  assert.match(metadata, /^schema: compact-change-v1\nchange_id: docs-typo\n/);
+  assert.match(metadata, /\nlifecycle_contract: compact-current-state-v1\n/);
+  assert.match(metadata, /\nlifecycle_revision: sha256:[a-f0-9]{64}\n/);
   assert.match(metadata, /\nartifacts: \{\}\n/);
-  assert.match(metadata, /\nrequirements: \[\]\n/);
-  assert.match(metadata, /\nchanged_files: \[\]\nreview:\n  status: "pending"\n  unresolved_items: 0\n/);
+  assert.match(metadata, /\nreviews: \{\}\n/);
+  assert.match(metadata, /\nremaining_work: \{\}\nreadiness: not-ready\n/);
 });
 
 test("TNC-007 YAML scalar escaping preserves shape and omits local details", () => {
@@ -822,7 +826,7 @@ test("TNC-009 standard profile creates only change.yaml", () => {
   assert.deepEqual(listProject(join(cwd, "docs/changes/adapter-install-cli")), ["change.yaml"]);
 
   const metadata = readProjectFile(cwd, "docs/changes/adapter-install-cli/change.yaml");
-  assert.match(metadata, /classification: "workflow"/);
+  assert.match(metadata, /lifecycle_contract: compact-current-state-v1/);
   assert.doesNotMatch(metadata, /implementation-complete|review-complete|verification-complete|pr-ready|proposal-accepted/);
 });
 
@@ -1106,8 +1110,8 @@ test("TNC-020 generated metadata validates with repository schema", () => {
 
   assert.equal(standard.status, 0, standard.stderr);
   assert.equal(minimal.status, 0, minimal.stderr);
-  assert.match(readFileSync(join(cwd, "docs/changes/schema-standard/change.yaml"), "utf8"), /^lifecycle_contract: stage-owned-change-local-v3$/m);
-  assert.match(readFileSync(join(cwd, "docs/changes/schema-minimal/change.yaml"), "utf8"), /^lifecycle_contract: stage-owned-change-local-v3$/m);
+  assert.match(readFileSync(join(cwd, "docs/changes/schema-standard/change.yaml"), "utf8"), /^lifecycle_contract: compact-current-state-v1$/m);
+  assert.match(readFileSync(join(cwd, "docs/changes/schema-minimal/change.yaml"), "utf8"), /^lifecycle_contract: compact-current-state-v1$/m);
   const validator = resolve(packageRoot, "..", "..", "scripts", "validate-change-metadata.py");
   execFileSync("python", [validator, join(cwd, "docs/changes/schema-standard/change.yaml")], { encoding: "utf8" });
   execFileSync("python", [validator, join(cwd, "docs/changes/schema-minimal/change.yaml")], { encoding: "utf8" });

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "operation": "record-package-review",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:0ddeba6abad3fc2892b45ff4b34279716f8ecf6223b93da2ba16b75cd7b52c25",
+  "package_kind": "design",
+  "members": {
+    "architecture": "docs/architecture/2026-09-03-compact-current-state-change-record.md",
+    "spec": "specs/compact-current-state-change-record.md",
+    "adr-compact-current-state-transaction": "docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md"
+  },
+  "upstream_review_id": "proposal-review-r1",
+  "review_id": "design-review-r1",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/reviews/design-review-r1.md",
+  "stage_authority": "design-review"
+}

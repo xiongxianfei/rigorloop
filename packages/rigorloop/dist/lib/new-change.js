@@ -1,8 +1,11 @@
+import { createHash } from "node:crypto";
+
+import { compactWriterStatus, loadPackagedCompactActivation } from "./compact-activation.js";
+
 const CHANGE_ID_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 const CLASSIFICATION_PATTERN = /^[a-z][a-z0-9-]{0,63}$/;
 const VALID_RISKS = new Set(["low", "medium", "high"]);
 const VALID_PROFILES = new Set(["standard", "minimal"]);
-const DEFAULT_LIFECYCLE_CONTRACT = "stage-owned-change-local-v3";
 
 function result(ok, code, message) {
   return ok ? { ok: true } : { ok: false, code, message };
@@ -40,32 +43,50 @@ function yamlString(value) {
   return JSON.stringify(String(value));
 }
 
-export function renderChangeMetadata({ changeId, title, classification, risk }) {
-  return `change_id: ${yamlString(changeId)}
-title: ${yamlString(title)}
-classification: ${yamlString(classification)}
-risk: ${yamlString(risk)}
-lifecycle_contract: ${DEFAULT_LIFECYCLE_CONTRACT}
-artifact_states: {}
-workflow_state:
-  lifecycle_state: active
-  current_stage: proposal
-  next_stage: proposal
-  blocker: null
-  evidence: []
-workflow: {}
-artifacts: {}
-requirements: []
-tests: []
-validation: []
-changed_files: []
-review:
-  status: "pending"
-  unresolved_items: 0
-`;
+function initialCompactRevision(changeId, changeBytes) {
+  const sentinel = `sha256:${"0".repeat(64)}`;
+  const coordinatorSha256 = `sha256:${createHash("sha256").update(changeBytes).digest("hex")}`;
+  const manifest = `${JSON.stringify({
+    change_id: changeId,
+    contract: "compact-current-state-v1",
+    coordinator_sha256: coordinatorSha256,
+    files: [],
+  })}\n`;
+  return { sentinel, revision: `sha256:${createHash("sha256").update(manifest).digest("hex")}` };
 }
 
-export function buildNewChangeDraft({ changeId, title, classification = "default", risk = "medium", profile = "standard" }) {
+export function renderChangeMetadata({ changeId, title }) {
+  const sentinel = `sha256:${"0".repeat(64)}`;
+  const initial = `schema: compact-change-v1
+change_id: ${changeId}
+title: ${yamlString(title)}
+lifecycle_contract: compact-current-state-v1
+lifecycle_revision: ${sentinel}
+current_stage: proposal
+artifacts: {}
+reviews: {}
+active_work: null
+open_findings: {}
+material_decisions: {}
+evidence: {}
+blockers: []
+remaining_work: {}
+readiness: not-ready
+`;
+  const { revision } = initialCompactRevision(changeId, initial);
+  return initial.replace(sentinel, revision);
+}
+
+export function buildNewChangeDraft(
+  { changeId, title, classification = "default", risk = "medium", profile = "standard" },
+  activation = loadPackagedCompactActivation(),
+) {
+  const status = compactWriterStatus(activation);
+  if (!status.writer) {
+    const error = new Error("compact-current-state-v1 writer is withheld; readers remain available");
+    error.code = "compact-writer-withheld";
+    throw error;
+  }
   const root = `docs/changes/${changeId}`;
   const metadataPath = `${root}/change.yaml`;
   return {

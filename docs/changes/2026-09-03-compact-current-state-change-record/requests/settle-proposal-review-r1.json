@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:bfe9bba74b6dedd2565537e7a6c4c5728ae72315720d7f84c52a42e3264e46bc",
+  "artifact_id": "proposal",
+  "stage_authority": "proposal-review"
+}

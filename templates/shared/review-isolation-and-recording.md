@@ -15,10 +15,9 @@ Use:
 
 `not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-For a clean review, create the lightweight review receipt required by the formal review recording spec and index it in `review-log.md`. Do not create an empty `review-resolution.md` solely for a clean review.
+For `compact-current-state-v1`, update the target's stable current review record through the CLI. A clean review replaces its current judgment at the stable path. Material findings remain directly accessible in that record; only resolved decisions that continue to constrain the change belong in `material-decisions.md`. Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.
 
-For material findings or blocking outcomes, create the required detailed review record and disposition artifacts.
-Use a detailed review record for material or blocking review outcomes.
+For registered historical contracts, create the lightweight clean receipt or detailed review record required by that contract, index it in `review-log.md`, and create `review-resolution.md` only when triggered.
 
 Material findings must include:
 

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "migrate",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:797f6465a3a6fdb0f6dccf82129867c64f70d153eedf92c013c4803bae988158",
+  "source_schema_version": 1,
+  "stage_authority": "workflow"
+}

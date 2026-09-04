@@ -626,6 +626,14 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
         )
         return _result(change_root, mode, findings, [], [], [], None)
 
+    metadata_path = change_root / "change.yaml"
+    try:
+        metadata = _load_change_metadata(metadata_path) if metadata_path.is_file() else None
+    except Exception:
+        metadata = None
+    if isinstance(metadata, dict) and metadata.get("lifecycle_contract") == "compact-current-state-v1":
+        return _validate_compact_change_root(change_root, metadata, mode)
+
     reviews_dir = change_root / "reviews"
     review_log_path = change_root / "review-log.md"
     resolution_path = change_root / "review-resolution.md"
@@ -679,6 +687,64 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
         findings.extend(_validate_closeout(finding_records, log_entries, resolution, mode))
 
     return _result(change_root, mode, findings, review_records, finding_records, log_entries, resolution)
+
+
+def _validate_compact_change_root(
+    change_root: Path, metadata: dict[str, Any], mode: str
+) -> ReviewArtifactValidationResult:
+    """Validate compact stable-review placement without importing legacy ledgers."""
+
+    findings: list[ValidationFinding] = []
+    review_records: list[ReviewRecord] = []
+    for retired in ("review-log.md", "review-resolution.md"):
+        path = change_root / retired
+        if path.exists():
+            findings.append(ValidationFinding(path=path, line=None, mode=mode, message=f"compact change must not contain {retired}"))
+
+    declared = metadata.get("reviews")
+    declared = declared if isinstance(declared, dict) else {}
+    declared_paths: set[str] = set()
+    for target_id, entry in declared.items():
+        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
+            findings.append(ValidationFinding(path=change_root / "change.yaml", line=None, mode=mode, message=f"compact review {target_id} must declare path"))
+            continue
+        declared_paths.add(entry["path"])
+
+    reviews_dir = change_root / "reviews"
+    if reviews_dir.exists() and not reviews_dir.is_dir():
+        findings.append(ValidationFinding(path=reviews_dir, line=None, mode=mode, message="reviews path exists but is not a directory"))
+    elif reviews_dir.is_dir():
+        for review_path in sorted(reviews_dir.glob("*.md")):
+            relative = review_path.relative_to(change_root.parents[2]).as_posix()
+            if re.search(r"-r[1-9][0-9]*\.md$", review_path.name):
+                findings.append(ValidationFinding(path=review_path, line=None, mode=mode, message="compact review path must be stable and not round-suffixed"))
+            if relative not in declared_paths:
+                findings.append(ValidationFinding(path=review_path, line=None, mode=mode, message="compact stable review is not referenced from change.yaml"))
+            lines = _read_lines(review_path)
+            if len(lines) < 3 or lines[0] != "---" or "---" not in lines[1:]:
+                findings.append(ValidationFinding(path=review_path, line=None, mode=mode, message="compact stable review requires YAML front matter"))
+                continue
+            end = lines[1:].index("---") + 1
+            fields = _collect_fields(lines[1:end], start_line=2)
+            required = ("schema", "review_id", "target", "round", "subjects", "reviewer_authority", "outcome", "recording_status", "open_findings", "material_decisions", "limitations", "recorded_at")
+            for label in required:
+                if label not in fields:
+                    findings.append(ValidationFinding(path=review_path, line=None, mode=mode, message=f"compact stable review missing required field {label}"))
+            schema = _first_nonempty(fields, "schema")
+            if schema is not None and schema.value != "compact-review-v1":
+                findings.append(ValidationFinding(path=review_path, line=schema.line, mode=mode, message=f"compact review schema: unknown_value {schema.value}"))
+            review_id = _first_nonempty(fields, "review_id")
+            outcome = _first_nonempty(fields, "outcome")
+            round_field = _first_nonempty(fields, "round")
+            reviewer = _first_nonempty(fields, "reviewer_authority")
+            if all(item is not None for item in (review_id, outcome, round_field, reviewer)):
+                review_records.append(ReviewRecord(path=review_path, line=review_id.line, review_id=review_id.value, stage=reviewer.value, round=round_field.value, reviewer=reviewer.value, target=next((key for key, entry in declared.items() if isinstance(entry, dict) and entry.get("path") == relative), "unknown"), status=outcome.value, record_mode=None))
+
+    for path in sorted(declared_paths):
+        absolute = change_root.parents[2] / path
+        if not absolute.is_file():
+            findings.append(ValidationFinding(path=absolute, line=None, mode=mode, message="declared compact stable review does not exist"))
+    return _result(change_root, mode, findings, review_records, [], [], None)
 
 
 def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:

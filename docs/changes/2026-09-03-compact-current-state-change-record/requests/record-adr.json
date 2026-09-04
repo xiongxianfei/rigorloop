@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:f5c5dd484288b438c11bb9bdef534c270690440ea1d0e6f8931f91e58e237bb8",
+  "artifact_id": "adr-compact-current-state-transaction",
+  "artifact_kind": "adr",
+  "artifact_role": "supporting",
+  "artifact_path": "docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/evidence/architecture-authoring.md",
+  "stage_authority": "architecture"
+}

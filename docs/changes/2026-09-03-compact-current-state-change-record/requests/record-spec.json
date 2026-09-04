@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:fab3b13db1356bdde62cc9c1eb8ca28ef95769f41098b085eb72b4c1b98f8eb8",
+  "artifact_id": "spec",
+  "artifact_kind": "spec",
+  "artifact_role": "primary",
+  "artifact_path": "specs/compact-current-state-change-record.md",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/evidence/spec-authoring.md",
+  "stage_authority": "spec"
+}

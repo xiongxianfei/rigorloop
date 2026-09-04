@@ -25,6 +25,7 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [2026-09-03 Compact Current-State Change Record](plans/2026-09-03-compact-current-state-change-record.md)
 - [2026-09-03 Relax PR Evidence Tail Topology](plans/2026-09-03-relax-pr-evidence-tail.md)
 - [2026-09-03 Refine Explore and Research as Optional Discovery Skills](plans/2026-09-03-refine-explore-research-optional-discovery-skills.md)
 - [2026-09-02 Refocus Workflow into Route](plans/2026-09-02-refocus-workflow-into-route.md)

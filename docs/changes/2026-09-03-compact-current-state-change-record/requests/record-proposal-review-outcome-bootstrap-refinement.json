@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "operation": "record-artifact-revision",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:619f187078126288ad1c5bf32e36df118029eb7532298bf8cd30da71dfb256ac",
+  "artifact_id": "proposal",
+  "artifact_kind": "proposal",
+  "artifact_role": "primary",
+  "artifact_path": "docs/proposals/2026-09-03-compact-current-state-change-record.md",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/evidence/proposal-review-outcome-bootstrap-refinement.md",
+  "prior_artifact_sha256": "0581449f61c8aa4ea059fad9407d079b9e146d7e8b00ab3e2018f29f78db8844",
+  "stage_authority": "proposal"
+}
