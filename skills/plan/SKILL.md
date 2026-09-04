@@ -25,6 +25,10 @@ Do not choose product direction, replace a missing specification, implement code
 
 ## Workflow role
 
+### Compact current-state contract
+
+For `compact-current-state-v1`, consume the bounded CLI projection and only its required approved design paths. Author the canonical plan, then submit the transient authoring operation through the CLI; never edit lifecycle coordination directly. The CLI validates consistency but grants no permission. The plan becomes review-ready for its stable current review. Do not create routine request, authoring-evidence, correction-return, or review-log artifacts.
+
 - role_name: plan
 - stage: authoring
 - upstream: accepted proposal, approved specification, architecture or ADRs when relevant, and project-local workflow evidence

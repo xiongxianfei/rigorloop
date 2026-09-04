@@ -13,12 +13,13 @@ from typing import Any
 LIFECYCLE_CONTRACT_V1 = "stage-owned-change-local-v1"
 LIFECYCLE_CONTRACT_V2 = "stage-owned-change-local-v2"
 LIFECYCLE_CONTRACT_V3 = "stage-owned-change-local-v3"
+COMPACT_CURRENT_STATE_V1 = "compact-current-state-v1"
 LEGACY_UNVERSIONED_CONTRACT = "legacy-unversioned"
 LIFECYCLE_ACTIVATION_MANIFEST_PATH = Path("specs/lifecycle-contract-activation.yaml")
 LIFECYCLE_ACTIVATION_SCHEMA_PATH = Path("schemas/lifecycle-contract-activation.schema.json")
 FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH = Path("specs/final-verification-contract-activation.yaml")
 FINAL_VERIFICATION_ACTIVATION_SCHEMA_PATH = Path("schemas/final-verification-contract-activation.schema.json")
-LIFECYCLE_CONTRACT_VALUES = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3})
+LIFECYCLE_CONTRACT_VALUES = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3, COMPACT_CURRENT_STATE_V1})
 PRIOR_CONTRACT_CLASSES = frozenset({LIFECYCLE_CONTRACT_V1, LEGACY_UNVERSIONED_CONTRACT})
 ACTIVATION_STATES = frozenset({"preactivation", "active"})
 WORKFLOW_LIFECYCLE_STATES = frozenset({"active", "paused", "completed", "cancelled"})
@@ -298,6 +299,12 @@ def classify_lifecycle_contract(
             "contract_class": contract_class,
             "activation_state": final_verification_manifest["state"],
             "authority": "active" if final_verification_manifest["state"] == "active" else "inactive",
+        }
+    if contract_class == COMPACT_CURRENT_STATE_V1:
+        return {
+            "contract_class": contract_class,
+            "activation_state": "candidate",
+            "authority": "withheld",
         }
     return {
         "contract_class": contract_class,

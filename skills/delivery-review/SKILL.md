@@ -27,6 +27,10 @@ Do not use to author the plan, repair specification behavior, redesign architect
 
 ## Workflow role
 
+### Compact current-state contract
+
+For `compact-current-state-v1`, consume the bounded CLI projection and exact delivery-package paths. Update one stable current review record for the delivery package through a transient CLI operation. Keep open findings in that record and retain only continuing material constraints in `material-decisions.md`. A changes-requested outcome returns to plan; a clean exact rereview approves delivery. Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.
+
 - role_name: delivery-review
 - stage: review
 - upstream: one exact primary plan and the approved Design Review ID
@@ -85,7 +89,7 @@ Each finding records a stable Finding ID, Severity, Location, Evidence, Required
 
 A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to `route` after settlement.
 
-Every formal result must be recorded or explicitly blocked. Clean review uses a lightweight receipt and review-log entry. Material or blocking results use a detailed record and `review-resolution.md` when disposition is required. Do not create an empty `review-resolution.md` solely for a clean result.
+Every formal result must be recorded or explicitly blocked. For registered historical contracts, clean review uses a lightweight receipt and review-log entry, while material or blocking results use a detailed record and triggered `review-resolution.md`. Compact results update the stable current review and conditional material-decision surface described above.
 
 ## Package recording and settlement
 

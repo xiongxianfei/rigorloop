@@ -22,6 +22,7 @@ PROFILE_FIXTURES = FIXTURES / "profiles"
 CHANGE_ROOT = ROOT / "docs" / "changes" / "2026-06-29-release-transaction-automation"
 sys.path.insert(0, str(ROOT / "scripts"))
 
+from adapter_distribution import parse_manifest_yaml  # noqa: E402
 from release_transaction import (  # noqa: E402
     GitHubReleaseAsset,
     NpmPackageMetadata,
@@ -581,7 +582,13 @@ class PrepareReleaseTests(unittest.TestCase):
 
             release_path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
             release_text = release_path.read_text(encoding="utf-8")
-            release_text = release_text.replace("manifest_version: pending", "manifest_version: v0.1.5")
+            manifest_path = root / "dist" / "adapters" / "manifest.yaml"
+            manifest_version = parse_manifest_yaml(
+                manifest_path.read_text(encoding="utf-8"), manifest_path
+            ).version
+            release_text = release_text.replace(
+                "manifest_version: pending", f"manifest_version: {manifest_version}"
+            )
             release_text = release_text.replace("result: pending", "result: pass")
             release_text = release_text.replace(": pending\n", ": pass\n")
             release_path.write_text(release_text, encoding="utf-8")

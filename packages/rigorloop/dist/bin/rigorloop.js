@@ -151,6 +151,9 @@ Usage:
   rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
   rigorloop workflow-context [--change <id>] [--format human|json]
+  rigorloop compact project --change <id> --view <view> [--requested-operation <operation>] [--format human|json]
+  rigorloop compact apply (--request <path|-> | --request-json <json>) [--format human|json]
+  rigorloop compact recover --change <id> [--action restore-prior|accept-candidate --expected-recovery-identity <sha256>] [--format human|json]
   rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json]
   rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json]
   rigorloop logs path [--format human|json]
@@ -162,6 +165,7 @@ Commands:
                           Initialize verified target support.
   new-change              Plan a change metadata scaffold.
   workflow-context        Report read-only project or exact-change workflow facts.
+  compact                 Project, apply, or recover the compact current-state contract.
   lifecycle               Inspect, validate, and perform guarded governed lifecycle operations.
   logs                    Show the local log path or inspect one exact invocation.
 `;
@@ -2338,6 +2342,17 @@ async function dispatchMain(rawArgs, invocation) {
       const { executeWorkflowContext } = await import("../lib/workflow-context.js");
       const execution = executeWorkflowContext(rawArgs.slice(1));
       activeOutput.terminalClass = execution.exitCode === 0 ? "success" : execution.exitCode === 2 || execution.exitCode === 4 ? "expected-rejection" : "internal-error";
+      activeOutput.deferredRender = () => execution.format === "json"
+        ? { stdout: `${JSON.stringify(execution.result, null, 2)}\n`, stderr: "" }
+        : execution.exitCode === 0
+          ? { stdout: execution.human, stderr: "" }
+          : { stdout: "", stderr: execution.human };
+      return execution.exitCode;
+    }
+    if (rawArgs[0] === "compact") {
+      const { executeCompactCli } = await import("../lib/compact-cli.js");
+      const execution = executeCompactCli(rawArgs.slice(1));
+      activeOutput.terminalClass = execution.exitCode === 0 ? "success" : "expected-rejection";
       activeOutput.deferredRender = () => execution.format === "json"
         ? { stdout: `${JSON.stringify(execution.result, null, 2)}\n`, stderr: "" }
         : execution.exitCode === 0

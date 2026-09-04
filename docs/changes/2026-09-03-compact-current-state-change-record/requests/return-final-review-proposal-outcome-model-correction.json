@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "return-correction",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:c8faee22da88505c7abad1f7bef14baa60db417a7f018aae0f0d839d501768f5",
+  "route_id": "route-443b9a8459354cc88167e31632f1f67850464d4aaa5f52ce307bc497f44e8971",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/evidence/final-review-proposal-outcome-model-correction-return.md",
+  "stage_authority": "workflow"
+}

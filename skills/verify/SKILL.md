@@ -1,14 +1,14 @@
 ---
 name: verify
 description: >
-  Run final verification and produce durable change rationale only on success before PR handoff. Use to verify artifact-code-test coherence,
+  Run final verification and produce durable change rationale only on success, with optional PR handoff. Use to verify artifact-code-test coherence,
   requirement coverage, validation commands, CI readiness, drift, release safety, and scoped direct validation checks.
 argument-hint: [feature name, branch, plan path, spec path, or verification scope]
 ---
 
 # Verification gate
 
-Prove that the requested scope, current evidence, implementation, tests, and governing artifacts agree. `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
+Prove that the requested scope, current evidence, implementation, tests, and governing artifacts agree. For compact changes, `verify` owns lifecycle completion. For registered historical contracts, `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
 
 ## Purpose
 
@@ -27,6 +27,10 @@ Use this skill for an explicit validation surface, a direct branch-readiness ass
 Do not use it to replace code-review, settle upstream artifacts, repair implementation, prepare or open a PR, or claim hosted CI that was not observed.
 
 ## Workflow role
+
+### Compact current-state contract
+
+For `compact-current-state-v1`, consume the bounded CLI projection and only its required artifacts, stable current review records, material decisions, and current evidence. Verify the exact complete-set subject without requiring Git, a branch, a remote, CI, or PR access. On success, update current evidence and write the sole `verify-report.md` through a transient CLI operation; that successful result establishes lifecycle completion. Failed or inconclusive attempts update current state or evidence as applicable but emit no final report. External PR or publication work is optional and cannot grant compact readiness. Do not create `review-log.md`, `review-resolution.md`, request files, raw-output records, or route receipts.
 
 `verify` evaluates evidence and records only verify-owned results. The `route` skill owns semantic lifecycle progression, and `pr` owns PR preparation and opening. A successful workflow-managed verification hands off to `pr`; it never invokes `pr` itself.
 
@@ -59,9 +63,9 @@ Loaded procedure and execution authority are independent:
 
 Use execution mode `isolated` for direct checks and direct branch-readiness assessments. Use `governed-final` only when current governed evidence establishes final `verify` for the same change. Never infer the mode from conversational wording.
 
-### V3 final-readiness profile
+### V3 final-readiness profile (registered historical changes)
 
-V3 is the only current executable final-readiness contract. Final readiness loads impact analysis and evidence applicability; successful results then load explanation guidance and use the v3 report skeleton. Failed or inconclusive attempts emit no final explanation. Scoped verification loads none of those resources. Historical v1/v2 records remain readable evidence but grant no current progression authority.
+V3 remains the executable final-readiness compatibility contract until compact activation and for registered v3 changes afterward. Final readiness loads impact analysis and evidence applicability; successful results then load explanation guidance and use the v3 report skeleton. Failed or inconclusive attempts emit no final explanation. Scoped verification loads none of those resources. Compact verification follows the current-state contract above.
 
 ## Execution authority
 
@@ -107,11 +111,11 @@ When `broad_smoke_required: true` appears in governing evidence, missing broad s
 
 ## Review and lifecycle closeout
 
-For material review findings, inspect `review-resolution.md`, `review-log.md`, and the project's review-artifact closeout validation. Block on `Closeout status: open`, `needs-decision`, missing final dispositions, missing required `Validation evidence`, or open findings. Block unless closeout validation passes. `Closeout status: closed` requires final dispositions and no open findings.
+For registered historical contracts with material review findings, inspect `review-resolution.md`, `review-log.md`, and the project's review-artifact closeout validation. Block on `Closeout status: open`, `needs-decision`, missing final dispositions, missing required `Validation evidence`, or open findings. Block unless closeout validation passes. `Closeout status: closed` requires final dispositions and no open findings. For compact changes, use open findings in stable current review records, material decisions, and freshness-marked current evidence instead.
 
-A stage-owned non-approval outcome that blocks progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout; `review-resolution.md` alone is not a silent substitute. For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
+Under registered historical contracts, a stage-owned non-approval outcome that blocks progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout; `review-resolution.md` alone is not a silent substitute. For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 
-For governed work, verify every implementation milestone is closed and current change-local state agrees with the stable plan. A stale touched, referenced, generated, or authoritative lifecycle-managed artifact blocks readiness; unrelated baseline debt is a warning. Required governing artifacts that exist only in untracked local state cannot support `branch-ready`.
+For governed work, verify every implementation milestone is closed and current change-local state agrees with the stable plan. A stale touched, referenced, generated, or authoritative lifecycle-managed artifact blocks readiness; unrelated baseline debt is a warning. Under registered historical contracts, required governing artifacts that exist only in untracked local state cannot support `branch-ready`. Compact verification binds exact file identities from the complete current set and does not inspect Git tracking state.
 
 ## Generated Markdown readability
 

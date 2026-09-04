@@ -2059,6 +2059,10 @@ class WorkflowAutomationStateStore:
         before_replace: Callable[[Path], None] | None = None,
     ) -> StateMutationResult:
         snapshot = self.read()
+        if snapshot.document.get("lifecycle_contract") == "compact-current-state-v1":
+            raise StateContractError(
+                "compact-current-state-v1 mutation belongs to the compact transaction boundary"
+            )
         if snapshot.document_identity != expected_document_identity:
             raise ConcurrentStateChange("change metadata identity changed before transaction")
         errors = validate_workflow_automation(
@@ -2643,6 +2647,8 @@ class StageOwnedChangeStateStore:
         expected_document_identity: str,
     ) -> StateMutationResult:
         snapshot = self.read()
+        if snapshot.document.get("lifecycle_contract") == "compact-current-state-v1":
+            raise StateContractError("compact-current-state-v1 cannot migrate to a historical contract")
         if snapshot.document_identity != expected_document_identity:
             raise ConcurrentStateChange("change metadata identity changed before migration")
         if snapshot.document.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:

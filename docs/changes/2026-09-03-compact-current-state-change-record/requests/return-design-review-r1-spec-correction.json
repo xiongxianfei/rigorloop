@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "return-correction",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:d33407d7472b70780f8e34c9b8971555f45f0a4c538a3b43f7fa4758c09deef9",
+  "route_id": "route-3498e84d8380168231169ceefd0982bbee21a792d03cb9eceb3a8bfcd3296297",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r1-spec-return.md",
+  "stage_authority": "workflow"
+}

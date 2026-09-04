@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:324bdd4be0305028db9c050db26f6ef65cbd4a568224761828fb295db4949170",
+  "source_stage": "code-review",
+  "destination_stage": "proposal",
+  "destination_artifact_id": "proposal",
+  "reason": "upstream-contract-gap",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/evidence/final-review-proposal-outcome-model-correction-route.md",
+  "finding_ids": [],
+  "return_stage": "code-review",
+  "stage_authority": "workflow"
+}

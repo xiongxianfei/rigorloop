@@ -2,6 +2,8 @@
 
 Current route amendment: `route` is the sole public semantic workflow router, `rigorloop workflow-context` supplies deterministic project-local facts, and `docs/workflows.md` and the former public `workflow` package have no current authority. Stable `stage_authority: workflow` and `workflow.automation` identifiers remain protocol state, not public skill names.
 
+Compact current-state amendment: `compact-current-state-v1` replaces history-oriented active records prospectively after coherent activation. The authoritative set is `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`, coordinated by one recoverable multi-file transaction boundary. The CLI derives eligibility and validates semantic operations; it is not a permission principal. Bounded projections identify current state and exact required paths. Correctness, recovery, review, resumption, and successful Verify work without Git history, without PR access, without network access, and without machine-local logs. Registered non-compact changes retain their contract and are never inferred or migrated from file shape. Compact writer authority remains withheld until package and supported-adapter parity is proven.
+
 ## Owning change record
 
 `docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml`
@@ -168,10 +170,14 @@ Current route amendment: `route` is the sole public semantic workflow router, `r
 - Governed Lifecycle CLI spec: `specs/governed-lifecycle-cli.md`
 - Governed Lifecycle CLI ADR: `docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md`
 - Governed Lifecycle CLI change metadata: `docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml`
+- Compact Current-State proposal: `docs/proposals/2026-09-03-compact-current-state-change-record.md`
+- Compact Current-State specification: `specs/compact-current-state-change-record.md`
+- Compact Current-State architecture: `docs/architecture/2026-09-03-compact-current-state-change-record.md`
+- Compact Current-State transaction ADR: `docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md`
 
 ## Introduction and Goals
 
-RigorLoop is a Git-first starter kit for AI-assisted software delivery. Its architecture is the repository system that keeps proposals, specs, architecture artifacts, plans, tests, implementation evidence, generated adapters, and review gates traceable.
+RigorLoop is a rigorous software engineering workflow for AI coding agents. Its architecture keeps proposals, specifications, architecture artifacts, plans, tests, implementation evidence, generated adapters, current review judgments, and verified outcomes traceable through durable project artifacts without making Git or pull requests correctness dependencies.
 
 This canonical architecture package is the long-lived current architecture source of truth for the repository architecture method. It adopts C4 for structural views, all 12 official arc42 sections for architecture documentation, and ADRs for durable decisions.
 

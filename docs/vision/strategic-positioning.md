@@ -16,11 +16,11 @@ AI agents can produce code faster than reviewers can safely understand the purpo
 
 ## Primary Promise
 
-RigorLoop makes AI-assisted changes reviewable, traceable, and reproducible enough that humans can approve, challenge, or maintain them with confidence.
+RigorLoop makes AI-assisted changes reviewable, traceable, and reproducible enough that humans can approve, challenge, verify, or maintain them with confidence without depending on a particular version-control or hosting service.
 
 ## Core Mechanism
 
-The workflow turns product intent into explicit proposals, testable system requirements, architecture decisions, verification-aware execution plans, implementation, concrete proof, review records, validation evidence, and change explanations.
+The workflow turns product intent into explicit proposals, testable system requirements, architecture decisions, verification-aware execution plans, implementation, concrete proof, current review records, validation evidence, and a verified change explanation.
 
 ## Alternatives
 
@@ -32,7 +32,7 @@ RigorLoop accepts more explicit artifacts and review gates in exchange for stron
 
 ## Compatibility Surfaces
 
-Git, CI, pull requests, repository-local artifacts, generated adapter packages, and common agent runtimes are compatibility surfaces. They support the workflow but are not the project category.
+Version control, CI, pull requests, repository-local storage, generated adapter packages, and common agent runtimes are compatibility surfaces. They may support the workflow but are neither its product category nor correctness dependencies.
 
 ## Refusals
 
@@ -40,4 +40,4 @@ RigorLoop refuses to become a generic project-management suite, hosted control p
 
 ## Falsifiability
 
-The vision is wrong if reviewers cannot reconstruct a representative change's purpose, requirements, design constraints, tests, validation evidence, and review concerns from tracked artifacts without chat history. It is also wrong if teams routinely ignore the artifacts because they slow delivery without improving review quality, or if useful adoption requires a platform migration.
+The vision is wrong if reviewers cannot reconstruct a representative change's purpose, requirements, design constraints, tests, validation evidence, current findings, and verified outcome from its current authoritative artifacts without chat history, Git history, or pull-request access. It is also wrong if teams routinely ignore the artifacts because they slow delivery without improving review quality, or if useful adoption requires a platform migration.

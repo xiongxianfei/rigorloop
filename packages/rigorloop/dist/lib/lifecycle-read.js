@@ -23,6 +23,7 @@ import { stageIsComplete } from "./lifecycle-stage-routing.js";
 
 const REVIEW_STAGES = new Set(["proposal-review", "design-review", "delivery-review", "code-review"]);
 const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input", "system-requirement-gap", "technical-realization-gap", "verification-allocation-gap", "implementation-defect", "stale-or-incomplete-review", "ci-or-environment-gap", "external-evidence-gap"]);
+const RESOLUTION_DISPOSITIONS = new Set(["accepted", "rejected", "deferred", "partially-accepted"]);
 const DOWNSTREAM_AUTHORITY_STAGES = new Set(["implement", "code-review", "verify", "pr"]);
 
 function diagnostic(code, summary, invariant, correctiveOperation = null, identities = []) {
@@ -120,6 +121,24 @@ function hashFile(path) {
   return createHash("sha256").update(readFileSync(path)).digest("hex");
 }
 
+function hashText(text) {
+  return createHash("sha256").update(text).digest("hex");
+}
+
+function findingResolutionSection(text, findingId) {
+  const lines = text.split(/\r?\n/);
+  const start = lines.findIndex((line) => line.trim() === `Finding ID: ${findingId}`);
+  if (start < 0) return null;
+  let end = lines.length;
+  for (let index = start + 1; index < lines.length; index += 1) {
+    if (/^#{2,6}\s/.test(lines[index]) || /^Finding ID:\s*/.test(lines[index])) {
+      end = index;
+      break;
+    }
+  }
+  return lines.slice(start, end).join("\n");
+}
+
 function collectArtifacts(root, change) {
   const artifacts = [];
   const errors = [];
@@ -139,7 +158,29 @@ function collectArtifacts(root, change) {
   return { artifacts, errors };
 }
 
-function openFindings(root, changeId) {
+function currentResolutionFindingIds(root, change) {
+  const findingIds = new Set();
+  for (const [findingId, resolution] of Object.entries(change.lifecycle_cli?.resolutions ?? {})) {
+    if (resolution?.finding_id !== findingId
+      || resolution?.stage_authority !== "review-resolution"
+      || !RESOLUTION_DISPOSITIONS.has(resolution?.disposition)
+      || typeof resolution?.owner !== "string"
+      || !resolution.owner.trim()
+      || !change.artifact_states?.[resolution?.artifact_id]) continue;
+    const evidence = repositoryPath(root, resolution.evidence_path);
+    if (!evidence || !existsSync(evidence) || !lstatSync(evidence).isFile()) continue;
+    const evidenceText = readFileSync(evidence, "utf8");
+    const section = findingResolutionSection(evidenceText, findingId);
+    const evidenceCurrent = resolution.evidence_section_sha256
+      ? section !== null && hashText(section) === resolution.evidence_section_sha256
+      : hashFile(evidence) === resolution.evidence_sha256;
+    if (!evidenceCurrent) continue;
+    findingIds.add(findingId);
+  }
+  return findingIds;
+}
+
+function openFindings(root, changeId, change) {
   const path = join(root, "docs", "changes", changeId, "review-log.md");
   if (!existsSync(path) || !lstatSync(path).isFile()) return [];
   const findings = [];
@@ -147,7 +188,8 @@ function openFindings(root, changeId) {
     if (match[1].trim().toLowerCase() === "none") continue;
     findings.push(...match[1].split(",").map((value) => value.trim().replace(/`/g, "")).filter(Boolean));
   }
-  return [...new Set(findings)].sort();
+  const resolved = currentResolutionFindingIds(root, change);
+  return [...new Set(findings)].filter((findingId) => !resolved.has(findingId)).sort();
 }
 
 function activeMilestone(change) {
@@ -170,6 +212,14 @@ function coordinationErrors(root, change) {
   const objectMaps = ["artifacts", "reviews", "validations", "resolutions", "milestones", "correction_history", "withdrawals"];
   for (const field of objectMaps) {
     if (!state[field] || Array.isArray(state[field]) || typeof state[field] !== "object") errors.push(diagnostic("RL_INVALID_REQUEST", `Lifecycle coordination ${field} must be a mapping.`, "coordination-schema", null, [field]));
+  }
+  for (const [findingId, resolution] of Object.entries(state.resolutions ?? {})) {
+    if (resolution?.finding_id !== findingId || resolution?.stage_authority !== "review-resolution" || typeof resolution?.owner !== "string" || !resolution.owner.trim() || !change.artifact_states?.[resolution?.artifact_id]) {
+      errors.push(diagnostic("RL_INVALID_REQUEST", "Finding resolution registration is incomplete or contradictory.", "resolution-consistency", "record-finding-resolution", [findingId]));
+    }
+    if (!RESOLUTION_DISPOSITIONS.has(resolution?.disposition)) {
+      errors.push(diagnostic("RL_INVALID_REQUEST", `Finding resolution disposition ${String(resolution?.disposition)} is unknown.`, "resolution-disposition", "record-finding-resolution", [findingId, String(resolution?.disposition)]));
+    }
   }
   if (state.package_reviews !== undefined && (!state.package_reviews || Array.isArray(state.package_reviews) || typeof state.package_reviews !== "object")) errors.push(diagnostic("RL_INVALID_REQUEST", "Lifecycle coordination package_reviews must be a mapping.", "coordination-schema", null, ["package_reviews"]));
   for (const [routeId, receipt] of Object.entries(state.correction_history ?? {})) {
@@ -206,6 +256,9 @@ function coordinationErrors(root, change) {
     const allowedCurrentStages = new Set([route.destination_stage]);
     const snapshot = route.source_snapshot;
     const verificationRoute = lifecycleContractVersion(change) === LIFECYCLE_CONTRACT_V3 && snapshot?.current_stage === "verify";
+    const packageReviewReturn = ["spec", "architecture"].includes(route.destination_stage) && snapshot?.current_stage !== "design-review"
+      ? "design-review"
+      : route.destination_stage === "plan" && snapshot?.current_stage !== "delivery-review" ? "delivery-review" : null;
     if (route.status !== "active") errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction has an unknown status.", "active-correction-route", null, [String(route.status)]));
     if (!CORRECTION_REASONS.has(route.reason) || !correctionDestinations.has(route.destination_stage)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction has an unknown reason or destination stage.", "active-correction-route", null, [String(route.reason), String(route.destination_stage)]));
     if (packageDestination) {
@@ -216,7 +269,7 @@ function coordinationErrors(root, change) {
     const destinationAbsolute = repositoryPath(root, destination?.path);
     if (!packageDestination && !stageDestination && change.workflow_state?.current_stage !== route.destination_stage && (!destinationAbsolute || !existsSync(destinationAbsolute) || hashFile(destinationAbsolute) !== registration?.artifact_sha256)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction destination registration is stale.", "active-correction-route", null, [String(route.destination_artifact_id)]));
     if (!evidenceCurrent) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction evidence is missing or stale.", "active-correction-evidence", null, [String(route.evidence_path)]));
-    if (!snapshot || (!stageDestination && !verificationRoute && snapshot.current_stage !== route.return_stage) || !Object.hasOwn(snapshot, "blocker") || !Array.isArray(snapshot.finding_ids)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction source snapshot is incomplete or contradictory.", "active-correction-snapshot", null, [String(route.route_id)]));
+    if (!snapshot || (!stageDestination && !verificationRoute && ![snapshot.current_stage, packageReviewReturn].filter(Boolean).includes(route.return_stage)) || !Object.hasOwn(snapshot, "blocker") || !Array.isArray(snapshot.finding_ids)) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Active correction source snapshot is incomplete or contradictory.", "active-correction-snapshot", null, [String(route.route_id)]));
     if (!allowedCurrentStages.has(change.workflow_state?.current_stage) || change.workflow_state?.blocker !== null) errors.push(diagnostic("RL_CORRECTION_ROUTE_INVALID", "Workflow routing contradicts the active correction.", "active-correction-routing", null, [String(change.workflow_state?.current_stage), String(change.workflow_state?.blocker)]));
   }
   errors.push(...validateStoredReviewPackages(change));
@@ -247,14 +300,35 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
     if (stage === route.destination_stage && coordination.artifacts?.[route.destination_artifact_id]?.artifact_sha256 !== route.prior_artifact_sha256) return ["return-correction"];
     if (stage === route.destination_stage) return ["record-artifact-revision"];
   }
+  const currentResolutionIds = currentResolutionFindingIds(root, change);
+  if (Object.keys(coordination?.resolutions ?? {}).some((findingId) => !currentResolutionIds.has(findingId))) return ["record-finding-resolution"];
+  if (["design-review", "delivery-review"].includes(stage)) {
+    const packageKind = stage.replace(/-review$/, "");
+    const nextOperation = packageContexts[packageKind]?.next_permitted_operation;
+    const currentPackageReviewId = packageContexts[packageKind]?.latest_review?.review_id;
+    const completedCorrectionTargets = new Set(Object.values(coordination?.correction_history ?? {})
+      .filter((receipt) => receipt?.return_stage === stage && receipt?.source_review_id === currentPackageReviewId)
+      .map((receipt) => receipt.destination_artifact_id));
+    const outstandingCorrectionTargets = (packageContexts[packageKind]?.correction_targets ?? [])
+      .some((artifactId) => !completedCorrectionTargets.has(artifactId));
+    const packageReviewCompatibleBlockers = blockers.every((blocker) => blocker.code === "RL_UNRESOLVED_MATERIAL_FINDING" || blocker.blocking_invariant?.startsWith("review-package-"));
+    if (nextOperation && nextOperation !== "route-correction" && !outstandingCorrectionTargets && packageReviewCompatibleBlockers) return [nextOperation];
+    if (!nextOperation && packageContexts[packageKind]?.authority === "granted" && stageIsComplete(root, change, stage) && allowedNextStages(change, stage).length > 0) return ["advance-stage"];
+  }
   const stageOrder = correctionStageOrder(change);
   const authoringStages = allowedArtifactKinds(change).filter((value) => value !== "adr");
   const sourceIndex = stageOrder.indexOf(stage);
   const packageContext = ["design-review", "delivery-review"].includes(stage) ? packageContexts[stage.replace(/-review$/, "")] : null;
+  const packageKind = stage === "design-review" ? "design" : stage === "delivery-review" ? "delivery" : null;
+  const registeredPackage = packageKind ? coordination?.package_reviews?.[packageKind] : null;
+  const projectedPackage = packageKind ? change.review_packages?.[packageKind] : null;
+  const invalidatedApprovedPackage = registeredPackage?.outcome === "approved" && projectedPackage?.status === "review-required";
   const completedPackageTargets = new Set(Object.values(coordination?.correction_history ?? {})
     .filter((receipt) => receipt?.return_stage === stage && receipt?.source_review_id === packageContext?.latest_review?.review_id)
     .map((receipt) => receipt.destination_artifact_id));
   const packageCorrectionTargets = new Set((packageContext?.correction_targets ?? []).filter((artifactId) => !completedPackageTargets.has(artifactId)));
+  const packageRecoveryTargets = new Set(invalidatedApprovedPackage ? Object.keys(projectedPackage.members ?? {}) : []);
+  if (packageKind === "design" && invalidatedApprovedPackage && coordination?.reviews?.proposal?.review_id !== registeredPackage.upstream_review_id) packageRecoveryTargets.add("proposal");
   const upstreamPackageCorrection = stage === "delivery-review"
     && packageCorrectionTargets.has("design")
     && change.review_packages?.design?.status === "approved"
@@ -263,10 +337,12 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
     const destinationStage = entry?.kind === "adr" ? "architecture" : entry?.kind;
     return authoringStages.includes(destinationStage)
       && stageOrder.indexOf(destinationStage) < sourceIndex
-      && (["accepted", "approved", "active"].includes(entry?.lifecycle_state) || (entry?.lifecycle_state === "review-required" && packageCorrectionTargets.has(artifactId)))
+      && (["accepted", "approved", "active"].includes(entry?.lifecycle_state) || (entry?.lifecycle_state === "review-required" && (packageCorrectionTargets.has(artifactId) || packageRecoveryTargets.has(artifactId))))
       && coordination?.artifacts?.[artifactId]?.artifact_path === entry?.path;
   }).map(([artifactId]) => artifactId);
-  const staleIdentities = blockers.filter((blocker) => blocker.code === "RL_STALE_EVIDENCE").flatMap((blocker) => blocker.relevant_identities ?? []);
+  const staleIdentities = blockers
+    .filter((blocker) => blocker.code === "RL_STALE_EVIDENCE" && blocker.blocking_invariant === "evidence-freshness")
+    .flatMap((blocker) => blocker.relevant_identities ?? []);
   const staleCorrectionIsRoutable = staleIdentities.length === 0
     || (blockerCodes.has("RL_UNRESOLVED_MATERIAL_FINDING") && staleIdentities.every((artifactId) => eligibleDestinationIds.includes(artifactId)));
   const routeCompatibleBlockers = staleCorrectionIsRoutable && blockers.every((blocker) => ["RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_STALE_EVIDENCE"].includes(blocker.code));
@@ -275,12 +351,18 @@ function permittedOperations(root, change, blockers, packageContexts = {}) {
   const verificationCorrectionAvailable = change.lifecycle_contract === LIFECYCLE_CONTRACT_V3 && stage === "verify" && onlyOpenFindings;
   if (coordination?.schema_version === 2 && !coordination.active_correction && (eligibleDestinationIds.length || upstreamPackageCorrection || stageCorrectionAvailable || verificationCorrectionAvailable) && routeCompatibleBlockers && (["review-resolution", "code-review", "verify"].includes(stage) || blockers.length)) operations.push("route-correction");
 
+  const planCanEnterRequiredDeliveryReview = stage === "plan"
+    && packageContexts.delivery?.next_permitted_operation === "record-package-review"
+    && stageIsComplete(root, change, stage)
+    && blockers.every((blocker) => blocker.code === "RL_UNRESOLVED_MATERIAL_FINDING" || blocker.blocking_invariant?.startsWith("review-package-"));
+  if (planCanEnterRequiredDeliveryReview) return ["advance-stage"];
   if (blockers.some((blocker) => blocker.code !== "RL_UNRESOLVED_MATERIAL_FINDING")) return operations;
   if (["design-review", "delivery-review"].includes(stage)) {
     const packageKind = stage.replace(/-review$/, "");
     const nextOperation = packageContexts[packageKind]?.next_permitted_operation;
     if (nextOperation) return [nextOperation];
     if (stage === "delivery-review" && packageContexts.delivery?.authority === "granted" && !change.workflow_state?.planned_work) return ["initialize-approved-plan"];
+    if (stageIsComplete(root, change, stage) && allowedNextStages(change, stage).length > 0) return ["advance-stage"];
     return [];
   }
   if (target?.lifecycle_state === "revision-required") return ["record-artifact-revision"];
@@ -337,7 +419,7 @@ export function interpretGovernedChange(root, selected) {
   errors.push(...coordinationErrors(root, change));
   const collected = collectArtifacts(root, change);
   errors.push(...collected.errors);
-  const unresolvedFindings = openFindings(root, selected.id);
+  const unresolvedFindings = openFindings(root, selected.id, change);
   const staleEvidence = collected.artifacts.filter((artifact) => artifact.evidence_state === "stale").map((artifact) => artifact.artifact_id);
   const blockers = [];
   if (change.workflow_state?.blocker) blockers.push({ code: "RL_OPERATION_NOT_PERMITTED", summary: String(change.workflow_state.blocker), blocking_invariant: "workflow-blocker" });
@@ -471,13 +553,17 @@ export function contextForStage(interpreted, stage) {
   if (["design-review", "delivery-review"].includes(stage)) {
     const packageKind = stage.replace(/-review$/, "");
     const reviewPackage = interpreted.review_packages[packageKind];
+    const nextReviewRound = interpreted.next_review_rounds?.[stage] ?? "r1";
+    const reviewRound = reviewPackage.next_permitted_operation === "record-package-review"
+      ? nextReviewRound
+      : reviewPackage.latest_review?.round ?? nextReviewRound;
     return {
       exact_change: interpreted.change_id,
       operation: stage,
       target_artifact: null,
       settled_upstream_inputs: Object.entries(reviewPackage.members).map(([artifact_id, path]) => ({ artifact_id, path })),
-      review_round: reviewPackage.latest_review?.round ?? interpreted.next_review_rounds?.[stage] ?? "r1",
-      authorized_output_path: `docs/changes/${interpreted.change_id}/reviews/${stage}-${reviewPackage.latest_review?.round ?? interpreted.next_review_rounds?.[stage] ?? "r1"}.md`,
+      review_round: reviewRound,
+      authorized_output_path: `docs/changes/${interpreted.change_id}/reviews/${stage}-${reviewRound}.md`,
       blockers: [...interpreted.blockers, ...reviewPackage.blockers],
       lifecycle_revision: interpreted.lifecycle_revision,
       permitted_registration_operation: reviewPackage.next_permitted_operation,

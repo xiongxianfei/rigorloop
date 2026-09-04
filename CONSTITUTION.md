@@ -148,7 +148,13 @@ Until repository-specific release checks replace the current conservative templa
 
 The following consolidated package-gate rules are current.
 
-After coherent activation, `stage-owned-change-local-v3` MUST be the only current executable contract. Historical v1/v2 records and artifacts remain readable but MUST NOT authorize current progression or new test-spec work. The implementing final-verification change MAY close through its last coherent released v2 package before activation; that bootstrap is not a reusable compatibility branch.
+`compact-current-state-v1` is the prospective current-state contract. Its compact authoritative set is `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`. It MUST remain fully usable without Git history, without PR access, without network access, and without machine-local logs. The CLI enforces deterministic validation and atomic state replacement; it does not possess human or stage permission and MUST validate the semantic authority carried by each operation.
+
+For compact changes, every formal review updates one stable current review record for its target. Open findings remain there and are referenced from `change.yaml`; materially constraining resolved decisions move to `material-decisions.md`; current validation provenance and freshness live in `evidence.yaml`. Routine resolutions, superseded rounds, request payloads, correction transport receipts, authoring receipts, raw output, review logs, and resolution ledgers are not authoritative compact artifacts. Successful Verify writes `verify-report.md` and establishes lifecycle completion; PR and other external delivery are optional consumers, not correctness dependencies.
+
+Compact skills MUST consume bounded CLI projections and their exact required paths. They MUST NOT infer current state from directory scans, Git, PRs, logs, filename rounds, or prior chat. Compact writing remains withheld until coherent activation; registered v3 changes continue unchanged until then.
+
+Until compact coherent activation, `stage-owned-change-local-v3` remains the current executable compatibility contract. At activation, new changes use `compact-current-state-v1`; registered v3 and earlier records remain readable and continue only under their exact registered contract. The implementing compact change closes under v3 and is not rewritten.
 
 `proposal-review` MUST evaluate proposal direction, scope, and embedded feasibility before design work for governed changes.
 
@@ -160,7 +166,7 @@ Architecture, specification, and plan authorship remain separate. Historical reg
 
 `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` are retired as progression entrypoints. Historical evidence remains readable but does not grant package authority.
 
-The current workflow requires `code-review` and `verify`; only successful Verify produces the final explanation and `branch-ready` evidence consumed by PR. Historical v1/v2 records do not select a current route. The bounded implementing-change bootstrap uses the released v2 closeout only before v3 activation.
+The workflow requires `code-review` and `verify`; only successful Verify produces the final explanation and readiness evidence. Compact readiness is independent of Git and PR state. Registered historical contracts may expose `branch-ready` for an optional PR consumer, but that legacy integration does not constrain compact completion.
 
 After a PR is open, a user-authorized CI repair MAY preserve those completed gates when it only restores already-approved behavior and does not change their decision basis. Such a repair uses existing commands and authority; a substantive or ambiguous correction returns to the earliest affected owning stage.
 
@@ -174,11 +180,11 @@ Every supported formal lifecycle review MUST create durable review evidence or r
 
 A detailed change-local review record MUST be preserved for every material finding before review-driven fixes or downstream routing proceed. For isolated or review-only requests, the record is required even when no downstream handoff follows.
 
-When material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `verify` and `pr` until resolved or explicitly deferred by an authorized owner. Verify creates the final rationale only after success.
+For registered historical contracts, when material findings exist for a non-trivial change, dispositions MUST be recorded in `review-resolution.md` using only `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`. `needs-decision` is not final and blocks `verify` and `pr` until resolved or explicitly deferred by an authorized owner. Verify creates the final rationale only after success.
 
-Clean required formal reviews with no material findings MUST still create a clean review receipt or report blocked recording. A clean review receipt proves the review happened; it does not by itself settle the reviewed artifact's lifecycle status. A no-material detailed review record requires `review-log.md` but MUST NOT create an empty `review-resolution.md` solely because `reviews/` exists.
+For registered historical contracts, clean required formal reviews with no material findings MUST still create a clean review receipt or report blocked recording. A clean review receipt proves the review happened; it does not by itself settle the reviewed artifact's lifecycle status. A no-material detailed review record requires `review-log.md` but MUST NOT create an empty `review-resolution.md` solely because `reviews/` exists.
 
-`review-resolution.md` MUST use top-level `Closeout status: open` or `Closeout status: closed`. `Closeout status: closed` requires final dispositions, no `review-log.md` open findings, plus the disposition-specific action, rationale, follow-up, and validation evidence records required by the governing spec.
+Under registered historical contracts, `review-resolution.md` MUST use top-level `Closeout status: open` or `Closeout status: closed`. `Closeout status: closed` requires final dispositions, no `review-log.md` open findings, plus the disposition-specific action, rationale, follow-up, and validation evidence records required by the governing spec.
 
 For the current stage-owned lifecycle contract, a formal review MUST record durable review evidence before settling only its matching artifact entry in `change.yaml`. A review MUST NOT edit the artifact it reviewed, another artifact's state, or workflow routing.
 

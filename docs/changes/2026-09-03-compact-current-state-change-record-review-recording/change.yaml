@@ -1,0 +1,31 @@
+change_id: 2026-09-03-compact-current-state-change-record-review-recording
+title: Compact Current-State Change Record Proposal Review Recording
+classification: review-recording
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-09-03-compact-current-state-change-record.md
+  review_resolution: docs/changes/2026-09-03-compact-current-state-change-record-review-recording/review-resolution.md
+requirements:
+  - Record the isolated proposal review before review-driven revision.
+  - Preserve the material finding about Git-history retention under rewritten merge history.
+  - Keep this recording-only root separate from proposal settlement and workflow continuation.
+tests:
+  - Review artifact structure validates the detailed R1 review, clean R2 review, log, and closed resolution relationship.
+review:
+  status: approved
+  unresolved_items: 0
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-09-03-compact-current-state-change-record-review-recording
+    result: pass_reviews_2_findings_1_log_entries_2_resolution_entries_1
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-09-03-compact-current-state-change-record-review-recording/change.yaml
+    result: pass
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-09-03-compact-current-state-change-record.md
+    result: pass_validated_1_artifact
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/proposals/2026-09-03-compact-current-state-change-record.md --path docs/changes/2026-09-03-compact-current-state-change-record-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-09-03-compact-current-state-change-record-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-09-03-compact-current-state-change-record-review-recording/review-log.md --path docs/changes/2026-09-03-compact-current-state-change-record-review-recording/review-resolution.md
+    result: pass_no_errors_or_warnings
+changed_files:
+  - docs/changes/2026-09-03-compact-current-state-change-record-review-recording/change.yaml
+  - docs/changes/2026-09-03-compact-current-state-change-record-review-recording/review-log.md
+  - docs/changes/2026-09-03-compact-current-state-change-record-review-recording/review-resolution.md
+  - docs/changes/2026-09-03-compact-current-state-change-record-review-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-09-03-compact-current-state-change-record-review-recording/reviews/proposal-review-r2.md

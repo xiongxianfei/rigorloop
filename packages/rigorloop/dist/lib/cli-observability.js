@@ -17,6 +17,7 @@ const TERMINAL_SEVERITY = Object.freeze({
 export function classifyCommand(args) {
   const command = args[0];
   if (command === "lifecycle") return { family: "lifecycle", command: "lifecycle", operation: LIFECYCLE_OPERATIONS.includes(args[1]) ? args[1] : "unknown" };
+  if (command === "compact") return { family: "compact", command: "compact" };
   if (["init", "new-change"].includes(command)) return { family: "repository-setup", command };
   if (["version", "workflow-context", "--help", "-h"].includes(command) || !command) return { family: "introspection", command: command || "help" };
   if (command === "logs") return { family: "log-inspection", command: "logs", operation: args[1] };

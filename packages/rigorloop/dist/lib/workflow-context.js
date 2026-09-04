@@ -11,6 +11,8 @@ import {
   correctionStageOrder,
   parseLifecycleYaml,
 } from "./lifecycle-contract.js";
+import { compactWriterStatus, loadPackagedCompactActivation } from "./compact-activation.js";
+import { executeCompactCli } from "./compact-cli.js";
 import { discoverGovernedChanges, findRepositoryRoot, interpretGovernedChange, selectGovernedChange } from "./lifecycle-read.js";
 
 export const WORKFLOW_CONTEXT_FORMATS = Object.freeze(["human", "json"]);
@@ -63,6 +65,10 @@ function repositoryRoot(start) {
 
 function readProjectLifecycleContract(root) {
   try {
+    const compact = compactWriterStatus(loadPackagedCompactActivation());
+    if (compact.writer) {
+      return { lifecycle_contract: { contract_class: compact.contract, activation_state: compact.state, authority: "active" } };
+    }
     const lifecyclePath = join(root, ...LIFECYCLE_ACTIVATION_MANIFEST_PATH.split("/"));
     const finalPath = join(root, ...FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH.split("/"));
     const lifecycleManifest = existsSync(lifecyclePath) ? parseLifecycleYaml(readFileSync(lifecyclePath, "utf8")) : PREACTIVATION_LIFECYCLE_MANIFEST;
@@ -319,15 +325,30 @@ function executeWorkflowContextUnsafe(args, options = {}) {
       const execution = errorResult("project", diagnostic("RL_CONTEXT_CHANGE_INVALID", "workflow-context-change-input", null, null, [malformed.id]), loaded.configuration);
       return { ...execution, format: parsed.format, human: workflowContextHuman(execution.result) };
     }
-    const active = discovered.filter((candidate) => candidate.change?.workflow_state?.lifecycle_state === "active");
-    const interpreted = active.map((candidate) => interpretGovernedChange(root, candidate));
-    const allCandidates = interpreted.map((item) => ({ change_id: item.change_id, current_stage: SAFE_IDENTIFIER.test(String(item.effective_state.current_stage ?? "")) ? item.effective_state.current_stage : null, lifecycle_state: SAFE_IDENTIFIER.test(String(item.change.workflow_state.lifecycle_state ?? "")) ? item.change.workflow_state.lifecycle_state : null, effective_state: SAFE_IDENTIFIER.test(String(item.effective_state.effective_state ?? "")) ? item.effective_state.effective_state : null, blocker_codes: [...new Set([...item.blockers, ...item.errors].map((entry) => entry.code).filter((value) => SAFE_IDENTIFIER.test(String(value))))].slice(0, MAX_PROJECTED_ITEMS) })).sort((left, right) => left.change_id.localeCompare(right.change_id));
+    const active = discovered.filter((candidate) => candidate.change?.lifecycle_contract === "compact-current-state-v1"
+      ? candidate.change.readiness !== "verified"
+      : candidate.change?.workflow_state?.lifecycle_state === "active");
+    const interpreted = [];
+    const invalidCompact = [];
+    const allCandidates = active.map((candidate) => {
+      if (candidate.change.lifecycle_contract === "compact-current-state-v1") {
+        const compact = executeCompactCli(["project", "--change", candidate.id, "--view", "summary", "--format", "json"], { cwd: root });
+        const projection = compact.result.projection;
+        const blockerCodes = [...new Set([...(projection?.blockers ?? []), ...(compact.result.errors ?? [])].map((entry) => entry.code).filter((value) => SAFE_IDENTIFIER.test(String(value))))].slice(0, MAX_PROJECTED_ITEMS);
+        if (compact.exitCode !== 0) invalidCompact.push(candidate.id);
+        return { change_id: candidate.id, current_stage: projection?.current_stage ?? null, lifecycle_state: "active", effective_state: projection?.progression_status ?? "blocked", blocker_codes: blockerCodes };
+      }
+      const item = interpretGovernedChange(root, candidate);
+      interpreted.push(item);
+      return { change_id: item.change_id, current_stage: SAFE_IDENTIFIER.test(String(item.effective_state.current_stage ?? "")) ? item.effective_state.current_stage : null, lifecycle_state: SAFE_IDENTIFIER.test(String(item.change.workflow_state.lifecycle_state ?? "")) ? item.change.workflow_state.lifecycle_state : null, effective_state: SAFE_IDENTIFIER.test(String(item.effective_state.effective_state ?? "")) ? item.effective_state.effective_state : null, blocker_codes: [...new Set([...item.blockers, ...item.errors].map((entry) => entry.code).filter((value) => SAFE_IDENTIFIER.test(String(value))))].slice(0, MAX_PROJECTED_ITEMS) };
+    }).sort((left, right) => left.change_id.localeCompare(right.change_id));
     const candidates = allCandidates.slice(0, MAX_PROJECTED_ITEMS);
     const lifecycleContract = projectContract.lifecycle_contract;
     const selection = { state: allCandidates.length === 0 ? "none" : allCandidates.length === 1 ? "single-candidate" : "ambiguous", selected_change: null };
     const projectBlockers = [];
     if (allCandidates.length > 1) projectBlockers.push(diagnostic("RL_CONTEXT_SELECTION_AMBIGUOUS", "workflow-context-selection", null, null, allCandidates.map((item) => item.change_id)));
-    if (interpreted.some((item) => item.errors.length)) projectBlockers.push(diagnostic("RL_CONTEXT_CHANGE_INVALID", "workflow-context-change-input", null, null, interpreted.filter((item) => item.errors.length).map((item) => item.change_id)));
+    const invalidChanges = [...interpreted.filter((item) => item.errors.length).map((item) => item.change_id), ...invalidCompact];
+    if (invalidChanges.length) projectBlockers.push(diagnostic("RL_CONTEXT_CHANGE_INVALID", "workflow-context-change-input", null, null, invalidChanges));
     const result = baseResult("project", { status: projectBlockers.length ? "blocked" : "success", configuration: loaded.configuration, lifecycle_contract: lifecycleContract, selection, candidates, candidate_total_count: allCandidates.length, candidates_truncated: allCandidates.length > MAX_PROJECTED_ITEMS, locations: resolved.locations, blockers: projectBlockers, errors: projectBlockers });
     const exitCode = projectBlockers.length ? 2 : 0;
     return { result, exitCode, format: parsed.format, human: workflowContextHuman(result) };
@@ -336,6 +357,48 @@ function executeWorkflowContextUnsafe(args, options = {}) {
   if (selected.error) {
     const execution = errorResult("change", diagnostic(selected.error.code === "RL_CHANGE_NOT_FOUND" ? "RL_CONTEXT_CHANGE_NOT_FOUND" : "RL_CONTEXT_CHANGE_INVALID", "workflow-context-change-selection", null, null, [parsed.change]), loaded.configuration);
     return { ...execution, format: parsed.format, human: workflowContextHuman(execution.result) };
+  }
+  if (selected.change.lifecycle_contract === "compact-current-state-v1") {
+    const compactExecution = executeCompactCli(["project", "--change", selected.change.change_id, "--view", "summary", "--format", "json"], { cwd: root });
+    if (compactExecution.exitCode !== 0 || !compactExecution.result.projection) {
+      const issue = compactExecution.result.errors?.[0] ?? { code: "RL_CONTEXT_CHANGE_INVALID", invariant: "compact-current-set", identities: [] };
+      const execution = errorResult("change", diagnostic(issue.code, issue.invariant, null, issue.next_operation, issue.identities), loaded.configuration);
+      return { ...execution, format: parsed.format, human: workflowContextHuman(execution.result) };
+    }
+    const projection = compactExecution.result.projection;
+    const projectedBlockers = projection.blockers.map((entry) => diagnostic(entry.code, entry.invariant, null, entry.next_operation, entry.identities));
+    const artifacts = Object.values(projection.artifacts).map((entry) => ({ artifact_id: entry.artifact_id, path: entry.path, sha256: entry.identity, recorded_state: entry.status, evidence_state: null }));
+    const result = baseResult("change", {
+      configuration: loaded.configuration,
+      lifecycle_contract: (() => {
+        const compact = compactWriterStatus(loadPackagedCompactActivation());
+        return { contract_class: compact.contract, activation_state: compact.state, authority: compact.writer ? "active" : "withheld" };
+      })(),
+      selection: { state: "exact", selected_change: selected.change.change_id },
+      candidates: [],
+      change_id: selected.change.change_id,
+      lifecycle_revision: selected.change.lifecycle_revision,
+      current_stage: selected.change.current_stage,
+      artifacts,
+      artifact_total_count: artifacts.length,
+      artifacts_truncated: false,
+      locations: resolved.locations,
+      packages: {},
+      milestones: selected.change.active_work?.kind === "milestone" ? { current_milestone: selected.change.active_work.milestone_id, remaining_implementation_milestones: [], milestones: { [selected.change.active_work.milestone_id]: { kind: "implementation", state: selected.change.active_work.status } }, total_count: 1, truncated: false } : { current_milestone: null, remaining_implementation_milestones: [], milestones: {}, total_count: 0, truncated: false },
+      blockers: projectedBlockers,
+      blocker_total_count: projectedBlockers.length,
+      blockers_truncated: false,
+      permitted_operations: projection.permitted_operations,
+      automation: null,
+      warnings: [],
+      warning_total_count: 0,
+      warnings_truncated: false,
+      errors: [],
+      error_total_count: 0,
+      errors_truncated: false,
+      compact_projection: projection,
+    });
+    return { result, exitCode: 0, format: parsed.format, human: workflowContextHuman(result) };
   }
   const interpreted = interpretGovernedChange(root, selected);
   const currentStage = interpreted.effective_state.current_stage;

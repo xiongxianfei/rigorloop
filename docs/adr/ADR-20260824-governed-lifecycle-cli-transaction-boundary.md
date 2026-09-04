@@ -1,5 +1,9 @@
 # ADR-20260824: Governed Lifecycle CLI Transaction Boundary
 
+## Prospective supersession
+
+After coherent activation of `compact-current-state-v1`, ADR-20260903 supersedes this decision where it limits persistence to `change.yaml`, requires committed procedural evidence, or treats Git, branches, or PR state as a correctness dependency. Registered non-compact changes continue under this ADR. The compact successor retains the pure semantic engine, exact identities, optimistic concurrency, fail-closed parsing, local lock and recovery boundary, and the rule that the CLI validates responsibility but grants no permission.
+
 ## Owning change record
 
 `docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml`

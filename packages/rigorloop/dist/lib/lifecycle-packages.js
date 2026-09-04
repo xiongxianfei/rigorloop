@@ -99,8 +99,10 @@ export function reviewPackageContext(root, change, kind) {
   const status = errors.length ? "incomplete" : projection && !projectionCurrent ? "review-required" : projection?.status ?? "review-required";
   const authority = status === "approved" ? "granted" : "withheld";
   const registeredCurrent = latest && canonicalJson(latest.members) === canonicalJson(members) && latest.upstream_review_id === upstream.value;
+  const registeredPendingSettlement = registeredCurrent && (!projection || projection.review_id !== latest.review_id);
   let nextOperation = null;
-  if (!errors.length && !projection) nextOperation = registeredCurrent ? "settle-review-package" : "record-package-review";
+  if (!errors.length && registeredPendingSettlement) nextOperation = "settle-review-package";
+  else if (!errors.length && !projection) nextOperation = "record-package-review";
   else if (!errors.length && status === "review-required") nextOperation = "record-package-review";
   else if (!errors.length && status === "changes-requested" && (projection?.correction_targets ?? []).length) nextOperation = "route-correction";
   else if (!errors.length && status === "blocked" && (projection?.correction_targets ?? []).length) nextOperation = "route-correction";

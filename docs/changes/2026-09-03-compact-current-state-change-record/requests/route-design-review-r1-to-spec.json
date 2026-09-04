@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "operation": "route-correction",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:4e3808e680c042e746b8ae667be46e72ffd0e7b75750a0b542b47926a635219e",
+  "source_stage": "design-review",
+  "destination_stage": "spec",
+  "destination_artifact_id": "spec",
+  "reason": "upstream-contract-gap",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/evidence/design-review-r1-spec-route.md",
+  "finding_ids": [
+    "CCSR-DR1"
+  ],
+  "return_stage": "design-review",
+  "stage_authority": "workflow"
+}

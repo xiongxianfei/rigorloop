@@ -481,6 +481,72 @@ review:
     def test_compact_valid_fixture_passes(self) -> None:
         self.assertPathPasses(FIXTURES / "compact-valid" / "change.yaml")
 
+    def test_compact_current_state_v1_coordinator_passes(self) -> None:
+        body = """schema: compact-change-v1
+change_id: example-change
+title: Example change
+lifecycle_contract: compact-current-state-v1
+lifecycle_revision: sha256:0000000000000000000000000000000000000000000000000000000000000000
+current_stage: proposal
+artifacts: {}
+reviews: {}
+active_work: null
+open_findings: {}
+material_decisions: {}
+evidence: {}
+blockers: []
+remaining_work: {}
+readiness: not-ready
+"""
+        with tempfile.TemporaryDirectory(prefix="compact-current-state-valid-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            target.write_text(body, encoding="utf-8")
+            self.assertPathPasses(target)
+
+    def test_compact_current_state_v1_unknown_stage_fails_closed(self) -> None:
+        body = """schema: compact-change-v1
+change_id: example-change
+title: Example change
+lifecycle_contract: compact-current-state-v1
+lifecycle_revision: sha256:0000000000000000000000000000000000000000000000000000000000000000
+current_stage: not-in-vocabulary
+artifacts: {}
+reviews: {}
+active_work: null
+open_findings: {}
+material_decisions: {}
+evidence: {}
+blockers: []
+remaining_work: {}
+readiness: not-ready
+"""
+        with tempfile.TemporaryDirectory(prefix="compact-current-state-invalid-") as temp_dir:
+            target = Path(temp_dir) / "change.yaml"
+            target.write_text(body, encoding="utf-8")
+            self.assertPathFails(target, "current_stage: unknown_value")
+
+    def test_shared_compact_v1_schema_records_match_python_validator(self) -> None:
+        validator = load_validator_module()
+        schema = json.loads((ROOT / "schemas" / "compact-current-state-v1.schema.json").read_text(encoding="utf-8"))
+        records = json.loads((ROOT / "tests" / "fixtures" / "compact-current-state-v1" / "schema-records.json").read_text(encoding="utf-8"))
+        definitions = {
+            "compact-change-v1": "change",
+            "compact-review-v1": "review",
+            "compact-decisions-v1": "decisions",
+            "compact-evidence-v1": "evidence",
+            "compact-verify-v1": "verify",
+            "compact-operation-v1": "operationEnvelope",
+            "compact-result-v1": "result",
+            "compact-recovery-v1": "recovery",
+        }
+        self.assertEqual(set(definitions), {record["schema"] for record in records})
+        for record in records:
+            with self.subTest(schema=record["schema"]):
+                definition = schema["$defs"][definitions[record["schema"]]]
+                self.assertEqual(validator.validate_against_schema(definition, record, root_schema=schema), [])
+                invalid = {**record, "extension": True}
+                self.assertTrue(validator.validate_against_schema(definition, invalid, root_schema=schema))
+
     def test_autoprogression_policy_record_passes(self) -> None:
         with tempfile.TemporaryDirectory(prefix="change-metadata-policy-valid-") as temp_dir:
             target = self.write_policy_fixture(Path(temp_dir))
@@ -2331,6 +2397,26 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
 
 
 class LifecycleContractClassificationTests(unittest.TestCase):
+    def test_compact_current_state_contract_is_readable_but_writer_withheld(self) -> None:
+        classification = classify_lifecycle_contract(
+            "example-change",
+            {"lifecycle_contract": "compact-current-state-v1"},
+            {
+                "schema_version": 1,
+                "state": "active",
+                "activating_source_revision": "0" * 40,
+                "changes": [],
+            },
+        )
+        self.assertEqual(
+            classification,
+            {
+                "contract_class": "compact-current-state-v1",
+                "activation_state": "candidate",
+                "authority": "withheld",
+            },
+        )
+
     @classmethod
     def setUpClass(cls) -> None:
         fixture_path = ROOT / "packages/rigorloop/test/fixtures/lifecycle/contract-classification-v1.json"

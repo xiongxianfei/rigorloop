@@ -41,6 +41,14 @@ def write_governed_fixture(root: Path, malformed: bool = False) -> None:
     spec_root = root / "specs"
     change_root.mkdir(parents=True)
     spec_root.mkdir(parents=True)
+    (spec_root / "lifecycle-contract-activation.yaml").write_text(
+        f"schema_version: 1\nstate: active\nactivating_source_revision: {'a' * 40}\nchanges: []\n",
+        encoding="utf-8",
+    )
+    (spec_root / "final-verification-contract-activation.yaml").write_text(
+        f"schema_version: 1\nstate: active\nactivating_source_revision: {'b' * 40}\nchanges: []\n",
+        encoding="utf-8",
+    )
     (spec_root / "example.md").write_text("# Example\n", encoding="utf-8")
     if malformed:
         content = "change_id: example\nchange_id: duplicate\n"
@@ -49,7 +57,7 @@ def write_governed_fixture(root: Path, malformed: bool = False) -> None:
 title: Example
 classification: feature
 risk: standard
-lifecycle_contract: stage-owned-change-local-v1
+lifecycle_contract: stage-owned-change-local-v3
 artifact_states:
   spec:
     kind: spec

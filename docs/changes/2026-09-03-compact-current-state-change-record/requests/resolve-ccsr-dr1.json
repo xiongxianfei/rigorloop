@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-finding-resolution",
+  "change_id": "2026-09-03-compact-current-state-change-record",
+  "expected_lifecycle_revision": "sha256:e582662ee83deb8dc1e6cfc968929ba92ade1c76b99e4955a58bae418881fafc",
+  "artifact_id": "spec",
+  "evidence_path": "docs/changes/2026-09-03-compact-current-state-change-record/review-resolution.md",
+  "finding_id": "CCSR-DR1",
+  "stage_authority": "review-resolution"
+}
