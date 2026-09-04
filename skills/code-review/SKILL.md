@@ -27,6 +27,10 @@ Do not use for proposal, spec, architecture, plan, final verification, or PR app
 
 ## Workflow role
 
+### Compact current-state contract
+
+For `compact-current-state-v1`, consume the bounded CLI projection, exact implementation subject, required contract paths, and current evidence. Update one stable current review record for the milestone or final-code target through a transient CLI operation. Keep open findings directly in that record and retain only continuing material constraints in `material-decisions.md`. Review the exact returned correction before clearing it; explicit return means review-ready, not approved. Do not require Git or PR state, and do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or route receipts.
+
 - role_name: code-review
 - stage: review
 - upstream: implementation diff, review-requested milestone, governing artifacts, tests, and validation evidence
@@ -59,7 +63,7 @@ Read the target, tracked authority, current milestone, tests, and relevant valid
 
 ## Review authority and evidence
 
-Inspect the actual changed files, staged or unstaged diff, commit range, PR diff, or other explicit target. Read the approved spec, stable plan milestone, relevant architecture or ADR, related tests, named validation evidence, and a matching test spec only for manifest-bound v1 continuation. For planned work, read `change.yaml` for current milestone and handoff state; use the plan only for stable intent and `review-resolution.md` for prior-finding disposition.
+Inspect the actual changed files, staged or unstaged diff, commit range, PR diff, or other explicit target. Read the approved spec, stable plan milestone, relevant architecture or ADR, related tests, named validation evidence, and a matching test spec only for manifest-bound v1 continuation. For planned work, read `change.yaml` for current milestone and handoff state and use the plan only for stable intent. Under registered historical contracts, use `review-resolution.md` for prior-finding disposition; under the compact contract, use stable current reviews and material decisions.
 
 For work governed by consolidated gates, require the current approved Design Review ID and its exact member map plus the current approved Delivery Review ID and its exact member map. Treat review-required, partial, stale, or historical artifact-review evidence as non-authorizing. These package inputs strengthen implementation review but do not merge Code Review with Design Review, Delivery Review, or Verify.
 
@@ -67,7 +71,7 @@ Use the smallest sufficient evidence set. Begin with the diff, spec, test spec, 
 
 Prefer a separate reviewer or fresh session. When unavailable, intentionally reset assumptions before reading the diff. Do not treat remembered intent, author self-assessment, or validation success as review proof.
 
-Tracked governing branch state is required for a clean branch-scoped conclusion. Local-only authority may provide context but cannot support that conclusion. Missing authority does not suppress an independently supported `changes-requested` or `blocked` finding; use `inconclusive` only when the gap prevents both an actionable finding and a clean result. This is the mixed-evidence rule.
+For registered historical contracts, tracked governing branch state is required for a clean branch-scoped conclusion. Local-only authority may provide context but cannot support that conclusion. Missing authority does not suppress an independently supported `changes-requested` or `blocked` finding; use `inconclusive` only when the gap prevents both an actionable finding and a clean result. This is the mixed-evidence rule. Compact review instead binds the explicit subject and complete-set identities supplied by the bounded projection and works without Git.
 
 ## Generated Markdown readability
 
@@ -139,10 +143,9 @@ Use:
 
 `not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-For a clean review, create the lightweight review receipt required by the formal review recording spec and index it in `review-log.md`. Do not create an empty `review-resolution.md` solely for a clean review.
+For `compact-current-state-v1`, update the target's stable current review record through the CLI. A clean review replaces its current judgment at the stable path. Material findings remain directly accessible in that record; only resolved decisions that continue to constrain the change belong in `material-decisions.md`. Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.
 
-For material findings or blocking outcomes, create the required detailed review record and disposition artifacts.
-Use a detailed review record for material or blocking review outcomes.
+For registered historical contracts, create the lightweight clean receipt or detailed review record required by that contract, index it in `review-log.md`, and create `review-resolution.md` only when triggered.
 
 Material findings must include:
 

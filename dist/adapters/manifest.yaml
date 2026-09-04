@@ -1,4 +1,4 @@
-version: v0.1.5
+version: v0.5.1
 skills:
   architecture:
     portable: true
@@ -48,6 +48,9 @@ skills:
   research:
     portable: true
     adapters: [codex, claude, opencode]
+  route:
+    portable: true
+    adapters: [codex, claude, opencode]
   spec:
     portable: true
     adapters: [codex, claude, opencode]
@@ -55,9 +58,6 @@ skills:
     portable: true
     adapters: [codex, claude, opencode]
   vision:
-    portable: true
-    adapters: [codex, claude, opencode]
-  route:
     portable: true
     adapters: [codex, claude, opencode]
 command_aliases:

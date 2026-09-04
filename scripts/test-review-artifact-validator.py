@@ -722,6 +722,57 @@ def partially_accepted_closed_resolution_text() -> str:
 
 
 class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
+    def compact_root(self, *, review_name: str = "proposal-review.md") -> Path:
+        temp_root = Path(tempfile.mkdtemp(prefix="compact-review-root-"))
+        self.addCleanup(shutil.rmtree, temp_root, True)
+        change_root = temp_root / "docs" / "changes" / "example"
+        review_relative = f"docs/changes/example/reviews/{review_name}"
+        write_text(
+            change_root / "change.yaml",
+            f"""
+            schema: compact-change-v1
+            change_id: example
+            lifecycle_contract: compact-current-state-v1
+            reviews:
+              proposal:
+                path: {review_relative}
+            """,
+        )
+        write_text(
+            change_root / "reviews" / review_name,
+            """
+            ---
+            schema: compact-review-v1
+            review_id: proposal-review-current
+            target:
+              target_id: proposal
+              target_kind: proposal
+            round: 2
+            subjects: {}
+            reviewer_authority: proposal-review
+            outcome: approved
+            recording_status: recorded
+            open_findings: {}
+            material_decisions: []
+            limitations: []
+            recorded_at: 2026-09-04T00:00:00Z
+            ---
+
+            # Proposal Review
+            """,
+        )
+        return change_root
+
+    def test_compact_stable_review_needs_no_legacy_ledgers(self) -> None:
+        result = validate_change_root(self.compact_root())
+        self.assertEqual(result.blocking_findings, ())
+        self.assertEqual(result.review_count, 1)
+        self.assertEqual(result.review_log_entry_count, 0)
+
+    def test_compact_round_suffixed_review_fails_closed(self) -> None:
+        result = validate_change_root(self.compact_root(review_name="proposal-review-r2.md"))
+        self.assertTrue(any("not round-suffixed" in item.message for item in result.blocking_findings))
+
     maxDiff = None
 
     def addCleanupTree(self, path: Path) -> None:
@@ -3307,12 +3358,15 @@ Validation target: Run tests.
             "specs/rigorloop-workflow.md",
             "skills/route/SKILL.md",
             "CONSTITUTION.md",
-            "AGENTS.md",
         ]:
             with self.subTest(path=path):
                 content = read_repo_file(path)
                 for term in required_terms:
                     self.assertIn(term, content)
+        agents = read_repo_file("AGENTS.md")
+        for term in ("compact-current-state-v1", "stable current review", "material-decisions.md", "Registered historical v3", "review-resolution.md"):
+            with self.subTest(path="AGENTS.md", term=term):
+                self.assertIn(term, agents)
 
     def test_review_stage_skills_align_with_review_resolution_contract(self) -> None:
         for path in [

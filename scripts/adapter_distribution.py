@@ -34,7 +34,7 @@ from skill_validation import (
 
 
 SUPPORTED_ADAPTERS = ("codex", "claude", "opencode")
-DEFAULT_ADAPTER_VERSION = "0.1.1"
+DEFAULT_ADAPTER_VERSION = "v0.5.1"
 OPENCODE_COMMAND_ALIASES = (
     "proposal",
     "proposal-review",
@@ -353,8 +353,8 @@ REQUIRED_RELEASE_VALIDATION_KEYS = (
     "security",
 )
 TOKEN_COST_REPORT_REQUIRED_RELEASES = frozenset({"v0.1.1"})
-ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5", "v0.3.6", "v0.4.0", "v0.4.1", "v0.5.0"})
-UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5", "v0.3.6", "v0.4.0", "v0.4.1", "v0.5.0"})
+ADAPTER_ARTIFACT_METADATA_REQUIRED_RELEASES = frozenset({"v0.1.2", "v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5", "v0.3.6", "v0.4.0", "v0.4.1", "v0.5.0", "v0.5.1"})
+UNTRACKED_PUBLIC_ADAPTER_RELEASES = frozenset({"v0.1.3", "v0.1.4", "v0.1.5", "v0.2.0", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5", "v0.3.6", "v0.4.0", "v0.4.1", "v0.5.0", "v0.5.1"})
 NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES = frozenset({"v0.1.4", "v0.1.5", "v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5", "v0.3.6", "v0.4.0", "v0.4.1", "v0.5.0"})
 TARGET_NATIVE_INIT_RELEASES = frozenset({"v0.3.0", "v0.3.1", "v0.3.2", "v0.3.3", "v0.3.4", "v0.3.5", "v0.3.6", "v0.4.0", "v0.4.1", "v0.5.0"})
 TOKEN_COST_RUNTIME_V2 = "skill-token-runtime-v2"
@@ -4374,7 +4374,11 @@ def validate_release_output(
             )
         except ValueError as exc:
             errors.append(str(exc))
-    if manifest is not None and manifest.version != expected_manifest_version:
+    if (
+        manifest is not None
+        and profile is ReleaseValidationProfile.CURRENT_SOURCE
+        and manifest.version != expected_manifest_version
+    ):
         errors.append(
             f"{manifest_path}: version mismatch: expected {expected_manifest_version}, "
             f"found {manifest.version}"

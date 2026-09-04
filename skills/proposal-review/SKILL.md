@@ -15,6 +15,10 @@ Judge whether the proposal responsibly refines the incoming RR into an IR-level 
 
 ## Workflow role
 
+### Compact current-state contract
+
+For `compact-current-state-v1`, consume the bounded CLI projection and the proposal path it names. Update the proposal target's stable current review record through a transient CLI operation. Keep every open finding directly in that record; retain a resolved rationale in `material-decisions.md` only when it continues to constrain the change. A finding returns to proposal refinement, while a clean exact rereview approves the proposal. Do not create a round-suffixed review, `review-log.md`, `review-resolution.md`, request file, or route receipt.
+
 - role_name: proposal-review
 - stage: review
 - upstream: proposal artifact plus user intent when available
@@ -76,7 +80,7 @@ Bounded discovery is not evidence expansion. Record a compact reason only when r
 
 ## Artifact placement
 
-When operating inside the RigorLoop repository, formal proposal-review records default to `docs/changes/<change-id>/reviews/proposal-review-r<n>.md` and are indexed in `docs/changes/<change-id>/review-log.md`. Use `docs/changes/<change-id>/review-resolution.md` only when material findings, blocking outcomes, or accepted dispositions require it.
+For registered historical contracts inside the RigorLoop repository, formal proposal-review records use `docs/changes/<change-id>/reviews/proposal-review-r<n>.md` and `docs/changes/<change-id>/review-log.md`, with `docs/changes/<change-id>/review-resolution.md` only when triggered. Compact placement is governed by the stable current review contract above.
 
 If formal review lacks a change pack, create or request `docs/changes/<change-id>/` before claiming `Recording status: recorded`. For an isolated advisory review without a durable trigger, do not create lifecycle artifacts.
 
@@ -146,10 +150,9 @@ Use:
 
 `not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-For a clean review, create the lightweight review receipt required by the formal review recording spec and index it in `review-log.md`. Do not create an empty `review-resolution.md` solely for a clean review.
+For `compact-current-state-v1`, update the target's stable current review record through the CLI. A clean review replaces its current judgment at the stable path. Material findings remain directly accessible in that record; only resolved decisions that continue to constrain the change belong in `material-decisions.md`. Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.
 
-For material findings or blocking outcomes, create the required detailed review record and disposition artifacts.
-Use a detailed review record for material or blocking review outcomes.
+For registered historical contracts, create the lightweight clean receipt or detailed review record required by that contract, index it in `review-log.md`, and create `review-resolution.md` only when triggered.
 
 Material findings must include:
 

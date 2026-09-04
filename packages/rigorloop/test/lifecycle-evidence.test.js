@@ -104,6 +104,64 @@ test("review registration binds exact evidence and settlement derives state", as
   assert.match(settledChange, /review:\n  latest_review: docs\/changes\/example\/reviews\/proposal-review-r1\.md\n  review_log: docs\/changes\/example\/review-log\.md\n  reviewed_artifact: docs\/proposals\/example\.md\n  status: clean\n  unresolved_items: 0/);
 });
 
+test("v3 isolated formal review can settle its exact review-required artifact", async () => {
+  const { root, changeRoot } = await fixture();
+  const changePath = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  change.workflow_state.current_stage = "implement";
+  change.workflow_state.next_stage = "code-review";
+  writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+
+  const reviewPath = request(root, "isolated-review", {
+    schema_version: 1, operation: "record-review", change_id: "example", expected_lifecycle_revision: revision(root),
+    artifact_id: "proposal", evidence_path: "docs/changes/example/reviews/proposal-review-r1.md", stage_authority: "proposal-review",
+  });
+  assert.equal(executeLifecycleCli(["record-review", "--request", reviewPath], { cwd: root }).exitCode, 0);
+  const settlePath = request(root, "isolated-settle", {
+    schema_version: 1, operation: "settle-artifact", change_id: "example", expected_lifecycle_revision: revision(root),
+    artifact_id: "proposal", stage_authority: "proposal-review",
+  });
+  const settled = executeLifecycleCli(["settle-artifact", "--request", settlePath, "--format", "json"], { cwd: root });
+  assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
+  const result = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  assert.equal(result.artifact_states.proposal.lifecycle_state, "accepted");
+  assert.equal(result.workflow_state.current_stage, "implement");
+});
+
+test("v3 can register an exact stale member of a mechanically review-required package", async () => {
+  const { root, changeRoot } = await packageRepository();
+  const changePath = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  const priorIdentity = change.lifecycle_cli.artifacts.plan.artifact_sha256;
+  change.workflow_state.current_stage = "design-review";
+  change.workflow_state.next_stage = "plan";
+  change.artifact_states.plan.lifecycle_state = "review-required";
+  change.review_packages = {
+    delivery: {
+      package_kind: "delivery", members: { plan: "docs/plans/example.md" }, upstream_review_id: "design-review-r1",
+      review_id: "delivery-review-r1", review_round: "r1", outcome: "approved", findings: [], correction_targets: [],
+      status: "review-required", authority: "withheld",
+    },
+  };
+  writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+
+  const planPath = join(root, "docs/plans/example.md");
+  const plan = `${readFileSync(planPath, "utf8")}\nTrust-boundary allocation.\n`;
+  writeFileSync(planPath, plan, "utf8");
+  const evidencePath = "docs/changes/example/evidence/plan-recovery.md";
+  writeFileSync(join(root, evidencePath), `Artifact path: docs/plans/example.md\nArtifact identity: sha256:${createHash("sha256").update(plan).digest("hex")}\nAuthoring result: complete\n`, "utf8");
+  const requestPath = writePackageRequest(root, "plan-package-recovery", {
+    schema_version: 1, operation: "record-artifact-revision", change_id: "example", expected_lifecycle_revision: packageLifecycleRevision(root),
+    artifact_id: "plan", artifact_kind: "plan", artifact_role: "primary", artifact_path: "docs/plans/example.md", evidence_path: evidencePath,
+    prior_artifact_sha256: priorIdentity, stage_authority: "plan",
+  });
+  const recorded = executeLifecycleCli(["record-artifact-revision", "--request", requestPath, "--format", "json"], { cwd: root });
+  assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
+  const result = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  assert.equal(result.lifecycle_cli.artifacts.plan.artifact_sha256, createHash("sha256").update(plan).digest("hex"));
+  assert.equal(result.workflow_state.current_stage, "design-review");
+});
+
 test("stale request and unresolved findings block without changing bytes", async () => {
   const { root, changeRoot } = await fixture("F-1");
   const oldRevision = revision(root);
@@ -139,9 +197,41 @@ test("validation and finding resolution register existing exact evidence only", 
   const { root } = await fixture();
   const validationPath = request(root, "validation", { schema_version: 1, operation: "record-validation", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/evidence/validation.md", subject_path: "docs/proposals/example.md", stage_authority: "verify" });
   assert.equal(executeLifecycleCli(["record-validation", "--request", validationPath], { cwd: root }).exitCode, 0);
+  const validationEvidence = join(root, "docs", "changes", "example", "evidence", "validation.md");
+  writeFileSync(validationEvidence, `${readFileSync(validationEvidence, "utf8")}Validation note: refreshed\n`, "utf8");
+  const refreshedValidation = request(root, "validation-refresh", { schema_version: 1, operation: "record-validation", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/evidence/validation.md", subject_path: "docs/proposals/example.md", stage_authority: "verify" });
+  assert.equal(executeLifecycleCli(["record-validation", "--request", refreshedValidation], { cwd: root }).exitCode, 0);
   const resolutionPath = request(root, "resolution", { schema_version: 1, operation: "record-finding-resolution", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" });
   assert.equal(executeLifecycleCli(["record-finding-resolution", "--request", resolutionPath], { cwd: root }).exitCode, 0);
   assert.match(readFileSync(join(root, "docs", "changes", "example", "change.yaml"), "utf8"), /resolutions:/);
+});
+
+test("finding resolution accepts one exact ID inside a canonical multi-finding occurrence", async () => {
+  const { root, changeRoot } = await fixture();
+  const logPath = join(changeRoot, "review-log.md");
+  writeFileSync(logPath, readFileSync(logPath, "utf8").replace("Finding ID: F-1", "Finding ID: F-1, F-2"), "utf8");
+  const resolutionPath = request(root, "multi-finding-resolution", { schema_version: 1, operation: "record-finding-resolution", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" });
+  const result = executeLifecycleCli(["record-finding-resolution", "--request", resolutionPath, "--format", "json"], { cwd: root });
+  assert.equal(result.exitCode, 0, JSON.stringify(result.result));
+});
+
+test("a closed milestone archives its validation registration so the next milestone can record evidence", async () => {
+  const { root, changeRoot } = await fixture();
+  const first = request(root, "milestone-validation-m1", { schema_version: 1, operation: "record-validation", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/evidence/validation.md", subject_path: "docs/proposals/example.md", stage_authority: "implement" });
+  assert.equal(executeLifecycleCli(["record-validation", "--request", first], { cwd: root }).exitCode, 0);
+  const changePath = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  change.workflow_state.current_stage = "implement";
+  change.workflow_state.next_stage = "code-review";
+  change.workflow_state.planned_work = { current_milestone: "M2", milestones: { M1: { kind: "implementation", state: "closed" }, M2: { kind: "implementation", state: "implementing" } }, remaining_implementation_milestones: ["M2"], latest_review: { status: "not-started", stage: "none", round: "none", artifact_id: "none", occurrence: "none", milestone_id: "none", evidence: [] }, final_closeout: { readiness: "not-ready", reasons: ["implementation-milestones-open"], evidence: [] } };
+  change.lifecycle_cli.milestones.M1 = { evidence_path: "docs/changes/example/evidence/validation.md" };
+  writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+  const subjectHash = createHash("sha256").update(readFileSync(join(root, "docs/proposals/example.md"))).digest("hex");
+  writeFileSync(join(changeRoot, "evidence", "m2.md"), `Milestone: M2\nSubject path: docs/proposals/example.md\nSubject identity: sha256:${subjectHash}\nValidation result: passed\n`, "utf8");
+  const second = request(root, "milestone-validation-m2", { schema_version: 1, operation: "record-validation", change_id: "example", expected_lifecycle_revision: revision(root), artifact_id: "proposal", evidence_path: "docs/changes/example/evidence/m2.md", subject_path: "docs/proposals/example.md", stage_authority: "implement" });
+  const recorded = executeLifecycleCli(["record-validation", "--request", second, "--format", "json"], { cwd: root });
+  assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
+  assert.equal(parseLifecycleYaml(readFileSync(changePath, "utf8")).lifecycle_cli.validations.proposal.evidence_path, "docs/changes/example/evidence/m2.md");
 });
 
 test("finding resolution reads fields from the requested finding section", async () => {
@@ -153,6 +243,72 @@ test("finding resolution reads fields from the requested finding section", async
   const change = parseLifecycleYaml(readFileSync(join(changeRoot, "change.yaml"), "utf8"));
   assert.equal(change.lifecycle_cli.resolutions["F-1"].disposition, "partially-accepted");
   assert.equal(change.lifecycle_cli.resolutions["F-1"].owner, "spec");
+});
+
+test("editing another resolution section does not reopen a settled finding", async () => {
+  const { root, changeRoot } = await fixture();
+  const resolutionPath = join(changeRoot, "review-resolution.md");
+  writeFileSync(resolutionPath, `# Resolution\n\nFinding ID: F-1\nDisposition: accepted\nOwner: proposal\nStatus: resolved\nValidation evidence: focused proof\n\nFinding ID: OTHER-1\nDisposition: accepted\nOwner: spec\nStatus: resolved\nValidation evidence: other proof\n`, "utf8");
+  const register = request(root, "section-stable-resolution", {
+    schema_version: 1, operation: "record-finding-resolution", change_id: "example",
+    expected_lifecycle_revision: revision(root), artifact_id: "proposal",
+    evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution",
+  });
+  const recorded = executeLifecycleCli(["record-finding-resolution", "--request", register, "--format", "json"], { cwd: root });
+  assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
+  assert.deepEqual(packageContext(root).result.effective_state.unresolved_findings, []);
+
+  writeFileSync(resolutionPath, readFileSync(resolutionPath, "utf8").replace("other proof", "updated other proof"), "utf8");
+  assert.deepEqual(packageContext(root).result.effective_state.unresolved_findings, []);
+});
+
+test("artifact revision does not reopen a settled finding occurrence", async () => {
+  const { root, changeRoot } = await fixture("F-1", "changes-requested");
+  const review = request(root, "revision-stable-review", {
+    schema_version: 1, operation: "record-review", change_id: "example",
+    expected_lifecycle_revision: revision(root), artifact_id: "proposal",
+    evidence_path: "docs/changes/example/reviews/proposal-review-r1.md", stage_authority: "proposal-review",
+  });
+  const reviewed = executeLifecycleCli(["record-review", "--request", review, "--format", "json"], { cwd: root });
+  assert.equal(reviewed.exitCode, 0, JSON.stringify(reviewed.result));
+  const register = request(root, "revision-stable-resolution", {
+    schema_version: 1, operation: "record-finding-resolution", change_id: "example",
+    expected_lifecycle_revision: revision(root), artifact_id: "proposal",
+    evidence_path: "docs/changes/example/review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution",
+  });
+  const recorded = executeLifecycleCli(["record-finding-resolution", "--request", register, "--format", "json"], { cwd: root });
+  assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
+
+  const changePath = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  const priorIdentity = createHash("sha256").update(readFileSync(join(root, "docs", "proposals", "example.md"))).digest("hex");
+  change.lifecycle_cli.artifacts.proposal = {
+    artifact_kind: "proposal", artifact_role: "primary", artifact_path: "docs/proposals/example.md",
+    artifact_sha256: priorIdentity, authoring_evidence_path: "docs/changes/example/evidence/validation.md",
+    authoring_evidence_sha256: createHash("sha256").update(readFileSync(join(changeRoot, "evidence", "validation.md"))).digest("hex"),
+    stage_authority: "proposal",
+  };
+  change.workflow_state.current_stage = "proposal";
+  change.workflow_state.next_stage = "proposal-review";
+  change.artifact_states.proposal.lifecycle_state = "revision-required";
+  writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+
+  const proposal = "# Example proposal\n\nRevised without recurring F-1.\n";
+  writeFileSync(join(root, "docs", "proposals", "example.md"), proposal, "utf8");
+  const proposalIdentity = createHash("sha256").update(proposal).digest("hex");
+  const evidencePath = "docs/changes/example/evidence/proposal-revision.md";
+  writeFileSync(join(root, evidencePath), `Artifact path: docs/proposals/example.md\nArtifact identity: sha256:${proposalIdentity}\nAuthoring result: complete\n`, "utf8");
+  const revise = request(root, "revise-with-settled-finding", {
+    schema_version: 1, operation: "record-artifact-revision", change_id: "example",
+    expected_lifecycle_revision: revision(root), artifact_id: "proposal", artifact_kind: "proposal",
+    artifact_role: "primary", artifact_path: "docs/proposals/example.md", evidence_path: evidencePath,
+    prior_artifact_sha256: priorIdentity, stage_authority: "proposal",
+  });
+  const revised = executeLifecycleCli(["record-artifact-revision", "--request", revise, "--format", "json"], { cwd: root });
+  assert.equal(revised.exitCode, 0, JSON.stringify(revised.result));
+  const current = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  assert.equal(current.lifecycle_cli.resolutions["F-1"].finding_id, "F-1");
+  assert.deepEqual(packageContext(root).result.effective_state.unresolved_findings, []);
 });
 
 test("settlement subtracts resolutions for the exact target review occurrence", async () => {
@@ -258,6 +414,46 @@ test("non-approved package outcomes remain visible and grant no authority", asyn
   assert.match(changeBytes(root), /affected_artifact_ids:\n\s+- architecture\n\s+- spec/);
 });
 
+test("changes-requested package settlement restores its review stage before correction routing", async () => {
+  const { root } = await packageRepository();
+  const context = packageContext(root);
+  const review = writePackageReview(root, context, {
+    outcome: "changes-requested",
+    findings: [{ id: "PKG-RETURN", scope: "artifact-local", affected: ["architecture"], owners: ["architecture"] }],
+    correctionTargets: ["architecture"],
+  });
+  const recordRequest = writePackageRequest(root, "record-package-return", {
+    schema_version: 1,
+    operation: "record-package-review",
+    change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root),
+    package_kind: "design",
+    review_id: review.reviewId,
+    upstream_review_id: review.packageFacts.upstream_review_id,
+    members: review.packageFacts.members,
+    evidence_path: review.reviewPath,
+    stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["record-package-review", "--request", recordRequest], { cwd: root }).exitCode, 0);
+
+  setWorkflowStage(root, "code-review");
+  const settleRequest = writePackageRequest(root, "settle-package-return", {
+    schema_version: 1,
+    operation: "settle-review-package",
+    change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root),
+    package_kind: "design",
+    review_id: review.reviewId,
+    stage_authority: "design-review",
+  });
+  const settled = executeLifecycleCli(["settle-review-package", "--request", settleRequest, "--format", "json"], { cwd: root });
+  assert.equal(settled.exitCode, 0, JSON.stringify(settled.result));
+  const changed = parseLifecycleYaml(changeBytes(root));
+  assert.equal(changed.workflow_state.current_stage, "design-review");
+  assert.equal(changed.workflow_state.next_stage, "design-review");
+  assert.equal(packageContext(root).result.context.review_package.next_permitted_operation, "route-correction");
+});
+
 test("governed member revision invalidates approved package without package hashes", async () => {
   const { root } = await packageRepository();
   const review = writePackageReview(root, packageContext(root));
@@ -355,6 +551,9 @@ test("blocked package review without correction targets permits an unchanged cle
   });
   const recorded = executeLifecycleCli(["record-package-review", "--request", recordApproved, "--format", "json"], { cwd: root });
   assert.equal(recorded.exitCode, 0, JSON.stringify(recorded.result));
+  const pendingSettlement = packageContext(root);
+  assert.equal(pendingSettlement.result.context.review_package.next_permitted_operation, "settle-review-package");
+  assert.deepEqual(pendingSettlement.result.permitted_operations, ["settle-review-package"]);
   const settleApproved = writePackageRequest(root, "settle-approved-r2", {
     schema_version: 1, operation: "settle-review-package", change_id: "example",
     expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
@@ -533,6 +732,113 @@ test("downstream workflow can recover exact review-required design and delivery 
   assert.equal(recovered.workflow_state.current_stage, "code-review");
   assert.equal(recovered.review_packages.delivery.review_id, deliveryReview.reviewId);
   assert.equal(recovered.review_packages.delivery.authority, "granted");
+});
+
+test("resolved package findings yield the next review round and one coherent operation", async () => {
+  const { root, changeRoot } = await packageRepository();
+  const firstContext = packageContext(root);
+  const firstReview = writePackageReview(root, firstContext, {
+    outcome: "changes-requested",
+    findings: [{ id: "PKG-1", scope: "artifact-local", affected: ["spec"], owners: ["spec"] }],
+    correctionTargets: ["spec"],
+  });
+  const record = writePackageRequest(root, "resolved-round-record", {
+    schema_version: 1, operation: "record-package-review", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
+    review_id: firstReview.reviewId, upstream_review_id: firstReview.packageFacts.upstream_review_id,
+    members: firstReview.packageFacts.members, evidence_path: firstReview.reviewPath, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["record-package-review", "--request", record], { cwd: root }).exitCode, 0);
+  const settle = writePackageRequest(root, "resolved-round-settle", {
+    schema_version: 1, operation: "settle-review-package", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), package_kind: "design",
+    review_id: firstReview.reviewId, stage_authority: "design-review",
+  });
+  assert.equal(executeLifecycleCli(["settle-review-package", "--request", settle], { cwd: root }).exitCode, 0);
+
+  const resolutionPath = "docs/changes/example/review-resolution.md";
+  const resolution = "Finding ID: PKG-1\nDisposition: accepted\nOwner: spec\nStatus: resolved\nValidation evidence: corrected specification\n";
+  writeFileSync(join(root, resolutionPath), resolution, "utf8");
+  const routeEvidencePath = "docs/changes/example/evidence/correction-route.md";
+  const returnEvidencePath = "docs/changes/example/evidence/correction-return.md";
+  const routeEvidence = "Correction routed to spec.\n";
+  const returnEvidence = "Corrected specification returned to Design Review.\n";
+  writeFileSync(join(root, routeEvidencePath), routeEvidence, "utf8");
+  writeFileSync(join(root, returnEvidencePath), returnEvidence, "utf8");
+  const spec = "# Corrected specification\n";
+  writeFileSync(join(root, "specs/example.md"), spec, "utf8");
+  const changePath = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  change.artifact_states.spec.lifecycle_state = "review-required";
+  change.lifecycle_cli.artifacts.spec.artifact_sha256 = createHash("sha256").update(spec).digest("hex");
+  change.lifecycle_cli.resolutions["PKG-1"] = {
+    artifact_id: "spec",
+    finding_id: "PKG-1",
+    disposition: "accepted",
+    owner: "spec",
+    evidence_path: resolutionPath,
+    evidence_sha256: createHash("sha256").update(resolution).digest("hex"),
+    stage_authority: "review-resolution",
+  };
+  change.lifecycle_cli.correction_history["route-PKG-1"] = {
+    route_id: "route-PKG-1",
+    status: "returned",
+    source_review_id: firstReview.reviewId,
+    destination_artifact_id: "spec",
+    return_stage: "design-review",
+    evidence_path: routeEvidencePath,
+    evidence_sha256: createHash("sha256").update(routeEvidence).digest("hex"),
+    return_evidence_path: returnEvidencePath,
+    return_evidence_sha256: createHash("sha256").update(returnEvidence).digest("hex"),
+  };
+  change.review_packages.design.status = "review-required";
+  change.review_packages.design.authority = "withheld";
+  writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+
+  const context = packageContext(root);
+  assert.equal(context.exitCode, 2, JSON.stringify(context.result));
+  assert.deepEqual(context.result.effective_state.unresolved_findings, []);
+  assert.deepEqual(context.result.permitted_operations, ["record-package-review"], JSON.stringify(context.result));
+  assert.equal(context.result.context.review_round, "r2");
+  assert.equal(context.result.context.authorized_output_path, "docs/changes/example/reviews/design-review-r2.md");
+  assert.equal(context.result.context.permitted_registration_operation, "record-package-review");
+
+  writeFileSync(join(root, resolutionPath), `${resolution}Changed after registration.\n`, "utf8");
+  const staleResolution = packageContext(root);
+  assert.deepEqual(staleResolution.result.effective_state.unresolved_findings, ["PKG-1"]);
+  assert.equal(staleResolution.result.errors.length, 0);
+  assert.ok(staleResolution.result.permitted_operations.includes("record-finding-resolution"));
+  const rerecord = writePackageRequest(root, "rerecord-stale-resolution", {
+    schema_version: 1, operation: "record-finding-resolution", change_id: "example",
+    expected_lifecycle_revision: packageLifecycleRevision(root), artifact_id: "spec",
+    evidence_path: resolutionPath, finding_id: "PKG-1", stage_authority: "review-resolution",
+  });
+  const rerecorded = executeLifecycleCli(["record-finding-resolution", "--request", rerecord, "--format", "json"], { cwd: root });
+  assert.equal(rerecorded.exitCode, 0, JSON.stringify(rerecorded.result));
+  assert.deepEqual(packageContext(root).result.effective_state.unresolved_findings, []);
+});
+
+test("stored finding resolution rejects a disposition not in the closed vocabulary", async () => {
+  const { root, changeRoot } = await packageRepository();
+  const evidencePath = "docs/changes/example/review-resolution.md";
+  const evidence = "Finding ID: PKG-1\nDisposition: waived\nOwner: spec\nStatus: resolved\nValidation evidence: proof\n";
+  writeFileSync(join(root, evidencePath), evidence, "utf8");
+  const changePath = join(changeRoot, "change.yaml");
+  const change = parseLifecycleYaml(readFileSync(changePath, "utf8"));
+  change.lifecycle_cli.resolutions["PKG-1"] = {
+    artifact_id: "spec",
+    finding_id: "PKG-1",
+    disposition: "waived",
+    owner: "spec",
+    evidence_path: evidencePath,
+    evidence_sha256: createHash("sha256").update(evidence).digest("hex"),
+    stage_authority: "review-resolution",
+  };
+  writeFileSync(changePath, serializeLifecycleYaml(change), "utf8");
+
+  const result = executeLifecycleCli(["validate", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(result.exitCode, 4, JSON.stringify(result.result));
+  assert.equal(result.result.errors.some((error) => error.blocking_invariant === "resolution-disposition" && /waived is unknown/.test(error.summary)), true);
 });
 
 test("package review rejects unknown finding scope and ignores ungoverned direct edits", async () => {

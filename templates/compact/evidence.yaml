@@ -1,0 +1,23 @@
+schema: compact-evidence-v1
+evidence:
+  <evidence-id>:
+    evidence_id: <evidence-id>
+    verifies:
+      - <claim-id>
+    subjects:
+      <subject-id>:
+        subject_id: <subject-id>
+        path: <repository-relative-path>
+        identity: sha256:<64-lowercase-hex>
+    method: <command-or-manual-method>
+    outcome: <passed|failed|inconclusive|not-run>
+    surfaces:
+      - <covered-surface>
+    freshness: <current|stale>
+    invalidating_dependencies:
+      - kind: <subject|artifact|review|decision>
+        id: <dependency-id>
+        identity: sha256:<64-lowercase-hex>
+    producer_authority: <responsibility>
+    detail_location: null
+    required_rerun: null

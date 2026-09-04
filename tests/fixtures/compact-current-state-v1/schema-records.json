@@ -1,0 +1,85 @@
+[
+  {
+    "schema": "compact-change-v1",
+    "change_id": "example",
+    "title": "Example",
+    "lifecycle_contract": "compact-current-state-v1",
+    "lifecycle_revision": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "current_stage": "proposal",
+    "artifacts": {},
+    "reviews": {},
+    "active_work": null,
+    "open_findings": {},
+    "material_decisions": {},
+    "evidence": {},
+    "blockers": [],
+    "remaining_work": {},
+    "readiness": "not-ready"
+  },
+  {
+    "schema": "compact-review-v1",
+    "review_id": "review-1",
+    "target": {"target_id": "proposal", "target_kind": "proposal"},
+    "round": 1,
+    "subjects": {"proposal": {"subject_id": "proposal", "path": "docs/proposals/example.md", "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}},
+    "reviewer_authority": "proposal-review",
+    "outcome": "approved",
+    "recording_status": "recorded",
+    "open_findings": {},
+    "material_decisions": [],
+    "limitations": [],
+    "recorded_at": "2026-09-04T00:00:00Z"
+  },
+  {
+    "schema": "compact-decisions-v1",
+    "decisions": {"D1": {"decision_id": "D1", "source": {"kind": "finding", "id": "F1"}, "decision": "Keep the boundary", "rationale": "It preserves authority", "affected_surfaces": ["CLI"], "owner": "architecture", "applicability": "applicable", "applicable_since": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+  },
+  {
+    "schema": "compact-evidence-v1",
+    "evidence": {"EV1": {"evidence_id": "EV1", "verifies": ["SR-01"], "subjects": {"spec": {"subject_id": "spec", "path": "specs/example.md", "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}, "method": "node --test", "outcome": "passed", "surfaces": ["contract"], "freshness": "current", "invalidating_dependencies": [{"kind": "subject", "id": "spec", "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}], "producer_authority": "implement", "detail_location": null, "required_rerun": null}}
+  },
+  {
+    "schema": "compact-verify-v1",
+    "verification_id": "verify-1",
+    "subjects": {"spec": {"subject_id": "spec", "path": "specs/example.md", "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}},
+    "verdict": "passed",
+    "impact": "standard",
+    "evidence_reused": ["EV1"],
+    "evidence_rerun": [],
+    "limitations": [],
+    "residual_risks": [],
+    "explanation": "The exact subject passed.",
+    "handoff": "ready",
+    "recorded_at": "2026-09-04T00:00:00Z"
+  },
+  {
+    "schema": "compact-operation-v1",
+    "operation": "advance-stage",
+    "change_id": "example",
+    "expected_lifecycle_revision": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expected_files": {},
+    "payload": {"from_stage": "proposal", "to_stage": "proposal-review"}
+  },
+  {
+    "schema": "compact-result-v1",
+    "status": "success",
+    "change_id": "example",
+    "prior_lifecycle_revision": null,
+    "resulting_lifecycle_revision": null,
+    "affected_paths": [],
+    "bytes_changed": false,
+    "blockers": [],
+    "errors": [],
+    "next_operation": null,
+    "projection": null
+  },
+  {
+    "schema": "compact-recovery-v1",
+    "transaction_id": "tx-1",
+    "change_id": "example",
+    "phase": "prepared",
+    "prior_lifecycle_revision": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "candidate_lifecycle_revision": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "affected_files": [{"path": "docs/changes/example/change.yaml", "prior_state": "present", "prior_identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "prior_content": ".rigorloop/transactions/example/prior/change", "candidate_state": "present", "candidate_identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "candidate_content": ".rigorloop/transactions/example/candidate/change", "replacement_status": "pending"}]
+  }
+]

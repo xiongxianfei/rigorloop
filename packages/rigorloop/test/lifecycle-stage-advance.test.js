@@ -99,6 +99,27 @@ test("approved package authority advances design and delivery gates", async () =
   assert.equal(initializationBasis.review_id, "delivery-review-r1");
   const deliveryAdvance = advance(root, "delivery-review", "implement");
   assert.equal(deliveryAdvance.exitCode, 0, JSON.stringify(deliveryAdvance.result));
+  const implementing = parseLifecycleYaml(changeBytes(root));
+  assert.equal(implementing.workflow_state.current_stage, "implement");
+  assert.equal(implementing.workflow_state.next_stage, "code-review");
+});
+
+test("delivery advancement retry repairs the historical implement self-loop", async () => {
+  const { root, changeRoot } = await packageRepository();
+  approvePackage(root, "design");
+  assert.equal(advance(root, "design-review", "plan").exitCode, 0);
+  approvePackage(root, "delivery");
+  assert.equal(initializeDeliveryPlan(root).exitCode, 0);
+
+  const path = join(changeRoot, "change.yaml");
+  const legacyProjection = parseLifecycleYaml(changeBytes(root));
+  legacyProjection.workflow_state.current_stage = "implement";
+  legacyProjection.workflow_state.next_stage = "implement";
+  writeFileSync(path, serializeLifecycleYaml(legacyProjection), "utf8");
+
+  const repaired = advance(root, "delivery-review", "implement", "repair-implement-self-loop");
+  assert.equal(repaired.exitCode, 0, JSON.stringify(repaired.result));
+  assert.equal(parseLifecycleYaml(changeBytes(root)).workflow_state.next_stage, "code-review");
 });
 
 test("package settlement remains isolated until workflow advances", async () => {
@@ -108,6 +129,8 @@ test("package settlement remains isolated until workflow advances", async () => 
   assert.equal(settled.review_packages.design.status, "approved");
   assert.equal(settled.workflow_state.current_stage, "design-review");
   assert.equal(settled.workflow_state.next_stage, "design-review");
+  const status = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root });
+  assert.deepEqual(status.result.permitted_operations, ["advance-stage"]);
 });
 
 test("v3 delivery package contains only the primary plan and advances directly from plan", async () => {

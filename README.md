@@ -1,17 +1,17 @@
 # RigorLoop
 
 <!-- vision:start -->
-RigorLoop is a rigorous software engineering workflow for AI coding agents. It turns AI work into traceable, resumable repository artifacts so humans can review, trust, and continue what the AI did.
+RigorLoop is a rigorous software engineering workflow for AI coding agents. It turns AI work into durable project artifacts so humans can trace, review, trust, and continue what the AI did.
 
-What makes it different: AI coding agents produce output quickly, but the reasoning often disappears. RigorLoop keeps decisions, requirements, tests, reviews, validation evidence, and handoff state in durable repository artifacts instead of lost chat logs.
+What makes it different: AI coding agents produce output quickly, but the reasoning often disappears. RigorLoop keeps decisions, requirements, tests, current reviews, validation evidence, and verified outcomes in durable project artifacts instead of lost chat logs. The governed lifecycle ends at final verification; external handoff is optional.
 
-Who it is for: RigorLoop is for individual contributors, maintainers, and teams that want AI-assisted software work to remain traceable, resumable, and reviewable in Git.
+Who it is for: RigorLoop is for individual contributors, maintainers, and teams that want AI-assisted software work to remain traceable, resumable, and reviewable without depending on a particular version-control or hosting service.
 
 See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->
 
 RigorLoop makes AI-assisted delivery inspectable after the chat ends.
-The chain runs from proposal through Design, delivery planning, implementation, review, final verification, and PR handoff.
+The chain runs from proposal through Design, delivery planning, implementation, review, and final verification. PR handoff is an optional external integration after compact lifecycle completion.
 
 It is for contributors and maintainers who want AI agents to help with serious software work without losing the reasoning, proof, and review trail that make a change safe to continue.
 
@@ -60,7 +60,7 @@ Key paths: [workflow contract](specs/rigorloop-workflow.md) · [contribute](CONT
 Use RigorLoop as a repository-local workflow, not as a chat convention. The useful path is:
 
 ```text
-proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> verify -> pr
+proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> verify
 ```
 
 Architecture and specification are separate design inputs reconciled by `design-review`. Delivery Review jointly approves safe implementation sequencing and the plan's verification allocation.
@@ -70,11 +70,11 @@ Add `review-resolution` when review records material findings. Add `ci-maintenan
 Best practices:
 
 1. Start with `proposal` for substantive work. Use it to settle the problem, goals, non-goals, scope, options, risks, and recommended direction before implementation pressure starts.
-2. Keep each lifecycle stage grounded in tracked artifacts. Do not rely on chat-only approval when a later stage needs reviewable evidence.
+2. Keep each lifecycle stage grounded in the current authoritative artifacts. Do not rely on chat-only approval when a later stage needs reviewable evidence.
 3. Let `plan` allocate requirements to milestones, verification groups, concrete checks, and evidence expectations before writing implementation code.
 4. Implement one approved milestone at a time, then run `code-review` against the actual diff and governing artifacts.
-5. Run `verify` after implementation and review closeout. Verify selects current evidence, decides branch readiness, and writes the final explanation only in a successful Verify report.
-6. Run `pr` only after successful final verification. `pr` consumes Verify's evidence basis and explanation when preparing and opening the pull request.
+5. Run `verify` after implementation and review closeout. Verify selects current evidence, decides governed-change readiness, and writes the final explanation only in a successful Verify report.
+6. When the project uses pull requests, run `pr` only after successful final verification. `pr` consumes Verify's evidence basis and explanation as an optional external handoff.
 
 For smaller focused tasks, you can invoke an individual skill directly. Treat that as isolated output unless you intentionally route the work through the full workflow.
 
@@ -126,7 +126,7 @@ flowchart LR
   H --> I[Implementation]
   I --> J[Code review]
   J --> K[Verify]
-  K --> L[PR]
+  K -. optional external handoff .-> L[PR]
 ```
 
 This is the recommended full chain for complete AI-assisted delivery.
@@ -171,7 +171,7 @@ Automation always stops before PR creation, push, publication, release, deployme
 - Direct skill requests such as `proposal-review`, `design-review`, `delivery-review`, `code-review`, or `verify` remain isolated unless you explicitly resume the workflow-managed change.
 - Automatic review-driven fixes require reviewer-declared eligibility and bounded affected paths.
 - Automatic workflow never merges, releases, deploys, publishes, or performs destructive Git actions by default.
-- `pr` is still the human-visible external boundary; open it only when readiness checks pass.
+- `pr` is an optional human-visible external boundary for projects that use pull requests; open it only when readiness checks pass.
 
 For the complete contract, read [specs/rigorloop-workflow.md](specs/rigorloop-workflow.md) and [specs/workflow-stage-autoprogression.md](specs/workflow-stage-autoprogression.md).
 
@@ -188,7 +188,7 @@ A RigorLoop change leaves a traceable artifact chain:
 | Review records | `docs/changes/<change>/reviews/` |
 | Validation evidence | `docs/changes/<change>/change.yaml` |
 | Successful Verify result and final explanation | `docs/changes/<change>/verify-report.md` |
-| PR handoff | linked from change records or release notes |
+| Optional external handoff | linked from change records or release notes when used |
 
 ## When to use / When not to use
 
@@ -200,7 +200,7 @@ Use RigorLoop when:
 
 Do not use RigorLoop when:
 
-- you want agents to bypass pull requests, CI, or human review
+- you want agents to bypass required review, validation, ownership, or release judgment
 - you need a hosted orchestration platform or centralized control plane
 - you want a zero-process scratchpad with no explicit artifacts or review gates
 
@@ -208,8 +208,8 @@ Do not use RigorLoop when:
 
 - **Reviewable artifacts.** Important decisions become files in your repository, not lost chat logs.
 - **Human-understandable AI work.** Reviewers can see what changed, why it changed, and what evidence supports it.
-- **Resumable across sessions and agents.** Work can continue because state lives in Git, not one model session.
-- **Traceable from idea to PR.** A change has a visible chain from proposal to verification and handoff.
+- **Resumable across sessions and agents.** Work can continue because current authoritative state lives in durable project artifacts, not one model session.
+- **Traceable from idea to verified change.** A change has a visible chain from proposal through final verification; external handoff is optional.
 - **Durable lessons.** Mistakes become reusable guidance and checks, improving reliability over time.
 
 ## npm Usage
@@ -347,7 +347,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 - Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
 - Workflow infrastructure: specs, CLI workflow context, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
-- Per-change chain: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`
+- Compact per-change chain: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify`. PR is an optional external handoff after lifecycle completion.
 - Periodic learning: `learn`
 
 Explore (`explore`) expands a materially unclear decision space; Research (`research`) reduces bounded uncertainty about facts that can change a decision. Use both when the option comparison depends on unanswered research questions, and neither when direction and relevant facts are already clear. They are optional supporting skills: an explicit invocation writes a standalone artifact under `docs/explorations/` or `docs/research/`, and the owning stage must adopt any conclusion that affects its decision. Neither skill approves a direction or advances the lifecycle. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.
@@ -372,8 +372,9 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 ## Change-Local Artifact Packs
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
-- Ordinary non-trivial work uses the baseline pack: `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning. A successful final-readiness run records its evidence basis and final explanation in `docs/changes/<change-id>/verify-report.md`.
-- `review-resolution.md` and `verify-report.md` stay conditional and are added only when their governing workflow triggers apply.
+- New `compact-current-state-v1` changes use `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`. Canonical proposal, architecture, specification, plan, and ADR artifacts stay in place and are referenced rather than copied.
+- The compact record works without Git history and without PR access. Git, pull requests, CI, hosted services, and machine-local logs may be useful integrations, but none is required to reconstruct or justify current compact state.
+- Existing non-compact changes retain their registered artifact model and are not rewritten.
 - Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
 
 ## Source Of Truth

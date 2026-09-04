@@ -6,10 +6,10 @@ RigorLoop is a rigorous software engineering workflow for AI coding agents.
 AI agents produce output quickly, but the reasoning behind that output often disappears.
 When the chat ends, teams can lose why a change was made, what was considered, what was tested, and how to resume the work safely.
 
-RigorLoop exists to make AI-assisted software work traceable, resumable, and reviewable in Git.
+RigorLoop exists to make AI-assisted software work traceable, resumable, and reviewable through durable project artifacts.
 
 It turns agent work into durable artifacts.
-The chain runs through proposal, testable system requirements, architecture, verification-aware delivery planning, implementation evidence, review findings, verification, and PR handoff.
+The chain runs through proposal, testable system requirements, architecture, verification-aware delivery planning, implementation evidence, review findings, and final verification. External handoff may follow when a project uses one, but it is not part of the required lifecycle.
 The goal is not just faster output.
 The goal is AI work that humans can inspect, trust, continue, and improve.
 
@@ -20,15 +20,15 @@ RigorLoop optimizes for trustworthy change delivery after the output exists.
 It treats agent work as a reviewable software engineering artifact rather than a chat transcript: decisions are written down, tests trace to the contract, design intent is visible, validation evidence is captured, and review concerns stay attached to the change.
 
 The differentiator is the traceability chain.
-A meaningful change can be traced from idea to proposal, system requirements, architecture, allocated delivery work, implementation, concrete proof, review, verification, and PR handoff.
+A meaningful change can be traced from idea to proposal, system requirements, architecture, allocated delivery work, implementation, concrete proof, review, and final verification.
 Months later, a reviewer should be able to see why the change was made, what proved it correct, and where to resume if work stopped.
 
 ## Principles
 
 ### Reviewable artifacts
 
-Important decisions become repository artifacts, not lost chat logs.
-Proposals, specifications, plans, concrete tests, reviews, validation evidence, and handoff state are versioned, diffable, and reviewable.
+Important decisions become durable project artifacts, not lost chat logs.
+Proposals, specifications, plans, concrete tests, reviews, validation evidence, and verified outcomes remain inspectable and reviewable.
 
 ### Human-understandable AI work
 
@@ -38,11 +38,11 @@ A human reviewer should be able to understand what changed, why it changed, what
 ### Resumable across sessions and agents
 
 Work should not depend on one chat session or one model.
-The repository carries the task state so another agent or human can continue from the artifacts.
+The current authoritative records carry the task state so another agent or human can continue from the artifacts.
 
-### Traceable from idea to PR
+### Traceable from idea to verified change
 
-A feature should have a visible chain from proposal to system requirements, architecture, allocated work, implementation, evidence, review, verification, and PR.
+A feature should have a visible chain from proposal to system requirements, architecture, allocated work, implementation, evidence, review, and final verification.
 The chain makes later review, maintenance, and resumption possible.
 
 ### Durable lessons
@@ -67,10 +67,11 @@ A meaningful change exposes its governing source, test obligations, design const
 
 ## What it refuses to be
 
-RigorLoop is not a hosted agent runtime, autonomous merge system, generic project-management suite, vendor-specific control plane, or replacement for engineers, reviewers, CI, ownership, and release judgment.
+RigorLoop is not a hosted agent runtime, autonomous merge system, generic project-management suite, vendor-specific control plane, or replacement for engineers, reviewers, validation, ownership, and release judgment.
+It does not require a particular version-control system, pull-request host, CI service, or network service to establish the current governed state.
 It refuses to reward code volume without evidence; faster generation matters only when the result remains understandable, testable, and consistent with system design.
 
 ## What would prove this wrong
 
-The vision is wrong if reviewers cannot reconstruct a representative change's purpose, requirements, design constraints, tests, validation evidence, and review concerns from tracked artifacts without chat history.
+The vision is wrong if reviewers cannot reconstruct a representative change's purpose, requirements, design constraints, tests, validation evidence, current findings, and verified outcome from the current authoritative project artifacts without chat history, Git history, or pull-request access.
 It is also wrong when teams routinely ignore the artifacts because they slow delivery without improving review quality, when the public story becomes more attractive but less accurate, or when RigorLoop requires a platform migration before it becomes useful.

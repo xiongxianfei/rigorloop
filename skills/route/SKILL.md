@@ -9,6 +9,10 @@ argument-hint: [feature, bug, project goal, issue number, or current workflow st
 
 You are the lifecycle orchestrator. Route work to the stage that owns the next artifact or proof, preserve lifecycle evidence, and stop unsafe or premature transitions. Do not replace a specialized stage skill.
 
+## Compact current-state routing
+
+For `compact-current-state-v1`, begin with the bounded CLI projection and read only its `required_paths` plus evidence needed for the routing judgment. Treat `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md` as the current record. Submit transient semantic operations with the expected lifecycle revision and file identities; the CLI checks consistency but grants no permission. Never reconstruct compact state from directory scans, Git, PRs, local logs, round-suffixed files, or prior chat. Normal adjacent authoring correction needs no route receipt; use explicit correction routing only for a non-adjacent return, and treat return as review-ready rather than approved.
+
 ## Quick operating guide
 
 Use this skill to: route, resume, audit, or automate the standard workflow without replacing the specialized stage skill.
@@ -25,7 +29,7 @@ Next stage: the specialized skill permitted by authoritative state, or a stop co
 
 ## Purpose
 
-Use this skill to start, resume, audit, or route the standard RigorLoop workflow. RigorLoop has one recommended per-change chain:
+Use this skill to start, resume, audit, or route the standard RigorLoop workflow. Registered v3 changes retain this compatibility chain:
 
 ```text
 proposal -> proposal-review -> architecture -> spec -> design-review
@@ -34,11 +38,11 @@ proposal -> proposal-review -> architecture -> spec -> design-review
 -> ci-maintenance when triggered -> verify -> pr
 ```
 
-Repeat `implement -> code-review -> review-resolution when triggered` for each implementation milestone. A clean non-final milestone returns to the next milestone. Final closeout requires all implementation milestones and required review resolution to be closed, followed by triggered CI maintenance, verification, success-only explanation generation, and PR handoff.
+For that compatibility chain, repeat `implement -> code-review -> review-resolution when triggered` for each implementation milestone. A clean non-final milestone returns to the next milestone. Final closeout requires all implementation milestones and required review resolution to be closed, followed by triggered CI maintenance, verification, success-only explanation generation, and PR handoff.
 
-The compact canonical chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`. Architecture and specification remain separate authoring stages reconciled before Design Review; plan owns verification allocation and is reviewed for implementation and verification readiness by Delivery Review. Retired stage records are historical evidence only and grant no progression authority.
+The compact canonical chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify`. Successful Verify establishes lifecycle completion; PR is an optional external handoff. Architecture and specification remain separate authoring stages reconciled before Design Review; plan owns verification allocation and is reviewed for implementation and verification readiness by Delivery Review. Historical v1/v2 records grant no current route. Other retired stage records are historical evidence only and grant no progression authority.
 
-Routing has one current executable contract: `stage-owned-change-local-v3`. The exact primary plan owns verification allocation; final closeout routes from final holistic Code Review through triggered review resolution and `ci-maintenance`, then directly to `verify` and `pr`. Successful Verify owns the final explanation; route exercises the stable workflow authority for correction routing. Historical v1/v2 records grant no current route. The implementing final-verification change alone uses its last coherent released v2 package as a bounded preactivation closeout bootstrap.
+Until compact activation, routing uses `stage-owned-change-local-v3` as its executable compatibility contract. The compact implementing change uses the bounded preactivation closeout bootstrap and is not rewritten into the compact shape. After activation, new changes use `compact-current-state-v1` and registered historical changes retain their exact contract. The exact primary plan owns verification allocation; final closeout routes through triggered review resolution and `ci-maintenance`, then to `verify`. Successful Verify owns the final explanation; route exercises the stable workflow authority for correction routing.
 
 The rename does not rewrite protocol state: route continues to use `stage_authority: workflow`, and existing `workflow.automation` occurrences remain authoritative with their exact target, occurrence, budgets, receipts, pause or cancellation state, and lifecycle-revision safeguards.
 
@@ -207,9 +211,9 @@ Do not claim:
 
 Progress means work that has happened so far. Readiness means the next stage that can happen. Closeout means the current artifact or stage satisfied its checklist. Done means final lifecycle state after required gates are complete. Readiness is not Done.
 
-Formal material findings require evidence, required outcome, and safe resolution or `needs-decision` rationale. Their disposition is `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`; `needs-decision` remains open. `Closeout status: open` means one or more material findings remain unresolved. `Closeout status: closed` requires final dispositions, validation evidence, and no open review-log findings. A stage-owned non-approval outcome requires a same-stage later review round or explicit reviewer or owner closeout. `review-resolution.md` alone is not a silent substitute for required re-review. no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
+Under registered historical contracts, formal material findings require evidence, required outcome, and safe resolution or `needs-decision` rationale. Their disposition is `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`; `needs-decision` remains open. `Closeout status: open` means one or more material findings remain unresolved. `Closeout status: closed` requires final dispositions, validation evidence, and no open review-log findings. A stage-owned non-approval outcome requires a same-stage later review round or explicit reviewer or owner closeout. `review-resolution.md` alone is not a silent substitute for required re-review. no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 
-`verify` owns branch-ready. `pr` owns PR-body and PR-open readiness. This mechanism never opens a PR, pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
+For registered historical contracts, `verify` owns branch-ready and `pr` owns PR-body and PR-open readiness. For compact changes, successful Verify owns lifecycle completion and any later PR is optional. This mechanism never opens a PR, pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
 
 ## Customer-project routing
 
@@ -221,7 +225,7 @@ Treat `docs/changes/<change-id>/plan.md` as a non-canonical historical or reject
 
 ## Default artifact paths
 
-Use repository conventions first. Portable defaults are:
+Use repository conventions first. Compact paths come from the bounded projection and stable-record contract. The following portable defaults describe registered historical contracts:
 
 ```text
 AGENTS.md

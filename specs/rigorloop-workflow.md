@@ -3,6 +3,20 @@
 ## Status
 - approved
 
+## Compact current-state amendment (preactivation)
+
+`compact-current-state-v1` is the next canonical lifecycle contract. Its authoritative working set is `change.yaml`, one stable current review record per applicable target, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`. Proposal, architecture, specification, plan, and applicable ADRs remain authoritative engineering artifacts referenced from `change.yaml`; they are not duplicated into the change record.
+
+The CLI is a deterministic consistency and transaction boundary, not a user, reviewer, or stage permission principal. A caller supplies a transient operation request and the CLI validates the explicit contract, expected lifecycle revision and file identities, semantic authority named by the operation, legal transition, and resulting complete set. Successful request payloads, routing receipts, return receipts, routine authoring evidence, raw command output, and transport diagnostics are not committed compact artifacts. Operational diagnostics may be machine-local, but compact correctness, recovery, resumption, and verification MUST work without Git history, without PR access, without a network, and without local logs.
+
+Normal authoring settlement is adjacent: authoring makes the artifact review-ready, its required stable current review records the current judgment and open findings, correction returns to the authoring owner when findings exist, and the exact rereview settles approval when no blocking finding remains. A later stage may explicitly route a non-adjacent correction. The active correction in `change.yaml` records source finding, owner, destination stage, required return condition, and expected next review; explicit return means review-ready, never implicitly approved. The exact subsequent stable current review clears the correction.
+
+Open findings remain directly available in stable current review records and `change.yaml` references. Only resolutions that continue to constrain the change belong in `material-decisions.md`. `evidence.yaml` contains only the current evidence basis, including subject identity, method, result, scope, provenance, and freshness. Successful Verify establishes compact lifecycle completion and writes the sole final `verify-report.md`; optional PR preparation, publication, and other external delivery may consume that report without changing or granting lifecycle readiness.
+
+Governed skills MUST begin from a bounded CLI projection and read only its required paths plus evidence needed for their semantic judgment. They MUST submit semantic operations through the CLI rather than editing lifecycle coordination directly. They MUST NOT reconstruct current state from directory scans, filename rounds, Git history, PR state, local logs, or prior chat.
+
+Compact writing remains withheld until the coherent activation gate proves agreement across canonical guidance, schemas, validators, CLI/package behavior, fixtures, and supported adapters. Until then, existing `stage-owned-change-local-v3` changes—including the implementing change—continue under their registered contract. After activation, new changes use `compact-current-state-v1`; existing non-compact changes remain readable and writable only under their registered contract and are never rewritten or inferred from file shape. All review-log, round-suffixed review, review-resolution ledger, committed-request, route-receipt, authoring-evidence, Git/branch, and PR progression clauses elsewhere in this file apply to historical contracts only and MUST NOT be imported into compact behavior.
+
 ## Unified automation amendment
 
 Upon approval of [Single Bounded Review-Fix Workflow Automation](single-bounded-review-fix-workflow-automation.md), its exact cross-spec disposition ledger governs every requirement and acceptance surface in this spec that names a retired automation profile.
@@ -11,9 +25,9 @@ Upon approval of [Single Bounded Review-Fix Workflow Automation](single-bounded-
 Only selectors explicitly listed in the unified spec's closed affected-selector registry are amended.
 Requirements outside that registry remain current lifecycle and artifact-ordering requirements of this spec and receive no implicit migration disposition.
 
-## Current v3 lifecycle amendment
+## Current v3 lifecycle amendment (implementation compatibility)
 
-The current source package defines only `stage-owned-change-local-v3`. Its standard chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement`, followed after implementation closeout by `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`. Plan owns milestone and change-level verification allocation, Delivery Review approves one exact plan-only package, and only a successful Verify result contains the final durable explanation.
+Until compact writer activation, the current executable compatibility package defines `stage-owned-change-local-v3`. Its standard chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement`, followed after implementation closeout by `code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify -> pr`. Plan owns milestone and change-level verification allocation, Delivery Review approves one exact plan-only package, and only a successful Verify result contains the final durable explanation.
 
 The publication candidate remains non-authoritative while `specs/final-verification-contract-activation.yaml` is in preactivation. Coherent activation grants current v3 authority; it does not reinterpret prior work. Historical v1/v2 records and explanation artifacts remain readable but grant no current progression authority.
 
@@ -66,7 +80,7 @@ retain distinct semantic ownership.
 
 `specs/skill-contract.md` owns skill-contract behavior. It owns standard skill shape, claim boundaries, result output expectations, shared-block rules, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules. `specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.
 
-RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or human review. It provides a repeatable path, artifact model, and validation rules so contributors can move from idea to reviewed change with traceable evidence.
+RigorLoop is a repository-local starter kit. Git, pull requests, and CI are supported integrations rather than compact correctness dependencies. It provides a repeatable path, artifact model, and validation rules so contributors can move from idea to independently reviewed and verified change with traceable current evidence.
 
 ## Glossary
 

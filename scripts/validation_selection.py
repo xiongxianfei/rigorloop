@@ -31,6 +31,12 @@ class CheckCatalogEntry:
 
 
 CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
+    "compact_contract.canonical": CheckCatalogEntry(
+        "compact_contract.canonical",
+        "python scripts/test-compact-current-state-canonical-contract.py && node --test packages/rigorloop/test/compact-contract.test.js",
+        "compact-current-state",
+        parallel_safe=True,
+    ),
     "boundary_first.validate": CheckCatalogEntry(
         "boundary_first.validate",
         "python scripts/validate-boundary-first.py --check",
@@ -1814,6 +1820,19 @@ def _apply_path_selection(
         )
         return
 
+    if category == "compact-current-state":
+        _add_check(
+            selected,
+            "compact_contract.canonical",
+            "Changed compact current-state contract surface requires canonical and cross-runtime contract proof.",
+        )
+        _add_check(
+            selected,
+            "change_metadata.regression",
+            "Changed compact current-state contract surface requires Python metadata parity proof.",
+        )
+        return
+
     if category == "change-record-query":
         _add_check(
             selected,
@@ -2271,6 +2290,12 @@ def _path_category(path: str) -> str | None:
         return "readme"
     if path == ROOT_VISION_PATH:
         return "vision"
+    if path.startswith("tests/fixtures/compact-current-state-v1/"):
+        return "compact-current-state"
+    if path == "scripts/test-compact-current-state-canonical-contract.py":
+        return "compact-current-state"
+    if path == "schemas/compact-current-state-v1.schema.json":
+        return "compact-current-state"
     if path.startswith("tests/fixtures/artifact-lifecycle/"):
         return "artifact-lifecycle-fixtures"
     if path.startswith("tests/fixtures/review-artifacts/"):

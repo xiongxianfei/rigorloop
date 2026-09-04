@@ -87,6 +87,34 @@ def synchronized_evidence() -> dict[str, object]:
 
 
 class WorkflowAutomationStateTests(unittest.TestCase):
+    def test_legacy_automation_store_reads_but_never_mutates_compact_current_state(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "change.yaml"
+        path.write_text(
+            """schema: compact-change-v1
+change_id: example
+title: Example
+lifecycle_contract: compact-current-state-v1
+lifecycle_revision: sha256:0000000000000000000000000000000000000000000000000000000000000000
+current_stage: proposal
+artifacts: {}
+reviews: {}
+active_work: null
+open_findings: {}
+material_decisions: {}
+evidence: {}
+blockers: []
+remaining_work: {}
+readiness: not-ready
+""",
+            encoding="utf-8",
+        )
+        store = WorkflowAutomationStateStore(path)
+        snapshot = store.read(allow_legacy_without_change_id=True)
+        self.assertEqual(snapshot.document["lifecycle_contract"], "compact-current-state-v1")
+        with self.assertRaisesRegex(StateContractError, "compact transaction boundary"):
+            store.replace_automation({}, expected_document_identity=snapshot.document_identity)
     def test_v3_phase_boundary_targets_verify_and_rejects_explain_change(self) -> None:
         fixture = {
             "profile": "implementation-through-verify",
