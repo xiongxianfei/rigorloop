@@ -3436,9 +3436,25 @@ release_gate:
             cwd=ROOT,
         )
 
-        self.assertNotEqual(verbose_check.returncode, 0)
-        self.assertIn("adapters.drift: failed", verbose_check.stdout)
-        self.assertIn("generated adapter file is missing", verbose_check.stdout)
+        self.assertEqual(verbose_check.returncode, 0, verbose_check.stdout + verbose_check.stderr)
+        self.assertIn("adapters.drift: ok", verbose_check.stdout)
+
+        tracked_verbose_check = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "build-adapters.py"),
+                "--version",
+                "0.1.2",
+                "--check",
+                "--verbose",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+        )
+        self.assertNotEqual(tracked_verbose_check.returncode, 0)
+        self.assertIn("adapters.drift: failed", tracked_verbose_check.stdout)
+        self.assertIn("generated adapter file is missing", tracked_verbose_check.stdout)
 
         invalid_verbose = subprocess.run(
             [
@@ -5393,13 +5409,15 @@ release_gate:
             for retired_alias in ("spec-review", "plan-review", "test-spec"):
                 self.assertNotIn(f"`{retired_alias}`", text)
 
-    def test_readme_exposes_only_the_current_v3_delivery_route(self) -> None:
+    def test_readme_exposes_the_current_compact_delivery_route(self) -> None:
         text = (ROOT / "README.md").read_text(encoding="utf-8")
+        recommended = text.split("## Recommended Use", 1)[1].split("## Starting a new repository", 1)[0]
 
         self.assertIn(
-            "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> verify -> pr",
-            text,
+            "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> verify",
+            recommended,
         )
+        self.assertIn("optional external integration", text)
         self.assertIn(
             "writes the final explanation only in a successful Verify report",
             text,
@@ -5410,7 +5428,7 @@ release_gate:
             "plan-review",
             "test-spec",
         ):
-            self.assertNotIn(retired_entrypoint, text)
+            self.assertNotIn(retired_entrypoint, recommended)
 
     def test_readme_distinguishes_claude_and_opencode_invocation_forms(self) -> None:
         text = (ROOT / "README.md").read_text(encoding="utf-8")

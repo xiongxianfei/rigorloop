@@ -143,6 +143,45 @@ validation_events:{events}
 validation_summary:{summary_block}
 """
 
+    def compact_current_state_yaml(self) -> str:
+        return """schema: compact-change-v1
+change_id: example-change
+title: Example change
+lifecycle_contract: compact-current-state-v1
+lifecycle_revision: sha256:0000000000000000000000000000000000000000000000000000000000000000
+current_stage: proposal-review
+artifacts:
+  proposal:
+    artifact_id: proposal
+    kind: proposal
+    role: primary
+    path: docs/proposals/example-change.md
+    identity: sha256:1111111111111111111111111111111111111111111111111111111111111111
+    owner: proposal
+    status: review-required
+reviews: {}
+active_work: null
+open_findings: {}
+material_decisions: {}
+evidence: {}
+blockers: []
+remaining_work: {}
+readiness: ready-for-review
+"""
+
+    def test_summary_projects_compact_current_state_without_legacy_ledgers(self) -> None:
+        repo = self.make_change("example-change", self.compact_current_state_yaml())
+        result = run_query("example-change", "summary", repo_root=repo)
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(payload["metadata_shape"], "compact-current-state-v1")
+        self.assertEqual(payload["current_stage"], "proposal-review")
+        self.assertEqual(payload["review_state"]["status"], "current")
+        self.assertEqual(payload["artifact_paths"], ["docs/proposals/example-change.md"])
+        self.assertNotIn("review_log", payload["detail_pointers"])
+        self.assertNotIn("review_resolution", payload["detail_pointers"])
+
     def legacy_change_yaml(self) -> str:
         return """change_id: 2026-05-22-legacy-query
 title: Legacy query fixture

@@ -55,6 +55,7 @@ ADAPTER_REGRESSION_COMMAND = (
 )
 
 EXPECTED_CATALOG = {
+    "compact_contract.canonical": "python scripts/test-compact-current-state-canonical-contract.py && node --test packages/rigorloop/test/compact-contract.test.js",
     "boundary_first.validate": "python scripts/validate-boundary-first.py --check",
     "boundary_first.reference_regression": "python scripts/test-boundary-first-reference.py",
     "boundary_first.regression": "python scripts/test-boundary-first-validation.py",
@@ -982,6 +983,19 @@ raise SystemExit({exit_code})
         kwargs.setdefault("preflight_context", self.root_preflight_context)
         return select_validation(SelectionRequest(mode=mode, paths=tuple(paths), repo_root=ROOT, **kwargs))
 
+    def test_compact_contract_surfaces_select_cross_runtime_and_metadata_proof(self) -> None:
+        for path in (
+            "schemas/compact-current-state-v1.schema.json",
+            "tests/fixtures/compact-current-state-v1/schema-records.json",
+            "scripts/test-compact-current-state-canonical-contract.py",
+        ):
+            with self.subTest(path=path):
+                result = self.select([path])
+                self.assertEqual(
+                    selected_ids(result.to_json_dict()),
+                    {"compact_contract.canonical", "change_metadata.regression"},
+                )
+
     def test_shared_preflight_context_requires_matching_repository_identity(self) -> None:
         other_root = Path(tempfile.mkdtemp(prefix="validation-selection-preflight-mismatch-"))
         self.addCleanupTree(other_root)
@@ -1667,6 +1681,7 @@ raise SystemExit({exit_code})
             "artifact_lifecycle.regression",
             "change_record_query.regression",
             "change_metadata.regression",
+            "compact_contract.canonical",
             "documentation_prose.regression",
             "guide_system.regression",
             "governed_lifecycle_cli_wrapper.test",

@@ -71,7 +71,7 @@ test("project phase reports the effective lifecycle contract with no active cand
   assert.equal(execution.exitCode, 0);
   assert.equal(execution.result.selection.state, "none");
   assert.deepEqual(execution.result.candidates, []);
-  assert.equal(execution.result.lifecycle_contract.contract_class, "stage-owned-change-local-v3");
+  assert.equal(execution.result.lifecycle_contract.contract_class, "compact-current-state-v1");
   assert.equal(execution.result.lifecycle_contract.activation_state, "active");
 });
 

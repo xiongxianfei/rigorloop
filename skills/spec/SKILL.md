@@ -11,6 +11,10 @@ argument-hint: [proposal path, feature name, behavior request, or issue number]
 
 ## Workflow role
 
+### Compact current-state contract
+
+For `compact-current-state-v1`, start from the bounded CLI projection and read only its required paths plus the approved proposal and architecture constraints needed for behavior. Author the canonical specification, then submit the transient authoring operation through the CLI; never edit lifecycle coordination directly. The CLI validates consistency but grants no permission. The artifact becomes review-ready for the stable current review owned by Design Review. Do not create routine request, authoring-evidence, correction-return, or review-log artifacts.
+
 - role_name: spec
 - stage: authoring
 - upstream: accepted proposal or approved direction

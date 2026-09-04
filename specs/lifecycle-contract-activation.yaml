@@ -596,6 +596,10 @@
       "contract_class": "stage-owned-change-local-v1"
     },
     {
+      "change_id": "2026-09-03-compact-current-state-change-record-review-recording",
+      "contract_class": "legacy-unversioned"
+    },
+    {
       "change_id": "token-and-runtime-efficient-scanning",
       "contract_class": "legacy-unversioned"
     }

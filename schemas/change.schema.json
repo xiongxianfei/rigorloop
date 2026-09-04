@@ -22,7 +22,8 @@
       "enum": [
         "stage-owned-change-local-v1",
         "stage-owned-change-local-v2",
-        "stage-owned-change-local-v3"
+        "stage-owned-change-local-v3",
+        "compact-current-state-v1"
       ]
     },
     "artifact_states": {

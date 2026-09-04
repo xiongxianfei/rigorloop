@@ -100,6 +100,7 @@ test("public commands have one closed family", () => {
   assert.equal(classifyCommand(["init"]).family, "repository-setup");
   assert.equal(classifyCommand(["version"]).family, "introspection");
   assert.equal(classifyCommand(["workflow-context"]).family, "introspection");
+  assert.equal(classifyCommand(["compact", "project"]).family, "compact");
   assert.equal(classifyCommand(["logs", "path"]).family, "log-inspection");
   assert.equal(classifyCommand(["future-command"]).family, "invalid-input");
   assert.equal(classifyCommand(["lifecycle", "private-raw-operation"]).operation, "unknown");

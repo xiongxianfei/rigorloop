@@ -4,16 +4,19 @@
 from __future__ import annotations
 
 import argparse
+import tempfile
 from pathlib import Path
 
 from adapter_distribution import (
     ADAPTER_OUTPUT_ROOT,
     DEFAULT_ADAPTER_VERSION,
+    UNTRACKED_PUBLIC_ADAPTER_RELEASES,
     build_adapter_archives,
     collect_adapter_drift_entries,
     format_adapter_drift_normal,
     format_adapter_drift_verbose,
     sync_adapter_output,
+    validate_adapter_archives,
 )
 
 
@@ -53,6 +56,16 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.check:
         drift = collect_adapter_drift_entries(args.version)
+        if args.version in UNTRACKED_PUBLIC_ADAPTER_RELEASES:
+            drift = tuple(entry for entry in drift if entry.category in {"canonical-source-error", "manifest-error"})
+            with tempfile.TemporaryDirectory(prefix="rigorloop-adapter-check-") as temp_dir:
+                output = Path(temp_dir)
+                build_adapter_archives(args.version, output)
+                archive_errors = validate_adapter_archives(args.version, output)
+            if archive_errors:
+                for error in archive_errors:
+                    print(error)
+                return 1
         if drift:
             if args.verbose:
                 print(

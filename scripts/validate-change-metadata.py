@@ -32,6 +32,7 @@ from validate_workflow_automation import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schemas" / "change.schema.json"
+COMPACT_CURRENT_STATE_SCHEMA_PATH = ROOT / "schemas" / "compact-current-state-v1.schema.json"
 ACTIVATION_MANIFEST_PATH = ROOT / LIFECYCLE_ACTIVATION_MANIFEST_PATH
 FINAL_VERIFICATION_MANIFEST_PATH = ROOT / FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH
 _LOAD_TRACKED_ACTIVATION_MANIFEST = object()
@@ -460,9 +461,68 @@ def validate_property_name(schema: dict[str, Any], name: str, path: str) -> list
     return errors
 
 
-def validate_against_schema(schema: dict[str, Any], value: Any, path: str = "$") -> list[str]:
+def _resolve_local_ref(root_schema: dict[str, Any], reference: str) -> dict[str, Any]:
+    if not reference.startswith("#/"):
+        raise ValueError(f"unsupported schema reference {reference}")
+    current: Any = root_schema
+    for component in reference[2:].split("/"):
+        component = component.replace("~1", "/").replace("~0", "~")
+        if not isinstance(current, dict) or component not in current:
+            raise ValueError(f"unresolved schema reference {reference}")
+        current = current[component]
+    if not isinstance(current, dict):
+        raise ValueError(f"schema reference {reference} does not resolve to an object")
+    return current
+
+
+def validate_against_schema(
+    schema: dict[str, Any], value: Any, path: str = "$", *, root_schema: dict[str, Any] | None = None
+) -> list[str]:
+    root_schema = schema if root_schema is None else root_schema
+    reference = schema.get("$ref")
+    if isinstance(reference, str):
+        return validate_against_schema(
+            _resolve_local_ref(root_schema, reference), value, path, root_schema=root_schema
+        )
+
     errors: list[str] = []
+    if "const" in schema and value != schema["const"]:
+        return [f"{path}: expected {schema['const']!r}"]
+    enum = schema.get("enum")
+    if isinstance(enum, list) and value not in enum:
+        return [f"{path}: unknown_value; expected one of {', '.join(map(str, enum))}"]
+
+    alternatives = schema.get("oneOf")
+    if isinstance(alternatives, list):
+        matches = [
+            candidate for candidate in alternatives
+            if not validate_against_schema(candidate, value, path, root_schema=root_schema)
+        ]
+        if len(matches) != 1:
+            return [f"{path}: expected exactly one permitted shape"]
+
+    constraints = schema.get("allOf")
+    if isinstance(constraints, list):
+        for constraint in constraints:
+            if not isinstance(constraint, dict):
+                continue
+            predicate = constraint.get("if")
+            consequence = constraint.get("then")
+            if isinstance(predicate, dict) and isinstance(consequence, dict):
+                if not validate_against_schema(predicate, value, path, root_schema=root_schema):
+                    errors.extend(validate_against_schema(consequence, value, path, root_schema=root_schema))
+            else:
+                errors.extend(validate_against_schema(constraint, value, path, root_schema=root_schema))
+
     expected_type = schema.get("type")
+    if expected_type is None and any(key in schema for key in ("properties", "required", "additionalProperties")):
+        expected_type = "object"
+
+    if isinstance(expected_type, list):
+        branches = [{"type": item} for item in expected_type]
+        if not any(not validate_against_schema(branch, value, path, root_schema=root_schema) for branch in branches):
+            return [f"{path}: expected one of {', '.join(expected_type)}"]
+        expected_type = None
 
     if expected_type == "object":
         if not isinstance(value, dict):
@@ -481,15 +541,18 @@ def validate_against_schema(schema: dict[str, Any], value: Any, path: str = "$")
         for key, child in value.items():
             if key in properties:
                 errors.extend(
-                    validate_against_schema(properties[key], child, path_label(path, key))
+                    validate_against_schema(properties[key], child, path_label(path, key), root_schema=root_schema)
                 )
                 continue
             if additional_properties is False:
                 errors.append(f"{path_label(path, key)}: unexpected property")
             elif isinstance(additional_properties, dict):
                 errors.extend(
-                    validate_against_schema(additional_properties, child, path_label(path, key))
+                    validate_against_schema(additional_properties, child, path_label(path, key), root_schema=root_schema)
                 )
+        min_properties = schema.get("minProperties")
+        if isinstance(min_properties, int) and len(value) < min_properties:
+            errors.append(f"{path}: expected at least {min_properties} properties")
         return errors
 
     if expected_type == "array":
@@ -499,8 +562,18 @@ def validate_against_schema(schema: dict[str, Any], value: Any, path: str = "$")
         if isinstance(item_schema, dict):
             for index, child in enumerate(value):
                 errors.extend(
-                    validate_against_schema(item_schema, child, path_label(path, index))
+                    validate_against_schema(item_schema, child, path_label(path, index), root_schema=root_schema)
                 )
+        min_items = schema.get("minItems")
+        if isinstance(min_items, int) and len(value) < min_items:
+            errors.append(f"{path}: expected at least {min_items} items")
+        if schema.get("uniqueItems") is True:
+            encoded = [json.dumps(item, sort_keys=True, separators=(",", ":")) for item in value]
+            if len(encoded) != len(set(encoded)):
+                errors.append(f"{path}: expected unique items")
+        max_items = schema.get("maxItems")
+        if isinstance(max_items, int) and len(value) > max_items:
+            errors.append(f"{path}: expected at most {max_items} items")
         return errors
 
     if expected_type == "string":
@@ -509,6 +582,12 @@ def validate_against_schema(schema: dict[str, Any], value: Any, path: str = "$")
         min_length = schema.get("minLength")
         if isinstance(min_length, int) and len(value) < min_length:
             errors.append(f"{path}: expected at least {min_length} characters")
+        max_length = schema.get("maxLength")
+        if isinstance(max_length, int) and len(value) > max_length:
+            errors.append(f"{path}: expected at most {max_length} characters")
+        pattern = schema.get("pattern")
+        if isinstance(pattern, str) and re.search(pattern, value) is None:
+            errors.append(f"{path}: does not match required pattern")
         return errors
 
     if expected_type == "integer":
@@ -519,7 +598,24 @@ def validate_against_schema(schema: dict[str, Any], value: Any, path: str = "$")
             errors.append(f"{path}: expected value >= {minimum}")
         return errors
 
+    if expected_type == "boolean" and not isinstance(value, bool):
+        return [f"{path}: expected boolean"]
+    if expected_type == "number" and (not isinstance(value, (int, float)) or isinstance(value, bool)):
+        return [f"{path}: expected number"]
+    if expected_type == "null" and value is not None:
+        return [f"{path}: expected null"]
+
     return errors
+
+
+def validate_compact_current_state_metadata(data: Any) -> list[str]:
+    """Validate the compact coordinator shape from the shared v1 schema."""
+
+    schema = json.loads(COMPACT_CURRENT_STATE_SCHEMA_PATH.read_text(encoding="utf-8"))
+    change_schema = schema.get("$defs", {}).get("change")
+    if not isinstance(change_schema, dict):
+        return ["compact schema: missing $defs.change"]
+    return validate_against_schema(change_schema, data, root_schema=schema)
 
 
 def validate_metadata_semantics(
@@ -2193,6 +2289,8 @@ def validate_file(
     data = load_yaml(path)
     if is_measurement_file(path):
         return validate_measurement_evidence(data)
+    if isinstance(data, dict) and data.get("lifecycle_contract") == "compact-current-state-v1":
+        return validate_compact_current_state_metadata(data)
     if is_compact_metadata(data):
         return validate_compact_metadata_semantics(data)
     schema = load_schema()

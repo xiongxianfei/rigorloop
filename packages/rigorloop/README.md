@@ -50,15 +50,20 @@ rigorloop version
 rigorloop init codex|claude|opencode [--write-state] [--from-archive <path>] [--dry-run] [--json]
 rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
 rigorloop workflow-context [--change <id>] [--format human|json]
+rigorloop compact project --change <id> --view <view> [--requested-operation <operation>] [--format human|json]
+rigorloop compact apply (--request <path|-> | --request-json <json>) [--format human|json]
+rigorloop compact recover --change <id> [--action restore-prior|accept-candidate --expected-recovery-identity <sha256>] [--format human|json]
 rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json|concise-human|concise-json|detailed-json]
 rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json|concise-human|concise-json|detailed-json]
 rigorloop logs path [--format human|json]
 rigorloop logs show <invocation-id> [--format human|json]
 ```
 
-Governed lifecycle mutations use request files so operation intent and the expected lifecycle revision remain reviewable. Existing version-1 coordination remains readable; run the explicit `migrate` operation before `route-correction`, `return-correction`, or `withdraw-artifact-registration`. Authoring skills continue to use `record-artifact-revision`; route alone owns correction routing, return, and safe duplicate-registration withdrawal through the stable lifecycle `workflow` authority role.
+Registered historical lifecycle mutations use request files and their existing operations. Existing version-1 coordination remains readable under that contract. Compact operations instead accept transient arguments, standard input, or disposable request files; successful requests are not governed artifacts. The CLI validates expected revision, exact identities, semantic operation shape, and resulting consistency, but it does not grant caller permission.
 
-`workflow-context` is read-only. Without `--change` it reports the effective workflow configuration and up to 32 sorted active-change candidates without selecting one; count and truncation fields show when exact `--change` selection is required. With an exact change ID it reports deterministic lifecycle, artifact, package, milestone, blocker, operation, and bounded automation facts. Collections are capped at 32 entries and expose count/truncation metadata where caller-controlled size can vary. Formal review locations retain separate proposal-review, design-review, delivery-review, and code-review ownership; their templates identify `<review-round>` as a required authoring input instead of assigning the shared review directory to one owner. An optional repository-root `rigorloop.workflow.yaml` may override supported bundled artifact locations; invalid or unsafe configuration fails closed.
+`workflow-context` is read-only. Without `--change` it reports the effective workflow configuration and up to 32 sorted active-change candidates without selecting one; count and truncation fields show when exact `--change` selection is required. With an exact change ID it reports deterministic lifecycle, artifact, package, milestone, blocker, operation, and bounded automation facts. Collections are capped at 32 entries and expose count/truncation metadata where caller-controlled size can vary. Compact formal reviews use one stable current review path per target; round-suffixed paths remain historical-contract behavior. An optional repository-root `rigorloop.workflow.yaml` may override supported bundled artifact locations; invalid or unsafe configuration fails closed.
+
+The `compact` command exposes the candidate `compact-current-state-v1` boundary without activating compact change creation. `project` returns bounded current views and can evaluate one requested operation separately from overall progression. `apply` accepts the same transient semantic request as an argument, standard input, or disposable file; the transport does not become governed state. `recover` reconciles an interrupted compact transaction from private local recovery state. The compact record and recovery path work without Git history, without PR access, and without local logs. Legacy changes remain on their registered lifecycle contract and reject compact writes or migration.
 
 ## Local CLI logs and concise results
 

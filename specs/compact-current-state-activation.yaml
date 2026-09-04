@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "contract": "compact-current-state-v1",
+  "state": "active",
+  "components": {
+    "adapters": "compact-current-state-v1",
+    "canonical-guidance": "compact-current-state-v1",
+    "cli": "compact-current-state-v1",
+    "documentation": "compact-current-state-v1",
+    "fixtures": "compact-current-state-v1",
+    "node-validator": "compact-current-state-v1",
+    "python-validator": "compact-current-state-v1",
+    "schemas": "compact-current-state-v1",
+    "skills": "compact-current-state-v1",
+    "templates": "compact-current-state-v1"
+  },
+  "supported_adapters": ["claude", "codex", "opencode"]
+}

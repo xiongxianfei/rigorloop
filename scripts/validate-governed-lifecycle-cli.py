@@ -23,6 +23,14 @@ from artifact_lifecycle_contracts import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
+COMPACT_CURRENT_STATE_V1 = "compact-current-state-v1"
+COMPACT_ACTIVATION_PATH = Path("specs/compact-current-state-activation.yaml")
+PACKAGED_COMPACT_ACTIVATION_PATH = Path("packages/rigorloop/dist/metadata/compact-current-state-activation.json")
+COMPACT_COMPONENTS = frozenset({
+    "adapters", "canonical-guidance", "cli", "documentation", "fixtures",
+    "node-validator", "python-validator", "schemas", "skills", "templates",
+})
+COMPACT_SUPPORTED_ADAPTERS = ["claude", "codex", "opencode"]
 BASELINE_WARNINGS = {
     "2026-08-05-activate-boundary-first-v1-v0-3-7": {
         "blocker_codes": ["RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING"],
@@ -45,7 +53,7 @@ BASELINE_WARNINGS = {
 RETIRED_PROGRESSION_STAGES = frozenset({
     "spec-review", "architecture-review", "plan-review", "test-spec-review",
 })
-GOVERNED_CONTRACTS = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V3, "stage-owned-change-local-v2"})
+GOVERNED_CONTRACTS = frozenset({LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V3, "stage-owned-change-local-v2", COMPACT_CURRENT_STATE_V1})
 _DEFAULT_METADATA_LOADER = None
 
 
@@ -187,6 +195,39 @@ def final_verification_manifest_errors(root: Path = ROOT, *, loader=None) -> lis
     return errors
 
 
+def compact_activation_errors(root: Path = ROOT) -> list[str]:
+    """Require one exact active or withheld matrix in canonical and packaged form."""
+    canonical_path = root / COMPACT_ACTIVATION_PATH
+    packaged_path = root / PACKAGED_COMPACT_ACTIVATION_PATH
+    try:
+        canonical = json.loads(canonical_path.read_text(encoding="utf-8"))
+        packaged = json.loads(packaged_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"compact activation matrix unreadable: {exc}"]
+    if canonical != packaged:
+        return ["compact activation canonical and packaged matrices differ"]
+    if not isinstance(canonical, dict):
+        return ["compact activation matrix must be an object"]
+    expected_fields = {"schema_version", "contract", "state", "components", "supported_adapters"}
+    if set(canonical) != expected_fields:
+        return ["compact activation fields do not match the closed matrix"]
+    if canonical.get("schema_version") != 1:
+        return [f"compact activation schema_version: unknown_value {canonical.get('schema_version')}"]
+    if canonical.get("contract") != COMPACT_CURRENT_STATE_V1:
+        return [f"compact activation contract: unknown_value {canonical.get('contract')}"]
+    if canonical.get("state") not in {"withheld", "active"}:
+        return [f"compact activation state: unknown_value {canonical.get('state')}"]
+    components = canonical.get("components")
+    if not isinstance(components, dict) or set(components) != COMPACT_COMPONENTS:
+        return ["compact activation components do not match the closed matrix"]
+    for name in sorted(COMPACT_COMPONENTS):
+        if components[name] != COMPACT_CURRENT_STATE_V1:
+            return [f"compact activation component {name}: unknown_value {components[name]}"]
+    if canonical.get("supported_adapters") != COMPACT_SUPPORTED_ADAPTERS:
+        return ["compact activation supported adapters do not match the closed matrix"]
+    return []
+
+
 def result_codes(payload: dict) -> list[str]:
     if not isinstance(payload, dict):
         return ["invalid-structured-result"]
@@ -203,14 +244,21 @@ def build_report(records: list[tuple[str, Path]], *, runner=subprocess.run, root
     failures = []
     warned = []
     legacy_dependent = []
+    inventory, _inventory_errors = parsed_change_inventory(root)
     for change_id, _ in records:
         retired_stages = legacy_progression_dependency(_)
         if retired_stages:
             legacy_dependent.append({"change_id": change_id, "stages": retired_stages})
-        command = [
-            "node", "packages/rigorloop/dist/bin/rigorloop.js", "lifecycle", "validate",
-            "--change", change_id, "--format", "json",
-        ]
+        if inventory.get(change_id, {}).get("contract") == COMPACT_CURRENT_STATE_V1:
+            command = [
+                "node", "packages/rigorloop/dist/bin/rigorloop.js", "compact", "project",
+                "--change", change_id, "--view", "summary", "--format", "json",
+            ]
+        else:
+            command = [
+                "node", "packages/rigorloop/dist/bin/rigorloop.js", "lifecycle", "validate",
+                "--change", change_id, "--format", "json",
+            ]
         result = runner(command, cwd=root, text=True, capture_output=True, check=False)
         if result.returncode == 0:
             continue
@@ -241,7 +289,8 @@ def main(*, records=None, runner=subprocess.run, root: Path = ROOT, output=sys.s
     report = build_report(governed_records(root) if records is None else records, runner=runner, root=root)
     report["activation_errors"] = activation_inventory_errors(root)
     report["final_verification_activation_errors"] = final_verification_manifest_errors(root)
-    if report["activation_errors"] or report["final_verification_activation_errors"]:
+    report["compact_activation_errors"] = compact_activation_errors(root)
+    if report["activation_errors"] or report["final_verification_activation_errors"] or report["compact_activation_errors"]:
         report["status"] = "failed"
     print(json.dumps(report, indent=2, sort_keys=True), file=output)
     return 0 if report["status"] == "passed" else 1

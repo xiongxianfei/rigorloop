@@ -12,15 +12,15 @@ Observed basis: direct inspection of `README.md`, `CONSTITUTION.md`, `AGENTS.md`
 
 ## Map Metadata
 
-- Last updated: 2026-09-03
-- Observed basis: current repository tree plus the route and CLI workflow-context cutover and optional Explore/Research artifact roots.
+- Last updated: 2026-09-04
+- Observed basis: current repository tree plus the compact current-state preactivation candidate, route and CLI workflow-context cutover, and optional Explore/Research artifact roots.
 - Covered areas: repository layout, governance and workflow surfaces, lifecycle and optional discovery artifacts, canonical skills, validation and generation scripts, adapter support, release evidence, token-cost evidence, tests, CI, and known architecture-orientation risks.
 - Known gaps: this map summarizes the canonical architecture package but does not duplicate it; narrow changes still need the governing spec, active plan, matching test spec, and touched files.
 - Refresh trigger: refresh or bypass this map with a no-map rationale when the relied-on area is absent, contradicted by current repository paths, or materially affected by recent changes.
 
 ## System Overview
 
-RigorLoop is a repository-local workflow kit, not a deployed service. Its main product is a spec-driven, test-driven, review-recording workflow for AI-assisted software delivery. `README.md` describes the system as a workflow that turns product intent into traceable proposals, specs, plans, tests, reviews, verification evidence, and PR handoff.
+RigorLoop is a repository-local workflow kit, not a deployed service. Its main product is a spec-driven, test-driven workflow for AI-assisted software delivery. The preactivation `compact-current-state-v1` candidate represents current truth through `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`. It is designed to work without Git history and without PR access; external delivery remains optional.
 
 Observed major containers:
 
@@ -62,7 +62,7 @@ flowchart LR
 | `docs/architecture/*.md` | Historical or legacy architecture records retained after normalization. |
 | `docs/adr/` | Durable architecture decision records. |
 | `docs/plans/` and `docs/plan.md` | Stable execution-plan bodies and their navigation index. |
-| `docs/changes/<change-id>/` | Authoritative mutable lifecycle and routing state plus durable reasoning, review records, review logs, review-resolution, explain-change, and verify evidence. |
+| `docs/changes/<change-id>/` | Contract-selected change state. Compact changes use `change.yaml`, stable current review records, conditional material decisions and evidence, and success-only Verify report; registered historical changes retain their prior shape. |
 | `docs/learn/` | Learn sessions and durable topic notes. |
 | `docs/follow-ups.md` | Optional unowned cross-change follow-up surface when routing rules require it. |
 | `docs/releases/<version>/` | Authored release metadata and release notes. |

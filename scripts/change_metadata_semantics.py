@@ -6,7 +6,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from artifact_lifecycle_contracts import LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3
+from artifact_lifecycle_contracts import COMPACT_CURRENT_STATE_V1, LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3
 
 
 REVIEW_GATE_INDEPENDENCE_LEVELS = {"L1", "L2", "L3"}
@@ -335,7 +335,7 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
     if not isinstance(data, dict):
         return []
     contract = data.get("lifecycle_contract")
-    supported_contracts = {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3}
+    supported_contracts = {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3, COMPACT_CURRENT_STATE_V1}
     if contract not in {None, *supported_contracts}:
         return [f"lifecycle_contract: unknown_value; expected one of {', '.join(sorted(supported_contracts))}"]
     if contract not in supported_contracts:

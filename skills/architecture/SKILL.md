@@ -11,6 +11,10 @@ argument-hint: [feature spec path, proposal path, architecture question, or chan
 
 ## Workflow role
 
+### Compact current-state contract
+
+For `compact-current-state-v1`, start from the bounded CLI projection and read only its required paths plus the approved proposal constraints needed for architecture. Author canonical architecture or ADR content, then submit the transient authoring operation through the CLI; never edit `change.yaml` directly. The CLI validates consistency but grants no permission. The artifact becomes review-ready for the stable current review owned by Design Review. Do not create routine request, authoring-evidence, correction-return, or review-log artifacts.
+
 - role_name: architecture
 - stage: authoring
 - upstream: accepted proposal and embedded feasibility evidence

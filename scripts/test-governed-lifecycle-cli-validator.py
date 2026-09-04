@@ -55,6 +55,47 @@ class BaselineWarningTests(unittest.TestCase):
         self.assertFalse(MODULE.baseline_matches(change_id, payload))
 
 
+class CompactActivationTests(unittest.TestCase):
+    def write_matrix(self, root: Path, matrix: dict) -> None:
+        (root / "specs").mkdir(parents=True, exist_ok=True)
+        (root / "packages/rigorloop/dist/metadata").mkdir(parents=True, exist_ok=True)
+        text = json.dumps(matrix)
+        (root / MODULE.COMPACT_ACTIVATION_PATH).write_text(text, encoding="utf-8")
+        (root / MODULE.PACKAGED_COMPACT_ACTIVATION_PATH).write_text(text, encoding="utf-8")
+
+    def matrix(self) -> dict:
+        return {
+            "schema_version": 1,
+            "contract": MODULE.COMPACT_CURRENT_STATE_V1,
+            "state": "active",
+            "components": {name: MODULE.COMPACT_CURRENT_STATE_V1 for name in MODULE.COMPACT_COMPONENTS},
+            "supported_adapters": list(MODULE.COMPACT_SUPPORTED_ADAPTERS),
+        }
+
+    def test_compact_activation_accepts_only_one_coherent_matrix(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_matrix(root, self.matrix())
+            self.assertEqual(MODULE.compact_activation_errors(root), [])
+
+            mixed = self.matrix()
+            mixed["components"]["cli"] = "unknown_value"
+            self.write_matrix(root, mixed)
+            self.assertRegex(MODULE.compact_activation_errors(root)[0], r"unknown_value")
+
+    def test_compact_activation_rejects_packaged_drift_and_allows_writer_rollback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            matrix = self.matrix()
+            matrix["state"] = "withheld"
+            self.write_matrix(root, matrix)
+            self.assertEqual(MODULE.compact_activation_errors(root), [])
+            packaged = json.loads((root / MODULE.PACKAGED_COMPACT_ACTIVATION_PATH).read_text(encoding="utf-8"))
+            packaged["state"] = "active"
+            (root / MODULE.PACKAGED_COMPACT_ACTIVATION_PATH).write_text(json.dumps(packaged), encoding="utf-8")
+            self.assertEqual(MODULE.compact_activation_errors(root), ["compact activation canonical and packaged matrices differ"])
+
+
 class WrapperExecutionTests(unittest.TestCase):
     class Result:
         def __init__(self, returncode, payload):
