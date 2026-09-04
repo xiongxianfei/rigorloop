@@ -173,6 +173,7 @@
     {
       "id": "lifecycle-governance",
       "check_ids": [
+        "compact_contract.canonical",
         "review_artifacts.regression",
         "review_artifacts.validate",
         "artifact_lifecycle.regression",
@@ -188,6 +189,7 @@
         "governed_lifecycle_cli_wrapper.test"
       ],
       "scripts": [
+        "scripts/test-compact-current-state-canonical-contract.py",
         "scripts/validate-artifact-lifecycle.py",
         "scripts/artifact_lifecycle_validation.py",
         "scripts/test-artifact-lifecycle-validator.py",
