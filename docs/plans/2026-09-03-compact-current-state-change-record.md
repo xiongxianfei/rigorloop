@@ -44,8 +44,7 @@ The current history-oriented lifecycle remains authoritative for this implementi
 | SR-22–SR-33, SR-43–SR-45; BND-INPUT-002, BND-AUTH-001, BND-AUTH-002, BND-COMPOSE-002, BND-TEMPORAL-001, BND-TEMPORAL-002, BND-RECOVERY-001, BND-ENV-002; INT-001–INT-004 | M2 pure evaluator, lock, persistence, recovery, retry, containment, and durability boundary |
 | SR-07–SR-26, SR-31–SR-34, SR-46–SR-48; BND-STATE-002, BND-STATE-003, BND-AUTH-001, BND-AUTH-002, BND-COMPOSE-001, BND-COMPOSE-002, BND-TEMPORAL-002, BND-RECOVERY-002, BND-COMPAT-003, BND-ENV-001; INT-001–INT-003, INT-006, INT-007 | M3 semantic operations, stable review judgment, occurrence-stable findings, material acceptance, derived progression, bounded CLI views, and the closed bootstrap operation |
 | SR-02–SR-05, SR-08–SR-12, SR-19–SR-26, SR-32–SR-36, SR-47–SR-48; BND-STATE-001, BND-STATE-003, BND-COMPAT-001, BND-COMPAT-002, BND-COMPAT-003, BND-ENV-001; INT-003, INT-005–INT-007 | M4 canonical governance, workflow, architecture, skills, validators, templates, fixtures, and contributor guidance |
-| SR-01–SR-48; all boundary IDs except BND-STATE-004; INT-001–INT-007 | M5 coherent activation, exact implementing-change bootstrap, supported-adapter parity, legacy-write denial and rollback proof, bounded-context proof, and complete-change validation |
-| SR-23, SR-25–SR-27, SR-31, SR-46–SR-49; BND-INPUT-001, BND-STATE-003, BND-STATE-004, BND-AUTH-001, BND-AUTH-002, BND-TEMPORAL-001, BND-TEMPORAL-002, BND-RECOVERY-001, BND-RECOVERY-002, BND-COMPAT-003, BND-ENV-001; INT-006–INT-008 | M6 append-only planned-work extension, corrected review/finding semantics, bootstrap completion, and final correction proof |
+| SR-01–SR-48; all boundary IDs and INT-001–INT-007 | M5 coherent activation, exact implementing-change bootstrap, supported-adapter parity, legacy-write denial and rollback proof, bounded-context proof, and complete-change validation |
 
 ## Milestones
 
@@ -237,7 +236,7 @@ The current history-oriented lifecycle remains authoritative for this implementi
 
 - Milestone kind: implementation
 - Engineering purpose: Prove canonical-to-package parity and integrated behavior before enabling prospective compact changes while keeping every legacy change on its registered contract.
-- Requirements: SR-01–SR-48; all boundary IDs except BND-STATE-004; INT-001–INT-007.
+- Requirements: SR-01–SR-48; all boundary IDs; INT-001–INT-007.
 - Architecture responsibility: activation discriminator, supported-adapter parity, rollout and rollback, complete workflow integration, bounded-context scaling, historical readership, and no-external-dependency proof.
 - Dependencies:
   - accepted M4 implementation and Code Review;
@@ -283,79 +282,38 @@ The current history-oriented lifecycle remains authoritative for this implementi
 - Rollback/recovery:
   - Disable new compact writers while retaining released compact readers and records; never reconstruct discarded procedure or rewrite completed compact changes.
 
-### M6. Complete corrected lifecycle semantics and final-review readiness
+## Post-M5 Design R13 correction allocation
 
-- Milestone kind: implementation
-- Engineering purpose: Deliver the post-M5 Design corrections as an explicit reviewable slice while proving that reviewed corrective work can be appended without rewriting completed milestone history.
-- Requirements: SR-23, SR-25–SR-27, SR-31, SR-46–SR-49; BND-INPUT-001, BND-STATE-003, BND-STATE-004, BND-AUTH-001, BND-AUTH-002, BND-TEMPORAL-001, BND-TEMPORAL-002, BND-RECOVERY-001, BND-RECOVERY-002, BND-COMPAT-003, BND-ENV-001; INT-006, INT-007, INT-008.
-- Architecture responsibility: append-only planned-work extension, occurrence-stable finding settlement, review-judgment and owner-acceptance separation, derived progression, exact implementing-change bootstrap, and final holistic-review readiness.
-- Dependencies:
-  - M1 through M5 remain closed with their identities, order, contracts, evidence allocation, and lifecycle states unchanged;
-  - Design Review is clear for the exact Architecture, ADR, and Specification revision that defines SR-49;
-  - Delivery Review is clear for this exact Plan revision;
-  - route appends M6 through the reviewed suffix operation before milestone selection;
-  - compact writer activation remains withheld until M6 Code Review and final Verify succeed.
-- Implementation scope: Add `append-planned-work` to the legacy implementing-change coordinator and compact evaluator using exact Plan and Delivery Review identities, immutable-prefix comparison, atomic suffix insertion, stale-write rejection, idempotent replay, and no automatic selection. Finish the R13 evaluator, reader, stable-review, finding, material-acceptance, derived-progression, canonical workflow, validator, fixture, adapter, and bootstrap corrections. Prove M6 follows ordinary `advance-milestone`, implementation, milestone Code Review, final holistic Code Review, Verify, and bootstrap closeout. Do not reopen M1 through M5, infer work from unreviewed prose, or use Git, PR, network, or logs as authority.
-- Files/components likely touched:
-  - legacy and compact lifecycle evaluators, readers, operations, projections, and CLI wiring under `packages/rigorloop/`;
-  - lifecycle and compact schemas, validators, fixtures, and focused tests;
-  - canonical workflow, skills, architecture, contributor guidance, activation metadata, and supported-adapter generation inputs;
-  - M6 stage-owned evidence and stable Code Review records.
-- Required verification:
-  - TG-24 — An exact clear Delivery Review and exact revised Plan append M6 once while M1 through M5 remain byte-for-byte equivalent in registered identity, order, contract, evidence allocation, and state; insertion, mutation, reopening, empty suffix, stale identity, concurrency, and conflicting replay reject unchanged.
-  - TG-25 — M6 is not auto-selected. Normal milestone selection, implementation, exact milestone Code Review, closure, final holistic Code Review, Verify, and bootstrap readiness each remain separately required and bounded by current state.
-  - TG-26 — Review judgment, material owner acceptance, and progression remain distinct; container changes do not resurrect settled findings; genuine recurrence uses a new finding linked to the applicable decision; declared dependencies alone invalidate current proof.
-  - TG-27 — The implementing-change bootstrap binds the complete planned-work set and rejects while M6 is pending, active, unreviewed, or stale; exact success remains one-use, atomic, and independent of Git, PR, network, and local logs.
-  - TG-28 — Canonical sources, validators, package behavior, fixtures, activation metadata, and supported adapters agree on SR-49 and the corrected R13 semantics before writer activation.
-- Evidence expectations: Immutable-prefix and suffix fixtures; before/after coordinator snapshots; stale, concurrent, exact-retry, and conflicting-replay results; M6 milestone and final-review records; per-occurrence finding regressions; owner-acceptance/progression matrix; bootstrap unfinished-work denials; canonical/package/adapter parity; focused and broad validation summaries.
-- Implementation steps:
-  - Add failing suffix-extension, immutable-prefix, stale/concurrent/replay, and unfinished-bootstrap tests first.
-  - Implement append-only extension through the same pure evaluator and recoverable transaction boundary; keep selection explicit.
-  - Complete the corrected review, finding, material-acceptance, progression, canonical, validation, and adapter semantics.
-  - Record M6 implementation evidence, run its milestone Code Review, then perform final holistic Code Review over the complete candidate.
-  - Run change-level Verify on the exact reviewed candidate; only then invoke the one-use bootstrap closeout and activation transaction.
-- Validation commands:
-  - `node --test packages/rigorloop/test/lifecycle-evidence.test.js packages/rigorloop/test/lifecycle-stage-advance.test.js packages/rigorloop/test/compact-operations.test.js packages/rigorloop/test/compact-activation.test.js`
-  - `npm test --prefix packages/rigorloop`
-  - `python scripts/validate-boundary-first.py --check --path specs/compact-current-state-change-record.md`
-  - `python scripts/test-change-metadata-validator.py`
-  - `python scripts/test-governed-lifecycle-cli-validator.py`
-  - `python scripts/test-skill-validator.py`
-  - `python scripts/test-adapter-distribution.py`
-  - `python scripts/build-adapters.py --check`
-  - `bash scripts/ci.sh --mode broad-smoke`
-- Expected observable result: The reviewed M6 suffix is represented as ordinary current work, all corrected semantics are implemented and independently reviewed, and bootstrap closeout cannot activate until that work and final verification are complete.
-- Completion criteria: TG-24 through TG-28 pass; M1 through M5 remain unchanged; M6 milestone Code Review and final holistic Code Review are clear; final Verify passes on the exact candidate; bootstrap closeout succeeds once or leaves prior authority unchanged.
-- Required evidence: `docs/changes/2026-09-03-compact-current-state-change-record/evidence/m6-corrected-lifecycle-closeout.md`
-- Review handoff: First Code Review M6 against its exact implementation and evidence, then final holistic Code Review of the complete change before Verify.
-- Optional commit boundary: `M6: complete corrected lifecycle closeout`
-- Risks:
-  - A permissive comparison could disguise a rewrite of completed work as an append.
-  - Coupling extension to selection could skip the independently visible pending state.
-  - Activation could occur against evidence that predates M6.
-- Rollback/recovery:
-  - Before M6 selection, reject or reverse only an unconsumed exact suffix through the transaction recovery path; never modify M1 through M5.
-  - After M6 begins, correct it through normal review and resolution; disable compact activation rather than rewriting completed work.
+Design Review R13 changed the approved current-state semantics after M1 through M5 had already completed under earlier Design packages. Their completion history remains owned by `change.yaml` and stage evidence; this plan does not rewrite it or add an ordinary M6 that the initialized legacy work set cannot represent.
+
+The correction is executed and rereviewed through the current legacy final-review correction route in this dependency order:
+
+1. M3 responsibility correction: update the evaluator, readers, stable review model, finding registrations, operation eligibility, and focused tests for SR-47 and SR-48. Prove that an unrelated resolution-container edit does not reopen a settled occurrence, a real recurrence uses a new identity, review judgment is not owner acceptance, progression is derived, and bootstrap eligibility is closed to the exact implementing change.
+2. M4 responsibility correction: update canonical workflow, skills, schemas, validators, fixtures, and contributor-facing terms so `clear`, `findings-open`, and `blocked` are review judgments; material acceptance is explicit; the CLI validates and persists but grants no human permission; and no consumer reconstructs current correctness from Git or PR state.
+3. M5 responsibility correction: regenerate or validate supported adapter candidates, bind the coherent activation manifest, and exercise bootstrap success, every fail-closed partition in `BND-COMPAT-003`, replay denial, rollback-to-read-only, and ordinary legacy write/migration denial through the recoverable transaction path.
+4. Final correction review and Verify: Code Review examines the combined R13 correction against the actual diff and focused evidence. Final verification reruns TG-FINAL-01 through TG-FINAL-04 plus TG-FINAL-05 below on the exact candidate before `bootstrap-closeout` may atomically record successful closeout and activate compact writers.
+
+This correction reopens proof for the affected M3, M4, and M5 responsibilities only. It does not reopen unrelated completed work, resurrect settled findings, or claim that earlier evidence proves the revised requirements.
 
 ## Change-level verification
 
 ### TG-FINAL-01. Complete current-state resumability and non-loss
 
-- Covers: SR-01–SR-26, SR-32, SR-37–SR-42, SR-46–SR-49; M1, M3, M4, M5, M6; BND-INPUT-001, BND-STATE-001, BND-STATE-002, BND-STATE-003, BND-STATE-004, BND-AUTH-001, BND-AUTH-002, BND-COMPOSE-001, BND-COMPOSE-002, BND-TEMPORAL-002, BND-RECOVERY-002, BND-ENV-001; INT-001, INT-002, INT-003, INT-005, INT-006, INT-008.
+- Covers: SR-01–SR-26, SR-32, SR-37–SR-42, SR-46–SR-47; M1, M3, M4, M5; BND-INPUT-001, BND-STATE-001, BND-STATE-002, BND-STATE-003, BND-AUTH-001, BND-AUTH-002, BND-COMPOSE-001, BND-COMPOSE-002, BND-TEMPORAL-002, BND-RECOVERY-002, BND-ENV-001; INT-001, INT-002, INT-003, INT-005, INT-006.
 - Demonstrate: A fresh-machine consumer resumes and justifies the exact current change from the bounded authoritative set; stable review replacement never loses an open finding or continuing decision; settled occurrences remain settled across unrelated container changes; recurrence creates a new finding linked to the applicable decision; evidence and Verify readiness follow declared dependencies; requests and superseded procedure are unnecessary.
 - Evidence expectations: End-to-end lifecycle fixtures, finding/decision/evidence mutation matrices, current-view projections, deleted-log/request/history runs, and exact final subject/evidence binding.
 - Non-applicability: Milestone-local checks prove components, but only integrated verification can prove the complete resume contract and cross-surface non-loss.
 
 ### TG-FINAL-02. Transaction, recovery, and retry integrity
 
-- Covers: SR-22–SR-31, SR-33, SR-40–SR-46, SR-49; M1–M3, M5, M6; BND-INPUT-002, BND-STATE-004, BND-AUTH-002, BND-TEMPORAL-001, BND-TEMPORAL-002, BND-RECOVERY-001, BND-RECOVERY-002, BND-ENV-002; INT-001, INT-002, INT-004, INT-008.
+- Covers: SR-22–SR-31, SR-33, SR-40–SR-46; M1–M3, M5; BND-INPUT-002, BND-AUTH-002, BND-TEMPORAL-001, BND-TEMPORAL-002, BND-RECOVERY-001, BND-RECOVERY-002, BND-ENV-002; INT-001, INT-002, INT-004.
 - Demonstrate: Competing writers, stale identities, every injected interruption, persistence ambiguity, permission failure, disk failure, retry, unsafe path, and tampered recovery data yield one exact complete set or a fail-closed recovery state without private-data disclosure.
 - Evidence expectations: Full fault matrix, before/after byte inventories, deterministic recovery outcomes, renderer parity, containment checks, and no-Git/no-network execution.
 - Non-applicability: Final integrated proof is required because correctness spans evaluator, adapter, filesystem, reader, renderer, and semantic operation boundaries.
 
 ### TG-FINAL-03. Compatibility, activation, and published parity
 
-- Covers: SR-01, SR-19–SR-26, SR-34–SR-49; M3–M6; BND-STATE-001, BND-STATE-003, BND-STATE-004, BND-COMPOSE-001, BND-COMPOSE-002, BND-COMPAT-001, BND-COMPAT-002, BND-COMPAT-003, BND-ENV-001; INT-003, INT-005, INT-006, INT-007, INT-008.
+- Covers: SR-01, SR-19–SR-26, SR-34–SR-48; M3–M5; BND-STATE-001, BND-STATE-003, BND-COMPOSE-001, BND-COMPOSE-002, BND-COMPAT-001, BND-COMPAT-002, BND-COMPAT-003, BND-ENV-001; INT-003, INT-005, INT-006, INT-007.
 - Demonstrate: Exactly one coherent component matrix permits compact writing across canonical source, CLI package, validators, fixtures, documentation, and supported adapters; historical readers survive activation and rollback; ordinary legacy changes reject compact migration and writes; and only this exact implementing change can close and activate atomically through the bounded bootstrap without changing its legacy shape.
 - Evidence expectations: Activation state matrix, canonical/generated byte checks, adapter inventories, legacy write-denial and rollback fixtures, historical byte comparisons, package validation, and broad smoke.
 - Non-applicability: No individual milestone can prove coherent public activation across every shipped consumer.
@@ -369,7 +327,7 @@ The current history-oriented lifecycle remains authoritative for this implementi
 
 ### TG-FINAL-05. Review judgment, material acceptance, and bootstrap closeout
 
-- Covers: SR-08–SR-12, SR-15, SR-23, SR-25–SR-27, SR-31, SR-35, SR-46–SR-49; M3–M6; BND-INPUT-001, BND-STATE-001, BND-STATE-003, BND-STATE-004, BND-AUTH-001, BND-AUTH-002, BND-TEMPORAL-001, BND-TEMPORAL-002, BND-RECOVERY-001, BND-RECOVERY-002, BND-COMPAT-003, BND-ENV-001; INT-006, INT-007, INT-008.
+- Covers: SR-08–SR-12, SR-15, SR-23, SR-25, SR-26, SR-35, SR-47, SR-48; M3–M5; BND-STATE-001, BND-STATE-003, BND-AUTH-001, BND-AUTH-002, BND-TEMPORAL-002, BND-RECOVERY-001, BND-COMPAT-003, BND-ENV-001; INT-006, INT-007.
 - Demonstrate: Independent review judgment, material owner acceptance, and derived progression remain distinct; unrelated container drift cannot reopen a settled occurrence; only declared dependencies invalidate; and the exact implementing current set either closes and activates atomically once or leaves prior writer authority unchanged.
 - Evidence expectations: Closed-vocabulary tests, owner-acceptance and progression matrices, per-occurrence resolution identity regression, genuine-recurrence fixture, exact bootstrap subject matrix, fault injection, replay and other-change denial, rollback proof, and runs with Git metadata and PR/network access absent.
 - Non-applicability: The claim composes current review semantics, legacy normalization, transaction recovery, activation, and external-independence boundaries and therefore requires change-level proof.
@@ -396,12 +354,12 @@ The current history-oriented lifecycle remains authoritative for this implementi
 - Risk: Canonical text and executable validators drift during the broad workflow rewrite.
   - Recovery: Use shared valid/invalid fixtures, focused canonical scans, and one final activation gate across all consumers.
 - Risk: The change becomes too large to review coherently.
-  - Recovery: Preserve the six dependency-ordered review boundaries; do not combine activation with unreviewed model, transaction, CLI, governance, or post-activation correction work.
+  - Recovery: Preserve the five dependency-ordered review boundaries; do not combine activation with unreviewed model, transaction, CLI, or governance work.
 
 ## Dependencies
 
-- Accepted proposal; the revised Design package and this exact Plan require fresh Design Review and Delivery Review before M6 may be appended.
-- M1 through M5 remain closed and immutable. M6 is a reviewed suffix, and its implementation requires stage-owned evidence and clean milestone Code Review before final holistic Code Review.
+- Accepted proposal and approved exact Design package `design-review-r13`.
+- M1 through M5 are strictly ordered; each implementation milestone requires stage-owned evidence and clean Code Review before the next begins.
 - Compact writer activation remains withheld through M4 and is the last mutation in M5 after integrated proof on the exact candidate.
 - The current v3 contract governs this implementing change through its own closeout; it is not migrated to the model it implements.
 - Existing YAML and standard-runtime filesystem primitives are used; any new dependency or changed durability outcome returns to Design.
@@ -417,9 +375,9 @@ The current history-oriented lifecycle remains authoritative for this implementi
 | 2026-09-04 | Keep the compact writer disabled until the final parity milestone. | The approved contract requires one coherent writer set and rejects mixed consumers. | Progressive writer rollout; infer capability from file presence. |
 | 2026-09-04 | Keep this implementing change on its current v3 record through closeout. | Migrating the implementation vehicle to its not-yet-proven output would create circular authority and weaken rollback. | Self-migration during implementation; rewrite its historical evidence. |
 | 2026-09-04 | Treat Git, PRs, networks, and local logs only as optional surroundings, never plan dependencies. | The approved proposal and Design package require fresh-machine correctness and recovery from current repository state alone. | Git-based recovery; PR-based audit reconstruction; log-backed freshness. |
-| 2026-09-04 | Represent the post-M5 Design correction as appended milestone M6. | Needed implementation must be planned and receive ordinary milestone Code Review; an exact reviewed suffix preserves M1 through M5 without a special final-review bypass. | Rewrite or reopen M1–M5; hide the work in a correction note; route implementation directly to final review. |
+| 2026-09-04 | Allocate the Design R13 delta as a bounded correction to M3 through M5 instead of creating M6. | The current legacy work set has already closed M1 through M5 and cannot safely acquire a new milestone; the affected responsibilities and final correction route already exist. | Rewrite milestone completion history; migrate this change; add an unrepresentable ordinary milestone. |
 
 ## Readiness
 
 - See the owning change record for current workflow state.
-- Readiness is not Done. Design Review must clear the revised Design package, Delivery Review must clear this exact Plan, and route must append M6 before implementation resumes.
+- Readiness is not Done. Delivery Review must approve this exact primary plan before implementation begins.
