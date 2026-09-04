@@ -6,6 +6,7 @@ Round: r6
 Reviewer: Independent Codex code-review context
 Reviewer authority: code-review
 Target: M3 compact semantic-operation and bounded CLI implementation against Design Review R9 and Delivery Review R6
+Reviewed artifact: M3 compact semantic-operation and bounded CLI implementation against Design Review R9 and Delivery Review R6
 Reviewed milestone: M3
 Review date: 2026-09-04
 Status: changes-requested
@@ -32,7 +33,7 @@ Recording status: recorded
 
 ## Finding CCSR-M3-CR7
 
-- Finding ID: CCSR-M3-CR7
+Finding ID: CCSR-M3-CR7
 - Severity: major
 - Location: `specs/compact-current-state-change-record.md:215`, `specs/compact-current-state-change-record.md:220`, `specs/compact-current-state-change-record.md:253`, `specs/compact-current-state-change-record.md:274`, and `packages/rigorloop/dist/lib/compact-operations.js` milestone handling
 - Evidence: The approved schema represents at most one active milestone, and `advance-milestone` requires that exact milestone already be active. Closing it sets `active_work` to null. `RemainingWork` has no milestone kind or activation semantics, and no operation can select the first or next planned milestone from current state. A multi-milestone change therefore cannot progress after closure without an undeclared caller-constructed coordinator or implementation-specific plan parsing. This is not safely repairable inside M3 because Design R9 does not define the semantic input, eligibility predicate, remaining-work update, or resulting current stage.

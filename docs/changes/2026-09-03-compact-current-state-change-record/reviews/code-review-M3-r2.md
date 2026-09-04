@@ -6,6 +6,7 @@ Round: r2
 Reviewer: Independent Codex code-review context
 Reviewer authority: code-review
 Target: CCSR-M3-CR1 Proposal, Design, Delivery, compact foundation, and lifecycle-recovery correction slice
+Reviewed artifact: CCSR-M3-CR1 Proposal, Design, Delivery, compact foundation, and lifecycle-recovery correction slice
 Reviewed milestone: M3
 Review date: 2026-09-04
 Status: approved

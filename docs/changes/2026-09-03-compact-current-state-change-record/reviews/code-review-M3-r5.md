@@ -6,6 +6,7 @@ Round: r5
 Reviewer: Independent Codex code-review context
 Reviewer authority: code-review
 Target: M3 compact semantic-operation and bounded CLI implementation against Design Review R9 and Delivery Review R6
+Reviewed artifact: M3 compact semantic-operation and bounded CLI implementation against Design Review R9 and Delivery Review R6
 Reviewed milestone: M3
 Review date: 2026-09-04
 Status: changes-requested
@@ -32,7 +33,7 @@ Recording status: recorded
 
 ## Finding CCSR-M3-CR6
 
-- Finding ID: CCSR-M3-CR6
+Finding ID: CCSR-M3-CR6
 - Severity: major
 - Location: `packages/rigorloop/dist/lib/compact-eligibility.js:35-49`, `packages/rigorloop/dist/lib/compact-eligibility.js:93-115`, and `packages/rigorloop/dist/lib/compact-eligibility.js:138-140`
 - Evidence: The R4 corrections close non-loss, expected-file, stable-registration, final-Verify, and tested target gaps, but the approved fourteen-operation matrix is still only partially encoded. `advance-stage` structurally rejects `implement → code-review` whenever an active milestone exists, although that active milestone selects the Code Review handoff. Conversely, `replace-review` and `settle-review` may target any review while the current stage is any review gate, without proving that target kind and reviewer responsibility are due at that gate. `upsert-decision` becomes structurally eligible at any stage once one decision exists, rather than only review-resolution or the responsible stage, and `invalidate-evidence` does not prove that every selection is a current entry or a directly observed drift source. These are direct untested violations of the Design R9 operation eligibility matrix and can either block a valid workflow or admit an ineligible mutation.

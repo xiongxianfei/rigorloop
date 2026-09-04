@@ -6,6 +6,7 @@ Round: r1
 Reviewer: Independent Codex code-review context
 Reviewer authority: code-review
 Target: M5 coherent activation and full-workflow integration
+Reviewed artifact: M5 coherent activation and full-workflow integration
 Reviewed milestone: M5
 Review date: 2026-09-04
 Status: changes-requested

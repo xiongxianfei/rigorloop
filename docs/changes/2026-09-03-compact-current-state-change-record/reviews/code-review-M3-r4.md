@@ -6,6 +6,7 @@ Round: r4
 Reviewer: Independent Codex code-review context
 Reviewer authority: code-review
 Target: M3 compact semantic-operation and bounded CLI implementation against Design Review R9 and Delivery Review R6
+Reviewed artifact: M3 compact semantic-operation and bounded CLI implementation against Design Review R9 and Delivery Review R6
 Reviewed milestone: M3
 Review date: 2026-09-04
 Status: changes-requested
@@ -36,7 +37,7 @@ Recording status: recorded
 
 ## Finding CCSR-M3-CR3
 
-- Finding ID: CCSR-M3-CR3
+Finding ID: CCSR-M3-CR3
 - Severity: major
 - Location: `packages/rigorloop/dist/lib/compact-operations.js:84`, `packages/rigorloop/dist/lib/compact-operations.js:102`, `packages/rigorloop/dist/lib/compact-operations.js:110`, `packages/rigorloop/dist/lib/compact-operations.js:181`, `packages/rigorloop/dist/lib/compact-operations.js:194`, and `packages/rigorloop/dist/lib/compact-operations.js:228`
 - Evidence: `resolve-finding` replaces the whole target review but verifies only that the selected finding disappeared, so another open finding can disappear without a disposition. `upsert-decision` and evidence replacement similarly delete every coordinator reference owned by the same stable file before adding the candidate contents, without proving that unselected current decisions or evidence entries remain. The focused suite directly proves finding non-loss only for `replace-review`, not these sibling operations.
@@ -46,7 +47,7 @@ Recording status: recorded
 
 ## Finding CCSR-M3-CR4
 
-- Finding ID: CCSR-M3-CR4
+Finding ID: CCSR-M3-CR4
 - Severity: major
 - Location: `packages/rigorloop/dist/lib/compact-eligibility.js:22`, `packages/rigorloop/dist/lib/compact-eligibility.js:73`, and `packages/rigorloop/dist/lib/compact-operations.js:151`
 - Evidence: The operation matrix implements only a generic main-chain `NEXT_STAGE` edge and shallow target checks. It omits the reviewed conditional Code Review and review-resolution edges; allows an existing artifact registration to change stable kind, role, path, or owner; does not bind review subjects to their target/package identities; and permits `record-verify` without proving a current approved final Code Review, no required remaining work, exact report evidence selection, and directly observed report subjects. Passing current tests does not exercise the full fourteen-operation stage/target matrix required by TG-09 through TG-13.
@@ -56,7 +57,7 @@ Recording status: recorded
 
 ## Finding CCSR-M3-CR5
 
-- Finding ID: CCSR-M3-CR5
+Finding ID: CCSR-M3-CR5
 - Severity: major
 - Location: `packages/rigorloop/dist/lib/compact-operations.js:42`, `packages/rigorloop/dist/lib/compact-operations.js:305`, and `packages/rigorloop/dist/lib/compact-cli.js`
 - Evidence: The evaluator proves that `expected_files` equals the adapter-supplied map and now requires referenced evidence subjects, but it does not derive and compare the only allowed input-path set. A request may add an unrelated repository path to `expected_files`; the adapter reads it and the evaluator accepts it as an input even though it is neither authoritative, affected, nor a declared evidence subject. This violates SR-26's missing/extra fail-closed rule and enlarges the supposedly bounded transaction surface.

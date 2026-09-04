@@ -6,6 +6,7 @@ Round: r1
 Reviewer: Independent Codex code-review context
 Reviewer authority: code-review
 Target: M4 canonical compact-contract alignment against Design Review R11 and Delivery Review R8
+Reviewed artifact: M4 canonical compact-contract alignment against Design Review R11 and Delivery Review R8
 Reviewed milestone: M4
 Review date: 2026-09-04
 Status: approved

@@ -80,9 +80,9 @@ workflow_state:
       reasons:
         - implementation-milestones-open
     initialization_basis:
-      review_id: delivery-review-r2
-      review_record: docs/changes/2026-09-03-compact-current-state-change-record/reviews/delivery-review-r2.md
-      review_round: r2
+      review_id: delivery-review-r10
+      review_record: docs/changes/2026-09-03-compact-current-state-change-record/reviews/delivery-review-r10.md
+      review_round: r10
       reviewed_artifact_path: docs/plans/2026-09-03-compact-current-state-change-record.md
     latest_review:
       artifact_id: plan

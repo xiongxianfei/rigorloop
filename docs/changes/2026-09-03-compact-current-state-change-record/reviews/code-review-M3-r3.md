@@ -6,6 +6,7 @@ Round: r3
 Reviewer: Independent Codex code-review context
 Reviewer authority: code-review
 Target: M3 compact semantic-operation implementation against the approved Design R6 package
+Reviewed artifact: M3 compact semantic-operation implementation against the approved Design R6 package
 Reviewed milestone: M3
 Review date: 2026-09-04
 Status: changes-requested
@@ -36,7 +37,7 @@ Recording status: recorded
 
 ## Finding CCSR-M3-CR2
 
-- Finding ID: CCSR-M3-CR2
+Finding ID: CCSR-M3-CR2
 - Severity: major
 - Location: `specs/compact-current-state-change-record.md` SR-03, SR-14, SR-15, SR-22, SR-25, SR-26, SR-34 and the approved M3 evaluator/request design
 - Evidence: M3 could validate a caller-constructed candidate set, but the approved contract did not define how dependency IDs resolve, how code or implementation subject drift is observed without Git, or the exact lifecycle-derived operation matrix. `permitted_operations` was writable coordinator state, and `migrate-change` required one evaluator to validate incompatible source and candidate contracts. The implementation therefore could not construct a unique legal result or prove freshness without inventing normative behavior.

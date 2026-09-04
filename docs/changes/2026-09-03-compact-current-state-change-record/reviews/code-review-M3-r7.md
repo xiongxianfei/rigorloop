@@ -6,6 +6,7 @@ Round: r7
 Reviewer: Independent Codex code-review context
 Reviewer authority: code-review
 Target: M3 compact semantic-operation and bounded CLI implementation against Design Review R11 and Delivery Review R8
+Reviewed artifact: M3 compact semantic-operation and bounded CLI implementation against Design Review R11 and Delivery Review R8
 Reviewed milestone: M3
 Review date: 2026-09-04
 Status: approved

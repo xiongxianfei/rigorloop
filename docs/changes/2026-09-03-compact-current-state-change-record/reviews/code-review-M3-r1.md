@@ -6,6 +6,7 @@ Round: r1
 Reviewer: Independent Codex code-review context
 Reviewer authority: code-review
 Target: M3 compact semantic-operation contract and current implementation foundation
+Reviewed artifact: M3 compact semantic-operation contract and current implementation foundation
 Reviewed milestone: M3
 Review date: 2026-09-04
 Status: changes-requested

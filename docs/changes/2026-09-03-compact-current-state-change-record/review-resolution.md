@@ -77,6 +77,7 @@ Decision needed: none; Design Review R13 fixes the behavior and the existing M3 
 Chosen action: bind the Plan to Design Review R13, allocate SR-47 and SR-48 plus their boundaries and interactions, correct review-judgment terminology, and add direct occurrence-stability and bootstrap proof without rewriting completed milestone history.
 Rationale: current Delivery authority cannot rely on a plan that omits approved behavior or claims that an approval label is itself the independent review judgment.
 Required outcome: the Plan traces SR-47, SR-48, `BND-STATE-003`, `BND-COMPAT-003`, `INT-006`, and `INT-007` through exact implementation responsibilities, regressions, coherent activation, and final integrated proof.
+Validation target: SR-47, SR-48, `BND-STATE-003`, `BND-COMPAT-003`, `INT-006`, and `INT-007` allocation in the corrected Plan.
 Safe resolution path: revise and register the Plan, explicitly return to Delivery Review, settle a fresh exact-package judgment, then continue through the current legacy correction and final-review route.
 Follow-up: Delivery Review R10 of the corrected exact Plan package.
 Validation evidence: `evidence/plan-correction-delivery-r9.md` and `reviews/delivery-review-r10.md`; the corrected Plan identity is `sha256:28af3d25ee0989e8aaba9a959fddb342064f96229820fa56be5f2459af929d2d`, boundary allocation validation passes, and Delivery Review R10 records a clear judgment on the exact package.
@@ -96,6 +97,7 @@ Decision needed: none; Design Review R11 fixes the behavior and M3 is the existi
 Chosen action: bind the Plan to Design Review R11, add SR-46 to M3 and M5 coverage, allocate direct milestone-selection proof in M3, and add the same path to integrated activation and change-level proof.
 Rationale: implementation and final activation must prove first and subsequent milestone selection without plan-prose parsing or caller-constructed active state.
 Required outcome: the Plan traces SR-46 through Architecture, M3 implementation, direct valid/invalid/retry proof, M5 activation, and change-level evidence.
+Validation target: SR-46 allocation across Architecture, M3, M5, and change-level verification.
 Safe resolution path: revise and register the Plan, explicitly return to Delivery Review, settle a fresh exact-package judgment, then resume M3 implementation.
 Follow-up: settle Delivery Review R8, then resume M3 implementation and Code Review M3 R7.
 Validation evidence: `evidence/plan-correction-delivery-r7.md` and `reviews/delivery-review-r8.md`; Plan prose, Markdown readability, and diff checks pass, the exact registered Plan identity is `sha256:0c18ba75e3139f28415889279a453f2769b963dc37dd5d96da565fda2da7f67e`, and Delivery Review R8 approved the exact package.
@@ -115,6 +117,7 @@ Decision needed: none; SR-46 fixes the observable transition.
 Chosen action: add coordinator ownership, evaluator selection, milestone runtime, retry behavior, and a quality scenario to the canonical architecture.
 Rationale: Delivery and implementation require one technical realization of the new selection contract.
 Required outcome: Architecture and Specification define one exact milestone selection and closure flow without plan-prose parsing or caller-constructed active state.
+Validation target: SR-46 and the typed pending-milestone selection and closure flow.
 Safe resolution path: revise and register Architecture, return to Design Review, settle a fresh exact-package judgment, then refresh Delivery allocation.
 Follow-up: fresh Design Review R11.
 Validation evidence: `evidence/architecture-correction-design-r10.md`; Architecture prose, Markdown readability, and diff checks pass, and the registered Architecture identity is `sha256:0f6041b49165f6f54363d86dfa803327b5ebe63fae6926830e3d93a82cfefc82`.
@@ -134,6 +137,7 @@ Decision needed: resolved by SR-46: use the bounded `advance-milestone` activati
 Chosen action: allow `advance-milestone` at `implement` to select one exact pending milestone with `from_status: null` and `to_status: planned`; remove that typed entry from remaining work and derive the active milestone atomically.
 Rationale: an implementation cannot derive the next milestone from an absent active record, unordered generic remaining work, or unparsed plan prose.
 Required outcome: first and subsequent milestone selection is an explicit bounded current-state transition, and closure deterministically exposes either another selectable milestone or the next downstream gate.
+Validation target: SR-46 milestone selection, closure, retry, and next-stage transitions.
 Safe resolution path: revise Specification and Architecture, obtain fresh Design and Delivery Review, implement exact tests, and perform Code Review M3 R7.
 Follow-up: fresh Design Review R11, Delivery reallocation, implementation, and Code Review M3 R7.
 Validation evidence: `evidence/spec-correction-m3-r6.md` and `evidence/architecture-correction-design-r10.md`; Specification boundary-first, prose, Markdown readability, and diff checks pass, Architecture documentation checks pass, and the exact registered identities are Specification `sha256:1ef428c5a0205134fc1b636b58cafbe8365cbaf728e4e0c6b5a5e68598e3ef48` and Architecture `sha256:0f6041b49165f6f54363d86dfa803327b5ebe63fae6926830e3d93a82cfefc82`.
@@ -153,6 +157,7 @@ Decision needed: none; Design R9 fixes the operation eligibility matrix.
 Chosen action: add matrix regressions and centralize exact stage, active-work, target, responsibility, decision, and invalidation predicates.
 Rationale: partial matrix enforcement can reject a valid milestone handoff while admitting unrelated review or stable-record mutations at the wrong stage.
 Required outcome: every approved exact operation predicate is admitted and every wrong-stage, wrong-target, or wrong-owner partition rejects unchanged.
+Validation target: the complete compact operation eligibility matrix and its positive and negative partitions.
 Safe resolution path: implement focused matrix proof, rerun all M3 and package validation, and perform fresh Code Review M3 R6.
 Follow-up: fresh Code Review M3 R6.
 Validation evidence: `evidence/m3-cli-operations.md`; 29 focused operation/CLI tests and the full 452-test package suite pass.
@@ -172,6 +177,7 @@ Decision needed: none; current-state non-loss is already required.
 Chosen action: add multi-entry regression tests and reject every unselected finding, decision, or evidence omission.
 Rationale: a compact record is safe only if replacement cannot silently erase another current consequence.
 Required outcome: all stable-file operations preserve unselected current entries or process an explicit valid disposition.
+Validation target: multi-entry non-loss behavior for review, decision, and evidence replacement operations.
 Safe resolution path: implement focused non-loss checks and perform fresh M3 Code Review.
 Follow-up: fresh Code Review M3 R5.
 Validation evidence: `evidence/m3-cli-operations.md`; focused semantic-operation tests and the full 443-test package suite pass.
@@ -189,6 +195,7 @@ Decision needed: none; Design R9 fixes the operation matrix.
 Chosen action: encode the exact stage, target, stable-registration, review, milestone, and Verify predicates and add positive and negative matrix proof.
 Rationale: schema validity and transaction atomicity cannot substitute for lifecycle eligibility.
 Required outcome: every approved operation edge is admitted only under its exact predicates and every other edge rejects unchanged.
+Validation target: all fourteen operation predicates, including Code Review and final Verify prerequisites.
 Safe resolution path: implement table-driven eligibility and end-to-end Verify/milestone checks, then perform fresh M3 Code Review.
 Follow-up: fresh Code Review M3 R5.
 Validation evidence: `evidence/m3-cli-operations.md`; exact lifecycle, milestone, review, and final Verify positive and negative tests pass.
@@ -206,6 +213,7 @@ Decision needed: none; the bounded input contract is exact.
 Chosen action: derive allowed expected paths from current authority, operation targets, and declared subject observations, then reject missing or extra paths.
 Rationale: accepting an unrelated expected file lets callers enlarge evaluator input and transaction scope.
 Required outcome: expected-file equality is computed by the evaluator and content source transport remains non-authoritative.
+Validation target: exact expected-file derivation with missing, extra, absent-target, and source-transport cases.
 Safe resolution path: add missing, extra, absent-target, and source-transport regressions, implement exact path derivation, and perform fresh M3 Code Review.
 Follow-up: fresh Code Review M3 R5.
 Validation evidence: `evidence/m3-cli-operations.md`; missing and extra expected-input regressions and the complete package suite pass.

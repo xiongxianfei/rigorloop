@@ -31,7 +31,7 @@ Resolution: review-resolution.md#design-review-r12
 Material findings: CCSR-DR12-1, CCSR-DR12-2
 Finding ID: CCSR-DR12-1
 Finding ID: CCSR-DR12-2
-Open findings: CCSR-DR12-1, CCSR-DR12-2
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -99,7 +99,7 @@ Detailed record: reviews/delivery-review-r7.md
 Resolution: review-resolution.md#delivery-review-r7
 Material findings: CCSR-DLR7-1
 Finding ID: CCSR-DLR7-1
-Open findings: CCSR-DLR7-1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -126,7 +126,7 @@ Detailed record: reviews/design-review-r10.md
 Resolution: review-resolution.md#design-review-r10
 Material findings: CCSR-DR10-1
 Finding ID: CCSR-DR10-1
-Open findings: CCSR-DR10-1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -141,7 +141,7 @@ Detailed record: reviews/code-review-M3-r6.md
 Resolution: review-resolution.md#code-review-m3-r6
 Material findings: CCSR-M3-CR7
 Finding ID: CCSR-M3-CR7
-Open findings: CCSR-M3-CR7
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -156,7 +156,7 @@ Detailed record: reviews/code-review-M3-r5.md
 Resolution: review-resolution.md#code-review-m3-r5
 Material findings: CCSR-M3-CR6
 Finding ID: CCSR-M3-CR6
-Open findings: CCSR-M3-CR6
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -171,7 +171,7 @@ Detailed record: reviews/code-review-M3-r4.md
 Resolution: review-resolution.md#code-review-m3-r4
 Material findings: CCSR-M3-CR3, CCSR-M3-CR4, CCSR-M3-CR5
 Finding ID: CCSR-M3-CR3, CCSR-M3-CR4, CCSR-M3-CR5
-Open findings: CCSR-M3-CR3, CCSR-M3-CR4, CCSR-M3-CR5
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -211,7 +211,7 @@ Detailed record: reviews/design-review-r8.md
 Resolution: review-resolution.md#design-review-r8
 Material findings: CCSR-DR8-1
 Finding ID: CCSR-DR8-1
-Open findings: CCSR-DR8-1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -225,7 +225,7 @@ Detailed record: reviews/design-review-r7.md
 Resolution: review-resolution.md#design-review-r7
 Material findings: CCSR-DR7-1, CCSR-DR7-2
 Finding ID: CCSR-DR7-1, CCSR-DR7-2
-Open findings: CCSR-DR7-1, CCSR-DR7-2
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -245,7 +245,7 @@ Recording status: recorded
 
 Review ID: proposal-review-r5
 Stage: proposal-review
-Round: r5
+Round: 5
 Reviewed artifact: proposal explicit-correction-return refinement
 Status: approved
 Detailed record: reviews/proposal-review-r5.md
@@ -258,7 +258,7 @@ Recording status: recorded
 
 Review ID: proposal-review-r4
 Stage: proposal-review
-Round: r4
+Round: 4
 Reviewed artifact: proposal review-owned settlement refinement
 Status: approved
 Detailed record: reviews/proposal-review-r4.md
@@ -271,7 +271,7 @@ Recording status: recorded
 
 Review ID: proposal-review-r3
 Stage: proposal-review
-Round: r3
+Round: 3
 Reviewed artifact: proposal derived-state and prospective-adoption refinement
 Status: approved
 Detailed record: reviews/proposal-review-r3.md
@@ -292,7 +292,7 @@ Detailed record: reviews/code-review-M3-r3.md
 Resolution: review-resolution.md#code-review-m3-r3
 Material findings: CCSR-M3-CR2
 Finding ID: CCSR-M3-CR2
-Open findings: CCSR-M3-CR2
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -352,7 +352,7 @@ Recording status: recorded
 
 Review ID: proposal-review-r2
 Stage: proposal-review
-Round: r2
+Round: 2
 Reviewed artifact: proposal trust-boundary refinement
 Status: approved
 Detailed record: reviews/proposal-review-r2.md
@@ -593,7 +593,7 @@ Detailed record: reviews/delivery-review-r9.md
 Resolution: review-resolution.md#delivery-review-r9
 Material findings: CCSR-DLR9-1
 Finding ID: CCSR-DLR9-1
-Open findings: CCSR-DLR9-1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
