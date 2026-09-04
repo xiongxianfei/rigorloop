@@ -72,7 +72,7 @@ The core safety rule is promotion before replacement: no operation may discard a
 
 ### Current-state coordinator
 
-`change.yaml` stores change identity, lifecycle contract, lifecycle revision, current stage, canonical artifact identities, current package and milestone states, blockers, open-finding and evidence references, typed remaining work, and readiness. A pending implementation milestone remains a typed `remaining_work` item until an exact semantic operation selects it; the evaluator then removes that item and derives the sole active milestone. A later reviewed Plan may extend this set only by appending new milestone identities after every previously registered milestone. Existing milestone identity, order, kind, completion contract, evidence allocation, and lifecycle state are immutable. It does not contain transition, review-round, correction, request, evidence-event history, or a caller-maintained operation list. The projection service derives allowed structural operations from the current snapshot.
+`change.yaml` stores change identity, lifecycle contract, lifecycle revision, current stage, canonical artifact identities, current package and milestone states, blockers, open-finding and evidence references, typed remaining work, and readiness. A pending implementation milestone remains a typed `remaining_work` item until an exact semantic operation selects it; the evaluator then removes that item and derives the sole active milestone. It does not contain transition, review-round, correction, request, evidence-event history, or a caller-maintained operation list. The projection service derives allowed structural operations from the current snapshot.
 
 ### Stable review store
 
@@ -136,13 +136,11 @@ Compatibility readers select semantics from an explicit lifecycle-contract discr
 ### Milestone selection and progression
 
 1. Delivery leaves each not-yet-active implementation milestone as a typed pending current-work item; active work is separate and singular.
-2. If a later correction changes approved work, Plan authors revise the canonical Plan and Delivery Review judges that exact revision before workflow state changes.
-3. Route may then submit `append-planned-work` with the current Plan and Delivery Review identities plus the proposed suffix. The evaluator rereads the reviewed Plan, proves every existing milestone is an unchanged prefix, and appends only new unique pending milestones. Rename, deletion, reorder, mutation, or reopening of existing work rejects unchanged. The CLI validates this authority; it does not grant the decision to extend scope.
-4. At `implement` with no active work, route supplies one current milestone ID through `advance-milestone` with `null → planned`; it does not supply an active-work record, ordering claim, or derived status.
-5. The evaluator verifies the selected entry is present, pending, milestone-kind, and implementation-owned, removes it from remaining work, and constructs the planned active milestone in one transaction.
-6. The existing adjacent transitions move that active milestone to implementing, review-required, and then closed after exact Code Review and evidence. Closure clears active work rather than retaining milestone history.
-7. If another pending milestone remains, projection selects `code-review → implement`, where another explicit current-ID selection is required. If none remains, findings, triggered CI work, and final-review state select the downstream route.
-8. Missing, blocked, wrong-kind, wrong-owner, duplicated, stale, or non-suffix extension rejects unchanged. Exact retry cannot append the suffix twice or reactivate an item already removed from remaining work.
+2. At `implement` with no active work, route supplies one current milestone ID through `advance-milestone` with `null → planned`; it does not supply an active-work record, ordering claim, or derived status.
+3. The evaluator verifies the selected entry is present, pending, milestone-kind, and implementation-owned, removes it from remaining work, and constructs the planned active milestone in one transaction.
+4. The existing adjacent transitions move that active milestone to implementing, review-required, and then closed after exact Code Review and evidence. Closure clears active work rather than retaining milestone history.
+5. If another pending milestone remains, projection selects `code-review → implement`, where another explicit current-ID selection is required. If none remains, findings, triggered CI work, and final-review state select the downstream route.
+6. Missing, blocked, wrong-kind, wrong-owner, duplicated, or stale selection rejects unchanged. Exact retry cannot reactivate an item already removed from remaining work.
 
 ### Successful final verification
 
@@ -153,7 +151,7 @@ Compatibility readers select semantics from an explicit lifecycle-contract discr
 
 ### Implementing-change bootstrap closeout
 
-The bootstrap applies only to `2026-09-03-compact-current-state-change-record` before compact writers activate. It does not migrate or reinterpret that change. Its legacy coordinator may use the same append-only invariant to register an exact reviewed suffix milestone needed to finish the implementation; this is a bounded lifecycle extension, not bootstrap success. One deterministic identity binds the current proposal, architecture, applicable ADR, specification, plan, complete planned-work set, implementation surfaces, latest applicable review judgments, current evidence basis, current lifecycle revision, and activation manifest. The bootstrap validator evaluates only current consequential state: current open findings, still-applicable material decisions, no unfinished planned work, current evidence, required validation, exact-subject final review, Verify, and activation coherence. Superseded requests, receipts, review rounds, and already-settled finding occurrences are outside that decision basis.
+The bootstrap applies only to `2026-09-03-compact-current-state-change-record` before compact writers activate. It does not migrate or reinterpret that change. One deterministic identity binds the current proposal, architecture, applicable ADR, specification, plan, implementation surfaces, latest applicable review judgments, current evidence basis, current lifecycle revision, and activation manifest. The bootstrap validator evaluates only current consequential state: current open findings, still-applicable material decisions, current evidence, required validation, exact-subject final review, Verify, and activation coherence. Superseded requests, receipts, review rounds, and already-settled finding occurrences are outside that decision basis.
 
 Any missing member, identity drift, current open blocker, stale required evidence, non-clear final review, failed Verify, or incoherent activation input rejects unchanged. When all conditions hold, final closeout and compact-writer activation are one recoverable transaction. No Git commit, branch, diff, pull request, hosted service, or local diagnostic log is an identity or readiness input. The exception expires when that exact activation succeeds and cannot be selected by another change.
 
@@ -221,7 +219,6 @@ Structural validation checks closed vocabularies before consistency, exact cross
 | Resumability | A new agent opens a compact change on a fresh machine with no PR or local logs | One bounded projection identifies current state, open findings, decisions, evidence, blockers, remaining work, and required paths. |
 | Corrective actionability | A change is globally blocked by an open finding and invalidated downstream package | The owning correction is projected as permitted while downstream advancement remains blocked; any target-specific invariant failure prohibits the correction explicitly. |
 | Multi-milestone resumption | A change has no active work and one or more pending implementation milestones | The projection exposes current pending IDs; one exact selection creates planned active work atomically, and invalid or stale selection changes no current bytes. |
-| Reviewed plan extension | A correction requires new implementation after all registered milestones closed | A clear Delivery Review of the exact revised Plan permits only a new suffix to be appended; existing identities, order, contracts, and states remain unchanged. |
 | Non-loss | A reviewer resolves or removes a finding while replacing a stable review record | The operation fails unless the finding remains open, has a valid final disposition, or has a required material-decision entry. |
 | Resolution stability | A current document or resolution container changes after an older finding was settled | The old finding stays settled; only declared current dependencies invalidate, and a genuine regression creates a new finding referencing the retained decision. |
 | Freshness | An artifact changes after evidence was recorded | Every explicitly dependent evidence entry leaves the current readiness basis in the same transaction. |
@@ -238,7 +235,6 @@ Structural validation checks closed vocabularies before consistency, exact cross
 - Multi-file recovery is more complex than the current single-file adapter and requires exhaustive fault injection at every replacement and cleanup boundary.
 - A Markdown material-decision surface requires a strict machine-readable field contract or a bounded companion parser; vague prose cannot protect non-loss invariants.
 - Stable review paths increase local contention and make stale identity checks mandatory for both human and automated reviewers.
-- Append-only Plan extension needs exact prefix comparison and reviewed Plan identity binding; prose similarity or a caller assertion cannot prove that completed work was preserved.
 - Materiality remains a semantic judgment. Over-retention recreates noise; under-retention loses constraints. Ambiguous cases must remain retained until the responsible reviewer or decision owner settles them.
 - Explicit evidence dependencies can be incomplete. Design Review and validators must challenge coverage, while Verify must not infer freshness from absence of a dependency.
 - During activation, legacy Python validators and the Node engine may disagree. Activation must fail until shared fixtures prove parity and the writer authority is singular.
