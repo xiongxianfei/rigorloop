@@ -569,6 +569,90 @@
       "result": "passed",
       "procedure": "2026-09-07 independent workflow-final-verification: node --test packages/rigorloop/test/record-store-contract.test.js packages/rigorloop/test/record-store-cli.test.js packages/rigorloop/test/record-store-workflow.test.js; python scripts/validate-boundary-first.py --check --path docs/design/workflow.md --path docs/design/cli.md; node scripts/build-record-store-schema.mjs --check; python scripts/test-artifact-lifecycle-validator.py -k er_m5; python scripts/validate-change-metadata.py docs/changes/2026-09-05-explicit-recording-and-model-centered-design/change.yaml; python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md; public record-store inspect, exact subject-hash comparison and git diff --check.",
       "summary": "Independent results: 59 recorder tests passed, 3 lifecycle regression tests passed including 12 tracked-mode cases, model/schema checks passed, current metadata/lifecycle commands exited zero and all required review/proof subjects matched. Assessed all21SR/scenario/composed-hazard allocations, independent current approvals, preserved M4 semantic/rollback proof, latest producer final20-check local CI/fulladapter157/lifecycle168/npm522+2skips/metadata115/publication7/selector162 evidence, and both actual owner dispositions. No current failed/inconclusive proof or open finding remains. Resolved historical finding subjects intentionally retain old hashes. Direct tracked-snapshot new-contract lifecycle validation is unavailable; working-tree explicit-path validation is supported. External final-target timing exclusion and actor-provenance limits remain. No hosted/native-tool/release/PR claim."
+    },
+    {
+      "id": "pr-tracked-gate-compatibility",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "scripts/artifact_lifecycle_validation.py",
+          "identity": "sha256:a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323"
+        },
+        {
+          "path": "scripts/test-artifact-lifecycle-validator.py",
+          "identity": "sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635"
+        }
+      ],
+      "result": "failed",
+      "procedure": "2026-09-07: inspect ci.sh:1533-1535 and tracked bridge; python scripts/test-artifact-lifecycle-validator.py -k er_m5_002_recording_tracked_revision_never_uses_live_bytes",
+      "summary": "Focused command exit0: 1 test /12 cases in2.164s confirms explicit tracked-mode rejection. Required PR integration capability fails; this is not a completed failing gate command. Repository xiongxianfei/rigorloop, branch feature/explicit-recording-cli, base d6770adfbbd835363d3b428acbd5a27a9485171b, head a5705e5011021514c58a0eaf4571a7f300c0e375. All74 proof subjects and8 record files matched committed bytes before recording. No branch-ready basis."
+    },
+    {
+      "id": "pr-wrapper-attempt",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "scripts/artifact_lifecycle_validation.py",
+          "identity": "sha256:a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323"
+        },
+        {
+          "path": "scripts/test-artifact-lifecycle-validator.py",
+          "identity": "sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635"
+        }
+      ],
+      "result": "inconclusive",
+      "procedure": "bash scripts/ci.sh --mode pr --base d6770adfbbd835363d3b428acbd5a27a9485171b --head a5705e5011021514c58a0eaf4571a7f300c0e375; python scripts/validate-artifact-lifecycle.py --mode pr-ci --base d6770adfbbd835363d3b428acbd5a27a9485171b --head a5705e5011021514c58a0eaf4571a7f300c0e375",
+      "summary": "Both actually started. Wrapper81600 ended but completion output unavailable after context truncation/session expiry: exit unknown. Separate lifecycle37680 deliberately terminated after deterministic incompatibility established: exit143; historical scan incomplete. No completed broad pass/failure or hosted CI claimed. Prior M5 report and other actors entries unchanged. No push or PR."
+    },
+    {
+      "id": "er-pr-001-regression",
+      "actor": {
+        "id": "root-bugfix",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/artifact_lifecycle_validation.py",
+          "identity": "sha256:2c4ab7dcbeb3521ad0da92b06c737b8577b344d578b89acd7128151d8d9608a0"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:272b75e7b7b92b83e2d4150e603df44802dcfc4c982db676f68b48235150ec27"
+        },
+        {
+          "path": "scripts/test-artifact-lifecycle-validator.py",
+          "identity": "sha256:967c7ccb80643bf32ca6dc2bb994eef253a93643fadd36b1fb9c49d3cdc22c01"
+        },
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-artifact-lifecycle-validator.py; python scripts/test-change-metadata-validator.py; exact-commit node scripts/validate-record-store.mjs --revision; git diff --check",
+      "summary": "Pre-correction: 1 test, 5 failed assertions, exit1/1.204s. Valid selected set rejected by both lifecycle modes and direct bridge. Exact test hash314e8affa6f0e579c268a76e7c4b654090751a7908ef56e263d912d26d83028b; production lifecycle a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323; bridge339baf0fdcae22d77bc427c11ee483f275720b91a6d89d2254efae355eda16c6. User explicitly authorized er-pr-001 repair, independent review and PR continuation. Fix/current-bounded/governed-scope-bound/single-governed-candidate; settled WF-SR-09/10 and CLI-SR-02/10 plus required ci.sh PR/main gate, integration-mismatch, supported root cause, feasible failing automated proof. Scope: these three scripts and existing owned evidence; no model, public command, schema or workflow change. Selected snapshot reads must validate exact raw blobs/regular-file modes without checkout or live-byte fallback; missing/unknown/unsafe/malformed data rejects.\nCorrection proof (2026-09-07): expanded tests exposed deleted/sibling record selection and UTF-8 text-parser failures; complete-set dispatch now owns those bytes. ER-PR-002 independent valid9,137,022-byte fixture failed under8MiB limit; corrected unique-ID regression failed against8MiB (1test/1.631s) then passed against65MiB (1test/1.575s). ER-PR-003 selected-invalid/live-symlink regression failed4assertions/69.346s before lexical-path correction, then passed in final full suite with unchanged test bytes. Final python scripts/test-artifact-lifecycle-validator.py:169tests passed/74.961s, exit0; includes12selected snapshot cases across PR/main and both composition modes, direct helper, and >8MiB valid set. python scripts/test-change-metadata-validator.py:115passed/24.14s. Direct node scripts/validate-record-store.mjs docs/changes/2026-09-05-explicit-recording-and-model-centered-design/change.yaml --revision a5705e5011021514c58a0eaf4571a7f300c0e375 passed against different live evidence. git diff --check passed. An initial misnamed metadata command failed because file absent; corrected named suite passed. Independent reviewer reproduced corrected limit and symlink outcomes. Current proof is producer validation, not PR readiness or hosted CI; full exact PR gate remains for Verify."
     }
   ]
 }

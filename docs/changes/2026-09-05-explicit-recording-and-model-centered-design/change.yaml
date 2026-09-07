@@ -193,16 +193,16 @@
         "id": "review-compact-fix",
         "role": "review"
       },
-      "reason": "Independent ER-M5-002 disposition and affected whole-change reassessment against exact corrected subjects; final Verify and its root blocker remain separate."
+      "reason": "Independent correction and affected whole-change review against exact current subjects; ER-PR-002/003 resolved. PR Verify remains separate."
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/verify-report.md",
-      "value": "current",
+      "value": "stale",
       "actor": {
-        "id": "review-compact-fix",
-        "role": "verify"
+        "id": "root-bugfix",
+        "role": "support"
       },
-      "reason": "Independent final assessment and exact current proof support success for the adopted isolated initiative; no external integration authority."
+      "reason": "Source correction for er-pr-001 changes relied-on validator subjects; retain prior judgments but require affected independent rereview and fresh Verify before reliance."
     }
   ],
   "blockers": [
@@ -270,6 +270,35 @@
           }
         ]
       }
+    },
+    {
+      "id": "er-pr-001",
+      "reporter": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "owner": {
+        "id": "ci-maintenance-owner",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "scripts/artifact_lifecycle_validation.py",
+          "identity": "sha256:a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323"
+        },
+        {
+          "path": "scripts/test-artifact-lifecycle-validator.py",
+          "identity": "sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635"
+        }
+      ],
+      "evidence": "Mandatory ci.sh:1533-1535 PR lifecycle gate invokes unsupported pr-ci. Independent 12-case regression confirms rejection. See evidence.yaml#pr-tracked-gate-compatibility. Prior isolated M5 success remains scoped history.",
+      "required_outcome": "Support required PR lifecycle validation against exact selected immutable subjects without using unrelated live bytes or skipping/weakening validation. Add regressions, independent correction and affected whole-change review, then exact PR Verify before push. CI/implementation owner needs bounded correction authority; Verify does not repair.",
+      "state": "open",
+      "resolution": null
     }
   ]
 }

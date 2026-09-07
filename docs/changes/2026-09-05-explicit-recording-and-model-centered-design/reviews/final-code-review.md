@@ -190,7 +190,7 @@
     },
     {
       "path": "scripts/validate-record-store.mjs",
-      "identity": "sha256:339baf0fdcae22d77bc427c11ee483f275720b91a6d89d2254efae355eda16c6"
+      "identity": "sha256:272b75e7b7b92b83e2d4150e603df44802dcfc4c982db676f68b48235150ec27"
     },
     {
       "path": "scripts/validation_selection.py",
@@ -286,11 +286,11 @@
     },
     {
       "path": "scripts/artifact_lifecycle_validation.py",
-      "identity": "sha256:a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323"
+      "identity": "sha256:2c4ab7dcbeb3521ad0da92b06c737b8577b344d578b89acd7128151d8d9608a0"
     },
     {
       "path": "scripts/test-artifact-lifecycle-validator.py",
-      "identity": "sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635"
+      "identity": "sha256:967c7ccb80643bf32ca6dc2bb994eef253a93643fadd36b1fb9c49d3cdc22c01"
     }
   ],
   "judgment": "approved",
@@ -332,6 +332,80 @@
           {
             "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
             "id": "er-m5-001-lifecycle-regression"
+          }
+        ]
+      }
+    },
+    {
+      "id": "er-pr-002",
+      "reporter": {
+        "id": "review-compact-fix",
+        "role": "review"
+      },
+      "owner": {
+        "id": "ci-maintenance-owner",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:2ab682d4e0150f55de984ee6361b23e81c1d14242c70c1d11ecc6e4971575d1b"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        }
+      ],
+      "evidence": "Independent committed fixture /tmp/er-pr-limit-F8nq3A: 18 files, 9,137,022 total bytes, each below1MiB. Shared validateRecordStoreSet passes; current --revision helper exits1. Helper snapshotFiles caps total at8MiB, contrary to CLI Design Performance and limits: authoritative complete-set total65MiB;8MiB is request stdin.",
+      "required_outcome": "Use the approved65MiB complete-set budget while retaining1MiB per-file and64-supporting-record bounds. Add a strict-valid >8MiB selected-snapshot regression and retain rejection above the approved limits. Independent rereview before relying on PR proof.",
+      "state": "resolved",
+      "resolution": {
+        "actor": {
+          "id": "review-compact-fix",
+          "role": "review"
+        },
+        "rationale": "Independently rerun original9137022-byte committed fixture now passes actual helper; approved65MiB complete-set bound restored, per-file/registry bounds retained.",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+            "id": "er-pr-001-regression"
+          }
+        ]
+      }
+    },
+    {
+      "id": "er-pr-003",
+      "reporter": {
+        "id": "review-compact-fix",
+        "role": "review"
+      },
+      "owner": {
+        "id": "ci-maintenance-owner",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/artifact_lifecycle_validation.py",
+          "identity": "sha256:d0091ce336fe29d8cbb44fae21872b9d6a54d982c8745df4953c9cde1fe84763"
+        },
+        {
+          "path": "scripts/test-artifact-lifecycle-validator.py",
+          "identity": "sha256:967c7ccb80643bf32ca6dc2bb994eef253a93643fadd36b1fb9c49d3cdc22c01"
+        }
+      ],
+      "evidence": "Independent Git fixture /tmp/lifecycle-recording-fixture-qvo8ysjk: only selected change is a CRLF-invalid committed reviews/design-review.md; live path replaced by symlink to unrelated tracked innocent.txt. Both pr-ci/push-main-ci with composition false/true return zero blockers. _collect_diff_paths resolves selected names through live filesystem; owner routing sees innocent.txt and omits the invalid set.",
+      "required_outcome": "Keep selected-tree paths lexical throughout tracked scope and discovery; do not let live symlink targets change selected Git identities. Validate selected registered blobs. Add direct invalid-selected/live-symlink and valid-selected/distinct-live proof across both modes and composition choices; independently rereview.",
+      "state": "resolved",
+      "resolution": {
+        "actor": {
+          "id": "review-compact-fix",
+          "role": "review"
+        },
+        "rationale": "Independently rerun original invalid-selected/live-symlink fixture now rejects in both tracked modes and both composition choices; selected paths remain lexical and raw selected blobs own validation.",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+            "id": "er-pr-001-regression"
           }
         ]
       }
@@ -424,3 +498,47 @@ Residual limitation: direct lifecycle pr-ci/push-main-ci validation of new-contr
 ### Final local CI result received at handoff
 
 The coordinator subsequently reported final bash scripts/ci.sh --mode local (session 35921) exit zero with all 20 selected checks passing after the tracked-mode safeguard, with no source changes during the run. This supersedes the pending-run timing above, not its preserved earlier evidence. Producer evidence refresh and Verify-owned root-blocker disposition follow separately. The current correction and affected whole-change judgments remain clean-with-notes; no Verify success is inferred.
+
+## PR correction first-pass review: ER-PR-002
+
+Status: changes-requested. Recording status: recorded. Independent reviewer authored no implementation. This bounded review identifies a new major valid-input rejection in the snapshot helper; it does not close ER-PR-001 or establish branch readiness.
+
+- Finding ID: ER-PR-002 (structured er-pr-002)
+- Severity: major
+- Location: scripts/validate-record-store.mjs, snapshotFiles aggregate total check; docs/design/cli.md, Performance and limits.
+- Evidence: independent Node fixture creates and commits18 valid records totaling9,137,022 bytes; shared complete-set validation passes, actual helper --revision exits1. Fixture retained at /tmp/er-pr-limit-F8nq3A.
+- Required outcome: enforce65MiB authoritative total, not8MiB stdin limit; direct regression for valid larger snapshots.
+- Safe resolution path: bounded implementation correction and independent rereview; no Design decision needed.
+
+Checklist: spec alignment, valid-input edge coverage, compatibility and proof adequacy block on this finding. Error handling remains fail-closed; architecture separation and no source mutation by reviewer pass. No packaging/guidance delta is claimed. Other current correction tests are still author-run/pending; this is not a comprehensive clean judgment. Earlier whole-change judgments remain historical; current applicability stays stale. No automatic downstream handoff; Verify readiness not claimed.
+
+## PR correction rereview: ER-PR-003
+
+Status: changes-requested. Recording status: recorded.
+
+- Finding ID: ER-PR-003 (structured er-pr-003)
+- Severity: major
+- Location: scripts/artifact_lifecycle_validation.py, _collect_diff_paths and tracked Markdown discovery live Path.resolve calls.
+- Evidence: independent fixture /tmp/lifecycle-recording-fixture-qvo8ysjk; selected CRLF-invalid review plus live symlink to unrelated tracked innocent.txt yields zero blockers in all four tracked mode/composition combinations. This is a false pass, not only an error-message issue.
+- Required outcome: selected-tree names remain lexical and raw selected blobs determine validation; regression must prove the invalid selected set rejects despite live symlink substitution.
+- Safe resolution path: bounded implementation/test correction and rereview; no Design change.
+
+Identity, alternate-path coverage and validation adequacy block. Snapshot helper limit correction is not rejected here, but its final disposition awaits the coherent correction. Prior findings/history preserved. No source changes by reviewer; no automatic downstream handoff, branch readiness or Verify success claimed.
+
+## Current PR correction and affected whole-change review
+
+Status: clean-with-notes. Recording status: recorded. Reviewer review-compact-fix authored no correction, runtime, model or plan contribution. ER-PR-002 and ER-PR-003 are resolved by independent exact-fixture retests; original finding subjects and earlier adverse judgments remain historical evidence. Verify-owned ER-PR-001 remains open pending actual branch verification.
+
+The reviewed correction consists of the three current subject identities below. Every other previously reviewed whole-change subject was rehashed and matched before reliance.
+
+- scripts/artifact_lifecycle_validation.py: sha256:2c4ab7dcbeb3521ad0da92b06c737b8577b344d578b89acd7128151d8d9608a0
+- scripts/validate-record-store.mjs: sha256:272b75e7b7b92b83e2d4150e603df44802dcfc4c982db676f68b48235150ec27
+- scripts/test-artifact-lifecycle-validator.py: sha256:967c7ccb80643bf32ca6dc2bb994eef253a93643fadd36b1fb9c49d3cdc22c01
+
+Independent commands/proof: actual validate-record-store.mjs --revision against /tmp/er-pr-limit-F8nq3A passed for18files/9137022bytes; validate_repository against /tmp/lifecycle-recording-fixture-qvo8ysjk rejected selected CRLF-invalid review despite live symlink in pr-ci/push-main-ci with composition false/true. Coordinator evidence er-pr-001-regression reports final full lifecycle169tests/74.961s, metadata115tests/24.14s and git diff --check exit0, preserving tests-first failures. These are local results, not hosted or PR-wrapper success.
+
+All ten checklist items pass for the correction: model limits/identity alignment;12selected snapshot cases across both modes/composition plus direct helper and large-set proof; deleted/sibling/encoding/symlink boundaries; fail-closed errors; reuse of shared complete-set validation; historical mode regression; bounded regular Git blobs without payload diagnostics; unchanged runtime/generated guidance identities; only three scoped validator/test scripts; and attributable direct proof.
+
+Distinct affected whole-change judgment: clean-with-notes for the current complete implementation. The new snapshot bridge composes with existing contract selection without reintroducing lifecycle eligibility or changing recording semantics. It validates selected immutable complete-set bytes, not unrelated live content; repository Git validation does not make Git a recorder prerequisite. Previously reviewed M1-M4 storage, model mapping, guidance, packaging and adoption behavior is unchanged, with exact prior subject inventory/proof retained. No implementation milestone remains open on this correction review.
+
+The earlier direct tracked-mode unsupported limitation is superseded by this implementation assessment, not by retroactively rewriting prior proof. Actual required PR-mode verification must still run against a fresh committed source candidate. No branch-ready, PR-ready, Verify success, publication or automatic downstream handoff is claimed by Code Review. Next owning assessment: Verify; ER-PR-001 closure remains its separate decision.
