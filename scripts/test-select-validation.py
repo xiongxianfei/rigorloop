@@ -56,7 +56,7 @@ ADAPTER_REGRESSION_COMMAND = (
 
 EXPECTED_CATALOG = {
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
-    "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/workflow.md --path docs/design/cli.md",
+    "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/workflow/workflow.md --path docs/design/cli/cli.md --path docs/design/record-format/record-format.md",
     "compact_contract.canonical": "python scripts/test-compact-current-state-canonical-contract.py && node --test packages/rigorloop/test/compact-contract.test.js",
     "boundary_first.validate": "python scripts/validate-boundary-first.py --check",
     "boundary_first.reference_regression": "python scripts/test-boundary-first-reference.py",
@@ -607,7 +607,7 @@ class ValidationSelectionTests(unittest.TestCase):
 
     def test_explicit_recording_adoption_surfaces_select_real_proof(self):
         paths = (
-            "docs/design/cli.md", "docs/design/workflow.md",
+            "docs/design/cli/cli.md", "docs/design/workflow/workflow.md",
             "schemas/explicit-recording-v1.schema.json",
             "scripts/build-record-store-schema.mjs",
             "scripts/validate-record-store.mjs",
@@ -641,12 +641,25 @@ class ValidationSelectionTests(unittest.TestCase):
                     "model.validate", "boundary_first.regression", "change_metadata.regression",
                 })
 
+    def test_model_example_selection_uses_owner_not_example_as_model(self):
+        import shlex
+        for path in ("docs/design/record-format/examples/minimal-change.json",
+                     "docs/design/workflow/examples/correction-cycle.mmd"):
+            result = select_validation(SelectionRequest(
+                mode="explicit", paths=(path,), repo_root=ROOT,
+                preflight_context=self.root_preflight_context))
+            check = next(c for c in result.selected_checks if c["id"] == "model.validate")
+            command = shlex.split(check["command"])
+            self.assertNotIn(path, command)
+            owner = path.split("/")[2]
+            self.assertIn(f"docs/design/{owner}/{owner}.md", command)
+
     def test_model_selection_retains_authoritative_tracking_preflight(self):
         repo = self.make_git_repo()
-        path = repo / "docs/design/workflow.md"
+        path = repo / "docs/design/workflow/workflow.md"
         path.parent.mkdir(parents=True)
         path.write_text("# Model fixture\n")
-        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/design/workflow.md",), repo_root=repo))
+        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/design/workflow/workflow.md",), repo_root=repo))
         self.assertIn("untracked-authoritative-artifacts", {item.get("code") for item in result.blocking_results})
 
     def test_isolated_recording_evidence_selects_proof_without_formal_settlement(self):

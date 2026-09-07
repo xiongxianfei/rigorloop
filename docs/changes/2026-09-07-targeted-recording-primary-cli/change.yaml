@@ -10,22 +10,22 @@
     {
       "id": "workflow",
       "subject": {
-        "path": "docs/design/workflow.md",
-        "identity": "sha256:1519bdc2fa8240a092a1f4f4349f60bda3244f1d40780f8c79be24575a80bcbf"
+        "path": "docs/design/workflow/workflow.md",
+        "identity": "sha256:2286a09a7a760013cebc8c6ec06758ae9a239618e2af72dce61789b0edc6bf20"
       }
     },
     {
       "id": "cli",
       "subject": {
-        "path": "docs/design/cli.md",
-        "identity": "sha256:858d1f4b342be8e64317d8cbda51caf27764785ddc3f42d9ce6a69ac419eba3f"
+        "path": "docs/design/cli/cli.md",
+        "identity": "sha256:e82c9249798dcaedfec2f1d5e6814af0a639433992093af5c4c8c5c480a8e836"
       }
     },
     {
       "id": "record-format",
       "subject": {
-        "path": "docs/design/record-format.md",
-        "identity": "sha256:61ef254569ef7444e6114ee5de507ebc4e6e8a81c0bb5c8950d7d800349c9a90"
+        "path": "docs/design/record-format/record-format.md",
+        "identity": "sha256:3a2e18d5df85101104f738dfc7ef7ca9c264437a5a332e0b0e3ac88427a7c108"
       }
     }
   ],
@@ -58,7 +58,7 @@
         "id": "codex-root",
         "role": "design"
       },
-      "reason": "Models now specify plain JSON v2 records, model-centered layout adoption and native-format companion examples. Original reviewed subjects and open rf-dr-001 are preserved; the revised package and relied-on examples need independent rereview."
+      "reason": "The user authorized moving each model into docs/design/<model>/<model>.md with validator, selector and reference updates. Current subjects now identify those files; the old review subjects and open rf-dr-001 remain unchanged pending independent review of the revised package."
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",

@@ -20,9 +20,9 @@ The model ID is `record-format`. Its selected prospective format is **RigorLoop 
 
 | Concern | Owner | Relationship |
 | --- | --- | --- |
-| Actor responsibility, decision meaning, justified progression and independence | [Workflow](workflow.md) | Supplies the semantic obligations represented by records |
+| Actor responsibility, decision meaning, justified progression and independence | [Workflow](../workflow/workflow.md) | Supplies the semantic obligations represented by records |
 | Stored record types, fields, relationships, versions and retained origin | Record Format | Defines the admissible durable representation |
-| Public commands, request/result schemas, selection and mechanical construction | [CLI](cli.md) | Constructs and exposes records conforming to this model |
+| Public commands, request/result schemas, selection and mechanical construction | [CLI](../cli/cli.md) | Constructs and exposes records conforming to this model |
 | Exact byte encoding, lossless edits, identity computation, containment, conflicts and recovery | CLI | Persists complete candidates while enforcing this model's invariants |
 
 In scope are change, review, evidence, material-decisions and success-only Verify records. Engineering model files, plans and implementation subjects remain referenced in place. No authentication system, new stage, readiness engine, historical migration, request ledger or review-history archive is introduced.
@@ -98,7 +98,7 @@ flowchart TB
 
 This conceptual view illustrates RF-SR-01/02/03; it is not a second schema. Subjects may also include implementation and other proof inputs admitted by the exact Subject type. Supporting records are conditional, and their arrows do not imply that every record must exist before a correction can be saved.
 
-| Stored record | Semantic responsibility | Compatibility definition in the [existing v1 JSON Schema](../../schemas/explicit-recording-v1.schema.json) |
+| Stored record | Semantic responsibility | Compatibility definition in the [existing v1 JSON Schema](../../../schemas/explicit-recording-v1.schema.json) |
 | --- | --- | --- |
 | Change | Recorded coordination, work, blockers, registry and applicability | `$defs.change` |
 | Review | Independent judgment, exact subjects and review-scoped findings | `$defs.review` |
@@ -106,7 +106,7 @@ This conceptual view illustrates RF-SR-01/02/03; it is not a second schema. Subj
 | Material decisions | Rationale and source references that constrain work | `$defs.decisions` |
 | Verify report | Successful final assessment and supporting references | `$defs.verify` |
 
-This model owns stored field shapes, relationships and preservation invariants. The [Workflow model](workflow.md#requirements) owns the engineering meaning of decisions and the obligations for relying on them. The JSON Schema expresses structural shapes; the [CLI model](cli.md#advanced-candidate-update-contract) owns byte encoding, containment, identity computation and persistence. The schema file also contains advanced request/result definitions, which are transport contracts rather than additional stored record kinds. V2 stores one JSON object per file. Narrative is a string field in that object, not a separate Markdown document or front-matter section. Structural validity does not establish workflow readiness.
+This model owns stored field shapes, relationships and preservation invariants. The [Workflow model](../workflow/workflow.md#requirements) owns the engineering meaning of decisions and the obligations for relying on them. The JSON Schema expresses structural shapes; the [CLI model](../cli/cli.md#advanced-candidate-update-contract) owns byte encoding, containment, identity computation and persistence. The schema file also contains advanced request/result definitions, which are transport contracts rather than additional stored record kinds. V2 stores one JSON object per file. Narrative is a string field in that object, not a separate Markdown document or front-matter section. Structural validity does not establish workflow readiness.
 
 ### Explicit record schema
 
@@ -136,13 +136,13 @@ These complete JSON objects illustrate the stored format; they are not registere
 
 | Example | Question answered | Requirement basis |
 | --- | --- | --- |
-| [Minimal change](record-format/examples/minimal-change.json) | What does the complete manifest look like before supporting records exist? | RF-SR-01/02/03 |
-| [Incomplete review](record-format/examples/incomplete-review.json) | How is missing assessment basis recorded without inventing approval? | RF-SR-01/03/05/07 |
-| [Before reassessment](record-format/examples/finding-reassessment/before.json) and [after reassessment](record-format/examples/finding-reassessment/after.json) | How can a new approval preserve an unresolved finding and its immutable origin? | RF-SR-03/04/05/07 |
+| [Minimal change](examples/minimal-change.json) | What does the complete manifest look like before supporting records exist? | RF-SR-01/02/03 |
+| [Incomplete review](examples/incomplete-review.json) | How is missing assessment basis recorded without inventing approval? | RF-SR-01/03/05/07 |
+| [Before reassessment](examples/finding-reassessment/before.json) and [after reassessment](examples/finding-reassessment/after.json) | How can a new approval preserve an unresolved finding and its immutable origin? | RF-SR-03/04/05/07 |
 
 The reassessment pair intentionally leaves the finding open and byte-equivalent as a JSON value. The current review changes subjects, judgment and body; no finding disposition or applicability is implied. The recordable after-state does not itself justify progression. Supporting-record registration and explicit applicability are required in a containing store, as specified above.
 
-Examples use JSON directly, without commentary properties or Markdown wrappers. The CLI owns [request/receipt examples](cli.md#examples), and Workflow owns [actor sequencing](workflow.md#examples). Readers load only the example relevant to their question.
+Examples use JSON directly, without commentary properties or Markdown wrappers. The CLI owns [request/receipt examples](../cli/cli.md#examples), and Workflow owns [actor sequencing](../workflow/workflow.md#examples). Readers load only the example relevant to their question.
 
 ### Retained judgments for unresolved findings
 
@@ -160,7 +160,7 @@ The v2 record table above and the types below form one stored-format definition.
 
 Objects are closed, listed fields are required, and the existing Actor, Subject, text and judgment types apply. The origin rationale is a concise, actor-supplied explanation of why the observed evidence matters for the required outcome. Supporting judgment is an optional fact represented by explicit null when none is cited; a concern does not need a fabricated overall review judgment to be recorded. When supplied, that judgment's complete relevant rationale and provenance are embedded, not represented solely by a mutable link or hash. The finding's original observed evidence and required outcome are retained even if its current fields later evolve.
 
-At creation the CLI copies reporter, subjects, evidence and required_outcome from the actor's concern values into origin. The actor supplies the rationale and explicitly chooses whether a supporting judgment is absent, supplied directly, or constructed from the provenance/outcome of an exact selected review plus actor-supplied finding-specific rationale. Copying the selected content is mechanical preservation; selecting its significance is the actor's decision. No actor is required to retype another review or assemble serialized metadata to retain it. The [CLI contract](cli.md#finding-origin-construction) defines those input forms.
+At creation the CLI copies reporter, subjects, evidence and required_outcome from the actor's concern values into origin. The actor supplies the rationale and explicitly chooses whether a supporting judgment is absent, supplied directly, or constructed from the provenance/outcome of an exact selected review plus actor-supplied finding-specific rationale. Copying the selected content is mechanical preservation; selecting its significance is the actor's decision. No actor is required to retype another review or assemble serialized metadata to retain it. The [CLI contract](../cli/cli.md#finding-origin-construction) defines those input forms.
 
 #### Preservation and reliance
 
@@ -205,7 +205,7 @@ The retained v1 format preserves its existing common types, closed vocabularies 
 | Review findings and change blockers | `Blocker = {id, reporter, owner, subjects, evidence, required_outcome, state, resolution}` | `Concern`, including required immutable origin |
 | Original concern basis | No separate retained origin field | Required Origin; supporting_judgment explicitly null or complete JudgmentBasis |
 
-The [existing v1 schema](../../schemas/explicit-recording-v1.schema.json) is the machine-readable compatibility definition, not an implementation of v2. Delivery must supply the corresponding v2 schema and validator dispatch; renaming the existing schema would not implement the new invariant.
+The [existing v1 schema](../../../schemas/explicit-recording-v1.schema.json) is the machine-readable compatibility definition, not an implementation of v2. Delivery must supply the corresponding v2 schema and validator dispatch; renaming the existing schema would not implement the new invariant.
 
 After coordinated v2 activation, primary change.create MUST explicitly select rigorloop-records-v2. A primary creation request selecting explicit-recording-v1 rejects as invalid-input without writes. Existing v1 roots remain supported for explicit compatible reads and updates. The advanced v1 recorder retains its existing explicitly selected creation behavior as a compatibility path; it is not the normal new-change interface and ordinary skills must not use it to bypass primary creation policy. No command guesses or silently substitutes the version. V2 records all carry schema_version 2, and mixed record versions inside one change reject structurally. An existing v1 root stays v1 and is never upgraded by recording a finding. V1 concern reads identify that retained origin is unavailable rather than synthesizing it from a current review. No v2 retention guarantee is claimed for v1 data. V1 fields and operations remain available under their unchanged compatibility rules.
 
@@ -237,7 +237,7 @@ Delivery must add v2 machine-readable stored definitions and explicit version di
 
 ### Serialization, identity and narrative
 
-The [CLI encoding and candidate contract](cli.md#lossless-candidate-construction-and-shared-engine) owns plain JSON encoding for v2, retained JSON-subset YAML/Markdown encoding for v1, exact-byte identities, lossless edits and limits. Record Format owns the resulting object structure and preservation requirements. A formatting-only rewrite is still subject to the CLI's byte-preservation rules. Narrative cannot override structured identity or enumerated values.
+The [CLI encoding and candidate contract](../cli/cli.md#lossless-candidate-construction-and-shared-engine) owns plain JSON encoding for v2, retained JSON-subset YAML/Markdown encoding for v1, exact-byte identities, lossless edits and limits. Record Format owns the resulting object structure and preservation requirements. A formatting-only rewrite is still subject to the CLI's byte-preservation rules. Narrative cannot override structured identity or enumerated values.
 
 File identity, stored format version and current workflow applicability are distinct. Changing one does not implicitly decide another. External historical subjects may drift; internal record references must resolve within the candidate.
 
@@ -286,7 +286,7 @@ Stored format: versioned durable data contract. Concern: review finding or chang
 
 ## Drafting basis and authority
 
-This model is extracted and refined under the user's explicit request to make RigorLoop Record Format a model. The design package now contains [Workflow](workflow.md), [CLI](cli.md) and this file (`record-format`). The [targeted-recording proposal](../proposals/2026-09-07-targeted-recording-primary-cli.md) supplies the direction. Existing review outcomes do not approve this new three-model package. This draft changes no stored records, runtime schemas, lifecycle settlement or release activation.
+This model is extracted and refined under the user's explicit request to make RigorLoop Record Format a model. The design package now contains [Workflow](../workflow/workflow.md), [CLI](../cli/cli.md) and this file (`record-format`). The [targeted-recording proposal](../../proposals/2026-09-07-targeted-recording-primary-cli.md) supplies the direction. Existing review outcomes do not approve this new three-model package. This draft changes no stored records, runtime schemas, lifecycle settlement or release activation.
 
 ## Next artifacts
 
