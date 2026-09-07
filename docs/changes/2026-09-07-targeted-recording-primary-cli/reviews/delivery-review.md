@@ -5,7 +5,7 @@
   "id": "delivery-review",
   "target": "delivery",
   "reviewer": {
-    "id": "delivery-fresh-review",
+    "id": "delivery-reliance-review",
     "role": "review"
   },
   "contributors": [
@@ -14,7 +14,7 @@
       "role": "plan"
     }
   ],
-  "independence_basis": "Separately delegated delivery-fresh-review execution independently read the entire primary plan, traced its allocation against the three approved models and proposal, checked exact upstream subject identities and inspected proof harnesses. This reviewer authored no plan or model content and was not the previous approving reviewer. codex-root remains the plan contributor; role labels themselves do not authenticate independence.",
+  "independence_basis": "Explicitly delegated independent Delivery reviewer reassessed the complete unchanged primary plan against the exact current approved Design Review and model/proposal basis without authoring the plan, models or the two M5 spec amendments. The reviewer independently authored only the separately attributed Design classification of those amendments, not their contents. This new assessment evaluates allocation and safe sequencing afresh, preserves prior reviewer attribution and all DP findings, and is not an automatic digest refresh or an implementation/Verify judgment.",
   "subjects": [
     {
       "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
@@ -38,11 +38,19 @@
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
-      "identity": "sha256:86a25fafdf99fdc9e4782d91b2d6005751f0dcfaac5801a052001ceed3632971"
+      "identity": "sha256:0719f7cb5aa5e02f0bbb0bd80cfc72e94396f0f2ceeaba95a8688082bb3bac3f"
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",
       "identity": "sha256:bdd21f4d0f122445ddf6f9f3bedb1d7b6b00eba59ad6da56ef20399d3270691a"
+    },
+    {
+      "path": "specs/rigorloop-workflow.md",
+      "identity": "sha256:0eae07ea872452fe203d01d50049b47e5df97b82542237af520d644671198cbc"
+    },
+    {
+      "path": "specs/skill-contract.md",
+      "identity": "sha256:ced40b68fc8c4e610b3bd66b19c10d4f8c0b2c394cd14adf95cd18c41cf35ca3"
     }
   ],
   "judgment": "approved",
@@ -134,6 +142,69 @@
   ]
 }
 ---
+# Current independent Delivery Review reassessment
+
+Outcome: approved. Reviewer: delivery-reliance-review (role: review). This is a genuinely new bounded independent assessment of the exact current delivery package for final reliance. It replaces the prior current Delivery judgment without attributing newer subjects to the prior reviewer. The plan, three governing models and prior DP finding bases are unchanged; the Design Review file changed only by appending a separately attributed independent classification of two exact M5 new-profile-only spec amendments. Its original structured Design reviewer/member map/judgment/finding and prior body remain unchanged.
+
+The reviewer read the complete primary plan and reassessed its requirement-to-boundary-to-milestone-to-proof trace against the known unchanged model package and the new classification. M1 representation and field-specific references precede M2 coherent publication, identities and exact-byte recovery. M3 scoped reads and bounded diagnostics precede M4 lossless construction, explicit origin/applicability and related updates. M5 explicitly allocates the amended governance/skill entry surfaces, resource closure and supported-package proof, so the new-profile-only classification adds no unallocated implementation or verification requirement. Historical procedures, v1 compatibility, explicit v2 creation and separately authorized activation remain correctly distinguished.
+
+The allocated normal/negative proof still covers each model dimension and the material compositions: stale declared basis, mixed readers/writers, interruptions and recovery, no-op/retry, unsafe containment, immutable origin, final-candidate references, full Verify/decisions reads, diagnostic density and B-to-C continuation drift. TG-FINAL-01 joins the public correction and safe-recording interaction; TG-FINAL-02 joins consumer/resource/installed-package coherence. C1-C10 remain concrete repository-owned checks, with structural validation and human assessment assigned distinct roles. Recovery after any v2 write retains version-capable readers and exact prepared bytes rather than replaying a constructor or migrating old data.
+
+DP-01 remains resolved: final independent whole-change Code Review with current integrated subjects and no unresolved material findings is explicit in M5 handoff, M6 dependencies, Dependencies and Readiness. A milestone-only review does not satisfy it. DP-02 remains resolved: TG-08 requires named equivalent full interactions, guidance/help and follow-up inclusion, tokenizer/call totals, adequate decision basis and supported qualitative benefit, or owning-Design disposition of unfavorable/inconclusive results before adoption recommendation. Completing an experiment alone is insufficient. DP-03 remains resolved: v2 origin is required; only supporting judgment may be absent, and the plan separately preserves v1's lack of origin. All structured finding fields, original subjects, discovery attribution and dispositions are retained exactly.
+
+The two spec amendments are explicitly allocated M5 entry-profile changes. Their Design-owned classification preserves the historical remainder and changes no approved model behavior, public semantic rule, milestone scope or acceptance consequence. No new Design decision, Delivery correction, historical feature-format adoption or additional artifact is required for this package. This conclusion is limited to the exact current subjects in the new structured assessment.
+
+Validation actually performed for this review: read the selected recorded context; recomputed the existing Delivery subject identities and found only the expected Design Review body digest change; compared current Design metadata and original-body prefix to the prior committed record and confirmed preservation; ran `python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/workflow/workflow.md --path docs/design/record-format/record-format.md`, which passed structure/reference validation. These checks support identity/document structure, not implementation correctness. The transient check/record request binds every exact new subject.
+
+New findings: none. Recording status: recorded. Explicit applicability is current for this exact Delivery assessment. Plan/models, implementation, prior findings and routing are not edited. Next owner: the final whole-change Code Reviewer may rely on this current Delivery judgment; M6 Verify remains a separate downstream responsibility. This review makes no Code Review, implementation-completion, Verify, branch/PR readiness, release or customer-activation claim.
+
+## Retained prior Delivery assessment attribution and subject map
+
+The following former current metadata and narrative are historical evidence from the previous reviewer. They are not the subject map of this new assessment and are not retargeted to newer bytes.
+
+```json
+{
+  "reviewer": {
+    "id": "delivery-fresh-review",
+    "role": "review"
+  },
+  "independence_basis": "Separately delegated delivery-fresh-review execution independently read the entire primary plan, traced its allocation against the three approved models and proposal, checked exact upstream subject identities and inspected proof harnesses. This reviewer authored no plan or model content and was not the previous approving reviewer. codex-root remains the plan contributor; role labels themselves do not authenticate independence.",
+  "subjects": [
+    {
+      "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+      "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+    },
+    {
+      "path": "docs/design/workflow/workflow.md",
+      "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+    },
+    {
+      "path": "docs/design/cli/cli.md",
+      "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+    },
+    {
+      "path": "docs/design/record-format/record-format.md",
+      "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+    },
+    {
+      "path": "docs/proposals/2026-09-07-targeted-recording-primary-cli.md",
+      "identity": "sha256:8200c3145bbdbe929be893c7fdd9327a829308084a31efe25d96a032b9b4f0c4"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
+      "identity": "sha256:86a25fafdf99fdc9e4782d91b2d6005751f0dcfaac5801a052001ceed3632971"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",
+      "identity": "sha256:bdd21f4d0f122445ddf6f9f3bedb1d7b6b00eba59ad6da56ef20399d3270691a"
+    }
+  ],
+  "judgment": "approved"
+}
+```
+
+## Retained prior Delivery narrative
+
 # Delivery review of targeted recording and Record Format v2
 
 ## Result
