@@ -21,7 +21,7 @@ The active published inventory omits standalone `test-spec` and `test-spec-revie
 
 ## Goal and context
 
-The `explicit-recording-v1` profiles implement the [Workflow model](../docs/design/workflow.md) for explicitly selected new changes in an adopting project. Their model-owned artifact/record shapes replace historical package and semantic-transition procedures only in that profile. Skill naming, self-containment, resource integrity, independent review, evidence and claim boundaries remain in force. Model-document validation consumes existing model tables; it does not require historical feature-format sidecars. The matching CLI, templates and generated supported adapters must agree; distribution availability never grants project adoption or review authority.
+The `explicit-recording-v1` profiles implement the [Workflow model](../docs/design/workflow/workflow.md) for explicitly selected new changes in an adopting project. Their model-owned artifact/record shapes replace historical package and semantic-transition procedures only in that profile. Skill naming, self-containment, resource integrity, independent review, evidence and claim boundaries remain in force. Model-document validation consumes existing model tables; it does not require historical feature-format sidecars. The matching CLI, templates and generated supported adapters must agree; distribution availability never grants project adoption or review authority.
 
 This spec defines the contributor-visible contract for RigorLoop skill guidance. A skill is an operational guide for one agent capability or workflow stage. It should be small enough to scan, explicit about local ownership, and clear about what it can and cannot claim.
 

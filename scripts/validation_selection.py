@@ -36,7 +36,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "model.validate": CheckCatalogEntry(
         "model.validate",
-        "python scripts/validate-boundary-first.py --check --path docs/design/workflow.md --path docs/design/cli.md",
+        "python scripts/validate-boundary-first.py --check --path docs/design/workflow/workflow.md --path docs/design/cli/cli.md --path docs/design/record-format/record-format.md",
         "explicit-recording", parallel_safe=True,
     ),
     "compact_contract.canonical": CheckCatalogEntry(
@@ -859,8 +859,17 @@ def catalog_command(
         return _join(*args)
     if check_id == "model.validate":
         args = ["python", "scripts/validate-boundary-first.py", "--check"]
-        models = {"docs/design/workflow.md", "docs/design/cli.md"}
-        models.update(path for path in paths if path.startswith("docs/design/"))
+        models = {"docs/design/workflow/workflow.md", "docs/design/cli/cli.md",
+                  "docs/design/record-format/record-format.md"}
+        for path in paths:
+            example = re.fullmatch(r"docs/design/([a-z0-9][a-z0-9-]{0,79})/examples/.+", path)
+            if example:
+                model = example.group(1)
+                models.add(f"docs/design/{model}/{model}.md")
+            elif path.startswith("docs/design/"):
+                # A moved flat path in a diff selects its current owner.
+                flat = re.fullmatch(r"docs/design/(workflow|cli|record-format)\.md", path)
+                models.add(f"docs/design/{flat.group(1)}/{flat.group(1)}.md" if flat else path)
         for path in sorted(models):
             args.extend(["--path", path])
         return _join(*args)

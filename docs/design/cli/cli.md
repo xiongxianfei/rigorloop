@@ -21,7 +21,7 @@ The CLI turns an actor's explicit decision into a safely stored update. Humans a
 | What does a query return or omit? | [Bounded queries](#bounded-queries-and-scope) |
 | What does a save or preview mean? | [Primary results](#primary-result-schema-diagnostics-and-preview) |
 | How are neighboring content, conflicts and recovery handled? | [Candidate construction](#lossless-candidate-construction-and-shared-engine), [retry](#batch-composition-no-op-and-retry) and [save safety](#save-safety-and-recovery-boundary) |
-| How does this interact with workflow decisions? | [Correction walkthrough](#correction-walkthrough-recording-behavior) and the [Workflow model](workflow.md) |
+| How does this interact with workflow decisions? | [Correction walkthrough](#correction-walkthrough-recording-behavior) and the [Workflow model](../workflow/workflow.md) |
 | Where is the maintenance interface? | [Advanced requests](#advanced-candidate-update-contract) and [advanced results](#advanced-result-schema-and-exit-behavior) |
 
 ## Context and Scope
@@ -34,8 +34,8 @@ The primary public surface is `status`, `context`, purpose-specific `show` and m
 
 | Concern | Owning model | This model's relationship |
 | --- | --- | --- |
-| Meaning of activity, work, findings, blockers, judgments and applicability | [Workflow](workflow.md#context-and-scope) | Accept and preserve explicitly supplied values |
-| Stored record types, relationships, versions and preservation | [Record Format](record-format.md) | Consume the stored-record contract |
+| Meaning of activity, work, findings, blockers, judgments and applicability | [Workflow](../workflow/workflow.md#context-and-scope) | Accept and preserve explicitly supplied values |
+| Stored record types, relationships, versions and preservation | [Record Format](../record-format/record-format.md) | Consume the stored-record contract |
 | Command syntax, request/result shapes and bounded selection | CLI | Define the public interface |
 | Encoding, byte preservation, identities, publication and recovery | CLI | Define and enforce mechanical storage safety |
 | Adequacy of evidence and justified progression | Workflow | Return observations without making those decisions |
@@ -46,22 +46,22 @@ The public documentation calls stored data the **RigorLoop Record Format**. The 
 
 | Surface | Existing or designed discriminator | Contract owner |
 | --- | --- | --- |
-| Stored records | Selected prospective design: rigorloop-records-v2 / schema_version 2. Retained compatibility: explicit-recording-v1 / schema_version 1. | Record Format owns the [complete stored-record definition](record-format.md#explicit-record-schema); CLI owns encoding and safety |
+| Stored records | Selected prospective design: rigorloop-records-v2 / schema_version 2. Retained compatibility: explicit-recording-v1 / schema_version 1. | Record Format owns the [complete stored-record definition](../record-format/record-format.md#explicit-record-schema); CLI owns encoding and safety |
 | Primary targeted requests | `interface: targeted-recording-v1`, `schema_version: 1` | CLI targeted request definitions |
 | Primary query/mutation results | `schema_version: 2`, operation-specific tagged result | CLI primary result definitions |
 | Advanced record-store requests/results | Compatibility request/result schema 1; prospective v2 request explicitly selects rigorloop-records-v2 and retains the advanced result schema | CLI advanced definitions |
 
 The model-document validation marker at the top of this file versions document structure only. It does not select a stored format. Stored schema versions, primary transport versions and advanced transport versions are independent; commands dispatch on the explicit contract and the version rules of their own surface.
 
-The existing [machine-readable schema](../../schemas/explicit-recording-v1.schema.json) includes stored types and advanced transport definitions. It does not yet implement the designed targeted request/result schemas or successor stored format. Schema linkage is structural evidence, not a claim that the primary commands are published or implemented.
+The existing [machine-readable schema](../../../schemas/explicit-recording-v1.schema.json) includes stored types and advanced transport definitions. It does not yet implement the designed targeted request/result schemas or successor stored format. Schema linkage is structural evidence, not a claim that the primary commands are published or implemented.
 
 ### Examples
 
 | Example | Scope and starting state | Requirement basis |
 | --- | --- | --- |
-| [Work update request](cli/examples/work-set/request.json) and [saved receipt](cli/examples/work-set/response.json) | Complete primary JSON messages for work.set on existing work-1, whose status is pending in example-change. Expected revision is current; no extra subject basis is claimed for this status-only decision. | CLI-SR-03/12/16 |
+| [Work update request](examples/work-set/request.json) and [saved receipt](examples/work-set/response.json) | Complete primary JSON messages for work.set on existing work-1, whose status is pending in example-change. Expected revision is current; no extra subject basis is claimed for this status-only decision. | CLI-SR-03/12/16 |
 
-Digests are illustrative, not reproducible fixture hashes or runtime evidence. The command is rigorloop work set work-1 with the explicit root/change and request on stdin. The actor chooses in-progress; the CLI preserves omitted ownership, requirements and neighboring entries. The response reports storage only. No complete stored file is submitted. Stored representations belong to the [Record Format examples](record-format.md#examples); actor sequencing belongs to [Workflow](workflow.md#examples).
+Digests are illustrative, not reproducible fixture hashes or runtime evidence. The command is rigorloop work set work-1 with the explicit root/change and request on stdin. The actor chooses in-progress; the CLI preserves omitted ownership, requirements and neighboring entries. The response reports storage only. No complete stored file is submitted. Stored representations belong to the [Record Format examples](../record-format/record-format.md#examples); actor sequencing belongs to [Workflow](../workflow/workflow.md#examples).
 
 ## Architecture Constraints
 
@@ -159,7 +159,7 @@ Creation/link are the two deliberate administrative verbs beyond show/add/set/re
 
 ### Finding origin construction
 
-Record Format's [retained-origin contract](record-format.md#retained-judgments-for-unresolved-findings) supersedes the earlier named-assessment proposal. The prospective stored format is rigorloop-records-v2 with schema_version 2 records; explicit-recording-v1 remains unchanged. The primary interface supports explicit dispatch to either, with no inferred conversion. V2 concerns carry their origin inside the finding or blocker; they do not require a review-history lookup to explain the original concern.
+Record Format's [retained-origin contract](../record-format/record-format.md#retained-judgments-for-unresolved-findings) supersedes the earlier named-assessment proposal. The prospective stored format is rigorloop-records-v2 with schema_version 2 records; explicit-recording-v1 remains unchanged. The primary interface supports explicit dispatch to either, with no inferred conversion. V2 concerns carry their origin inside the finding or blocker; they do not require a review-history lookup to explain the original concern.
 
 On v2 finding.add or blocker.add, values contain the ordinary Blocker fields except id plus required `basis: {rationale, supporting_judgment}`. This basis is input, not an additional stored field. Supporting_judgment is exactly null, `{snapshot: JudgmentBasis}`, or `{from_review: ID, rationale}`. The latter explicitly selects a registered review in this change's coherent candidate at that operation, including explicitly supplied earlier batch operations: the CLI copies its reviewer, contributors, independence_basis, subjects and judgment, using the actor-supplied finding-specific rationale rather than copying the entire review body. That rationale is the actor's explicit account of the supporting judgment, not a claim that it reproduces every sentence of the review. A missing/unreadable selected review rejects; the CLI never selects the latest or most favorable judgment. The expected change revision binds the before-state and batch order fixes any explicitly updated source content. Later operations do not retarget the captured origin. The actor need not separately copy or hash the source review.
 
@@ -384,7 +384,7 @@ A single context request may instead select `{kind: "verify", where: {}}` and `{
 
 ### Correction walkthrough: recording behavior
 
-This is the same example as Workflow's [actor-decision walkthrough](workflow.md#correction-walkthrough-actor-decisions). The selected change has a recorded completed activity, and a later Verify attempt detects a defect. The rows illustrate CLI-SR-03/04/05/07/08/12–17; they add no new command, status or ownership rule. Requests carry the explicit revision and decision basis required by their normal contracts.
+This is the same example as Workflow's [actor-decision walkthrough](../workflow/workflow.md#correction-walkthrough-actor-decisions). The selected change has a recorded completed activity, and a later Verify attempt detects a defect. The rows illustrate CLI-SR-03/04/05/07/08/12–17; they add no new command, status or ownership rule. Requests carry the explicit revision and decision basis required by their normal contracts.
 
 | Step | Public interaction | CLI records or returns | Preserved boundary |
 | --- | --- | --- | --- |
@@ -443,15 +443,15 @@ This is the CLI-owned companion to the Workflow model's adoption inventory. This
 
 | ID | Existing source and exact rule area | Proposed replacement or preservation | New requirement basis |
 | --- | --- | --- | --- |
-| CLI-MAP-01 | [Compact record contract](../../specs/compact-current-state-change-record.md), SR-19–25 and SR-46: projection, permitted operations, semantic requests, evaluator-derived candidate and milestone transitions | Replace for new contract with record-store commands, explicit candidates and storage-only results. Do not call the old eligibility engine before a record operation. | CLI-SR-01/02/03/07/11 |
+| CLI-MAP-01 | [Compact record contract](../../../specs/compact-current-state-change-record.md), SR-19–25 and SR-46: projection, permitted operations, semantic requests, evaluator-derived candidate and milestone transitions | Replace for new contract with record-store commands, explicit candidates and storage-only results. Do not call the old eligibility engine before a record operation. | CLI-SR-01/02/03/07/11 |
 | CLI-MAP-02 | Compact record contract, SR-26–31: identities, writer exclusion, multi-file publication, recovery and replay | Preserve safety outcomes with the new revision/read-set, save-safety, explicit recovery and stale-retry rules; do not prescribe OS mechanisms. Existing transaction code is a reuse candidate only. | CLI-SR-04/05/06/08 |
 | CLI-MAP-03 | Compact record contract, SR-33 and SR-37–39: path safety, schema identities, YAML/front matter and closed shapes | Preserve fail-closed containment and vocabulary; introduce the explicit-recording schema and exact-byte JSON-subset encoding. Do not widen the old schema to accept new shapes. | CLI-SR-02/03/09/10 |
-| CLI-MAP-04 | [Governed lifecycle CLI spec](../../specs/governed-lifecycle-cli.md), R2–5, R7–17, R19–25 and R28: lifecycle commands, effective-state projection, semantic registration/settlement, automatic invalidation and migration | Retain for its historical handlers. New record-store commands reject those contracts; they do not replace `lifecycle` by an alias or use its migration operation. | CLI-SR-01/03/07/10/11 |
-| CLI-MAP-05 | [System architecture](../architecture/system/architecture.md), Building Block View → Governed Lifecycle CLI: pure interpretation, transition evaluation and transaction adaptation | Add a contract-separated recording path with no transition evaluator. Keep old engine responsibilities described as historical-contract behavior. | CLI-SR-01–10 |
-| CLI-MAP-06 | [Compact schema](../../schemas/compact-current-state-v1.schema.json) and [compact templates](../../templates/compact/current-review.md) with evidence, decisions and Verify siblings | Retain old schema and templates. Author separate new-contract validation/scaffolding from the three model designs during implementation; never reinterpret old front matter. | CLI-SR-02/03/10 and WF-SR-02/10 |
-| CLI-MAP-07 | [Metadata validator](../../scripts/validate-change-metadata.py), [metadata regression tests](../../scripts/test-change-metadata-validator.py), [compact canonical-contract tests](../../scripts/test-compact-current-state-canonical-contract.py) | Add explicit contract dispatch and new-record coverage while preserving historical expectations. Split semantic readiness assertions from structural recording checks. | CLI-SR-02/07/10 |
+| CLI-MAP-04 | [Governed lifecycle CLI spec](../../../specs/governed-lifecycle-cli.md), R2–5, R7–17, R19–25 and R28: lifecycle commands, effective-state projection, semantic registration/settlement, automatic invalidation and migration | Retain for its historical handlers. New record-store commands reject those contracts; they do not replace `lifecycle` by an alias or use its migration operation. | CLI-SR-01/03/07/10/11 |
+| CLI-MAP-05 | [System architecture](../../architecture/system/architecture.md), Building Block View → Governed Lifecycle CLI: pure interpretation, transition evaluation and transaction adaptation | Add a contract-separated recording path with no transition evaluator. Keep old engine responsibilities described as historical-contract behavior. | CLI-SR-01–10 |
+| CLI-MAP-06 | [Compact schema](../../../schemas/compact-current-state-v1.schema.json) and [compact templates](../../../templates/compact/current-review.md) with evidence, decisions and Verify siblings | Retain old schema and templates. Author separate new-contract validation/scaffolding from the three model designs during implementation; never reinterpret old front matter. | CLI-SR-02/03/10 and WF-SR-02/10 |
+| CLI-MAP-07 | [Metadata validator](../../../scripts/validate-change-metadata.py), [metadata regression tests](../../../scripts/test-change-metadata-validator.py), [compact canonical-contract tests](../../../scripts/test-compact-current-state-canonical-contract.py) | Add explicit contract dispatch and new-record coverage while preserving historical expectations. Split semantic readiness assertions from structural recording checks. | CLI-SR-02/07/10 |
 
-Runtime impact candidates are the [CLI dispatcher](../../packages/rigorloop/dist/bin/rigorloop.js), new record-store parsing/validation/persistence, and compatibility tests. Existing [compact operations](../../packages/rigorloop/dist/lib/compact-operations.js), [eligibility](../../packages/rigorloop/dist/lib/compact-eligibility.js), [projection](../../packages/rigorloop/dist/lib/compact-projection.js) and [transaction code](../../packages/rigorloop/dist/lib/compact-transaction.js) are not deletion targets. Any extracted safety helper must preserve their behavior through regression proof. Exact implementation modules and test files belong to Delivery planning after Design Review; these links identify impact boundaries, not authorization to refactor them now.
+Runtime impact candidates are the [CLI dispatcher](../../../packages/rigorloop/dist/bin/rigorloop.js), new record-store parsing/validation/persistence, and compatibility tests. Existing [compact operations](../../../packages/rigorloop/dist/lib/compact-operations.js), [eligibility](../../../packages/rigorloop/dist/lib/compact-eligibility.js), [projection](../../../packages/rigorloop/dist/lib/compact-projection.js) and [transaction code](../../../packages/rigorloop/dist/lib/compact-transaction.js) are not deletion targets. Any extracted safety helper must preserve their behavior through regression proof. Exact implementation modules and test files belong to Delivery planning after Design Review; these links identify impact boundaries, not authorization to refactor them now.
 
 Installation, release publication, general observability, cache policy and hosted integrations remain unchanged unless a concrete incompatibility is demonstrated. In particular, the system architecture's CLI Observability and Result Projection section is an integration dependency: the new storage-only result and exit statuses must coexist with its renderer without granting logs lifecycle authority. Any required mapping belongs in this model before implementation, not an unreviewed global renderer change.
 
@@ -482,7 +482,7 @@ Structural references resolve to record identities; subject hashes describe eval
 
 ### Boundary scan and acceptance scenarios
 
-These rows use the [Workflow-owned model validation and proof mapping](workflow.md#model-validation-and-proof-mapping). CLI-SR IDs remain local to this model; all eight dimensions apply. Delivery maps these rows and the combined hazards below to concrete checks and evidence. This document does not duplicate the mapping rule or claim that its validator is implemented.
+These rows use the [Workflow-owned model validation and proof mapping](../workflow/workflow.md#model-validation-and-proof-mapping). CLI-SR IDs remain local to this model; all eight dimensions apply. Delivery maps these rows and the combined hazards below to concrete checks and evidence. This document does not duplicate the mapping rule or claim that its validator is implemented.
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
@@ -545,7 +545,7 @@ Candidate: complete replacement content constructed from targeted edits or expli
 
 This living model combines requirements, architecture and decisions. The targeted-interface amendment is authored under the user's explicit request to finish Design and obtain independent Design Review. Its exact package is this file (`cli`), `workflow.md` (`workflow`) and `record-format.md` (`record-format`), with no separate specification or ADR sibling. The existing `record-store` foundation is present on the synchronized main branch; the purpose-specific interface specified here remains prospective. Editing this model does not publish commands, change executable behavior, migrate records or authorize implementation.
 
-Current direction: [Make Targeted Recording the Primary CLI Interface](../proposals/2026-09-07-targeted-recording-primary-cli.md), its [independent Proposal Review](../changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md), and the user-supplied purpose-specific command boundary. Earlier direction: [Explicit Workflow Recording and Model-Centered Design](../proposals/2026-09-05-explicit-recording-and-model-centered-design.md). The [Workflow model](workflow.md) owns lifecycle meaning, decision responsibilities and model-document conventions. The current [Constitution](../../CONSTITUTION.md) governs explicitly selected recording contracts. The prior proposal review is direction evidence, not a claim of historical lifecycle settlement. This file addresses workflow recording, not a redesign of installation, release or every public CLI command.
+Current direction: [Make Targeted Recording the Primary CLI Interface](../../proposals/2026-09-07-targeted-recording-primary-cli.md), its [independent Proposal Review](../../changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md), and the user-supplied purpose-specific command boundary. Earlier direction: [Explicit Workflow Recording and Model-Centered Design](../../proposals/2026-09-05-explicit-recording-and-model-centered-design.md). The [Workflow model](../workflow/workflow.md) owns lifecycle meaning, decision responsibilities and model-document conventions. The current [Constitution](../../../CONSTITUTION.md) governs explicitly selected recording contracts. The prior proposal review is direction evidence, not a claim of historical lifecycle settlement. This file addresses workflow recording, not a redesign of installation, release or every public CLI command.
 
 ## Next artifacts
 
