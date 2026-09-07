@@ -44,6 +44,29 @@ rigorloop init codex
 
 ## Commands
 
+### Explicit workflow recording
+
+This distribution supports `explicit-recording-v1` for explicitly selected new changes in projects that adopt the matching Workflow/CLI models and stage guidance. Installation alone does not adopt the workflow. Historical roots retain their contracts; `new-change`, `workflow-context`, `compact` and `lifecycle` retain their historical purposes and are not new-record registration or progression commands.
+
+```bash
+rigorloop record-store inspect --root /path/to/project --change example --format json
+rigorloop record-store check --root /path/to/project --change example --input - --format json
+rigorloop record-store record --root /path/to/project --change example --input - --format json
+rigorloop record-store recover --root /path/to/project --change example --transaction TRANSACTION --expected-recovery DIGEST --action restore --format json
+```
+
+`check` and `record` read one UTF-8 JSON request from stdin. The request contains exactly `schema_version: 1`, `contract: explicit-recording-v1`, `change_id`, `expected_revision`, `writes: [{path, expected_identity, content}]` and `reads: [{path, expected_identity}]`. Obtain current revision and identities from inspect; null means absence, not permission to overwrite. `content` is the complete replacement string. Include the actual current hashes of decision-basis files in reads. Inspect/check do not write. Record saves only supplied decisions and never advances a stage or approves work.
+
+The package includes `dist/schemas/explicit-recording-v1.schema.json` and `dist/templates/explicit-recording/records.json`. The latter provides example metadata for change, review, evidence, decisions and successful Verify records. Replace example identities, subjects, actors and decisions with actual evidence. It is not a complete record request and must not be recorded unchanged. In particular, never create a Verify report from the template until successful Verify establishes its claims. A normal initial request writes only `docs/changes/<id>/change.yaml`, with empty registry/applicability arrays; add conditional records only when needed and register them together.
+
+Encode YAML-named records as JSON objects plus a final LF. Markdown records contain `---`, a JSON metadata object, `---`, then nonempty reasoning, with each delimiter on its own line and a final LF. Register supporting records and their explicit applicability in the change record. The CLI preserves supplied bytes; it does not serialize or merge them for you. Create `docs/changes/` in the project before initial recording. The selected change directory must be absent; an existing directory without a manifest cannot be adopted.
+
+All outcomes claim `storage-only`. Text and JSON preserve the same meanings: success is exit 0, rejected input 2, conflict 3, busy 4 and recovery-required 5. Conflict requires rereading and reassessing. Recovery uses the returned transaction and recovery identity; explicitly select `restore` or `complete`. Do not manually edit records during recording or recovery: external exact-target edits after the final identity check can be overwritten. Stale reviews, failed proof and inconsistent completion are observations; actors must block reliance and record corrections explicitly.
+
+Rollback before any new-contract writes restores prior CLI/guidance without changing records. After new records exist, stop invoking write commands and retain this compatible reader while fixing forward; do not use an old writer, delete records or rewrite the contract to simulate rollback. There is no automatic migration, rollback command or extra configuration layer.
+
+### Other command families
+
 ```bash
 rigorloop --help
 rigorloop version
@@ -69,7 +92,7 @@ The `compact` command exposes the candidate `compact-current-state-v1` boundary 
 
 RigorLoop records privacy-bounded local JSON Lines diagnostics by default and prints console diagnostics at `error` level by default. Routine success is therefore quiet on stderr. Logs rotate at 5 MiB and retain `rigorloop.jsonl` plus four archives in the platform user-state directory; use `rigorloop logs path` to locate it and `rigorloop logs show <invocation-id>` for exact lookup.
 
-Use `--no-file-log` or `RIGORLOOP_FILE_LOG=off` to disable file logging. Set `--file-log-level debug|info|warning|error` and `--console-log-level debug|info|warning|error|off` for one invocation; the matching environment variables are `RIGORLOOP_FILE_LOG_LEVEL` and `RIGORLOOP_CONSOLE_LOG_LEVEL`. `RIGORLOOP_LOG_DIR` accepts only an absolute, non-symlinked safe directory.
+For historical commands, use `--no-file-log` or `RIGORLOOP_FILE_LOG=off` to disable file logging. Set `--file-log-level debug|info|warning|error` and `--console-log-level debug|info|warning|error|off` for one invocation; the matching environment variables are `RIGORLOOP_FILE_LOG_LEVEL` and `RIGORLOOP_CONSOLE_LOG_LEVEL`. `RIGORLOOP_LOG_DIR` accepts only an absolute, non-symlinked safe directory. The separate `record-store` namespace must be the first argument; it rejects these flags, ignores this logging environment and emits only its model-defined result.
 
 Existing v0.4.x output defaults and `--json` remain unchanged. Agents can opt into compact results with `--format concise-json` or `--format concise-human`; complete results remain available with `--format detailed-json`. Local logs are diagnostics only and never authorize lifecycle transitions.
 

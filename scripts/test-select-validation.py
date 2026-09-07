@@ -55,6 +55,8 @@ ADAPTER_REGRESSION_COMMAND = (
 )
 
 EXPECTED_CATALOG = {
+    "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
+    "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/workflow.md --path docs/design/cli.md",
     "compact_contract.canonical": "python scripts/test-compact-current-state-canonical-contract.py && node --test packages/rigorloop/test/compact-contract.test.js",
     "boundary_first.validate": "python scripts/validate-boundary-first.py --check",
     "boundary_first.reference_regression": "python scripts/test-boundary-first-reference.py",
@@ -533,6 +535,133 @@ class ScriptOutputContractTests(unittest.TestCase):
 class ValidationSelectionTests(unittest.TestCase):
     maxDiff = None
     root_preflight_context = build_repository_preflight_context(ROOT)
+
+    def recording_repo(self):
+        repo = self.make_git_repo()
+        shutil.copyfile(ROOT / ".gitignore", repo / ".gitignore")
+        (repo / "docs/changes").mkdir(parents=True)
+        templates = json.loads((ROOT / "templates/explicit-recording/records.json").read_text())
+        change = templates["change"]
+        records = {"reviews/design-review.md": ("review", templates["review"]),
+                   "evidence.yaml": ("evidence", templates["evidence"]),
+                   "material-decisions.md": ("decisions", templates["decisions"]),
+                   "verify-report.md": ("verify", templates["verify"])}
+        prefix = "docs/changes/example/"
+        change["records"] = [{"path": prefix + name, "kind": kind} for name, (kind, _) in records.items()]
+        change["applicability"] = [{"path": entry["path"], "value": "current",
+                                    "actor": {"id": "fixture", "role": "support"},
+                                    "reason": "Structural selector fixture, not an actual approval"}
+                                   for entry in change["records"]]
+        writes = [{"path": prefix + "change.yaml", "expected_identity": None,
+                   "content": json.dumps(change) + "\n"}]
+        for name, (kind, record) in records.items():
+            content = json.dumps(record) + "\n"
+            if kind != "evidence":
+                content = "---\n" + content + "---\n\nStructural test fixture only.\n"
+            writes.append({"path": prefix + name, "expected_identity": None, "content": content})
+        request = {"schema_version": 1, "contract": "explicit-recording-v1", "change_id": "example",
+                   "expected_revision": None, "reads": [], "writes": writes}
+        result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
+                                 "record-store", "record", "--root", str(repo), "--change", "example",
+                                 "--input", "-", "--format", "json"],
+                                input=json.dumps(request) + "\n", text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        return repo, tuple(write["path"] for write in writes)
+
+    def test_er_m5_001_real_recording_paths_select_complete_set_validation(self):
+        repo, paths = self.recording_repo()
+        for path in paths:
+            with self.subTest(path=path):
+                result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+                self.assertEqual(result.status, "ok", result.blocking_results)
+                checks = {check["id"]: check for check in result.selected_checks}
+                self.assertIn("change_metadata.validate", checks)
+                self.assertIn("docs/changes/example/change.yaml", checks["change_metadata.validate"]["command"])
+                self.assertNotIn("review_artifacts.validate", checks)
+                self.assertNotIn("artifact_lifecycle.validate", checks)
+
+    def test_er_m5_001_local_selection_ignores_private_recorder_state_only(self):
+        repo, paths = self.recording_repo()
+        result = select_validation(SelectionRequest(mode="local", repo_root=repo))
+        self.assertFalse(any(path.startswith(".rigorloop/record-store/") for path in result.changed_paths))
+        self.assertTrue(set(paths) <= set(result.changed_paths))
+        self.assertEqual(result.status, "ok", result.blocking_results)
+        private = ".rigorloop/unknown_value/state"
+        (repo / private).parent.mkdir(parents=True)
+        (repo / private).write_text("not excluded\n")
+        result = select_validation(SelectionRequest(mode="local", repo_root=repo))
+        self.assertIn(private, result.unclassified_paths)
+
+    def test_er_m5_001_unknown_value_contract_and_unregistered_paths_fail_closed(self):
+        repo, _ = self.recording_repo()
+        unknown = "docs/changes/example/unknown_value.md"
+        result = select_validation(SelectionRequest(mode="explicit", paths=(unknown,), repo_root=repo))
+        self.assertEqual(result.status, "blocked")
+        manifest = repo / "docs/changes/example/change.yaml"
+        value = json.loads(manifest.read_text())
+        value["contract"] = "unknown_value"
+        manifest.write_text(json.dumps(value) + "\n")
+        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/changes/example/evidence.yaml",), repo_root=repo))
+        self.assertEqual(result.status, "blocked")
+        self.assertTrue(any(block["code"] == "unsupported-change-contract" for block in result.blocking_results))
+
+    def test_explicit_recording_adoption_surfaces_select_real_proof(self):
+        paths = (
+            "docs/design/cli.md", "docs/design/workflow.md",
+            "schemas/explicit-recording-v1.schema.json",
+            "scripts/build-record-store-schema.mjs",
+            "scripts/validate-record-store.mjs",
+            "tests/fixtures/explicit-recording-v1/records.json",
+            "templates/explicit-recording/records.json",
+        )
+        for path in paths:
+            with self.subTest(path=path):
+                result = select_validation(SelectionRequest(
+                    mode="explicit", paths=(path,), repo_root=ROOT,
+                    preflight_context=self.root_preflight_context,
+                ))
+                checks = {check["id"] for check in result.selected_checks}
+                self.assertTrue({"rigorloop_cli.test", "record_store.schema", "model.validate"} <= checks, checks)
+                self.assertNotIn(path, result.unclassified_paths)
+                self.assertFalse(any(item.get("code") == "manual-routing-required" for item in result.blocking_results))
+
+    def test_explicit_recording_package_paths_retain_publication_proof(self):
+        for path in ("packages/rigorloop/dist/lib/record-store.js",
+                     "packages/rigorloop/dist/templates/explicit-recording/records.json",
+                     "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json",
+                     "packages/rigorloop/test/record-store-cli.test.js",
+                     "packages/rigorloop/test/helpers/record-store-launcher.mjs"):
+            with self.subTest(path=path):
+                result = select_validation(SelectionRequest(
+                    mode="explicit", paths=(path,), repo_root=ROOT,
+                    preflight_context=self.root_preflight_context,
+                ))
+                self.assertEqual({check["id"] for check in result.selected_checks}, {
+                    "rigorloop_cli.test", "npm_package_publication.test", "record_store.schema",
+                    "model.validate", "boundary_first.regression", "change_metadata.regression",
+                })
+
+    def test_model_selection_retains_authoritative_tracking_preflight(self):
+        repo = self.make_git_repo()
+        path = repo / "docs/design/workflow.md"
+        path.parent.mkdir(parents=True)
+        path.write_text("# Model fixture\n")
+        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/design/workflow.md",), repo_root=repo))
+        self.assertIn("untracked-authoritative-artifacts", {item.get("code") for item in result.blocking_results})
+
+    def test_isolated_recording_evidence_selects_proof_without_formal_settlement(self):
+        for path in ("docs/implementation/explicit-recording-m4.md", "docs/reviews/explicit-recording-m3-code-review.md"):
+            result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=ROOT,
+                                                       preflight_context=self.root_preflight_context))
+            self.assertNotIn(path, result.unclassified_paths)
+            checks = {check["id"] for check in result.selected_checks}
+            self.assertTrue({"documentation_prose.audit", "model.validate", "rigorloop_cli.test"} <= checks)
+            self.assertNotIn("review_artifacts.validate", checks)
+        unknown = "docs/reviews/unknown_value.md"
+        result = select_validation(SelectionRequest(mode="explicit", paths=(unknown,), repo_root=ROOT,
+                                                   preflight_context=self.root_preflight_context))
+        self.assertIn(unknown, result.unclassified_paths)
+
 
     def addCleanupTree(self, path: Path) -> None:
         self.addCleanup(lambda: shutil.rmtree(path, ignore_errors=True))
@@ -1677,6 +1806,7 @@ raise SystemExit({exit_code})
         from validation_selection import is_parallel_safe_check
 
         expected_parallel_safe = {
+            "record_store.schema", "model.validate",
             "adapters.regression",
             "artifact_lifecycle.regression",
             "change_record_query.regression",

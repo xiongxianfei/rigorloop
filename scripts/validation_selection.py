@@ -31,6 +31,14 @@ class CheckCatalogEntry:
 
 
 CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
+    "record_store.schema": CheckCatalogEntry(
+        "record_store.schema", "node scripts/build-record-store-schema.mjs --check", "explicit-recording", parallel_safe=True,
+    ),
+    "model.validate": CheckCatalogEntry(
+        "model.validate",
+        "python scripts/validate-boundary-first.py --check --path docs/design/workflow.md --path docs/design/cli.md",
+        "explicit-recording", parallel_safe=True,
+    ),
     "compact_contract.canonical": CheckCatalogEntry(
         "compact_contract.canonical",
         "python scripts/test-compact-current-state-canonical-contract.py && node --test packages/rigorloop/test/compact-contract.test.js",
@@ -280,6 +288,7 @@ BOUNDARY_CHECK_IDS = frozenset(
     }
 )
 AUTHORITATIVE_ARTIFACT_PREFIXES = (
+    "docs/design/",
     "docs/proposals/",
     "docs/plans/",
     "docs/architecture/",
@@ -291,6 +300,15 @@ AUTHORITATIVE_ARTIFACT_PREFIXES = (
     "templates/",
 )
 AUTHORITATIVE_ARTIFACT_FILES = frozenset({"AGENTS.md", "CONSTITUTION.md", "VISION.md", "docs/plan.md"})
+
+# Exact user-authorized isolated evidence for the recorder adoption initiative.
+# These are advisory prose, not registered lifecycle reviews or settlement.
+ISOLATED_RECORDING_EVIDENCE = frozenset({
+    "docs/reviews/explicit-recording-and-model-centered-design.md",
+    "docs/reviews/explicit-recording-and-model-centered-design-delivery.md",
+    *(f"docs/implementation/explicit-recording-m{milestone}.md" for milestone in range(1, 5)),
+    *(f"docs/reviews/explicit-recording-m{milestone}-code-review.md" for milestone in range(1, 5)),
+})
 
 
 @dataclass(frozen=True)
@@ -839,6 +857,13 @@ def catalog_command(
         for path in sorted(spec_paths):
             args.extend(["--path", path])
         return _join(*args)
+    if check_id == "model.validate":
+        args = ["python", "scripts/validate-boundary-first.py", "--check"]
+        models = {"docs/design/workflow.md", "docs/design/cli.md"}
+        models.update(path for path in paths if path.startswith("docs/design/"))
+        for path in sorted(models):
+            args.extend(["--path", path])
+        return _join(*args)
     if check_id == "adapters.validate":
         return _join(
             "python",
@@ -1313,6 +1338,39 @@ def _apply_path_selection(
     changed_sections_by_path: dict[str, tuple[str, ...]],
     tracked_deletion: bool,
 ) -> None:
+    # Record-store owns complete-set validation for its explicitly selected
+    # roots. Historical review/lifecycle validators must not reinterpret them.
+    manifest_path = _change_root_change_yaml(path)
+    if manifest_path:
+        manifest = repo_root / manifest_path
+        try:
+            metadata = json.loads(manifest.read_text(encoding="utf-8")) if manifest.is_file() else None
+        except (OSError, ValueError):
+            metadata = None
+        if isinstance(metadata, dict) and "contract" in metadata:
+            _add_check(selected, "change_metadata.validate",
+                       "Validate the explicitly selected recording contract and its complete registered set.",
+                       path=manifest_path)
+            _add_check(selected, "change_metadata.regression",
+                       "Recording paths retain metadata and historical compatibility regression proof.")
+            affected_roots.add(_change_root(path))
+            if metadata["contract"] != "explicit-recording-v1":
+                blocking_results.append({"code": "unsupported-change-contract", "path": manifest_path,
+                                         "message": "Unknown recording contract; no historical fallback."})
+                return
+            relative = path.removeprefix(_change_root(path))
+            kind = {"evidence.yaml": "evidence", "material-decisions.md": "decisions",
+                    "verify-report.md": "verify"}.get(relative)
+            if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\.md", relative):
+                kind = "review"
+            records = metadata.get("records")
+            registered = isinstance(records, list) and any(
+                isinstance(record, dict) and record.get("path") == path and record.get("kind") == kind
+                for record in records)
+            if path != manifest_path and (kind is None or not registered):
+                blocking_results.append({"code": "unregistered-recording-path", "path": path,
+                                         "message": "Recording evidence must be allowlisted and explicitly registered."})
+            return
     if tracked_deletion and path.startswith("docs/changes/"):
         _add_check(
             selected,
@@ -1759,6 +1817,20 @@ def _apply_path_selection(
         return
 
     if category == "boundary-first":
+        return
+
+    if category in {"explicit-recording", "isolated-recording-evidence"}:
+        for check_id in ("rigorloop_cli.test", "record_store.schema", "model.validate",
+                         "boundary_first.regression", "change_metadata.regression"):
+            _add_check(selected, check_id,
+                       "Explicit recording adoption requires model, schema and historical/runtime compatibility proof.",
+                       path=path)
+        if path.startswith("packages/rigorloop/"):
+            _add_check(selected, "npm_package_publication.test",
+                       "Record-store package paths retain tarball and installed-binary compatibility proof.")
+        if category == "isolated-recording-evidence":
+            _add_check(selected, "documentation_prose.audit",
+                       "Isolated advisory evidence requires prose checks and its underlying model/runtime proof, not formal settlement.", path=path)
         return
 
     if category == "token-cost":
@@ -2284,6 +2356,17 @@ def _build_result(
 
 def _path_category(path: str) -> str | None:
     parts = path.split("/")
+    if path in ISOLATED_RECORDING_EVIDENCE:
+        return "isolated-recording-evidence"
+    if (path.startswith("docs/design/")
+            or path.startswith("tests/fixtures/explicit-recording-v1/")
+            or path in {"schemas/explicit-recording-v1.schema.json", "scripts/build-record-store-schema.mjs", "scripts/validate-record-store.mjs",
+                        "templates/explicit-recording/records.json", "packages/rigorloop/dist/templates/explicit-recording/records.json",
+                        "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json"}
+            or (path.startswith("packages/rigorloop/dist/lib/record-store") and path.endswith(".js"))
+            or (path.startswith("packages/rigorloop/test/record-store-") and path.endswith(".test.js"))
+            or path == "packages/rigorloop/test/helpers/record-store-launcher.mjs"):
+        return "explicit-recording"
     if path == "specs/boundary-first-activation.yaml":
         return "lifecycle"
     if path == "README.md":

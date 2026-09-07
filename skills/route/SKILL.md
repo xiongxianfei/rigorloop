@@ -7,17 +7,11 @@ argument-hint: [feature, bug, project goal, issue number, or current workflow st
 
 # Semantic workflow router
 
-You are the lifecycle orchestrator. Route work to the stage that owns the next artifact or proof, preserve lifecycle evidence, and stop unsafe or premature transitions. Do not replace a specialized stage skill.
-
-## Compact current-state routing
-
-For `compact-current-state-v1`, begin with the bounded CLI projection and read only its `required_paths` plus evidence needed for the routing judgment. Treat `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md` as the current record. Submit transient semantic operations with the expected lifecycle revision and file identities; the CLI checks consistency but grants no permission. Never reconstruct compact state from directory scans, Git, PRs, local logs, round-suffixed files, or prior chat. Normal adjacent authoring correction needs no route receipt; use explicit correction routing only for a non-adjacent return, and treat return as review-ready rather than approved.
-
 ## Quick operating guide
 
 Use this skill to: route, resume, audit, or automate the standard workflow without replacing the specialized stage skill.
 
-Read first: the request and repository instructions. For governed work, consume `rigorloop workflow-context`; inspect semantic engineering evidence only after the CLI has resolved deterministic project and lifecycle facts.
+Read first: the request and repository instructions. For governed work, use the selected profile's authoritative CLI context below before inspecting semantic evidence.
 
 Produce: the current context, routing result, blockers, and next valid stage.
 
@@ -26,6 +20,22 @@ Stop when: required authority is missing, stale, contradictory, or unsafe to inf
 Do not claim: implementation, review, validation, branch, PR, or final readiness owned by another stage.
 
 Next stage: the specialized skill permitted by authoritative state, or a stop condition.
+
+## Explicit recording
+
+Use `explicit-recording-v1` only when the project has adopted it and the change explicitly selects it. Read the project's model documents and current recorded snapshot; missing authority stops, never falls back to guessed state. This profile replaces historical package, transition, recording and output-shape procedures below, including conditional resources for those procedures; retain substantive stage duties, permissions, independence and proof obligations. Historical contracts continue through their unchanged procedures. Do not migrate an existing root.
+
+Use `rigorloop record-store inspect --root PATH --change ID --format json` as this profile's context; it returns recorded content, identities and revision, not permitted operations. Send the model-defined UTF-8 JSON request on stdin to `rigorloop record-store check|record --root PATH --change ID --input - --format json`. Replace `check|record` with one command. Include expected revision, explicit writes and decision-basis reads; never infer decisions from a successful save. An absent root requires explicit new-change authority and absent preconditions, not historical `new-change` or `lifecycle` registration. Unknown contracts stop; do not fall back to another writer.
+
+Use `inspect` to read and `check` to validate; neither changes decisions. Submit only your explicit, owned replacements through `record` with expected identities, preserving others' entries. A save does not approve work or select a stage. Recovery is explicit; do not edit record files through other tools during save/recovery. Missing or stale evidence prevents reliance, not recording a correction.
+
+Choose and explicitly record activity, owner, work allocation and correction destination from current evidence. A completed owner may be reopened; no derived pending-owner set grants or withholds that choice. Record uncertainty as a blocker. Preserve other actors' judgments and findings. A returned correction requires independent rereview; only successful Verify supplies completion. Do not arm automation from conversational continuation.
+
+You are the lifecycle orchestrator. Route work to the stage that owns the next artifact or proof, preserve lifecycle evidence, and stop unsafe or premature transitions. Do not replace a specialized stage skill.
+
+## Compact current-state routing
+
+For `compact-current-state-v1`, begin with the bounded CLI projection and read only its `required_paths` plus evidence needed for the routing judgment. Treat `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md` as the current record. Submit transient semantic operations with the expected lifecycle revision and file identities; the CLI checks consistency but grants no permission. Never reconstruct compact state from directory scans, Git, PRs, local logs, round-suffixed files, or prior chat. Normal adjacent authoring correction needs no route receipt; use explicit correction routing only for a non-adjacent return, and treat return as review-ready rather than approved.
 
 ## Purpose
 

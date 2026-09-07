@@ -3131,5 +3131,54 @@ process.stdout.write(JSON.stringify(JSON.parse(input).map(validateFinalVerificat
         )
 
 
+class ExplicitRecordingMetadataTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="record-metadata-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.path = self.root / "docs/changes/example/change.yaml"
+        self.path.parent.mkdir(parents=True)
+        self.fixture = json.loads((ROOT / "tests/fixtures/explicit-recording-v1/records.json").read_text())
+        self.change = json.loads(self.fixture["request"]["writes"][0]["content"])
+
+    def check(self, change=None):
+        self.path.write_text(json.dumps(self.change if change is None else change) + "\n")
+        return run_validator(self.path)
+
+    def test_explicit_recording_metadata_accepts_structure_without_stage_eligibility(self):
+        self.change["activity"]["status"] = "completed"
+        self.assertEqual(self.check().returncode, 0)
+
+    def test_explicit_recording_unknown_value_and_mixed_contract_fail_closed(self):
+        for field, value in (("contract", "unknown_value"), ("schema_version", 999),
+                             ("lifecycle_contract", "compact-current-state-v1")):
+            candidate = copy.deepcopy(self.change)
+            candidate[field] = value
+            self.assertNotEqual(self.check(candidate).returncode, 0)
+
+    def test_explicit_recording_metadata_rejects_duplicate_keys_encoding_and_symlink(self):
+        raw = json.dumps(self.change) + "\n"
+        for content in (raw.rstrip("\n"), raw.replace('"schema_version": 1', '"schema_version": 1, "schema_version": 1', 1)):
+            self.path.write_text(content)
+            self.assertNotEqual(run_validator(self.path).returncode, 0)
+            self.assertEqual(self.path.read_text(), content)
+        outside = self.root / "outside.yaml"
+        outside.write_text(raw)
+        self.path.unlink()
+        self.path.symlink_to(outside)
+        self.assertNotEqual(run_validator(self.path).returncode, 0)
+        self.assertEqual(outside.read_text(), raw)
+
+    def test_explicit_recording_metadata_validates_registered_set_not_subject_freshness(self):
+        path = "docs/changes/example/evidence.yaml"
+        self.change["records"] = [{"path": path, "kind": "evidence"}]
+        self.change["applicability"] = [{"path": path, "value": "stale", "actor": {"id": "author", "role": "implement"}, "reason": "Prior proof"}]
+        self.assertNotEqual(self.check().returncode, 0)
+        (self.root / path).write_text(json.dumps(self.fixture["evidence"]) + "\n")
+        self.assertEqual(self.check().returncode, 0)
+        (self.root / path).write_text("not a record\n")
+        self.assertNotEqual(self.check().returncode, 0)
+
+
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))

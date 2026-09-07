@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import os
+import json
 import shutil
 import subprocess
 import sys
@@ -550,6 +551,149 @@ def current_fixture_branch(path: Path) -> str:
 
 
 class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
+    def recording_root(self):
+        root = Path(tempfile.mkdtemp(prefix="lifecycle-recording-fixture-"))
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        (root / "docs/changes").mkdir(parents=True)
+        templates = json.loads((ROOT / "templates/explicit-recording/records.json").read_text())
+        prefix = "docs/changes/example/"
+        records = {"reviews/design-review.md": "review", "evidence.yaml": "evidence",
+                   "material-decisions.md": "decisions", "verify-report.md": "verify"}
+        change = templates["change"]
+        change["records"] = [{"path": prefix + name, "kind": kind} for name, kind in records.items()]
+        change["applicability"] = [{"path": entry["path"], "value": "current",
+                                    "actor": {"id": "fixture", "role": "support"},
+                                    "reason": "Structural fixture, not approval or completion"}
+                                   for entry in change["records"]]
+        contents = {prefix + "change.yaml": json.dumps(change) + "\n"}
+        for name, kind in records.items():
+            content = json.dumps(templates[kind]) + "\n"
+            if kind != "evidence":
+                content = "---\n" + content + "---\n\nStructural fixture only.\n"
+            contents[prefix + name] = content
+        request = {"schema_version": 1, "contract": "explicit-recording-v1", "change_id": "example",
+                   "expected_revision": None, "reads": [],
+                   "writes": [{"path": path, "expected_identity": None, "content": content}
+                              for path, content in contents.items()]}
+        result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
+                                 "record-store", "record", "--root", str(root), "--change", "example",
+                                 "--input", "-", "--format", "json"],
+                                input=json.dumps(request) + "\n", text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        return root, contents
+
+    def test_er_m5_001_recording_lifecycle_uses_complete_set_without_legacy_reviews(self):
+        root, contents = self.recording_root()
+        for compose in (False, True):
+            for path in contents:
+                with self.subTest(compose=compose, path=path):
+                    result = validate_repository(root, mode="explicit-paths", paths=[path],
+                                                 compose_change_metadata=compose)
+                    self.assertFalse(result.blocking_findings, result.blocking_findings)
+        self.assertEqual({path: (root / path).read_text() for path in contents}, contents)
+        self.assertFalse((root / "docs/changes/example/review-log.md").exists())
+
+    def test_er_m5_001_recording_lifecycle_unknown_value_and_malformed_fail_closed(self):
+        for mutation in ("unknown_value", "malformed-json", "malformed-review", "missing-review"):
+            for compose in (False, True):
+                with self.subTest(mutation=mutation, compose=compose):
+                    root, contents = self.recording_root()
+                    manifest = root / "docs/changes/example/change.yaml"
+                    review = root / "docs/changes/example/reviews/design-review.md"
+                    if mutation == "unknown_value":
+                        manifest.write_text(manifest.read_text().replace("explicit-recording-v1", "unknown_value"))
+                    elif mutation == "malformed-json":
+                        manifest.write_text('{"contract":')
+                    elif mutation == "malformed-review":
+                        review.write_text(review.read_text().replace('"blocked"', '"unknown_value"'))
+                    else:
+                        review.unlink()
+                    result = validate_repository(root, mode="explicit-paths",
+                                                 paths=["docs/changes/example/change.yaml"],
+                                                 compose_change_metadata=compose)
+                    self.assertTrue(result.blocking_findings)
+                    self.assertTrue(any(f.artifact_class == "change_metadata" for f in result.blocking_findings),
+                                    result.blocking_findings)
+
+    def test_er_m5_002_recording_tracked_revision_never_uses_live_bytes(self):
+        for selected in ("valid", "unknown_value", "review-crlf", "manifest-bom",
+                         "missing-review", "symlink-review", "duplicate-key", "invalid-utf8",
+                         "missing-evidence", "invalid-decisions", "invalid-verify", "live-symlink"):
+            root, contents = self.recording_root()
+            (root / "innocent.txt").write_text("Unrelated tracked content.\n")
+            base = init_git_fixture(root)
+            manifest = root / "docs/changes/example/change.yaml"
+            review = root / "docs/changes/example/reviews/design-review.md"
+            if selected == "unknown_value":
+                manifest.write_text(manifest.read_text().replace("explicit-recording-v1", "unknown_value"))
+            elif selected in {"review-crlf", "live-symlink"}:
+                review.write_bytes(review.read_bytes().replace(b"\n", b"\r\n"))
+            elif selected == "manifest-bom":
+                manifest.write_bytes(b"\xef\xbb\xbf" + manifest.read_bytes())
+            elif selected == "missing-review":
+                review.unlink()
+            elif selected == "symlink-review":
+                review.unlink()
+                review.symlink_to("../material-decisions.md")
+            elif selected == "duplicate-key":
+                manifest.write_text(manifest.read_text().replace('"schema_version": 1',
+                                                               '"schema_version": 1, "schema_version": 1'))
+            elif selected == "invalid-utf8":
+                review.write_bytes(review.read_bytes() + b"\xff")
+            elif selected == "missing-evidence":
+                (manifest.parent / "evidence.yaml").unlink()
+            elif selected in {"invalid-decisions", "invalid-verify"}:
+                name = "material-decisions.md" if selected == "invalid-decisions" else "verify-report.md"
+                (manifest.parent / name).write_bytes(b"\xff\n")
+            else:
+                manifest.write_text(manifest.read_text() + "\n")
+            subprocess.run(["git", "add", "docs/changes/example"], cwd=root, check=True, capture_output=True)
+            subprocess.run(["git", "commit", "-m", "selected fixture"], cwd=root, check=True, capture_output=True)
+            head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, check=True,
+                                  capture_output=True, text=True).stdout.strip()
+            # Keep a valid but distinct live set: it cannot prove the selected revision.
+            for path, content in contents.items():
+                if (root / path).is_symlink():
+                    (root / path).unlink()
+                (root / path).write_text(content)
+            if selected == "valid":
+                # A valid snapshot must also pass when the live set is invalid.
+                review.write_text("unrelated live bytes\n")
+            elif selected == "live-symlink":
+                review.unlink()
+                review.symlink_to(root / "innocent.txt")
+            for compose in (False, True):
+                for mode, revisions in (("pr-ci", {"base": base, "head": head}),
+                                        ("push-main-ci", {"before": base, "after": head})):
+                    with self.subTest(selected=selected, compose=compose, mode=mode):
+                        result = validate_repository(root, mode=mode, compose_change_metadata=compose,
+                                                     **revisions)
+                        if selected == "valid":
+                            self.assertFalse(result.blocking_findings, result.blocking_findings)
+                        else:
+                            self.assertTrue(result.blocking_findings)
+            result = subprocess.run(["node", str(ROOT / "scripts/validate-record-store.mjs"),
+                                     str(manifest), "--revision", head], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0 if selected == "valid" else 1,
+                             result.stdout + result.stderr)
+
+    def test_er_pr_002_snapshot_accepts_complete_set_above_request_limit(self):
+        root, contents = self.recording_root()
+        manifest = root / "docs/changes/example/change.yaml"
+        change = json.loads(manifest.read_text())
+        review = contents["docs/changes/example/reviews/design-review.md"]
+        for index in range(9):
+            path = f"docs/changes/example/reviews/large-{index}.md"
+            (root / path).write_text(review.replace('"id": "design-review"',
+                                                    f'"id": "large-{index}"') + "x" * 950000 + "\n")
+            change["records"].append({"path": path, "kind": "review"})
+            change["applicability"].append({**change["applicability"][0], "path": path})
+        manifest.write_text(json.dumps(change) + "\n")
+        head = init_git_fixture(root)
+        result = subprocess.run(["node", str(ROOT / "scripts/validate-record-store.mjs"),
+                                 str(manifest), "--revision", head], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_architecture_contract_matches_canonical_arc42_skeleton(self) -> None:
         skeleton = (ROOT / "skills" / "architecture" / "assets" / "architecture-skeleton.md").read_text(
             encoding="utf-8"

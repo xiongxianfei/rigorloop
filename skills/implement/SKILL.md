@@ -9,25 +9,6 @@ argument-hint: [plan path, milestone ID, feature name, or implementation request
 
 # Test-driven implementation
 
-Implement the smallest scope-complete approved slice with tests or proof first.
-Do not expand scope, silently alter the contract, or claim success without direct evidence.
-
-## Workflow role
-
-### Compact current-state contract
-
-For `compact-current-state-v1`, consume the bounded CLI projection and only its required approved artifacts, stable current review records, material decisions, and current evidence. Record implementation proof as current entries in `evidence.yaml` through a transient CLI operation, including subject identity, method, result, scope, provenance, and freshness. Never edit lifecycle coordination directly or create routine request, milestone receipt, authoring-evidence, raw-output, or correction-return artifacts.
-
-- role_name: implement
-- stage: execution
-- upstream: approved Design Review package, approved Delivery Review package, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
-- downstream: code-review
-- summary: Implement one scope-complete slice, record validation evidence, and hand it to code-review.
-- must_not_claim: review passed, clean review, branch readiness, PR readiness, final verification, final closeout readiness, or derived artifact currency without owning proof.
-
-For planned initiatives, treat the plan and upstream artifacts as read-only.
-Write implementation, tests, and implementation evidence only; route owns milestone and routing state.
-
 ## Quick operating guide
 
 Use this skill to:
@@ -50,6 +31,35 @@ Next stage:
 - code-review.
 
 Use full-file or broader-section reading when bounded evidence cannot preserve correctness.
+
+## Explicit recording
+
+Use `explicit-recording-v1` only when the project has adopted it and the change explicitly selects it. Read the project's model documents and current recorded snapshot; missing authority stops, never falls back to guessed state. This profile replaces historical package, transition, recording and output-shape procedures below, including conditional resources for those procedures; retain substantive stage duties, permissions, independence and proof obligations. Historical contracts continue through their unchanged procedures. Do not migrate an existing root.
+
+Use `rigorloop record-store inspect --root PATH --change ID --format json` as this profile's context; it returns recorded content, identities and revision, not permitted operations. Send the model-defined UTF-8 JSON request on stdin to `rigorloop record-store check|record --root PATH --change ID --input - --format json`. Replace `check|record` with one command. Include expected revision, explicit writes and decision-basis reads; never infer decisions from a successful save. An absent root requires explicit new-change authority and absent preconditions, not historical `new-change` or `lifecycle` registration. Unknown contracts stop; do not fall back to another writer.
+
+Use `inspect` to read and `check` to validate; neither changes decisions. Submit only your explicit, owned replacements through `record` with expected identities, preserving others' entries. A save does not approve work or select a stage. Recovery is explicit; do not edit record files through other tools during save/recovery. Missing or stale evidence prevents reliance, not recording a correction.
+
+Implement only the authorized slice against current reviewed models and delivery allocation, with tests first. Record your execution evidence and exact subjects. Preserve other actors' entries and all unresolved findings; changed work marks affected applicability stale rather than retargeting approval. A Design gap returns to its author. Hand the slice to independent Code Review without declaring it approved.
+
+Implement the smallest scope-complete approved slice with tests or proof first.
+Do not expand scope, silently alter the contract, or claim success without direct evidence.
+
+## Workflow role
+
+### Compact current-state contract
+
+For `compact-current-state-v1`, consume the bounded CLI projection and only its required approved artifacts, stable current review records, material decisions, and current evidence. Record implementation proof as current entries in `evidence.yaml` through a transient CLI operation, including subject identity, method, result, scope, provenance, and freshness. Never edit lifecycle coordination directly or create routine request, milestone receipt, authoring-evidence, raw-output, or correction-return artifacts.
+
+- role_name: implement
+- stage: execution
+- upstream: approved Design Review package, approved Delivery Review package, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
+- downstream: code-review
+- summary: Implement one scope-complete slice, record validation evidence, and hand it to code-review.
+- must_not_claim: review passed, clean review, branch readiness, PR readiness, final verification, final closeout readiness, or derived artifact currency without owning proof.
+
+For planned initiatives, treat the plan and upstream artifacts as read-only.
+Write implementation, tests, and implementation evidence only; route owns milestone and routing state.
 
 ## Purpose
 

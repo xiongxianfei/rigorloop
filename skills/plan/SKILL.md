@@ -9,6 +9,16 @@ argument-hint: [feature name, spec path, architecture path, or implementation go
 
 # Stable execution plan
 
+## Explicit recording
+
+Use `explicit-recording-v1` only when the project has adopted it and the change explicitly selects it. Read the project's model documents and current recorded snapshot; missing authority stops, never falls back to guessed state. This profile replaces historical package, transition, recording and output-shape procedures below, including conditional resources for those procedures; retain substantive stage duties, permissions, independence and proof obligations. Historical contracts continue through their unchanged procedures. Do not migrate an existing root.
+
+Use `rigorloop record-store inspect --root PATH --change ID --format json` as this profile's context; it returns recorded content, identities and revision, not permitted operations. Send the model-defined UTF-8 JSON request on stdin to `rigorloop record-store check|record --root PATH --change ID --input - --format json`. Replace `check|record` with one command. Include expected revision, explicit writes and decision-basis reads; never infer decisions from a successful save. An absent root requires explicit new-change authority and absent preconditions, not historical `new-change` or `lifecycle` registration. Unknown contracts stop; do not fall back to another writer.
+
+Use `inspect` to read and `check` to validate; neither changes decisions. Submit only your explicit, owned replacements through `record` with expected identities, preserving others' entries. A save does not approve work or select a stage. Recovery is explicit; do not edit record files through other tools during save/recovery. Missing or stale evidence prevents reliance, not recording a correction.
+
+Use the approved affected model revisions and requirements to author the stable delivery plan. Map every affected requirement, scenario row and material combined hazard to work, concrete checks and expected evidence; preserve one owner per cross-model rule. Plans do not hold current progress. Record the plan subject, leaving allocation/activity changes to route and delivery judgment to independent review.
+
 Turn approved behavior and architecture into reviewable execution intent. Do not choose product direction or implement the plan.
 
 ## Purpose

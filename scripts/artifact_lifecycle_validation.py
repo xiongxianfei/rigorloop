@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import re
 import subprocess
 import sys
@@ -237,6 +238,19 @@ def _review_change_record_for(root: Path, path: Path) -> Path | None:
     if not review_surface:
         return None
     return change_root / "change.yaml"
+
+
+def _recording_change_record_for(root: Path, path: Path, revision: str | None) -> Path | None:
+    if not _is_relative_to(path, root):
+        return None
+    parts = path.relative_to(root).parts
+    if len(parts) < 4 or parts[:2] != ("docs", "changes"):
+        return None
+    owner = root / "docs" / "changes" / parts[2] / "change.yaml"
+    if _path_exists(root, owner, revision):
+        if _read_repo_text(root, owner, revision).lstrip("\ufeff \t\r\n").startswith("{"):
+            return owner
+    return None
 
 
 @dataclass(frozen=True)
@@ -1380,6 +1394,8 @@ def _merge_dependent_warning_paths(root: Path, scope: ValidationScope) -> set[Pa
 def _validate_merge_dependent_language_warnings(root: Path, scope: ValidationScope) -> list[ValidationFinding]:
     warnings: list[ValidationFinding] = []
     for path in sorted(_merge_dependent_warning_paths(root, scope)):
+        if _recording_change_record_for(root, path, scope.tracked_revision) is not None:
+            continue
         text = _read_repo_text(root, path, scope.tracked_revision)
         matches: list[tuple[int, str]] = []
         for line_number, line in enumerate(text.splitlines(), start=1):
@@ -1750,7 +1766,7 @@ def _tracked_markdown_paths(root: Path, tracked_revision: str) -> list[Path]:
         capture_output=True,
     )
     return [
-        (root / entry.decode("utf-8")).resolve()
+        root / entry.decode("utf-8")
         for entry in result.stdout.split(b"\0")
         if entry and entry.decode("utf-8").endswith(".md")
     ]
@@ -1760,15 +1776,18 @@ def _discover_all_in_scope_artifacts(root: Path, tracked_revision: str | None = 
     results: set[Path] = set()
     candidates = root.rglob("*.md") if tracked_revision is None else _tracked_markdown_paths(root, tracked_revision)
     for candidate in candidates:
+        candidate = candidate.resolve() if tracked_revision is None else candidate
         if not candidate.is_file():
             if tracked_revision is None:
                 continue
-        if not _is_relative_to(candidate.resolve(), root):
+        if not _is_relative_to(candidate, root):
             continue
-        text = _read_repo_text(root, candidate.resolve(), tracked_revision)
-        relative = candidate.resolve().relative_to(root)
+        if _recording_change_record_for(root, candidate, tracked_revision) is not None:
+            continue
+        text = _read_repo_text(root, candidate, tracked_revision)
+        relative = candidate.relative_to(root)
         if classify_artifact(relative, text) is not None:
-            results.add(candidate.resolve())
+            results.add(candidate)
     return results
 
 
@@ -1797,7 +1816,8 @@ def _collect_diff_paths(root: Path, diff_spec: str) -> list[Path]:
         capture_output=True,
         text=True,
     )
-    return [(root / line.strip()).resolve() for line in result.stdout.splitlines() if line.strip()]
+    # Selected Git paths must not follow unrelated working-tree symlinks.
+    return [root / line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
 def _resolve_scope(
@@ -1837,6 +1857,13 @@ def _resolve_scope(
 
     queue: list[Path] = []
     for path in changed_paths:
+        recording_owner = _recording_change_record_for(root, path, tracked_revision)
+        if recording_owner is not None:
+            queue.append(recording_owner)
+            continue
+        owner = _review_change_record_for(root, path)
+        if owner is not None and _path_exists(root, owner, tracked_revision):
+            queue.append(owner)
         if not _path_exists(root, path, tracked_revision):
             if tracked_revision is not None:
                 continue
@@ -1871,6 +1898,10 @@ def _resolve_scope(
             continue
 
         relative = current.relative_to(root)
+        recording_owner = _recording_change_record_for(root, current, current_revision)
+        if recording_owner is not None:
+            change_yaml_paths.add(recording_owner)
+            continue
         review_change_record = _review_change_record_for(root, current)
         if review_change_record is not None and _path_exists(
             root, review_change_record, current_revision
@@ -2033,6 +2064,42 @@ def validate_repository(
     }
 
     for path in scope.change_yaml_paths:
+        metadata_text = _read_repo_text(root_resolved, path, scope.tracked_revision)
+        # JSON-subset recording sets have no legacy lifecycle/review semantics.
+        # Reuse complete-set validation even for callers that omit composition;
+        # malformed/unknown contracts must not fall through to historical checks.
+        if metadata_text.lstrip("\ufeff \t\r\n").startswith("{"):
+            try:
+                candidate = json.loads(metadata_text)
+            except ValueError:
+                candidate = None
+            if candidate is None or (isinstance(candidate, dict) and "contract" in candidate):
+                if scope.tracked_revision is not None:
+                    # Validate raw selected blobs, never text-normalized or live bytes.
+                    try:
+                        result = subprocess.run(
+                            ["node", str(Path(__file__).with_name("validate-record-store.mjs")),
+                             str(path), "--revision", scope.tracked_revision],
+                            capture_output=True, timeout=30,
+                        )
+                        valid = result.returncode == 0
+                    except (OSError, subprocess.TimeoutExpired):
+                        valid = False
+                    if not valid:
+                        blocking_findings.append(
+                            ValidationFinding(severity="block", path=path,
+                                              artifact_class="change_metadata", status=None,
+                                              message="invalid or unavailable explicit recording snapshot")
+                        )
+                    continue
+                metadata_parser = _load_change_metadata_parser()
+                for message in metadata_parser.validate_file(path):
+                    blocking_findings.append(
+                        ValidationFinding(severity="block", path=path,
+                                          artifact_class="change_metadata", status=None,
+                                          message=message)
+                    )
+                continue
         metadata_error_messages: set[str] = set()
         if compose_change_metadata:
             metadata_parser = _load_change_metadata_parser()
