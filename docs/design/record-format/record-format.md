@@ -44,7 +44,7 @@ The CLI constructs registry and serialization mechanically from explicit operati
 | ID | Required behavior |
 | --- | --- |
 | RF-SR-01 | Every stored change MUST identify its contract and every record its schema version. V2 records MUST be plain JSON objects at the listed .json paths, with narrative inside explicit string fields and no front matter or trailing Markdown. The exact closed record/type definitions below MUST govern all supported writers and readers; unknown fields, vocabularies, versions and mixed-version stores MUST reject structurally. |
-| RF-SR-02 | The manifest MUST enumerate all supporting authoritative records with matching kind/change identity and exactly one explicit record-level applicability declaration each. Internal entry references MUST resolve in the complete candidate; extra physical files MUST NOT become authority through discovery. |
+| RF-SR-02 | The manifest MUST enumerate all supporting authoritative records with matching kind/change identity and exactly one explicit record-level applicability declaration each. Every v2 EntryRef MUST select exactly one admissible object using the field-specific resolution table and disjoint per-file referenceable IDs; missing, unsupported or ambiguous targets MUST reject in the complete candidate; extra physical files MUST NOT become authority through discovery. |
 | RF-SR-03 | Records MUST preserve actor-supplied subjects, provenance, decisions and narrative without inferring approval, applicability or completion. Finding and blocker identity and disposition representation MUST retain the distinction between reporter and correction owner. |
 | RF-SR-04 | Each v2 concern MUST retain its complete immutable Origin for its lifetime, including after disposition. Current judgments or concern fields MUST NOT rewrite that basis; supporting judgment MUST be explicitly absent or embedded with its relevant rationale and provenance. |
 | RF-SR-05 | Structural validity MUST remain separate from workflow adequacy. A completed activity, failed evidence or changed external subject MUST NOT alone invalidate a correction candidate; malformed internal references still reject. |
@@ -129,6 +129,32 @@ Common types are `Subject = {path, identity}` and `Actor = {id, role}`. `identit
 The `records` array declares every supporting authoritative record for this change; `change.json` is implicit. Each declared record must exist in the candidate set and have the matching kind and change identity. Each supporting record has exactly one explicit applicability entry in `change.json`. Extra physical files are not discovered as authority. A new supporting record and its registry/applicability entries are published together. The targeted command constructs registry bookkeeping, but the requesting actor explicitly supplies applicability value, actor and reason. Applicability remains at supporting-record level; individual checks or findings do not acquire a separate applicability field. These are referential checks, not review prerequisites.
 
 The CLI model owns bytes and encoding. Review, material-decisions and Verify objects require a nonempty body string containing human-readable reasoning. All fields belong to the same JSON object. Body explains the judgment or shared rationale; it must not maintain a second status, finding list or reviewer roster. The named structured fields remain authoritative for those facts. Avoiding narrative duplication is an authoring responsibility, not a CLI semantic rejection gate. Markdown formatting may occur inside a narrative string but adds no separate serialization layer. Subject and evidence arrays may be empty while recording incomplete work; Workflow actors must not use incomplete records to justify approval or completion. A Verify report's outcome admits only success, but the CLI does not establish that its assertion is true.
+
+### Entry reference resolution
+
+RF-SR-02 owns v2 EntryRef interpretation. The representation remains exactly `{path, id}`; no kind field, inferred namespace or search across files is introduced. Path selects the exact authoritative file in the same change's complete candidate: the implicit change.json or a registered supporting file. ID then selects the exact case-sensitive ID of an admissible object in that file, as defined by the referencing field below.
+
+| Referencing field | Admissible target file and object |
+| --- | --- |
+| Finding or blocker resolution.evidence_refs[] | evidence.json, a checks[] entry |
+| verify-report.json evidence_refs[] | evidence.json, a checks[] entry |
+| verify-report.json review_refs[] | A registered reviews/<review-id>.json, its root review object selected by the root id; never a finding |
+| material-decisions.json decisions[].source_refs[] | change.json models[], work[] or blockers[]; a registered review's root object or findings[]; evidence.json checks[]; or material-decisions.json decisions[] |
+
+All IDs of referenceable objects within a v2 file MUST be disjoint, including a review's root id versus finding IDs and the manifest's model, work and blocker IDs. Array-local uniqueness still applies. The same ID may occur in different files because path is part of identity. Actor IDs, change_id, applicability entries, activity, Origin and JudgmentBasis are not referenceable objects. A Verify report has no entry id and is not an EntryRef target. Its full content remains available through normal targeted reads. Subject references identify engineering files separately; they are not EntryRef targets.
+
+| Resolution case | Structural result |
+| --- | --- |
+| Exact path, permitted collection and exactly one matching ID | Resolve that object; do not infer approval, applicability, freshness or adequacy |
+| Missing file or ID, unregistered path, wrong target kind/collection, cross-change path or unsupported object | Reject the combined candidate as broken-reference; unsafe paths retain unsafe-path rejection |
+| Duplicate referenceable IDs within a file, including collisions across collections or with the review root | Reject as invalid-input even if no current reference uses the collision; never pick the first match |
+| Malformed reference object or duplicate identical pair within one reference array | Reject as invalid-input |
+
+Resolution validates the final combined candidate, so a reference and its target may be introduced in the same transaction. Empty reference arrays remain valid representation. References record links rather than recursive evaluation: self-links and cycles among decision source_refs are structurally recordable, but do not independently establish evidence or justified reliance. The CLI does not follow them to manufacture a judgment.
+
+For example, review_refs pointing at review file design-review.json with id finding-1 rejects even if that finding exists; the field permits only the review root. A decision's source_refs may select that same finding. A review root and finding both named design-review reject rather than making either field ambiguous. A new check and a disposition referencing that check resolve together after complete candidate construction.
+
+These target namespaces are a v2 contract refinement. The retained v1 validator accepts existing path/ID membership across its referenceable objects without this field-specific restriction; ordinary recording does not reinterpret or newly reject historical v1 references under v2 rules. No migration is introduced. When v1 data lacks a unique target interpretation, consumers must not infer v2 meaning; a future migration would need an explicit mapping, outside this design.
 
 ### Examples
 
@@ -245,10 +271,10 @@ File identity, stored format version and current workflow applicability are dist
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
-| Input domain | RF-SR-01, RF-SR-02 | V2 front matter, trailing Markdown, wrong file extensions, missing/empty body and unknown members/enums reject; escaped multiline body round-trips as a JSON string; every declared record has matching kind, identity and explicit applicability. |
+| Input domain | RF-SR-01, RF-SR-02 | V2 front matter, trailing Markdown, wrong file extensions, missing/empty body and unknown members/enums reject; escaped multiline body round-trips as a JSON string; every declared record has matching kind, identity and explicit applicability. EntryRef rejects missing, unsupported and ambiguous targets, including review-root/finding and manifest collection ID collisions. |
 | State/lifecycle | RF-SR-03, RF-SR-04, RF-SR-05 | Completed work can receive a new blocker; resolving a concern preserves origin and cannot implicitly close another concern. |
 | Identity/authority | RF-SR-03, RF-SR-04 | Changed review subjects never rewrite historical origin; actor labels do not establish reviewer independence. |
-| Composition/path | RF-SR-02, RF-SR-07, RF-SR-08 | Targeted and advanced candidates enforce identical invariants; full selected Verify/decisions reads retain narratives without unrelated record bodies. |
+| Composition/path | RF-SR-02, RF-SR-07, RF-SR-08 | Targeted and advanced candidates enforce identical invariants, including field-specific references and same-batch target creation; full selected Verify/decisions reads retain narratives without unrelated record bodies. |
 | Temporal/retry | RF-SR-04, RF-SR-08 | A later review preserves an existing concern's basis; stale retries conflict through the CLI without duplicated effects. |
 | Failure/recovery | RF-SR-02, RF-SR-04, RF-SR-08 | Interrupted publication restores exact before-state or completes the prepared candidate; neither outcome leaves mixed versions or partially registered authority. |
 | Compatibility/migration | RF-SR-01, RF-SR-06 | Primary v2 creation succeeds only after activation; primary v1 creation rejects without writes. Explicit advanced v1 compatibility creation retains its existing contract. Existing v1 reports unavailable origin; unknown contracts and mixed versions reject. |
@@ -286,7 +312,7 @@ Stored format: versioned durable data contract. Concern: review finding or chang
 
 ## Drafting basis and authority
 
-This model is extracted and refined under the user's explicit request to make RigorLoop Record Format a model. The design package now contains [Workflow](../workflow/workflow.md), [CLI](../cli/cli.md) and this file (`record-format`). The [targeted-recording proposal](../../proposals/2026-09-07-targeted-recording-primary-cli.md) supplies the direction. Existing review outcomes do not approve this new three-model package. This draft changes no stored records, runtime schemas, lifecycle settlement or release activation.
+This model is extracted and refined under the user's explicit request to make RigorLoop Record Format a model. The design package contains docs/design/workflow/workflow.md (`workflow`), docs/design/cli/cli.md (`cli`) and docs/design/record-format/record-format.md (`record-format`). The [targeted-recording proposal](../../proposals/2026-09-07-targeted-recording-primary-cli.md) supplies the direction. Existing review outcomes do not approve this new three-model package. This draft changes no stored records, runtime schemas, lifecycle settlement or release activation.
 
 ## Next artifacts
 
