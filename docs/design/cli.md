@@ -2,29 +2,60 @@
 
 Model validation contract: explicit-recording-v1
 
-## Drafting basis and authority
-
-This living model combines requirements, architecture and decisions. The targeted-interface amendment is authored under the user's explicit request to finish Design and obtain independent Design Review. Its exact package is this file (`cli`) and `workflow.md` (`workflow`), with no separate specification or ADR sibling. The existing `record-store` foundation is present on the synchronized main branch; the purpose-specific interface specified here remains prospective. Editing this model does not publish commands, change executable behavior, migrate records or authorize implementation.
-
-Current direction: [Make Targeted Recording the Primary CLI Interface](../proposals/2026-09-07-targeted-recording-primary-cli.md), its [independent Proposal Review](../changes/2026-09-07-targeted-recording-primary-cli-review-recording/reviews/proposal-review-r1.md), and the user-supplied purpose-specific command boundary. Earlier direction: [Explicit Workflow Recording and Model-Centered Design](../proposals/2026-09-05-explicit-recording-and-model-centered-design.md). The [Workflow model](workflow.md) owns lifecycle meaning, decision responsibilities and model-document conventions. The current [Constitution](../../CONSTITUTION.md) governs explicitly selected recording contracts. The prior proposal review is direction evidence, not a claim of historical lifecycle settlement. This file addresses workflow recording, not a redesign of installation, release or every public CLI command.
-
 ## Introduction and Goals
 
 Make the CLI a small repository-local tool that reads records, reports observations, validates explicit updates and persists them safely. The user or agent supplies status and decisions. The CLI never chooses a stage or turns another edit into a workflow decision.
 
 Simplicity means removing semantic transition orchestration, not removing schema validation, concurrency protection or recovery. A lifecycle may need human judgment; safely writing bytes must not require the lifecycle first to become semantically complete.
 
-## Architecture Constraints
+### Design at a glance
 
-Use exact local identities and explicit paths. Do not require Git, PR access, network services or a daemon. Data safety is enforced mechanically; workflow authority is not inferred from a caller's role string. Never use the new recorder as an implicit interpreter for an old contract.
+The CLI turns an actor's explicit decision into a safely stored update. Humans and skills use purpose-specific commands; one shared recording engine constructs candidates, checks structure and identities, and publishes recoverable changes. Read commands expose recorded information and observations with a stated scope.
 
-The existing record-store foundation is the shared persistence boundary. Targeted commands construct candidates and enter its validation and transaction path; they do not delegate to the compact eligibility engine. Reuse is subject to preservation, conflict and recovery proof, not inferred from module names. No project-map inference is used: the proposed boundary is grounded in the proposal, governance and directly inspected persistence surface.
+| Reader question | Start here |
+| --- | --- |
+| Which command serves my task? | [Public command catalogue](#primary-public-command-contract) |
+| What do I submit? | [Targeted requests and operations](#targeted-request-and-operation-definitions) |
+| What does a query return or omit? | [Bounded queries](#bounded-queries-and-scope) |
+| What does a save or preview mean? | [Primary results](#primary-result-schema-diagnostics-and-preview) |
+| How are neighboring content, conflicts and recovery handled? | [Candidate construction](#lossless-candidate-construction-and-shared-engine), [retry](#batch-composition-no-op-and-retry) and [save safety](#save-safety-and-recovery-boundary) |
+| How does this interact with workflow decisions? | [Correction walkthrough](#correction-walkthrough-recording-behavior) and the [Workflow model](workflow.md) |
+| Where is the maintenance interface? | [Advanced requests](#advanced-candidate-update-contract) and [advanced results](#advanced-result-schema-and-exit-behavior) |
 
 ## Context and Scope
 
 The CLI receives an exact change target, explicit decisions expressed as targeted operations, and expected current identities from an actor. It returns stored content, observations or a persistence result. The Workflow model interprets that result and decides what to do next. Filesystem permissions and runtime restrictions bound execution; the CLI cannot grant external permissions.
 
 The primary public surface is `status`, `context`, purpose-specific `show` and mutation commands, and `batch`. The existing `record-store inspect|check|record|recover` surface remains advanced tooling with its v1 request/result contract. Historical semantic command handlers and installation/release commands retain their separate meanings; no alias dispatches a targeted command into their eligibility engines.
+
+### Model boundary
+
+| Concern | Owning model | This model's relationship |
+| --- | --- | --- |
+| Meaning of activity, work, findings, blockers, judgments and applicability | [Workflow](workflow.md#context-and-scope) | Accept and preserve explicitly supplied values |
+| Record types, relationships and decision ownership | [Workflow record model](workflow.md#record-model) | Consume the stored-record contract |
+| Command syntax, request/result shapes and bounded selection | CLI | Define the public interface |
+| Encoding, byte preservation, identities, publication and recovery | CLI | Define and enforce mechanical storage safety |
+| Adequacy of evidence and justified progression | Workflow | Return observations without making those decisions |
+
+### Contract names and versions
+
+The public documentation calls stored data the **RigorLoop Record Format**. Its existing identifier remains unchanged; this presentation introduces no new format or migration. A transport version describes an interface envelope, while the stored contract identifies persisted record meaning.
+
+| Surface | Existing or designed discriminator | Contract owner |
+| --- | --- | --- |
+| Stored records | `contract: explicit-recording-v1` on the change; `schema_version: 1` on each record | Workflow owns fields/meaning; CLI owns encoding and safety |
+| Primary targeted requests | `interface: targeted-recording-v1`, `schema_version: 1` | CLI targeted request definitions |
+| Primary query/mutation results | `interface: targeted-recording-v1`, `schema_version: 2` | CLI primary result definitions |
+| Advanced record-store requests/results | `schema_version: 1`; request also names the stored contract | CLI advanced definitions |
+
+The existing [machine-readable schema](../../schemas/explicit-recording-v1.schema.json) includes stored types and advanced transport definitions. It does not yet implement the designed targeted request/result schemas. Schema linkage is structural evidence, not a claim that the primary commands are published or implemented.
+
+## Architecture Constraints
+
+Use exact local identities and explicit paths. Do not require Git, PR access, network services or a daemon. Data safety is enforced mechanically; workflow authority is not inferred from a caller's role string. Never use the new recorder as an implicit interpreter for an old contract.
+
+The existing record-store foundation is the shared persistence boundary. Targeted commands construct candidates and enter its validation and transaction path; they do not delegate to the compact eligibility engine. Reuse is subject to preservation, conflict and recovery proof, not inferred from module names. No project-map inference is used: the proposed boundary is grounded in the proposal, governance and directly inspected persistence surface.
 
 ## Solution Strategy
 
@@ -57,71 +88,37 @@ An old reviewed-subject hash is a legitimate reference to what was reviewed, not
 
 ## Building Block View
 
-```text
-Actor-supplied decisions and expected identities
-                    |
-       Purpose-specific / batch decoder
-                    |
-       Coherent snapshot + expected basis
-                    |
-         Lossless candidate construction
-                    |
-     Shared candidate validator <--- Advanced byte request
-                    |
-       Shared identity / transaction executor
-                    |
-        Stored values + persistence result
-
-Read-only observations accompany snapshots and results.
-Workflow interpretation remains outside this pipeline.
+```mermaid
+flowchart TB
+    Actor["Human or stage skill"]:::person
+    Primary["Purpose-specific commands / batch"]:::container
+    Advanced["Advanced replacement request"]:::container
+    Query["status / context / show"]:::container
+    subgraph Engine["Shared recording engine"]
+        Snapshot["Coherent snapshot and expected basis"]:::container
+        Candidate["Construct targeted edits or accept exact candidate bytes"]:::container
+        Validate["Structure, references and path validation"]:::container
+        Publish["Freshness checks and recoverable publication"]:::container
+    end
+    Projection["Bounded selection and scope"]:::container
+    Result["Storage result and observations"]:::system
+    Actor --> Primary
+    Actor --> Query
+    Primary --> Snapshot
+    Advanced --> Snapshot
+    Snapshot --> Candidate --> Validate --> Publish --> Result
+    Query --> Snapshot
+    Snapshot --> Projection --> Result
+    Validate -. "preview: no publication" .-> Result
+    classDef person fill:#08427b,stroke:#073b6f,color:#fff
+    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+    classDef external fill:#999,stroke:#666,color:#fff
+    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
 ```
 
 The decoder recognizes the selected contract and bounded record kinds. The structural validator checks only data representation and integrity. The snapshot reader and transaction layer coordinate access to authoritative files. The observer reports factual differences without selecting decisions. The renderer makes the distinction visible to humans and agents.
 
-### Advanced candidate update contract
-
-The transient request is UTF-8 JSON with exactly `schema_version: 1`, `contract: explicit-recording-v1`, `change_id`, `expected_revision`, `writes` and `reads`. `writes` is a nonempty array of `{path, expected_identity, content}`; `reads` is an array of `{path, expected_identity}`. Content is a UTF-8 string containing the complete replacement file. Expected identities are exact SHA-256 digests; null means the target must be absent. Null `expected_revision` is allowed only when creating an absent change root. IDs and record kinds come from the Workflow model. Duplicate keys, duplicate paths and unknown fields reject the request.
-
-The first contract stores JSON-subset YAML: `.yaml` files contain a single JSON object; Markdown records begin with `---`, a single JSON metadata object, another `---`, then the Markdown body. Delimiters occupy their own lines. JSON objects admit no duplicate keys, comments or nonfinite numbers. Content uses LF newlines, no BOM and a final newline; other encodings are rejected rather than silently normalized. Advanced record parses content to validate it but persists the exact supplied bytes. Object order and whitespace are not semantically significant, but remain significant to byte identity. Its no-rewrite guarantee remains unchanged. Primary targeted commands instead use the lossless construction rules below to produce those bytes; neither path supplies semantic defaults.
-
-The change revision is computed, never written into the record: hash the compact JSON encoding of a path-sorted array of `[path, exact-byte-digest]` pairs for `change.yaml` and every file listed by its `records` registry. Paths use ASCII and sort by byte order. This avoids a self-referential hash and catches supporting-record changes even when the manifest bytes did not change. Candidate revision uses the candidate registry and bytes. Broken current references can be repaired: inspect reports missing registered content using a null digest in the revision array, and record validates the complete candidate rather than demanding a semantically valid before-state. An unreadable/malformed manifest cannot supply a registry and requires explicit external repair under user authority; the CLI does not guess one from directory scans.
-
-The first recording contract supports creation and replacement of allowed workflow records only, not unrestricted deletion or arbitrary edits to engineering documents. Authors edit model documents through their normal scoped editing workflow and include their identities in the recording read set. This avoids pretending that a review-record transaction also atomically edited all design or implementation files.
-
-The write set is restricted to the exact selected change's recognized record surfaces. Decision-basis reads may reference safe repository-local model documents and proof inputs. An entire repository scan is neither required nor permitted as a substitute for a declared basis. Undeclared semantic dependencies remain an actor/reviewer responsibility.
-
-### Paths and command interface
-
-CLI-SR-02/03/09/10/11 own this interface. `--root` is an explicit existing repository directory and `--change` is a Workflow-model change ID. Inputs and outputs are not inferred from the current working directory. Supported authoritative paths relative to that root are exactly `docs/changes/<id>/change.yaml`, `docs/changes/<id>/reviews/<review-id>.md`, and the three conditional files `evidence.yaml`, `material-decisions.md`, `verify-report.md` in that change directory. Registry entries cannot expand this allowlist. The review filename and metadata ID must agree.
-
-| Proposed invocation | Input and behavior |
-| --- | --- |
-| `rigorloop record-store inspect --root PATH --change ID --format json` | No stdin; returns the registered snapshot, byte identities, computed revision and observations. An absent root is an absent observation, not an invitation to create it. |
-| `rigorloop record-store check --root PATH --change ID --input - --format json` | Reads one request from stdin, validates the candidate against a snapshot, writes nothing and makes no reservation. |
-| `rigorloop record-store record --root PATH --change ID --input - --format json` | Reads the same request form, repeats all freshness checks and commits only explicit writes. CLI and envelope change IDs must match. |
-| `rigorloop record-store recover --root PATH --change ID --transaction ID --expected-recovery DIGEST --action restore --format json` | Explicitly restores the verified before-state of an interrupted transaction; `--action complete` selects the exact candidate instead. No other action is accepted. |
-
-`--format` accepts `json` or `text`, defaulting to text; all other shown selectors are required. Unknown flags, extra positional arguments, contradictory selectors or non-stdin input selectors reject. No permanent operation request file is created. `record` also performs initial creation using absent preconditions; a separate automatic initialization step is unnecessary. An existing directory, even without a manifest, is not an absent root and cannot be adopted by creation.
-
-New-root creation may create only the selected change directory and required `reviews` directory; it may not claim an existing root. Existing registry membership cannot be removed in this first version: retirement is recorded with explicit applicability and retained bytes. Registered missing files may be restored through an explicit absent write precondition. A candidate can introduce a new registered file in the same transaction. Writes to unregistered sidecars, unsupported paths or existing unregistered files reject. Abandoned unrelated files are never overwritten or silently imported.
-
-All paths are nonempty ASCII repository-relative paths with `/` separators, no empty, dot or dot-dot segments, backslashes, control characters or absolute prefixes. Symlinks in the root's descendants and hard-linked authoritative files are rejected; targets must be regular files or explicitly absent. The implementation must protect path resolution against concurrent substitution, not merely check a string once. Decision-basis paths cannot name transient store data. The request read set is not required to repeat historical subject hashes as current expectations: doing so would recreate the stale-review correction cycle.
-
-### Advanced result schema and exit behavior
-
-Every advanced record-store JSON result has exactly `{schema_version: 1, operation, status, change_id, revision, files, snapshot, observations, errors, transaction, claim}`. `operation` is one of the four command names; `claim` is always `storage-only`. `revision` is a digest or null when unavailable; `files` is an array of `{path, identity}` where identity is a digest or null for an absent path. `transaction` is null or `{id, recovery_identity}` with a digest when recoverable metadata exists, otherwise null for that identity. Observations and errors are arrays of `{code, path, message}`, with path null for non-path-specific conditions. Messages are safe summaries, not raw payloads.
-
-CLI-SR-02/11 defines one narrow selector-error exception: before dispatch, an unavailable `operation` or `change_id` is represented by null, never a fabricated sentinel or an echo of invalid input. An operation is available only when the subcommand is one of the four recognized names. A change ID is available only when exactly one `--change` selector supplies a valid Workflow-model ID. Missing, invalid or repeated change selectors make that identity unavailable, even when repeated values are equal. Each independently available selector is retained. Unknown flags or other argument errors do not erase otherwise available identities.
-
-Any result with a null selector MUST have `status: rejected`, exit code 2, `revision: null`, `files: []`, `snapshot: null`, `observations: []`, `transaction: null`, `claim: storage-only`, and exactly one non-path-specific `invalid-input` error with a safe message. All argument-validation failures use that same empty, non-mutating rejection shape, retaining available selectors; they perform no repository access or stdin read. Every non-rejected result requires both valid selectors. Unknown non-null values remain invalid. This extends the single result envelope rather than adding a separate usage-error schema or weakening request and persisted-record identities. For invalid or repeated `--format`, output falls back to text with exit code 2; exactly one valid `--format json` selects JSON even when another argument is invalid. No raw rejected selector value appears in text, JSON or diagnostic logs. These input-rejection rules do not change command-scoped storage failures or successful results.
-
-For `inspect` with status `inspected`, `snapshot` is exactly `{records: [{path, content}]}`. It contains `change.yaml` and every registered supporting record in path order, with the same paths and identities as `files`, all obtained from one coherent snapshot. `content` is the exact UTF-8 file content as a JSON string, using the record encodings and Workflow-model definitions already specified; this introduces no second schema for activity, reviews or evidence. Missing registered supporting files remain present with null content and null identity and a `subject-drift` observation. They are not silently omitted or synthesized. An absent change root returns an empty records array, empty files array, null revision and the existing `absent-change` observation. An unreadable, malformed or unsafe manifest cannot establish the registry and returns a rejection with null snapshot.
-
-For every other operation or any non-`inspected` result, `snapshot` is null. In particular, busy or recovery-required inspection never exposes partial content as a usable snapshot, and check/record/recover do not echo record bodies. Text inspection presents the same content and missing-file distinctions. Content belongs only in the explicit inspection payload, never diagnostic messages. These presence rules realize CLI-SR-01/05/11; inspect remains read-only and its content is recorded data, not derived workflow judgment.
-
-Status and exit pairs are `inspected/0`, `valid/0`, `saved/0`, `unchanged/0`, `recovered/0`, `rejected/2`, `conflict/3`, `busy/4`, `recovery-required/5`. `inspected` and `valid` belong only to inspect/check; `saved` and `unchanged` to record; `recovered` to recover. Failure statuses apply to any relevant operation. `unchanged` requires both satisfied current preconditions and identical candidate bytes; a lost-response retry with an old revision returns conflict even if the candidate was already saved. This intentionally avoids an operation ledger.
-
-The closed v1 diagnostic codes are `invalid-input`, `unsupported-contract`, `unsafe-path`, `broken-reference`, `identity-conflict`, `store-busy`, `recovery-needed`, `io-failure`, `limit-exceeded`, `absent-change`, `subject-drift`, `failed-evidence`, `inconsistent-claim`. Only the last four are observations. The observer reports absent roots, missing/changed referenced subjects, explicitly failed evidence checks, and a recorded completed activity coexisting with an open blocker or failed evidence. It does not implement general workflow eligibility. Unknown diagnostic codes require a version change rather than silent consumer fall-through. Diagnostics alone do not change record status or an exit-0 storage outcome.
+The diagram shows responsibilities and alternative read/write paths, not an instruction to execute every edge. Queries stop at projection; previews stop after candidate validation; actual writes use the shared publisher. Detailed exclusion, rechecking and recovery obligations remain in the sections below.
 
 ### Primary public command contract
 
@@ -170,24 +167,6 @@ For existing material-decisions narrative, `decision.record` optionally accepts 
 
 The common expected revision covers the manifest and all registered records, so callers need not repeat neighboring record hashes. The adapter resolves exact affected file identities from that same verified snapshot and passes them to the shared engine. `reads` carries current expected identities for the externally selected decision basis; subject identities inside historical records remain assertions about assessed content and are never substituted with newly computed hashes. `change.link` additionally requires its supplied subject identity as an equal read-set expectation. Other subject-bearing commands retain the ability to record historical or incomplete evidence; the actor explicitly declares the current basis it actually relied on. The CLI computes identities, not the adequacy of that basis.
 
-### Lossless candidate construction and shared engine
-
-The primary adapter parses the admitted JSON-subset YAML or Markdown front matter with source spans. It retains the original byte buffer and builds an index of object fields and stable entry IDs. Replacement edits change only the selected value token span; inserting an entry adds a serialized element plus the necessary comma at the array end. Existing entry bytes, order, whitespace, front-matter delimiters and Markdown body bytes remain unchanged outside explicit target spans. An unchanged semantic value produces no byte edit even if the caller's whitespace or object-key order differs. No metadata change alone rewrites a body. An explicit body replacement changes only the body span and must already meet the LF/final-newline/nonempty encoding rules.
-
-New objects and value tokens use deterministic JSON encoding: keys sorted by ASCII field name, arrays in supplied order, compact separators, Unicode retained as UTF-8 except JSON-required escaping, finite numbers only, and a final LF for a complete new file. A new Markdown file is `---\n` plus its compact metadata and `\n---\n` plus the actor body. Existing object members are not reordered. The lossless parser must either preserve the admitted source representation or reject structurally; silently canonicalizing an existing file is forbidden. Only necessary adjacent commas may be inserted when adding members/elements. This is a narrow replacement of the old full-file primary interface, while the advanced exact-byte contract remains intact.
-
-The construction phase has no filesystem write capability. It returns complete before/candidate bytes, explicit target effects and expanded registry/applicability effects. A shared transaction executor acquires writer exclusion, reads a coherent snapshot, verifies expected revision and declared basis, applies construction against that exact snapshot, validates the combined final candidate, prepares recovery and publishes using CLI-SR-04/05/06/09. The advanced adapter supplies bytes directly at the same candidate-validation boundary. Preview uses a coherent read without reserving it, constructs and validates the same candidate, and creates no lock/reservation/transaction files. A real write must start again under writer exclusion and repeat all checks; it cannot trust a preview.
-
-No adapter writes files independently or calls compact/lifecycle eligibility first. Targeted and advanced writers use the same per-change exclusion domain and private recovery location. Recovery consumes the exact prepared bytes; it never reruns targeted operations against newer state. The external-edit limitation in Save safety and recovery boundary applies unchanged to all paths.
-
-### Batch composition, no-op and retry
-
-Batch constructs operations in listed order against an in-memory candidate based on one revision. Internal references are validated against the complete final candidate, permitting a new review and its finding or a check and referencing blocker in one transaction. An operation can select an entry created earlier in the batch. Each selected semantic field may be assigned at most once: overlapping writes, two adds with the same ID, two recordings of the same check or review, or incompatible registration declarations reject with `overlapping-operation`, even if supplied values agree. An ancestor replacement overlaps any descendant edit except the expressly separate review assessment/findings and decision metadata/body spans. Adding a new review and then its findings is permitted because new empty findings are representation scaffolding, not an explicit clearing operation. Changes to distinct named fields/entries in the same file compose deterministically. Physical registry/applicability bookkeeping is coalesced once.
-
-No intermediate candidate is published, and structural validation is not applied as a workflow eligibility check between operations. Invalid final references, missing applicability decisions, limits or conflicts reject the entire batch. A batch cannot include raw record-store requests, recovery, queries, arbitrary engineering edits or cross-change writes. Individual commands remain sufficient for independent decisions; no transaction requires Route or every responsible actor to participate.
-
-Expected revision is checked before no-op recognition. Identical candidate bytes with satisfied current preconditions return `unchanged`; old-revision retries return `conflict`, including after a lost success response. A fresh retry of add against an existing ID returns `target-exists`; callers inspect rather than invent new IDs to bypass uncertainty. A repeated record at a fresh revision with identical decision values returns unchanged. There is no persistent idempotency ledger, semantic increment, automatic retry merge or automatic regenerated decision basis.
-
 ### Bounded queries and scope
 
 Primary queries read one coherent full registered snapshot internally to establish its revision and structural observations; output is bounded, not falsely claimed to be a partial storage read. They never scan directories for authority or repair files. `status` returns recorded `activity`, `proposal`, `models`, `plan` and counts grouped by explicit work status, blocker/finding state, review judgment and evidence result. Counts distinguish records missing from the snapshot, and are counts of stored labels rather than a readiness calculation. Full record content is available through the explicit advanced inspect path.
@@ -232,15 +211,85 @@ Primary statuses/exits are `inspected/0` for queries, `valid/0` for dry-run, `sa
 
 Human text prints the same storage outcome, selected scope or effects, revision, observations and actionable errors, without color dependencies. No renderer translates saved/valid or an empty observations list into approval, applicability or readiness. The existing global result/logging layer must carry this typed result unchanged in meaning; raw bodies belong only in an explicit query response, never error or diagnostic logs.
 
-### Adoption and proof boundary for the primary interface
+### Lossless candidate construction and shared engine
 
-This amendment preserves stored schema_version 1 and contract explicit-recording-v1. Existing records in that exact contract can be targeted without rewriting their encoding, historical judgments or file identities merely to adopt the commands. Other contracts reject with unsupported-contract. No new targeted schema accepts a historical record by coercion; advanced requests/results retain schema 1 and exact-byte behavior. The new primary envelope is separately versioned, so old clients must reject it explicitly rather than infer v1 fields.
+The primary adapter parses the admitted JSON-subset YAML or Markdown front matter with source spans. It retains the original byte buffer and builds an index of object fields and stable entry IDs. Replacement edits change only the selected value token span; inserting an entry adds a serialized element plus the necessary comma at the array end. Existing entry bytes, order, whitespace, front-matter delimiters and Markdown body bytes remain unchanged outside explicit target spans. An unchanged semantic value produces no byte edit even if the caller's whitespace or object-key order differs. No metadata change alone rewrites a body. An explicit body replacement changes only the body span and must already meet the LF/final-newline/nonempty encoding rules.
 
-The CLI and Workflow adoption inventories remain impact references; the targeted amendment adds shared candidate construction, public dispatch/help, static context projection, lossless serialization and bounded renderers. Implementation must prove public-command/engine parity, registry/application decision separation, unchanged-neighbor bytes including noncanonical valid whitespace, retry and mixed advanced/targeted concurrency, stale declared basis, pagination drift, output limits before writes and existing interrupted-save/recovery outcomes. A failed check and new blocker after completed work must remain recordable, with Route deciding its own later activity. No new OS/platform guarantee or installation/release mechanism is introduced.
+New objects and value tokens use deterministic JSON encoding: keys sorted by ASCII field name, arrays in supplied order, compact separators, Unicode retained as UTF-8 except JSON-required escaping, finite numbers only, and a final LF for a complete new file. A new Markdown file is `---\n` plus its compact metadata and `\n---\n` plus the actor body. Existing object members are not reordered. The lossless parser must either preserve the admitted source representation or reject structurally; silently canonicalizing an existing file is forbidden. Only necessary adjacent commas may be inserted when adding members/elements. This is a narrow replacement of the old full-file primary interface, while the advanced exact-byte contract remains intact.
 
-Token evaluation compares complete representative interactions on identical starting fixtures: append a finding to a review with neighbors and narrative; record a check plus a blocker after completed work; explicitly revise applicability and later record reassessment. Include loaded skill/help guidance, all inspection pages/show calls, requests, results, previews actually used and follow-up conflict reads. Record tokenizer/tool versions and totals by component; compare targeted commands with the retained full-record path, including large-record cases. No numerical saving or universal improvement is assumed. Preservation and sufficient decision basis are mandatory even if a measurement favors the older path; Delivery owns concrete checks and acceptance evidence, and a failure to reduce routine reconstruction/context returns to the owning Design decision before adoption.
+The construction phase has no filesystem write capability. It returns complete before/candidate bytes, explicit target effects and expanded registry/applicability effects. A shared transaction executor acquires writer exclusion, reads a coherent snapshot, verifies expected revision and declared basis, applies construction against that exact snapshot, validates the combined final candidate, prepares recovery and publishes using CLI-SR-04/05/06/09. The advanced adapter supplies bytes directly at the same candidate-validation boundary. Preview uses a coherent read without reserving it, constructs and validates the same candidate, and creates no lock/reservation/transaction files. A real write must start again under writer exclusion and repeat all checks; it cannot trust a preview.
+
+No adapter writes files independently or calls compact/lifecycle eligibility first. Targeted and advanced writers use the same per-change exclusion domain and private recovery location. Recovery consumes the exact prepared bytes; it never reruns targeted operations against newer state. The external-edit limitation in Save safety and recovery boundary applies unchanged to all paths.
+
+### Batch composition, no-op and retry
+
+Batch constructs operations in listed order against an in-memory candidate based on one revision. Internal references are validated against the complete final candidate, permitting a new review and its finding or a check and referencing blocker in one transaction. An operation can select an entry created earlier in the batch. Each selected semantic field may be assigned at most once: overlapping writes, two adds with the same ID, two recordings of the same check or review, or incompatible registration declarations reject with `overlapping-operation`, even if supplied values agree. An ancestor replacement overlaps any descendant edit except the expressly separate review assessment/findings and decision metadata/body spans. Adding a new review and then its findings is permitted because new empty findings are representation scaffolding, not an explicit clearing operation. Changes to distinct named fields/entries in the same file compose deterministically. Physical registry/applicability bookkeeping is coalesced once.
+
+No intermediate candidate is published, and structural validation is not applied as a workflow eligibility check between operations. Invalid final references, missing applicability decisions, limits or conflicts reject the entire batch. A batch cannot include raw record-store requests, recovery, queries, arbitrary engineering edits or cross-change writes. Individual commands remain sufficient for independent decisions; no transaction requires Route or every responsible actor to participate.
+
+Expected revision is checked before no-op recognition. Identical candidate bytes with satisfied current preconditions return `unchanged`; old-revision retries return `conflict`, including after a lost success response. A fresh retry of add against an existing ID returns `target-exists`; callers inspect rather than invent new IDs to bypass uncertainty. A repeated record at a fresh revision with identical decision values returns unchanged. There is no persistent idempotency ledger, semantic increment, automatic retry merge or automatic regenerated decision basis.
+
+### Paths and command interface
+
+CLI-SR-02/03/09/10/11 own this interface. `--root` is an explicit existing repository directory and `--change` is a Workflow-model change ID. Inputs and outputs are not inferred from the current working directory. Supported authoritative paths relative to that root are exactly `docs/changes/<id>/change.yaml`, `docs/changes/<id>/reviews/<review-id>.md`, and the three conditional files `evidence.yaml`, `material-decisions.md`, `verify-report.md` in that change directory. Registry entries cannot expand this allowlist. The review filename and metadata ID must agree.
+
+| Proposed invocation | Input and behavior |
+| --- | --- |
+| `rigorloop record-store inspect --root PATH --change ID --format json` | No stdin; returns the registered snapshot, byte identities, computed revision and observations. An absent root is an absent observation, not an invitation to create it. |
+| `rigorloop record-store check --root PATH --change ID --input - --format json` | Reads one request from stdin, validates the candidate against a snapshot, writes nothing and makes no reservation. |
+| `rigorloop record-store record --root PATH --change ID --input - --format json` | Reads the same request form, repeats all freshness checks and commits only explicit writes. CLI and envelope change IDs must match. |
+| `rigorloop record-store recover --root PATH --change ID --transaction ID --expected-recovery DIGEST --action restore --format json` | Explicitly restores the verified before-state of an interrupted transaction; `--action complete` selects the exact candidate instead. No other action is accepted. |
+
+`--format` accepts `json` or `text`, defaulting to text; all other shown selectors are required. Unknown flags, extra positional arguments, contradictory selectors or non-stdin input selectors reject. No permanent operation request file is created. `record` also performs initial creation using absent preconditions; a separate automatic initialization step is unnecessary. An existing directory, even without a manifest, is not an absent root and cannot be adopted by creation.
+
+New-root creation may create only the selected change directory and required `reviews` directory; it may not claim an existing root. Existing registry membership cannot be removed in this first version: retirement is recorded with explicit applicability and retained bytes. Registered missing files may be restored through an explicit absent write precondition. A candidate can introduce a new registered file in the same transaction. Writes to unregistered sidecars, unsupported paths or existing unregistered files reject. Abandoned unrelated files are never overwritten or silently imported.
+
+All paths are nonempty ASCII repository-relative paths with `/` separators, no empty, dot or dot-dot segments, backslashes, control characters or absolute prefixes. Symlinks in the root's descendants and hard-linked authoritative files are rejected; targets must be regular files or explicitly absent. The implementation must protect path resolution against concurrent substitution, not merely check a string once. Decision-basis paths cannot name transient store data. The request read set is not required to repeat historical subject hashes as current expectations: doing so would recreate the stale-review correction cycle.
+
+### Advanced candidate update contract
+
+The transient request is UTF-8 JSON with exactly `schema_version: 1`, `contract: explicit-recording-v1`, `change_id`, `expected_revision`, `writes` and `reads`. `writes` is a nonempty array of `{path, expected_identity, content}`; `reads` is an array of `{path, expected_identity}`. Content is a UTF-8 string containing the complete replacement file. Expected identities are exact SHA-256 digests; null means the target must be absent. Null `expected_revision` is allowed only when creating an absent change root. IDs and record kinds come from the Workflow model. Duplicate keys, duplicate paths and unknown fields reject the request.
+
+The first contract stores JSON-subset YAML: `.yaml` files contain a single JSON object; Markdown records begin with `---`, a single JSON metadata object, another `---`, then the Markdown body. Delimiters occupy their own lines. JSON objects admit no duplicate keys, comments or nonfinite numbers. Content uses LF newlines, no BOM and a final newline; other encodings are rejected rather than silently normalized. Advanced record parses content to validate it but persists the exact supplied bytes. Object order and whitespace are not semantically significant, but remain significant to byte identity. Its no-rewrite guarantee remains unchanged. Primary targeted commands instead use the lossless construction rules below to produce those bytes; neither path supplies semantic defaults.
+
+The change revision is computed, never written into the record: hash the compact JSON encoding of a path-sorted array of `[path, exact-byte-digest]` pairs for `change.yaml` and every file listed by its `records` registry. Paths use ASCII and sort by byte order. This avoids a self-referential hash and catches supporting-record changes even when the manifest bytes did not change. Candidate revision uses the candidate registry and bytes. Broken current references can be repaired: inspect reports missing registered content using a null digest in the revision array, and record validates the complete candidate rather than demanding a semantically valid before-state. An unreadable/malformed manifest cannot supply a registry and requires explicit external repair under user authority; the CLI does not guess one from directory scans.
+
+The first recording contract supports creation and replacement of allowed workflow records only, not unrestricted deletion or arbitrary edits to engineering documents. Authors edit model documents through their normal scoped editing workflow and include their identities in the recording read set. This avoids pretending that a review-record transaction also atomically edited all design or implementation files.
+
+The write set is restricted to the exact selected change's recognized record surfaces. Decision-basis reads may reference safe repository-local model documents and proof inputs. An entire repository scan is neither required nor permitted as a substitute for a declared basis. Undeclared semantic dependencies remain an actor/reviewer responsibility.
+
+### Advanced result schema and exit behavior
+
+Every advanced record-store JSON result has exactly `{schema_version: 1, operation, status, change_id, revision, files, snapshot, observations, errors, transaction, claim}`. `operation` is one of the four command names; `claim` is always `storage-only`. `revision` is a digest or null when unavailable; `files` is an array of `{path, identity}` where identity is a digest or null for an absent path. `transaction` is null or `{id, recovery_identity}` with a digest when recoverable metadata exists, otherwise null for that identity. Observations and errors are arrays of `{code, path, message}`, with path null for non-path-specific conditions. Messages are safe summaries, not raw payloads.
+
+CLI-SR-02/11 defines one narrow selector-error exception: before dispatch, an unavailable `operation` or `change_id` is represented by null, never a fabricated sentinel or an echo of invalid input. An operation is available only when the subcommand is one of the four recognized names. A change ID is available only when exactly one `--change` selector supplies a valid Workflow-model ID. Missing, invalid or repeated change selectors make that identity unavailable, even when repeated values are equal. Each independently available selector is retained. Unknown flags or other argument errors do not erase otherwise available identities.
+
+Any result with a null selector MUST have `status: rejected`, exit code 2, `revision: null`, `files: []`, `snapshot: null`, `observations: []`, `transaction: null`, `claim: storage-only`, and exactly one non-path-specific `invalid-input` error with a safe message. All argument-validation failures use that same empty, non-mutating rejection shape, retaining available selectors; they perform no repository access or stdin read. Every non-rejected result requires both valid selectors. Unknown non-null values remain invalid. This extends the single result envelope rather than adding a separate usage-error schema or weakening request and persisted-record identities. For invalid or repeated `--format`, output falls back to text with exit code 2; exactly one valid `--format json` selects JSON even when another argument is invalid. No raw rejected selector value appears in text, JSON or diagnostic logs. These input-rejection rules do not change command-scoped storage failures or successful results.
+
+For `inspect` with status `inspected`, `snapshot` is exactly `{records: [{path, content}]}`. It contains `change.yaml` and every registered supporting record in path order, with the same paths and identities as `files`, all obtained from one coherent snapshot. `content` is the exact UTF-8 file content as a JSON string, using the record encodings and Workflow-model definitions already specified; this introduces no second schema for activity, reviews or evidence. Missing registered supporting files remain present with null content and null identity and a `subject-drift` observation. They are not silently omitted or synthesized. An absent change root returns an empty records array, empty files array, null revision and the existing `absent-change` observation. An unreadable, malformed or unsafe manifest cannot establish the registry and returns a rejection with null snapshot.
+
+For every other operation or any non-`inspected` result, `snapshot` is null. In particular, busy or recovery-required inspection never exposes partial content as a usable snapshot, and check/record/recover do not echo record bodies. Text inspection presents the same content and missing-file distinctions. Content belongs only in the explicit inspection payload, never diagnostic messages. These presence rules realize CLI-SR-01/05/11; inspect remains read-only and its content is recorded data, not derived workflow judgment.
+
+Status and exit pairs are `inspected/0`, `valid/0`, `saved/0`, `unchanged/0`, `recovered/0`, `rejected/2`, `conflict/3`, `busy/4`, `recovery-required/5`. `inspected` and `valid` belong only to inspect/check; `saved` and `unchanged` to record; `recovered` to recover. Failure statuses apply to any relevant operation. `unchanged` requires both satisfied current preconditions and identical candidate bytes; a lost-response retry with an old revision returns conflict even if the candidate was already saved. This intentionally avoids an operation ledger.
+
+The closed v1 diagnostic codes are `invalid-input`, `unsupported-contract`, `unsafe-path`, `broken-reference`, `identity-conflict`, `store-busy`, `recovery-needed`, `io-failure`, `limit-exceeded`, `absent-change`, `subject-drift`, `failed-evidence`, `inconsistent-claim`. Only the last four are observations. The observer reports absent roots, missing/changed referenced subjects, explicitly failed evidence checks, and a recorded completed activity coexisting with an open blocker or failed evidence. It does not implement general workflow eligibility. Unknown diagnostic codes require a version change rather than silent consumer fall-through. Diagnostics alone do not change record status or an exit-0 storage outcome.
 
 ## Runtime View
+
+### Correction walkthrough: recording behavior
+
+This is the same example as Workflow's [actor-decision walkthrough](workflow.md#correction-walkthrough-actor-decisions). The selected change has a recorded completed activity, and a later Verify attempt detects a defect. The rows illustrate CLI-SR-03/04/05/07/08/12–17; they add no new command, status or ownership rule. Requests carry the explicit revision and decision basis required by their normal contracts.
+
+| Step | Public interaction | CLI records or returns | Preserved boundary |
+| --- | --- | --- | --- |
+| 1. Inspect the basis | `context --for verify`, with selected `show` calls and engineering reads | Scoped recorded data, subject identities, counts and observations | No claim that the view is sufficient for Verify |
+| 2. Record failure | `batch` containing `evidence.record` and `blocker.add` | One combined candidate containing the supplied failed result and blocker | Activity remains completed unless explicitly changed; a newly created evidence file requires actor-supplied applicability |
+| 3. Select correction | Route invokes `activity set` and any explicit `work add/set` | The requested activity/work fields | No automatic routing from the failed check; steps 2 and 3 may be separate transactions |
+| 4. Record correction proof | `work set` and `evidence record` | Selected work fields and check results | Existing findings, blockers and applicability remain unchanged unless explicitly updated |
+| 5. Record reassessment | `review record`, with a separately explicit applicability declaration where needed | The supplied independent judgment against exact subjects | No hash-based approval restoration or automatic blocker closure |
+| 6. Record disposition and success | Verify uses `blocker set`, then `verify record`; explicit completion may be batched | The supplied blocker resolution, success report and any explicitly requested activity decision | Storage does not assess correction adequacy or perform Verify |
+
+An old revision conflicts before publication, even when the request concerns only one entry. An interrupted batch exposes recovery-required rather than a usable mixed snapshot. A missing registered evidence file is unavailable content, not an empty check collection. These are the same failure outcomes defined by the request, query and recovery contracts.
 
 ### Read and check
 
@@ -299,6 +348,14 @@ This is the CLI-owned companion to the Workflow model's adoption inventory. The 
 Runtime impact candidates are the [CLI dispatcher](../../packages/rigorloop/dist/bin/rigorloop.js), new record-store parsing/validation/persistence, and compatibility tests. Existing [compact operations](../../packages/rigorloop/dist/lib/compact-operations.js), [eligibility](../../packages/rigorloop/dist/lib/compact-eligibility.js), [projection](../../packages/rigorloop/dist/lib/compact-projection.js) and [transaction code](../../packages/rigorloop/dist/lib/compact-transaction.js) are not deletion targets. Any extracted safety helper must preserve their behavior through regression proof. Exact implementation modules and test files belong to Delivery planning after Design Review; these links identify impact boundaries, not authorization to refactor them now.
 
 Installation, release publication, general observability, cache policy and hosted integrations remain unchanged unless a concrete incompatibility is demonstrated. In particular, the system architecture's CLI Observability and Result Projection section is an integration dependency: the new storage-only result and exit statuses must coexist with its renderer without granting logs lifecycle authority. Any required mapping belongs in this model before implementation, not an unreviewed global renderer change.
+
+### Adoption and proof boundary for the primary interface
+
+This amendment preserves stored schema_version 1 and contract explicit-recording-v1. Existing records in that exact contract can be targeted without rewriting their encoding, historical judgments or file identities merely to adopt the commands. Other contracts reject with unsupported-contract. No new targeted schema accepts a historical record by coercion; advanced requests/results retain schema 1 and exact-byte behavior. The new primary envelope is separately versioned, so old clients must reject it explicitly rather than infer v1 fields.
+
+The CLI and Workflow adoption inventories remain impact references; the targeted amendment adds shared candidate construction, public dispatch/help, static context projection, lossless serialization and bounded renderers. Implementation must prove public-command/engine parity, registry/application decision separation, unchanged-neighbor bytes including noncanonical valid whitespace, retry and mixed advanced/targeted concurrency, stale declared basis, pagination drift, output limits before writes and existing interrupted-save/recovery outcomes. A failed check and new blocker after completed work must remain recordable, with Route deciding its own later activity. No new OS/platform guarantee or installation/release mechanism is introduced.
+
+Token evaluation compares complete representative interactions on identical starting fixtures: append a finding to a review with neighbors and narrative; record a check plus a blocker after completed work; explicitly revise applicability and later record reassessment. Include loaded skill/help guidance, all inspection pages/show calls, requests, results, previews actually used and follow-up conflict reads. Record tokenizer/tool versions and totals by component; compare targeted commands with the retained full-record path, including large-record cases. No numerical saving or universal improvement is assumed. Preservation and sufficient decision basis are mandatory even if a measurement favors the older path; Delivery owns concrete checks and acceptance evidence, and a failure to reduce routine reconstruction/context returns to the owning Design decision before adoption.
 
 ## Crosscutting Concepts
 
@@ -375,6 +432,12 @@ The targeted request/result shapes and command adapters are prospective Design d
 ## Glossary
 
 Candidate: complete replacement content constructed from targeted edits or explicitly submitted by advanced callers. Read set: exact inputs on which the caller based its decisions. Conflict: a current identity differs from an expected one. Drift: an observed difference between a record's subject and actual content. Transaction: recoverable publication of a bounded set of replacements. Observation: a fact reported without mutating workflow decisions.
+
+## Drafting basis and authority
+
+This living model combines requirements, architecture and decisions. The targeted-interface amendment is authored under the user's explicit request to finish Design and obtain independent Design Review. Its exact package is this file (`cli`) and `workflow.md` (`workflow`), with no separate specification or ADR sibling. The existing `record-store` foundation is present on the synchronized main branch; the purpose-specific interface specified here remains prospective. Editing this model does not publish commands, change executable behavior, migrate records or authorize implementation.
+
+Current direction: [Make Targeted Recording the Primary CLI Interface](../proposals/2026-09-07-targeted-recording-primary-cli.md), its [independent Proposal Review](../changes/2026-09-07-targeted-recording-primary-cli-review-recording/reviews/proposal-review-r1.md), and the user-supplied purpose-specific command boundary. Earlier direction: [Explicit Workflow Recording and Model-Centered Design](../proposals/2026-09-05-explicit-recording-and-model-centered-design.md). The [Workflow model](workflow.md) owns lifecycle meaning, decision responsibilities and model-document conventions. The current [Constitution](../../CONSTITUTION.md) governs explicitly selected recording contracts. The prior proposal review is direction evidence, not a claim of historical lifecycle settlement. This file addresses workflow recording, not a redesign of installation, release or every public CLI command.
 
 ## Next artifacts
 

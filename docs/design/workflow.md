@@ -2,23 +2,24 @@
 
 Model validation contract: explicit-recording-v1
 
-## Drafting basis and authority
-
-This living model combines behavioral requirements, architecture and decision rationale. The targeted-interface amendment is authored under the user's explicit request to finish the CLI/Workflow Design and obtain independent Design Review. The exact package is this file (`workflow`) and `cli.md` (`cli`); no separate specification or ADR sibling is created. The current Constitution permits explicitly selected explicit-recording-v1 work; the new purpose-specific interface remains prospective. This drafting step changes no executable behavior, persisted contract or historical lifecycle record.
-
-Current direction: [Make Targeted Recording the Primary CLI Interface](../proposals/2026-09-07-targeted-recording-primary-cli.md), its [independent Proposal Review](../changes/2026-09-07-targeted-recording-primary-cli-review-recording/reviews/proposal-review-r1.md), and the user-supplied command boundary. Earlier direction: [Explicit Workflow Recording and Model-Centered Design](../proposals/2026-09-05-explicit-recording-and-model-centered-design.md). Related model: [CLI](cli.md). Current [Constitution](../../CONSTITUTION.md) and contract-selected [workflow specification](../../specs/rigorloop-workflow.md) retain their authority; this amendment does not claim historical lifecycle settlement. The architectural and specification authoring methods are combined here rather than producing mandatory sidecars. This is not yet a complete replacement for all existing workflow contracts.
-
 ## Introduction and Goals
 
 The Workflow model defines how responsible humans and agents turn a direction into reviewed design, delivery work and verified outcomes. It owns the meaning of recorded status, responsibilities, review applicability, correction and readiness. Its purpose is durable, inspectable reasoning and resumable work without making a command-line transition engine the decision owner.
 
 The initial model inventory for this change has two members: Workflow and CLI. Workflow owns the engineering process and the model-document convention; CLI owns the safe storage interface. Neither is defined by a feature, class or AI model. Other system models can be identified later without forcing unrelated contracts into either file.
 
-## Architecture Constraints
+### Design at a glance
 
-Current state must remain understandable without Git history, PR access, a network service or a previous chat. Reviewers must remain independent of the work they approve. Saving a decision does not prove it correct. Existing approvals and findings cannot acquire new meaning through a document rename.
+Workflow defines who makes each engineering decision, what that decision means, and what evidence another actor needs before relying on it. Records retain those explicit decisions. The CLI is the recording mechanism; it does not become the decision owner.
 
-This draft deliberately changes the proposed ownership of lifecycle decisions and design documentation. It does not remove final Code Review, change release permissions or authorize automatic progression. Those concerns retain their existing owners.
+| Reader question | Start here |
+| --- | --- |
+| Who owns each decision? | [Actor boundary](#context-and-scope) and [responsibility-specific updates](#responsibility-specific-updates) |
+| What is stored, and how do records relate? | [Record model](#record-model) and [formal record fields](#explicit-record-schema) |
+| How do actors use the CLI? | [Primary skill interaction](#primary-skill-interaction-and-decision-ownership) |
+| What happens when Verify finds a defect after completion? | [Correction walkthrough](#correction-walkthrough-actor-decisions) |
+| What supports independent review and downstream reliance? | [Requirements](#requirements) and [model traceability](#model-documentation-and-traceability) |
+| What must agree before adoption? | [Targeted-interface allocation](#targeted-interface-adoption-allocation) and [historical compatibility](#adoption-and-historical-compatibility) |
 
 ## Context and Scope
 
@@ -34,11 +35,36 @@ This draft deliberately changes the proposed ownership of lifecycle decisions an
 
 The CLI interface is a dependency, not a superior workflow authority. Local filesystem permissions and runtime controls remain the execution boundary; an actor label in a record is attribution, not authentication.
 
+## Architecture Constraints
+
+Current state must remain understandable without Git history, PR access, a network service or a previous chat. Reviewers must remain independent of the work they approve. Saving a decision does not prove it correct. Existing approvals and findings cannot acquire new meaning through a document rename.
+
+This draft deliberately changes the proposed ownership of lifecycle decisions and design documentation. It does not remove final Code Review, change release permissions or authorize automatic progression. Those concerns retain their existing owners.
+
 ## Solution Strategy
 
 Use explicit decisions supported by evidence. Responsible actors read the current records and exact subject identities, decide their updates, and submit purpose-specific operations through the CLI, using batch only for related explicit decisions that require coherent publication. The workflow remains governed by skills and independent assessment, but storage accepts a structurally sound correction regardless of the currently recorded stage.
 
 Avoid duplicated readiness fields where one explicit decision suffices. A stored decision and an observation about its supporting evidence are separate: a recorded approval may remain visible while a diagnostic reports that its subject has changed. Consumers must not mistake the visible historical judgment for current permission to proceed.
+
+```mermaid
+flowchart LR
+    Basis["Engineering subjects and evidence"]:::external
+    Actor["Responsible actor"]:::person
+    Decision["Explicit decision and rationale"]:::container
+    Records["Workflow records"]:::system
+    Receiver["Independent reviewer or downstream actor"]:::person
+    Basis --> Actor --> Decision
+    Decision -->|"record through CLI"| Records
+    Records --> Receiver
+    Basis -->|"assess current basis"| Receiver
+    classDef person fill:#08427b,stroke:#073b6f,color:#fff
+    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+    classDef external fill:#999,stroke:#666,color:#fff
+    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
+```
+
+The arrows show evidence and decision flow, not automatic stage transitions. The receiving actor decides whether recorded evidence supports reliance; the CLI's successful save supplies no additional approval.
 
 ## Requirements
 
@@ -78,6 +104,49 @@ Workflow has three conceptual parts, not three services or mandatory files: stag
 | Successful final explanation | Success-only `verify-report.md` |
 
 These placements preserve distinct responsibilities under the `explicit-recording-v1` contract defined below; they do not claim compatibility with existing compact schemas. A blocker originating in Verify remains owned there for closure even when a subsequent review supplies supporting judgment. Review findings remain reviewer-owned.
+
+### Record model
+
+**RigorLoop Record Format** is the public name used here for the stored-record contract. The existing `explicit-recording-v1` discriminator and `schema_version: 1` remain unchanged. A clearer document name neither changes serialized values nor migrates existing records.
+
+The change record is the registry and coordination entry point. It contains activity, work and change-level blockers; it references the proposal, affected models and optional plan. Its registry identifies supporting records, each with an explicitly declared applicability entry. Review findings belong to their containing review. Reviews and evidence name exact engineering subjects; those subject identities do not become automatically current when files change.
+
+```mermaid
+flowchart TB
+    Change["Change: activity, work and blockers"]:::system
+    Subjects["Proposal, models and optional plan"]:::external
+    Registry["Registered paths and explicit applicability"]:::container
+    Review["Reviews and their findings"]:::container
+    Evidence["Evidence checks"]:::container
+    Decisions["Material decisions"]:::container
+    Verify["Successful Verify report"]:::container
+    Change -->|"references"| Subjects
+    Change -->|"contains"| Registry
+    Registry --> Review
+    Registry --> Evidence
+    Registry --> Decisions
+    Registry --> Verify
+    Review -->|"reviewed subjects"| Subjects
+    Evidence -->|"evaluated subjects"| Subjects
+    Verify -->|"supporting references"| Review
+    Verify -->|"supporting references"| Evidence
+    classDef person fill:#08427b,stroke:#073b6f,color:#fff
+    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+    classDef external fill:#999,stroke:#666,color:#fff
+    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
+```
+
+This conceptual view illustrates WF-SR-02/03/05/08/12/13; it is not a second schema. Subjects may also include implementation and other proof inputs admitted by the exact Subject type. Supporting records are conditional, and their arrows do not imply that every record must exist before a correction can be saved.
+
+| Stored record | Semantic responsibility | Definition in the [existing JSON Schema](../../schemas/explicit-recording-v1.schema.json) |
+| --- | --- | --- |
+| Change | Recorded coordination, work, blockers, registry and applicability | `$defs.change` |
+| Review | Independent judgment, exact subjects and review-scoped findings | `$defs.review` |
+| Evidence | Supplied procedures, results and evaluated subjects | `$defs.evidence` |
+| Material decisions | Rationale and source references that constrain work | `$defs.decisions` |
+| Verify report | Successful final assessment and supporting references | `$defs.verify` |
+
+Workflow owns the field meanings and cross-record obligations below. The JSON Schema expresses structural shapes; the [CLI model](cli.md#advanced-candidate-update-contract) owns byte encoding, containment, identity computation and persistence. The schema file also contains advanced request/result definitions, which are transport contracts rather than additional stored record kinds. Markdown bodies provide actor-authored reasoning alongside structured metadata; metadata retains the declared status and identity meaning. Structural validity does not establish workflow readiness.
 
 ### Explicit record schema
 
@@ -142,6 +211,43 @@ Evidence applicability applies to the whole evidence record. If one changed chec
 
 A failed Verify can batch failed evidence and a new blocker after activity is recorded completed. It supplies initial applicability if it creates the evidence file; no Route decision is invented. Route later sets correction activity/ownership. After correction evidence and independent review, Verify explicitly resolves its blocker following reassessment and records success only when all obligations pass. Completing activity is another explicit decision, which Verify may include in the same batch as its report. No stage's structurally sound correction waits for all actors to decide simultaneously.
 
+## Runtime View
+
+### Correction walkthrough: actor decisions
+
+A change's activity is recorded completed, but a later Verify attempt detects a defect. This walkthrough illustrates WF-SR-01/03/04/05/06/09/11–14. The [CLI walkthrough](cli.md#correction-walkthrough-recording-behavior) shows the matching commands and storage outcomes; this view explains who supplies each decision.
+
+| Step | Responsible actor | Decision and basis | What remains separately owned |
+| --- | --- | --- | --- |
+| 1. Inspect the basis | Verify | Read the current requirements, recorded claims and relevant proof; expand scoped context as needed | The CLI does not decide whether that reading is sufficient |
+| 2. Record failure | Verify | Record the observed failed check and a change-level blocker with evidence, required outcome and correction owner | The blocker is not a fabricated review finding; recorded activity does not change automatically |
+| 3. Select correction | Route | Assess the reported defect and explicitly select correction activity and work ownership | Verify retains responsibility for its blocker's disposition |
+| 4. Record correction proof | Implementation owner | Perform the authorized correction and record actual progress and proof | Supplying evidence does not resolve the blocker or establish independent approval |
+| 5. Record reassessment | Independent reviewer | Assess the corrected subjects and record judgment, rationale and explicit applicability | A review approval does not close Verify's blocker |
+| 6. Record disposition and success | Verify | Reassess its required outcome, explicitly resolve the blocker when justified, and record success only after final obligations pass | Activity completion is a separately explicit decision, even if saved with the success report |
+
+Earlier failed evidence and unresolved concerns remain usable context until their owners make explicit updates. Different actors can save in successive transactions. A recorded completed activity does not prevent correction recording, and a safely saved decision does not itself justify downstream progression.
+
+### Normal work
+
+Route selects an authorized activity and records it explicitly. The author updates the affected model document, identifies impact and submits its recording changes. An independent reviewer assesses the exact content and records the judgment and applicability decision. Route separately records the next activity only when its basis is adequate. One actor does not impersonate another to bundle their decisions into a single save.
+
+### Revising previously reviewed content
+
+An edit can temporarily leave the recorded review subject behind the actual file. The CLI reports the mismatch without changing the review. The author records the revised artifact identity, affected applicability and correction work; the retained review continues to identify the bytes actually reviewed. Route can choose the needed author directly, including a previously completed owner. Independent rereview supplies a new judgment before downstream reliance.
+
+### A defect found at Verify
+
+Verify records a blocker and failed evidence, not a success report. Route records a correction owner and activity even when the previous stage was terminal or no author was pending. The author fixes the owning model or implementation; affected reviewers independently reassess their subjects. Verify closes its blocker only after checking the correction and supporting evidence, then reruns the required final assessment.
+
+### Concurrent edits or interrupted recording
+
+An actor that loses a revision conflict rereads current records and reassesses its decisions; it must not replay an outdated approval against different content. Storage recovery is owned by the CLI model. Workflow consumers do not rely on a mixed or recovery-required snapshot and do not interpret mechanical recovery as a new decision.
+
+## Deployment View
+
+Workflow remains repository-local guidance and artifacts consumed by supported agent integrations. There is no new daemon, hosted coordinator or authenticated workflow service. Skill generation and public adapter packaging remain unchanged during drafting. Adoption later requires coherent guidance across the supported integrations; an old skill must not silently write the new contract.
+
 ### Targeted-interface adoption allocation
 
 The schema above remains unchanged: new commands are adapters, not an implicit data migration. The lower-level recorder remains available for advanced tooling and recovery; supported stage guidance uses the primary commands after coherent adoption. No normal skill path may retain full-file reconstruction or call a historical eligibility engine before saving. The earlier replacement inventories remain historical impact mappings; the following table owns this amendment's remaining adoption scope.
@@ -198,28 +304,6 @@ The CLI model owns the companion storage/schema/runtime inventory; these rows do
 | Model adoption decisions and affected plan/verification references | Enumerate displaced requirement IDs and retained outside-model references for each actual consolidated model revision; validate links and exact reviewed identities. | Model author and independent Design Review |
 
 The inventory identifies the principal replacement sites, but is not evidence that every transitive skill resource or normative clause has been reconciled. Before adoption, each row must have an exact reviewed diff or an explicit unaffected/deferred disposition, with no required dependency left deferred. Delivery must expand affected source resources into a concrete file list; it must not treat a directory-level inventory row as proof of completion. Existing change records and review evidence are not bulk-edit targets. No governing surface named above is changed by this drafting step.
-
-## Runtime View
-
-### Normal work
-
-Route selects an authorized activity and records it explicitly. The author updates the affected model document, identifies impact and submits its recording changes. An independent reviewer assesses the exact content and records the judgment and applicability decision. Route separately records the next activity only when its basis is adequate. One actor does not impersonate another to bundle their decisions into a single save.
-
-### Revising previously reviewed content
-
-An edit can temporarily leave the recorded review subject behind the actual file. The CLI reports the mismatch without changing the review. The author records the revised artifact identity, affected applicability and correction work; the retained review continues to identify the bytes actually reviewed. Route can choose the needed author directly, including a previously completed owner. Independent rereview supplies a new judgment before downstream reliance.
-
-### A defect found at Verify
-
-Verify records a blocker and failed evidence, not a success report. Route records a correction owner and activity even when the previous stage was terminal or no author was pending. The author fixes the owning model or implementation; affected reviewers independently reassess their subjects. Verify closes its blocker only after checking the correction and supporting evidence, then reruns the required final assessment.
-
-### Concurrent edits or interrupted recording
-
-An actor that loses a revision conflict rereads current records and reassesses its decisions; it must not replay an outdated approval against different content. Storage recovery is owned by the CLI model. Workflow consumers do not rely on a mixed or recovery-required snapshot and do not interpret mechanical recovery as a new decision.
-
-## Deployment View
-
-Workflow remains repository-local guidance and artifacts consumed by supported agent integrations. There is no new daemon, hosted coordinator or authenticated workflow service. Skill generation and public adapter packaging remain unchanged during drafting. Adoption later requires coherent guidance across the supported integrations; an old skill must not silently write the new contract.
 
 ## Crosscutting Concepts
 
@@ -298,6 +382,12 @@ The model-validation mapping checks document structure and references; it does n
 ## Glossary
 
 Model: coherent system responsibility with owned concepts and rules. Judgment: an actor's substantive assessment. Applicability: whether that judgment may support current work. Observation: a mechanical fact about stored or actual data. Recording: safe persistence, not approval. Adoption: explicit establishment of a new governing contract and its compatibility boundary.
+
+## Drafting basis and authority
+
+This living model combines behavioral requirements, architecture and decision rationale. The targeted-interface amendment is authored under the user's explicit request to finish the CLI/Workflow Design and obtain independent Design Review. The exact package is this file (`workflow`) and `cli.md` (`cli`); no separate specification or ADR sibling is created. The current Constitution permits explicitly selected explicit-recording-v1 work; the new purpose-specific interface remains prospective. This drafting step changes no executable behavior, persisted contract or historical lifecycle record.
+
+Current direction: [Make Targeted Recording the Primary CLI Interface](../proposals/2026-09-07-targeted-recording-primary-cli.md), its [independent Proposal Review](../changes/2026-09-07-targeted-recording-primary-cli-review-recording/reviews/proposal-review-r1.md), and the user-supplied command boundary. Earlier direction: [Explicit Workflow Recording and Model-Centered Design](../proposals/2026-09-05-explicit-recording-and-model-centered-design.md). Related model: [CLI](cli.md). Current [Constitution](../../CONSTITUTION.md) and contract-selected [workflow specification](../../specs/rigorloop-workflow.md) retain their authority; this amendment does not claim historical lifecycle settlement. The architectural and specification authoring methods are combined here rather than producing mandatory sidecars. This is not yet a complete replacement for all existing workflow contracts.
 
 ## Next artifacts
 
