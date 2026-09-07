@@ -18,22 +18,62 @@
       "role": "human"
     }
   ],
-  "independence_basis": "The separately delegated record-format-rereview agent independently read all three complete models and their proposal/review basis and authored none of the reviewed model content. The user supplied direction and codex-root authored the model changes. The same independent reviewer now records its existing changes-requested assessment in the supported record store; no new approval is claimed.",
+  "independence_basis": "The same separately delegated record-format-rereview agent independently reread all three current model files and all ten model-owned examples, verified the diagnostic digest examples, and reassessed its original finding. The reviewer authored none of the model, layout, plain-JSON or diagnostic corrections. Contributors remain user and codex-root. This is an actual independent rereview, not automatic approval from matching hashes or a new role label.",
   "subjects": [
     {
-      "path": "docs/design/workflow.md",
-      "identity": "sha256:526d1d300db4eb1a7a772b9c0621c570bc04c73b3ae3a4424f1162d044571ee1"
+      "path": "docs/design/workflow/workflow.md",
+      "identity": "sha256:2286a09a7a760013cebc8c6ec06758ae9a239618e2af72dce61789b0edc6bf20"
     },
     {
-      "path": "docs/design/cli.md",
-      "identity": "sha256:938c9aeea27174f6ba7e86e839365b84c68a9765c84455dd648d435a9b461761"
+      "path": "docs/design/cli/cli.md",
+      "identity": "sha256:532cc0b06ec6fc3417c3387a3139c8b12e31d80663adb6d09155e79c10c2551f"
     },
     {
-      "path": "docs/design/record-format.md",
-      "identity": "sha256:ec75b838464949029db9353995bf0fc69fabb3219ed1cc81d056a04b5e340782"
+      "path": "docs/design/record-format/record-format.md",
+      "identity": "sha256:3a2e18d5df85101104f738dfc7ef7ca9c264437a5a332e0b0e3ac88427a7c108"
+    },
+    {
+      "path": "docs/design/cli/examples/observation-freshness/expected.json",
+      "identity": "sha256:1d22534396a88cb3f3edb8d19be15cc37b8fe77b458ac2344e9627816094cca8"
+    },
+    {
+      "path": "docs/design/cli/examples/observation-freshness/scan-b.json",
+      "identity": "sha256:4fde512f9fd9c9b25502d1e983bb9a22382812ac726af6af32e040f7c3ff8222"
+    },
+    {
+      "path": "docs/design/cli/examples/observation-freshness/scan-c.json",
+      "identity": "sha256:d271716355c2d96bd1110c24f37e01de1bfb2a53d011a2f2a884bbebda2b9593"
+    },
+    {
+      "path": "docs/design/cli/examples/work-set/request.json",
+      "identity": "sha256:f35f7b4c6fc54f3bbe5164b1d75ef2b786f7898a8d64199f0d15dab2c2b3018e"
+    },
+    {
+      "path": "docs/design/cli/examples/work-set/response.json",
+      "identity": "sha256:75c8d51fdb5756ad71879f183ca6c08b807b7eba3f8e4648e0adbb682a77ab96"
+    },
+    {
+      "path": "docs/design/record-format/examples/finding-reassessment/after.json",
+      "identity": "sha256:c13ffa7fe8d4189f2f30f7bb5c603c50c0e8d4d783dc394013d7db81883f32e0"
+    },
+    {
+      "path": "docs/design/record-format/examples/finding-reassessment/before.json",
+      "identity": "sha256:df39c9d8cb532e8fa48f3590e3558a4308bdfd815aab09b68866247be35d2f1d"
+    },
+    {
+      "path": "docs/design/record-format/examples/incomplete-review.json",
+      "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735"
+    },
+    {
+      "path": "docs/design/record-format/examples/minimal-change.json",
+      "identity": "sha256:523ee35620d9deb9b393ecb59c414bd25e240be81a28dc76f347d412e0201cb6"
+    },
+    {
+      "path": "docs/design/workflow/examples/correction-cycle.mmd",
+      "identity": "sha256:2a42da7884e3aeff0020f814fcb36b98f88ad80fc385a8f52a2b5ddaf4aa0ca9"
     }
   ],
-  "judgment": "changes-requested",
+  "judgment": "approved",
   "findings": [
     {
       "id": "rf-dr-001",
@@ -53,50 +93,69 @@
       ],
       "evidence": "CLI model lines 258 and 274-278 define observation_identity as the hash of {schema_version: 1, revision, observations}, with diagnostics containing code, safe message and locations but no required observed external subject identity. Line 278 nevertheless promises conflict when an observed external subject changes. A retained subject identity A can observe B on the first scan and C on the next, both different from A. The registered revision and the subject-drift code, location and fixed safe message can all remain identical, so the explicitly defined digest input remains identical. This is a missing identity input, not a hash collision or an external edit during publication.",
       "required_outcome": "Make the exact observation digest input and continuation contract agree about changes to the observed external basis, including B-to-C drift that preserves the diagnostic category, location and message. Preserve bounded storage receipts and safe diagnostics; detail retrieval must not become a write prerequisite. Bind a deterministic observed path/identity basis, including absence, or define an equivalent identity-bearing diagnostic representation and acceptance case. Any deliberate narrowing to diagnostic-content stability must be an explicit reconciled Design decision and independently rereviewed.",
-      "state": "open",
-      "resolution": null
+      "state": "resolved",
+      "resolution": {
+        "actor": {
+          "id": "record-format-rereview",
+          "role": "review"
+        },
+        "rationale": "Independently reassessed CLI-SR-20 and the complete three-model package. The internal preimage now explicitly includes schema_version 2, revision, observed_subjects and observations. Every schema-defined Subject path is observed once, deduplicated and sorted, with exact current digest or confirmed absence; candidate/current scans share scope and request-only reads remain separate. Both published example digests were independently recomputed: B and C produce distinct identities despite identical record revision and diagnostics. The stated B-to-C conflict guarantee is now supported without expanding the bounded receipt. The original evidence, subjects and required outcome remain unchanged; no runtime implementation claim is made.",
+        "evidence_refs": []
+      }
     }
   ]
 }
 ---
 # Design review of the Workflow, CLI and Record Format models
 
-## Result and exact scope
+## Result
 
-Review status: changes-requested. The exact three-model subjects and their byte identities are in this record's metadata. Workflow owns actor decisions, Record Format owns durable layout and preservation, and CLI owns commands, construction and persistence. Each file combines requirements and architecture; no separate ADR member applies. This review grants no design approval, downstream progression, implementation authority, runtime activation or release readiness.
+- Skill: design-review
+- Review status: approved
+- Package members: workflow = docs/design/workflow/workflow.md; cli = docs/design/cli/cli.md; record-format = docs/design/record-format/record-format.md. The ten relied-on model-owned examples are included as exact subjects in metadata.
+- Upstream review ID: proposal-review-r1, registered in this change; its approved proposal subject remains unchanged.
+- Review ID: design-review, independent correction rereview by record-format-rereview.
+- Material findings: none open; rf-dr-001 explicitly resolved after independent reassessment.
+- Correction targets: none required for this Design judgment.
+- Recording status: supported actor-owned review record, with explicit current applicability.
+- Settlement status: no historical lifecycle settlement command or transition is claimed. This record owns the explicit Design judgment.
+- Immediate next stage: isolated stop; no routing decision was made.
+- Claim limitations: exact-package Design approval only. No implementation correctness, runtime activation, final Verify completion, branch readiness or release approval is established. Delivery must still allocate and prove the specified obligations.
 
-This is the independently conducted review recorded by its original reviewer in the supported explicit-recording-v1 store. The previous evidence placement was unsupported and has been removed. No deleted document, prior chat or Git history is required to understand the finding below. The supported v1 record has no v2 origin field; its full original finding basis and supporting judgment are retained here and in the finding's structured fields rather than inventing a new field.
+## Finding RF-DR-001: original basis and current disposition
 
-## Finding RF-DR-001
+Stable stored ID: rf-dr-001. Original severity: medium. Scope: artifact-local, cli. Correction owner: codex-root, Design authoring. Reporter and disposition owner: record-format-rereview. The finding's original exact subject identity remains in its structured subjects and is not retargeted to the relocated model.
 
-Stored finding ID: rf-dr-001. Severity: medium. Scope: artifact-local. Affected model: cli. Correction owner and stage: codex-root, Design authoring. Reporter and disposition owner: record-format-rereview.
+Original evidence: CLI model lines 258 and 274-278 define observation_identity as the hash of {schema_version: 1, revision, observations}, with diagnostics containing code, safe message and locations but no required observed external subject identity. Line 278 nevertheless promises conflict when an observed external subject changes. A retained subject identity A can observe B on the first scan and C on the next, both different from A. The registered revision and the subject-drift code, location and fixed safe message can all remain identical, so the explicitly defined digest input remains identical. This is a missing identity input, not a hash collision or an external edit during publication.
 
-Location: CLI model, Primary result schema, diagnostics and preview, and Bounded storage receipt and diagnostic detail (lines 258 and 274-278 of the exact reviewed subject).
+Original required outcome: Make the exact observation digest input and continuation contract agree about changes to the observed external basis, including B-to-C drift that preserves the diagnostic category, location and message. Preserve bounded storage receipts and safe diagnostics; detail retrieval must not become a write prerequisite. Bind a deterministic observed path/identity basis, including absence, or define an equivalent identity-bearing diagnostic representation and acceptance case. Any deliberate narrowing to diagnostic-content stability must be an explicit reconciled Design decision and independently rereviewed.
 
-CLI model lines 258 and 274-278 define observation_identity as the hash of {schema_version: 1, revision, observations}, with diagnostics containing code, safe message and locations but no required observed external subject identity. Line 278 nevertheless promises conflict when an observed external subject changes. A retained subject identity A can observe B on the first scan and C on the next, both different from A. The registered revision and the subject-drift code, location and fixed safe message can all remain identical, so the explicitly defined digest input remains identical. This is a missing identity input, not a hash collision or an external edit during publication.
+Original rationale: a stable diagnostic projection could hide an already-drifted subject changing again. The promised expected-observations check needed the observed identity as an input, rather than assuming that a different file necessarily produces a different message. The original supporting Design judgment was changes-requested because this gap made diagnostic continuation weaker than its stated guarantee.
 
-Required outcome: Make the exact observation digest input and continuation contract agree about changes to the observed external basis, including B-to-C drift that preserves the diagnostic category, location and message. Preserve bounded storage receipts and safe diagnostics; detail retrieval must not become a write prerequisite. Bind a deterministic observed path/identity basis, including absence, or define an equivalent identity-bearing diagnostic representation and acceptance case. Any deliberate narrowing to diagnostic-content stability must be an explicit reconciled Design decision and independently rereviewed.
+Current disposition: resolved. Independently reassessed CLI-SR-20 and the complete three-model package. The internal preimage now explicitly includes schema_version 2, revision, observed_subjects and observations. Every schema-defined Subject path is observed once, deduplicated and sorted, with exact current digest or confirmed absence; candidate/current scans share scope and request-only reads remain separate. Both published example digests were independently recomputed: B and C produce distinct identities despite identical record revision and diagnostics. The stated B-to-C conflict guarantee is now supported without expanding the bounded receipt. The original evidence, subjects and required outcome remain unchanged; no runtime implementation claim is made.
 
-Rationale: an actor using the two expected selectors is promised fresh diagnostic context, including changes to observed external subjects. A digest over an unchanged diagnostic projection cannot establish that stronger claim. A subject that is already drifted and then changes again is a distinct acceptance case from a previously matching subject becoming drifted.
+The correction chooses stronger identity binding rather than narrowing the promised freshness guarantee. It specifies all Subject fields, including origin and supporting-judgment subjects, independent of applicability and selected page. Schema-only traversal excludes narrative and EntryRef strings. Unsafe/unreadable subjects cannot masquerade as absence. Stored subject references do not acquire the unrelated 256 request-read limit. The deterministic preimage uses recursively ordered object keys, defined array ordering and no final LF. Candidate/current reads reconstruct the same subject scope, with each observed path used consistently within the scan. The existing external-edit limit and reverted-between-scans limit remain explicit.
 
-Safe resolution path: the CLI Design author can add precisely defined, deterministically ordered observed external path/identity pairs to the digest, including explicit absence, or an equivalent identity-bearing diagnostic shape. Define equivalent basis reconstruction for candidate/current scans and test the already-drifted B-to-C case while the registered revision stays constant. Narrowing the freshness promise instead requires an explicit Design decision reconciling the related requirements and temporal acceptance scenario. No owner decision is missing if the current promise is retained. Independent rereview must assess the exact corrected package; this finding remains open.
+The B/C examples keep both registered revision and diagnostics identical. Independent compact UTF-8 encoding and SHA-256 recomputation matched the expected identities, and those identities differ. Temporal acceptance now includes this case, disappearance/reappearance, formerly matching subjects and duplicate references. Counts and one digest remain the receipt's entire diagnostic payload; detail volume still cannot block structurally valid correction recording.
 
-## Supporting package assessment
+## Complete package assessment
 
-Primary new-root creation explicitly selects v2 only after coordinated activation. Existing v1 roots retain compatible operations and advanced v1 creation remains a separate compatibility facility. Governance, schemas, runtime, skills and adapters still require coordinated adoption; the design does not change today's supported stored profile.
+The current package was read in full, including the model directory layout and plain-JSON changes since the prior review. Record Format owns v2 .json paths and complete closed object layouts, including required body strings and immutable concern origin. CLI dispatches the two exact manifest candidates, rejects ambiguity and version/extension mismatch, constructs body string tokens losslessly, and preserves the separate v1 encoding. Workflow maintains actor-owned meaning and requires coordinated adoption rather than making prospective v2 an available runtime profile. Historical subjects are preserved instead of silently remapped by the directory move.
 
-The record_contract addition supports the first targeted update: primary change-scoped reads expose the stored discriminator and revision from one snapshot, including empty selections; absent roots use null and invalid stores do not fabricate a contract. Writes still check freshness and actor-declared basis.
+Purpose-specific commands and batch retain one structural and recoverable persistence boundary. Actor-supplied applicability, judgments and dispositions remain separate from mechanical registry construction. A failed Verify and new blocker can be recorded after completed activity; Route supplies a later explicit routing decision. Stale mutation revisions conflict before no-op recognition. The corrected diagnostic identity strengthens detail continuation without expanding publication's external-tool concurrency guarantee.
 
-Bounded receipts separate storage results from potentially large diagnostics. The finite changed-target/count representation fits the documented reserve, optional detail can be explicitly omitted, and publication cannot become false rejection due to output delivery failure. RF-DR-001 concerns diagnostic retrieval freshness, not that core availability design.
+Normal reads expose record_contract and revision from the same snapshot, including empty selections. Final Verify and shared decisions narratives remain available through ordinary targeted reads, with identity, applicability and clear absent/missing/malformed outcomes. The new plain-JSON body representation preserves those semantics. Findings retain enough origin to explain the concern without old review rounds, while responsible actors still inspect current engineering subjects before relying on evidence.
 
-Normal verify show, decisions show and full context selectors expose complete narratives, identities and applicability, with separate absent/missing/malformed behavior. Immutable v2 concern origin retains the original subjects, reporter, evidence, outcome and rationale, with explicitly absent or embedded supporting judgment. Later current assessments preserve that basis across targeted and advanced writes and recovery. These prospective requirements are not claimed as implemented by this v1 review record.
+All ten owned examples were read. Nine JSON examples parse; the reassessment pair preserves the complete finding value while explicitly changing the current review assessment. The workflow diagram depicts responsible actor sequencing, not automatic CLI permission. Work-set messages illustrate explicit status recording against a stated starting state. The observation examples are internal preimages with synthetic subject identities, not runtime proof.
 
-Purpose-specific commands and batch share final-candidate validation, lossless preservation, expected revision checks and exact-byte recovery. Findings and blockers retain distinct correction/disposition responsibility. Failed Verify and a new blocker remain recordable after completed work, with Route making a later independent routing decision. No additional material finding was identified in the reviewed package. Concrete runtime proof, adapter adoption and complete-interaction token measurements remain Delivery obligations.
+All eight boundary dimensions and material composed hazards retain requirement-owned outcomes. No additional material finding was identified. Residual flat-path mentions in a generic subject-inspection illustration and the Workflow placement table are editorial inconsistencies: the explicit model-layout and contract-specific path owners resolve the intended paths. They do not expand the recording allowlist or authorize migration. Delivery and published guidance should consistently use the selected paths.
 
-## Validation and limits
+## Validation and recording evidence
 
-The reviewer confirmed the three model files remain identical to the previously reviewed a5035818 revision using git diff a5035818 --exit-code -- docs/design/workflow.md docs/design/cli.md docs/design/record-format.md. This corroborates the earlier subject review; the metadata identities and recording read set bind the actual current subjects without requiring Git to interpret the finding.
+- python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/workflow/workflow.md --path docs/design/record-format/record-format.md: passed, structure-and-references-only.
+- python scripts/validate-markdown-readability.py docs/design/cli/cli.md docs/design/workflow/workflow.md docs/design/record-format/record-format.md: passed with 239 audit-only warnings.
+- git diff --check: passed before review recording.
+- Independent Python JSON/SHA-256 check: parsed all nine JSON examples; confirmed equal B/C revision and diagnostics; matched both expected observation digests; confirmed different digests; confirmed the before/after finding arrays are equal.
+- record-store inspect supplies current registered context and expected revision. The transient check/record request binds the current model/example/proposal identities and both changed record identities. No permanent operation request or unsupported review artifact is created.
 
-Previously run model checks passed: python scripts/validate-boundary-first.py --check --path docs/design/cli.md --path docs/design/workflow.md --path docs/design/record-format.md (structure-and-references-only), and python scripts/validate-markdown-readability.py docs/design/cli.md docs/design/workflow.md docs/design/record-format.md (226 audit-only warnings). These checks do not establish semantic approval or runtime correctness. No implementation test was performed for this design-only assessment.
-
-The present recording uses record-store inspect, then check and record of the same transient request with exact expected revision, manifest identity and model read identities. Successful storage means this changes-requested review was saved, not that its finding was resolved or that progression was approved.
+The reviewer authored only this review and its explicit applicability/activity updates through the supported recorder. Review metadata includes all exact current relied-on subjects; the historical finding basis remains unchanged. Successful recording is storage-only and does not itself authenticate independence or run the proposed commands. No runtime implementation test was performed; Design approval does not replace Delivery Review, Code Review or Verify.

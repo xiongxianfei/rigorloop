@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "revision": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "observed_subjects": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "observations": [
+    {
+      "code": "subject-drift",
+      "path": "docs/design/example/example.md",
+      "location": "subjects[0]",
+      "message": "Recorded subject differs from current content."
+    }
+  ]
+}
