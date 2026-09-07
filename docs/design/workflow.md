@@ -10,6 +10,8 @@ The initial model inventory for this change has two members: Workflow and CLI. W
 
 ### Design at a glance
 
+> Agents spend tokens understanding engineering meaning; the CLI spends computation on identities, selection, preservation, serialization, registration and persistence.
+
 Workflow defines who makes each engineering decision, what that decision means, and what evidence another actor needs before relying on it. Records retain those explicit decisions. The CLI is the recording mechanism; it does not become the decision owner.
 
 | Reader question | Start here |
@@ -77,12 +79,12 @@ The following stable requirements define model behavior; the targeted-command am
 | WF-SR-03 | A formal reviewer MUST record a judgment against the exact reviewed subjects and its basis before approval is relied on. An author MUST NOT approve its own contribution. CLI persistence success or a caller-supplied reviewer label is not independent-review evidence. |
 | WF-SR-04 | Before relying on changed work, its author MUST identify affected approvals and evidence, explicitly mark applicability changes, and record outstanding correction work. Route MUST assess cross-model impacts and select the next responsible owner without requiring that owner to appear in a previously derived pending set. Uncertain impact remains an explicit blocker. |
 | WF-SR-05 | Any responsible stage, including Verify, MUST be able to record a newly discovered defect with stable finding or blocker identity, affected subjects, evidence, required outcome and correction owner. Failed Verify MUST NOT create a success report. Route records the correction destination; the finding does not need to originate in a prior review stage. |
-| WF-SR-06 | A correction MUST retain each unresolved finding and the exact assessments explicitly cited as its supporting judgments, including reviewer provenance, reviewed subjects, outcome and rationale. Selecting a newer current assessment MUST NOT replace those cited assessments; change-level blockers retain disposition responsibility with their reporter, including Verify. Returning work for rereview is not approval. Completed work may be explicitly reopened; a former completion or current stage MUST NOT prevent recording that decision. |
+| WF-SR-06 | Each unresolved finding MUST retain self-contained origin basis: who reported it, the exact subjects, the observed evidence, the required outcome and the rationale, including any explicitly cited supporting judgment. A later review MUST NOT overwrite that basis or require prior review rounds, Git history or chat to reconstruct it; change-level blockers retain disposition responsibility with their reporter, including Verify. Returning work for rereview is not approval. Completed work may be explicitly reopened; a former completion or current stage MUST NOT prevent recording that decision. |
 | WF-SR-07 | Each model MUST have one authoritative living Design file combining requirements, structure, decisions, boundaries, compatibility and acceptance. Features update affected models; cross-model contracts have one named owner and references from consumers. Mandatory separate specifications, architecture files and ADRs for the same model are removed only upon approved adoption. |
 | WF-SR-08 | Requirement and decision references MUST survive normal document revisions. A changed or retired obligation retains its identity and rationale or an explicit replacement mapping. Design Review MUST assess the exact affected model revisions and relevant relationships; approval of one change does not approve another change's concurrent edits. |
 | WF-SR-09 | A downstream actor MUST check the current decision basis before reliance. Missing, changed or contradictory required evidence blocks progression and is recorded explicitly; it does not prevent safely recording the blocker or correction. Only successful Verify may record lifecycle completion with exact evidence supporting the required design and delivery obligations. |
 | WF-SR-10 | Historical contracts MUST remain explicitly identified and must not be silently reinterpreted. Adoption MUST preserve findings, decisions and proof provenance, identify replacement ownership and provide a supported recovery or rollback boundary. This amendment performs no adoption. |
-| WF-SR-11 | Ordinary skills MUST use purpose-specific inspection and targeted recording, or batch for related explicit edits, without full-file reconstruction or historical eligibility checks. Actors MUST supply all intended decisions and expand bounded context when their judgment requires it. |
+| WF-SR-11 | Ordinary skills MUST use purpose-specific inspection and targeted recording, or batch for related explicit edits, without full-file reconstruction or historical eligibility checks. Actors MUST supply all intended decisions and explicitly select useful context. The CLI MUST perform mechanical selection, identity computation, registration, preservation, serialization and persistence; actors expand the engineering basis when their judgment requires it. |
 | WF-SR-12 | A new supporting record MUST have an explicit actor-supplied record-level applicability declaration; CLI registry construction MUST NOT decide applicability. Updating a check or review alone MUST NOT change applicability, activity, finding disposition or completion. |
 | WF-SR-13 | Findings MUST remain review-scoped and change-level blockers MUST remain distinct. The reporter owns disposition assessment, while the recorded owner identifies correction responsibility; neither a later review nor a correction agent may silently close a Verify-owned blocker. |
 | WF-SR-14 | A receiving actor MUST treat status, scoped context, preview and successful saves as recorded information, not permission or sufficient engineering context. Bounded omissions and stale identities require explicit further inspection or reassessment before reliance. |
@@ -96,7 +98,7 @@ Workflow has three conceptual parts, not three services or mandatory files: stag
 | Model engineering truth | One `docs/design/<model>.md` per model |
 | Change intent | Existing proposal surface |
 | Mutable work state and explicit decisions | Change-local `change.yaml` |
-| Current judgment and open findings | Stable change-local review record for the applicable target; the proposed retained-assessment revision explicitly separates current selection from supporting judgments |
+| Current judgment and open findings | Stable change-local review record for the applicable target; each finding carries its own retained origin basis |
 | New non-review-stage blocker, including Verify failure | Structured blocker entries in the change record, with evidence references; no fabricated review |
 | Current proof and freshness subjects | Conditional change-local `evidence.yaml` |
 | Resolved rationale that still constrains work | Conditional `material-decisions.md` |
@@ -107,7 +109,7 @@ These placements preserve distinct responsibilities under the `explicit-recordin
 
 ### Record model
 
-**RigorLoop Record Format** is the public name used here for the stored-record contract. The existing `explicit-recording-v1` discriminator and `schema_version: 1` remain unchanged. A clearer document name neither changes serialized values nor migrates existing records.
+**RigorLoop Record Format** is the public name used here for the stored-record contract. The existing `explicit-recording-v1` discriminator and schema_version 1 remain the compatibility format. The selected prospective v2 refinement below adds retained concern origin under its own discriminator; a clearer document name alone changes no serialized values.
 
 The change record is the registry and coordination entry point. It contains activity, work and change-level blockers; it references the proposal, affected models and optional plan. Its registry identifies supporting records, each with an explicitly declared applicability entry. Review findings belong to their containing review. Reviews and evidence name exact engineering subjects; those subject identities do not become automatically current when files change.
 
@@ -172,58 +174,56 @@ The CLI model owns bytes and encoding. Markdown record bodies carry nonempty hum
 
 ### Retained judgments for unresolved findings
 
-The retained object is an **assessment**, not merely the current review's judgment label. A finding's evidence explains the defect; its supporting assessment records who judged it, against which exact subjects, with what outcome and rationale. These are related but distinct records. This section refines WF-SR-03/06/08/13; it selects named assessments shared by findings rather than duplicating full judgment snapshots inside each finding.
+The finding itself retains enough origin basis for the next actor to understand the concern. It does not depend on a chain of prior review rounds, an assessment archive, Git history or chat. This replaces the earlier proposed named-assessment collection and current-assessment pointer; neither becomes part of the selected stored representation. A current review judgment can change while its unresolved findings keep the original basis that made them actionable.
 
-The existing v1 representation above has a gap: one review contains one replaceable assessment plus a findings array. Preserving that array while replacing reviewer, subjects, judgment and body can discard the basis supporting an unresolved finding. A pointer to the mutable review file, its latest body, or an old hash without retained content does not repair that gap. Git history and old conversations are not required storage.
+#### Selected record-format revision
 
-#### Proposed review schema revision
+The prospective successor is **RigorLoop Record Format v2**, identified by `contract: rigorloop-records-v2` in the change record and `schema_version: 2` in each stored record. The v1 record table above remains the compatibility definition. In v2 every record retains that table's fields and meanings, except its schema version and the change contract, and every review finding or change-level blocker uses `Concern` in place of `Blocker`. No review assessment array or current pointer is added. The existing published v1 schema and implementation remain unchanged until this revision is implemented and adopted.
 
-The following is a proposed **review schema version 2**, not an extension silently accepted by the closed v1 schema. Existing v1 definitions and the published schema file remain unchanged by this Design edit. This review shape is not yet admitted by the existing recording implementation. Its versioned dispatch and consumer adoption must be reconciled before implementation or use; no v1 record is automatically converted, and missing historical provenance must never be reconstructed by guesswork.
-
-| Object | Exact fields and meaning |
+| Type | Exact shape |
 | --- | --- |
-| Review metadata, schema version 2 | `{schema_version: 2, change_id, id, target, current_assessment_id, assessments: [Assessment], findings: [Finding]}`. Current assessment is an explicit actor-selected ID or null while no assessment is selected. |
-| Assessment | `{id, reviewer: Actor, contributors: [Actor], independence_basis, subjects: [Subject], judgment, rationale}`. Uses the existing judgment vocabulary; rationale is the complete actor-authored assessment explanation. ID is unique within the review. |
-| Finding | Existing Blocker fields plus `{supporting_assessment_ids: [id]}`. Each unique ID resolves to an assessment in this same review, not to the current-assessment pointer. |
+| Concern | All existing Blocker fields plus `origin: Origin` |
+| Origin | `{reporter: Actor, subjects: [Subject], evidence, required_outcome, rationale, supporting_judgment: JudgmentBasis or null}` |
+| JudgmentBasis | `{reviewer: Actor, contributors: [Actor], independence_basis, subjects: [Subject], judgment, rationale}` |
 
-All objects remain closed. Review change_id, id and target are immutable once established; another review target uses a new review record, so retained assessments cannot silently acquire a different target. Each supplied field is required; current_assessment_id is the only nullable new field. IDs, Actor, Subject and text use the existing types. Assessments may be empty with a null current pointer. Supporting IDs may be empty to permit recording an incomplete newly reported concern; the reviewer must provide an adequate decision basis before relying on a formal finding assessment. An empty list is explicit incompleteness, not a judgment inferred by the CLI.
+Objects are closed, listed fields are required, and the existing Actor, Subject, text and judgment types apply. The origin rationale is a concise, actor-supplied explanation of why the observed evidence matters for the required outcome. Supporting judgment is an optional fact represented by explicit null when none is cited; a concern does not need a fabricated overall review judgment to be recorded. When supplied, that judgment's complete relevant rationale and provenance are embedded, not represented solely by a mutable link or hash. The finding's original observed evidence and required outcome are retained even if its current fields later evolve.
 
-Assessment rationale is stored with the assessment so a later edit to the review's general Markdown body cannot erase it. That body remains a nonempty human-readable overview and cannot override structured assessment fields. Current reviewer, judgment and subjects are read from the explicitly selected assessment; they are not duplicated as mutable top-level fields. Current assessment selection does not change the supporting IDs of any finding, imply that the selected assessment resolves all findings, or change record-level applicability.
+At creation the CLI copies reporter, subjects, evidence and required_outcome from the actor's concern values into origin. The actor supplies the rationale and explicitly chooses whether a supporting judgment is absent, supplied directly, or constructed from the provenance/outcome of an exact selected review plus actor-supplied finding-specific rationale. Copying the selected content is mechanical preservation; selecting its significance is the actor's decision. No actor is required to retype another review or assemble serialized metadata to retain it. The [CLI contract](cli.md#finding-origin-construction) defines those input forms.
+
+#### Preservation and reliance
+
+Origin is immutable for the lifetime of a concern ID in v2, including after an explicit disposition. New reviews preserve the complete origin along with the finding. They may update their current judgment and narrative without carrying every prior review round. A correction to the concern's current subjects, evidence or required outcome leaves origin intact. A mistaken original report is addressed through current explanation and explicit disposition, not by falsifying its history; a distinct concern receives a distinct ID.
+
+Supporting judgment can be null while the origin remains useful: the reporter, exact subjects, evidence, rationale and required outcome explain the original defect. If a formal reviewer cites an actual supporting assessment, it preserves that assessment's relevant content within the origin. No automatic inference supplies a judgment, independence basis, applicability value or disposition. Later judgment does not become new origin simply because hashes match or a review is approved.
+
+The current state and resolution fields say what the responsible actor now concluded. A resolved/deferred disposition retains the actor, rationale and explicit evidence references under the existing resolution type. That outcome does not overwrite origin or automatically close another actor's concern. Origin preservation applies to targeted and advanced writers and exact-byte recovery; attempts to mutate/remove it under an existing ID are structural preservation errors. This invariant applies regardless of open/resolved state, so it does not create a readiness prerequisite for correction recording.
+
+A normal finding read returns current fields and origin together. This is sufficient to understand the reported concern and its origin without replaying review history, but it does not replace reading the current engineering subjects needed to assess a fix. The existing size limits apply to embedded basis; a limit error does not permit silently truncating rationale or dropping provenance. Actors provide the relevant finding-specific basis, not a dump of all earlier records.
 
 ```mermaid
 flowchart LR
-    Review["Review record"]:::system -->|"current_assessment_id"| New["Assessment a2: later judgment"]:::container
-    Finding["Open finding f1"]:::container -->|"supporting_assessment_ids"| Old["Assessment a1: original judgment"]:::container
-    Review -->|"retains"| Old
-    Review -->|"contains"| Finding
+    Review["Current review judgment"]:::system -->|"contains"| Finding["Finding: current concern and disposition"]:::container
+    Finding -->|"retains directly"| Origin["Origin: reporter, exact subjects, evidence, required outcome and rationale"]:::container
+    Origin -->|"if explicitly cited"| Judgment["Embedded supporting judgment and provenance"]:::container
     classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
     classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
 ```
 
-The diagram illustrates a retained relationship, not automatic status progression. Both assessments and the finding remain available in the current record set even if a2 is selected as current.
+#### Example: a later approval does not erase a concern
 
-#### Retention and correction rules
-
-1. The reviewer explicitly supplies the supporting assessment IDs when recording or supplementing a finding. The CLI never chooses a supporting judgment from recency, matching subject hashes or the current pointer.
-2. Once recorded, an assessment's content is immutable under its ID. A corrected or later judgment uses a new assessment ID; an identical retry may be unchanged after current preconditions pass. Conflicting content under the same ID is an identity error, not a readiness decision.
-3. Finding support references are append-only in this first representation. A later supporting assessment can be explicitly added, but an earlier link is not silently retargeted or removed. A finding's corrected disposition explains why an earlier judgment no longer constrains the work; it does not falsify that judgment's original basis.
-4. Every referenced assessment remains stored with all of its provenance, subjects and rationale. No routine command deletes assessments, including after disposition. This simple first policy is stronger than the minimum retention-until-disposition requirement and avoids making deletion depend on workflow eligibility. Any later pruning policy requires its own reviewed retention rule. Existing size limits still apply; reaching a limit produces a structural limit error, never automatic eviction of an assessment or support link.
-5. A new current assessment can coexist with an unresolved finding and its earlier supporting assessment. Recording either is allowed even when the judgments disagree. The responsible actors decide whether that disagreement blocks reliance and explicitly record disposition; the CLI checks references and preservation, not who is substantively correct.
-6. Resolution remains an explicit state/resolution update by the finding's responsible reviewer. If a later assessment supports that disposition, the reviewer explicitly adds its ID to supporting_assessment_ids in the same update or beforehand. Recording an approved assessment alone never resolves a finding.
-
-These invariants apply to every supported writer for the revised representation, including targeted commands, batch, advanced replacements and recovery. Advanced replacement cannot delete a retained assessment or rewrite its content under an existing ID. Recovery restores or completes the exact prepared representation, including assessment content and support links. This is preservation of stored provenance, not a gate based on completion or approval status.
-
-#### Example: a later judgment does not erase an open concern
-
-| Moment | Current assessment | Finding f1 | Retained assessment content |
+| Moment | Current review | Finding f1 | Origin available in f1 |
 | --- | --- | --- | --- |
-| Initial review | a1, changes-requested | Open; supports `[a1]` | a1 contains the original reviewer, exact subjects, judgment and rationale |
-| Later review | a2, approved | Still open; supports `[a1]` | a1 remains byte-preserved; a2 contains its own explicitly supplied assessment |
-| Reviewer reassesses f1 | a2, approved | Explicitly resolved with rationale; supports `[a1, a2]` when the reviewer cites both | Both assessments remain available; neither is rewritten to describe the other's subjects |
+| Original report | changes-requested | Open, with actionable evidence and required outcome | Original reporter, subject identities, evidence, rationale and explicitly cited judgment |
+| Later review | approved | Still open until its responsible reviewer decides otherwise | The same origin, without reading the old review body |
+| Explicit reassessment | approved | Resolved with the reviewer's current rationale and evidence references | The original basis remains alongside the current disposition |
 
-This illustration is governed by WF-SR-03/06/08/13 and the rules above. The middle row is recordable but does not establish justified progression. Approval and finding disposition are separate decisions.
+The middle row is recordable but does not establish justified progression. This example illustrates WF-SR-03/06/08/13; a saved later approval never disposes the finding automatically.
 
-The current v1 transport and stored-record tables describe the compatibility baseline; the revised review shape is a pending storage-contract amendment. Design owns completing its exact version selection, request/result mapping and cross-record-reference integration before Delivery relies on it. Delivery must allocate closed-schema, referential-integrity, immutable-content, query, limit and recovery proof. This refinement does not claim those changes implemented or approved, and the earlier Design Review does not cover this new representation.
+#### Compatibility and adoption
+
+New roots explicitly select either the retained v1 contract or rigorloop-records-v2; no command guesses the version. V2 records all carry schema_version 2, and mixed record versions inside one change reject structurally. An existing v1 root stays v1 and is never upgraded by recording a finding. V1 concern reads identify that retained origin is unavailable rather than synthesizing it from a current review. No v2 retention guarantee is claimed for v1 data. V1 fields and operations remain available under their unchanged compatibility rules.
+
+Adoption requires versioned schema/validator dispatch, CLI origin construction and immutable-origin checks, context/show mappings, generated templates and consuming skills to agree. Migration is outside this amendment; missing historical basis must not be guessed. Exact representation and its integration are Design decisions here; Delivery allocates implementation and proof. The previously recorded Design Review does not approve this revised interaction or stored format.
 
 ### Responsibility-specific updates
 
@@ -243,7 +243,7 @@ For independence, the reviewer records the actual contributor identities and a c
 
 ### Primary skill interaction and decision ownership
 
-The CLI model owns exact commands, requests, output, selectors and serialization. Workflow owns how actors interpret them. The normal interaction is scoped context, any additional selected show/read needed for the actual decision, and one targeted mutation or batch. A separate preview/check is optional; normal writes validate themselves. A skill does not repeat a full inspect/check/inspect/record cycle as routine ceremony.
+The CLI model owns exact commands, requests, output, selectors and serialization. Workflow owns how actors interpret them. The normal interaction is explicitly selected context with useful record content, subject inspect for mechanical identity computation and any requested subject content, actor judgment, and a targeted mutation or batch. A separate preview/check is optional; normal writes validate themselves. A skill does not repeat a full inspect/check/inspect/record cycle, manually hash subjects, reconstruct registries or collect many shallow summaries followed by mandatory show calls as routine ceremony.
 
 | Actor task | Primary interaction | Explicit decision retained by actor |
 | --- | --- | --- |
@@ -252,17 +252,17 @@ The CLI model owns exact commands, requests, output, selectors and serialization
 | Record independent assessment | `review record`, with `finding add/set` for individual findings | Reviewed subjects, contributors, actual independence, judgment, rationale and any dispositions |
 | Report a defect outside review | `blocker add/set` | Reporter, correction owner, evidence, required outcome and explicit disposition |
 | Record proof | `evidence record` | Observed result, subjects, procedure and summary; no automatically completed work |
-| Declare usable scope | `applicability set`, or explicit registration applicability for a new file | Record-level applicability value, responsible actor and reason |
+| Declare usable scope | `applicability set`, or an explicit applicability decision supplied to a producer command | Record-level applicability value, responsible actor and reason |
 | Preserve a material decision | `decision record` | Rationale, subjects and source references |
 | Record successful final assessment | `verify record`, optionally batched with `activity set` | Successful assessment/explanation and separately explicit completion decision |
 
 A finding uses `(review ID, finding ID)` and remains inside that review. A blocker uses a change-level ID even if Verify discovered it; Verify never needs to invent a review. A resolved/deferred state and its resolution travel together as an explicit actor decision. An implementation owner can supply correction evidence but cannot impersonate the reporter's disposition. The CLI validates representation and references, while skills/review/execution authority assess whether the supplied actor actually had responsibility.
 
-Under the v1 compatibility representation, a review record's new assessment may replace a prior current assessment only after actual independent rereview of the supplied subjects; the proposed [retained-assessment revision](#retained-judgments-for-unresolved-findings) separates current selection from immutable supporting judgments. In either representation, finding operations never implicitly retarget those subjects or rewrite judgment. Linking a revised model changes only the link and its declared identity. It neither restores nor invalidates applicability automatically. The responsible author separately declares the impact, and a reviewer alone restores reliance on its assessment after checking the current basis. A matching hash is not a substitute for that assessment.
+A review record's new assessment may replace its current assessment only after actual independent rereview of the supplied subjects. In v2, each retained finding carries [its own origin basis](#retained-judgments-for-unresolved-findings), which the replacement cannot change. Finding operations never implicitly retarget those subjects or rewrite judgment. Linking a revised model changes only the link and its declared identity. It neither restores nor invalidates applicability automatically. The responsible author separately declares the impact, and a reviewer alone restores reliance on its assessment after checking the current basis. A matching hash is not a substitute for that assessment.
 
 Evidence applicability applies to the whole evidence record. If one changed check makes the record unreliable, the responsible actor explicitly restricts applicability and explains the affected scope; consumers inspect individual results/subjects as well. This interface does not add per-check stale/current commands. Record-level current is a supplied assertion, never a CLI conclusion that all checks passed.
 
-`context --for` is a starting projection selected by the caller, not a proof map or dependency resolver. Review/Verify actors inspect all governing model requirements, relevant narrative, prior unresolved findings and current proof necessary for their assessment, even when context omits them. Every receiving actor checks current subject identity and the declared scope; a complete page means complete only within that selection. They may use targeted show, continuation pages, direct reads of named engineering subjects, or explicitly requested advanced inspection. A clean observation list and a saved claim do not waive these duties.
+`context` applies explicit actor-supplied record selectors and returns complete selected entries by default, including concern origin, evidence and rationale; an optional `--for` label attributes the activity but selects no records. It is not a proof map or dependency resolver. Review/Verify actors inspect all governing model requirements, relevant narrative, prior unresolved findings and current proof necessary for their assessment, even when they fall outside its explicit context selection. Every receiving actor checks current subject identity and the declared scope; a complete page means complete only within that selection. They may use targeted show, continuation pages, direct reads of named engineering subjects, or explicitly requested advanced inspection. A clean observation list and a saved claim do not waive these duties.
 
 A failed Verify can batch failed evidence and a new blocker after activity is recorded completed. It supplies initial applicability if it creates the evidence file; no Route decision is invented. Route later sets correction activity/ownership. After correction evidence and independent review, Verify explicitly resolves its blocker following reassessment and records success only when all obligations pass. Completing activity is another explicit decision, which Verify may include in the same batch as its report. No stage's structurally sound correction waits for all actors to decide simultaneously.
 
@@ -305,7 +305,7 @@ Workflow remains repository-local guidance and artifacts consumed by supported a
 
 ### Targeted-interface adoption allocation
 
-The schema above remains unchanged: new commands are adapters, not an implicit data migration. The lower-level recorder remains available for advanced tooling and recovery; supported stage guidance uses the primary commands after coherent adoption. No normal skill path may retain full-file reconstruction or call a historical eligibility engine before saving. The earlier replacement inventories remain historical impact mappings; the following table owns this amendment's remaining adoption scope.
+The v1 compatibility schema remains unchanged. The explicitly selected v2 schema adds self-contained concern origin; targeted commands do not implicitly migrate existing records. The lower-level recorder remains available for advanced tooling and recovery; supported stage guidance uses the primary commands after coherent adoption. No normal skill path may retain full-file reconstruction, manual hashing or registry construction, or call a historical eligibility engine before saving. The earlier replacement inventories remain historical impact mappings; the following table owns this amendment's remaining adoption scope.
 
 | Surface family | Required action before primary-interface adoption | Owning responsibility |
 | --- | --- | --- |
@@ -370,7 +370,7 @@ Two features changing the same model use the same document. They must reconcile 
 
 ### Model validation and proof mapping
 
-WF-SR-07/08/09 own this mapping for `explicit-recording-v1`. A model file uses the existing `Requirements` table and `Boundary scan and acceptance scenarios` table; it does not need a separate feature spec, test spec or four-table boundary record. This is a model-specific replacement of that document format, not a claim of historical `boundary-first-v1` serialization conformance. The boundary reasoning and independent assessment obligations remain.
+WF-SR-07/08/09 own this model-document validation mapping, identified by explicit-recording-v1. That marker versions document structure independently of the v1/v2 stored-record discriminators. A model file uses the existing `Requirements` table and `Boundary scan and acceptance scenarios` table; it does not need a separate feature spec, test spec or four-table boundary record. This is a model-specific replacement of that document format, not a claim of historical `boundary-first-v1` serialization conformance. The boundary reasoning and independent assessment obligations remain.
 
 Model validation accepts an explicitly selected, repository-contained regular file at `docs/design/<model>.md`, where the filename stem follows the model ID grammar. Symlinked paths are rejected. Each file declares exactly once `Model validation contract: explicit-recording-v1`. Missing or unknown contract markers reject; they never fall back to feature validation. Historical `specs/` documents retain their feature-format and activation rules, with the semantic-review handoff clarified below. Validating a model draft does not activate it or require a registered change record.
 
@@ -394,10 +394,10 @@ These rows are the Workflow model's boundary allocations under Model validation 
 | State/lifecycle | WF-SR-04, WF-SR-06 | Reopen completed work explicitly without a pending-owner or previous-stage prerequisite. |
 | Identity/authority | WF-SR-03, WF-SR-08 | Reject reliance on self-approval or approval of another revision. |
 | Composition/path | WF-SR-07, WF-SR-09, WF-SR-11, WF-SR-14 | Both exact models are reviewed together; ordinary skills use targeted commands and expand bounded reading without deriving authority from the CLI. |
-| Temporal/retry | WF-SR-08, WF-SR-09 | Concurrent model edits require fresh applicability assessment, not approval replay. |
+| Temporal/retry | WF-SR-06, WF-SR-08, WF-SR-09 | A later review preserves each unresolved finding's origin; concurrent model edits require fresh assessment rather than approval replay. |
 | Failure/recovery | WF-SR-05, WF-SR-09 | A new Verify defect is durably recordable before correction, without a success report. |
 | Compatibility/migration | WF-SR-10 | An old approval is preserved but not silently converted to a new-contract approval. |
-| External/environment | WF-SR-02, WF-SR-09 | Another agent can resume from current local records without Git, PRs or chat. |
+| External/environment | WF-SR-02, WF-SR-06, WF-SR-09, WF-SR-11 | Another agent understands an unresolved concern from its current fields and origin, obtains subject identities from the CLI and resumes without prior review rounds, Git or chat. |
 
 The material composed hazards are changed subject plus retained approval, completed owner plus new correction, and cross-model concurrent edits plus downstream reliance. WF-SR-03/04/06/08/09 own their outcomes; examples do not introduce new rules.
 
