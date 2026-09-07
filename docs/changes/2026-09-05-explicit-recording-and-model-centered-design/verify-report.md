@@ -28,20 +28,24 @@
       "identity": "sha256:f1d2ea08a55eaa99ac849f37ee9b17d5a470be26671b16b179f72de30d277975"
     },
     {
+      "path": "docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json",
+      "identity": "sha256:b68eb8bdc1d4e54df60d7dfac9e959c90b9453d5f913fcfbddc1408216c0a70a"
+    },
+    {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/material-decisions.md",
-      "identity": "sha256:2f17dacdc6ffc3d8839d9a8f1829217befc5351f82657e953b37615beaef5ee8"
+      "identity": "sha256:2ae18b27c7bf46ccace681320e8de7c97cc4062dcd4def091d3c8977985542c4"
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/delivery-review.md",
-      "identity": "sha256:0e513d5dc5a49f5d7f872ef7d3af409e561a72ddeff48d971ee5839cd19cd64a"
+      "identity": "sha256:350e556556b251bd178c12a7d8a2fb00e1a275644349cf77b8e5a976815c4674"
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/design-review.md",
-      "identity": "sha256:a58852b6d169b39d275de8ab571d6ea3585cb0b4ade36d8768a81d44c5c2cafc"
+      "identity": "sha256:9b5f86926555775022fc7c8274c4c43fe6d7992ca031d912d27ccc188e45779c"
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md",
-      "identity": "sha256:43d0e97d1bc647f562ba94cc2dc318a51babd8c3ab4a65263b3cadf863b5d73a"
+      "identity": "sha256:049ebba3aa63222283278c7c61974658e8461a205403c710a46ad303d7db17bf"
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/proposal-review.md",
@@ -173,7 +177,7 @@
     },
     {
       "path": "scripts/artifact_lifecycle_validation.py",
-      "identity": "sha256:a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323"
+      "identity": "sha256:2c4ab7dcbeb3521ad0da92b06c737b8577b344d578b89acd7128151d8d9608a0"
     },
     {
       "path": "scripts/boundary_first_validation.py",
@@ -193,7 +197,7 @@
     },
     {
       "path": "scripts/test-artifact-lifecycle-validator.py",
-      "identity": "sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635"
+      "identity": "sha256:967c7ccb80643bf32ca6dc2bb994eef253a93643fadd36b1fb9c49d3cdc22c01"
     },
     {
       "path": "scripts/test-boundary-first-validation.py",
@@ -202,6 +206,10 @@
     {
       "path": "scripts/test-change-metadata-validator.py",
       "identity": "sha256:44d5ab15486006f90fd156a11021e823377eacc5614616cdd570b3c40a89100d"
+    },
+    {
+      "path": "scripts/test-governed-lifecycle-cli-validator.py",
+      "identity": "sha256:121ecb1affc2270fc48cfa1b2b061f629a027bf3d738ef62e0e248b9cb1a10d1"
     },
     {
       "path": "scripts/test-npm-package-publication.py",
@@ -224,8 +232,12 @@
       "identity": "sha256:5d3829970b9695841f132bea7d6c61e56d0f45a512ec9057482b5f5f7c2de399"
     },
     {
+      "path": "scripts/validate-governed-lifecycle-cli.py",
+      "identity": "sha256:34156333cb492da21a268f649196e9684b9110003042ad3239c03ecd45fb2297"
+    },
+    {
       "path": "scripts/validate-record-store.mjs",
-      "identity": "sha256:339baf0fdcae22d77bc427c11ee483f275720b91a6d89d2254efae355eda16c6"
+      "identity": "sha256:272b75e7b7b92b83e2d4150e603df44802dcfc4c982db676f68b48235150ec27"
     },
     {
       "path": "scripts/validation_selection.py",
@@ -281,7 +293,7 @@
     },
     {
       "path": "specs/compact-current-state-change-record.md",
-      "identity": "sha256:a07cbbe6e7b9c703c779ba905d3e6c521a10eb0215db30ff7734206e17b758fc"
+      "identity": "sha256:fb0a17528b0a5653c383ad8aef55b40e06eeaface7a968a9fdd0d46dd04f92e6"
     },
     {
       "path": "specs/rigorloop-workflow.md",
@@ -307,43 +319,19 @@
   "evidence_refs": [
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "m5-ci-selector"
+      "id": "pr-final-verification"
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "m5-generated-parity"
+      "id": "er-pr-001-regression"
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "m5-adapter-full"
+      "id": "er-pr-004-regression"
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "er-m5-001-regression"
-    },
-    {
-      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "er-m5-001-correction-ci"
-    },
-    {
-      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "m5-final-focused"
-    },
-    {
-      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "er-m5-001-lifecycle-regression"
-    },
-    {
-      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "er-m5-002-regression"
-    },
-    {
-      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "m5-current-record-check"
-    },
-    {
-      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
-      "id": "m5-independent-final-verification"
+      "id": "er-pr-005-regression"
     }
   ],
   "review_refs": [
@@ -367,6 +355,45 @@
   "outcome": "success"
 }
 ---
+
+# Current PR-specific Verify assessment
+
+Outcome: branch-ready for the exact subject below. Independent verifier review-compact-fix authored no implementation or correction. User explicitly authorized fix and PR submission; this assessment extends, rather than rewrites, the original isolated M5 scope. PR preparation/push/open remain the PR owner's actions.
+
+## Immutable verification_basis
+
+```json
+{
+  "repository_identity": "xiongxianfei/rigorloop",
+  "remote_identity": "git@github.com:xiongxianfei/rigorloop.git",
+  "base_branch": "main",
+  "base_revision": "d6770adfbbd835363d3b428acbd5a27a9485171b",
+  "merge_base_revision": "d6770adfbbd835363d3b428acbd5a27a9485171b",
+  "head_branch": "feature/explicit-recording-cli",
+  "verified_subject_revision": "dcb984b014f46c2acfaaf2d3ddc57160a69d476e"
+}
+```
+
+Origin fetch is https://github.com/xiongxianfei/rigorloop; the remote_identity above is its observed push destination. Live main matched the immutable base before and after validation; no remote feature branch existed. No hosted CI was observed.
+
+## Actual proof and current judgment
+
+`bash scripts/ci.sh --mode pr --base d6770adfbbd835363d3b428acbd5a27a9485171b --head dcb984b014f46c2acfaaf2d3ddc57160a69d476e` completed exit0: **28 checks passed**, including the mandatory selected-revision lifecycle gate. No dry-run, bypass or replacement local-mode command supplies this result. Full successful check output is intentionally suppressed by the wrapper; individual test counts are not invented. Current proof and exact subjects are in evidence.yaml#pr-final-verification. All four independent reviews are approved, current and free of open findings; their subject bytes match.
+
+ER-PR-001/004/005 are resolved by their Verify owner after independent correction review and this complete run. ER-PR-002/003 remain resolved in Code Review. Earlier failures and interrupted attempts remain explicitly historical; their current entries record supersession, not retroactive successful execution. Snapshot validation now reads exact selected regular Git blobs and preserves lexical paths/approved limits. Contract-dispatched wrapper validation and operational ownership inventory are complete. Historical compact specification bytes and historical lifecycle records are preserved without a waiver. The ongoing operational retirement-ledger catalog under the older change directory was updated for the two checks and two proof scripts; that catalog maintenance is not a historical lifecycle or approval mutation.
+
+The unchanged21requirement trace, both model scenario sets, combined hazards and TG-FINAL01/02 assessment from the isolated report below remain applicable after the reviewed compatibility corrections. M1-M4 behavior, packaged runtime and guidance are unchanged by the final validator/inventory repairs. Independent M4 semantic/rollback proof remains current: the genuine separate-author fixture honestly stayed inconclusive without a success report; automated installed scenarios separately prove positive explicit-completion mechanics. Neither is relabeled as the other. Requirements/test coverage, test validity, architecture, current authority, plan/review closeout, generated currency, direct validation and branch basis pass.
+
+## Limits and handoff
+
+The original direct tracked-mode unsupported limitation below is historical and superseded by reviewed snapshot support plus this actual gate pass. External concurrent manual/other-tool target edits remain excluded as specified; observed-check protection, cooperating CLI exclusion and ancestor containment are retained. No native Claude/OpenCode session, hostedCI, release or merge claim is added.
+
+Only attributable review/Verify evidence changes follow the tested source commit; they do not redefine verified_subject_revision. The PR owner must inspect any cumulative evidence-only suffix, confirm unchanged engineering subjects and current remote/base before submission. A code/model/guidance change or unexplained suffix invalidates this handoff.
+
+## Preserved prior isolated M5 assessment — historical scope
+
+The following original body is retained as history. Its old no-PR scope and tracked-mode limitation do not override the current explicit PR assessment above.
+
 
 # Final verification — explicit recording and model-centered Design
 

@@ -29,7 +29,7 @@
       "id": "review-compact-fix",
       "role": "verify"
     },
-    "reason": "Independent M5 final verification succeeded against current model, delivery, review and proof subjects; both findings are resolved. Explicit lifecycle completion only; isolated stop, no commit, push, PR or release."
+    "reason": "Independent user-authorized branch Verify completed against dcb984b014f46c2acfaaf2d3ddc57160a69d476e with28required PR gates passing and current reviewed subjects. Earlier isolated M5 completion remains history; this fresh assessment permits PR-owner handoff, not publication by Verify."
   },
   "plan": {
     "path": "docs/plans/2026-09-05-explicit-recording-and-model-centered-design.md",
@@ -197,12 +197,12 @@
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/verify-report.md",
-      "value": "stale",
+      "value": "current",
       "actor": {
-        "id": "root-bugfix",
-        "role": "support"
+        "id": "review-compact-fix",
+        "role": "verify"
       },
-      "reason": "Source correction for er-pr-001 changes relied-on validator subjects; retain prior judgments but require affected independent rereview and fresh Verify before reliance."
+      "reason": "Fresh independent successful branch assessment after reviewed corrections and exact28-gate PR validation; historical limitations superseded only as stated in current report."
     }
   ],
   "blockers": [
@@ -297,8 +297,20 @@
       ],
       "evidence": "Mandatory ci.sh:1533-1535 PR lifecycle gate invokes unsupported pr-ci. Independent 12-case regression confirms rejection. See evidence.yaml#pr-tracked-gate-compatibility. Prior isolated M5 success remains scoped history.",
       "required_outcome": "Support required PR lifecycle validation against exact selected immutable subjects without using unrelated live bytes or skipping/weakening validation. Add regressions, independent correction and affected whole-change review, then exact PR Verify before push. CI/implementation owner needs bounded correction authority; Verify does not repair.",
-      "state": "open",
-      "resolution": null
+      "state": "resolved",
+      "resolution": {
+        "actor": {
+          "id": "review-compact-fix",
+          "role": "verify"
+        },
+        "rationale": "Original Verify owner independently reassessed the exact corrected implementation and current reviews. Required complete PR command on dcb984b014f46c2acfaaf2d3ddc57160a69d476e passed all28gates, including snapshot validation, contract-dispatched wrapper and inventory completeness. Original finding subjects/evidence remain historical; no waiver or historical approval retargeting.",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+            "id": "pr-final-verification"
+          }
+        ]
+      }
     },
     {
       "id": "er-pr-004",
@@ -326,8 +338,20 @@
       ],
       "evidence": "Actual required PR wrapper at head577b9754f8700a944e61ddc2371632353d90ad92 exits1: Governance lifecycle validation wrapper regressions,19tests/1failure. test_t13_main_emits_one_aggregate_and_suppresses_successful_child_stdout expects0 but gets1. Independent activation_inventory_errors reports new explicit root unreadable: line1 expected key:value; historical YAML loader does not dispatch its JSON recording contract. See evidence.yaml#pr-branch-577b9754.",
       "required_outcome": "Make the repository lifecycle-wrapper inventory handle the explicitly selected recording contract without applying historical YAML/lifecycle semantics or silently exempting unknown/invalid records. Add regression proof, independent correction and affected whole-change review, then rerun the complete required PR verification on a fresh immutable candidate. Verify does not repair; bounded implementation authority required.",
-      "state": "open",
-      "resolution": null
+      "state": "resolved",
+      "resolution": {
+        "actor": {
+          "id": "review-compact-fix",
+          "role": "verify"
+        },
+        "rationale": "Original Verify owner independently reassessed the exact corrected implementation and current reviews. Required complete PR command on dcb984b014f46c2acfaaf2d3ddc57160a69d476e passed all28gates, including snapshot validation, contract-dispatched wrapper and inventory completeness. Original finding subjects/evidence remain historical; no waiver or historical approval retargeting.",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+            "id": "pr-final-verification"
+          }
+        ]
+      }
     },
     {
       "id": "er-pr-005",
@@ -367,8 +391,20 @@
       ],
       "evidence": "Required PR run on c79ca7db3ef2d1704ea6a1704d987cc27e314135 exits1 at python scripts/test-retirement-ledger.py:16tests/3failures/0.080s. Ownership missing for record_store.schema and model.validate; script inventory missing validate-record-store.mjs and build-record-store-schema.mjs. See evidence.yaml#pr-branch-c79ca7db.",
       "required_outcome": "Reconcile exact new check/script ownership in the repository retirement inventory under its proper owner without weakening completeness tests or fabricating historical settlement. Add bounded proof, independent affected review and fresh complete PR verification. No automatic Verify repair or historical record rewrite.",
-      "state": "open",
-      "resolution": null
+      "state": "resolved",
+      "resolution": {
+        "actor": {
+          "id": "review-compact-fix",
+          "role": "verify"
+        },
+        "rationale": "Original Verify owner independently reassessed the exact corrected implementation and current reviews. Required complete PR command on dcb984b014f46c2acfaaf2d3ddc57160a69d476e passed all28gates, including snapshot validation, contract-dispatched wrapper and inventory completeness. Original finding subjects/evidence remain historical; no waiver or historical approval retargeting.",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+            "id": "pr-final-verification"
+          }
+        ]
+      }
     }
   ]
 }
