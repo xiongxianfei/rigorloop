@@ -31,12 +31,12 @@
   ],
   "activity": {
     "stage": "code-review",
-    "status": "in-progress",
+    "status": "completed",
     "owner": {
       "id": "m3-code-review",
       "role": "review"
     },
-    "reason": "Route hands M3 implementation and exact evidence to independent Code Review, including m3-cr-001/002 reassessment. M4 has not started."
+    "reason": "Route records M3 closure after independent Code Review approved the exact corrected implementation and evidence, with m3-cr-001 and m3-cr-002 resolved. This continuation ends at M3; M4 remains the next unstarted dependency. No whole-change completion, Verify or activation claim."
   },
   "plan": {
     "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
@@ -83,7 +83,7 @@
     },
     {
       "id": "m3",
-      "status": "ready",
+      "status": "completed",
       "owner": {
         "id": "codex-root",
         "role": "implement"
@@ -185,7 +185,7 @@
         "id": "m3-code-review",
         "role": "review"
       },
-      "reason": "Independent M3 first-pass changes-requested assessment of exact recorded subjects; correction and full rereview remain required."
+      "reason": "Independent M3 approval of exact final subjects; both recorded findings resolved after regression proof. Increment assessment only; final whole-change review and Verify remain downstream."
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/evidence.yaml",
