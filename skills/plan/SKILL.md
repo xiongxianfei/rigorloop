@@ -9,9 +9,13 @@ argument-hint: [feature name, spec path, architecture path, or implementation go
 
 # Stable execution plan
 
+## Review and Closeout application
+
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
 
 This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
 
@@ -79,6 +83,7 @@ The plan's primary responsibility is to define the safe engineering and dependen
 - Derive every behavior-changing step from approved requirements and architecture; do not add unstated behavior.
 - Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing.
 - Give each implementation milestone a unique ordered ID and kind, engineering purpose, governing SRs or justified non-SR obligations, architecture responsibility, dependencies, implementation scope, completion criteria, required verification groups, evidence expectations, review handoff, risks, and rollback or recovery.
+- Apply the packaged closeout guidance: name final whole-change Code Review as a checkpoint after all implementation and required corrections, before successful final Verify.
 - Separate implementation milestones from `lifecycle-closeout` work. Do not postpone or hide in-scope implementation merely to expose final closeout.
 - Put direct proof near the milestone that first establishes the behavior. Include negative, failure, retry, recovery, compatibility, generated-output, security, and external-boundary proof when applicable.
 - Add change-level verification whenever end-to-end, cross-milestone, cross-component, compatibility, migration, concurrency, failure/recovery, security, authority, generated-output parity, or other integrated behavior cannot be demonstrated adequately within one milestone. Milestone completion does not imply complete-change correctness.
@@ -129,6 +134,8 @@ Capability state controls formal adoption: `pending` never claims active adoptio
 Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing. Stop planning when an applicable boundary lacks one of those owners and route a contract gap upstream.
 
 ## Resource map
+
+- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
 
 - READ `references/requirement-to-delivery-model.md` when allocating system requirements and architecture boundaries into milestones or optional work hierarchy.
 - READ `references/governed-plan-authoring.md` exactly when valid governed plan authority exists for `create-primary-plan`, `revise-primary-plan`, or `initialize-approved-plan`.

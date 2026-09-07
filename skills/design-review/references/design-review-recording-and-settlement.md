@@ -1,5 +1,7 @@
 # Design Review recording and settlement
 
+This procedure retains its named historical recording/lifecycle contract. For explicitly adopted Review and Closeout work, the parent skill selects the packaged assessment/reliance application and primary recording interface; historical commands, judgment rules and output shapes below do not override that selection.
+
 Load for every durable or formal Design Review. The parent skill owns judgment, outcome, findings, isolation, and handoff; this reference owns durable recording and exact-package CLI settlement.
 
 ## Recording

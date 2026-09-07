@@ -42,6 +42,28 @@ DISCOVERY_SUPPORT_SOURCE = ROOT / "templates" / "shared" / "discovery-support.md
 DISCOVERY_SUPPORT_CONSUMERS = frozenset({"explore", "research"})
 DISCOVERY_SUPPORT_TARGET = Path("references/discovery-support.md")
 
+REVIEW_CLOSEOUT_CONSUMERS = frozenset({"proposal-review", "design-review", "delivery-review", "code-review", "plan", "route", "verify", "pr", "implement", "ci-maintenance"})
+REVIEW_ASSESSMENT_CONSUMERS = frozenset({"proposal-review", "design-review", "delivery-review", "code-review"})
+
+
+def validate_review_closeout_copies(skill_path: Path, skill_name: str, *, source: Path | None = None) -> list[str]:
+    """Check packaged application bytes, never semantic judgment or readiness."""
+    if skill_name not in REVIEW_CLOSEOUT_CONSUMERS:
+        return [f"{skill_path}: unknown review-closeout consumer {skill_name!r}"]
+    source = source if source is not None else ROOT / "templates" / "shared"
+    names = ["review-reliance"]
+    if skill_name in REVIEW_ASSESSMENT_CONSUMERS:
+        names.append("review-assessment")
+    errors = []
+    for name in names:
+        canonical = source / f"{name}.md"
+        local = skill_path.parent / "references" / f"{name}.md"
+        if not canonical.is_file() or not local.is_file():
+            errors.append(f"{local}: review-closeout reference is missing (source {canonical})")
+        elif local.read_bytes() != canonical.read_bytes():
+            errors.append(f"{local}: review-closeout reference differs from canonical source")
+    return errors
+
 
 @dataclass(frozen=True)
 class SkillLocalResourceReference:
@@ -313,6 +335,10 @@ def _is_approved_packaged_non_asset_resource(
     skill_name: str | None,
     relative_resource: str,
 ) -> bool:
+    if skill_name in REVIEW_CLOSEOUT_CONSUMERS and relative_resource == "references/review-reliance.md":
+        return True
+    if skill_name in REVIEW_ASSESSMENT_CONSUMERS and relative_resource == "references/review-assessment.md":
+        return True
     if (skill_name, relative_resource) in PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST:
         return True
     if skill_name not in BOUNDARY_FIRST_GOVERNED_SKILLS:
@@ -3356,6 +3382,8 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     errors.extend(validate_project_map_canonical_contract(path, metadata, body))
     if skill_name and _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
         errors.extend(validate_requirement_delivery_model_copy(path, skill_name))
+        if skill_name in REVIEW_CLOSEOUT_CONSUMERS:
+            errors.extend(validate_review_closeout_copies(path, skill_name))
         if skill_name in DISCOVERY_SUPPORT_CONSUMERS:
             errors.extend(
                 validate_discovery_support_copy(
