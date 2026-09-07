@@ -2,6 +2,19 @@
 
 Completed plan history moved out of the common-read plan index.
 
+## Retired explanation paths
+
+The six pre-change-record explanations formerly under `docs/explain/` are retained in their corresponding historical plans. References to their former paths in old plans and proof remain historical; this relocation does not recreate old change records or reapprove their conclusions.
+
+| Former explanation | Retained rationale |
+| --- | --- |
+| `docs/explain/2026-04-19-rigorloop-first-release.md` | [2026-04-19-rigorloop-first-release-implementation](plans/2026-04-19-rigorloop-first-release-implementation.md#historical-closeout-rationale) |
+| `docs/explain/2026-04-20-artifact-status-lifecycle-ownership.md` | [2026-04-20-artifact-status-lifecycle-ownership](plans/2026-04-20-artifact-status-lifecycle-ownership.md#historical-closeout-rationale) |
+| `docs/explain/2026-04-20-constitution-governance-migration.md` | [2026-04-20-constitution-governance-migration](plans/2026-04-20-constitution-governance-migration.md#historical-closeout-rationale) |
+| `docs/explain/2026-04-20-plan-index-lifecycle-ownership.md` | [2026-04-20-plan-index-lifecycle-ownership](plans/2026-04-20-plan-index-lifecycle-ownership.md#historical-closeout-rationale) |
+| `docs/explain/2026-04-21-docs-changes-usage-policy.md` | [2026-04-21-docs-changes-usage-policy](plans/2026-04-21-docs-changes-usage-policy.md#historical-closeout-rationale) |
+| `docs/explain/2026-04-21-workflow-stage-autoprogression.md` | [2026-04-21-workflow-stage-autoprogression](plans/2026-04-21-workflow-stage-autoprogression.md#historical-closeout-rationale) |
+
 ## Done (archive)
 
 - [2026-08-16 PR Skill Simplification](plans/2026-08-16-pr-skill-simplification.md)
