@@ -31,12 +31,12 @@
   ],
   "activity": {
     "stage": "code-review",
-    "status": "in-progress",
+    "status": "completed",
     "owner": {
       "id": "m1-code-review",
       "role": "review"
     },
-    "reason": "Route hands the bounded M1 implementation and exact evidence to independent Code Review for correction reassessment. M2 has not started."
+    "reason": "Route records M1 closure after independent Code Review approved the exact corrected implementation and evidence, with m1-cr-01/02/03 resolved. This isolated implement invocation ends at M1; M2 remains the next unstarted dependency. No whole-change completion, Verify or activation claim."
   },
   "plan": {
     "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
@@ -45,7 +45,7 @@
   "work": [
     {
       "id": "m1",
-      "status": "ready",
+      "status": "completed",
       "owner": {
         "id": "codex-root",
         "role": "implement"
@@ -118,7 +118,7 @@
         "id": "m1-code-review",
         "role": "review"
       },
-      "reason": "Independent M1 review findings apply to the exact inspected implementation subjects."
+      "reason": "Independent M1 rereview approved exact corrected subjects and current registered evidence; all three findings resolved."
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/evidence.yaml",
