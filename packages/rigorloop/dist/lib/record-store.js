@@ -1,3 +1,4 @@
+import {scanObservations} from "./recording-observations.js";
 // Explicit values only: no workflow transition evaluator or eligibility engine.
 import {boundAdvancedObservations} from "./recording-result.js";
 import { randomBytes } from "node:crypto";
@@ -233,11 +234,11 @@ class Store {
     validateAdvancedResult(result);
     return result;
   }
-  record(request) {
-    const initial=this.snapshot(()=>[]), candidate=this.candidate(request,initial.set);
+  record(request,lockedSnapshot=null) {
+    const initial=lockedSnapshot??this.snapshot(()=>[]), candidate=this.candidate(request,initial.set);
     let journal;
     try {
-      this.acquire();
+      if(!lockedSnapshot)this.acquire();
       // Recheck after exclusion; a check result and a stale retry reserve nothing.
       if(this.fs.inspect(this.journal).info) stop("recovery-needed");
       const before=this.readSet(); this.candidate(request,before);
@@ -323,4 +324,43 @@ export function withRecordSnapshot(root,changeId,inspect,options={}) {
   if(failure){failure.snapshotVerified=true;throw failure;}return result;
  }
  catch(e){e.transaction=store.recoveryInfo();throw e;}
+}
+
+// Targeted writes construct under the same exclusion held through publication.
+// Preview uses the coherent reader and never creates exclusion state.
+export function executeTargetedStore({root,changeId,request,preview,construct,prepare},options={}) {
+ const store=new Store(root,changeId,options);
+ try {
+  const before=store.snapshot(()=>[]);
+  if(!preview)store.acquire();
+  const build=set=>{
+   if(revision(set)!==request.expected_revision)stop("identity-conflict");
+   if(Object.keys(set).length&&store.format.contract!==request.contract)stop("unsupported-contract");
+   const built=construct(request,set);
+   validateAdvancedRequest(built.request);
+   store.options.prepareResult=prepare(built);
+   return built.request;
+  };
+  if(preview)return store.snapshot(set=>{
+   const advanced=build(set),candidate=store.candidate(advanced,set);
+   return store.prepareResult("check","valid",candidate,revision(set));
+  }).observations;
+  if(store.fs.inspect(store.journal).info)stop("recovery-needed");
+  const set=store.readSet();
+  if(revision(set)!==revision(before.set))stop("identity-conflict");
+  const advanced=build(set);
+  return store.record(advanced,{set});
+ }catch(e){
+  if(e.recordStoreCode==="broken-reference"){
+   try{
+    const diagnose=set=>({revision:revision(set),summary:scanObservations({set,format:store.format,reader:store.fs,revision:revision(set)}).summary()});
+    let observed;
+    if(store.token){store.own();const set=store.readSet();observed=diagnose(set);if(revision(store.readSet())!==observed.revision)stop("identity-conflict");store.own();}
+    else observed=store.snapshot(diagnose).observations;
+    e.revision=observed.revision;e.observation_summary=observed.summary;
+   }catch{/* Unverified optional metadata is never attached. */}
+  }
+  e.transaction=store.recoveryInfo();throw e;
+ }
+ finally{store.release();}
 }

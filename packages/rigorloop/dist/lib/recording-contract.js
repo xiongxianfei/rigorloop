@@ -6,7 +6,7 @@ export const id=v=>typeof v==="string"&&/^[a-z0-9][a-z0-9-]{0,79}$/.test(v);
 export const isDigest=v=>typeof v==="string"&&/^sha256:[a-f0-9]{64}$/.test(v);
 export function safePath(path){if(typeof path!=="string"||!path.length||path.length>1024||!/^[\x20-\x7e]+$/.test(path)||path.includes("\\")||/^[A-Za-z]:/.test(path)||path.split("/").some(p=>!p||p==="."||p===".."))stop("unsafe-path");return path;}
 export function exact(v,required,optional=[]){if(!v||typeof v!=="object"||Array.isArray(v)||required.some(k=>!Object.hasOwn(v,k))||Object.keys(v).some(k=>![...required,...optional].includes(k)))stop("invalid-input");}
-function validate(schema,value){
+export function validate(schema,value){
  if(schema.$ref){const key=schema.$ref.split("/").at(-1);if(key.endsWith("-path"))safePath(value);return validate(RECORDING_SCHEMA.$defs[key],value);}
  if(schema.anyOf||schema.oneOf){let matches=0,unsafe;for(const branch of schema.anyOf??schema.oneOf){try{validate(branch,value);matches++;if(schema.anyOf)return;}catch(e){if(e.recordStoreCode==="unsafe-path")unsafe=e;}}if(schema.oneOf&&matches===1)return;if(!matches&&unsafe)throw unsafe;stop("invalid-input");}
  if(Object.hasOwn(schema,"const")&&schema.const!==value)stop("invalid-input");if(schema.enum&&!schema.enum.includes(value))stop("invalid-input");
@@ -14,7 +14,7 @@ function validate(schema,value){
  if(schema.type==="boolean"&&typeof value!=="boolean")stop("invalid-input");
  if(schema.type==="integer"&&(!Number.isSafeInteger(value)||value<schema.minimum||value>schema.maximum))stop("invalid-input");
  if(schema.type==="string"&&(typeof value!=="string"||(schema.minLength!==undefined&&value.length<schema.minLength)||(schema.maxLength!==undefined&&value.length>schema.maxLength)||(schema.pattern&&!new RegExp(schema.pattern).test(value))))stop("invalid-input");
- if(schema.type==="object"){exact(value,schema.required,Object.keys(schema.properties).filter(k=>!schema.required.includes(k)));for(const [key,child]of Object.entries(schema.properties))if(Object.hasOwn(value,key))validate(child,value[key]);}
+ if(schema.type==="object"){if(schema.minProperties!==undefined&&Object.keys(value??{}).length<schema.minProperties)stop("invalid-input");for(const [key,required]of Object.entries(schema.dependentRequired??{}))if(value&&Object.hasOwn(value,key)&&required.some(k=>!Object.hasOwn(value,k)))stop("invalid-input");exact(value,schema.required,Object.keys(schema.properties).filter(k=>!schema.required.includes(k)));for(const [key,child]of Object.entries(schema.properties))if(Object.hasOwn(value,key))validate(child,value[key]);}
  if(schema.type==="array"){if(!Array.isArray(value)||(schema.minItems!==undefined&&value.length<schema.minItems)||(schema.maxItems!==undefined&&value.length>schema.maxItems))stop("invalid-input");for(const child of value)validate(schema.items,child);if(schema.uniqueItems&&new Set(value.map(canonicalJSON)).size!==value.length)stop("invalid-input");}
 }
 export function validateQueryInput(value){validate(RECORDING_SCHEMA.$defs.query,value);return value;}
