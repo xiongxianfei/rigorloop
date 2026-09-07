@@ -6,7 +6,7 @@ Model validation contract: explicit-recording-v1
 
 The Workflow model defines how responsible humans and agents turn a direction into reviewed design, delivery work and verified outcomes. It owns the meaning of recorded status, responsibilities, review applicability, correction and readiness. Its purpose is durable, inspectable reasoning and resumable work without making a command-line transition engine the decision owner.
 
-The initial model inventory for this change has two members: Workflow and CLI. Workflow owns the engineering process and the model-document convention; CLI owns the safe storage interface. Neither is defined by a feature, class or AI model. Other system models can be identified later without forcing unrelated contracts into either file.
+The model inventory for this change has three members: Workflow, RigorLoop Record Format and CLI. Workflow owns the engineering process and model-document convention; Record Format owns durable structure and preservation; CLI owns the safe storage interface. These models are defined by coherent responsibilities, not by features, classes or AI models. Other system models can be identified later without forcing unrelated contracts into either file.
 
 ### Design at a glance
 
@@ -33,6 +33,7 @@ Workflow defines who makes each engineering decision, what that decision means, 
 | Route agent | Selecting work, coordination, recorded current activity and correction responsibility | Manufacturing review or Verify results |
 | Implementation agent | Approved implementation and execution evidence | Changing the approved design through code |
 | Verify agent | Final coherence assessment and success-only completion evidence | Approving its own correction |
+| Record Format model | Stored structure, versions, relationships and preservation invariants | Engineering judgments or persistence execution |
 | CLI model | Mechanically validated persistence and observations | Any of the decisions above |
 
 The CLI interface is a dependency, not a superior workflow authority. Local filesystem permissions and runtime controls remain the execution boundary; an actor label in a record is attribution, not authentication.
@@ -110,141 +111,17 @@ These placements preserve distinct responsibilities under the `explicit-recordin
 
 ### Record model
 
-**RigorLoop Record Format v2** is the selected prospective stored-record design. Its complete record layouts are defined below, with `contract: rigorloop-records-v2` in change.yaml and `schema_version: 2` in every record. This is a data-format contract: it defines stored fields, relationships and preservation invariants. It does not select a workflow stage or version the CLI command interface.
+The [RigorLoop Record Format model](record-format.md) owns stored record types, fields, relationships, versions and preservation invariants. Workflow owns what the recorded decisions mean, who supplies them and what evidence justifies downstream reliance. CLI owns construction, inspection and safe publication.
 
-| Versioned surface | Identifier | Meaning |
-| --- | --- | --- |
-| Selected stored-record design | `rigorloop-records-v2`, stored schema_version 2 | Complete current design, including immutable concern origin |
-| Retained compatibility format | `explicit-recording-v1`, stored schema_version 1 | Existing schema, without the v2 origin guarantee |
-| Model-document validation | `Model validation contract: explicit-recording-v1` | Document structure checked by the model validator; not the selected stored-record version |
-| Primary CLI transport | `targeted-recording-v1`, request schema_version 1, result schema_version 2 | Transient requests and receipts, defined by the CLI model |
-
-Version numbers belong to their own surface. A targeted request with schema_version 1 can explicitly select rigorloop-records-v2; its request version does not change the stored version. The document-validation marker remains unchanged for validator compatibility. Its reuse of the older identifier does not make this document's selected record format v1. The successor remains a design until coordinated implementation and adoption.
-
-The change record is the registry and coordination entry point. It contains activity, work and change-level blockers; it references the proposal, affected models and optional plan. Its registry identifies supporting records, each with an explicitly declared applicability entry. Review findings belong to their containing review. Reviews and evidence name exact engineering subjects; those subject identities do not become automatically current when files change.
-
-```mermaid
-flowchart TB
-    Change["Change: activity, work and blockers"]:::system
-    Subjects["Proposal, models and optional plan"]:::external
-    Registry["Registered paths and explicit applicability"]:::container
-    Review["Reviews and their findings"]:::container
-    Evidence["Evidence checks"]:::container
-    Decisions["Material decisions"]:::container
-    Verify["Successful Verify report"]:::container
-    Change -->|"references"| Subjects
-    Change -->|"contains"| Registry
-    Registry --> Review
-    Registry --> Evidence
-    Registry --> Decisions
-    Registry --> Verify
-    Review -->|"reviewed subjects"| Subjects
-    Evidence -->|"evaluated subjects"| Subjects
-    Verify -->|"supporting references"| Review
-    Verify -->|"supporting references"| Evidence
-    classDef person fill:#08427b,stroke:#073b6f,color:#fff
-    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
-    classDef external fill:#999,stroke:#666,color:#fff
-    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
-```
-
-This conceptual view illustrates WF-SR-02/03/05/08/12/13; it is not a second schema. Subjects may also include implementation and other proof inputs admitted by the exact Subject type. Supporting records are conditional, and their arrows do not imply that every record must exist before a correction can be saved.
-
-| Stored record | Semantic responsibility | Compatibility definition in the [existing v1 JSON Schema](../../schemas/explicit-recording-v1.schema.json) |
-| --- | --- | --- |
-| Change | Recorded coordination, work, blockers, registry and applicability | `$defs.change` |
-| Review | Independent judgment, exact subjects and review-scoped findings | `$defs.review` |
-| Evidence | Supplied procedures, results and evaluated subjects | `$defs.evidence` |
-| Material decisions | Rationale and source references that constrain work | `$defs.decisions` |
-| Verify report | Successful final assessment and supporting references | `$defs.verify` |
-
-Workflow owns the field meanings and cross-record obligations below. The JSON Schema expresses structural shapes; the [CLI model](cli.md#advanced-candidate-update-contract) owns byte encoding, containment, identity computation and persistence. The schema file also contains advanced request/result definitions, which are transport contracts rather than additional stored record kinds. Markdown bodies provide actor-authored reasoning alongside structured metadata; metadata retains the declared status and identity meaning. Structural validity does not establish workflow readiness.
+The manifest carries current activity, work and change-level blockers, and registers reviews, evidence, material decisions and the success-only Verify report. These concepts represent Workflow obligations; their exact serialization has one owner in Record Format.
 
 ### Explicit record schema
 
-WF-SR-02/03/05/06/08 own this stored-record definition. The table defines v2 directly; the compatibility subsection below defines the retained v1 differences. It is not a CLI request schema. Every object is closed: only listed fields are admitted, all fields are required unless marked optional, and duplicate keys or IDs are invalid. Empty arrays represent no entries; there are no inferred defaults. IDs use lowercase letters, digits and hyphens, start with a letter or digit, and contain 1–80 characters. Change IDs follow the same grammar. Paths are repository-relative and subject to CLI containment rules. A digest is `sha256:` followed by 64 lowercase hexadecimal digits.
-
-Common types are `Subject = {path, identity}` and `Actor = {id, role}`. `identity` is a digest of exact file bytes; `role` is one of `human`, `proposal`, `design`, `plan`, `review`, `route`, `implement`, `verify`, `support`. A reference to a record entry is `{path, id}`; it identifies the entry, not a claim about freshness. Narrative fields are nonempty strings. IDs are unique within their containing array. Referenced subject files may have changed or disappeared; those are observations, unlike a dangling reference to an entry inside the candidate record set.
-
-| Record | Exact structured fields |
-| --- | --- |
-| `change.yaml` | `schema_version: 2`, `contract: rigorloop-records-v2`, `change_id`, `proposal: Subject`, `models: [{id, subject: Subject}]`, `activity: {stage, status, owner: Actor, reason}`, `plan: Subject or null`, `work: [{id, status, owner: Actor, requirement_refs: [string]}]`, `records: [{path, kind}]`, `applicability: [{path, value, actor: Actor, reason}]`, `blockers: [Concern]` |
-| `reviews/<review-id>.md` metadata | `schema_version: 2`, `change_id`, `id`, `target`, `reviewer: Actor`, `contributors: [Actor]`, `independence_basis`, `subjects: [Subject]`, `judgment`, `findings: [Concern]` |
-| `evidence.yaml` | `schema_version: 2`, `change_id`, `checks: [{id, actor: Actor, subjects: [Subject], result, procedure, summary}]` |
-| `material-decisions.md` metadata | `schema_version: 2`, `change_id`, `decisions: [{id, actor: Actor, subjects: [Subject], rationale, source_refs: [EntryRef]}]` |
-| `verify-report.md` metadata | `schema_version: 2`, `change_id`, `verifier: Actor`, `subjects: [Subject]`, `evidence_refs: [EntryRef]`, `review_refs: [EntryRef]`, `outcome: success` |
-
-`Concern` has exactly `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution, origin: Origin}`. Origin and its immutable preservation rules are defined below. `reporter` identifies the actor responsible for disposition assessment and `owner` identifies who must perform correction; these are deliberately distinct. `state` is `open`, `resolved` or `deferred`; `resolution` is null for open work or `{actor: Actor, rationale, evidence_refs: [EntryRef]}` otherwise. The CLI checks this representation, not whether the resolution is justified. An empty evidence-reference array is valid for a reasoned disposition but does not prove the disposition adequate. Review-record blockers are findings; change-record blockers allow any stage to record a defect without inventing a review.
-
-`stage` is `proposal`, `proposal-review`, `design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, `verify` or `support`. `status` is `pending`, `in-progress`, `blocked`, `ready`, `completed` or `cancelled`. These are labels, not a transition graph: any well-formed old/new label pair is recordable. `target` is `proposal`, `design`, `delivery` or `code`; `judgment` is `approved`, `changes-requested`, `blocked` or `inconclusive`. Evidence `result` is `passed`, `failed` or `inconclusive`. Applicability `value` is `current`, `stale` or `not-applicable`. Record `kind` is `review`, `evidence`, `decisions` or `verify`.
-
-The `records` array declares every supporting authoritative record for this change; `change.yaml` is implicit. Each declared record must exist in the candidate set and have the matching kind and change identity. Each supporting record has exactly one explicit applicability entry in `change.yaml`. Extra physical files are not discovered as authority. A new supporting record and its registry/applicability entries are published together. The targeted command constructs registry bookkeeping, but the requesting actor explicitly supplies applicability value, actor and reason. Applicability remains at supporting-record level; individual checks or findings do not acquire a separate applicability field. These are referential checks, not review prerequisites.
-
-The CLI model owns bytes and encoding. Markdown record bodies carry nonempty human-readable reasoning, while their structured metadata owns IDs and enumerated judgments. Body text cannot override metadata. Subject and evidence arrays may be empty while recording incomplete work; Workflow actors must not use incomplete records to justify approval or completion. A Verify report's metadata admits only success, but the CLI does not establish that its assertion is true.
+See the [complete stored layouts and common types](record-format.md#explicit-record-schema). Workflow requirements WF-SR-02/03/05/06/10/12/13/15 are represented by RF-SR-01 through RF-SR-08; field changes must update that model and the consuming CLI together. The existing v1 schema is a compatibility definition, not the selected v2 design.
 
 ### Retained judgments for unresolved findings
 
-The finding itself retains enough origin basis for the next actor to understand the concern. It does not depend on a chain of prior review rounds, an assessment archive, Git history or chat. This replaces the earlier proposed named-assessment collection and current-assessment pointer; neither becomes part of the selected stored representation. A current review judgment can change while its unresolved findings keep the original basis that made them actionable.
-
-#### Selected record-format revision
-
-The v2 record table above and the types below form one stored-format definition. Every review finding and change-level blocker carries its own origin; no review assessment array or current pointer is added. The existing v1 schema and implementation remain unchanged by this design document.
-
-| Type | Exact shape |
-| --- | --- |
-| Concern | `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution, origin: Origin}` |
-| Origin | `{reporter: Actor, subjects: [Subject], evidence, required_outcome, rationale, supporting_judgment: JudgmentBasis or null}` |
-| JudgmentBasis | `{reviewer: Actor, contributors: [Actor], independence_basis, subjects: [Subject], judgment, rationale}` |
-
-Objects are closed, listed fields are required, and the existing Actor, Subject, text and judgment types apply. The origin rationale is a concise, actor-supplied explanation of why the observed evidence matters for the required outcome. Supporting judgment is an optional fact represented by explicit null when none is cited; a concern does not need a fabricated overall review judgment to be recorded. When supplied, that judgment's complete relevant rationale and provenance are embedded, not represented solely by a mutable link or hash. The finding's original observed evidence and required outcome are retained even if its current fields later evolve.
-
-At creation the CLI copies reporter, subjects, evidence and required_outcome from the actor's concern values into origin. The actor supplies the rationale and explicitly chooses whether a supporting judgment is absent, supplied directly, or constructed from the provenance/outcome of an exact selected review plus actor-supplied finding-specific rationale. Copying the selected content is mechanical preservation; selecting its significance is the actor's decision. No actor is required to retype another review or assemble serialized metadata to retain it. The [CLI contract](cli.md#finding-origin-construction) defines those input forms.
-
-#### Preservation and reliance
-
-Origin is immutable for the lifetime of a concern ID in v2, including after an explicit disposition. New reviews preserve the complete origin along with the finding. They may update their current judgment and narrative without carrying every prior review round. A correction to the concern's current subjects, evidence or required outcome leaves origin intact. A mistaken original report is addressed through current explanation and explicit disposition, not by falsifying its history; a distinct concern receives a distinct ID.
-
-Supporting judgment can be null while the origin remains useful: the reporter, exact subjects, evidence, rationale and required outcome explain the original defect. If a formal reviewer cites an actual supporting assessment, it preserves that assessment's relevant content within the origin. No automatic inference supplies a judgment, independence basis, applicability value or disposition. Later judgment does not become new origin simply because hashes match or a review is approved.
-
-The current state and resolution fields say what the responsible actor now concluded. A resolved/deferred disposition retains the actor, rationale and explicit evidence references under the existing resolution type. That outcome does not overwrite origin or automatically close another actor's concern. Origin preservation applies to targeted and advanced writers and exact-byte recovery; attempts to mutate/remove it under an existing ID are structural preservation errors. This invariant applies regardless of open/resolved state, so it does not create a readiness prerequisite for correction recording.
-
-A normal finding read returns current fields and origin together. This is sufficient to understand the reported concern and its origin without replaying review history, but it does not replace reading the current engineering subjects needed to assess a fix. The existing size limits apply to embedded basis; a limit error does not permit silently truncating rationale or dropping provenance. Actors provide the relevant finding-specific basis, not a dump of all earlier records.
-
-```mermaid
-flowchart LR
-    Review["Current review judgment"]:::system -->|"contains"| Finding["Finding: current concern and disposition"]:::container
-    Finding -->|"retains directly"| Origin["Origin: reporter, exact subjects, evidence, required outcome and rationale"]:::container
-    Origin -->|"if explicitly cited"| Judgment["Embedded supporting judgment and provenance"]:::container
-    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
-    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
-```
-
-#### Example: a later approval does not erase a concern
-
-| Moment | Current review | Finding f1 | Origin available in f1 |
-| --- | --- | --- | --- |
-| Original report | changes-requested | Open, with actionable evidence and required outcome | Original reporter, subject identities, evidence, rationale and explicitly cited judgment |
-| Later review | approved | Still open until its responsible reviewer decides otherwise | The same origin, without reading the old review body |
-| Explicit reassessment | approved | Resolved with the reviewer's current rationale and evidence references | The original basis remains alongside the current disposition |
-
-The middle row is recordable but does not establish justified progression. This example illustrates WF-SR-03/06/08/13; a saved later approval never disposes the finding automatically.
-
-#### Compatibility and adoption
-
-The retained v1 format has exactly the same record layouts, common types, closed vocabularies and reference rules except for these differences:
-
-| Stored component | V1 compatibility | V2 selected design |
-| --- | --- | --- |
-| change.yaml discriminator | `contract: explicit-recording-v1` | `contract: rigorloop-records-v2` |
-| Every record's schema_version | `1` | `2` |
-| Review findings and change blockers | `Blocker = {id, reporter, owner, subjects, evidence, required_outcome, state, resolution}` | `Concern`, including required immutable origin |
-| Original concern basis | No separate retained origin field | Required Origin; supporting_judgment explicitly null or complete JudgmentBasis |
-
-The [existing v1 schema](../../schemas/explicit-recording-v1.schema.json) is the machine-readable compatibility definition, not an implementation of v2. Delivery must supply the corresponding v2 schema and validator dispatch; renaming the existing schema would not implement the new invariant.
-
-New roots explicitly select either the retained v1 contract or rigorloop-records-v2; no command guesses the version. V2 records all carry schema_version 2, and mixed record versions inside one change reject structurally. An existing v1 root stays v1 and is never upgraded by recording a finding. V1 concern reads identify that retained origin is unavailable rather than synthesizing it from a current review. No v2 retention guarantee is claimed for v1 data. V1 fields and operations remain available under their unchanged compatibility rules.
-
-Adoption requires versioned schema/validator dispatch, CLI origin construction and immutable-origin checks, context/show mappings, generated templates and consuming skills to agree. Migration is outside this amendment; missing historical basis must not be guessed. Exact representation and its integration are Design decisions here; Delivery allocates implementation and proof. The previously recorded Design Review does not approve this revised interaction or stored format.
+WF-SR-06 requires a finding to remain understandable after a later judgment. The Record Format model owns the [immutable origin representation](record-format.md#retained-judgments-for-unresolved-findings). Reviewers own the engineering assessment; recording a later approval does not settle a retained finding. Current disposition and original basis have distinct meanings.
 
 ### Responsibility-specific updates
 
@@ -419,7 +296,7 @@ These rows are the Workflow model's boundary allocations under Model validation 
 | Input domain | WF-SR-02, WF-SR-05, WF-SR-12, WF-SR-13 | New supporting records require explicit record-level applicability; findings and blockers retain separate targets and disposition/correction owners. |
 | State/lifecycle | WF-SR-04, WF-SR-06 | Reopen completed work explicitly without a pending-owner or previous-stage prerequisite. |
 | Identity/authority | WF-SR-03, WF-SR-08 | Reject reliance on self-approval or approval of another revision. |
-| Composition/path | WF-SR-07, WF-SR-09, WF-SR-11, WF-SR-14, WF-SR-15 | Both exact models are reviewed together; ordinary skills retrieve final explanations and shared narratives through targeted reads and expand their basis without deriving authority from the CLI. |
+| Composition/path | WF-SR-07, WF-SR-09, WF-SR-11, WF-SR-14, WF-SR-15 | All three exact models and their shared boundaries are reviewed together; ordinary skills retrieve final explanations and shared narratives through targeted reads and expand their basis without deriving authority from the CLI. |
 | Temporal/retry | WF-SR-06, WF-SR-08, WF-SR-09 | A later review preserves each unresolved finding's origin; concurrent model edits require fresh assessment rather than approval replay. |
 | Failure/recovery | WF-SR-05, WF-SR-09 | A new Verify defect is durably recordable before correction, without a success report. |
 | Compatibility/migration | WF-SR-10 | An old approval is preserved but not silently converted to a new-contract approval. |
@@ -466,13 +343,13 @@ Model: coherent system responsibility with owned concepts and rules. Judgment: a
 
 ## Drafting basis and authority
 
-This living model combines behavioral requirements, architecture and decision rationale. The targeted-interface amendment is authored under the user's explicit request to finish the CLI/Workflow Design and obtain independent Design Review. The exact package is this file (`workflow`) and `cli.md` (`cli`); no separate specification or ADR sibling is created. The current Constitution permits explicitly selected explicit-recording-v1 work; the new purpose-specific interface remains prospective. This drafting step changes no executable behavior, persisted contract or historical lifecycle record.
+This living model combines behavioral requirements, architecture and decision rationale. The targeted-interface amendment is authored under the user's explicit request to finish the CLI/Workflow Design and obtain independent Design Review. The exact package is this file (`workflow`), `record-format.md` (`record-format`) and `cli.md` (`cli`); no separate specification or ADR sibling is created. The current Constitution permits explicitly selected explicit-recording-v1 work; the new purpose-specific interface remains prospective. This drafting step changes no executable behavior, persisted contract or historical lifecycle record.
 
 Current direction: [Make Targeted Recording the Primary CLI Interface](../proposals/2026-09-07-targeted-recording-primary-cli.md), its [independent Proposal Review](../changes/2026-09-07-targeted-recording-primary-cli-review-recording/reviews/proposal-review-r1.md), and the user-supplied command boundary. Earlier direction: [Explicit Workflow Recording and Model-Centered Design](../proposals/2026-09-05-explicit-recording-and-model-centered-design.md). Related model: [CLI](cli.md). Current [Constitution](../../CONSTITUTION.md) and contract-selected [workflow specification](../../specs/rigorloop-workflow.md) retain their authority; this amendment does not claim historical lifecycle settlement. The architectural and specification authoring methods are combined here rather than producing mandatory sidecars. This is not yet a complete replacement for all existing workflow contracts.
 
 ## Next artifacts
 
-Refine these two model designs and their adoption contract before an explicitly authorized independent Design Review. Delivery planning follows approved Design, not this draft.
+Refine these three model designs and their adoption contract before an explicitly authorized independent Design Review. Delivery planning follows approved Design, not this draft.
 
 ## Follow-on artifacts
 
