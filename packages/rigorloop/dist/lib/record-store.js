@@ -1,7 +1,7 @@
 // Explicit values only: no workflow transition evaluator or eligibility engine.
 import { randomBytes } from "node:crypto";
 import { RecordFiles, digest, stop, MIB } from "./record-store-files.js";
-import { parseRecordStore, validateRecordStoreRecord, validateRecordStoreSet, validateRecordStoreCreation, recordStorePathKind } from "./record-store-contract.js";
+import {V1_FORMAT,V2_FORMAT,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
 
 const decode = bytes => bytes === null ? null : new TextDecoder("utf-8",{fatal:true,ignoreBOM:true}).decode(bytes);
 const encoded = data => Buffer.from(JSON.stringify(data)+"\n");
@@ -19,12 +19,16 @@ export function emptyRecordResult(operation,changeId) {
 
 class Store {
   constructor(root,id,options) {
-    recordStorePathKind(id,`docs/changes/${id}/change.yaml`);
+    V1_FORMAT.pathKind(id,`docs/changes/${id}/change.yaml`);
     this.fs=new RecordFiles(root); this.id=id; this.options=options;
-    this.directory=`docs/changes/${id}`; this.manifest=`${this.directory}/change.yaml`;
+    this.directory=`docs/changes/${id}`; this.selectFormat(V1_FORMAT);
     this.private=`.rigorloop/record-store/${id}`;
     this.journal=`${this.private}/journal.json`; this.lock=`${this.private}/lock`; this.epoch=`${this.private}/epoch`;
     this.token=null;
+  }
+  selectFormat(format) {
+    this.format=format;this.manifest=`${this.directory}/${format.manifest}`;
+    this.otherManifest=`${this.directory}/${(format===V1_FORMAT?V2_FORMAT:V1_FORMAT).manifest}`;
   }
   fault(point) {
     const action=this.options.fault?.(point);
@@ -51,13 +55,15 @@ class Store {
   readSet() {
     const root=this.fs.inspect(this.directory,true);
     if(!root.info) return {};
-    const raw=this.fs.read(this.manifest);
-    if(raw===null) stop("invalid-input");
+    const v1=this.fs.read(`${this.directory}/change.yaml`),v2=this.fs.read(`${this.directory}/change.json`);
+    if((v1!==null)===(v2!==null))stop("invalid-input");
+    this.selectFormat(v2!==null?V2_FORMAT:V1_FORMAT);
+    const raw=v2??v1;
     let discriminator;
-    try { discriminator=JSON.parse(decode(raw)).contract; }
+    try { discriminator=JSON.parse(decode(raw)); }
     catch { if(/(?:contract|lifecycle_contract):/.test(decode(raw))) stop("unsupported-contract"); stop("invalid-input"); }
-    if(discriminator!=="explicit-recording-v1") stop("unsupported-contract");
-    const change=parseRecordStore("change",raw);
+    if(discriminator?.contract!==this.format.contract || (Object.hasOwn(discriminator,"schema_version") && discriminator.schema_version!==this.format.version)) stop("unsupported-contract");
+    const change=this.format.parse("change",raw);
     if(change.change_id!==this.id) stop("invalid-input");
     const set={[this.manifest]:decode(raw)};
     for(const record of change.records) set[record.path]=decode(this.fs.read(record.path));
@@ -78,7 +84,7 @@ class Store {
     let change;
     for(const [path,content] of Object.entries(set)) {
       if(content===null) { add("subject-drift",path); continue; }
-      const data=parseRecordStore(recordStorePathKind(this.id,path),content);
+      const data=this.format.parse(this.format.pathKind(this.id,path),content);
       if(path===this.manifest) change=data;
       visit(data);
       if(data.checks?.some(check=>check.result==="failed")) { failed=true; add("failed-evidence",path); }
@@ -97,7 +103,10 @@ class Store {
   candidate(request,before) {
     if(request.change_id!==this.id) stop("invalid-input");
     if(revision(before)!==request.expected_revision) stop("identity-conflict");
-    if(request.expected_revision===null) validateRecordStoreCreation(request,!!this.fs.inspect(this.directory,true).info);
+    const format=requestFormat(request);
+    if(Object.keys(before).length && format!==this.format)stop("unsupported-contract");
+    if(!Object.keys(before).length)this.selectFormat(format);
+    if(request.expected_revision===null) format.creation(request,!!this.fs.inspect(this.directory,true).info);
     const candidate={...before};
     for(const write of request.writes) {
       const exists=Object.hasOwn(before,write.path), actual=this.fs.hash(write.path);
@@ -105,7 +114,7 @@ class Store {
       if(actual!==write.expected_identity) stop("identity-conflict");
       candidate[write.path]=write.content;
     }
-    validateRecordStoreSet(this.id,candidate);
+    preserveRecords(this.format,this.id,before,candidate);
     this.basis(request.reads);
     return candidate;
   }
@@ -124,11 +133,20 @@ class Store {
     }
     this.token=encoded({pid:process.pid,nonce:randomBytes(16).toString("hex")});
     try { this.fs.write(this.lock,this.token,{exclusive:true}); }
-    catch(e) { this.token=null; if(e.code==="EEXIST")stop("store-busy"); throw e; }
+    catch(e) {
+      if(e.code==="EEXIST") { this.token=null; stop("store-busy"); }
+      // Exclusive creation may have completed before a later fsync failed.
+      // Keep the token so finally can remove only our exact bytes.
+      throw e;
+    }
     this.fs.write(this.epoch,randomBytes(16).toString("hex"));
   }
   own() { if(this.token===null || this.fs.hash(this.lock)!==digest(this.token)) stop("store-busy"); }
-  release() { if(this.token!==null) { this.fs.remove(this.lock,digest(this.token)); this.token=null; } }
+  release() {
+    if(this.token===null)return;
+    try { this.fs.remove(this.lock,digest(this.token)); this.token=null; }
+    catch { stop("recovery-needed"); } // Partial/unknown locks require reconciliation.
+  }
   saveJournal(journal) { this.own(); this.fs.write(this.journal,encoded(journal)); }
   loadJournal(expected,id) {
     const raw=this.fs.read(this.journal,MAX_JOURNAL_BYTES);
@@ -136,19 +154,20 @@ class Store {
     let j; try { j=JSON.parse(decode(raw)); } catch { stop("recovery-needed"); }
     if(!encoded(j).equals(raw)) stop("recovery-needed");
     exact(j,["version","id","change_id","phase","before","candidate","writes","reads","created_dirs"]);
-    if(j.version!==1 || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
+    if(![1,2].includes(j.version) || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
+    this.selectFormat(j.version===1?V1_FORMAT:V2_FORMAT);
     for(const side of ["before","candidate"]) {
       const map=j[side]; if(!map || typeof map!=="object" || Array.isArray(map) || Object.keys(map).length>65) stop("recovery-needed");
       for(const [path,entry] of Object.entries(map)) {
-        recordStorePathKind(this.id,path); exact(entry,["content","identity"]);
+        this.format.pathKind(this.id,path); exact(entry,["content","identity"]);
         if(entry.content!==null && (typeof entry.content!=="string" || Buffer.byteLength(entry.content)>MIB)) stop("recovery-needed");
         if(digest(entry.content)!==entry.identity) stop("recovery-needed");
       }
     }
     const before=this.unpack(j.before),candidate=this.unpack(j.candidate);
-    validateRecordStoreSet(this.id,candidate);
+    preserveRecords(this.format,this.id,before,candidate);
     if(Object.keys(before).length) {
-      const change=parseRecordStore("change",before[this.manifest]);
+      const change=this.format.parse("change",before[this.manifest]);
       if(change.change_id!==this.id || [this.manifest,...change.records.map(r=>r.path)].sort().join("\n")!==Object.keys(before).sort().join("\n")) stop("recovery-needed");
     }
     if(!Array.isArray(j.writes)||!j.writes.length||j.writes.length>65||new Set(j.writes).size!==j.writes.length)stop("recovery-needed");
@@ -156,7 +175,7 @@ class Store {
     for(const path of Object.keys(before)) if(!Object.hasOwn(candidate,path)||(!j.writes.includes(path)&&digest(before[path])!==digest(candidate[path])))stop("recovery-needed");
     for(const path of Object.keys(candidate)) if(!Object.hasOwn(before,path)&&!j.writes.includes(path))stop("recovery-needed");
     // The public request schema validates the journal's declared targets and basis too.
-    validateRecordStoreRecord("request",{schema_version:1,contract:"explicit-recording-v1",change_id:this.id,expected_revision:revision(before),
+    validateAdvancedRequest({schema_version:this.format.version,contract:this.format.contract,change_id:this.id,expected_revision:revision(before),
       writes:j.writes.map(path=>({path,expected_identity:digest(before[path]??null),content:candidate[path]})),reads:j.reads});
     if(!Array.isArray(j.created_dirs)||j.created_dirs.length>2||new Set(j.created_dirs.map(d=>d.path)).size!==j.created_dirs.length)stop("recovery-needed");
     for(const d of j.created_dirs) { exact(d,["path","identity"]); if(![this.directory,`${this.directory}/reviews`].includes(d.path)||typeof d.identity!=="string"||!/^\d+:\d+$/.test(d.identity))stop("recovery-needed"); }
@@ -165,6 +184,7 @@ class Store {
   unpack(map) { return Object.fromEntries(Object.entries(map).map(([path,e])=>[path,e.content])); }
   pack(map) { return Object.fromEntries(Object.entries(map).map(([path,content])=>[path,{content,identity:digest(content)}])); }
   known(j) {
+    if(this.fs.read(this.otherManifest)!==null)stop("recovery-needed");
     for(const path of Object.keys(j.candidate)) {
       const actual=this.fs.hash(path),before=j.before[path]?.identity??null,after=j.candidate[path].identity;
       if(actual!==before && actual!==after) stop("recovery-needed");
@@ -204,23 +224,32 @@ class Store {
     if(side==="before") for(const dir of [...j.created_dirs].reverse()) this.fs.removeDirectory(dir.path,dir.identity);
   }
   cleanup() { this.own(); this.fs.remove(this.journal,this.fs.hash(this.journal)); this.release(); }
+  prepareResult(operation,status,set) {
+    this.fault("before-result");
+    const result={...emptyRecordResult(operation,this.id),status,revision:revision(set),files:entries(set),observations:this.observations(set)};
+    validateAdvancedResult(result);
+    return result;
+  }
   record(request) {
     const initial=this.snapshot(), candidate=this.candidate(request,initial.set);
-    this.acquire(); let journal;
+    let journal;
     try {
+      this.acquire();
       // Recheck after exclusion; a check result and a stale retry reserve nothing.
       if(this.fs.inspect(this.journal).info) stop("recovery-needed");
       const before=this.readSet(); this.candidate(request,before);
       if(revision(before)!==revision(initial.set))stop("identity-conflict");
-      if(revision(before)===revision(candidate)) { this.release(); return {status:"unchanged",set:before}; }
+      const unchanged=revision(before)===revision(candidate);
+      const prepared=this.prepareResult("record",unchanged?"unchanged":"saved",candidate);
+      if(unchanged) { this.release(); return prepared; }
       this.fault("after-lock");
-      journal={version:1,id:randomBytes(16).toString("hex"),change_id:this.id,phase:"prepared",before:this.pack(before),candidate:this.pack(candidate),
+      journal={version:this.format.version,id:randomBytes(16).toString("hex"),change_id:this.id,phase:"prepared",before:this.pack(before),candidate:this.pack(candidate),
         writes:request.writes.map(w=>w.path),reads:request.reads,created_dirs:[]};
       this.saveJournal(journal); this.fault("after-preparation");
       this.basis(request.reads); this.publish(journal,"candidate");
       this.fault("before-commit"); this.basis(request.reads);
       journal.phase="committed"; this.saveJournal(journal); this.fault("after-commit");
-      this.cleanup(); return {status:"saved",set:candidate};
+      this.cleanup(); return prepared;
     } catch(e) {
       if(journal && !e.simulatedCrash && journal.phase!=="committed") {
         try { this.publish(journal,"before"); this.cleanup(); throw e; }
@@ -233,11 +262,13 @@ class Store {
   recover(id,expected,action) {
     if(!["complete","restore"].includes(action))stop("invalid-input");
     let journal=this.loadJournal(expected,id);
-    this.acquire(true);
     try {
+      this.acquire(true);
       journal=this.loadJournal(expected,id); this.known(journal);
       if(action==="restore" && journal.phase==="committed")stop("recovery-needed");
       if(action==="complete")this.basis(journal.reads);
+      const set=this.unpack(action==="complete"?journal.candidate:journal.before);
+      const prepared=this.prepareResult("recover","recovered",set);
       this.fault("before-recovery");
       this.publish(journal,action==="complete"?"candidate":"before");
       if(action==="complete") {
@@ -246,8 +277,7 @@ class Store {
         journal.phase="committed"; this.saveJournal(journal);
       }
       this.fault("after-recovery");
-      const set=this.unpack(action==="complete"?journal.candidate:journal.before);
-      this.cleanup(); return {status:"recovered",set};
+      this.cleanup(); return prepared;
     } finally { this.release(); }
   }
 }
@@ -256,7 +286,7 @@ export function executeRecordStore({root,changeId,operation,request,transaction,
   const result=emptyRecordResult(operation,changeId); let store;
   try {
     if(!["inspect","check","record","recover"].includes(operation))stop("invalid-input");
-    if(request)validateRecordStoreRecord("request",request);
+    if(request)validateAdvancedRequest(request);
     store=new Store(root,changeId,options);
     let set;
     if(operation==="inspect") {
@@ -265,12 +295,11 @@ export function executeRecordStore({root,changeId,operation,request,transaction,
     } else if(operation==="check") {
       const snapshot=store.snapshot(); set=store.candidate(request,snapshot.set); result.status="valid";
     } else {
-      const saved=operation==="record"?store.record(request):store.recover(transaction,expectedRecovery,action);
-      set=saved.set; result.status=saved.status;
+      return operation==="record"?store.record(request):store.recover(transaction,expectedRecovery,action);
     }
     result.revision=revision(set); result.files=entries(set);
     if(operation!=="inspect")result.observations=store.observations(set);
-    validateRecordStoreRecord("result",result);
+    validateAdvancedResult(result);
   } catch(e) {
     const code=e.recordStoreCode??(e.code?"io-failure":String(e.message).includes("limit")?"limit-exceeded":"invalid-input");
     result.status=operation==="recover"? (code==="store-busy"?"busy":"recovery-required")

@@ -5,23 +5,6 @@ import { executeRecordStore } from "../packages/rigorloop/dist/lib/record-store.
 import { parseRecordStore, validateRecordStoreSet } from "../packages/rigorloop/dist/lib/record-store-contract.js";
 
 import { parseV2Record, validateV2Set } from "../packages/rigorloop/dist/lib/record-format-v2.js";
-import { RecordFiles } from "../packages/rigorloop/dist/lib/record-store-files.js";
-
-function liveV2Files(root, changeId) {
-  const reader=new RecordFiles(root), prefix=`docs/changes/${changeId}/`;
-  if(reader.read(prefix+"change.yaml")!==null) throw new Error();
-  const manifest=prefix+"change.json", files={[manifest]:reader.read(manifest)};
-  const change=parseV2Record("change",files[manifest]);
-  if(change.change_id!==changeId) throw new Error();
-  for(const record of change.records) files[record.path]=reader.read(record.path);
-  // Detect observed drift; this does not promise exclusion of external editors.
-  for(const [path,bytes] of Object.entries(files)) {
-    const current=reader.read(path);
-    if(bytes===null || current===null || !bytes.equals(current)) throw new Error();
-  }
-  if(reader.read(prefix+"change.yaml")!==null) throw new Error();
-  return files;
-}
 
 function snapshotFiles(root, changeId, revision, v2) {
   if (!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(revision)) throw new Error();
@@ -60,13 +43,10 @@ try {
   const changeId = basename(changeDirectory);
   let files;
   if (snapshot) files = snapshotFiles(dirname(docs), changeId, process.argv[4], v2);
-  else if(v2) files=liveV2Files(dirname(docs),changeId);
   else {
-    if(new RecordFiles(dirname(docs)).read(`docs/changes/${changeId}/change.json`)!==null) throw new Error();
     const result = executeRecordStore({ root: dirname(docs), changeId, operation: "inspect" });
-    if (result.status !== "inspected" || result.revision === null) throw new Error();
+    if (result.status !== "inspected" || result.revision === null || !result.files.some(file=>file.path===`docs/changes/${changeId}/${basename(path)}`)) throw new Error();
     files = Object.fromEntries(result.snapshot.records.map(record => [record.path, record.content]));
-    if(new RecordFiles(dirname(docs)).read(`docs/changes/${changeId}/change.json`)!==null) throw new Error();
   }
   (v2?validateV2Set:validateRecordStoreSet)(changeId, files);
   process.stdout.write("Explicit recording structure and references valid; no readiness judgment.\n");
