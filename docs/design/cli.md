@@ -46,10 +46,12 @@ The public documentation calls stored data the **RigorLoop Record Format**. The 
 
 | Surface | Existing or designed discriminator | Contract owner |
 | --- | --- | --- |
-| Stored records | Compatibility: explicit-recording-v1 / schema_version 1. Prospective successor: rigorloop-records-v2 / schema_version 2. | Workflow owns fields/meaning; CLI owns encoding and safety |
+| Stored records | Selected prospective design: rigorloop-records-v2 / schema_version 2. Retained compatibility: explicit-recording-v1 / schema_version 1. | Workflow owns the [complete stored-record definition](workflow.md#explicit-record-schema); CLI owns encoding and safety |
 | Primary targeted requests | `interface: targeted-recording-v1`, `schema_version: 1` | CLI targeted request definitions |
 | Primary query/mutation results | `schema_version: 2`, operation-specific tagged result | CLI primary result definitions |
 | Advanced record-store requests/results | Compatibility request/result schema 1; prospective v2 request explicitly selects rigorloop-records-v2 and retains the advanced result schema | CLI advanced definitions |
+
+The model-document validation marker at the top of this file versions document structure only. It does not select a stored format. Stored schema versions, primary transport versions and advanced transport versions are independent; commands dispatch on the explicit contract and the version rules of their own surface.
 
 The existing [machine-readable schema](../../schemas/explicit-recording-v1.schema.json) includes stored types and advanced transport definitions. It does not yet implement the designed targeted request/result schemas or successor stored format. Schema linkage is structural evidence, not a claim that the primary commands are published or implemented.
 

@@ -110,7 +110,16 @@ These placements preserve distinct responsibilities under the `explicit-recordin
 
 ### Record model
 
-**RigorLoop Record Format** is the public name used here for the stored-record contract. The existing `explicit-recording-v1` discriminator and schema_version 1 remain the compatibility format. The selected prospective v2 refinement below adds retained concern origin under its own discriminator; a clearer document name alone changes no serialized values.
+**RigorLoop Record Format v2** is the selected prospective stored-record design. Its complete record layouts are defined below, with `contract: rigorloop-records-v2` in change.yaml and `schema_version: 2` in every record. This is a data-format contract: it defines stored fields, relationships and preservation invariants. It does not select a workflow stage or version the CLI command interface.
+
+| Versioned surface | Identifier | Meaning |
+| --- | --- | --- |
+| Selected stored-record design | `rigorloop-records-v2`, stored schema_version 2 | Complete current design, including immutable concern origin |
+| Retained compatibility format | `explicit-recording-v1`, stored schema_version 1 | Existing schema, without the v2 origin guarantee |
+| Model-document validation | `Model validation contract: explicit-recording-v1` | Document structure checked by the model validator; not the selected stored-record version |
+| Primary CLI transport | `targeted-recording-v1`, request schema_version 1, result schema_version 2 | Transient requests and receipts, defined by the CLI model |
+
+Version numbers belong to their own surface. A targeted request with schema_version 1 can explicitly select rigorloop-records-v2; its request version does not change the stored version. The document-validation marker remains unchanged for validator compatibility. Its reuse of the older identifier does not make this document's selected record format v1. The successor remains a design until coordinated implementation and adoption.
 
 The change record is the registry and coordination entry point. It contains activity, work and change-level blockers; it references the proposal, affected models and optional plan. Its registry identifies supporting records, each with an explicitly declared applicability entry. Review findings belong to their containing review. Reviews and evidence name exact engineering subjects; those subject identities do not become automatically current when files change.
 
@@ -141,7 +150,7 @@ flowchart TB
 
 This conceptual view illustrates WF-SR-02/03/05/08/12/13; it is not a second schema. Subjects may also include implementation and other proof inputs admitted by the exact Subject type. Supporting records are conditional, and their arrows do not imply that every record must exist before a correction can be saved.
 
-| Stored record | Semantic responsibility | Definition in the [existing JSON Schema](../../schemas/explicit-recording-v1.schema.json) |
+| Stored record | Semantic responsibility | Compatibility definition in the [existing v1 JSON Schema](../../schemas/explicit-recording-v1.schema.json) |
 | --- | --- | --- |
 | Change | Recorded coordination, work, blockers, registry and applicability | `$defs.change` |
 | Review | Independent judgment, exact subjects and review-scoped findings | `$defs.review` |
@@ -153,19 +162,19 @@ Workflow owns the field meanings and cross-record obligations below. The JSON Sc
 
 ### Explicit record schema
 
-WF-SR-02/03/05/08 own this schema. Every object is closed: only listed fields are admitted, all fields are required unless marked optional, and duplicate keys or IDs are invalid. Empty arrays represent no entries; there are no inferred defaults. IDs use lowercase letters, digits and hyphens, start with a letter or digit, and contain 1–80 characters. Change IDs follow the same grammar. Paths are repository-relative and subject to CLI containment rules. A digest is `sha256:` followed by 64 lowercase hexadecimal digits.
+WF-SR-02/03/05/06/08 own this stored-record definition. The table defines v2 directly; the compatibility subsection below defines the retained v1 differences. It is not a CLI request schema. Every object is closed: only listed fields are admitted, all fields are required unless marked optional, and duplicate keys or IDs are invalid. Empty arrays represent no entries; there are no inferred defaults. IDs use lowercase letters, digits and hyphens, start with a letter or digit, and contain 1–80 characters. Change IDs follow the same grammar. Paths are repository-relative and subject to CLI containment rules. A digest is `sha256:` followed by 64 lowercase hexadecimal digits.
 
 Common types are `Subject = {path, identity}` and `Actor = {id, role}`. `identity` is a digest of exact file bytes; `role` is one of `human`, `proposal`, `design`, `plan`, `review`, `route`, `implement`, `verify`, `support`. A reference to a record entry is `{path, id}`; it identifies the entry, not a claim about freshness. Narrative fields are nonempty strings. IDs are unique within their containing array. Referenced subject files may have changed or disappeared; those are observations, unlike a dangling reference to an entry inside the candidate record set.
 
 | Record | Exact structured fields |
 | --- | --- |
-| `change.yaml` | `schema_version: 1`, `contract: explicit-recording-v1`, `change_id`, `proposal: Subject`, `models: [{id, subject: Subject}]`, `activity: {stage, status, owner: Actor, reason}`, `plan: Subject or null`, `work: [{id, status, owner: Actor, requirement_refs: [string]}]`, `records: [{path, kind}]`, `applicability: [{path, value, actor: Actor, reason}]`, `blockers: [Blocker]` |
-| `reviews/<review-id>.md` metadata | `schema_version: 1`, `change_id`, `id`, `target`, `reviewer: Actor`, `contributors: [Actor]`, `independence_basis`, `subjects: [Subject]`, `judgment`, `findings: [Blocker]` |
-| `evidence.yaml` | `schema_version: 1`, `change_id`, `checks: [{id, actor: Actor, subjects: [Subject], result, procedure, summary}]` |
-| `material-decisions.md` metadata | `schema_version: 1`, `change_id`, `decisions: [{id, actor: Actor, subjects: [Subject], rationale, source_refs: [EntryRef]}]` |
-| `verify-report.md` metadata | `schema_version: 1`, `change_id`, `verifier: Actor`, `subjects: [Subject]`, `evidence_refs: [EntryRef]`, `review_refs: [EntryRef]`, `outcome: success` |
+| `change.yaml` | `schema_version: 2`, `contract: rigorloop-records-v2`, `change_id`, `proposal: Subject`, `models: [{id, subject: Subject}]`, `activity: {stage, status, owner: Actor, reason}`, `plan: Subject or null`, `work: [{id, status, owner: Actor, requirement_refs: [string]}]`, `records: [{path, kind}]`, `applicability: [{path, value, actor: Actor, reason}]`, `blockers: [Concern]` |
+| `reviews/<review-id>.md` metadata | `schema_version: 2`, `change_id`, `id`, `target`, `reviewer: Actor`, `contributors: [Actor]`, `independence_basis`, `subjects: [Subject]`, `judgment`, `findings: [Concern]` |
+| `evidence.yaml` | `schema_version: 2`, `change_id`, `checks: [{id, actor: Actor, subjects: [Subject], result, procedure, summary}]` |
+| `material-decisions.md` metadata | `schema_version: 2`, `change_id`, `decisions: [{id, actor: Actor, subjects: [Subject], rationale, source_refs: [EntryRef]}]` |
+| `verify-report.md` metadata | `schema_version: 2`, `change_id`, `verifier: Actor`, `subjects: [Subject]`, `evidence_refs: [EntryRef]`, `review_refs: [EntryRef]`, `outcome: success` |
 
-`Blocker` has exactly `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution}`. `reporter` identifies the actor responsible for disposition assessment and `owner` identifies who must perform correction; these are deliberately distinct. `state` is `open`, `resolved` or `deferred`; `resolution` is null for open work or `{actor: Actor, rationale, evidence_refs: [EntryRef]}` otherwise. The CLI checks this representation, not whether the resolution is justified. An empty evidence-reference array is valid for a reasoned disposition but does not prove the disposition adequate. Review-record blockers are findings; change-record blockers allow any stage to record a defect without inventing a review.
+`Concern` has exactly `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution, origin: Origin}`. Origin and its immutable preservation rules are defined below. `reporter` identifies the actor responsible for disposition assessment and `owner` identifies who must perform correction; these are deliberately distinct. `state` is `open`, `resolved` or `deferred`; `resolution` is null for open work or `{actor: Actor, rationale, evidence_refs: [EntryRef]}` otherwise. The CLI checks this representation, not whether the resolution is justified. An empty evidence-reference array is valid for a reasoned disposition but does not prove the disposition adequate. Review-record blockers are findings; change-record blockers allow any stage to record a defect without inventing a review.
 
 `stage` is `proposal`, `proposal-review`, `design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, `verify` or `support`. `status` is `pending`, `in-progress`, `blocked`, `ready`, `completed` or `cancelled`. These are labels, not a transition graph: any well-formed old/new label pair is recordable. `target` is `proposal`, `design`, `delivery` or `code`; `judgment` is `approved`, `changes-requested`, `blocked` or `inconclusive`. Evidence `result` is `passed`, `failed` or `inconclusive`. Applicability `value` is `current`, `stale` or `not-applicable`. Record `kind` is `review`, `evidence`, `decisions` or `verify`.
 
@@ -179,11 +188,11 @@ The finding itself retains enough origin basis for the next actor to understand 
 
 #### Selected record-format revision
 
-The prospective successor is **RigorLoop Record Format v2**, identified by `contract: rigorloop-records-v2` in the change record and `schema_version: 2` in each stored record. The v1 record table above remains the compatibility definition. In v2 every record retains that table's fields and meanings, except its schema version and the change contract, and every review finding or change-level blocker uses `Concern` in place of `Blocker`. No review assessment array or current pointer is added. The existing published v1 schema and implementation remain unchanged until this revision is implemented and adopted.
+The v2 record table above and the types below form one stored-format definition. Every review finding and change-level blocker carries its own origin; no review assessment array or current pointer is added. The existing v1 schema and implementation remain unchanged by this design document.
 
 | Type | Exact shape |
 | --- | --- |
-| Concern | All existing Blocker fields plus `origin: Origin` |
+| Concern | `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution, origin: Origin}` |
 | Origin | `{reporter: Actor, subjects: [Subject], evidence, required_outcome, rationale, supporting_judgment: JudgmentBasis or null}` |
 | JudgmentBasis | `{reviewer: Actor, contributors: [Actor], independence_basis, subjects: [Subject], judgment, rationale}` |
 
@@ -221,6 +230,17 @@ flowchart LR
 The middle row is recordable but does not establish justified progression. This example illustrates WF-SR-03/06/08/13; a saved later approval never disposes the finding automatically.
 
 #### Compatibility and adoption
+
+The retained v1 format has exactly the same record layouts, common types, closed vocabularies and reference rules except for these differences:
+
+| Stored component | V1 compatibility | V2 selected design |
+| --- | --- | --- |
+| change.yaml discriminator | `contract: explicit-recording-v1` | `contract: rigorloop-records-v2` |
+| Every record's schema_version | `1` | `2` |
+| Review findings and change blockers | `Blocker = {id, reporter, owner, subjects, evidence, required_outcome, state, resolution}` | `Concern`, including required immutable origin |
+| Original concern basis | No separate retained origin field | Required Origin; supporting_judgment explicitly null or complete JudgmentBasis |
+
+The [existing v1 schema](../../schemas/explicit-recording-v1.schema.json) is the machine-readable compatibility definition, not an implementation of v2. Delivery must supply the corresponding v2 schema and validator dispatch; renaming the existing schema would not implement the new invariant.
 
 New roots explicitly select either the retained v1 contract or rigorloop-records-v2; no command guesses the version. V2 records all carry schema_version 2, and mixed record versions inside one change reject structurally. An existing v1 root stays v1 and is never upgraded by recording a finding. V1 concern reads identify that retained origin is unavailable rather than synthesizing it from a current review. No v2 retention guarantee is claimed for v1 data. V1 fields and operations remain available under their unchanged compatibility rules.
 
@@ -330,7 +350,7 @@ Required consumer/safety dependencies cannot be deferred beyond adoption; Delive
 
 WF-SR-10 selects new changes only for the first version. No in-place migration, contract-field rewrite or bulk document deletion is supported. Existing changes continue through their exact historical handlers; defects in those handlers remain separately owned. Neither earlier proposal is automatically closed or superseded.
 
-Coherent adoption requires approved governing amendments, the matching model documents, recording schemas and CLI, stage guidance, validators, templates and supported adapter output to agree. The adopting delivery package must enumerate these surfaces and evidence of their agreement. A new root is created only by an explicitly requested `explicit-recording-v1` record operation after that adoption; there is no background conversion or silently changed default for historical roots. Drafting these files does not satisfy adoption.
+Coherent adoption requires approved governing amendments, the matching model documents, recording schemas and CLI, stage guidance, validators, templates and supported adapter output to agree. The adopting delivery package must enumerate these surfaces and evidence of their agreement. A new root is created only by an explicit operation selecting its stored-record contract after the corresponding adoption; there is no background conversion or silently changed default for historical roots. Drafting these files does not satisfy adoption.
 
 Consolidation is incremental by model. Before a model document becomes authoritative for new work, its adoption decision must identify each displaced normative section, its replacement requirement/decision IDs and any deliberately retained external model contract. Earlier specs, architecture documents and ADRs remain readable under their historical contracts. New approvals cover the consolidated content; old approvals are not retargeted to it. Mixed historical/new references identify which contract owns each obligation, and conflicting authority blocks reliance until resolved.
 
