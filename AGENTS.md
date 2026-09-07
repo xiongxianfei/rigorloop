@@ -82,7 +82,6 @@ For an already-open PR, a user-authorized bounded CI repair may inspect the exac
 
 ## Plan file policy
 
-- `docs/roadmap.md` stores future ideas and unapproved work.
 - `docs/plan.md` is a navigation index to plan bodies and owning change records. It does not own active, blocked, milestone, review, or next-stage state.
 - `docs/plan-archive.md` stores older historical plan references. Do not infer current lifecycle state from it.
 - Concrete plan files under `docs/plans/` are the plan bodies that carry initiative detail.
