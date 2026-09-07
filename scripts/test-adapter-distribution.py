@@ -152,6 +152,21 @@ class AdapterDistributionTests(unittest.TestCase):
                             )
                             self.assertIn(expected_path, package_bytes)
 
+    def test_targeted_profiles_match_canonical_in_every_supported_archive(self) -> None:
+        names = ("proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "route", "verify", "bugfix", "ci-maintenance", "pr", "research", "explore", "learn")
+        with tempfile.TemporaryDirectory(prefix="targeted-archives-") as temporary:
+            output = Path(temporary)
+            build_adapter_archives("v0.5.1", output)
+            self.assertEqual(validate_adapter_archives("v0.5.1", output), [])
+            for adapter in SUPPORTED_ADAPTERS:
+                with zipfile.ZipFile(output / adapter_archive_name(adapter, "v0.5.1")) as archive:
+                    for name in names:
+                        canonical = (ROOT / "skills" / name / "SKILL.md").read_text().split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
+                        body = archive.read(ADAPTERS[adapter].skill_path(name).as_posix()).decode()
+                        self.assertEqual(body.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0], canonical)
+                        self.assertIn("subject inspect", canonical)
+                        self.assertNotIn("record-store check|record", canonical)
+
     def test_v0_5_1_bundled_candidate_metadata_matches_generated_route_only_archives(self) -> None:
         version = "v0.5.1"
         bundled = json.loads(

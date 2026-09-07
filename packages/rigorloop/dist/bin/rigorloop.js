@@ -17,6 +17,9 @@ import { isInvocationId } from "../lib/diagnostic-event.js";
 import { findInvocationEvents } from "../lib/log-inspection.js";
 import { renderResult, RESULT_FORMATS } from "../lib/result-renderer.js";
 
+const RECORDING_FAMILIES = new Set(["status","context","subject","change","activity","work","review","finding","blocker","evidence","applicability","decision","decisions","verify","observations","batch"]);
+const isRecordingCommand = argv => RECORDING_FAMILIES.has(argv[0]);
+
 const LOCKFILE_PATH = "rigorloop.lock";
 let activeOutput = {};
 
@@ -151,6 +154,13 @@ Usage:
   rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
   rigorloop workflow-context [--change <id>] [--format human|json]
+  rigorloop status --root PATH --change ID [--format text|json]
+  rigorloop context --root PATH --change ID --input - [--format text|json]
+  rigorloop subject inspect --root PATH --path FILE [--content none|full] [--format text|json]
+  rigorloop <record-kind> show [ID] --root PATH --change ID [--format text|json]
+  rigorloop <record-kind> add|set|record [ID] --root PATH --change ID --input - [--dry-run] [--format text|json]
+  rigorloop change create|link --root PATH --change ID --input - [--dry-run] [--format text|json]
+  rigorloop batch --root PATH --change ID --input - [--dry-run] [--format text|json]
   rigorloop record-store inspect --root PATH --change ID [--format text|json]
   rigorloop record-store check|record --root PATH --change ID --input - [--format text|json]
   rigorloop record-store recover --root PATH --change ID --transaction ID --expected-recovery DIGEST --action restore|complete [--format text|json]
@@ -168,7 +178,9 @@ Commands:
                           Initialize verified target support.
   new-change              Plan a change metadata scaffold.
   workflow-context        Report read-only project or exact-change workflow facts.
-  record-store            Read, check, save or recover explicit-recording-v1 records; storage only.
+  status/context/show     Inspect explicitly selected recorded information; storage only.
+  add/set/record/batch     Record explicit actor decisions; use per-command --help for exact selectors.
+  record-store            Advanced inspection, replacement and recovery for v1/v2 records; storage only.
   compact                 Project, apply, or recover the compact current-state contract.
   lifecycle               Inspect, validate, and perform guarded governed lifecycle operations.
   logs                    Show the local log path or inspect one exact invocation.
@@ -2341,6 +2353,13 @@ async function handleInit(flags, initArgs = []) {
 
 async function dispatchMain(rawArgs, invocation) {
   try {
+    if (isRecordingCommand(rawArgs)) {
+      const {executeRecordingCli} = await import("../lib/recording-cli.js");
+      const execution = executeRecordingCli(rawArgs, invocation.recordStoreOptions);
+      activeOutput.terminalClass = execution.exitCode === 0 ? "success" : "expected-rejection";
+      activeOutput.deferredRender = () => ({stdout: execution.format === "json" ? execution.json : execution.human, stderr: ""});
+      return execution.exitCode;
+    }
     // Contract-separated explicit recording; no lifecycle transition evaluator.
     if (rawArgs[0] === "record-store") {
       const { executeRecordStoreCli } = await import("../lib/record-store-cli.js");
@@ -2433,7 +2452,7 @@ export async function main(rawArgs = process.argv.slice(2), invocation = {}) {
 
 if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const rawArgs = process.argv.slice(2);
-  if (rawArgs[0] === "record-store") {
+  if (rawArgs[0] === "record-store" || isRecordingCommand(rawArgs)) {
     // The recorder owns its complete grammar and result envelope. Historical
     // logging flags and environment must not consume or replace either.
     const execution = await main(rawArgs);
@@ -2445,7 +2464,7 @@ if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.me
     process.exitCode = await runObservedCli(rawArgs, (args, invocation) =>
       // Logging preprocessing cannot turn a historical invocation into a
       // recorder invocation by removing leading flags.
-      main(args[0] === "record-store" ? ["record-store", ...rawArgs] : args, invocation),
+      main(args[0] === "record-store" ? ["record-store", ...rawArgs] : isRecordingCommand(args) ? [args[0], ...rawArgs] : args, invocation),
     { cliVersion: packageInfo().version });
   }
 }

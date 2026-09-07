@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "contract": "explicit-recording-v1",
+  "change_id": "2026-09-07-targeted-recording-primary-cli",
+  "proposal": {
+    "path": "docs/proposals/2026-09-07-targeted-recording-primary-cli.md",
+    "identity": "sha256:8200c3145bbdbe929be893c7fdd9327a829308084a31efe25d96a032b9b4f0c4"
+  },
+  "models": [
+    {
+      "id": "workflow",
+      "subject": {
+        "path": "docs/design/workflow/workflow.md",
+        "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "path": "docs/design/cli/cli.md",
+        "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+      }
+    },
+    {
+      "id": "record-format",
+      "subject": {
+        "path": "docs/design/record-format/record-format.md",
+        "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+      }
+    }
+  ],
+  "activity": {"owner":{"id":"codex-root","role":"verify"},"reason":"Route records successful refreshed final verification after full-PR corrections and independent reassessment. All in-scope implementation complete. User authorized PR handoff; release/publication/customer activation remain separately authorized.","stage":"verify","status":"completed"},
+  "plan": {
+    "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+    "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+  },
+  "work": [
+    {
+      "id": "m1",
+      "status": "completed",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-01",
+        "RF-SR-02",
+        "RF-SR-06",
+        "RF-SR-08",
+        "CLI-SR-02",
+        "CLI-SR-09",
+        "CLI-SR-10"
+      ]
+    },
+    {
+      "id": "m2",
+      "status": "completed",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-02",
+        "RF-SR-04",
+        "RF-SR-06",
+        "RF-SR-08",
+        "CLI-SR-02",
+        "CLI-SR-04",
+        "CLI-SR-05",
+        "CLI-SR-06",
+        "CLI-SR-08",
+        "CLI-SR-09",
+        "CLI-SR-10"
+      ]
+    },
+    {
+      "id": "m3",
+      "status": "completed",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-07",
+        "WF-SR-14",
+        "WF-SR-15",
+        "CLI-SR-01",
+        "CLI-SR-14",
+        "CLI-SR-17",
+        "CLI-SR-19",
+        "CLI-SR-20",
+        "CLI-SR-21",
+        "CLI-SR-22"
+      ]
+    },
+    {
+      "id": "m4",
+      "status": "completed",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "CLI-SR-03",
+        "CLI-SR-07",
+        "CLI-SR-11",
+        "CLI-SR-12",
+        "CLI-SR-13",
+        "CLI-SR-15",
+        "CLI-SR-16",
+        "CLI-SR-17",
+        "RF-SR-03",
+        "RF-SR-04",
+        "RF-SR-05",
+        "WF-SR-01",
+        "WF-SR-02",
+        "WF-SR-04",
+        "WF-SR-05",
+        "WF-SR-06",
+        "WF-SR-12",
+        "WF-SR-13"
+      ]
+    },
+    {
+      "id": "m5",
+      "status": "completed",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "CLI-SR-18",
+        "RF-SR-06",
+        "RF-SR-08",
+        "WF-SR-03",
+        "WF-SR-07",
+        "WF-SR-08",
+        "WF-SR-09",
+        "WF-SR-10",
+        "WF-SR-11"
+      ]
+    }
+  ],
+  "records": [
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/delivery-review.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m1.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/evidence.yaml",
+      "kind": "evidence"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m2.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m3.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m4.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m5.md",
+      "kind": "review"
+    }
+  ,{"kind":"review","path":"docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review.md"},{"kind":"verify","path":"docs/changes/2026-09-07-targeted-recording-primary-cli/verify-report.md"}],
+  "applicability": [
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
+      "value": "current",
+      "actor": {
+        "id": "record-format-rereview",
+        "role": "review"
+      },
+      "reason": "Independent rereview approves the exact current three-model package after ownership and v2 EntryRef refinement; no open findings. rf-dr-001 original basis and resolved disposition remain preserved."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",
+      "value": "current",
+      "actor": {
+        "id": "codex-root",
+        "role": "design"
+      },
+      "reason": "The original approved proposal judgment is preserved and its exact reviewed proposal identity is unchanged; relocation adds no new approval."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/delivery-review.md",
+      "value": "current",
+      "actor": {
+        "id": "delivery-reliance-review",
+        "role": "review"
+      },
+      "reason": "Independent current Delivery reassessment of exact unchanged plan/models and current separately attributed Design classification; DP-01/02/03 retained resolved. No implementation or Verify claim."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m1.md",
+      "value": "stale",
+      "actor": {
+        "id": "codex-root",
+        "role": "route"
+      },
+      "reason": "Retained historical increment review; later implementation and evidence changed assessed subjects. Final whole-change Code Review must assess current integrated subjects; original review is not rewritten."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m2.md",
+      "value": "stale",
+      "actor": {
+        "id": "codex-root",
+        "role": "route"
+      },
+      "reason": "Retained historical increment review; later implementation and evidence changed assessed subjects. Final whole-change Code Review must assess current integrated subjects; original review is not rewritten."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m3.md",
+      "value": "stale",
+      "actor": {
+        "id": "codex-root",
+        "role": "route"
+      },
+      "reason": "Retained historical increment review; later implementation and evidence changed assessed subjects. Final whole-change Code Review must assess current integrated subjects; original review is not rewritten."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m4.md",
+      "value": "stale",
+      "actor": {
+        "id": "codex-root",
+        "role": "route"
+      },
+      "reason": "Retained historical increment review; later implementation and evidence changed assessed subjects. Final whole-change Code Review must assess current integrated subjects; original review is not rewritten."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m5.md",
+      "value": "stale",
+      "actor": {"id":"codex-root","role":"route"},
+      "reason": "M5 increment code remains unchanged, but its reviewed aggregate evidence file gained final checks. Preserve original subjects; final Code Review supplies current integrated assessment."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/evidence.yaml",
+      "value": "current",
+      "actor": {"id":"codex-root","role":"verify"},
+      "reason": "Current final evidence explicitly supports this exact implementation and basis. Retained earlier check entries describe historical increments; no old subject is rewritten."
+    }
+  ,{"actor":{"id":"final-code-review","role":"review"},"path":"docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review.md","reason":"Independent bounded PR CI correction rereview confirms exact historical compact-spec restoration changes no approved Design/Delivery meaning; current full PR-mode local gates pass against these exact subjects. Prior assessments remain historical and no hosted result is inferred.","value":"current"},{"actor":{"id":"codex-root","role":"verify"},"path":"docs/changes/2026-09-07-targeted-recording-primary-cli/verify-report.md","reason":"Fresh successful assessment of complete tested PR range, independent resolved final review and exact current subject identities; prior Verify was explicitly stale before correction.","value":"current"}],
+  "blockers": []
+}

@@ -19,7 +19,7 @@ Activation record identity: specs/boundary-first-activation.yaml
 
 ## Goal and context
 
-Prospective model documents explicitly marked `Model validation contract: explicit-recording-v1` use the [Workflow-owned model validation and proof mapping](../docs/design/workflow.md#model-validation-and-proof-mapping), not this feature-document serialization. That mapping retains the eight reasoning dimensions, requirement ownership, plan-owned proof allocation and independent semantic assessment without extra boundary/test-spec files. Model structural checks do not activate a lifecycle contract. Historical feature-format and activation rules remain unchanged; the mapping clarifies the structural-reporting and Design Review handoff for grandfathered amendments under PBF-R049b/PBF-R055a/PBF-R056.
+Prospective model documents explicitly marked `Model validation contract: explicit-recording-v1` use the [Workflow-owned model validation and proof mapping](../docs/design/workflow/workflow.md#model-validation-and-proof-mapping), not this feature-document serialization. That mapping retains the eight reasoning dimensions, requirement ownership, plan-owned proof allocation and independent semantic assessment without extra boundary/test-spec files. Model structural checks do not activate a lifecycle contract. Historical feature-format and activation rules remain unchanged; the mapping clarifies the structural-reporting and Design Review handoff for grandfathered amendments under PBF-R049b/PBF-R055a/PBF-R056.
 
 This spec defines a portable boundary-first contract for behavior-changing
 feature specs, test specs, plans, implementation, review, and verification.

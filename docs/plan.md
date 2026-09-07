@@ -25,6 +25,7 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [2026-09-07 Targeted Recording and Record Format v2](plans/2026-09-07-targeted-recording-primary-cli.md) — [owning change](changes/2026-09-07-targeted-recording-primary-cli/change.yaml)
 - [2026-09-05 Explicit Recording and Model-Centered Design](plans/2026-09-05-explicit-recording-and-model-centered-design.md)
 - [2026-09-03 Compact Current-State Change Record](plans/2026-09-03-compact-current-state-change-record.md)
 - [2026-09-03 Relax PR Evidence Tail Topology](plans/2026-09-03-relax-pr-evidence-tail.md)

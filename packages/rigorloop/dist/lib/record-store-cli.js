@@ -1,6 +1,6 @@
 import { readSync } from "node:fs";
 import { executeRecordStore, emptyRecordResult } from "./record-store.js";
-import { parseRecordStore } from "./record-store-contract.js";
+import { parseAdvancedRequest } from "./record-store-format.js";
 import { MIB } from "./record-store-files.js";
 
 const OPERATIONS = ["inspect","check","record","recover"];
@@ -54,7 +54,7 @@ export function executeRecordStoreCli(args,options={}) {
   if(selected.invalid)result.errors=[{code:"invalid-input",path:null,message:"Invalid record-store arguments."}];
   else {
     try {
-      const request=["record","check"].includes(selected.operation)?parseRecordStore("request",options.input??(options.readInput??input)()):undefined;
+      const request=["record","check"].includes(selected.operation)?parseAdvancedRequest(options.input??(options.readInput??input)()):undefined;
       result=executeRecordStore({...selected,request},options);
     } catch(e) {
       const code=e.recordStoreCode??(e.code?"io-failure":String(e.message).includes("limit")?"limit-exceeded":"invalid-input");

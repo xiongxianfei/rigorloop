@@ -6989,6 +6989,16 @@ class VerifySkillSimplificationContractTests(unittest.TestCase):
             self.assertIn(phrase, self.skill)
 
 
+def historical_profile_body(text: str) -> str:
+    """Keep historical size claims scoped to their original profile.
+
+    The separately adopted recording profile is measured by TG-08, including
+    its complete loaded guidance; it must not rewrite historical measurements.
+    """
+    return re.sub(r"\n## Explicit recording\n.*?(?=^## |\Z)", "", text,
+                  flags=re.MULTILINE | re.DOTALL)
+
+
 class PRSkillSimplificationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.root = ROOT / "skills" / "pr"
@@ -7166,7 +7176,7 @@ class PRSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase, self.skill)
 
     def test_portable_and_governed_profiles_both_decrease(self) -> None:
-        skill_bytes = self.skill.encode("utf-8")
+        skill_bytes = historical_profile_body(self.skill).encode("utf-8")
         reference_bytes = self.reference.encode("utf-8")
         profiles = {
             "PR0-portable": skill_bytes,
@@ -7793,7 +7803,7 @@ class LearnSkillSimplificationTests(unittest.TestCase):
             self.assertIn(claim.lower(), self.skill.lower())
 
     def test_real_profiles_decrease_from_flat_baseline(self) -> None:
-        skill = self.skill.encode("utf-8")
+        skill = historical_profile_body(self.skill).encode("utf-8")
         method = self.method.encode("utf-8")
         for name, assembled in {"LR0": skill, "LR1": skill + method}.items():
             with self.subTest(profile=name):
@@ -8109,7 +8119,7 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
     def test_flat_package_and_truthful_size_reporting(self) -> None:
         files = sorted(path.relative_to(self.skill_dir).as_posix() for path in self.skill_dir.rglob("*") if path.is_file())
         self.assertEqual(files, ["SKILL.md"])
-        normalized = self.skill.replace("\r\n", "\n").replace("\r", "\n")
+        normalized = historical_profile_body(self.skill).replace("\r\n", "\n").replace("\r", "\n")
         self.assertGreater(len(normalized.split()), 0)
         self.assertGreater(len(normalized.encode("utf-8")), 0)
         self.assertIn("Counts are diagnostic", self.skill)
@@ -8969,15 +8979,24 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
 
 
 class ExplicitRecordingGuidanceTests(unittest.TestCase):
+    def test_targeted_profile_validator_rejects_retired_normal_writer(self):
+        from skill_validation import validate_targeted_recording_profile
+        path = ROOT / "skills/implement/SKILL.md"
+        text = path.read_text()
+        self.assertEqual(validate_targeted_recording_profile(path, text), [])
+        self.assertTrue(validate_targeted_recording_profile(path, text.replace("rigorloop context", "record-store check|record", 1)))
+
     def test_explicit_profiles_are_scoped_and_use_model_owned_records(self):
         # Structural reachability only; the independent M3 walkthrough owns semantics.
-        for skill in ("architecture", "spec", "route", "proposal", "proposal-review", "design-review", "plan", "delivery-review", "implement", "code-review", "verify"):
+        for skill in ("architecture", "spec", "route", "proposal", "proposal-review", "design-review", "plan", "delivery-review", "implement", "code-review", "verify", "bugfix", "ci-maintenance", "pr", "research", "explore", "learn"):
             with self.subTest(skill=skill):
                 text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
                 self.assertEqual(text.count("## Explicit recording\n"), 1)
                 block = text.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
-                for phrase in ("project has adopted", "explicit-recording-v1", "project's model documents", "historical", "expected identities", "does not approve", "record-store inspect", "Do not migrate"):
+                for phrase in ("project has adopted", "explicit-recording-v1", "project's model documents", "historical", "expected identities", "does not approve", "rigorloop-records-v2", "rigorloop context", "subject inspect", "targeted", "Do not migrate"):
                     self.assertIn(phrase, block)
+                self.assertNotIn("record-store check|record", block)
+                self.assertNotIn("explicit writes", block)
                 self.assertNotIn("templates/shared/", block)
                 self.assertNotIn("specs/rigorloop-workflow.md", block)
 

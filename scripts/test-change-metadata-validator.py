@@ -3145,6 +3145,15 @@ class ExplicitRecordingMetadataTests(unittest.TestCase):
         self.path.write_text(json.dumps(self.change if change is None else change) + "\n")
         return run_validator(self.path)
 
+    def test_recording_v2_manifest_dispatch_preserves_contract_and_unknown_value_rejects(self):
+        self.path = self.path.with_name("change.json")
+        f = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())
+        self.change = f["change"]
+        self.change.update(records=[], applicability=[], blockers=[])
+        self.assertEqual(self.check().returncode, 0)
+        self.change["contract"] = "unknown_value"
+        self.assertNotEqual(self.check().returncode, 0)
+
     def test_explicit_recording_metadata_accepts_structure_without_stage_eligibility(self):
         self.change["activity"]["status"] = "completed"
         self.assertEqual(self.check().returncode, 0)

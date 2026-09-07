@@ -13,8 +13,8 @@ This plan does not create lifecycle authority. Before implementation, establish 
 ## Source artifacts
 
 - Proposal: [Explicit Workflow Recording and Model-Centered Design](../proposals/2026-09-05-explicit-recording-and-model-centered-design.md).
-- Specification and architecture, combined by user-authorized exception: [Workflow model](../design/workflow.md) and [CLI model](../design/cli.md).
-- Design assessment: [independent advisory rereview](../reviews/explicit-recording-and-model-centered-design.md), including the resolved MODEL-DR-001 finding. This is not a formal Design Review ID.
+- Specification and architecture, combined by user-authorized exception: [Workflow model](../design/workflow/workflow.md) and [CLI model](../design/cli/cli.md).
+- Design assessment: The former outside-change assessment was removed at the user’s direction. This plan reference supplies no Design Review authority; use the owning change’s registered review records.
 - Prior-contract test spec: None; this is not a manifest-bound v1 continuation.
 - Governing repository rules: [Constitution](../../CONSTITUTION.md) and [AGENTS.md](../../AGENTS.md), unchanged by this plan.
 
@@ -120,7 +120,7 @@ The model requirement ID and named architectural boundary are the traceability k
   - TG-06 — Map every WF/CLI requirement and existing scenario row to these groups and concrete checks; cross-model references have one owner; overlapping features retain exact review subjects; adoption inventory identifies every changed source and retained historical contract. Validate affected skill resources and model references without creating sidecar engineering truth.
 - Evidence expectations: Automated record/skill fixtures plus a concise independent human/agent walkthrough of the exact changed guidance. A structural validator cannot establish actual reviewer independence or semantic adequacy.
 - Implementation steps: Expand inventory rows to exact affected files; update prospective guidance and mappings; run fixtures through M2 commands; record walkthrough evidence; resolve any contradiction at its owner before review.
-- Validation commands: `python scripts/validate-skills.py skills`; `python scripts/test-skill-validator.py`; `python scripts/test-boundary-first-validation.py`; `python scripts/validate-boundary-first.py --check --path docs/design/workflow.md --path docs/design/cli.md` after model-aware recognition exists; `npm --prefix packages/rigorloop test`; `git diff --check`.
+- Validation commands: `python scripts/validate-skills.py skills`; `python scripts/test-skill-validator.py`; `python scripts/test-boundary-first-validation.py`; `python scripts/validate-boundary-first.py --check --path docs/design/workflow/workflow.md --path docs/design/cli/cli.md --path docs/design/record-format/record-format.md` after model-aware recognition exists; `npm --prefix packages/rigorloop test`; `git diff --check`.
 - Expected observable result: A fresh actor can follow the new process using model files and explicit records, with no engine-driven stage decision and no public adoption yet.
 - Completion criteria: TG-05/06 proved; changed resources reconciled; no unresolved normative behavior gap hidden as a mapping task; independent Code Review.
 - Required evidence: Exact requirement/test mapping and walkthrough note identifying actor, fixture, actions, expected/observed records, review provenance and current source identities. Rerun when referenced guidance or commands change.

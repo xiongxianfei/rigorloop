@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -153,6 +154,60 @@ class NpmPackagePublicationTests(unittest.TestCase):
             invoke("record", bad, expected=2)
             self.assertEqual(manifest.read_bytes(), preserved)
         self.assertFalse((project / ".git").exists())
+        self.assert_primary_recording(binary, project)
+
+    def assert_primary_recording(self, binary: Path, project: Path) -> None:
+        package = binary.resolve().parents[2]
+        for relative, canonical in (
+            ("dist/templates/rigorloop-records-v2/records.json", "templates/rigorloop-records-v2/records.json"),
+            ("dist/schemas/rigorloop-records-v2.schema.json", "schemas/rigorloop-records-v2.schema.json"),
+            ("dist/schemas/targeted-recording-v1.schema.json", "schemas/targeted-recording-v1.schema.json"),
+        ):
+            self.assertEqual((package / relative).read_bytes(), (ROOT / canonical).read_bytes())
+        def invoke(words, data=None, expected=0, change="primary"):
+            args = [str(binary), *words, "--root", str(project), "--change", change, "--format", "json"]
+            if data is not None:
+                args.extend(["--input", "-"])
+            r = subprocess.run(args, cwd=project, input=None if data is None else json.dumps(data) + "\n",
+                               capture_output=True, text=True)
+            self.assertEqual(r.returncode, expected, r.stdout + r.stderr)
+            result = json.loads(r.stdout)
+            self.assertEqual(result["claim"], "storage-only")
+            return result
+        basis = project / "primary-basis.md"
+        basis.write_text("Installed-package decision basis.\n")
+        subject = {"path": basis.name, "identity": "sha256:" + hashlib.sha256(basis.read_bytes()).hexdigest()}
+        inspected = subprocess.run([str(binary), "subject", "inspect", "--root", str(project),
+                                    "--path", basis.name, "--content", "full", "--format", "json"],
+                                   cwd=project, capture_output=True, text=True)
+        self.assertEqual(inspected.returncode, 0, inspected.stdout + inspected.stderr)
+        self.assertEqual(json.loads(inspected.stdout)["data"]["subjects"], [subject])
+        actor = {"id": "tester", "role": "implement"}
+        operation = {"op": "change.create", "target": {}, "values": {
+            "proposal": subject, "models": [], "plan": None, "work": [], "blockers": [],
+            "activity": {"stage": "implement", "status": "in-progress", "owner": actor, "reason": "Explicit package fixture."}}}
+        request = {"schema_version": 1, "interface": "targeted-recording-v1", "contract": "rigorloop-records-v2",
+                   "change_id": "primary", "expected_revision": None, "reads": [subject], "operation": operation}
+        self.assertEqual(invoke(["change", "create"], request)["status"], "saved")
+        context = invoke(["context"], {"schema_version": 1, "select": [{"kind": "activity", "where": {}}]})
+        self.assertEqual(context["record_contract"], "rigorloop-records-v2")
+        request["expected_revision"] = context["revision"]
+        request["operation"] = {"op": "verify.record", "target": {}, "values": {
+            "verifier": {"id": "verifier", "role": "verify"}, "subjects": [], "evidence_refs": [], "review_refs": [],
+            "outcome": "success", "body": "Explicit installed-package explanation.\n"},
+            "applicability": {"value": "current", "actor": actor, "reason": "Explicit fixture declaration."}}
+        self.assertEqual(invoke(["verify", "record"], request)["status"], "saved")
+        self.assertEqual(invoke(["verify", "show"])["data"]["items"][0]["fields"]["body"],
+                         "Explicit installed-package explanation.\n")
+        self.assertTrue((project / "docs/changes/primary/change.json").is_file())
+        self.assertFalse((project / "docs/changes/primary/change.yaml").exists())
+        for unsupported in ("explicit-recording-v1", "unknown_value"):
+            bad = {**request, "contract": unsupported, "change_id": "absent", "expected_revision": None,
+                   "operation": operation}
+            invoke(["change", "create"], bad, expected=2, change="absent")
+            self.assertFalse((project / "docs/changes/absent").exists())
+        # The primary reader reports an existing v1 contract without migration.
+        self.assertEqual(invoke(["status"], change="example")["record_contract"], "explicit-recording-v1")
 
     def test_package_policy_rejects_lifecycle_scripts_and_runtime_dependencies(self) -> None:
         validate_package_policy(

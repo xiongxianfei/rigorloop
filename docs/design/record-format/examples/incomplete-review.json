@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "change_id": "example-change",
+  "id": "design-review",
+  "target": "design",
+  "reviewer": {
+    "id": "reviewer-a",
+    "role": "review"
+  },
+  "contributors": [
+    {
+      "id": "author-a",
+      "role": "design"
+    }
+  ],
+  "independence_basis": "Reviewer A authored none of the supplied design.",
+  "subjects": [],
+  "judgment": "inconclusive",
+  "findings": [],
+  "body": "The exact design package has not been supplied.\nThe reviewer needs its subjects before assessing coherence."
+}
