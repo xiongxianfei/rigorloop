@@ -11,21 +11,21 @@
       "id": "workflow",
       "subject": {
         "path": "docs/design/workflow.md",
-        "identity": "sha256:115e7e0857f16dc580aa6083c86773ebdc2ec91dab569a31e9ef532796e745c8"
+        "identity": "sha256:549a23341d37ac784a10ef3fb46ab977e330dcde76180b0da0cfc7ec08cf5444"
       }
     },
     {
       "id": "cli",
       "subject": {
         "path": "docs/design/cli.md",
-        "identity": "sha256:ffeb1bd910a2ea63fa96cf618a2bf3c2978526f114316af9d5a37495b8e509c4"
+        "identity": "sha256:131778a83144a3600b6a06a1b317513038aa3c9996dd0ffd7ebe817287a97047"
       }
     },
     {
       "id": "record-format",
       "subject": {
         "path": "docs/design/record-format.md",
-        "identity": "sha256:ec75b838464949029db9353995bf0fc69fabb3219ed1cc81d056a04b5e340782"
+        "identity": "sha256:12552374b9a8fd4d7d20d525bb9ddaee2275b5b452a74de0e9dcfd6a095c0b1f"
       }
     }
   ],
@@ -58,7 +58,7 @@
         "id": "codex-root",
         "role": "design"
       },
-      "reason": "Workflow and CLI model references were changed to the registered proposal-review path. Preserve the original review subjects and open rf-dr-001; current applicability needs reviewer reassessment of the changed exact package."
+      "reason": "The user directed v2 to use plain JSON records with body fields and .json paths. All three model references now name the revised exact subjects; the old review subjects and open rf-dr-001 remain unchanged pending independent rereview."
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",

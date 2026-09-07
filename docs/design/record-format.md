@@ -35,7 +35,7 @@ This model is a proposed contract, not an activated schema. The existing v1 sche
 
 ## Solution Strategy
 
-Use one explicit version per change and its registered records. Separate current concern fields and disposition from immutable origin. Store narrative alongside structured metadata, and retain exact subjects and explicit record-level applicability. Structural validation admits incomplete or contradictory workflow claims without endorsing them.
+Use one explicit version per change and its registered records. Separate current concern fields and disposition from immutable origin. Store narrative in explicit fields within the same JSON object, and retain exact subjects and explicit record-level applicability. Structural validation admits incomplete or contradictory workflow claims without endorsing them.
 
 The CLI constructs registry and serialization mechanically from explicit operations. This model owns what must survive those operations, independently of which supported write path performs them.
 
@@ -43,7 +43,7 @@ The CLI constructs registry and serialization mechanically from explicit operati
 
 | ID | Required behavior |
 | --- | --- |
-| RF-SR-01 | Every stored change MUST identify its contract and every record its schema version. The exact closed record/type definitions below MUST govern all supported writers and readers; unknown fields, vocabularies, versions and mixed-version stores MUST reject structurally. |
+| RF-SR-01 | Every stored change MUST identify its contract and every record its schema version. V2 records MUST be plain JSON objects at the listed .json paths, with narrative inside explicit string fields and no front matter or trailing Markdown. The exact closed record/type definitions below MUST govern all supported writers and readers; unknown fields, vocabularies, versions and mixed-version stores MUST reject structurally. |
 | RF-SR-02 | The manifest MUST enumerate all supporting authoritative records with matching kind/change identity and exactly one explicit record-level applicability declaration each. Internal entry references MUST resolve in the complete candidate; extra physical files MUST NOT become authority through discovery. |
 | RF-SR-03 | Records MUST preserve actor-supplied subjects, provenance, decisions and narrative without inferring approval, applicability or completion. Finding and blocker identity and disposition representation MUST retain the distinction between reporter and correction owner. |
 | RF-SR-04 | Each v2 concern MUST retain its complete immutable Origin for its lifetime, including after disposition. Current judgments or concern fields MUST NOT rewrite that basis; supporting judgment MUST be explicitly absent or embedded with its relevant rationale and provenance. |
@@ -58,7 +58,7 @@ These requirements realize Workflow's actor-owned recording and retained-basis o
 
 ### Record model
 
-**RigorLoop Record Format v2** is the selected prospective stored-record design. Its complete record layouts are defined below, with `contract: rigorloop-records-v2` in change.yaml and `schema_version: 2` in every record. This is a data-format contract: it defines stored fields, relationships and preservation invariants. It does not select a workflow stage or version the CLI command interface.
+**RigorLoop Record Format v2** is the selected prospective stored-record design. Its complete record layouts are defined below, with `contract: rigorloop-records-v2` in change.json and `schema_version: 2` in every record. This is a data-format contract: it defines stored fields, relationships and preservation invariants. It does not select a workflow stage or version the CLI command interface.
 
 | Versioned surface | Identifier | Meaning |
 | --- | --- | --- |
@@ -106,7 +106,7 @@ This conceptual view illustrates RF-SR-01/02/03; it is not a second schema. Subj
 | Material decisions | Rationale and source references that constrain work | `$defs.decisions` |
 | Verify report | Successful final assessment and supporting references | `$defs.verify` |
 
-This model owns stored field shapes, relationships and preservation invariants. The [Workflow model](workflow.md#requirements) owns the engineering meaning of decisions and the obligations for relying on them. The JSON Schema expresses structural shapes; the [CLI model](cli.md#advanced-candidate-update-contract) owns byte encoding, containment, identity computation and persistence. The schema file also contains advanced request/result definitions, which are transport contracts rather than additional stored record kinds. Markdown bodies provide actor-authored reasoning alongside structured metadata; metadata retains the declared status and identity meaning. Structural validity does not establish workflow readiness.
+This model owns stored field shapes, relationships and preservation invariants. The [Workflow model](workflow.md#requirements) owns the engineering meaning of decisions and the obligations for relying on them. The JSON Schema expresses structural shapes; the [CLI model](cli.md#advanced-candidate-update-contract) owns byte encoding, containment, identity computation and persistence. The schema file also contains advanced request/result definitions, which are transport contracts rather than additional stored record kinds. V2 stores one JSON object per file. Narrative is a string field in that object, not a separate Markdown document or front-matter section. Structural validity does not establish workflow readiness.
 
 ### Explicit record schema
 
@@ -116,19 +116,39 @@ Common types are `Subject = {path, identity}` and `Actor = {id, role}`. `identit
 
 | Record | Exact structured fields |
 | --- | --- |
-| `change.yaml` | `schema_version: 2`, `contract: rigorloop-records-v2`, `change_id`, `proposal: Subject`, `models: [{id, subject: Subject}]`, `activity: {stage, status, owner: Actor, reason}`, `plan: Subject or null`, `work: [{id, status, owner: Actor, requirement_refs: [string]}]`, `records: [{path, kind}]`, `applicability: [{path, value, actor: Actor, reason}]`, `blockers: [Concern]` |
-| `reviews/<review-id>.md` metadata | `schema_version: 2`, `change_id`, `id`, `target`, `reviewer: Actor`, `contributors: [Actor]`, `independence_basis`, `subjects: [Subject]`, `judgment`, `findings: [Concern]` |
-| `evidence.yaml` | `schema_version: 2`, `change_id`, `checks: [{id, actor: Actor, subjects: [Subject], result, procedure, summary}]` |
-| `material-decisions.md` metadata | `schema_version: 2`, `change_id`, `decisions: [{id, actor: Actor, subjects: [Subject], rationale, source_refs: [EntryRef]}]` |
-| `verify-report.md` metadata | `schema_version: 2`, `change_id`, `verifier: Actor`, `subjects: [Subject]`, `evidence_refs: [EntryRef]`, `review_refs: [EntryRef]`, `outcome: success` |
+| `change.json` | `schema_version: 2`, `contract: rigorloop-records-v2`, `change_id`, `proposal: Subject`, `models: [{id, subject: Subject}]`, `activity: {stage, status, owner: Actor, reason}`, `plan: Subject or null`, `work: [{id, status, owner: Actor, requirement_refs: [string]}]`, `records: [{path, kind}]`, `applicability: [{path, value, actor: Actor, reason}]`, `blockers: [Concern]` |
+| `reviews/<review-id>.json` | `schema_version: 2`, `change_id`, `id`, `target`, `reviewer: Actor`, `contributors: [Actor]`, `independence_basis`, `subjects: [Subject]`, `judgment`, `findings: [Concern]`, `body: string` |
+| `evidence.json` | `schema_version: 2`, `change_id`, `checks: [{id, actor: Actor, subjects: [Subject], result, procedure, summary}]` |
+| `material-decisions.json` | `schema_version: 2`, `change_id`, `decisions: [{id, actor: Actor, subjects: [Subject], rationale, source_refs: [EntryRef]}]`, `body: string` |
+| `verify-report.json` | `schema_version: 2`, `change_id`, `verifier: Actor`, `subjects: [Subject]`, `evidence_refs: [EntryRef]`, `review_refs: [EntryRef]`, `outcome: success`, `body: string` |
 
 `Concern` has exactly `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution, origin: Origin}`. Origin and its immutable preservation rules are defined below. `reporter` identifies the actor responsible for disposition assessment and `owner` identifies who must perform correction; these are deliberately distinct. `state` is `open`, `resolved` or `deferred`; `resolution` is null for open work or `{actor: Actor, rationale, evidence_refs: [EntryRef]}` otherwise. The CLI checks this representation, not whether the resolution is justified. An empty evidence-reference array is valid for a reasoned disposition but does not prove the disposition adequate. Review-record blockers are findings; change-record blockers allow any stage to record a defect without inventing a review.
 
 `stage` is `proposal`, `proposal-review`, `design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, `verify` or `support`. `status` is `pending`, `in-progress`, `blocked`, `ready`, `completed` or `cancelled`. These are labels, not a transition graph: any well-formed old/new label pair is recordable. `target` is `proposal`, `design`, `delivery` or `code`; `judgment` is `approved`, `changes-requested`, `blocked` or `inconclusive`. Evidence `result` is `passed`, `failed` or `inconclusive`. Applicability `value` is `current`, `stale` or `not-applicable`. Record `kind` is `review`, `evidence`, `decisions` or `verify`.
 
-The `records` array declares every supporting authoritative record for this change; `change.yaml` is implicit. Each declared record must exist in the candidate set and have the matching kind and change identity. Each supporting record has exactly one explicit applicability entry in `change.yaml`. Extra physical files are not discovered as authority. A new supporting record and its registry/applicability entries are published together. The targeted command constructs registry bookkeeping, but the requesting actor explicitly supplies applicability value, actor and reason. Applicability remains at supporting-record level; individual checks or findings do not acquire a separate applicability field. These are referential checks, not review prerequisites.
+The `records` array declares every supporting authoritative record for this change; `change.json` is implicit. Each declared record must exist in the candidate set and have the matching kind and change identity. Each supporting record has exactly one explicit applicability entry in `change.json`. Extra physical files are not discovered as authority. A new supporting record and its registry/applicability entries are published together. The targeted command constructs registry bookkeeping, but the requesting actor explicitly supplies applicability value, actor and reason. Applicability remains at supporting-record level; individual checks or findings do not acquire a separate applicability field. These are referential checks, not review prerequisites.
 
-The CLI model owns bytes and encoding. Markdown record bodies carry nonempty human-readable reasoning, while their structured metadata owns IDs and enumerated judgments. Body text cannot override metadata. Subject and evidence arrays may be empty while recording incomplete work; Workflow actors must not use incomplete records to justify approval or completion. A Verify report's metadata admits only success, but the CLI does not establish that its assertion is true.
+The CLI model owns bytes and encoding. Review, material-decisions and Verify objects require a nonempty body string containing human-readable reasoning. All fields belong to the same JSON object. Body explains the judgment or shared rationale; it must not maintain a second status, finding list or reviewer roster. The named structured fields remain authoritative for those facts. Avoiding narrative duplication is an authoring responsibility, not a CLI semantic rejection gate. Markdown formatting may occur inside a narrative string but adds no separate serialization layer. Subject and evidence arrays may be empty while recording incomplete work; Workflow actors must not use incomplete records to justify approval or completion. A Verify report's outcome admits only success, but the CLI does not establish that its assertion is true.
+
+### JSON review example
+
+This incomplete review illustrates RF-SR-01/03/05/07. Empty subjects and an inconclusive judgment faithfully record missing assessment basis; they grant no approval. The JSON object is the entire file reviews/design-review.json, with no front matter or appended document.
+
+```json
+{
+  "schema_version": 2,
+  "change_id": "example-change",
+  "id": "design-review",
+  "target": "design",
+  "reviewer": {"id": "reviewer-a", "role": "review"},
+  "contributors": [{"id": "author-a", "role": "design"}],
+  "independence_basis": "Reviewer A authored none of the supplied design.",
+  "subjects": [],
+  "judgment": "inconclusive",
+  "findings": [],
+  "body": "The exact design package has not been supplied.\nThe reviewer needs its subjects before assessing coherence."
+}
+```
 
 ### Retained judgments for unresolved findings
 
@@ -179,11 +199,14 @@ The middle row is recordable but does not establish justified progression. This 
 
 #### Compatibility and adoption
 
-The retained v1 format has exactly the same record layouts, common types, closed vocabularies and reference rules except for these differences:
+The retained v1 format preserves its existing common types, closed vocabularies and reference rules. It differs from v2 as follows:
 
 | Stored component | V1 compatibility | V2 selected design |
 | --- | --- | --- |
-| change.yaml discriminator | `contract: explicit-recording-v1` | `contract: rigorloop-records-v2` |
+| Manifest discriminator | `contract: explicit-recording-v1` | `contract: rigorloop-records-v2` |
+| Paths | change.yaml, reviews/<id>.md, evidence.yaml, material-decisions.md, verify-report.md | change.json, reviews/<id>.json, evidence.json, material-decisions.json, verify-report.json |
+| Representation | JSON-subset YAML and JSON front matter with separate Markdown body | One complete JSON object per file |
+| Review, decisions and Verify narrative | Body outside the metadata object; no body metadata field | Required body string in the JSON object |
 | Every record's schema_version | `1` | `2` |
 | Review findings and change blockers | `Blocker = {id, reporter, owner, subjects, evidence, required_outcome, state, resolution}` | `Concern`, including required immutable origin |
 | Original concern basis | No separate retained origin field | Required Origin; supporting_judgment explicitly null or complete JudgmentBasis |
@@ -220,7 +243,7 @@ Delivery must add v2 machine-readable stored definitions and explicit version di
 
 ### Serialization, identity and narrative
 
-The [CLI encoding and candidate contract](cli.md#lossless-candidate-construction-and-shared-engine) owns the admitted JSON-subset YAML and Markdown front matter, exact-byte identities, lossless edits and limits. Record Format owns the resulting object structure and preservation requirements. A formatting-only rewrite is still subject to the CLI's byte-preservation rules. Narrative cannot override structured identity or enumerated values.
+The [CLI encoding and candidate contract](cli.md#lossless-candidate-construction-and-shared-engine) owns plain JSON encoding for v2, retained JSON-subset YAML/Markdown encoding for v1, exact-byte identities, lossless edits and limits. Record Format owns the resulting object structure and preservation requirements. A formatting-only rewrite is still subject to the CLI's byte-preservation rules. Narrative cannot override structured identity or enumerated values.
 
 File identity, stored format version and current workflow applicability are distinct. Changing one does not implicitly decide another. External historical subjects may drift; internal record references must resolve within the candidate.
 
@@ -228,7 +251,7 @@ File identity, stored format version and current workflow applicability are dist
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
-| Input domain | RF-SR-01, RF-SR-02 | Unknown members/enums, duplicate IDs and malformed types reject; every declared record has matching kind, identity and explicit applicability. |
+| Input domain | RF-SR-01, RF-SR-02 | V2 front matter, trailing Markdown, wrong file extensions, missing/empty body and unknown members/enums reject; escaped multiline body round-trips as a JSON string; every declared record has matching kind, identity and explicit applicability. |
 | State/lifecycle | RF-SR-03, RF-SR-04, RF-SR-05 | Completed work can receive a new blocker; resolving a concern preserves origin and cannot implicitly close another concern. |
 | Identity/authority | RF-SR-03, RF-SR-04 | Changed review subjects never rewrite historical origin; actor labels do not establish reviewer independence. |
 | Composition/path | RF-SR-02, RF-SR-07, RF-SR-08 | Targeted and advanced candidates enforce identical invariants; full selected Verify/decisions reads retain narratives without unrelated record bodies. |
@@ -245,6 +268,7 @@ Material combined hazards include a new concern after completed work (RF-SR-04/0
 | --- | --- | --- |
 | RF-DEC-01 | Give stored representation its own model. | Workflow meaning and CLI mechanics consume one field contract; neither maintains a second normative layout. |
 | RF-DEC-02 | Use rigorloop-records-v2 with schema_version 2 for the selected prospective format. | Required concern origin changes persisted structure, so a document rename or silent extension of closed v1 records is insufficient. |
+| RF-DEC-05 | Store v2 as plain JSON with body strings. | A single structured object eliminates dual JSON/Markdown sections and repeated decision facts; CLI human rendering provides readable explanations. Existing v1 files are not converted. |
 | RF-DEC-03 | Embed immutable origin in each concern. | Preserves actionable basis without an assessment archive; consumes record space and requires explicit finding-specific rationale. |
 | RF-DEC-04 | Preserve v1 without inferred origin or implicit migration. | Historical truth takes precedence over uniform appearance; readers must expose the missing retention guarantee. |
 
