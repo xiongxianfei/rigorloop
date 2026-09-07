@@ -8968,5 +8968,19 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
         self.assertIn("does not advance lifecycle state", route)
 
 
+class ExplicitRecordingGuidanceTests(unittest.TestCase):
+    def test_explicit_profiles_are_scoped_and_use_model_owned_records(self):
+        # Structural reachability only; the independent M3 walkthrough owns semantics.
+        for skill in ("architecture", "spec", "route", "proposal", "proposal-review", "design-review", "plan", "delivery-review", "implement", "code-review", "verify"):
+            with self.subTest(skill=skill):
+                text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
+                self.assertEqual(text.count("## Explicit recording\n"), 1)
+                block = text.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
+                for phrase in ("project has adopted", "explicit-recording-v1", "project's model documents", "historical", "expected identities", "does not approve", "record-store inspect", "Do not migrate"):
+                    self.assertIn(phrase, block)
+                self.assertNotIn("templates/shared/", block)
+                self.assertNotIn("specs/rigorloop-workflow.md", block)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

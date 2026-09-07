@@ -22,14 +22,27 @@ def main() -> int:
     parser.add_argument("--path", action="append", default=[])
     args = parser.parse_args()
     root = Path(args.root).resolve()
-    issues = list(validate_activation(root))
+    model_only = bool(args.path) and all(path.startswith("docs/design/") for path in args.path)
+    issues = [] if model_only else list(validate_activation(root))
     for path in args.path:
         issues.extend(validate_changed_spec(root, path))
+    # This one diagnostic is a semantic obligation, not a structural error.
+    # All other (including unknown) diagnostics continue to fail closed.
+    review_required = [
+        {**issue.as_dict(), "owner": "design-review"}
+        for issue in issues if issue.code == "BFR-GRANDFATHERED-REVIEW"
+    ]
+    issues = [issue for issue in issues if issue.code != "BFR-GRANDFATHERED-REVIEW"]
     if issues:
-        print(json.dumps({"status": "failed", "issues": [issue.as_dict() for issue in issues]}, sort_keys=True))
+        print(json.dumps({"status": "failed", "issues": [issue.as_dict() for issue in issues], "review_required": review_required}, sort_keys=True))
         return 1
+    if model_only:
+        print(json.dumps({"status": "passed", "paths": sorted(args.path), "validation": "structure-and-references-only"}, sort_keys=True))
+        return 0
     output: dict[str, object] = {
-        "status": "passed",
+        "status": "review-required" if review_required else "passed",
+        "validation": "structure-and-references-only",
+        "review_required": review_required,
         "activation": "validated",
         "paths": sorted(args.path),
     }
@@ -44,6 +57,7 @@ def main() -> int:
                     {
                         "status": "failed",
                         "issues": [issue.as_dict() for issue in selection_issues],
+                        "review_required": review_required,
                     },
                     sort_keys=True,
                 )

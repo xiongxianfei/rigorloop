@@ -4,8 +4,11 @@
 from __future__ import annotations
 
 import json
+import io
+import contextlib
 import os
 import re
+import runpy
 import shutil
 import subprocess
 import sys
@@ -1931,6 +1934,205 @@ class BoundaryFirstActivationTests(unittest.TestCase):
         serialized = json.dumps(issue.as_dict(), sort_keys=True)
         self.assertNotIn(secret, serialized)
         self.assertIn("redacted:sha256:", serialized)
+
+
+class GrandfatheredReviewHandoffTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        (self.root / "specs").mkdir()
+        data = json.loads((ROOT / "specs/boundary-first-activation.yaml").read_text())
+        data["state"] = "active"
+        data["grandfathered_specs"] = ["specs/historical.md", "specs/other.md"]
+        (self.root / "specs/boundary-first-activation.yaml").write_text(json.dumps(data))
+        for name in ("historical", "other"):
+            (self.root / f"specs/{name}.md").write_text("# Historical\n")
+        self.main = runpy.run_path(str(ROOT / "scripts/validate-boundary-first.py"))["main"]
+
+    def run_check(self, *paths: str, rollback_issues: tuple = ()) -> tuple[int, dict]:
+        args = ["validate-boundary-first", "--check", "--root", str(self.root)]
+        for path in paths:
+            args.extend(["--path", path])
+        output = io.StringIO()
+        # Activation/archive integrity has its own tests; exercise the real
+        # selected-file parser and command reporting against this small fixture.
+        selection = mock.Mock(release="v0.4.0", artifacts=[])
+        with mock.patch.dict(self.main.__globals__, {
+            "validate_activation": lambda root: (),
+            "rollback_package_selection": lambda root: (selection, rollback_issues),
+        }), mock.patch.object(sys, "argv", args), contextlib.redirect_stdout(output):
+            result = self.main()
+        return result, json.loads(output.getvalue())
+
+    def test_review_required_is_structural_success_not_approval(self) -> None:
+        before = relevant_tree_snapshot(self.root)
+        code, output = self.run_check("specs/historical.md", "specs/other.md")
+        self.assertEqual(code, 0)
+        self.assertEqual(output["status"], "review-required")
+        self.assertEqual(output["validation"], "structure-and-references-only")
+        self.assertEqual({item["path"] for item in output["review_required"]},
+                         {"specs/historical.md", "specs/other.md"})
+        self.assertTrue(all(item["owner"] == "design-review" for item in output["review_required"]))
+        self.assertEqual(relevant_tree_snapshot(self.root), before)
+
+    def test_review_required_does_not_hide_mixed_structural_failure(self) -> None:
+        code, output = self.run_check("specs/historical.md", "docs/design/missing.md")
+        self.assertEqual(code, 1)
+        self.assertEqual(output["status"], "failed")
+        self.assertEqual(output["review_required"][0]["path"], "specs/historical.md")
+        self.assertTrue(output["issues"])
+
+    def test_unknown_value_marker_fails_for_new_and_grandfathered_specs(self) -> None:
+        for path in ("specs/new.md", "specs/historical.md"):
+            with self.subTest(path=path):
+                (self.root / path).write_text(valid_feature().replace("boundary_contract: boundary-first-v1", "boundary_contract: unknown_value"))
+                code, output = self.run_check(path)
+                self.assertEqual(code, 1)
+                self.assertEqual(output["status"], "failed")
+                self.assertTrue(output["issues"])
+                self.assertFalse(output.get("review_required"))
+
+    def test_malformed_boundary_content_is_not_review_only(self) -> None:
+        for text in (valid_feature().replace("## Boundary definitions", "## Missing"),
+                     "# Historical\n\n## Boundary model\n", "# Historical\nboundary_contract:\n"):
+            with self.subTest(text=text):
+                (self.root / "specs/historical.md").write_text(text)
+                code, output = self.run_check("specs/historical.md")
+                self.assertEqual(code, 1)
+                self.assertFalse(output.get("review_required"))
+
+    def test_new_spec_missing_marker_still_fails(self) -> None:
+        (self.root / "specs/new.md").write_text("# New\n")
+        code, output = self.run_check("specs/new.md")
+        self.assertEqual(code, 1)
+        self.assertEqual(output["issues"][0]["check_id"], "BFR-NEW-SPEC-MARKER")
+
+    def test_review_required_survives_rollback_validation_failure(self) -> None:
+        issue = validate_changed_spec(self.root, "docs/design/missing.md")[0]
+        code, output = self.run_check("specs/historical.md", rollback_issues=(issue,))
+        self.assertEqual(code, 1)
+        self.assertEqual(output["status"], "failed")
+        self.assertEqual(output["review_required"][0]["path"], "specs/historical.md")
+        self.assertEqual(output["issues"][0]["check_id"], issue.code)
+
+    def test_unknown_value_diagnostic_is_not_demoted_to_review(self) -> None:
+        issue = validate_changed_spec(self.root, "docs/design/missing.md")[0]
+        unknown = type(issue)("unknown_value", issue.path, issue.message, issue.offending_value, issue.expected)
+        with mock.patch.dict(self.main.__globals__, {"validate_changed_spec": lambda root, path: (unknown,)}):
+            code, output = self.run_check("specs/historical.md")
+        self.assertEqual(code, 1)
+        self.assertEqual(output["issues"][0]["check_id"], "unknown_value")
+        self.assertFalse(output["review_required"])
+
+
+class ModelRecordTests(unittest.TestCase):
+    """TG-06: model recognition is structural, explicit and independent of lifecycle."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix="rigorloop-model-")
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.path = self.root / "docs/design/workflow.md"
+        self.path.parent.mkdir(parents=True)
+        self.text = (ROOT / "docs/design/workflow.md").read_text(encoding="utf-8")
+
+    def check(self, text=None, relative="docs/design/workflow.md"):
+        self.path.write_text(self.text if text is None else text, encoding="utf-8")
+        return validate_changed_spec(self.root, relative)
+
+    def test_model_current_files_validate_without_activation_or_change_record(self):
+        for model in ("workflow", "cli"):
+            with self.subTest(model=model):
+                relative = f"docs/design/{model}.md"
+                (self.root / relative).write_bytes((ROOT / relative).read_bytes())
+                self.assertEqual(validate_changed_spec(self.root, relative), ())
+        self.assertFalse((self.root / "docs/changes").exists())
+
+    def test_model_unknown_value_marker_and_dimension_fail_closed(self):
+        for text in (
+            self.text.replace("Model validation contract: explicit-recording-v1", "Model validation contract: unknown_value", 1),
+            self.text.replace("| Input domain |", "| unknown_value |", 1),
+        ):
+            with self.subTest(text=text[:50]):
+                codes = {i.code for i in self.check(text)}
+                self.assertTrue(codes & {"BFR-MODEL-CONTRACT", "BFR-MODEL-DIMENSIONS"}, codes)
+
+    def test_model_missing_duplicate_malformed_tables_and_references_reject(self):
+        variants = (
+            self.text.replace("Model validation contract: explicit-recording-v1\n", "", 1),
+            self.text + "\nModel validation contract: explicit-recording-v1\n",
+            self.text + "\n## Requirements\n",
+            self.text.replace("| Dimension | Requirement basis |", "| Dimension | unknown_value |", 1),
+            self.text.replace("| Input domain | WF-SR-02, WF-SR-05 |", "| Input domain | not_in_vocabulary |", 1),
+            self.text.replace("| Input domain | WF-SR-02, WF-SR-05 |", "| Input domain | WF-SR-02, WF-SR-02 |", 1),
+            self.text.replace("| State/lifecycle |", "| Input domain |", 1),
+            self.text.replace("| WF-SR-01 |", "| WF-SR-02 |", 1),
+            self.text.replace("| WF-SR-01 |", "| 1-invalid |", 1),
+            self.text.replace("| --- | --- | --- |\n| Input domain", "| bad | --- | --- |\n| Input domain", 1),
+            self.text.replace("| Input domain | WF-SR-02, WF-SR-05 |", "| Input domain | WF-SR-02 | extra |", 1),
+        )
+        for index, text in enumerate(variants):
+            with self.subTest(index=index):
+                self.assertTrue(self.check(text))
+
+    def test_model_not_applicable_requires_reason(self):
+        row = next(l for l in self.text.splitlines() if l.startswith("| Input domain |"))
+        self.assertEqual(self.check(self.text.replace(row, "| Input domain | - | Not applicable: no input behavior in this fixture. |")), ())
+        for outcome in ("Not applicable:", "", "No reason"):
+            self.assertTrue(self.check(self.text.replace(row, f"| Input domain | - | {outcome} |")))
+
+    def test_model_unsafe_missing_and_symlink_paths_reject(self):
+        self.check()
+        for relative in ("docs/design/../workflow.md", "docs/design/nested/workflow.md", "docs/design/UPPER.md", "docs/design/missing.md"):
+            self.assertTrue(validate_changed_spec(self.root, relative))
+        self.path.unlink()
+        outside = self.root / "outside.md"
+        outside.write_text(self.text, encoding="utf-8")
+        self.path.symlink_to(outside)
+        self.assertTrue(validate_changed_spec(self.root, "docs/design/workflow.md"))
+        self.path.unlink()
+        self.path.parent.rmdir()
+        other = self.root / "other"
+        other.mkdir()
+        (other / "workflow.md").write_text(self.text, encoding="utf-8")
+        self.path.parent.symlink_to(other, target_is_directory=True)
+        self.assertTrue(validate_changed_spec(self.root, "docs/design/workflow.md"))
+
+    def test_model_fenced_contract_or_tables_are_not_authority(self):
+        self.assertTrue(self.check("```md\n" + self.text + "\n```\n"))
+        self.assertTrue(self.check(self.text.replace("## Requirements", "```md\n## Requirements", 1) + "\n```\n"))
+
+    def test_model_indented_code_cannot_supply_required_sections(self):
+        headings = {"## Requirements", "### Boundary scan and acceptance scenarios"}
+
+        def indent_sections(prefix, tables_only=False):
+            lines = []
+            selected = False
+            for line in self.text.splitlines():
+                if line.startswith("#"):
+                    selected = line in headings
+                indent = selected and line and (not tables_only or line.startswith("|"))
+                lines.append(prefix + line if indent else line)
+            return "\n".join(lines) + "\n"
+
+        for prefix in ("    ", "\t", "  \t"):
+            for tables_only in (False, True):
+                with self.subTest(prefix=prefix, tables_only=tables_only):
+                    issues = self.check(indent_sections(prefix, tables_only))
+                    self.assertIn("BFR-MODEL-TABLE", {issue.code for issue in issues})
+        # Up to three spaces remain ordinary Markdown, not an indented code block.
+        self.assertEqual(self.check(indent_sections("   ")), ())
+
+    def test_model_public_check_is_read_only_and_not_activation(self):
+        self.check()
+        before = relevant_tree_snapshot(self.root)
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/validate-boundary-first.py"), "--check", "--root", str(self.root), "--path", "docs/design/workflow.md"], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        data = json.loads(result.stdout)
+        self.assertEqual(data["validation"], "structure-and-references-only")
+        self.assertNotIn("activation", data)
+        self.assertEqual(relevant_tree_snapshot(self.root), before)
 
 
 if __name__ == "__main__":

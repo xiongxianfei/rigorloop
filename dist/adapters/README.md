@@ -26,6 +26,8 @@ Historical note: v0.1.2 kept repository-tree adapter packages during the compati
 
 ## Migration notes
 
+The current local candidate includes explicit-recording profiles for the existing stage skills. Use them with the matching packaged CLI and project-approved model documents, only for explicitly selected new `explicit-recording-v1` roots. The CLI reads and records decisions; stage skills retain judgment, independence, correction and completion responsibilities. Historical roots and handlers are not migrated. Installation does not adopt a contract or approve work. See [CLI recording and rollback usage](../../packages/rigorloop/README.md#explicit-workflow-recording). The candidate is not a claim that these additions are already published in a historical release archive.
+
 The workflow routing skill has been renamed from `workflow` to `route`. Use `route` for routing and bounded automation. The v0.5.1 candidate archives do not install `workflow` as an alias. Exact lockfile-managed installs can be replaced by normal `init --write-state`; unmanaged or drifted installs stop with state-specific recovery guidance. Stable lifecycle authority values and `workflow.automation` state remain compatible and are not renamed.
 
 The CI workflow authoring/review skill has been renamed from `ci` to `ci-maintenance`. Use `ci-maintenance` for direct skill invocation. Existing direct `ci` invocations should be updated; this adapter release does not install `ci` as a compatibility alias.

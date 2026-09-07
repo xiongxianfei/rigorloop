@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "contract": "explicit-recording-v1",
+  "change_id": "2026-09-05-explicit-recording-and-model-centered-design",
+  "proposal": {
+    "path": "docs/proposals/2026-09-05-explicit-recording-and-model-centered-design.md",
+    "identity": "sha256:b4efd7fd9010fa0e9af32207afc68abbc847f12f707047c2f640ec7f6e9e44a9"
+  },
+  "models": [
+    {
+      "id": "workflow",
+      "subject": {
+        "path": "docs/design/workflow.md",
+        "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "path": "docs/design/cli.md",
+        "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+      }
+    }
+  ],
+  "activity": {
+    "stage": "verify",
+    "status": "completed",
+    "owner": {
+      "id": "review-compact-fix",
+      "role": "verify"
+    },
+    "reason": "Independent M5 final verification succeeded against current model, delivery, review and proof subjects; both findings are resolved. Explicit lifecycle completion only; isolated stop, no commit, push, PR or release."
+  },
+  "plan": {
+    "path": "docs/plans/2026-09-05-explicit-recording-and-model-centered-design.md",
+    "identity": "sha256:2058ebf122e130f7d92f0c5d6dfa464200927ad85f99d4c754893d4ddd4904f4"
+  },
+  "work": [
+    {
+      "id": "m1",
+      "status": "completed",
+      "owner": {
+        "id": "root-implementation",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "WF-SR-02",
+        "CLI-SR-02"
+      ]
+    },
+    {
+      "id": "m2",
+      "status": "completed",
+      "owner": {
+        "id": "root-implementation",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "CLI-SR-01",
+        "CLI-SR-03",
+        "CLI-SR-04",
+        "CLI-SR-05",
+        "CLI-SR-06",
+        "CLI-SR-07",
+        "CLI-SR-08",
+        "CLI-SR-09",
+        "CLI-SR-11"
+      ]
+    },
+    {
+      "id": "m3",
+      "status": "completed",
+      "owner": {
+        "id": "root-implementation",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "WF-SR-01",
+        "WF-SR-03",
+        "WF-SR-04",
+        "WF-SR-05",
+        "WF-SR-06",
+        "WF-SR-07",
+        "WF-SR-08",
+        "WF-SR-09"
+      ]
+    },
+    {
+      "id": "m4",
+      "status": "completed",
+      "owner": {
+        "id": "root-implementation",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "WF-SR-10",
+        "CLI-SR-10"
+      ]
+    },
+    {
+      "id": "m5",
+      "status": "completed",
+      "owner": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "requirement_refs": [
+        "WF-SR-09",
+        "WF-SR-10"
+      ]
+    }
+  ],
+  "records": [
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/material-decisions.md",
+      "kind": "decisions"
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+      "kind": "evidence"
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/proposal-review.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/design-review.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/delivery-review.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/verify-report.md",
+      "kind": "verify"
+    }
+  ],
+  "applicability": [
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/material-decisions.md",
+      "value": "current",
+      "actor": {
+        "id": "root-coordinator",
+        "role": "route"
+      },
+      "reason": "Explicit user authorization and inspected current source identities."
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+      "value": "current",
+      "actor": {
+        "id": "root-verification",
+        "role": "verify"
+      },
+      "reason": "Actual 2026-09-07 failed Verify preflight and bounded parity evidence with exact source subjects."
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/proposal-review.md",
+      "value": "current",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "review"
+      },
+      "reason": "Independent current proposal assessment against exact subjects after explicit user adoption; no automatic conversion of prior advisory evidence."
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/design-review.md",
+      "value": "current",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "review"
+      },
+      "reason": "Independent current design assessment against exact subjects after explicit user adoption; no automatic conversion of prior advisory evidence."
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/delivery-review.md",
+      "value": "current",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "review"
+      },
+      "reason": "Independent current delivery assessment against exact subjects after explicit user adoption; no automatic conversion of prior advisory evidence."
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md",
+      "value": "current",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "review"
+      },
+      "reason": "Independent ER-M5-002 disposition and affected whole-change reassessment against exact corrected subjects; final Verify and its root blocker remain separate."
+    },
+    {
+      "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/verify-report.md",
+      "value": "current",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "reason": "Independent final assessment and exact current proof support success for the adopted isolated initiative; no external integration authority."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "er-m5-001",
+      "reporter": {
+        "id": "root-verification",
+        "role": "verify"
+      },
+      "owner": {
+        "id": "ci-maintenance-owner",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:c4b75e7358ebe8b514efa0b8622de015783ee7c5ff2d6914fba5680d51d915a5"
+        },
+        {
+          "path": ".gitignore",
+          "identity": "sha256:0f65d0c3be2ff4a8e7fcfbf7d99d0c742d411f98b73907788d1fa67b707b108e"
+        },
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        },
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/material-decisions.md",
+          "identity": "sha256:2f17dacdc6ffc3d8839d9a8f1829217befc5351f82657e953b37615beaef5ee8"
+        }
+      ],
+      "evidence": "evidence.yaml#m5-ci-selector records actual exit 2. Selector recognizes initiative source paths but not its real new-contract evidence; .gitignore covers historical transactions, not record-store private state. Existing advisory reviews are unchanged; independent new-record review adoption paused without writes. Final CI session 45963 exits 1 after four new current reviews: historical review-log.md and Review IDs demanded. See current evidence.yaml#m5-ci-selector. Independent reviewer reproduced this and classified it as the same compatibility integration defect, not a Design gap. Original blocker subjects remain historical defect identities.",
+      "required_outcome": "Complete M4 CI integration for real explicit-recording roots and allowlisted record kinds, and keep private recorder state out of change selection using a narrowly scoped policy. Retain fail-closed handling of unknown/unregistered paths. Add actual-root regression proof, independently rereview corrections and refresh affected whole-change review, then rerun M5. No new Design sidecars or automatic lifecycle decisions.",
+      "state": "resolved",
+      "resolution": {
+        "actor": {
+          "id": "root-verification",
+          "role": "verify"
+        },
+        "rationale": "The original Verify owner reassessed actual new-root selector/private-state and lifecycle integration after independent correction and affected whole-change review. Final local CI passes all20 checks; exact current review subjects match; both real-root regressions and tracked-mode fail-closed proof pass. Original failing subjects and evidence are preserved. Direct new-contract Git-snapshot lifecycle validation remains explicitly unsupported; ordinary intended-checkout explicit-path validation is supported. No completion follows automatically from this disposition.",
+        "evidence_refs": [
+          {
+            "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+            "id": "m5-ci-selector"
+          },
+          {
+            "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+            "id": "er-m5-001-regression"
+          },
+          {
+            "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/evidence.yaml",
+            "id": "er-m5-001-lifecycle-regression"
+          },
+          {
+            "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md",
+            "id": "final-code-review"
+          }
+        ]
+      }
+    }
+  ]
+}

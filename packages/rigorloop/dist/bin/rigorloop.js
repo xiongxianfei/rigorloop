@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
 import { basename, dirname, join, resolve } from "node:path";
@@ -151,6 +151,9 @@ Usage:
   rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
   rigorloop workflow-context [--change <id>] [--format human|json]
+  rigorloop record-store inspect --root PATH --change ID [--format text|json]
+  rigorloop record-store check|record --root PATH --change ID --input - [--format text|json]
+  rigorloop record-store recover --root PATH --change ID --transaction ID --expected-recovery DIGEST --action restore|complete [--format text|json]
   rigorloop compact project --change <id> --view <view> [--requested-operation <operation>] [--format human|json]
   rigorloop compact apply (--request <path|-> | --request-json <json>) [--format human|json]
   rigorloop compact recover --change <id> [--action restore-prior|accept-candidate --expected-recovery-identity <sha256>] [--format human|json]
@@ -165,6 +168,7 @@ Commands:
                           Initialize verified target support.
   new-change              Plan a change metadata scaffold.
   workflow-context        Report read-only project or exact-change workflow facts.
+  record-store            Read, check, save or recover explicit-recording-v1 records; storage only.
   compact                 Project, apply, or recover the compact current-state contract.
   lifecycle               Inspect, validate, and perform guarded governed lifecycle operations.
   logs                    Show the local log path or inspect one exact invocation.
@@ -2337,6 +2341,16 @@ async function handleInit(flags, initArgs = []) {
 
 async function dispatchMain(rawArgs, invocation) {
   try {
+    // Contract-separated explicit recording; no lifecycle transition evaluator.
+    if (rawArgs[0] === "record-store") {
+      const { executeRecordStoreCli } = await import("../lib/record-store-cli.js");
+      const execution = executeRecordStoreCli(rawArgs.slice(1), invocation.recordStoreOptions);
+      activeOutput.terminalClass = execution.exitCode === 0 ? "success" : "expected-rejection";
+      activeOutput.deferredRender = () => execution.format === "json"
+        ? { stdout: `${JSON.stringify(execution.result)}\n`, stderr: "" }
+        : execution.exitCode === 0 ? { stdout: execution.human, stderr: "" } : { stdout: "", stderr: execution.human };
+      return execution.exitCode;
+    }
     if (rawArgs[0] === "logs") return handleLogs(rawArgs.slice(1), invocation);
     if (rawArgs[0] === "workflow-context") {
       const { executeWorkflowContext } = await import("../lib/workflow-context.js");
@@ -2405,7 +2419,7 @@ async function dispatchMain(rawArgs, invocation) {
   }
 }
 
-async function main(rawArgs = process.argv.slice(2), invocation = {}) {
+export async function main(rawArgs = process.argv.slice(2), invocation = {}) {
   activeOutput = { ...invocation, stdout: "", stderr: "", deferredRender: null, terminalClass: null };
   const exitCode = await dispatchMain(rawArgs, invocation);
   return {
@@ -2417,4 +2431,21 @@ async function main(rawArgs = process.argv.slice(2), invocation = {}) {
   };
 }
 
-process.exitCode = await runObservedCli(process.argv.slice(2), main, { cliVersion: packageInfo().version });
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const rawArgs = process.argv.slice(2);
+  if (rawArgs[0] === "record-store") {
+    // The recorder owns its complete grammar and result envelope. Historical
+    // logging flags and environment must not consume or replace either.
+    const execution = await main(rawArgs);
+    const rendered = execution.render({});
+    if (rendered.stdout) process.stdout.write(rendered.stdout);
+    if (rendered.stderr) process.stderr.write(rendered.stderr);
+    process.exitCode = execution.exitCode;
+  } else {
+    process.exitCode = await runObservedCli(rawArgs, (args, invocation) =>
+      // Logging preprocessing cannot turn a historical invocation into a
+      // recorder invocation by removing leading flags.
+      main(args[0] === "record-store" ? ["record-store", ...rawArgs] : args, invocation),
+    { cliVersion: packageInfo().version });
+  }
+}

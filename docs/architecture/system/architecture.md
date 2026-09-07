@@ -1193,6 +1193,8 @@ Rollback before public CLI publication removes or disables the package candidate
 
 ### Source of truth
 
+Explicitly selected new explicit-recording work uses [one Design file per model](../../design/workflow.md#model-documentation-and-traceability), with [CLI storage](../../design/cli.md) separate from actor-owned workflow decisions. The contract-separated `record-store` path exposes inspect, check, explicit record and recovery without calling a transition evaluator. Model validation checks the Workflow-owned document mapping without invoking recording or transition evaluation. Existing architecture/spec/ADR ownership and historical lifecycle machinery below remain unchanged outside that profile; adopting projects require matching models, CLI and stage guidance.
+
 The focused architecture package method spec owns the normative package contract. This canonical package owns current architecture shape for direct updates and for durable current truth represented from exceptional evidence. ADRs own durable decisions. Change-local deltas are not a normal architecture authoring path and never compete with the canonical package.
 
 ### Lowest sufficient architecture surface

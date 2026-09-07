@@ -9,6 +9,32 @@ argument-hint: [branch, diff, plan path, spec path, or feature name]
 
 # Independent implementation review
 
+## Quick operating guide
+
+Use this skill to: inspect the actual review surface against its governing contract and record a first-pass review outcome.
+
+Read first: the actual diff, tracked governing authority, current milestone, relevant tests, and validation evidence.
+
+Produce: a recorded review status, findings or no-finding rationale, checklist coverage, and milestone-aware handoff.
+
+Stop when: authority, evidence, or milestone state cannot support a credible outcome, or an owner decision is required.
+
+Do not claim: branch-ready, PR-ready, verification passed, CI passed, or fixes owned by another stage.
+
+Next stage: review-resolution for findings, the next milestone after a clean non-final review, or final closeout after the required final holistic review.
+
+Use broader-section or full-file reading when bounded evidence is insufficient.
+
+## Explicit recording
+
+Use `explicit-recording-v1` only when the project has adopted it and the change explicitly selects it. Read the project's model documents and current recorded snapshot; missing authority stops, never falls back to guessed state. This profile replaces historical package, transition, recording and output-shape procedures below, including conditional resources for those procedures; retain substantive stage duties, permissions, independence and proof obligations. Historical contracts continue through their unchanged procedures. Do not migrate an existing root.
+
+Use `rigorloop record-store inspect --root PATH --change ID --format json` as this profile's context; it returns recorded content, identities and revision, not permitted operations. Send the model-defined UTF-8 JSON request on stdin to `rigorloop record-store check|record --root PATH --change ID --input - --format json`. Replace `check|record` with one command. Include expected revision, explicit writes and decision-basis reads; never infer decisions from a successful save. An absent root requires explicit new-change authority and absent preconditions, not historical `new-change` or `lifecycle` registration. Unknown contracts stop; do not fall back to another writer.
+
+Use `inspect` to read and `check` to validate; neither changes decisions. Submit only your explicit, owned replacements through `record` with expected identities, preserving others' entries. A save does not approve work or select a stage. Recovery is explicit; do not edit record files through other tools during save/recovery. Missing or stale evidence prevents reliance, not recording a correction.
+
+Assess the actual implementation and direct proof against the current model and plan subjects. Record real contributors, independent provenance, judgment, findings and your dispositions. A role label cannot prove separation. Preserve unresolved findings during correction; rereview the changed subjects before declaring applicability current. A clean slice does not replace final whole-change review or successful Verify.
+
 Review in independent-review mode with fresh eyes. Determine whether the actual implementation satisfies the approved contract safely; passing tests or plausible code alone is not sufficient.
 
 ## Purpose
@@ -40,22 +66,6 @@ For `compact-current-state-v1`, consume the bounded CLI projection, exact implem
 - must_not_claim: branch readiness, PR readiness, final verification, CI success, implementation fixes, or derived-artifact currency without separate owning evidence
 
 It must not edit implementation, the plan, artifact settlement, milestone state, or routing.
-
-## Quick operating guide
-
-Use this skill to: inspect the actual review surface against its governing contract and record a first-pass review outcome.
-
-Read first: the actual diff, tracked governing authority, current milestone, relevant tests, and validation evidence.
-
-Produce: a recorded review status, findings or no-finding rationale, checklist coverage, and milestone-aware handoff.
-
-Stop when: authority, evidence, or milestone state cannot support a credible outcome, or an owner decision is required.
-
-Do not claim: branch-ready, PR-ready, verification passed, CI passed, or fixes owned by another stage.
-
-Next stage: review-resolution for findings, the next milestone after a clean non-final review, or final closeout after the required final holistic review.
-
-Use broader-section or full-file reading when bounded evidence is insufficient.
 
 ## Inputs to read
 

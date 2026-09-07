@@ -1,0 +1,574 @@
+{
+  "schema_version": 1,
+  "change_id": "2026-09-05-explicit-recording-and-model-centered-design",
+  "checks": [
+    {
+      "id": "m5-ci-selector",
+      "actor": {
+        "id": "root-verification",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:9f1a7f7998b4e171f51ddf9d0d3673a0151db583e22e40590c2012d184fd5682"
+        },
+        {
+          "path": ".gitignore",
+          "identity": "sha256:29f586c6bfb851c8935e6bd779a0e32bec79823c97facd5cfb8a421e17395819"
+        },
+        {
+          "path": "scripts/artifact_lifecycle_validation.py",
+          "identity": "sha256:a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323"
+        },
+        {
+          "path": "scripts/test-artifact-lifecycle-validator.py",
+          "identity": "sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635"
+        },
+        {
+          "path": "scripts/validate-change-metadata.py",
+          "identity": "sha256:5d3829970b9695841f132bea7d6c61e56d0f45a512ec9057482b5f5f7c2de399"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:339baf0fdcae22d77bc427c11ee483f275720b91a6d89d2254efae355eda16c6"
+        },
+        {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        }
+      ],
+      "result": "passed",
+      "procedure": "2026-09-07: bash scripts/ci.sh --mode local, final post-correction run against the registered new root with all four review records.",
+      "summary": "Final current run: bash scripts/ci.sh --mode local, session 35921, exit 0, all 20 selected checks passed after the lifecycle and tracked-mode safeguards; boundary 8.18s, focused 223.12s. Includes lifecycle regression/validation, complete-set metadata/regressions, selector, npm/publication, models/schema, skills and adapters. Engineering bytes unchanged throughout. Later review/decision recordings have separate fresh focused structural validation, not a fabricated earlier CI identity. Preserved failed-run history: Current result: exit 1. artifact_lifecycle.validate demands historical review-log.md and one legacy Review ID in each of four valid explicit-recording reviews. Other 18 selected checks passed. artifact_lifecycle_validation.py unconditionally calls legacy validate_change_root after metadata validation. Independently reproduced by /root/review_compact_fix with python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md (exit 1). Historical initial result: Exit 2 before selected tests: unclassified-path for private .rigorloop/record-store/<change-id>/epoch; manual-routing-required / unregistered-change-evidence for material-decisions.md. Valid check/record/inspect had no observations. M4 fixture proof did not cover selection against actual new root/private state. Historical selector identity sha256:c4b75e7358ebe8b514efa0b8622de015783ee7c5ff2d6914fba5680d51d915a5; .gitignore sha256:0f65d0c3be2ff4a8e7fcfbf7d99d0c742d411f98b73907788d1fa67b707b108e. First corrected CI passed 19 checks before reviews existed; that narrower pass is not final readiness."
+    },
+    {
+      "id": "m5-generated-parity",
+      "actor": {
+        "id": "root-verification",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:69fd13f1530dc31cccf9f12de035509723fb2188d9ab6512ae04dc4204a98b32"
+        },
+        {
+          "path": "schemas/explicit-recording-v1.schema.json",
+          "identity": "sha256:3c5c78689dcd2fe31a43bf3b48c684c2c7dcaea3729b67b76b049e1531de38c2"
+        },
+        {
+          "path": "templates/explicit-recording/records.json",
+          "identity": "sha256:f32fc683953f7b6eadbd6c4a34454b716547187ab509970a1557d0b43c049675"
+        },
+        {
+          "path": "packages/rigorloop/dist/metadata/adapter-artifacts-v0.5.1.json",
+          "identity": "sha256:1c27e0767d018af9e15f0b5c0a16a55b4d542510b22ee82b8ada1afa131310c6"
+        }
+      ],
+      "result": "passed",
+      "procedure": "2026-09-07: python scripts/build-adapters.py --check; node scripts/build-record-store-schema.mjs --check; git diff --check",
+      "summary": "All commands exited zero; adapter output in sync and schema/template parity valid. Does not override failed CI selector."
+    },
+    {
+      "id": "m5-adapter-full",
+      "actor": {
+        "id": "root-verification",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "scripts/test-adapter-distribution.py",
+          "identity": "sha256:fd4c3c61b7524f3e22fa7a3b608607863e27a9fdc29ea80e6f4d70dff02e01ec"
+        },
+        {
+          "path": "packages/rigorloop/dist/metadata/adapter-artifacts-v0.5.1.json",
+          "identity": "sha256:1c27e0767d018af9e15f0b5c0a16a55b4d542510b22ee82b8ada1afa131310c6"
+        }
+      ],
+      "result": "passed",
+      "procedure": "2026-09-07: python scripts/test-adapter-distribution.py",
+      "summary": "Fresh full rerun: 157 tests passed in 429.504 seconds, exit 0 (session 83029). Prior attempt was deliberately terminated, exit 143, after the initial selector blocker; preserved as interrupted history, not passing proof. Remaining lifecycle CI failure prevents M5 completion. Latest post-lifecycle-correction full rerun passed all 157 tests in 450.761 seconds, exit 0 (session 78452)."
+    },
+    {
+      "id": "er-m5-001-regression",
+      "actor": {
+        "id": "root-bugfix",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:2b61a2aed302d32cab9557b658423b0cd4f4f3be0c2451a3688f524b32153d86"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:9f1a7f7998b4e171f51ddf9d0d3673a0151db583e22e40590c2012d184fd5682"
+        },
+        {
+          "path": ".gitignore",
+          "identity": "sha256:29f586c6bfb851c8935e6bd779a0e32bec79823c97facd5cfb8a421e17395819"
+        },
+        {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-select-validation.py -k er_m5_001; Node packaged public record creates all five record kinds in fresh temporary Git repositories using canonical examples; no external services.",
+      "summary": "2026-09-07 proof-authoring: seven failed assertions across three regression tests reproduce private-state leakage, wrong historical routing for all five record kinds, and missing explicit unknown-contract rejection. Test SHA2562b61a2aed302d32cab9557b658423b0cd4f4f3be0c2451a3688f524b32153d86. Automated proof feasible; no infeasibility exception. Bugfix operation fix; current-bounded commands and governed-scope-bound writes authorized by user go ahead; single governed candidate. Settled WF-SR-10/CLI-SR-10 and M4 integration allocation; supported root cause integration-mismatch. Only selector, .gitignore, regression tests and this existing evidence are writable; no model or historical-contract change. Post-fix 2026-09-07: identical command, test file, generated fixture procedure and environment now pass all three tests. Original production selector c4b75e7358ebe8b514efa0b8622de015783ee7c5ff2d6914fba5680d51d915a5 and ignore0f65d0c3be2ff4a8e7fcfbf7d99d0c742d411f98b73907788d1fa67b707b108e replaced by current subjects. Complete selector suite:162 passed. No test weakened or changed after red proof."
+    },
+    {
+      "id": "er-m5-001-correction-ci",
+      "actor": {
+        "id": "root-bugfix",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": ".gitignore",
+          "identity": "sha256:29f586c6bfb851c8935e6bd779a0e32bec79823c97facd5cfb8a421e17395819"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:9f1a7f7998b4e171f51ddf9d0d3673a0151db583e22e40590c2012d184fd5682"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:2b61a2aed302d32cab9557b658423b0cd4f4f3be0c2451a3688f524b32153d86"
+        }
+      ],
+      "result": "passed",
+      "procedure": "2026-09-07: python scripts/test-select-validation.py; bash scripts/ci.sh --mode local; git diff --check",
+      "summary": "162 selector tests passed. Actual local CI with the real change.yaml/evidence.yaml/material-decisions.md passed all19 selected checks including complete-set change_metadata.validate, historical compatibility, full npm and installed-package proof. Only private .rigorloop/record-store/ is ignored; unknown private paths, unknown contracts and unregistered records fail closed. Bugfix fix-applied within user-authorized three-file correction; independent code rereview and Verify-owned blocker disposition still required. Full adapter suite refreshing separately, not claimed here."
+    },
+    {
+      "id": "m5-final-focused",
+      "actor": {
+        "id": "root-verification",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "scripts/test-change-metadata-validator.py",
+          "identity": "sha256:44d5ab15486006f90fd156a11021e823377eacc5614616cdd570b3c40a89100d"
+        },
+        {
+          "path": "scripts/test-npm-package-publication.py",
+          "identity": "sha256:b369e63983d4456a9f1a4ae1108040b3b593006358ff47ab64c20e66b81ffc44"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:2b61a2aed302d32cab9557b658423b0cd4f4f3be0c2451a3688f524b32153d86"
+        },
+        {
+          "path": "packages/rigorloop/dist/bin/rigorloop.js",
+          "identity": "sha256:0e468cf3bbb9c030a8825015d3bc2d3b05e627f291f31f8cbd9147c43b52272b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:5d27c3f20f57f770140c705fdad46c2286bb709ee158d4d5296cdb2d77a2a5cc"
+        }
+      ],
+      "result": "passed",
+      "procedure": "2026-09-07: npm --prefix packages/rigorloop test; python scripts/test-change-metadata-validator.py; python scripts/test-npm-package-publication.py; python scripts/test-select-validation.py; python scripts/build-adapters.py --check; node scripts/build-record-store-schema.mjs --check; git diff --check.",
+      "summary": "Fresh actual results: npm 524 total, 522 passed, 2 existing skips; metadata 115 passed; installed-package publication 7 passed; selector 162 passed including 3 same-identity regressions. Generated adapter and schema/template parity and whitespace checks passed. No hosted CI, publication or completion claimed. Latest npm rerun passed 522/524 with 2 existing skips and zero failures (19.996 seconds)."
+    },
+    {
+      "id": "er-m5-001-lifecycle-regression",
+      "actor": {
+        "id": "root-bugfix",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/artifact_lifecycle_validation.py",
+          "identity": "sha256:a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323"
+        },
+        {
+          "path": "scripts/test-artifact-lifecycle-validator.py",
+          "identity": "sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635"
+        },
+        {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        }
+      ],
+      "result": "passed",
+      "procedure": "2026-09-07: python scripts/test-artifact-lifecycle-validator.py -k er_m5_001; actual packaged recorder creates all five record kinds in fresh temporary roots; both metadata composition settings; no Git or network needed.",
+      "summary": "Pre-correction automated proof: 2 tests, 8 failed assertions, exit 1. Valid manifest/review paths hit legacy Review ID/log requirements; non-composed helper misses proper metadata failures for unknown contract, malformed JSON/review and missing review. Test identity sha256:ee97f27dffac635cf6824e94500e90d0d28dbd17be3248135a74e8c1b40d3463; production identity sha256:c2d409f51c5ef9a3b1fed727f72a3ef3ee84674977342c0ecee5d9a402c1a5fd. Expected valid complete-set acceptance without mutation, invalid set explicit rejection. Fix authority: latest explicit user approval of lifecycle validator correction, regression, independent rereview and M5. Operation fix; commands current-bounded; writes governed-scope-bound to these two scripts and existing evidence; single governed candidate; settled WF-SR-10/CLI-SR-10, M4 TG-07/TG-FINAL-02; reproduced integration-mismatch, feasible automated proof, supported cause. No Design/model/plan/runtime changes or external actions. Post-fix same-identity command: 2 tests passed in 9.101 seconds, exit 0; production correction reuses the existing validator before legacy dispatch, no automatic workflow changes. Full lifecycle/CI and independent review pending. Current combined rerun: python scripts/test-artifact-lifecycle-validator.py -k er_m5_ passed all 3 tests in 12.641 seconds (exit 0), with ER-M5-002 test bytes unchanged from its red proof. ER-M5-001 original same-identity red/green proof above remains preserved; the later test-file addition covers ER-M5-002 without weakening earlier assertions. Production safeguard explicitly rejects direct tracked-snapshot new-contract validation; ordinary selector-owned explicit-path working-tree complete-set validation remains supported. Full CI and independent rereview pending. Current full lifecycle suite passed 168 tests in 41.760 seconds; historical review suite 113 passed in 3.915 seconds. Actual new review-path lifecycle command exits zero and git diff --check passes. Final local CI after all corrections passed all 20 selected checks. Independent current final-code-review records correction and affected whole-change clean-with-notes; er-m5-002 resolved by its actual reviewer. Earlier pending statements above are preserved handoff history, not current test or review status."
+    },
+    {
+      "id": "er-m5-002-regression",
+      "actor": {
+        "id": "root-bugfix",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/artifact_lifecycle_validation.py",
+          "identity": "sha256:a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323"
+        },
+        {
+          "path": "scripts/test-artifact-lifecycle-validator.py",
+          "identity": "sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635"
+        }
+      ],
+      "result": "passed",
+      "procedure": "2026-09-07: python scripts/test-artifact-lifecycle-validator.py -k er_m5_002; public-created temporary record sets and temporary Git fixture commits only; pr-ci/push-main-ci, both metadata composition settings, selected valid/unknown contract/CRLF review with distinct valid live bytes.",
+      "summary": "Before correction: 1 test, 12 failed assertions, exit 1, 8.067s. Selected snapshots wrongly accepted using different live bytes. Exact proof test hash sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635; production hash sha256:1d69eee0d9bf83ccda8d65b4c49a40938e9fa821a2dacd619075b7c7e0e9d7ca. Reviewer-owned ER-M5-002 durably recorded before correction. Settled no-false-proof/compatibility basis, feasible failing automated proof, integration-mismatch. Bounded correction will explicitly stop unavailable tracked-revision new-contract validation, not introduce arbitrary Git snapshot support; ordinary selector-owned working-tree validation remains supported. Current combined rerun: python scripts/test-artifact-lifecycle-validator.py -k er_m5_ passed all 3 tests in 12.641 seconds (exit 0), with ER-M5-002 test bytes unchanged from its red proof. ER-M5-001 original same-identity red/green proof above remains preserved; the later test-file addition covers ER-M5-002 without weakening earlier assertions. Production safeguard explicitly rejects direct tracked-snapshot new-contract validation; ordinary selector-owned explicit-path working-tree complete-set validation remains supported. Full CI and independent rereview pending. Current full lifecycle suite passed 168 tests in 41.760 seconds; historical review suite 113 passed in 3.915 seconds. Actual new review-path lifecycle command exits zero and git diff --check passes. Final local CI after all corrections passed all 20 selected checks. Independent current final-code-review records correction and affected whole-change clean-with-notes; er-m5-002 resolved by its actual reviewer. Earlier pending statements above are preserved handoff history, not current test or review status."
+    },
+    {
+      "id": "m5-current-record-check",
+      "actor": {
+        "id": "root-verification",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/proposal-review.md",
+          "identity": "sha256:5b14201e9045aacfe606fcdf97fa09a56b178f0fffc68ef3a5748538e150f51f"
+        },
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/design-review.md",
+          "identity": "sha256:a58852b6d169b39d275de8ab571d6ea3585cb0b4ade36d8768a81d44c5c2cafc"
+        },
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/delivery-review.md",
+          "identity": "sha256:0e513d5dc5a49f5d7f872ef7d3af409e561a72ddeff48d971ee5839cd19cd64a"
+        },
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md",
+          "identity": "sha256:43d0e97d1bc647f562ba94cc2dc318a51babd8c3ab4a65263b3cadf863b5d73a"
+        }
+      ],
+      "result": "passed",
+      "procedure": "2026-09-07: python scripts/validate-change-metadata.py docs/changes/2026-09-05-explicit-recording-and-model-centered-design/change.yaml; python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md; exact SHA-256 comparison of all current review subjects.",
+      "summary": "Both focused commands exit 0 after current independent rereview recording. All four judgments approved; exact current subject counts 3/9/7/69 with no drift, no open reviewer findings. ER-M5-002 resolved by independent reviewer. Original resolved finding subject hashes intentionally remain historical; they are not current approval subjects. Completion remains for independent M5 assessment."
+    },
+    {
+      "id": "m5-independent-final-verification",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": ".gitignore",
+          "identity": "sha256:29f586c6bfb851c8935e6bd779a0e32bec79823c97facd5cfb8a421e17395819"
+        },
+        {
+          "path": "AGENTS.md",
+          "identity": "sha256:52d4ff2dde00cc5d478726155be41c2322115d67bfde3786901a1d0a961eb993"
+        },
+        {
+          "path": "CONSTITUTION.md",
+          "identity": "sha256:ba13fbf7bbce39f8257f91ca07c657f06b3e22658da89807acb3be9512b38a92"
+        },
+        {
+          "path": "dist/adapters/README.md",
+          "identity": "sha256:947e75b4c9348b98eaac61d36cc5b8844b8a0f6a41452f680fbfa0a895edb5eb"
+        },
+        {
+          "path": "docs/architecture/system/architecture.md",
+          "identity": "sha256:f1d2ea08a55eaa99ac849f37ee9b17d5a470be26671b16b179f72de30d277975"
+        },
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/material-decisions.md",
+          "identity": "sha256:2f17dacdc6ffc3d8839d9a8f1829217befc5351f82657e953b37615beaef5ee8"
+        },
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/delivery-review.md",
+          "identity": "sha256:0e513d5dc5a49f5d7f872ef7d3af409e561a72ddeff48d971ee5839cd19cd64a"
+        },
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/design-review.md",
+          "identity": "sha256:a58852b6d169b39d275de8ab571d6ea3585cb0b4ade36d8768a81d44c5c2cafc"
+        },
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md",
+          "identity": "sha256:43d0e97d1bc647f562ba94cc2dc318a51babd8c3ab4a65263b3cadf863b5d73a"
+        },
+        {
+          "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/proposal-review.md",
+          "identity": "sha256:5b14201e9045aacfe606fcdf97fa09a56b178f0fffc68ef3a5748538e150f51f"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        },
+        {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+        },
+        {
+          "path": "docs/implementation/explicit-recording-m1.md",
+          "identity": "sha256:3dfc7e53a04e49c3c91421c532500af8632610711e25d2c8af7c444c8c46f2c8"
+        },
+        {
+          "path": "docs/implementation/explicit-recording-m2.md",
+          "identity": "sha256:c7af8821db15d8e8cd51d94ee1dccd831a8bb78e6b234c187413e2dd02801c0d"
+        },
+        {
+          "path": "docs/implementation/explicit-recording-m3.md",
+          "identity": "sha256:4a4b6b9a34ae19c1d67ceb87237f578ae2574a33c549b60fca9fb9105626b0f1"
+        },
+        {
+          "path": "docs/implementation/explicit-recording-m4.md",
+          "identity": "sha256:8a94a65a1ea390f5917393d5eaa21aa78daf42da15d235e6e89e5d6e68c6830b"
+        },
+        {
+          "path": "docs/plan.md",
+          "identity": "sha256:d59116249ec8d288e95c04c2371c231ddacfecbfc8e377abd2f2aa667e1fea16"
+        },
+        {
+          "path": "docs/plans/2026-09-05-explicit-recording-and-model-centered-design.md",
+          "identity": "sha256:2058ebf122e130f7d92f0c5d6dfa464200927ad85f99d4c754893d4ddd4904f4"
+        },
+        {
+          "path": "docs/proposals/2026-09-05-explicit-recording-and-model-centered-design.md",
+          "identity": "sha256:b4efd7fd9010fa0e9af32207afc68abbc847f12f707047c2f640ec7f6e9e44a9"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-and-model-centered-design-delivery.md",
+          "identity": "sha256:a41728e98c4018a3ee9b47c7d0757d8dbf5e95c71e9bc1fcc3232b3b813b9273"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-and-model-centered-design.md",
+          "identity": "sha256:56e21a1a7d0cda7e38516de99347ddc6c95f59c5e256bcf56e3d3bc9f0a04d6d"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-m1-code-review.md",
+          "identity": "sha256:94d54108699b64e2466f1d6bb211b3cdeb9eb9864562993c35e6720a74812349"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-m2-code-review.md",
+          "identity": "sha256:1787d5e21b82ef7599db76020f0b3f2d996ed30c2d33386fa6f1db41bfc3b9e1"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-m3-code-review.md",
+          "identity": "sha256:694bdec6f994f655252d4839cebbdf022f955c11c2b81ac1f8ca06c08b14c984"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-m4-code-review.md",
+          "identity": "sha256:f7f4db5fdb0b57f073c004723aafca99c7175d97a1a4c4f9c291ccac5eb19d4c"
+        },
+        {
+          "path": "packages/rigorloop/dist/bin/rigorloop.js",
+          "identity": "sha256:0e468cf3bbb9c030a8825015d3bc2d3b05e627f291f31f8cbd9147c43b52272b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:5d27c3f20f57f770140c705fdad46c2286bb709ee158d4d5296cdb2d77a2a5cc"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:9c76928470276d8ebd1a8a2900cec9a016207b5fb5084f6d893cedf460c56405"
+        },
+        {
+          "path": "packages/rigorloop/dist/metadata/adapter-artifacts-v0.5.1.json",
+          "identity": "sha256:1c27e0767d018af9e15f0b5c0a16a55b4d542510b22ee82b8ada1afa131310c6"
+        },
+        {
+          "path": "packages/rigorloop/dist/metadata/releases.json",
+          "identity": "sha256:69ea4ebaf432c328355f2693033e79c03dfebd95a98da82e1facc6a01bbadf31"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json",
+          "identity": "sha256:3c5c78689dcd2fe31a43bf3b48c684c2c7dcaea3729b67b76b049e1531de38c2"
+        },
+        {
+          "path": "packages/rigorloop/dist/templates/explicit-recording/records.json",
+          "identity": "sha256:f32fc683953f7b6eadbd6c4a34454b716547187ab509970a1557d0b43c049675"
+        },
+        {
+          "path": "packages/rigorloop/README.md",
+          "identity": "sha256:71d506c1036aef9b13296364ce59fa041fff7a3a324e3dcefcd8bca1af2e5a5e"
+        },
+        {
+          "path": "packages/rigorloop/test/cli.test.js",
+          "identity": "sha256:c44203eb4495b3c77d238bf96a969b0829746b5dd66ab62547a2771167a59c56"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/record-store-launcher.mjs",
+          "identity": "sha256:54c35e54cfb6b71f9680bcc3a4ba4d133d5fa5949cf33d88f76cbfab1c193fa8"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-cli.test.js",
+          "identity": "sha256:feb09e6a639d83eef4e1895421376ffec7ec8ec9e72a5381ccb3b1bd38b973be"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-contract.test.js",
+          "identity": "sha256:55b718c66e918ea3921639d2875d5ee582cbcbc5e1a31ce58b1f77b85aa49ef3"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-workflow.test.js",
+          "identity": "sha256:35c3d134bd03c014fb9d86c873a88e816ce8b2df0323dc4d177de049d3504d18"
+        },
+        {
+          "path": "schemas/explicit-recording-v1.schema.json",
+          "identity": "sha256:3c5c78689dcd2fe31a43bf3b48c684c2c7dcaea3729b67b76b049e1531de38c2"
+        },
+        {
+          "path": "scripts/artifact_lifecycle_validation.py",
+          "identity": "sha256:a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323"
+        },
+        {
+          "path": "scripts/boundary_first_validation.py",
+          "identity": "sha256:403d9c77f2c8fe3a99a532157c2b5ad639b23ca6a405f20757d92b969f5e04af"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:69fd13f1530dc31cccf9f12de035509723fb2188d9ab6512ae04dc4204a98b32"
+        },
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "scripts/test-adapter-distribution.py",
+          "identity": "sha256:fd4c3c61b7524f3e22fa7a3b608607863e27a9fdc29ea80e6f4d70dff02e01ec"
+        },
+        {
+          "path": "scripts/test-artifact-lifecycle-validator.py",
+          "identity": "sha256:daafba014ecc1f065c27c71fbcb5af515dfecc4367ffd613855937687a79f635"
+        },
+        {
+          "path": "scripts/test-boundary-first-validation.py",
+          "identity": "sha256:832b6f0754f89350bd1cdb11fa8ba80fb16f3530461f93c551d55f1e055cf997"
+        },
+        {
+          "path": "scripts/test-change-metadata-validator.py",
+          "identity": "sha256:44d5ab15486006f90fd156a11021e823377eacc5614616cdd570b3c40a89100d"
+        },
+        {
+          "path": "scripts/test-npm-package-publication.py",
+          "identity": "sha256:b369e63983d4456a9f1a4ae1108040b3b593006358ff47ab64c20e66b81ffc44"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:2b61a2aed302d32cab9557b658423b0cd4f4f3be0c2451a3688f524b32153d86"
+        },
+        {
+          "path": "scripts/test-skill-validator.py",
+          "identity": "sha256:08422daaa2ba9cbfeae0d51a76a58a138fea98cf7692810bfe6bf753329f870d"
+        },
+        {
+          "path": "scripts/validate-boundary-first.py",
+          "identity": "sha256:3d12bb1991e923ae9a409ecde67e49fe1c73a63c461f05a1e16510cd20b65288"
+        },
+        {
+          "path": "scripts/validate-change-metadata.py",
+          "identity": "sha256:5d3829970b9695841f132bea7d6c61e56d0f45a512ec9057482b5f5f7c2de399"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:339baf0fdcae22d77bc427c11ee483f275720b91a6d89d2254efae355eda16c6"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:9f1a7f7998b4e171f51ddf9d0d3673a0151db583e22e40590c2012d184fd5682"
+        },
+        {
+          "path": "skills/architecture/SKILL.md",
+          "identity": "sha256:3d19519808911916552ba4b841f680ce82f34dbd5e4154dfa7eef4cc6409fa27"
+        },
+        {
+          "path": "skills/code-review/SKILL.md",
+          "identity": "sha256:6879564a4a577113bec5ed02af6dd677fe2d275e7b6ec362384884e7634f30a7"
+        },
+        {
+          "path": "skills/delivery-review/SKILL.md",
+          "identity": "sha256:527e3f722f8f607ab26f5a7629d6242bfb458d881e6a6448d8d77b6f6f361987"
+        },
+        {
+          "path": "skills/design-review/SKILL.md",
+          "identity": "sha256:4d5805df40fcd54d711899fa88e20f0a25d073b796b3f707b277c09fa105d602"
+        },
+        {
+          "path": "skills/implement/SKILL.md",
+          "identity": "sha256:682196d731cd9a3d91598bcf0b76cbc93c2354712bc67581fa940cc28f50bbbe"
+        },
+        {
+          "path": "skills/plan/SKILL.md",
+          "identity": "sha256:df0ae5c1fdbd03b15c7d3dffe81e43d01877f70b2b1faca7b0c719c4ad00adad"
+        },
+        {
+          "path": "skills/proposal-review/SKILL.md",
+          "identity": "sha256:2f229d90510e45e63e25c228f65f8fe85261214f68e7fa4ed8c979d0ca6dd677"
+        },
+        {
+          "path": "skills/proposal/SKILL.md",
+          "identity": "sha256:181484512c300a3a1c89af42f289d3986e47aece0973382b0d5bec92dfc586cc"
+        },
+        {
+          "path": "skills/route/SKILL.md",
+          "identity": "sha256:298ad4ec122811f3e3b6d759154eb5172a88910c4b47d3ec6dd7703bfe3150fe"
+        },
+        {
+          "path": "skills/spec/SKILL.md",
+          "identity": "sha256:b313228b5a0c4575e63427d183b2da3a7651d1c195fa159b3e3a0ad6ff2edebf"
+        },
+        {
+          "path": "skills/verify/SKILL.md",
+          "identity": "sha256:661bb3314b3f24cbb99f1179e593d8b21bd42eb80ddb127a9c655fe6f9a57f27"
+        },
+        {
+          "path": "specs/boundary-first-proof-model.md",
+          "identity": "sha256:a166b68a673d485c83a0b665446933c774406b03a4f464b205426ae9b8b315bb"
+        },
+        {
+          "path": "specs/compact-current-state-change-record.md",
+          "identity": "sha256:a07cbbe6e7b9c703c779ba905d3e6c521a10eb0215db30ff7734206e17b758fc"
+        },
+        {
+          "path": "specs/rigorloop-workflow.md",
+          "identity": "sha256:b755687df0f75199dbab35438895bb23fe26a2e150d75b9407f7cdc589355dde"
+        },
+        {
+          "path": "specs/skill-contract.md",
+          "identity": "sha256:02efe372f358bce68a1d1e85e4dcd4ca6a8686c652f0cb1258d2563884215408"
+        },
+        {
+          "path": "templates/explicit-recording/records.json",
+          "identity": "sha256:f32fc683953f7b6eadbd6c4a34454b716547187ab509970a1557d0b43c049675"
+        },
+        {
+          "path": "tests/fixtures/explicit-recording-v1/records.json",
+          "identity": "sha256:d26bcaf4b366160e55968f56e9c39d4d22e418689ee2b80ed12e215c803f856c"
+        },
+        {
+          "path": "VISION.md",
+          "identity": "sha256:9e2d76bff364133fe34d7246c8b4dbbdc2a9c838dc89179ea74037be0a6c0501"
+        }
+      ],
+      "result": "passed",
+      "procedure": "2026-09-07 independent workflow-final-verification: node --test packages/rigorloop/test/record-store-contract.test.js packages/rigorloop/test/record-store-cli.test.js packages/rigorloop/test/record-store-workflow.test.js; python scripts/validate-boundary-first.py --check --path docs/design/workflow.md --path docs/design/cli.md; node scripts/build-record-store-schema.mjs --check; python scripts/test-artifact-lifecycle-validator.py -k er_m5; python scripts/validate-change-metadata.py docs/changes/2026-09-05-explicit-recording-and-model-centered-design/change.yaml; python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md; public record-store inspect, exact subject-hash comparison and git diff --check.",
+      "summary": "Independent results: 59 recorder tests passed, 3 lifecycle regression tests passed including 12 tracked-mode cases, model/schema checks passed, current metadata/lifecycle commands exited zero and all required review/proof subjects matched. Assessed all21SR/scenario/composed-hazard allocations, independent current approvals, preserved M4 semantic/rollback proof, latest producer final20-check local CI/fulladapter157/lifecycle168/npm522+2skips/metadata115/publication7/selector162 evidence, and both actual owner dispositions. No current failed/inconclusive proof or open finding remains. Resolved historical finding subjects intentionally retain old hashes. Direct tracked-snapshot new-contract lifecycle validation is unavailable; working-tree explicit-path validation is supported. External final-target timing exclusion and actor-provenance limits remain. No hosted/native-tool/release/PR claim."
+    }
+  ]
+}

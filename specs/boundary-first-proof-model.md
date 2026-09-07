@@ -19,6 +19,8 @@ Activation record identity: specs/boundary-first-activation.yaml
 
 ## Goal and context
 
+Prospective model documents explicitly marked `Model validation contract: explicit-recording-v1` use the [Workflow-owned model validation and proof mapping](../docs/design/workflow.md#model-validation-and-proof-mapping), not this feature-document serialization. That mapping retains the eight reasoning dimensions, requirement ownership, plan-owned proof allocation and independent semantic assessment without extra boundary/test-spec files. Model structural checks do not activate a lifecycle contract. Historical feature-format and activation rules remain unchanged; the mapping clarifies the structural-reporting and Design Review handoff for grandfathered amendments under PBF-R049b/PBF-R055a/PBF-R056.
+
 This spec defines a portable boundary-first contract for behavior-changing
 feature specs, test specs, plans, implementation, review, and verification.
 
@@ -446,6 +448,7 @@ PBF-R049b. Structural validation MUST use the release-activation manifest to
 distinguish grandfathered feature specs from new feature specs.
 It MUST NOT infer whether an edit to a grandfathered spec is substantively
 normative.
+Changed unmarked grandfathered specs MUST produce the separate `review_required` observation defined by the Workflow-owned mapping. A `review-required` result with exit zero establishes structural success only; any structural error still fails with nonzero exit, including mixed results. Unknown markers and malformed boundary content remain errors.
 
 PBF-R050. Structural validators MUST NOT claim semantic completeness,
 applicability correctness, interaction adequacy, milestone isolation, proof
@@ -473,10 +476,11 @@ PBF-R055. Spelling, formatting, links, status settlement, review-record
 references, and non-normative example clarification MUST NOT activate the
 contract by themselves.
 
-PBF-R055a. `spec-review` MUST classify whether a changed grandfathered feature
+PBF-R055a. `design-review` MUST classify whether a changed grandfathered feature
 spec is substantively revised.
 An undecidable classification blocks review rather than allowing an unmarked
 substantive change.
+The independent classification binds exact subjects in the existing review record. New-profile-only amendments use their owning model and explicitly preserve the historical remainder; substantive historical revisions retain feature-format adoption. Missing, uncertain or stale classification blocks downstream reliance and Verify regardless of structural CI success. The validator neither supplies nor authenticates approval.
 
 PBF-R056. Existing accepted historical specs MUST remain valid until
 substantively revised and MUST NOT require automatic migration.
@@ -506,7 +510,7 @@ store, or custom rollback writer is part of this capability.
 
 PBF-R059. `spec-review` MUST own semantic approval of dimension applicability,
 boundary completeness, interactions, invariants, outcomes, and example
-ownership and substantive-revision classification for grandfathered specs.
+ownership under its historical scope. Current grandfathered-spec classification is owned by `design-review` under PBF-R055a.
 
 PBF-R060. `plan-review` MUST own semantic approval of boundary sequencing,
 milestone isolation, dependencies, rollback units, and proof timing.

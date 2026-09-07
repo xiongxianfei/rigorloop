@@ -1,0 +1,73 @@
+---
+{
+  "schema_version": 1,
+  "change_id": "2026-09-05-explicit-recording-and-model-centered-design",
+  "decisions": [
+    {
+      "id": "explicit-recording-adoption",
+      "actor": {
+        "id": "root-coordinator",
+        "role": "route"
+      },
+      "subjects": [
+        {
+          "path": "docs/proposals/2026-09-05-explicit-recording-and-model-centered-design.md",
+          "identity": "sha256:b4efd7fd9010fa0e9af32207afc68abbc847f12f707047c2f640ec7f6e9e44a9"
+        },
+        {
+          "path": "docs/plans/2026-09-05-explicit-recording-and-model-centered-design.md",
+          "identity": "sha256:2058ebf122e130f7d92f0c5d6dfa464200927ad85f99d4c754893d4ddd4904f4"
+        },
+        {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        },
+        {
+          "path": "CONSTITUTION.md",
+          "identity": "sha256:ba13fbf7bbce39f8257f91ca07c657f06b3e22658da89807acb3be9512b38a92"
+        },
+        {
+          "path": "docs/implementation/explicit-recording-m4.md",
+          "identity": "sha256:8a94a65a1ea390f5917393d5eaa21aa78daf42da15d235e6e89e5d6e68c6830b"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-and-model-centered-design.md",
+          "identity": "sha256:56e21a1a7d0cda7e38516de99347ddc6c95f59c5e256bcf56e3d3bc9f0a04d6d"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-and-model-centered-design-delivery.md",
+          "identity": "sha256:a41728e98c4018a3ee9b47c7d0757d8dbf5e95c71e9bc1fcc3232b3b813b9273"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-m1-code-review.md",
+          "identity": "sha256:94d54108699b64e2466f1d6bb211b3cdeb9eb9864562993c35e6720a74812349"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-m2-code-review.md",
+          "identity": "sha256:1787d5e21b82ef7599db76020f0b3f2d996ed30c2d33386fa6f1db41bfc3b9e1"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-m3-code-review.md",
+          "identity": "sha256:694bdec6f994f655252d4839cebbdf022f955c11c2b81ac1f8ca06c08b14c984"
+        },
+        {
+          "path": "docs/reviews/explicit-recording-m4-code-review.md",
+          "identity": "sha256:f7f4db5fdb0b57f073c004723aafca99c7175d97a1a4c4f9c291ccac5eb19d4c"
+        }
+      ],
+      "rationale": "On 2026-09-07 the user explicitly approved creation of this previously absent explicit-recording-v1 root, preservation of existing review evidence, and resuming M5. M4 packaged adoption and distinct whole-change review are clean-with-notes. This records new-contract selection in the isolated worktree only; it grants no commit, publication or historical migration. Existing advisory records and exact judgments remain unchanged; their independent owners must record any new current judgment, never relabel old evidence automatically.",
+      "source_refs": []
+    }
+  ]
+}
+---
+
+# Explicit adoption and preserved evidence
+
+The user authorized this new record and M5 on 2026-09-07. Existing model, plan, implementation and advisory review files remain in place and unchanged. Their initial-draft/no-root wording records historical drafting context, not current state. The exact subjects above preserve that basis; new review decisions remain independently reviewer-owned.
+
+M1-M4 are recorded completed from their execution evidence and independently reviewed handoffs. M5 remains pending, with no successful Verify report. Public release, commits and changes to historical roots remain outside scope.
