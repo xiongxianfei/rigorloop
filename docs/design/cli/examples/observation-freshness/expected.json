@@ -1,0 +1,8 @@
+{
+  "historical_subject_identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "first_observation_identity": "sha256:ab1a57a566200c3fddaa907d028e73f599a0a4d3348a425f31e1eee2f10f84e0",
+  "current_observation_identity": "sha256:62da1f557608c29e637fb043d96cc454242e3eed68618d20f0da682567def327",
+  "same_record_revision": true,
+  "same_diagnostics": true,
+  "continuation_status": "conflict"
+}
