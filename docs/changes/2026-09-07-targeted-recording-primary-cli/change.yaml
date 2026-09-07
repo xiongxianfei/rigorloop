@@ -31,12 +31,12 @@
   ],
   "activity": {
     "stage": "code-review",
-    "status": "in-progress",
+    "status": "completed",
     "owner": {
       "id": "m2-code-review",
       "role": "review"
     },
-    "reason": "Route hands the bounded M2 implementation and exact evidence to independent Code Review for lock-failure correction reassessment. M3 has not started."
+    "reason": "Route records M2 closure after independent Code Review approved the exact corrected implementation and evidence, with m2-cr-001 resolved. This continuation ends at M2; M3 remains the next unstarted dependency. No whole-change completion, Verify or activation claim."
   },
   "plan": {
     "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
@@ -62,7 +62,7 @@
     },
     {
       "id": "m2",
-      "status": "ready",
+      "status": "completed",
       "owner": {
         "id": "codex-root",
         "role": "implement"
@@ -152,7 +152,7 @@
         "id": "m2-code-review",
         "role": "review"
       },
-      "reason": "Independent M2 first pass records open m2-cr-001 against exact inspected subjects; changes requested before correction."
+      "reason": "Independent M2 rereview approves exact final implementation and verified registered evidence. m2-cr-001 resolved; no remaining material findings. This is milestone scope only."
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/evidence.yaml",
