@@ -1,3 +1,34 @@
+---
+{
+  "schema_version": 1,
+  "change_id": "2026-09-07-targeted-recording-primary-cli",
+  "id": "proposal-review-r1",
+  "target": "proposal",
+  "reviewer": {
+    "id": "independent-proposal-review",
+    "role": "review"
+  },
+  "contributors": [
+    {
+      "id": "user",
+      "role": "human"
+    },
+    {
+      "id": "codex-root",
+      "role": "design"
+    }
+  ],
+  "independence_basis": "Original judgment by separately delegated agent /root/independent_proposal_review, which authored none of the proposal. This recording preserves that assessment and its exact proposal identity; relocation is performed by codex-root and is not a new review.",
+  "subjects": [
+    {
+      "path": "docs/proposals/2026-09-07-targeted-recording-primary-cli.md",
+      "identity": "sha256:8200c3145bbdbe929be893c7fdd9327a829308084a31efe25d96a032b9b4f0c4"
+    }
+  ],
+  "judgment": "approved",
+  "findings": []
+}
+---
 # Targeted recording proposal review
 
 ## Result
@@ -6,8 +37,8 @@
 - Review status: approved
 - Vision alignment: aligned
 - Material findings: none
-- Open blockers: formal lifecycle settlement lacks an authoritative selected change; proposal assessment has no blocker.
-- Proposal readiness: direction is sufficient for Design; no formal next-stage eligibility is established.
+- Open findings: none in the original proposal assessment.
+- Proposal readiness: original direction assessment is approved; this relocation grants no additional stage authority.
 - Immediate next stage: isolated stop
 - Automatic downstream handoff: none
 - Claim limitations: independent direction review only; no Design, Delivery, implementation, verification, activation or release approval. The proposal's authorization of further Design and Delivery work remains subject to the intervening Design and Delivery gates; it does not bypass them.
@@ -43,29 +74,12 @@
 - Gate outcomes: pass. Core public interface work and coordinated adoption dependencies are classified with reasons; detailed mechanisms remain downstream, and excluded work is explicit. No hidden follow-up is introduced.
 - Trigger ambiguity: none. VISION.md and CONSTITUTION.md exist; no vision exception or standing-artifact bootstrap decision is needed.
 
-## Durable-recording group
+## Registered recording
 
-- Recording status: recorded
-- Recording blocker: none for review evidence; authoritative lifecycle settlement is unavailable.
-- Record path: docs/changes/2026-09-07-targeted-recording-primary-cli-review-recording/reviews/proposal-review-r1.md
-- Finding-record paths: none
-
-## Formal-settlement group
-
-- Review ID: proposal-review-r1
-- Review record: docs/changes/2026-09-07-targeted-recording-primary-cli-review-recording/reviews/proposal-review-r1.md
-- Review log: docs/changes/2026-09-07-targeted-recording-primary-cli-review-recording/review-log.md
-- Review resolution: not-required
-- Proposal settlement: not performed; recording-only fallback grants no settlement authority. No change.yaml was created or changed.
-- Governed change identity: unknown. The proposal has no owning-change pointer, and authoritative workflow-context returned RL_CONTEXT_CHANGE_INVALID for unrelated 2026-04-24-multi-agent-adapters-first-public-release, with no selected change or lifecycle contract.
-- Formal next-stage eligibility: unavailable; no eligibility claim or automatic handoff.
+This review is registered under the owning change through record-store. The original independent direction judgment, finding-free assessment and exact proposal subject are preserved. Obsolete fallback registration and review-log machinery are removed; historical workflow-context failure is not a prerequisite for this recording profile. No new review or downstream approval is claimed.
 
 ## Subject and independence evidence
 
-- Recording mode: formal-lifecycle
-- Automation mode: manual
-- Assembly: PRR1G-recorded-context-gated
-- Recording identity: 2026-09-07-targeted-recording-primary-cli-review-recording; minimal recording-only fallback under the proposal-review recording procedure, not a registered implementation initiative.
 - Reviewed proposal: [Make Targeted Recording the Primary CLI Interface](../../../proposals/2026-09-07-targeted-recording-primary-cli.md)
 - Exact SHA-256: 8200c3145bbdbe929be893c7fdd9327a829308084a31efe25d96a032b9b4f0c4
 - Actual contributors: the user supplied the direction and substantive proposal text; the parent Codex agent /root authored the repository proposal and its scope/intent additions.
@@ -73,11 +87,6 @@
 - Evidence basis: current VISION.md and CONSTITUTION.md; CLI model requirements CLI-SR-01 through CLI-SR-11 and Candidate update contract, Result schema, and Save safety and recovery boundary; Workflow requirements WF-SR-01 through WF-SR-10 and Responsibility-specific updates; the linked 2026-09-05 explicit-recording proposal. These support the draft-level assessment, not implementation correctness.
 - Evidence scope: no project-map or current-code inference was needed. The model drafts are evaluated as proposed contracts, not active adopted authority. The original user request was compared against the complete proposal.
 
-## Validation
+## Relocation validation
 
-- `python scripts/validate-markdown-readability.py docs/changes/2026-09-07-targeted-recording-primary-cli-review-recording/reviews/proposal-review-r1.md docs/changes/2026-09-07-targeted-recording-primary-cli-review-recording/review-log.md`: passed for both files, with audit-only MDREAD-002 warnings.
-- `git diff --no-index --check /dev/null <review-record>` and the same command for `<review-log>`: no whitespace diagnostics; exit 1 reflects the new-file comparison.
-- `sha256sum docs/proposals/2026-09-07-targeted-recording-primary-cli.md`: matched the exact reviewed identity above.
-- `node packages/rigorloop/dist/bin/rigorloop.js workflow-context --format json`: exit 2, blocked with RL_CONTEXT_CHANGE_INVALID as recorded above. This prevents formal settlement reliance, not the independent direction assessment.
-
-No behavior-changing implementation was reviewed or tested.
+The proposal bytes were checked against the original reviewed SHA-256 before recording. The CLI check validates the combined manifest and review; record publishes them with expected revision and subject identities, and subsequent inspect verifies registration. Original document-only review did not test runtime behavior.

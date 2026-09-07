@@ -11,14 +11,14 @@
       "id": "workflow",
       "subject": {
         "path": "docs/design/workflow.md",
-        "identity": "sha256:526d1d300db4eb1a7a772b9c0621c570bc04c73b3ae3a4424f1162d044571ee1"
+        "identity": "sha256:115e7e0857f16dc580aa6083c86773ebdc2ec91dab569a31e9ef532796e745c8"
       }
     },
     {
       "id": "cli",
       "subject": {
         "path": "docs/design/cli.md",
-        "identity": "sha256:938c9aeea27174f6ba7e86e839365b84c68a9765c84455dd648d435a9b461761"
+        "identity": "sha256:ffeb1bd910a2ea63fa96cf618a2bf3c2978526f114316af9d5a37495b8e509c4"
       }
     },
     {
@@ -44,17 +44,30 @@
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
       "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",
+      "kind": "review"
     }
   ],
   "applicability": [
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
+      "value": "stale",
+      "actor": {
+        "id": "codex-root",
+        "role": "design"
+      },
+      "reason": "Workflow and CLI model references were changed to the registered proposal-review path. Preserve the original review subjects and open rf-dr-001; current applicability needs reviewer reassessment of the changed exact package."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",
       "value": "current",
       "actor": {
-        "id": "record-format-rereview",
-        "role": "review"
+        "id": "codex-root",
+        "role": "design"
       },
-      "reason": "The three exact model subjects remain unchanged from the independent assessment; the changes-requested judgment and open rf-dr-001 apply to this package. Current applicability is not approval."
+      "reason": "The original approved proposal judgment is preserved and its exact reviewed proposal identity is unchanged; relocation adds no new approval."
     }
   ],
   "blockers": []
