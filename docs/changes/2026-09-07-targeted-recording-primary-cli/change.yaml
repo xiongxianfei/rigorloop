@@ -11,21 +11,21 @@
       "id": "workflow",
       "subject": {
         "path": "docs/design/workflow/workflow.md",
-        "identity": "sha256:2286a09a7a760013cebc8c6ec06758ae9a239618e2af72dce61789b0edc6bf20"
+        "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
       }
     },
     {
       "id": "cli",
       "subject": {
         "path": "docs/design/cli/cli.md",
-        "identity": "sha256:532cc0b06ec6fc3417c3387a3139c8b12e31d80663adb6d09155e79c10c2551f"
+        "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
       }
     },
     {
       "id": "record-format",
       "subject": {
         "path": "docs/design/record-format/record-format.md",
-        "identity": "sha256:3a2e18d5df85101104f738dfc7ef7ca9c264437a5a332e0b0e3ac88427a7c108"
+        "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
       }
     }
   ],
@@ -53,12 +53,12 @@
   "applicability": [
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
-      "value": "current",
+      "value": "stale",
       "actor": {
-        "id": "record-format-rereview",
-        "role": "review"
+        "id": "codex-root",
+        "role": "design"
       },
-      "reason": "Independent rereview approves the exact current three-model package and relied-on examples; rf-dr-001 is explicitly resolved against the corrected identity contract. No runtime activation or routing decision is implied."
+      "reason": "User-requested current-path/ownership cleanup and explicit v2 EntryRef target namespaces, per-file disjoint IDs and structural outcomes change the reviewed package. Preserve prior approval subjects and resolved rf-dr-001; new exact package requires independent rereview."
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",

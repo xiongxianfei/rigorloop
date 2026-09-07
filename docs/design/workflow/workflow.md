@@ -102,12 +102,12 @@ Workflow has three conceptual parts, not three services or mandatory files: stag
 | Mutable work state and explicit decisions | Change-local manifest: v2 change.json; v1 change.yaml |
 | Current judgment and open findings | Stable change-local review record for the applicable target; each finding carries its own retained origin basis |
 | New non-review-stage blocker, including Verify failure | Structured blocker entries in the change record, with evidence references; no fabricated review |
-| Current proof and freshness subjects | Conditional change-local `evidence.yaml` |
+| Current proof and freshness subjects | Conditional change-local evidence.json in v2; evidence.yaml in v1 compatibility |
 | Resolved rationale that still constrains work | Conditional material-decisions.json in v2; material-decisions.md in v1 |
 | Stable delivery allocation | Existing plan surface |
 | Successful final explanation | Success-only verify-report.json in v2; verify-report.md in v1 |
 
-These placements preserve distinct responsibilities under the `explicit-recording-v1` contract defined below; they do not claim compatibility with existing compact schemas. A blocker originating in Verify remains owned there for closure even when a subsequent review supplies supporting judgment. Review findings remain reviewer-owned.
+These placements express Workflow responsibilities through the [Record Format contract](../record-format/record-format.md#explicit-record-schema): v2 uses the selected JSON paths and v1 retains its compatibility paths. They do not claim compatibility with compact schemas. A blocker originating in Verify remains owned there for closure even when a subsequent review supplies supporting judgment. Review findings remain reviewer-owned.
 
 ### Record model
 
@@ -212,12 +212,12 @@ The v1 compatibility schema and YAML/Markdown paths remain unchanged. The explic
 
 | Surface family | Required action before primary-interface adoption | Owning responsibility |
 | --- | --- | --- |
-| CLI model and Workflow model | Keep request construction, semantic ownership, batch/preview/scope, record-level applicability and compatibility mutually consistent | Design and independent Design Review |
+| CLI, Workflow and Record Format models | Keep request construction, semantic ownership, batch/preview/scope, record-level applicability and compatibility mutually consistent | Design and independent Design Review |
 | Canonical stage skills and their transitive references/assets | Replace normal full-file procedure with purpose-specific commands; bound per-operation help, retain sufficient-basis reading, actor ownership and independent review; keep advanced recovery conditional | Workflow Design defines behavior; Delivery allocates exact files; implementation updates authored sources |
 | Route and Verify guidance | Use recorded status and scoped context without next-stage inference; distinguish findings/blockers and keep final assessment/completion explicit | Workflow Design, then corresponding guidance implementation |
 | Governance, workflow/skill contracts and system architecture | Amend only interface/adoption descriptions affected by this change; retain historical-contract handlers and one-file model authority | Design identifies affected clauses; Delivery supplies concrete diffs or justified unaffected dispositions |
 | CLI dispatcher, shared record engine, public help and package examples | Implement the CLI model catalogue and shared pipeline; per-command help avoids unrelated schemas | CLI implementation after reviewed Delivery allocation |
-| Targeted request/result schemas, validators, model checks and focused regression coverage | Fail closed on unknown values and conflicting operations; prove preservation, safety parity, scoped output and correction availability | CLI/Workflow requirements, then Delivery proof allocation |
+| Targeted request/result schemas, validators, model checks and focused regression coverage | Fail closed on unknown values and conflicting operations; prove preservation, safety parity, scoped output and correction availability | CLI, Workflow and Record Format requirements, then Delivery proof allocation |
 | Supported Codex, Claude and OpenCode adapter packages and examples | Generate from authored skills and verify parity using existing build/release validation; do not hand-edit distributed bodies | Delivery allocation and adapter implementation |
 | Complete-interaction token evaluation | Measure guidance, reads, requests, results and follow-up with adequate identical decision basis; do not claim savings from payload-only comparisons | Delivery allocation and Verify evidence |
 
@@ -250,7 +250,7 @@ This inventory implements WF-SR-07/10 at the level of governing rules and affect
 | WF-MAP-09 | [Route skill](../../../skills/route/SKILL.md) and [Verify skill](../../../skills/verify/SKILL.md): permitted-operation context, routing, correction and final completion | Amend shared guidance: WF-SR-01/04/05/06/09 supplies decision ownership; consume CLI storage observations without delegated eligibility judgment. | Keep author/reviewer write boundaries, isolated invocation limits and external permissions. No new automatic progression is introduced. |
 | WF-MAP-10 | [AGENTS.md](../../../AGENTS.md), Artifact lifecycle defaults, Planning and workflow, Required reading before implementation | Amend shared guidance to select model-file authority and explicit recording only for the new contract. | Preserve canonical source paths, user changes, historical continuation, small diffs and validation obligations. |
 
-The CLI model owns the companion storage/schema/runtime inventory; these rows do not duplicate its normative interface. Prior [closeout simplification](../../proposals/2026-09-04-remove-final-code-review-and-simplify-cli.md) and [correction lifecycle](../../proposals/2026-09-05-compact-correction-lifecycle-amendment.md) initiatives, their design artifacts and findings are retained as separately owned work. This inventory neither establishes their current lifecycle state nor closes their obligations.
+CLI owns the companion command, encoding and runtime inventory; Record Format owns stored schemas, reference interpretation and preservation; these rows do not duplicate its normative interface. Prior [closeout simplification](../../proposals/2026-09-04-remove-final-code-review-and-simplify-cli.md) and [correction lifecycle](../../proposals/2026-09-05-compact-correction-lifecycle-amendment.md) initiatives, their design artifacts and findings are retained as separately owned work. This inventory neither establishes their current lifecycle state nor closes their obligations.
 
 ### Adoption support surfaces and completion check
 
@@ -267,7 +267,7 @@ The inventory identifies the principal replacement sites, but is not evidence th
 
 ### Model documentation and traceability
 
-This file owns the one-file-per-model convention. `cli.md` consumes it rather than restating that contract. Model documents contain stable intent, including meaningful decisions and rejected alternatives. Change records identify affected model paths and exact content identities; requirement references combine model identity and stable local ID. A shared contract belongs to one existing model or a deliberately justified shared model, never duplicate normative prose.
+This file owns the one-file-per-model convention. CLI and Record Format consume it rather than restating that contract. Model documents contain stable intent, including meaningful decisions and rejected alternatives. Change records identify affected model paths and exact content identities; requirement references combine model identity and stable local ID. A shared contract belongs to one existing model or a deliberately justified shared model, never duplicate normative prose.
 
 Two features changing the same model use the same document. They must reconcile overlapping requirements before either treats a review as applicable to the combined content. Splitting or renaming a model requires an explicit responsibility and reference mapping, not just a size threshold.
 
@@ -385,7 +385,7 @@ Model: coherent system responsibility with owned concepts and rules. Judgment: a
 
 ## Drafting basis and authority
 
-This living model combines behavioral requirements, architecture and decision rationale. The targeted-interface amendment is authored under the user's explicit request to finish the CLI/Workflow Design and obtain independent Design Review. The exact package is this file (`workflow`), `record-format.md` (`record-format`) and `cli.md` (`cli`); no separate specification or ADR sibling is created. The current Constitution permits explicitly selected explicit-recording-v1 work; the new purpose-specific interface remains prospective. This drafting step changes no executable behavior, persisted contract or historical lifecycle record.
+This living model combines behavioral requirements, architecture and decision rationale. The targeted-interface amendment is authored under the user's explicit request to finish the CLI/Workflow Design and obtain independent Design Review. The exact package is docs/design/workflow/workflow.md (`workflow`), docs/design/record-format/record-format.md (`record-format`) and docs/design/cli/cli.md (`cli`); no separate specification or ADR sibling is created. The current Constitution permits explicitly selected explicit-recording-v1 work; the new purpose-specific interface remains prospective. This drafting step changes no executable behavior, persisted contract or historical lifecycle record.
 
 Current direction: [Make Targeted Recording the Primary CLI Interface](../../proposals/2026-09-07-targeted-recording-primary-cli.md), its [independent Proposal Review](../../changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md), and the user-supplied command boundary. Earlier direction: [Explicit Workflow Recording and Model-Centered Design](../../proposals/2026-09-05-explicit-recording-and-model-centered-design.md). Related model: [CLI](../cli/cli.md). Current [Constitution](../../../CONSTITUTION.md) and contract-selected [workflow specification](../../../specs/rigorloop-workflow.md) retain their authority; this amendment does not claim historical lifecycle settlement. The architectural and specification authoring methods are combined here rather than producing mandatory sidecars. This is not yet a complete replacement for all existing workflow contracts.
 
