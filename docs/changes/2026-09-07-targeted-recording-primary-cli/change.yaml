@@ -36,11 +36,11 @@
       "id": "targeted-delivery-review",
       "role": "review"
     },
-    "reason": "Recorded independent approval of the exact delivery plan and its verification allocation. Isolated review stop; no implementation, routing or activation decision."
+    "reason": "Independent reassessment resolves the three adopted user findings and approves the exact revised delivery package. Isolated review; no routing, implementation or activation."
   },
   "plan": {
     "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
-    "identity": "sha256:635e121d38ab31b45e47581a96204f59efbede92fef22b9224dfe3f799e5ed50"
+    "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
   },
   "work": [],
   "records": [
@@ -83,7 +83,7 @@
         "id": "targeted-delivery-review",
         "role": "review"
       },
-      "reason": "Independent Delivery Review approves the exact primary plan against current approved design-review; sequencing and full proof allocation are sufficient, with no material findings."
+      "reason": "Independent rereview approves the exact revised plan after user-discovered dp-01/dp-02/dp-03 were validated and explicitly resolved; original finding basis retained."
     }
   ],
   "blockers": []
