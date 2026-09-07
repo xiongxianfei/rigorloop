@@ -282,7 +282,7 @@
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/delivery-review.md",
-      "identity": "sha256:0e513d5dc5a49f5d7f872ef7d3af409e561a72ddeff48d971ee5839cd19cd64a"
+      "identity": "sha256:350e556556b251bd178c12a7d8a2fb00e1a275644349cf77b8e5a976815c4674"
     },
     {
       "path": "scripts/artifact_lifecycle_validation.py",
@@ -299,6 +299,10 @@
     {
       "path": "scripts/test-governed-lifecycle-cli-validator.py",
       "identity": "sha256:121ecb1affc2270fc48cfa1b2b061f629a027bf3d738ef62e0e248b9cb1a10d1"
+    },
+    {
+      "path": "docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json",
+      "identity": "sha256:b68eb8bdc1d4e54df60d7dfac9e959c90b9453d5f913fcfbddc1408216c0a70a"
     }
   ],
   "judgment": "approved",
@@ -562,3 +566,19 @@ Coordinator proof: unchanged regression21tests passed12.212s, metadata115tests p
 All ten checklist items pass: approved contract separation; positive and five rejection cases/nonmutation; mixed/invalid/incomplete boundaries; fail-closed helper and exceptions; shared validation ownership; preserved historical semantics and exact spec bytes; no new credentials/payload logging; unchanged packaged/runtime/guidance subjects; bounded two scripts plus owned paragraph restoration; attributable tests and real wrapper proof.
 
 Distinct affected whole-change judgment: clean-with-notes. Current M1-M4 implementation, prior snapshot fixes and adoption remain coherent after these changes. No new public command, schema, model, transition, migration or historical waiver is introduced. Verify-owned ER-PR-001 and ER-PR-004 remain open for the exact committed PR reassessment; Code Review does not disposition them. No branch-ready/PR-ready/Verify success or automatic downstream handoff is claimed.
+
+## Delivery evidence freshness acknowledgment
+
+The current independent affected Delivery reassessment approves the unchanged plan against current Design reconciliation. Code reviewer assessed that updated basis; no engineering, test, model, plan or guidance bytes changed. Earlier current whole-change implementation judgment remains clean-with-notes, with exact Delivery subject updated where referenced. The actual subsequent PR retirement-ledger failure is a new Verify-owned integration blocker, not hidden by this acknowledgment; no branch readiness or Verify success is claimed.
+
+## Current retirement-inventory correction and affected whole-change review
+
+Review status: clean-with-notes. Recording status: recorded. Independent reviewer authored no ledger correction. The current exact ledger is included in subjects; all unchanged prior whole-change subjects, including current Delivery basis, were rehashed without drift.
+
+The sole engineering delta assigns model.validate to existing canonical-skill-integrity/GateA, and record_store.schema plus build-record-store-schema.mjs and validate-record-store.mjs to existing lifecycle-governance. Their structural/proof responsibilities fit those owners; updated protected-failure/reuse prose does not grant semantic approval. R14 of published-skill-first-repository-simplification requires ongoing script/check ownership. No retirement state, budget, baseline allowance, test oracle, CLI behavior, schema, model or historical lifecycle settlement changes.
+
+Independent commands: python scripts/test-retirement-ledger.py,16tests passed0.255s; git diff --check exit0. Producer er-pr-005-regression preserves the unchanged-test3failure preproof and corrected pass; its additional tail-check preflight is not a substitute for the still-required full PR run.
+
+All ten checklist items pass: contract/R14 alignment; exact ownership and inventory regression coverage; closed ownership/retirement boundaries; unchanged fail-closed errors; existing gate reuse; preserved historical semantics; no sensitive-output/permission expansion; no generated-runtime changes; one scoped operational ledger; actual attributable validation.
+
+Distinct current affected whole-change judgment: clean-with-notes. This inventory repair completes the newly found proof-ownership omission without changing the reviewed M1-M4 behavior, snapshot/wrapper corrections, plan allocations or Design reconciliation. No further implementation finding is identified. Verify-owned ER-PR-001/004/005 remain for exact committed branch reassessment; no readiness, hostedCI, push or PR claim is made by Code Review.

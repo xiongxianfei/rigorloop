@@ -50,6 +50,7 @@
     {
       "id": "canonical-skill-integrity",
       "check_ids": [
+        "model.validate",
         "boundary_first.validate",
         "boundary_first.reference_regression",
         "boundary_first.regression",
@@ -67,10 +68,10 @@
         "scripts/test-build-skills.py",
         "scripts/build-skills.py"
       ],
-      "protected_failure": "Invalid canonical structure, resource map, path, placeholder, boundary projection, or generated local mirror drift.",
+      "protected_failure": "Invalid canonical skill or model structure, resource map, path, placeholder, boundary projection, or generated local mirror drift.",
       "owner": "gate-a",
       "deterministic_automation": "Appropriate because all facts are repository-local structure, path, vocabulary, or byte facts.",
-      "existing_owner_decision": "Consolidate inside the existing skill-validation and build modules; do not add a new CLI.",
+      "existing_owner_decision": "Consolidate inside the existing skill-validation and build modules; do not add a new CLI. Model validation reuses the existing boundary validator and decides no semantic readiness.",
       "invocation": "Selector catalog, CI wrapper, contributor commands, and release composition.",
       "actionable_repair": "Edit canonical skills or mapped resources and regenerate derived output.",
       "fixture_inventory": [
@@ -173,6 +174,7 @@
     {
       "id": "lifecycle-governance",
       "check_ids": [
+        "record_store.schema",
         "compact_contract.canonical",
         "review_artifacts.regression",
         "review_artifacts.validate",
@@ -190,6 +192,8 @@
       ],
       "scripts": [
         "scripts/test-compact-current-state-canonical-contract.py",
+        "scripts/build-record-store-schema.mjs",
+        "scripts/validate-record-store.mjs",
         "scripts/validate-artifact-lifecycle.py",
         "scripts/artifact_lifecycle_validation.py",
         "scripts/test-artifact-lifecycle-validator.py",
@@ -210,10 +214,10 @@
         "scripts/validate-governed-lifecycle-cli.py",
         "scripts/test-retirement-ledger.py"
       ],
-      "protected_failure": "Malformed lifecycle state, illegal transition, dangling evidence, contradictory state, invalid review record, or unknown closed-vocabulary value.",
+      "protected_failure": "Malformed lifecycle state, illegal transition, dangling evidence, contradictory state, invalid review record, unknown closed-vocabulary value, or drift in explicit-recording schemas and complete-set validation.",
       "owner": "governance",
       "deterministic_automation": "Appropriate because record shapes, references, transitions, and vocabularies are deterministic.",
-      "existing_owner_decision": "Compose focused modules behind the existing artifact-lifecycle entry point in M5.",
+      "existing_owner_decision": "Compose focused modules behind the existing artifact-lifecycle entry point in M5. Explicit-recording schema generation and complete-set helpers reuse the packaged contract validator behind the same metadata/lifecycle validation owners; they introduce no separate workflow evaluator.",
       "invocation": "Workflow stages, selector catalog, CI, and direct lifecycle validation.",
       "actionable_repair": "Correct the owning change record or referenced stage evidence before handoff.",
       "fixture_inventory": [

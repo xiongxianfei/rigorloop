@@ -184,7 +184,7 @@
         "id": "review-compact-fix",
         "role": "review"
       },
-      "reason": "Independent current delivery assessment against exact subjects after explicit user adoption; no automatic conversion of prior advisory evidence."
+      "reason": "Independent affected Delivery reassessment and dependent Code basis refreshed; new Verify blocker does not imply readiness."
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/final-code-review.md",
@@ -193,7 +193,7 @@
         "id": "review-compact-fix",
         "role": "review"
       },
-      "reason": "Independent wrapper correction and affected whole-change review against current exact subjects; PR Verify remains separate."
+      "reason": "Independent ledger correction and affected whole-change review; all current reviewed subjects matched. Required branch Verify remains separate."
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/verify-report.md",
@@ -326,6 +326,47 @@
       ],
       "evidence": "Actual required PR wrapper at head577b9754f8700a944e61ddc2371632353d90ad92 exits1: Governance lifecycle validation wrapper regressions,19tests/1failure. test_t13_main_emits_one_aggregate_and_suppresses_successful_child_stdout expects0 but gets1. Independent activation_inventory_errors reports new explicit root unreadable: line1 expected key:value; historical YAML loader does not dispatch its JSON recording contract. See evidence.yaml#pr-branch-577b9754.",
       "required_outcome": "Make the repository lifecycle-wrapper inventory handle the explicitly selected recording contract without applying historical YAML/lifecycle semantics or silently exempting unknown/invalid records. Add regression proof, independent correction and affected whole-change review, then rerun the complete required PR verification on a fresh immutable candidate. Verify does not repair; bounded implementation authority required.",
+      "state": "open",
+      "resolution": null
+    },
+    {
+      "id": "er-pr-005",
+      "reporter": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "owner": {
+        "id": "ci-maintenance-owner",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "scripts/test-retirement-ledger.py",
+          "identity": "sha256:b6f73a456b24e74ba6dfb4796e62ede0f9b450797c4a5c98de4661d36c2e5227"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:9f1a7f7998b4e171f51ddf9d0d3673a0151db583e22e40590c2012d184fd5682"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:272b75e7b7b92b83e2d4150e603df44802dcfc4c982db676f68b48235150ec27"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:69fd13f1530dc31cccf9f12de035509723fb2188d9ab6512ae04dc4204a98b32"
+        },
+        {
+          "path": "docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json",
+          "identity": "sha256:b20cc30f2cca69b246d58855fd02dbf1f0060573b9f21317e9ded0aeb71e85ed"
+        }
+      ],
+      "evidence": "Required PR run on c79ca7db3ef2d1704ea6a1704d987cc27e314135 exits1 at python scripts/test-retirement-ledger.py:16tests/3failures/0.080s. Ownership missing for record_store.schema and model.validate; script inventory missing validate-record-store.mjs and build-record-store-schema.mjs. See evidence.yaml#pr-branch-c79ca7db.",
+      "required_outcome": "Reconcile exact new check/script ownership in the repository retirement inventory under its proper owner without weakening completeness tests or fabricating historical settlement. Add bounded proof, independent affected review and fresh complete PR verification. No automatic Verify repair or historical record rewrite.",
       "state": "open",
       "resolution": null
     }

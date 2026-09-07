@@ -42,7 +42,7 @@
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/design-review.md",
-      "identity": "sha256:a58852b6d169b39d275de8ab571d6ea3585cb0b4ade36d8768a81d44c5c2cafc"
+      "identity": "sha256:9b5f86926555775022fc7c8274c4c43fe6d7992ca031d912d27ccc188e45779c"
     }
   ],
   "judgment": "approved",
@@ -72,3 +72,9 @@ TG-01–07 allocate required closed-vocabulary, null/empty, encoding, exact-limi
 DELIVERY-001's correction still explicitly separates M4 slice review from independent final whole-change Code Review and requires refreshed review after affected correction/CI changes before Verify. ER-M5-001 is an implementation integration miss against the already allocated real adoption/selector obligation, not absent Delivery allocation. Its correction and Code Review do not substitute for the Verify owner's reassessment.
 
 No further material sequencing, feasibility, scope or proof-allocation gap was identified. Commands in the plan are obligations, not success claims made by this Delivery judgment. Existing advisory first-pass finding and rereview remain unchanged.
+
+## Current affected Delivery reassessment
+
+Skill: delivery-review. Review status: approved. Package: the unchanged2026-09-05 explicit-recording plan. Upstream: current design-review including preserve-historical-compact-spec reconciliation. Recording status: recorded; no historical settlement or implementation claim.
+
+Independent reviewer reread the entire plan and current Design reconciliation; no plan authorship. All21SR allocations, both eight-dimension scenario sets and combined hazards retain their proof groups and owner boundaries. M1representation, M2complete storage, M3guidance, M4adoption plus distinct final Code Review and M5Verify remain a safe sequence. Restoring exact historical spec bytes satisfies TG-FINAL02 without a new normative behavior or missing allocation. Wrapper/snapshot compatibility corrections lie within M4integration and triggered correction review. Normal, negative, concurrency, recovery, migration-prohibition and supported-output proof remain required. No findings or plan changes required. This is explicit reassessment, not automatic hash retargeting; PR verification failure below is not Delivery approval of failing implementation.

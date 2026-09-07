@@ -713,6 +713,66 @@
       "result": "passed",
       "procedure": "python scripts/test-governed-lifecycle-cli-validator.py; python scripts/test-change-metadata-validator.py; python scripts/validate-governed-lifecycle-cli.py; git diff --exit-code d6770adfbbd835363d3b428acbd5a27a9485171b -- specs/compact-current-state-change-record.md",
       "summary": "2026-09-07 pre-correction: existing mocked-success wrapper regression and new explicit inventory/invalid-set regressions fail. User authorizes fix then PR. Fix/current-bounded/governed-scope-bound/single-governed-candidate; settled WF-SR-09/10, CLI-SR-02/10, TG-FINAL-02 and required ci.sh gate; integration-mismatch supported, automated proof feasible. Scope two wrapper/test scripts and existing evidence; no public CLI, model, schema, historical manifest or workflow changes. Expected: explicit JSON sets strictly validated by existing complete-set validator, classified separately from frozen legacy inventory; unknown/mixed/malformed/incomplete sets reject, historical loader remains unchanged. Test identities above bind pre/post proof. No-map rationale: exact failing wrapper and its calls establish bounded placement without project-map reliance. Pre-correction suite:21tests/7failed assertions/1.423s. Post-correction unchanged test identity:21passed/11.878s. Actual repository wrapper then exposed stale spec evidence in the historical compact change, caused solely by our redundant scope paragraph. Spec-owner assessment restored only that paragraph to base d6770adfbbd835363d3b428acbd5a27a9485171b bytes; no historical record/approval retargeting or baseline waiver. Final exact same wrapper regression suite:21passed/12.212s. python scripts/test-change-metadata-validator.py:115passed/24.05s. python scripts/validate-governed-lifecycle-cli.py:passed,38historical records,3existing baseline warnings,zero failures/activation errors. git diff --exit-code d6770adfbbd835363d3b428acbd5a27a9485171b -- specs/compact-current-state-change-record.md:exit0. Original worktree unchanged. Independent affected Design/Code review and exactPR Verify remain required."
+    },
+    {
+      "id": "pr-branch-c79ca7db",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "scripts/test-retirement-ledger.py",
+          "identity": "sha256:b6f73a456b24e74ba6dfb4796e62ede0f9b450797c4a5c98de4661d36c2e5227"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:9f1a7f7998b4e171f51ddf9d0d3673a0151db583e22e40590c2012d184fd5682"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:272b75e7b7b92b83e2d4150e603df44802dcfc4c982db676f68b48235150ec27"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:69fd13f1530dc31cccf9f12de035509723fb2188d9ab6512ae04dc4204a98b32"
+        },
+        {
+          "path": "docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json",
+          "identity": "sha256:b20cc30f2cca69b246d58855fd02dbf1f0060573b9f21317e9ded0aeb71e85ed"
+        }
+      ],
+      "result": "failed",
+      "procedure": "2026-09-07: bash scripts/ci.sh --mode pr --base d6770adfbbd835363d3b428acbd5a27a9485171b --head c79ca7db3ef2d1704ea6a1704d987cc27e314135",
+      "summary": "Actual session68516 completed exit1; final output retained. Fourteen preceding sequential gates passed: canonical integrity/regressions/currency/boundary; adapter regressions/build/validation; release integrity; npm; lifecycle wrapper regressions and real wrapper; metadata, lifecycle and review-evidence regressions. Fifteenth gate retirement ledger fails16tests/3assertions in0.080s: missing model.validate/record_store.schema ownership and two proof scripts. Later snapshot PR lifecycle gate not reached. Successful check counts suppressed by wrapper, not invented. HEAD/base/live origin main confirmed; no source mutation, hostedCI, push or PR. Prior report remains unchanged/stale; no branch-ready basis."
+    },
+    {
+      "id": "er-pr-005-regression",
+      "actor": {
+        "id": "root-bugfix",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json",
+          "identity": "sha256:b68eb8bdc1d4e54df60d7dfac9e959c90b9453d5f913fcfbddc1408216c0a70a"
+        },
+        {
+          "path": "scripts/test-retirement-ledger.py",
+          "identity": "sha256:b6f73a456b24e74ba6dfb4796e62ede0f9b450797c4a5c98de4661d36c2e5227"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:9f1a7f7998b4e171f51ddf9d0d3673a0151db583e22e40590c2012d184fd5682"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-retirement-ledger.py",
+      "summary": "2026-09-07 before correction:16tests/3failures/0.232s. Existing identity-stable tests reject missing model.validate and record_store.schema ownership, plus validate-record-store.mjs/build-record-store-schema.mjs inventory. Fix/current-bounded/governed-scope-bound/single-governed-candidate; user fix-then-submit scope. Cause integration-mismatch, supported; settled simplification R14 and approved explicit-recording TG-FINAL02, feasible failing automated proof. Writable correction only existing operational retirement-ledger catalog entries; no budget/retirement-policy/state, historical lifecycle/review record, test expectation, publicCLI or model change. Extend existing Gate A/governance owners rather than adding a validation subsystem. Existing repo history maintains this catalog for later initiatives. CI-maintenance coverage/project-validation-automation/project-native-other-provider/ordinary-workflow-context/preserve-existing-structure/CIM6; named focused check plus exactCIgate required. Post-fix same test bytes sha256:b6f73a456b24e74ba6dfb4796e62ede0f9b450797c4a5c98de4661d36c2e5227:16passed/0.233s; independent reviewer16passed/0.255s. Old ledger identityb20cc30f2cca69b246d58855fd02dbf1f0060573b9f21317e9ded0aeb71e85ed retained here for red proof. node scripts/build-record-store-schema.mjs --check passed; python scripts/validate-boundary-first.py --check --path docs/design/workflow.md --path docs/design/cli.md passed structure/references; git diff --check passed. Named remaining-CI preflight commands all exited0: test-query-change-record.py27tests; test-workflow-automation.py78; test-workflow-code-state.py19; test-workflow-automation-policy.py20; test-workflow-automation-state.py71; test-validate-workflow-automation.py68; test-fidelity-gate-spec-reads.py with CI representative-review/max4096/no-broad-reads args; validate-readme.py README.md with/without --vision-markers; test-markdown-readability-validator.py7; test-guide-system-validator.py8; validate-guide-system.py. These are bounded producer checks, not exact finalPR Verify or hostedCI. Exact-c79 snapshot gate preflight remains pending at recording time; final committed PR command still required."
     }
   ]
 }
