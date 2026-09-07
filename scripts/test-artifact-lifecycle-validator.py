@@ -616,15 +616,35 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
                                     result.blocking_findings)
 
     def test_er_m5_002_recording_tracked_revision_never_uses_live_bytes(self):
-        for selected in ("valid", "unknown_value", "review-crlf"):
+        for selected in ("valid", "unknown_value", "review-crlf", "manifest-bom",
+                         "missing-review", "symlink-review", "duplicate-key", "invalid-utf8",
+                         "missing-evidence", "invalid-decisions", "invalid-verify", "live-symlink"):
             root, contents = self.recording_root()
+            (root / "innocent.txt").write_text("Unrelated tracked content.\n")
             base = init_git_fixture(root)
             manifest = root / "docs/changes/example/change.yaml"
             review = root / "docs/changes/example/reviews/design-review.md"
             if selected == "unknown_value":
                 manifest.write_text(manifest.read_text().replace("explicit-recording-v1", "unknown_value"))
-            elif selected == "review-crlf":
+            elif selected in {"review-crlf", "live-symlink"}:
                 review.write_bytes(review.read_bytes().replace(b"\n", b"\r\n"))
+            elif selected == "manifest-bom":
+                manifest.write_bytes(b"\xef\xbb\xbf" + manifest.read_bytes())
+            elif selected == "missing-review":
+                review.unlink()
+            elif selected == "symlink-review":
+                review.unlink()
+                review.symlink_to("../material-decisions.md")
+            elif selected == "duplicate-key":
+                manifest.write_text(manifest.read_text().replace('"schema_version": 1',
+                                                               '"schema_version": 1, "schema_version": 1'))
+            elif selected == "invalid-utf8":
+                review.write_bytes(review.read_bytes() + b"\xff")
+            elif selected == "missing-evidence":
+                (manifest.parent / "evidence.yaml").unlink()
+            elif selected in {"invalid-decisions", "invalid-verify"}:
+                name = "material-decisions.md" if selected == "invalid-decisions" else "verify-report.md"
+                (manifest.parent / name).write_bytes(b"\xff\n")
             else:
                 manifest.write_text(manifest.read_text() + "\n")
             subprocess.run(["git", "add", "docs/changes/example"], cwd=root, check=True, capture_output=True)
@@ -633,15 +653,46 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
                                   capture_output=True, text=True).stdout.strip()
             # Keep a valid but distinct live set: it cannot prove the selected revision.
             for path, content in contents.items():
+                if (root / path).is_symlink():
+                    (root / path).unlink()
                 (root / path).write_text(content)
+            if selected == "valid":
+                # A valid snapshot must also pass when the live set is invalid.
+                review.write_text("unrelated live bytes\n")
+            elif selected == "live-symlink":
+                review.unlink()
+                review.symlink_to(root / "innocent.txt")
             for compose in (False, True):
                 for mode, revisions in (("pr-ci", {"base": base, "head": head}),
                                         ("push-main-ci", {"before": base, "after": head})):
                     with self.subTest(selected=selected, compose=compose, mode=mode):
                         result = validate_repository(root, mode=mode, compose_change_metadata=compose,
                                                      **revisions)
-                        self.assertTrue(any("tracked-revision validation is unavailable" in f.message
-                                            for f in result.blocking_findings), result.blocking_findings)
+                        if selected == "valid":
+                            self.assertFalse(result.blocking_findings, result.blocking_findings)
+                        else:
+                            self.assertTrue(result.blocking_findings)
+            result = subprocess.run(["node", str(ROOT / "scripts/validate-record-store.mjs"),
+                                     str(manifest), "--revision", head], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0 if selected == "valid" else 1,
+                             result.stdout + result.stderr)
+
+    def test_er_pr_002_snapshot_accepts_complete_set_above_request_limit(self):
+        root, contents = self.recording_root()
+        manifest = root / "docs/changes/example/change.yaml"
+        change = json.loads(manifest.read_text())
+        review = contents["docs/changes/example/reviews/design-review.md"]
+        for index in range(9):
+            path = f"docs/changes/example/reviews/large-{index}.md"
+            (root / path).write_text(review.replace('"id": "design-review"',
+                                                    f'"id": "large-{index}"') + "x" * 950000 + "\n")
+            change["records"].append({"path": path, "kind": "review"})
+            change["applicability"].append({**change["applicability"][0], "path": path})
+        manifest.write_text(json.dumps(change) + "\n")
+        head = init_git_fixture(root)
+        result = subprocess.run(["node", str(ROOT / "scripts/validate-record-store.mjs"),
+                                 str(manifest), "--revision", head], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_architecture_contract_matches_canonical_arc42_skeleton(self) -> None:
         skeleton = (ROOT / "skills" / "architecture" / "assets" / "architecture-skeleton.md").read_text(
