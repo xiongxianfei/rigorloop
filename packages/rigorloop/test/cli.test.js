@@ -555,7 +555,7 @@ test("T1 package metadata exposes one public binary and publishable runtime poli
   assert.deepEqual(packageJson.dependencies ?? {}, { yaml: "2.9.0" });
 });
 
-test("TNP-005 package version maps to bundled route-only v0.5.1 adapter metadata", () => {
+test("TNP-005 package version maps to bundled v0.5.1 targeted-recording candidate metadata", () => {
   const metadataPath = join(packageRoot, "dist", "metadata", publicMetadataFile);
   const releaseIndexPath = join(packageRoot, "dist", "metadata", "releases.json");
   assert.equal(existsSync(metadataPath), true);
@@ -574,7 +574,7 @@ test("TNP-005 package version maps to bundled route-only v0.5.1 adapter metadata
   const artifact = metadata.artifacts.find((entry) => entry.adapter === "codex");
   assert.equal(artifact.archive, publicArchiveFile);
   assert.equal(artifact.install_root, ".agents/skills");
-  assert.equal(artifact.tree_sha256, "0167e7acda5ae8f179f210b4a55dfc8d4ed98f8c1eab2083174013cd12568ca6");
+  assert.equal(artifact.tree_sha256, "24ea641bd1a6523a73629d08acaf835012fbec8d8ba18cc74f27fe39409334c8");
   assert.equal(artifact.file_count, 105);
   assert.equal(
     artifact.url,

@@ -2,6 +2,8 @@
 
 # Compact Current-State Change Record
 
+Contract boundary: this document governs its registered historical lifecycle contract. Adopted RigorLoop Record Format work instead uses the [Workflow](../docs/design/workflow/workflow.md), [Record Format](../docs/design/record-format/record-format.md) and [CLI](../docs/design/cli/cli.md) models with actor-owned decisions and targeted recording. Historical eligibility does not gate that recorder, and no root is converted by this amendment.
+
 ## Owning change record
 
 `docs/changes/2026-09-03-compact-current-state-change-record/change.yaml`
