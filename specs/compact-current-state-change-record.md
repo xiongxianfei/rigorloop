@@ -16,8 +16,6 @@ boundary_contract: boundary-first-v1
 
 ## Goal and context
 
-This specification retains its `compact-current-state-v1` scope. The `explicit-recording-v1` contract is separately owned by the [Workflow](../docs/design/workflow.md) and [CLI](../docs/design/cli.md) models and is selected only by an explicit new-root recording request with matching adopted guidance. Its explicit actor decisions do not inherit this contract's derived coordinator or semantic-operation prerequisites. No historical record, finding or subject identity is converted by this separate recording path.
-
 RigorLoop MUST make the current effective state of a governed change directly resumable from a bounded authoritative working set. Current lifecycle coordination, review judgments, open findings, materially constraining decisions, applicable evidence, blockers, remaining work, and final readiness MUST remain available without Git history, pull-request history, committed command requests, transport receipts, machine-local logs, or superseded review rounds.
 
 This contract replaces procedural accumulation with current-state replacement. It preserves every consequence still needed to continue or justify the change and permits non-material superseded procedure to disappear. The CLI owns validation, concurrency, coordinated persistence, recovery, and projection. Stage owners and reviewers continue to own semantic content and decisions.
