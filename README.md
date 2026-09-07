@@ -375,7 +375,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - New `compact-current-state-v1` changes use `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`. Canonical proposal, architecture, specification, plan, and ADR artifacts stay in place and are referenced rather than copied.
 - The compact record works without Git history and without PR access. Git, pull requests, CI, hosted services, and machine-local logs may be useful integrations, but none is required to reconstruct or justify current compact state.
 - Existing non-compact changes retain their registered artifact model and are not rewritten.
-- Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
+- Historical explanations formerly under `docs/explain/` are retained in the plan archive; see the [retired-path mapping](docs/plan-archive.md#retired-explanation-paths). New work records its final explanation in the owning change’s contract-selected Verify report.
 
 ## Source Of Truth
 
