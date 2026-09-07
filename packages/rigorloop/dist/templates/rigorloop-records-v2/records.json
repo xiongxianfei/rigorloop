@@ -1,0 +1,79 @@
+{
+  "change": {
+    "schema_version": 2,
+    "contract": "rigorloop-records-v2",
+    "change_id": "example",
+    "proposal": {
+      "path": "docs/proposals/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "models": [
+      {
+        "id": "workflow",
+        "subject": {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    ],
+    "activity": {
+      "stage": "proposal",
+      "status": "pending",
+      "owner": {
+        "id": "author",
+        "role": "proposal"
+      },
+      "reason": "Example only; replace with the responsible actor's decision"
+    },
+    "plan": null,
+    "work": [],
+    "records": [],
+    "applicability": [],
+    "blockers": []
+  },
+  "review": {
+    "schema_version": 2,
+    "change_id": "example",
+    "id": "design-review",
+    "target": "design",
+    "reviewer": {
+      "id": "reviewer",
+      "role": "review"
+    },
+    "contributors": [
+      {
+        "id": "author",
+        "role": "design"
+      }
+    ],
+    "independence_basis": "Example only; supply actual independent review provenance",
+    "subjects": [],
+    "judgment": "blocked",
+    "findings": [],
+    "body": "Example only; supply the responsible actor's explanation."
+  },
+  "evidence": {
+    "schema_version": 2,
+    "change_id": "example",
+    "checks": []
+  },
+  "decisions": {
+    "schema_version": 2,
+    "change_id": "example",
+    "decisions": [],
+    "body": "Example only; supply the responsible actor's explanation."
+  },
+  "verify": {
+    "schema_version": 2,
+    "change_id": "example",
+    "verifier": {
+      "id": "verifier",
+      "role": "verify"
+    },
+    "subjects": [],
+    "evidence_refs": [],
+    "review_refs": [],
+    "outcome": "success",
+    "body": "Example only; supply the responsible actor's explanation."
+  }
+}
