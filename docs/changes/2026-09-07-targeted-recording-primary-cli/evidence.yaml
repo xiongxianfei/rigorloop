@@ -801,6 +801,546 @@
       "result": "passed",
       "procedure": "Bounded manual scope assessment against approved M1 and independent review corrections.",
       "summary": "Separate v2 pure module and bundled representations only; no public v2 dispatcher/writer, targeted operations or adoption. V1 schema/template/validator bytes remain unchanged. Read-only standalone dispatch checks both manifests. Narrow existing test-path and selector mapping repairs enable actual current proof. No migration or release activation. M1 findings m1-cr-01/02/03 corrected for reviewer reassessment; this evidence does not grant review approval."
+    },
+    {
+      "id": "m2-schema",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-format-v2.js",
+          "identity": "sha256:08cac36c9df883fb3fa6267b3e4f7f5e36a3f43e16d96900a72ede1ca57f8540"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:05fd20c590a54fdcfbe639b7b1d91e956527e985997710a786be51482edfe34f"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-format.js",
+          "identity": "sha256:eabf51c610956c19c8490d42c7cdcd584a65258d0cba4155560886eeda59353a"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:08e946d727c10fcd43e4b545ce544c2e5077a1bc646a92746dde90be4e4feb9c"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-v2-persistence.test.js",
+          "identity": "sha256:6e85ded3a08a8104dbbc40f6f15343d1b8736a35037b673356841682a3f99140"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:70a255d2cad4fc993c9418294563a309244646b79399e3c1412d7208c1af1bc7"
+        }
+      ],
+      "result": "passed",
+      "procedure": "node scripts/build-record-store-schema.mjs --check",
+      "summary": "Passed canonical/package v1 and v2 schema/template byte parity."
+    },
+    {
+      "id": "m2-contract",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-format-v2.js",
+          "identity": "sha256:08cac36c9df883fb3fa6267b3e4f7f5e36a3f43e16d96900a72ede1ca57f8540"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:05fd20c590a54fdcfbe639b7b1d91e956527e985997710a786be51482edfe34f"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-format.js",
+          "identity": "sha256:eabf51c610956c19c8490d42c7cdcd584a65258d0cba4155560886eeda59353a"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:08e946d727c10fcd43e4b545ce544c2e5077a1bc646a92746dde90be4e4feb9c"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-v2-persistence.test.js",
+          "identity": "sha256:6e85ded3a08a8104dbbc40f6f15343d1b8736a35037b673356841682a3f99140"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:70a255d2cad4fc993c9418294563a309244646b79399e3c1412d7208c1af1bc7"
+        }
+      ],
+      "result": "passed",
+      "procedure": "node --test packages/rigorloop/test/record-store-*.test.js",
+      "summary": "119 passed, zero failed. Includes 41 v2 persistence cases: exact advanced JSON/text reads and writes, unchanged v1 envelopes, conflicts/no-op order/lost-success retries, mixed-version subprocess exclusion, all publication phases and repeated recovery, origin tampering, missing-record repair, observed late basis drift, unsafe paths and I/O faults. New adapter absence and reviewer lock regressions failed before their fixes."
+    },
+    {
+      "id": "m2-metadata",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-format-v2.js",
+          "identity": "sha256:08cac36c9df883fb3fa6267b3e4f7f5e36a3f43e16d96900a72ede1ca57f8540"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:05fd20c590a54fdcfbe639b7b1d91e956527e985997710a786be51482edfe34f"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-format.js",
+          "identity": "sha256:eabf51c610956c19c8490d42c7cdcd584a65258d0cba4155560886eeda59353a"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:08e946d727c10fcd43e4b545ce544c2e5077a1bc646a92746dde90be4e4feb9c"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-v2-persistence.test.js",
+          "identity": "sha256:6e85ded3a08a8104dbbc40f6f15343d1b8736a35037b673356841682a3f99140"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:70a255d2cad4fc993c9418294563a309244646b79399e3c1412d7208c1af1bc7"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-change-metadata-validator.py",
+      "summary": "115 passed; retained repository metadata compatibility."
+    },
+    {
+      "id": "m2-model",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-format-v2.js",
+          "identity": "sha256:08cac36c9df883fb3fa6267b3e4f7f5e36a3f43e16d96900a72ede1ca57f8540"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:05fd20c590a54fdcfbe639b7b1d91e956527e985997710a786be51482edfe34f"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-format.js",
+          "identity": "sha256:eabf51c610956c19c8490d42c7cdcd584a65258d0cba4155560886eeda59353a"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:08e946d727c10fcd43e4b545ce544c2e5077a1bc646a92746dde90be4e4feb9c"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-v2-persistence.test.js",
+          "identity": "sha256:6e85ded3a08a8104dbbc40f6f15343d1b8736a35037b673356841682a3f99140"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:70a255d2cad4fc993c9418294563a309244646b79399e3c1412d7208c1af1bc7"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/workflow/workflow.md --path docs/design/record-format/record-format.md",
+      "summary": "Passed structure/references only; no semantic approval or activation claim."
+    },
+    {
+      "id": "m2-boundary",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-format-v2.js",
+          "identity": "sha256:08cac36c9df883fb3fa6267b3e4f7f5e36a3f43e16d96900a72ede1ca57f8540"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:05fd20c590a54fdcfbe639b7b1d91e956527e985997710a786be51482edfe34f"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-format.js",
+          "identity": "sha256:eabf51c610956c19c8490d42c7cdcd584a65258d0cba4155560886eeda59353a"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:08e946d727c10fcd43e4b545ce544c2e5077a1bc646a92746dde90be4e4feb9c"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-v2-persistence.test.js",
+          "identity": "sha256:6e85ded3a08a8104dbbc40f6f15343d1b8736a35037b673356841682a3f99140"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:70a255d2cad4fc993c9418294563a309244646b79399e3c1412d7208c1af1bc7"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-boundary-first-validation.py",
+      "summary": "87 passed."
+    },
+    {
+      "id": "m2-package",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-format-v2.js",
+          "identity": "sha256:08cac36c9df883fb3fa6267b3e4f7f5e36a3f43e16d96900a72ede1ca57f8540"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:05fd20c590a54fdcfbe639b7b1d91e956527e985997710a786be51482edfe34f"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-format.js",
+          "identity": "sha256:eabf51c610956c19c8490d42c7cdcd584a65258d0cba4155560886eeda59353a"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:08e946d727c10fcd43e4b545ce544c2e5077a1bc646a92746dde90be4e4feb9c"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-v2-persistence.test.js",
+          "identity": "sha256:6e85ded3a08a8104dbbc40f6f15343d1b8736a35037b673356841682a3f99140"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:70a255d2cad4fc993c9418294563a309244646b79399e3c1412d7208c1af1bc7"
+        }
+      ],
+      "result": "passed",
+      "procedure": "npm --prefix packages/rigorloop test",
+      "summary": "582 passed, 2 existing historical skips, zero failed (584 total)."
+    },
+    {
+      "id": "m2-package-publication",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-format-v2.js",
+          "identity": "sha256:08cac36c9df883fb3fa6267b3e4f7f5e36a3f43e16d96900a72ede1ca57f8540"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:05fd20c590a54fdcfbe639b7b1d91e956527e985997710a786be51482edfe34f"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-format.js",
+          "identity": "sha256:eabf51c610956c19c8490d42c7cdcd584a65258d0cba4155560886eeda59353a"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:08e946d727c10fcd43e4b545ce544c2e5077a1bc646a92746dde90be4e4feb9c"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-v2-persistence.test.js",
+          "identity": "sha256:6e85ded3a08a8104dbbc40f6f15343d1b8736a35037b673356841682a3f99140"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:70a255d2cad4fc993c9418294563a309244646b79399e3c1412d7208c1af1bc7"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-npm-package-publication.py",
+      "summary": "7 passed; temporary package validation without publication."
+    },
+    {
+      "id": "m2-diff",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-format-v2.js",
+          "identity": "sha256:08cac36c9df883fb3fa6267b3e4f7f5e36a3f43e16d96900a72ede1ca57f8540"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:05fd20c590a54fdcfbe639b7b1d91e956527e985997710a786be51482edfe34f"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-format.js",
+          "identity": "sha256:eabf51c610956c19c8490d42c7cdcd584a65258d0cba4155560886eeda59353a"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:08e946d727c10fcd43e4b545ce544c2e5077a1bc646a92746dde90be4e4feb9c"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-v2-persistence.test.js",
+          "identity": "sha256:6e85ded3a08a8104dbbc40f6f15343d1b8736a35037b673356841682a3f99140"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:70a255d2cad4fc993c9418294563a309244646b79399e3c1412d7208c1af1bc7"
+        }
+      ],
+      "result": "passed",
+      "procedure": "git diff --check; git diff --cached --check",
+      "summary": "Passed whitespace integrity; not behavioral proof."
+    },
+    {
+      "id": "m2-scope",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-format-v2.js",
+          "identity": "sha256:08cac36c9df883fb3fa6267b3e4f7f5e36a3f43e16d96900a72ede1ca57f8540"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-cli.js",
+          "identity": "sha256:05fd20c590a54fdcfbe639b7b1d91e956527e985997710a786be51482edfe34f"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-format.js",
+          "identity": "sha256:eabf51c610956c19c8490d42c7cdcd584a65258d0cba4155560886eeda59353a"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:08e946d727c10fcd43e4b545ce544c2e5077a1bc646a92746dde90be4e4feb9c"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-v2-persistence.test.js",
+          "identity": "sha256:6e85ded3a08a8104dbbc40f6f15343d1b8736a35037b673356841682a3f99140"
+        },
+        {
+          "path": "scripts/validate-record-store.mjs",
+          "identity": "sha256:70a255d2cad4fc993c9418294563a309244646b79399e3c1412d7208c1af1bc7"
+        }
+      ],
+      "result": "passed",
+      "procedure": "Bounded manual M2 scope assessment and explicit-path validation selection; independent finding m2-cr-001 correction.",
+      "summary": "Shared advanced engine now dispatches v1/v2 manifests, requests and recoverable journals without conversion. V1 schema, templates and legacy validator bytes are unchanged. Existing RecordFiles containment remains shared and unchanged. V2 origin preservation applies to candidate construction and recovery; missing evidence remains repairable. Results are prepared before writes, and standalone validation uses coordinated engine reads. Exact-owned failed locks can be released; partial/unknown locks remain untouched with recovery-required and no fabricated recovery identity. No expanded external-editor or OS guarantee. Primary targeted commands, bounded diagnostic rendering, consumer adoption and final Verify remain later milestones. Explicit selection of the staged implementation paths returned ok without blockers. M1 approval retains its exact increment subjects; it is not silently retargeted to M2. Current M2 proof covers the changed shared surfaces; this evidence awaits independent review approval."
     }
   ]
 }

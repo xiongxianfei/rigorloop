@@ -248,3 +248,8 @@ export function validateV2Preservation(changeId, beforeFiles, afterFiles) {
   }
   return after;
 }
+
+// Shared strict, bounded decoding before advanced request version dispatch.
+export function parseRequestJSON(input) {
+  return strictJSON(decode(input,8*MIB));
+}
