@@ -29,7 +29,7 @@
       }
     }
   ],
-  "activity": {"owner":{"id":"codex-root","role":"verify"},"reason":"Route records completion after successful M6 assessment, exact final whole-change Code Review and independently current Delivery/Design/Proposal basis. All in-scope implementation work and required correction assessment are complete. Isolated closeout; no PR/publication/customer activation authority.","stage":"verify","status":"completed"},
+  "activity": {"owner":{"id":"codex-root","role":"implement"},"reason":"Route selects bounded M5 validation corrections final-cr-001/002/003, then independent final whole-PR Code Review and refreshed Verify before authorized PR handoff.","stage":"implement","status":"in-progress"},
   "plan": {
     "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
     "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
@@ -255,6 +255,6 @@
       "actor": {"id":"codex-root","role":"verify"},
       "reason": "Current final evidence explicitly supports this exact implementation and basis. Retained earlier check entries describe historical increments; no old subject is rewritten."
     }
-  ,{"actor":{"id":"final-code-review","role":"review"},"path":"docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review.md","reason":"Independent whole-change assessment applies to these exact current implementation, consumer, model and delivery subjects. Historical milestone subjects remain truthful; this integrated judgment replaces no prior actor decision.","value":"current"},{"actor":{"id":"codex-root","role":"verify"},"path":"docs/changes/2026-09-07-targeted-recording-primary-cli/verify-report.md","reason":"Successful M6 final coherence assessment of the exact complete change and cited current proof; no external release or activation claim.","value":"current"}],
+  ,{"actor":{"id":"final-code-review","role":"review"},"path":"docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review.md","reason":"Current independent whole-PR coverage assessment identifies an actionable selector defect in the additional merge-base range; prior clean assessment remains historical scoped evidence.","value":"current"},{"actor":{"id":"codex-root","role":"verify"},"path":"docs/changes/2026-09-07-targeted-recording-primary-cli/verify-report.md","reason":"PR-range review found final-cr-001/002/003 in earlier included model-layout/selector work. Previous success remains historical; full PR-range correction and fresh Verify required.","value":"stale"}],
   "blockers": []
 }
