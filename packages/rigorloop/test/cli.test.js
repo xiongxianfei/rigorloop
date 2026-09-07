@@ -574,7 +574,7 @@ test("TNP-005 package version maps to bundled route-only v0.5.1 adapter metadata
   const artifact = metadata.artifacts.find((entry) => entry.adapter === "codex");
   assert.equal(artifact.archive, publicArchiveFile);
   assert.equal(artifact.install_root, ".agents/skills");
-  assert.equal(artifact.tree_sha256, "9186086ef5010680de12f670e72cabc577055cbf8d71cbb30ce9763549d77c86");
+  assert.equal(artifact.tree_sha256, "0167e7acda5ae8f179f210b4a55dfc8d4ed98f8c1eab2083174013cd12568ca6");
   assert.equal(artifact.file_count, 105);
   assert.equal(
     artifact.url,

@@ -25,8 +25,8 @@ from npm_package_validation import (  # noqa: E402
 )
 
 PACKAGE_ROOT = ROOT / "packages" / "rigorloop"
-CURRENT_VERSION_FIXTURE = ROOT / "tests" / "fixtures" / "release-transaction" / "current-version.json"
-PACKAGE_VERSION = json.loads(CURRENT_VERSION_FIXTURE.read_text(encoding="utf-8"))["package_version"]
+# Smoke tests pack the current package, not the release-transaction's old-version fixture.
+PACKAGE_VERSION = json.loads((PACKAGE_ROOT / "package.json").read_text(encoding="utf-8"))["version"]
 RELEASE_TAG = f"v{PACKAGE_VERSION}"
 METADATA_FILE = f"adapter-artifacts-{RELEASE_TAG}.json"
 TARGET_SKILL_ROOTS = {
@@ -57,6 +57,103 @@ def pack_package(destination: Path) -> Path:
 
 
 class NpmPackagePublicationTests(unittest.TestCase):
+    def assert_explicit_recording(self, binary: Path, project: Path) -> None:
+        package = binary.resolve().parents[2]
+        templates = json.loads((package / "dist/templates/explicit-recording/records.json").read_text())
+        self.assertEqual((package / "dist/templates/explicit-recording/records.json").read_bytes(),
+                         (ROOT / "templates/explicit-recording/records.json").read_bytes())
+        self.assertTrue((package / "dist/schemas/explicit-recording-v1.schema.json").is_file())
+        (project / "docs/changes").mkdir(parents=True)
+        manifest = project / "docs/changes/example/change.yaml"
+        change = templates["change"]
+        change["activity"]["reason"] = "Explicit installed-package test decision"
+        content = json.dumps(change) + "\n"
+        request = {"schema_version": 1, "contract": "explicit-recording-v1", "change_id": "example",
+                   "expected_revision": None, "writes": [{"path": "docs/changes/example/change.yaml",
+                   "expected_identity": None, "content": content}], "reads": []}
+
+        def invoke(operation: str, request_data=None, *, change_id="example", extra=(), expected=0):
+            args = [str(binary), "record-store", operation, "--root", str(project), "--change", change_id, "--format", "json", *extra]
+            if request_data is not None:
+                args.extend(["--input", "-"])
+            result = subprocess.run(args, cwd=project, input=None if request_data is None else json.dumps(request_data) + "\n",
+                                    capture_output=True, text=True, check=False)
+            self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["claim"], "storage-only")
+            return payload
+
+        self.assertEqual(invoke("inspect")["revision"], None)
+        for extra in (("--no-file-log",), ("--console-log-level", "unknown_value")):
+            rejected = invoke("record", request, extra=extra, expected=2)
+            self.assertEqual(rejected["status"], "rejected")
+            self.assertEqual(rejected["errors"][0]["code"], "invalid-input")
+            self.assertEqual(rejected["files"], [])
+            self.assertIsNone(rejected["snapshot"])
+            self.assertFalse(manifest.exists())
+        self.assertEqual(invoke("check", request)["status"], "valid")
+        self.assertFalse(manifest.exists())
+        self.assertEqual(invoke("record", request)["status"], "saved")
+        self.assertEqual(manifest.read_text(), content)
+        self.assertEqual(invoke("record", request, expected=3)["status"], "conflict")
+        before = invoke("inspect")
+        self.assertEqual(before["snapshot"]["records"][0]["content"], content)
+        text_result = run_command([str(binary), "record-store", "inspect", "--root", str(project),
+                                   "--change", "example", "--format", "text"], cwd=project)
+        self.assertEqual(text_result.returncode, 0, text_result.stdout + text_result.stderr)
+        self.assertIn(f'Revision: {before["revision"]}\n', text_result.stdout)
+        for record_file in before["files"]:
+            self.assertIn(f'{record_file["path"]}: {record_file["identity"]}\n', text_result.stdout)
+        request["expected_revision"] = before["revision"]
+        request["writes"][0]["expected_identity"] = before["files"][0]["identity"]
+        change["activity"].update(stage="design", status="in-progress", reason="Explicitly reopen")
+        request["writes"][0]["content"] = json.dumps(change) + "\n"
+
+        # Inject interruption into the packed dispatcher; recovery and competing
+        # writers still enter through the real installed public binary.
+        launcher = project / "interrupt.mjs"
+        launcher.write_text(
+            'import {main} from ' + json.dumps(binary.resolve().as_uri()) + ';\n'
+            'import {spawnSync} from "node:child_process";\n'
+            'const args=JSON.parse(process.env.TEST_ARGS), input=process.env.TEST_INPUT;\n'
+            'await main(args,{recordStoreOptions:{fault:point=>{\n'
+            'if(point==="after-preparation"){const c=spawnSync(process.env.TEST_BIN,args,{input,encoding:"utf8"});'
+            'if(c.status!==4)throw Error("competing writer did not report busy");}\n'
+            'if(point==="after-replace:0")process.exit(99);}}});\n'
+        )
+        args = ["record-store", "record", "--root", str(project), "--change", "example", "--format", "json", "--input", "-"]
+        for action in ("restore", "complete"):
+            env = {**os.environ, "TEST_BIN": str(binary), "TEST_ARGS": json.dumps(args), "TEST_INPUT": json.dumps(request) + "\n"}
+            interrupted = subprocess.run(["node", str(launcher)], input=json.dumps(request) + "\n", env=env,
+                                         capture_output=True, text=True, check=False)
+            self.assertEqual(interrupted.returncode, 99, interrupted.stdout + interrupted.stderr)
+            blocked = invoke("inspect", expected=5)
+            self.assertIsNone(blocked["snapshot"])
+            tx = blocked["transaction"]
+            self.assertEqual(invoke("recover", extra=("--transaction", tx["id"], "--expected-recovery", tx["recovery_identity"], "--action", action))["status"], "recovered")
+            self.assertEqual(manifest.read_text(), content if action == "restore" else request["writes"][0]["content"])
+
+        # A write-stop keeps this reader available and preserves every byte.
+        preserved = manifest.read_bytes()
+        invoke("inspect")
+        self.assertEqual(manifest.read_bytes(), preserved)
+        for contract in ("stage-owned-change-local-v3", "compact-current-state-v1", "unknown_value"):
+            old = project / "docs/changes/historical"
+            old.mkdir(exist_ok=True)
+            old_record = old / "change.yaml"
+            raw = json.dumps({"lifecycle_contract": contract}) + "\n"
+            old_record.write_text(raw)
+            invoke("inspect", change_id="historical", expected=2)
+            bad = {**request, "change_id": "historical", "expected_revision": None,
+                   "writes": [{"path": "docs/changes/historical/change.yaml", "expected_identity": None, "content": content}]}
+            invoke("record", bad, change_id="historical", expected=2)
+            self.assertEqual(old_record.read_text(), raw)
+        for contract in ("unknown_value", "compact-current-state-v1"):
+            bad = {**request, "contract": contract}
+            invoke("record", bad, expected=2)
+            self.assertEqual(manifest.read_bytes(), preserved)
+        self.assertFalse((project / ".git").exists())
+
     def test_package_policy_rejects_lifecycle_scripts_and_runtime_dependencies(self) -> None:
         validate_package_policy(
             {
@@ -217,6 +314,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
                     self.assertEqual(init_payload["command"], "init")
                     self.assert_default_target_install(target_project, target)
                     self.assert_no_state_files(target_project)
+                    self.assert_explicit_recording(bin_path, target_project)
 
                 with self.subTest(target=target, mode="write-state"):
                     state_project = Path(project_temp) / f"state-{target}"
@@ -242,6 +340,11 @@ class NpmPackagePublicationTests(unittest.TestCase):
             self.assertEqual(new_change_result.stderr, "")
             new_change_payload = json.loads(new_change_result.stdout)
             self.assertEqual(new_change_payload["command"], "new-change")
+            workflow = run_command(
+                ["node", "--test", "--test-name-pattern=TG-05 actors", "packages/rigorloop/test/record-store-workflow.test.js"],
+                env={**os.environ, "RIGORLOOP_TEST_PACKAGED_BIN": str(bin_path)},
+            )
+            self.assertEqual(workflow.returncode, 0, workflow.stdout + workflow.stderr)
 
     def test_packed_package_observability_surface_matches_documentation(self) -> None:
         with tempfile.TemporaryDirectory(prefix="rigorloop-npm-pack-") as pack_temp, tempfile.TemporaryDirectory(

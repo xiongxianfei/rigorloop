@@ -7,6 +7,7 @@ import hashlib
 import json
 import re
 import shlex
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -2286,6 +2287,24 @@ def validate_file(
     activation_manifest: Any = _LOAD_TRACKED_ACTIVATION_MANIFEST,
     final_verification_manifest: Any = _LOAD_TRACKED_ACTIVATION_MANIFEST,
 ) -> list[str]:
+    # Explicit JSON-subset records have their own shape, never legacy semantics.
+    raw = path.read_text(encoding="utf-8")
+    if raw.lstrip().startswith("{"):
+        try:
+            candidate = json.loads(raw)
+        except ValueError:
+            return ["invalid JSON metadata"]
+        if isinstance(candidate, dict) and "contract" in candidate:
+            if candidate["contract"] != "explicit-recording-v1":
+                return ["contract: unknown_value; unsupported recording contract"]
+            try:
+                result = subprocess.run(
+                    ["node", str(ROOT / "scripts/validate-record-store.mjs"), str(path.absolute())],
+                    capture_output=True, text=True, timeout=30,
+                )
+            except (OSError, subprocess.TimeoutExpired):
+                return ["explicit recording validator unavailable"]
+            return [] if result.returncode == 0 else ["invalid or unavailable explicit recording set"]
     data = load_yaml(path)
     if is_measurement_file(path):
         return validate_measurement_evidence(data)

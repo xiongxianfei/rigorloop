@@ -23,6 +23,7 @@ from artifact_lifecycle_contracts import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPLICIT_RECORDING_V1 = "explicit-recording-v1"
 COMPACT_CURRENT_STATE_V1 = "compact-current-state-v1"
 COMPACT_ACTIVATION_PATH = Path("specs/compact-current-state-activation.yaml")
 PACKAGED_COMPACT_ACTIVATION_PATH = Path("packages/rigorloop/dist/metadata/compact-current-state-activation.json")
@@ -82,6 +83,24 @@ def parsed_change_inventory(root: Path = ROOT, *, loader=None) -> tuple[dict[str
     for path in paths:
         change_id = path.parent.name
         try:
+            text = path.read_text(encoding="utf-8")
+            if text.lstrip("\ufeff \t\r\n").startswith("{"):
+                metadata = json.loads(text)
+                if isinstance(metadata, dict) and "contract" in metadata:
+                    if metadata["contract"] != EXPLICIT_RECORDING_V1:
+                        errors.append(f"change metadata {change_id} contract: unknown_value")
+                        continue
+                    result = subprocess.run(
+                        ["node", str(Path(__file__).with_name("validate-record-store.mjs")), str(path)],
+                        capture_output=True, timeout=30,
+                    )
+                    if result.returncode != 0:
+                        errors.append(f"change metadata {change_id}: invalid explicit recording set")
+                        continue
+                    # This set was validated above; do not send it to historical
+                    # lifecycle commands or add it to the frozen legacy inventory.
+                    records[change_id] = {"path": path, "metadata": metadata, "contract": EXPLICIT_RECORDING_V1}
+                    continue
             metadata = load(path)
         except Exception as exc:
             errors.append(f"change metadata {change_id} unreadable: {exc}")

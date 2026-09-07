@@ -1,0 +1,287 @@
+{
+  "change": {
+    "schema_version": 1,
+    "change_id": "example",
+    "contract": "explicit-recording-v1",
+    "proposal": {
+      "path": "docs/proposals/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "models": [
+      {
+        "id": "workflow",
+        "subject": {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    ],
+    "activity": {
+      "stage": "design",
+      "status": "blocked",
+      "owner": {
+        "id": "author",
+        "role": "design"
+      },
+      "reason": "Correction"
+    },
+    "plan": null,
+    "work": [
+      {
+        "id": "m1",
+        "status": "pending",
+        "owner": {
+          "id": "author",
+          "role": "design"
+        },
+        "requirement_refs": [
+          "WF-SR-02"
+        ]
+      }
+    ],
+    "records": [
+      {
+        "path": "docs/changes/example/reviews/design-review.md",
+        "kind": "review"
+      },
+      {
+        "path": "docs/changes/example/evidence.yaml",
+        "kind": "evidence"
+      },
+      {
+        "path": "docs/changes/example/material-decisions.md",
+        "kind": "decisions"
+      },
+      {
+        "path": "docs/changes/example/verify-report.md",
+        "kind": "verify"
+      }
+    ],
+    "applicability": [
+      {
+        "path": "docs/changes/example/reviews/design-review.md",
+        "value": "stale",
+        "actor": {
+          "id": "author",
+          "role": "design"
+        },
+        "reason": "Basis changed"
+      },
+      {
+        "path": "docs/changes/example/evidence.yaml",
+        "value": "stale",
+        "actor": {
+          "id": "author",
+          "role": "design"
+        },
+        "reason": "Basis changed"
+      },
+      {
+        "path": "docs/changes/example/material-decisions.md",
+        "value": "stale",
+        "actor": {
+          "id": "author",
+          "role": "design"
+        },
+        "reason": "Basis changed"
+      },
+      {
+        "path": "docs/changes/example/verify-report.md",
+        "value": "stale",
+        "actor": {
+          "id": "author",
+          "role": "design"
+        },
+        "reason": "Basis changed"
+      }
+    ],
+    "blockers": [
+      {
+        "id": "finding-one",
+        "reporter": {
+          "id": "reviewer",
+          "role": "review"
+        },
+        "owner": {
+          "id": "author",
+          "role": "design"
+        },
+        "subjects": [
+          {
+            "path": "docs/design/workflow.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "evidence": "Observed gap",
+        "required_outcome": "Correct the gap",
+        "state": "open",
+        "resolution": null
+      }
+    ]
+  },
+  "review": {
+    "schema_version": 1,
+    "change_id": "example",
+    "id": "design-review",
+    "target": "design",
+    "reviewer": {
+      "id": "reviewer",
+      "role": "review"
+    },
+    "contributors": [
+      {
+        "id": "author",
+        "role": "design"
+      }
+    ],
+    "independence_basis": "Separate reviewer",
+    "subjects": [
+      {
+        "path": "docs/design/workflow.md",
+        "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "judgment": "changes-requested",
+    "findings": [
+      {
+        "id": "finding-one",
+        "reporter": {
+          "id": "reviewer",
+          "role": "review"
+        },
+        "owner": {
+          "id": "author",
+          "role": "design"
+        },
+        "subjects": [
+          {
+            "path": "docs/design/workflow.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "evidence": "Observed gap",
+        "required_outcome": "Correct the gap",
+        "state": "open",
+        "resolution": null
+      }
+    ]
+  },
+  "evidence": {
+    "schema_version": 1,
+    "change_id": "example",
+    "checks": [
+      {
+        "id": "check-one",
+        "actor": {
+          "id": "author",
+          "role": "design"
+        },
+        "subjects": [
+          {
+            "path": "docs/design/workflow.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "result": "failed",
+        "procedure": "Focused test",
+        "summary": "Regression reproduced"
+      }
+    ]
+  },
+  "decisions": {
+    "schema_version": 1,
+    "change_id": "example",
+    "decisions": [
+      {
+        "id": "decision-one",
+        "actor": {
+          "id": "author",
+          "role": "design"
+        },
+        "subjects": [
+          {
+            "path": "docs/design/workflow.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "rationale": "Keep separation",
+        "source_refs": [
+          {
+            "path": "docs/changes/example/reviews/design-review.md",
+            "id": "finding-one"
+          }
+        ]
+      }
+    ]
+  },
+  "verify": {
+    "schema_version": 1,
+    "change_id": "example",
+    "verifier": {
+      "id": "verifier",
+      "role": "verify"
+    },
+    "subjects": [
+      {
+        "path": "docs/design/workflow.md",
+        "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "evidence_refs": [
+      {
+        "path": "docs/changes/example/evidence.yaml",
+        "id": "check-one"
+      }
+    ],
+    "review_refs": [
+      {
+        "path": "docs/changes/example/reviews/design-review.md",
+        "id": "design-review"
+      }
+    ],
+    "outcome": "success"
+  },
+  "request": {
+    "schema_version": 1,
+    "change_id": "example",
+    "contract": "explicit-recording-v1",
+    "expected_revision": null,
+    "writes": [
+      {
+        "path": "docs/changes/example/change.yaml",
+        "expected_identity": null,
+        "content": "{\"schema_version\":1,\"change_id\":\"example\",\"contract\":\"explicit-recording-v1\",\"proposal\":{\"path\":\"docs/proposals/example.md\",\"identity\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"models\":[{\"id\":\"workflow\",\"subject\":{\"path\":\"docs/design/workflow.md\",\"identity\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}}],\"activity\":{\"stage\":\"design\",\"status\":\"blocked\",\"owner\":{\"id\":\"author\",\"role\":\"design\"},\"reason\":\"Correction\"},\"plan\":null,\"work\":[{\"id\":\"m1\",\"status\":\"pending\",\"owner\":{\"id\":\"author\",\"role\":\"design\"},\"requirement_refs\":[\"WF-SR-02\"]}],\"records\":[],\"applicability\":[],\"blockers\":[{\"id\":\"finding-one\",\"reporter\":{\"id\":\"reviewer\",\"role\":\"review\"},\"owner\":{\"id\":\"author\",\"role\":\"design\"},\"subjects\":[{\"path\":\"docs/design/workflow.md\",\"identity\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"evidence\":\"Observed gap\",\"required_outcome\":\"Correct the gap\",\"state\":\"open\",\"resolution\":null}]}\n"
+      }
+    ],
+    "reads": [
+      {
+        "path": "docs/design/workflow.md",
+        "expected_identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ]
+  },
+  "result": {
+    "schema_version": 1,
+    "operation": "record",
+    "status": "saved",
+    "change_id": "example",
+    "revision": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "files": [
+      {
+        "path": "docs/changes/example/change.yaml",
+        "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "snapshot": null,
+    "observations": [
+      {
+        "code": "failed-evidence",
+        "path": "docs/changes/example/evidence.yaml",
+        "message": "Failed check"
+      }
+    ],
+    "errors": [],
+    "transaction": null,
+    "claim": "storage-only"
+  }
+}

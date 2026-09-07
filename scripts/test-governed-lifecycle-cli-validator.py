@@ -97,6 +97,57 @@ class CompactActivationTests(unittest.TestCase):
 
 
 class WrapperExecutionTests(unittest.TestCase):
+    def recording_fixture(self, root):
+        path = root / "docs/changes/example/change.yaml"
+        path.parent.mkdir(parents=True)
+        template = json.loads((MODULE.ROOT / "templates/explicit-recording/records.json").read_text())
+        path.write_text(json.dumps(template["change"]) + "\n")
+        (root / "specs").mkdir()
+        (root / MODULE.LIFECYCLE_ACTIVATION_MANIFEST_PATH).write_text(json.dumps({
+            "schema_version": 1, "state": "active", "activating_source_revision": "a" * 40,
+            "changes": [],
+        }))
+        return path
+
+    def test_er_pr_004_recording_inventory_preserves_explicit_contract(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = self.recording_fixture(root)
+            before = path.read_bytes()
+            inventory, errors = MODULE.parsed_change_inventory(root)
+            self.assertEqual(errors, [])
+            self.assertEqual(inventory["example"]["contract"], "explicit-recording-v1")
+            self.assertEqual(MODULE.governed_records(root), [])
+            self.assertEqual(MODULE.activation_inventory_errors(root), [])
+            self.assertEqual(path.read_bytes(), before)
+
+    def test_er_pr_004_recording_unknown_value_and_invalid_sets_fail_closed(self):
+        for mutation in ("unknown_value", "malformed", "duplicate-key", "mixed", "missing-record"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                path = self.recording_fixture(root)
+                change = json.loads(path.read_text())
+                if mutation == "unknown_value":
+                    change["contract"] = "unknown_value"
+                elif mutation == "mixed":
+                    change["lifecycle_contract"] = "stage-owned-change-local-v3"
+                elif mutation == "missing-record":
+                    change["records"] = [{"path": "docs/changes/example/evidence.yaml", "kind": "evidence"}]
+                    change["applicability"] = [{"path": "docs/changes/example/evidence.yaml", "value": "current",
+                                                "actor": {"id": "fixture", "role": "support"}, "reason": "Fixture"}]
+                text = json.dumps(change) + "\n"
+                if mutation == "malformed":
+                    text = '{"contract":\n'
+                elif mutation == "duplicate-key":
+                    text = text.replace('"schema_version": 1', '"schema_version": 1, "schema_version": 1')
+                path.write_text(text)
+                before = path.read_bytes()
+                inventory, errors = MODULE.parsed_change_inventory(root)
+                self.assertTrue(errors)
+                self.assertNotIn("example", inventory)
+                self.assertTrue(MODULE.activation_inventory_errors(root))
+                self.assertEqual(path.read_bytes(), before)
+
     class Result:
         def __init__(self, returncode, payload):
             self.returncode = returncode

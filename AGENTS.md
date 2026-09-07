@@ -48,6 +48,8 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 
 ## Planning and workflow
 
+For explicitly selected new `explicit-recording-v1` changes, follow the Workflow and CLI models in `docs/design/`; use one file per model and actor-owned decisions. Use `rigorloop record-store inspect` for recorded context and explicit `check`/`record` requests for persistence. Historical `workflow-context`, `new-change`, `compact` and `lifecycle` commands do not register or advance this profile; existing roots are never converted. The historical lifecycle procedures below do not become new-contract prerequisites; permissions, independent review and validation duties still apply. Model checks validate documents, not workflow eligibility.
+
 Use a plan first for work that is multi-file, risky, ambiguous, architecture-affecting, migration-heavy, or large enough that it should be split into reviewable milestones.
 
 For the lifecycle contract, follow `specs/rigorloop-workflow.md`.
