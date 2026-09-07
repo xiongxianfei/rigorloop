@@ -39,6 +39,7 @@ Execution options:
   --verbose                       Print successful check output when supported.
   --skip-diff-scoped              In broad-smoke mode, skip dirty-worktree review roots and use push-range lifecycle scope.
 
+PR mode runs change-selected checks; main retains the full direct product gates.
 When no --mode is supplied, ci.sh defaults to --mode broad-smoke for legacy compatibility.
 When --jobs is omitted, ci.sh uses available CPU count minus one with a floor of one for selected checks.
 Broad-smoke remains sequential unless --jobs is explicitly greater than 1.
@@ -936,7 +937,7 @@ run_selected_mode() {
     set -e
   fi
 
-  python - "$selector_output" "$selector_exit" "$timeout_seconds" "$verbose" "$jobs" "$fail_fast" <<'PY'
+  python - "$selector_output" "$selector_exit" "$timeout_seconds" "$verbose" "$jobs" "$fail_fast" "$mode" "$base" "$head" <<'PY'
 from __future__ import annotations
 
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
@@ -1300,6 +1301,7 @@ timeout_seconds = int(sys.argv[3])
 verbose = bool(int(sys.argv[4]))
 jobs = int(sys.argv[5])
 fail_fast = bool(int(sys.argv[6]))
+requested_mode, requested_base, requested_head = sys.argv[7:10]
 try:
     payload = json.loads(selector_output.read_text(encoding="utf-8"))
 except json.JSONDecodeError as exc:
@@ -1324,6 +1326,8 @@ if missing:
     fail(f"Selector JSON missing required fields: {', '.join(missing)}")
 
 mode = payload["mode"]
+if requested_mode == "pr" and mode != requested_mode:
+    fail("Selector mode does not match requested PR mode")
 status = payload["status"]
 print(f"Selector mode: {mode}")
 print(f"Selector status: {status}")
@@ -1383,6 +1387,9 @@ for check in selected_checks:
             affected_roots=affected_roots,
             versions=versions,
             adapter_version=DEFAULT_ADAPTER_VERSION,
+            mode=requested_mode,
+            base=requested_base,
+            head=requested_head,
         )
     except ValueError as exc:
         fail(f"Selected check {check_id} cannot be converted to a trusted command: {exc}")
@@ -1449,7 +1456,11 @@ run_direct_check() {
     echo "+ ${command_text% }"
     return 0
   fi
-  run_check "$label" "$@"
+  echo "==> $label"
+  local started
+  started="$(current_epoch_seconds)"
+  run_check "$label" "$@" || return $?
+  echo "[PASS] $label in $(elapsed_seconds_since "$started")s"
 }
 
 run_direct_product_gates() {
@@ -1562,10 +1573,10 @@ if ! command -v python >/dev/null 2>&1; then
 fi
 
 case "$mode" in
-  local|explicit|release)
+  local|explicit|release|pr)
     run_selected_mode
     ;;
-  pr|main)
+  main)
     run_direct_product_gates
     ;;
   broad-smoke)
