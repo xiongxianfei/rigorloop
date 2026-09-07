@@ -25,9 +25,13 @@ Next stage: review-resolution for findings, the next milestone after a clean non
 
 Use broader-section or full-file reading when bounded evidence is insufficient.
 
+## Review and Closeout application
+
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
 
 This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
 
@@ -81,7 +85,7 @@ For work governed by consolidated gates, require the current approved Design Rev
 
 Use the smallest sufficient evidence set. Begin with the diff, spec, test spec, milestone, tests, and validation. Add architecture, governance, related code, generated output, or history only when the reviewed behavior or an evidence conflict requires it. Record why substantive evidence outside that set was needed. Full-file reading is appropriate when the whole file is the target or bounded evidence is incomplete, contradictory, or context-sensitive.
 
-Prefer a separate reviewer or fresh session. When unavailable, intentionally reset assumptions before reading the diff. Do not treat remembered intent, author self-assessment, or validation success as review proof.
+Apply the adopted assessment application for actual nonauthor independence. A separate session is useful only with concrete contributor separation. Historical assumption-reset fallback is available only when the selected historical contract expressly permits it; it cannot establish adopted independent approval.
 
 For registered historical contracts, tracked governing branch state is required for a clean branch-scoped conclusion. Local-only authority may provide context but cannot support that conclusion. Missing authority does not suppress an independently supported `changes-requested` or `blocked` finding; use `inconclusive` only when the gap prevents both an actionable finding and a clean result. This is the mixed-evidence rule. Compact review instead binds the explicit subject and complete-set identities supplied by the bounded projection and works without Git.
 
@@ -129,16 +133,18 @@ For a changed published skill, assess description and trigger clarity, ownership
 
 ## Status, severity, and material findings
 
-Use exactly one first-pass status:
+For historical contracts using the following vocabulary, use exactly one first-pass status:
 
 - `clean-with-notes`: no unresolved accepted fix is required.
 - `changes-requested`: one or more evidenced, in-scope, safely actionable findings exist.
 - `blocked`: safe continuation requires a product, spec, architecture, ADR, ownership, or scope decision.
 - `inconclusive`: missing evidence prevents both a credible clean result and an actionable finding.
 
-Use severity `blocker`, `major`, `minor`, `nit`, or `positive`. A material finding is a required change or decision, not a quota. Every material finding must include Finding ID, Severity, Location, evidence, required outcome, and a safe resolution path or `needs-decision` rationale naming the decision and owner. Clearly fixable in-scope issues use `changes-requested`, not `blocked`.
+Use severity `blocker`, `major`, `minor`, `nit`, or `positive`. A material finding is a required change or decision, not a quota. Every material finding must include Finding ID, Severity, Location, evidence, required outcome, and a safe resolution path or `needs-decision` rationale naming the decision and owner. Under historical judgment rules, clearly fixable in-scope issues use `changes-requested`, not `blocked`. Adopted assessments use the shared combined-condition rule and preserve findings under blocked or inconclusive judgments.
 
 ## Isolation and Recording
+
+The following recording and settlement procedure applies to historical profiles only. Adopted Review and Closeout assessments use the packaged application and their selected recording interface.
 
 Isolation governs handoff. Recording follows formal review triggers.
 
@@ -182,7 +188,7 @@ For an isolated review with material findings, the final review output must stat
 
 A clean conclusion for a named edge case requires direct proof from a targeted test, targeted validation output, or an allowed explicit manual verification note. Code-shape inference alone is insufficient. For validation routing, targeted proof names the selected or executed checks; broad smoke remains a separate trigger-owned obligation.
 
-Changed implementation must be rereviewed. A targeted rereview can close its finding, but final closeout still requires a holistic review of the complete final diff and cross-milestone interactions. A clean milestone-local review is not proof that the branch or whole plan is ready.
+Apply the packaged reliance guidance for adopted reassessment and final whole-change scope. Historical contracts retain changed-implementation rereview and holistic review of the complete final diff and cross-milestone interactions; milestone-local review alone is not whole-plan readiness.
 
 ## Stop conditions
 
@@ -210,6 +216,8 @@ Progress means work that has happened so far. Readiness means the next stage tha
 - Conditional next stages: review-resolution, the next implementation milestone, final closeout, or a stop.
 
 ## Status and milestone handoff
+
+For adopted policy, identify milestone versus final whole-change scope in the judgment. Return applicable approval to route for the next implementation milestone or the distinct final-review/Verify checkpoint. Supported findings retain their correction owner even when the overall result is inconclusive. The following bullets retain historical vocabulary and routing only.
 
 - `clean-with-notes` in a workflow-managed review follows the current plan and milestone state when no stop applies.
 - `changes-requested` routes to review-resolution and rereview on the same milestone.
@@ -259,6 +267,9 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Resource map
+
+- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
+- READ `references/review-assessment.md` for every review under explicitly adopted Review and Closeout policy.
 
 - READ `references/requirement-to-delivery-model.md` when tracing an implementation slice through allocated work to governing requirements and direction.
 - READ `references/boundary-first-method-v1.md` when approved diff-related boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for review.

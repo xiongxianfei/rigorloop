@@ -12,9 +12,13 @@ argument-hint: [operation, exact target path, concern, and command evidence]
 Maintain CI infrastructure from project-owned commands and risk evidence. Ordinary authoring does not run validation, does not design tests, does not specify validation commands, or wait for checks; validation stays under `verify`. A bounded PR CI repair may run already-authoritative validation commands and observe the replacement hosted check under the rules below.
 
 
+## Review and Closeout application
+
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
 
 This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
 
@@ -74,6 +78,8 @@ Select one: `CIM0` narrow review; `CIM1` ordinary GitHub authoring; `CIM2` proje
 Creation adds the skeleton; revision adds it only for authorized replacement. Late predicates load additions before dependent action.
 
 ## Resource map
+
+- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
 
 - READ `references/github-workflow-authoring.md` when a GitHub workflow is created or revised under ordinary or exact approved-design authority. It serializes settled policy and does not select coverage.
 - READ `references/risk-to-check-map.md` when coverage-sensitive judgment is required. It owns semantic placement and must include current authoritative commands.

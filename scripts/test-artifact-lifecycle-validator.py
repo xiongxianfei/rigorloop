@@ -582,6 +582,45 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return root, contents
 
+    def v2_recording_root(self):
+        root, _ = self.recording_root()
+        shutil.rmtree(root / "docs/changes/example")
+        fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())
+        request = fixture["request"]
+        result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
+                                 "record-store", "record", "--root", str(root), "--change", "example",
+                                 "--input", "-", "--format", "json"],
+                                input=json.dumps(request) + "\n", text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        return root, {w["path"]: w["content"] for w in request["writes"]}
+
+    def test_v2_recording_complete_set_and_unknown_value_fail_closed(self):
+        for mutation in (None, "unknown_value", "malformed", "missing-record"):
+            root, contents = self.v2_recording_root()
+            manifest = root / "docs/changes/example/change.json"
+            review = next(path for path in contents if "/reviews/" in path)
+            if mutation == "unknown_value":
+                manifest.write_text(manifest.read_text().replace("rigorloop-records-v2", "unknown_value"))
+            elif mutation == "malformed":
+                manifest.write_text("not-json\n")
+            elif mutation == "missing-record":
+                (root / review).unlink()
+            for compose in (False, True):
+                result = validate_repository(root, mode="explicit-paths", paths=[review], compose_change_metadata=compose)
+                self.assertEqual(bool(result.blocking_findings), mutation is not None, (mutation, result.blocking_findings))
+
+    def test_v2_recording_tracked_snapshot_ignores_valid_live_replacement(self):
+        root, contents = self.v2_recording_root()
+        base = init_git_fixture(root)
+        manifest = root / "docs/changes/example/change.json"
+        manifest.write_text(manifest.read_text().replace("rigorloop-records-v2", "unknown_value"))
+        subprocess.run(["git", "add", "."], cwd=root, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "invalid selected contract"], cwd=root, check=True, capture_output=True)
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+        manifest.write_text(contents["docs/changes/example/change.json"])
+        result = validate_repository(root, mode="pr-ci", base=base, head=head)
+        self.assertTrue(result.blocking_findings, result)
+
     def test_er_m5_001_recording_lifecycle_uses_complete_set_without_legacy_reviews(self):
         root, contents = self.recording_root()
         for compose in (False, True):

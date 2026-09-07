@@ -9,9 +9,13 @@ argument-hint: [change ID, delivery package, or plan path]
 
 # Delivery review
 
+## Review and Closeout application
+
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
 
 This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
 
@@ -81,11 +85,11 @@ Evaluate this exact trace for every applicable requirement and architecture risk
 
 `requirement -> architectural boundary -> implementation milestone -> required proof -> validation command or manual evidence`
 
-Reject or request correction for missing SR allocation, unsafe or overly broad sequencing, unreviewable milestones, insufficient milestone or change-level verification, proof at the wrong boundary, architecture risk without validation, compatibility or migration work without evidence, unrealistic proof, and verification that requires a different implementation order than the plan. Milestone completion must not be treated as complete-change correctness.
+Reject or request correction for missing SR allocation, unsafe or overly broad sequencing, unreviewable milestones, insufficient milestone or change-level verification, proof at the wrong boundary, architecture risk without validation, compatibility or migration work without evidence, unrealistic proof, and verification that requires a different implementation order than the plan. Milestone completion must not be treated as complete-change correctness. Under adopted policy, check the named final whole-change Code Review checkpoint and its implementation/correction dependencies separately from integrated proof groups, as required by the packaged closeout application.
 
 Route the correction to `plan` when verification allocation is missing or inadequate; route missing observable behavior to `spec`. Do not author the correction, accept a standalone test-spec substitute, or defer material pre-implementation coverage to final Verify.
 
-Use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Only `approved` authorizes implementation. Every other outcome grants no progression authority.
+Apply the packaged assessment rule when adopted; approval covers this exact package for authorized implementation. Under historical contracts, use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`; only approved package evidence permits reliance for implementation. Recording is not permission.
 
 ## Findings and ownership
 
@@ -99,11 +103,15 @@ Each finding records a stable Finding ID, Severity, Location, Evidence, Required
 
 ## Isolation and recording
 
+The following recording and settlement procedure applies to historical profiles only. Adopted Review and Closeout assessments use the packaged application and their selected recording interface.
+
 A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to `route` after settlement.
 
 Every formal result must be recorded or explicitly blocked. For registered historical contracts, clean review uses a lightweight receipt and review-log entry, while material or blocking results use a detailed record and triggered `review-resolution.md`. Compact results update the stable current review and conditional material-decision surface described above.
 
 ## Package recording and settlement
+
+The following recording and settlement procedure applies to historical profiles only. Adopted Review and Closeout assessments use the packaged application and their selected recording interface.
 
 Recording mode is `none`, `advisory-durable`, or `formal-lifecycle`. Settlement is `none` or `exact-package`. Only formal lifecycle review may settle, and loading the procedure grants no authority.
 
@@ -115,7 +123,7 @@ Produce the package identity, upstream review ID, traceability judgment, outcome
 
 ## Handoff
 
-An approved workflow-managed review returns to `route` for implementation. `changes-requested` routes plan allocation gaps to `plan` and behavioral or design gaps to their named upstream owner. `blocked` routes only to the named design owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
+An approved workflow-managed review returns to `route` for implementation. `changes-requested` routes plan allocation gaps to `plan` and behavioral or design gaps to their named upstream owner. `blocked` identifies the necessary decision and its actual owner; this may be the plan or an upstream owner. `inconclusive` stops for missing evidence. Direct review remains isolated.
 
 ## Stop conditions
 
@@ -126,6 +134,9 @@ Stop on incomplete or unsafe member maps, missing or stale design authority, sta
 Do not claim plan authorship, implementation completion or correctness, or code-review, verification, branch, PR, release, or deployment readiness.
 
 ## Resource map
+
+- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
+- READ `references/review-assessment.md` for every review under explicitly adopted Review and Closeout policy.
 
 - READ `references/requirement-to-delivery-model.md` when tracing approved design into allocated milestones, work, and proof.
 - READ `references/boundary-first-method-v1.md` initially for every `delivery-review` invocation.
