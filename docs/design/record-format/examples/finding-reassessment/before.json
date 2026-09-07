@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "change_id": "example-change",
+  "id": "design-review",
+  "target": "design",
+  "reviewer": {
+    "id": "reviewer-a",
+    "role": "review"
+  },
+  "contributors": [
+    {
+      "id": "author-a",
+      "role": "design"
+    }
+  ],
+  "independence_basis": "Reviewer A authored none of the supplied design.",
+  "subjects": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "judgment": "changes-requested",
+  "findings": [
+    {
+      "id": "finding-1",
+      "reporter": {
+        "id": "reviewer-a",
+        "role": "review"
+      },
+      "owner": {
+        "id": "author-a",
+        "role": "design"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/example/example.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": "Diagnostic digest excludes observed subject identities.",
+      "required_outcome": "Bind the digest to observed identities, including changes between two already-drifted subjects.",
+      "state": "open",
+      "resolution": null,
+      "origin": {
+        "reporter": {
+          "id": "reviewer-a",
+          "role": "review"
+        },
+        "subjects": [
+          {
+            "path": "docs/design/example/example.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "evidence": "Diagnostic digest excludes observed subject identities.",
+        "required_outcome": "Bind the digest to observed identities, including changes between two already-drifted subjects.",
+        "rationale": "Identical drift messages can describe different subject content.",
+        "supporting_judgment": null
+      }
+    }
+  ],
+  "body": "The diagnostic continuation contract promises stronger freshness than its digest inputs establish."
+}

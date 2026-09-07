@@ -130,25 +130,19 @@ The `records` array declares every supporting authoritative record for this chan
 
 The CLI model owns bytes and encoding. Review, material-decisions and Verify objects require a nonempty body string containing human-readable reasoning. All fields belong to the same JSON object. Body explains the judgment or shared rationale; it must not maintain a second status, finding list or reviewer roster. The named structured fields remain authoritative for those facts. Avoiding narrative duplication is an authoring responsibility, not a CLI semantic rejection gate. Markdown formatting may occur inside a narrative string but adds no separate serialization layer. Subject and evidence arrays may be empty while recording incomplete work; Workflow actors must not use incomplete records to justify approval or completion. A Verify report's outcome admits only success, but the CLI does not establish that its assertion is true.
 
-### JSON review example
+### Examples
 
-This incomplete review illustrates RF-SR-01/03/05/07. Empty subjects and an inconclusive judgment faithfully record missing assessment basis; they grant no approval. The JSON object is the entire file reviews/design-review.json, with no front matter or appended document.
+These complete JSON objects illustrate the stored format; they are not registered change records or additional normative definitions. Hashes are synthetic, syntactically valid identities, not hashes of repository files. Each file illustrates one record, not a complete registered store. Example change/subject identities connect scenarios conceptually; the CLI work example has its own stated starting state.
 
-```json
-{
-  "schema_version": 2,
-  "change_id": "example-change",
-  "id": "design-review",
-  "target": "design",
-  "reviewer": {"id": "reviewer-a", "role": "review"},
-  "contributors": [{"id": "author-a", "role": "design"}],
-  "independence_basis": "Reviewer A authored none of the supplied design.",
-  "subjects": [],
-  "judgment": "inconclusive",
-  "findings": [],
-  "body": "The exact design package has not been supplied.\nThe reviewer needs its subjects before assessing coherence."
-}
-```
+| Example | Question answered | Requirement basis |
+| --- | --- | --- |
+| [Minimal change](record-format/examples/minimal-change.json) | What does the complete manifest look like before supporting records exist? | RF-SR-01/02/03 |
+| [Incomplete review](record-format/examples/incomplete-review.json) | How is missing assessment basis recorded without inventing approval? | RF-SR-01/03/05/07 |
+| [Before reassessment](record-format/examples/finding-reassessment/before.json) and [after reassessment](record-format/examples/finding-reassessment/after.json) | How can a new approval preserve an unresolved finding and its immutable origin? | RF-SR-03/04/05/07 |
+
+The reassessment pair intentionally leaves the finding open and byte-equivalent as a JSON value. The current review changes subjects, judgment and body; no finding disposition or applicability is implied. The recordable after-state does not itself justify progression. Supporting-record registration and explicit applicability are required in a containing store, as specified above.
+
+Examples use JSON directly, without commentary properties or Markdown wrappers. The CLI owns [request/receipt examples](cli.md#examples), and Workflow owns [actor sequencing](workflow.md#examples). Readers load only the example relevant to their question.
 
 ### Retained judgments for unresolved findings
 
