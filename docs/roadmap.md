@@ -1,15 +1,5 @@
 # Roadmap
 
-Put future ideas, possible initiatives, and unapproved work here.
+No future initiatives are currently listed. Add concrete, unapproved ideas here when they arise.
 
-## Now
-- nothing committed yet
-
-## Next
-- example initiative
-
-## Later
-- example idea
-
-## Parking lot
-- ideas that are not approved but should not be forgotten
+See [the plan index](plan.md) for execution plans and [the plan archive](plan-archive.md) for historical work.
