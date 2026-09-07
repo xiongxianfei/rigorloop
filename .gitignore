@@ -14,3 +14,6 @@ node_modules/
 
 # Machine-local compact transaction and recovery state
 .rigorloop/transactions/
+
+# Machine-local explicit recorder coordination and recovery state
+.rigorloop/record-store/

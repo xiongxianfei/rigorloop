@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import re
 import subprocess
 import sys
@@ -2033,6 +2034,34 @@ def validate_repository(
     }
 
     for path in scope.change_yaml_paths:
+        metadata_text = _read_repo_text(root_resolved, path, scope.tracked_revision)
+        # JSON-subset recording sets have no legacy lifecycle/review semantics.
+        # Reuse complete-set validation even for callers that omit composition;
+        # malformed/unknown contracts must not fall through to historical checks.
+        if metadata_text.lstrip().startswith("{"):
+            try:
+                candidate = json.loads(metadata_text)
+            except ValueError:
+                candidate = None
+            if candidate is None or (isinstance(candidate, dict) and "contract" in candidate):
+                if scope.tracked_revision is not None:
+                    # The recorder validates a live complete set, not Git snapshots.
+                    # Never substitute working-tree bytes for the selected revision.
+                    blocking_findings.append(
+                        ValidationFinding(severity="block", path=path,
+                                          artifact_class="change_metadata", status=None,
+                                          message="explicit recording tracked-revision validation is unavailable; "
+                                                  "validate the intended checkout with explicit-paths")
+                    )
+                    continue
+                metadata_parser = _load_change_metadata_parser()
+                for message in metadata_parser.validate_file(path):
+                    blocking_findings.append(
+                        ValidationFinding(severity="block", path=path,
+                                          artifact_class="change_metadata", status=None,
+                                          message=message)
+                    )
+                continue
         metadata_error_messages: set[str] = set()
         if compose_change_metadata:
             metadata_parser = _load_change_metadata_parser()

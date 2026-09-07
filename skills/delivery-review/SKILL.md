@@ -9,6 +9,16 @@ argument-hint: [change ID, delivery package, or plan path]
 
 # Delivery review
 
+## Explicit recording
+
+Use `explicit-recording-v1` only when the project has adopted it and the change explicitly selects it. Read the project's model documents and current recorded snapshot; missing authority stops, never falls back to guessed state. This profile replaces historical package, transition, recording and output-shape procedures below, including conditional resources for those procedures; retain substantive stage duties, permissions, independence and proof obligations. Historical contracts continue through their unchanged procedures. Do not migrate an existing root.
+
+Use `rigorloop record-store inspect --root PATH --change ID --format json` as this profile's context; it returns recorded content, identities and revision, not permitted operations. Send the model-defined UTF-8 JSON request on stdin to `rigorloop record-store check|record --root PATH --change ID --input - --format json`. Replace `check|record` with one command. Include expected revision, explicit writes and decision-basis reads; never infer decisions from a successful save. An absent root requires explicit new-change authority and absent preconditions, not historical `new-change` or `lifecycle` registration. Unknown contracts stop; do not fall back to another writer.
+
+Use `inspect` to read and `check` to validate; neither changes decisions. Submit only your explicit, owned replacements through `record` with expected identities, preserving others' entries. A save does not approve work or select a stage. Recovery is explicit; do not edit record files through other tools during save/recovery. Missing or stale evidence prevents reliance, not recording a correction.
+
+Assess the exact plan against the reviewed model revisions: sequencing, requirement/scenario/hazard coverage, concrete checks, evidence expectations and recovery. Record an independent judgment with exact subjects and findings. Do not initialize or mutate a legacy planned-work coordinator, manufacture missing proof allocation, or treat structural checks as semantic adequacy.
+
 Judge whether the approved design can be implemented safely and proved adequately through the exact primary plan. Review without editing the plan or approved design.
 
 ## Purpose

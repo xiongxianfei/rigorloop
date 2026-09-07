@@ -9,6 +9,16 @@ argument-hint: [feature idea, selected option, problem statement, or issue numbe
 
 # Change proposal
 
+## Explicit recording
+
+Use `explicit-recording-v1` only when the project has adopted it and the change explicitly selects it. Read the project's model documents and current recorded snapshot; missing authority stops, never falls back to guessed state. This profile replaces historical package, transition, recording and output-shape procedures below, including conditional resources for those procedures; retain substantive stage duties, permissions, independence and proof obligations. Historical contracts continue through their unchanged procedures. Do not migrate an existing root.
+
+Use `rigorloop record-store inspect --root PATH --change ID --format json` as this profile's context; it returns recorded content, identities and revision, not permitted operations. Send the model-defined UTF-8 JSON request on stdin to `rigorloop record-store check|record --root PATH --change ID --input - --format json`. Replace `check|record` with one command. Include expected revision, explicit writes and decision-basis reads; never infer decisions from a successful save. An absent root requires explicit new-change authority and absent preconditions, not historical `new-change` or `lifecycle` registration. Unknown contracts stop; do not fall back to another writer.
+
+Use `inspect` to read and `check` to validate; neither changes decisions. Submit only your explicit, owned replacements through `record` with expected identities, preserving others' entries. A save does not approve work or select a stage. Recovery is explicit; do not edit record files through other tools during save/recovery. Missing or stale evidence prevents reliance, not recording a correction.
+
+Write the bounded direction in the existing proposal surface and explicitly record its subject and your owned work. Identify affected model documents without drafting separate specification or architecture siblings. Leave proposal judgment to an independent reviewer and activity selection to route. Preserve existing findings and other actors' entries.
+
 Turn a problem or selected direction into a concise direction-approval artifact: why the problem matters, what outcome is sought, what direction should be pursued, and whether it is credible enough to enter Design.
 
 ## Workflow role

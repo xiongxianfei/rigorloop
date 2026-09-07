@@ -8,6 +8,16 @@ argument-hint: [feature name, branch, plan path, spec path, or verification scop
 
 # Verification gate
 
+## Explicit recording
+
+Use `explicit-recording-v1` only when the project has adopted it and the change explicitly selects it. Read the project's model documents and current recorded snapshot; missing authority stops, never falls back to guessed state. This profile replaces historical package, transition, recording and output-shape procedures below, including conditional resources for those procedures; retain substantive stage duties, permissions, independence and proof obligations. Historical contracts continue through their unchanged procedures. Do not migrate an existing root.
+
+Use `rigorloop record-store inspect --root PATH --change ID --format json` as this profile's context; it returns recorded content, identities and revision, not permitted operations. Send the model-defined UTF-8 JSON request on stdin to `rigorloop record-store check|record --root PATH --change ID --input - --format json`. Replace `check|record` with one command. Include expected revision, explicit writes and decision-basis reads; never infer decisions from a successful save. An absent root requires explicit new-change authority and absent preconditions, not historical `new-change` or `lifecycle` registration. Unknown contracts stop; do not fall back to another writer.
+
+Use `inspect` to read and `check` to validate; neither changes decisions. Submit only your explicit, owned replacements through `record` with expected identities, preserving others' entries. A save does not approve work or select a stage. Recovery is explicit; do not edit record files through other tools during save/recovery. Missing or stale evidence prevents reliance, not recording a correction.
+
+Check every required model, delivery, review and proof subject before reliance. Missing, stale or contradictory evidence blocks completion, not recording the blocker. Record your newly found defect and failed evidence directly, with stable ID, subjects, evidence, required outcome and correction owner; do not fabricate a review or write a failed success-report. After correction and independent rereview, reassess, disposition your own blocker and explicitly record completion with the success-only Verify report.
+
 Prove that the requested scope, current evidence, implementation, tests, and governing artifacts agree. For compact changes, `verify` owns lifecycle completion. For registered historical contracts, `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
 
 ## Purpose
