@@ -831,6 +831,7 @@ def validate_evidence_class_registry(
 def catalog_command(
     check_id: str,
     *,
+    repo_root: Path = Path.cwd(),
     paths: tuple[str, ...] = (),
     changed_sections: tuple[str, ...] = (),
     affected_roots: tuple[str, ...] = (),
@@ -867,9 +868,11 @@ def catalog_command(
                 model = example.group(1)
                 models.add(f"docs/design/{model}/{model}.md")
             elif path.startswith("docs/design/"):
-                # A moved flat path in a diff selects its current owner.
+                # Only an absent historical alias selects the current owner.
+                # A present flat input must be validated under its exact path.
                 flat = re.fullmatch(r"docs/design/(workflow|cli|record-format)\.md", path)
-                models.add(f"docs/design/{flat.group(1)}/{flat.group(1)}.md" if flat else path)
+                absent = not (repo_root / path).exists() and not (repo_root / path).is_symlink()
+                models.add(f"docs/design/{flat.group(1)}/{flat.group(1)}.md" if flat and absent else path)
         for path in sorted(models):
             args.extend(["--path", path])
         return _join(*args)
@@ -1028,6 +1031,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         registration_debt=registration_debt,
         status=status,
         adapter_version=request.adapter_version,
+        repo_root=repo_root,
     )
 
 
@@ -1842,7 +1846,9 @@ def _apply_path_selection(
         if path.startswith("packages/rigorloop/"):
             _add_check(selected, "npm_package_publication.test",
                        "Record-store package paths retain tarball and installed-binary compatibility proof.")
-        if category == "isolated-recording-evidence":
+        if category == "isolated-recording-evidence" and not _proven_prose_deletion(
+            path, repo_root=repo_root, tracked_deletion=tracked_deletion
+        ):
             _add_check(selected, "documentation_prose.audit",
                        "Isolated advisory evidence requires prose checks and its underlying model/runtime proof, not formal settlement.", path=path)
         return
@@ -2287,8 +2293,24 @@ def _is_safe_repo_relative_path(value: str) -> bool:
     return not path.is_absolute() and ".." not in path.parts
 
 
+def _proven_prose_deletion(path: str, *, repo_root: Path, tracked_deletion: bool) -> bool:
+    # Selection can include committed deletions as well as worktree deletions.
+    # Never suppress a present input, unsafe symlink, or unproven missing path.
+    target = repo_root / path
+    if target.exists() or target.is_symlink():
+        return False
+    if tracked_deletion:
+        return True
+    result = subprocess.run(
+        ["git", "log", "-1", "--format=", "--name-status", "--no-renames", "HEAD", "--", path],
+        cwd=repo_root, capture_output=True, text=True,
+    )
+    return result.returncode == 0 and result.stdout.strip() == f"D\t{path}"
+
+
 def _build_result(
     *,
+    repo_root: Path = Path.cwd(),
     mode: str,
     changed_paths: list[str],
     classified_paths: list[dict[str, str]],
@@ -2315,6 +2337,7 @@ def _build_result(
         try:
             command = catalog_command(
                 check_id,
+                repo_root=repo_root,
                 paths=paths,
                 changed_sections=changed_sections,
                 affected_roots=roots,

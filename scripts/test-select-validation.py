@@ -672,15 +672,86 @@ class ValidationSelectionTests(unittest.TestCase):
     def test_model_example_selection_uses_owner_not_example_as_model(self):
         import shlex
         for path in ("docs/design/record-format/examples/minimal-change.json",
+                     "docs/design/cli/examples/work-set/request.json",
+                     "docs/design/cli/examples/observation-freshness/scan-b.json",
                      "docs/design/workflow/examples/correction-cycle.mmd"):
             result = select_validation(SelectionRequest(
                 mode="explicit", paths=(path,), repo_root=ROOT,
                 preflight_context=self.root_preflight_context))
+            self.assertIn("rigorloop_cli.test", {c["id"] for c in result.selected_checks})
             check = next(c for c in result.selected_checks if c["id"] == "model.validate")
             command = shlex.split(check["command"])
             self.assertNotIn(path, command)
             owner = path.split("/")[2]
             self.assertIn(f"docs/design/{owner}/{owner}.md", command)
+
+    def test_model_selection_validates_present_historical_flat_input(self):
+        repo = self.make_git_repo()
+        for model in ("workflow", "cli", "record-format"):
+            owner = f"docs/design/{model}/{model}.md"
+            (repo / owner).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / owner, repo / owner)
+        flat = "docs/design/workflow.md"
+        (repo / flat).write_text("# Invalid historical model\n")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+        selected = select_validation(SelectionRequest(mode="explicit", paths=(flat,), repo_root=repo))
+        command = shlex.split(next(c["command"] for c in selected.selected_checks if c["id"] == "model.validate"))
+        self.assertIn(flat, command)
+        # Execute the selected paths through the real validator at the fixture root.
+        command[1] = str(ROOT / command[1])
+        checked = subprocess.run(command, cwd=repo, capture_output=True, text=True)
+        self.assertNotEqual(checked.returncode, 0, checked.stdout)
+        self.assertIn(flat, checked.stdout + checked.stderr)
+
+    def test_model_selection_deleted_flat_input_selects_current_owner(self):
+        result = self.select(["docs/design/workflow.md"])
+        command = shlex.split(next(c["command"] for c in result.selected_checks if c["id"] == "model.validate"))
+        self.assertNotIn("docs/design/workflow.md", command)
+        self.assertIn("docs/design/workflow/workflow.md", command)
+
+    def test_model_selection_rejects_historical_flat_symlink(self):
+        for dangling in (False, True):
+            with self.subTest(dangling=dangling):
+                repo = self.make_git_repo()
+                flat = repo / "docs/design/workflow.md"
+                flat.parent.mkdir(parents=True)
+                target = repo / "target.md"
+                if not dangling:
+                    target.write_text("# Target\n")
+                flat.symlink_to(target)
+                subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+                result = select_validation(SelectionRequest(mode="explicit", paths=(str(flat),), repo_root=repo))
+                self.assertEqual(result.status, "blocked", result.to_json_dict())
+
+    def test_deleted_isolated_prose_keeps_proof_without_reading_deleted_file(self):
+        path = "docs/reviews/explicit-recording-m3-code-review.md"
+        for committed in (False, True):
+            with self.subTest(committed=committed):
+                repo = self.make_git_repo()
+                file = repo / path
+                file.parent.mkdir(parents=True)
+                file.write_text("# Historical review\n")
+                subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+                subprocess.run(["git", "commit", "-m", "historical review"], cwd=repo, check=True, capture_output=True)
+                file.unlink()
+                if committed:
+                    subprocess.run(["git", "commit", "-am", "remove unsupported review location"], cwd=repo, check=True, capture_output=True)
+                selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+                checks = {c["id"]: c for c in selected.selected_checks}
+                self.assertNotIn("documentation_prose.audit", checks)
+                self.assertTrue({"model.validate", "rigorloop_cli.test"} <= checks.keys())
+
+    def test_missing_unproven_or_present_isolated_prose_retains_audit(self):
+        path = "docs/reviews/explicit-recording-m3-code-review.md"
+        repo = self.make_git_repo()
+        for present in (False, True):
+            if present:
+                (repo / path).parent.mkdir(parents=True)
+                (repo / path).write_text("# Explicit review input\n")
+                subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+            selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+            check = next(c for c in selected.selected_checks if c["id"] == "documentation_prose.audit")
+            self.assertIn(path, shlex.split(check["command"]))
 
     def test_model_selection_retains_authoritative_tracking_preflight(self):
         repo = self.make_git_repo()
@@ -691,9 +762,12 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertIn("untracked-authoritative-artifacts", {item.get("code") for item in result.blocking_results})
 
     def test_isolated_recording_evidence_selects_proof_without_formal_settlement(self):
+        repo = self.make_git_repo()
         for path in ("docs/implementation/explicit-recording-m4.md", "docs/reviews/explicit-recording-m3-code-review.md"):
-            result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=ROOT,
-                                                       preflight_context=self.root_preflight_context))
+            (repo / path).parent.mkdir(parents=True, exist_ok=True)
+            (repo / path).write_text("# Present historical evidence fixture\n")
+            subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+            result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
             self.assertNotIn(path, result.unclassified_paths)
             checks = {check["id"] for check in result.selected_checks}
             self.assertTrue({"documentation_prose.audit", "model.validate", "rigorloop_cli.test"} <= checks)
