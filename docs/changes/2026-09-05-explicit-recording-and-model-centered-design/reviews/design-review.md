@@ -51,6 +51,10 @@
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/proposal-review.md",
       "identity": "sha256:5b14201e9045aacfe606fcdf97fa09a56b178f0fffc68ef3a5748538e150f51f"
+    },
+    {
+      "path": "specs/compact-current-state-change-record.md",
+      "identity": "sha256:fb0a17528b0a5653c383ad8aef55b40e06eeaface7a968a9fdd0d46dd04f92e6"
     }
   ],
   "judgment": "approved",
@@ -84,3 +88,17 @@ The approved external-edit limit remains: no simultaneous manual/other-tool targ
 The exact opening Explicit recording amendments in specs/rigorloop-workflow.md and the first Goal and context paragraph in specs/skill-contract.md are new-profile-only adoption reconciliation, not formatting changes. They select explicitly requested new roots and matching guidance, retain independent review and final Verify, and preserve the historical remainder. The boundary-first-proof-model reconciliation assigns grandfathered semantic classification to Design Review while retaining feature-format/activation rules. Review-required exit zero establishes structural success only; absent or stale classification still blocks reliance. These current subjects are included explicitly. The selector correction restores that settled separation; it requires no new Design decision.
 
 Prior MODEL-DR-001 and subsequent selector-error, external-edit and model-validation clarifications retain their recorded dispositions and rationale in the unchanged advisory record. No approval is inferred merely because hashes match; this reviewer reassessed the exact package and current adoption context.
+
+## Current adoption reconciliation: preserve historical compact specification
+
+- Skill: design-review
+- Review status: approved
+- Package members: workflow -> docs/design/workflow.md; cli -> docs/design/cli.md; affected adoption boundary -> specs/compact-current-state-change-record.md
+- Upstream review ID: proposal-review in this change
+- Material findings/correction targets: none
+- Recording status: recorded; settlement: no historical lifecycle operation
+- Claim limitations: Design coherence only, not implementation or PR verification
+
+The spec owner removed only this initiative's redundant scope paragraph. Independent git diff --exit-code against d6770adfbbd835363d3b428acbd5a27a9485171b confirms exact historical bytes. The current material decision preserve-historical-compact-spec owns the inventory correction: compact specification preserved unchanged, replacing only the earlier implementation-note claim of an added paragraph. Historical records, approvals and subject registrations are untouched.
+
+All six Design criteria remain satisfied. Both model documents and approved direction are unchanged; WF-MAP-02 through06 and CLI-MAP-01 through06 already assign new-profile ownership. Adopted Constitution/workflow/skill-contract provide explicit selection; the removed paragraph owns no unique requirement. This restoration preserves compatibility and independent authority without weakening behavior, changing boundaries or requiring a new model/plan. No blanket stale-evidence waiver or historical approval conversion is granted.

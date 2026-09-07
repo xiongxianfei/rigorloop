@@ -246,7 +246,7 @@
     },
     {
       "path": "specs/compact-current-state-change-record.md",
-      "identity": "sha256:a07cbbe6e7b9c703c779ba905d3e6c521a10eb0215db30ff7734206e17b758fc"
+      "identity": "sha256:fb0a17528b0a5653c383ad8aef55b40e06eeaface7a968a9fdd0d46dd04f92e6"
     },
     {
       "path": "specs/rigorloop-workflow.md",
@@ -278,7 +278,7 @@
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/design-review.md",
-      "identity": "sha256:a58852b6d169b39d275de8ab571d6ea3585cb0b4ade36d8768a81d44c5c2cafc"
+      "identity": "sha256:9b5f86926555775022fc7c8274c4c43fe6d7992ca031d912d27ccc188e45779c"
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/delivery-review.md",
@@ -291,6 +291,14 @@
     {
       "path": "scripts/test-artifact-lifecycle-validator.py",
       "identity": "sha256:967c7ccb80643bf32ca6dc2bb994eef253a93643fadd36b1fb9c49d3cdc22c01"
+    },
+    {
+      "path": "scripts/validate-governed-lifecycle-cli.py",
+      "identity": "sha256:34156333cb492da21a268f649196e9684b9110003042ad3239c03ecd45fb2297"
+    },
+    {
+      "path": "scripts/test-governed-lifecycle-cli-validator.py",
+      "identity": "sha256:121ecb1affc2270fc48cfa1b2b061f629a027bf3d738ef62e0e248b9cb1a10d1"
     }
   ],
   "judgment": "approved",
@@ -542,3 +550,15 @@ All ten checklist items pass for the correction: model limits/identity alignment
 Distinct affected whole-change judgment: clean-with-notes for the current complete implementation. The new snapshot bridge composes with existing contract selection without reintroducing lifecycle eligibility or changing recording semantics. It validates selected immutable complete-set bytes, not unrelated live content; repository Git validation does not make Git a recorder prerequisite. Previously reviewed M1-M4 storage, model mapping, guidance, packaging and adoption behavior is unchanged, with exact prior subject inventory/proof retained. No implementation milestone remains open on this correction review.
 
 The earlier direct tracked-mode unsupported limitation is superseded by this implementation assessment, not by retroactively rewriting prior proof. Actual required PR-mode verification must still run against a fresh committed source candidate. No branch-ready, PR-ready, Verify success, publication or automatic downstream handoff is claimed by Code Review. Next owning assessment: Verify; ER-PR-001 closure remains its separate decision.
+
+## Current ER-PR-004 correction and affected whole-change review
+
+Review status: clean-with-notes. Recording status: recorded. Independent reviewer authored neither scripts nor restoration. Exact current subjects include the two wrapper scripts and restored compact specification; unchanged earlier whole-change subjects were rehashed without drift, with the new Design reconciliation updated explicitly.
+
+The inventory validates explicit JSON sets through the existing strict complete-set helper before excluding them from legacy commands/frozen inventory. Unknown, malformed, duplicate-key, mixed-discriminator and missing-member cases reject. Historical parser and legacy baseline allowances are unchanged. The restored specification matches its historical base and current Design reconciliation; no historical record is retargeted.
+
+Coordinator proof: unchanged regression21tests passed12.212s, metadata115tests passed24.05s, actual python scripts/validate-governed-lifecycle-cli.py passed38records with3existing baseline warnings and zero errors; git diff --check passed. Evidence er-pr-004-regression preserves initial21test/7failure proof and intermediate historical-staleness failure. These are actual local outcomes, not a full PR-wrapper result.
+
+All ten checklist items pass: approved contract separation; positive and five rejection cases/nonmutation; mixed/invalid/incomplete boundaries; fail-closed helper and exceptions; shared validation ownership; preserved historical semantics and exact spec bytes; no new credentials/payload logging; unchanged packaged/runtime/guidance subjects; bounded two scripts plus owned paragraph restoration; attributable tests and real wrapper proof.
+
+Distinct affected whole-change judgment: clean-with-notes. Current M1-M4 implementation, prior snapshot fixes and adoption remain coherent after these changes. No new public command, schema, model, transition, migration or historical waiver is introduced. Verify-owned ER-PR-001 and ER-PR-004 remain open for the exact committed PR reassessment; Code Review does not disposition them. No branch-ready/PR-ready/Verify success or automatic downstream handoff is claimed.

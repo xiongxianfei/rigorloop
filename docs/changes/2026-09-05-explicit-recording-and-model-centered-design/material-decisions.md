@@ -61,6 +61,33 @@
       ],
       "rationale": "On 2026-09-07 the user explicitly approved creation of this previously absent explicit-recording-v1 root, preservation of existing review evidence, and resuming M5. M4 packaged adoption and distinct whole-change review are clean-with-notes. This records new-contract selection in the isolated worktree only; it grants no commit, publication or historical migration. Existing advisory records and exact judgments remain unchanged; their independent owners must record any new current judgment, never relabel old evidence automatically.",
       "source_refs": []
+    },
+    {
+      "id": "preserve-historical-compact-spec",
+      "actor": {
+        "id": "root-spec",
+        "role": "design"
+      },
+      "subjects": [
+        {
+          "path": "specs/compact-current-state-change-record.md",
+          "identity": "sha256:fb0a17528b0a5653c383ad8aef55b40e06eeaface7a968a9fdd0d46dd04f92e6"
+        },
+        {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        },
+        {
+          "path": "CONSTITUTION.md",
+          "identity": "sha256:ba13fbf7bbce39f8257f91ca07c657f06b3e22658da89807acb3be9512b38a92"
+        }
+      ],
+      "rationale": "Spec-owner reconciliation under user fix-then-PR authority: preserve specs/compact-current-state-change-record.md byte-identical to the reviewed historical base. Remove only this initiative's redundant scope paragraph. No compact requirement, boundary, approval, evidence registration or record changes. WF-MAP-02 through WF-MAP-06 and CLI-MAP-01 through CLI-MAP-06 remain owned by the two models; explicit selection already lives in adopted Constitution, rigorloop-workflow and skill-contract. Current adoption inventory disposition for the compact spec is preserved unchanged, superseding only the earlier M4 implementation-note claim that this file receives an entry paragraph. Those notes remain historical execution evidence. No new normative outcome, model or plan change, exception or waiver; independent affected Design and Code review must confirm this reconciliation before reliance.",
+      "source_refs": []
     }
   ]
 }

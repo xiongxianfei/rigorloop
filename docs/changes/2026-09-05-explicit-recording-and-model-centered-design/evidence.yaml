@@ -653,6 +653,66 @@
       "result": "passed",
       "procedure": "python scripts/test-artifact-lifecycle-validator.py; python scripts/test-change-metadata-validator.py; exact-commit node scripts/validate-record-store.mjs --revision; git diff --check",
       "summary": "Pre-correction: 1 test, 5 failed assertions, exit1/1.204s. Valid selected set rejected by both lifecycle modes and direct bridge. Exact test hash314e8affa6f0e579c268a76e7c4b654090751a7908ef56e263d912d26d83028b; production lifecycle a730d394a5a7a8f57bed650bf2aa8b8c0628a7cbeef2caed1c13bdc7a98f0323; bridge339baf0fdcae22d77bc427c11ee483f275720b91a6d89d2254efae355eda16c6. User explicitly authorized er-pr-001 repair, independent review and PR continuation. Fix/current-bounded/governed-scope-bound/single-governed-candidate; settled WF-SR-09/10 and CLI-SR-02/10 plus required ci.sh PR/main gate, integration-mismatch, supported root cause, feasible failing automated proof. Scope: these three scripts and existing owned evidence; no model, public command, schema or workflow change. Selected snapshot reads must validate exact raw blobs/regular-file modes without checkout or live-byte fallback; missing/unknown/unsafe/malformed data rejects.\nCorrection proof (2026-09-07): expanded tests exposed deleted/sibling record selection and UTF-8 text-parser failures; complete-set dispatch now owns those bytes. ER-PR-002 independent valid9,137,022-byte fixture failed under8MiB limit; corrected unique-ID regression failed against8MiB (1test/1.631s) then passed against65MiB (1test/1.575s). ER-PR-003 selected-invalid/live-symlink regression failed4assertions/69.346s before lexical-path correction, then passed in final full suite with unchanged test bytes. Final python scripts/test-artifact-lifecycle-validator.py:169tests passed/74.961s, exit0; includes12selected snapshot cases across PR/main and both composition modes, direct helper, and >8MiB valid set. python scripts/test-change-metadata-validator.py:115passed/24.14s. Direct node scripts/validate-record-store.mjs docs/changes/2026-09-05-explicit-recording-and-model-centered-design/change.yaml --revision a5705e5011021514c58a0eaf4571a7f300c0e375 passed against different live evidence. git diff --check passed. An initial misnamed metadata command failed because file absent; corrected named suite passed. Independent reviewer reproduced corrected limit and symlink outcomes. Current proof is producer validation, not PR readiness or hosted CI; full exact PR gate remains for Verify."
+    },
+    {
+      "id": "pr-branch-577b9754",
+      "actor": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "scripts/validate-governed-lifecycle-cli.py",
+          "identity": "sha256:8cf0565749f3e9f4ba694271098ba378dd3c71ae1f5a4cdf6982d45c67b2e117"
+        },
+        {
+          "path": "scripts/test-governed-lifecycle-cli-validator.py",
+          "identity": "sha256:354e38d7bf08e3705ca1ecd6573849cbc9bcbbcd4e87e980173a6209c140a0cc"
+        }
+      ],
+      "result": "failed",
+      "procedure": "2026-09-07: bash scripts/ci.sh --mode pr --base d6770adfbbd835363d3b428acbd5a27a9485171b --head 577b9754f8700a944e61ddc2371632353d90ad92",
+      "summary": "Actual completed session85992 exit1; final completion retained. Failed tenth gate: python scripts/test-governed-lifecycle-cli-validator.py,19tests/1failure in1.430s (wrapper reports2s). Failure at line148 expected0 got1. Nine preceding sequential gates completed: canonical integrity/regressions/generatedcurrency/boundary; adapter regressions/build/validation; release integrity; npm. Successful check output is suppressed, so individual counts are not invented. Required PR snapshot lifecycle gate was not reached. Read-only activation_inventory_errors confirms explicit root historical YAML parse error line1 expected key:value. Clean source HEAD and mergebase/live origin main independently verified before run; all4review subject sets current. No source mutation, push, PR or hostedCI; prior M5 success report remains unchanged/stale for corrected subjects. No branch-ready verification_basis."
+    },
+    {
+      "id": "er-pr-004-regression",
+      "actor": {
+        "id": "root-bugfix",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/validate-governed-lifecycle-cli.py",
+          "identity": "sha256:34156333cb492da21a268f649196e9684b9110003042ad3239c03ecd45fb2297"
+        },
+        {
+          "path": "scripts/test-governed-lifecycle-cli-validator.py",
+          "identity": "sha256:121ecb1affc2270fc48cfa1b2b061f629a027bf3d738ef62e0e248b9cb1a10d1"
+        },
+        {
+          "path": "docs/design/workflow.md",
+          "identity": "sha256:29f9c0994e6468ee630516198d2e7d0f6a28ebcaae81ab1ea5b9b43d55b3094e"
+        },
+        {
+          "path": "docs/design/cli.md",
+          "identity": "sha256:f0bde78dcdd9bd9daaaaf4639df42f712ea9b9a90184f09ad062244558d535a5"
+        },
+        {
+          "path": "specs/compact-current-state-change-record.md",
+          "identity": "sha256:fb0a17528b0a5653c383ad8aef55b40e06eeaface7a968a9fdd0d46dd04f92e6"
+        },
+        {
+          "path": "CONSTITUTION.md",
+          "identity": "sha256:ba13fbf7bbce39f8257f91ca07c657f06b3e22658da89807acb3be9512b38a92"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-governed-lifecycle-cli-validator.py; python scripts/test-change-metadata-validator.py; python scripts/validate-governed-lifecycle-cli.py; git diff --exit-code d6770adfbbd835363d3b428acbd5a27a9485171b -- specs/compact-current-state-change-record.md",
+      "summary": "2026-09-07 pre-correction: existing mocked-success wrapper regression and new explicit inventory/invalid-set regressions fail. User authorizes fix then PR. Fix/current-bounded/governed-scope-bound/single-governed-candidate; settled WF-SR-09/10, CLI-SR-02/10, TG-FINAL-02 and required ci.sh gate; integration-mismatch supported, automated proof feasible. Scope two wrapper/test scripts and existing evidence; no public CLI, model, schema, historical manifest or workflow changes. Expected: explicit JSON sets strictly validated by existing complete-set validator, classified separately from frozen legacy inventory; unknown/mixed/malformed/incomplete sets reject, historical loader remains unchanged. Test identities above bind pre/post proof. No-map rationale: exact failing wrapper and its calls establish bounded placement without project-map reliance. Pre-correction suite:21tests/7failed assertions/1.423s. Post-correction unchanged test identity:21passed/11.878s. Actual repository wrapper then exposed stale spec evidence in the historical compact change, caused solely by our redundant scope paragraph. Spec-owner assessment restored only that paragraph to base d6770adfbbd835363d3b428acbd5a27a9485171b bytes; no historical record/approval retargeting or baseline waiver. Final exact same wrapper regression suite:21passed/12.212s. python scripts/test-change-metadata-validator.py:115passed/24.05s. python scripts/validate-governed-lifecycle-cli.py:passed,38historical records,3existing baseline warnings,zero failures/activation errors. git diff --exit-code d6770adfbbd835363d3b428acbd5a27a9485171b -- specs/compact-current-state-change-record.md:exit0. Original worktree unchanged. Independent affected Design/Code review and exactPR Verify remain required."
     }
   ]
 }

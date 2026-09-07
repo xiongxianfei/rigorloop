@@ -175,7 +175,7 @@
         "id": "review-compact-fix",
         "role": "review"
       },
-      "reason": "Independent current design assessment against exact subjects after explicit user adoption; no automatic conversion of prior advisory evidence."
+      "reason": "Independent current adoption reconciliation preserves historical compact specification without changing model direction."
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/reviews/delivery-review.md",
@@ -193,7 +193,7 @@
         "id": "review-compact-fix",
         "role": "review"
       },
-      "reason": "Independent correction and affected whole-change review against exact current subjects; ER-PR-002/003 resolved. PR Verify remains separate."
+      "reason": "Independent wrapper correction and affected whole-change review against current exact subjects; PR Verify remains separate."
     },
     {
       "path": "docs/changes/2026-09-05-explicit-recording-and-model-centered-design/verify-report.md",
@@ -297,6 +297,35 @@
       ],
       "evidence": "Mandatory ci.sh:1533-1535 PR lifecycle gate invokes unsupported pr-ci. Independent 12-case regression confirms rejection. See evidence.yaml#pr-tracked-gate-compatibility. Prior isolated M5 success remains scoped history.",
       "required_outcome": "Support required PR lifecycle validation against exact selected immutable subjects without using unrelated live bytes or skipping/weakening validation. Add regressions, independent correction and affected whole-change review, then exact PR Verify before push. CI/implementation owner needs bounded correction authority; Verify does not repair.",
+      "state": "open",
+      "resolution": null
+    },
+    {
+      "id": "er-pr-004",
+      "reporter": {
+        "id": "review-compact-fix",
+        "role": "verify"
+      },
+      "owner": {
+        "id": "ci-maintenance-owner",
+        "role": "support"
+      },
+      "subjects": [
+        {
+          "path": "scripts/ci.sh",
+          "identity": "sha256:d84fc247ef45d84ee1aae77f3b2cc0fc019e167f26f29555f9e7e2a19a1219b9"
+        },
+        {
+          "path": "scripts/validate-governed-lifecycle-cli.py",
+          "identity": "sha256:8cf0565749f3e9f4ba694271098ba378dd3c71ae1f5a4cdf6982d45c67b2e117"
+        },
+        {
+          "path": "scripts/test-governed-lifecycle-cli-validator.py",
+          "identity": "sha256:354e38d7bf08e3705ca1ecd6573849cbc9bcbbcd4e87e980173a6209c140a0cc"
+        }
+      ],
+      "evidence": "Actual required PR wrapper at head577b9754f8700a944e61ddc2371632353d90ad92 exits1: Governance lifecycle validation wrapper regressions,19tests/1failure. test_t13_main_emits_one_aggregate_and_suppresses_successful_child_stdout expects0 but gets1. Independent activation_inventory_errors reports new explicit root unreadable: line1 expected key:value; historical YAML loader does not dispatch its JSON recording contract. See evidence.yaml#pr-branch-577b9754.",
+      "required_outcome": "Make the repository lifecycle-wrapper inventory handle the explicitly selected recording contract without applying historical YAML/lifecycle semantics or silently exempting unknown/invalid records. Add regression proof, independent correction and affected whole-change review, then rerun the complete required PR verification on a fresh immutable candidate. Verify does not repair; bounded implementation authority required.",
       "state": "open",
       "resolution": null
     }
