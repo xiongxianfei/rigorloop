@@ -14,7 +14,7 @@ This plan does not create lifecycle authority. Before implementation, establish 
 
 - Proposal: [Explicit Workflow Recording and Model-Centered Design](../proposals/2026-09-05-explicit-recording-and-model-centered-design.md).
 - Specification and architecture, combined by user-authorized exception: [Workflow model](../design/workflow.md) and [CLI model](../design/cli.md).
-- Design assessment: [independent advisory rereview](../reviews/explicit-recording-and-model-centered-design.md), including the resolved MODEL-DR-001 finding. This is not a formal Design Review ID.
+- Design assessment: The former outside-change assessment was removed at the user’s direction. This plan reference supplies no Design Review authority; use the owning change’s registered review records.
 - Prior-contract test spec: None; this is not a manifest-bound v1 continuation.
 - Governing repository rules: [Constitution](../../CONSTITUTION.md) and [AGENTS.md](../../AGENTS.md), unchanged by this plan.
 
