@@ -568,6 +568,24 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return repo, tuple(write["path"] for write in writes)
 
+    def test_v2_registered_json_paths_select_contract_owned_validator(self):
+        repo, _ = self.recording_repo()
+        shutil.rmtree(repo / "docs/changes/example")
+        (repo / "docs/changes").mkdir(parents=True, exist_ok=True)
+        fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())
+        result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
+                                 "record-store", "record", "--root", str(repo), "--change", "example",
+                                 "--input", "-", "--format", "json"],
+                                input=json.dumps(fixture["request"])+"\n", text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        for write in fixture["request"]["writes"]:
+            selected = select_validation(SelectionRequest(mode="explicit", paths=(write["path"],), repo_root=repo))
+            self.assertEqual(selected.status, "ok", selected.blocking_results)
+            checks = {c["id"]: c for c in selected.selected_checks}
+            self.assertIn("docs/changes/example/change.json", checks["change_metadata.validate"]["command"])
+            self.assertNotIn("review_artifacts.validate", checks)
+            self.assertNotIn("artifact_lifecycle.validate", checks)
+
     def test_er_m5_001_real_recording_paths_select_complete_set_validation(self):
         repo, paths = self.recording_repo()
         for path in paths:

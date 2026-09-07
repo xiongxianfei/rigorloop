@@ -3275,6 +3275,20 @@ def validate_metadata_against_schema(metadata: dict[str, str], schema: dict, pat
     return errors
 
 
+def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
+    """Check the declared primary interface, not semantic workflow eligibility."""
+    block = _extract_markdown_section(body, "Explicit recording")
+    if block is None:
+        return []
+    required = ("rigorloop-records-v2", "explicit-recording-v1", "rigorloop context", "subject inspect",
+                "record_contract", "expected_revision", "targeted", "does not approve", "Do not migrate")
+    errors = [f"{path}: explicit recording profile missing primary contract token: {token}"
+              for token in required if token not in block]
+    if "record-store check|record" in block or "explicit writes" in block:
+        errors.append(f"{path}: explicit recording profile retains a normal full-record writer")
+    return errors
+
+
 def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None]:
     errors: list[str] = []
     full_text = path.read_text(encoding="utf-8")
@@ -3308,6 +3322,7 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     errors.extend(_validate_published_description(path, metadata))
     errors.extend(_validate_resource_map(path, body))
     errors.extend(validate_ci_maintenance_contract(path, metadata, body))
+    errors.extend(validate_targeted_recording_profile(path, body))
     errors.extend(_validate_published_self_containment(path, metadata, body))
     errors.extend(validate_readability_contract(path, metadata, body))
     errors.extend(

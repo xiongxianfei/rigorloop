@@ -168,3 +168,26 @@ All eight boundary dimensions and material composed hazards retain requirement-o
 - record-store inspect supplies the registered context, expected revision and record identities. The transient check/record request binds all relied-on model/example/compatibility/proposal identities, preserves the complete existing finding and updates only review evidence, its explicit applicability and matching review activity.
 
 The exact three-model review remains independent of its author. No reviewed model was edited by the reviewer, no unsupported artifact or permanent request was created, and no routing or automatic downstream continuation was performed. The retained historical finding subject can still produce subject-drift because its old path is truthful; that does not invalidate this explicitly assessed current package or authorize rewriting historical evidence.
+
+## Bounded independent Design Review: M5 adoption amendments
+
+Reviewer: m5-adoption-design-review (role: review). This classification was explicitly delegated to the independent reviewer who did not author the amended specs or M5 implementation. It is a separately attributed Design Review assessment of the two exact amendments below. The earlier structured reviewer, member subjects, judgment and finding remain the original assessment; none is retargeted or attributed to this reviewer. This entry neither substitutes for M5 Code Review nor approves the complete implementation.
+
+Outcome: approved for this bounded classification. Both reported amendments are new-profile-only, assessed against their already approved owning models. No new semantic Design decision, historical feature-format adoption, or historical-contract migration is required. Workflow model's Model validation and proof mapping assigns this classification to Design Review before downstream reliance; this entry settles that semantic review obligation only for the exact subjects shown.
+
+| Exact reviewed subject or governing basis | Content identity |
+| --- | --- |
+| specs/rigorloop-workflow.md | `sha256:0eae07ea872452fe203d01d50049b47e5df97b82542237af520d644671198cbc` |
+| specs/skill-contract.md | `sha256:ced40b68fc8c4e610b3bd66b19c10d4f8c0b2c394cd14adf95cd18c41cf35ca3` |
+| docs/design/workflow/workflow.md | `sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251` |
+| docs/design/cli/cli.md | `sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c` |
+| docs/design/record-format/record-format.md | `sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb` |
+| docs/plans/2026-09-07-targeted-recording-primary-cli.md | `sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d` |
+
+`specs/rigorloop-workflow.md`: the only amendment replaces its opening Explicit recording paragraph. It now identifies the three approved model owners, targeted context/show/subject-inspection and mutations, explicit v2 primary creation, retained existing v1 compatibility, and the absence of installation-derived adoption. These are the approved Workflow WF-SR-01/04/07/09/10 and WF-MAP-02 adoption boundaries, complemented by CLI's recording/adoption inventory and Record Format's compatibility obligations. The downstream sequence and entire historical remainder are unchanged and explicitly preserved. Classification: new-profile-only amendment; no substantive historical behavior change.
+
+`specs/skill-contract.md`: the only amendment replaces its model-profile paragraph under Goal and context. It aligns consumer guidance with the approved three-model ownership split, targeted operations, explicit identities/applicability, v2 primary creation, truthful v1 origin absence, and conditional replacement of historical procedures within the selected profile. Substantive stage duties, permissions, independence, proof, skill structure and resource integrity remain obligations. The matching CLI/schema/template/adapter coherence requirement and separately authorized adoption remain explicit. This is the exact Skill contract adoption surface identified by Workflow's Further affected surfaces and allocated by approved plan M5. The remaining historical skill contract is unchanged. Classification: new-profile-only amendment; no substantive historical behavior change.
+
+The exact diff contains no other edits to either specification. Existing feature-format and grandfathering rules continue for the preserved historical remainder; this classification does not waive those rules for a future historical behavior change. Structural review-required is not itself approval: this independent semantic assessment supplies the required classification with exact identities. If either subject changes, reassess the affected amendment rather than treating this entry as approval of newer content.
+
+Findings: none for this bounded classification. Recording: existing Design Review record, separately attributed body entry; no new classification document or workflow transition. Next owner: M5 Code Review and the final whole-change reviewer may rely on this exact classification once their own evidence is current. Release/customer activation, Verify success, branch readiness and PR readiness are not claimed.

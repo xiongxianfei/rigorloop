@@ -1351,6 +1351,10 @@ def _apply_path_selection(
     # roots. Historical review/lifecycle validators must not reinterpret them.
     manifest_path = _change_root_change_yaml(path)
     if manifest_path:
+        v2_manifest = manifest_path.removesuffix("change.yaml") + "change.json"
+        if (repo_root / v2_manifest).exists():
+            manifest_path = v2_manifest
+    if manifest_path:
         manifest = repo_root / manifest_path
         try:
             metadata = json.loads(manifest.read_text(encoding="utf-8")) if manifest.is_file() else None
@@ -1363,14 +1367,15 @@ def _apply_path_selection(
             _add_check(selected, "change_metadata.regression",
                        "Recording paths retain metadata and historical compatibility regression proof.")
             affected_roots.add(_change_root(path))
-            if metadata["contract"] != "explicit-recording-v1":
+            if metadata["contract"] not in {"explicit-recording-v1", "rigorloop-records-v2"}:
                 blocking_results.append({"code": "unsupported-change-contract", "path": manifest_path,
                                          "message": "Unknown recording contract; no historical fallback."})
                 return
             relative = path.removeprefix(_change_root(path))
-            kind = {"evidence.yaml": "evidence", "material-decisions.md": "decisions",
-                    "verify-report.md": "verify"}.get(relative)
-            if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\.md", relative):
+            v2 = metadata["contract"] == "rigorloop-records-v2"
+            kind = ({"evidence.json": "evidence", "material-decisions.json": "decisions", "verify-report.json": "verify"}
+                    if v2 else {"evidence.yaml": "evidence", "material-decisions.md": "decisions", "verify-report.md": "verify"}).get(relative)
+            if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\." + ("json" if v2 else "md"), relative):
                 kind = "review"
             records = metadata.get("records")
             registered = isinstance(records, list) and any(
@@ -2380,7 +2385,7 @@ def _path_category(path: str) -> str | None:
             or (path.startswith("packages/rigorloop/dist/lib/recording-") and path.endswith(".js"))
             or (path.startswith("packages/rigorloop/dist/lib/record-store") and path.endswith(".js"))
             or (path.startswith("packages/rigorloop/test/record-store-") and path.endswith(".test.js"))
-            or path in {"packages/rigorloop/test/helpers/record-store-launcher.mjs", "packages/rigorloop/test/helpers/recording-query-launcher.mjs"}):
+            or path in {"packages/rigorloop/test/helpers/record-store-launcher.mjs", "packages/rigorloop/test/helpers/recording-query-launcher.mjs", "packages/rigorloop/test/helpers/record-store-interactions.mjs", "packages/rigorloop/test/helpers/record-store-tokenize.py", "packages/rigorloop/test/fixtures/recording-interactions/README.md"}):
         return "explicit-recording"
     if path == "specs/boundary-first-activation.yaml":
         return "lifecycle"
@@ -2543,7 +2548,7 @@ def _path_category(path: str) -> str | None:
     if path == "docs/follow-ups.md":
         return "follow-up-register"
     if path.startswith("docs/changes/") and len(parts) >= 4:
-        if parts[3] == "change.yaml":
+        if parts[3] in {"change.yaml", "change.json"}:
             return "change-metadata"
         if (
             parts[3] in {"review-log.md", "review-resolution.md"}

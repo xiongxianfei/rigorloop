@@ -2295,7 +2295,7 @@ def validate_file(
         except ValueError:
             return ["invalid JSON metadata"]
         if isinstance(candidate, dict) and "contract" in candidate:
-            if candidate["contract"] != "explicit-recording-v1":
+            if candidate["contract"] not in {"explicit-recording-v1", "rigorloop-records-v2"}:
                 return ["contract: unknown_value; unsupported recording contract"]
             try:
                 result = subprocess.run(
@@ -2326,7 +2326,7 @@ def validate_file(
 def main(argv: list[str]) -> int:
     if len(argv) < 2:
         print(
-            "usage: validate-change-metadata.py <change.yaml> [<change.yaml> ...]",
+            "usage: validate-change-metadata.py <change.yaml|change.json> [...]",
             file=sys.stderr,
         )
         return 2
