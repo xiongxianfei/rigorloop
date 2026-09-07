@@ -31,12 +31,12 @@
   ],
   "activity": {
     "stage": "code-review",
-    "status": "in-progress",
+    "status": "completed",
     "owner": {
       "id": "m5-code-review",
       "role": "review"
     },
-    "reason": "Route hands exact M5 consumer/adoption implementation and evidence to independent Code Review, including m5-cr-001 reassessment. No final whole-change Code Review or Verify claim."
+    "reason": "Route records M5 closure after independent Code Review approved exact consumer/adoption implementation and evidence with m5-cr-001 resolved, and independent Design Review classified the allocated new-profile-only spec amendments. Next prerequisite is final whole-change Code Review of integrated M1-M5; M6 Verify remains unstarted. No whole-change approval, Verify success, activation or publication claim."
   },
   "plan": {
     "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
@@ -131,7 +131,7 @@
     },
     {
       "id": "m5",
-      "status": "ready",
+      "status": "completed",
       "owner": {
         "id": "codex-root",
         "role": "implement"
@@ -258,7 +258,7 @@
         "id": "m5-code-review",
         "role": "review"
       },
-      "reason": "Independent M5 first-pass changes-requested review of exact recorded subjects; correction and complete rereview required."
+      "reason": "Independent bounded M5 approval of all final increment subjects and current evidence; m5-cr-001 resolved. Final whole-change Code Review and M6 Verify remain mandatory and separate."
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/evidence.yaml",
