@@ -55,6 +55,14 @@ The model-document validation marker at the top of this file versions document s
 
 The existing [machine-readable schema](../../schemas/explicit-recording-v1.schema.json) includes stored types and advanced transport definitions. It does not yet implement the designed targeted request/result schemas or successor stored format. Schema linkage is structural evidence, not a claim that the primary commands are published or implemented.
 
+### Examples
+
+| Example | Scope and starting state | Requirement basis |
+| --- | --- | --- |
+| [Work update request](cli/examples/work-set/request.json) and [saved receipt](cli/examples/work-set/response.json) | Complete primary JSON messages for work.set on existing work-1, whose status is pending in example-change. Expected revision is current; no extra subject basis is claimed for this status-only decision. | CLI-SR-03/12/16 |
+
+Digests are illustrative, not reproducible fixture hashes or runtime evidence. The command is rigorloop work set work-1 with the explicit root/change and request on stdin. The actor chooses in-progress; the CLI preserves omitted ownership, requirements and neighboring entries. The response reports storage only. No complete stored file is submitted. Stored representations belong to the [Record Format examples](record-format.md#examples); actor sequencing belongs to [Workflow](workflow.md#examples).
+
 ## Architecture Constraints
 
 Use exact local identities and explicit paths. Do not require Git, PR access, network services or a daemon. Data safety is enforced mechanically; workflow authority is not inferred from a caller's role string. Never use the new recorder as an implicit interpreter for an old contract.

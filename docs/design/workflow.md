@@ -271,11 +271,53 @@ This file owns the one-file-per-model convention. `cli.md` consumes it rather th
 
 Two features changing the same model use the same document. They must reconcile overlapping requirements before either treats a review as applicable to the combined content. Splitting or renaming a model requires an explicit responsibility and reference mapping, not just a size threshold.
 
+### Model-centered layout and examples
+
+WF-SR-07/08 select the following layout for coordinated adoption:
+
+```text
+docs/design/
+  record-format/
+    record-format.md
+    examples/
+      minimal-change.json
+      incomplete-review.json
+      finding-reassessment/
+        before.json
+        after.json
+  cli/
+    cli.md
+    examples/
+      work-set/
+        request.json
+        response.json
+  workflow/
+    workflow.md
+    examples/
+      correction-cycle.mmd
+```
+
+Each docs/design/<model>/<model>.md is the single normative document for that model. Its filename matches the directory's stable model ID. Examples belong only under that model's examples directory and may use JSON, Mermaid, Markdown or another format suited to the demonstrated content. No common cross-model example directory, mandatory Markdown wrapper or additional model is introduced.
+
+The owning document indexes each example with its purpose, governing requirements, complete-artifact or excerpt scope, and any synthetic identities or starting assumptions. Examples illustrate existing requirements and cannot introduce additional rules. JSON examples must parse without explanatory extra keys; complete records must conform to their selected schema when that schema is available. Before/after pairs must preserve the invariants they demonstrate. Mermaid illustrates responsibility and ordering rather than executable eligibility.
+
+Examples are read on demand, not mandatory context for every invocation. When an example changes, validation selection must check it and its owning model; it must not treat every file under docs/design as a normative Markdown model. Independent review covers the affected examples alongside their owner and includes their exact identities when relied upon.
+
+The current flat files remain authoritative until Delivery implements the layout and validator/selector changes together. Current examples already occupy their final model-centered directories. Adoption moves workflow.md, cli.md and record-format.md into their matching directories, repairs relative links and governance/template references, updates current change-model references through the CLI and requires fresh review applicability. Historical reviewed paths and identities are preserved; they are not rewritten to claim review of relocated files. Flat paths remain readable historical subjects, but must not coexist as competing current normative copies. This design step does not activate path validation or silently relocate registered subjects.
+
+### Examples
+
+| Example | Scope | Requirement basis |
+| --- | --- | --- |
+| [Correction cycle](workflow/examples/correction-cycle.mmd) | Responsibility sequence after Verify detects a defect, including after recorded completion; this is a diagram, not a transition engine. | WF-SR-01/04/05/06/09/13 |
+
+The diagram shows actor decisions only. Storage details are in the [CLI examples](cli.md#examples); exact fields and preserved origin are in [Record Format](record-format.md#examples). No arrow means the CLI authorizes the next activity.
+
 ### Model validation and proof mapping
 
 WF-SR-07/08/09 own this model-document validation mapping, identified by explicit-recording-v1. That marker versions document structure independently of the v1/v2 stored-record discriminators. A model file uses the existing `Requirements` table and `Boundary scan and acceptance scenarios` table; it does not need a separate feature spec, test spec or four-table boundary record. This is a model-specific replacement of that document format, not a claim of historical `boundary-first-v1` serialization conformance. The boundary reasoning and independent assessment obligations remain.
 
-Model validation accepts an explicitly selected, repository-contained regular file at `docs/design/<model>.md`, where the filename stem follows the model ID grammar. Symlinked paths are rejected. Each file declares exactly once `Model validation contract: explicit-recording-v1`. Missing or unknown contract markers reject; they never fall back to feature validation. Historical `specs/` documents retain their feature-format and activation rules, with the semantic-review handoff clarified below. Validating a model draft does not activate it or require a registered change record.
+Current model validation accepts an explicitly selected, repository-contained regular file at docs/design/<model>.md. After the coordinated layout adoption above, current model validation MUST accept docs/design/<model>/<model>.md with equal directory and filename IDs following the same grammar. Mismatched IDs, example paths submitted as models and extra nesting reject. Historical flat subjects retain explicit historical handling rather than being silently mapped to a different file. Symlinked paths are rejected. Each file declares exactly once `Model validation contract: explicit-recording-v1`. Missing or unknown contract markers reject; they never fall back to feature validation. Historical `specs/` documents retain their feature-format and activation rules, with the semantic-review handoff clarified below. Validating a model draft does not activate it or require a registered change record.
 
 The `Requirements` table has columns `ID` and `Required behavior`, with unique stable IDs and nonempty requirement text. Requirement IDs begin with a letter and contain only letters, digits and hyphens; existing WF-SR and CLI-SR IDs stay unchanged. The scenario table has exactly `Dimension`, `Requirement basis` and `Distinct outcome to demonstrate`. It contains each of the eight dimension labels shown below exactly once. An applicable row lists unique IDs declared in that model's Requirements table, separated by comma and space, plus a nonempty outcome. A non-applicable row uses `-` as its requirement basis and an outcome beginning `Not applicable:` followed by a reason. Unknown labels, duplicate or missing rows, malformed tables and undeclared requirement references reject. Each required table and its heading occurs once.
 

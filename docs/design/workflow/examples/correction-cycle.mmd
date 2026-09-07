@@ -1,0 +1,7 @@
+flowchart TD
+    V["Verify assesses a failed check"] --> B["Verify records evidence and a change-level blocker"]
+    B --> R["Route explicitly assigns correction work"]
+    R --> A["Owner corrects the implementation and records evidence"]
+    A --> I["Independent reviewer assesses corrected subjects"]
+    I --> D["Verify reassesses and explicitly disposes its blocker"]
+    D --> S["Verify records success only when justified"]

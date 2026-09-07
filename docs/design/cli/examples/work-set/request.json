@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "interface": "targeted-recording-v1",
+  "contract": "rigorloop-records-v2",
+  "change_id": "example-change",
+  "expected_revision": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "reads": [],
+  "operation": {
+    "op": "work.set",
+    "target": {
+      "id": "work-1"
+    },
+    "values": {
+      "status": "in-progress"
+    }
+  }
+}
