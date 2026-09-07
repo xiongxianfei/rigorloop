@@ -36,6 +36,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from validation_selection import (  # noqa: E402
     CHECK_CATALOG,
+    catalog_command,
     EvidenceClassRegistration,
     build_repository_preflight_context,
     SelectionRequest,
@@ -1079,11 +1080,11 @@ raise SystemExit({exit_code})
     def assert_ci_mode_dispatch_has_documented_policies(self, ci_text: str) -> None:
         self.assertRegex(
             ci_text,
-            r"(?ms)^case \"\$mode\" in.*local\|explicit\|release\)\n\s*run_selected_mode",
+            r"(?ms)^case \"\$mode\" in.*local\|explicit\|release\|pr\)\n\s*run_selected_mode",
         )
         self.assertRegex(
             ci_text,
-            r"(?ms)^case \"\$mode\" in.*pr\|main\)\n\s*run_direct_product_gates",
+            r"(?ms)^case \"\$mode\" in.*main\)\n\s*run_direct_product_gates",
         )
         self.assertRegex(
             ci_text,
@@ -5164,10 +5165,10 @@ run_new_validation_mode() {
 }
 
 case "$mode" in
-  local|explicit|release)
+  local|explicit|release|pr)
     run_selected_mode
     ;;
-  pr|main)
+  main)
     run_direct_product_gates
     ;;
   broad-smoke)
@@ -5203,10 +5204,10 @@ run_direct_streaming_mode() {
 }
 
 case "$mode" in
-  local|explicit|release)
+  local|explicit|release|pr)
     run_selected_mode
     ;;
-  pr|main)
+  main)
     run_direct_product_gates
     ;;
   broad-smoke)
@@ -5521,48 +5522,95 @@ raise SystemExit(3)
                 traced = trace.read_text(encoding="utf-8").splitlines()
                 self.assertEqual(traced[-len(expected) :], expected)
 
-    def test_pr_mode_uses_direct_product_gate_graph_without_selector_or_runtime(self) -> None:
-        trace = Path(tempfile.mkdtemp(prefix="validation-direct-pr-")) / "selector-argv.txt"
+    def test_pr_mode_runs_selected_checks_instead_of_full_product_graph(self) -> None:
+        fixture = self.write_selector_fixture(self.minimal_selector_payload(mode="pr"))
+        trace = Path(tempfile.mkdtemp(prefix="validation-selected-pr-")) / "selector-argv.txt"
         self.addCleanupTree(trace.parent)
-        result = run_ci(
-            "--mode",
-            "pr",
-            "--base",
-            "base-sha",
-            "--head",
-            "head-sha",
-            env={
-                "RIGORLOOP_CI_DIRECT_DRY_RUN": "1",
-                "RIGORLOOP_CI_SELECTOR_ARGV_FILE": str(trace),
-            },
-        )
-        output = result.stdout + result.stderr
+        result = run_ci("--mode", "pr", "--base", "base-sha", "--head", "head-sha",
+                        env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture),
+                             "RIGORLOOP_CI_DIRECT_DRY_RUN": "1",
+                             "RIGORLOOP_CI_SELECTOR_ARGV_FILE": str(trace)})
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertTrue(trace.exists(), "PR must consult the selector")
+        self.assertEqual(trace.read_text().splitlines()[-6:],
+                         ["--mode", "pr", "--base", "base-sha", "--head", "head-sha"])
+        self.assertIn("Selector mode: pr", result.stdout)
+        self.assertNotIn("Gate B: adapter parity regressions", result.stdout)
 
-        self.assertEqual(result.returncode, 0, output)
-        self.assertFalse(trace.exists(), "direct PR graph must not invoke the selector")
-        for command in (
-            "python scripts/validate-skills.py",
-            "python scripts/test-skill-validator.py",
-            "python scripts/build-skills.py --check",
-            "python scripts/test-adapter-distribution.py",
-            "python scripts/build-adapters.py --version v0.1.5",
-            "python scripts/validate-adapters.py --version v0.1.5 --adapter-root",
-            "python scripts/test-release-transaction.py",
-            "python scripts/test-change-metadata-validator.py",
-            "python scripts/test-artifact-lifecycle-validator.py",
-            "python scripts/test-review-artifact-validator.py",
-            "python scripts/validate-artifact-lifecycle.py --mode pr-ci --base base-sha --head head-sha",
-        ):
-            self.assertIn(command, output)
-        for forbidden in (
-            "scripts/select-validation.py",
-            "--mode broad-smoke",
-            "codex exec",
-            "claude --",
-            "opencode run",
-            "transcript",
-        ):
-            self.assertNotIn(forbidden, output)
+    def test_pr_lifecycle_catalog_preserves_revision_scope(self) -> None:
+        command = catalog_command("artifact_lifecycle.validate", mode="pr",
+                                  base="base-sha", head="head-sha",
+                                  paths=("docs/plans/example.md",))
+        self.assertEqual(shlex.split(command),
+                         ["python", "scripts/validate-artifact-lifecycle.py", "--mode", "pr-ci",
+                          "--base", "base-sha", "--head", "head-sha"])
+        with self.assertRaises(ValueError):
+            catalog_command("artifact_lifecycle.validate", mode="pr", paths=("README.md",))
+
+    def test_pr_always_retains_lifecycle_scope_for_docs_and_code(self) -> None:
+        for path in ("README.md", "packages/rigorloop/dist/lib/example.js"):
+            with self.subTest(path=path):
+                repo = self.make_git_repo()
+                base = self.git_output(repo, "rev-parse", "HEAD")
+                target = repo / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text("changed\n")
+                subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+                subprocess.run(["git", "commit", "-m", "bounded change"], cwd=repo, check=True, capture_output=True)
+                head = self.git_output(repo, "rev-parse", "HEAD")
+                result = select_validation(SelectionRequest(mode="pr", base=base, head=head, repo_root=repo))
+                self.assertEqual(result.status, "ok", result.blocking_results)
+                checks = {check["id"]: check for check in result.selected_checks}
+                self.assertIn("artifact_lifecycle.validate", checks)
+                self.assertEqual(shlex.split(checks["artifact_lifecycle.validate"]["command"])[-4:],
+                                 ["--base", base, "--head", head])
+                if path == "README.md":
+                    self.assertNotIn("adapters.regression", checks)
+                    self.assertNotIn("rigorloop_cli.test", checks)
+                else:
+                    self.assertIn("rigorloop_cli.test", checks)
+
+    def test_pr_wrapper_executes_exact_lifecycle_range_and_preserves_failure(self) -> None:
+        workspace = self.make_ci_workspace()
+        marker = workspace / "argv.json"
+        self.write_fake_script(workspace, "scripts/validate-artifact-lifecycle.py",
+                               "import json, os, sys\nfrom pathlib import Path\n"
+                               "Path(os.environ['ARGV_MARKER']).write_text(json.dumps(sys.argv[1:]))\n"
+                               "sys.exit(int(os.environ['CHECK_EXIT']))\n")
+        for exit_code in (0, 7):
+            with self.subTest(exit_code=exit_code):
+                payload = self.minimal_selector_payload(mode="pr", selected_checks=[{
+                    "id": "artifact_lifecycle.validate", "paths": ["docs/plans/example.md"],
+                    "command": "python scripts/validate-artifact-lifecycle.py --mode pr-ci --base base-sha --head head-sha",
+                }])
+                fixture = self.write_selector_fixture(payload)
+                result = run_ci("--mode", "pr", "--base", "base-sha", "--head", "head-sha",
+                                env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture),
+                                     "ARGV_MARKER": str(marker), "CHECK_EXIT": str(exit_code)},
+                                script=workspace / "scripts/ci.sh", cwd=workspace)
+                self.assertEqual(result.returncode, exit_code, result.stdout + result.stderr)
+                self.assertEqual(json.loads(marker.read_text()),
+                                 ["--mode", "pr-ci", "--base", "base-sha", "--head", "head-sha"])
+        marker.unlink()
+        payload["selected_checks"][0]["command"] = payload["selected_checks"][0]["command"].replace("head-sha", "other-sha")
+        fixture = self.write_selector_fixture(payload)
+        result = run_ci("--mode", "pr", "--base", "base-sha", "--head", "head-sha",
+                        env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture), "ARGV_MARKER": str(marker), "CHECK_EXIT": "0"},
+                        script=workspace / "scripts/ci.sh", cwd=workspace)
+        self.assertEqual(result.returncode, 4, result.stdout + result.stderr)
+        self.assertIn("command does not match catalog", result.stderr)
+        self.assertFalse(marker.exists())
+
+    def test_pr_wrapper_rejects_selector_mode_substitution(self) -> None:
+        fixture = self.write_selector_fixture(self.minimal_selector_payload(mode="explicit"))
+        result = run_ci("--mode", "pr", "--base", "base-sha", "--head", "head-sha",
+                        env={"RIGORLOOP_SELECTOR_FIXTURE": str(fixture)})
+        self.assertEqual(result.returncode, 4, result.stdout + result.stderr)
+        self.assertIn("Selector mode does not match", result.stderr)
+
+    def test_catalog_rejects_unknown_value_for_mode(self) -> None:
+        with self.assertRaisesRegex(ValueError, "unsupported catalog mode"):
+            catalog_command("artifact_lifecycle.validate", mode="unknown_value", paths=("README.md",))
 
     def test_main_mode_uses_direct_lifecycle_scope(self) -> None:
         result = run_ci(

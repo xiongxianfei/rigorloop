@@ -837,7 +837,12 @@ def catalog_command(
     affected_roots: tuple[str, ...] = (),
     versions: tuple[str, ...] = (),
     adapter_version: str = DEFAULT_ADAPTER_VERSION,
+    mode: str = "explicit",
+    base: str | None = None,
+    head: str | None = None,
 ) -> str:
+    if mode not in {"local", "explicit", "pr", "main", "release"}:
+        raise ValueError(f"unsupported catalog mode: {mode}")
     if check_id not in CHECK_CATALOG:
         raise ValueError(f"unknown check ID: {check_id}")
 
@@ -887,6 +892,11 @@ def catalog_command(
             raise ValueError("review_artifacts.validate requires at least one change root")
         return _join("python", "scripts/validate-review-artifacts.py", *affected_roots)
     if check_id == "artifact_lifecycle.validate":
+        if mode == "pr":
+            if not base or not head:
+                raise ValueError("PR lifecycle validation requires base and head")
+            return _join("python", "scripts/validate-artifact-lifecycle.py", "--mode", "pr-ci",
+                         "--base", base, "--head", head)
         if not paths:
             raise ValueError("artifact_lifecycle.validate requires at least one path")
         args = ["python", "scripts/validate-artifact-lifecycle.py", "--mode", "explicit-paths"]
@@ -997,6 +1007,10 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             ),
         )
 
+    if request.mode == "pr":
+        _add_check(selected, "artifact_lifecycle.validate",
+                   "Every PR retains revision-bound lifecycle and baseline checks.")
+
     if _readme_marker_validation_required(tuple(changed_paths), repo_root=repo_root):
         _add_check(
             selected,
@@ -1020,6 +1034,8 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
     status = "blocked" if blocking_results else "ok"
     return _build_result(
         mode=request.mode,
+        base=request.base,
+        head=request.head,
         changed_paths=changed_paths,
         classified_paths=classified_paths,
         unclassified_paths=unclassified_paths,
@@ -2312,6 +2328,8 @@ def _build_result(
     *,
     repo_root: Path = Path.cwd(),
     mode: str,
+    base: str | None = None,
+    head: str | None = None,
     changed_paths: list[str],
     classified_paths: list[dict[str, str]],
     unclassified_paths: list[str],
@@ -2338,6 +2356,9 @@ def _build_result(
             command = catalog_command(
                 check_id,
                 repo_root=repo_root,
+                mode=mode,
+                base=base,
+                head=head,
                 paths=paths,
                 changed_sections=changed_sections,
                 affected_roots=roots,

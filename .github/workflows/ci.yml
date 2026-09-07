@@ -37,7 +37,7 @@ jobs:
       - name: Install public package dependencies
         run: npm ci --prefix packages/rigorloop
 
-      - name: Run direct product and governance gates
+      - name: Run change-selected PR checks or full main gates
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             bash scripts/ci.sh --mode pr --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.event.pull_request.head.sha }}"

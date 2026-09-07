@@ -35,3 +35,9 @@ python scripts/validate-documentation-prose.py --mode enforce --path README.md -
 - small bug fixes with regression coverage
 - test improvements
 - build and tooling cleanup with clear scope
+
+## Validation scope
+
+Use `bash scripts/ci.sh --mode local` for checks selected from the working-tree changes, or `--mode explicit --path PATH` for a bounded surface. PR CI uses the same selector with `--mode pr --base SHA --head SHA`; unclassified paths or failed preflight checks block execution. Every PR retains the revision-bound lifecycle comparison, including its historical-baseline handling. Main CI retains the full direct gate suite, and release validation retains its existing policy.
+
+Documentation is classified by its role: skills, model contracts, records and executable examples still select their owning checks. A Markdown extension alone does not grant an exemption. Selected checks report durations; full main gates report progress and duration per gate. No tests are retired by this scheduling change.
