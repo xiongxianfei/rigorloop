@@ -77,7 +77,7 @@ The following stable requirements define model behavior; the targeted-command am
 | WF-SR-03 | A formal reviewer MUST record a judgment against the exact reviewed subjects and its basis before approval is relied on. An author MUST NOT approve its own contribution. CLI persistence success or a caller-supplied reviewer label is not independent-review evidence. |
 | WF-SR-04 | Before relying on changed work, its author MUST identify affected approvals and evidence, explicitly mark applicability changes, and record outstanding correction work. Route MUST assess cross-model impacts and select the next responsible owner without requiring that owner to appear in a previously derived pending set. Uncertain impact remains an explicit blocker. |
 | WF-SR-05 | Any responsible stage, including Verify, MUST be able to record a newly discovered defect with stable finding or blocker identity, affected subjects, evidence, required outcome and correction owner. Failed Verify MUST NOT create a success report. Route records the correction destination; the finding does not need to originate in a prior review stage. |
-| WF-SR-06 | A correction MUST retain unresolved findings and supporting judgments until their responsible reviewers record disposition; change-level blockers retain disposition responsibility with their reporter, including Verify. Returning work for rereview is not approval. Completed work may be explicitly reopened; a former completion or current stage MUST NOT prevent recording that decision. |
+| WF-SR-06 | A correction MUST retain each unresolved finding and the exact assessments explicitly cited as its supporting judgments, including reviewer provenance, reviewed subjects, outcome and rationale. Selecting a newer current assessment MUST NOT replace those cited assessments; change-level blockers retain disposition responsibility with their reporter, including Verify. Returning work for rereview is not approval. Completed work may be explicitly reopened; a former completion or current stage MUST NOT prevent recording that decision. |
 | WF-SR-07 | Each model MUST have one authoritative living Design file combining requirements, structure, decisions, boundaries, compatibility and acceptance. Features update affected models; cross-model contracts have one named owner and references from consumers. Mandatory separate specifications, architecture files and ADRs for the same model are removed only upon approved adoption. |
 | WF-SR-08 | Requirement and decision references MUST survive normal document revisions. A changed or retired obligation retains its identity and rationale or an explicit replacement mapping. Design Review MUST assess the exact affected model revisions and relevant relationships; approval of one change does not approve another change's concurrent edits. |
 | WF-SR-09 | A downstream actor MUST check the current decision basis before reliance. Missing, changed or contradictory required evidence blocks progression and is recorded explicitly; it does not prevent safely recording the blocker or correction. Only successful Verify may record lifecycle completion with exact evidence supporting the required design and delivery obligations. |
@@ -96,7 +96,7 @@ Workflow has three conceptual parts, not three services or mandatory files: stag
 | Model engineering truth | One `docs/design/<model>.md` per model |
 | Change intent | Existing proposal surface |
 | Mutable work state and explicit decisions | Change-local `change.yaml` |
-| Current judgment and open findings | Stable change-local review record for the applicable target |
+| Current judgment and open findings | Stable change-local review record for the applicable target; the proposed retained-assessment revision explicitly separates current selection from supporting judgments |
 | New non-review-stage blocker, including Verify failure | Structured blocker entries in the change record, with evidence references; no fabricated review |
 | Current proof and freshness subjects | Conditional change-local `evidence.yaml` |
 | Resolved rationale that still constrains work | Conditional `material-decisions.md` |
@@ -170,6 +170,61 @@ The `records` array declares every supporting authoritative record for this chan
 
 The CLI model owns bytes and encoding. Markdown record bodies carry nonempty human-readable reasoning, while their structured metadata owns IDs and enumerated judgments. Body text cannot override metadata. Subject and evidence arrays may be empty while recording incomplete work; Workflow actors must not use incomplete records to justify approval or completion. A Verify report's metadata admits only success, but the CLI does not establish that its assertion is true.
 
+### Retained judgments for unresolved findings
+
+The retained object is an **assessment**, not merely the current review's judgment label. A finding's evidence explains the defect; its supporting assessment records who judged it, against which exact subjects, with what outcome and rationale. These are related but distinct records. This section refines WF-SR-03/06/08/13; it selects named assessments shared by findings rather than duplicating full judgment snapshots inside each finding.
+
+The existing v1 representation above has a gap: one review contains one replaceable assessment plus a findings array. Preserving that array while replacing reviewer, subjects, judgment and body can discard the basis supporting an unresolved finding. A pointer to the mutable review file, its latest body, or an old hash without retained content does not repair that gap. Git history and old conversations are not required storage.
+
+#### Proposed review schema revision
+
+The following is a proposed **review schema version 2**, not an extension silently accepted by the closed v1 schema. Existing v1 definitions and the published schema file remain unchanged by this Design edit. This review shape is not yet admitted by the existing recording implementation. Its versioned dispatch and consumer adoption must be reconciled before implementation or use; no v1 record is automatically converted, and missing historical provenance must never be reconstructed by guesswork.
+
+| Object | Exact fields and meaning |
+| --- | --- |
+| Review metadata, schema version 2 | `{schema_version: 2, change_id, id, target, current_assessment_id, assessments: [Assessment], findings: [Finding]}`. Current assessment is an explicit actor-selected ID or null while no assessment is selected. |
+| Assessment | `{id, reviewer: Actor, contributors: [Actor], independence_basis, subjects: [Subject], judgment, rationale}`. Uses the existing judgment vocabulary; rationale is the complete actor-authored assessment explanation. ID is unique within the review. |
+| Finding | Existing Blocker fields plus `{supporting_assessment_ids: [id]}`. Each unique ID resolves to an assessment in this same review, not to the current-assessment pointer. |
+
+All objects remain closed. Review change_id, id and target are immutable once established; another review target uses a new review record, so retained assessments cannot silently acquire a different target. Each supplied field is required; current_assessment_id is the only nullable new field. IDs, Actor, Subject and text use the existing types. Assessments may be empty with a null current pointer. Supporting IDs may be empty to permit recording an incomplete newly reported concern; the reviewer must provide an adequate decision basis before relying on a formal finding assessment. An empty list is explicit incompleteness, not a judgment inferred by the CLI.
+
+Assessment rationale is stored with the assessment so a later edit to the review's general Markdown body cannot erase it. That body remains a nonempty human-readable overview and cannot override structured assessment fields. Current reviewer, judgment and subjects are read from the explicitly selected assessment; they are not duplicated as mutable top-level fields. Current assessment selection does not change the supporting IDs of any finding, imply that the selected assessment resolves all findings, or change record-level applicability.
+
+```mermaid
+flowchart LR
+    Review["Review record"]:::system -->|"current_assessment_id"| New["Assessment a2: later judgment"]:::container
+    Finding["Open finding f1"]:::container -->|"supporting_assessment_ids"| Old["Assessment a1: original judgment"]:::container
+    Review -->|"retains"| Old
+    Review -->|"contains"| Finding
+    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
+```
+
+The diagram illustrates a retained relationship, not automatic status progression. Both assessments and the finding remain available in the current record set even if a2 is selected as current.
+
+#### Retention and correction rules
+
+1. The reviewer explicitly supplies the supporting assessment IDs when recording or supplementing a finding. The CLI never chooses a supporting judgment from recency, matching subject hashes or the current pointer.
+2. Once recorded, an assessment's content is immutable under its ID. A corrected or later judgment uses a new assessment ID; an identical retry may be unchanged after current preconditions pass. Conflicting content under the same ID is an identity error, not a readiness decision.
+3. Finding support references are append-only in this first representation. A later supporting assessment can be explicitly added, but an earlier link is not silently retargeted or removed. A finding's corrected disposition explains why an earlier judgment no longer constrains the work; it does not falsify that judgment's original basis.
+4. Every referenced assessment remains stored with all of its provenance, subjects and rationale. No routine command deletes assessments, including after disposition. This simple first policy is stronger than the minimum retention-until-disposition requirement and avoids making deletion depend on workflow eligibility. Any later pruning policy requires its own reviewed retention rule. Existing size limits still apply; reaching a limit produces a structural limit error, never automatic eviction of an assessment or support link.
+5. A new current assessment can coexist with an unresolved finding and its earlier supporting assessment. Recording either is allowed even when the judgments disagree. The responsible actors decide whether that disagreement blocks reliance and explicitly record disposition; the CLI checks references and preservation, not who is substantively correct.
+6. Resolution remains an explicit state/resolution update by the finding's responsible reviewer. If a later assessment supports that disposition, the reviewer explicitly adds its ID to supporting_assessment_ids in the same update or beforehand. Recording an approved assessment alone never resolves a finding.
+
+These invariants apply to every supported writer for the revised representation, including targeted commands, batch, advanced replacements and recovery. Advanced replacement cannot delete a retained assessment or rewrite its content under an existing ID. Recovery restores or completes the exact prepared representation, including assessment content and support links. This is preservation of stored provenance, not a gate based on completion or approval status.
+
+#### Example: a later judgment does not erase an open concern
+
+| Moment | Current assessment | Finding f1 | Retained assessment content |
+| --- | --- | --- | --- |
+| Initial review | a1, changes-requested | Open; supports `[a1]` | a1 contains the original reviewer, exact subjects, judgment and rationale |
+| Later review | a2, approved | Still open; supports `[a1]` | a1 remains byte-preserved; a2 contains its own explicitly supplied assessment |
+| Reviewer reassesses f1 | a2, approved | Explicitly resolved with rationale; supports `[a1, a2]` when the reviewer cites both | Both assessments remain available; neither is rewritten to describe the other's subjects |
+
+This illustration is governed by WF-SR-03/06/08/13 and the rules above. The middle row is recordable but does not establish justified progression. Approval and finding disposition are separate decisions.
+
+The current v1 transport and stored-record tables describe the compatibility baseline; the revised review shape is a pending storage-contract amendment. Design owns completing its exact version selection, request/result mapping and cross-record-reference integration before Delivery relies on it. Delivery must allocate closed-schema, referential-integrity, immutable-content, query, limit and recovery proof. This refinement does not claim those changes implemented or approved, and the earlier Design Review does not cover this new representation.
+
 ### Responsibility-specific updates
 
 The unified `design` responsibility combines architecture and specification authorship; it is not a new permission principal. Existing architecture/spec skills can supply portions during adoption, but one reconciled model document is the reviewed subject. Proposal, plan, implementation and Verify remain distinct responsibilities; review targets retain independent reviewers.
@@ -203,7 +258,7 @@ The CLI model owns exact commands, requests, output, selectors and serialization
 
 A finding uses `(review ID, finding ID)` and remains inside that review. A blocker uses a change-level ID even if Verify discovered it; Verify never needs to invent a review. A resolved/deferred state and its resolution travel together as an explicit actor decision. An implementation owner can supply correction evidence but cannot impersonate the reporter's disposition. The CLI validates representation and references, while skills/review/execution authority assess whether the supplied actor actually had responsibility.
 
-A review record's new assessment may replace a prior current assessment only after actual independent rereview of the supplied subjects; finding operations never implicitly retarget those subjects or rewrite judgment. Linking a revised model changes only the link and its declared identity. It neither restores nor invalidates applicability automatically. The responsible author separately declares the impact, and a reviewer alone restores reliance on its assessment after checking the current basis. A matching hash is not a substitute for that assessment.
+Under the v1 compatibility representation, a review record's new assessment may replace a prior current assessment only after actual independent rereview of the supplied subjects; the proposed [retained-assessment revision](#retained-judgments-for-unresolved-findings) separates current selection from immutable supporting judgments. In either representation, finding operations never implicitly retarget those subjects or rewrite judgment. Linking a revised model changes only the link and its declared identity. It neither restores nor invalidates applicability automatically. The responsible author separately declares the impact, and a reviewer alone restores reliance on its assessment after checking the current basis. A matching hash is not a substitute for that assessment.
 
 Evidence applicability applies to the whole evidence record. If one changed check makes the record unreliable, the responsible actor explicitly restricts applicability and explains the affected scope; consumers inspect individual results/subjects as well. This interface does not add per-check stale/current commands. Record-level current is a supplied assertion, never a CLI conclusion that all checks passed.
 
