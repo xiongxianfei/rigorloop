@@ -31,12 +31,12 @@
   ],
   "activity": {
     "stage": "code-review",
-    "status": "completed",
+    "status": "in-progress",
     "owner": {
-      "id": "m2-code-review",
+      "id": "m3-code-review",
       "role": "review"
     },
-    "reason": "Route records M2 closure after independent Code Review approved the exact corrected implementation and evidence, with m2-cr-001 resolved. This continuation ends at M2; M3 remains the next unstarted dependency. No whole-change completion, Verify or activation claim."
+    "reason": "Route hands M3 implementation and exact evidence to independent Code Review, including m3-cr-001/002 reassessment. M4 has not started."
   },
   "plan": {
     "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
@@ -80,6 +80,26 @@
         "CLI-SR-09",
         "CLI-SR-10"
       ]
+    },
+    {
+      "id": "m3",
+      "status": "ready",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-07",
+        "WF-SR-14",
+        "WF-SR-15",
+        "CLI-SR-01",
+        "CLI-SR-14",
+        "CLI-SR-17",
+        "CLI-SR-19",
+        "CLI-SR-20",
+        "CLI-SR-21",
+        "CLI-SR-22"
+      ]
     }
   ],
   "records": [
@@ -105,6 +125,10 @@
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m2.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m3.md",
       "kind": "review"
     }
   ],
@@ -155,13 +179,22 @@
       "reason": "Independent M2 rereview approves exact final implementation and verified registered evidence. m2-cr-001 resolved; no remaining material findings. This is milestone scope only."
     },
     {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m3.md",
+      "value": "current",
+      "actor": {
+        "id": "m3-code-review",
+        "role": "review"
+      },
+      "reason": "Independent M3 first-pass changes-requested assessment of exact recorded subjects; correction and full rereview remain required."
+    },
+    {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/evidence.yaml",
       "value": "current",
       "actor": {
         "id": "codex-root",
         "role": "implement"
       },
-      "reason": "Recorded M2 checks ran on these exact implementation/design subjects; M2 current proof supplements retained exact M1 increment evidence; not final Verify evidence."
+      "reason": "Recorded M3 checks ran on these exact implementation/design subjects; supplements retained M1/M2 increment evidence; not final Verify evidence."
     }
   ],
   "blockers": []

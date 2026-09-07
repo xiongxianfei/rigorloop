@@ -1341,6 +1341,846 @@
       "result": "passed",
       "procedure": "Bounded manual M2 scope assessment and explicit-path validation selection; independent finding m2-cr-001 correction.",
       "summary": "Shared advanced engine now dispatches v1/v2 manifests, requests and recoverable journals without conversion. V1 schema, templates and legacy validator bytes are unchanged. Existing RecordFiles containment remains shared and unchanged. V2 origin preservation applies to candidate construction and recovery; missing evidence remains repairable. Results are prepared before writes, and standalone validation uses coordinated engine reads. Exact-owned failed locks can be released; partial/unknown locks remain untouched with recovery-required and no fabricated recovery identity. No expanded external-editor or OS guarantee. Primary targeted commands, bounded diagnostic rendering, consumer adoption and final Verify remain later milestones. Explicit selection of the staged implementation paths returned ok without blockers. M1 approval retains its exact increment subjects; it is not silently retargeted to M2. Current M2 proof covers the changed shared surfaces; this evidence awaits independent review approval."
+    },
+    {
+      "id": "m3-schema",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "node scripts/build-record-store-schema.mjs --check",
+      "summary": "Passed canonical/package v1, v2 and prospective targeted query/result schema parity."
+    },
+    {
+      "id": "m3-contract",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "node --test packages/rigorloop/test/record-store-*.test.js",
+      "summary": "148 passed, zero failed. Includes 29 new TG-03/TG-04 cases: every selector/filter, full Verify and decisions, v1 origin availability, scoped missing content, exact contract/revision, normalized cursor pagination and stale conflicts, byte bounds, same-read subject identities, canonical full observation digest and retained-origin subjects, precise unsafe/unreadable failures, bounded dense correction receipts, preview/no-op, prepublication rejection, busy/recovery envelopes, postcommit no-read and lost-response retry. Reviewer m3-cr-001/002 and bounded-read regressions failed before correction. Test-only subprocess launcher proves primary JSON/text parity without activation."
+    },
+    {
+      "id": "m3-metadata",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-change-metadata-validator.py",
+      "summary": "115 passed; retained metadata compatibility."
+    },
+    {
+      "id": "m3-model",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/workflow/workflow.md --path docs/design/record-format/record-format.md",
+      "summary": "Passed structure/references only; no semantic approval or activation claim."
+    },
+    {
+      "id": "m3-boundary",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-boundary-first-validation.py",
+      "summary": "87 passed."
+    },
+    {
+      "id": "m3-selector",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-select-validation.py",
+      "summary": "163 passed. Explicit selection of all staged implementation paths returned ok with zero blockers and selected record_store.schema, model.validate, boundary_first.regression, change_metadata.regression, selector.regression, rigorloop_cli.test and npm_package_publication.test."
+    },
+    {
+      "id": "m3-package",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "npm --prefix packages/rigorloop test",
+      "summary": "612 passed, 2 existing historical skips, zero failed (614 total). Initial launcher no-argument discovery failure corrected and full suite rerun."
+    },
+    {
+      "id": "m3-package-publication",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "python scripts/test-npm-package-publication.py",
+      "summary": "7 passed; temporary package validation without publication."
+    },
+    {
+      "id": "m3-diff",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "git diff --check; git diff --cached --check",
+      "summary": "Passed whitespace integrity; not behavioral proof."
+    },
+    {
+      "id": "m3-scope",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/cli/cli.md",
+          "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
+        },
+        {
+          "path": "docs/design/record-format/record-format.md",
+          "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
+        },
+        {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
+        },
+        {
+          "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
+          "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+          "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store-files.js",
+          "identity": "sha256:5f83885b5198a8687942488887512344b9daa2ed77856072a9459996b3ed373d"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/record-store.js",
+          "identity": "sha256:f719ced00e197612a0605cdd568c962562cbb3ad39468335bebc457cd4c90f6b"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-contract.js",
+          "identity": "sha256:574a3bc7573d1463f9e5cbe5c09faf6fedc539a0320b9f77d1ac5bbdb6004657"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-observations.js",
+          "identity": "sha256:59b47f1f4ce5c22db8dee714febc20a01e61a01c921f7d51eb9d633246f2e5a4"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js",
+          "identity": "sha256:ae3aadb182ab9f6983c8235a3e2eed522a6f05bfaeb3839f643202523576ddfd"
+        },
+        {
+          "path": "packages/rigorloop/dist/lib/recording-result.js",
+          "identity": "sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141"
+        },
+        {
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
+          "identity": "sha256:a11c35bf45bb2c3c5e36f6b988d6d33f5e029fbe7ed22549a74a0defa9b57273"
+        },
+        {
+          "path": "packages/rigorloop/test/record-store-queries.test.js",
+          "identity": "sha256:1dfc9405bf776908086b1b7f134e86043982636924d781ba213ca7fa7b871a85"
+        },
+        {
+          "path": "schemas/targeted-recording-v1.schema.json",
+          "identity": "sha256:a704663b14046baace59be80c4ece92fce87177082f3bc33b2edefd6665ab475"
+        },
+        {
+          "path": "scripts/build-record-store-schema.mjs",
+          "identity": "sha256:e2774e543455d86eab5b1e2e9a32edf75b4c04ffc63c3dd3bc4cacf340fd52aa"
+        },
+        {
+          "path": "scripts/test-select-validation.py",
+          "identity": "sha256:3b6a9ba5d1a14258903342ea386afaddffc631c3c392c1090f2b003a27c31520"
+        },
+        {
+          "path": "scripts/validation_selection.py",
+          "identity": "sha256:66d2b298bcf848ec2b8095fc38845be3e5d8596136bf64def6a8e2a2bff8757f"
+        }
+      ],
+      "result": "passed",
+      "procedure": "Bounded M3 scope assessment against TG-03/TG-04 and selected validation; independent findings m3-cr-001/002 correction.",
+      "summary": "Internal primary query adapters now expose selected context, status, all normal show families including Verify/shared decisions, mechanical subject inspection and observation pagination. Closed versioned result schema and prepublication receipt hook share the existing recoverable persistence engine. Exact contract/revision are reported without workflow eligibility. Observation hashing uses all structured stored subjects including retained origins and streams diagnostic payloads; dense completed-work failed-evidence recording remains available with bounded receipt and optional-detail fallback. Advanced outcomes and v1 validator/schema remain unchanged. Public dispatcher activation, targeted constructors, consumer adoption, token benefit evaluation and final Verify remain later milestones. Existing M1/M2 evidence and reviews retain truthful increment subjects and are not retargeted. No expanded external-editor guarantee. Implementation evidence awaits independent M3 approval."
     }
   ]
 }

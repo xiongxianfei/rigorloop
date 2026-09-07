@@ -609,6 +609,7 @@ class ValidationSelectionTests(unittest.TestCase):
         paths = (
             "docs/design/cli/cli.md", "docs/design/workflow/workflow.md",
             "schemas/explicit-recording-v1.schema.json",
+            "schemas/targeted-recording-v1.schema.json",
             "scripts/build-record-store-schema.mjs",
             "scripts/validate-record-store.mjs",
             "tests/fixtures/explicit-recording-v1/records.json",
@@ -630,6 +631,9 @@ class ValidationSelectionTests(unittest.TestCase):
 
     def test_explicit_recording_package_paths_retain_publication_proof(self):
         for path in ("packages/rigorloop/dist/lib/record-store.js",
+                     "packages/rigorloop/dist/lib/recording-query-cli.js",
+                     "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
+                     "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
                      "packages/rigorloop/dist/lib/record-format-v2.js",
                      "packages/rigorloop/dist/schemas/rigorloop-records-v2.schema.json",
                      "packages/rigorloop/dist/templates/rigorloop-records-v2/records.json",
