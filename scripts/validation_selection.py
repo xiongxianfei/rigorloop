@@ -2369,6 +2369,11 @@ def _path_category(path: str) -> str | None:
         return "isolated-recording-evidence"
     if (path.startswith("docs/design/")
             or path.startswith("tests/fixtures/explicit-recording-v1/")
+            or path.startswith("tests/fixtures/rigorloop-records-v2/")
+            or path in {"schemas/rigorloop-records-v2.schema.json", "templates/rigorloop-records-v2/records.json",
+                        "packages/rigorloop/dist/schemas/rigorloop-records-v2.schema.json",
+                        "packages/rigorloop/dist/templates/rigorloop-records-v2/records.json",
+                        "packages/rigorloop/dist/lib/record-format-v2.js"}
             or path in {"schemas/explicit-recording-v1.schema.json", "scripts/build-record-store-schema.mjs", "scripts/validate-record-store.mjs",
                         "templates/explicit-recording/records.json", "packages/rigorloop/dist/templates/explicit-recording/records.json",
                         "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json"}

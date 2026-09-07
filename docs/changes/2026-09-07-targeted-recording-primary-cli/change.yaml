@@ -30,19 +30,37 @@
     }
   ],
   "activity": {
-    "stage": "delivery-review",
-    "status": "completed",
+    "stage": "code-review",
+    "status": "in-progress",
     "owner": {
-      "id": "delivery-fresh-review",
+      "id": "m1-code-review",
       "role": "review"
     },
-    "reason": "Fresh independent Delivery Review approves the complete exact plan and proof allocation; prior resolved findings are preserved. Isolated stop; no routing, implementation or activation."
+    "reason": "Route hands the bounded M1 implementation and exact evidence to independent Code Review for correction reassessment. M2 has not started."
   },
   "plan": {
     "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
     "identity": "sha256:2078ea15010d79a50941cc3bfaa80fa02d521972bb97c6cc01ee2e89cc5d393d"
   },
-  "work": [],
+  "work": [
+    {
+      "id": "m1",
+      "status": "ready",
+      "owner": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-01",
+        "RF-SR-02",
+        "RF-SR-06",
+        "RF-SR-08",
+        "CLI-SR-02",
+        "CLI-SR-09",
+        "CLI-SR-10"
+      ]
+    }
+  ],
   "records": [
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
@@ -55,6 +73,14 @@
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/delivery-review.md",
       "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m1.md",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/evidence.yaml",
+      "kind": "evidence"
     }
   ],
   "applicability": [
@@ -84,6 +110,24 @@
         "role": "review"
       },
       "reason": "Fresh independent assessment approves the exact current delivery package; no new material findings. dp-01/dp-02/dp-03 original evidence and resolved dispositions remain intact."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/code-review-m1.md",
+      "value": "current",
+      "actor": {
+        "id": "m1-code-review",
+        "role": "review"
+      },
+      "reason": "Independent M1 review findings apply to the exact inspected implementation subjects."
+    },
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/evidence.yaml",
+      "value": "current",
+      "actor": {
+        "id": "codex-root",
+        "role": "implement"
+      },
+      "reason": "Recorded M1 checks ran on these exact implementation/design subjects; M1 only, not final Verify evidence."
     }
   ],
   "blockers": []
