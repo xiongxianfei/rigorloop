@@ -18,19 +18,19 @@
       "role": "human"
     }
   ],
-  "independence_basis": "The same separately delegated record-format-rereview agent independently reread all three current model files and all ten model-owned examples, verified the diagnostic digest examples, and reassessed its original finding. The reviewer authored none of the model, layout, plain-JSON or diagnostic corrections. Contributors remain user and codex-root. This is an actual independent rereview, not automatic approval from matching hashes or a new role label.",
+  "independence_basis": "The separately delegated record-format-rereview agent independently reread the three complete current models after the ownership and EntryRef changes, checked the retained examples and v1 membership implementation, and authored none of these changes. The user and codex-root remain the contributors. Prior approval was stale; this is a new independent assessment of the exact current subjects, not approval restored by hashes alone.",
   "subjects": [
     {
       "path": "docs/design/workflow/workflow.md",
-      "identity": "sha256:2286a09a7a760013cebc8c6ec06758ae9a239618e2af72dce61789b0edc6bf20"
+      "identity": "sha256:a3727f571eec0f9ae34bfdda31f9f7711e3903abdabd31e28903b8c3b69b2251"
     },
     {
       "path": "docs/design/cli/cli.md",
-      "identity": "sha256:532cc0b06ec6fc3417c3387a3139c8b12e31d80663adb6d09155e79c10c2551f"
+      "identity": "sha256:951c0f427e118914d70c1f326a02ae01efab47107a1cca897211b980b9d8d22c"
     },
     {
       "path": "docs/design/record-format/record-format.md",
-      "identity": "sha256:3a2e18d5df85101104f738dfc7ef7ca9c264437a5a332e0b0e3ac88427a7c108"
+      "identity": "sha256:6ddfcd350212437ddf2feaade14818fd66f9a04b8a00ccb01c5fb13291879eeb"
     },
     {
       "path": "docs/design/cli/examples/observation-freshness/expected.json",
@@ -71,6 +71,10 @@
     {
       "path": "docs/design/workflow/examples/correction-cycle.mmd",
       "identity": "sha256:2a42da7884e3aeff0020f814fcb36b98f88ad80fc385a8f52a2b5ddaf4aa0ca9"
+    },
+    {
+      "path": "packages/rigorloop/dist/lib/record-store-contract.js",
+      "identity": "sha256:72a9813be174d2fdeb9dd8c552a5c23fda916befa8d2338107b130ea5f90f458"
     }
   ],
   "judgment": "approved",
@@ -112,15 +116,15 @@
 
 - Skill: design-review
 - Review status: approved
-- Package members: workflow = docs/design/workflow/workflow.md; cli = docs/design/cli/cli.md; record-format = docs/design/record-format/record-format.md. The ten relied-on model-owned examples are included as exact subjects in metadata.
+- Package members: workflow = docs/design/workflow/workflow.md; cli = docs/design/cli/cli.md; record-format = docs/design/record-format/record-format.md. Exact model identities are in metadata. The ten relied-on examples and the bounded v1 compatibility-inspection subject are also identified there; the latter is evidence, not a code approval.
 - Upstream review ID: proposal-review-r1, registered in this change; its approved proposal subject remains unchanged.
-- Review ID: design-review, independent correction rereview by record-format-rereview.
-- Material findings: none open; rf-dr-001 explicitly resolved after independent reassessment.
-- Correction targets: none required for this Design judgment.
-- Recording status: supported actor-owned review record, with explicit current applicability.
-- Settlement status: no historical lifecycle settlement command or transition is claimed. This record owns the explicit Design judgment.
+- Review ID: design-review, independent rereview of the ownership and EntryRef refinement recorded in commit 59e5152c.
+- Material findings: none open; the previously resolved rf-dr-001 remains retained without changes to its evidence, original subjects or disposition.
+- Correction targets: none required.
+- Recording status: supported actor-owned review with explicit current applicability.
+- Settlement status: no historical lifecycle settlement command or transition is claimed; this record owns the explicit exact-package Design judgment.
 - Immediate next stage: isolated stop; no routing decision was made.
-- Claim limitations: exact-package Design approval only. No implementation correctness, runtime activation, final Verify completion, branch readiness or release approval is established. Delivery must still allocate and prove the specified obligations.
+- Claim limitations: Design approval only. No implementation correctness, v2 activation, final Verify completion, branch readiness or release approval. Delivery must allocate and prove the accepted requirements.
 
 ## Finding RF-DR-001: original basis and current disposition
 
@@ -138,24 +142,29 @@ The correction chooses stronger identity binding rather than narrowing the promi
 
 The B/C examples keep both registered revision and diagnostics identical. Independent compact UTF-8 encoding and SHA-256 recomputation matched the expected identities, and those identities differ. Temporal acceptance now includes this case, disappearance/reappearance, formerly matching subjects and duplicate references. Counts and one digest remain the receipt's entire diagnostic payload; detail volume still cannot block structurally valid correction recording.
 
-## Complete package assessment
+## Current package assessment
 
-The current package was read in full, including the model directory layout and plain-JSON changes since the prior review. Record Format owns v2 .json paths and complete closed object layouts, including required body strings and immutable concern origin. CLI dispatches the two exact manifest candidates, rejects ambiguity and version/extension mismatch, constructs body string tokens losslessly, and preserves the separate v1 encoding. Workflow maintains actor-owned meaning and requires coordinated adoption rather than making prospective v2 an available runtime profile. Historical subjects are preserved instead of silently remapped by the directory move.
+The complete current package is coherent. Workflow identifies semantic responsibility; Record Format owns stored schema, reference interpretation and preservation; CLI owns targeted requests, encoding and shared safe persistence. The current paths, v2 evidence filenames and adoption inventories now identify their owners directly. Plain JSON remains the prospective v2 representation, with v1 paths and byte semantics preserved. Model requirements, adoption, examples and proof obligations remain in the user-authorized combined model layout.
 
-Purpose-specific commands and batch retain one structural and recoverable persistence boundary. Actor-supplied applicability, judgments and dispositions remain separate from mechanical registry construction. A failed Verify and new blocker can be recorded after completed activity; Route supplies a later explicit routing decision. Stale mutation revisions conflict before no-op recognition. The corrected diagnostic identity strengthens detail continuation without expanding publication's external-tool concurrency guarantee.
+The new EntryRef table defines every reference-bearing field. Resolution and Verify evidence references name checks; Verify review references name a review root rather than a finding. Material-decision source references admit the enumerated manifest entries, review roots/findings, checks and decisions. Per-file disjoint referenceable IDs make path/id resolution unique, while allowing the same ID in different files. Actor IDs, change identity, activity, applicability, Origin, JudgmentBasis and Verify itself are explicitly excluded as EntryRef targets. Subject identity remains a separate concept.
 
-Normal reads expose record_contract and revision from the same snapshot, including empty selections. Final Verify and shared decisions narratives remain available through ordinary targeted reads, with identity, applicability and clear absent/missing/malformed outcomes. The new plain-JSON body representation preserves those semantics. Findings retain enough origin to explain the concern without old review rounds, while responsible actors still inspect current engineering subjects before relying on evidence.
+Purpose-specific operations still compose with this rule. A finding added with the containing review's root ID is an invalid final v2 candidate even though no finding with that ID existed before. Likewise, a work/model/blocker ID collision in the manifest is structurally rejected; the CLI cannot silently rename an actor's selected ID or mutate the neighboring collection. This does not conflict with target-exists for an already present selected entry, or overlap rejection for assigning the same selected field twice. Those are separate target/operation checks; Record Format owns final candidate validity. Valid distinct targets remain constructible through the existing commands.
 
-All ten owned examples were read. Nine JSON examples parse; the reassessment pair preserves the complete finding value while explicitly changing the current review assessment. The workflow diagram depicts responsible actor sequencing, not automatic CLI permission. Work-set messages illustrate explicit status recording against a stated starting state. The observation examples are internal preimages with synthetic subject identities, not runtime proof.
+Reference resolution occurs after complete candidate construction. A new check and a referencing disposition, or decisions that refer to one another, can therefore be saved together without an intermediate workflow gate. Duplicate reference pairs, wrong target collections, missing IDs, unregistered paths and cross-change references have explicit structural rejection outcomes. Self-links and decision cycles record links without recursively establishing evidence or manufacturing approval. Downstream actors remain responsible for rejecting circular or inadequate justification.
 
-All eight boundary dimensions and material composed hazards retain requirement-owned outcomes. No additional material finding was identified. Residual flat-path mentions in a generic subject-inspection illustration and the Workflow placement table are editorial inconsistencies: the explicit model-layout and contract-specific path owners resolve the intended paths. They do not expand the recording allowlist or authorize migration. Delivery and published guidance should consistently use the selected paths.
+The field-specific interpretation and cross-collection uniqueness rule are explicitly v2-only. A bounded inspection of the existing record-store-contract.js collector confirms that v1 builds a path-to-ID membership set from root and collection IDs and checks membership without the new field-specific restriction. Retaining that behavior avoids silently rejecting old references or interpreting ambiguous historical membership as v2 meaning. No migration or broadening of v1 semantics is approved.
+
+The existing diagnostic correction remains intact: the digest binds the revision, complete observed Subject basis and diagnostic content; an already-drifted external subject changing again alters that identity. Receipt bounds, explicit diagnostic retrieval, truthful publication reporting, normal final-report reads and record_contract plus revision remain consistent. Purpose-specific writes and advanced paths share structural validation, preservation, conflicts and recoverable publication. Findings and blockers retain reporter disposition responsibility; recording a correction after completed activity still requires no readiness gate.
+
+All eight boundary dimensions and material composed hazards retain requirement-owned outcomes. RF-SR-02 now includes wrong-kind, ambiguous and missing references and same-batch target creation in its allocated acceptance scope. Concrete v2 runtime regression tests, consumer adoption, adapter proof and token measurements remain Delivery obligations. The examples remain illustrative rather than substitute authority. No new material finding was identified.
 
 ## Validation and recording evidence
 
-- python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/workflow/workflow.md --path docs/design/record-format/record-format.md: passed, structure-and-references-only.
-- python scripts/validate-markdown-readability.py docs/design/cli/cli.md docs/design/workflow/workflow.md docs/design/record-format/record-format.md: passed with 239 audit-only warnings.
-- git diff --check: passed before review recording.
-- Independent Python JSON/SHA-256 check: parsed all nine JSON examples; confirmed equal B/C revision and diagnostics; matched both expected observation digests; confirmed different digests; confirmed the before/after finding arrays are equal.
-- record-store inspect supplies current registered context and expected revision. The transient check/record request binds the current model/example/proposal identities and both changed record identities. No permanent operation request or unsupported review artifact is created.
+- Parent-run python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/workflow/workflow.md --path docs/design/record-format/record-format.md: passed, structure-and-references-only.
+- Parent-run python scripts/validate-markdown-readability.py docs/design/cli/cli.md docs/design/workflow/workflow.md docs/design/record-format/record-format.md: passed with 244 audit-only warnings.
+- git diff 59e5152c --exit-code -- docs/design: passed; reviewed model/example contents match the requested commit. This checks document identity, not workflow state.
+- Independent Python example checks: all nine JSON examples parse; both diagnostic preimage hashes match the expected values and differ with equal revision/diagnostics; reassessment findings remain equal; complete Record Format examples satisfy the new disjoint referenceable-ID rule.
+- Read packages/rigorloop/dist/lib/record-store-contract.js lines 236-246 to substantiate the narrow v1 membership compatibility claim; no runtime implementation test or general code review was performed.
+- record-store inspect supplies the registered context, expected revision and record identities. The transient check/record request binds all relied-on model/example/compatibility/proposal identities, preserves the complete existing finding and updates only review evidence, its explicit applicability and matching review activity.
 
-The reviewer authored only this review and its explicit applicability/activity updates through the supported recorder. Review metadata includes all exact current relied-on subjects; the historical finding basis remains unchanged. Successful recording is storage-only and does not itself authenticate independence or run the proposed commands. No runtime implementation test was performed; Design approval does not replace Delivery Review, Code Review or Verify.
+The exact three-model review remains independent of its author. No reviewed model was edited by the reviewer, no unsupported artifact or permanent request was created, and no routing or automatic downstream continuation was performed. The retained historical finding subject can still produce subject-drift because its old path is truthful; that does not invalidate this explicitly assessed current package or authorize rewriting historical evidence.

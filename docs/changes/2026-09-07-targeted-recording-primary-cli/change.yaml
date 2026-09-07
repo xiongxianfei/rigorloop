@@ -36,7 +36,7 @@
       "id": "record-format-rereview",
       "role": "review"
     },
-    "reason": "Independent Design rereview concluded approved for the exact recorded subjects, with rf-dr-001 explicitly resolved; no downstream routing or lifecycle completion decision is made."
+    "reason": "Independent Design rereview approved the exact current package after EntryRef and ownership refinement; no routing, implementation or final lifecycle-completion decision is made."
   },
   "plan": null,
   "work": [],
@@ -53,12 +53,12 @@
   "applicability": [
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
-      "value": "stale",
+      "value": "current",
       "actor": {
-        "id": "codex-root",
-        "role": "design"
+        "id": "record-format-rereview",
+        "role": "review"
       },
-      "reason": "User-requested current-path/ownership cleanup and explicit v2 EntryRef target namespaces, per-file disjoint IDs and structural outcomes change the reviewed package. Preserve prior approval subjects and resolved rf-dr-001; new exact package requires independent rereview."
+      "reason": "Independent rereview approves the exact current three-model package after ownership and v2 EntryRef refinement; no open findings. rf-dr-001 original basis and resolved disposition remain preserved."
     },
     {
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md",
