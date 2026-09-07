@@ -99,13 +99,13 @@ Workflow has three conceptual parts, not three services or mandatory files: stag
 | --- | --- |
 | Model engineering truth | One `docs/design/<model>.md` per model |
 | Change intent | Existing proposal surface |
-| Mutable work state and explicit decisions | Change-local `change.yaml` |
+| Mutable work state and explicit decisions | Change-local manifest: v2 change.json; v1 change.yaml |
 | Current judgment and open findings | Stable change-local review record for the applicable target; each finding carries its own retained origin basis |
 | New non-review-stage blocker, including Verify failure | Structured blocker entries in the change record, with evidence references; no fabricated review |
 | Current proof and freshness subjects | Conditional change-local `evidence.yaml` |
-| Resolved rationale that still constrains work | Conditional `material-decisions.md` |
+| Resolved rationale that still constrains work | Conditional material-decisions.json in v2; material-decisions.md in v1 |
 | Stable delivery allocation | Existing plan surface |
-| Successful final explanation | Success-only `verify-report.md` |
+| Successful final explanation | Success-only verify-report.json in v2; verify-report.md in v1 |
 
 These placements preserve distinct responsibilities under the `explicit-recording-v1` contract defined below; they do not claim compatibility with existing compact schemas. A blocker originating in Verify remains owned there for closure even when a subsequent review supplies supporting judgment. Review findings remain reviewer-owned.
 
@@ -165,7 +165,7 @@ Evidence applicability applies to the whole evidence record. If one changed chec
 
 A storage receipt may report many observations through a bounded counts-only summary and expose diagnostic detail separately. The summary explicitly says detail is omitted; it is neither a clean assessment nor a requirement to retrieve every observation before saving a correction. Actors obtain enough context for their actual decision. CLI-SR-20 owns receipt sizing and diagnostic retrieval, including the prohibition on false rejection after successful publication.
 
-The success-only Verify report is a normal final deliverable, not a persistence-maintenance record. Its complete metadata, final Markdown explanation and recorded applicability are available through verify show or a full verify context selector. The decisions singleton similarly exposes the shared material-decisions narrative; individual decision reads still serve entry-specific rationale. Missing or stale supporting evidence continues to constrain reliance, not the availability of truthful recorded content.
+The success-only Verify report is a normal final deliverable, not a persistence-maintenance record. Its complete metadata, final explanation in the record's body field (separate Markdown body only in v1) and recorded applicability are available through verify show or a full verify context selector. The decisions singleton similarly exposes the shared material-decisions narrative; individual decision reads still serve entry-specific rationale. Missing or stale supporting evidence continues to constrain reliance, not the availability of truthful recorded content.
 
 A failed Verify can batch failed evidence and a new blocker after activity is recorded completed. It supplies initial applicability if it creates the evidence file; no Route decision is invented. Route later sets correction activity/ownership. After correction evidence and independent review, Verify explicitly resolves its blocker following reassessment and records success only when all obligations pass. Completing activity is another explicit decision, which Verify may include in the same batch as its report. No stage's structurally sound correction waits for all actors to decide simultaneously.
 
@@ -208,7 +208,7 @@ Workflow remains repository-local guidance and artifacts consumed by supported a
 
 ### Targeted-interface adoption allocation
 
-The v1 compatibility schema remains unchanged. The explicitly selected v2 schema adds self-contained concern origin; targeted commands do not implicitly migrate existing records. The lower-level recorder remains available for advanced tooling and recovery; supported stage guidance uses the primary commands after coherent adoption. No normal skill path may retain full-file reconstruction, manual hashing or registry construction, or call a historical eligibility engine before saving. The earlier replacement inventories remain historical impact mappings; the following table owns this amendment's remaining adoption scope.
+The v1 compatibility schema and YAML/Markdown paths remain unchanged. The explicitly selected v2 schema uses plain JSON files with narrative string fields and adds self-contained concern origin; targeted commands do not implicitly migrate existing records. The lower-level recorder remains available for advanced tooling and recovery; supported stage guidance uses the primary commands after coherent adoption. No normal skill path may retain full-file reconstruction, manual hashing or registry construction, or call a historical eligibility engine before saving. The earlier replacement inventories remain historical impact mappings; the following table owns this amendment's remaining adoption scope.
 
 | Surface family | Required action before primary-interface adoption | Owning responsibility |
 | --- | --- | --- |
