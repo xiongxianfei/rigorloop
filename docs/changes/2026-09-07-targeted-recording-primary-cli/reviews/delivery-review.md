@@ -5,7 +5,7 @@
   "id": "delivery-review",
   "target": "delivery",
   "reviewer": {
-    "id": "targeted-delivery-review",
+    "id": "delivery-fresh-review",
     "role": "review"
   },
   "contributors": [
@@ -14,7 +14,7 @@
       "role": "plan"
     }
   ],
-  "independence_basis": "Separate delegated agent /root/targeted_delivery_review independently read the complete plan and assessed its sequencing and proof allocation. The reviewer authored no plan or model content and owns this judgment; the parent authored the plan. Role text records attribution, while the distinct review execution supplies independence evidence.",
+  "independence_basis": "Separately delegated delivery-fresh-review execution independently read the entire primary plan, traced its allocation against the three approved models and proposal, checked exact upstream subject identities and inspected proof harnesses. This reviewer authored no plan or model content and was not the previous approving reviewer. codex-root remains the plan contributor; role labels themselves do not authenticate independence.",
   "subjects": [
     {
       "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
@@ -140,17 +140,44 @@
 
 - Skill: delivery-review
 - Review status: approved
-- Package members: primary-plan = docs/plans/2026-09-07-targeted-recording-primary-cli.md. This is the sole delivery member; the approved models and upstream reviews are supporting decision basis, not extra delivery members. Exact identities are in metadata.
-- Upstream review ID: design-review; all current model and relied-on review subjects matched their recorded identities and its declared applicability is current.
-- Review ID and round: delivery-review, independent reassessment after user findings DP-01, DP-02 and DP-03; the stable record retains the original finding basis.
-- Traceability result: sufficient implementation sequencing and verification allocation for every affected model requirement and material boundary hazard.
-- Material findings: dp-01 and dp-02 resolved; wording finding dp-03 resolved; none open.
+- Package members: primary-plan = docs/plans/2026-09-07-targeted-recording-primary-cli.md. Its exact identity and the approved design/proposal basis are in structured subjects.
+- Upstream review ID: design-review; approved and explicitly current, with all fourteen reviewed subject identities verified.
+- Review ID and round: delivery-review, fresh independent rereview by delivery-fresh-review.
+- Traceability result: all CLI-SR-01–22, RF-SR-01–08 and WF-SR-01–15 have proportional implementation and proof allocation; no material sequencing or verification gap found.
+- Material findings: none new or open. Existing dp-01, dp-02 and dp-03 remain resolved with original attribution, subject identities, evidence and dispositions unchanged.
 - Correction targets: none.
-- Recording status: supported actor-owned recording through record-store with explicit current applicability.
-- Settlement status: not-applicable to historical lifecycle settlement. This record owns the exact delivery judgment under the selected explicit-recording-v1 profile; persistence itself establishes storage only.
-- Open blockers: none identified within this delivery package.
-- Immediate next stage: isolated stop. No routing decision is recorded.
-- Claim limitations: Delivery approval only; no implementation correctness, completed milestone, final Verify, branch readiness, publication or customer activation is claimed.
+- Recording status: recorded through the explicit-recording-v1 check/record interface with expected revision and exact decision-basis reads; applicability is an explicit reviewer declaration.
+- Settlement status: exact delivery judgment under actor-owned recording; no historical lifecycle settlement or derived routing is claimed.
+- Open blockers: none for this delivery judgment.
+- Immediate next stage: isolated stop.
+- Claim limitations: approval concerns implementation sequence and proof allocation only. It establishes no implemented behavior, runtime safety, token saving, Code Review, final Verify, release or customer activation.
+
+## Fresh independent assessment
+
+The entire primary plan was read rather than relying on the earlier approval. M1 separates closed v2 schema/reference validation from preserved v1 behavior. M2 proves the shared transactional boundary before M3 query/receipt work and M4 targeted construction. Their required proof covers malformed inputs, unsafe paths, changed identities, exact prepared-byte recovery, mixed reader/writer states, retries and absence, with the explicitly limited external-edit guarantee. Public and advanced paths enter the same boundary; independent Code Review precedes each dependent milestone. The existing subprocess and injectable filesystem/transaction harnesses are suitable extension points, not proof that the new behavior already works.
+
+M3 and M4 allocate the important compositions: first-read contract/revision discovery, whole-item scope and pagination, full final narratives, subject inspection, current observed-basis digest including the B-to-C regression, maximum diagnostic density with fitting truthful receipts, all targeted operations and equivalent batch, omitted neighbor/narrative preservation, required applicability, immutable origin and correction recording after completed activity. TG-FINAL-01 exercises these together, including conflicts and interrupted recovery, so milestone checks do not stand in for integrated proof.
+
+M5 requires exact resource closure of named governance, skills, templates, validation and distribution entry points before edits/review, with no required deferred dependency or parallel ordinary reconstruction path. Newly discovered semantic requirements return to Design. Packed CLI and supported adapter proof is allocated through existing repository harnesses and TG-FINAL-02. Normal v2 creation remains coordinated with consumer adoption; this initiative stays v1, historical roots are not converted and rollback retains readers/recovery for any existing v2 data. Publication/customer activation is outside the package.
+
+DP-01 is adequately corrected in M5, M6, Dependencies and Readiness: a final independent whole-change Code Review explicitly assesses the integrated implementation and current subjects before Verify. Sharing the last review invocation is permitted only with whole-change scope; an M5-only review is insufficient. DP-02 is adequately corrected in TG-08, M5 completion, Validation and Readiness: named reusable equal fixtures, documented command/guidance loading and tokenizer/call totals support reproducibility; qualitative benefit with adequate basis, or owning-Design disposition and required rereview, precedes adoption recommendation. Merely completing the experiment is insufficient. DP-03 now explicitly requires v2 origin and rejects missing/null origin while permitting an explicitly absent supporting judgment and preserving v1 compatibility.
+
+The requirement matrix and local/final verification groups cover all eight model dimensions and their named combined hazards without introducing historical boundary-first proof-table prerequisites. C1–C10 are concrete existing harness entry points; the plan allocates future cases and extensions and does not claim they already prove the new format. M6 assesses complete current evidence only after milestone and whole-change reviews, returns defects to their owner and writes a success explanation only on success. No material correction is required by this rereview.
+
+## Fresh validation evidence
+
+- Ran record-store inspect for the selected change. Recomputed all current review subjects, including the fourteen upstream Design Review subjects and the proposal/plan basis; all matched. The stored design approval and applicability are current.
+- Ran python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/workflow/workflow.md --path docs/design/record-format/record-format.md: passed, structure-and-references-only.
+- Ran node scripts/build-record-store-schema.mjs --check: passed for the existing compatibility baseline.
+- Ran python scripts/validate-markdown-readability.py docs/plans/2026-09-07-targeted-recording-primary-cli.md: passed with 101 audit-only warnings.
+- Inspected record-store CLI/workflow test entry points, filesystem/transaction fault injection, schema builder, adapter distribution and npm package publication harnesses for the proposed proof extension. No future implementation suite is claimed as executed.
+- Recording binds the expected complete registered revision, exact subjects and upstream example/compatibility identities. The only writes are this review and its explicit applicability/matching review activity. Subsequent inspect checks the stored result; no plan, design, routing or implementation edits are made.
+
+The existing subject-drift observations describe retained historical finding bases, including rf-dr-001 and the original DP plan identity. They do not contradict the separately checked current reviewed subjects and are not silently rewritten or used as approval evidence.
+
+## Retained previous assessment and finding evidence
+
+The following is preserved from targeted-delivery-review's earlier assessment. Its reviewer/discovery attribution and resolutions are historical evidence; the fresh judgment above owns the current assessment. No original finding basis or disposition is changed.
 
 ## Reassessment and retained feedback
 

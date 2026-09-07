@@ -33,10 +33,10 @@
     "stage": "delivery-review",
     "status": "completed",
     "owner": {
-      "id": "targeted-delivery-review",
+      "id": "delivery-fresh-review",
       "role": "review"
     },
-    "reason": "Independent reassessment resolves the three adopted user findings and approves the exact revised delivery package. Isolated review; no routing, implementation or activation."
+    "reason": "Fresh independent Delivery Review approves the complete exact plan and proof allocation; prior resolved findings are preserved. Isolated stop; no routing, implementation or activation."
   },
   "plan": {
     "path": "docs/plans/2026-09-07-targeted-recording-primary-cli.md",
@@ -80,10 +80,10 @@
       "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/delivery-review.md",
       "value": "current",
       "actor": {
-        "id": "targeted-delivery-review",
+        "id": "delivery-fresh-review",
         "role": "review"
       },
-      "reason": "Independent rereview approves the exact revised plan after user-discovered dp-01/dp-02/dp-03 were validated and explicitly resolved; original finding basis retained."
+      "reason": "Fresh independent assessment approves the exact current delivery package; no new material findings. dp-01/dp-02/dp-03 original evidence and resolved dispositions remain intact."
     }
   ],
   "blockers": []
