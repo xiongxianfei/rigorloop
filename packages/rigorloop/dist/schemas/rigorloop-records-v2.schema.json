@@ -1,0 +1,828 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RigorLoop Record Format v2 \u2014 representation only",
+  "description": "Plain JSON stored records and advanced candidate requests. Representation validation does not activate writing or establish workflow readiness.",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,79}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[\\x20-\\x7e]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "human",
+        "proposal",
+        "design",
+        "plan",
+        "review",
+        "route",
+        "implement",
+        "verify",
+        "support"
+      ]
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "proposal",
+        "proposal-review",
+        "design",
+        "design-review",
+        "plan",
+        "delivery-review",
+        "implement",
+        "code-review",
+        "verify",
+        "support"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in-progress",
+        "blocked",
+        "ready",
+        "completed",
+        "cancelled"
+      ]
+    },
+    "judgment": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "changes-requested",
+        "blocked",
+        "inconclusive"
+      ]
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "review",
+        "evidence",
+        "decisions",
+        "verify"
+      ]
+    },
+    "applicabilityValue": {
+      "type": "string",
+      "enum": [
+        "current",
+        "stale",
+        "not-applicable"
+      ]
+    },
+    "blockerState": {
+      "type": "string",
+      "enum": [
+        "open",
+        "resolved",
+        "deferred"
+      ]
+    },
+    "target": {
+      "type": "string",
+      "enum": [
+        "proposal",
+        "design",
+        "delivery",
+        "code"
+      ]
+    },
+    "evidenceResult": {
+      "type": "string",
+      "enum": [
+        "passed",
+        "failed",
+        "inconclusive"
+      ]
+    },
+    "actor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "role": {
+          "$ref": "#/$defs/role"
+        }
+      },
+      "required": [
+        "id",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "subject": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "identity": {
+          "$ref": "#/$defs/digest"
+        }
+      },
+      "required": [
+        "path",
+        "identity"
+      ],
+      "additionalProperties": false
+    },
+    "entryRef": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "path",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "resolution": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entryRef"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "actor",
+        "rationale",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    },
+    "change": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "contract": {
+          "const": "rigorloop-records-v2"
+        },
+        "proposal": {
+          "$ref": "#/$defs/subject"
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "subject": {
+                "$ref": "#/$defs/subject"
+              }
+            },
+            "required": [
+              "id",
+              "subject"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true
+        },
+        "activity": {
+          "type": "object",
+          "properties": {
+            "stage": {
+              "$ref": "#/$defs/stage"
+            },
+            "status": {
+              "$ref": "#/$defs/status"
+            },
+            "owner": {
+              "$ref": "#/$defs/actor"
+            },
+            "reason": {
+              "$ref": "#/$defs/text"
+            }
+          },
+          "required": [
+            "stage",
+            "status",
+            "owner",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "plan": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "work": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "status": {
+                "$ref": "#/$defs/status"
+              },
+              "owner": {
+                "$ref": "#/$defs/actor"
+              },
+              "requirement_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/text"
+                },
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "id",
+              "status",
+              "owner",
+              "requirement_refs"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/path"
+              },
+              "kind": {
+                "$ref": "#/$defs/kind"
+              }
+            },
+            "required": [
+              "path",
+              "kind"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true,
+          "maxItems": 64
+        },
+        "applicability": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/path"
+              },
+              "value": {
+                "$ref": "#/$defs/applicabilityValue"
+              },
+              "actor": {
+                "$ref": "#/$defs/actor"
+              },
+              "reason": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "required": [
+              "path",
+              "value",
+              "actor",
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true,
+          "maxItems": 64
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/concern"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "schema_version",
+        "change_id",
+        "contract",
+        "proposal",
+        "models",
+        "activity",
+        "plan",
+        "work",
+        "records",
+        "applicability",
+        "blockers"
+      ],
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "target": {
+          "$ref": "#/$defs/target"
+        },
+        "reviewer": {
+          "$ref": "#/$defs/actor"
+        },
+        "contributors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/actor"
+          },
+          "uniqueItems": true
+        },
+        "independence_basis": {
+          "$ref": "#/$defs/text"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          },
+          "uniqueItems": true
+        },
+        "judgment": {
+          "$ref": "#/$defs/judgment"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/concern"
+          },
+          "uniqueItems": true
+        },
+        "body": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "schema_version",
+        "change_id",
+        "id",
+        "target",
+        "reviewer",
+        "contributors",
+        "independence_basis",
+        "subjects",
+        "judgment",
+        "findings",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "actor": {
+                "$ref": "#/$defs/actor"
+              },
+              "subjects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/subject"
+                },
+                "uniqueItems": true
+              },
+              "result": {
+                "$ref": "#/$defs/evidenceResult"
+              },
+              "procedure": {
+                "$ref": "#/$defs/text"
+              },
+              "summary": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "required": [
+              "id",
+              "actor",
+              "subjects",
+              "result",
+              "procedure",
+              "summary"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "schema_version",
+        "change_id",
+        "checks"
+      ],
+      "additionalProperties": false
+    },
+    "decisions": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "actor": {
+                "$ref": "#/$defs/actor"
+              },
+              "subjects": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/subject"
+                },
+                "uniqueItems": true
+              },
+              "rationale": {
+                "$ref": "#/$defs/text"
+              },
+              "source_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/entryRef"
+                },
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "id",
+              "actor",
+              "subjects",
+              "rationale",
+              "source_refs"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true
+        },
+        "body": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "schema_version",
+        "change_id",
+        "decisions",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "verify": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "verifier": {
+          "$ref": "#/$defs/actor"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          },
+          "uniqueItems": true
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entryRef"
+          },
+          "uniqueItems": true
+        },
+        "review_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entryRef"
+          },
+          "uniqueItems": true
+        },
+        "outcome": {
+          "const": "success"
+        },
+        "body": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "schema_version",
+        "change_id",
+        "verifier",
+        "subjects",
+        "evidence_refs",
+        "review_refs",
+        "outcome",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "change_id": {
+          "$ref": "#/$defs/id"
+        },
+        "contract": {
+          "const": "rigorloop-records-v2"
+        },
+        "expected_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/path"
+              },
+              "expected_identity": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/digest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "content": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "required": [
+              "path",
+              "expected_identity",
+              "content"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 65
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/path"
+              },
+              "expected_identity": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/digest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "path",
+              "expected_identity"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "schema_version",
+        "change_id",
+        "contract",
+        "expected_revision",
+        "writes",
+        "reads"
+      ],
+      "additionalProperties": false
+    },
+    "concern": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "reporter": {
+          "$ref": "#/$defs/actor"
+        },
+        "owner": {
+          "$ref": "#/$defs/actor"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          },
+          "uniqueItems": true
+        },
+        "evidence": {
+          "$ref": "#/$defs/text"
+        },
+        "required_outcome": {
+          "$ref": "#/$defs/text"
+        },
+        "state": {
+          "$ref": "#/$defs/blockerState"
+        },
+        "resolution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/resolution"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "$ref": "#/$defs/origin"
+        }
+      },
+      "required": [
+        "id",
+        "reporter",
+        "owner",
+        "subjects",
+        "evidence",
+        "required_outcome",
+        "state",
+        "resolution",
+        "origin"
+      ],
+      "additionalProperties": false
+    },
+    "judgmentBasis": {
+      "type": "object",
+      "properties": {
+        "reviewer": {
+          "$ref": "#/$defs/actor"
+        },
+        "contributors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/actor"
+          },
+          "uniqueItems": true
+        },
+        "independence_basis": {
+          "$ref": "#/$defs/text"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          },
+          "uniqueItems": true
+        },
+        "judgment": {
+          "$ref": "#/$defs/judgment"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "reviewer",
+        "contributors",
+        "independence_basis",
+        "subjects",
+        "judgment",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "origin": {
+      "type": "object",
+      "properties": {
+        "reporter": {
+          "$ref": "#/$defs/actor"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subject"
+          },
+          "uniqueItems": true
+        },
+        "evidence": {
+          "$ref": "#/$defs/text"
+        },
+        "required_outcome": {
+          "$ref": "#/$defs/text"
+        },
+        "rationale": {
+          "$ref": "#/$defs/text"
+        },
+        "supporting_judgment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/judgmentBasis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "reporter",
+        "subjects",
+        "evidence",
+        "required_outcome",
+        "rationale",
+        "supporting_judgment"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

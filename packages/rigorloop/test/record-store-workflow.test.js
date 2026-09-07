@@ -16,8 +16,8 @@ const markdown=value=>`---\n${JSON.stringify(value)}\n---\nFixture reasoning; ac
 test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rereview and complete",t=>{
   const root=mkdtempSync(join(tmpdir(),"rigorloop-workflow-"));
   t.after(()=>rmSync(root,{recursive:true,force:true}));
-  for(const dir of ["docs/changes","docs/design","docs/proposals"])mkdirSync(join(root,dir),{recursive:true});
-  const wf="docs/design/workflow.md", cli="docs/design/cli.md", proposal="docs/proposals/example.md";
+  for(const dir of ["docs/changes","docs/design/workflow","docs/design/cli","docs/proposals"])mkdirSync(join(root,dir),{recursive:true});
+  const wf="docs/design/workflow/workflow.md", cli="docs/design/cli/cli.md", proposal="docs/proposals/example.md";
   for(const path of [wf,cli])writeFileSync(join(root,path),readFileSync(new URL(`../../../${path}`,import.meta.url)));
   writeFileSync(join(root,proposal),"Fixture direction\n");
   const subject=path=>({path,identity:digest(readFileSync(join(root,path)))});

@@ -1,0 +1,16 @@
+{
+  "schema_version": 2,
+  "operation": "work.set",
+  "status": "saved",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "revision": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "changed": [
+    {
+      "kind": "work",
+      "target": {
+        "id": "work-1"
+      }
+    }
+  ]
+}

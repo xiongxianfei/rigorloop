@@ -36,7 +36,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "model.validate": CheckCatalogEntry(
         "model.validate",
-        "python scripts/validate-boundary-first.py --check --path docs/design/workflow.md --path docs/design/cli.md",
+        "python scripts/validate-boundary-first.py --check --path docs/design/workflow/workflow.md --path docs/design/cli/cli.md --path docs/design/record-format/record-format.md",
         "explicit-recording", parallel_safe=True,
     ),
     "compact_contract.canonical": CheckCatalogEntry(
@@ -831,6 +831,7 @@ def validate_evidence_class_registry(
 def catalog_command(
     check_id: str,
     *,
+    repo_root: Path = Path.cwd(),
     paths: tuple[str, ...] = (),
     changed_sections: tuple[str, ...] = (),
     affected_roots: tuple[str, ...] = (),
@@ -859,8 +860,19 @@ def catalog_command(
         return _join(*args)
     if check_id == "model.validate":
         args = ["python", "scripts/validate-boundary-first.py", "--check"]
-        models = {"docs/design/workflow.md", "docs/design/cli.md"}
-        models.update(path for path in paths if path.startswith("docs/design/"))
+        models = {"docs/design/workflow/workflow.md", "docs/design/cli/cli.md",
+                  "docs/design/record-format/record-format.md"}
+        for path in paths:
+            example = re.fullmatch(r"docs/design/([a-z0-9][a-z0-9-]{0,79})/examples/.+", path)
+            if example:
+                model = example.group(1)
+                models.add(f"docs/design/{model}/{model}.md")
+            elif path.startswith("docs/design/"):
+                # Only an absent historical alias selects the current owner.
+                # A present flat input must be validated under its exact path.
+                flat = re.fullmatch(r"docs/design/(workflow|cli|record-format)\.md", path)
+                absent = not (repo_root / path).exists() and not (repo_root / path).is_symlink()
+                models.add(f"docs/design/{flat.group(1)}/{flat.group(1)}.md" if flat and absent else path)
         for path in sorted(models):
             args.extend(["--path", path])
         return _join(*args)
@@ -1019,6 +1031,7 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
         registration_debt=registration_debt,
         status=status,
         adapter_version=request.adapter_version,
+        repo_root=repo_root,
     )
 
 
@@ -1342,6 +1355,10 @@ def _apply_path_selection(
     # roots. Historical review/lifecycle validators must not reinterpret them.
     manifest_path = _change_root_change_yaml(path)
     if manifest_path:
+        v2_manifest = manifest_path.removesuffix("change.yaml") + "change.json"
+        if (repo_root / v2_manifest).exists():
+            manifest_path = v2_manifest
+    if manifest_path:
         manifest = repo_root / manifest_path
         try:
             metadata = json.loads(manifest.read_text(encoding="utf-8")) if manifest.is_file() else None
@@ -1354,14 +1371,15 @@ def _apply_path_selection(
             _add_check(selected, "change_metadata.regression",
                        "Recording paths retain metadata and historical compatibility regression proof.")
             affected_roots.add(_change_root(path))
-            if metadata["contract"] != "explicit-recording-v1":
+            if metadata["contract"] not in {"explicit-recording-v1", "rigorloop-records-v2"}:
                 blocking_results.append({"code": "unsupported-change-contract", "path": manifest_path,
                                          "message": "Unknown recording contract; no historical fallback."})
                 return
             relative = path.removeprefix(_change_root(path))
-            kind = {"evidence.yaml": "evidence", "material-decisions.md": "decisions",
-                    "verify-report.md": "verify"}.get(relative)
-            if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\.md", relative):
+            v2 = metadata["contract"] == "rigorloop-records-v2"
+            kind = ({"evidence.json": "evidence", "material-decisions.json": "decisions", "verify-report.json": "verify"}
+                    if v2 else {"evidence.yaml": "evidence", "material-decisions.md": "decisions", "verify-report.md": "verify"}).get(relative)
+            if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\." + ("json" if v2 else "md"), relative):
                 kind = "review"
             records = metadata.get("records")
             registered = isinstance(records, list) and any(
@@ -1828,7 +1846,9 @@ def _apply_path_selection(
         if path.startswith("packages/rigorloop/"):
             _add_check(selected, "npm_package_publication.test",
                        "Record-store package paths retain tarball and installed-binary compatibility proof.")
-        if category == "isolated-recording-evidence":
+        if category == "isolated-recording-evidence" and not _proven_prose_deletion(
+            path, repo_root=repo_root, tracked_deletion=tracked_deletion
+        ):
             _add_check(selected, "documentation_prose.audit",
                        "Isolated advisory evidence requires prose checks and its underlying model/runtime proof, not formal settlement.", path=path)
         return
@@ -2273,8 +2293,24 @@ def _is_safe_repo_relative_path(value: str) -> bool:
     return not path.is_absolute() and ".." not in path.parts
 
 
+def _proven_prose_deletion(path: str, *, repo_root: Path, tracked_deletion: bool) -> bool:
+    # Selection can include committed deletions as well as worktree deletions.
+    # Never suppress a present input, unsafe symlink, or unproven missing path.
+    target = repo_root / path
+    if target.exists() or target.is_symlink():
+        return False
+    if tracked_deletion:
+        return True
+    result = subprocess.run(
+        ["git", "log", "-1", "--format=", "--name-status", "--no-renames", "HEAD", "--", path],
+        cwd=repo_root, capture_output=True, text=True,
+    )
+    return result.returncode == 0 and result.stdout.strip() == f"D\t{path}"
+
+
 def _build_result(
     *,
+    repo_root: Path = Path.cwd(),
     mode: str,
     changed_paths: list[str],
     classified_paths: list[dict[str, str]],
@@ -2301,6 +2337,7 @@ def _build_result(
         try:
             command = catalog_command(
                 check_id,
+                repo_root=repo_root,
                 paths=paths,
                 changed_sections=changed_sections,
                 affected_roots=roots,
@@ -2360,12 +2397,18 @@ def _path_category(path: str) -> str | None:
         return "isolated-recording-evidence"
     if (path.startswith("docs/design/")
             or path.startswith("tests/fixtures/explicit-recording-v1/")
-            or path in {"schemas/explicit-recording-v1.schema.json", "scripts/build-record-store-schema.mjs", "scripts/validate-record-store.mjs",
+            or path.startswith("tests/fixtures/rigorloop-records-v2/")
+            or path in {"schemas/rigorloop-records-v2.schema.json", "templates/rigorloop-records-v2/records.json",
+                        "packages/rigorloop/dist/schemas/rigorloop-records-v2.schema.json",
+                        "packages/rigorloop/dist/templates/rigorloop-records-v2/records.json",
+                        "packages/rigorloop/dist/lib/record-format-v2.js"}
+            or path in {"schemas/targeted-recording-v1.schema.json", "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json", "schemas/explicit-recording-v1.schema.json", "scripts/build-record-store-schema.mjs", "scripts/validate-record-store.mjs",
                         "templates/explicit-recording/records.json", "packages/rigorloop/dist/templates/explicit-recording/records.json",
                         "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json"}
+            or (path.startswith("packages/rigorloop/dist/lib/recording-") and path.endswith(".js"))
             or (path.startswith("packages/rigorloop/dist/lib/record-store") and path.endswith(".js"))
             or (path.startswith("packages/rigorloop/test/record-store-") and path.endswith(".test.js"))
-            or path == "packages/rigorloop/test/helpers/record-store-launcher.mjs"):
+            or path in {"packages/rigorloop/test/helpers/record-store-launcher.mjs", "packages/rigorloop/test/helpers/recording-query-launcher.mjs", "packages/rigorloop/test/helpers/record-store-interactions.mjs", "packages/rigorloop/test/helpers/record-store-tokenize.py", "packages/rigorloop/test/fixtures/recording-interactions/README.md"}):
         return "explicit-recording"
     if path == "specs/boundary-first-activation.yaml":
         return "lifecycle"
@@ -2528,7 +2571,7 @@ def _path_category(path: str) -> str | None:
     if path == "docs/follow-ups.md":
         return "follow-up-register"
     if path.startswith("docs/changes/") and len(parts) >= 4:
-        if parts[3] == "change.yaml":
+        if parts[3] in {"change.yaml", "change.json"}:
             return "change-metadata"
         if (
             parts[3] in {"review-log.md", "review-resolution.md"}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "contract": "rigorloop-records-v2",
+  "change_id": "example-change",
+  "proposal": {
+    "path": "docs/proposals/example.md",
+    "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "models": [
+    {
+      "id": "example",
+      "subject": {
+        "path": "docs/design/example/example.md",
+        "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ],
+  "activity": {
+    "stage": "design",
+    "status": "in-progress",
+    "owner": {
+      "id": "author-a",
+      "role": "design"
+    },
+    "reason": "Define the recording contract."
+  },
+  "plan": null,
+  "work": [],
+  "records": [],
+  "applicability": [],
+  "blockers": []
+}

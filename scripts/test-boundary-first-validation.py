@@ -2033,21 +2033,35 @@ class ModelRecordTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(prefix="rigorloop-model-")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        self.path = self.root / "docs/design/workflow.md"
+        self.path = self.root / "docs/design/workflow/workflow.md"
         self.path.parent.mkdir(parents=True)
-        self.text = (ROOT / "docs/design/workflow.md").read_text(encoding="utf-8")
+        self.text = (ROOT / "docs/design/workflow/workflow.md").read_text(encoding="utf-8")
 
-    def check(self, text=None, relative="docs/design/workflow.md"):
+    def check(self, text=None, relative="docs/design/workflow/workflow.md"):
         self.path.write_text(self.text if text is None else text, encoding="utf-8")
         return validate_changed_spec(self.root, relative)
 
     def test_model_current_files_validate_without_activation_or_change_record(self):
-        for model in ("workflow", "cli"):
+        for model in ("workflow", "cli", "record-format"):
             with self.subTest(model=model):
-                relative = f"docs/design/{model}.md"
+                relative = f"docs/design/{model}/{model}.md"
+                (self.root / relative).parent.mkdir(parents=True, exist_ok=True)
                 (self.root / relative).write_bytes((ROOT / relative).read_bytes())
                 self.assertEqual(validate_changed_spec(self.root, relative), ())
         self.assertFalse((self.root / "docs/changes").exists())
+
+    def test_model_mismatched_directory_examples_and_extra_nesting_reject(self):
+        for relative in ("docs/design/cli/workflow.md", "docs/design/workflow/examples/sample.md",
+                         "docs/design/workflow/nested/workflow.md"):
+            path = self.root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(self.text)
+            self.assertTrue(validate_changed_spec(self.root, relative))
+
+    def test_model_flat_historical_path_remains_explicitly_valid(self):
+        path = self.root / "docs/design/workflow.md"
+        path.write_text(self.text)
+        self.assertEqual(validate_changed_spec(self.root, "docs/design/workflow.md"), ())
 
     def test_model_unknown_value_marker_and_dimension_fail_closed(self):
         for text in (
@@ -2064,13 +2078,13 @@ class ModelRecordTests(unittest.TestCase):
             self.text + "\nModel validation contract: explicit-recording-v1\n",
             self.text + "\n## Requirements\n",
             self.text.replace("| Dimension | Requirement basis |", "| Dimension | unknown_value |", 1),
-            self.text.replace("| Input domain | WF-SR-02, WF-SR-05 |", "| Input domain | not_in_vocabulary |", 1),
-            self.text.replace("| Input domain | WF-SR-02, WF-SR-05 |", "| Input domain | WF-SR-02, WF-SR-02 |", 1),
+            self.text.replace(next(l for l in self.text.splitlines() if l.startswith("| Input domain |")), "| Input domain | not_in_vocabulary |", 1),
+            self.text.replace(next(l for l in self.text.splitlines() if l.startswith("| Input domain |")), "| Input domain | WF-SR-02, WF-SR-02 |", 1),
             self.text.replace("| State/lifecycle |", "| Input domain |", 1),
             self.text.replace("| WF-SR-01 |", "| WF-SR-02 |", 1),
             self.text.replace("| WF-SR-01 |", "| 1-invalid |", 1),
             self.text.replace("| --- | --- | --- |\n| Input domain", "| bad | --- | --- |\n| Input domain", 1),
-            self.text.replace("| Input domain | WF-SR-02, WF-SR-05 |", "| Input domain | WF-SR-02 | extra |", 1),
+            self.text.replace(next(l for l in self.text.splitlines() if l.startswith("| Input domain |")), "| Input domain | WF-SR-02 | outcome | extra |", 1),
         )
         for index, text in enumerate(variants):
             with self.subTest(index=index):
@@ -2090,14 +2104,14 @@ class ModelRecordTests(unittest.TestCase):
         outside = self.root / "outside.md"
         outside.write_text(self.text, encoding="utf-8")
         self.path.symlink_to(outside)
-        self.assertTrue(validate_changed_spec(self.root, "docs/design/workflow.md"))
+        self.assertTrue(validate_changed_spec(self.root, "docs/design/workflow/workflow.md"))
         self.path.unlink()
         self.path.parent.rmdir()
         other = self.root / "other"
         other.mkdir()
         (other / "workflow.md").write_text(self.text, encoding="utf-8")
         self.path.parent.symlink_to(other, target_is_directory=True)
-        self.assertTrue(validate_changed_spec(self.root, "docs/design/workflow.md"))
+        self.assertTrue(validate_changed_spec(self.root, "docs/design/workflow/workflow.md"))
 
     def test_model_fenced_contract_or_tables_are_not_authority(self):
         self.assertTrue(self.check("```md\n" + self.text + "\n```\n"))
@@ -2127,7 +2141,7 @@ class ModelRecordTests(unittest.TestCase):
     def test_model_public_check_is_read_only_and_not_activation(self):
         self.check()
         before = relevant_tree_snapshot(self.root)
-        result = subprocess.run([sys.executable, str(ROOT / "scripts/validate-boundary-first.py"), "--check", "--root", str(self.root), "--path", "docs/design/workflow.md"], capture_output=True, text=True)
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/validate-boundary-first.py"), "--check", "--root", str(self.root), "--path", "docs/design/workflow/workflow.md"], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         data = json.loads(result.stdout)
         self.assertEqual(data["validation"], "structure-and-references-only")

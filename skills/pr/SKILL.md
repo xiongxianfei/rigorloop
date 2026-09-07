@@ -7,6 +7,19 @@ argument-hint: [branch, feature name, plan path, or PR request]
 
 # Pull request preparation
 
+
+## Explicit recording
+
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+
+This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
+
+Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
+
+Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
+
+Read the final assessment with verify show and the relevant review/evidence/decision basis through selected context or show. Assess current applicability and exact subjects before relying on the report; saved or absent observations do not establish permission. Retain repository/remote/branch and explicit external-action authority checks, but do not require historical lifecycle receipts from this profile. Do not manufacture review or Verify results, mutate workflow decisions, or infer authority to merge or release.
+
 ## Purpose
 
 Open one evidence-grounded pull request. `verify` owns `branch-ready`; this skill owns `pr-body-ready` and `pr-open-ready`. No downstream continuation.
