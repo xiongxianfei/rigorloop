@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "contract": "explicit-recording-v1",
+  "change_id": "2026-09-07-targeted-recording-primary-cli",
+  "proposal": {
+    "path": "docs/proposals/2026-09-07-targeted-recording-primary-cli.md",
+    "identity": "sha256:8200c3145bbdbe929be893c7fdd9327a829308084a31efe25d96a032b9b4f0c4"
+  },
+  "models": [
+    {
+      "id": "workflow",
+      "subject": {
+        "path": "docs/design/workflow.md",
+        "identity": "sha256:526d1d300db4eb1a7a772b9c0621c570bc04c73b3ae3a4424f1162d044571ee1"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "path": "docs/design/cli.md",
+        "identity": "sha256:938c9aeea27174f6ba7e86e839365b84c68a9765c84455dd648d435a9b461761"
+      }
+    },
+    {
+      "id": "record-format",
+      "subject": {
+        "path": "docs/design/record-format.md",
+        "identity": "sha256:ec75b838464949029db9353995bf0fc69fabb3219ed1cc81d056a04b5e340782"
+      }
+    }
+  ],
+  "activity": {
+    "stage": "design-review",
+    "status": "completed",
+    "owner": {
+      "id": "record-format-rereview",
+      "role": "review"
+    },
+    "reason": "Independent Design Review concluded changes-requested with open rf-dr-001; recording completion of this review activity does not approve Design or select downstream work."
+  },
+  "plan": null,
+  "work": [],
+  "records": [
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
+      "kind": "review"
+    }
+  ],
+  "applicability": [
+    {
+      "path": "docs/changes/2026-09-07-targeted-recording-primary-cli/reviews/design-review.md",
+      "value": "current",
+      "actor": {
+        "id": "record-format-rereview",
+        "role": "review"
+      },
+      "reason": "The three exact model subjects remain unchanged from the independent assessment; the changes-requested judgment and open rf-dr-001 apply to this package. Current applicability is not approval."
+    }
+  ],
+  "blockers": []
+}
