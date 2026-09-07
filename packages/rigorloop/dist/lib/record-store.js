@@ -1,4 +1,5 @@
 // Explicit values only: no workflow transition evaluator or eligibility engine.
+import {boundAdvancedObservations} from "./recording-result.js";
 import { randomBytes } from "node:crypto";
 import { RecordFiles, digest, stop, MIB } from "./record-store-files.js";
 import {V1_FORMAT,V2_FORMAT,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
@@ -69,7 +70,7 @@ class Store {
     for(const record of change.records) set[record.path]=decode(this.fs.read(record.path));
     return set;
   }
-  observations(set) {
+  observations(set,iterator=false) {
     if(!Object.keys(set).length) return [message("absent-change")];
     const found=new Map(); let failed=false;
     const add=(code,path) => found.set(`${code}:${path}`,{...message(code),path});
@@ -90,12 +91,12 @@ class Store {
       if(data.checks?.some(check=>check.result==="failed")) { failed=true; add("failed-evidence",path); }
     }
     if(change.activity.status==="completed" && (failed || change.blockers.some(b=>b.state==="open"))) add("inconsistent-claim",this.manifest);
-    return [...found.values()];
+    return iterator?found.values():[...found.values()];
   }
-  snapshot() {
+  snapshot(observe=set=>this.observations(set)) {
     const epoch=this.gate(), set=this.readSet();
     this.fault("during-inspect");
-    const observations=this.observations(set);
+    const observations=observe(set);
     if(this.gate()!==epoch || revision(this.readSet())!==revision(set) || this.gate()!==epoch) stop("identity-conflict");
     return {set,observations};
   }
@@ -224,14 +225,16 @@ class Store {
     if(side==="before") for(const dir of [...j.created_dirs].reverse()) this.fs.removeDirectory(dir.path,dir.identity);
   }
   cleanup() { this.own(); this.fs.remove(this.journal,this.fs.hash(this.journal)); this.release(); }
-  prepareResult(operation,status,set) {
+  prepareResult(operation,status,set,beforeRevision=revision(set)) {
     this.fault("before-result");
-    const result={...emptyRecordResult(operation,this.id),status,revision:revision(set),files:entries(set),observations:this.observations(set)};
+    if(this.options.prepareResult)return this.options.prepareResult({operation,status,set,format:this.format,reader:this.fs,revision:revision(set),before_revision:beforeRevision});
+    const result={...emptyRecordResult(operation,this.id),status,revision:revision(set),files:entries(set)};
+    result.observations=boundAdvancedObservations(this.observations(set,true),8*MIB-Buffer.byteLength(JSON.stringify(result))-1);
     validateAdvancedResult(result);
     return result;
   }
   record(request) {
-    const initial=this.snapshot(), candidate=this.candidate(request,initial.set);
+    const initial=this.snapshot(()=>[]), candidate=this.candidate(request,initial.set);
     let journal;
     try {
       this.acquire();
@@ -293,7 +296,7 @@ export function executeRecordStore({root,changeId,operation,request,transaction,
       const snapshot=store.snapshot(); set=snapshot.set; result.observations=snapshot.observations;
       result.status="inspected"; result.snapshot={records:Object.keys(set).sort().map(path=>({path,content:set[path]}))};
     } else if(operation==="check") {
-      const snapshot=store.snapshot(); set=store.candidate(request,snapshot.set); result.status="valid";
+      const snapshot=store.snapshot(()=>[]); set=store.candidate(request,snapshot.set); return store.prepareResult("check","valid",set,revision(snapshot.set));
     } else {
       return operation==="record"?store.record(request):store.recover(transaction,expectedRecovery,action);
     }
@@ -308,4 +311,16 @@ export function executeRecordStore({root,changeId,operation,request,transaction,
     result.errors=[message(code)]; result.transaction=store?.recoveryInfo()??null;
   }
   return result;
+}
+
+// Internal primary adapters use the same before/after exclusion and identity
+// checks without first constructing an advanced full-inspection response.
+export function withRecordSnapshot(root,changeId,inspect,options={}) {
+ const store=new Store(root,changeId,options);
+ try{
+  let failure;
+  const result=store.snapshot(set=>{try{return inspect({set,format:store.format,reader:store.fs,revision:revision(set)});}catch(e){failure=e;}}).observations;
+  if(failure){failure.snapshotVerified=true;throw failure;}return result;
+ }
+ catch(e){e.transaction=store.recoveryInfo();throw e;}
 }

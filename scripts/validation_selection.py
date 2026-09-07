@@ -2374,12 +2374,13 @@ def _path_category(path: str) -> str | None:
                         "packages/rigorloop/dist/schemas/rigorloop-records-v2.schema.json",
                         "packages/rigorloop/dist/templates/rigorloop-records-v2/records.json",
                         "packages/rigorloop/dist/lib/record-format-v2.js"}
-            or path in {"schemas/explicit-recording-v1.schema.json", "scripts/build-record-store-schema.mjs", "scripts/validate-record-store.mjs",
+            or path in {"schemas/targeted-recording-v1.schema.json", "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json", "schemas/explicit-recording-v1.schema.json", "scripts/build-record-store-schema.mjs", "scripts/validate-record-store.mjs",
                         "templates/explicit-recording/records.json", "packages/rigorloop/dist/templates/explicit-recording/records.json",
                         "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json"}
+            or (path.startswith("packages/rigorloop/dist/lib/recording-") and path.endswith(".js"))
             or (path.startswith("packages/rigorloop/dist/lib/record-store") and path.endswith(".js"))
             or (path.startswith("packages/rigorloop/test/record-store-") and path.endswith(".test.js"))
-            or path == "packages/rigorloop/test/helpers/record-store-launcher.mjs"):
+            or path in {"packages/rigorloop/test/helpers/record-store-launcher.mjs", "packages/rigorloop/test/helpers/recording-query-launcher.mjs"}):
         return "explicit-recording"
     if path == "specs/boundary-first-activation.yaml":
         return "lifecycle"
