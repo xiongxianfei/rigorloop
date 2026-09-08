@@ -21,7 +21,6 @@
         "design-review-record": { "$ref": "#/$defs/location" },
         "delivery-review-record": { "$ref": "#/$defs/location" },
         "code-review-record": { "$ref": "#/$defs/location" },
-        "review-resolution": { "$ref": "#/$defs/location" },
         "implementation-evidence": { "$ref": "#/$defs/location" },
         "verification-report": { "$ref": "#/$defs/location" }
       }
@@ -35,7 +34,7 @@
       "properties": {
         "path_template": { "type": "string", "minLength": 1 },
         "owner": {
-          "enum": ["workflow", "proposal", "spec", "architecture", "plan", "proposal-review", "design-review", "delivery-review", "code-review", "review-resolution", "implement", "verify"]
+          "enum": ["workflow", "proposal", "spec", "architecture", "plan", "proposal-review", "design-review", "delivery-review", "code-review", "implement", "verify"]
         }
       }
     }

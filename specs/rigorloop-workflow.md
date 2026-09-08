@@ -1,5 +1,11 @@
 # RigorLoop Workflow
 
+## V2-only runtime retirement
+
+The [Record Format](../docs/design/record-format/record-format.md), [CLI](../docs/design/cli/cli.md) and [Workflow](../docs/design/workflow/workflow.md) models select `rigorloop-records-v2` as the only supported runtime stored format. Earlier compact/lifecycle and explicit-recording-v1 acceptance, activation, projection, mutation and recovery clauses below are historical design evidence, not current execution or compatibility obligations. Their stable IDs and recorded approvals keep their original meaning. Current consumers use scoped primary reads and targeted recording, with actor-owned decisions and applicability; the CLI does not select readiness. Preserve archival records unchanged, reject explicit retired input safely and preserve v2 safety. Unrelated document/configuration/transport version domains remain supported under their own contracts.
+
+Specialist authoring and review responsibilities remain. Each governed change requires fresh independent whole-change Code Review after all implementation milestones and corrections, then distinct successful final Verify. Installed skills must contain usable v2 procedures and selective portable resources, without private internal requirement IDs or a dependency on this design repository.
+
 ## Test criteria ownership
 
 For this repository's explicitly adopted model work, [Test](../docs/design/test/test.md) owns shared derivation, protective-value and maintenance criteria (TEST-SR-01–13). Specialist reviewers and Verify judge actual plans, tests and evidence; Review and Closeout retains assessment authority policy, applicability and closeout consequences. Workflow retains coordination. Canonical consumers apply the criteria through selective quality and maintenance resources; those resources are application guidance, not another policy owner. This initiative's coordinated consumer adoption preserves historical contracts, required negative/regression proof and separately owned execution permissions. Installation does not adopt customer policy. Internal requirement mappings and package mechanics remain in contributor/governance surfaces rather than published skills.
@@ -10,14 +16,14 @@ For explicitly adopted model work, [Review and Closeout](../docs/design/review-c
 
 ## Explicit recording
 
-For explicitly adopted RigorLoop Record Format work, [Workflow](../docs/design/workflow/workflow.md) owns actor responsibilities and decision meaning, [Record Format](../docs/design/record-format/record-format.md) owns v2 stored shapes and v1 compatibility, and [CLI](../docs/design/cli/cli.md) owns targeted construction and safe recording. Normal skills use explicit context/show selectors, subject inspection and purpose-specific operations or batch. The coordinated candidate requires explicit rigorloop-records-v2 primary creation; existing explicit-recording-v1 roots stay v1. Historical procedures below retain their exact contracts and are not prerequisites for recording corrections in the model profile. Installation alone does not activate a project or customer.
+For explicitly adopted RigorLoop Record Format work, [Workflow](../docs/design/workflow/workflow.md) owns actor responsibilities and decision meaning, [Record Format](../docs/design/record-format/record-format.md) owns v2 stored shapes, and [CLI](../docs/design/cli/cli.md) owns targeted construction and safe recording. Normal skills use explicit context/show selectors, subject inspection and purpose-specific operations or batch. The coordinated candidate requires explicit rigorloop-records-v2 primary creation; retired stored roots are archival evidence only. Historical procedures below grant no current runtime acceptance and are not prerequisites for recording corrections. Installation alone does not activate a project or customer.
 
 The new-contract sequence is proposal, independent Proposal Review, unified model Design, independent Design Review, plan, independent Delivery Review, implementation/Code Review per milestone, retained final whole-change Code Review and successful Verify. Triggered correction and support work keep their owners. Route selects and records activity; no read or save derives readiness or advancement. An author declares invalidation, a reviewer supplies independent judgment and dispositions, and Verify may originate its own blocker without a success report. Complete records, exact subjects and proof remain necessary for downstream reliance. The model-defined records and one-file-per-model validation mapping replace historical package/transition and feature-document machinery only in this profile.
 
 ## Status
 - approved
 
-## Compact current-state amendment (preactivation)
+## Historical compact current-state amendment
 
 `compact-current-state-v1` is the next canonical lifecycle contract. Its authoritative working set is `change.yaml`, one stable current review record per applicable target, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`. Proposal, architecture, specification, plan, and applicable ADRs remain authoritative engineering artifacts referenced from `change.yaml`; they are not duplicated into the change record.
 

@@ -259,16 +259,17 @@ rigorloop --help
 rigorloop init codex
 ```
 
-The first public npm package supports:
+The current CLI candidate supports:
 
 - `rigorloop --help`
 - `rigorloop version`
 - `rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]`
-- `rigorloop new-change <change-id> --title <title> [--dry-run] [--json]`
+- `rigorloop change create --root PATH --input - --format json`
+- `rigorloop workflow-context [--change ID] --format json`
 
 `init codex` installs verified Codex support into `.agents/skills/`. The CLI uses package-bundled official metadata, downloads the official GitHub release archive, verifies archive SHA-256 and installed tree hash, and leaves `rigorloop.yaml` / `rigorloop.lock` untouched unless `--write-state` is requested.
 
-`new-change` scaffolds `docs/changes/<change-id>/change.yaml` for a new RigorLoop change. It does not replace proposal, spec, review, verification, or PR judgment.
+`change create` constructs a new v2 record set from an explicit targeted request. It does not replace proposal, Design, review, Verify or PR judgment. See [CLI recording usage](packages/rigorloop/README.md).
 
 The npm package is a delivery channel for the CLI. It is not the canonical source for workflow rules, skills, schemas, templates, or adapter archives. Canonical source remains in this repository, and adapter archives remain verified GitHub release artifacts.
 
@@ -372,9 +373,9 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 ## Change-Local Artifact Packs
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
-- New `compact-current-state-v1` changes use `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`. Canonical proposal, architecture, specification, plan, and ADR artifacts stay in place and are referenced rather than copied.
-- The compact record works without Git history and without PR access. Git, pull requests, CI, hosted services, and machine-local logs may be useful integrations, but none is required to reconstruct or justify current compact state.
-- Existing non-compact changes retain their registered artifact model and are not rewritten.
+- Only `rigorloop-records-v2` is supported at runtime: `change.json`, registered JSON reviews, evidence, material decisions and the success-only Verify record. Canonical engineering artifacts remain referenced in place.
+- Actors own judgments and closeout; the CLI records explicit decisions and observations. Recording does not require Git history or PR access.
+- Named legacy stored formats and their execution engines are retired. Preserve historical records unchanged as archival evidence; current commands reject retired input without fallback or migration.
 - Historical explanations formerly under `docs/explain/` are retained in the plan archive; see the [retired-path mapping](docs/plan-archive.md#retired-explanation-paths). New work records its final explanation in the owning change’s contract-selected Verify report.
 
 ## Source Of Truth

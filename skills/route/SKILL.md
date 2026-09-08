@@ -9,7 +9,7 @@ argument-hint: [feature, bug, project goal, issue number, or current workflow st
 
 ## Test criteria application
 
-When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
 
 ## Quick operating guide
 
@@ -27,13 +27,13 @@ Next stage: the specialized skill permitted by authoritative state, or a stop co
 
 ## Review and Closeout application
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
 
-This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
+Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
 
 Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
 
@@ -43,30 +43,19 @@ Choose the current activity and responsible owner from the required engineering 
 
 You are the lifecycle orchestrator. Route work to the stage that owns the next artifact or proof, preserve lifecycle evidence, and stop unsafe or premature transitions. Do not replace a specialized stage skill.
 
-## Compact current-state routing
-
-For `compact-current-state-v1`, begin with the bounded CLI projection and read only its `required_paths` plus evidence needed for the routing judgment. Treat `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md` as the current record. Submit transient semantic operations with the expected lifecycle revision and file identities; the CLI checks consistency but grants no permission. Never reconstruct compact state from directory scans, Git, PRs, local logs, round-suffixed files, or prior chat. Normal adjacent authoring correction needs no route receipt; use explicit correction routing only for a non-adjacent return, and treat return as review-ready rather than approved.
-
 ## Purpose
 
-Use this skill to start, resume, audit, or route the standard RigorLoop workflow. Registered v3 changes retain this compatibility chain:
+Use this skill to start, resume, audit, or route the standard RigorLoop workflow. The responsible actors coordinate:
 
 ```text
 proposal -> proposal-review -> architecture -> spec -> design-review
--> plan -> delivery-review
--> implement -> code-review -> review-resolution when triggered
--> ci-maintenance when triggered -> verify -> pr
+-> plan -> delivery-review -> implement -> milestone code-review
+-> fresh final whole-change code-review -> verify -> optional pr
 ```
 
-For that compatibility chain, repeat `implement -> code-review -> review-resolution when triggered` for each implementation milestone. A clean non-final milestone returns to the next milestone. Final closeout requires all implementation milestones and required review resolution to be closed, followed by triggered CI maintenance, verification, success-only explanation generation, and PR handoff.
+Repeat implementation and independent review for each milestone. Route required corrections to their owning author; reconcile Design before planning. Trigger CI maintenance when needed before the final reviewed subject is established. After all implementation milestones and required corrections are complete, require fresh independent whole-change Code Review of the complete final diff and cross-milestone interactions before successful final Verify. Prior milestone judgments inform but do not replace that review.
 
-The compact canonical chain is `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify`. Successful Verify establishes lifecycle completion; PR is an optional external handoff. Architecture and specification remain separate authoring stages reconciled before Design Review; plan owns verification allocation and is reviewed for implementation and verification readiness by Delivery Review. Historical v1/v2 records grant no current route. Other retired stage records are historical evidence only and grant no progression authority.
-
-Until compact activation, routing uses `stage-owned-change-local-v3` as its executable compatibility contract. The compact implementing change uses the bounded preactivation closeout bootstrap and is not rewritten into the compact shape. After activation, new changes use `compact-current-state-v1` and registered historical changes retain their exact contract. The exact primary plan owns verification allocation; final closeout routes through triggered review resolution and `ci-maintenance`, then to `verify`. Successful Verify owns the final explanation; route exercises the stable workflow authority for correction routing.
-
-The rename does not rewrite protocol state: route continues to use `stage_authority: workflow`, and existing `workflow.automation` occurrences remain authoritative with their exact target, occurrence, budgets, receipts, pause or cancellation state, and lifecycle-revision safeguards.
-
-After a PR is open, a user-authorized bounded PR CI repair is an isolated correction, not a new profile or another pass through the chain. Preserve current review, explanation, verification, and lifecycle evidence only when the correction restores already-approved behavior without changing their decision basis. Otherwise route to the earliest affected owning stage.
+Use only the selected v2 record store for runtime recording. Preserve old records as archival evidence without execution, migration or fallback. Route owns explicit activity and work decisions; CLI observations do not select a stage or grant readiness. Successful Verify owns the final explanation and closeout assessment. PR, release and publication retain separate authority.
 
 ## When to use
 
@@ -94,7 +83,7 @@ Read only what the routing decision needs:
 - stable upstream artifacts and the active plan when relevant;
 - git, validation, CI, or external evidence only when the route depends on it.
 
-For governed routing, request project-phase `rigorloop workflow-context` when exact change identity is not authoritative, then request change-phase context for the selected exact change. Stop on unresolved candidate ambiguity. Use the returned lifecycle revision, artifacts, locations, blockers, permitted operations, and automation projection; do not reconstruct them from prose, filenames, prior chat, remembered state, or guessed paths. Refresh the complete change-phase context after any lifecycle mutation or observed identity drift.
+For governed routing, use factual `rigorloop workflow-context` discovery when the exact change is not selected. Resolve ambiguity explicitly. Then use primary `context` and `show` for the selected v2 registry, activity, work, reviews, findings, evidence and blockers. Inspect exact engineering subjects as needed; do not infer state from prose, filenames or prior chat. Refresh the revision and relied-on reads after mutations or observed drift. Context reports observations, not permitted operations or an automation projection.
 
 Unknown artifact types and unknown lifecycle stages are blockers. In portable mode, an explicit safe target or published portable default may be used, but it grants no governed lifecycle state or project-local customization claim. If neither is available, request an explicit path rather than guessing.
 
@@ -191,7 +180,7 @@ Stage-obligation values are `mandatory`, `conditional`, `on-demand`, and `period
 
 ## Universal ownership and safety
 
-The user owns product intent and destructive or external authority. Each authoring stage owns its artifact and matching authoring transition. Review peers own their review evidence and matching settlement. Implementation and evidence stages own only their scoped outputs. Route owns semantic routing and later planned-work decisions while using `stage_authority: workflow` for workflow-owned mutations. New primary plans reach Delivery Review without live work; after the delivery package is approved, plan owns the one-time initialization of missing `planned_work`, and route owns every later transition.
+The user owns product intent and destructive or external authority. Authors own their artifacts and authorized evidence; reviewers own judgments, findings and dispositions. Implementation owns its slice and proof. Route owns explicit activity and later work decisions. Plan may initialize absent work once from the exact approved Delivery package; it cannot revise existing work. Targeted recording preserves these supplied decisions without granting permission or deriving progression.
 
 Do not update an upstream artifact as workflow bookkeeping. Do not infer completion from file existence. Review readiness is not verification readiness, and verification readiness is not PR readiness.
 
@@ -236,10 +225,6 @@ Do not claim:
 
 Progress means work that has happened so far. Readiness means the next stage that can happen. Closeout means the current artifact or stage satisfied its checklist. Done means final lifecycle state after required gates are complete. Readiness is not Done.
 
-Under registered historical contracts, formal material findings require evidence, required outcome, and safe resolution or `needs-decision` rationale. Their disposition is `accepted`, `rejected`, `deferred`, `partially-accepted`, or `needs-decision`; `needs-decision` remains open. `Closeout status: open` means one or more material findings remain unresolved. `Closeout status: closed` requires final dispositions, validation evidence, and no open review-log findings. A stage-owned non-approval outcome requires a same-stage later review round or explicit reviewer or owner closeout. `review-resolution.md` alone is not a silent substitute for required re-review. no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
-
-For registered historical contracts, `verify` owns branch-ready and `pr` owns PR-body and PR-open readiness. For compact changes, successful Verify owns lifecycle completion and any later PR is optional. This mechanism never opens a PR, pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
-
 ## Customer-project routing
 
 Do not require RigorLoop repository-internal specs or docs to be present. Governed use requires authoritative CLI context. Portable use may rely on an explicit safe target or the published defaults below but cannot claim governed placement or project customization.
@@ -250,7 +235,7 @@ Treat `docs/changes/<change-id>/plan.md` as a non-canonical historical or reject
 
 ## Default artifact paths
 
-Use repository conventions first. Compact paths come from the bounded projection and stable-record contract. The following portable defaults describe registered historical contracts:
+Use project conventions and the selected v2 registry. These paths are orientation defaults, not inferred registration or authority:
 
 ```text
 AGENTS.md
@@ -262,11 +247,11 @@ docs/adr/YYYY-MM-DD-slug.md
 docs/plans/YYYY-MM-DD-slug.md
 docs/plan.md
 docs/changes/YYYY-MM-DD-slug/
-docs/changes/<change-id>/change.yaml
-docs/changes/<change-id>/reviews/<stage>-r<n>.md
-docs/changes/<change-id>/review-log.md
-docs/changes/<change-id>/review-resolution.md
-docs/changes/<change-id>/verify-report.md
+docs/changes/<change-id>/change.json
+docs/changes/<change-id>/reviews/<review-id>.json
+docs/changes/<change-id>/evidence.json
+docs/changes/<change-id>/material-decisions.json
+docs/changes/<change-id>/verify-report.json
 specs/slug.md
 docs/learn/sessions/YYYY-MM-DD-slug.md
 ```

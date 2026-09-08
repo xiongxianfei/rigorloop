@@ -1,5 +1,7 @@
 # Review Resolution: Change Title
 
+Standalone review/calibration presentation only. This is not a v2 stored record or a legacy continuation facility. Old persistent automation adapters are unsupported; optional driver fields below require separately supported execution authority. Current v2 findings and dispositions use targeted recording.
+
 ## Summary
 
 Closeout status: open

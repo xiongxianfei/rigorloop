@@ -3,11 +3,23 @@
 
 # Published-Skill-First Repository Simplification
 
+## Scoped stored-format retirement amendment
+
+For the named v2-only retirement, [Workflow's scoped replacement map](../docs/design/workflow/workflow.md#existing-retirement-governance-scoped-replacement) replaces the R14/R17–20/R22–25 operational allocation. Existing v2 evidence carries check ownership, fixture/protection dispositions, actual removal proof and rollback identities. No second ledger or historical ledger rewrite is required. Dedicated retired acceptance is explicitly de-contracted; shared v2 safety and safe-rejection proof remain required. Record actual measurements and limitations without requiring another token benchmark or parity with retired behavior. All unrelated obligations remain in force.
+
 ## Owning change record
+
+`docs/changes/2026-09-08-retire-compact-workflow-mutations/change.json`
+
+boundary_contract: boundary-first-v1
+
+This pointer owns only the current retirement amendment. The historical requirements retain their stable identities and the exact scoped replacements stated above.
+
+## Historical owning change record
 
 `docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml`
 
-boundary_contract: boundary-first-v1
+The original owner and approvals describe the earlier subject and are not retargeted by this amendment.
 
 ## Related proposal
 

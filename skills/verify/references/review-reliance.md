@@ -1,6 +1,6 @@
 # Assessment reliance and closeout application
 
-This guidance applies the project's explicitly adopted Review and Closeout policy. The project's governing policy remains authoritative. Select the project contract before using this guidance; installing a skill does not adopt policy or migrate historical records. Historical procedures, identities, judgments and approvals retain their original contract and meaning.
+This guidance applies the project's explicitly adopted Review and Closeout policy. The project's governing policy remains authoritative. Select the project contract before using this guidance; installing a skill does not adopt policy or migrate historical records. Historical identities, judgments and approvals retain their original meaning as archival evidence; this does not retain runtime support for retired stored formats.
 
 ## Current reliance and correction
 

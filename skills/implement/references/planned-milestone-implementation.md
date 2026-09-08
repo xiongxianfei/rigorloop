@@ -8,7 +8,7 @@ The `implement` skill package remains the policy and lifecycle owner.
 Required evidence:
 
 - workflow-managed invocation;
-- valid active plan and owning `change.yaml`;
+- valid active plan and owning `change.json`;
 - one exact current milestone owned by `implement`;
 - a current milestone state that permits implementation.
 
@@ -17,11 +17,11 @@ Planned evidence without armed automation loads this reference alone.
 
 ## Milestone authority and inspection
 
-Start with the owning `change.yaml`, then the active plan's `Current Handoff Summary`, the current milestone section, implementation validation notes, and review-resolution only when findings exist.
+Start with the owning `change.json`, then the active plan's `Current Handoff Summary`, the current milestone section, implementation validation notes, and review-resolution only when findings exist.
 
 Confirm:
 
-- `lifecycle_contract: stage-owned-change-local-v3` with current Delivery Review authority;
+- `record_contract: rigorloop-records-v2` with current Delivery Review authority;
 - plan artifact identity and current milestone match;
 - the milestone is the first nonterminal implementation milestone;
 - the contract-selected Delivery Review package and review ID are current;
@@ -33,7 +33,7 @@ If change-local state does not identify the current milestone or next stage, sto
 ## Baseline change pack
 
 Before implementation, identify the milestone's required authored surfaces, aligned surfaces, tests, commands, evidence path, rollback unit, and commit subject.
-Treat the stable plan as execution intent and `change.yaml` as the sole live state owner.
+Treat the stable plan as execution intent and `change.json` as the sole live state owner.
 Implementation writes scoped evidence only; workflow performs state transitions.
 
 Record unchanged required surfaces as `unaffected with rationale`.
@@ -47,7 +47,7 @@ Run its proof first, perform the smallest scope-complete change, and execute eve
 After implementation:
 
 - record decisions, surprises, changed and unaffected surfaces, commands, and results in milestone evidence;
-- run the artifact-lifecycle state-sync check;
+- validate the selected v2 record set and affected evidence;
 - confirm the handoff still binds the same plan and milestone;
 - report implementation-complete only as evidence, never as a milestone state.
 
@@ -55,13 +55,13 @@ After implementation:
 
 Create the implementation handoff commit with subject `M<n>: <implemented milestone outcome>` and include validation in its body or referenced evidence.
 
-When required proof passes, report the milestone as ready for `route` to transition to `review-requested` and send it to `code-review`.
-The milestone becomes `closed` only after clean review and required resolution.
+When required proof passes, report the milestone as ready for `route` to record a ready review activity and send it to `code-review`.
+The milestone becomes completed only after clean review and required resolution.
 A clean non-final review lets `route` select the next in-scope implementation milestone; a clean final milestone enters final closeout rather than direct verification.
 
 ## Accepted correction return
 
 Accepted findings stay attached to the same milestone.
-Apply only the recorded resolution scope, rerun named validation, update implementation evidence, and return the same milestone to `review-requested` for rereview.
+Apply only the recorded resolution scope, rerun named validation, update implementation evidence, and return the same milestone to independent review for rereview.
 
 Do not silently rebind a correction to another milestone, alter upstream artifacts as bookkeeping, or start later work while the current milestone remains open.

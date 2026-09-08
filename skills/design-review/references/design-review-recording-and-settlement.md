@@ -1,21 +1,17 @@
-# Design Review recording and settlement
+# Design Review recording
 
-This procedure retains its named historical recording/lifecycle contract. For explicitly adopted Review and Closeout work, the parent skill selects the packaged assessment/reliance application and primary recording interface; historical commands, judgment rules and output shapes below do not override that selection.
+Load for a durable or formal review. The parent skill and packaged assessment guidance own substantive judgment, independence and findings. This reference applies v2 recording and preserves isolated advisory use.
 
-Load for every durable or formal Design Review. The parent skill owns judgment, outcome, findings, isolation, and handoff; this reference owns durable recording and exact-package CLI settlement.
+## Exact assessment basis
 
-## Recording
+Read the complete Design package, accepted proposal constraints and applicable dependencies. Select the exact change through scoped `rigorloop context`; obtain complete subjects and mechanical identities through `subject inspect`. An omitted field is not evidence of absence. Resolve ambiguous placement or subject identity before claiming durable recording, while retaining supported findings.
 
-Resolve the exact change and package from bounded CLI context. For `compact-current-state-v1`, replace the stable current review at `docs/changes/<change-id>/reviews/design-review.md`; keep open findings there, and retain only continuing material constraints in `material-decisions.md`. Submit one transient semantic operation with the expected complete-set revision and identities. For registered historical contracts, retain their round-suffixed review, `review-log.md`, and triggered `review-resolution.md` behavior. If placement or identity is ambiguous, report recording blocked without weakening findings.
+## Record the judgment
 
-The record binds package kind `design`, the exact member ID-to-path map, accepted Proposal Review ID, Design Review ID and round, reviewer authority, outcome, findings, correction targets, and evidence path. It contains no aggregate revision or content hash.
+Use `review record` with the complete assessment, reviewer attribution, exact subject basis, one overall judgment, rationale and explicit applicability. Use `finding add` or `finding set` for supported findings and owned dispositions. Preserve unresolved findings and their immutable origin. Supply the current contract, expected revision and exact reads. Use a targeted batch only for related explicit updates; no complete-file reconstruction or legacy settlement command is required.
 
-## CLI settlement
+Keep substantive judgment, recording outcome, applicability and continuation distinct. A successful save grants no approval or permission. Blocked and inconclusive assessments retain supported findings and remain recordable. Conflict or changed subjects require rereading and reassessment before reliance; never retarget an old approval to a revised subject.
 
-For registered historical contracts, submit `record-package-review`, refresh context, then submit `settle-review-package` for the same package and review identity. For compact changes, submit the compact stable-review operation once; the evaluator records the outcome and derives progression together. Only `approved` grants package authority; all other outcomes remain visible and withhold progression. The CLI validates consistency and does not authenticate or grant reviewer permission.
+## Isolation and handoff
 
-An exact replay is idempotent. Stale lifecycle revision, changed member map, wrong upstream review, mismatched evidence, or failed atomic mutation stops unchanged. Never edit `change.yaml` settlement fields directly.
-
-## Isolation
-
-Settlement does not advance routing. A direct invocation stops after recording and any authorized settlement. Workflow-managed execution returns control to `route`, which alone chooses continuation or correction routes.
+Write only this review's evidence and authorized assessment applicability. Do not edit reviewed content, another actor's evidence, activity or work state. Corrections return to the owning author and require appropriate independent reassessment. A direct review invocation stops after its requested assessment and recording. Governed execution returns to route for continuation. Advisory review without lifecycle artifacts remains available and makes no formal recording or gate claim.

@@ -2,11 +2,25 @@
 
 # Compact Current-State Change Record
 
+## V2-only runtime retirement
+
+The [Record Format](../docs/design/record-format/record-format.md), [CLI](../docs/design/cli/cli.md) and [Workflow](../docs/design/workflow/workflow.md) models select `rigorloop-records-v2` as the only supported runtime stored format. Earlier compact/lifecycle and explicit-recording-v1 acceptance, activation, projection, mutation and recovery clauses below are historical design evidence, not current execution or compatibility obligations. Their stable IDs and recorded approvals keep their original meaning. Current consumers use scoped primary reads and targeted recording, with actor-owned decisions and applicability; the CLI does not select readiness. Preserve archival records unchanged, reject explicit retired input safely and preserve v2 safety. Unrelated document/configuration/transport version domains remain supported under their own contracts.
+
+Specialist authoring and review responsibilities remain. Each governed change requires fresh independent whole-change Code Review after all implementation milestones and corrections, then distinct successful final Verify. Installed skills must contain usable v2 procedures and selective portable resources, without private internal requirement IDs or a dependency on this design repository.
+
 ## Owning change record
+
+`docs/changes/2026-09-08-retire-compact-workflow-mutations/change.json`
+
+boundary_contract: boundary-first-v1
+
+This pointer owns only the current retirement amendment. The historical requirements retain their stable identities and the exact scoped replacements stated above.
+
+## Historical owning change record
 
 `docs/changes/2026-09-03-compact-current-state-change-record/change.yaml`
 
-boundary_contract: boundary-first-v1
+The original owner and approvals describe the earlier subject and are not retargeted by this amendment.
 
 ## Related proposal
 

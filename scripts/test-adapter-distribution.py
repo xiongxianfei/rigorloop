@@ -186,7 +186,7 @@ class AdapterDistributionTests(unittest.TestCase):
                     pr_entry = next(name for name in names if name.endswith("/pr/SKILL.md"))
                     verify_entry = next(
                         name for name in names
-                        if name.endswith("/verify/references/successful-explanation-v3.md")
+                        if name.endswith("/verify/references/successful-explanation.md")
                     )
                     pr_body = archive.read(pr_entry).decode("utf-8")
                     verify_explanation = archive.read(verify_entry).decode("utf-8")
@@ -196,7 +196,7 @@ class AdapterDistributionTests(unittest.TestCase):
                 self.assertIn("any commit count or direct-parent topology", pr_body)
                 self.assertNotIn("exactly one direct-child verify-owned evidence commit", pr_body)
                 self.assertIn(
-                    "do not become part of the Verify result registration",
+                    "Keep substantive success, durable save and current reliance distinct",
                     verify_explanation,
                 )
 
@@ -208,10 +208,10 @@ class AdapterDistributionTests(unittest.TestCase):
             archives = build_staged_v3_adapter_archives("v0.1.6", output)
             self.assertEqual(validate_staged_v3_adapter_archives("v0.1.6", output), [])
             required = {
-                "final-impact-analysis-v3.md",
-                "evidence-applicability-v3.md",
-                "successful-explanation-v3.md",
-                "verify-report-v3-skeleton.md",
+                "final-impact-analysis.md",
+                "evidence-applicability.md",
+                "successful-explanation.md",
+                "verify-report-skeleton.md",
             }
             for archive_path in archives:
                 with zipfile.ZipFile(archive_path) as archive:
