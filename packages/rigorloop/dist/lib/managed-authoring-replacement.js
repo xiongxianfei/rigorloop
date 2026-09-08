@@ -1,7 +1,7 @@
 // Private filesystem transaction for the explicitly authorized authoring upgrade.
 // Archive trust and recorded-tree eligibility remain the installer's responsibility.
 import { lstatSync, readdirSync, readFileSync, mkdirSync, mkdtempSync, writeFileSync, renameSync, linkSync, realpathSync } from "node:fs";
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { resolve, join, dirname, basename } from "node:path";
 
 const STATE_PATHS = ["rigorloop.yaml", "rigorloop.lock"];
@@ -123,6 +123,7 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
   const expected = { ...basis };
   const saved = new Map();
   const moves = [];
+  const retained = [];
   const authority = basis.$ancestors;
   function assertCurrent() {
     assertAuthority(projectRoot, authority);
@@ -133,10 +134,22 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
       if (!equal(snapshot(backup), original)) throw failure("The retained original changed during replacement.");
     }
   }
-  function saveOriginal(target, backup, path) {
+  function detach(path, kind) {
+    // Neither endpoint traverses a mutable ancestor. The private name is fresh,
+    // unpredictable and not exposed before the move; retained copies are never
+    // automatically deleted. No destination traverses the staging pathname.
+    return withParent(projectRoot, path, name => {
+      const privateName = `.rigorloop-authoring-${kind}-${randomBytes(32).toString("hex")}`;
+      if (stat(privateName)) throw failure("Private detachment name collision.");
+      renameSync(name, privateName);
+      const backup = join(projectRoot, dirname(path), privateName);
+      retained.push({ path, backup, kind });
+      return backup;
+    }, authority);
+  }
+  function saveOriginal(path) {
     assertCurrent();
-    if (stat(backup)) throw failure("A private backup destination unexpectedly exists.");
-    withParent(projectRoot, path, name => renameSync(name, backup), authority);
+    const backup = detach(path, "old");
     moves.push({ kind: "saved", backup, path });
     expected[path] = null;
     saved.set(backup, basis[path]);
@@ -177,7 +190,6 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
   }
   try {
     mkdirSync(join(stage, "new"));
-    mkdirSync(join(stage, "old"));
     for (const root of roots) mkdirSync(join(stage, "new", root), { recursive: true });
     for (const { path, content } of files) {
       const destination = safePath(join(stage, "new"), path);
@@ -191,9 +203,8 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
     for (const [i, path] of selected.paths.entries()) {
       // Verify the installed roots before either shared state file is published.
       if (i === roots.length) { verifyInstalled(); checkpoint("verified"); assertCurrent(); }
-      const target = safePath(projectRoot, path);
       if (expected[path]) {
-        saveOriginal(target, join(stage, "old", String(i)), path);
+        saveOriginal(path);
         checkpoint(`saved:${path}`);
       }
       const source = join(stage, "new", path);
@@ -212,9 +223,8 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
         if (last.kind === "published") {
           // Detach before inspecting; never recursively delete a public path.
           // If a writer won this source race, retain its bytes and report it.
-          const detached = join(stage, `detached-${moves.length}`);
           const wanted = expected[last.path];
-          withParent(projectRoot, last.path, name => renameSync(name, detached), authority);
+          const detached = detach(last.path, "rollback");
           expected[last.path] = null;
           saved.set(detached, wanted);
           assertCurrent();
@@ -225,9 +235,10 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
         moves.pop();
       }
       error.recoveryPath = stage;
+      error.retainedPaths = retained;
       error.restored = true;
     } catch (recoveryError) {
-      throw Object.assign(failure(`Replacement stopped; preserve the recovery directory and operator backup, inspect intervening changes, and restore a coherent original basis before retry. ${recoveryError.message}`, "managed-authoring-recovery-required"), { recoveryPath: stage, cause: error });
+      throw Object.assign(failure(`Replacement stopped; preserve the recovery directory and operator backup, inspect intervening changes, and restore a coherent original basis before retry. ${recoveryError.message}`, "managed-authoring-recovery-required"), { recoveryPath: stage, retainedPaths: retained, cause: error });
     }
     throw error;
   }
@@ -235,5 +246,5 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
   // already-open writer can still write an old inode after its last check;
   // deleting that backup automatically could lose the independent write.
   // The operator may remove this directory after inspecting the completed pair.
-  return { backupPath: stage };
+  return { backupPath: stage, retainedPaths: retained };
 }

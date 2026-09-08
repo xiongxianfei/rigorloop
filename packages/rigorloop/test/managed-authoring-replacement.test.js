@@ -35,7 +35,7 @@ test("authorized replacement publishes both roots and state, preserving neighbor
   assert.ok(verified);
   assert.equal(readFileSync(join(f.projectRoot, "rigorloop.lock"), "utf8"), "new lock\n");
   assert.equal(readFileSync(join(f.projectRoot, "unrelated.txt"), "utf8"), "neighbor\n");
-  assert.equal(readFileSync(join(result.backupPath, "old", "0", "spec.md"), "utf8"), "original skill\n");
+  assert.equal(readFileSync(join(result.retainedPaths.find(p => p.path === f.roots[0] && p.kind === "old").backup, "spec.md"), "utf8"), "original skill\n");
 });
 
 for (const point of ["staged", "saved:.opencode/skills", "published:.opencode/skills", "saved:.opencode/commands", "published:.opencode/commands", "verified", "saved:rigorloop.yaml", "published:rigorloop.yaml", "saved:rigorloop.lock", "published:rigorloop.lock"]) {
@@ -75,7 +75,7 @@ test("intervening shared-state writer survives conflict and rollback", t => {
   assert.equal(failure.code, "managed-authoring-recovery-required");
   assert.ok(existsSync(failure.recoveryPath));
   assert.equal(readFileSync(join(f.projectRoot, "rigorloop.lock"), "utf8"), "independent writer\n");
-  assert.equal(readFileSync(join(failure.recoveryPath, "old", "0", "spec.md"), "utf8"), "original skill\n");
+  assert.equal(readFileSync(join(failure.retainedPaths.find(p => p.path === f.roots[0] && p.kind === "old").backup, "spec.md"), "utf8"), "original skill\n");
 });
 
 test("rollback failure retains recoverable prior bytes and reports partial state", t => {
@@ -88,7 +88,7 @@ test("rollback failure retains recoverable prior bytes and reports partial state
     }});
   } catch (error) { failure = error; }
   assert.equal(failure.code, "managed-authoring-recovery-required");
-  assert.equal(readFileSync(join(failure.recoveryPath, "old", "0", "spec.md"), "utf8"), "original skill\n");
+  assert.equal(readFileSync(join(failure.retainedPaths.find(p => p.path === f.roots[0] && p.kind === "old").backup, "spec.md"), "utf8"), "original skill\n");
 });
 
 test("original absent manifest is restored as absent after failed publication", t => {
@@ -145,7 +145,7 @@ for (const restoring of [false, true]) {
     const target = join(f.projectRoot, "rigorloop.lock");
     let injected = false;
     interleave(["renameSync", "linkSync"], (_name, [from, to]) => {
-      if (!injected && resolve(to) === target && String(from).includes(restoring ? "/old/" : "/new/")) {
+      if (!injected && resolve(to) === target && String(from).includes(restoring ? ".rigorloop-authoring-old-" : "/new/")) {
         injected = true;
         writeFileSync(target, "independent after-check write\n");
       }
@@ -181,7 +181,7 @@ test("a late writer through an already open original descriptor keeps its bytes"
   try {
     const result = replaceManagedAuthoring(f);
     fs.writeSync(fd, "late independent write\n");
-    assert.match(readFileSync(join(result.backupPath, "old", "3"), "utf8"), /late independent write/);
+    assert.match(readFileSync(result.retainedPaths.find(p => p.path === "rigorloop.lock" && p.kind === "old").backup, "utf8"), /late independent write/);
     assert.equal(readFileSync(join(f.projectRoot, "rigorloop.lock"), "utf8"), "new lock\n");
   } finally { fs.closeSync(fd); }
 });
@@ -195,7 +195,7 @@ for (const restoring of [false, true]) {
     writeFileSync(join(neighbor, "unrelated.txt"), "keep");
     let injected = false;
     interleave(["linkSync"], (_name, [from, to]) => {
-      if (!injected && resolve(to) === join(root, restoring ? "spec.md" : "design.md") && String(from).includes(restoring ? "/old/" : "/new/")) {
+      if (!injected && resolve(to) === join(root, restoring ? "spec.md" : "design.md") && String(from).includes(restoring ? ".rigorloop-authoring-old-" : "/new/")) {
         injected = true;
         fs.renameSync(root, `${root}-detached-by-writer`);
         symlinkSync(neighbor, root);
@@ -257,5 +257,35 @@ for (const symlink of [false, true]) {
     assert.equal(readFileSync(join(f.projectRoot, f.roots[0], "spec.md"), "utf8"), "original skill\n");
     assert.equal(existsSync(join(f.projectRoot, f.roots[0], "design.md")), false);
     assert.equal(readFileSync(join(original, "rigorloop.lock"), "utf8"), "original lock\n");
+  });
+}
+
+for (const restoring of [false, true]) {
+  test(`root substitution during ${restoring ? "rollback detachment" : "backup"} preserves unrelated destination bytes`, t => {
+    const f = fixture(t);
+    const original = `${f.projectRoot}-original`;
+    const neighbor = `${f.projectRoot}-neighbor`;
+    t.after(() => { rmSync(original, { recursive: true, force: true }); rmSync(neighbor, { recursive: true, force: true }); });
+    let injected = false;
+    let unrelated;
+    interleave(["renameSync"], (_name, [from, to], originals) => {
+      const wanted = restoring ? (String(to).includes("detached-") || String(to).includes("rollback-")) : (String(to).includes("/old/3") || String(to).includes("authoring-old-"));
+      if (!injected && from === "rigorloop.lock" && wanted) {
+        injected = true;
+        const priorCwd = process.cwd();
+        const destination = resolve(to);
+        fs.cpSync(f.projectRoot, neighbor, { recursive: true });
+        originals.renameSync(f.projectRoot, original);
+        symlinkSync(neighbor, f.projectRoot);
+        unrelated = destination.replace(f.projectRoot, neighbor);
+        mkdirSync(resolve(unrelated, ".."), { recursive: true });
+        writeFileSync(unrelated, "independent unrelated bytes");
+        assert.equal(priorCwd, f.projectRoot);
+      }
+    }, () => assert.throws(() => replaceManagedAuthoring({ ...f, checkpoint: phase => {
+      if (restoring && phase === "published:rigorloop.lock") throw new Error("force rollback detachment");
+    }}), { code: "managed-authoring-recovery-required" }));
+    assert.ok(injected);
+    assert.equal(readFileSync(unrelated, "utf8"), "independent unrelated bytes");
   });
 }
