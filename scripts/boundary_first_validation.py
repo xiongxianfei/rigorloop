@@ -1645,8 +1645,8 @@ def validate_model_record(text: str, path: str) -> tuple[ValidationIssue, ...]:
     """Explicit model format: structural proof only, never workflow settlement."""
     text = _live_markdown(re.sub(r"<!--[\s\S]*?(?:-->|$)", "", text))
     markers = re.findall(r"^Model validation contract:\s*(.*?)\s*$", text, re.MULTILINE)
-    if markers != ["explicit-recording-v1"]:
-        return (_issue("BFR-MODEL-CONTRACT", path, "one explicit model contract marker is required", markers),)
+    if markers != ["model-document-v1"]:
+        return (_issue("BFR-MODEL-CONTRACT", path, "exactly one model-document-v1 model contract marker is required", markers),)
 
     def table(heading: str, columns: tuple[str, ...]) -> list[list[str]]:
         # Four columns (including tabs) are code, not authoritative structure.

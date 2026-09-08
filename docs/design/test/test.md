@@ -1,6 +1,6 @@
 # Test Model Design
 
-Model validation contract: explicit-recording-v1
+Model validation contract: model-document-v1
 
 Owning change: [2026-09-08-design-derived-test-model](../../changes/2026-09-08-design-derived-test-model/change.json)
 

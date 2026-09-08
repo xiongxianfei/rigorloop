@@ -187,6 +187,17 @@ All identifiers below are source-qualified to Target-native init's scoped TNI-DE
 - Risks: high file count from replicated consumer guidance, stale projection hashes, an omitted legacy method, premature supersession, incorrect backup guidance or an installer guard that breaks every current archive before candidate metadata is aligned.
 - Rollback/recovery: before adoption revert the whole unadopted coupled source/metadata unit, not one old skill beside `design`. Generated outputs are disposable and recreated from the retained source. After adoption use the Design's authorized coherent reversal/forward correction; installed recovery follows TNI-DES-05 and preserves unrelated changes. If the cutover cannot be independently reviewed as this bounded responsibility, replan before splitting its acceptance boundary.
 
+### M3. Rename the document marker and demonstrate its contract
+
+- Scope: user-requested `model-document-v1` rename and the indexed fenced example in the owning Design. Preserve structural rules, stored `rigorloop-records-v2`, targeted transport versions and historical records. Current model documents, validator, authoring resource/skeleton and measured candidate metadata change together.
+- Dependencies: independent approval of the revised model set and this Delivery addendum; M1/M2 implementation remains unchanged.
+- Requirements: DES-SR-09/11/12/16/19 and the model-document structural/transition/example contract; no new runtime record format or automatic customer-document migration.
+- Implementation: update validator dispatch and diagnostics; update current authoring resources; add regression proof for the new marker, retired/unknown/missing/duplicate markers and the fenced example. Update the seven living-model declarations and current boundary-method consumer. Rebuild the same supported adapter set into a new empty task directory and regenerate current local-candidate metadata using the existing archive-measurement helper; do not hand-edit archive bodies or historical metadata.
+- Verification: V3/V4/V6 for affected source/model/prose/selector checks; validate the extracted example directly as a hypothetical model and reject an invalid-marker variant. V5/V8 for current candidate generation, clean installation and metadata coherence. Rerun the selector's maintained checks. Repeat the installed authoring walkthrough against the changed guidance and candidate; retain other prior proof only with independent unaffected-basis assessment. Public managed-installation/recovery proof must use the revised candidate where archive identity is material. No broad smoke or release-only V9 without their existing triggers.
+- Acceptance: no live document declaration or current authoring instruction selects the retired marker; old/unknown markers fail before table validation; the new example and parent each validate with exactly one live declaration. All eight dimensions, model-local references and illustrative scope are reviewable. Packages provide the current marker guidance without internal checkout; historical v1 stored-record names and exact approvals remain historical.
+- Evidence: actual command results and new exact subjects/candidate identities in existing v2 records; independent M3 review, then fresh complete whole-change Code Review and distinct Verify before updating the existing PR.
+- Recovery: restore the coherent document/validator/guidance/candidate set together if the rename is not adopted. Never change a historical record or rewrite customer model files through installation. An incompatible or interrupted customer edit is corrected under that project's document owner.
+
 ## Verification groups
 
 | Group | Required claim, representative conditions and distinguishing oracle | Commands / evidence owner |
@@ -202,7 +213,7 @@ All identifiers below are source-qualified to Target-native init's scoped TNI-DE
 ## Final review checkpoint
 
 - Kind: lifecycle-closeout.
-- Dependency: both implementation milestones and all required corrections complete, including integrated evidence and durable follow-up assignments.
+- Dependency: all in-scope implementation milestones (M1–M3) and all required corrections complete, including integrated evidence and durable follow-up assignments.
 - Assessment: fresh independent final whole-change Code Review of the complete delivered engineering change, including proposal/Design/Delivery artifacts, implementation and cross-milestone interactions. Earlier milestone reviews inform but do not replace it.
 - Evidence: exact final subjects, complete diff, independent reviewer basis, current proof and all required concern dispositions.
 - Successor: distinct final Verify. Corrections return to the owning stage and require affected reassessment; only successful Verify owns the final explanation and completion assessment.
