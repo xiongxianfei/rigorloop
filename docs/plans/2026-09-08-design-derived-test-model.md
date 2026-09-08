@@ -120,10 +120,62 @@ The three material combined hazards map explicitly: consolidation plus lost publ
 - Risks: losing public-boundary, unknown-value, historical, side-effect or diagnostic protection; weakening assertions while reducing setup.
 - Rollback/recovery: restore the affected tests and fixtures if equivalence fails; retain failing evidence and route missing behavior authority upstream. No quarantine or skip may conceal a gap.
 
+### M3. Remove user-selected historical lifecycle and cache-applicability tests
+
+- Milestone kind: implementation.
+- Engineering purpose: execute the user's subsequent selection of historical lifecycle protocols and cache applicability for removal, following the repository inventory.
+- Requirements: direct user scope amendment; TEST-SR-07/10/11/12 for explicit impact, discovery and truthful assessment. This deliberately removes selected coverage; it is not a claim of redundancy or equivalent remaining proof. The direct user request supersedes the original bounded-cleanup restriction for these named tests only.
+- Architecture responsibility: tests only. Existing historical commands and cache behavior remain present; their runtime support and stored contracts are not retired by test deletion.
+- Dependencies: original M1/M2 scope delivered; independent review of this amendment before relying on the expanded allocation.
+- Implementation scope: remove the 13 historical lifecycle test files listed below and the 11 cache-eligibility/reuse methods listed below. Keep cache hashing, path normalization, cache-hit record shape/serialization and all unlisted tests, implementation, fixtures and helpers. Remove an import only if these deletions leave it unused.
+- Files/components likely touched: the named test files, this stable scope amendment and current change-local evidence. Existing Node automatic discovery and Python unittest discovery need no runner changes.
+- Required verification: TG-05 exact deletion/remaining-discovery audit; TG-FINAL-01 renewed on the complete expanded change.
+- Evidence expectations: exact removed paths/names, baseline versus resulting runtime case counts, actual remaining-suite results, and explicit reduced-coverage limitations. Retained tests passing must not be described as proof of the removed obligations.
+- Implementation steps: verify selected definitions and direct imports; remove only selected cases; run complete remaining Node/cache suites; record protection loss and discovery; independently review the milestone, then renew final whole-change review and Verify before updating the existing PR.
+- Validation commands: `npm test --prefix packages/rigorloop`; `python scripts/test-validation-cache.py`; `python scripts/validate-markdown-readability.py docs/plans/2026-09-08-design-derived-test-model.md`; `node scripts/validate-record-store.mjs docs/changes/2026-09-08-design-derived-test-model/change.json`; `git diff --check`. Run PR-mode repository checks over the exact full branch before renewed final closeout. Prior skill/adapter evidence may be reused only for unchanged sources/environment under RC-SR-15.
+- Expected observable result: selected historical protocol suites and cache-applicability methods are absent, while unselected tests are still discovered and pass.
+- Completion criteria: exact selected removal, no runtime changes or accidental unselected loss, remaining-suite validation, independent milestone/final assessments and renewed Verify. No assertion that compatibility or cache behavior now lacks all other coverage.
+- Required evidence: TG-05 removal audit and actual proof, current independent reviews and explicit final scope limitations.
+- Review handoff: independent Code Review; policy exceptions and lost coverage must remain visible.
+- Risks: reduced regression detection for still-present legacy commands and cache reuse/eligibility; passing remaining suites does not replace deleted protection.
+- Rollback/recovery: restore the named files/methods from the preceding revision and validate before relying on restored protection.
+
+Historical files selected for removal:
+
+- `packages/rigorloop/test/final-verification-protocol.test.js`
+- `packages/rigorloop/test/lifecycle-artifact-revision.test.js`
+- `packages/rigorloop/test/lifecycle-contract.test.js`
+- `packages/rigorloop/test/lifecycle-correction-route.test.js`
+- `packages/rigorloop/test/lifecycle-evidence.test.js`
+- `packages/rigorloop/test/lifecycle-migration-repair.test.js`
+- `packages/rigorloop/test/lifecycle-milestone.test.js`
+- `packages/rigorloop/test/lifecycle-ownership.test.js`
+- `packages/rigorloop/test/lifecycle-plan-initialization.test.js`
+- `packages/rigorloop/test/lifecycle-read.test.js`
+- `packages/rigorloop/test/lifecycle-stage-advance.test.js`
+- `packages/rigorloop/test/lifecycle-transaction.test.js`
+- `packages/rigorloop/test/lifecycle-withdrawal.test.js`
+
+Cache methods selected in `scripts/test-validation-cache.py`:
+
+- `test_cacheable_command_family_is_lifecycle_explicit_paths_only`
+- `test_duplicate_explicit_paths_disable_cache_eligibility`
+- `test_unsafe_path_values_are_rejected_before_cache_lookup`
+- `test_implementation_manifest_missing_entrypoint_is_cache_ineligible`
+- `test_implementation_manifest_unresolved_repository_import_is_cache_ineligible`
+- `test_implementation_manifest_unparseable_repository_helper_is_cache_ineligible`
+- `test_local_execution_cache_is_branch_worktree_and_change_local`
+- `test_helper_reuses_direct_actual_run_cache_identity`
+- `test_local_cache_store_reuses_only_matching_prior_pass`
+- `test_cache_lookup_misses_after_helper_or_policy_change`
+- `test_final_verification_cache_hit_is_not_actual_run_evidence`
+
+TG-05 checks exact path/method deletion and unchanged remaining definitions, compares actual discovery, and records complete remaining Node/cache suite results. Existing schema/runtime behavior is outside the change. The original M2 audit claim remains limited to its two classes; M3 is a subsequent user-selected coverage removal, not retrospective evidence that those tests were useless.
+
 ## Final review checkpoint
 
 - Kind: lifecycle-closeout.
-- Dependency: M1, M2 and all required corrections complete.
+- Dependency: M1, M2, M3 and all required corrections complete.
 - Assessment: fresh independent final whole-change Code Review of the complete delivered engineering change and cross-milestone interactions against the current approved Design and Delivery allocation.
 - Evidence: exact final subjects, actual independence basis, judgment, concern dispositions and the relationship between packaged criteria and the cleanup rationale.
 - Successor: distinct final Verify. Corrections return to their owner and require affected reassessment; milestone judgments do not substitute for this fresh assessment.
@@ -134,8 +186,8 @@ This checkpoint remains mandatory even if M2 retains every test. Verification gr
 
 ### TG-FINAL-01. Criteria, cleanup and final evidence agree
 
-- Covers: M1/M2, TEST-SR-01–13, WF-SR-17 and RC-SR-11–15.
-- Demonstrate: installed guidance preserves the approved ownership and diagnostic/removal criteria; actual maintenance rationale follows them; every cleanup claim matches the bounded audited set and retained proof; no historical contract, independent review or required discovery check was dropped.
+- Covers: M1/M2 criteria and bounded audit, the explicit M3 user-selected removal scope and limitations, TEST-SR-01–13, WF-SR-17 and RC-SR-11–15.
+- Demonstrate: installed guidance preserves the approved ownership and diagnostic/removal criteria; M1/M2 maintenance rationale follows them; M3 is the explicit user-selected coverage exception below; every cleanup claim matches its allocated set and actual retained proof; no historical runtime contract, independent review or required discovery check was dropped.
 - Evidence expectations: V10 selected integrated validation, current exact model/plan/review/evidence basis, manual comparison of final consumer guidance with TG-03 outcomes, and a distinct final whole-change review followed by Verify.
 - Non-applicability: none. Package consumers and maintenance claims cross milestone boundaries.
 
@@ -176,7 +228,7 @@ Use focused checks first. Do not run overlapping copies of suites concurrently w
 
 - The proposal, latest Test Design including diagnostic contribution, Workflow and their independent approvals must remain applicable before reliance.
 - Delivery Review must assess this exact plan before implementation or planned-work initialization. Workflow routing remains separately owned.
-- M2 depends on M1's reviewed criteria and package coherence. Final review depends on both milestones and corrections; final Verify depends on the fresh final review.
+- M2 depends on M1's reviewed criteria and package coherence. Final review depends on M1, M2, M3 and corrections; final Verify depends on the fresh final review.
 - Record Format/CLI schemas, historical records, external permissions and release versions remain unchanged. Public distribution/customer activation requires separately authorized coherent adoption.
 
 ## Decision log
