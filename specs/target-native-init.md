@@ -4,11 +4,105 @@
 
 approved
 
+This retained status describes the original contract. The separately owned scoped Design amendment below is subject to its owning change and coordinated adoption; the historical approval does not assess that amendment.
+
 ## Related proposal
 
 - [Target-Native Init Commands and Adapter Terminology Retirement](../docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md)
 - Proposal-review evidence: [proposal-review-r3](../docs/changes/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement/reviews/proposal-review-r3.md)
 - Supersession boundary: when this spec is approved, it supersedes the `init --adapter` command surface and default state-file write requirements in [Multi-Adapter Init and Proxy-Aware Adapter Download](multi-adapter-init-and-proxy-aware-download.md), [RigorLoop CLI Lockfile](rigorloop-cli-lockfile.md), and the `rigorloop.yaml` init requirements in [RigorLoop CLI Package and Codex Init](rigorloop-cli-package-and-codex-init.md). Archive verification, tree hashing, extraction safety, proxy diagnostics, local archive trust, and generated-output mutation safety continue to apply unless this spec explicitly changes them.
+
+## Owning change record
+
+`docs/changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json`
+boundary_contract: boundary-first-v1
+
+This owner and marker apply to TNI-DES-01–06 and their scoped boundary record only. The earlier contract and its historical approval retain their original ownership and meaning.
+
+## Scoped Design amendment: managed authoring replacement
+
+This section is the installation owner's bounded amendment for [Unified Design Authoring and Bounded Model Consolidation](../docs/proposals/2026-09-08-unified-design-authoring-and-bounded-model-consolidation.md), recorded under the owning change above. The earlier approval and requirements outside this section retain their original scope. This amendment takes effect only at that initiative's coordinated adoption; drafting or Design Review does not implement it or authorize an installation. Installation remains an unmigrated responsibility owned here. [Design](../docs/design/design/design.md#public-invocation-compatibility) owns which authoring invocations are withdrawn and consumes this replacement procedure.
+
+### Replacement requirements
+
+| ID | Required outcome |
+| --- | --- |
+| TNI-DES-01 | A candidate archive containing `spec` or `architecture` skill entries or their target command aliases MUST be rejected before target or state writes. A selected installation containing them MUST block ordinary init. Its diagnostic MUST distinguish managed replacement from unmanaged cleanup; it MUST NOT direct a managed operator to delete entries before the recorded tree is checked. |
+| TNI-DES-02 | The existing `init <target> --write-state` managed replacement mechanism MUST support the bounded authoring transition only when the selected old target has retired entries, has no competing `design` entry, and its complete recorded roots match their original lockfile hashes before removal. Valid unambiguous state, non-overlapping ownership, safe regular-file/directory roots, and a trusted candidate containing `design` and no retired entries are required. Missing roots, symlinks, modified content, additional unrecorded files, conflicting roots or unsupported state MUST block before mutation. Hashing semantics and TNI-R19–28/R72–75 remain unchanged; `--write-state` is not a drift override. |
+| TNI-DES-03 | The public procedure MUST identify the exact selected roots and replacement effect, require an operator backup outside those roots of their complete contents and both state files (including recorded absence), and require explicit authorization to replace those roots. Running the documented `--write-state` replacement requests that bounded operation; an agent still needs applicable execution permission. Ordinary init, detection and dry-run MUST NOT remove entries. Dry-run MUST expose eligibility/blockers and the selected replacement/state-write scope without mutation. |
+| TNI-DES-04 | After candidate verification and a final check of the unchanged original basis, replacement MUST retain an exclusive write basis for the selected roots and shared state through publication and rollback, or detect intervening changes and stop without overwriting them. Replacement MUST affect only the selected target's recorded roots and its permitted state entries. Other target files, unrelated project content and unrelated valid state entries MUST be preserved. The installer MUST stage and verify the candidate before replacement, retain the prior target/state for rollback, verify installed hashes and counts, and write the new selected-target state only after verification. It MUST NOT remove unrelated content merely because it shares a parent directory or replace a modified target. |
+| TNI-DES-05 | A caught replacement or state-write failure MUST restore the prior selected roots and prior state bytes while that write basis remains exclusive/unchanged. If independent writes intervene, rollback MUST preserve them and report a recovery conflict rather than restore stale shared-state bytes. If restoration fails, it MUST report the remaining partial state and required recovery without success or silent state reset. After process interruption, retry MUST validate the actual target/state pair and block on a mixed or drifted basis. The documented manual recovery MUST use the retained operator backup to restore a coherent original basis before retry; it MUST preserve intervening changes and never delete the lockfile or bless the partial tree with a refreshed hash. |
+| TNI-DES-06 | Unmanaged cleanup MUST require explicit operator inspection, backup and removal of only the retired entries/aliases, with existing file-conflict checks on retry. Uncertain or state-implicated ownership MUST follow the managed safety path or stop. No broad force option, automatic cleanup on detection, record migration or change to the existing workflow-to-route transition is authorized by this amendment. |
+
+### Operator sequence and recovery
+
+1. Select the target and a trusted release supplying the new authoring inventory. Inspect the installed roots and valid manifest/lockfile; retain the original tree while checking the recorded hashes. Use `rigorloop init codex --write-state --dry-run --json` for Codex, substituting `claude` or `opencode` as appropriate. The adopting installer reports the selected replacement roots and prerequisites. The current implementation is not claimed to support this new transition yet.
+2. Back up those complete roots, `rigorloop.yaml` and `rigorloop.lock` outside all installation roots. Preserve local edits separately. For a drifted target, inspect the differences and explicitly restore the original recorded content from a known matching backup/release; archive additions outside the managed roots only with operator authority. Verify the original hashes again. Do not merely remove `spec`/`architecture`, edit the recorded hash, remove state entries or use `--write-state` to accept drift.
+3. After authorizing the reported replacement, run `rigorloop init codex --write-state` against the same selected candidate, using the corresponding target and existing pinned-release/local-archive selection mechanism. The installer checks the unchanged original basis, replaces the eligible selected target, verifies the new tree and records its new basis. The old entrypoints disappear as part of that explicitly requested managed replacement, not as a preliminary manual deletion. Keep the backup until success and coherence are established.
+4. If preflight blocks, correct the named cause without target/state mutation. If a caught failure restores the original pair, retry after resolving the cause. If interrupted, inspect the target and both state files before retry: a coherent completed new installation follows ordinary idempotent init; a coherent original pair can repeat the replacement; a partial pair requires operator-authorized restoration from the backup. Back up partial contents and inspect intervening changes first. Restore original selected roots and state bytes only when shared state has not changed independently; otherwise stop for the installation owner to reconcile the selected entries while preserving those independent changes. Recheck hashes before retry. Already performed manual cleanup is recovered by restoring the removed original content from the backup, not by resetting the lockfile.
+
+### Representative acceptance outcomes
+
+| Example ID | Condition | Observable outcome |
+| --- | --- | --- |
+| E-DES-01 | Clean managed old installation; trusted new candidate | Backup, explicit replacement authorization and `--write-state` reach one coherent `design` installation and matching recorded hashes without manual pre-deletion. Other targets and unrelated state/content remain intact. |
+| E-DES-02 | Local edits in old skills, an additional file, missing root or unsafe symlink | Both ordinary and managed replacement block before writes. The diagnostic preserves the content and explains restoration of the original recorded basis after separate backup/inspection; no removal or hash reset is inferred from `--write-state`. |
+| E-DES-03 | Interrupted manual cleanup, caught failure or process interruption during replacement/state write | Original matching backup permits recovery to a coherent old basis and a successful retry. Caught failure restores prior bytes under the retained write basis; conflicting independent writes or incomplete recovery remain explicit. A mixed tree/state pair cannot be adopted as success, and intervening unrelated changes cannot be overwritten during recovery. |
+| E-DES-04 | Clean target with the new inventory, or completed replacement retried | Existing verified init/idempotency behavior applies; no retired-entry cleanup is attempted. |
+| E-DES-05 | Ordinary init encounters installed retired entries, or the candidate contains retired entries/aliases | Before writes, candidate rejection or the installed-inventory diagnostic identifies the offending path and the managed or unmanaged next action. |
+| E-DES-06 | Dry-run inspects any managed replacement candidate | Eligibility/blockers and selected replacement/state-write scope are reported without target/state mutation. |
+
+These outcomes cover the interaction between TNI-DES-01–06, TNI-R19–28/R72–75 and lockfile R46–R51. Delivery allocates real installation and fault/recovery checks; the current workflow-to-route implementation is feasibility evidence for a mechanism, not proof that this authoring transition or its interruption obligations already pass.
+
+## Boundary model
+
+Boundary model version: boundary-first-v1
+Boundary model scope: TNI-DES-01, TNI-DES-02, TNI-DES-03, TNI-DES-04, TNI-DES-05, TNI-DES-06
+
+This retained feature-format record covers only the scoped authoring-transition amendment. The original TNI requirements, examples and historical approval retain their existing meaning; this is not an installation-model migration.
+
+| Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
+| --- | --- | --- | --- | --- |
+| input-domain | applicable | TNI-DES-01, TNI-DES-02 | BND-INPUT-001 | - |
+| state-lifecycle | applicable | TNI-DES-02, TNI-DES-04, TNI-DES-05 | BND-STATE-001 | - |
+| identity-authority | applicable | TNI-DES-02, TNI-DES-03, TNI-DES-06 | BND-AUTH-001 | - |
+| composition-path | applicable | TNI-DES-01, TNI-DES-02, TNI-DES-04, TNI-DES-06 | BND-COMPOSE-001 | - |
+| temporal-retry | applicable | TNI-DES-02, TNI-DES-04, TNI-DES-05 | BND-TEMPORAL-001 | - |
+| failure-recovery | applicable | TNI-DES-03, TNI-DES-04, TNI-DES-05 | BND-RECOVERY-001 | - |
+| compatibility-migration | applicable | TNI-DES-01, TNI-DES-02, TNI-DES-06 | BND-COMPAT-001 | - |
+| external-environment | applicable | TNI-DES-02, TNI-DES-03, TNI-DES-04, TNI-DES-05 | BND-ENV-001 | - |
+
+## Boundary definitions
+
+| Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
+| --- | --- | --- | --- | --- | --- | --- |
+| BND-INPUT-001 | input-domain | TNI-DES-01, TNI-DES-02 | Trusted clean candidate versus retired entries, aliases or invalid archive | Only verified replacement inventory may publish | Reject invalid candidate before writes; evaluate eligible clean candidate | TNI-DES-01 |
+| BND-STATE-001 | state-lifecycle | TNI-DES-02, TNI-DES-04, TNI-DES-05 | Matching old pair, matching new pair, drifted or partial pair | Recorded basis agrees with installed roots before replacement or success | Replace eligible old pair; ordinary idempotency for new pair; block/recover partial pair | TNI-DES-02 |
+| BND-AUTH-001 | identity-authority | TNI-DES-02, TNI-DES-03, TNI-DES-06 | Managed, unmanaged or uncertain ownership; authorized replacement versus detection/dry-run | No inferred removal permission or drift override | Only explicitly authorized eligible replacement mutates; uncertain ownership stops | TNI-DES-02 |
+| BND-COMPOSE-001 | composition-path | TNI-DES-01, TNI-DES-02, TNI-DES-04, TNI-DES-06 | Candidate, selected target roots/aliases, unrelated targets and shared state | All selected roots remain coherent; unrelated content/state is preserved | Guard all inventory paths; replace only selected recorded roots; cleanup cannot bypass managed checks | TNI-DES-01 |
+| BND-TEMPORAL-001 | temporal-retry | TNI-DES-02, TNI-DES-04, TNI-DES-05 | Unchanged preflight basis, changed basis, repeated success or interrupted retry | Final basis check precedes replacement; retry does not bless drift | Recheck before mutation; preserve intervening changes; recover original pair or accept verified completed pair | TNI-DES-02 |
+| BND-RECOVERY-001 | failure-recovery | TNI-DES-03, TNI-DES-04, TNI-DES-05 | Preflight failure, caught replacement/state failure, rollback failure or process interruption | Backup preserves original basis; partial outcome never claims success | No preflight writes; restore prior pair on caught failure or report incomplete recovery; inspect backup before retry | TNI-DES-03 |
+| BND-COMPAT-001 | compatibility-migration | TNI-DES-01, TNI-DES-02, TNI-DES-06 | Managed old inventory, unmanaged old inventory, mixed inventory or clean replacement | Old names withdrawn without a competing author or lockfile reset | Eligible managed replacement works without pre-deletion; unmanaged scoped cleanup preserves normal protections | TNI-DES-01 |
+| BND-ENV-001 | external-environment | TNI-DES-02, TNI-DES-03, TNI-DES-04, TNI-DES-05 | Safe filesystem and backup versus symlinks, unavailable backup or interrupted writes | Unsafe roots block; external backup survives target replacement | Verify candidate and roots before mutation; preserve backup and explicit recovery limits | TNI-DES-02 |
+
+## Selected interactions
+
+| Interaction ID | Governing requirement IDs | Boundary IDs | Hazard | Required composed outcome |
+| --- | --- | --- | --- | --- |
+| INT-001 | TNI-DES-01, TNI-DES-02, TNI-DES-04 | BND-INPUT-001, BND-STATE-001, BND-COMPOSE-001 | Manual retirement cleanup invalidates the recorded basis | Verify original target and clean candidate before authorized replacement; then verify and record new basis |
+| INT-002 | TNI-DES-03, TNI-DES-04, TNI-DES-05 | BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-ENV-001 | Interrupted publication or recovery overwrites independent state or accepts a partial tree | Preserve backup and intervening changes; restore coherent original basis or recognize verified completed pair; otherwise stop explicitly |
+| INT-003 | TNI-DES-02, TNI-DES-06 | BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001 | Unmanaged cleanup becomes a bypass for a managed or overlapping target | State-implicated roots retain managed checks and cannot use cleanup to escape drift protection |
+
+## Example ownership
+
+| Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
+| --- | --- | --- | --- | --- | --- |
+| E-DES-01 | illustration | TNI-DES-02, TNI-DES-04 | BND-STATE-001, BND-COMPOSE-001 | - | - |
+| E-DES-02 | illustration | TNI-DES-02 | BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-ENV-001 | - | - |
+| E-DES-03 | illustration | TNI-DES-05 | BND-STATE-001, BND-TEMPORAL-001, BND-RECOVERY-001 | - | - |
+| E-DES-04 | illustration | TNI-DES-02, TNI-DES-05 | BND-STATE-001, BND-TEMPORAL-001 | - | - |
+| E-DES-05 | illustration | TNI-DES-01 | BND-INPUT-001, BND-COMPOSE-001 | - | - |
+| E-DES-06 | illustration | TNI-DES-03 | BND-AUTH-001, BND-RECOVERY-001 | - | - |
 
 ## Goal and context
 

@@ -4,9 +4,13 @@ Model validation contract: explicit-recording-v1
 
 ## Introduction and Goals
 
-The Workflow model defines how responsible humans and agents coordinate a direction into reviewed design, delivery work and verified outcomes. It owns activity selection, work and correction allocation, continuation authority, and the model-document convention. The [Review and Closeout model](../review-closeout/review-closeout.md) owns shared assessment policy within this domain; Workflow applies its judgments and applicability conditions when coordinating work. The purpose remains durable, inspectable reasoning and resumable work without making a command-line transition engine the decision owner.
+The Workflow model defines how responsible humans and agents coordinate a direction into reviewed design, delivery work and verified outcomes. It owns activity selection, work and correction allocation and continuation authority. The [Design model](../design/design.md) owns the authoring method and model-document convention under the coordinated adoption boundary below. The [Review and Closeout model](../review-closeout/review-closeout.md) owns shared assessment policy within this domain; Workflow applies its judgments and applicability conditions when coordinating work. The purpose remains durable, inspectable reasoning and resumable work without making a command-line transition engine the decision owner.
 
-The model inventory contains Workflow, Review and Closeout, Test, RigorLoop Record Format, and CLI. Review and Closeout and [Test](../test/test.md) are bounded policy responsibilities within the Workflow domain, not new stages or runtime components. Test owns shared test-quality and maintenance criteria; specialists assess actual plans, tests and evidence under Review and Closeout. Record Format owns durable structure and preservation; CLI owns the safe storage interface. This retirement amendment changes Workflow, Record Format and CLI; Review and Closeout and Test remain referenced policy dependencies. These models are defined by coherent responsibilities, not by features, classes or AI models.
+The [System model inventory](../system/system.md#responsibility-inventory) describes composition and declared current/unmigrated owners. Workflow coordinates Design, Review and Closeout, Test, RigorLoop Record Format and CLI without copying their local contracts. Review and Closeout and [Test](../test/test.md) are bounded policy responsibilities within the Workflow domain, not new stages or runtime components. Test owns shared test-quality and maintenance criteria; specialists assess actual plans, tests and evidence under Review and Closeout. Record Format owns durable structure and preservation; CLI owns the safe storage interface. The earlier retirement amendment changed Workflow, Record Format and CLI; this authoring-convention amendment changes Design, System and Workflow, with the other models retained as policy/mechanical dependencies. These models are defined by coherent responsibilities, not by features, classes or AI models.
+
+### Unified authoring adoption boundary
+
+This amendment follows the independently approved unified-authoring direction. Its Design/System ownership references take effect only with the coordinated governing and consumer adoption defined by [Design](../design/design.md#coordinated-adoption-boundary). Before that adoption, prior effective governance and public entrypoints remain in force. The model-document contract is preserved while its owner moves; this draft grants no implementation, publication or customer-adoption authority. Historical retirement scope and records retain their meaning.
 
 ### Design at a glance
 
@@ -33,6 +37,8 @@ Workflow assigns responsible activities and consumes the assessment meanings and
 | Route agent | Selecting work, coordination, recorded current activity and correction responsibility | Manufacturing review or Verify results |
 | Implementation agent | Approved implementation and execution evidence | Changing the approved design through code |
 | Verify agent | Final coherence assessment and success-only completion evidence | Approving its own correction |
+| Design model | Authoring method, model convention, decision preservation and assessment intent | Product direction, actual judgments or work allocation |
+| System model | Assembled-system relationships and integrated obligations | Component contracts or governance precedence |
 | Review and Closeout model | Shared assessment scope, independence, applicability, concern disposition and final closeout policy | Activity selection, storage shapes or execution permission |
 | Test model | Shared test-purpose, derivation, protective-value and maintenance criteria | Behavioral authority, actual review judgments, evidence applicability or closeout consequences |
 | Record Format model | Stored structure, versions, relationships and preservation invariants | Engineering judgments or persistence execution |
@@ -44,7 +50,7 @@ The CLI interface is a dependency, not a superior workflow authority. Local file
 
 Workflow consumes the independence, reliance, compatibility, and environment obligations in RC-SR-02/04/05/16/18 of [Review and Closeout](../review-closeout/review-closeout.md#requirements). Local coordination does not authenticate an actor or extend its authority.
 
-This revision selects retirement of completed legacy runtime support while retaining Workflow coordination and the established Review and Closeout and Test ownership. It changes no release permission or automatic-progression authority. Older compatibility clauses become explicit removal targets; historical judgments retain their exact meaning.
+The earlier retirement selected v2-only support and retained Workflow coordination and Review and Closeout/Test ownership. This later revision transfers the selected authoring/document convention to Design and system composition to System. It changes no release permission or automatic-progression authority; historical judgments retain their exact meaning.
 
 ## Solution Strategy
 
@@ -73,7 +79,7 @@ The arrows show evidence and decision flow, not automatic stage transitions. The
 
 ## Requirements
 
-The following stable requirements define model behavior; the retirement amendments require coordinated implementation before removal can be claimed. IDs are model-scoped and remain stable when later features revise this document.
+The following stable requirements define model behavior; the authoring-ownership amendment requires coordinated adoption before its replacement authority can be claimed. IDs are model-scoped and remain stable when later features revise this document.
 
 | ID | Required behavior |
 | --- | --- |
@@ -83,9 +89,9 @@ The following stable requirements define model behavior; the retirement amendmen
 | WF-SR-04 | Route MUST assess cross-model correction impacts and select the responsible owner without requiring that owner to appear in a previously derived pending set. Authors and receiving actors MUST apply RC-SR-05–07/10 to changed-subject impact, applicability and reassessment; uncertain impact is handled under that policy. |
 | WF-SR-05 | Workflow MUST provide an owned recording and correction path for defects discovered by any responsible stage, including Verify, under RC-SR-08/10/14. Record Format and CLI retain representation and mechanical recording ownership. |
 | WF-SR-06 | Workflow MUST allow explicit reopening of completed work and coordinate reassessment without a previous-stage prerequisite. Concern origin, disposition and the meaning of return-for-review are owned by RC-SR-08–10/14 and represented under the selected Record Format contract. |
-| WF-SR-07 | Each model MUST have one authoritative living Design file combining requirements, structure, decisions, boundaries, compatibility and acceptance. Features update affected models; cross-model contracts have one named owner and references from consumers. Mandatory separate specifications, architecture files and ADRs for the same model are removed only upon approved adoption. |
-| WF-SR-08 | Requirement and decision references MUST survive normal document revisions. A changed or retired obligation retains its identity and rationale or an explicit replacement mapping. Exact affected-model review and concurrent-change applicability MUST follow RC-SR-01/02/05/06/10; retaining a reference MUST NOT retarget an old approval. |
-| WF-SR-09 | Workflow MUST condition continuation and completion coordination on the applicable assessments and closeout obligations owned by RC-SR-05/11–15. Missing readiness MUST NOT prevent recording owned blockers or corrections under RC-SR-14. Model verification allocation remains governed by the Model validation and proof mapping below. |
+| WF-SR-07 | Workflow MUST coordinate owning-model updates under Design DES-SR-01/02/07/08/11/12 and its scoped adoption boundary. This retained identity references Design for unified authorship, document convention and shared-contract ownership; Workflow MUST NOT maintain a second definition of that method. |
+| WF-SR-08 | Workflow MUST preserve Design DES-SR-06/11/13 reference and decision continuity when coordinating revisions. Exact affected-model review and concurrent-change applicability MUST follow RC-SR-01/02/05/06/10; retaining a reference MUST NOT retarget an old approval. |
+| WF-SR-09 | Workflow MUST condition continuation and completion coordination on the applicable assessments and closeout obligations owned by RC-SR-05/11–15. Missing readiness MUST NOT prevent recording owned blockers or corrections under RC-SR-14. Workflow coordinates Delivery allocation under Design DES-SR-10/16 and the Model validation and proof mapping reference below. |
 | WF-SR-10 | Retirement MUST preserve historical bytes, identities and approval meaning while ending runtime support for the exact RF-SR-06 set. The owner-confirmed completed-work baseline MUST NOT be recast as an executed inventory result. No migration or speculative legacy continuation facility is required; concrete contradictory residue MUST receive a bounded owner disposition before the affected removal proceeds. |
 | WF-SR-11 | Ordinary skills MUST use purpose-specific inspection and targeted recording, or batch for related explicit edits, without full-file reconstruction or historical eligibility checks. Actors MUST supply all intended decisions and explicitly select useful context. The CLI MUST perform mechanical selection, identity computation, registration, preservation, serialization and persistence; actors expand the engineering basis when their judgment requires it. |
 | WF-SR-12 | A new supporting record MUST have an explicit actor-supplied record-level applicability declaration; CLI registry construction MUST NOT decide applicability. Updating a check or review alone MUST NOT change applicability, activity, finding disposition or completion. |
@@ -108,12 +114,12 @@ All RC-SR references in this file resolve to the [Review and Closeout requiremen
 | WF-SR-04 | Changed-subject impact and applicability | RC-SR-05–07/10 | Cross-model correction allocation |
 | WF-SR-05 | Defect basis and success-only Verify failure behavior | RC-SR-08/10/14 | Maintain an owned recording/correction path |
 | WF-SR-06 | Retained origin, disposition, and return-for-review meaning | RC-SR-08–10/14; Record Format for stored preservation | Reopen completed work and coordinate reassessment |
-| WF-SR-08 | Exact design package review and concurrency applicability | RC-SR-01/02/05/06/10 | Stable requirements, decisions, and replacement mappings |
-| WF-SR-09 | Reliance and justified successful completion | RC-SR-05/11–15 | Apply those conditions to continuation; retain model proof-allocation convention |
+| WF-SR-08 | Exact design package review and concurrency applicability | RC-SR-01/02/05/06/10 | Coordinate reference continuity under Design DES-SR-06/11/13 |
+| WF-SR-09 | Reliance and justified successful completion | RC-SR-05/11–15 | Apply those conditions to continuation and coordinate Design-owned proof-intent handoff |
 | WF-SR-13 | Reporter-owned disposition distinct from repair | RC-SR-08–10/14 | Allocate the correction without assuming disposition authority |
 | WF-SR-14 | Sufficient basis and no permission inferred from observations | RC-SR-04/05/18 | Select context and interpret CLI observations for coordination |
 
-WF-SR-02/07/10–12/15 retain state, document, compatibility, targeted-interface, explicit-recording and retrieval responsibilities. WF-SR-16 makes consumption of the existing final-review dependency explicit. Historical policy mappings elsewhere in this file are reference history; assessment obligations they cite resolve through this table for the proposed revision. Runtime examples below illustrate application of the owning policy rather than define another policy source.
+WF-SR-02/10–12/15 retain state, compatibility, targeted-interface, explicit-recording and retrieval responsibilities; WF-SR-07 now coordinates the Design-owned document method. WF-SR-16 makes consumption of the existing final-review dependency explicit. Historical policy mappings elsewhere in this file are reference history; assessment obligations they cite resolve through this table for the proposed revision. Runtime examples below illustrate application of the owning policy rather than define another policy source.
 
 ## Building Block View
 
@@ -121,7 +127,7 @@ Workflow has three conceptual parts, not three services or mandatory files: stag
 
 | Artifact responsibility | Proposed owner and placement |
 | --- | --- |
-| Model engineering truth | One `docs/design/<model>/<model>.md` per model |
+| Model engineering truth | Owning model subject under [Design document convention](../design/design.md#model-document-and-structural-contract) |
 | Change intent | Existing proposal surface |
 | Mutable work state and explicit decisions | Change-local manifest: change.json |
 | Current judgment and open findings | Stable change-local review record for the applicable target; each finding carries its own retained origin basis |
@@ -149,7 +155,7 @@ WF-SR-06 references RC-SR-08/09 for retained concern meaning and disposition. Th
 
 ### Responsibility-specific updates
 
-The unified `design` responsibility combines architecture and specification authorship; it is not a new permission principal. Existing architecture/spec skills can supply portions during adoption, but one reconciled model document is the reviewed subject. Proposal, plan, implementation and Verify remain distinct responsibilities; review targets retain independent reviewers.
+The [Design model](../design/design.md#runtime-view) owns unified authoring and exact package handoff; it is not a new permission principal. Workflow selects that responsibility and applies its adoption/compatibility boundary. Existing architecture/spec skills can supply portions before coordinated adoption. Proposal, plan, implementation and Verify remain distinct responsibilities; review targets retain independent reviewers.
 
 | Responsible actor | Allowed semantic edit under the workflow |
 | --- | --- |
@@ -278,7 +284,7 @@ This inventory implements WF-SR-07/10. Its stable IDs preserve traceability to d
 | WF-MAP-09 | [Route skill](../../../skills/route/SKILL.md) and [Verify skill](../../../skills/verify/SKILL.md): permitted-operation context, routing, correction and final completion | Amend shared guidance: WF-SR-01/04/05/06/09 supplies decision ownership; consume CLI storage observations without delegated eligibility judgment. | Keep author/reviewer write boundaries, isolated invocation limits and external permissions. No new automatic progression is introduced. |
 | WF-MAP-10 | [AGENTS.md](../../../AGENTS.md), Artifact lifecycle defaults, Planning and workflow, Required reading before implementation | Amend shared guidance to select model-file authority and v2-only runtime recording and safe archive separation. | Preserve canonical source paths, user changes, archival identities, small diffs and validation obligations. |
 
-CLI owns the companion command, encoding and runtime inventory; Record Format owns stored schemas, reference interpretation and preservation; these rows do not duplicate its normative interface. Prior [closeout simplification](../../proposals/2026-09-04-remove-final-code-review-and-simplify-cli.md) and [correction lifecycle](../../proposals/2026-09-05-compact-correction-lifecycle-amendment.md) initiatives, their design artifacts and findings are retained as separately owned work. This inventory neither establishes their current lifecycle state nor closes their obligations.
+CLI owns the companion command, encoding and runtime inventory; Record Format owns stored schemas, reference interpretation and preservation; these rows do not duplicate its normative interface. The earlier source cited `docs/proposals/2026-09-04-remove-final-code-review-and-simplify-cli.md` and `docs/proposals/2026-09-05-compact-correction-lifecycle-amendment.md`; those files are absent from this checkout. These retained historical citations are not usable current authority or evidence that corresponding work remains active. This inventory neither reconstructs those artifacts nor establishes or closes any historical obligation.
 
 ### Existing retirement governance: scoped replacement
 
@@ -300,7 +306,7 @@ Delivery must include the corresponding reference/consumer amendments to these n
 | Surface | Required adoption action | Owner |
 | --- | --- | --- |
 | [Skill contract](../../../specs/skill-contract.md), canonical skill references/assets and [skill validator](../../../scripts/skill_validation.py) | Reconcile contract-sensitive artifact placement and claim boundaries; retain source ownership and published-skill quality requirements. Resource changes must be traced from the modified canonical skills, not installed copies. | Workflow Design, then Delivery allocation |
-| [Boundary method](../../../specs/references/boundary-first-method-v1.md), [feature authoring format](../../../specs/references/boundary-first-feature-authoring-v1.md), [boundary validator](../../../scripts/validate-boundary-first.py) | Retain existing model/feature-document validation and independently versioned markers. Reconcile only callers affected by stored-format retirement; do not require a new authoring-format adoption. | Workflow owns the retained mapping; Delivery verifies affected consumers |
+| [Boundary method](../../../specs/references/boundary-first-method-v1.md), [feature authoring format](../../../specs/references/boundary-first-feature-authoring-v1.md), [boundary validator](../../../scripts/validate-boundary-first.py) | Retain existing model/feature-document validation and independently versioned markers. Reconcile only callers affected by stored-format retirement; do not require a new authoring-format adoption. | Design owns the retained mapping; Workflow consumes it for coordination; Delivery verifies affected consumers |
 | [Adapter builder](../../../scripts/build-adapters.py), [adapter validator](../../../scripts/validate-adapters.py), [adapter support manifest](../../../dist/adapters/manifest.yaml) | Regenerate and validate supported public outputs from canonical sources when the changed guidance is adopted. Do not hand-edit generated packages. | Delivery allocation |
 | Model adoption decisions and affected plan/verification references | Enumerate displaced requirement IDs and retained outside-model references for each actual consolidated model revision; validate links and exact reviewed identities. | Model author and independent Design Review |
 
@@ -310,45 +316,11 @@ The inventory identifies the principal replacement sites, but is not evidence th
 
 ### Model documentation and traceability
 
-This file owns the one-file-per-model convention. CLI and Record Format consume it rather than restating that contract. Model documents contain stable intent, including meaningful decisions and rejected alternatives. Change records identify affected model paths and exact content identities; requirement references combine model identity and stable local ID. A shared contract belongs to one existing model or a deliberately justified shared model, never duplicate normative prose.
-
-Two features changing the same model use the same document; their assessment applicability follows RC-SR-05/06/10. Splitting or renaming a model requires an explicit responsibility and reference mapping, not just a size threshold.
+[Design DES-SR-02/06/08/11/13](../design/design.md#requirements) owns single-model authority, stable requirement/decision references, shared-contract ownership and explicit replacement mappings. WF-SR-07/08 retain coordination obligations and source-reference continuity; they do not duplicate the method. Historical references to this heading now resolve to that owner. Current assessments and concurrent-change applicability remain governed by Review and Closeout.
 
 ### Model-centered layout and examples
 
-WF-SR-07/08 select the following model-centered layout:
-
-```text
-docs/design/
-  record-format/
-    record-format.md
-    examples/
-      minimal-change.json
-      incomplete-review.json
-      finding-reassessment/
-        before.json
-        after.json
-  cli/
-    cli.md
-    examples/
-      work-set/
-        request.json
-        response.json
-  review-closeout/
-    review-closeout.md
-  workflow/
-    workflow.md
-    examples/
-      correction-cycle.mmd
-```
-
-Each docs/design/<model>/<model>.md is the single normative document for that model. Its filename matches the directory's stable model ID. Examples belong only under that model's examples directory and may use JSON, Mermaid, Markdown or another format suited to the demonstrated content. No common cross-model example directory or mandatory Markdown wrapper is introduced. Review and Closeout uses this same placement convention for its justified policy responsibility.
-
-The owning document indexes each example with its purpose, governing requirements, complete-artifact or excerpt scope, and any synthetic identities or starting assumptions. Examples illustrate existing requirements and cannot introduce additional rules. JSON examples must parse without explanatory extra keys; complete records must conform to their selected schema when that schema is available. Before/after pairs must preserve the invariants they demonstrate. Mermaid illustrates responsibility and ordering rather than executable eligibility.
-
-Examples are read on demand, not mandatory context for every invocation. When an example changes, validation selection must check it and its owning model; it must not treat every file under docs/design as a normative Markdown model. Independent review covers the affected examples alongside their owner and includes their exact identities when relied upon.
-
-The model documents now occupy the matching directories shown above. The move updates current references, model-path validation and validation selection together under explicit user authority. Historical reviewed paths and identities remain unchanged; they are not rewritten to claim review of relocated files. Explicitly selected historical flat files remain valid inputs when present, but no flat copy is maintained as a competing current source. A model move changes its subject identity and requires independent review applicability reassessment. This layout change does not activate v2 recording or approve any design package.
+[Design's document and structural contract](../design/design.md#model-document-and-structural-contract) owns the retained model-centered layout, model/example distinction, supported historical flat inputs and validation-selection pairing. Its [model-owned example contract](../design/design.md#model-owned-example-contract), under DES-SR-12/16, is the destination for the complete transferred example obligations and their review handoff; the [individual replacement mappings](../design/design.md#selected-replacement-map) retain their source meaning. WF-SR-07/08 consume that convention. Earlier layout moves and their reviewed identities remain historical evidence; this ownership transfer does not replay their approvals or introduce another move.
 
 ### Examples
 
@@ -360,32 +332,20 @@ The diagram shows actor decisions only. Storage details are in the [CLI examples
 
 ### Model validation and proof mapping
 
-WF-SR-07/08/09 own this model-document validation mapping, identified by explicit-recording-v1. That marker versions document structure independently of the v1/v2 stored-record discriminators. A model file uses the existing `Requirements` table and `Boundary scan and acceptance scenarios` table; it does not need a separate feature spec, test spec or four-table boundary record. This is a model-specific replacement of that document format, not a claim of historical `boundary-first-v1` serialization conformance. The boundary reasoning and independent assessment obligations remain.
+[Design DES-SR-09/10/11/12/16/19](../design/design.md#model-document-and-structural-contract) owns the unchanged `explicit-recording-v1` model-document mapping: requirement/scenario tables, closed values, path/reference checks, example pairing, historical feature-format preservation and the grandfathered-spec semantic-review handoff. This anchor remains an explicit replacement reference for WF-SR-07/08/09 consumers, not a second normative definition.
 
-Model validation accepts an explicitly selected, repository-contained regular file at docs/design/<model>/<model>.md with equal directory and filename IDs following the model ID grammar. Explicit historical flat paths at docs/design/<model>.md remain accepted when present. Mismatched IDs, example paths submitted as models and extra nesting reject. Historical subjects are not silently mapped to a different file. Validation selection maps model-owned example changes to their owning model and a known flat-path deletion to its current model, without changing any stored subject reference. Symlinked paths are rejected. Each file declares exactly once `Model validation contract: explicit-recording-v1`. Missing or unknown contract markers reject; they never fall back to feature validation. Historical `specs/` documents retain their feature-format and activation rules, with the semantic-review handoff clarified below. Validating a model draft does not activate it or require a registered change record.
-
-The `Requirements` table has columns `ID` and `Required behavior`, with unique stable IDs and nonempty requirement text. Requirement IDs begin with a letter and contain only letters, digits and hyphens; existing WF-SR and CLI-SR IDs stay unchanged. The scenario table has exactly `Dimension`, `Requirement basis` and `Distinct outcome to demonstrate`. It contains each of the eight dimension labels shown below exactly once. An applicable row lists unique IDs declared in that model's Requirements table, separated by comma and space, plus a nonempty outcome. A non-applicable row uses `-` as its requirement basis and an outcome beginning `Not applicable:` followed by a reason. Unknown labels, duplicate or missing rows, malformed tables and undeclared requirement references reject. Each required table and its heading occurs once.
-
-References use the model path plus its existing requirement ID, or the model path plus the exact dimension label for a scenario row; review and evidence subjects also retain exact file identities. Consumers link to the owning model rather than duplicate its rule. Material combined hazards remain concise requirement-linked prose alongside the scenario table; examples illustrate those requirements, never add behavior. No new boundary or proof ID series is required.
-
-Delivery plans map every affected requirement, scenario row and material combined hazard to a verification group, concrete checks and expected evidence. Execution evidence records actual results and exact subjects. Validators check structure and reference resolution, not coverage adequacy, reviewer independence, approval or completion; independent Design and Delivery reviews assess those meanings. This is document tooling, not another responsibility for `record-store`.
-
-For adopted Test-model work, [Test requirements](../test/test.md#requirements) define shared criteria for the protective value, derivation and maintenance of that proof. This section retains document structure and allocation conventions; Delivery retains concrete allocation, and specialists retain actual assessments under Review and Closeout. The [Test adoption inventory](../test/test.md#consumer-ownership-and-adoption-inventory) owns the affected criterion mapping and coordinated consumer scope. It does not replace historical contract formats or authorize test removal through a structural check.
-
-For changed grandfathered specs without a boundary marker, structural validation MUST report a separate `review_required` observation naming each path and Design Review as owner. With no structural errors, the result is `review-required` with exit zero: structural checks passed, semantic approval is not established. Structural errors still produce failure and nonzero exit, including when review observations are also present. A missing or unknown marker on a non-grandfathered spec, or malformed existing boundary content, is never converted to a review observation.
-
-Before downstream reliance, independent Design Review MUST classify each reported amendment against its exact reviewed subjects in the existing review record. A non-substantive historical amendment retains grandfathering; a substantive historical behavior change requires the existing feature-format adoption. A new-profile-only amendment is assessed against its owning model and must explicitly preserve the historical remainder. Missing, uncertain or stale classification blocks progression and Verify, even when structural CI passes. The validator neither infers nor authenticates this decision; no extra classification file, receipt or CLI state transition is introduced. This clarifies the handoff in PBF-R049b/PBF-R055a/PBF-R056 and replaces the retired `spec-review` owner with Design Review, without changing historical behavior or waiving semantic review.
+Delivery owns concrete proof allocation; Workflow coordinates that handoff and the receiving activities. Test TEST-SR-01–13 owns shared protective-value and maintenance criteria; specialists assess actual plans/tests/evidence under Review and Closeout. No marker, structural pass, selector result or saved review independently selects continuation or proves test adequacy.
 
 ### Boundary scan and acceptance scenarios
 
-These rows are the Workflow model's boundary allocations under Model validation and proof mapping above. All eight dimensions apply. They define the review and verification scope, not a claim that validation or adoption has occurred.
+These rows are Workflow coordination outcomes using the Design-owned structural mapping referenced above. All eight dimensions apply. They define the review and verification scope, not a claim that validation or adoption has occurred.
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
 | Input domain | WF-SR-02, WF-SR-05, WF-SR-12, WF-SR-13 | New supporting records require explicit record-level applicability; findings and blockers retain separate targets and disposition/correction owners. |
 | State/lifecycle | WF-SR-04, WF-SR-06, WF-SR-16 | Reopen completed work without a pending-owner prerequisite; preserve the planned final-assessment dependency after the last milestone and required corrections. |
 | Identity/authority | WF-SR-03, WF-SR-08 | Reject reliance on self-approval or approval of another revision. |
-| Composition/path | WF-SR-07, WF-SR-09, WF-SR-11, WF-SR-14, WF-SR-15, WF-SR-17 | The exact affected model package and relevant shared boundaries are assessed under RC-SR-01/05; ordinary skills retrieve final explanations and shared narratives through targeted reads and expand their basis without deriving authority from the CLI. A test-related gap selects Design, planning or implementation according to its faulty subject; Test criteria do not become a separate assessment gate. |
+| Composition/path | WF-SR-07, WF-SR-09, WF-SR-11, WF-SR-14, WF-SR-15, WF-SR-17 | The exact affected model package and relevant shared boundaries are assessed under RC-SR-01/05; ordinary skills retrieve final explanations and shared narratives through targeted reads and expand their basis without deriving authority from the CLI. A test-related gap selects Design, planning or implementation according to its faulty subject; Test criteria do not become a separate assessment gate. Unified authoring and model-document references resolve to Design without changing Workflow activity ownership. |
 | Temporal/retry | WF-SR-06, WF-SR-08, WF-SR-09 | A later review preserves each unresolved finding's origin; concurrent model edits require fresh assessment rather than approval replay. |
 | Failure/recovery | WF-SR-05, WF-SR-09 | A new Verify defect is durably recordable before correction, without a success report. |
 | Compatibility/migration | WF-SR-10 | Historical bytes and approvals remain unchanged while current tooling supports only v2. Normal discovery excludes archives without running old validators; malformed v2 remains visible. Concrete contradictory residue receives a bounded disposition without a speculative continuation facility. |
@@ -402,7 +362,7 @@ Decision provenance is inspectable, not cryptographically authenticated by actor
 | ID | Decision and rationale | Alternative and consequence |
 | --- | --- | --- |
 | WF-DEC-01 | Skills and humans own workflow semantics; CLI records them. This removes stage eligibility as a prerequisite for recording repairs. | Extending the transition engine preserves automatic enforcement but recreates correction dependencies. Explicit decisions increase actor responsibility. |
-| WF-DEC-02 | Consolidate normative design by coherent model, with embedded decision rationale. | Feature-specific spec/architecture/ADR packages multiply sources for the same model. Unified documents need disciplined ownership and concurrency handling. |
+| WF-DEC-02 | Retained decision identity: [Design DES-DEC-01/02/05](../design/design.md#architecture-decisions) now owns the method for consolidation by coherent model and embedded rationale; Workflow coordinates its use. | The original alternative was feature-specific spec/architecture/ADR packages, which multiply sources. Disciplined ownership and concurrency handling remain necessary; historical approvals keep their original subjects. |
 | WF-DEC-03 | Retain the identity/applicability distinction; assessment ownership is extracted to RC-SR-05–07 and RC-DEC-03. | Retargeting old approval misrepresents evidence; Workflow consumes applicability rather than defining a second policy. |
 | WF-DEC-04 | Retain distinct non-review-stage defect recording; assessment/disposition ownership is extracted to RC-SR-08–10/14. | A review-only finding surface makes Verify correction depend on another stage recording its discovery. |
 | WF-DEC-05 | Review and Closeout owns shared assessment policy within this domain; Workflow retains coordination and references that owner. | Keeping normative copies here and in every specialist obscures responsibility and allows closeout obligations to disappear in handoff. |
@@ -434,13 +394,15 @@ Model: coherent system responsibility with owned concepts and rules. Judgment: a
 
 ## Drafting basis and authority
 
-This revision follows the [approved retirement direction](../../proposals/2026-09-08-retire-compact-workflow-mutations.md), its independent Proposal Review and the user's continuation into focused Design. Owning record: [change.json](../../changes/2026-09-08-retire-compact-workflow-mutations/change.json). The exact package comprises Record Format, CLI and Workflow; Review and Closeout and Test remain unchanged policy dependencies. The owner confirms that legacy work is complete and v2 is operational; this is an attributed operating baseline, not an independently executed completion query. The selected retirement supersedes earlier compatibility-retention clauses prospectively. Prior subjects, approvals and archival records retain their original meaning. This Design does not implement retirement, activate a release or authorize publication.
+This revision follows the [approved unified-authoring direction](../../proposals/2026-09-08-unified-design-authoring-and-bounded-model-consolidation.md), its independent Proposal Review and the user's continuation into Design. Owning record: [change.json](../../changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json). The exact authored package comprises Design, System, this scoped Workflow amendment and the [Target-native init](../../../specs/target-native-init.md#scoped-design-amendment-managed-authoring-replacement) amendment TNI-DES-01–06 under the retained installation owner. Review and Closeout, Test, Record Format and CLI remain unchanged policy/mechanical dependencies.
 
-Earlier targeted-recording, Review and Closeout and Test amendments established the retained model ownership and v2 behavior. This revision changes the retirement/support boundary only; it does not require the separate architecture/spec-to-design skill refactor.
+The earlier [retirement direction](../../proposals/2026-09-08-retire-compact-workflow-mutations.md) and its model revision remain historical basis for retained v2-only behavior. Its exclusion of a separate authoring-skill refactor described that earlier initiative, not this separately approved direction. Earlier targeted-recording and policy amendments, record bytes and reviewed identities keep their exact meaning; no earlier approval is retargeted to this changed Workflow subject.
+
+The exact transfer is mapped in [Design's replacement inventory](../design/design.md#selected-replacement-map). Workflow coordination requirements outside WF-SR-07/08 and the document/proof-reference clause of WF-SR-09 retain their behavior. No governing consumer, installer, public skill or release is changed by this drafting step.
 
 ## Next artifacts
 
-Independent Design Review assesses the exact Record Format, CLI and Workflow package, including removal dependencies, archival separation and retained v2 safety. Delivery planning follows Design approval and authorized continuation; implementation and final closeout require their normal independent assessments.
+Independent Design Review assesses the exact Design, System, Workflow and scoped Target-native init package, including responsibility transfer, retained historical mapping, public invocation compatibility and local/integrated acceptance intent. Delivery planning follows package approval and authorized continuation; implementation and final closeout retain their normal independent assessments.
 
 ## Follow-on artifacts
 
