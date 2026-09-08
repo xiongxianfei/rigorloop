@@ -1,6 +1,6 @@
 # Assessment reliance and closeout application
 
-This packaged guidance applies explicitly adopted Review and Closeout policy (RC-SR-05–18), owned within the project's Workflow domain. It applies that policy without becoming a second owner or requiring RigorLoop's internal Design repository. Select the project contract first: installing guidance does not adopt it or migrate historical records. Keep historical procedures, identities, vocabularies and approvals truthful.
+This guidance applies the project's explicitly adopted Review and Closeout policy. The project's governing policy remains authoritative. Select the project contract before using this guidance; installing a skill does not adopt policy or migrate historical records. Historical procedures, identities, judgments and approvals retain their original contract and meaning.
 
 ## Current reliance and correction
 

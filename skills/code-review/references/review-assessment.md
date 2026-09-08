@@ -1,6 +1,6 @@
 # Review assessment application
 
-This is operational guidance for explicitly adopted Review and Closeout policy (RC-SR-01–04, RC-SR-08–10, RC-SR-16–18), owned by the project's Review and Closeout model within Workflow. It is not a second policy owner. Use project authority and this packaged application; an internal RigorLoop Design checkout is not required. Installation alone does not adopt policy. Historical judgments keep their selected contract and meaning.
+This guidance applies the project's explicitly adopted Review and Closeout policy. The project's governing policy remains authoritative. Select the project contract before using this guidance; installing a skill does not adopt policy or migrate historical records. Historical procedures, identities, judgments and approvals retain their original contract and meaning.
 
 ## Establish the assessment
 
