@@ -547,12 +547,35 @@ class ReviewEvidenceSummary:
         return self.material_count - self.open_count
 
 
+def _stored_review_boundary(path: Path, mode: str) -> ValidationFinding | None:
+    """Reject stored inputs without decoding their format or historical bytes."""
+    try:
+        locations = (path.absolute(), path.resolve())
+        for location in locations:
+            for parent in location.parents:
+                if any((parent / name).is_symlink() or (parent / name).exists()
+                       for name in ("change.yaml", "change.json", "evidence.json",
+                                    "material-decisions.json", "verify-report.json")):
+                    return ValidationFinding(path=path, line=None, mode=mode,
+                        message="stored change roots are unsupported by the legacy review adapter; use v2 record validation")
+    except (OSError, RuntimeError):
+        return ValidationFinding(path=path, line=None, mode=mode,
+            message="review input storage boundary is unavailable")
+    return None
+
+
+def _require_standalone_review_input(path: Path) -> None:
+    finding = _stored_review_boundary(path, "structure")
+    if finding is not None:
+        raise ValueError(finding.message)
+
+
 def parse_formal_review_record(
     path: Path,
 ) -> tuple[ReviewRecord | None, tuple[ValidationFinding, ...]]:
     """Parse one formal review through the repository-owned review grammar."""
 
-    review, _finding_records, findings = _parse_review_file(path.resolve(), "structure")
+    review, _finding_records, findings = _parse_review_file(path, "structure")
     return review, tuple(findings)
 
 
@@ -566,7 +589,7 @@ def parse_formal_review_findings(
     """Parse one formal review and its material findings through the canonical grammar."""
 
     review, finding_records, findings = _parse_review_file(
-        path.resolve(), "structure"
+        path, "structure"
     )
     return review, tuple(finding_records), tuple(findings)
 
@@ -576,7 +599,7 @@ def parse_formal_review_log(
 ) -> tuple[tuple[ReviewLogEntry, ...], tuple[ValidationFinding, ...]]:
     """Parse the canonical review log through the repository-owned grammar."""
 
-    entries, findings = _parse_review_log(path.resolve(), "structure")
+    entries, findings = _parse_review_log(path, "structure")
     return tuple(entries), tuple(findings)
 
 
@@ -585,7 +608,7 @@ def parse_formal_review_resolution(
 ) -> tuple[ReviewResolution, tuple[ValidationFinding, ...]]:
     """Parse review-resolution evidence through the canonical grammar."""
 
-    resolution, findings = _parse_review_resolution(path.resolve(), "structure")
+    resolution, findings = _parse_review_resolution(path, "structure")
     return resolution, tuple(findings)
 
 
@@ -611,6 +634,9 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
     if mode not in VALIDATION_MODES:
         raise ValueError(f"unsupported review artifact validation mode: {mode}")
 
+    boundary = _stored_review_boundary(change_root / "review-log.md", mode)
+    if boundary is not None:
+        return _result(change_root.absolute(), mode, [boundary], [], [], [], None)
     change_root = change_root.resolve()
     findings: list[ValidationFinding] = []
 
@@ -623,15 +649,6 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
                 message="change root does not exist",
             )
         )
-        return _result(change_root, mode, findings, [], [], [], None)
-
-    # Standalone calibration/review evidence remains a separate facility. A
-    # stored change root must use its owning recorder and cannot enter this
-    # historical operational-format validator.
-    if any((change_root / name).exists() or (change_root / name).is_symlink()
-           for name in ("change.yaml", "change.json", "evidence.json", "material-decisions.json", "verify-report.json")):
-        findings.append(ValidationFinding(path=change_root, line=None, mode=mode,
-            message="stored change roots are unsupported by the legacy review adapter; use v2 record validation"))
         return _result(change_root, mode, findings, [], [], [], None)
 
     reviews_dir = change_root / "reviews"
@@ -692,6 +709,7 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
 
 def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
     """Return derived material/open finding IDs from review evidence."""
+    _require_standalone_review_input(change_root / "review-log.md")
     change_root = change_root.resolve()
     material_ids: set[str] = set()
     finding_records: list[FindingRecord] = []
@@ -701,6 +719,7 @@ def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
     reviews_dir = change_root / "reviews"
     if reviews_dir.is_dir():
         for review_path in sorted(reviews_dir.glob("*.md")):
+            _require_standalone_review_input(review_path)
             _, review_findings, _ = _parse_review_file(review_path, "structure")
             finding_records.extend(review_findings)
             for finding in review_findings:
@@ -708,12 +727,14 @@ def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
 
     review_log_path = change_root / "review-log.md"
     if review_log_path.exists():
+        _require_standalone_review_input(review_log_path)
         log_entries, _ = _parse_review_log(review_log_path, "structure")
         for entry in log_entries:
             material_ids.update(entry.material_finding_ids)
 
     resolution_path = change_root / "review-resolution.md"
     if resolution_path.exists():
+        _require_standalone_review_input(resolution_path)
         resolution, _ = _parse_review_resolution(resolution_path, "structure")
 
     open_ids = {
@@ -766,6 +787,10 @@ def _parse_review_file(
     path: Path,
     mode: str,
 ) -> tuple[ReviewRecord | None, list[FindingRecord], list[ValidationFinding]]:
+    boundary = _stored_review_boundary(path, mode)
+    if boundary is not None:
+        return None, [], [boundary]
+    path = path.resolve()
     lines = _read_lines(path)
     fields = _collect_fields(lines)
     findings: list[ValidationFinding] = []
@@ -2606,6 +2631,10 @@ def _validate_reconstructed_record(
 
 
 def _parse_review_log(path: Path, mode: str) -> tuple[list[ReviewLogEntry], list[ValidationFinding]]:
+    boundary = _stored_review_boundary(path, mode)
+    if boundary is not None:
+        return [], [boundary]
+    path = path.resolve()
     lines = _read_lines(path)
     entries: list[ReviewLogEntry] = []
     findings: list[ValidationFinding] = []
@@ -2805,6 +2834,10 @@ def _parse_review_resolution(
     path: Path,
     mode: str,
 ) -> tuple[ReviewResolution, list[ValidationFinding]]:
+    boundary = _stored_review_boundary(path, mode)
+    if boundary is not None:
+        return ReviewResolution(path, None, None, (), (), ()), [boundary]
+    path = path.resolve()
     lines = _read_lines(path)
     fields = _collect_fields(lines)
     findings: list[ValidationFinding] = []
