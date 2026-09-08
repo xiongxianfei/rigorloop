@@ -782,6 +782,67 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
         self.addCleanupTree(root)
         return root
 
+    def test_review_helper_entrypoints_reject_stored_roots_before_reads(self) -> None:
+        from unittest.mock import patch
+        from review_artifact_validation import (
+            parse_formal_review_record, parse_formal_review_findings,
+            parse_formal_review_resolution,
+        )
+        root = self.fixture()
+        inputs = [
+            (parse_formal_review_record, root / "reviews/code-review-r1.md"),
+            (parse_formal_review_findings, root / "reviews/code-review-r1.md"),
+            (parse_formal_review_log, root / "review-log.md"),
+            (parse_formal_review_resolution, root / "review-resolution.md"),
+        ]
+        for parser, path in inputs:
+            self.assertFalse(parser(path)[-1], parser.__name__)
+        self.assertGreater(summarize_review_evidence(root).material_count, 0)
+        marker = root / "change.yaml"
+        marker.write_bytes(b"archived format basis\xff")
+        with patch("review_artifact_validation._read_lines", side_effect=AssertionError("must not read stored input")):
+            for parser, path in inputs:
+                with self.subTest(parser=parser.__name__):
+                    self.assertIn("stored change roots are unsupported", parser(path)[-1][0].message)
+            self.assertTrue(validate_change_root(root).blocking_findings)
+            with self.assertRaisesRegex(ValueError, "stored change roots are unsupported"):
+                summarize_review_evidence(root)
+        self.assertEqual(marker.read_bytes(), b"archived format basis\xff")
+
+    def test_review_helper_boundary_covers_enclosing_roots_and_symlinks(self) -> None:
+        from unittest.mock import patch
+        from review_artifact_validation import parse_formal_review_record
+        root = self.fixture()
+        standalone = root / "reviews/code-review-r1.md"
+        archive = root / "archive"
+        nested = archive / "nested/reviews"
+        nested.mkdir(parents=True)
+        archived = nested / "review.md"
+        archived.write_bytes(b"unreadable archived review\xff")
+        alias = root / "alias.md"
+        alias.symlink_to(archived)
+        summary_alias = root / "reviews/archived.md"
+        summary_alias.symlink_to(archived)
+        escaped = nested / "standalone-alias.md"
+        escaped.symlink_to(standalone)
+        for marker_name in ("change.json", "evidence.json", "material-decisions.json", "verify-report.json", "change.yaml"):
+            marker = archive / marker_name
+            if marker_name == "change.yaml":
+                marker.symlink_to(archive / "absent-marker-target")
+            else:
+                marker.write_bytes(b"unreadable stored basis\xff")
+            with self.subTest(marker=marker_name), patch("review_artifact_validation._read_lines", side_effect=AssertionError("must not read stored input")):
+                self.assertIn("stored change roots are unsupported", parse_formal_review_record(archived)[-1][0].message)
+                if marker_name == "change.json":
+                    for path in (alias, escaped):
+                        self.assertIn("stored change roots are unsupported", parse_formal_review_record(path)[-1][0].message)
+                    with self.assertRaisesRegex(ValueError, "stored change roots are unsupported"):
+                        summarize_review_evidence(root)
+                self.assertTrue(validate_change_root(nested.parent).blocking_findings)
+                with self.assertRaisesRegex(ValueError, "stored change roots are unsupported"):
+                    summarize_review_evidence(nested.parent)
+            marker.unlink()
+
     def clean_receipt_fixture(self) -> Path:
         root = copy_fixture("valid-clean-receipt-root")
         self.addCleanupTree(root)

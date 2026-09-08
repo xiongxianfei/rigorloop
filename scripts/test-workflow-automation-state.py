@@ -87,6 +87,25 @@ def synchronized_evidence() -> dict[str, object]:
 
 
 class RetiredStorageAdapterTests(unittest.TestCase):
+    def test_canonical_review_occurrence_rejects_stored_basis_but_retains_standalone(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            evidence = root / "standalone"
+            review = evidence / "reviews/code-review-r1.md"
+            review.parent.mkdir(parents=True)
+            review.write_text("# Review\n\nReview ID: code-review-r1\nStage: code-review\nRound: 1\nReviewer: Independent reviewer\nTarget: specs/example.md\nStatus: approved\n\n## Findings\n\nNo material findings.\n")
+            (evidence / "review-log.md").write_text("# Review Log\n\n### Review entry\nReview ID: code-review-r1\nStage: code-review\nRound: 1\nStatus: approved\nDetailed record: reviews/code-review-r1.md\nResolution: None\nMaterial findings: None\nOpen findings: None\n")
+            occurrence = _canonical_review_occurrence(review, repository_root=root)
+            self.assertIsNotNone(occurrence)
+            self.assertEqual(occurrence[0].status, "approved")
+            for marker in ("change.yaml", "change.json"):
+                with self.subTest(marker=marker):
+                    path = evidence / marker
+                    path.write_bytes(b"stored basis must not be decoded\xff")
+                    self.assertIsNone(_canonical_review_occurrence(review, repository_root=root))
+                    self.assertEqual(path.read_bytes(), b"stored basis must not be decoded\xff")
+                    path.unlink()
+
     def test_legacy_adapters_reject_before_path_access_and_preserve_bytes(self):
         from unittest.mock import patch
         with tempfile.TemporaryDirectory() as temporary:
