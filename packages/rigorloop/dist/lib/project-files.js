@@ -71,4 +71,3 @@ export function findRepositoryRoot(start) {
     cursor = parent;
   }
 }
-
