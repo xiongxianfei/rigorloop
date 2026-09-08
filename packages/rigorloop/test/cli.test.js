@@ -574,7 +574,7 @@ test("TNP-005 package version maps to bundled v0.5.1 targeted-recording candidat
   const artifact = metadata.artifacts.find((entry) => entry.adapter === "codex");
   assert.equal(artifact.archive, publicArchiveFile);
   assert.equal(artifact.install_root, ".agents/skills");
-  assert.equal(artifact.tree_sha256, "f848c346558469ffb47897ec9e6bade40a05589850ee719d19685c79405a1696");
+  assert.equal(artifact.tree_sha256, "fe4f59238ce0ae230616c93b311b00961145dd21ed0b49cf998ed7f1483603ff");
   assert.equal(artifact.file_count, 119);
   assert.equal(
     artifact.url,
