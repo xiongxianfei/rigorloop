@@ -11,6 +11,10 @@ Use this skill for unexpected behavior, failing evidence, incident, regression, 
 Read the request, governing behavior, current code and tests, available bug evidence, exact current authority, governed signals, and project-owned commands. Use the smallest sufficient evidence set; expand to current plans, architecture, history, or neighboring code only when the defect path requires it.
 
 
+## Test criteria application
+
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+
 ## Explicit recording
 
 Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
@@ -123,3 +127,8 @@ Read fully when the whole file is the review target, bounded searches disagree, 
 ## Expected output
 
 Return the completion record.
+
+## Resource map
+
+- READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
+- READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.

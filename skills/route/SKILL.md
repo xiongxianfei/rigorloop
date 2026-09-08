@@ -7,6 +7,10 @@ argument-hint: [feature, bug, project goal, issue number, or current workflow st
 
 # Semantic workflow router
 
+## Test criteria application
+
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+
 ## Quick operating guide
 
 Use this skill to: route, resume, audit, or automate the standard workflow without replacing the specialized stage skill.
@@ -143,6 +147,9 @@ Active or resumable automation without a valid governed identity stops.
 Every predicate combination must match exactly one assembly row. Any other combination, or any combination matching more than one row, stops as invalid invocation context before resource-dependent interpretation or mutation.
 
 ## Resource map
+
+- READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
+- READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.
 
 - READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
 

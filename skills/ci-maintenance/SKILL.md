@@ -12,6 +12,10 @@ argument-hint: [operation, exact target path, concern, and command evidence]
 Maintain CI infrastructure from project-owned commands and risk evidence. Ordinary authoring does not run validation, does not design tests, does not specify validation commands, or wait for checks; validation stays under `verify`. A bounded PR CI repair may run already-authoritative validation commands and observe the replacement hosted check under the rules below.
 
 
+## Test criteria application
+
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+
 ## Review and Closeout application
 
 When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
@@ -78,6 +82,9 @@ Select one: `CIM0` narrow review; `CIM1` ordinary GitHub authoring; `CIM2` proje
 Creation adds the skeleton; revision adds it only for authorized replacement. Late predicates load additions before dependent action.
 
 ## Resource map
+
+- READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
+- READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.
 
 - READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
 

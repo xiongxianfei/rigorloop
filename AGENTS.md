@@ -1,5 +1,9 @@
 # AGENTS.md
 
+## Test criteria ownership
+
+For this repository's explicitly adopted model work, [Test](docs/design/test/test.md) owns shared derivation, protective-value and maintenance criteria (TEST-SR-01–13). Specialist reviewers and Verify judge actual plans, tests and evidence; Review and Closeout retains assessment authority policy, applicability and closeout consequences. Workflow retains coordination. Canonical consumers apply the criteria through selective quality and maintenance resources; those resources are application guidance, not another policy owner. This initiative's coordinated consumer adoption preserves historical contracts, required negative/regression proof and separately owned execution permissions. Installation does not adopt customer policy. Internal requirement mappings and package mechanics remain in contributor/governance surfaces rather than published skills.
+
 This repository uses Codex to help maintain a public open source project.
 
 Optimize for correctness, explicitness, small reviewable diffs, and alignment with the documented contract over speculative improvements.
