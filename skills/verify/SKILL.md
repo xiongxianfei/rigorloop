@@ -79,7 +79,7 @@ Loaded procedure and execution authority are independent:
 
 Use execution mode `isolated` for direct checks and direct branch-readiness assessments. Use `governed-final` only when current governed evidence establishes final `verify` for the same change. Never infer the mode from conversational wording.
 
-### Final-readiness profile (registered historical changes)
+### Final-readiness profile
 
 Final readiness loads impact analysis and evidence applicability; successful results then load explanation guidance. Failed or inconclusive attempts emit no successful final explanation. Scoped verification loads none of those final-closeout resources.
 
