@@ -721,57 +721,24 @@ def partially_accepted_closed_resolution_text() -> str:
     """
 
 
+class RetiredReviewStoreTests(unittest.TestCase):
+    def test_store_inputs_reject_without_decoding_private_archival_bytes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for name in ("change.yaml", "change.json"):
+                with self.subTest(name=name):
+                    path = root / name
+                    path.write_bytes(b"private invalid bytes\xff")
+                    result = validate_change_root(root)
+                    self.assertTrue(result.blocking_findings)
+                    self.assertIn("unsupported", result.blocking_findings[0].message)
+                    self.assertEqual(path.read_bytes(), b"private invalid bytes\xff")
+                    path.unlink()
+
+
 class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
-    def compact_root(self, *, review_name: str = "proposal-review.md") -> Path:
-        temp_root = Path(tempfile.mkdtemp(prefix="compact-review-root-"))
-        self.addCleanup(shutil.rmtree, temp_root, True)
-        change_root = temp_root / "docs" / "changes" / "example"
-        review_relative = f"docs/changes/example/reviews/{review_name}"
-        write_text(
-            change_root / "change.yaml",
-            f"""
-            schema: compact-change-v1
-            change_id: example
-            lifecycle_contract: compact-current-state-v1
-            reviews:
-              proposal:
-                path: {review_relative}
-            """,
-        )
-        write_text(
-            change_root / "reviews" / review_name,
-            """
-            ---
-            schema: compact-review-v1
-            review_id: proposal-review-current
-            target:
-              target_id: proposal
-              target_kind: proposal
-            round: 2
-            subjects: {}
-            reviewer_authority: proposal-review
-            outcome: approved
-            recording_status: recorded
-            open_findings: {}
-            material_decisions: []
-            limitations: []
-            recorded_at: 2026-09-04T00:00:00Z
-            ---
 
-            # Proposal Review
-            """,
-        )
-        return change_root
 
-    def test_compact_stable_review_needs_no_legacy_ledgers(self) -> None:
-        result = validate_change_root(self.compact_root())
-        self.assertEqual(result.blocking_findings, ())
-        self.assertEqual(result.review_count, 1)
-        self.assertEqual(result.review_log_entry_count, 0)
-
-    def test_compact_round_suffixed_review_fails_closed(self) -> None:
-        result = validate_change_root(self.compact_root(review_name="proposal-review-r2.md"))
-        self.assertTrue(any("not round-suffixed" in item.message for item in result.blocking_findings))
 
     maxDiff = None
 
@@ -2097,53 +2064,6 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                     offenders.append(f"specs/requirement-fidelity-gate.md:{line_number}: {term}: {line}")
         self.assertEqual(offenders, [])
 
-    def test_clean_receipt_root_requires_change_metadata_contract(self) -> None:
-        cases = [
-            (
-                "  reviewed_artifact: specs/example.md\n",
-                "",
-                "review.reviewed_artifact is required for clean receipt roots",
-            ),
-            (
-                "  review_log: tests/fixtures/review-artifacts/valid-clean-receipt-root/review-log.md\n",
-                "",
-                "review.review_log is required for clean receipt roots",
-            ),
-            (
-                "  status: clean\n",
-                "",
-                "review.status must identify clean receipt root status",
-            ),
-            (
-                "  status: clean\n",
-                "  status: approved\n",
-                "review.status must be 'clean' for clean receipt roots",
-            ),
-            (
-                "  status: clean\n",
-                "  status: changes-requested\n",
-                "review.status must be 'clean' for clean receipt roots",
-            ),
-            (
-                "  unresolved_items: 0\n",
-                "",
-                "review.unresolved_items must be 0 for clean receipt roots",
-            ),
-            (
-                "  unresolved_items: 0\n",
-                "  unresolved_items: 1\n",
-                "review.unresolved_items must be 0 for clean receipt roots",
-            ),
-        ]
-        for old, new, expected in cases:
-            with self.subTest(expected=expected):
-                root = self.clean_receipt_fixture()
-                metadata_path = root / "change.yaml"
-                metadata_path.write_text(
-                    metadata_path.read_text(encoding="utf-8").replace(old, new),
-                    encoding="utf-8",
-                )
-                self.assertFails(root, expected)
 
     def test_clean_receipt_root_rejects_empty_resolution_file(self) -> None:
         root = self.clean_receipt_fixture()
@@ -2232,70 +2152,7 @@ class ReviewArtifactValidatorFixtureTests(unittest.TestCase):
                 )
                 self.assertFails(root, expected)
 
-    def test_v2_rejects_test_spec_review_and_delivery_member(self) -> None:
-        cases = (
-            ("test-spec-review", test_spec_review_text(), "test-spec-review: unknown_value"),
-            ("delivery-review", package_review_text(stage="delivery-review", status="changes-requested", scope="cross-artifact"), "v2 Delivery Review package members must exactly match the primary plan"),
-        )
-        for stage, source, expected in cases:
-            with self.subTest(stage=stage):
-                root = Path(tempfile.mkdtemp(prefix=f"review-artifact-v2-{stage}-"))
-                self.addCleanupTree(root)
-                write_text(
-                    root / "change.yaml",
-                    """lifecycle_contract: stage-owned-change-local-v2
-artifact_states:
-  primary-plan:
-    kind: plan
-    path: docs/plan.md
-    role: primary
-    lifecycle_state: review-required
-""",
-                )
-                review_id = f"{stage}-r1"
-                write_text(root / "reviews" / f"{review_id}.md", source)
-                write_text(
-                    root / "review-log.md",
-                    review_log_text(
-                        review_id=review_id,
-                        stage=stage,
-                        status="changes-requested",
-                        detailed_record=f"reviews/{review_id}.md",
-                        material_findings="PKG-1" if stage == "delivery-review" else "none",
-                        open_findings="PKG-1" if stage == "delivery-review" else "none",
-                    ),
-                )
-                self.assertFails(root, expected)
 
-    def test_v2_delivery_review_accepts_the_exact_nonliteral_primary_plan_id(self) -> None:
-        root = Path(tempfile.mkdtemp(prefix="review-artifact-v2-primary-plan-"))
-        self.addCleanupTree(root)
-        write_text(
-            root / "change.yaml",
-            """lifecycle_contract: stage-owned-change-local-v2
-artifact_states:
-  primary-plan:
-    kind: plan
-    path: docs/plan.md
-    role: primary
-    lifecycle_state: review-required
-""",
-        )
-        source = package_review_text(stage="delivery-review").replace(
-            "plan=docs/plan.md, test-spec=docs/test-spec.md",
-            "primary-plan=docs/plan.md",
-        )
-        write_text(root / "reviews" / "delivery-review-r1.md", source)
-        write_text(
-            root / "review-log.md",
-            review_log_text(
-                review_id="delivery-review-r1",
-                stage="delivery-review",
-                status="approved",
-                detailed_record="reviews/delivery-review-r1.md",
-            ),
-        )
-        self.assertPasses(root)
 
     def test_proposal_review_requires_one_known_vision_alignment(self) -> None:
         for outcome in (

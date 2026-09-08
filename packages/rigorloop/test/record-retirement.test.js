@@ -18,3 +18,10 @@ for(const contract of ['explicit-recording-v1','compact-current-state-v1','stage
   assert.equal(result.errors[0]?.code,'unsupported-contract');assert.equal(readFileSync(path,'utf8'),bytes);
  }
 });
+for(const command of ['compact','lifecycle','new-change'])for(const format of ['json','detailed-json','concise-json','concise-human','human'])test(`removed ${command} (${format}) rejects before input, recording or logging effects`,async t=>{
+ const {spawnSync}=await import('node:child_process');const root=setup(t),path=join(root,'docs/changes/example/change.yaml'),bytes='Archive: unchanged\n';writeFileSync(path,bytes);
+ const r=spawnSync(process.execPath,[new URL('../dist/bin/rigorloop.js',import.meta.url).pathname,...(format==='json'?['--file-log-level','info']:[]),command,...(command==='new-change'?['other','--title','Retired']:['recover','--change','example']),'--format',format],{cwd:root,encoding:'utf8',input:'private-invalid-request',env:{...process.env,RIGORLOOP_LOG_DIR:join(root,'logs')}});
+ assert.equal(r.status,4,r.stdout+r.stderr);if(format==='json'||format==='detailed-json')assert.equal(JSON.parse(r.stdout).errors[0].code,'invalid-usage');else if(format==='concise-json')assert.deepEqual(JSON.parse(r.stdout).codes,['invalid-usage']);assert.equal(readFileSync(path,'utf8'),bytes);
+ const {existsSync}=await import('node:fs');for(const p of ['logs','.rigorloop','docs/changes/other'])assert.equal(existsSync(join(root,p)),false);
+ assert.doesNotMatch(r.stdout+r.stderr,/private-invalid-request/);
+});
