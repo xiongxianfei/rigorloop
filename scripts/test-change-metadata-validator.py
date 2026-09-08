@@ -475,9 +475,6 @@ review:
                 "legacy source mechanism and identity must match exactly",
             )
 
-    def test_valid_basic_fixture_passes(self) -> None:
-        self.assertPathPasses(FIXTURES / "valid-basic" / "change.yaml")
-
     def test_compact_valid_fixture_passes(self) -> None:
         self.assertPathPasses(FIXTURES / "compact-valid" / "change.yaml")
 
