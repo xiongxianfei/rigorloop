@@ -1,5 +1,9 @@
 # RigorLoop Constitution
 
+## Design and System ownership
+
+For this repository’s explicitly selected design-authoring and model-composition responsibility, [Design](docs/design/design/design.md) owns living model conventions, reconciled behavioral/technical authoring, decision preservation and validation mapping. [System](docs/design/system/system.md) owns the selected composition view and shared-owner relationships. The normal public author is `design`; `design-review` remains independent and selects the exact affected models, retained legacy contracts, examples and interactions. Workflow coordinates and consumes the mapping. Unmigrated responsibilities retain their declared owners and formats; installation does not adopt customer governance. The exact transfer is bounded by the models’ displacement maps and takes effect only with reviewed implementation and successful Verify. Historical IDs and approvals retain their original meaning.
+
 ## Test criteria ownership
 
 For this repository's explicitly adopted model work, [Test](docs/design/test/test.md) owns shared derivation, protective-value and maintenance criteria (TEST-SR-01–13). Specialist reviewers and Verify judge actual plans, tests and evidence; Review and Closeout retains assessment authority policy, applicability and closeout consequences. Workflow retains coordination. Canonical consumers apply the criteria through selective quality and maintenance resources; those resources are application guidance, not another policy owner. This initiative's coordinated consumer adoption preserves historical contracts, required negative/regression proof and separately owned execution permissions. Installation does not adopt customer policy. Internal requirement mappings and package mechanics remain in contributor/governance surfaces rather than published skills.
@@ -21,7 +25,7 @@ For explicitly adopted RigorLoop Record Format work, the [Workflow](docs/design/
 External runtime instructions still outrank repository artifacts. Within the repository, the source-of-truth order is:
 
 1. `CONSTITUTION.md`
-2. approved feature specs in `specs/`
+2. approved owning living Designs for adopted responsibilities; approved feature specs in `specs/` for unmigrated responsibilities
 3. approved architecture and ADR documents under `docs/architecture/` and `docs/adr/`
 4. active execution plans under `docs/plans/`
 5. matching test specs in `specs/*.test.md` for manifest-bound v1 continuation
@@ -49,7 +53,7 @@ Routine vision alignment is Proposal Review evidence, not a required proposal se
 
 ## Spec-driven rules
 
-Changes that affect externally observable behavior MUST have an approved spec before implementation.
+Changes that affect externally observable behavior MUST have an approved owning Design or retained feature spec before implementation.
 
 RigorLoop recommends one standard workflow for complete AI-assisted delivery. Public workflow guidance MUST NOT classify work into separate routes by speed, completeness, size, or risk labels.
 
@@ -110,7 +114,7 @@ Change-local artifacts under `docs/changes/<change-id>/` SHOULD stay concise and
 
 For non-trivial governed changes, use the selected v2 manifest and registered evidence. Successful Verify owns the durable final explanation. Preserve completed historical records and recorded identities unchanged; no migration, temporary continuation or permanent legacy reader is selected.
 
-Architecture-affecting changes MUST update the relevant architecture document or ADR in the same change.
+Architecture-affecting changes MUST update the owning Design, or the relevant unmigrated architecture document or ADR under its retained contract, in the same change.
 
 ## Security and privacy rules
 
@@ -164,11 +168,11 @@ Use scoped primary reads, subject inspection and targeted operations. Record exp
 
 `proposal-review` MUST evaluate proposal direction, scope, and embedded feasibility before design work for governed changes.
 
-`design-review` MUST independently approve the exact architecture, specification, and applicable ADR package before delivery planning relies on it.
+`design-review` MUST independently approve the exact affected Design package, including applicable retained legacy contracts, examples and interactions, before delivery planning relies on it.
 
 `delivery-review` MUST independently approve the exact contract-selected delivery package before implementation.
 
-Architecture, specification, and plan authorship remain separate. Historical registered v1 test-specification evidence remains a separate record. A package reviewer MUST NOT edit and approve the artifacts it reviews.
+Behavioral and technical authorship are reconciled by `design`; plan authorship remains separate. Historical registered v1 test-specification evidence remains a separate record. A package reviewer MUST NOT edit and approve the artifacts it reviews.
 
 `spec-review`, `architecture-review`, `plan-review`, and `test-spec-review` are retired as progression entrypoints. Historical evidence remains readable but does not grant package authority.
 
@@ -200,7 +204,7 @@ Behavior changes MUST update the relevant spec, test spec, docs, fixtures, or ex
 
 Workflow or governance changes MUST update affected operating and governance guidance, including `CONSTITUTION.md`, `AGENTS.md`, authoritative CLI workflow context, and current stage skills when their guidance is affected. If an affected surface is intentionally unchanged, contributors MUST record it as unaffected with rationale or defer it with owner and follow-up in a contributor-visible tracked or review-visible surface.
 
-Architecture or boundary changes MUST update the relevant architecture document or ADR.
+Architecture or boundary changes MUST update the owning Design or relevant unmigrated architecture document or ADR.
 
 When a change leaves durable lessons for future contributors, the repository SHOULD capture them through the periodic or explicitly invoked `learn` stage instead of leaving them only in chat or PR comments. Learn sessions that reach Frame use tracked records under `docs/learn/sessions/`, with durable topic guidance under `docs/learn/topics/` only when confirmed reusable lessons justify it.
 

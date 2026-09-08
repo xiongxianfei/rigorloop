@@ -6,7 +6,7 @@ Load this procedure only after `SKILL.md` classifies `branch-readiness` or `work
 
 Resolve the repository and exact engineering subject, then bind all evidence to exactly one governed change or explicit evidence root. Resolve a branch or commit when the requested assessment includes Git/PR readiness; non-Git v2 closeout uses exact inspected subject identities without a branch or remote prerequisite. For a governed-final run, confirm the same change is currently at final `verify` and all in-scope implementation milestones are closed.
 
-Require the applicable governing spec and proof map, architecture or explicit no-architecture assessment, stable plan, current change state, final reviewed diff, review closeout, and named validation commands. Missing, ambiguous, mismatched, or local-only governing authority blocks final readiness.
+Require the applicable governing spec and proof map, the affected Design models or retained legacy technical basis, stable plan, current change state, final reviewed diff, review closeout, and named validation commands. Missing, ambiguous, mismatched, or local-only governing authority blocks final readiness.
 
 ## Final evidence composition
 

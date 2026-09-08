@@ -1,10 +1,12 @@
 # RigorLoop Project Map
 
+Current design-authoring and composition navigation: [Design](design/design/design.md) owns unified authoring, model conventions and validation mapping; [System](design/system/system.md) owns the bounded composition view. Canonical `skills/design/` replaces the two old authors; remaining specs, Level 2 architecture and ADR responsibilities retain their declared contracts. Historical inventories below do not establish the current public author list.
+
 ## Purpose and Scope
 
 This map describes the current repository shape for contributors and agents who need orientation before architecture, planning, implementation, or review work. It covers the RigorLoop repository as a workflow, validation, skill, adapter, release-evidence, and documentation system.
 
-It does not replace the normative source-of-truth order in `CONSTITUTION.md`, the workflow contract in `specs/rigorloop-workflow.md`, the canonical architecture package in `docs/architecture/system/architecture.md`, or change-specific artifacts under `docs/changes/`.
+It does not replace the normative source-of-truth order in `CONSTITUTION.md`, the workflow contract in `specs/rigorloop-workflow.md`, the owning Design/System models and retained architecture detail in `docs/architecture/system/architecture.md`, or change-specific artifacts under `docs/changes/`.
 
 This map orients readers to repository structure and boundaries. It does not own workflow stage order, exact lifecycle artifact placement, or current milestone state.
 
@@ -20,7 +22,7 @@ Observed basis: direct inspection of `README.md`, `CONSTITUTION.md`, `AGENTS.md`
 
 ## System Overview
 
-RigorLoop is a repository-local workflow kit, not a deployed service. Its main product is a spec-driven, test-driven workflow for AI-assisted software delivery. The preactivation `compact-current-state-v1` candidate represents current truth through `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`. It is designed to work without Git history and without PR access; external delivery remains optional.
+RigorLoop is a repository-local workflow kit, not a deployed service. Its main product is a spec-driven, test-driven workflow for AI-assisted software delivery. Current adopted work uses `rigorloop-records-v2` JSON records through primary targeted CLI commands. The earlier compact candidate remains historical evidence. It is designed to work without Git history and without PR access; external delivery remains optional.
 
 Observed major containers:
 
@@ -58,7 +60,7 @@ flowchart LR
 | `docs/explorations/` | Standalone, explicitly invoked Explore artifacts that expand a decision space and hand options to a named owner without approving them. |
 | `docs/research/` | Standalone, explicitly invoked Research artifacts that reduce bounded decision uncertainty and hand sourced findings to a named owner without approving them. |
 | `specs/` | Behavior contracts and matching `.test.md` test specs. `specs/README.md` states that specs are for behavior-changing work that benefits from explicit contracts. |
-| `docs/architecture/system/` | Canonical current architecture package and C4 Mermaid diagrams. |
+| `docs/architecture/system/` | Mixed retained architecture detail and historical diagrams; selected method/composition ownership is in Design/System. |
 | `docs/architecture/*.md` | Historical or legacy architecture records retained after normalization. |
 | `docs/adr/` | Durable architecture decision records. |
 | `docs/plans/` and `docs/plan.md` | Stable execution-plan bodies and their navigation index. |

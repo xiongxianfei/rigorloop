@@ -1,5 +1,9 @@
 # Architecture Package Method
 
+## Historical method authority
+
+The current design-authoring and model-composition obligations are replaced at coordinated adoption by [Design](../docs/design/design/design.md#selected-replacement-map) and [System](../docs/design/system/system.md#exact-mixed-architecture-migration-boundary). The preserved body below, including stable requirement/test IDs and prior approval references, is historical evidence; it does not create a second current method owner. Design’s numbered and unnumbered displacement and material-decision maps identify the replacement of each obligation. Historical reviews assessed their original subjects, not the consolidated models.
+
 ## Owning change record
 
 `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml`

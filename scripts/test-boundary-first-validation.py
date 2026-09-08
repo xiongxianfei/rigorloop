@@ -194,6 +194,40 @@ def valid_proof() -> str:
     )
 
 
+class RetiredMethodSourceTests(unittest.TestCase):
+    def fixture(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        for rel in ("specs/architecture-package-method.md", "specs/architecture-package-method.test.md", "docs/design/design/design.md", "docs/design/system/system.md"):
+            target = root / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / rel, target)
+        return root
+
+    def test_retired_method_preservation_replaces_new_feature_format(self):
+        root = self.fixture()
+        for path in ("specs/architecture-package-method.md", "specs/architecture-package-method.test.md"):
+            self.assertEqual(validate_changed_spec(root, path), ())
+
+    def test_retired_method_unknown_value_or_changed_body_cannot_escape_validation(self):
+        for suffix in ("\nunknown_value\n", "\nboundary_contract: unknown_value\n"):
+            root = self.fixture()
+            path = root / "specs/architecture-package-method.md"
+            path.write_text(path.read_text() + suffix)
+            self.assertTrue(any(i.code == "BFR-RETIRED-METHOD-CHANGED" for i in validate_changed_spec(root, "specs/architecture-package-method.test.md")))
+
+    def test_retired_method_missing_notice_partner_or_owner_blocks(self):
+        for rel in ("specs/architecture-package-method.md", "specs/architecture-package-method.test.md", "docs/design/design/design.md", "docs/design/system/system.md"):
+            root = self.fixture()
+            (root / rel).unlink()
+            self.assertTrue(validate_changed_spec(root, "specs/architecture-package-method.md"))
+        root = self.fixture()
+        path = root / "specs/architecture-package-method.md"
+        path.write_text(path.read_text().replace("## Historical method authority", "## unknown_value"))
+        self.assertTrue(validate_changed_spec(root, "specs/architecture-package-method.md"))
+
+
 class BoundaryFirstStructuralTests(unittest.TestCase):
     def test_durable_minimal_semantic_omission_and_gap_fixtures(self) -> None:
         minimal = (FIXTURES / "feature-records" / "minimal.md").read_text(

@@ -1047,7 +1047,9 @@ def _apply_path_selection(
             "Changed boundary-first validator or fixture requires boundary validation regression fixtures.",
             path=path,
         )
-    if _is_tier_b_documentation_prose_path(path):
+    if _is_tier_b_documentation_prose_path(path) and not _proven_prose_deletion(
+        path, repo_root=repo_root, tracked_deletion=tracked_deletion
+    ):
         _add_check(
             selected,
             "documentation_prose.audit",

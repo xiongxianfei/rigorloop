@@ -1,8 +1,5 @@
 version: v0.5.1
 skills:
-  architecture:
-    portable: true
-    adapters: [codex, claude, opencode]
   bugfix:
     portable: true
     adapters: [codex, claude, opencode]
@@ -16,6 +13,9 @@ skills:
     portable: true
     adapters: [codex, claude, opencode]
   delivery-review:
+    portable: true
+    adapters: [codex, claude, opencode]
+  design:
     portable: true
     adapters: [codex, claude, opencode]
   design-review:
@@ -51,9 +51,6 @@ skills:
   route:
     portable: true
     adapters: [codex, claude, opencode]
-  spec:
-    portable: true
-    adapters: [codex, claude, opencode]
   verify:
     portable: true
     adapters: [codex, claude, opencode]
@@ -62,12 +59,11 @@ skills:
     adapters: [codex, claude, opencode]
 command_aliases:
   opencode:
-    count: 10
+    count: 9
     aliases:
       proposal: dist/adapters/opencode/.opencode/commands/proposal.md
       proposal-review: dist/adapters/opencode/.opencode/commands/proposal-review.md
-      architecture: dist/adapters/opencode/.opencode/commands/architecture.md
-      spec: dist/adapters/opencode/.opencode/commands/spec.md
+      design: dist/adapters/opencode/.opencode/commands/design.md
       design-review: dist/adapters/opencode/.opencode/commands/design-review.md
       plan: dist/adapters/opencode/.opencode/commands/plan.md
       delivery-review: dist/adapters/opencode/.opencode/commands/delivery-review.md

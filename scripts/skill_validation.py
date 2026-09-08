@@ -28,8 +28,6 @@ REQUIREMENT_DELIVERY_MODEL_CONSUMERS = frozenset(
     {
         "proposal",
         "proposal-review",
-        "architecture",
-        "spec",
         "design-review",
         "plan",
         "delivery-review",
@@ -46,7 +44,9 @@ REVIEW_CLOSEOUT_CONSUMERS = frozenset({"proposal-review", "design-review", "deli
 REVIEW_ASSESSMENT_CONSUMERS = frozenset({"proposal-review", "design-review", "delivery-review", "code-review"})
 
 
-TEST_QUALITY_CONSUMERS = frozenset(['architecture', 'bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'design-review', 'implement', 'plan', 'route', 'spec', 'verify'])
+TEST_QUALITY_CONSUMERS = frozenset(['design', 'bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'design-review', 'implement', 'plan', 'route', 'verify'])
+DESIGN_RESOURCES = frozenset(['assets/design-skeleton.md', 'assets/diagram-styles.mmd', 'assets/legacy-adr-skeleton.md', 'assets/legacy-architecture-skeleton.md', 'references/boundary-first-feature-authoring-v1.md', 'references/boundary-first-method-v1.md', 'references/governed-design-authoring.md', 'references/legacy-source-reconciliation.md', 'references/legacy-technical-authoring.md', 'references/model-authoring.md', 'references/system-composition.md', 'references/technical-design.md', 'references/test-quality.md'])
+
 TEST_MAINTENANCE_CONSUMERS = frozenset(['bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'implement', 'plan', 'route', 'verify'])
 
 
@@ -3385,6 +3385,12 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
 
     errors.extend(_validate_published_description(path, metadata))
     errors.extend(_validate_resource_map(path, body))
+    if skill_name == "design":
+        actual = {p.relative_to(path.parent).as_posix() for p in path.parent.rglob("*") if p.is_file() and p != path}
+        for missing in sorted(DESIGN_RESOURCES - actual):
+            errors.append(f"{path}: required design resource missing: {missing}")
+        for unknown in sorted(actual - DESIGN_RESOURCES):
+            errors.append(f"{path}: unknown design resource: {unknown}")
     errors.extend(validate_ci_maintenance_contract(path, metadata, body))
     errors.extend(validate_targeted_recording_profile(path, body))
     errors.extend(_validate_published_self_containment(path, metadata, body))

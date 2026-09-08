@@ -1,5 +1,9 @@
 # Multi-Adapter Init and Proxy-Aware Adapter Download
 
+## Bounded authoring upgrade amendment
+
+[Target-native init TNI-DES-01–06](target-native-init.md#scoped-design-amendment-managed-authoring-replacement) owns the retired-authoring inventory guard and narrowly authorized managed replacement. It preserves this contract’s archive trust, target boundaries and state protections. The complete operator procedure is in the [CLI installation guide](../packages/rigorloop/README.md#upgrading-retired-authoring-skills). Other installation obligations below remain current under their existing amendments.
+
 ## Status
 
 approved

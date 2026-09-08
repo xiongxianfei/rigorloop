@@ -4,9 +4,9 @@
   "activating_release": "v0.4.0",
   "rollback_release": "v0.3.6",
   "canonical_reference": "specs/references/boundary-first-method-v1.md",
-  "canonical_reference_sha256": "4268fbe89ecdfd7b79ca1321b8d6b19b2ed24e8adeda17cae8c319b087760f6f",
+  "canonical_reference_sha256": "89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
   "resource_manifest": "specs/boundary-first-resources.yaml",
-  "resource_manifest_sha256": "eaa2572df6f1cde304fffbf3df146462ef038ca597e7fce2ad94bbde2c9465bf",
+  "resource_manifest_sha256": "320335d3e902eea21c49a2d0a933427cd1953c3eb298819420f10fbd496339d7",
   "grandfathering_baseline_revision": "ca2630e4a0a4bc82c330b51f0480eb97e047ec3f",
   "grandfathered_specs": [
     "specs/artifact-status-lifecycle-ownership.md",
@@ -90,7 +90,7 @@
   ],
   "governed_skills": [
     "route",
-    "spec",
+    "design",
     "design-review",
     "plan",
     "delivery-review",
@@ -98,5 +98,5 @@
     "code-review",
     "verify"
   ],
-  "projection_sha256": "872d976cc0a6d6c957025dee08838c65ed939c651b4c2e1cdb28e57d54e5bdf6"
+  "projection_sha256": "5f7c99e9008c5bcacfe0976aebbbc017fc1c4a60642a758da47d03b47c5fa5af"
 }

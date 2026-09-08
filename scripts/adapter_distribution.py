@@ -38,8 +38,7 @@ DEFAULT_ADAPTER_VERSION = "v0.5.1"
 OPENCODE_COMMAND_ALIASES = (
     "proposal",
     "proposal-review",
-    "architecture",
-    "spec",
+    "design",
     "design-review",
     "plan",
     "delivery-review",
@@ -66,7 +65,7 @@ COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint", "schema-version", "version"})
 PORTABLE_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 PUBLISHED_SKILL_INVOCATION_NAMES = (
-    "architecture",
+    "design",
     "bugfix",
     "ci-maintenance",
     "code-review",
@@ -82,7 +81,6 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "proposal",
     "proposal-review",
     "research",
-    "spec",
     "verify",
     "vision",
     "route",
@@ -463,7 +461,7 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     )
     expected_command_blocks = (
         "- `$route auto: <target-stage>` selects a structured target. Supported "
-        "targets are `proposal-review`, `architecture`, `spec`, `design-review`, "
+        "targets are `proposal-review`, `design`, `design-review`, "
         "`plan`, `delivery-review`, `implement`, `code-review`, and "
         "`verify`.\n",
         "- `$route auto: status` is read-only. `$route auto: off` durably "
