@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { lstatSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { captureManagedBasis, replaceManagedAuthoring, inspectManagedAuthoringRecovery, settleManagedAuthoringRecovery } from "../lib/managed-authoring-replacement.js";
 
 import { EXIT, exitCodeForResult } from "../lib/command-result.js";
 import { adapterDescriptor, supportedAdapterNames } from "../lib/adapters.js";
@@ -1251,6 +1253,52 @@ function existingStateSafetyBlocker(descriptor, artifact) {
   return undefined;
 }
 
+function presentPath(path) {
+  try { lstatSync(resolve(process.cwd(), path)); return true; }
+  catch (error) { if (error.code === "ENOENT") return false; throw error; }
+}
+
+function authoringPaths(descriptor, skill) {
+  return [`${descriptor.primaryInstallRoot()}/${skill}`, ...(descriptor.installRoots.commands ? [`${descriptor.installRoots.commands}/${skill}.md`] : [])];
+}
+
+function retiredAuthoringPaths(descriptor, entries) {
+  return ["spec", "architecture"].flatMap(skill => authoringPaths(descriptor, skill)).filter(path =>
+    entries ? entries.some(entry => entry.name === path || entry.name.startsWith(`${path}/`)) : presentPath(path));
+}
+
+function authoringTransition(descriptor) {
+  const retired = retiredAuthoringPaths(descriptor);
+  if (!retired.length) return undefined;
+  const roots = Object.values(descriptor.installRoots);
+  let basis;
+  let reason;
+  try {
+    basis = captureManagedBasis({ projectRoot: process.cwd(), roots });
+    const entry = currentLockfileEntry(descriptor);
+    const recordedRoots = entry && lockfileEntryRoots(entry);
+    if (authoringPaths(descriptor, "design").some(presentPath)) reason = "The selected target contains competing old and new authors.";
+    else if (!entry || JSON.stringify([...recordedRoots].sort()) !== JSON.stringify([...roots].sort())) reason = "The selected roots do not have an exact unambiguous managed owner.";
+    else reason = existingStateSafetyBlocker(descriptor)?.message ?? lockfileDriftBlocker(entry)?.message;
+    if (!reason) return { roots, basis, retired };
+  } catch (error) { reason = error.message; }
+  return { roots, retired, reason };
+}
+
+function authoringTransitionBlocker(descriptor, transition, candidate = false) {
+  const stateImplicated = presentPath("rigorloop.yaml") || presentPath(LOCKFILE_PATH);
+  return {
+    code: candidate ? "retired-authoring-candidate" : "retired-authoring-installation",
+    message: candidate ? "Candidate contains retired spec/architecture entrypoints or aliases; select a coherent design package." : `Selected ${descriptor.displayName} target contains retired authoring entries. ${transition.reason ?? "The original recorded installation is eligible for authorized replacement."}`,
+    path: transition.retired[0],
+    next_action: candidate ? "Use a verified package with design and without spec/architecture; no files were published." : !transition.reason
+      ? `Inspect and back up complete roots ${transition.roots.join(", ")} and both rigorloop.yaml/rigorloop.lock outside the roots (including absence); explicitly authorize their replacement, then run init ${descriptor.name} --write-state with this same candidate. Do not pre-delete old entries or reset hashes. --dry-run reports scope without writes.`
+      : stateImplicated
+        ? "Back up and inspect the managed/state-implicated installation. Restore its original recorded basis under the installation owner's recovery procedure; preserve local changes and other targets. Do not pre-delete retired entries, remove state or refresh hashes to bypass drift."
+        : `For this unmanaged target, inspect and back up first, then explicitly remove only ${transition.retired.join(", ")} and retry ordinary conflict-checked installation.`,
+  };
+}
+
 function obsoleteWorkflowSkillBlocker(descriptor, entries = []) {
   const installRoot = descriptor.primaryInstallRoot();
   const obsoletePath = `${installRoot}/workflow`;
@@ -2042,6 +2090,14 @@ async function handleInit(flags, initArgs = []) {
   if (plan.blockers.length > 0 && !deferrableRootBlockers) {
     return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
   }
+  const pendingAuthoring = inspectManagedAuthoringRecovery({ projectRoot: process.cwd(), roots: Object.values(descriptor.installRoots), shared: flags.writeState });
+  if (pendingAuthoring.blocker) return writeBlockedResult(flags, plan, pendingAuthoring.blocker.message, [pendingAuthoring.blocker]);
+  const authoring = authoringTransition(descriptor);
+  if (authoring && (authoring.reason || !flags.writeState)) {
+    const blocker = authoringTransitionBlocker(descriptor, authoring);
+    return writeBlockedResult(flags, plan, blocker.message, [blocker]);
+  }
+  let authoringRecovery;
   const managedObsoleteInstall = managedObsoleteWorkflowInstall(descriptor);
   const obsoleteInstalledSkill = obsoleteWorkflowSkillBlocker(descriptor);
   if (obsoleteInstalledSkill && !(flags.writeState && !flags.dryRun && managedObsoleteInstall)) {
@@ -2073,6 +2129,21 @@ async function handleInit(flags, initArgs = []) {
       return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
     }
   }
+  const managedAuthoringMigration = Boolean(authoring && !authoring.reason && flags.writeState && archiveWork.entries);
+  if (archiveWork.entries) {
+    const retired = retiredAuthoringPaths(descriptor, archiveWork.entries);
+    if (retired.length) {
+      const blocker = authoringTransitionBlocker(descriptor, { retired }, true);
+      return writeBlockedResult(flags, plan, blocker.message, [blocker]);
+    }
+    if (managedAuthoringMigration && !archiveWork.entries.some(entry => entry.name.startsWith(`${descriptor.primaryInstallRoot()}/design/`))) {
+      const blocker = { code: "missing-design-candidate", message: "Managed authoring replacement requires a verified design package.", path: descriptor.primaryInstallRoot(), next_action: "Select the coherent replacement candidate; original target/state remain unchanged." };
+      return writeBlockedResult(flags, plan, blocker.message, [blocker]);
+    }
+  }
+  if (flags.dryRun && authoring && !authoring.reason && !archiveWork.entries) {
+    for (const root of authoring.roots) plan.actions.push({ type: "replace", path: root, status: "planned", reason: "Original managed basis is eligible; back up and authorize these exact roots and both state files. Candidate inventory/trust verification remains required during the actual run; dry-run does not read archive bytes." });
+  }
   const managedWorkflowMigration = Boolean(
     flags.writeState &&
       managedObsoleteInstall &&
@@ -2084,7 +2155,7 @@ async function handleInit(flags, initArgs = []) {
     if (obsoleteArchiveSkill && !managedWorkflowMigration) {
       return writeBlockedResult(flags, plan, obsoleteArchiveSkill.message, [obsoleteArchiveSkill]);
     }
-    const conflict = managedWorkflowMigration ? undefined : generatedOutputConflictBlocker(archiveWork.entries);
+    const conflict = (managedWorkflowMigration || managedAuthoringMigration) ? undefined : generatedOutputConflictBlocker(archiveWork.entries);
     if (conflict) {
       return writeBlockedResult(flags, plan, conflict.message, [conflict], "mutation_conflict");
     }
@@ -2102,7 +2173,12 @@ async function handleInit(flags, initArgs = []) {
         drift.code === "overwrite-refused" ? "mutation_conflict" : "blocked",
       );
     }
-    if (managedWorkflowMigration) {
+    if (managedAuthoringMigration) {
+      for (const root of authoring.roots) {
+        plan.actions.push({ type: "replace", path: root, status: flags.dryRun ? "planned" : "pending", reason: "Explicitly authorized replacement of this exact managed root after backup; preserve original basis until candidate verification." });
+        plan.artifacts.push({ path: root, kind: "adapter-root", status: flags.dryRun ? "planned" : "pending" });
+      }
+    } else if (managedWorkflowMigration) {
       plan.actions.push({
         type: "replace",
         path: descriptor.primaryInstallRoot(),
@@ -2133,7 +2209,33 @@ async function handleInit(flags, initArgs = []) {
     return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
   }
 
-  if (!flags.dryRun && managedWorkflowMigration) {
+  if (!flags.dryRun && flags.writeState && pendingAuthoring.pending.length) {
+    try { settleManagedAuthoringRecovery({ projectRoot: process.cwd(), roots: Object.values(descriptor.installRoots), shared: true }); }
+    catch (error) { return writeValidationErrorResult(flags, plan, { code: error.code ?? "managed-authoring-recovery-required", message: error.message }); }
+  }
+  if (!flags.dryRun && managedAuthoringMigration) {
+    const lockfile = lockfileForVerifiedInstall(plan.info, plan.source, plan.manifest, archiveWork.artifact, rootHashesForEntries(archiveWork.entries, descriptor, archiveWork.artifact), descriptor);
+    try {
+      authoringRecovery = replaceManagedAuthoring({
+        projectRoot: process.cwd(), roots: authoring.roots, basis: authoring.basis,
+        files: archiveWork.entries.map(entry => ({ path: entry.name, content: entry.name.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes })),
+        state: { "rigorloop.yaml": Buffer.from(plan.manifest), "rigorloop.lock": Buffer.from(serializeLockfile(lockfile)) },
+        verifyInstalled: () => {
+          const installed = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor);
+          if (installed.error) throw new Error(installed.error.message);
+        },
+      });
+      plan.planned_lockfile = lockfile;
+      for (const action of plan.actions.filter(action => action.status === "pending")) action.status = "done";
+      for (const artifact of plan.artifacts.filter(artifact => artifact.status === "pending")) artifact.status = "updated";
+    } catch (error) {
+      const retained = (error.retainedPaths ?? []).map(item => item.backup).join(", ");
+      return writeValidationErrorResult(flags, plan, {
+        code: error.code ?? "managed-authoring-replacement-failed",
+        message: `Authoring replacement failed. ${error.restored ? "Original target/state restored; resolve the cause before retry." : "Inspect partial state and intervening changes; restore a coherent original basis from the operator backup before retry, without resetting hashes."} ${error.message} Retain staging ${error.recoveryPath ?? "(not created)"} and copies ${retained || "(none detached)"}; if an ancestor moved, locate them in its original directory.`,
+      });
+    }
+  } else if (!flags.dryRun && managedWorkflowMigration) {
     const managedRoots = managedObsoleteInstall.roots;
     const rootSnapshot = snapshotManagedPaths(managedRoots);
     const manifestPath = resolve(process.cwd(), "rigorloop.yaml");
@@ -2264,6 +2366,7 @@ async function handleInit(flags, initArgs = []) {
   }
 
   const warnings = initWarnings(descriptor, archiveWork.artifact);
+  if (authoringRecovery) warnings.push({ code: "authoring-backups-retained", message: `Verified design installation complete. Inspect before manually removing staging ${authoringRecovery.backupPath} and retained copies: ${authoringRecovery.retainedPaths.map(item => `${item.path} -> ${item.backup}`).join(", ")}. Keep the separate operator backup until coherence is confirmed.` });
   const result = envelope("init", flags, {
     status: warnings.length > 0 ? "warning" : "success",
     summary: flags.dryRun

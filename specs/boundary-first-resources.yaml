@@ -6,7 +6,7 @@ resources:
     target: references/boundary-first-method-v1.md
     consumers:
       - route
-      - spec
+      - design
       - design-review
       - plan
       - delivery-review
@@ -17,7 +17,7 @@ resources:
     source: specs/references/boundary-first-feature-authoring-v1.md
     target: references/boundary-first-feature-authoring-v1.md
     consumers:
-      - spec
+      - design
       - design-review
   - id: proof
     source: specs/references/boundary-first-proof-v1.md

@@ -291,7 +291,7 @@ function fixturePackage(options = {}) {
   copyFileSync(cliPath, join(root, "dist", "bin", "rigorloop.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "adapters.js"), join(root, "dist", "lib", "adapters.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "command-result.js"), join(root, "dist", "lib", "command-result.js"));
-  for (const file of ["cli-observability.js", "diagnostic-event.js", "log-config.js", "log-inspection.js", "log-sink.js", "result-renderer.js"]) {
+  for (const file of ["managed-authoring-replacement.js", "cli-observability.js", "diagnostic-event.js", "log-config.js", "log-inspection.js", "log-sink.js", "result-renderer.js"]) {
     copyFileSync(join(packageRoot, "dist", "lib", file), join(root, "dist", "lib", file));
   }
   copyFileSync(join(packageRoot, "dist", "lib", "lockfile.js"), join(root, "dist", "lib", "lockfile.js"));
@@ -557,7 +557,7 @@ test("TNP-005 package version maps to bundled v0.5.1 targeted-recording candidat
   assert.equal(artifact.install_root, ".agents/skills");
   // Exact source/archive parity is exercised by the adapter distribution suite.
   assert.match(artifact.tree_sha256, /^[a-f0-9]{64}$/);
-  assert.equal(artifact.file_count, 138);
+  assert.equal(artifact.file_count, 137); // 138 - 15 retired files + 14 unified-author files.
   assert.equal(
     artifact.url,
     `https://github.com/xiongxianfei/rigorloop/releases/download/${publicReleaseTag}/${publicArchiveFile}`,
@@ -3217,4 +3217,199 @@ test("TLF-008 manifest normalization hash is stable", () => {
   const withLf = 'schema_version: 1\nrigorloop:\n  package: "@xiongxianfei/rigorloop"\n';
 
   assert.equal(sha256NormalizedText(Buffer.from(withCrLf, "utf8")), sha256NormalizedText(Buffer.from(withLf, "utf8")));
+});
+
+function authoringUpgradeFixture(t, target = "codex") {
+  const cwd = tempProject();
+  t.after(() => rmSync(cwd, { recursive: true, force: true }));
+  const descriptor = adapterDescriptor(target);
+  const roots = descriptor.installRoots;
+  const oldEntries = ["spec", "architecture"].flatMap(skill => [
+    { name: `${roots.skills}/${skill}/SKILL.md`, bytes: Buffer.from(`# Old ${skill}\n`) },
+    ...(roots.commands ? [{ name: `${roots.commands}/${skill}.md`, bytes: Buffer.from(`Use ${skill}\n`) }] : []),
+  ]);
+  for (const entry of oldEntries) {
+    mkdirSync(resolve(cwd, entry.name, ".."), { recursive: true });
+    writeFileSync(join(cwd, entry.name), entry.bytes);
+  }
+  const rootYaml = roots.commands ? `install_roots:\n      skills: "${roots.skills}"\n      commands: "${roots.commands}"` : `install_root: "${roots.skills}"`;
+  let manifest = `schema_version: 2\nrigorloop:\n  package: "${packageJson.name}"\n  package_version: "0.5.0"\ntargets:\n  - target: ${target}\n    ${rootYaml}\n    source: release-archive\n    release: v0.5.0\n`;
+  const entry = { target, release: "v0.5.0", source: "release-archive", archive: `rigorloop-adapter-${target}-v0.5.0.zip`, archive_sha256: "a".repeat(64), tree_hash_algorithm: "rigorloop-tree-hash-v1" };
+  if (roots.commands) {
+    entry.installed_roots = roots;
+    entry.root_hashes = Object.fromEntries(Object.entries(roots).map(([role, root]) => [role, { tree_sha256: treeHashForEntries(oldEntries, root), file_count: fileCountForEntries(oldEntries, root) }]));
+  } else Object.assign(entry, { installed_root: roots.skills, tree_sha256: treeHashForEntries(oldEntries, roots.skills), file_count: fileCountForEntries(oldEntries, roots.skills) });
+  const neighborTarget = target === "codex" ? "claude" : "codex";
+  const neighborRoot = adapterDescriptor(neighborTarget).primaryInstallRoot();
+  const neighborEntries = [{ name: `${neighborRoot}/proposal/SKILL.md`, bytes: Buffer.from("neighbor target bytes\n") }];
+  mkdirSync(join(cwd, neighborRoot, "proposal"), { recursive: true });
+  writeFileSync(join(cwd, neighborEntries[0].name), neighborEntries[0].bytes);
+  manifest += `  - target: ${neighborTarget}\n    install_root: "${neighborRoot}"\n    source: release-archive\n    release: v0.5.0\n`;
+  const neighborEntry = { target: neighborTarget, release: "v0.5.0", source: "release-archive", archive: `rigorloop-adapter-${neighborTarget}-v0.5.0.zip`, archive_sha256: "b".repeat(64), tree_hash_algorithm: "rigorloop-tree-hash-v1", installed_root: neighborRoot, tree_sha256: treeHashForEntries(neighborEntries, neighborRoot), file_count: 1 };
+  const lock = { schema_version: 3, rigorloop: { package: packageJson.name, version: "0.5.0" }, manifest: { path: "rigorloop.yaml", sha256: sha256NormalizedText(manifest) }, generated: { targets: [entry, neighborEntry] } };
+  writeFileSync(join(cwd, "rigorloop.yaml"), manifest);
+  writeFileSync(join(cwd, "rigorloop.lock"), serializeLockfile(lock));
+  writeFileSync(join(cwd, "unrelated.txt"), "keep neighbor\n");
+  const entries = [{ name: `${roots.skills}/design/SKILL.md`, bytes: Buffer.from("# Design\n") }, ...(roots.commands ? [{ name: `${roots.commands}/design.md`, bytes: Buffer.from("Use design\n") }] : [])];
+  const options = { adapter: target, installRoot: roots.skills, entries, ...(roots.commands ? { installRoots: roots, commandAliases: { opencode: { count: 1, paths: [`${roots.commands}/design.md`] } } } : {}) };
+  const candidate = fixtureArchive(cwd, options);
+  const args = ["init", target, "--from-archive", candidate.archivePath, "--json"];
+  return { cwd, roots, oldEntries, lock, manifest, candidate, args, options, neighborEntry, neighborEntries };
+}
+
+for (const target of ["codex", "claude", "opencode"]) {
+  test(`DES managed ${target} authoring upgrade is explicit and preserves a coherent basis`, t => {
+    const f = authoringUpgradeFixture(t, target);
+    const before = readProjectFile(f.cwd, "rigorloop.lock");
+    const ordinary = runCliWithBundledMetadata(f.args, f.cwd, f.candidate.metadata);
+    assert.notEqual(ordinary.status, 0);
+    assert.match(parseJsonResult(ordinary).blockers[0].next_action, /--write-state/);
+    assert.equal(readProjectFile(f.cwd, "rigorloop.lock"), before);
+    const dry = runCliWithBundledMetadata([...f.args, "--write-state", "--dry-run"], f.cwd, f.candidate.metadata);
+    assert.equal(dry.status, 0, dry.stdout);
+    assert.ok(parseJsonResult(dry).actions.some(a => a.type === "replace"));
+    assert.equal(readProjectFile(f.cwd, "rigorloop.lock"), before);
+    const result = runCliWithBundledMetadata([...f.args, "--write-state"], f.cwd, f.candidate.metadata);
+    assert.equal(result.status, 0, result.stdout);
+    for (const old of f.oldEntries) assert.equal(existsSync(join(f.cwd, old.name)), false);
+    for (const entry of f.candidate.entries) assert.deepEqual(readFileSync(join(f.cwd, entry.name)), entry.bytes);
+    const after = parseLockfile(readProjectFile(f.cwd, "rigorloop.lock"));
+    assert.equal(after.ok, true);
+    const actual = after.lockfile.generated.targets.find(row => row.target === target);
+    assert.deepEqual(after.lockfile.generated.targets.find(row => row.target !== target), f.neighborEntry);
+    assert.deepEqual(readFileSync(join(f.cwd, f.neighborEntries[0].name)), f.neighborEntries[0].bytes);
+    if (f.roots.commands) assert.equal(actual.root_hashes.commands.tree_sha256, treeHashForEntries(f.candidate.entries, f.roots.commands));
+    else assert.equal(actual.tree_sha256, treeHashForEntries(f.candidate.entries, f.roots.skills));
+    assert.equal(readProjectFile(f.cwd, "unrelated.txt"), "keep neighbor\n");
+    const retry = runCliWithBundledMetadata([...f.args, "--write-state"], f.cwd, f.candidate.metadata);
+    assert.equal(retry.status, 0, retry.stdout);
+  });
+}
+
+for (const mutation of ["modified", "extra", "predeleted", "symlink", "mixed"]) {
+  test(`DES ${mutation} managed target cannot bypass retained safety`, t => {
+    const f = authoringUpgradeFixture(t);
+    const root = join(f.cwd, f.roots.skills);
+    if (mutation === "modified") writeFileSync(join(root, "spec/SKILL.md"), "local edit");
+    if (mutation === "extra") writeFileSync(join(root, "extra.txt"), "local addition");
+    if (mutation === "predeleted") rmSync(join(root, "spec"), { recursive: true });
+    if (mutation === "symlink") { rmSync(join(root, "spec"), { recursive: true }); symlinkSync(join(f.cwd, "unrelated.txt"), join(root, "spec")); }
+    if (mutation === "mixed") { mkdirSync(join(root, "design")); writeFileSync(join(root, "design/SKILL.md"), "competing author"); }
+    const before = readProjectFile(f.cwd, "rigorloop.lock");
+    const result = runCliWithBundledMetadata([...f.args, "--write-state"], f.cwd, f.candidate.metadata);
+    assert.notEqual(result.status, 0);
+    assert.equal(readProjectFile(f.cwd, "rigorloop.lock"), before);
+    assert.equal(readProjectFile(f.cwd, "unrelated.txt"), "keep neighbor\n");
+  });
+}
+
+test("DES retired candidate rejects before clean target publication", t => {
+  const f = authoringUpgradeFixture(t);
+  for (const root of Object.values(f.roots)) rmSync(join(f.cwd, root), { recursive: true });
+  rmSync(join(f.cwd, "rigorloop.lock")); rmSync(join(f.cwd, "rigorloop.yaml"));
+  const old = fixtureArchive(f.cwd, { ...f.options, entries: f.oldEntries });
+  const result = runCliWithBundledMetadata([...f.args, "--write-state"], f.cwd, old.metadata);
+  assert.notEqual(result.status, 0);
+  assert.equal(existsSync(join(f.cwd, f.roots.skills)), false);
+  assertNoStateFiles(f.cwd);
+});
+
+for (const mode of ["caught", "interrupted", "rollback-failure", "concurrent"]) {
+  test(`DES public ${mode} replacement preserves recovery and retry authority`, t => {
+    const f = authoringUpgradeFixture(t, "opencode");
+    const backup = tempProject();
+    t.after(() => rmSync(backup, { recursive: true, force: true }));
+    for (const root of Object.values(f.roots)) {
+      mkdirSync(resolve(backup, root, ".."), { recursive: true });
+      execFileSync(process.execPath, ["-e", "require('fs').cpSync(process.argv[1],process.argv[2],{recursive:true})", join(f.cwd, root), join(backup, root)]);
+    }
+    for (const file of ["rigorloop.yaml", "rigorloop.lock"]) copyFileSync(join(f.cwd, file), join(backup, file));
+    const hook = join(backup, "fault.mjs");
+    writeFileSync(hook, `import fs from 'node:fs'; import {syncBuiltinESMExports} from 'node:module'; import {resolve} from 'node:path';
+const original=fs.linkSync; let failed=false; const mode=${JSON.stringify(mode)};
+fs.linkSync=(from,to)=>{
+ if(mode==='rollback-failure'&&failed&&String(from).includes('.rigorloop-authoring-old-')) throw new Error('injected rollback failure');
+ if(!failed&&to==='rigorloop.lock'&&String(from).includes('/new/')) { failed=true;
+  if(mode==='interrupted') process.exit(97);
+  if(mode==='concurrent') { fs.writeFileSync('rigorloop.yaml','independent manifest bytes\\n'); }
+  else throw new Error('injected state publication failure');
+ }
+ return original(from,to);
+}; syncBuiltinESMExports();`);
+    const fault = runCliWithBundledMetadata([...f.args, "--write-state"], f.cwd, f.candidate.metadata, { env: { NODE_OPTIONS: `--import=${hook}` } });
+    assert.notEqual(fault.status, 0, fault.stdout);
+    if (mode === "caught") {
+      for (const file of ["rigorloop.yaml", "rigorloop.lock"]) assert.deepEqual(readFileSync(join(f.cwd, file)), readFileSync(join(backup, file)));
+      for (const entry of f.oldEntries) assert.deepEqual(readFileSync(join(f.cwd, entry.name)), entry.bytes);
+      assert.match(fault.stdout, /Original target\/state restored/);
+    } else {
+      const retry = runCliWithBundledMetadata([...f.args, "--write-state"], f.cwd, f.candidate.metadata);
+      assert.notEqual(retry.status, 0, "partial basis must not be silently accepted on retry");
+      if (mode === "concurrent") {
+        assert.equal(readProjectFile(f.cwd, "rigorloop.yaml"), "independent manifest bytes\n");
+        // Independent shared-state changes require an installation-owner decision;
+        // this recovery test must not overwrite them or pretend to resolve it.
+        return;
+      }
+      // Operator restores only the selected roots/state from the separately
+      // retained matching backup after inspecting/preserving partial contents.
+      for (const root of Object.values(f.roots)) {
+        rmSync(join(f.cwd, root), { recursive: true, force: true });
+        execFileSync(process.execPath, ["-e", "require('fs').cpSync(process.argv[1],process.argv[2],{recursive:true})", join(backup, root), join(f.cwd, root)]);
+      }
+      for (const file of ["rigorloop.yaml", "rigorloop.lock"]) copyFileSync(join(backup, file), join(f.cwd, file));
+    }
+    const restored = runCliWithBundledMetadata([...f.args, "--write-state"], f.cwd, f.candidate.metadata);
+    assert.equal(restored.status, 0, restored.stdout);
+    assert.equal(readProjectFile(f.cwd, "unrelated.txt"), "keep neighbor\n");
+  });
+}
+
+test("DES unmanaged backed-up cleanup reaches design without creating state", t => {
+  const f = authoringUpgradeFixture(t, "opencode");
+  rmSync(join(f.cwd, "rigorloop.yaml")); rmSync(join(f.cwd, "rigorloop.lock"));
+  const backup = tempProject();
+  t.after(() => rmSync(backup, { recursive: true, force: true }));
+  for (const entry of f.oldEntries) {
+    mkdirSync(resolve(backup, entry.name, ".."), { recursive: true });
+    copyFileSync(join(f.cwd, entry.name), join(backup, entry.name));
+  }
+  const blocked = runCliWithBundledMetadata(f.args, f.cwd, f.candidate.metadata);
+  assert.notEqual(blocked.status, 0);
+  assert.match(blocked.stdout, /unmanaged/i);
+  for (const name of ["spec", "architecture"]) {
+    rmSync(join(f.cwd, f.roots.skills, name), { recursive: true });
+    rmSync(join(f.cwd, f.roots.commands, `${name}.md`));
+  }
+  const result = runCliWithBundledMetadata(f.args, f.cwd, f.candidate.metadata);
+  assert.equal(result.status, 0, result.stdout);
+  assertNoStateFiles(f.cwd);
+  assert.equal(readProjectFile(f.cwd, `${f.roots.skills}/design/SKILL.md`), "# Design\n");
+  assert.equal(readProjectFile(f.cwd, f.neighborEntries[0].name), "neighbor target bytes\n");
+  for (const entry of f.oldEntries) assert.deepEqual(readFileSync(join(backup, entry.name)), entry.bytes);
+});
+
+test("DES manifest-implicated target cannot use unmanaged cleanup authority", t => {
+  const f = authoringUpgradeFixture(t);
+  rmSync(join(f.cwd, "rigorloop.lock"));
+  const result = runCliWithBundledMetadata([...f.args, "--write-state"], f.cwd, f.candidate.metadata);
+  assert.notEqual(result.status, 0);
+  assert.equal(readProjectFile(f.cwd, "rigorloop.yaml"), f.manifest);
+  assert.equal(existsSync(join(f.cwd, "rigorloop.lock")), false);
+  for (const entry of f.oldEntries) assert.deepEqual(readFileSync(join(f.cwd, entry.name)), entry.bytes);
+});
+
+test("DES retired OpenCode alias rejects even when candidate skills are unified", t => {
+  const f = authoringUpgradeFixture(t, "opencode");
+  for (const root of Object.values(f.roots)) rmSync(join(f.cwd, root), { recursive: true });
+  rmSync(join(f.cwd, "rigorloop.yaml")); rmSync(join(f.cwd, "rigorloop.lock"));
+  const candidate = fixtureArchive(f.cwd, { ...f.options,
+    entries: [...f.options.entries, { name: `${f.roots.commands}/spec.md`, bytes: Buffer.from("Old alias\n") }],
+    commandAliases: { opencode: { count: 2, paths: [`${f.roots.commands}/design.md`, `${f.roots.commands}/spec.md`] } },
+  });
+  const result = runCliWithBundledMetadata(f.args, f.cwd, candidate.metadata);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stdout, /retired-authoring-candidate/);
+  for (const root of Object.values(f.roots)) assert.equal(existsSync(join(f.cwd, root)), false);
+  assertNoStateFiles(f.cwd);
 });

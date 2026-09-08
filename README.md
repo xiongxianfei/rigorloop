@@ -60,10 +60,10 @@ Key paths: [workflow contract](specs/rigorloop-workflow.md) · [contribute](CONT
 Use RigorLoop as a repository-local workflow, not as a chat convention. The useful path is:
 
 ```text
-proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> verify
+proposal -> proposal-review -> design -> design-review -> plan -> delivery-review -> implement -> code-review -> verify
 ```
 
-Architecture and specification are separate design inputs reconciled by `design-review`. Delivery Review jointly approves safe implementation sequencing and the plan's verification allocation.
+`design` reconciles behavior, technical realization, decisions and acceptance in owning living Designs; `design-review` independently assesses the exact affected subjects and interactions. Delivery Review jointly approves safe implementation sequencing and the plan's verification allocation.
 
 Add `review-resolution` when review records material findings. Add `ci-maintenance` only when CI workflows or related automation must change.
 
@@ -148,7 +148,7 @@ $route auto: <target-stage>
 Supported targets are:
 
 ```text
-proposal-review, architecture, spec, design-review,
+proposal-review, design, design-review,
 plan, delivery-review, implement, code-review, verify
 ```
 
@@ -182,8 +182,8 @@ A RigorLoop change leaves a traceable artifact chain:
 | Stage | Example artifact |
 | --- | --- |
 | Proposal | `docs/proposals/<change>.md` |
-| Architecture | `docs/architecture/<change>.md` |
-| Spec | `specs/<slug>.md` |
+| Design | `docs/design/<model>/<model>.md` |
+| Retained legacy contracts | Existing project-declared spec/architecture/ADR paths until explicitly migrated |
 | Plan | `docs/plans/<change>.md` |
 | Review records | `docs/changes/<change>/reviews/` |
 | Validation evidence | `docs/changes/<change>/change.yaml` |
@@ -321,7 +321,7 @@ OpenCode uses generated command aliases for the curated lifecycle stages. All in
 /pr Prepare the verified change for pull request review.
 ```
 
-OpenCode command aliases are generated only for `proposal`, `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `pr`. Other portable skills remain available as skills but do not receive command aliases.
+OpenCode command aliases are generated only for `proposal`, `proposal-review`, `design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `pr`. Other portable skills remain available as skills but do not receive command aliases.
 
 OpenCode one-shot example:
 
@@ -348,7 +348,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 - Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
 - Workflow infrastructure: specs, CLI workflow context, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
-- Compact per-change chain: `proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify`. PR is an optional external handoff after lifecycle completion.
+- Compact per-change chain: `proposal -> proposal-review -> design -> design-review -> plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify`. PR is an optional external handoff after lifecycle completion.
 - Periodic learning: `learn`
 
 Explore (`explore`) expands a materially unclear decision space; Research (`research`) reduces bounded uncertainty about facts that can change a decision. Use both when the option comparison depends on unanswered research questions, and neither when direction and relevant facts are already clear. They are optional supporting skills: an explicit invocation writes a standalone artifact under `docs/explorations/` or `docs/research/`, and the owning stage must adopt any conclusion that affects its decision. Neither skill approves a direction or advances the lifecycle. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.
@@ -437,3 +437,5 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 ## License
 
 This repository currently ships with the MIT license.
+
+The unified authoring candidate replaces `spec` and `architecture` with `design`. Existing managed installations use the [authorized upgrade and recovery procedure](packages/rigorloop/README.md#upgrading-retired-authoring-skills); pre-deleting managed entries creates drift. The selected [Design](docs/design/design/design.md) and [System](docs/design/system/system.md) own the bounded method/composition migration. Other document consolidation remains [explicit follow-up work](docs/follow-ups.md).

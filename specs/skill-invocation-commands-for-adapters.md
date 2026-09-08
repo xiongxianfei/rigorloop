@@ -1,5 +1,9 @@
 # Skill Invocation Commands for Adapter Packages
 
+## Unified authoring adoption
+
+For the selected responsibility, [Design](../docs/design/design/design.md) replaces separate normal `spec` and `architecture` authoring with `design`, including one OpenCode `design` alias. Independent `design-review` assesses the exact affected model, legacy-source and example subjects and relevant interactions; no fixed spec/architecture/ADR tuple is required for model work. The normalized skill structure, unrelated invocation rules, historical protocol identities and downstream responsibilities below retain their meaning. Removing old invocations does not retire their documents; source authority follows the explicit Design/System displacement maps.
+
 ## Status
 - approved
 

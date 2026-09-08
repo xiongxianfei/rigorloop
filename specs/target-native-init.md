@@ -1,8 +1,8 @@
 # Target-Native Init
 
-## Status
+## Historical approval
 
-approved
+The original Target-native init specification was approved under its original contract. Current amendment state and assessments belong to the owning change record below.
 
 This retained status describes the original contract. The separately owned scoped Design amendment below is subject to its owning change and coordinated adoption; the historical approval does not assess that amendment.
 

@@ -1718,6 +1718,34 @@ def validate_model_path(root: Path, relative_path: str) -> tuple[ValidationIssue
         return (_issue("BFR-MODEL-READ", relative_path, "model file cannot be safely read"),)
 
 
+# The reviewed Design/System displacement map retires exactly these two current
+# method authorities. Preserve their notice and original body byte-for-byte;
+# never infer archive status from a heading, filename pattern or unknown marker.
+# Reusing or revising these paths requires explicit owner reconciliation.
+RETIRED_METHOD_SOURCES = {
+    "specs/architecture-package-method.md": "4b8ca5c93fc85e1a8bdceb0203c7ad2faf7e41921d2eeb11c1b3eaf482a95899",
+    "specs/architecture-package-method.test.md": "86b42bc0f616931f51462da90e579722a720cfc7c24585d3272fb7bf50d03346",
+}
+
+
+def _validate_retired_method_sources(root: Path) -> tuple[ValidationIssue, ...]:
+    for relative, expected in RETIRED_METHOD_SOURCES.items():
+        path, issue = _changed_spec_path(root, relative)
+        if issue:
+            return (issue,)
+        if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+            return (_issue("BFR-RETIRED-METHOD-CHANGED", relative,
+                           "preserved retired method source or replacement notice changed or is missing",
+                           "changed-or-missing", "reviewed immutable historical source"),)
+    for relative in ("docs/design/design/design.md", "docs/design/system/system.md"):
+        path, issue = _contained_regular_file(root, Path(relative))
+        if issue:
+            return (_issue("BFR-RETIRED-METHOD-OWNER", relative,
+                           "replacement owner must be a contained regular non-symlink file",
+                           "unsafe-or-missing", "declared Design owner"),)
+    return ()
+
+
 def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIssue, ...]:
     if relative_path.startswith("docs/design/"):
         return validate_model_path(root, relative_path)
@@ -1727,6 +1755,8 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
     if path_issue:
         return (path_issue,)
     assert path is not None
+    if relative_path in RETIRED_METHOD_SOURCES:
+        return _validate_retired_method_sources(root)
     activation_path, activation_path_issue = _fixed_authoritative_path(
         root,
         ACTIVATION_RECORD,

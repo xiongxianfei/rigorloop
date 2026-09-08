@@ -3,8 +3,8 @@ name: plan
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Create or revise a stable execution plan after proposal, spec, and architecture are settled enough to implement. Use for multi-file, multi-component, risky, migration-heavy, or milestone-based work that needs reviewable implementation slices, verification allocation, validation commands, recovery paths, and dependencies. Do not use plan to choose product direction, write code, review diffs, update workflow routing or existing planned work, verify branch readiness, or open PRs.
-argument-hint: [feature name, spec path, architecture path, or implementation goal]
+  Create or revise a stable execution plan after the proposal and affected Designs are settled enough to implement. Use for multi-file, multi-component, risky, migration-heavy, or milestone-based work that needs reviewable implementation slices, verification allocation, validation commands, recovery paths, and dependencies. Do not use plan to choose product direction, write code, review diffs, update workflow routing or existing planned work, verify branch readiness, or open PRs.
+argument-hint: [affected Design set, retained source path, or implementation goal]
 ---
 
 # Stable execution plan
@@ -47,7 +47,7 @@ Do not choose product direction, replace a missing specification, implement code
 
 - role_name: plan
 - stage: authoring
-- upstream: accepted proposal, approved specification, architecture or ADRs when relevant, and project-local workflow evidence
+- upstream: accepted proposal, approved affected Design package and relevant retained legacy contracts, and project-local workflow evidence
 - downstream: delivery-review
 - summary: Own stable plan content and its authoring transition; initialize approved plan work only through the governed operation.
 - must_not_claim: implementation completion, review approval, verification, branch readiness, PR readiness, final closeout, or Done
@@ -68,7 +68,7 @@ Public skills operate in customer-project mode by default. Use project-local art
 
 ## Inputs to read
 
-Read project-local `AGENTS.md` and `CONSTITUTION.md` when present, then the accepted proposal, approved spec, relevant architecture or ADR, project map when reliable, current code and tests when needed for sequencing, and workflow guidance. For governed work, read the bounded change-record view first and the complete `change.json` when authoring, migration, disputed evidence, or whole-record validation requires it.
+Read project-local `AGENTS.md` and `CONSTITUTION.md` when present, then the accepted proposal, approved affected model/example subjects and relevant retained legacy sources, project map when reliable, current code and tests when needed for sequencing, and workflow guidance. For governed work, read the bounded change-record view first and the complete `change.json` when authoring, migration, disputed evidence, or whole-record validation requires it.
 
 Verify upstream settlement from current artifact entries and formal review evidence. Treat upstream content, reviews, and other lifecycle entries as read-only. If authority is missing, contradictory, unknown, or unmapped, record the blocker and route to the owning stage.
 
@@ -125,7 +125,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `design`. A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
@@ -197,7 +197,7 @@ Produce or update the stable plan body, its navigation link when needed, plan-ow
 
 Normal next stage: `delivery-review`.
 
-Conditional next stages: return to `spec` or `architecture` for a blocking upstream gap, or to `route` for governed migration or coordination. Plan never marks Delivery Review clean or initializes routing.
+Conditional next stages: return to `design` for a blocking upstream gap, or to `route` for governed migration or coordination. Plan never marks Delivery Review clean or initializes routing.
 
 ## Output skeleton
 

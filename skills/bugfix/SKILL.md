@@ -77,9 +77,9 @@ Root cause is exactly `implementation-defect`, `contract-gap`, `integration-mism
 Current action is exactly `stop-blocked`, `route-owner`, `continue-diagnosis`, `complete-diagnosis`, `resolve-test-feasibility`, `author-automated-proof`, `apply-production-correction`, `run-post-fix-validation`, or `complete-fix`. Apply these conditions in order:
 
 1. Unknown value, cross-axis inconsistency, unsafe identity, invalid authority, missing required authority, or fix with write authority `none`: `stop-blocked`. The recognized contract basis value `conflicting` routes under the next rule; it is not a cross-axis inconsistency by itself.
-2. `contract-gap`, or basis `missing`, `conflicting`, or `behavior-change-request`: `route-owner` to `spec` or the contract owner.
+2. `contract-gap`, or basis `missing`, `conflicting`, or `behavior-change-request`: `route-owner` to `design` or the contract owner.
 3. Cause `unknown`, or unresolved reproduction/support: `continue-diagnosis`.
-4. A required long-lived design decision: `route-owner` to `architecture`.
+4. A required long-lived design decision: `route-owner` to `design`.
 5. Environment or dependency cause without settled resilience behavior and scope: `route-owner` to its system owner.
 6. Diagnose-only with supported evidence and no owner action: `complete-diagnosis`.
 7. A correction exists and identity-equal proof or required blast-radius validation fails: `stop-blocked`.

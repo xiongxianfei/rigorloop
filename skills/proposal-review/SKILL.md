@@ -34,7 +34,7 @@ Judge whether the proposal responsibly refines the incoming RR into an IR-level 
 - role_name: proposal-review
 - stage: review
 - upstream: proposal artifact plus user intent when available
-- downstream: proposal revision, accepted proposal, or isolated stop before architecture and specification
+- downstream: proposal revision, accepted proposal, or isolated stop before Design
 - summary: Review proposal direction, scope, risk, and feasibility as one decision.
 - ownership: Write review evidence and, with exact formal authority, settle only the matching proposal entry. Route owns semantic routing and continuation.
 - must_not_claim: spec completion, implementation review, final verification, branch readiness, PR readiness, or automatic downstream handoff
@@ -117,7 +117,7 @@ Use `pass`, `concern`, or `block`. Judge decision sufficiency and proportionalit
 
 ### Feasibility
 
-Require exactly one embedded `Feasibility` section with an assessment, basis, constraints, and blockers. Treat supporting research as input, not as a separate proposal artifact or gate. A missing, unsupported, contradicted, materially stale, or blocking evaluation requires proposal revision and cannot authorize architecture or specification authoring. Approval confirms only that the direction is valuable, bounded, and feasible enough for design work; it does not approve detailed behavior, architecture, delivery, implementation, or proof adequacy.
+Require exactly one embedded `Feasibility` section with an assessment, basis, constraints, and blockers. Treat supporting research as input, not as a separate proposal artifact or gate. A missing, unsupported, contradicted, materially stale, or blocking evaluation requires proposal revision and cannot authorize Design authoring. Approval confirms only that the direction is valuable, bounded, and feasible enough for design work; it does not approve detailed behavior, architecture, delivery, implementation, or proof adequacy.
 
 ### Vision alignment
 
@@ -141,7 +141,7 @@ Report the scope-preservation result in the mapped result asset.
 
 Every material finding includes Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or a `needs-decision` rationale naming the decision and owner. Copy the finding asset once per material finding. A material finding is a required change or decision, not a quota.
 
-For historical judgment rules, use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval locks only the accepted challenge, goals, scope and non-goals, governing principle, high-level direction, sufficient feasibility, and disclosed proposal-level impacts. It authorizes architecture and specification authoring only, not that either artifact exists or is approved. Use `changes-requested` for actionable proposal or feasibility defects, `blocked` for an authority, feasibility blocker, or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
+For historical judgment rules, use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval locks only the accepted challenge, goals, scope and non-goals, governing principle, high-level direction, sufficient feasibility, and disclosed proposal-level impacts. It authorizes Design authoring only, not that either artifact exists or is approved. Use `changes-requested` for actionable proposal or feasibility defects, `blocked` for an authority, feasibility blocker, or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
 
 A direction that is too vague to approve is a material finding. Content that prematurely settles a detailed Design or Delivery decision is also a material finding. Proposal Review must not create a finding solely because downstream detail or a routine impact section is absent.
 

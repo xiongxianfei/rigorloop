@@ -31,3 +31,7 @@ The current local candidate includes targeted recording profiles for the stage a
 The workflow routing skill has been renamed from `workflow` to `route`. Use `route` for routing and bounded automation. The v0.5.1 candidate archives do not install `workflow` as an alias. Exact lockfile-managed installs can be replaced by normal `init --write-state`; unmanaged or drifted installs stop with state-specific recovery guidance. Stable lifecycle authority values and `workflow.automation` state remain compatible and are not renamed.
 
 The CI workflow authoring/review skill has been renamed from `ci` to `ci-maintenance`. Use `ci-maintenance` for direct skill invocation. Existing direct `ci` invocations should be updated; this adapter release does not install `ci` as a compatibility alias.
+
+## Unified authoring candidate transition
+
+The coordinated candidate contains one `design` author and OpenCode alias; `spec` and `architecture` are withdrawn. Use the [complete managed/unmanaged upgrade and recovery procedure](../../packages/rigorloop/README.md#upgrading-retired-authoring-skills). Managed targets retain the old complete tree until original-hash checks and explicitly authorized replacement; manual pre-deletion is not that procedure. This candidate does not change published archives or authorize publication/customer adoption.

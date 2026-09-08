@@ -153,7 +153,7 @@ class AdapterDistributionTests(unittest.TestCase):
                             self.assertIn(expected_path, package_bytes)
 
     def test_targeted_profiles_match_canonical_in_every_supported_archive(self) -> None:
-        names = ("proposal", "proposal-review", "architecture", "spec", "design-review", "plan", "delivery-review", "implement", "code-review", "route", "verify", "bugfix", "ci-maintenance", "pr", "research", "explore", "learn")
+        names = ("proposal", "proposal-review", "design", "design-review", "plan", "delivery-review", "implement", "code-review", "route", "verify", "bugfix", "ci-maintenance", "pr", "research", "explore", "learn")
         with tempfile.TemporaryDirectory(prefix="targeted-archives-") as temporary:
             output = Path(temporary)
             build_adapter_archives("v0.5.1", output)
@@ -161,9 +161,14 @@ class AdapterDistributionTests(unittest.TestCase):
             for adapter in SUPPORTED_ADAPTERS:
                 with zipfile.ZipFile(output / adapter_archive_name(adapter, "v0.5.1")) as archive:
                     for name in names:
-                        canonical = (ROOT / "skills" / name / "SKILL.md").read_text().split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
-                        body = archive.read(ADAPTERS[adapter].skill_path(name).as_posix()).decode()
-                        self.assertEqual(body.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0], canonical)
+                        relative = "references/governed-design-authoring.md" if name == "design" else "SKILL.md"
+                        canonical = (ROOT / "skills" / name / relative).read_text()
+                        member = ADAPTERS[adapter].skill_path(name).parent / relative
+                        body = archive.read(member.as_posix()).decode()
+                        if name != "design":
+                            canonical = canonical.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
+                            body = body.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
+                        self.assertEqual(body, canonical)
                         self.assertIn("subject inspect", canonical)
                         self.assertNotIn("record-store check|record", canonical)
 
@@ -1523,7 +1528,7 @@ release_gate:
     def test_boundary_first_archive_drift_reports_exact_layer_and_hashes(self) -> None:
         cases = (
             ("route", "references/boundary-first-method-v1.md"),
-            ("spec", "references/boundary-first-feature-authoring-v1.md"),
+            ("design", "references/boundary-first-feature-authoring-v1.md"),
         )
         for skill_name, relative_resource in cases:
             with self.subTest(layer=relative_resource), tempfile.TemporaryDirectory() as tmp:
@@ -3538,9 +3543,9 @@ release_gate:
                 "unsupported command alias tool: claude",
             ),
             (
-                "    count: 10\n    aliases:\n",
+                "    count: 9\n    aliases:\n",
                 (
-                    "    count: 11\n"
+                    "    count: 10\n"
                     "    aliases:\n"
                     "      verify: dist/adapters/opencode/.opencode/commands/verify.md\n"
                 ),
@@ -5044,6 +5049,7 @@ release_gate:
             root = Path(tmp)
             skills_root = root / "skills"
             shutil.copytree(ROOT / "skills", skills_root)
+            (skills_root / "architecture").mkdir()
             (skills_root / "architecture" / "SKILL.md").write_text(legacy_skill, encoding="utf-8")
             output_root = root / "dist" / "adapters"
             self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.5")
@@ -5429,7 +5435,7 @@ release_gate:
         recommended = text.split("## Recommended Use", 1)[1].split("## Starting a new repository", 1)[0]
 
         self.assertIn(
-            "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement -> code-review -> verify",
+            "proposal -> proposal-review -> design -> design-review -> plan -> delivery-review -> implement -> code-review -> verify",
             recommended,
         )
         self.assertIn("optional external integration", text)

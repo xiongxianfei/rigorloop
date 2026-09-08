@@ -15,7 +15,7 @@ Build, refresh, or audit an evidence-bound map of the repository as it exists to
 - role_name: project-map
 - stage: support
 - upstream: current repository state, project-local guidance, and the user's orientation question
-- downstream: explore, proposal, architecture, workflow, or none
+- downstream: explore, proposal, design, route, or none
 - summary: Create, refresh, or audit a current-state repository map with cited evidence, bounded inference, known gaps, and downstream orientation.
 - must_not_claim: future architecture approval, implementation readiness, review approval, validation success, branch readiness, PR readiness, or final lifecycle closeout
 
@@ -129,7 +129,7 @@ Use Mermaid only to clarify flows or boundaries. Tie nodes to observed component
 
 Downstream skills may use a current map for orientation. They must inspect source directly when it is stale or partial, scope is unreviewed, evidence conflicts, exact architecture or security behavior matters, paths disappeared, or a relied-on claim is inferred or unknown.
 
-Recommend `explore` for uncertainty, `proposal` for direction, `architecture` for future design, `route` for routing, or `none`. Isolated invocation never starts it automatically.
+Recommend `explore` for uncertainty, `proposal` for direction, `design` for future design, `route` for routing, or `none`. Isolated invocation never starts it automatically.
 
 ## Follow-up boundary
 
@@ -164,7 +164,7 @@ Read the full file when the whole file is the review target or map target, bound
 - Freshness result: <current | partial | stale>
 - Correction note: <note or none>
 - Open blockers: <blockers or none>
-- Next stage: <explore | proposal | architecture | workflow | none>
+- Next stage: <explore | proposal | design | route | none>
 ```
 
 ## Expected output

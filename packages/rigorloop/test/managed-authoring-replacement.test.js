@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
-import { captureManagedBasis, replaceManagedAuthoring } from "../dist/lib/managed-authoring-replacement.js";
+import { captureManagedBasis, replaceManagedAuthoring, inspectManagedAuthoringRecovery, settleManagedAuthoringRecovery } from "../dist/lib/managed-authoring-replacement.js";
 
 function fixture(t) {
   const projectRoot = mkdtempSync(join(tmpdir(), "authoring-replacement-"));
@@ -289,3 +289,29 @@ for (const restoring of [false, true]) {
     assert.equal(readFileSync(unrelated, "utf8"), "independent unrelated bytes");
   });
 }
+
+for (const value of ["unknown_value", "", "Settled.\nextra"]) {
+  test(`unknown_value recovery settlement rejects ${JSON.stringify(value)}`, t => {
+    const f = fixture(t);
+    const result = replaceManagedAuthoring(f);
+    writeFileSync(join(result.backupPath, "settled"), value);
+    assert.equal(inspectManagedAuthoringRecovery(f).blocker?.code, "managed-authoring-recovery-required");
+  });
+}
+
+test("recovery settlement refuses a symlink", t => {
+  const f = fixture(t);
+  const result = replaceManagedAuthoring(f);
+  rmSync(join(result.backupPath, "settled"));
+  symlinkSync(join(f.projectRoot, "unrelated.txt"), join(result.backupPath, "settled"));
+  assert.equal(inspectManagedAuthoringRecovery(f).blocker?.code, "managed-authoring-recovery-required");
+});
+
+test("coherent recovery can settle before installing a different missing target", t => {
+  const f = fixture(t);
+  const result = replaceManagedAuthoring(f);
+  rmSync(join(result.backupPath, "settled"));
+  settleManagedAuthoringRecovery({ projectRoot: f.projectRoot, roots: [".new/skills"], shared: true });
+  assert.deepEqual(inspectManagedAuthoringRecovery(f).pending, []);
+  assert.equal(existsSync(join(f.projectRoot, ".new")), false);
+});

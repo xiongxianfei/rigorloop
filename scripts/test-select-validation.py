@@ -749,6 +749,20 @@ class ValidationSelectionTests(unittest.TestCase):
                 self.assertNotIn("documentation_prose.audit", checks)
                 self.assertTrue({"model.validate", "rigorloop_cli.test"} <= checks.keys())
 
+    def test_retired_author_deletion_keeps_package_proof_without_auditing_absent_source(self):
+        repo = self.make_git_repo()
+        path = "skills/spec/SKILL.md"
+        file = repo / path
+        file.parent.mkdir(parents=True)
+        file.write_text("# Historical author\n")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "old author"], cwd=repo, check=True, capture_output=True)
+        file.unlink()
+        selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+        checks = {c["id"] for c in selected.selected_checks}
+        self.assertNotIn("documentation_prose.audit", checks)
+        self.assertTrue({"skills.validate", "skills.regression", "adapters.drift"} <= checks)
+
     def test_missing_unproven_or_present_isolated_prose_retains_audit(self):
         path = "docs/reviews/explicit-recording-m3-code-review.md"
         repo = self.make_git_repo()
@@ -1560,7 +1574,7 @@ raise SystemExit({exit_code})
             self.assertEqual(check["cache_status"], "not-applicable")
 
     def test_canonical_skill_only_uses_purpose_built_checks_without_lifecycle(self) -> None:
-        path = "skills/spec/SKILL.md"
+        path = "skills/design/SKILL.md"
         payload = self.select([path]).to_json_dict()
 
         self.assertEqual(payload["status"], "ok")
@@ -1576,10 +1590,10 @@ raise SystemExit({exit_code})
                 "documentation_prose.audit",
             }.issubset(selected_ids(payload))
         )
-        self.assertIn("skills/spec", payload["affected_roots"])
+        self.assertIn("skills/design", payload["affected_roots"])
 
     def test_generated_skill_only_uses_derivation_checks_without_lifecycle(self) -> None:
-        path = ".codex/skills/spec/SKILL.md"
+        path = ".codex/skills/design/SKILL.md"
         payload = self.select([path]).to_json_dict()
 
         self.assertEqual(payload["status"], "ok")
@@ -1617,7 +1631,7 @@ raise SystemExit({exit_code})
                     self.assertIn(path, lifecycle["paths"])
 
     def test_mixed_skill_and_spec_scope_each_check_to_its_owner(self) -> None:
-        skill_path = "skills/spec/SKILL.md"
+        skill_path = "skills/design/SKILL.md"
         spec_path = "specs/progressive-boundary-first-skill-guidance.md"
         payload = self.select([skill_path, spec_path]).to_json_dict()
 
@@ -1638,7 +1652,7 @@ raise SystemExit({exit_code})
         self.assertEqual(boundary["paths"], [skill_path, spec_path])
 
     def test_lifecycle_words_do_not_change_skill_path_classification(self) -> None:
-        path = "skills/spec/SKILL.md"
+        path = "skills/design/SKILL.md"
         first = self.select([path]).to_json_dict()
         second = self.select([path]).to_json_dict()
 
@@ -1818,7 +1832,7 @@ raise SystemExit({exit_code})
             [
                 "scripts/boundary_first_validation.py",
                 "docs/changes/2026-08-05-example/review-log.md",
-                "skills/spec/SKILL.md",
+                "skills/design/SKILL.md",
                 "dist/adapters/manifest.yaml",
                 "packages/rigorloop/package.json",
                 "docs/releases/v0.3.6/release.yaml",
@@ -1867,7 +1881,7 @@ raise SystemExit({exit_code})
                 "skills.validate",
                 "python scripts/validate-skills.py",
                 "scripts/validate-skills.py",
-                ("--mode", "explicit", "--path", "skills/spec/SKILL.md"),
+                ("--mode", "explicit", "--path", "skills/design/SKILL.md"),
             ),
             (
                 "adapters.regression",
@@ -5160,7 +5174,7 @@ raise SystemExit(3)
             "specs/boundary-first-resources.yaml",
             "specs/feature.md",
             "specs/feature.test.md",
-            "skills/spec/references/boundary-first-method-v1.md",
+            "skills/design/references/boundary-first-method-v1.md",
             "dist/adapters/manifest.yaml",
             "scripts/boundary_first_reference.py",
             "scripts/project-boundary-first-reference.py",
@@ -5198,7 +5212,7 @@ raise SystemExit(3)
                 )
                 if path in {
                     "specs/boundary-first-resources.yaml",
-                    "skills/spec/references/boundary-first-method-v1.md",
+                    "skills/design/references/boundary-first-method-v1.md",
                     "scripts/boundary_first_reference.py",
                     "scripts/project-boundary-first-reference.py",
                     "scripts/test-boundary-first-reference.py",

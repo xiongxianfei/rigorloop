@@ -43,6 +43,20 @@ class BuildSkillsTests(unittest.TestCase):
         self.assertTrue((output_dir / "proposal" / "SKILL.md").is_file())
         self.assertTrue((output_dir / "route" / "SKILL.md").is_file())
         self.assertFalse((output_dir / "workflow").exists())
+        self.assertTrue((output_dir / "design" / "SKILL.md").is_file())
+        for retired in ("spec", "architecture"):
+            self.assertFalse((output_dir / retired).exists())
+        for resource in (
+            "references/model-authoring.md", "references/technical-design.md",
+            "references/system-composition.md", "references/legacy-source-reconciliation.md",
+            "references/boundary-first-method-v1.md", "references/boundary-first-feature-authoring-v1.md",
+            "references/legacy-technical-authoring.md", "references/governed-design-authoring.md",
+            "references/test-quality.md", "assets/design-skeleton.md",
+            "assets/legacy-architecture-skeleton.md", "assets/legacy-adr-skeleton.md",
+            "assets/diagram-styles.mmd",
+        ):
+            self.assertTrue((output_dir / "design" / resource).is_file(), resource)
+
         self.assertFalse((output_dir / "route" / "assets" / "workflows-skeleton.md").exists())
         self.assertFalse(self.build_skills.collect_drift(self.build_skills.CANONICAL_SKILLS_DIR, output_dir))
 
@@ -122,7 +136,7 @@ class BuildSkillsTests(unittest.TestCase):
             self.build_skills.CANONICAL_SKILLS_DIR,
             output_dir,
         )
-        generated_resource = output_dir / "architecture" / "assets" / "architecture-skeleton.md"
+        generated_resource = output_dir / "design" / "assets" / "legacy-architecture-skeleton.md"
         generated_resource.write_text(
             generated_resource.read_text(encoding="utf-8") + "\nstale\n",
             encoding="utf-8",
@@ -135,7 +149,7 @@ class BuildSkillsTests(unittest.TestCase):
 
         self.assertTrue(
             any(
-                "mapped resource parity mismatch: architecture: assets/architecture-skeleton.md"
+                "mapped resource parity mismatch: design: assets/legacy-architecture-skeleton.md"
                 in error
                 and "canonical sha256=" in error
                 and "generated sha256=" in error
@@ -150,7 +164,7 @@ class BuildSkillsTests(unittest.TestCase):
             self.build_skills.CANONICAL_SKILLS_DIR,
             output_dir,
         )
-        (output_dir / "architecture" / "assets" / "adr-skeleton.md").unlink()
+        (output_dir / "design" / "assets" / "legacy-adr-skeleton.md").unlink()
 
         errors = self.build_skills.collect_generated_resource_parity_errors(
             self.build_skills.CANONICAL_SKILLS_DIR,
@@ -159,7 +173,7 @@ class BuildSkillsTests(unittest.TestCase):
 
         self.assertTrue(
             any(
-                "mapped resource missing: architecture: assets/adr-skeleton.md "
+                "mapped resource missing: design: assets/legacy-adr-skeleton.md "
                 "in generated local skill mirror" in error
                 for error in errors
             ),

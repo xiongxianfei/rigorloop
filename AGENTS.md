@@ -1,5 +1,9 @@
 # AGENTS.md
 
+## Design and System ownership
+
+For this repository’s explicitly selected design-authoring and model-composition responsibility, [Design](docs/design/design/design.md) owns living model conventions, reconciled behavioral/technical authoring, decision preservation and validation mapping. [System](docs/design/system/system.md) owns the selected composition view and shared-owner relationships. The normal public author is `design`; `design-review` remains independent and selects the exact affected models, retained legacy contracts, examples and interactions. Workflow coordinates and consumes the mapping. Unmigrated responsibilities retain their declared owners and formats; installation does not adopt customer governance. The exact transfer is bounded by the models’ displacement maps and takes effect only with reviewed implementation and successful Verify. Historical IDs and approvals retain their original meaning.
+
 ## Test criteria ownership
 
 For this repository's explicitly adopted model work, [Test](docs/design/test/test.md) owns shared derivation, protective-value and maintenance criteria (TEST-SR-01–13). Specialist reviewers and Verify judge actual plans, tests and evidence; Review and Closeout retains assessment authority policy, applicability and closeout consequences. Workflow retains coordination. Canonical consumers apply the criteria through selective quality and maintenance resources; those resources are application guidance, not another policy owner. This initiative's coordinated consumer adoption preserves historical contracts, required negative/regression proof and separately owned execution permissions. Installation does not adopt customer policy. Internal requirement mappings and package mechanics remain in contributor/governance surfaces rather than published skills.
@@ -20,7 +24,7 @@ When instructions conflict, follow this order:
 
 1. Direct user request
 2. `CONSTITUTION.md`
-3. Approved feature spec in `specs/`
+3. Approved owning Design for adopted responsibilities, or approved feature spec in `specs/` for unmigrated responsibilities
 4. Approved architecture or ADR docs when relevant
 5. Active execution plan file in `docs/plans/`
 6. Matching test spec in `specs/`
@@ -72,7 +76,7 @@ Once proposal, spec, and architecture are already settled, execution usually pro
 
 After all implementation milestones and required corrections, require fresh independent whole-change Code Review of the complete final diff and cross-milestone interactions before distinct final Verify. Only successful Verify owns the final explanation and closeout assessment. PR is an optional external integration.
 
-The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves the plan and its verification allocation. Earlier package shapes remain historical evidence, not current progression routes.
+The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves the exact affected models, retained legacy contracts, examples and interactions as one package; Delivery Review approves the plan and its verification allocation. Earlier package shapes remain historical evidence, not current progression routes.
 
 For milestone-based plans, repeat implementation and code-review for each in-scope implementation milestone. A clean non-final milestone review routes to the next implementation milestone; final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
 

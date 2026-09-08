@@ -32,10 +32,10 @@
 
 - <follow-up or none>
 
-## Spec / plan / architecture
+## Design and delivery basis
 
 - Proposal: <path or not applicable>
-- Spec: <path or not applicable>
+- Owning Designs and affected examples: <path or not applicable>
 - Test spec: <path or not applicable>
 - Architecture / ADRs: <paths or not applicable>
 - Plan: <path or not applicable>
