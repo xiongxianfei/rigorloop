@@ -48,7 +48,7 @@ You are the lifecycle orchestrator. Route work to the stage that owns the next a
 Use this skill to start, resume, audit, or route the standard RigorLoop workflow. The responsible actors coordinate:
 
 ```text
-proposal -> proposal-review -> architecture -> spec -> design-review
+proposal -> proposal-review -> design -> design-review
 -> plan -> delivery-review -> implement -> milestone code-review
 -> fresh final whole-change code-review -> verify -> optional pr
 ```
@@ -113,7 +113,7 @@ Either skill may support Proposal, Design, Delivery, Implementation, Verify, or 
 Classify the three predicates below from authoritative evidence. Automation command forms are portable across supported adapters:
 
 - Adapter invocation equivalents preserve the same arguments: Codex uses `$route auto: <argument>`, Claude uses `/route auto: <argument>`, and OpenCode invokes the installed `route` skill with `auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or `off`.
-- `$route auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `verify`.
+- `$route auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `verify`.
 - `$route auto: status` is read-only. `$route auto: off` durably cancels the unified run and preserves transition evidence.
 - `governed_change_context`: a valid current governed change record exists.
 - `automation_command_context`: the invocation is an explicit automation command, including a pre-persistence target bootstrap.
@@ -159,7 +159,7 @@ Run this compact scan before any stage-owned decision that can change observable
 
 If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
 
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`. A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority. Downstream stages do not redefine or rename upstream IDs.
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `design`. A pre-implementation verification-allocation gap routes to `plan`. Historical contracts grant no current progression authority. Downstream stages do not redefine or rename upstream IDs.
 
 Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
 
@@ -172,7 +172,7 @@ Route the method, locate governing artifacts, and stop on missing applicable own
 - Standing artifacts: project vision and constitution.
 - Living references: project map and CLI-derived workflow context.
 - Workflow infrastructure: governance, stage skills, and derived skill-package output.
-- On-demand support: `explore`, `research`, `architecture`, `ci-maintenance`, and `learn` when triggered.
+- On-demand support: `explore`, `research`, `ci-maintenance`, and `learn` when triggered.
 - Per-change chain: the standard sequence above, including ci-maintenance when triggered.
 - Periodic artifacts: learning and other cadence- or incident-triggered memory.
 
@@ -204,7 +204,7 @@ Use targeted proof first. Run broad smoke only when an authoritative `broad_smok
 ## Handoff
 
 - Normal next stage: the next valid specialized skill or stop condition for the standard workflow state.
-- Conditional next stages: `explore`, `research`, `architecture`, `ci-maintenance`, or `learn` when triggered; review, explanation, verification, and PR only when workflow state permits them.
+- Conditional next stages: `explore`, `research`, `design`, `ci-maintenance`, or `learn` when triggered; review, explanation, verification, and PR only when workflow state permits them.
 - The `route` skill owns semantic routing; the receiving skill owns its artifact or proof.
 
 Route deferred work to the durable artifact that can act on it using authoritative CLI context. Do not put deferred execution work in `project-map`.
@@ -242,8 +242,8 @@ AGENTS.md
 CONSTITUTION.md
 docs/project-map.md
 docs/proposals/YYYY-MM-DD-slug.md
-docs/architecture/YYYY-MM-DD-slug.md
-docs/adr/YYYY-MM-DD-slug.md
+docs/design/<model>/<model>.md
+docs/design/<model>/examples/<example>
 docs/plans/YYYY-MM-DD-slug.md
 docs/plan.md
 docs/changes/YYYY-MM-DD-slug/

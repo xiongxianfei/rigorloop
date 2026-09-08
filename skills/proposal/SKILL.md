@@ -3,7 +3,7 @@ name: proposal
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Create a concise direction-approval proposal before Design. Use when the user has a selected direction, explored options, problem statement, or issue that needs its challenge, goals, bounds, governing principle, direction, and feasibility recorded. Use proposal-review to review an existing proposal; use architecture and spec for detailed Design decisions.
+  Create a concise direction-approval proposal before Design. Use when the user has a selected direction, explored options, problem statement, or issue that needs its challenge, goals, bounds, governing principle, direction, and feasibility recorded. Use proposal-review to review an existing proposal; use design for detailed engineering decisions.
 argument-hint: [feature idea, selected option, problem statement, or issue number]
 ---
 

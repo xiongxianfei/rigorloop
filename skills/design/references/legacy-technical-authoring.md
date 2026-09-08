@@ -1,0 +1,11 @@
+# Retained architecture and ADR authoring
+
+Use only for a source that remains under a declared legacy project contract. Resolve its exact identity, ownership and packaging before editing. Preserve its applicable technical concerns and decision history; generic assets cannot override a mandatory project-specific format.
+
+For a retained C4/arc42 architecture package, update only affected sections/views. Where the project requires the twelve-section format, preserve Introduction and Goals, Architecture Constraints, Context and Scope, Solution Strategy, Building Block View, Runtime View, Deployment View, Crosscutting Concepts, Architecture Decisions, Quality Requirements, Risks and Technical Debt, and Glossary. Justify applicable omissions. Runtime explains behavior/failures; Deployment explains packaging/environments; Crosscutting Concepts explains relevant validation, security, portability, generation, caching and observability. Preserve the project's canonical text/diagram relationship and valid relative links. Write subordinate diagram sources before their canonical text commit point when that contract requires it.
+
+For a durable decision governed by an existing ADR contract, retain context, decision, meaningful alternatives, consequences and follow-up. Use replacement/supersession links instead of rewriting old judgments. System boundaries, packaging, validation, portability, release, security or workflow decisions may trigger that contract; living-model work embeds decisions instead of duplicating them.
+
+When creating or rebuilding a legacy artifact and the project permits the generic aid, COPY `assets/legacy-architecture-skeleton.md` or COPY `assets/legacy-adr-skeleton.md`. Fill required fields and remove placeholders. COPY `assets/diagram-styles.mmd` when the relevant diagram needs the common styles. These assets are installed resources and need no contributor checkout. Small amendments use the existing artifact without mandatory scaffold replacement.
+
+Report exact changed subjects, affected views/decisions, preserved historical meaning, relevant interactions and remaining reconciliation. Hand independent Design Review the affected legacy members alongside relevant model owners; a separate fixed package tuple is not required by the unified authoring method.

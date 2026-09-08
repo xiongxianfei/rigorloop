@@ -1,5 +1,9 @@
 # RigorLoop Canonical System Architecture
 
+## Bounded Design and System replacement
+
+[System](../../design/system/system.md#exact-mixed-architecture-migration-boundary) identifies the exact selected composition sections transferred here; [Design](../../design/design/design.md#selected-replacement-map) owns the reconciled authoring method and decision mapping. This coordinated replacement covers only those selected paragraphs, bullets, tables and method decisions. Unselected Level 2, installation, distribution, validation and other responsibilities below retain their existing owners and amendments. Historical diagrams and approvals remain historical evidence; this mixed file is not wholly superseded.
+
 ## V2-only runtime retirement
 
 The [Record Format](../../design/record-format/record-format.md), [CLI](../../design/cli/cli.md) and [Workflow](../../design/workflow/workflow.md) models select `rigorloop-records-v2` as the only supported runtime stored format. Earlier compact/lifecycle and explicit-recording-v1 acceptance, activation, projection, mutation and recovery clauses below are historical design evidence, not current execution or compatibility obligations. Their stable IDs and recorded approvals keep their original meaning. Current consumers use scoped primary reads and targeted recording, with actor-owned decisions and applicability; the CLI does not select readiness. Preserve archival records unchanged, reject explicit retired input safely and preserve v2 safety. Unrelated document/configuration/transport version domains remain supported under their own contracts.
@@ -193,17 +197,10 @@ For explicitly adopted model work, [Review and Closeout](../../design/review-clo
 
 ## Introduction and Goals
 
-RigorLoop is a rigorous software engineering workflow for AI coding agents. Its architecture keeps proposals, specifications, architecture artifacts, plans, tests, implementation evidence, generated adapters, current review judgments, and verified outcomes traceable through durable project artifacts without making Git or pull requests correctness dependencies.
+Current external boundaries, system responsibilities and composition goals are owned by [System](../../design/system/system.md). [Design](../../design/design/design.md) owns the smallest justified living-model set, structural/runtime reasoning and embedded decision preservation.
 
-This canonical architecture package is the long-lived current architecture source of truth for the repository architecture method. It adopts C4 for structural views, all 12 official arc42 sections for architecture documentation, and ADRs for durable decisions.
+Retained additional goals:
 
-The goals are:
-
-- make current repository structure visible through reviewable C4 source diagrams;
-- keep architecture reasoning complete without requiring heavy prose;
-- separate canonical architecture from historical or exceptional change-local evidence;
-- keep architecture updates on the lowest sufficient architecture surface;
-- preserve durable decisions in ADRs;
 - preserve review, verification, and closeout evidence in repository artifacts;
 - keep generated output reproducible from canonical sources;
 - keep `skills/` as the only authored skill source while moving local and public generated skill copies out of ordinary authored Git state in staged releases;
@@ -246,17 +243,12 @@ The goals are:
 
 ## Architecture Constraints
 
+- [Design](../../design/design/design.md) owns model layout, technical reasoning, decisions and scoped legacy authoring; [Workflow](../../design/workflow/workflow.md) coordinates the handoff. Contributor scaffolds remain under `templates/`; required portable legacy aids are packaged inside `design`. Historical deltas cannot compete with a migrated current owner.
 - `CONSTITUTION.md` is the highest-priority repository governance artifact below external runtime instructions.
-- `specs/architecture-package-method.md` owns the C4, arc42, ADR, template, canonical-package, architecture-surface, and historical change-local evidence contract.
-- `specs/rigorloop-workflow.md` owns only workflow stage routing and handoff language for this method.
 - `specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md`
   owns governed artifact-state placement, transition authority, workflow
   routing state, planned-work state, automation-target semantics, and
   prospective migration.
-- The canonical package path is `docs/architecture/system/architecture.md` with default diagrams under `docs/architecture/system/diagrams/`.
-- Architecture and ADR scaffolds live under `templates/`; live architecture and ADR records live under `docs/architecture/` and `docs/adr/`.
-- Architecture work uses the lowest sufficient architecture surface: no-impact rationale for changes with no architecture impact, direct canonical package update for clear current-architecture changes, ADR when a durable decision is introduced or revised, and proposal/spec routing when direction or behavior is not ready.
-- Change-local architecture deltas are not part of the normal architecture authoring path. Existing deltas remain historical evidence, and new deltas are limited to legacy closeout or explicit exceptional evidence.
 - `skills/` is the only authored skill source.
 - `.codex/skills/` is ignored local Codex runtime state and must not be hand-edited, required as tracked Git state, or treated as release evidence after its migration slice.
 - Public adapter skill copies under `dist/adapters/**/skills` are generated adapter output and remain tracked only until the release-artifact compatibility window is satisfied.
@@ -392,34 +384,11 @@ The goals are:
 
 ## Context and Scope
 
-RigorLoop operates inside a repository boundary. Contributors and agents author changes through repository artifacts, reviewers inspect the diff and evidence, GitHub and local shells execute validation, and adapter consumers receive generated guidance for supported agent runtimes.
-
-The canonical scope includes:
-
-- authored governance, workflow, specification, architecture, ADR, plan, test, report, and change-local artifacts;
-- canonical skills, adapter entrypoint templates, architecture templates, and ADR templates;
-- repository-owned validation and generation scripts;
-- generated Codex runtime skills, public adapter packages, adapter manifests, adapter install guidance, adapter artifact metadata, release asset archives, and command aliases;
-- release profiles, generated release-prep surfaces, authored release metadata, tracked release notes, release timing evidence, public closeout evidence, and maintainer smoke evidence;
-- token-cost benchmark prompts, clean fixtures, runner-produced run evidence, analyzer summaries, and release token-friendliness reports;
-- archived legacy architecture documents that remain historical evidence after lifecycle normalization.
-
-The canonical scope excludes runtime application infrastructure, databases, service APIs, and production telemetry because this repository is a workflow and adapter starter kit rather than a deployed service.
-
-Target-agent interpretation is also outside repository acceptance.
-Agent runtimes consume published packages, but repository correctness ends at deterministic package, archive, release, and applicable installer-filesystem boundaries.
-
-See [`diagrams/context.mmd`](diagrams/context.mmd) for the C4 system context view.
+[System Context and Scope](../../design/system/system.md#context-and-scope) owns the external actors, included responsibilities and target-agent interpretation boundary. The existing [context diagram](diagrams/context.mmd) remains historical structural evidence; it is not a second current composition contract.
 
 ## Solution Strategy
 
-Use one canonical architecture package as the current baseline and choose the lowest sufficient architecture surface for each change. Leaf or no-impact work records a no-architecture-impact rationale. Clear current-architecture changes update the canonical package directly. ADRs preserve durable decisions. Unsettled direction routes back to proposal or proposal revision, and unsettled behavior routes back to spec or spec revision.
-
-Historical or exceptional change-local architecture evidence never competes with this package. When such evidence contains durable current architecture truth, that truth must be represented directly in the canonical package before completion.
-
-The repository keeps structural documentation in C4 Mermaid source diagrams, written architecture in the official arc42 section model, and durable decision rationale in ADRs. Existing validation remains path-scoped and review-based for architecture sufficiency, with narrow lifecycle compatibility for canonical architecture packages, diagrams, historical or exceptional change-local architecture evidence, review artifacts, change metadata, and generated-output drift.
-
-This strategy keeps the method practical for normal contributors while making architecture review compare structure, runtime flow, deployment boundaries, cross-cutting concerns, quality requirements, risks, and decision history consistently.
+Use [Design](../../design/design/design.md) for unified behavioral and technical authoring, scoped model selection, decision rationale, affected-consumer reconciliation and independent review. [System](../../design/system/system.md) owns the assembled responsibility view and integrated obligations. Retained local contracts below continue under their declared owners; the living models do not silently migrate them.
 
 For published skills, use a one-way proof chain: Gate A validates canonical skill and resource integrity; Gate B generates and proves Codex, Claude Code, and opencode package parity; Gate C composes current A and B proof with release-only metadata and archive checks.
 Lifecycle records flow to one bounded governance validation owner, while semantic skill questions flow to formal review.
@@ -437,34 +406,7 @@ for a governing requirement, material risk, or explicit request.
 
 ## Building Block View
 
-See [`diagrams/container.mmd`](diagrams/container.mmd) for the C4 container view.
-
-### Level 1 White-Box: RigorLoop Repository System
-
-The repository system is composed of authored guidance, lifecycle artifacts, validation and generation scripts, generated adapter outputs, and release evidence. Authored surfaces define intent and contracts; scripts provide deterministic proof and generated-output refresh; generated surfaces are derived and must not become sources of truth.
-
-`Project maps` is a first-class repository artifact container because it has a distinct current-state orientation responsibility, canonical root and area-map paths, freshness semantics, and downstream consumers.
-
-It is separate from `Architecture`: project maps describe observed repository reality, while architecture artifacts own design structure and decisions.
-
-| Container | Responsibility | Technology / source |
-| --- | --- | --- |
-| Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md` and `AGENTS.md`, with deterministic project-local facts exposed by `rigorloop workflow-context` |
-| Lifecycle artifacts and ADRs | Carry stable proposal, spec, architecture, ADR, plan, and test-spec intent plus their durable review and decision history | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, and `docs/plans/` |
-| Project maps | Carry living current-state repository orientation, map metadata, cited evidence, inference and unknown labels, root/area registration, risks, and open questions | Markdown in `docs/project-map.md` and `docs/project-map/` |
-| Token-cost benchmark fixtures and reports | Carry executable benchmark prompts, clean downstream fixtures, raw or sanitized run evidence, analyzer summaries, and longitudinal token-friendliness reports | Markdown/YAML/JSONL under `benchmarks/token-cost/` and `docs/reports/token-cost/` |
-| RigorLoop CLI package | Provides the `rigorloop` binary, project scaffolding, change metadata scaffolding, stable human/JSON command envelopes, bundled adapter metadata, verified adapter archive installation for supported adapters, proxy-safe download diagnostics, and durable lockfile writes for verified generated adapter output | Node/npm package under `packages/rigorloop`, published as `@xiongxianfei/rigorloop` only through the approved npm publication boundary |
-| Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
-| Change-local lifecycle and evidence | Sole mutable owner of governed artifact lifecycle, workflow routing, planned-work state, blockers, closeout readiness, the selected automation target, and evidence links; also owns review, resolution, explanation, validation, verification, and historical evidence | Markdown/YAML in `docs/changes/<change-id>/`, centered on `change.yaml` |
-| Workflow automation orchestration semantics | Defines public `$route auto: <stage>`, status, off, pause, and stage-handoff semantics without implementing a separate state machine or owning stage settlement | Markdown in the mapped `skills/route/` package: universal policy in `SKILL.md` plus governed lifecycle, bounded automation, and boundary references |
-| Workflow lifecycle support | Validates structured targets, current prerequisites, fixed stage write boundaries, closed transitions, evidence consistency, and prospective migration without becoming a second normative workflow or claiming writer attribution | Published skills plus repository-owned validation and generation scripts |
-| Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
-| Canonical skills and adapter templates | Source instructions, packaged skill-local resources, workflow stages, and thin adapter entrypoints | Markdown in `skills/`, skill-local resources under each skill root, templates in `scripts/adapter_templates/` |
-| Progressive boundary guidance and activation | Owns one compact core, two stage-family semantic resources, one closed declarative projection inventory, inline compact-scan source, and the prospective grandfathering baseline | Markdown under `specs/references/` and `templates/shared/`, resource and activation YAML under `specs/`, tracked derived references under governed `skills/*/references/` |
-| Validation and generation scripts | Select checks, route registered evidence, validate change-local state and review consistency, query bounded change-record slices, refresh generated output, prove drift status, validate mapped resources, and compare adapter parity without defining stage authority | Python and shell under `scripts/` |
-| Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter packages are generated from canonical sources and are not authored sources | Ignored local files under `.codex/skills/`, tracked adapter support metadata under `dist/adapters/`, generated temporary or release-output package directories, and release asset archives |
-| Release evidence | Durable release profiles, generated release-prep surfaces, authored release contract, release notes narrative, standing process evidence, timing evidence, adapter artifact metadata, package publication evidence, public closeout evidence, registry verification, checksums, emergency deferrals, and maintainer smoke evidence | Markdown/YAML under `docs/releases/profiles/`, `docs/releases/v<version>.md`, `docs/releases/<version>/`, and `docs/reports/adapter-artifacts/releases/` |
-| Legacy architecture archive | Historical architecture records retained after accepted current content is merged here | Archived Markdown under `docs/architecture/*.md` |
+The current system inventory and responsibility relationships are owned by [System](../../design/system/system.md#responsibility-inventory). The [container diagram](diagrams/container.mmd) is retained historical evidence. The following Level 2 details remain unmigrated under their existing contract amendments.
 
 ### Level 2 White-Box: Project-Map Skill Package
 
@@ -695,16 +637,9 @@ Deterministic compatibility validators reject unknown values before consistency 
 
 ## Runtime View
 
-### Architecture update flow
+### Design authoring flow
 
-1. Contributor or agent reads the governing proposal, spec, existing architecture, ADRs, active plan, and test spec.
-2. The architecture stage chooses the lowest sufficient architecture surface.
-3. If the change has no architecture impact, the contributor records a short rationale in plan, test-spec, change metadata, or PR evidence.
-4. If current architecture truth changes clearly, the contributor updates the smallest affected canonical arc42 section or C4 diagram directly.
-5. If direction is unsettled, the contributor stops architecture authoring and routes the issue to proposal or proposal revision.
-6. If behavior is unsettled, the contributor stops architecture authoring and routes the issue to spec or spec revision.
-7. Durable decisions are captured, amended, superseded, or deprecated in ADRs under `docs/adr/`.
-8. If historical or exceptional change-local architecture evidence contains durable current architecture truth, the contributor represents that truth directly in the canonical package before completion.
+Follow [Design Runtime View](../../design/design/design.md#runtime-view) for the reconciled engineering contract and exact review handoff. [System](../../design/system/system.md#integrated-authoring-change) explains the composition with planning, implementation and verification.
 
 ### Workflow and review flow
 
@@ -1209,18 +1144,11 @@ Rollback before public CLI publication removes or disables the package candidate
 
 ### Source of truth
 
-Explicitly selected new explicit-recording work uses [one Design file per model](../../design/workflow.md#model-documentation-and-traceability), with [CLI storage](../../design/cli.md) separate from actor-owned workflow decisions. The contract-separated `record-store` path exposes inspect, check, explicit record and recovery without calling a transition evaluator. Model validation checks the Workflow-owned document mapping without invoking recording or transition evaluation. Existing architecture/spec/ADR ownership and historical lifecycle machinery below remain unchanged outside that profile; adopting projects require matching models, CLI and stage guidance.
+[Design](../../design/design/design.md) owns living-model conventions and their validation mapping. [System](../../design/system/system.md) owns system composition; [Workflow](../../design/workflow/workflow.md) coordinates actors and [CLI](../../design/cli/cli.md) owns recording mechanics under [Record Format](../../design/record-format/record-format.md). Unmigrated details retain their declared source contracts; historical package/ADR evidence grants no second current owner.
 
-The focused architecture package method spec owns the normative package contract. This canonical package owns current architecture shape for direct updates and for durable current truth represented from exceptional evidence. ADRs own durable decisions. Change-local deltas are not a normal architecture authoring path and never compete with the canonical package.
+### Smallest sufficient Design scope
 
-### Lowest sufficient architecture surface
-
-Architecture work should choose the smallest durable surface that makes the design reviewable:
-
-- no-impact rationale when architecture boundaries, generated-output flow, deployment, packaging, quality targets, cross-cutting rules, and durable decisions are unchanged;
-- direct canonical package update when the current architecture change is clear enough to review directly;
-- ADR when a durable architecture decision is introduced, superseded, or deprecated.
-- proposal/spec routing when direction or behavior is not ready for architecture.
+Use Design’s owner-selection and scoped legacy-source method. A change updates only its justified affected responsibilities and interactions; significant decisions belong to the owning model. Unsettled product direction returns to Proposal, and an unmigrated source retains its contract until explicitly consolidated.
 
 ### Lifecycle status
 
@@ -1451,7 +1379,7 @@ whole-record review.
 
 ### Diagram source policy
 
-Package diagrams have one authored source file and are linked from `architecture.md` by relative path. Default Mermaid diagrams use `.mmd` files under the package `diagrams/` directory. Mermaid flowchart or graph C4 diagrams use shared role classes for people, the system under review, external systems, and containers; generated images, if added later for publication, are derived output and are not edited by hand.
+[Design technical reasoning](../../design/design/design.md#technical-reasoning-and-decisions) owns current text-source diagram selection and placement. Existing diagrams retain their historical identities and explanatory context; they do not impose a second current architecture layout.
 
 ### Published-skill-first validation boundary
 
@@ -1662,7 +1590,7 @@ Architecture artifacts and diagrams must not include secrets, credentials, priva
 
 ### Legacy architecture handling
 
-The legacy normalization follow-on inventoried every current `docs/architecture/` file, merged accepted current content into this package, and archived the eight top-level legacy Markdown records. Those legacy records remain historical evidence only; downstream architecture work uses this canonical package.
+The legacy normalization follow-on inventoried every current `docs/architecture/` file, merged accepted current content into this package, and archived the eight top-level legacy Markdown records. Those legacy records remain historical evidence only. That earlier eight-file normalization was not completion of living-Design consolidation; current method/composition ownership follows Design and System, while the unmigrated remainder stays explicit here.
 
 ## Architecture Decisions
 - [ADR-20260825: Local CLI Observability and Result Projection Boundary](../../adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md) establishes one invocation controller, allowlist event model, bounded synchronous local sink, shared result projection, and compatibility-gated concise-default decision.
@@ -1674,8 +1602,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - [ADR-20260813: Reviewed Plan Initialization and Settlement](../../adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md) amended initialization timing while preserving the then-current single-state, stage-write, and no-hash boundaries; ADR-20260824 later revises hash and direct-write mechanics only for activated supported CLI operations.
 
 - `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`: three composed deterministic product gates, one lifecycle-governance entry point, review-owned semantic quality, no target-runtime acceptance, and ledger-backed retirement slices.
-- `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
-- `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: removes change-local deltas from the normal architecture authoring path and requires architecture-review surface classification.
+- `docs/adr/ADR-20260428-architecture-package-method.md`: historical C4/arc42/ADR method; current reasoning and decision ownership is [Design](../../design/design/design.md#material-decision-preservation).
+- `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: historical surface-simplification decision; [Design](../../design/design/design.md#material-decision-preservation) preserves its meaning and owns current model selection and scoped legacy treatment.
 - `docs/adr/ADR-20260419-repository-source-layout.md`: repository source layout and canonical-source/generated-output separation.
 - `docs/adr/ADR-20260424-generated-adapter-packages.md`: generated public adapter package boundary.
 - `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md`: staged migration from tracked generated skill mirrors to untracked local mirrors and generated release artifacts.
@@ -2094,7 +2022,7 @@ decisions from ADR-20260728 and ADR-20260729.
 - Plan-review for the 2026-04-29 package-quality refinement: approved on 2026-04-29 after PR-F1 corrected M5 sequencing.
 - Plan-review for the 2026-05-08 workflow-governance execution plan: approved in `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r2.md` with no material findings.
 - Test spec update: `specs/architecture-package-method.test.md` active on 2026-04-29 for R76-R118 and AC14-AC20.
-- Architecture skill surface simplification: proposal accepted and spec amendment approved on 2026-05-09; canonical architecture and ADR update approved in this package revision.
+- Historical architecture skill surface simplification (current replacement: [Design decision preservation](../../design/design/design.md#material-decision-preservation)): proposal accepted and spec amendment approved on 2026-05-09; canonical architecture and ADR update approved in this package revision.
 - Architecture-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md` with no material findings.
 - Plan-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r2.md` after PR-F1 corrected milestone review sequencing.
 - Token-cost measurement baseline and proposal scope preservation: accepted proposal and approved spec add repository-local measurement scripts, token-cost baseline reports under `docs/reports/token-cost/`, and proposal/proposal-review scope-preservation guidance.

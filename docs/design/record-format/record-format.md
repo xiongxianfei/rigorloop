@@ -1,6 +1,6 @@
 # RigorLoop Record Format Model Design
 
-Model validation contract: explicit-recording-v1
+Model validation contract: model-document-v1
 
 ## Introduction and Goals
 
@@ -64,10 +64,10 @@ These requirements realize Workflow's actor-owned recording and retained-basis o
 | --- | --- | --- |
 | Selected stored-record design | `rigorloop-records-v2`, stored schema_version 2 | Complete current design, including immutable concern origin |
 | Retired stored formats | Exact set in Compatibility and adoption | Archival evidence only; no runtime reader or writer |
-| Model-document validation | `Model validation contract: explicit-recording-v1` | Document structure checked by the model validator; not the selected stored-record version |
+| Model-document validation | `Model validation contract: model-document-v1` | Document structure checked by the model validator; not the selected stored-record version |
 | Primary CLI transport | `targeted-recording-v1`, request schema_version 1, result schema_version 2 | Transient requests and receipts, defined by the CLI model |
 
-Version numbers belong to their own surface. A targeted request with schema_version 1 can explicitly select rigorloop-records-v2; its request version does not change the stored version. The document-validation marker remains unchanged for validator compatibility. Its reuse of the older identifier does not make this document's selected record format v1. Retirement changes supported stored inputs, not these independent version domains.
+Version numbers belong to their own surface. A targeted request with schema_version 1 can explicitly select rigorloop-records-v2; its request version does not change the stored version. The document-validation marker `model-document-v1` versions Markdown structure separately. Its version 1 does not make the selected stored-record format v1. Retirement changes supported stored inputs, not these independent version domains.
 
 The change record is the registry and coordination entry point. It contains activity, work and change-level blockers; it references the proposal, affected models and optional plan. Its registry identifies supporting records, each with an explicitly declared applicability entry. Review findings belong to their containing review. Reviews and evidence name exact engineering subjects; those subject identities do not become automatically current when files change.
 
@@ -301,7 +301,7 @@ Material combined hazards include a new concern after completed work (RF-SR-04/0
 
 ## Risks and Technical Debt
 
-Embedded rationale can reach the existing per-record size limit; the CLI must reject excess explicitly without truncation. Preservation cannot establish that an original assessment was correct. The removal dependency analysis and v2 regression proof remain delivery obligations; the operational v2 baseline is not proof of the future removal. Model-document validation still uses the older explicit-recording-v1 marker; consumers must not confuse it with stored-format dispatch.
+Embedded rationale can reach the existing per-record size limit; the CLI must reject excess explicitly without truncation. Preservation cannot establish that an original assessment was correct. The removal dependency analysis and v2 regression proof remain delivery obligations; the operational v2 baseline is not proof of the future removal. Model-document validation uses `model-document-v1`; the Design model owns its structural contract, independently of stored-format dispatch.
 
 ## Glossary
 
