@@ -2295,7 +2295,7 @@ def validate_file(
         except ValueError:
             return ["invalid JSON metadata"]
         if isinstance(candidate, dict) and "contract" in candidate:
-            if candidate["contract"] not in {"explicit-recording-v1", "rigorloop-records-v2"}:
+            if candidate["contract"] not in {"rigorloop-records-v2"}:
                 return ["contract: unknown_value; unsupported recording contract"]
             try:
                 result = subprocess.run(

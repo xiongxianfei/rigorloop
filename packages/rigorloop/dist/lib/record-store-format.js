@@ -1,14 +1,12 @@
 import {validateAdvancedEnvelope} from "./record-store-transport.js";
 // Version dispatch for the advanced storage interface. No historical conversion.
-import {parseRecordStore,validateRecordStoreRecord,validateRecordStoreSet,validateRecordStoreCreation,recordStorePathKind} from "./record-store-contract.js";
 import {parseV2Record,validateV2Record,validateV2Set,validateV2Preservation,validateV2Creation,v2PathKind,parseRequestJSON} from "./record-format-v2.js";
 import {digest,stop} from "./record-store-files.js";
 
-export const V1_FORMAT=Object.freeze({version:1,contract:"explicit-recording-v1",manifest:"change.yaml",parse:parseRecordStore,validate:validateRecordStoreRecord,set:validateRecordStoreSet,creation:validateRecordStoreCreation,pathKind:recordStorePathKind});
 export const V2_FORMAT=Object.freeze({version:2,contract:"rigorloop-records-v2",manifest:"change.json",parse:parseV2Record,validate:validateV2Record,set:validateV2Set,creation:validateV2Creation,pathKind:v2PathKind});
 export function requestFormat(request) {
   if(!request || typeof request!=="object" || Array.isArray(request) || typeof request.contract!=="string" || !Object.hasOwn(request,"schema_version"))stop("invalid-input");
-  const format=request?.contract===V1_FORMAT.contract?V1_FORMAT:request?.contract===V2_FORMAT.contract?V2_FORMAT:null;
+  const format=request?.contract===V2_FORMAT.contract?V2_FORMAT:null;
   if(!format || request.schema_version!==format.version) stop("unsupported-contract");
   return format;
 }
@@ -29,15 +27,18 @@ function exact(value,keys) {
 }
 
 export function validateAdvancedResult(result) {
-  if(result?.operation!=="inspect" || result.status!=="inspected" || !(Array.isArray(result.snapshot?.records) && result.snapshot.records.some(r=>r?.path===`docs/changes/${result.change_id}/change.json`)))
-    return result?.operation==="inspect" && result.status==="inspected" ? validateRecordStoreRecord("result",result) : validateAdvancedEnvelope(result);
-  // Transport schema 1 is independent of stored v1. Validate the actual envelope
-  // before checking the v2 snapshot against its own representation contract.
   validateAdvancedEnvelope(result);
+  if(result.operation!=="inspect" || result.status!=="inspected")return result;
+  if(result.revision===null){
+    exact(result.snapshot,["records"]);
+    if(!Array.isArray(result.snapshot.records)||result.snapshot.records.length||result.files.length||!result.observations.some(o=>o.code==="absent-change"))stop("invalid-input");
+    return result;
+  }
   exact(result.snapshot,["records"]);
   const records=result.snapshot.records;
   if(!Array.isArray(records)||records.length!==result.files.length||records.length>65)stop("invalid-input");
   const manifest=`docs/changes/${result.change_id}/change.json`, entry=records.find(r=>r.path===manifest);
+  if(!entry)stop("invalid-input");
   const change=parseV2Record("change",entry.content);
   if(change.change_id!==result.change_id)stop("invalid-input");
   const membership=new Set([manifest,...change.records.map(r=>r.path)]);

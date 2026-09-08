@@ -23,7 +23,7 @@ from artifact_lifecycle_contracts import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPLICIT_RECORDING_V1 = "explicit-recording-v1"
+CURRENT_RECORD_CONTRACT = "rigorloop-records-v2"
 COMPACT_CURRENT_STATE_V1 = "compact-current-state-v1"
 COMPACT_ACTIVATION_PATH = Path("specs/compact-current-state-activation.yaml")
 PACKAGED_COMPACT_ACTIVATION_PATH = Path("packages/rigorloop/dist/metadata/compact-current-state-activation.json")
@@ -77,7 +77,7 @@ def parsed_change_inventory(root: Path = ROOT, *, loader=None) -> tuple[dict[str
     records: dict[str, dict] = {}
     errors: list[str] = []
     paths = sorted(
-        (root / "docs" / "changes").glob("*/change.yaml"),
+        [*(root / "docs" / "changes").glob("*/change.yaml"), *(root / "docs" / "changes").glob("*/change.json")],
         key=lambda path: path.parent.name.encode("utf-8"),
     )
     for path in paths:
@@ -87,7 +87,7 @@ def parsed_change_inventory(root: Path = ROOT, *, loader=None) -> tuple[dict[str
             if text.lstrip("\ufeff \t\r\n").startswith("{"):
                 metadata = json.loads(text)
                 if isinstance(metadata, dict) and "contract" in metadata:
-                    if metadata["contract"] != EXPLICIT_RECORDING_V1:
+                    if metadata["contract"] != CURRENT_RECORD_CONTRACT:
                         errors.append(f"change metadata {change_id} contract: unknown_value")
                         continue
                     result = subprocess.run(
@@ -99,7 +99,7 @@ def parsed_change_inventory(root: Path = ROOT, *, loader=None) -> tuple[dict[str
                         continue
                     # This set was validated above; do not send it to historical
                     # lifecycle commands or add it to the frozen legacy inventory.
-                    records[change_id] = {"path": path, "metadata": metadata, "contract": EXPLICIT_RECORDING_V1}
+                    records[change_id] = {"path": path, "metadata": metadata, "contract": CURRENT_RECORD_CONTRACT}
                     continue
             metadata = load(path)
         except Exception as exc:

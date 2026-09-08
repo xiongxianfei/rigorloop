@@ -32,23 +32,6 @@ test("bounded project reports blocked progression and permitted correction indep
   assert.equal(result.projection.requested_operation, "route-correction");
 });
 
-test("workflow-context delegates exact compact candidates to the bounded current-state projection", async () => {
-  const root = await mkdtemp(join(tmpdir(), "rigorloop-compact-context-"));
-  writeCompactFixture(root);
-  const execution = run(root, ["workflow-context", "--change", "example", "--format", "json"]);
-  assert.equal(execution.status, 0, execution.stderr);
-  const result = JSON.parse(execution.stdout);
-  assert.equal(result.lifecycle_contract.contract_class, "compact-current-state-v1");
-  assert.equal(result.compact_projection.progression_status, "blocked");
-  assert.ok(result.permitted_operations.includes("route-correction"));
-
-  const discovered = run(root, ["workflow-context", "--format", "json"]);
-  assert.equal(discovered.status, 0, discovered.stderr);
-  const project = JSON.parse(discovered.stdout);
-  assert.equal(project.selection.state, "single-candidate");
-  assert.deepEqual(project.candidates.map((candidate) => candidate.change_id), ["example"]);
-});
-
 test("bounded projections are identical for equal current state with unequal disposable history", async () => {
   const leanRoot = await mkdtemp(join(tmpdir(), "rigorloop-compact-lean-"));
   const noisyRoot = await mkdtemp(join(tmpdir(), "rigorloop-compact-noisy-"));
@@ -152,10 +135,5 @@ test("an evidence projection hashes only its declared subject and reports bounde
   assert.deepEqual(projected.required_paths, [changePath, evidencePath, subjectPath]);
   assert.match(readFileSync(join(root, evidencePath), "utf8"), /freshness: current/);
 
-  const context = run(root, ["workflow-context", "--change", "drift", "--format", "json"]);
-  assert.equal(context.status, 0, context.stderr);
-  const contextProjection = JSON.parse(context.stdout).compact_projection;
-  assert.equal(contextProjection.evidence.EV1.freshness, "stale");
-  assert.equal(contextProjection.progression_status, "blocked");
-  assert.equal(contextProjection.blockers[0].code, "RL_EVIDENCE_DRIFT");
+
 });

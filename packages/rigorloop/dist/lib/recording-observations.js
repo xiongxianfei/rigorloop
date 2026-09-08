@@ -25,7 +25,7 @@ export function scanObservations({set,format,reader,revision}) {
  for(const path of Object.keys(set).sort()) {
   if(set[path]===null){add("subject-drift",path,"");add("missing-content",path,"");continue;}
   const kind=format.pathKind(path.split("/")[2],path),data=format.parse(kind,set[path]);
-  if(data.change_id!==path.split("/")[2]||(kind==="review"&&!path.endsWith(`/reviews/${data.id}.${format.version===1?"md":"json"}`)))stop("invalid-input");
+  if(data.change_id!==path.split("/")[2]||(kind==="review"&&!path.endsWith(`/reviews/${data.id}.json`)))stop("invalid-input");
   parsed.set(path,data);subjects(data,path);
   if(kind==="change"){change=data;manifest=path;}
   for(const [i,check]of (data.checks??[]).entries())if(check.result==="failed"){failed=true;add("failed-evidence",path,`checks[${i}].result`);}

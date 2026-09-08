@@ -1,9 +1,10 @@
+import {classifyRecordDirectory} from './record-discovery.js';
 import {scanObservations} from "./recording-observations.js";
 // Explicit values only: no workflow transition evaluator or eligibility engine.
 import {boundAdvancedObservations} from "./recording-result.js";
 import { randomBytes } from "node:crypto";
 import { RecordFiles, digest, stop, MIB } from "./record-store-files.js";
-import {V1_FORMAT,V2_FORMAT,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
+import {V2_FORMAT,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
 
 const decode = bytes => bytes === null ? null : new TextDecoder("utf-8",{fatal:true,ignoreBOM:true}).decode(bytes);
 const encoded = data => Buffer.from(JSON.stringify(data)+"\n");
@@ -23,14 +24,14 @@ class Store {
   constructor(root,id,options) {
     V2_FORMAT.pathKind(id,`docs/changes/${id}/change.json`);
     this.fs=new RecordFiles(root); this.id=id; this.options=options;
-    this.directory=`docs/changes/${id}`; this.selectFormat(V1_FORMAT);
+    this.directory=`docs/changes/${id}`; this.selectFormat(V2_FORMAT);
     this.private=`.rigorloop/record-store/${id}`;
     this.journal=`${this.private}/journal.json`; this.lock=`${this.private}/lock`; this.epoch=`${this.private}/epoch`;
     this.token=null;
   }
   selectFormat(format) {
     this.format=format;this.manifest=`${this.directory}/${format.manifest}`;
-    this.otherManifest=`${this.directory}/${(format===V1_FORMAT?V2_FORMAT:V1_FORMAT).manifest}`;
+    this.otherManifest=`${this.directory}/change.yaml`;
   }
   fault(point) {
     const action=this.options.fault?.(point);
@@ -55,15 +56,14 @@ class Store {
     } catch { return null; }
   }
   readSet() {
-    const root=this.fs.inspect(this.directory,true);
-    if(!root.info) return {};
-    const v1=this.fs.read(`${this.directory}/change.yaml`),v2=this.fs.read(`${this.directory}/change.json`);
-    if((v1!==null)===(v2!==null))stop("invalid-input");
-    this.selectFormat(v2!==null?V2_FORMAT:V1_FORMAT);
-    const raw=v2??v1;
+    const classification=classifyRecordDirectory(this.fs,this.id);
+    if(classification==='absent')return {};
+    if(classification==='archive')stop('unsupported-contract');
+    if(classification!=='current')stop('invalid-input');
+    const raw=this.fs.read(this.manifest);
     let discriminator;
     try { discriminator=JSON.parse(decode(raw)); }
-    catch { if(/(?:contract|lifecycle_contract):/.test(decode(raw))) stop("unsupported-contract"); stop("invalid-input"); }
+    catch { stop("invalid-input"); }
     if(discriminator?.contract!==this.format.contract || (Object.hasOwn(discriminator,"schema_version") && discriminator.schema_version!==this.format.version)) stop("unsupported-contract");
     const change=this.format.parse("change",raw);
     if(change.change_id!==this.id) stop("invalid-input");
@@ -156,8 +156,8 @@ class Store {
     let j; try { j=JSON.parse(decode(raw)); } catch { stop("recovery-needed"); }
     if(!encoded(j).equals(raw)) stop("recovery-needed");
     exact(j,["version","id","change_id","phase","before","candidate","writes","reads","created_dirs"]);
-    if(![1,2].includes(j.version) || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
-    this.selectFormat(j.version===1?V1_FORMAT:V2_FORMAT);
+    if(j.version!==2 || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
+    this.selectFormat(V2_FORMAT);
     for(const side of ["before","candidate"]) {
       const map=j[side]; if(!map || typeof map!=="object" || Array.isArray(map) || Object.keys(map).length>65) stop("recovery-needed");
       for(const [path,entry] of Object.entries(map)) {

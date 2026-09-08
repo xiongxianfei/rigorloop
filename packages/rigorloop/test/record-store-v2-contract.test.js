@@ -203,19 +203,6 @@ test("TG-01 unknown_value regression reaches every stored and request vocabulary
   assert.ok(covered.size>35);
 });
 
-test("TG-01 retained v1 broad EntryRef membership is not reinterpreted as v2", async () => {
-  const {validateRecordStoreSet}=await import("../dist/lib/record-store-contract.js");
-  const legacy=JSON.parse(readFileSync(new URL("../../../tests/fixtures/explicit-recording-v1/records.json",import.meta.url)));
-  const manifest=legacy.change, review=legacy.review;
-  const reviewPath=manifest.records.find(r=>r.kind==="review").path;
-  legacy.verify.evidence_refs=[{path:reviewPath,id:review.id}];
-  const map={[root+"change.yaml"]:encode(manifest)};
-  for(const record of manifest.records) map[record.path]=["review","decisions","verify"].includes(record.kind)
-    ? "---\n"+JSON.stringify(legacy[record.kind])+"\n---\nCompatibility fixture.\n" : encode(legacy[record.kind]);
-  assert.doesNotThrow(()=>validateRecordStoreSet("example",map));
-});
-
-
 test("TG-01 nested optional references retain unsafe-path diagnostics", () => {
   const review=fixture().review;
   review.findings[0].resolution.evidence_refs[0].path="../escape";
@@ -228,9 +215,8 @@ test("TG-01 nested optional references retain unsafe-path diagnostics", () => {
 test("TG-01 either manifest entry rejects dual manifests live and at an exact Git snapshot", () => {
   const dir=mkdtempSync(join(tmpdir(),"records-dispatch-"));
   try {
-    const legacy=JSON.parse(readFileSync(new URL("../../../templates/explicit-recording/records.json",import.meta.url)));
     mkdirSync(join(dir,root),{recursive:true});
-    writeFileSync(join(dir,root+"change.yaml"),encode(legacy.change));
+    writeFileSync(join(dir,root+"change.yaml"),"Uninterpreted archival bytes\n");
     writeFileSync(join(dir,root+"change.json"),encode(JSON.parse(readFileSync(new URL("../../../templates/rigorloop-records-v2/records.json",import.meta.url))).change));
     const git=args=>{const r=spawnSync("git",["-C",dir,...args],{encoding:"utf8"});assert.equal(r.status,0,r.stderr);return r.stdout.trim();};
     git(["init","-q"]);git(["add","docs"]);
