@@ -25,6 +25,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [2026-09-08 Unify Review and Closeout Policy Ownership](plans/2026-09-08-unify-review-closeout-policy.md) — [owning change](changes/2026-09-07-unify-review-closeout-policy/change.json)
+
 - [2026-09-07 Targeted Recording and Record Format v2](plans/2026-09-07-targeted-recording-primary-cli.md) — [owning change](changes/2026-09-07-targeted-recording-primary-cli/change.yaml)
 - [2026-09-05 Explicit Recording and Model-Centered Design](plans/2026-09-05-explicit-recording-and-model-centered-design.md)
 - [2026-09-03 Compact Current-State Change Record](plans/2026-09-03-compact-current-state-change-record.md)

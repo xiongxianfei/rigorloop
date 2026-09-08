@@ -1,7 +1,7 @@
 <!-- Template: plan-skeleton-v3 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:30e8f3f615bb10e46f6ebb684b9e91c04d4412c91d67090fa4d39e91e9ae9c43 -->
+<!-- Structural-fingerprint: sha256:41e5a53fc9626de70a61c8506ea7fd8b4de125eb1c1d35e0d65831f0c7cbff35 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 <!-- Readability contract: use normal prose paragraphs, keep complete sentences intact, and retain stable IDs and tables for repeated proof or mapping structures. -->
 
@@ -37,6 +37,16 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 ## Milestones
 
 <copy assets/milestone.md once per implementation milestone>
+
+## Final review checkpoint
+
+- Kind: lifecycle-closeout.
+- Dependency: all in-scope implementation milestones and required corrections complete.
+- Assessment: fresh independent final whole-change Code Review of the complete delivered engineering change and cross-milestone interactions.
+- Evidence: exact final subjects, independent reviewer basis, judgment and concern dispositions.
+- Successor: final Verify; corrections return to their owner and require affected reassessment.
+
+This checkpoint applies the selected review policy. A verification-group non-applicability rationale does not waive it.
 
 ## Change-level verification
 

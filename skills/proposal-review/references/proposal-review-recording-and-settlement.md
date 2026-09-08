@@ -1,5 +1,7 @@
 # Proposal-review recording and settlement
 
+This procedure retains its named historical recording/lifecycle contract. For explicitly adopted Review and Closeout work, the parent skill selects the packaged assessment/reliance application and primary recording interface; historical commands, judgment rules and output shapes below do not override that selection.
+
 Load exactly when `durable_recording_context` is true. The parent owns judgment, modes, claims, stops, and handoff; this reference owns recording and formal CLI settlement.
 
 ## Recording

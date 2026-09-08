@@ -1683,7 +1683,7 @@ def _apply_path_selection(
             "guide_system.validate",
             "Changed plan index surface requires cross-guide boundary validation.",
         )
-        context_paths = _plan_index_context_paths(changed_paths)
+        context_paths = _plan_index_context_paths(changed_paths, repo_root)
         for index_path in _plan_index_surface_paths():
             _add_check(
                 selected,
@@ -2827,7 +2827,7 @@ def _architecture_doc_for_diagram(path: str) -> str | None:
     return "/".join([*parts[:diagrams_index], "architecture.md"])
 
 
-def _plan_index_context_paths(changed_paths: tuple[str, ...]) -> list[str]:
+def _plan_index_context_paths(changed_paths: tuple[str, ...], repo_root: Path) -> list[str]:
     context: list[str] = []
     for path in changed_paths:
         if path == "docs/plan.md":
@@ -2836,6 +2836,11 @@ def _plan_index_context_paths(changed_paths: tuple[str, ...]) -> list[str]:
             context.append(path)
             continue
         if path.startswith("docs/changes/"):
+            root = _change_root(path)
+            if root and (repo_root / (root + "change.json")).is_file():
+                # Preserve v2 complete-set dispatch when plan-index context is added.
+                context.append(root + "change.json")
+                continue
             parts = path.split("/")
             if len(parts) >= 4 and parts[3] == "change.yaml":
                 context.append(path)

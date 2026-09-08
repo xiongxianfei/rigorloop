@@ -32,9 +32,13 @@ Next stage:
 
 Use full-file or broader-section reading when bounded evidence cannot preserve correctness.
 
+## Review and Closeout application
+
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
 
 This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
 
@@ -220,6 +224,8 @@ Diagrams are optional and should reduce real cognitive load.
 Do not require manual-proof contracts from readability guidance alone.
 
 ## Resource map
+
+- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
 
 - READ `references/boundary-first-method-v1.md` when approved boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for implementation.
 - READ `references/planned-milestone-implementation.md` when authoritative workflow evidence establishes a current planned milestone owned by `implement`.

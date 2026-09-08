@@ -4,15 +4,15 @@ Model validation contract: explicit-recording-v1
 
 ## Introduction and Goals
 
-The Workflow model defines how responsible humans and agents turn a direction into reviewed design, delivery work and verified outcomes. It owns the meaning of recorded status, responsibilities, review applicability, correction and readiness. Its purpose is durable, inspectable reasoning and resumable work without making a command-line transition engine the decision owner.
+The Workflow model defines how responsible humans and agents coordinate a direction into reviewed design, delivery work and verified outcomes. It owns activity selection, work and correction allocation, continuation authority, and the model-document convention. The [Review and Closeout model](../review-closeout/review-closeout.md) owns shared assessment policy within this domain; Workflow applies its judgments and applicability conditions when coordinating work. The purpose remains durable, inspectable reasoning and resumable work without making a command-line transition engine the decision owner.
 
-The model inventory for this change has three members: Workflow, RigorLoop Record Format and CLI. Workflow owns the engineering process and model-document convention; Record Format owns durable structure and preservation; CLI owns the safe storage interface. These models are defined by coherent responsibilities, not by features, classes or AI models. Other system models can be identified later without forcing unrelated contracts into either file.
+The model inventory contains Workflow, Review and Closeout, RigorLoop Record Format, and CLI. Review and Closeout is a bounded policy responsibility within the Workflow domain, not a new stage or runtime component. Record Format owns durable structure and preservation; CLI owns the safe storage interface. This amendment changes only Workflow and Review and Closeout; the other two remain referenced dependencies. These models are defined by coherent responsibilities, not by features, classes or AI models.
 
 ### Design at a glance
 
 > Agents spend tokens understanding engineering meaning; the CLI spends computation on identities, selection, preservation, serialization, registration and persistence.
 
-Workflow defines who makes each engineering decision, what that decision means, and what evidence another actor needs before relying on it. Records retain those explicit decisions. The CLI is the recording mechanism; it does not become the decision owner.
+Workflow assigns responsible activities and consumes the assessment meanings and reliance conditions defined by Review and Closeout. Records retain those explicit decisions. The CLI is the recording mechanism; it does not become the decision owner.
 
 | Reader question | Start here |
 | --- | --- |
@@ -20,7 +20,7 @@ Workflow defines who makes each engineering decision, what that decision means, 
 | What is stored, and how do records relate? | [Record model](#record-model) and [formal record fields](#explicit-record-schema) |
 | How do actors use the CLI? | [Primary skill interaction](#primary-skill-interaction-and-decision-ownership) |
 | What happens when Verify finds a defect after completion? | [Correction walkthrough](#correction-walkthrough-actor-decisions) |
-| What supports independent review and downstream reliance? | [Requirements](#requirements) and [model traceability](#model-documentation-and-traceability) |
+| What supports independent review and downstream reliance? | [Review and Closeout](../review-closeout/review-closeout.md#requirements), applied through [ownership references](#review-and-closeout-policy-ownership) |
 | What must agree before adoption? | [Targeted-interface allocation](#targeted-interface-adoption-allocation) and [historical compatibility](#adoption-and-historical-compatibility) |
 
 ## Context and Scope
@@ -33,6 +33,7 @@ Workflow defines who makes each engineering decision, what that decision means, 
 | Route agent | Selecting work, coordination, recorded current activity and correction responsibility | Manufacturing review or Verify results |
 | Implementation agent | Approved implementation and execution evidence | Changing the approved design through code |
 | Verify agent | Final coherence assessment and success-only completion evidence | Approving its own correction |
+| Review and Closeout model | Shared assessment scope, independence, applicability, concern disposition and final closeout policy | Activity selection, storage shapes or execution permission |
 | Record Format model | Stored structure, versions, relationships and preservation invariants | Engineering judgments or persistence execution |
 | CLI model | Mechanically validated persistence and observations | Any of the decisions above |
 
@@ -40,15 +41,15 @@ The CLI interface is a dependency, not a superior workflow authority. Local file
 
 ## Architecture Constraints
 
-Current state must remain understandable without Git history, PR access, a network service or a previous chat. Reviewers must remain independent of the work they approve. Saving a decision does not prove it correct. Existing approvals and findings cannot acquire new meaning through a document rename.
+Workflow consumes the independence, reliance, compatibility, and environment obligations in RC-SR-02/04/05/16/18 of [Review and Closeout](../review-closeout/review-closeout.md#requirements). Local coordination does not authenticate an actor or extend its authority.
 
-This draft deliberately changes the proposed ownership of lifecycle decisions and design documentation. It does not remove final Code Review, change release permissions or authorize automatic progression. Those concerns retain their existing owners.
+This draft extracts shared assessment policy while retaining Workflow coordination and model-document responsibilities. It neither activates the extraction nor changes release permissions or existing automatic-progression authority. Historical contracts retain their exact rules until explicitly adopted replacements apply.
 
 ## Solution Strategy
 
-Use explicit decisions supported by evidence. Responsible actors read the current records and exact subject identities, decide their updates, and submit purpose-specific operations through the CLI, using batch only for related explicit decisions that require coherent publication. The workflow remains governed by skills and independent assessment, but storage accepts a structurally sound correction regardless of the currently recorded stage.
+Use explicit decisions supported by evidence. Responsible actors read the current records and exact subject identities, decide their updates, and submit purpose-specific operations through the CLI, using batch only for related explicit decisions that require coherent publication. Workflow coordinates skills under the Review and Closeout assessment obligations; storage mechanics remain capable of recording a structurally sound correction regardless of the currently recorded stage.
 
-Avoid duplicated readiness fields where one explicit decision suffices. A stored decision and an observation about its supporting evidence are separate: a recorded approval may remain visible while a diagnostic reports that its subject has changed. Consumers must not mistake the visible historical judgment for current permission to proceed.
+Workflow keeps activity selection separate from the assessment and observation concepts defined by Review and Closeout and CLI. It consumes the RC-SR-04/05 distinction between a recorded judgment and current reliance rather than redefining that distinction here.
 
 ```mermaid
 flowchart LR
@@ -75,21 +76,42 @@ The following stable requirements define model behavior; the targeted-command am
 
 | ID | Required behavior |
 | --- | --- |
-| WF-SR-01 | Responsible actors MUST explicitly decide stage, status, ownership, review applicability and readiness. Neither saving another record nor a read operation may supply those decisions automatically. |
+| WF-SR-01 | Responsible actors MUST explicitly decide activity, status, ownership and authorized continuation. Workflow MUST consume review applicability and closeout conclusions under RC-SR-04/05/13 rather than infer them from saves or reads. |
 | WF-SR-02 | A change record MUST identify its contract, proposal, affected model documents, current activity, responsible owner and unresolved blockers. Each referenced review or proof MUST identify its exact subjects. Mutable progress belongs in change records, not model Design documents or plan bodies. |
-| WF-SR-03 | A formal reviewer MUST record a judgment against the exact reviewed subjects and its basis before approval is relied on. An author MUST NOT approve its own contribution. CLI persistence success or a caller-supplied reviewer label is not independent-review evidence. |
-| WF-SR-04 | Before relying on changed work, its author MUST identify affected approvals and evidence, explicitly mark applicability changes, and record outstanding correction work. Route MUST assess cross-model impacts and select the next responsible owner without requiring that owner to appear in a previously derived pending set. Uncertain impact remains an explicit blocker. |
-| WF-SR-05 | Any responsible stage, including Verify, MUST be able to record a newly discovered defect with stable finding or blocker identity, affected subjects, evidence, required outcome and correction owner. Failed Verify MUST NOT create a success report. Route records the correction destination; the finding does not need to originate in a prior review stage. |
-| WF-SR-06 | Each unresolved finding MUST retain self-contained origin basis: who reported it, the exact subjects, the observed evidence, the required outcome and the rationale, including any explicitly cited supporting judgment. A later review MUST NOT overwrite that basis or require prior review rounds, Git history or chat to reconstruct it; change-level blockers retain disposition responsibility with their reporter, including Verify. Returning work for rereview is not approval. Completed work may be explicitly reopened; a former completion or current stage MUST NOT prevent recording that decision. |
+| WF-SR-03 | Workflow MUST obtain the required independent judgment through Review and Closeout RC-SR-01–04 before relying on approval. This stable ID now references that policy owner; it does not redefine reviewer independence or judgment. |
+| WF-SR-04 | Route MUST assess cross-model correction impacts and select the responsible owner without requiring that owner to appear in a previously derived pending set. Authors and receiving actors MUST apply RC-SR-05–07/10 to changed-subject impact, applicability and reassessment; uncertain impact is handled under that policy. |
+| WF-SR-05 | Workflow MUST provide an owned recording and correction path for defects discovered by any responsible stage, including Verify, under RC-SR-08/10/14. Record Format and CLI retain representation and mechanical recording ownership. |
+| WF-SR-06 | Workflow MUST allow explicit reopening of completed work and coordinate reassessment without a previous-stage prerequisite. Concern origin, disposition and the meaning of return-for-review are owned by RC-SR-08–10/14 and represented under the selected Record Format contract. |
 | WF-SR-07 | Each model MUST have one authoritative living Design file combining requirements, structure, decisions, boundaries, compatibility and acceptance. Features update affected models; cross-model contracts have one named owner and references from consumers. Mandatory separate specifications, architecture files and ADRs for the same model are removed only upon approved adoption. |
-| WF-SR-08 | Requirement and decision references MUST survive normal document revisions. A changed or retired obligation retains its identity and rationale or an explicit replacement mapping. Design Review MUST assess the exact affected model revisions and relevant relationships; approval of one change does not approve another change's concurrent edits. |
-| WF-SR-09 | A downstream actor MUST check the current decision basis before reliance. Missing, changed or contradictory required evidence blocks progression and is recorded explicitly; it does not prevent safely recording the blocker or correction. Only successful Verify may record lifecycle completion with exact evidence supporting the required design and delivery obligations. |
+| WF-SR-08 | Requirement and decision references MUST survive normal document revisions. A changed or retired obligation retains its identity and rationale or an explicit replacement mapping. Exact affected-model review and concurrent-change applicability MUST follow RC-SR-01/02/05/06/10; retaining a reference MUST NOT retarget an old approval. |
+| WF-SR-09 | Workflow MUST condition continuation and completion coordination on the applicable assessments and closeout obligations owned by RC-SR-05/11–15. Missing readiness MUST NOT prevent recording owned blockers or corrections under RC-SR-14. Model verification allocation remains governed by the Model validation and proof mapping below. |
 | WF-SR-10 | Historical contracts MUST remain explicitly identified and must not be silently reinterpreted. Adoption MUST preserve findings, decisions and proof provenance, identify replacement ownership and provide a supported recovery or rollback boundary. This amendment performs no adoption. |
 | WF-SR-11 | Ordinary skills MUST use purpose-specific inspection and targeted recording, or batch for related explicit edits, without full-file reconstruction or historical eligibility checks. Actors MUST supply all intended decisions and explicitly select useful context. The CLI MUST perform mechanical selection, identity computation, registration, preservation, serialization and persistence; actors expand the engineering basis when their judgment requires it. |
 | WF-SR-12 | A new supporting record MUST have an explicit actor-supplied record-level applicability declaration; CLI registry construction MUST NOT decide applicability. Updating a check or review alone MUST NOT change applicability, activity, finding disposition or completion. |
-| WF-SR-13 | Findings MUST remain review-scoped and change-level blockers MUST remain distinct. The reporter owns disposition assessment, while the recorded owner identifies correction responsibility; neither a later review nor a correction agent may silently close a Verify-owned blocker. |
-| WF-SR-14 | A receiving actor MUST treat status, scoped context, preview and successful saves as recorded information, not permission or sufficient engineering context. Bounded omissions and stale identities require explicit further inspection or reassessment before reliance. Diagnostic detail is not a storage prerequisite; actors choose the basis necessary for their decision rather than treating diagnostic volume as a CLI eligibility gate. |
+| WF-SR-13 | Workflow MUST keep the recorded correction owner distinct from the disposition owner defined by RC-SR-08–10/14. Review findings and change-level blockers use the selected Record Format targets; route coordinates their correction without manufacturing another actor’s disposition. |
+| WF-SR-14 | Workflow actors MUST select and expand useful context for their decisions and apply RC-SR-04/05/18 before reliance. Diagnostic detail remains a CLI observation, not a storage prerequisite or a source of activity-selection authority. |
 | WF-SR-15 | The complete successful Verify assessment and final explanation, and the shared material-decisions narrative, MUST be available through normal targeted reads with recorded applicability and identities. Retrieving a deliverable MUST NOT require advanced inspection of unrelated records or imply renewed verification. |
+| WF-SR-16 | Workflow MUST preserve the final assessment dependency defined by RC-SR-11/12 in delivery and closeout coordination, including when later corrections affect a previously reviewed result. The plan and specialist assessments supply the basis; route MUST NOT fabricate a final-review judgment or treat a milestone result as a whole-change result. |
+
+### Review and Closeout policy ownership
+
+Dependency references to “Workflow-owned assessment policy” denote the broader Workflow domain. Within that domain they resolve through the ownership map below to Review and Closeout for judgments, independence, applicability, evidence adequacy, and justified reliance; Workflow retains coordination. This treatment intentionally retains the CLI model’s Context and Scope boundary descriptions and Record Format’s Context and Scope and stored-layout introduction descriptions. It grants Workflow no second assessment-policy definition. Record Format and CLI model files remain unchanged dependencies, not additional members of this review package; no representation or runtime change is selected.
+
+All RC-SR references in this file resolve to the [Review and Closeout requirements](../review-closeout/review-closeout.md#requirements). The requirement table retains WF identities as coordination obligations or explicit references to the new owner. The following map states the proposed extraction; it does not claim that earlier reviewed revisions have changed meaning.
+
+| Retained identity | Prior assessment responsibility | New policy owner | Workflow remainder |
+| --- | --- | --- | --- |
+| WF-SR-01 | Explicit applicability and readiness decisions | RC-SR-04/05/13 | Explicit activity, status, ownership and continuation |
+| WF-SR-03 | Exact judgment, independence, and no self-approval | RC-SR-01–04 | Obtain the required specialist assessment |
+| WF-SR-04 | Changed-subject impact and applicability | RC-SR-05–07/10 | Cross-model correction allocation |
+| WF-SR-05 | Defect basis and success-only Verify failure behavior | RC-SR-08/10/14 | Maintain an owned recording/correction path |
+| WF-SR-06 | Retained origin, disposition, and return-for-review meaning | RC-SR-08–10/14; Record Format for stored preservation | Reopen completed work and coordinate reassessment |
+| WF-SR-08 | Exact design package review and concurrency applicability | RC-SR-01/02/05/06/10 | Stable requirements, decisions, and replacement mappings |
+| WF-SR-09 | Reliance and justified successful completion | RC-SR-05/11–15 | Apply those conditions to continuation; retain model proof-allocation convention |
+| WF-SR-13 | Reporter-owned disposition distinct from repair | RC-SR-08–10/14 | Allocate the correction without assuming disposition authority |
+| WF-SR-14 | Sufficient basis and no permission inferred from observations | RC-SR-04/05/18 | Select context and interpret CLI observations for coordination |
+
+WF-SR-02/07/10–12/15 retain state, document, compatibility, targeted-interface, explicit-recording and retrieval responsibilities. WF-SR-16 makes consumption of the existing final-review dependency explicit. Historical policy mappings elsewhere in this file are reference history; assessment obligations they cite resolve through this table for the proposed revision. Runtime examples below illustrate application of the owning policy rather than define another policy source.
 
 ## Building Block View
 
@@ -97,7 +119,7 @@ Workflow has three conceptual parts, not three services or mandatory files: stag
 
 | Artifact responsibility | Proposed owner and placement |
 | --- | --- |
-| Model engineering truth | One `docs/design/<model>.md` per model |
+| Model engineering truth | One `docs/design/<model>/<model>.md` per model |
 | Change intent | Existing proposal surface |
 | Mutable work state and explicit decisions | Change-local manifest: v2 change.json; v1 change.yaml |
 | Current judgment and open findings | Stable change-local review record for the applicable target; each finding carries its own retained origin basis |
@@ -107,11 +129,11 @@ Workflow has three conceptual parts, not three services or mandatory files: stag
 | Stable delivery allocation | Existing plan surface |
 | Successful final explanation | Success-only verify-report.json in v2; verify-report.md in v1 |
 
-These placements express Workflow responsibilities through the [Record Format contract](../record-format/record-format.md#explicit-record-schema): v2 uses the selected JSON paths and v1 retains its compatibility paths. They do not claim compatibility with compact schemas. A blocker originating in Verify remains owned there for closure even when a subsequent review supplies supporting judgment. Review findings remain reviewer-owned.
+These placements express Workflow responsibilities through the [Record Format contract](../record-format/record-format.md#explicit-record-schema): v2 uses the selected JSON paths and v1 retains its compatibility paths. They do not claim compatibility with compact schemas. Concern ownership and closure follow RC-SR-08/09/14.
 
 ### Record model
 
-The [RigorLoop Record Format model](../record-format/record-format.md) owns stored record types, fields, relationships, versions and preservation invariants. Workflow owns what the recorded decisions mean, who supplies them and what evidence justifies downstream reliance. CLI owns construction, inspection and safe publication.
+The [RigorLoop Record Format model](../record-format/record-format.md) owns stored record types, fields, relationships, versions and preservation invariants. Workflow owns coordination decisions; Review and Closeout owns assessment meaning and the evidence conditions for downstream reliance. CLI owns construction, inspection and safe publication.
 
 The manifest carries current activity, work and change-level blockers, and registers reviews, evidence, material decisions and the success-only Verify report. These concepts represent Workflow obligations; their exact serialization has one owner in Record Format.
 
@@ -121,7 +143,7 @@ See the [complete stored layouts and common types](../record-format/record-forma
 
 ### Retained judgments for unresolved findings
 
-WF-SR-06 requires a finding to remain understandable after a later judgment. The Record Format model owns the [immutable origin representation](../record-format/record-format.md#retained-judgments-for-unresolved-findings). Reviewers own the engineering assessment; recording a later approval does not settle a retained finding. Current disposition and original basis have distinct meanings.
+WF-SR-06 references RC-SR-08/09 for retained concern meaning and disposition. The Record Format model owns the [immutable origin representation](../record-format/record-format.md#retained-judgments-for-unresolved-findings). Workflow coordinates the named correction while preserving that separation.
 
 ### Responsibility-specific updates
 
@@ -129,15 +151,15 @@ The unified `design` responsibility combines architecture and specification auth
 
 | Responsible actor | Allowed semantic edit under the workflow |
 | --- | --- |
-| Author | Its engineering content and recorded subject references; its work item; new blocker; marking affected applicability stale with rationale |
-| Reviewer | Its review, finding dispositions and declaration of current review applicability after exact assessment |
-| Route | Activity, work allocation, correction owner and justified applicability restrictions; never a fabricated judgment. Registry insertion is mechanical CLI work, not a Route prerequisite. |
-| Evidence producer | Its evidence checks and their applicability declaration |
-| Verify | Its blockers/dispositions, final report and explicit completion decision after checking all obligations |
+| Author | Engineering content, subject references and assigned work; assessment-impact actions under RC-SR-06/08 |
+| Reviewer | Review, disposition and applicability actions under RC-SR-02–10 |
+| Route | Activity, work and correction allocation; restrictions under RC-SR-06. Registry insertion remains CLI-owned |
+| Evidence producer | Assigned proof production under RC-SR-05/15 and Record Format evidence representation |
+| Verify | Assessment actions under RC-SR-09/13/14; separately explicit activity-completion decision |
 
-Targeted recording does not transfer ownership of neighboring fields. The actor names its exact object and edits; the CLI preserves omitted entries, fields and narrative bytes under CLI-SR-13. Advanced full-file replacement retains the same semantic preservation obligation, but ordinary skills must not depend on that path. Anyone responsible for affected work may conservatively mark evidence stale, but cannot restore another actor's approval merely because hashes match. Different actor decisions may be recorded in successive transactions; no single transaction requires every responsible agent to be simultaneously available. Semantic ownership is enforced by skills, review and runtime authority, not by trusting request labels.
+Targeted recording mechanics are owned by CLI-SR-13: named edits preserve omitted entries, fields and narrative bytes. Workflow selects the responsible activities and may coordinate successive actor transactions. Applicability restriction/restoration and actor authority follow RC-SR-02/06/18; the table above is an assignment index, not an independent definition of those conditions.
 
-For independence, the reviewer records the actual contributor identities and a concrete basis: a separately conducted review by an agent or human who did not author the reviewed contribution. Changing a role label or starting another turn of the same author is insufficient. The receiving actor inspects the review output and available execution provenance; if provenance cannot establish separation, it records a blocker or requests an independent human review. This contract introduces neither authentication tokens nor a new attestation service.
+Independent assessment and provenance are defined once by RC-SR-02. Workflow uses that evidence to select a valid receiving activity; it does not authenticate a reviewer through an actor label or restore approval through routing.
 
 ### Primary skill interaction and decision ownership
 
@@ -147,27 +169,27 @@ The CLI model owns exact commands, requests, output, selectors and serialization
 | --- | --- | --- |
 | Establish change intent | `change create` and `change link` | Exact proposal/model/plan subjects and initial activity; root creation requires user/runtime authority |
 | Select correction activity | `activity set`, `work add` or `work set` | Stage, status, owner, reason and work allocation |
-| Record independent assessment | `review record`, with `finding add/set` for individual findings | Reviewed subjects, contributors, actual independence, judgment, rationale and any dispositions |
-| Report a defect outside review | `blocker add/set` | Reporter, correction owner, evidence, required outcome and explicit disposition |
-| Record proof | `evidence record` | Observed result, subjects, procedure and summary; no automatically completed work |
-| Declare usable scope | `applicability set`, or an explicit applicability decision supplied to a producer command | Record-level applicability value, responsible actor and reason |
+| Record independent assessment | `review record`, with `finding add/set` for individual findings | Assessment values under RC-SR-01–10, represented by Record Format |
+| Report a defect outside review | `blocker add/set` | Concern values under RC-SR-08–10/14; Workflow allocates correction |
+| Record proof | `evidence record` | Proof under RC-SR-15; recorded values follow Record Format |
+| Declare usable scope | `applicability set`, or an explicit applicability decision supplied to a producer command | Applicability under RC-SR-05–07/15, at Record Format granularity |
 | Preserve a material decision | `decision record` | Rationale, subjects and source references |
-| Record successful final assessment | `verify record`, optionally batched with `activity set` | Successful assessment/explanation and separately explicit completion decision |
-| Read the final explanation or shared decision rationale | `verify show`, `decisions show`, or their full context selectors | The receiving actor assesses the recorded subjects, applicability and explanation before reliance |
+| Record successful final assessment | `verify record`, optionally batched with `activity set` | Assessment under RC-SR-13/14; activity completion remains a separate Workflow decision |
+| Read the final explanation or shared decision rationale | `verify show`, `decisions show`, or their full context selectors | Retrieval under WF-SR-15; reliance under RC-SR-05/13 |
 
-A finding uses `(review ID, finding ID)` and remains inside that review. A blocker uses a change-level ID even if Verify discovered it; Verify never needs to invent a review. A resolved/deferred state and its resolution travel together as an explicit actor decision. An implementation owner can supply correction evidence but cannot impersonate the reporter's disposition. The CLI validates representation and references, while skills/review/execution authority assess whether the supplied actor actually had responsibility.
+Finding/blocker addressing, coupled disposition fields and v2 origin preservation are defined by the [Record Format schema](../record-format/record-format.md#explicit-record-schema); targeted construction and reference validation are defined by the [CLI primary interface](../cli/cli.md#primary-public-command-contract). Workflow allocates correction activities using the concern ownership defined in RC-SR-08–10/14.
 
-A review record's new assessment may replace its current assessment only after actual independent rereview of the supplied subjects. In v2, each retained finding carries [its own origin basis](#retained-judgments-for-unresolved-findings), which the replacement cannot change. Finding operations never implicitly retarget those subjects or rewrite judgment. Linking a revised model changes only the link and its declared identity. It neither restores nor invalidates applicability automatically. The responsible author separately declares the impact, and a reviewer alone restores reliance on its assessment after checking the current basis. A matching hash is not a substitute for that assessment.
+Review replacement and changed-subject reliance apply RC-SR-05–07/10. Workflow coordinates the required author and reviewer activities under those conditions. Record Format owns immutable finding origin; CLI change.link updates the declared subject reference without inferring an applicability decision. This paragraph adds no independent reassessment or restoration rule.
 
-Evidence applicability applies to the whole evidence record. If one changed check makes the record unreliable, the responsible actor explicitly restricts applicability and explains the affected scope; consumers inspect individual results/subjects as well. This interface does not add per-check stale/current commands. Record-level current is a supplied assertion, never a CLI conclusion that all checks passed.
+Record Format owns record-level applicability granularity; CLI owns the available update selectors. Workflow consumes the sufficient-proof and multi-check reliance policy in RC-SR-05/15. Assessment of an individual check and the containing declaration follows those requirements, not a separate Workflow algorithm.
 
-`context` applies explicit actor-supplied record selectors and returns complete selected entries by default, including concern origin, evidence and rationale; an optional `--for` label attributes the activity but selects no records. It is not a proof map or dependency resolver. Review/Verify actors inspect all governing model requirements, relevant narrative, prior unresolved findings and current proof necessary for their assessment, even when they fall outside its explicit context selection. Every receiving actor checks current subject identity and the declared scope; a complete page means complete only within that selection. They may use targeted show, continuation pages, direct reads of named engineering subjects, or explicitly requested advanced inspection. A clean observation list and a saved claim do not waive these duties.
+The CLI context contract owns selector behavior, full selected entries, pagination, attribution and diagnostic completeness. Workflow actors use that interface under WF-SR-11/14 and the sufficient-basis requirements in RC-SR-05/18; Workflow does not define another evidence-reading threshold or infer permission from output completeness.
 
-A storage receipt may report many observations through a bounded counts-only summary and expose diagnostic detail separately. The summary explicitly says detail is omitted; it is neither a clean assessment nor a requirement to retrieve every observation before saving a correction. Actors obtain enough context for their actual decision. CLI-SR-20 owns receipt sizing and diagnostic retrieval, including the prohibition on false rejection after successful publication.
+CLI-SR-20 owns receipt sizing, bounded observation summaries and diagnostic-detail retrieval. Workflow applies RC-SR-04/05/18 when interpreting that output for coordination. Diagnostic volume is not an activity-selection mechanism.
 
-The success-only Verify report is a normal final deliverable, not a persistence-maintenance record. Its complete metadata, final explanation in the record's body field (separate Markdown body only in v1) and recorded applicability are available through verify show or a full verify context selector. The decisions singleton similarly exposes the shared material-decisions narrative; individual decision reads still serve entry-specific rationale. Missing or stale supporting evidence continues to constrain reliance, not the availability of truthful recorded content.
+WF-SR-15 retains normal targeted retrieval of the final Verify explanation and shared material-decisions narrative. Record Format owns the selected representation and CLI owns verify show, decisions show and full context retrieval. RC-SR-05/13/14 owns their assessment meaning and reliance conditions.
 
-A failed Verify can batch failed evidence and a new blocker after activity is recorded completed. It supplies initial applicability if it creates the evidence file; no Route decision is invented. Route later sets correction activity/ownership. After correction evidence and independent review, Verify explicitly resolves its blocker following reassessment and records success only when all obligations pass. Completing activity is another explicit decision, which Verify may include in the same batch as its report. No stage's structurally sound correction waits for all actors to decide simultaneously.
+Workflow can coordinate the separate activities in the correction example below using primary operations or batch. RC-SR-08–10/13/14 owns failure, reassessment, disposition and success conditions. Workflow retains the separately explicit activity-completion decision; saving multiple actors’ records does not allocate their work implicitly.
 
 ## Runtime View
 
@@ -192,7 +214,7 @@ Route selects an authorized activity and records it explicitly. The author updat
 
 ### Revising previously reviewed content
 
-An edit can temporarily leave the recorded review subject behind the actual file. The CLI reports the mismatch without changing the review. The author records the revised artifact identity, affected applicability and correction work; the retained review continues to identify the bytes actually reviewed. Route can choose the needed author directly, including a previously completed owner. Independent rereview supplies a new judgment before downstream reliance.
+An engineering edit can temporarily leave the recorded review subject behind the actual file; record-only changes are assessed under RC-SR-07. The CLI reports the mismatch without changing the review. The author records the revised artifact identity, affected applicability and correction work; the retained review continues to identify the bytes actually reviewed. Route can choose the needed author directly, including a previously completed owner. Independent rereview supplies a new judgment before downstream reliance.
 
 ### A defect found at Verify
 
@@ -201,6 +223,10 @@ Verify records a blocker and failed evidence, not a success report. Route record
 ### Concurrent edits or interrupted recording
 
 An actor that loses a revision conflict rereads current records and reassesses its decisions; it must not replay an outdated approval against different content. Storage recovery is owned by the CLI model. Workflow consumers do not rely on a mixed or recovery-required snapshot and do not interpret mechanical recovery as a new decision.
+
+### Final assessment coordination
+
+Workflow applies RC-SR-11/12 through the delivery plan's named closeout checkpoint. Completion of the final implementation milestone selects the required whole-change assessment, not a direct completion claim. Its result and any required corrections determine the next authorized activity; final Verify applies RC-SR-13. Triggered CI maintenance retains its own owner, with any resulting engineering change assessed under RC-SR-06/11 before final reliance. This is the existing lifecycle with explicit assessment dependencies, not a new gate or CLI readiness calculation.
 
 ## Deployment View
 
@@ -269,7 +295,7 @@ The inventory identifies the principal replacement sites, but is not evidence th
 
 This file owns the one-file-per-model convention. CLI and Record Format consume it rather than restating that contract. Model documents contain stable intent, including meaningful decisions and rejected alternatives. Change records identify affected model paths and exact content identities; requirement references combine model identity and stable local ID. A shared contract belongs to one existing model or a deliberately justified shared model, never duplicate normative prose.
 
-Two features changing the same model use the same document. They must reconcile overlapping requirements before either treats a review as applicable to the combined content. Splitting or renaming a model requires an explicit responsibility and reference mapping, not just a size threshold.
+Two features changing the same model use the same document; their assessment applicability follows RC-SR-05/06/10. Splitting or renaming a model requires an explicit responsibility and reference mapping, not just a size threshold.
 
 ### Model-centered layout and examples
 
@@ -291,13 +317,15 @@ docs/design/
       work-set/
         request.json
         response.json
+  review-closeout/
+    review-closeout.md
   workflow/
     workflow.md
     examples/
       correction-cycle.mmd
 ```
 
-Each docs/design/<model>/<model>.md is the single normative document for that model. Its filename matches the directory's stable model ID. Examples belong only under that model's examples directory and may use JSON, Mermaid, Markdown or another format suited to the demonstrated content. No common cross-model example directory, mandatory Markdown wrapper or additional model is introduced.
+Each docs/design/<model>/<model>.md is the single normative document for that model. Its filename matches the directory's stable model ID. Examples belong only under that model's examples directory and may use JSON, Mermaid, Markdown or another format suited to the demonstrated content. No common cross-model example directory or mandatory Markdown wrapper is introduced. Review and Closeout uses this same placement convention for its justified policy responsibility.
 
 The owning document indexes each example with its purpose, governing requirements, complete-artifact or excerpt scope, and any synthetic identities or starting assumptions. Examples illustrate existing requirements and cannot introduce additional rules. JSON examples must parse without explanatory extra keys; complete records must conform to their selected schema when that schema is available. Before/after pairs must preserve the invariants they demonstrate. Mermaid illustrates responsibility and ordering rather than executable eligibility.
 
@@ -336,9 +364,9 @@ These rows are the Workflow model's boundary allocations under Model validation 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
 | Input domain | WF-SR-02, WF-SR-05, WF-SR-12, WF-SR-13 | New supporting records require explicit record-level applicability; findings and blockers retain separate targets and disposition/correction owners. |
-| State/lifecycle | WF-SR-04, WF-SR-06 | Reopen completed work explicitly without a pending-owner or previous-stage prerequisite. |
+| State/lifecycle | WF-SR-04, WF-SR-06, WF-SR-16 | Reopen completed work without a pending-owner prerequisite; preserve the planned final-assessment dependency after the last milestone and required corrections. |
 | Identity/authority | WF-SR-03, WF-SR-08 | Reject reliance on self-approval or approval of another revision. |
-| Composition/path | WF-SR-07, WF-SR-09, WF-SR-11, WF-SR-14, WF-SR-15 | All three exact models and their shared boundaries are reviewed together; ordinary skills retrieve final explanations and shared narratives through targeted reads and expand their basis without deriving authority from the CLI. |
+| Composition/path | WF-SR-07, WF-SR-09, WF-SR-11, WF-SR-14, WF-SR-15 | The exact affected model package and relevant shared boundaries are assessed under RC-SR-01/05; ordinary skills retrieve final explanations and shared narratives through targeted reads and expand their basis without deriving authority from the CLI. |
 | Temporal/retry | WF-SR-06, WF-SR-08, WF-SR-09 | A later review preserves each unresolved finding's origin; concurrent model edits require fresh assessment rather than approval replay. |
 | Failure/recovery | WF-SR-05, WF-SR-09 | A new Verify defect is durably recordable before correction, without a success report. |
 | Compatibility/migration | WF-SR-10 | An old approval is preserved but not silently converted to a new-contract approval. |
@@ -356,8 +384,9 @@ Decision provenance is inspectable, not cryptographically authenticated by actor
 | --- | --- | --- |
 | WF-DEC-01 | Skills and humans own workflow semantics; CLI records them. This removes stage eligibility as a prerequisite for recording repairs. | Extending the transition engine preserves automatic enforcement but recreates correction dependencies. Explicit decisions increase actor responsibility. |
 | WF-DEC-02 | Consolidate normative design by coherent model, with embedded decision rationale. | Feature-specific spec/architecture/ADR packages multiply sources for the same model. Unified documents need disciplined ownership and concurrency handling. |
-| WF-DEC-03 | Retain exact reviewed identities when subjects change; explicitly change applicability instead of rewriting what was reviewed. | Retargeting an old approval would misrepresent evidence. Preserved identities require readers to distinguish recorded judgment from usable approval. |
-| WF-DEC-04 | Non-review-stage defects use change-local blockers, not synthetic review judgments or failure-shaped Verify reports. | A review-only finding surface makes Verify correction depend on another stage recording its discovery. |
+| WF-DEC-03 | Retain the identity/applicability distinction; assessment ownership is extracted to RC-SR-05–07 and RC-DEC-03. | Retargeting old approval misrepresents evidence; Workflow consumes applicability rather than defining a second policy. |
+| WF-DEC-04 | Retain distinct non-review-stage defect recording; assessment/disposition ownership is extracted to RC-SR-08–10/14. | A review-only finding surface makes Verify correction depend on another stage recording its discovery. |
+| WF-DEC-05 | Review and Closeout owns shared assessment policy within this domain; Workflow retains coordination and references that owner. | Keeping normative copies here and in every specialist obscures responsibility and allows closeout obligations to disappear in handoff. |
 
 No separate ADR is created: decisions stay in this owning model under the user-authorized model Design scope. WF-DEC-01 now uses purpose-specific commands for mechanical recording; its actor-owned semantics are retained. The targeted amendment does not retarget old approvals or settle historical replacements.
 
@@ -385,13 +414,19 @@ Model: coherent system responsibility with owned concepts and rules. Judgment: a
 
 ## Drafting basis and authority
 
+The Review and Closeout extraction is authored under the user's explicit request to start model design after the [proposal](../../proposals/2026-09-07-unify-review-closeout-policy.md) and its [independent direction review](../../changes/2026-09-07-unify-review-closeout-policy/reviews/proposal-review.json). The exact amended package is this Workflow file and [Review and Closeout](../review-closeout/review-closeout.md). Record Format and CLI are retained dependencies with no identified representation or mechanical gap. The user explicitly selected `rigorloop-records-v2` for this initiative; its owning record is [change.json](../../changes/2026-09-07-unify-review-closeout-policy/change.json). The model-validation marker remains independently versioned. The user request supplies authority to draft and use v2 storage, not Design Review approval, implementation, policy activation, automatic downstream handoff, or retirement of historical v1 roots. Earlier review records remain attached to their original subjects.
+
+The following paragraphs retain the earlier targeted-interface amendment's drafting basis. Their package references and prospective implementation statements describe that earlier amendment, not approval or lifecycle state of this extraction.
+
 This living model combines behavioral requirements, architecture and decision rationale. The targeted-interface amendment is authored under the user's explicit request to finish the CLI/Workflow Design and obtain independent Design Review. The exact package is docs/design/workflow/workflow.md (`workflow`), docs/design/record-format/record-format.md (`record-format`) and docs/design/cli/cli.md (`cli`); no separate specification or ADR sibling is created. The current Constitution permits explicitly selected explicit-recording-v1 work; the new purpose-specific interface remains prospective. This drafting step changes no executable behavior, persisted contract or historical lifecycle record.
 
 Current direction: [Make Targeted Recording the Primary CLI Interface](../../proposals/2026-09-07-targeted-recording-primary-cli.md), its [independent Proposal Review](../../changes/2026-09-07-targeted-recording-primary-cli/reviews/proposal-review-r1.md), and the user-supplied command boundary. Earlier direction: [Explicit Workflow Recording and Model-Centered Design](../../proposals/2026-09-05-explicit-recording-and-model-centered-design.md). Related model: [CLI](../cli/cli.md). Current [Constitution](../../../CONSTITUTION.md) and contract-selected [workflow specification](../../../specs/rigorloop-workflow.md) retain their authority; this amendment does not claim historical lifecycle settlement. The architectural and specification authoring methods are combined here rather than producing mandatory sidecars. This is not yet a complete replacement for all existing workflow contracts.
 
 ## Next artifacts
 
-Refine these three model designs and their adoption contract before an explicitly authorized independent Design Review. Delivery planning follows approved Design, not this draft.
+Review the affected Workflow and Review and Closeout revisions together through independent Design Review, including their policy ownership mapping and retained Record Format/CLI boundaries. Delivery planning follows an approved exact Design package and separately authorized continuation.
+
+Earlier targeted-interface planning intent retained: refine the three Workflow, Record Format, and CLI model designs and their adoption contract before an explicitly authorized independent Design Review. Delivery planning follows approved Design, not the draft.
 
 ## Follow-on artifacts
 

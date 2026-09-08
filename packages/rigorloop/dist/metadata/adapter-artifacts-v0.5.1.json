@@ -16,30 +16,30 @@
       "adapter": "codex",
       "archive": "rigorloop-adapter-codex-v0.5.1.zip",
       "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/rigorloop-adapter-codex-v0.5.1.zip",
-      "sha256": "aa57ba00e85a38180b2fe4e5d731baa74b38cf66b0eac199d0bb53ce4e15d4bb",
-      "size_bytes": 216512,
+      "sha256": "c49bc8f3d727d9c72e145fff1a78b7bdf4c05ab906275f52d4608947d4b6770c",
+      "size_bytes": 253163,
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
       "install_root": ".agents/skills",
-      "tree_sha256": "24ea641bd1a6523a73629d08acaf835012fbec8d8ba18cc74f27fe39409334c8",
-      "file_count": 105
+      "tree_sha256": "fe4f59238ce0ae230616c93b311b00961145dd21ed0b49cf998ed7f1483603ff",
+      "file_count": 119
     },
     {
       "adapter": "claude",
       "archive": "rigorloop-adapter-claude-v0.5.1.zip",
       "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/rigorloop-adapter-claude-v0.5.1.zip",
-      "sha256": "0e570b1bd6a7d6f8b77c41794aa64dfa88251a1f602ab073c09a0892a2052890",
-      "size_bytes": 215781,
+      "sha256": "b0dd0c9d7672afda3d9adb46db165d7c85c384a90b2296b6eebad2df623ba717",
+      "size_bytes": 252424,
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
       "install_root": ".claude/skills",
-      "tree_sha256": "8a415b0f14c1772fc7ca3a489377f3903175c9a33b7f132ae264f1163bbc0ccd",
-      "file_count": 105
+      "tree_sha256": "b6a742612efdf6496798b1ab1a426171e29f63fa123234e4fa6dc1e6abd08eb2",
+      "file_count": 119
     },
     {
       "adapter": "opencode",
       "archive": "rigorloop-adapter-opencode-v0.5.1.zip",
       "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/rigorloop-adapter-opencode-v0.5.1.zip",
-      "sha256": "c826db9211d3fbffd1c507342078c28f9dcbeea824ed001d301b969795237ac0",
-      "size_bytes": 218751,
+      "sha256": "17f3b876fe63a9f62897690dd4bc1d8f5d99815092fdb45cc3c5fb3770ffcb2e",
+      "size_bytes": 255450,
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
       "install_roots": {
         "skills": ".opencode/skills",
@@ -47,8 +47,8 @@
       },
       "root_hashes": {
         "skills": {
-          "tree_sha256": "8a415b0f14c1772fc7ca3a489377f3903175c9a33b7f132ae264f1163bbc0ccd",
-          "file_count": 105
+          "tree_sha256": "b6a742612efdf6496798b1ab1a426171e29f63fa123234e4fa6dc1e6abd08eb2",
+          "file_count": 119
         },
         "commands": {
           "tree_sha256": "f7366be1b02d4f1929f234f7791035fe199b2b3b5338efca422d6850ecfa395b",

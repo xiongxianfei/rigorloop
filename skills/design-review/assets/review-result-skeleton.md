@@ -3,6 +3,9 @@
 <!-- Template status: normative -->
 <!-- Maintained alongside: skills/design-review/SKILL.md -->
 
+
+<!-- Presentation only: adopted Review and Closeout uses exact subjects, scope and claim limits from the packaged application. Historical fields below remain contract-selected; do not serialize them into v2 by copying this asset. -->
+
 ## Result
 
 - Skill: design-review

@@ -6,6 +6,10 @@ Current route amendment: `route` is the sole public semantic workflow router, `r
 
 Compact current-state amendment: `compact-current-state-v1` replaces history-oriented active records prospectively after coherent activation. The authoritative set is `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`, coordinated by one recoverable multi-file transaction boundary. The CLI derives eligibility and validates semantic operations; it is not a permission principal. Bounded projections identify current state and exact required paths. Correctness, recovery, review, resumption, and successful Verify work without Git history, without PR access, without network access, and without machine-local logs. Registered non-compact changes retain their contract and are never inferred or migrated from file shape. Compact writer authority remains withheld until package and supported-adapter parity is proven.
 
+## Review and Closeout ownership
+
+For explicitly adopted model work, [Review and Closeout](../../design/review-closeout/review-closeout.md) owns shared assessment and final-closeout policy within Workflow (RC-SR-01–18). Workflow retains coordination; Record Format and CLI retain representation and mechanics. This change adopts that ownership for this repository's explicitly selected initiative; installation and distribution do not activate customer projects. The model's clause-level map identifies replacement ownership, while historical contracts and their stable IDs, judgments and stored procedures below retain their exact meaning. Specialized skills apply the owner through selectively packaged guidance; they do not define competing policy. Existing separately authorized release, PR, publication and destructive-action boundaries remain in force.
+
 ## Owning change record
 
 `docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml`
