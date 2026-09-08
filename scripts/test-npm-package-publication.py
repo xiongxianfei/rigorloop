@@ -242,6 +242,13 @@ class NpmPackagePublicationTests(unittest.TestCase):
 
     def test_forbidden_path_detection_rejects_root_and_nested_sensitive_files(self) -> None:
         forbidden_paths = [
+            "package/dist/lib/compact-operations.js",
+            "package/dist/lib/lifecycle-read.js",
+            "package/dist/lib/new-change.js",
+            "package/dist/lib/final-verification-protocol.js",
+            "package/dist/schemas/explicit-recording-v1.schema.json",
+            "package/dist/templates/explicit-recording/records.json",
+            "package/dist/metadata/compact-current-state-activation.json",
             "package/rigorloop-adapter-codex-v0.2.0.zip",
             "package/archive.tgz",
             "package/.env",
@@ -391,10 +398,11 @@ class NpmPackagePublicationTests(unittest.TestCase):
                 [str(bin_path), "new-change", "test-change", "--title", "Test change", "--dry-run", "--json"],
                 cwd=Path(project_temp),
             )
-            self.assertEqual(new_change_result.returncode, 0, new_change_result.stderr)
+            self.assertEqual(new_change_result.returncode, 4, new_change_result.stderr)
             self.assertEqual(new_change_result.stderr, "")
             new_change_payload = json.loads(new_change_result.stdout)
-            self.assertEqual(new_change_payload["command"], "new-change")
+            self.assertEqual(new_change_payload["errors"][0]["code"], "invalid-usage")
+            self.assertFalse((Path(project_temp) / "docs/changes/test-change").exists())
             workflow = run_command(
                 ["node", "--test", "--test-name-pattern=TG-05 actors", "packages/rigorloop/test/record-store-workflow.test.js"],
                 env={**os.environ, "RIGORLOOP_TEST_PACKAGED_BIN": str(bin_path)},

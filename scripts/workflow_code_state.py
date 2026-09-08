@@ -11,7 +11,6 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Protocol
 
-from artifact_lifecycle_validation import _parse_change_yaml_text
 
 
 class CodeStateError(ValueError):
@@ -117,64 +116,6 @@ class GitCodeStateProvider:
 
     test_only = False
 
-    _POST_REVIEW_EVIDENCE_PREFIXES = (
-        "docs/changes/",
-        "docs/plans/",
-    )
-    _POST_REVIEW_EVIDENCE_PATHS = frozenset({"docs/plan.md"})
-    _REVIEW_CHANGE_FIELD_PREFIXES = (
-        ("workflow_state", "lifecycle_state"),
-        ("workflow_state", "current_stage"),
-        ("workflow_state", "next_stage"),
-        ("workflow_state", "blocker"),
-        ("workflow_state", "evidence"),
-        ("workflow_state", "planned_work", "current_milestone"),
-        ("workflow_state", "planned_work", "milestones"),
-        ("workflow_state", "planned_work", "remaining_implementation_milestones"),
-        ("workflow_state", "planned_work", "latest_review"),
-        ("workflow_state", "planned_work", "final_closeout"),
-        ("workflow", "automation", "status"),
-        ("workflow", "automation", "current_stage"),
-        ("workflow", "automation", "stop_reason"),
-        ("workflow", "automation", "evidence"),
-        ("review", "status"),
-        ("review", "unresolved_items"),
-        ("changed_files",),
-    )
-    _EXPLANATION_CHANGE_FIELD_PREFIXES = (
-        ("workflow_state", "lifecycle_state"),
-        ("workflow_state", "current_stage"),
-        ("workflow_state", "next_stage"),
-        ("workflow_state", "blocker"),
-        ("workflow_state", "evidence"),
-        ("workflow_state", "planned_work", "final_closeout"),
-        ("workflow", "automation", "status"),
-        ("workflow", "automation", "current_stage"),
-        ("workflow", "automation", "stop_reason"),
-        ("workflow", "automation", "evidence"),
-        ("artifacts", "explain_change"),
-        ("changed_files",),
-    )
-    _VERIFY_CHANGE_FIELD_PREFIXES = (
-        ("workflow_state", "lifecycle_state"),
-        ("workflow_state", "current_stage"),
-        ("workflow_state", "next_stage"),
-        ("workflow_state", "blocker"),
-        ("workflow_state", "evidence"),
-        ("workflow_state", "planned_work", "final_closeout"),
-        ("workflow", "automation", "status"),
-        ("workflow", "automation", "current_stage"),
-        ("workflow", "automation", "stop_reason"),
-        ("workflow", "automation", "evidence"),
-        ("validation",),
-        ("changed_files",),
-    )
-    _SHARED_LIST_FIELDS = (
-        ("workflow_state", "evidence"),
-        ("workflow", "automation", "evidence"),
-        ("changed_files",),
-    )
-
     def __init__(
         self,
         *,
@@ -183,17 +124,6 @@ class GitCodeStateProvider:
         if not isinstance(anchor, CodeStateAnchor):
             raise CodeStateError("resolved code-state anchor is required")
         self._anchor = anchor
-        self._allowed_post_review_paths = frozenset(
-            anchor.lifecycle_evidence_paths
-        )
-        change_root = f"docs/changes/{anchor.change_id}"
-        self._allowed_post_handoff_paths = frozenset(
-            {
-                f"{change_root}/change.yaml",
-                f"{change_root}/verify-report.md",
-            }
-        )
-
     @staticmethod
     def _validate_relative_path(value: str) -> str:
         path = PurePosixPath(value)
@@ -279,28 +209,6 @@ class GitCodeStateProvider:
                 f"cannot decode lifecycle evidence path: {path}"
             ) from error
 
-    @staticmethod
-    def _changed_fields(
-        older: object,
-        newer: object,
-        prefix: tuple[str, ...] = (),
-    ) -> frozenset[tuple[str, ...]]:
-        if isinstance(older, dict) and isinstance(newer, dict):
-            changed: set[tuple[str, ...]] = set()
-            for key in set(older) | set(newer):
-                key_text = str(key)
-                if key not in older or key not in newer:
-                    changed.add((*prefix, key_text))
-                    continue
-                changed.update(
-                    GitCodeStateProvider._changed_fields(
-                        older[key], newer[key], (*prefix, key_text)
-                    )
-                )
-            return frozenset(changed)
-        if older != newer:
-            return frozenset({prefix})
-        return frozenset()
 
     @staticmethod
     def _value_at_path(value: object, path: tuple[str, ...]) -> object:
@@ -311,152 +219,9 @@ class GitCodeStateProvider:
             current = current[part]
         return current
 
-    def _validate_shared_list_deltas(
-        self,
-        before: object,
-        after: object,
-        *,
-        stage: str,
-        allowed_entries: frozenset[str],
-    ) -> None:
-        for field_path in self._SHARED_LIST_FIELDS:
-            old_value = self._value_at_path(before, field_path)
-            new_value = self._value_at_path(after, field_path)
-            if old_value is None:
-                old_value = []
-            if new_value is None:
-                new_value = []
-            if old_value == new_value:
-                continue
-            if not isinstance(old_value, list) or not isinstance(new_value, list):
-                raise CodeStateError(
-                    f"shared metadata list has invalid shape in {stage}: "
-                    f"{'.'.join(field_path)}"
-                )
-            if new_value[: len(old_value)] != old_value:
-                raise CodeStateError(
-                    f"shared metadata list must preserve its prior sequence "
-                    f"in {stage}: {'.'.join(field_path)}"
-                )
-            appended = new_value[len(old_value) :]
-            if (
-                not appended
-                or not all(isinstance(entry, str) for entry in appended)
-                or len(set(appended)) != len(appended)
-                or any(
-                    entry not in allowed_entries
-                    or entry in old_value
-                    for entry in appended
-                )
-            ):
-                raise CodeStateError(
-                    f"shared metadata list has unowned append in {stage}: "
-                    f"{'.'.join(field_path)}"
-                )
 
-    def _validate_change_metadata_fields(
-        self,
-        root: Path,
-        older: str,
-        newer: str,
-        *,
-        stage: str,
-        change_path: str,
-        allowed_list_entries: frozenset[str],
-    ) -> None:
-        try:
-            before = _parse_change_yaml_text(
-                self._blob_text(root, older, change_path)
-            )
-            after = _parse_change_yaml_text(
-                self._blob_text(root, newer, change_path)
-            )
-        except Exception as error:
-            raise CodeStateError(
-                "cannot parse change metadata for stage-evidence validation"
-            ) from error
-        prefixes_by_stage = {
-            "final-review": self._REVIEW_CHANGE_FIELD_PREFIXES,
-            "explanation": self._EXPLANATION_CHANGE_FIELD_PREFIXES,
-            "verify": self._VERIFY_CHANGE_FIELD_PREFIXES,
-        }
-        prefixes = prefixes_by_stage[stage]
-        self._validate_shared_list_deltas(
-            before,
-            after,
-            stage=stage,
-            allowed_entries=allowed_list_entries,
-        )
-        changed = self._changed_fields(before, after)
-        unowned = sorted(
-            ".".join(path)
-            for path in changed
-            if not any(path[: len(prefix)] == prefix for prefix in prefixes)
-        )
-        if unowned:
-            raise CodeStateError(
-                f"unowned change metadata field in {stage} revision: {unowned}"
-            )
 
-    def _validate_stage_commit(
-        self,
-        root: Path,
-        older: str,
-        newer: str,
-        *,
-        stage: str,
-    ) -> None:
-        change_root = f"docs/changes/{self._anchor.change_id}"
-        change_path = f"{change_root}/change.yaml"
-        paths = self._changed_paths(root, older, newer)
-        if stage == "final-review":
-            required = frozenset(
-                {
-                    f"{change_root}/reviews/{self._anchor.final_review_id}.md",
-                    f"{change_root}/review-invocation-{self._anchor.final_review_id}.yaml",
-                    f"{change_root}/review-log.md",
-                    change_path,
-                }
-            )
-            allowed = required | frozenset(
-                {f"{change_root}/review-resolution.md"}
-            )
-            label = "final-review recording paths"
-        else:
-            required = self._allowed_post_review_paths | frozenset({change_path})
-            allowed = required
-            label = "explanation recording paths"
-        if not required.issubset(paths) or not paths.issubset(allowed):
-            raise CodeStateError(
-                f"{label} are invalid: {sorted(paths)}"
-            )
-        self._validate_change_metadata_fields(
-            root,
-            older,
-            newer,
-            stage=stage,
-            change_path=change_path,
-            allowed_list_entries=paths - frozenset({change_path}),
-        )
 
-    def _linear_tail(self, root: Path, reviewed: str, head: str) -> tuple[str, ...]:
-        if head == reviewed:
-            return ()
-        output = self._git(
-            root, "rev-list", "--reverse", f"{reviewed}..{head}"
-        ).decode("ascii").splitlines()
-        commits = tuple(item.strip() for item in output if item.strip())
-        previous = reviewed
-        for commit in commits:
-            parent_line = self._git(
-                root, "rev-list", "--parents", "-n", "1", commit
-            ).decode("ascii").strip().split()
-            if len(parent_line) != 2 or parent_line[1] != previous:
-                raise CodeStateError(
-                    "post-review evidence tail must be linear non-merge direct children"
-                )
-            previous = commit
-        return commits
 
     def _entries(
         self, root: Path, base: str, reviewed: str
@@ -570,49 +335,8 @@ class GitCodeStateProvider:
                 "reviewed revision is not an ancestor of HEAD"
             ) from error
 
-        tail = self._linear_tail(root, reviewed, head)
-        if len(tail) > 3:
-            raise CodeStateError(
-                "post-review evidence tail contains additional pre-verify commits"
-            )
-        final_review_recording = tail[0] if tail else None
-        explanation_recording = tail[1] if len(tail) >= 2 else None
-        if final_review_recording is not None:
-            self._validate_stage_commit(
-                root,
-                reviewed,
-                final_review_recording,
-                stage="final-review",
-            )
-        if explanation_recording is not None:
-            self._validate_stage_commit(
-                root,
-                final_review_recording,
-                explanation_recording,
-                stage="explanation",
-            )
-        previous = explanation_recording
-        for commit in tail[2:]:
-            assert previous is not None
-            paths = self._changed_paths(root, previous, commit)
-            if paths != self._allowed_post_handoff_paths:
-                raise CodeStateError(
-                    "post-handoff evidence revision contains unowned paths: "
-                    f"{sorted(paths)}"
-                )
-            change_path = (
-                f"docs/changes/{self._anchor.change_id}/change.yaml"
-            )
-            if change_path in paths:
-                self._validate_change_metadata_fields(
-                    root,
-                    previous,
-                    commit,
-                    stage="verify",
-                    change_path=change_path,
-                    allowed_list_entries=paths - frozenset({change_path}),
-                )
-            previous = commit
+        if head != reviewed:
+            raise CodeStateError("post-review legacy evidence-tail interpretation is unsupported")
 
         unexpected_worktree = self._worktree_paths(root)
         if unexpected_worktree:
@@ -626,16 +350,10 @@ class GitCodeStateProvider:
             base_revision=base,
             reviewed_revision=reviewed,
             entries=self._entries(root, base, reviewed),
-            final_review_recording_revision=final_review_recording,
-            explanation_recording_revision=explanation_recording,
-            handoff_revision=explanation_recording,
-            tail_state=(
-                "complete"
-                if explanation_recording is not None
-                else "review-recorded"
-                if final_review_recording is not None
-                else "reviewed-subject"
-            ),
+            final_review_recording_revision=None,
+            explanation_recording_revision=None,
+            handoff_revision=None,
+            tail_state="reviewed-subject",
         )
 
 
@@ -718,21 +436,9 @@ class GitCodeStateAnchorResolver:
         base = GitCodeStateProvider._git(
             root, "merge-base", target, reviewed
         ).decode("ascii").strip()
+        if lifecycle_evidence_paths:
+            raise CodeStateError("post-review exemption adapter is unsupported")
         allowed_paths: set[str] = set()
-        for path in lifecycle_evidence_paths:
-            relative_path = GitCodeStateProvider._validate_relative_path(path)
-            if (
-                relative_path
-                not in GitCodeStateProvider._POST_REVIEW_EVIDENCE_PATHS
-                and not relative_path.startswith(
-                    GitCodeStateProvider._POST_REVIEW_EVIDENCE_PREFIXES
-                )
-            ):
-                raise CodeStateError(
-                    "post-review exemption is not a lifecycle evidence path: "
-                    f"{relative_path}"
-                )
-            allowed_paths.add(relative_path)
         return CodeStateAnchor(
             change_id=change_id,
             target_ref=target_ref,

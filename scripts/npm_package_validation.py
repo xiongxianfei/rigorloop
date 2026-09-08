@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import fnmatch
 import tarfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,13 +19,14 @@ REQUIRED_PACKAGE_PATHS = frozenset(
         "package/dist/bin/rigorloop.js",
         "package/dist/lib/command-result.js",
         "package/dist/lib/lockfile.js",
-        "package/dist/lib/lifecycle-contract.js",
-        "package/dist/lib/lifecycle-cli.js",
-        "package/dist/lib/lifecycle-read.js",
-        "package/dist/lib/lifecycle-operations.js",
-        "package/dist/lib/lifecycle-transaction.js",
-        "package/dist/lib/new-change-filesystem.js",
-        "package/dist/lib/new-change.js",
+        "package/dist/lib/record-store.js",
+        "package/dist/lib/record-format-v2.js",
+        "package/dist/lib/recording-cli.js",
+        "package/dist/lib/record-discovery.js",
+        "package/dist/lib/record-store-transport.js",
+        "package/dist/schemas/rigorloop-records-v2.schema.json",
+        "package/dist/schemas/targeted-recording-v1.schema.json",
+        "package/dist/schemas/record-store-transport.schema.json",
         "package/dist/lib/official-archive-url.js",
         "package/dist/metadata/adapter-artifacts-v0.3.4.json",
         "package/dist/metadata/releases.json",
@@ -32,6 +34,15 @@ REQUIRED_PACKAGE_PATHS = frozenset(
 )
 
 FORBIDDEN_PATH_PATTERNS = (
+    "package/dist/lib/compact-*.js",
+    "package/dist/lib/lifecycle-*.js",
+    "package/dist/lib/new-change*.js",
+    "package/dist/lib/final-verification-protocol.js",
+    "package/dist/schemas/explicit-recording-v1.schema.json",
+    "package/dist/schemas/compact-*.schema.json",
+    "package/dist/templates/explicit-recording/**",
+    "package/dist/templates/compact/**",
+    "package/dist/metadata/compact-current-state-activation.json",
     "package/test/**",
     "package/tests/**",
     "package/__fixtures__/**",
@@ -127,6 +138,9 @@ def inspect_package_tarball(tarball: Path) -> PackageTarballReport:
 def is_forbidden_path(path: str) -> bool:
     normalized = normalize_tarball_path(path)
     if not normalized.startswith("package/"):
+        return True
+
+    if any(fnmatch.fnmatchcase(normalized, pattern) for pattern in FORBIDDEN_PATH_PATTERNS):
         return True
 
     relative = normalized[len("package/") :]
