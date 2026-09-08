@@ -123,7 +123,7 @@ Evaluate applicable dimensions as `pass`, `concern`, or `block`: requirement and
 5. Check drift, blockers, claim limits, and the permitted handoff.
 6. Report the verdict and exact commands actually run.
 
-When `broad_smoke_required: true` appears in governing evidence, missing broad smoke blocks final readiness. Inspect `verify-report.md` for required normal-change manual proof and release metadata for release smoke or release manual proof.
+When `broad_smoke_required: true` appears in governing evidence, missing broad smoke blocks final readiness. Inspect registered v2 evidence for required normal-change manual proof and assess its subjects and applicability. Successful Verify references the supporting evidence; an existing successful Verify record is not a prerequisite for this assessment. Inspect release metadata for release smoke or release manual proof.
 
 ## Review and lifecycle closeout
 

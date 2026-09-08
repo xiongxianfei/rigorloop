@@ -199,7 +199,7 @@ Stop and surface the smallest concrete blocker when:
 
 Do not treat a missing resource as permission to use remembered procedure. Do not repair another stage's evidence while routing.
 
-Use targeted proof first. Run broad smoke only when an authoritative `broad_smoke.sources` trigger applies, and keep required manual proof in `verify-report.md`.
+Use targeted proof first. Run broad smoke only when an authoritative `broad_smoke.sources` trigger applies. Record required manual proof as registered v2 evidence with its subjects and applicability before final Verify; successful Verify references that evidence.
 
 ## Handoff
 
