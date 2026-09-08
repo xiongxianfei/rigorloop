@@ -11,9 +11,9 @@ const prefix='docs/changes/example/';
 const encode=x=>JSON.stringify(x)+'\n';
 const actor=(id,role)=>({id,role});
 const implementer=actor('implementer','implement'),verifier=actor('verifier','verify'),reviewer=actor('independent','review');
-for(const contract of ['rigorloop-records-v2','explicit-recording-v1'])test(`TG-FINAL-01 public correction, recovery and explanation: ${contract}`,t=>{
+for(const contract of ['rigorloop-records-v2'])test(`TG-FINAL-01 public correction, recovery and explanation: ${contract}`,t=>{
  const root=mkdtempSync(join(tmpdir(),'recording-adoption-'));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(join(root,'docs/changes'),{recursive:true});
- const v2=contract==='rigorloop-records-v2',mp=prefix+(v2?'change.json':'change.yaml'),ep=prefix+(v2?'evidence.json':'evidence.yaml'),rp=prefix+'reviews/final-review.'+(v2?'json':'md');
+ const mp=prefix+'change.json',ep=prefix+'evidence.json',rp=prefix+'reviews/final-review.json';
  writeFileSync(join(root,'basis'),'A\n');let subject={path:'basis',identity:digest('A\n')},revision=null;
  function call(words,payload,extra=[],expected=0){const args=[...words,'--root',root,...(words[0]==='subject'?[]:['--change','example']),'--format','json',...(payload?['--input','-']:[]),...extra];const r=spawnSync(process.execPath,[cli,...args],{input:payload?encode(payload):undefined,encoding:'utf8',maxBuffer:16*1024*1024});assert.equal(r.status,expected,r.stdout+r.stderr);const result=JSON.parse(r.stdout);assert.equal(result.claim,'storage-only');return result;}
  const app=who=>({value:'current',actor:who,reason:'Explicit actor assessment for this test.'});
@@ -21,11 +21,11 @@ for(const contract of ['rigorloop-records-v2','explicit-recording-v1'])test(`TG-
  function words(op){return Array.isArray(op)?['batch']:[...op.op.split('.'),...(op.target.id?[op.target.id]:[])];}
  function mutate(op){const r=call(words(op),request(op));assert.equal(r.status,'saved');assert.ok(Buffer.byteLength(encode(r))<65536);if(r.observation_summary)assert.equal(r.observation_summary.details_included,false);revision=r.revision;return r;}
  const initial={proposal:subject,models:[],activity:{stage:'verify',status:'completed',owner:verifier,reason:'An earlier explicit completion.'},plan:null,work:[{id:'work-1',status:'completed',owner:implementer,requirement_refs:['CLI-SR-07']}],blockers:[]};
- if(v2)mutate({op:'change.create',target:{},values:initial});else{const c={schema_version:1,contract,change_id:'example',...initial,records:[],applicability:[]};call(['record-store','record'],{schema_version:1,contract,change_id:'example',expected_revision:null,reads:[],writes:[{path:mp,expected_identity:null,content:encode(c)}]});}
+ mutate({op:'change.create',target:{},values:initial});
  const context=call(['context'],{schema_version:1,select:[{kind:'activity',where:{}},{kind:'work',where:{ids:['work-1']}}]});assert.equal(context.record_contract,contract);revision=context.revision;
  const inspected=call(['subject','inspect'],undefined,['--path','basis','--content','full']);assert.deepEqual(inspected.data.subjects,[subject]);
  const failed={op:'evidence.record',target:{id:'failed-check'},values:{actor:verifier,subjects:[subject],result:'failed',procedure:'Observe the interrupted correction fixture.',summary:'Required result failed.'},applicability:app(verifier)};
- const blocker={op:'blocker.add',target:{id:'defect'},values:{reporter:verifier,owner:implementer,subjects:[subject],evidence:'The check failed after recorded completion.',required_outcome:'Demonstrate correction with a current passing check.',state:'open',resolution:null,...(v2?{basis:{rationale:'Failure requires correction.',supporting_judgment:null}}:{})}};
+ const blocker={op:'blocker.add',target:{id:'defect'},values:{reporter:verifier,owner:implementer,subjects:[subject],evidence:'The check failed after recorded completion.',required_outcome:'Demonstrate correction with a current passing check.',state:'open',resolution:null,basis:{rationale:'Failure requires correction.',supporting_judgment:null}}};
  const beforeFailure=revision;assert.ok(mutate([failed,blocker]).observation_summary.total>0);assert.equal(call(['status']).data.activity.status,'completed');
  call(['batch'],request([failed,blocker],beforeFailure),[],3);
  mutate({op:'activity.set',target:{},values:{stage:'implement',status:'in-progress',owner:implementer,reason:'Route explicitly selects correction.'}});
@@ -39,7 +39,7 @@ for(const contract of ['rigorloop-records-v2','explicit-recording-v1'])test(`TG-
  const tx=blocked.transaction;assert.equal(call(['record-store','recover'],undefined,['--transaction',tx.id,'--expected-recovery',tx.recovery_identity,'--action','complete']).status,'recovered');
  revision=call(['status']).revision;call(['batch'],payload,[],3);
  mutate({op:'review.record',target:{id:'final-review'},values:{target:'code',reviewer,contributors:[implementer],independence_basis:'Separate reviewer assesses this complete fixture implementation.',subjects:[subject],judgment:'approved',body:'The corrected subject meets the stated requirement.\n'},applicability:app(reviewer)});
- let concern=call(['blocker','show','defect']).data.items[0].fields;assert.equal(concern.state,'open');if(v2){assert.deepEqual(concern.origin.subjects,[subject]);assert.equal(concern.origin.supporting_judgment,null);}else assert.equal(concern.origin,undefined);
+ let concern=call(['blocker','show','defect']).data.items[0].fields;assert.equal(concern.state,'open');assert.deepEqual(concern.origin.subjects,[subject]);assert.equal(concern.origin.supporting_judgment,null);
  mutate({op:'blocker.set',target:{id:'defect'},values:{state:'resolved',resolution:{actor:verifier,rationale:'Verify reassessed its required outcome.',evidence_refs:[{path:ep,id:'corrected-check'}]}}});
  const explanation='Correction retained the original failure, its ownership and the explicit final assessment.\n';
  mutate({op:'decision.record',target:{id:'correction-basis'},values:{actor:verifier,subjects:[subject],rationale:'Keep the original failure as truthful evidence.',source_refs:[{path:mp,id:'defect'}],body:explanation},applicability:app(verifier)});

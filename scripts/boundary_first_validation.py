@@ -4,12 +4,10 @@
 from __future__ import annotations
 
 import hashlib
-import importlib.util
 import json
 import os
 import re
 import subprocess
-import sys
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
@@ -304,117 +302,15 @@ def _line_value(text: str, label: str) -> str | None:
     return match.group(1) if match else None
 
 
-def _load_change_metadata_parser():
-    validator_path = Path(__file__).resolve().with_name("validate-change-metadata.py")
-    module_name = "change_metadata_validator_for_boundary_first"
-    existing = sys.modules.get(module_name)
-    if existing is not None:
-        return existing
-    spec = importlib.util.spec_from_file_location(module_name, validator_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError("could not load change metadata parser")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-def _parse_change_record(text: str) -> dict[str, object]:
-    parser = _load_change_metadata_parser()
-    lines = parser.tokenize_yaml(text)
-    if not lines:
-        raise parser.MetadataValidationError("metadata file is empty")
-    data, index = parser.parse_yaml_block(lines, 0, lines[0].indent)
-    if index != len(lines) or not isinstance(data, dict):
-        raise parser.MetadataValidationError("change metadata must be one complete mapping")
-    return data
-
-
 def _stage_owned_marker_authority(
-    root: Path | None,
-    change_record: str,
-    path: str,
-) -> tuple[str | bool | None, ValidationIssue | None]:
-    if root is None:
-        return (
-            None,
-            _issue(
-                "BFR-MARKER-AUTHORITY",
-                path,
-                "owner-pointer marker placement requires a resolvable lifecycle contract",
-                "unresolved-change-record",
-                "repository-contained owning change record",
-            ),
-        )
-    relative = PurePosixPath(change_record)
-    candidate = root.joinpath(*relative.parts)
-    current = root
-    for part in relative.parts:
-        current = current / part
-        if current.is_symlink():
-            return (
-                None,
-                _issue(
-                    "BFR-MARKER-AUTHORITY",
-                    path,
-                    "owner-pointer marker authority must not traverse a symlink",
-                    change_record,
-                    "repository-contained owning change record",
-                ),
-            )
-    resolved_root = root.resolve()
-    resolved_candidate = candidate.resolve(strict=False)
-    if not resolved_candidate.is_relative_to(resolved_root) or not candidate.is_file():
-        return (
-            None,
-            _issue(
-                "BFR-MARKER-AUTHORITY",
-                path,
-                "owner-pointer marker placement requires an existing owning change record",
-                change_record,
-                "existing owning change record",
-            ),
-        )
-    try:
-        change_text = candidate.read_text(encoding="utf-8")
-    except (OSError, UnicodeDecodeError):
-        return (
-            None,
-            _issue(
-                "BFR-MARKER-AUTHORITY",
-                path,
-                "owning change record is unreadable",
-                change_record,
-                "readable owning change record",
-            ),
-        )
-    try:
-        change_data = _parse_change_record(change_text)
-    except Exception as exc:
-        return (
-            None,
-            _issue(
-                "BFR-MARKER-AUTHORITY" if "duplicate" in str(exc) else "BFR-UNKNOWN-LIFECYCLE-CONTRACT",
-                path,
-                "owning change record contains duplicate metadata" if "duplicate" in str(exc) else "owning change record lifecycle contract is malformed",
-                "duplicate-lifecycle-contract" if "duplicate" in str(exc) else "malformed-lifecycle-contract",
-                "one parsed lifecycle_contract value" if "duplicate" in str(exc) else "stage-owned-change-local-v1, stage-owned-change-local-v2, stage-owned-change-local-v3, or absent legacy contract",
-            ),
-        )
-    if "lifecycle_contract" not in change_data:
-        return (False, None)
-    contract = change_data["lifecycle_contract"]
-    if contract in {"stage-owned-change-local-v1", "stage-owned-change-local-v2", "stage-owned-change-local-v3"}:
-        return (str(contract), None)
-    return (
-        None,
-        _issue(
-            "BFR-UNKNOWN-LIFECYCLE-CONTRACT",
-            path,
-            "owning change record declares an unknown lifecycle contract",
-            "unknown-lifecycle-contract",
-            "stage-owned-change-local-v1, stage-owned-change-local-v2, stage-owned-change-local-v3, or absent legacy contract",
-        ),
+    root: Path | None, change_record: str, path: str,
+) -> tuple[None, ValidationIssue]:
+    # This was a legacy stored-state adapter, not part of the independent
+    # boundary document grammar. Never read or reinterpret its archived root.
+    return None, _issue(
+        "BFR-MARKER-AUTHORITY", path,
+        "legacy stored-record marker authority is unsupported",
+        "retired-record-interface", "standalone document or current model contract",
     )
 
 
@@ -443,6 +339,23 @@ def _marker_issues(
         r"(?m)^`(docs/changes/[^/]+/change\.yaml)`\s*$"
     )
     owner_pointers = tuple(owner_pointer_pattern.finditer(owner))
+    # V2 ownership pointers are document placement, not stored eligibility.
+    # The record validator and independent reviewer assess the selected store
+    # and authority separately; never decode an archive to validate this form.
+    v2_pointers = tuple(re.finditer(
+        r"(?m)^`docs/changes/[A-Za-z0-9][A-Za-z0-9._-]*/change\.json`\s*$", owner,
+    ))
+    if v2_pointers:
+        if len(v2_pointers) != 1 or owner_pointers or len(owner_markers) != 1:
+            return [_issue("BFR-MARKER-PLACEMENT", path,
+                "v2 document marker requires one exact owning pointer",
+                "ambiguous-owner", "one v2 owner followed by one marker")]
+        preceding = owner[:owner_markers[0].start()].strip().splitlines()
+        if preceding and preceding[-1].strip() == v2_pointers[0].group(0).strip():
+            return []
+        return [_issue("BFR-MARKER-PLACEMENT", path,
+            "boundary contract marker must follow the v2 owning pointer",
+            "misplaced-marker", "after normalized v2 owning pointer")]
     stage_owned = False
     if len(owner_pointers) == 1:
         stage_owned_result, authority_issue = _stage_owned_marker_authority(
@@ -1722,99 +1635,6 @@ def _changed_spec_path(
     return candidate, None
 
 
-def _stage_owned_plan_proof_issues(
-    root: Path,
-    feature_text: str,
-    feature_relative: str,
-) -> tuple[ValidationIssue, ...] | None:
-    owner = _section(feature_text, "Owning change record")
-    pointer_match = re.search(r"(?m)^`(docs/changes/[^/]+/change\.yaml)`\s*$", owner)
-    if pointer_match is None:
-        return None
-    change_relative = pointer_match.group(1)
-    contract, authority_issue = _stage_owned_marker_authority(root, change_relative, feature_relative)
-    if authority_issue or contract not in {"stage-owned-change-local-v2", "stage-owned-change-local-v3"}:
-        return None
-    change_path = root.joinpath(*PurePosixPath(change_relative).parts)
-    try:
-        change = _parse_change_record(change_path.read_text(encoding="utf-8"))
-    except Exception:
-        return None
-    artifact_states = change.get("artifact_states")
-    plan = artifact_states.get("plan") if isinstance(artifact_states, dict) else None
-    if not isinstance(plan, dict) or plan.get("kind") != "plan" or plan.get("role") != "primary":
-        if contract == "stage-owned-change-local-v3":
-            return ()
-        return (
-            _issue(
-                "BFR-PLAN-PROOF-MISSING",
-                feature_relative,
-                "v2/v3 boundary proof requires one registered primary plan",
-                "missing-primary-plan",
-                "artifact_states.plan with kind plan and role primary",
-            ),
-        )
-    raw_plan_path = plan.get("path")
-    if not isinstance(raw_plan_path, str):
-        return (
-            _issue(
-                "BFR-PLAN-PROOF-MISSING",
-                feature_relative,
-                "registered primary plan path is missing or invalid",
-                "invalid-primary-plan-path",
-                "repository-relative docs/plans/*.md path",
-            ),
-        )
-    plan_relative = PurePosixPath(raw_plan_path)
-    if plan_relative.is_absolute() or ".." in plan_relative.parts or plan_relative.suffix != ".md" or plan_relative.parts[:2] != ("docs", "plans"):
-        return (
-            _issue(
-                "BFR-PLAN-PROOF-MISSING",
-                feature_relative,
-                "registered primary plan path is unsafe",
-                raw_plan_path,
-                "repository-relative docs/plans/*.md path",
-            ),
-        )
-    plan_path = root.joinpath(*plan_relative.parts)
-    if not plan_path.is_file() or plan_path.is_symlink() or not plan_path.resolve().is_relative_to(root.resolve()):
-        return (
-            _issue(
-                "BFR-PLAN-PROOF-MISSING",
-                feature_relative,
-                "registered primary plan is missing or unsafe",
-                raw_plan_path,
-                "current repository-contained primary plan",
-            ),
-        )
-    try:
-        plan_text = plan_path.read_text(encoding="utf-8")
-    except (OSError, UnicodeDecodeError):
-        return (
-            _issue(
-                "BFR-PLAN-PROOF-MISSING",
-                feature_relative,
-                "registered primary plan is unreadable",
-                raw_plan_path,
-                "readable primary plan",
-            ),
-        )
-    required_ids = set(re.findall(r"\bBND-(?:INPUT|STATE|AUTH|COMPOSE|TEMPORAL|RECOVERY|COMPAT|ENV)-[0-9]{3}\b", feature_text))
-    required_ids.update(re.findall(r"\bINT-[0-9]{3}\b", feature_text))
-    missing = sorted(item for item in required_ids if item not in plan_text)
-    if missing:
-        return (
-            _issue(
-                "BFR-PLAN-PROOF-INCOMPLETE",
-                raw_plan_path,
-                "registered primary plan does not allocate every approved boundary and interaction",
-                ", ".join(missing),
-                "all approved boundary and interaction IDs",
-            ),
-        )
-    return ()
-
-
 MODEL_DIMENSIONS = (
     "Input domain", "State/lifecycle", "Identity/authority", "Composition/path",
     "Temporal/retry", "Failure/recovery", "Compatibility/migration", "External/environment",
@@ -1980,10 +1800,15 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
                 root=root,
             )
         )
-        plan_proof_issues = _stage_owned_plan_proof_issues(root, feature_text, feature_relative)
-        if plan_proof_issues is not None:
-            issues.extend(plan_proof_issues)
-        elif not proof_path.is_file():
+        if issues:
+            return tuple(issues)
+        # V2 allocates proof in the reviewed delivery plan. Document validation
+        # checks the feature grammar only; it must not recreate a retired
+        # test-spec requirement or derive delivery approval from an owner path.
+        if not is_test_spec and re.search(r"(?m)^`docs/changes/[A-Za-z0-9][A-Za-z0-9._-]*/change\.json`\s*$",
+                     _section(live_feature, "Owning change record")):
+            return tuple(issues)
+        if not proof_path.is_file():
             issues.append(
                 _issue(
                     "BFR-PROOF-MAP-MISSING",

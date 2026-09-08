@@ -17,9 +17,6 @@ DEFAULT_ADAPTER_VERSION = "0.1.1"
 STATUSES = frozenset({"ok", "blocked", "fallback", "error"})
 EXIT_CODES = {"ok": 0, "blocked": 2, "fallback": 3, "error": 4}
 ROOT_VISION_PATH = "VISION.md"
-REQUIRED_EVIDENCE_DEFERRAL_FIELDS = frozenset(
-    {"owner", "path", "reason", "validation_impact", "follow_up"}
-)
 
 
 @dataclass(frozen=True)
@@ -39,11 +36,10 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-boundary-first.py --check --path docs/design/workflow/workflow.md --path docs/design/cli/cli.md --path docs/design/record-format/record-format.md",
         "explicit-recording", parallel_safe=True,
     ),
-    "compact_contract.canonical": CheckCatalogEntry(
-        "compact_contract.canonical",
-        "python scripts/test-compact-current-state-canonical-contract.py && node --test packages/rigorloop/test/compact-contract.test.js",
-        "compact-current-state",
-        parallel_safe=True,
+    "record_retirement.regression": CheckCatalogEntry(
+        "record_retirement.regression",
+        "node --test packages/rigorloop/test/record-retirement.test.js",
+        "record-retirement", parallel_safe=True,
     ),
     "boundary_first.validate": CheckCatalogEntry(
         "boundary_first.validate",
@@ -312,27 +308,6 @@ ISOLATED_RECORDING_EVIDENCE = frozenset({
 
 
 @dataclass(frozen=True)
-class EvidenceClassRegistration:
-    evidence_class_id: str
-    patterns: tuple[str, ...]
-    selector_routes: tuple[str, ...]
-    required_validator: str
-    lifecycle_stage: str
-    allowed_root: str = "docs/changes/{change_id}/"
-    allowed_when: tuple[str, ...] = ()
-    required_when: tuple[str, ...] = ()
-    forbidden_when: tuple[str, ...] = ()
-
-
-@dataclass(frozen=True)
-class EvidenceDeferralStatus:
-    status: str
-    missing_fields: tuple[str, ...] = ()
-    invalid_fields: tuple[str, ...] = ()
-    deferral: dict[str, str] = field(default_factory=dict)
-
-
-@dataclass(frozen=True)
 class RepositoryPreflightContext:
     repo_root: str
     inside_worktree: bool
@@ -340,318 +315,8 @@ class RepositoryPreflightContext:
     unmerged_paths: tuple[str, ...]
 
 
-EVIDENCE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
 RELEASE_PROFILE_FILENAME_PATTERN = re.compile(
     r"^(v(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*))\.yaml$"
-)
-BROAD_EVIDENCE_PATTERNS = frozenset({"*.md", "*.txt", "*.yaml", "*.yml"})
-
-CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
-    EvidenceClassRegistration(
-        evidence_class_id="audit",
-        patterns=("*-audit.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("audit evidence is recorded for a milestone or review",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="identity",
-        patterns=("*-identity.txt",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("identity proof is recorded for command or output evidence",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="preservation",
-        patterns=("*-preservation.md", "behavior-preservation.md"),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("behavior preservation evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="architecture-assessment",
-        patterns=("architecture-assessment.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="architecture",
-        allowed_when=("architecture assessment evidence is recorded before downstream planning or implementation",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="pr-handoff",
-        patterns=("pr.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="pr",
-        allowed_when=("change-local PR handoff evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="adoption-surface-review",
-        patterns=("adoption-surface-review.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("adoption-surface cold-read, link, command, stale-version, unsupported-claim, and visual evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="readme-ownership-proof",
-        patterns=("readme-ownership-proof.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("README generated-region and source-of-truth ownership proof is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="vision-readme-sync-proof",
-        patterns=("vision-readme-sync-proof.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("VISION.md and README consistency proof is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="cold-read-review",
-        patterns=("cold-read-review.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("cold-read reviewer evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="guide-cold-read-proof",
-        patterns=("guide-cold-read.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("guide-system cold-read proof is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="repository-metadata-proof",
-        patterns=("repository-metadata-proof.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("external repository metadata before and after proof is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="version-sync-proof",
-        patterns=("version-sync-proof.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("Quick Start release-version source and stale-version proof is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="baseline",
-        patterns=("baseline.md", "selected-tests-baseline.txt", "script-performance-baseline.yaml"),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("baseline evidence is recorded for a comparison",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="selector-regression-profile",
-        patterns=("selector-regression-profile.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("selector-regression profiling evidence is recorded before optimization",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="selector-regression-runtime",
-        patterns=("selector-regression-runtime-baseline.yaml", "selector-regression-runtime-result.yaml"),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("selector-regression runtime evidence is recorded before and after optimization",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="release-transaction-inventory",
-        patterns=("release-surface-inventory.yaml",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("release transaction surface ownership inventory is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="release-literal-audit-baseline",
-        patterns=("release-literal-audit-baseline.yaml",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("release literal audit baseline evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="broad-smoke-parallelism",
-        patterns=(
-            "broad-smoke-child-classification.yaml",
-            "broad-smoke-parallelism-baseline.yaml",
-            "broad-smoke-parallelism-result.yaml",
-        ),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("broad-smoke parallelism classification and runtime evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="token-cost",
-        patterns=("token-cost.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("token-cost evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="behavior-parity",
-        patterns=("behavior-parity.md", "behavior-parity-report.md"),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("behavior parity evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="generated-output",
-        patterns=("generated-output-proof.md", "*-generated-token-cold-read-evidence.md"),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("generated-output evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="routing-coverage",
-        patterns=("routing-coverage.md", "selector-routing-proof.md"),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("routing coverage evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="skill-audit",
-        patterns=("skill-contract-sufficiency.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("skill audit evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="script-output",
-        patterns=("output-contract-red-test.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("script-output behavior evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="command-output",
-        patterns=(
-            "broad-smoke-child-classification.md",
-            "broad-smoke-child-commands-*.txt",
-            "change-metadata-validator-tests-*.txt",
-            "selected-tests-m3.txt",
-        ),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("command-output evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="historical-coverage",
-        patterns=("historical-coverage.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("historical coverage evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="clean-install-proof",
-        patterns=("clean-install-proof.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("clean-install proof evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="validator-fixtures",
-        patterns=("validator-fixtures.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("validator fixture evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="boundary-validation",
-        patterns=("boundary-validation-evidence.yaml",),
-        selector_routes=("artifact_lifecycle.validate", "boundary_first.validate"),
-        required_validator="validate-boundary-first",
-        lifecycle_stage="implementation",
-        allowed_when=("boundary-first structural and activation validation evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="boundary-reference",
-        patterns=("boundary-reference-evidence.yaml",),
-        selector_routes=("artifact_lifecycle.validate", "boundary_first.reference_regression"),
-        required_validator="test-boundary-first-reference",
-        lifecycle_stage="implementation",
-        allowed_when=("boundary-first reference projection evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="boundary-activation",
-        patterns=("boundary-activation-evidence.yaml",),
-        selector_routes=("artifact_lifecycle.validate", "boundary_first.validate"),
-        required_validator="validate-boundary-first",
-        lifecycle_stage="implementation",
-        allowed_when=("boundary-first activation evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="boundary-install",
-        patterns=("boundary-install-evidence.yaml",),
-        selector_routes=("artifact_lifecycle.validate", "adapters.regression"),
-        required_validator="test-adapter-distribution",
-        lifecycle_stage="implementation",
-        allowed_when=("boundary-first installed-package evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="project-map-output-proof",
-        patterns=("cold-read-proof.md", "representative-project-map-outputs.md"),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("project-map representative output or cold-read proof is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="release-process-dry-run",
-        patterns=("release-process-dry-run.md",),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("non-publishing release-process rehearsal evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="implementation-note",
-        patterns=("implementation-notes.md", "m*-implementation.md", "cold-read-report.md", "adapter-packaging.md"),
-        selector_routes=("artifact_lifecycle.validate",),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("implementation support evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="validation-cache-evidence",
-        patterns=("validation-cache-evidence.yaml",),
-        selector_routes=("artifact_lifecycle.validate", "validation_cache.regression"),
-        required_validator="validate-artifact-lifecycle",
-        lifecycle_stage="implementation",
-        allowed_when=("formal validation cache-hit evidence is recorded",),
-    ),
-    EvidenceClassRegistration(
-        evidence_class_id="validation-cache-measurement",
-        patterns=("validation-cache-measurement.yaml",),
-        selector_routes=("artifact_lifecycle.validate", "change_metadata.validate"),
-        required_validator="validate-change-metadata",
-        lifecycle_stage="implementation",
-        allowed_when=("Workstream A validation cache measurement evidence is recorded",),
-    ),
 )
 
 
@@ -788,46 +453,6 @@ def classify_path(path: str) -> PathClassification:
     return PathClassification(path=path, category=category)
 
 
-def validate_evidence_class_registry(
-    registry: tuple[EvidenceClassRegistration, ...] | list[EvidenceClassRegistration] = CHANGE_EVIDENCE_CLASSES,
-    *,
-    sample_paths: tuple[str, ...] = (),
-) -> list[str]:
-    errors: list[str] = []
-    seen_ids: set[str] = set()
-    for entry in registry:
-        if not EVIDENCE_ID_PATTERN.fullmatch(entry.evidence_class_id):
-            errors.append(f"evidence class ID is not stable ASCII: {entry.evidence_class_id}")
-        if entry.evidence_class_id in seen_ids:
-            errors.append(f"duplicate evidence class ID: {entry.evidence_class_id}")
-        seen_ids.add(entry.evidence_class_id)
-        if entry.allowed_root != "docs/changes/{change_id}/":
-            errors.append(f"{entry.evidence_class_id}: unsupported allowed root {entry.allowed_root}")
-        if not entry.patterns:
-            errors.append(f"{entry.evidence_class_id}: missing filename pattern or exact filename")
-        for pattern in entry.patterns:
-            if _is_broad_evidence_pattern(pattern):
-                errors.append(f"{entry.evidence_class_id}: evidence pattern {pattern} is too broad")
-        if not entry.selector_routes:
-            errors.append(f"{entry.evidence_class_id}: missing selector route")
-        for route in entry.selector_routes:
-            if route not in CHECK_CATALOG:
-                errors.append(f"{entry.evidence_class_id}: unknown selector route {route}")
-        if not entry.required_validator:
-            errors.append(f"{entry.evidence_class_id}: missing required validator")
-        if not entry.lifecycle_stage:
-            errors.append(f"{entry.evidence_class_id}: missing lifecycle stage")
-        if not (entry.allowed_when or entry.required_when or entry.forbidden_when):
-            errors.append(f"{entry.evidence_class_id}: missing allowed/required/forbidden conditions")
-
-    for sample_path in sample_paths:
-        matches = _matching_evidence_classes(sample_path, registry=tuple(registry))
-        if len(matches) > 1:
-            class_ids = ", ".join(entry.evidence_class_id for entry in matches)
-            errors.append(f"{sample_path}: ambiguous evidence class match: {class_ids}")
-    return errors
-
-
 def catalog_command(
     check_id: str,
     *,
@@ -905,7 +530,7 @@ def catalog_command(
         return _join(*args)
     if check_id == "change_metadata.validate":
         if not paths:
-            raise ValueError("change_metadata.validate requires at least one change.yaml path")
+            raise ValueError("change_metadata.validate requires at least one change.json path")
         return _join("python", "scripts/validate-change-metadata.py", *paths)
     if check_id == "markdown_readability.validate":
         if not paths:
@@ -1369,62 +994,38 @@ def _apply_path_selection(
 ) -> None:
     # Record-store owns complete-set validation for its explicitly selected
     # roots. Historical review/lifecycle validators must not reinterpret them.
-    manifest_path = _change_root_change_yaml(path)
-    if manifest_path:
-        v2_manifest = manifest_path.removesuffix("change.yaml") + "change.json"
-        if (repo_root / v2_manifest).exists():
-            manifest_path = v2_manifest
-    if manifest_path:
+    change_root = _change_root(path)
+    if change_root:
+        manifest_path = change_root + "change.json"
         manifest = repo_root / manifest_path
-        try:
-            metadata = json.loads(manifest.read_text(encoding="utf-8")) if manifest.is_file() else None
-        except (OSError, ValueError):
-            metadata = None
-        if isinstance(metadata, dict) and "contract" in metadata:
+        relative = path.removeprefix(change_root)
+        reserved = relative in {"change.json", "evidence.json", "material-decisions.json", "verify-report.json"} or bool(re.fullmatch(r"reviews/[^/]+\.json", relative))
+        if manifest.exists() or manifest.is_symlink() or reserved:
             _add_check(selected, "change_metadata.validate",
-                       "Validate the explicitly selected recording contract and its complete registered set.",
-                       path=manifest_path)
-            _add_check(selected, "change_metadata.regression",
-                       "Recording paths retain metadata and historical compatibility regression proof.")
-            affected_roots.add(_change_root(path))
-            if metadata["contract"] not in {"explicit-recording-v1", "rigorloop-records-v2"}:
-                blocking_results.append({"code": "unsupported-change-contract", "path": manifest_path,
-                                         "message": "Unknown recording contract; no historical fallback."})
-                return
-            relative = path.removeprefix(_change_root(path))
-            v2 = metadata["contract"] == "rigorloop-records-v2"
-            kind = ({"evidence.json": "evidence", "material-decisions.json": "decisions", "verify-report.json": "verify"}
-                    if v2 else {"evidence.yaml": "evidence", "material-decisions.md": "decisions", "verify-report.md": "verify"}).get(relative)
-            if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\." + ("json" if v2 else "md"), relative):
-                kind = "review"
-            records = metadata.get("records")
-            registered = isinstance(records, list) and any(
-                isinstance(record, dict) and record.get("path") == path and record.get("kind") == kind
-                for record in records)
-            if path != manifest_path and (kind is None or not registered):
-                blocking_results.append({"code": "unregistered-recording-path", "path": path,
-                                         "message": "Recording evidence must be allowlisted and explicitly registered."})
+                       "Validate the current v2 set, including malformed manifests and reserved residue.", path=manifest_path)
+            _add_check(selected, "change_metadata.regression", "Retain current record validation boundary proof.")
+            affected_roots.add(change_root)
+            try:
+                metadata = json.loads(manifest.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                metadata = None
+            if isinstance(metadata, dict):
+                if metadata.get("contract") != "rigorloop-records-v2":
+                    blocking_results.append({"code": "unsupported-change-contract", "path": manifest_path,
+                                             "message": "Unsupported current record contract; no legacy fallback."})
+                elif path != manifest_path:
+                    kind = {"evidence.json": "evidence", "material-decisions.json": "decisions", "verify-report.json": "verify"}.get(relative)
+                    if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\.json", relative):
+                        kind = "review"
+                    records = metadata.get("records")
+                    if kind is None or not isinstance(records, list) or not any(isinstance(r, dict) and r.get("path") == path and r.get("kind") == kind for r in records):
+                        blocking_results.append({"code": "unregistered-recording-path", "path": path,
+                                                 "message": "Recording paths must be explicitly registered."})
             return
-    if tracked_deletion and path.startswith("docs/changes/"):
-        _add_check(
-            selected,
-            "artifact_lifecycle.regression",
-            "Deleted tracked change-local artifacts require lifecycle regression coverage without validating missing paths.",
-        )
-        if category == "review-artifacts":
-            _add_check(
-                selected,
-                "review_artifacts.regression",
-                "Deleted tracked review artifacts require review-artifact regression coverage.",
-            )
-        if category == "change-metadata":
-            _add_check(
-                selected,
-                "change_metadata.regression",
-                "Deleted tracked change metadata requires change-metadata regression coverage.",
-            )
+        # Noncurrent archival evidence has no operational validation route.
+        # Dedicated removal checks remain selected for archive-path changes.
+        _add_check(selected, "record_retirement.regression", "Archival paths must not restore execution or obstruct current records.")
         return
-
     if _is_boundary_first_surface(path):
         _add_check(
             selected,
@@ -1484,41 +1085,6 @@ def _apply_path_selection(
         _add_check(selected, "adapters.validate", "Adapter output or generator change requires adapter validation.")
         return
 
-    if category == "review-artifacts":
-        root = _change_root(path)
-        if root:
-            affected_roots.add(root)
-            _add_check(
-                selected,
-                "review_artifacts.validate",
-                "Changed review artifact requires review artifact structure validation.",
-                affected_root=root,
-            )
-        _add_lifecycle_warning_check(
-            selected,
-            path,
-            "Changed review artifact can carry lifecycle state and requires lifecycle-language warning validation.",
-        )
-        return
-
-    if category == "change-metadata":
-        root = _change_root(path)
-        if root:
-            affected_roots.add(root)
-        _add_check(
-            selected,
-            "change_metadata.validate",
-            "Changed change metadata requires change metadata validation.",
-            path=path,
-        )
-        _add_check(selected, "change_metadata.regression", "Changed change metadata requires validator regression fixtures.")
-        _add_lifecycle_warning_check(
-            selected,
-            path,
-            "Changed change metadata can carry lifecycle state and requires lifecycle-language warning validation.",
-        )
-        return
-
     if category == "lifecycle":
         _add_check(
             selected,
@@ -1526,145 +1092,6 @@ def _apply_path_selection(
             "Changed lifecycle artifact requires artifact lifecycle validation.",
             path=path,
         )
-        return
-
-    if category == "change-local-lifecycle":
-        governing_change_yaml = _change_root_change_yaml(path)
-        if governing_change_yaml:
-            _add_check(
-                selected,
-                "artifact_lifecycle.validate",
-                "Changed change-local lifecycle artifact requires its governing change metadata for lifecycle validation.",
-                path=governing_change_yaml,
-            )
-        if _is_plan_index_migration_proof(path):
-            for index_path in _plan_index_surface_paths():
-                _add_check(
-                    selected,
-                    "artifact_lifecycle.validate",
-                    "Changed plan-index migration proof requires plan index surface validation.",
-                    path=index_path,
-                )
-        _add_check(
-            selected,
-            "artifact_lifecycle.validate",
-            "Changed change-local lifecycle artifact requires artifact lifecycle validation.",
-            path=path,
-        )
-        return
-
-    if category == "registered-change-evidence":
-        evidence_name = path.split("/")[3]
-        matches = _matching_evidence_classes(evidence_name)
-        if len(matches) != 1:
-            blocking_results.append(
-                {
-                    "code": "manual-routing-required",
-                    "path": path,
-                    "message": "registered change evidence could not be resolved to exactly one evidence class",
-                }
-            )
-            return
-        evidence_class = matches[0]
-        governing_change_root = _change_root(path)
-        governing_change_yaml = _change_root_change_yaml(path)
-        if governing_change_root:
-            affected_roots.add(governing_change_root)
-        for route in evidence_class.selector_routes:
-            if route == "artifact_lifecycle.validate":
-                if governing_change_yaml:
-                    _add_check(
-                        selected,
-                        route,
-                        f"Registered change evidence class {evidence_class.evidence_class_id} requires governing change metadata for lifecycle validation.",
-                        path=governing_change_yaml,
-                    )
-                _add_check(
-                    selected,
-                    route,
-                    f"Registered change evidence class {evidence_class.evidence_class_id} requires lifecycle validation.",
-                    path=path,
-                )
-            elif route == "change_metadata.validate":
-                if evidence_class.evidence_class_id == "validation-cache-measurement":
-                    _add_check(
-                        selected,
-                        route,
-                        "Validation cache measurement evidence requires measurement metadata validation.",
-                        path=path,
-                    )
-                    _add_check(
-                        selected,
-                        "change_metadata.regression",
-                        "Validation cache measurement evidence requires validator regression fixtures.",
-                    )
-                elif governing_change_yaml:
-                    _add_check(
-                        selected,
-                        route,
-                        f"Registered change evidence class {evidence_class.evidence_class_id} requires change metadata validation.",
-                        path=governing_change_yaml,
-                    )
-                    _add_check(
-                        selected,
-                        "change_metadata.regression",
-                        "Registered change evidence with metadata route requires validator regression fixtures.",
-                    )
-            else:
-                _add_check(
-                    selected,
-                    route,
-                    f"Registered change evidence class {evidence_class.evidence_class_id} requires {route}.",
-                    path=path,
-                )
-        return
-
-    if category == "ambiguous-change-evidence":
-        blocking_results.append(
-            {
-                "code": "ambiguous-evidence-class",
-                "path": path,
-                "message": "changed evidence path matches more than one registered evidence class",
-            }
-        )
-        return
-
-    if category == "unregistered-change-evidence":
-        root = _change_root(path)
-        if root:
-            affected_roots.add(root)
-        governing_change_yaml = _change_root_change_yaml(path)
-        deferral = evaluate_evidence_registration_deferral(
-            evidence_path=path,
-            change_yaml_path=repo_root / governing_change_yaml if governing_change_yaml else None,
-            change_root=root,
-        )
-        debt_result = _evidence_registration_debt_result(path, deferral)
-        if deferral.status == "complete":
-            registration_debt.append(debt_result)
-        else:
-            blocking_results.append(debt_result)
-        return
-
-    if category == "change-local-unsupported":
-        root = _change_root(path)
-        if root:
-            affected_roots.add(root)
-        governing_change_yaml = _change_root_change_yaml(path)
-        deferral = evaluate_evidence_registration_deferral(
-            evidence_path=path,
-            change_yaml_path=repo_root / governing_change_yaml if governing_change_yaml else None,
-            change_root=root,
-        )
-        debt_result = _evidence_registration_debt_result(
-            path,
-            deferral,
-            path_class="change-local-unsupported",
-        )
-        if deferral.status == "complete":
-            registration_debt.append(debt_result)
-        else:
-            blocking_results.append(debt_result)
         return
 
     if category == "architecture-diagram":
@@ -1928,16 +1355,16 @@ def _apply_path_selection(
         )
         return
 
-    if category == "compact-current-state":
+    if category == "record-retirement":
         _add_check(
             selected,
-            "compact_contract.canonical",
-            "Changed compact current-state contract surface requires canonical and cross-runtime contract proof.",
+            "record_retirement.regression",
+            "Removed record surfaces require safe rejection and archival exclusion proof.",
         )
         _add_check(
             selected,
             "change_metadata.regression",
-            "Changed compact current-state contract surface requires Python metadata parity proof.",
+            "Removed metadata surfaces require current wrapper regression proof.",
         )
         return
 
@@ -2182,133 +1609,6 @@ def _add_lifecycle_warning_check(
     _add_check(selected, "artifact_lifecycle.validate", reason, path=path)
 
 
-def _evidence_registration_debt_result(
-    evidence_path: str,
-    deferral: EvidenceDeferralStatus,
-    *,
-    path_class: str = "unregistered-change-evidence",
-) -> dict[str, Any]:
-    result: dict[str, Any] = {
-        "code": "manual-routing-required",
-        "path": evidence_path,
-        "path_class": path_class,
-        "affected_class": "change-local evidence",
-        "manual_routing_required": True,
-        "debt": "evidence-registration",
-        "verify_readiness": "owner-deferred" if deferral.status == "complete" else "blocked",
-        "deferral_status": deferral.status,
-        "next_action": (
-            "Register an evidence class and selector routing for this deterministic change-local evidence path "
-            "or record a complete owner-approved deferral before verify with owner, path, "
-            "reason, validation impact, and follow-up."
-        ),
-        "message": "unregistered deterministic change-local evidence creates registration debt",
-    }
-    if deferral.missing_fields:
-        result["missing_deferral_fields"] = list(deferral.missing_fields)
-    if deferral.invalid_fields:
-        result["invalid_deferral_fields"] = list(deferral.invalid_fields)
-    if deferral.status == "complete":
-        result["owner"] = deferral.deferral.get("owner", "")
-        result["follow_up"] = deferral.deferral.get("follow_up", "")
-        result["deferral"] = dict(deferral.deferral)
-    return result
-
-
-def evaluate_evidence_registration_deferral(
-    *,
-    evidence_path: str,
-    change_yaml_path: Path | None,
-    change_root: str | None,
-) -> EvidenceDeferralStatus:
-    if change_yaml_path is None or change_root is None or not change_yaml_path.exists():
-        return EvidenceDeferralStatus(status="none")
-
-    deferrals = load_evidence_registration_deferrals(change_yaml_path)
-    matching = [entry for entry in deferrals if entry.get("path") == evidence_path]
-    if not matching:
-        return EvidenceDeferralStatus(status="none")
-    if len(matching) > 1:
-        return EvidenceDeferralStatus(status="invalid", invalid_fields=("duplicate:path",))
-
-    entry = matching[0]
-    missing = tuple(sorted(field for field in REQUIRED_EVIDENCE_DEFERRAL_FIELDS if not entry.get(field, "").strip()))
-    invalid = tuple(
-        sorted(
-            field
-            for field in ("path", "follow_up")
-            if entry.get(field) and not _is_safe_repo_relative_path(entry[field])
-        )
-    )
-    path = entry.get("path", "")
-    if path and not path.startswith(change_root):
-        invalid = tuple(sorted((*invalid, "path")))
-
-    if missing:
-        return EvidenceDeferralStatus(status="incomplete", missing_fields=missing, invalid_fields=invalid)
-    if invalid:
-        return EvidenceDeferralStatus(status="invalid", invalid_fields=invalid)
-
-    return EvidenceDeferralStatus(
-        status="complete",
-        deferral={field: entry[field].strip() for field in sorted(REQUIRED_EVIDENCE_DEFERRAL_FIELDS)},
-    )
-
-
-def load_evidence_registration_deferrals(change_yaml_path: Path) -> list[dict[str, str]]:
-    lines = change_yaml_path.read_text(encoding="utf-8").splitlines()
-    start_index: int | None = None
-    for index, raw_line in enumerate(lines):
-        if raw_line.strip() == "evidence_registration_deferrals:" and not raw_line.startswith(" "):
-            start_index = index + 1
-            break
-    if start_index is None:
-        return []
-
-    deferrals: list[dict[str, str]] = []
-    current: dict[str, str] | None = None
-    index = start_index
-    while index < len(lines):
-        line = lines[index]
-        if line and not line.startswith(" "):
-            break
-        stripped = line.strip()
-        if not stripped or stripped.startswith("#"):
-            index += 1
-            continue
-        if line.startswith("  - "):
-            if current is not None:
-                deferrals.append(current)
-            current = {}
-            remainder = line[4:].strip()
-            if remainder:
-                key, value = _split_selector_yaml_pair(remainder)
-                current[key] = value
-            index += 1
-            continue
-        if line.startswith("    ") and current is not None:
-            key, value = _split_selector_yaml_pair(stripped)
-            current[key] = value
-        index += 1
-    if current is not None:
-        deferrals.append(current)
-    return deferrals
-
-
-def _split_selector_yaml_pair(text: str) -> tuple[str, str]:
-    if ":" not in text:
-        return text.strip(), ""
-    key, value = text.split(":", 1)
-    return key.strip(), value.strip().strip("\"'")
-
-
-def _is_safe_repo_relative_path(value: str) -> bool:
-    if not value or value.startswith(("/", "~")) or "\\" in value or "://" in value:
-        return False
-    path = PurePosixPath(value)
-    return not path.is_absolute() and ".." not in path.parts
-
-
 def _proven_prose_deletion(path: str, *, repo_root: Path, tracked_deletion: bool) -> bool:
     # Selection can include committed deletions as well as worktree deletions.
     # Never suppress a present input, unsafe symlink, or unproven missing path.
@@ -2438,11 +1738,11 @@ def _path_category(path: str) -> str | None:
     if path == ROOT_VISION_PATH:
         return "vision"
     if path.startswith("tests/fixtures/compact-current-state-v1/"):
-        return "compact-current-state"
+        return "record-retirement"
     if path == "scripts/test-compact-current-state-canonical-contract.py":
-        return "compact-current-state"
+        return "record-retirement"
     if path == "schemas/compact-current-state-v1.schema.json":
-        return "compact-current-state"
+        return "record-retirement"
     if path.startswith("tests/fixtures/artifact-lifecycle/"):
         return "artifact-lifecycle-fixtures"
     if path.startswith("tests/fixtures/review-artifacts/"):
@@ -2512,7 +1812,7 @@ def _path_category(path: str) -> str | None:
     if path in {"scripts/validation_cache.py", "scripts/test-validation-cache.py"}:
         return "validation-cache"
     if path in {
-        "scripts/change_metadata_semantics.py",
+        "scripts/change_metadata_semantics.py", "scripts/project_yaml.py",
         "scripts/validate-change-metadata.py",
         "scripts/test-change-metadata-validator.py",
     }:
@@ -2591,53 +1891,8 @@ def _path_category(path: str) -> str | None:
         return "living-reference/project-map"
     if path == "docs/follow-ups.md":
         return "follow-up-register"
-    if path.startswith("docs/changes/") and len(parts) >= 4:
-        if parts[3] in {"change.yaml", "change.json"}:
-            return "change-metadata"
-        if (
-            parts[3] in {"review-log.md", "review-resolution.md"}
-            or parts[3] == "reviews"
-            or fnmatch.fnmatch(parts[3], "review-invocation-*.yaml")
-        ):
-            return "review-artifacts"
-        if len(parts) == 5 and parts[3] == "evidence":
-            return "change-local-lifecycle"
-        if len(parts) == 4:
-            matches = _matching_evidence_classes(parts[3])
-            if len(matches) == 1:
-                return "registered-change-evidence"
-            if len(matches) > 1:
-                return "ambiguous-change-evidence"
-        change_local_name = parts[3]
-        if change_local_name in {
-            "explain-change.md",
-            "architecture.md",
-            "verify-report.md",
-            "implementation-notes.md",
-            "cold-read-report.md",
-            "adapter-packaging.md",
-            "baseline.md",
-            "behavior-parity-report.md",
-            "behavior-parity.md",
-            "behavior-preservation.md",
-            "output-contract-red-test.md",
-            "script-output-audit.md",
-            "script-output-layer-audit.md",
-            "generated-output-proof.md",
-            "historical-coverage.md",
-            "plan-index-migration.md",
-            "routing-coverage.md",
-            "selected-tests-baseline.txt",
-            "selected-tests-m3.txt",
-            "skill-audit.md",
-            "token-cost.md",
-        } or (
-            parts[3] == "diagrams"
-        ):
-            return "change-local-lifecycle"
-        if len(parts) == 4:
-            return "unregistered-change-evidence"
-        return "change-local-unsupported"
+    if path.startswith("docs/changes/"):
+        return "change-records"
     if path in _plan_index_surface_paths():
         return "plan-index"
     if path.startswith("docs/architecture/") and path.endswith(".mmd"):
@@ -2727,25 +1982,6 @@ def _is_boundary_first_validation_surface(path: str) -> bool:
         "scripts/test-boundary-first-validation.py",
     }
 
-def _matching_evidence_classes(
-    filename: str,
-    *,
-    registry: tuple[EvidenceClassRegistration, ...] = CHANGE_EVIDENCE_CLASSES,
-) -> list[EvidenceClassRegistration]:
-    return [
-        entry
-        for entry in registry
-        if any(fnmatch.fnmatchcase(filename, pattern) for pattern in entry.patterns)
-    ]
-
-
-def _is_broad_evidence_pattern(pattern: str) -> bool:
-    if pattern in BROAD_EVIDENCE_PATTERNS:
-        return True
-    if pattern.startswith("*.") and pattern.count("*") == 1:
-        return True
-    return False
-
 
 def _is_lifecycle_path(path: str) -> bool:
     if path == "docs/plan.md":
@@ -2799,13 +2035,6 @@ def _is_learn_artifact_path(path: str) -> bool:
     return False
 
 
-def _change_root_change_yaml(path: str) -> str | None:
-    root = _change_root(path)
-    if root:
-        return f"{root}change.yaml"
-    return None
-
-
 def _is_plan_index_migration_proof(path: str) -> bool:
     return path.startswith("docs/changes/") and path.endswith("/plan-index-migration.md")
 
@@ -2837,17 +2066,8 @@ def _plan_index_context_paths(changed_paths: tuple[str, ...], repo_root: Path) -
             continue
         if path.startswith("docs/changes/"):
             root = _change_root(path)
-            if root and (repo_root / (root + "change.json")).is_file():
-                # Preserve v2 complete-set dispatch when plan-index context is added.
+            if root and ((repo_root / (root + "change.json")).exists() or path.endswith(".json")):
                 context.append(root + "change.json")
-                continue
-            parts = path.split("/")
-            if len(parts) >= 4 and parts[3] == "change.yaml":
-                context.append(path)
-                continue
-            change_yaml = _change_root_change_yaml(path)
-            if change_yaml:
-                context.append(change_yaml)
     return _dedupe(context)
 
 

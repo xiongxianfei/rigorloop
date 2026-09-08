@@ -11,7 +11,7 @@
 
 ## Current Handoff Summary
 
-- Owning change record: <docs/changes/change-id/change.yaml>
+- Owning change record: <docs/changes/change-id/change.json>
 
 Mutable lifecycle state, current milestone state, review status, blockers, routing, and closeout readiness live only in this record.
 
@@ -20,7 +20,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 - Proposal: <path or none>
 - Spec: <path or none>
 - Architecture: <path or not-required>
-- Prior-contract test spec: <path when required by registered v1 contract, otherwise none>
+- Prior-contract test spec: <path only when independently applicable to current approved scope, otherwise none>
 
 ## Context and orientation
 

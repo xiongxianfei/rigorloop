@@ -18,8 +18,7 @@ function index(source) {
 export function replaceValue(source,path,value){const tree=index(source);let node=tree;for(const key of path){node=node.children.get(key);if(!node)stop('invalid-input');}const token=source.slice(node.start,node.end);if(canonicalJSON(JSON.parse(token))===canonicalJSON(value))return source;return source.slice(0,node.start)+canonicalJSON(value)+source.slice(node.end);}
 export function appendValue(source,path,value){let node=index(source);for(const key of path){node=node.children.get(key);if(!node)stop('invalid-input');}if(source[node.start]!=='[')stop('invalid-input');return source.slice(0,node.end-1)+(node.children.size?',':'')+canonicalJSON(value)+source.slice(node.end-1);}
 export class RecordDocument {
- constructor(format,kind,source,data){this.format=format;this.kind=kind;this.source=source;this.data=data;this.markdown=format.version===1&&['review','decisions','verify'].includes(kind);}
- get json(){return this.markdown?this.source.slice(4,this.source.indexOf('\n---\n',4)):this.source;}
- edit(path,value,append=false){const before=this.json,after=(append?appendValue:replaceValue)(before,path,value);if(this.markdown)this.source=this.source.slice(0,4)+after+this.source.slice(4+before.length);else this.source=after;let node=this.data;for(const key of path.slice(0,-1))node=node[key];if(append){const array=path.length?node[path.at(-1)]:this.data;array.push(value);}else node[path.at(-1)]=value;}
- body(value){if(!this.markdown){this.edit(['body'],value);return;}const end=this.source.indexOf('\n---\n',4)+5;this.source=this.source.slice(0,end)+value;}
+ constructor(format,kind,source,data){this.format=format;this.kind=kind;this.source=source;this.data=data;}
+ edit(path,value,append=false){this.source=(append?appendValue:replaceValue)(this.source,path,value);let node=this.data;for(const key of path.slice(0,-1))node=node[key];if(append){const array=path.length?node[path.at(-1)]:this.data;array.push(value);}else node[path.at(-1)]=value;}
+ body(value){this.edit(['body'],value);}
 }

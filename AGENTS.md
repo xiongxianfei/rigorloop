@@ -47,16 +47,12 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Do not create a new skill for one-off behavior; update an existing skill unless the new skill owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
 - `VISION.md` is the canonical project-vision artifact. Routine vision alignment is Proposal Review evidence, not a required proposal section. Material vision issues remain proposal-level decisions.
 - README content between `<!-- vision:start -->` and `<!-- vision:end -->` is generated from `VISION.md`; README front-matter is not the source of truth when it conflicts with `VISION.md`.
-- For `compact-current-state-v1`, the authoritative set is `change.yaml`, stable current review records, conditional `material-decisions.md`, conditional `evidence.yaml`, and success-only `verify-report.md`; canonical engineering artifacts remain referenced in place. The contract works without Git history and without PR access.
-- For compact changes, open findings remain in the stable current review record, materially constraining resolutions belong in `material-decisions.md`, and current proof with subject identity and freshness belongs in `evidence.yaml`. Do not create routine review logs, resolution ledgers, committed operation requests, correction receipts, authoring receipts, or raw-output artifacts.
-- Use the bounded compact CLI projection and its exact required paths. Submit semantic operations through the CLI with expected revision and identities; the CLI is a consistency tool, not a permission principal. Do not infer compact state from directory scans, Git, PRs, logs, or chat.
-- Compact writing stays withheld until coherent activation. Registered historical v3 changes keep their review records, `review-log.md`, and triggered `review-resolution.md`; do not rewrite them into the compact shape.
 - Validator closed-vocabulary checks must fail closed before consistency checks. For constants such as `*_OUTCOMES`, `*_FIELDS`, `*_KINDS`, and similar closed sets, unknown values must produce an explicit validation error unless the code documents why fall-through is intentional. The pattern `if value in CONSTANT: check_consistency(value)` is a defect when unknown values can pass silently. Every new closed-vocabulary validator constant should have an unknown-value regression test, preferably with `unknown_value` or `not_in_vocabulary` in the test name.
 - Keep `AGENTS.md` practical. Keep workflow contracts in `specs/`, deterministic project-local workflow facts behind `rigorloop workflow-context`, and feature-specific detail in the matching spec.
 
 ## Planning and workflow
 
-For explicitly adopted RigorLoop Record Format work, follow docs/design/cli/cli.md, docs/design/workflow/workflow.md and docs/design/record-format/record-format.md. Use primary status/context/show to read the exact record_contract and revision, subject inspect for the declared basis, and purpose-specific commands or batch for targeted recording. The coordinated candidate creates new primary roots only with explicit rigorloop-records-v2; existing explicit-recording-v1 roots retain compatibility. Record-store is advanced inspection/replacement/recovery, not the normal skill path. Do not convert historical roots, reconstruct complete files routinely, or invoke historical eligibility before recording. Installation and model validation grant neither adoption nor workflow approval. This implementing change retains its existing v1 root and its authorized advanced maintenance path until its consumer adoption is settled.
+For explicitly adopted RigorLoop Record Format work, follow docs/design/cli/cli.md, docs/design/workflow/workflow.md and docs/design/record-format/record-format.md. Use primary status/context/show to read the exact record_contract and revision, subject inspect for the declared basis, and purpose-specific commands or batch for targeted recording. Only rigorloop-records-v2 is supported at runtime. Retired inputs reject safely; discovery excludes unrelated archival legacy records without running their validators and does not hide malformed current stores. Record-store is advanced inspection/replacement/recovery, not the normal skill path. Do not convert historical roots, reconstruct complete files routinely, or invoke historical eligibility before recording. Installation and model validation grant neither adoption nor workflow approval. Legacy work is owner-confirmed complete. Preserve historical record bytes and identities without migration, temporary continuation or a permanent legacy reader.
 
 Use a plan first for work that is multi-file, risky, ambiguous, architecture-affecting, migration-heavy, or large enough that it should be split into reviewable milestones.
 
@@ -74,13 +70,13 @@ Once proposal, spec, and architecture are already settled, execution usually pro
 
 `plan -> delivery-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> verify`
 
-Successful Verify owns the final durable explanation and establishes compact lifecycle completion. PR is an optional external integration. Until compact activation, `stage-owned-change-local-v3` remains the executable compatibility contract; after activation, new changes use `compact-current-state-v1` while registered historical changes retain their exact contract.
+After all implementation milestones and required corrections, require fresh independent whole-change Code Review of the complete final diff and cross-milestone interactions before distinct final Verify. Only successful Verify owns the final explanation and closeout assessment. PR is an optional external integration.
 
 The consolidated pre-implementation gates are `proposal-review`, `design-review`, and `delivery-review`. Design Review approves architecture, specification, and applicable ADRs as one exact package; Delivery Review approves the plan and its verification allocation. Earlier package shapes remain historical evidence, not current progression routes.
 
 For milestone-based plans, repeat implementation and code-review for each in-scope implementation milestone. A clean non-final milestone review routes to the next implementation milestone; final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
 
-For planned initiatives, `docs/changes/<change-id>/change.yaml` owns the current milestone, milestone state, review status, remaining in-scope implementation milestones, next stage, and final closeout readiness. Plans carry stable execution intent, while stage-owned artifacts provide scoped evidence. Every state-changing handoff checks the change-local state and affected evidence before downstream readiness is claimed.
+For planned initiatives, `docs/changes/<change-id>/change.json` owns the current milestone, milestone state, review status, remaining in-scope implementation milestones, next stage, and final closeout readiness. Plans carry stable execution intent, while stage-owned artifacts provide scoped evidence. Every state-changing handoff checks the change-local state and affected evidence before downstream readiness is claimed.
 
 In workflow-managed completion flows, continue automatically into the next mandatory or triggered downstream stage when the approved autoprogression contract says to do so. Do not wait for redundant user confirmation to enter a known review or PR gate. Review-only and manual individual-skill invocations stay isolated by default, direct `pr` still opens the PR when readiness passes, and bugfix skill invocations remain explicit-step unless a higher-priority artifact broadens them.
 
@@ -107,7 +103,7 @@ Before implementing behavior-changing work, follow the source-of-truth order fro
 2. the relevant feature spec in `specs/<feature>.md`
 3. approved architecture or ADR docs when they are relevant to the change
 4. `docs/plan.md`, then the active plan file in `docs/plans/`
-5. the matching test spec in `specs/<feature>.test.md` only for a manifest-bound v1 continuation
+5. the matching test spec in `specs/<feature>.test.md` only when independently applicable to the current approved contract
 6. authoritative CLI workflow context when the task touches an existing governed flow or release process
 7. the files you expect to modify
 
@@ -122,9 +118,9 @@ If the work changes externally observable behavior and no relevant spec exists, 
 
 ## Artifact lifecycle defaults
 
-- Mutable proposal, spec, test-spec, architecture, ADR, and plan lifecycle state lives in the owning `docs/changes/<change-id>/change.yaml`.
+- Mutable proposal, spec, test-spec, architecture, ADR, and plan lifecycle state lives in the owning `docs/changes/<change-id>/change.json`.
 - Governed artifacts contain one stable pointer to their owning change record and keep stable intent, planning history, and explicitly historical evidence.
-- Authoring skills may change only their own governed content and matching authoring-state transition. The sole narrow exception is that `plan` initializes missing `workflow_state.planned_work` exactly once from an approved Delivery Review package containing that primary plan; it never initializes an unreviewed draft or replaces or updates existing planned work. Review peers may change only their own review evidence and the matching package or artifact settlement transition.
+- Authoring skills may change only their own governed content and matching authoring-state transition. The sole narrow exception is that `plan` initializes missing v2 work entries exactly once from an approved Delivery Review package containing that primary plan; it never initializes an unreviewed draft or replaces or updates existing planned work. Review peers may change only their own review evidence and the matching package or artifact settlement transition.
 - Route owns semantic routing and uses the stable workflow authority for lifecycle mutations. Downstream and support skills treat upstream governed artifacts and lifecycle state as read-only and route corrections to the owning stage.
 - Keep `Next artifacts` as planning history while an artifact is active. Use `Follow-on artifacts` or `Closeout` for actual downstream artifacts or final disposition. If a `Follow-on artifacts` section appears before real follow-ons exist, it must say `None yet`.
 - A superseded artifact's change-local state and owning closeout evidence must identify its replacement.
@@ -141,7 +137,7 @@ If the work changes externally observable behavior and no relevant spec exists, 
 
 ## Verification expectations
 
-- Until the repository-wide validation scripts are fully implemented, use the exact validation commands named in the active plan and, for manifest-bound v1 continuation, its matching test spec.
+- Until the repository-wide validation scripts are fully implemented, use the exact validation commands named in the active plan and any independently applicable test spec.
 - When repo-owned validation scripts exist, run those named commands before PR instead of inventing substitute checks.
 - For adapter package work, ordinary contributors do not need all supported tools installed locally; non-smoke validation is repository-owned through adapter generation, adapter validation, release metadata validation, and `scripts/release-verify.sh`.
 - Release automation must use tracked release notes under `docs/releases/<tag>/release-notes.md`; do not rely on generated release notes for adapter compatibility claims.

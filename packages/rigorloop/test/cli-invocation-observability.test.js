@@ -7,86 +7,10 @@ import { spawnSync } from "node:child_process";
 import test from "node:test";
 
 import { classifyCommand } from "../dist/lib/cli-observability.js";
-import { lifecycleTerminalClass } from "../dist/lib/lifecycle-cli.js";
 import { findInvocationEvents } from "../dist/lib/log-inspection.js";
 import { runObservedCli } from "../dist/lib/cli-observability.js";
-import { writeActiveV3Manifests } from "./helpers/lifecycle-package-fixture.js";
 
 function root() { return mkdtempSync(join(tmpdir(), "rigorloop-invocation-")); }
-
-function writeGovernedFixture(project) {
-  writeActiveV3Manifests(project);
-  const changeRoot = join(project, "docs", "changes", "example");
-  const specRoot = join(project, "specs");
-  mkdirSync(changeRoot, { recursive: true });
-  mkdirSync(specRoot, { recursive: true });
-  writeFileSync(join(specRoot, "example.md"), "# Example\n");
-  const change = `change_id: example
-title: Example
-classification: feature
-risk: standard
-lifecycle_contract: stage-owned-change-local-v3
-artifact_states:
-  spec:
-    kind: spec
-    path: specs/example.md
-    role: primary
-    lifecycle_state: approved
-workflow_state:
-  lifecycle_state: active
-  current_stage: implement
-  next_stage: implement
-  blocker: null
-  evidence: []
-  planned_work:
-    current_milestone: M1
-    milestones:
-      M1:
-        kind: implementation
-        state: implementing
-    remaining_implementation_milestones:
-      - M1
-review:
-  status: approved
-  unresolved_items: 0
-`;
-  const path = join(changeRoot, "change.yaml");
-  writeFileSync(path, change);
-  return path;
-}
-
-function writeLifecycleMutationFixture(project) {
-  writeActiveV3Manifests(project);
-  const changeRoot = join(project, "docs", "changes", "example");
-  mkdirSync(join(changeRoot, "evidence"), { recursive: true });
-  mkdirSync(join(project, "requests"), { recursive: true });
-  mkdirSync(join(project, "specs"), { recursive: true });
-  const artifact = "# Example\n";
-  writeFileSync(join(project, "specs", "example.md"), artifact);
-  writeFileSync(join(changeRoot, "change.yaml"), `change_id: example
-title: Example
-classification: feature
-risk: standard
-lifecycle_contract: stage-owned-change-local-v3
-artifact_states: {}
-workflow_state:
-  lifecycle_state: active
-  current_stage: spec
-  next_stage: design-review
-  blocker: null
-  evidence: []
-`, "utf8");
-  const evidencePath = "docs/changes/example/evidence/spec.md";
-  const identity = createHash("sha256").update(artifact).digest("hex");
-  writeFileSync(join(project, evidencePath), `Artifact path: specs/example.md\nArtifact identity: sha256:${identity}\nAuthoring result: complete\n`);
-  return { changeRoot, evidencePath };
-}
-
-function lifecycleRequest(project, name, body) {
-  const path = `requests/${name}.json`;
-  writeFileSync(join(project, path), `${JSON.stringify(body, null, 2)}\n`);
-  return path;
-}
 
 function normalizedSemantic(payload) {
   const copy = structuredClone(payload);
@@ -96,27 +20,25 @@ function normalizedSemantic(payload) {
 }
 
 test("public commands have one closed family", () => {
-  assert.equal(classifyCommand(["lifecycle", "status"]).family, "lifecycle");
+  assert.equal(classifyCommand(["lifecycle", "status"]).family, "invalid-input");
   assert.equal(classifyCommand(["init"]).family, "repository-setup");
   assert.equal(classifyCommand(["version"]).family, "introspection");
   assert.equal(classifyCommand(["workflow-context"]).family, "introspection");
-  assert.equal(classifyCommand(["compact", "project"]).family, "compact");
+  assert.equal(classifyCommand(["compact", "project"]).family, "invalid-input");
   assert.equal(classifyCommand(["logs", "path"]).family, "log-inspection");
   assert.equal(classifyCommand(["future-command"]).family, "invalid-input");
-  assert.equal(classifyCommand(["lifecycle", "private-raw-operation"]).operation, "unknown");
+  assert.equal(classifyCommand(["lifecycle", "private-raw-operation"]).operation, undefined);
 });
 
 test("T06 public command families record deterministic terminal severity and status", () => {
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
   const project = root();
-  writeGovernedFixture(project);
   const cases = [
     { args: ["version"], family: "introspection", exit: 0, severity: "info", status: "success" },
-    { args: ["workflow-context", "--change", "example", "--format", "json"], family: "introspection", exit: 0, severity: "info", status: "success" },
+    { args: ["workflow-context", "--change", "example", "--format", "json"], family: "introspection", exit: 2, severity: "warning", status: "blocked" },
     { args: ["init", "unsupported", "--json"], family: "repository-setup", exit: 2, severity: "warning", status: "blocked" },
     { args: ["future-command", "--json"], family: "invalid-input", exit: 4, severity: "warning", status: "error" },
     { args: ["logs", "path"], family: "log-inspection", exit: 0, severity: "info", status: "success" },
-    { args: ["lifecycle", "status", "--change", "example", "--format", "json"], family: "lifecycle", exit: 0, severity: "info", status: "success" },
   ];
   for (const [index, item] of cases.entries()) {
     const directory = join(root(), `logs-${index}`);
@@ -191,57 +113,6 @@ test("CLIOBS-M3-R1-F3 semantic terminal class controls severity independently of
   }
 });
 
-test("CLIOBS-M3-R1-F3 lifecycle semantic result distinguishes expected and unsafe failures", () => {
-  assert.equal(lifecycleTerminalClass({ status: "error", errors: [{ code: "RL_STALE_EVIDENCE" }] }), "expected-rejection");
-  assert.equal(lifecycleTerminalClass({ status: "blocked", errors: [{ code: "RL_RECOVERY_REQUIRED" }] }), "unsafe-recovery");
-  assert.equal(lifecycleTerminalClass({ status: "error", errors: [{ code: "RL_POST_VALIDATION_FAILED" }] }), "internal-error");
-  assert.equal(lifecycleTerminalClass({ status: "error", errors: [{ code: "RL_STALE_EVIDENCE" }, { code: "RL_RECOVERY_REQUIRED" }] }), "unsafe-recovery");
-  assert.equal(lifecycleTerminalClass({ status: "error", errors: [{ code: "RL_STALE_EVIDENCE" }, { code: "RL_POST_VALIDATION_FAILED" }] }), "internal-error");
-  assert.equal(lifecycleTerminalClass({ status: "error", errors: [{ code: "RL_UNKNOWN_FAILURE" }] }), "internal-error");
-});
-
-test("CLIOBS-M3-R1-F3 public lifecycle stale and unsafe-recovery paths keep semantic exits and severity", () => {
-  const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-
-  const staleProject = root();
-  const staleFixture = writeLifecycleMutationFixture(staleProject);
-  const staleRevision = spawnSync(process.execPath, [cli.pathname, "lifecycle", "status", "--change", "example", "--format", "json", "--no-file-log"], { cwd: staleProject, encoding: "utf8" });
-  const staleRequest = lifecycleRequest(staleProject, "stale", {
-    schema_version: 1, operation: "record-artifact-revision", change_id: "example",
-    expected_lifecycle_revision: JSON.parse(staleRevision.stdout).lifecycle_revision,
-    artifact_id: "spec", artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md",
-    evidence_path: staleFixture.evidencePath, stage_authority: "spec",
-  });
-  writeFileSync(join(staleProject, staleFixture.evidencePath), `Artifact path: specs/example.md\nArtifact identity: sha256:${"0".repeat(64)}\nAuthoring result: complete\n`);
-  const staleLogs = join(root(), "stale-logs");
-  const stale = spawnSync(process.execPath, [cli.pathname, "lifecycle", "record-artifact-revision", "--request", staleRequest, "--format", "json"], {
-    cwd: staleProject, encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: staleLogs },
-  });
-  assert.equal(stale.status, 3, stale.stderr);
-  assert.equal(JSON.parse(stale.stdout).errors[0].code, "RL_STALE_EVIDENCE");
-  assert.equal(stale.stderr, "");
-  assert.equal(JSON.parse(readFileSync(join(staleLogs, "rigorloop.jsonl"), "utf8").trim().split("\n").at(-1)).severity, "warning");
-
-  const recoveryProject = root();
-  const recoveryFixture = writeLifecycleMutationFixture(recoveryProject);
-  const recoveryRevisionRun = spawnSync(process.execPath, [cli.pathname, "lifecycle", "status", "--change", "example", "--format", "json", "--no-file-log"], { cwd: recoveryProject, encoding: "utf8" });
-  const recoveryRequest = lifecycleRequest(recoveryProject, "recovery", {
-    schema_version: 1, operation: "record-artifact-revision", change_id: "example",
-    expected_lifecycle_revision: JSON.parse(recoveryRevisionRun.stdout).lifecycle_revision,
-    artifact_id: "spec", artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md",
-    evidence_path: recoveryFixture.evidencePath, stage_authority: "spec",
-  });
-  writeFileSync(join(recoveryFixture.changeRoot, ".rigorloop-lifecycle.lock"), `${JSON.stringify({ schema_version: 1, change_id: "example", pid: 2147483647, nonce: "stale", started_at: "2026-08-28T00:00:00Z" })}\n`);
-  const recoveryLogs = join(root(), "recovery-logs");
-  const recovery = spawnSync(process.execPath, [cli.pathname, "lifecycle", "record-artifact-revision", "--request", recoveryRequest, "--format", "json"], {
-    cwd: recoveryProject, encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: recoveryLogs },
-  });
-  assert.equal(recovery.status, 2, recovery.stderr);
-  assert.equal(JSON.parse(recovery.stdout).errors[0].code, "RL_RECOVERY_REQUIRED");
-  assert.match(recovery.stderr, /RL_CLI_INTERNAL/);
-  assert.equal(JSON.parse(readFileSync(join(recoveryLogs, "rigorloop.jsonl"), "utf8").trim().split("\n").at(-1)).severity, "error");
-});
-
 test("CLI records correlated events, stays quiet on success, and supports exact lookup", () => {
   const directory = root();
   chmodSync(directory, 0o700);
@@ -272,29 +143,6 @@ test("explicit concise output is compact and disabling file logs is semantic-onl
   assert.equal(payload.projection, "concise");
   assert.equal(payload.observability, "disabled");
   assert.equal(existsSync(join(directory, "rigorloop.jsonl")), false);
-});
-
-test("T10 new-change supports shared explicit formats without changing legacy JSON", () => {
-  const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const args = ["new-change", "example-change", "--title", "Example change", "--dry-run", "--no-file-log"];
-  const project = root();
-  const run = (extra) => spawnSync(process.execPath, [cli.pathname, ...args, ...extra], { cwd: project, encoding: "utf8" });
-  const legacy = run(["--json"]);
-  const detailed = run(["--format", "detailed-json"]);
-  const concise = run(["--format", "concise-json"]);
-  const conciseHuman = run(["--format", "concise-human"]);
-  assert.equal(legacy.status, 0, legacy.stderr);
-  assert.equal(detailed.status, 0, detailed.stderr);
-  const detailedPayload = JSON.parse(detailed.stdout);
-  const { observability, ...legacyCompatibleDetailed } = detailedPayload;
-  assert.equal(observability, "disabled");
-  assert.deepEqual(legacyCompatibleDetailed, JSON.parse(legacy.stdout));
-  assert.equal(JSON.parse(concise.stdout).projection, "concise");
-  assert.equal(JSON.parse(concise.stdout).command, "new-change");
-  assert.equal(conciseHuman.status, 0, conciseHuman.stderr);
-  assert.ok(conciseHuman.stdout.includes("new-change success"));
-  assert.ok(conciseHuman.stdout.includes("observability=disabled"));
-  assert.ok(conciseHuman.stdout.trim().split("\n").length <= 2);
 });
 
 test("file and console thresholds suppress lower-severity success events", () => {
@@ -557,55 +405,4 @@ test("CLIOBS-M3-R1-F2 invalid lookup identities are never reflected", () => {
     assert.match(`${child.stdout}${child.stderr}`, /RL_INVALID_INVOCATION_ID/);
     if (extra.length) assert.equal("invocation_id" in JSON.parse(child.stdout), false);
   }
-});
-
-test("T12 logging states preserve lifecycle semantics and repository bytes", () => {
-  const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const project = root();
-  const changePath = writeGovernedFixture(project);
-  const before = readFileSync(changePath);
-  const run = (extraArgs, env) => spawnSync(process.execPath, [cli.pathname, "lifecycle", "status", "--change", "example", "--format", "concise-json", ...extraArgs], {
-    cwd: project, encoding: "utf8", env: { ...process.env, ...env },
-  });
-  const recordedRoot = root();
-  const recorded = run([], { RIGORLOOP_LOG_DIR: recordedRoot });
-  const disabled = run(["--no-file-log"], { RIGORLOOP_LOG_DIR: root() });
-  const unsafe = run([], { RIGORLOOP_LOG_DIR: "relative-private-path" });
-  const lockedRoot = root();
-  writeFileSync(join(lockedRoot, ".rigorloop-log.lock"), "owned elsewhere", { mode: 0o600 });
-  const locked = run([], { RIGORLOOP_LOG_DIR: lockedRoot });
-  const results = [recorded, disabled, unsafe, locked];
-  for (const result of results) assert.equal(result.status, 0, result.stderr);
-  const semantic = results.map((result) => normalizedSemantic(JSON.parse(result.stdout)));
-  for (const result of semantic.slice(1)) assert.deepEqual(result, semantic[0]);
-  assert.deepEqual(readFileSync(changePath), before);
-  assert.equal(JSON.parse(recorded.stdout).observability, "recorded");
-  assert.equal(JSON.parse(disabled.stdout).observability, "disabled");
-  assert.equal(JSON.parse(unsafe.stdout).observability, "degraded");
-  assert.equal(JSON.parse(locked.stdout).observability, "degraded");
-});
-
-test("T14 copied diagnostic claims cannot alter lifecycle status", () => {
-  const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const project = root();
-  writeGovernedFixture(project);
-  const cleanRoot = root();
-  const adversarialRoot = root();
-  const fake = {
-    schema_version: 1, event: "invocation-complete", timestamp: "2026-08-25T00:00:00.000Z",
-    invocation_id: "0000000000000000", severity: "info", command_family: "lifecycle",
-    command: "lifecycle", cli_version: "0.4.1", sequence: 2, status: "approved",
-    exit_code: 0, duration_ms: 0, operation: "settle-artifact", change_id: "example",
-    resulting_lifecycle_revision: "sha256:forged", state_changed: true,
-  };
-  writeFileSync(join(adversarialRoot, "rigorloop.jsonl"), `${JSON.stringify(fake)}\n`, { mode: 0o600 });
-  const invoke = (directory) => spawnSync(process.execPath, [cli.pathname, "lifecycle", "status", "--change", "example", "--format", "concise-json", "--no-file-log"], {
-    cwd: project, encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: directory },
-  });
-  const clean = invoke(cleanRoot);
-  const adversarial = invoke(adversarialRoot);
-  assert.equal(clean.status, 0);
-  assert.equal(adversarial.status, 0);
-  assert.deepEqual(normalizedSemantic(JSON.parse(adversarial.stdout)), normalizedSemantic(JSON.parse(clean.stdout)));
-  assert.notEqual(JSON.parse(adversarial.stdout).lifecycle_revision, "sha256:forged");
 });

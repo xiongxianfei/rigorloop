@@ -72,9 +72,9 @@ test("TG-02 v2 readers and mixed-version contenders share writer exclusion",t=>{
  const bin=new URL("../dist/bin/rigorloop.js",import.meta.url).pathname;
  const result=run(root,"record",r,{fault:p=>{if(p!=="after-preparation")return;reached=true;
   for(const op of ["inspect","record"])for(const version of [1,2]) {
-   const request=version===2?r:JSON.parse(readFileSync(new URL("../../../tests/fixtures/explicit-recording-v1/records.json",import.meta.url))).request;
+   const request=version===2?r:{...fixture().request,schema_version:1,contract:"explicit-recording-v1"};
    const child=spawnSync(process.execPath,[bin,"record-store",...argv(root,op)],{encoding:"utf8",input:op==="record"?encode({...request,reads:[]}):undefined});
-   assert.equal(child.status,4,child.stdout);assert.equal(JSON.parse(child.stdout).snapshot,null);
+   assert.equal(child.status,op==="record"&&version===1?2:4,child.stdout);assert.equal(JSON.parse(child.stdout).snapshot,null);
   }
  }});assert.ok(reached);assert.equal(result.status,"saved");sameBytes(root,r);
 });
@@ -85,7 +85,7 @@ test("TG-02 observed v2 basis drift after publication restores before bytes",t=>
  assert.equal(result.status,"conflict");sameBytes(root,before);assert.equal(readFileSync(join(root,"basis"),"utf8"),"after");
 });
 
-for(const mutate of [j=>j.version=99,j=>j.phase="unknown_value",j=>{const x=JSON.parse(j.candidate[review].content);x.findings[0].origin.rationale="tampered";j.candidate[review].content=encode(x);j.candidate[review].identity=digest(j.candidate[review].content);}]) test("TG-02 unknown_value or rewritten-origin recovery journal fails closed",t=>{
+for(const mutate of [j=>j.version=1,j=>j.version=99,j=>j.phase="unknown_value",j=>{const x=JSON.parse(j.candidate[review].content);x.findings[0].origin.rationale="tampered";j.candidate[review].content=encode(x);j.candidate[review].identity=digest(j.candidate[review].content);}]) test("TG-02 unknown_value or rewritten-origin recovery journal fails closed",t=>{
  const root=setup(t),before=create(root),r=update(root);edit(r,evidence,x=>x.checks[0].summary="candidate");
  const stopped=run(root,"record",r,{fault:p=>p==="after-preparation"?"crash":undefined});
  const path=join(root,".rigorloop/record-store/example/journal.json"),j=JSON.parse(readFileSync(path));mutate(j);writeFileSync(path,encode(j));stopped.transaction.recovery_identity=digest(readFileSync(path));
@@ -100,8 +100,8 @@ for(const fault of ["symlink","hardlink","ancestor","EACCES","ENOSPC"]) test(`TG
 });
 
 test("TG-02 dual manifests and cross-contract writes never migrate roots",t=>{
- const root=setup(t);create(root);const legacy=JSON.parse(readFileSync(new URL("../../../tests/fixtures/explicit-recording-v1/records.json",import.meta.url))).request;legacy.reads=[];
- assert.equal(run(root,"record",legacy).status,"conflict");
+ const root=setup(t);create(root);const legacy={...fixture().request,schema_version:1,contract:"explicit-recording-v1"};legacy.reads=[];
+ assert.equal(run(root,"record",legacy).errors[0].code,"unsupported-contract");
  const r=update(root);writeFileSync(join(root,prefix+"change.yaml"),"{}\n");
  for(const op of ["inspect","check","record"])assert.equal(run(root,op,op==="inspect"?undefined:r).errors[0].code,"invalid-input");
 });
@@ -164,7 +164,7 @@ test("TG-02 malformed advanced requests and unknown_value version pairs reject p
   assert.equal(x.status,"rejected");assert.equal(x.errors[0].code,"invalid-input");
  }
  for(const version of [1,2,99])for(const contract of ["explicit-recording-v1","rigorloop-records-v2","unknown_value"]) {
-  if((version===1&&contract==="explicit-recording-v1")||(version===2&&contract==="rigorloop-records-v2"))continue;
+  if(version===2&&contract==="rigorloop-records-v2")continue;
   const r=fixture().request;r.schema_version=version;r.contract=contract;
   assert.equal(run(root,"check",r).errors[0].code,"unsupported-contract");
  }
@@ -172,7 +172,7 @@ test("TG-02 malformed advanced requests and unknown_value version pairs reject p
 
 test("TG-02 current version mismatch and selected standalone path fail closed",t=>{
  const root=setup(t);mkdirSync(join(root,prefix),{recursive:true});
- const c=JSON.parse(readFileSync(new URL("../../../templates/explicit-recording/records.json",import.meta.url))).change;
+ const c={contract:"explicit-recording-v1",schema_version:1};
  c.schema_version=2;writeFileSync(join(root,prefix+"change.yaml"),encode(c));
  assert.equal(run(root,"inspect").errors[0].code,"unsupported-contract");
  c.schema_version=1;writeFileSync(join(root,prefix+"change.yaml"),encode(c));
@@ -217,5 +217,14 @@ for(const state of ["owned","partial","third-state"]) test(`TG-02 lock write fai
  } else {
   assert.equal(result.status,"recovery-required");assert.equal(run(root,"inspect").status,"recovery-required");
   assert.equal(readFileSync(join(root,lock),"utf8"),state==="partial"?'{"pid":':"external\n");
+ }
+});
+
+test('retirement shared transport rejects unknown_value without requiring a legacy stored schema',async()=>{
+ const {validateAdvancedEnvelope}=await import('../dist/lib/record-store-transport.js');
+ const result={schema_version:1,operation:'check',status:'valid',change_id:'example',revision:null,files:[],snapshot:null,observations:[],errors:[],transaction:null,claim:'storage-only'};
+ assert.equal(validateAdvancedEnvelope(result),result);
+ for(const alter of [r=>r.status='unknown_value',r=>r.errors.push({code:'unknown_value',path:null,message:'Unknown'}),r=>r.schema_version=2,r=>r.snapshot={records:[]}]) {
+  const invalid=structuredClone(result);alter(invalid);assert.throws(()=>validateAdvancedEnvelope(invalid));
  }
 });

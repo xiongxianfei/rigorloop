@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import re
 import subprocess
 import sys
@@ -13,37 +14,20 @@ from pathlib import Path
 from typing import Any
 
 from artifact_lifecycle_contracts import (
-    FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH,
-    LIFECYCLE_ACTIVATION_MANIFEST_PATH,
-    LIFECYCLE_CONTRACT_V1,
-    LIFECYCLE_CONTRACT_V2,
-    LIFECYCLE_CONTRACT_V3,
     SIMPLIFIED_PROPOSAL_CUTOVER_DATE,
     SIMPLIFIED_PROPOSAL_FORBIDDEN_SECTIONS,
     SIMPLIFIED_PROPOSAL_OPTIONAL_SECTION,
     SIMPLIFIED_PROPOSAL_REQUIRED_SECTIONS,
     ArtifactContract,
     classify_artifact,
-    classify_lifecycle_contract,
-    parse_lifecycle_activation_manifest,
-    validate_lifecycle_activation_manifest,
-    validate_final_verification_activation_manifest,
 )
-from change_metadata_semantics import STAGE_OWNED_CONTRACT, validate_stage_owned_lifecycle_metadata
-from lifecycle_state_sync import (
-    has_structured_workflow_state_marker,
-    has_workflow_state_handoff_section,
-    resolve_owners_from_index,
-    validate_workflow_state_sync,
-)
-from review_artifact_validation import format_finding as format_review_finding
-from review_artifact_validation import validate_change_root
+
 
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|lorem ipsum)\b", re.IGNORECASE)
 RELEASE_EVIDENCE_PATH_PATTERN = re.compile(r"^docs/releases/v[^/]+\.md$")
 REPO_PATH_PATTERN = re.compile(
-    r"(?P<path>(?:\.\./|\.\/)?(?:docs|specs|\.codex)/[A-Za-z0-9._/\-]+(?:\.md|\.yaml))"
+    r"(?P<path>(?:\.\./|\.\/)?(?:docs|specs|\.codex)/[A-Za-z0-9._/\-]+(?:\.md|\.json))"
 )
 MARKDOWN_LINK_TARGET_PATTERN = re.compile(r"\]\((?P<path>[^)#]+)\)")
 CHANGE_RECORD_PATH_PATTERN = re.compile(
@@ -224,20 +208,6 @@ class ValidationInputError(Exception):
     """Raised when validator input is incomplete or ambiguous."""
 
 
-def _review_change_record_for(root: Path, path: Path) -> Path | None:
-    """Resolve a change record for a changed review-evidence path."""
-    try:
-        relative = path.relative_to(root)
-    except ValueError:
-        return None
-    parts = relative.parts
-    if len(parts) < 4 or parts[:2] != ("docs", "changes"):
-        return None
-    change_root = root / "docs" / "changes" / parts[2]
-    review_surface = parts[3] in {"review-log.md", "review-resolution.md", "reviews"}
-    if not review_surface:
-        return None
-    return change_root / "change.yaml"
 
 
 def _recording_change_record_for(root: Path, path: Path, revision: str | None) -> Path | None:
@@ -250,10 +220,11 @@ def _recording_change_record_for(root: Path, path: Path, revision: str | None) -
     if _path_exists(root, owner_v2, revision):
         # Even malformed/unknown JSON roots must reach complete-set validation.
         return owner_v2
-    owner = root / "docs" / "changes" / parts[2] / "change.yaml"
-    if _path_exists(root, owner, revision):
-        if _read_repo_text(root, owner, revision).lstrip("\ufeff \t\r\n").startswith("{"):
-            return owner
+    relative = path.relative_to(owner_v2.parent).as_posix()
+    if relative in {"change.json", "evidence.json", "material-decisions.json", "verify-report.json"} or (
+        len(Path(relative).parts) == 2 and relative.startswith("reviews/") and relative.endswith(".json")
+    ):
+        return owner_v2
     return None
 
 
@@ -266,11 +237,6 @@ class ArtifactInspection:
     errors: tuple[str, ...]
 
 
-@dataclass(frozen=True)
-class StageOwnedArtifactState:
-    change_record: Path
-    kind: str
-    lifecycle_state: str
 
 
 @dataclass(frozen=True)
@@ -857,197 +823,12 @@ def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list
     return validate_release_evidence_checklist(relative_path, text)
 
 
-def _load_change_metadata_parser() -> Any:
-    validator_path = Path(__file__).resolve().with_name("validate-change-metadata.py")
-    module_name = "change_metadata_validator_for_artifact_lifecycle"
-    existing = sys.modules.get(module_name)
-    if existing is not None:
-        return existing
-    spec = importlib.util.spec_from_file_location(module_name, validator_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError("could not load change metadata parser")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    spec.loader.exec_module(module)
-    return module
 
 
-def _parse_change_yaml_text(text: str) -> Any:
-    parser = _load_change_metadata_parser()
-    lines = parser.tokenize_yaml(text)
-    if not lines:
-        raise parser.MetadataValidationError("metadata file is empty")
-    data, index = parser.parse_yaml_block(lines, 0, lines[0].indent)
-    if index != len(lines):
-        line = lines[index]
-        raise parser.MetadataValidationError(
-            f"line {line.lineno}: unexpected trailing content at indentation {line.indent}"
-        )
-    return data
 
 
-def _extract_change_yaml_refs(root: Path, path: Path, tracked_revision: str | None = None) -> set[Path]:
-    refs: set[Path] = set()
-    text = _read_repo_text(root, path, tracked_revision)
-    try:
-        data = _parse_change_yaml_text(text)
-    except Exception:
-        data = None
-    if isinstance(data, dict) and data.get("lifecycle_contract") in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3}:
-        states = data.get("artifact_states")
-        if isinstance(states, dict):
-            for entry in states.values():
-                if not isinstance(entry, dict):
-                    continue
-                raw_path = entry.get("path")
-                if not isinstance(raw_path, str):
-                    continue
-                resolved = _normalize_repo_path(root, path, raw_path)
-                if resolved is not None:
-                    refs.add(resolved)
-
-    lines = text.splitlines()
-    in_artifacts = False
-    artifact_indent = 0
-
-    for raw_line in lines:
-        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
-            continue
-        indent = len(raw_line) - len(raw_line.lstrip(" "))
-        stripped = raw_line.strip()
-        if stripped == "artifacts:":
-            in_artifacts = True
-            artifact_indent = indent
-            continue
-        if in_artifacts and indent <= artifact_indent:
-            break
-        if not in_artifacts or ":" not in stripped:
-            continue
-        _, value = stripped.split(":", 1)
-        resolved = _normalize_repo_path(root, path, value.strip().strip("'\""))
-        if resolved is not None:
-            refs.add(resolved)
-
-    return refs
 
 
-def _change_yaml_closeout_cache_findings(
-    root: Path,
-    path: Path,
-    tracked_revision: str | None = None,
-) -> list[str]:
-    text = _read_repo_text(root, path, tracked_revision)
-    if "schema_version: 2" not in text or "validation_events:" not in text:
-        return []
-
-    bundles: dict[str, str] = {}
-    events: list[dict[str, object]] = []
-    current: dict[str, str] | None = None
-    current_bundle: str | None = None
-    in_events = False
-    in_bundles = False
-    events_indent = 0
-    bundles_indent = 0
-    current_indent = 0
-
-    for raw_line in text.splitlines():
-        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
-            continue
-        indent = len(raw_line) - len(raw_line.lstrip(" "))
-        stripped = raw_line.strip()
-        if stripped == "validation_bundles:":
-            in_bundles = True
-            in_events = False
-            bundles_indent = indent
-            current_bundle = None
-            continue
-        if stripped == "validation_events:":
-            in_events = True
-            in_bundles = False
-            events_indent = indent
-            current_bundle = None
-            continue
-        if in_bundles and indent <= bundles_indent:
-            in_bundles = False
-            current_bundle = None
-        if in_bundles:
-            if indent == bundles_indent + 2 and stripped.endswith(":"):
-                current_bundle = stripped[:-1].strip()
-                continue
-            if current_bundle and indent > bundles_indent + 2 and stripped.startswith("command:"):
-                bundles[current_bundle] = stripped.split(":", 1)[1].strip().strip("'\"")
-            continue
-        if in_events and indent <= events_indent:
-            break
-        if not in_events:
-            continue
-        if indent == events_indent + 2 and stripped.startswith("- "):
-            if current is not None:
-                events.append(current)
-            current = {}
-            current_indent = indent
-            remainder = stripped[2:].strip()
-            if ":" in remainder:
-                key, value = remainder.split(":", 1)
-                current[key.strip()] = value.strip().strip("'\"")
-            continue
-        if current is None or indent <= current_indent:
-            continue
-        if indent == current_indent + 4 and stripped.startswith("- "):
-            event_bundles = current.setdefault("bundles", [])
-            if isinstance(event_bundles, list):
-                event_bundles.append(stripped[2:].strip().strip("'\""))
-            continue
-        if ":" not in stripped:
-            continue
-        key, value = stripped.split(":", 1)
-        key = key.strip()
-        if key in {"stage", "result", "evidence_kind"}:
-            current[key] = value.strip().strip("'\"")
-
-    if current is not None:
-        events.append(current)
-
-    cache_closeout = any(
-        "closeout" in event.get("stage", "").lower()
-        and event.get("result") == "pass"
-        and event.get("evidence_kind") == "cache-hit-inner-loop"
-        for event in events
-    )
-    actual_closeout = any(
-        "closeout" in event.get("stage", "").lower()
-        and event.get("result") == "pass"
-        and event.get("evidence_kind") == "actual-run-pass"
-        for event in events
-    )
-    if cache_closeout and not actual_closeout:
-        return [
-            "closeout requires actual-run-pass evidence; cache-hit-inner-loop is inner-loop evidence only"
-        ]
-    helper_closeout = False
-    direct_closeout = False
-    for event in events:
-        if "closeout" not in str(event.get("stage", "")).lower() or event.get("result") != "pass":
-            continue
-        for bundle_id in event.get("bundles", []):
-            if not isinstance(bundle_id, str):
-                continue
-            command = bundles.get(bundle_id, "")
-            if "scripts/validate-artifact-lifecycle.py" not in command:
-                continue
-            if "--mode explicit-paths-inner-loop" in command or "--mode=explicit-paths-inner-loop" in command:
-                helper_closeout = True
-            if (
-                ("--mode explicit-paths" in command or "--mode=explicit-paths" in command)
-                and "--mode explicit-paths-inner-loop" not in command
-                and "--mode=explicit-paths-inner-loop" not in command
-            ):
-                direct_closeout = True
-    if helper_closeout and not direct_closeout:
-        return [
-            "closeout requires direct explicit-paths actual-run evidence; explicit-paths-inner-loop is inner-loop only"
-        ]
-    return []
 
 
 def _plan_lifecycle_candidate_paths(
@@ -1098,19 +879,10 @@ def _explicit_terminal_plan_body_in_scope(root: Path, scope: ValidationScope) ->
     return False
 
 
-def _has_structured_workflow_state_marker(root: Path, path: Path, tracked_revision: str | None = None) -> bool:
-    text = _read_repo_text(root, path, tracked_revision)
-    return has_structured_workflow_state_marker(text)
 
 
-def _has_workflow_state_handoff_section(root: Path, path: Path, tracked_revision: str | None = None) -> bool:
-    text = _read_repo_text(root, path, tracked_revision)
-    return has_workflow_state_handoff_section(text)
 
 
-def _is_live_workflow_state_plan_body(root: Path, path: Path, tracked_revision: str | None = None) -> bool:
-    marker = _extract_plan_lifecycle_marker(_read_repo_text(root, path, tracked_revision))
-    return marker.explicit and marker.state in PLAN_NONTERMINAL_LIFECYCLE_STATES
 
 
 def _validate_plan_surface_shape(
@@ -1386,7 +1158,7 @@ def _merge_dependent_warning_paths(root: Path, scope: ValidationScope) -> set[Pa
         if not _is_relative_to(path, root):
             continue
         relative = path.relative_to(root)
-        if _is_generated_output_path(relative):
+        if _is_generated_output_path(relative) or relative.parts[:2] == ("docs", "changes"):
             continue
         if path.suffix not in {".md", ".yaml"}:
             continue
@@ -1714,6 +1486,8 @@ def _inspect_artifact(
     relative_path = path.relative_to(root)
     text = _read_repo_text(root, path, tracked_revision)
     contract = classify_artifact(relative_path, text)
+    if re.search(r"(?:Owning change record:|## Owning change record\s+).*?change\.(?:json|yaml)", text):
+        stage_owned = True
     if contract is None:
         return None
     if contract.class_name == "proposal" and _proposal_requires_simplified_contract(
@@ -1786,10 +1560,15 @@ def _discover_all_in_scope_artifacts(root: Path, tracked_revision: str | None = 
                 continue
         if not _is_relative_to(candidate, root):
             continue
+        relative = candidate.relative_to(root)
+        # Change records are selected and validated as complete v2 sets above.
+        # Their Markdown archives are not current document candidates, even
+        # when historical bytes cannot be decoded by today's tooling.
+        if relative.parts[:2] == ("docs", "changes"):
+            continue
         if _recording_change_record_for(root, candidate, tracked_revision) is not None:
             continue
         text = _read_repo_text(root, candidate, tracked_revision)
-        relative = candidate.relative_to(root)
         if classify_artifact(relative, text) is not None:
             results.add(candidate)
     return results
@@ -1839,7 +1618,7 @@ def _resolve_scope(
     if mode == "explicit-paths":
         if not paths:
             raise ValidationInputError("explicit-paths mode requires at least one --path")
-        changed_paths = [((root / raw).resolve()) for raw in paths]
+        changed_paths = [Path(os.path.abspath(root / raw)) for raw in paths]
         input_source = "explicit paths"
     elif mode == "local":
         changed_paths = _collect_local_changed_paths(root)
@@ -1860,16 +1639,15 @@ def _resolve_scope(
         raise ValidationInputError(f"unsupported mode: {mode}")
 
     queue: list[Path] = []
+    selected_record_owners: set[Path] = set()
     for path in changed_paths:
         recording_owner = _recording_change_record_for(root, path, tracked_revision)
         if recording_owner is not None:
             queue.append(recording_owner)
+            selected_record_owners.add(recording_owner)
             continue
-        owner = _review_change_record_for(root, path)
-        if owner is not None and _path_exists(root, owner, tracked_revision):
-            queue.append(owner)
         if not _path_exists(root, path, tracked_revision):
-            if tracked_revision is not None:
+            if mode != "explicit-paths":
                 continue
             raise ValidationInputError(f"input path does not exist: {path.relative_to(root)}")
         queue.append(path)
@@ -1895,6 +1673,10 @@ def _resolve_scope(
 
         current_revision = None if current == pr_path else tracked_revision
 
+        if current in selected_record_owners:
+            change_yaml_paths.add(current)
+            continue
+
         if not _path_exists(root, current, current_revision):
             continue
 
@@ -1906,14 +1688,14 @@ def _resolve_scope(
         if recording_owner is not None:
             change_yaml_paths.add(recording_owner)
             continue
-        review_change_record = _review_change_record_for(root, current)
-        if review_change_record is not None and _path_exists(
-            root, review_change_record, current_revision
-        ):
-            queue.append(review_change_record)
         if _is_generated_output_path(relative):
             if mode == "explicit-paths":
                 generated_paths.add(current)
+            continue
+
+        if relative.parts[:2] == ("docs", "changes"):
+            if mode == "explicit-paths" and current in changed_paths and current.name == "change.yaml":
+                change_yaml_paths.add(current)
             continue
 
         current_text = _read_repo_text(root, current, current_revision) if current.suffix in {".md", ".yaml"} else None
@@ -1932,10 +1714,6 @@ def _resolve_scope(
                 )
             )
 
-        if current.name == "change.yaml":
-            change_yaml_paths.add(current)
-            queue.extend(sorted(_extract_change_yaml_refs(root, current, current_revision)))
-            continue
 
         relative_text = relative.as_posix()
         is_reference_surface = (
@@ -1992,294 +1770,21 @@ def validate_repository(
     warning_findings: list[ValidationFinding] = []
     root_resolved = root.resolve()
     related_paths = set(scope.related_artifact_paths)
-    stage_owned_records: set[Path] = set()
-    stage_owned_proposal_records: set[Path] = set()
-    stage_owned_states: dict[Path, list[StageOwnedArtifactState]] = {}
-
-    activation_manifest: Any | None = None
-    activation_manifest_valid = False
-    activation_manifest_path = root_resolved / LIFECYCLE_ACTIVATION_MANIFEST_PATH
-    activation_manifest_present = _path_exists(
-        root_resolved,
-        activation_manifest_path,
-        scope.tracked_revision,
-    )
-    if activation_manifest_present:
-        try:
-            activation_manifest = parse_lifecycle_activation_manifest(
-                _read_repo_text(root_resolved, activation_manifest_path, scope.tracked_revision)
-            )
-            manifest_errors = validate_lifecycle_activation_manifest(activation_manifest)
-        except ValueError as exc:
-            manifest_errors = [str(exc)]
-        if manifest_errors:
-            for message in manifest_errors:
-                blocking_findings.append(
-                    ValidationFinding(
-                        severity="block",
-                        path=activation_manifest_path,
-                        artifact_class="change_metadata",
-                        status=None,
-                        message=message,
-                    )
-                )
-        else:
-            activation_manifest_valid = True
-    classification_manifest = activation_manifest if activation_manifest_valid else {
-        "schema_version": 1,
-        "state": "preactivation",
-        "activating_source_revision": None,
-        "changes": [],
-    }
-    final_verification_manifest: Any | None = None
-    final_verification_manifest_valid = False
-    final_verification_manifest_path = root_resolved / FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH
-    final_verification_manifest_present = _path_exists(
-        root_resolved,
-        final_verification_manifest_path,
-        scope.tracked_revision,
-    )
-    if final_verification_manifest_present:
-        try:
-            final_verification_manifest = parse_lifecycle_activation_manifest(
-                _read_repo_text(root_resolved, final_verification_manifest_path, scope.tracked_revision)
-            )
-            final_manifest_errors = validate_final_verification_activation_manifest(final_verification_manifest)
-        except ValueError as exc:
-            final_manifest_errors = [str(exc)]
-        if final_manifest_errors:
-            for message in final_manifest_errors:
-                blocking_findings.append(
-                    ValidationFinding(
-                        severity="block",
-                        path=final_verification_manifest_path,
-                        artifact_class="change_metadata",
-                        status=None,
-                        message=message,
-                    )
-                )
-        else:
-            final_verification_manifest_valid = True
-    classification_final_manifest = final_verification_manifest if final_verification_manifest_valid else {
-        "schema_version": 1,
-        "state": "preactivation",
-        "activating_source_revision": None,
-        "changes": [],
-    }
-
     for path in scope.change_yaml_paths:
-        metadata_text = _read_repo_text(root_resolved, path, scope.tracked_revision)
-        # JSON-subset recording sets have no legacy lifecycle/review semantics.
-        # Reuse complete-set validation even for callers that omit composition;
-        # malformed/unknown contracts must not fall through to historical checks.
-        if path.name == "change.json" or metadata_text.lstrip("\ufeff \t\r\n").startswith("{"):
-            try:
-                candidate = json.loads(metadata_text)
-            except ValueError:
-                candidate = None
-            if path.name == "change.json" or candidate is None or (isinstance(candidate, dict) and "contract" in candidate):
-                if scope.tracked_revision is not None or path.name == "change.json":
-                    # V2 always uses complete-set validation; tracked reads use raw selected blobs.
-                    try:
-                        result = subprocess.run(
-                            ["node", str(Path(__file__).with_name("validate-record-store.mjs")),
-                             str(path)] + (["--revision", scope.tracked_revision] if scope.tracked_revision is not None else []),
-                            capture_output=True, timeout=30,
-                        )
-                        valid = result.returncode == 0
-                    except (OSError, subprocess.TimeoutExpired):
-                        valid = False
-                    if not valid:
-                        blocking_findings.append(
-                            ValidationFinding(severity="block", path=path,
-                                              artifact_class="change_metadata", status=None,
-                                              message="invalid or unavailable explicit recording snapshot")
-                        )
-                    continue
-                metadata_parser = _load_change_metadata_parser()
-                for message in metadata_parser.validate_file(path):
-                    blocking_findings.append(
-                        ValidationFinding(severity="block", path=path,
-                                          artifact_class="change_metadata", status=None,
-                                          message=message)
-                    )
-                continue
-        metadata_error_messages: set[str] = set()
-        if compose_change_metadata:
-            metadata_parser = _load_change_metadata_parser()
-            try:
-                metadata_kwargs = {}
-                if activation_manifest is not None:
-                    metadata_kwargs["activation_manifest"] = activation_manifest
-                if final_verification_manifest is not None:
-                    metadata_kwargs["final_verification_manifest"] = final_verification_manifest
-                metadata_errors = metadata_parser.validate_file(path, **metadata_kwargs)
-            except (FileNotFoundError, metadata_parser.MetadataValidationError) as exc:
-                metadata_errors = [f"invalid change metadata: {exc}"]
-            for message in metadata_errors:
-                metadata_error_messages.add(message)
-                blocking_findings.append(
-                    ValidationFinding(
-                        severity="block",
-                        path=path,
-                        artifact_class="change_metadata",
-                        status=None,
-                        message=message,
-                    )
-                )
-
-        metadata_text = _read_repo_text(
-            root_resolved,
-            path,
-            scope.tracked_revision,
-        )
         try:
-            metadata = _parse_change_yaml_text(metadata_text)
-        except Exception as exc:
-            if f"lifecycle_contract: {STAGE_OWNED_CONTRACT}" in metadata_text:
-                blocking_findings.append(
-                    ValidationFinding(
-                        severity="block",
-                        path=path,
-                        artifact_class="change_metadata",
-                        status=None,
-                        message=f"could not parse stage-owned change metadata: {exc}",
-                    )
-                )
-            metadata = None
-
-        lifecycle_classification: dict[str, str] | None = None
-        if isinstance(metadata, dict) and activation_manifest_present and not activation_manifest_valid:
-            continue
-        if (
-            isinstance(metadata, dict)
-            and metadata.get("lifecycle_contract") == LIFECYCLE_CONTRACT_V3
-            and not final_verification_manifest_present
-        ):
-            blocking_findings.append(
-                ValidationFinding(
-                    severity="block",
-                    path=path,
-                    artifact_class="change_metadata",
-                    status=None,
-                    message="v3 lifecycle contract requires the tracked final verification activation manifest",
-                )
+            result = subprocess.run(
+                ["node", str(Path(__file__).with_name("validate-record-store.mjs")), str(path)]
+                + (["--revision", scope.tracked_revision] if scope.tracked_revision is not None else []),
+                capture_output=True, timeout=30,
             )
-            continue
-        if isinstance(metadata, dict) and (activation_manifest_valid or not activation_manifest_present):
-            change_id = metadata.get("change_id")
-            if isinstance(change_id, str):
-                try:
-                    lifecycle_classification = classify_lifecycle_contract(
-                        change_id,
-                        metadata,
-                        classification_manifest,
-                        classification_final_manifest,
-                    )
-                    if (
-                        lifecycle_classification["contract_class"] == LIFECYCLE_CONTRACT_V3
-                        and lifecycle_classification["authority"] == "inactive"
-                    ):
-                        blocking_findings.append(
-                            ValidationFinding(
-                                severity="block",
-                                path=path,
-                                artifact_class="change_metadata",
-                                status=None,
-                                message="v3 lifecycle contract is not active",
-                            )
-                        )
-                except ValueError as exc:
-                    message = str(exc)
-                    if message not in metadata_error_messages:
-                        blocking_findings.append(
-                            ValidationFinding(
-                                severity="block",
-                                path=path,
-                                artifact_class="change_metadata",
-                                status=None,
-                                message=message,
-                            )
-                        )
-                    continue
-
-        is_stage_owned = (
-            lifecycle_classification is not None
-            and lifecycle_classification["contract_class"] in {LIFECYCLE_CONTRACT_V1, LIFECYCLE_CONTRACT_V2, LIFECYCLE_CONTRACT_V3}
-        ) or (
-            lifecycle_classification is None
-            and not activation_manifest_present
-            and isinstance(metadata, dict)
-            and metadata.get("lifecycle_contract") == STAGE_OWNED_CONTRACT
-        )
-        if isinstance(metadata, dict) and is_stage_owned:
-            stage_owned_records.add(path)
-            for message in validate_stage_owned_lifecycle_metadata(metadata):
-                if message in metadata_error_messages:
-                    continue
-                blocking_findings.append(
-                    ValidationFinding(
-                        severity="block",
-                        path=path,
-                        artifact_class="change_metadata",
-                        status=None,
-                        message=message,
-                    )
-                )
-            states = metadata.get("artifact_states")
-            if isinstance(states, dict):
-                for artifact_id, entry in states.items():
-                    if not isinstance(artifact_id, str) or not isinstance(entry, dict):
-                        continue
-                    raw_artifact_path = entry.get("path")
-                    kind = entry.get("kind")
-                    role = entry.get("role")
-                    lifecycle_state = entry.get("lifecycle_state")
-                    if not all(
-                        isinstance(value, str)
-                        for value in (raw_artifact_path, kind, lifecycle_state)
-                    ):
-                        continue
-                    artifact_path = _normalize_repo_path(root_resolved, path, raw_artifact_path)
-                    if artifact_path is None:
-                        continue
-                    stage_owned_states.setdefault(artifact_path, []).append(
-                        StageOwnedArtifactState(
-                            change_record=path,
-                            kind=kind,
-                            lifecycle_state=lifecycle_state,
-                        )
-                    )
-                    if kind == "proposal" and role == "primary":
-                        stage_owned_proposal_records.add(path)
-
-        for message in _change_yaml_closeout_cache_findings(
-            root_resolved,
-            path,
-            scope.tracked_revision,
-        ):
-            blocking_findings.append(
-                ValidationFinding(
-                    severity="block",
-                    path=path,
-                    artifact_class="change_metadata",
-                    status=None,
-                    message=message,
-                )
-            )
-
-        change_root = path.parent
-        review_result = validate_change_root(change_root, mode="structure")
-        for finding in review_result.blocking_findings:
-            blocking_findings.append(
-                ValidationFinding(
-                    severity="block",
-                    path=finding.path,
-                    artifact_class="review_artifacts",
-                    status=None,
-                    message=format_review_finding(finding, root=root_resolved),
-                )
-            )
+            valid = result.returncode == 0
+        except (OSError, subprocess.TimeoutExpired):
+            valid = False
+        if not valid:
+            blocking_findings.append(ValidationFinding(
+                severity="block", path=path, artifact_class="change_metadata", status=None,
+                message="invalid or unavailable explicit recording snapshot",
+            ))
 
     for path in scope.generated_paths:
         blocking_findings.append(
@@ -2291,15 +1796,6 @@ def validate_repository(
                 message="generated output path must not be treated as authored source of truth",
             )
         )
-
-    selected_proposal_paths: set[Path] = set()
-    for selected_path in scope.changed_paths:
-        if selected_path not in related_paths or selected_path.suffix != ".md":
-            continue
-        selected_text = _read_repo_text(root_resolved, selected_path, scope.tracked_revision)
-        selected_contract = classify_artifact(selected_path.relative_to(root_resolved), selected_text)
-        if selected_contract is not None and selected_contract.class_name == "proposal":
-            selected_proposal_paths.add(selected_path)
 
     for path in tuple(sorted(related_paths)):
         relative_path = path.relative_to(root_resolved)
@@ -2320,95 +1816,10 @@ def validate_repository(
     inspections: dict[Path, ArtifactInspection] = {}
     for path in tuple(sorted(related_paths | set(scope.baseline_paths))):
         text = _read_repo_text(root_resolved, path, scope.tracked_revision)
-        owning_refs = _extract_owning_change_record_refs(root_resolved, path, text)
-        stage_owned_refs = owning_refs & stage_owned_records
-        owners = stage_owned_states.get(path, [])
-        contract = classify_artifact(path.relative_to(root_resolved), text)
-        if (
-            contract is not None
-            and contract.class_name == "proposal"
-            and path in scope.changed_paths
-            and len(selected_proposal_paths) == 1
-            and len(stage_owned_proposal_records & set(scope.changed_paths)) == 1
-            and not owners
-        ):
-            blocking_findings.append(
-                ValidationFinding(
-                    severity="block",
-                    path=path,
-                    artifact_class="change_metadata",
-                    status=None,
-                    message="selected change record does not identify this proposal as its primary proposal",
-                )
-            )
-        stage_owned = bool(stage_owned_refs or owners)
-        stage_owned_status: str | None = None
-        if stage_owned:
-            target_findings = blocking_findings if path in related_paths else warning_findings
-            severity = "block" if path in related_paths else "warn"
-            simplified_proposal = bool(
-                contract is not None
-                and contract.class_name == "proposal"
-                and _uses_simplified_proposal_shape(text)
-            )
-            expected_ref_counts = {0} if simplified_proposal else {1}
-            if len(stage_owned_refs) not in expected_ref_counts:
-                ownership_message = (
-                    "simplified governed proposal must not contain an owning change-record pointer"
-                    if simplified_proposal
-                    else "stage-owned governed artifact must identify exactly one owning change record"
-                )
-                target_findings.append(
-                    ValidationFinding(
-                        severity=severity,
-                        path=path,
-                        artifact_class="change_metadata",
-                        status=None,
-                        message=ownership_message,
-                    )
-                )
-            if len(owners) != 1:
-                target_findings.append(
-                    ValidationFinding(
-                        severity=severity,
-                        path=path,
-                        artifact_class="change_metadata",
-                        status=None,
-                        message="stage-owned governed artifact must have exactly one normalized artifact entry",
-                    )
-                )
-            else:
-                owner = owners[0]
-                stage_owned_status = owner.lifecycle_state
-                if contract is not None and owner.kind != contract.class_name:
-                    target_findings.append(
-                        ValidationFinding(
-                            severity=severity,
-                            path=path,
-                            artifact_class=contract.class_name,
-                            status=stage_owned_status,
-                            message=(
-                                f"artifact kind '{owner.kind}' does not match "
-                                f"classified kind '{contract.class_name}'"
-                            ),
-                        )
-                    )
-                if len(stage_owned_refs) == 1 and owner.change_record not in stage_owned_refs:
-                    target_findings.append(
-                        ValidationFinding(
-                            severity=severity,
-                            path=path,
-                            artifact_class="change_metadata",
-                            status=stage_owned_status,
-                            message="owning change-record pointer does not match the exact artifact entry owner",
-                        )
-                    )
         inspection = _inspect_artifact(
             path,
             root_resolved,
             scope.tracked_revision,
-            stage_owned=stage_owned,
-            stage_owned_status=stage_owned_status,
             current_path=path in scope.changed_paths,
         )
         if inspection is not None:
@@ -2454,43 +1865,6 @@ def validate_repository(
     plan_blockers, plan_warnings = _validate_plan_lifecycle_consistency(root_resolved, scope)
     blocking_findings.extend(plan_blockers)
     warning_findings.extend(plan_warnings)
-    workflow_state_plan_paths = {
-        path
-        for path in (*scope.changed_paths, *scope.related_artifact_paths)
-        if _is_plan_body_path(root_resolved, path) and _path_exists(root_resolved, path, scope.tracked_revision)
-        and _is_live_workflow_state_plan_body(root_resolved, path, scope.tracked_revision)
-        and _has_workflow_state_handoff_section(root_resolved, path, scope.tracked_revision)
-    }
-    workflow_state_plan_index = root_resolved / "docs" / "plan.md"
-    if _plan_index_surface_in_scope(root_resolved, scope) and _path_exists(root_resolved, workflow_state_plan_index, scope.tracked_revision):
-        index_resolution = resolve_owners_from_index(root_resolved, workflow_state_plan_index)
-        workflow_state_plan_paths.update(index_resolution.plan_paths)
-        for finding in index_resolution.findings:
-            blocking_findings.append(
-                ValidationFinding(
-                    severity="block",
-                    path=finding.path,
-                    artifact_class="workflow-state",
-                    status=None,
-                    message=finding.message,
-                )
-            )
-    if workflow_state_plan_paths:
-        for finding in validate_workflow_state_sync(
-            root_resolved,
-            plan_paths=tuple(sorted(workflow_state_plan_paths)),
-            plan_index_path=workflow_state_plan_index if _path_exists(root_resolved, workflow_state_plan_index, scope.tracked_revision) else None,
-            change_yaml_paths=scope.change_yaml_paths,
-        ):
-            blocking_findings.append(
-                ValidationFinding(
-                    severity="block",
-                    path=finding.path,
-                    artifact_class="workflow-state",
-                    status=None,
-                    message=finding.message,
-                )
-            )
     if _plan_index_surface_in_scope(root_resolved, scope) or _explicit_terminal_plan_body_in_scope(root_resolved, scope):
         surface_entries: list[PlanSurfaceEntry] = []
         surface_findings: list[ValidationFinding] = []

@@ -1,4 +1,4 @@
-<!-- Historical recording application. Adopted Review and Closeout consumers select shared assessment/reliance guidance; this block preserves historical handlers and shapes. -->
+<!-- Recording application; assessment and reliance policy remain with their owning shared guidance. -->
 
 ## Isolation and Recording
 
@@ -17,9 +17,7 @@ Use:
 
 `not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-For `compact-current-state-v1`, update the target's stable current review record through the CLI. A clean review replaces its current judgment at the stable path. Material findings remain directly accessible in that record; only resolved decisions that continue to constrain the change belong in `material-decisions.md`. Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.
-
-For registered historical contracts, create the lightweight clean receipt or detailed review record required by that contract, index it in `review-log.md`, and create `review-resolution.md` only when triggered.
+Use the selected v2 registry and targeted review/finding commands. Bind the complete assessment to exact subjects and supplied applicability. Preserve unresolved findings and immutable origin; do not retarget prior approval. Saving does not settle workflow, establish current reliance or grant permission. Historical records remain unchanged archives, without old runtime handlers.
 
 Material findings must include:
 

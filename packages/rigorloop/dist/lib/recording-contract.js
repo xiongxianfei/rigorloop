@@ -37,6 +37,6 @@ export function validatePrimaryResult(r){
  if(scope.complete!==(scope.next===null&&!(scope.missing_paths?.length)))stop("invalid-input");
  if(r.operation==="observations.show")return r;
  if((scope.total===null)!==(scope.missing_paths.length>0))stop("invalid-input");
- for(const item of rows){if(item.fields?.schema_version!==undefined&&item.fields.schema_version!==(r.record_contract==="rigorloop-records-v2"?2:1))stop("invalid-input");if(item.origin_available!==undefined&&item.origin_available!==(r.record_contract==="rigorloop-records-v2"))stop("invalid-input");if(r.operation.endsWith(".show")&&item.kind!==r.operation.split(".")[0])stop("invalid-input");}
+ for(const item of rows){if(item.fields?.schema_version!==undefined&&item.fields.schema_version!==2)stop("invalid-input");if(item.origin_available!==undefined&&item.origin_available!==(r.record_contract==="rigorloop-records-v2"))stop("invalid-input");if(r.operation.endsWith(".show")&&item.kind!==r.operation.split(".")[0])stop("invalid-input");}
  return r;
 }

@@ -250,6 +250,40 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
         )
         self.assertEqual(issues[0].code, "BFR-UNKNOWN-CONTRACT-VERSION")
 
+    def test_retired_marker_adapter_rejects_without_reading_archive(self):
+        from unittest.mock import patch
+        document = valid_feature().replace(
+            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
+            "## Owning change record\n\n`docs/changes/example/change.yaml`\n\nboundary_contract: boundary-first-v1",
+        )
+        with patch.object(Path, "read_text", side_effect=AssertionError("must not read archived store")):
+            issues = validate_feature_record(document, "specs/example.md", root=Path("."))
+        self.assertEqual(issues[0].code, "BFR-MARKER-AUTHORITY")
+        self.assertIn("unsupported", issues[0].message)
+
+    def test_v2_marker_placement_is_document_structure_not_record_authority(self):
+        from unittest.mock import patch
+        document = valid_feature().replace(
+            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
+            "## Owning change record\n\n`docs/changes/example/change.json`\n\nboundary_contract: boundary-first-v1",
+        )
+        with patch.object(Path, "read_text", side_effect=AssertionError("document validation must not inspect a store")):
+            self.assertEqual(validate_feature_record(document, "specs/example.md", root=Path(".")), ())
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "specs").mkdir()
+            (root / "specs/example.md").write_text(document)
+            activation = json.loads((ROOT / "specs/boundary-first-activation.yaml").read_text())
+            activation["state"] = "active"
+            (root / "specs/boundary-first-activation.yaml").write_text(json.dumps(activation))
+            # Delivery Review owns v2 plan allocation; this feature-authoring
+            # check must not require an obsolete standalone test-spec file.
+            self.assertEqual(validate_changed_spec(root, "specs/example.md"), ())
+            (root / "specs/example.test.md").write_text("malformed explicit proof map")
+            self.assertTrue(validate_changed_spec(root, "specs/example.test.md"))
+        malformed = document.replace("docs/changes/example/change.json", "docs/changes/../change.json")
+        self.assertTrue(validate_feature_record(malformed, "specs/example.md", root=Path(".")))
+
     def test_marker_must_follow_lifecycle_value_inside_status(self) -> None:
         misplaced = valid_feature().replace(
             "approved\nboundary_contract: boundary-first-v1",
@@ -272,350 +306,10 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
             "BFR-MARKER-COUNT",
         )
 
-    def test_stage_owned_marker_requires_matching_lifecycle_contract(self) -> None:
-        stage_owned = valid_feature().replace(
-            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
-            "## Owning change record\n\n"
-            "`docs/changes/2026-08-06-example/change.yaml`\n\n"
-            "boundary_contract: boundary-first-v1",
-        )
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            change_path = root / "docs/changes/2026-08-06-example/change.yaml"
-            change_path.parent.mkdir(parents=True)
-            change_path.write_text(
-                "change_id: 2026-08-06-example\n"
-                "lifecycle_contract: stage-owned-change-local-v1\n",
-                encoding="utf-8",
-            )
 
-            self.assertEqual(
-                validate_feature_record(
-                    stage_owned,
-                    "specs/example.md",
-                    root=root,
-                ),
-                (),
-            )
 
-            stage_owned_status = valid_feature().replace(
-                "## Status",
-                "## Owning change record\n\n"
-                "`docs/changes/2026-08-06-example/change.yaml`\n\n"
-                "## Status",
-                1,
-            )
-            self.assertEqual(
-                validate_feature_record(
-                    stage_owned_status,
-                    "specs/example.md",
-                    root=root,
-                )[0].code,
-                "BFR-MARKER-PLACEMENT",
-            )
 
-            change_path.write_text(
-                "change_id: 2026-08-06-example\n"
-                "lifecycle_contract : stage-owned-change-local-v1\n",
-                encoding="utf-8",
-            )
-            self.assertEqual(
-                validate_feature_record(
-                    stage_owned,
-                    "specs/example.md",
-                    root=root,
-                ),
-                (),
-            )
-            self.assertEqual(
-                validate_feature_record(
-                    stage_owned_status,
-                    "specs/example.md",
-                    root=root,
-                )[0].code,
-                "BFR-MARKER-PLACEMENT",
-            )
 
-            before_pointer = stage_owned.replace(
-                "`docs/changes/2026-08-06-example/change.yaml`\n\n"
-                "boundary_contract: boundary-first-v1",
-                "boundary_contract: boundary-first-v1\n\n"
-                "`docs/changes/2026-08-06-example/change.yaml`",
-            )
-            self.assertEqual(
-                validate_feature_record(
-                    before_pointer,
-                    "specs/example.md",
-                    root=root,
-                )[0].code,
-                "BFR-MARKER-PLACEMENT",
-            )
-
-            change_path.unlink()
-            self.assertEqual(
-                validate_feature_record(
-                    stage_owned,
-                    "specs/example.md",
-                    root=root,
-                )[0].code,
-                "BFR-MARKER-AUTHORITY",
-            )
-            change_path.write_text(
-                "change_id: 2026-08-06-example\n",
-                encoding="utf-8",
-            )
-            self.assertEqual(
-                validate_feature_record(
-                    stage_owned,
-                    "specs/example.md",
-                    root=root,
-                )[0].code,
-                "BFR-MARKER-AUTHORITY",
-            )
-            self.assertEqual(
-                validate_feature_record(
-                    stage_owned_status,
-                    "specs/example.md",
-                    root=root,
-                ),
-                (),
-            )
-
-            change_path.write_text(
-                "change_id: 2026-08-06-example\n"
-                'lifecycle_contract: "stage-owned-change-local-v1"\n',
-                encoding="utf-8",
-            )
-            self.assertEqual(
-                validate_feature_record(
-                    stage_owned,
-                    "specs/example.md",
-                    root=root,
-                ),
-                (),
-            )
-            self.assertEqual(
-                validate_feature_record(
-                    stage_owned_status,
-                    "specs/example.md",
-                    root=root,
-                )[0].code,
-                "BFR-MARKER-PLACEMENT",
-            )
-
-    def test_unknown_value_lifecycle_contract_fails_before_marker_consistency(self) -> None:
-        stage_owned_status = valid_feature().replace(
-            "## Status",
-            "## Owning change record\n\n"
-            "`docs/changes/2026-08-06-example/change.yaml`\n\n"
-            "## Status",
-            1,
-        )
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            change_path = root / "docs/changes/2026-08-06-example/change.yaml"
-            change_path.parent.mkdir(parents=True)
-            for case, contract in (
-                ("canonical unknown", "lifecycle_contract: future-contract-v2\n"),
-                ("spaced unknown", "lifecycle_contract : future-contract-v2\n"),
-                ("spaced malformed", 'lifecycle_contract : "unterminated\n'),
-                (
-                    "mixed duplicate",
-                    "lifecycle_contract: stage-owned-change-local-v1\n"
-                    "lifecycle_contract : stage-owned-change-local-v1\n",
-                ),
-            ):
-                with self.subTest(case=case):
-                    change_path.write_text(
-                        "change_id: 2026-08-06-example\n" + contract,
-                        encoding="utf-8",
-                    )
-
-                    issues = validate_feature_record(
-                        stage_owned_status,
-                        "specs/example.md",
-                        root=root,
-                    )
-
-                    self.assertEqual(
-                        issues[0].code,
-                        "BFR-UNKNOWN-LIFECYCLE-CONTRACT"
-                        if case != "mixed duplicate"
-                        else "BFR-MARKER-AUTHORITY",
-                    )
-
-    def test_v2_and_v3_stage_owned_specs_use_the_registered_primary_plan_for_proof(self) -> None:
-        stage_owned = valid_feature().replace(
-            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
-            "## Owning change record\n\n"
-            "`docs/changes/example/change.yaml`\n\n"
-            "boundary_contract: boundary-first-v1",
-        )
-        for contract in ("stage-owned-change-local-v2", "stage-owned-change-local-v3"):
-            with self.subTest(contract=contract), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
-                copy_activation_surfaces(root)
-                change_root = root / "docs/changes/example"
-                change_root.mkdir(parents=True)
-                plan_path = root / "docs/plans/example.md"
-                plan_path.parent.mkdir(parents=True)
-                plan_path.write_text(
-                    "# Plan\n\n## Verification allocation\n\n"
-                    "FIX-R001 is allocated to automated proof for BND-INPUT-001.\n",
-                    encoding="utf-8",
-                )
-                (root / "specs/example.md").write_text(stage_owned, encoding="utf-8")
-                change_root.joinpath("change.yaml").write_text(
-                    "change_id: example\n"
-                    f'lifecycle_contract: "{contract}"\n'
-                    "artifact_states:\n"
-                    "  plan:\n"
-                    "    kind: plan\n"
-                    "    path: docs/plans/example.md\n"
-                    "    role: primary\n"
-                    "    lifecycle_state: active\n",
-                    encoding="utf-8",
-                )
-                self.assertEqual(
-                    validate_changed_spec(root, "specs/example.md"),
-                    (),
-                )
-
-                plan_path.write_text(
-                    "# Plan\n\n## Verification allocation\n\nFIX-R001 only.\n",
-                    encoding="utf-8",
-                )
-                self.assertEqual(
-                    validate_changed_spec(root, "specs/example.md")[0].code,
-                    "BFR-PLAN-PROOF-INCOMPLETE",
-                )
-
-    def test_v3_stage_owned_spec_before_plan_registration_is_valid(self) -> None:
-        stage_owned = valid_feature().replace(
-            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
-            "## Owning change record\n\n"
-            "`docs/changes/example/change.yaml`\n\n"
-            "boundary_contract: boundary-first-v1",
-        )
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            copy_activation_surfaces(root)
-            change_root = root / "docs/changes/example"
-            change_root.mkdir(parents=True)
-            (root / "specs/example.md").write_text(stage_owned, encoding="utf-8")
-            change_root.joinpath("change.yaml").write_text(
-                "change_id: example\n"
-                'lifecycle_contract: "stage-owned-change-local-v3"\n'
-                "artifact_states:\n"
-                "  spec:\n"
-                "    kind: spec\n"
-                "    path: specs/example.md\n"
-                "    role: primary\n"
-                "    lifecycle_state: authoring\n",
-                encoding="utf-8",
-            )
-            self.assertEqual(validate_changed_spec(root, "specs/example.md"), ())
-
-    def test_registered_plan_authority_rejects_duplicate_mapping_keys_recursively(self) -> None:
-        stage_owned = valid_feature().replace(
-            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
-            "## Owning change record\n\n"
-            "`docs/changes/example/change.yaml`\n\n"
-            "boundary_contract: boundary-first-v1",
-        )
-        duplicate_cases = {
-            "artifact_states": (
-                "artifact_states:\n"
-                "  plan:\n"
-                "    kind: plan\n"
-                "    path: docs/plans/missing.md\n"
-                "    role: primary\n"
-                "artifact_states:\n"
-                "  plan:\n"
-                "    kind: plan\n"
-                "    path: docs/plans/example.md\n"
-                "    role: primary\n"
-            ),
-            "plan": (
-                "artifact_states:\n"
-                "  plan:\n"
-                "    kind: plan\n"
-                "    path: docs/plans/missing.md\n"
-                "    role: primary\n"
-                "  plan:\n"
-                "    kind: plan\n"
-                "    path: docs/plans/example.md\n"
-                "    role: primary\n"
-            ),
-            "kind": (
-                "artifact_states:\n"
-                "  plan:\n"
-                "    kind: unknown\n"
-                "    kind: plan\n"
-                "    path: docs/plans/example.md\n"
-                "    role: primary\n"
-            ),
-            "role": (
-                "artifact_states:\n"
-                "  plan:\n"
-                "    kind: plan\n"
-                "    path: docs/plans/example.md\n"
-                "    role: supporting\n"
-                "    role: primary\n"
-            ),
-            "path": (
-                "artifact_states:\n"
-                "  plan:\n"
-                "    kind: plan\n"
-                "    path: docs/plans/missing.md\n"
-                "    path: docs/plans/example.md\n"
-                "    role: primary\n"
-            ),
-        }
-        for contract in ("stage-owned-change-local-v2", "stage-owned-change-local-v3"):
-            for key, mapping in duplicate_cases.items():
-                for reverse in (False, True):
-                    with self.subTest(contract=contract, key=key, reverse=reverse), tempfile.TemporaryDirectory() as temporary:
-                        root = Path(temporary)
-                        copy_activation_surfaces(root)
-                        change_root = root / "docs/changes/example"
-                        change_root.mkdir(parents=True)
-                        plan_path = root / "docs/plans/example.md"
-                        plan_path.parent.mkdir(parents=True)
-                        plan_path.write_text(
-                            "# Plan\n\nFIX-R001 BND-INPUT-001\n",
-                            encoding="utf-8",
-                        )
-                        (root / "specs/example.md").write_text(stage_owned, encoding="utf-8")
-                        if reverse:
-                            if "docs/plans/missing.md" in mapping:
-                                mapping = (
-                                    mapping.replace("docs/plans/missing.md", "__PLAN_PATH__")
-                                    .replace("docs/plans/example.md", "docs/plans/missing.md")
-                                    .replace("__PLAN_PATH__", "docs/plans/example.md")
-                                )
-                            if "kind: unknown" in mapping:
-                                mapping = (
-                                    mapping.replace("kind: unknown", "__PLAN_KIND__")
-                                    .replace("kind: plan", "kind: unknown")
-                                    .replace("__PLAN_KIND__", "kind: plan")
-                                )
-                            if "role: supporting" in mapping:
-                                mapping = (
-                                    mapping.replace("role: supporting", "__PLAN_ROLE__")
-                                    .replace("role: primary", "role: supporting")
-                                    .replace("__PLAN_ROLE__", "role: primary")
-                                )
-                        change_root.joinpath("change.yaml").write_text(
-                            "change_id: example\n"
-                            f"lifecycle_contract: {contract}\n"
-                            + mapping,
-                            encoding="utf-8",
-                        )
-                        self.assertNotEqual(
-                            validate_changed_spec(root, "specs/example.md"),
-                            (),
-                        )
 
     def test_composed_example_requirements_may_span_the_union_of_cited_boundaries(self) -> None:
         text = valid_feature().replace(

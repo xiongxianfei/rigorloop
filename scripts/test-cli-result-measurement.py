@@ -13,14 +13,12 @@ SPEC.loader.exec_module(MODULE)
 
 
 class MeasurementTests(unittest.TestCase):
-    def test_repository_profile_passes_without_changing_default(self):
-        report = MODULE.measure(
-            ROOT / "packages/rigorloop/test/fixtures/observability/token-profiles-v1.json",
-            ROOT / "docs/reports/token-cost/cli/v0.4.x-detailed-baseline.json",
-        )
-        self.assertGreaterEqual(report["median_reduction_percent"], 30)
-        self.assertTrue(all(report["gates"].values()))
-        self.assertFalse(report["default_changed"])
+    def test_retired_profile_cannot_execute_or_claim_new_measurement(self):
+        with self.assertRaisesRegex(ValueError, "measurement execution is retired"):
+            MODULE.measure(
+                ROOT / "packages/rigorloop/test/fixtures/observability/token-profiles-v1.json",
+                ROOT / "docs/reports/token-cost/cli/v0.4.x-detailed-baseline.json",
+            )
 
     def test_changed_profile_vocabulary_fails_closed(self):
         baseline = ROOT / "docs/reports/token-cost/cli/v0.4.x-detailed-baseline.json"
