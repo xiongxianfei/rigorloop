@@ -1,4 +1,4 @@
-# Retire Compact Workflow Mutation and Progression
+# Retire Legacy Record Formats and Workflow Engines
 
 Owning change record: [change.json](../changes/2026-09-08-retire-compact-workflow-mutations/change.json).
 
@@ -6,11 +6,11 @@ Owning change record: [change.json](../changes/2026-09-08-retire-compact-workflo
 
 RigorLoop retains semantic workflow execution mechanisms alongside the explicitly adopted recorder. Tests for those mechanisms cannot be judged unnecessary merely by age, filenames or a newer architecture. Removing their tests while keeping supported behavior reduces regression protection without simplifying the supported product.
 
-The compact engine is a concrete first candidate: it derives workflow progression, assessment settlement and active work through `compact-current-state-v1`. The recorder has a separate dispatch and persistence boundary. However, the current [CLI Design](../design/cli/cli.md) expressly preserves compact handlers; it did not approve retirement. Current canonical and packaged activation metadata both declare compact writing active, and new-change creation consumes that setting. This is a proposed compatibility change, not removal of an already inactive engine.
+The user-selected destination is rigorloop-records-v2 as the only supported runtime record format, retiring explicit-recording-v1 and the old compact/lifecycle formats with their exclusive execution mechanisms. The compact engine illustrates the existing coupling: it derives workflow progression, assessment settlement and active work through `compact-current-state-v1`. The recorder has a separate dispatch and persistence boundary. However, the current [CLI Design](../design/cli/cli.md) expressly preserves compact handlers; it did not approve retirement. Current canonical and packaged activation metadata both declare compact writing active, and new-change creation consumes that setting. This is a proposed compatibility change, not removal of an already inactive engine.
 
 ## Goals
 
-Reduce the number of supported semantic execution mechanisms by deliberately retiring one bounded writer/progression capability and its exclusively owned implementation and tests. Preserve honest historical reading, required recovery, exact contract identity, current recorder safety and independent review obligations.
+Converge runtime record support on rigorloop-records-v2. Retire the old record readers, validators, creators, writers and progression mechanisms with their exclusively owned implementation and tests after existing-work and recovery obligations are dispositioned. Preserve historical evidence without reinterpreting its meaning, exact contract identity, v2 recorder safety and independent review obligations.
 
 Use actual callers and protected failures to determine removal. Report changes in maintained code, discovered cases, runtime and agent context separately; no savings target or measured benefit is asserted here.
 
@@ -19,19 +19,23 @@ Use actual callers and protected failures to determine removal. Report changes i
 | Initial intent | Treatment | Destination |
 | --- | --- | --- |
 | Reconcile duplicate test name and audit five rollout assertions | in scope; same-slice dependency | Preparatory audit below; one unused duplicate definition removed without discovery loss |
-| Retire compact creation, mutation and progression | in scope; core to this proposal | Workflow/CLI-owned compatibility Design, then reviewed Delivery |
-| Compact historical reading, validation, projection and interrupted-write recovery | in scope; same-slice dependency | Define retained responsibilities and any bounded continuation before disabling writers |
-| Historical lifecycle mutation under other exact contracts | deferred follow-up; separate proposal | Workflow/CLI owners; do not delete its readers or writers under this proposal |
+| Retire explicit-recording-v1 and compact/lifecycle formats and their exclusive engines | in scope; core to this proposal | Record Format, Workflow and CLI compatibility Design, then reviewed Delivery slices |
+| Existing records, historical evidence, active-work continuation and interrupted-write recovery | in scope; same-slice dependency | Define archival treatment and temporary transition/recovery obligations with explicit removal conditions |
+| Historical lifecycle readers, validators, mutation and progression | in scope; separate implementation slice | Exact contract inventory and supported cutover before removing exclusive machinery |
 | Capability/receipt automation and calibration enforcement | deferred follow-up; separate proposal | Respective automation and Review and Closeout policy owners; establish actual support first |
 | Old release procedures | deferred follow-up; separate proposal | Release-tooling owner; retain published evidence and current release safety |
 | Other test-only consolidation | deferred follow-up; separate implementation slice | Test maintenance assessment comparing actual boundaries; previous mirror consolidation remains complete |
-| Current record-store safety and explicit-recording-v1 compatibility retirement | out of scope | Retain current contracts and protection; rigorloop-records-v2 remains distinct from compact and historical lifecycle version labels |
+| Current rigorloop-records-v2 safety and recovery | in scope; same-slice dependency | Preserve protection at the surviving recorder boundary; do not discard shared safety tests with retired-format cases |
 
-The first retirement encompasses the selected compact writer's complete dependency path: creation entry points, mutation/progression evaluation, exclusive fixtures and tests, activation, projection dependencies, guidance, packaging and selectors where affected. This is a bounded impact inventory, not approval to delete every compact module. Shared parsing, transaction and safety helpers remain until their surviving callers and obligations are established.
+The exact retirement set is `explicit-recording-v1`, `compact-current-state-v1`, `stage-owned-change-local-v1`, `stage-owned-change-local-v2`, `stage-owned-change-local-v3`, and `legacy-unversioned`. Design must inventory their subordinate record shapes and registered variants rather than infer contracts from directory names or schema numbers. The destination is unsupported runtime input with safe rejection, not permanent read-only compatibility for these formats.
+
+The coordinated initiative covers creation, reading, validation, projection, writing, progression, schemas, exclusive fixtures and tests, activation, guidance, packaging and selectors where affected. Delivery must split this broad direction into independently reviewable retirement slices with explicit dependencies. Shared parsing, transaction and safety helpers remain wherever v2 or approved temporary transition tooling still relies on them.
+
+The `Model validation contract: explicit-recording-v1` document marker and `targeted-recording-v1` request transport are separate version domains, not old stored records. Do not remove them by name matching. Design must resolve any confusing marker or shared-schema coupling without silently changing transport or historical document meaning.
 
 No blanket restoration or further deletion of the 13 historical suites already removed on the preceding branch is selected. Those deletions were explicitly recorded as coverage loss, not capability retirement or replacement evidence. Any proof needed for a later retirement must be established before reliance.
 
-No automatic conversion of historical data, reinterpretation of approvals, new record type, new retirement ledger, lifecycle gate, publication or implementation is selected. The duplicate-definition correction is a small preparatory test-only correction, not implementation of the proposed retirement.
+No historical evidence deletion, automatic conversion, reinterpretation of approvals, new record type, new retirement ledger, lifecycle gate, publication or implementation is selected. Any conversion or export needed for transition requires its own explicit Design mapping and later execution authority; this proposal does not select a migration mechanism. The duplicate-definition correction is a small preparatory test-only correction, not implementation of the proposed retirement.
 
 ## Governing principle
 
@@ -39,13 +43,13 @@ Retire a supported capability through an explicit compatibility decision, then r
 
 ## Proposed direction
 
-Pursue retirement of compact creation and ordinary semantic mutation/progression, with historical reading and validation preserved under their exact contract. Explicit-recording-v1 and rigorloop-records-v2 recorder behavior and safety remain supported independently.
+Pursue rigorloop-records-v2-only runtime record support. Retire the named old formats across normal and advanced entry points, including old-format creation, reading, validation, mutation and semantic progression. Preserve v2 inspection, correction recording, atomic persistence, identity/conflict checks, safe paths, retry and recovery. Historical source artifacts and recorded identities may remain as archival evidence; their preservation must not imply continued execution support or current approval.
 
-Before adoption, Design must map public commands, direct library callers, scripts, registered work, recovery artifacts, fixtures, selectors and installed guidance to an exact disposition: supported, read-only compatibility, explicitly unsupported, or temporarily retained for continuation/recovery. This is a decision aid in existing owning documents, not a new serialized state machine. No writer may be disabled while it is the only supported continuation or recovery path for active work.
+Before adoption, Design must map public commands, direct library callers, scripts, registered work, recovery artifacts, fixtures, selectors and installed guidance to an exact transition disposition: retained v2 support, archival evidence, explicitly unsupported, or temporarily retained for continuation/recovery with an owner and removal condition. This is a decision aid in existing owning documents, not a new serialized state machine. No writer may be disabled while it is the only supported continuation or recovery path for active work.
 
-A historical reader must explain preserved data without silently conferring current progression authority. The compact projection imports eligibility logic today; Design must distinguish historical explanation from any continued executable eligibility service. Recovery may still require narrowly bounded writes, so “read-only compatibility” must not erase an unresolved transaction's recovery path. Detailed commands, diagnostics, exit statuses, rollout and continuation mechanisms belong to Design.
+Any temporary historical reader must explain preserved data without conferring current progression authority and must have a defined exit condition. The compact projection imports eligibility logic today, so even reader removal requires dependency analysis. Recovery may require narrowly bounded old-format writes until existing transactions are safely resolved. Design must make that temporary boundary explicit; the final destination remains retirement rather than indefinite compatibility. Detailed commands, diagnostics, exit statuses, archival access, rollout and continuation mechanisms belong to Design. V1 data lacks v2 retained-origin guarantees; a transition must not fabricate missing origin or relabel historical judgments as newly approved.
 
-Retained tests must establish declared reading, unsupported-operation rejection, no fallback or unintended mutation, identity checks and recovery at surviving boundaries before reduced-suite evidence is used. Preserve independent assessment, truthful subjects, visible findings, justified disposition and fresh final whole-change Code Review before successful Verify.
+Retained tests must establish v2 behavior, safe rejection of retired-format input without fallback or unintended mutation, and identity/recovery guarantees at surviving boundaries before reduced-suite evidence is used. Any temporary compatibility tool needs its own bounded proof. Dedicated old-format acceptance tests leave only with the supported capability they protect. Preserve independent assessment, truthful subjects, visible findings, justified disposition and fresh final whole-change Code Review before successful Verify.
 
 Use the existing retirement mechanism and its applicable governing policy to record protected failures, owners, fixture knowledge, contract disposition, proof, removal evidence and rollback. Reconcile its historical scope and fixed vocabulary with this initiative in Design rather than inventing a parallel ledger or silently claiming a new adoption.
 
@@ -58,6 +62,8 @@ Direct source inspection establishes separate recording, compact and lifecycle d
 The active canonical [activation manifest](../../specs/compact-current-state-activation.yaml), packaged metadata and [activation tests](../../packages/rigorloop/test/compact-activation.test.js) contradict an assumption that compact writing remains withheld. The retained activation and compact CLI suites passed 10 cases, including writer rollback, projection and recovery. This supports the need to preserve those boundaries; it does not establish complete caller coverage.
 
 The project-wide `workflow-context --format json` query returned `RL_CONTEXT_CHANGE_INVALID` for `2026-04-24-multi-agent-adapters-first-public-release`. Its empty candidate list is therefore not evidence that no active changes exist. Design must resolve authoritative continuation inventory and external support assumptions before selecting cutover; directory or Git scans must not substitute for workflow authority. This known uncertainty blocks retirement implementation, not the bounded investigation proposed here.
+
+The Record Format and CLI Designs currently retain explicit-recording-v1 reads, updates and advanced creation. Those compatibility clauses require explicit revision alongside Workflow; the previously reviewed compact-only proposal is insufficient authority for this expanded scope. Shared v1/v2 schemas, validators, constructors and recovery paths must be mapped before deletion. No new stored schema version is required by selecting existing v2 alone.
 
 The [retirement library](../../scripts/retirement_ledger.py) and [governing simplification contract](../../specs/published-skill-first-repository-simplification.md) already require named protection, fixture disposition, replacement or de-contracting authority, evidence and rollback. Their adoption compatibility needs analysis; no new ledger or schema is justified now.
 
@@ -78,12 +84,12 @@ The stale activation assertion is a demonstrated existing test failure. The othe
 
 ## Impact and major trade-offs
 
-A smaller supported execution surface may reduce maintenance, but retiring an active writer can strand work and creates a real compatibility cost. Read-only explanation and narrowly retained recovery may limit the amount of code removed. Those costs are preferable to silently converting historical contracts or deleting their only recovery path.
+A v2-only runtime may reduce maintenance, but retiring active writers and old-format readers creates a real compatibility break. Users may need to finish work, export information or retain a separately identified historical tool before cutover. Design must select those dispositions without indefinite hidden compatibility or stranded recovery. Archival evidence alone is not an operational continuation path.
 
-The proposal is deliberately narrower than the overall shortlist. Automation, calibration and release procedures require different owner decisions and should not become hidden prerequisites or automatic follow-on deletions.
+This scope expands the earlier compact-only proposal at the user’s explicit request. Record Format now joins Workflow and CLI in the minimum Design package. Automation, calibration and old release procedures remain separate decisions; any concrete dependency that prevents format retirement must be surfaced with its owner and disposition rather than silently removed or hidden as a prerequisite.
 
 ## Decision requested
 
-Approve detailed Design of retirement for compact creation and semantic mutation/progression, subject to explicit historical reading, validation, continuation and recovery dispositions. Approve coordinated consumer and test removal only as a downstream Design/Delivery objective after retained protection is established.
+Approve detailed Design of rigorloop-records-v2-only runtime record support, retiring explicit-recording-v1 and the named compact/lifecycle formats across readers, validators, creation, mutation and exclusive progression machinery. Require exact existing-record, active-work, archival and recovery dispositions, bounded temporary support where necessary, and coordinated consumer/test retirement with retained v2 safety proof.
 
-This decision does not retire the engine now, resolve unknown customer obligations, authorize exact handler deletion, migrate records, retire current recorder v1 compatibility, or approve implementation, activation, publication or release. Other legacy engines and tooling remain separate proposals.
+Approval selects this broader direction and supersedes the earlier proposal's permanent old-format compatibility and compact-only scope. It does not retire any format now, settle unknown customer obligations, authorize exact handler or historical-record deletion, migrate records, or approve implementation, activation, publication or release. Support remains under existing contracts until the reviewed transition is adopted.
