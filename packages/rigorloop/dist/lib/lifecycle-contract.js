@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
 
-import { isAlias, isMap, isScalar, isSeq, parseAllDocuments, stringify } from "yaml";
+import { stringify } from "yaml";
+import {parseProjectYaml as parseLifecycleYaml} from "./project-files.js";
+export {parseLifecycleYaml};
 
 export const LIFECYCLE_CONTRACT_V1 = "stage-owned-change-local-v1";
 export const LIFECYCLE_CONTRACT_V2 = "stage-owned-change-local-v2";
@@ -71,16 +73,6 @@ export const LIFECYCLE_ERROR_CODES = Object.freeze([
 ]);
 
 export const PROVENANCE_EXCLUDED_FIELDS = Object.freeze(["actor", "recorded_at"]);
-
-const STANDARD_TAGS = new Set([
-  "tag:yaml.org,2002:map",
-  "tag:yaml.org,2002:seq",
-  "tag:yaml.org,2002:str",
-  "tag:yaml.org,2002:null",
-  "tag:yaml.org,2002:bool",
-  "tag:yaml.org,2002:int",
-  "tag:yaml.org,2002:float",
-]);
 
 const TOP_LEVEL_ORDER = [
   "change_id",
@@ -329,48 +321,6 @@ function invalid(message) {
   return error;
 }
 
-function inspectNode(node) {
-  if (!node) return;
-  if (isAlias(node)) throw invalid("YAML aliases are not supported");
-  if (node.anchor) throw invalid("YAML anchors are not supported");
-  if (node.tag && !STANDARD_TAGS.has(node.tag)) throw invalid("custom YAML tags are not supported");
-  if (isMap(node)) {
-    for (const pair of node.items) {
-      if (!isScalar(pair.key) || typeof pair.key.value !== "string") {
-        throw invalid("YAML mapping keys must be strings");
-      }
-      if (pair.key.value === "<<") throw invalid("YAML merge keys are not supported");
-      inspectNode(pair.value);
-    }
-  } else if (isSeq(node)) {
-    for (const item of node.items) inspectNode(item);
-  } else if (isScalar(node)) {
-    if (typeof node.value === "number" && !Number.isFinite(node.value)) {
-      throw invalid("non-finite YAML numbers are not supported");
-    }
-  } else {
-    throw invalid("unsupported YAML node kind");
-  }
-}
-
-export function parseLifecycleYaml(text) {
-  if (typeof text !== "string") throw invalid("YAML input must be UTF-8 text");
-  let documents;
-  try {
-    documents = parseAllDocuments(text, { uniqueKeys: true, merge: false, maxAliasCount: 0 });
-  } catch (error) {
-    throw invalid(error.message);
-  }
-  if (documents.length !== 1) throw invalid("exactly one YAML document is required");
-  const [document] = documents;
-  if (document.errors.length > 0) throw invalid(document.errors[0].message);
-  inspectNode(document.contents);
-  const value = document.toJS({ maxAliasCount: 0, mapAsMap: false });
-  if (!value || Array.isArray(value) || typeof value !== "object") {
-    throw invalid("lifecycle YAML root must be a mapping");
-  }
-  return value;
-}
 
 function ordered(value, topLevel = false) {
   if (Array.isArray(value)) return value.map((item) => ordered(item));

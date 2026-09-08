@@ -1,3 +1,4 @@
+import {parseProjectYaml as parseLifecycleYaml,findRepositoryRoot} from "./project-files.js";
 import { existsSync, lstatSync, readFileSync } from "node:fs";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 
@@ -9,11 +10,10 @@ import {
   PREACTIVATION_LIFECYCLE_MANIFEST,
   classifyLifecycleContract,
   correctionStageOrder,
-  parseLifecycleYaml,
 } from "./lifecycle-contract.js";
 import { compactWriterStatus, loadPackagedCompactActivation } from "./compact-activation.js";
 import { executeCompactCli } from "./compact-cli.js";
-import { discoverGovernedChanges, findRepositoryRoot, interpretGovernedChange, selectGovernedChange } from "./lifecycle-read.js";
+import { discoverGovernedChanges, interpretGovernedChange, selectGovernedChange } from "./lifecycle-read.js";
 
 export const WORKFLOW_CONTEXT_FORMATS = Object.freeze(["human", "json"]);
 export const WORKFLOW_CONFIG_SCHEMA_VERSIONS = Object.freeze([1]);

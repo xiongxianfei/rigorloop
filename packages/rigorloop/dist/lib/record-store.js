@@ -21,7 +21,7 @@ export function emptyRecordResult(operation,changeId) {
 
 class Store {
   constructor(root,id,options) {
-    V1_FORMAT.pathKind(id,`docs/changes/${id}/change.yaml`);
+    V2_FORMAT.pathKind(id,`docs/changes/${id}/change.json`);
     this.fs=new RecordFiles(root); this.id=id; this.options=options;
     this.directory=`docs/changes/${id}`; this.selectFormat(V1_FORMAT);
     this.private=`.rigorloop/record-store/${id}`;

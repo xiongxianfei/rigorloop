@@ -1,3 +1,5 @@
+import {findRepositoryRoot} from "./project-files.js";
+export {findRepositoryRoot};
 import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
@@ -70,15 +72,6 @@ function repositoryPath(root, candidate) {
   return absolute;
 }
 
-export function findRepositoryRoot(start) {
-  let cursor = resolve(start);
-  while (true) {
-    if (existsSync(join(cursor, ".git")) || existsSync(join(cursor, "docs", "changes"))) return cursor;
-    const parent = dirname(cursor);
-    if (parent === cursor) return resolve(start);
-    cursor = parent;
-  }
-}
 
 function changeCandidates(root) {
   const changesRoot = join(root, "docs", "changes");
