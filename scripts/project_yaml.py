@@ -214,5 +214,3 @@ def load_yaml(path: Path) -> Any:
             f"line {line.lineno}: unexpected trailing content at indentation {line.indent}"
         )
     return data
-
-
