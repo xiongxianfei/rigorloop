@@ -19,7 +19,19 @@ function relativePath(path) {
   return path;
 }
 
-function safePath(projectRoot, path) {
+function assertAuthority(projectRoot, authority) {
+  if (realpathSync(projectRoot) !== projectRoot) throw failure("Project root is no longer safe.");
+  for (const [path, dev, ino] of authority) {
+    const info = stat(join(projectRoot, path));
+    if (!info?.isDirectory() || info.isSymbolicLink() || info.dev !== dev || info.ino !== ino) {
+      throw failure("The original project root or installation ancestor changed.");
+    }
+  }
+}
+
+function safePath(projectRoot, path, authority) {
+  if (authority) assertAuthority(projectRoot, authority);
+  else if (realpathSync(projectRoot) !== projectRoot || !lstatSync(projectRoot).isDirectory()) throw failure("Unsafe project root.");
   relativePath(path);
   let current = projectRoot;
   const pieces = path.split("/");
@@ -36,8 +48,8 @@ function safePath(projectRoot, path) {
 
 // As in RecordFiles.withParent, the synchronous CLI pins the verified parent
 // inode as cwd. Basename-only writes cannot follow a replaced ancestor.
-function withParent(projectRoot, path, action) {
-  const target = safePath(projectRoot, path);
+function withParent(projectRoot, path, action, authority) {
+  const target = safePath(projectRoot, path, authority);
   const parent = dirname(target);
   const identity = lstatSync(parent);
   if (!identity.isDirectory()) throw failure("Unsafe replacement parent.");
@@ -46,7 +58,7 @@ function withParent(projectRoot, path, action) {
     process.chdir(parent);
     const opened = lstatSync(".");
     if (opened.dev !== identity.dev || opened.ino !== identity.ino) throw failure("Replacement parent changed.");
-    safePath(projectRoot, path);
+    safePath(projectRoot, path, authority);
     const current = lstatSync(parent);
     if (current.dev !== identity.dev || current.ino !== identity.ino) throw failure("Replacement parent changed.");
     return action(basename(target));
@@ -73,16 +85,25 @@ function scope(projectRoot, roots) {
 
 export function captureManagedBasis({ projectRoot, roots }) {
   const selected = scope(projectRoot, roots);
+  const parents = new Set(["."]);
+  for (const root of roots) {
+    let parent = dirname(root);
+    while (parent !== ".") { parents.add(parent); parent = dirname(parent); }
+  }
+  const authority = [...parents].sort().map(path => {
+    const info = lstatSync(path === "." ? selected.projectRoot : safePath(selected.projectRoot, path));
+    return [path, info.dev, info.ino];
+  });
   const basis = Object.fromEntries(selected.paths.map(path => [path, snapshot(safePath(selected.projectRoot, path))]));
   if (roots.some(path => basis[path]?.kind !== "directory")) throw failure("A recorded managed root is missing or unsafe.");
   if (STATE_PATHS.some(path => basis[path] && basis[path].kind !== "file")) throw failure("Unsafe managed state file.");
-  return basis;
+  return { $ancestors: authority, ...basis };
 }
 
 export function replaceManagedAuthoring({ projectRoot, roots, basis, files, state, verifyInstalled = () => {}, checkpoint = () => {} }) {
   const selected = scope(projectRoot, roots);
   projectRoot = selected.projectRoot;
-  if (!equal(Object.keys(basis ?? {}).sort(), [...selected.paths].sort()) || !equal(captureManagedBasis({ projectRoot, roots }), basis)) {
+  if (!equal(Object.keys(basis ?? {}).sort(), ["$ancestors", ...selected.paths].sort()) || !equal(captureManagedBasis({ projectRoot, roots }), basis)) {
     throw failure("The original managed installation basis changed before replacement.");
   }
   if (!state || !equal(Object.keys(state).sort(), [...STATE_PATHS].sort()) || STATE_PATHS.some(p => !Buffer.isBuffer(state[p]))) {
@@ -102,7 +123,9 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
   const expected = { ...basis };
   const saved = new Map();
   const moves = [];
+  const authority = basis.$ancestors;
   function assertCurrent() {
+    assertAuthority(projectRoot, authority);
     for (const path of selected.paths) {
       if (!equal(snapshot(safePath(projectRoot, path)), expected[path])) throw failure("An independent write changed the replacement basis.");
     }
@@ -113,7 +136,7 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
   function saveOriginal(target, backup, path) {
     assertCurrent();
     if (stat(backup)) throw failure("A private backup destination unexpectedly exists.");
-    withParent(projectRoot, path, name => renameSync(name, backup));
+    withParent(projectRoot, path, name => renameSync(name, backup), authority);
     moves.push({ kind: "saved", backup, path });
     expected[path] = null;
     saved.set(backup, basis[path]);
@@ -126,7 +149,7 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
       if (value.kind === "file") {
         // link is an atomic no-clobber publication on the same filesystem.
         // rename would overwrite a writer arriving after the final check.
-        withParent(projectRoot, relative, name => linkSync(from, name));
+        withParent(projectRoot, relative, name => linkSync(from, name), authority);
         attach(value);
       } else {
         withParent(projectRoot, relative, name => {
@@ -135,7 +158,7 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
           const mask = process.umask(0);
           try { mkdirSync(name, { mode: value.mode & 0o7777 }); }
           finally { process.umask(mask); }
-        });
+        }, authority);
         const directory = { ...value, entries: [] };
         attach(directory);
         for (const [name, child] of value.entries) {
@@ -191,7 +214,7 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
           // If a writer won this source race, retain its bytes and report it.
           const detached = join(stage, `detached-${moves.length}`);
           const wanted = expected[last.path];
-          withParent(projectRoot, last.path, name => renameSync(name, detached));
+          withParent(projectRoot, last.path, name => renameSync(name, detached), authority);
           expected[last.path] = null;
           saved.set(detached, wanted);
           assertCurrent();

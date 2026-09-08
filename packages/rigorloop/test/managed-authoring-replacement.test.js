@@ -239,3 +239,23 @@ test("rollback restores directory modes and the caller's restrictive umask", t =
     assert.equal(process.umask(), 0o077);
   } finally { process.umask(previous); }
 });
+
+for (const symlink of [false, true]) {
+  test(`project root substitution (${symlink ? "symlink" : "directory"}) cannot redirect publication`, t => {
+    const f = fixture(t);
+    const original = `${f.projectRoot}-original`;
+    const neighbor = `${f.projectRoot}-neighbor`;
+    t.after(() => { rmSync(original, { recursive: true, force: true }); rmSync(neighbor, { recursive: true, force: true }); });
+    assert.throws(() => replaceManagedAuthoring({ ...f, checkpoint: phase => {
+      if (phase === "staged") {
+        fs.cpSync(f.projectRoot, neighbor, { recursive: true });
+        fs.renameSync(f.projectRoot, original);
+        if (symlink) symlinkSync(neighbor, f.projectRoot);
+        else fs.renameSync(neighbor, f.projectRoot);
+      }
+    }}), { code: "managed-authoring-recovery-required" });
+    assert.equal(readFileSync(join(f.projectRoot, f.roots[0], "spec.md"), "utf8"), "original skill\n");
+    assert.equal(existsSync(join(f.projectRoot, f.roots[0], "design.md")), false);
+    assert.equal(readFileSync(join(original, "rigorloop.lock"), "utf8"), "original lock\n");
+  });
+}
