@@ -2,26 +2,27 @@
 
 Model validation contract: explicit-recording-v1
 
-This marker versions Markdown model validation only. This initiative uses `rigorloop-records-v2` for stored change records.
+This marker versions Markdown model validation only; its older name does not select a stored format. The current runtime contract is `rigorloop-records-v2`, as defined by [Record Format](../record-format/record-format.md#record-model). Retired-format descriptions below explain historical decisions and records; they do not authorize a v1 reader, writer or continuation path.
 
 ## Introduction and Goals
 
 Review and Closeout owns the shared policy for judging engineering work and justifying final completion within the Workflow domain. It defines assessment scope, independence, judgment, applicability, concern disposition, reassessment, and closeout obligations. Specialist skills apply this policy using methods appropriate to their subjects. Workflow coordinates the responsible activities; it does not define these obligations again.
 
-The direction comes from [Unify Review and Closeout Policy Ownership](../../proposals/2026-09-07-unify-review-closeout-policy.md) and its [independent Proposal Review](../../changes/2026-09-07-unify-review-closeout-policy/reviews/proposal-review.json). This is a proposed model design, not activation of new policy or approval of its implementation. The adoption boundary below preserves existing contracts and historical judgments.
+The direction comes from [Unify Review and Closeout Policy Ownership](../../proposals/2026-09-07-unify-review-closeout-policy.md) and its [independent Proposal Review](../../changes/2026-09-07-unify-review-closeout-policy/reviews/proposal-review.json). [Repository governance](../../../CONSTITUTION.md) adopts this policy for explicitly selected repository work. Installation does not adopt it for a customer project. The original extraction and adoption basis is retained below as historical context; current activity, assessments and implementation evidence belong to the owning change records.
 
 ## Architecture Constraints
 
 There is no new service, public skill, lifecycle gate, record type, schema version, approval principal, or history ledger. Proposal Review, Design Review, Delivery Review, Code Review, and Verify remain specialized. No command decides whether their conclusions are justified. External execution, release, PR creation, publication, and destructive-action authority remain outside this model.
 
-The [Workflow model](../workflow/workflow.md#model-documentation-and-traceability) owns the one-file model convention and model validation. This document combines behavioral requirements, architecture, and decisions without separate specification or ADR siblings. Its identity is `review-closeout`; placement follows the existing model-directory convention, not a new runtime component boundary.
+The [Design model](../design/design.md#model-document-and-structural-contract) owns the one-file model convention and model validation; Workflow consumes it for coordination. This document combines behavioral requirements, architecture, and decisions without separate specification or ADR siblings. Its identity is `review-closeout`; placement follows the existing model-directory convention, not a new runtime component boundary.
 
 ## Context and Scope
 
 | Responsibility | Owner | Boundary |
 | --- | --- | --- |
 | Shared assessment and closeout policy | Review and Closeout | Defines obligations and limits, not storage or activity selection |
-| Stage selection, author/correction allocation, allowed continuation, model-document convention | Workflow and route | Apply assessment results without manufacturing them |
+| Stage selection, author/correction allocation and allowed continuation | Workflow and route | Apply assessment results without manufacturing them |
+| Model-document convention and structural mapping | Design | Owns the document contract; Workflow coordinates its use |
 | Subject-specific assessment methods | Specialized review skills | Preserve proposal sufficiency, design coherence, delivery proof allocation, and actual implementation inspection |
 | Final evidence/coherence assessment and explanation | Verify | Applies closeout conditions; cannot replace Code Review or approve its own correction |
 | Engineering subjects and corrections | Their authoring or implementation activity | Supplies changed work and proof, not independent approval |
@@ -77,7 +78,7 @@ Material incompleteness means that unavailable or unreliable evidence prevents a
 
 For a partially inspectable package, row 2 takes precedence over row 3 even when the inspectable portion contains a concrete defect. This deliberately distinguishes confidence in a bounded finding from coverage of the required overall assessment. The finding remains actionable to the extent its evidence and correction authority support it; an overall `inconclusive` judgment neither discards it nor authorizes work outside the existing scope. Optional improvements are explicitly labeled advisory and do not become required corrections merely because a reviewer prefers them.
 
-The rule introduces no judgment values, severity scoring, new gate, schema field, or CLI judgment selector. Structurally valid judgments and findings remain recordable independently of whether the reviewer can justify progression. Historical contracts keep their own selected judgment rules under RC-SR-16; this proposed shared rule must not silently reinterpret their earlier outcomes.
+The rule introduces no judgment values, severity scoring, new gate, schema field, or CLI judgment selector. Structurally valid judgments and findings remain recordable independently of whether the reviewer can justify progression. Historical records retain the meaning of their selected judgment rules under RC-SR-16; the shared rule must not silently reinterpret their earlier outcomes or reactivate their retired runtime procedures.
 
 ### Assessment scopes and consequences
 
@@ -105,7 +106,7 @@ Record-only classification is semantic, not a filename allowlist. Saving review 
 
 The existing [Record Format](../record-format/record-format.md#explicit-record-schema) represents review target, actual subjects, reviewer, contributors, independence basis, judgment, narrative, findings, and record-level applicability. Milestone and final assessments both remain target `code`; their existing record identity, subjects, and narrative make scope and consequence explicit. This design does not add a stored scope discriminator or assessment type. Existing Verify, evidence, decisions, and blocker structures carry the remaining conclusions.
 
-The [CLI](../cli/cli.md) already separates subject inspection, targeted review/evidence/blocker recording, explicit applicability, activity updates, conflict detection, and recovery. No command or validation-readiness change is needed for this policy extraction. Record Format retains the requirement to preserve origin in v2 and its explicitly weaker v1 compatibility guarantee. This policy does not fabricate missing historical origin. Mechanically valid but unjustified conclusions remain recordable and must not support downstream reliance.
+The [CLI](../cli/cli.md) already separates subject inspection, targeted review/evidence/blocker recording, explicit applicability, activity updates, conflict detection, and recovery. No command or validation-readiness change is needed for this policy extraction. [Record Format RF-SR-03/06](../record-format/record-format.md#requirements) requires origin preservation in v2 and retires all v1 runtime acceptance. Earlier v1 records remain archival bytes with their original, weaker provenance; this policy neither fabricates missing origin nor requires a compatibility reader. Mechanically valid but unjustified conclusions remain recordable and must not support downstream reliance.
 
 ## Runtime View
 
@@ -148,14 +149,14 @@ This model is a repository design surface. Runtime delivery remains the supporte
 
 ### Consumer ownership and adoption inventory
 
-The inventory identifies rule families and destinations for RC-SR-16/17. The clause-level map below settles policy ownership and contract treatment during Design. Delivery expands those settled decisions into exact edit locations and concrete checks; it does not choose replacement policy or historical applicability. Directory-level coverage is not evidence that every transitive resource was reconciled. This authoring step changes only the two model documents; it does not activate the consumer refactor.
+The inventory identifies rule families and destinations for RC-SR-16/17. The clause-level map below settles policy ownership and contract treatment during Design. Delivery expands those settled decisions into exact edit locations and concrete checks; it does not choose replacement policy or historical applicability. Directory-level coverage is not evidence that every transitive resource was reconciled. The original authoring step selected two model documents; that historical scope is not a statement of current implementation status. This inventory preserves the source-to-owner decisions; the registered reviews and delivery evidence establish their adoption for a selected project.
 
 | Existing source and rule area | Selected policy destination | Retained consumer responsibility and required alignment |
 | --- | --- | --- |
 | [Workflow](../workflow/workflow.md), WF-SR-03 and independence prose | RC-SR-01–04 | Workflow references the assessment policy and preserves its old ID as a traceability entry |
 | Workflow WF-SR-04, WF-SR-09, WF-SR-14 and applicability/reliance prose | RC-SR-05–07, RC-SR-13–15 | Workflow retains correction activity allocation and context selection, referencing the owned conditions |
 | Workflow WF-SR-05/06/13 and concern responsibilities | RC-SR-08–10, RC-SR-14 | Workflow retains recording access and reopening coordination; Record Format retains representation/origin preservation |
-| Workflow WF-SR-08 exact Design Review basis | RC-SR-01/02/05/10 | Workflow retains requirement identity, replacement mapping, and model convention |
+| Workflow WF-SR-08 exact Design Review basis | RC-SR-01/02/05/10 | Workflow retains requirement identity and coordination; Design owns the model convention and its replacement mapping |
 | [Proposal Review](../../../skills/proposal-review/SKILL.md), Core review contract, status, independence, isolation and recording; matching conditional gates, recording reference, result and finding assets | RC-SR-01–10, RC-SR-16–18 | Keep challenge/goals/scope/feasibility/vision judgment, scope preservation and conditional gate methods; align common conclusions without weakening them |
 | [Design Review](../../../skills/design-review/SKILL.md), Review contract, Findings and ownership, isolation/settlement; matching recording reference and assets | RC-SR-01–10, RC-SR-16–18 | Keep architecture/specification or model-package coherence, boundary reasoning, compatibility classification, and cross-member finding attribution |
 | [Delivery Review](../../../skills/delivery-review/SKILL.md), Review contract and Findings and ownership; matching recording reference and assets | RC-SR-01–10, RC-SR-12, RC-SR-15–18 | Keep sequencing and requirement-to-proof adequacy; explicitly check the final-review checkpoint separately from integrated validation groups |
@@ -172,7 +173,7 @@ The inventory identifies rule families and destinations for RC-SR-16/17. The cla
 
 This is the Design-owned relocation map required by RC-SR-16. Source sections and distinguishing clauses identify obligations, not entire files to replace. Source paths under `skills/` are canonical; matching installed copies are not additional owners. A row listing multiple sources applies the same disposition to the identified common clause in each, not to all surrounding text. The family inventory above is a consumer index only; this table owns the extraction decisions.
 
-Contract treatment is explicit: **current extraction** applies to the proposed shared policy upon adoption; **retained specialist** keeps the named assessment method while its judgment/recording uses the shared policy; **historical only** preserves the selected historical contract without importing its stored shapes or eligibility engine into v2; **retained dependency** leaves coordination or storage with its existing owner. Historical records and existing approvals are never rewritten by these mappings. References to requirement ranges denote the named destination requirements, not permission to postpone the individual source decision.
+Source names and section labels in this map identify the original extraction inputs, including retired manuals and procedures; they are not a current package inventory. Contract treatment is explicit: **current extraction** identifies shared policy applied to explicitly adopted work; **retained specialist** keeps the named assessment method while its judgment/recording uses the shared policy; **historical only** preserves the selected historical contract without importing its stored shapes or eligibility engine into v2; **retained dependency** leaves coordination or storage with its existing owner. Historical records and existing approvals are never rewritten by these mappings. References to requirement ranges denote the named destination requirements, not permission to postpone the individual source decision.
 
 | Source clause or stable identity | Contract treatment and exact destination | Retained meaning and consumer action |
 | --- | --- | --- |
@@ -214,23 +215,23 @@ Contract treatment is explicit: **current extraction** applies to the proposed s
 | Verify, final-impact-analysis-v3 and branch-readiness-verification final-readiness prerequisites, composition and blocker aggregation | Retain impact/coherence assessment method under RC-SR-05/13/15; v3 identity/freshness and branch-ready machinery historical only | Assess all touched, authoritative, referenced and generated surfaces; unrelated baseline debt remains visible. Broader command execution follows applicable requirements, not mere file-touch counting |
 | Route, bounded-workflow-automation Authoring and review gates, Bounded correction, Promotion and pause; Code Review automated-review reference | Retained dependency: Workflow owns automation authority, budgets and routing; RC-SR-02/04/06/10/18 owns assessment conditions | Preserve independent review and stop limits; shared policy does not initiate an automated run or enlarge correction authority |
 | PR, governed-pr-readiness; CI maintenance and implement handoff: reliance on current review/Verify evidence | Current extraction: RC-SR-05–07/10–15/18; external authority retained by respective action owner | Preserve bounded CI repair only when decision basis remains applicable; substantive edits return to the owning assessment. PR/merge/publish are not created by a saved judgment |
-| CONSTITUTION Review rules; AGENTS Planning and workflow and Artifact lifecycle defaults; specs/rigorloop-workflow review/closeout requirements | Current shared assessment clauses map to RC-SR-01–18 by the specific obligations above; governance precedence and historical handlers retained | Adoption amendments reference this owner for scope, independence, disposition and closeout; retain source precedence, explicit authorization, historical settlement procedures and unrelated governance |
+| CONSTITUTION Review rules; AGENTS Planning and workflow and Artifact lifecycle defaults; specs/rigorloop-workflow review/closeout requirements | Current shared assessment clauses map to RC-SR-01–18 by the specific obligations above; governance precedence and historical procedure meaning retained without runtime handlers | Adoption amendments reference this owner for scope, independence, disposition and closeout; retain source precedence, explicit authorization, historical settlement procedures and unrelated governance |
 | specs/skill-contract normalized skill/claim boundaries; review/Verify result and finding assets; templates/compact review/evidence/Verify shapes | Split: RC-SR-01/03/04/08/13/17 owns meanings; specialist result presentation retained; historical stored shapes retained by their contract | Assets are application/presentation, not competing policy owners. V2 fields remain Record Format-owned; do not introduce template-only obligations or new judgment vocabularies |
 | CLI Context and Scope; Record Format Context and Scope and stored-layout introduction describing Workflow-owned semantics | Retained dependency: intentional Workflow-domain indirection through its ownership map | No file edit or extra review-package member selected; RC owns assessment, Workflow coordination, Record Format representation, CLI mechanics |
 
-The Workflow ID map supplies the remaining split clauses for WF-SR-01/04/08/09/14; WF-SR-02/07/10–12/15/16 retain their stated coordination, convention and interface duties. Specialist finding criteria listed above establish required corrections; RC-SR-03 alone decides their combined overall result for the adopted policy. No source-local unconditional status instruction can override that rule after adoption.
+The Workflow ID map supplies the remaining split clauses for WF-SR-01/04/08/09/14; WF-SR-02/07/10–12/15/16 retain coordination and interface duties, with the model convention delegated to Design. Specialist finding criteria listed above establish required corrections; RC-SR-03 alone decides their combined overall result for the adopted policy. No source-local unconditional status instruction can override that rule after adoption.
 
 Before consumer implementation, independent Design Review checks this map against the identified clauses and the complete two-model package. Delivery owns implementation sequencing, concrete file allocation and proof mechanics only. Discovery of another affected policy clause requires a Design map amendment and applicability reassessment; it is not an implicit delegation of policy decisions to Delivery.
 
 ### Historical applicability and adoption
 
-RC-SR-16 selects a policy extraction for explicitly adopted work. Historical `stage-owned-change-local-v3`, compact, and earlier contracts keep their own procedures, paths, vocabularies, review rounds where required, and exact approvals. Existing `explicit-recording-v1` roots remain v1; this design neither converts them nor claims the v2 origin guarantee for them. A new root, when separately selected, follows the existing primary v2 creation contract. Model validation alone adopts none of these formats.
+RC-SR-16 preserves historical truth for explicitly adopted work. Historical `stage-owned-change-local-v3`, compact and `explicit-recording-v1` records keep their original bytes, paths, vocabularies, procedural context and exact approvals as archives. They cannot be created, inspected, validated, mutated, resumed or recovered through the current runtime. [Record Format RF-SR-06](../record-format/record-format.md#compatibility-and-adoption) owns that retirement; [CLI](../cli/cli.md#requirements) owns safe rejection and current-store discovery. Current creation and recording use v2. Preservation does not convert old records, infer missing origin or adopt a customer project.
 
-The historical Code Review `clean-with-notes` vocabulary and the explicit-recording `approved` vocabulary are contract-specific expressions, not a migration instruction. Existing settled records remain exact evidence of their original subjects and policy. The proposed WF-to-RC references below are prospective ownership mappings; consumers of an earlier reviewed Workflow revision retain that revision's meaning until an explicit applicability/adoption decision.
+The historical Code Review `clean-with-notes` vocabulary and the explicit-recording `approved` vocabulary are contract-specific expressions, not a migration instruction. Existing settled records remain exact evidence of their original subjects and policy. The WF-to-RC mapping preserves the original transfer of assessment policy. An earlier reviewed Workflow revision remains evidence of its exact subjects; it does not override current adopted owners or supply current runtime authority.
 
 Before activation, Design Review must approve the two-model ownership package and its exact revisions. Delivery must implement the clause-level ownership decisions below across their transitive consumers, account for each with a reviewed diff or justified unaffected disposition, allocate verification for every RC requirement and scenario, and preserve separately owned historical corrections. Any newly discovered unmapped normative clause returns to Design before dependent implementation; Delivery cannot resolve its policy ownership by omission or convenience. A required consumer cannot be silently deferred beyond adoption. Any discovered stored-interface gap returns to its owning Design model before dependent implementation; it is not permission to expand this extraction opportunistically.
 
-Rollback before adoption restores the previous coherent guidance set without rewriting records. After adoption, retain compatible readers and truthful applicability; do not restore older policy in a way that pretends a newer approval was made under it. Stop affected continuation and fix forward, or obtain a separately authorized compatibility change. No migration or new recovery mechanism is designed here.
+Rollback before adoption restores the previous coherent guidance set without rewriting records. After adoption, preserve archival records and truthful applicability under the current v2-only runtime; rollback of policy does not authorize restoring a retired reader or pretending a newer approval was made under older policy. Stop affected continuation and fix forward, or obtain a separately authorized compatibility change. No migration or new recovery mechanism is designed here.
 
 ## Crosscutting Concepts
 
@@ -242,7 +243,7 @@ The records need enough rationale for a later actor to understand a judgment and
 
 ### Boundary scan and acceptance scenarios
 
-These rows follow the [Workflow-owned model validation mapping](../workflow/workflow.md#model-validation-and-proof-mapping). All eight dimensions apply. Delivery allocates concrete checks and evidence; these are required outcomes, not proof that implementation exists.
+These rows follow the [Design-owned model validation mapping](../design/design.md#model-document-and-structural-contract). All eight dimensions apply. Delivery allocates concrete checks and evidence; these are required outcomes, not proof that implementation exists.
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
@@ -252,7 +253,7 @@ These rows follow the [Workflow-owned model validation mapping](../workflow/work
 | Composition/path | RC-SR-01, RC-SR-10, RC-SR-11, RC-SR-12, RC-SR-17 | All specialist paths and plan/route/Verify consumers agree on whole-change closeout; installed selective guidance works without internal model files; advisory scope does not acquire a full lifecycle |
 | Temporal/retry | RC-SR-05, RC-SR-06, RC-SR-07, RC-SR-11, RC-SR-15 | A post-review engineering edit requires reassessment; a bookkeeping-only save does not automatically invalidate approval; unchanged code with new failed proof cannot retain unjustified reliance |
 | Failure/recovery | RC-SR-04, RC-SR-08, RC-SR-09, RC-SR-14, RC-SR-18 | Failed recording or recovery-required state blocks reliance without destroying supported findings; Verify's concern survives a later reviewer approval until its owner assesses disposition |
-| Compatibility/migration | RC-SR-03, RC-SR-16, RC-SR-17 | Historical IDs, vocabularies, subjects, and procedures retain their meaning; consumers distinguish proposed replacement ownership from adoption; no v1-to-v2 conversion is inferred |
+| Compatibility/migration | RC-SR-03, RC-SR-16, RC-SR-17 | Historical IDs, vocabularies, subjects and procedural context remain archival; consumers use adopted current owners without restoring retired runtime support; no v1-to-v2 conversion or inferred origin |
 | External/environment | RC-SR-02, RC-SR-15, RC-SR-17, RC-SR-18 | Review and completion basis is understandable without Git/PR/network history; missing required provenance or changed proof environment triggers a bounded stop or new evidence rather than guessed validity |
 
 Material combined hazards include overlapping decision impediments, incomplete assessment basis and actionable defects (RC-SR-03/04); final-review correction plus a changed integrated subject (RC-SR-06/10/11); record-only revision plus newly contradictory proof (RC-SR-05/07/15); concurrent model changes plus historical approval (RC-SR-05/06/16); Verify-owned blocker plus a later clean reviewer judgment (RC-SR-08/09/14); and a single-milestone plan plus omitted closeout checkpoint (RC-SR-11/12). These require composed proof, not only isolated happy-path checks. No Cartesian scenario inventory is required.
@@ -287,7 +288,7 @@ No separate ADR is needed: these decisions and their alternatives are part of th
 
 The main risk is extraction in name only: leaving independent normative copies in Workflow, templates, or shared skill text. The ownership inventory and exact consumer adoption review address that risk. A second risk is treating bookkeeping classification as blanket permission to ignore new evidence; RC-SR-07 requires assessment of actual semantic effect. Final-review cost remains deliberate even for small changes.
 
-The proposal's motivating delivery-plan omission was not identified by path and remains reported context; this design does not claim to repair that plan. The inspected canonical obligations independently justify the selected policy. The broad transitive resource inventory still requires Delivery allocation and implementation evidence before adoption. No numerical savings, runtime change, or historical lifecycle settlement is claimed.
+The proposal's motivating delivery-plan omission was not identified by path and remains reported context; this design does not claim to repair that plan. The inspected canonical obligations independently justify the selected policy. The original extraction required Delivery allocation and implementation evidence for the transitive resource inventory; current adoption and assessment evidence is held in the owning records, not inferred from this historical drafting statement. No numerical savings, runtime change, or historical lifecycle settlement is claimed.
 
 ## Glossary
 
@@ -295,14 +296,16 @@ Engineering subject: the actual delivered artifact or relevant governing/proof i
 
 ## Drafting basis and authority
 
-The user authorized starting model design after independent Proposal Review approved the exact proposal. The authoring package is this new model and the affected Workflow revision. Record Format and CLI are retained dependencies, not revised package members. The user subsequently selected `rigorloop-records-v2` for this initiative. Its owning record is [change.json](../../changes/2026-09-07-unify-review-closeout-policy/change.json); that record owns current activity and references. The v2 proposal review is the current direction assessment; the user authorized removal of this initiative's superseded advisory review files. Selecting v2 storage establishes no Design Review approval, Delivery plan, implementation, activation of this policy, or external handoff. Retirement of v1 is future work, not part of this change.
+**Historical extraction basis.** The user authorized starting model design after independent Proposal Review approved the exact proposal. The authoring package comprised this model and the affected Workflow revision. Record Format and CLI were retained dependencies, not revised package members. The user subsequently selected `rigorloop-records-v2` for this initiative. The original extraction record is [change.json](../../changes/2026-09-07-unify-review-closeout-policy/change.json); its recorded subjects and judgments retain their original meaning. That v2 proposal review was the direction assessment for the extraction; the user authorized removal of this initiative's superseded advisory review files. Selecting v2 storage establishes no Design Review approval, Delivery plan, implementation, activation of this policy, or external handoff. V1 retirement was outside that extraction. The later [Record Format retirement decision](../record-format/record-format.md#compatibility-and-adoption) supersedes its v1-reader retention assumption. This historical paragraph grants no present compatibility support.
+
+The [scoped current-authority clarification](../../changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json) reconciles this consumer with the current Record Format and Design owners. It preserves RC-SR-01–18, RC-DEC-01–05 and the original reviews; no old approval is retargeted to this revision.
 
 No-map rationale: direct inspection of the named current models and canonical consumer skills supplies the policy and boundary basis; the older project map is not used to infer current ownership or lifecycle state. Model-format authoring follows the user-authorized combined model convention, rather than emitting separate architecture/specification/ADR scaffolds.
 
 ## Next artifacts
 
-Independent Design Review of this model and the affected Workflow revision, including the ownership mappings and retained Record Format/CLI boundaries. Delivery planning follows an approved exact Design package and separately authorized continuation.
+Historical planning intent for the original extraction: independent Design Review of this model and the affected Workflow revision, including the ownership mappings and retained Record Format/CLI boundaries, followed by Delivery planning under approved authority. Current activity and required reassessment are recorded in the owning change, not selected by this paragraph.
 
 ## Follow-on artifacts
 
-None yet.
+The original extraction and scoped clarification records linked above retain their actual stage-owned follow-ons and evidence. This section does not reinterpret earlier approvals as assessments of the revised model.
