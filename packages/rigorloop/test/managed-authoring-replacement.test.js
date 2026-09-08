@@ -1,8 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, readdirSync, symlinkSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, symlinkSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
 import { captureManagedBasis, replaceManagedAuthoring } from "../dist/lib/managed-authoring-replacement.js";
 
 function fixture(t) {
@@ -25,7 +27,7 @@ function fixture(t) {
 test("authorized replacement publishes both roots and state, preserving neighbors", t => {
   const f = fixture(t);
   let verified = false;
-  replaceManagedAuthoring({ ...f, verifyInstalled: () => {
+  const result = replaceManagedAuthoring({ ...f, verifyInstalled: () => {
     assert.equal(readFileSync(join(f.projectRoot, "rigorloop.lock"), "utf8"), "original lock\n");
     for (const root of f.roots) assert.equal(readFileSync(join(f.projectRoot, root, "design.md"), "utf8"), "new author\n");
     verified = true;
@@ -33,7 +35,7 @@ test("authorized replacement publishes both roots and state, preserving neighbor
   assert.ok(verified);
   assert.equal(readFileSync(join(f.projectRoot, "rigorloop.lock"), "utf8"), "new lock\n");
   assert.equal(readFileSync(join(f.projectRoot, "unrelated.txt"), "utf8"), "neighbor\n");
-  assert.ok(!readdirSync(f.projectRoot).some(p => p.startsWith(".rigorloop-authoring-")));
+  assert.equal(readFileSync(join(result.backupPath, "old", "0", "spec.md"), "utf8"), "original skill\n");
 });
 
 for (const point of ["staged", "saved:.opencode/skills", "published:.opencode/skills", "saved:.opencode/commands", "published:.opencode/commands", "verified", "saved:rigorloop.yaml", "published:rigorloop.yaml", "saved:rigorloop.lock", "published:rigorloop.lock"]) {
@@ -120,4 +122,120 @@ test("invalid or overlapping scope and escaped candidate paths fail closed", t =
     assert.deepEqual(captureManagedBasis(f), f.basis);
   }
   assert.throws(() => replaceManagedAuthoring({ ...f, state: { ...f.state, unknown_value: Buffer.from("bad") } }));
+});
+
+function interleave(methods, inject, run) {
+  const originals = Object.fromEntries(methods.map(name => [name, fs[name]]));
+  try {
+    for (const name of methods) fs[name] = (...args) => {
+      inject(name, args, originals);
+      return originals[name](...args);
+    };
+    syncBuiltinESMExports();
+    run();
+  } finally {
+    Object.assign(fs, originals);
+    syncBuiltinESMExports();
+  }
+}
+
+for (const restoring of [false, true]) {
+  test(`a writer after the final check cannot be overwritten during ${restoring ? "rollback" : "publication"}`, t => {
+    const f = fixture(t);
+    const target = join(f.projectRoot, "rigorloop.lock");
+    let injected = false;
+    interleave(["renameSync", "linkSync"], (_name, [from, to]) => {
+      if (!injected && resolve(to) === target && String(from).includes(restoring ? "/old/" : "/new/")) {
+        injected = true;
+        writeFileSync(target, "independent after-check write\n");
+      }
+    }, () => {
+      assert.throws(() => replaceManagedAuthoring({ ...f, checkpoint: phase => {
+        if (restoring && phase === "published:rigorloop.lock") throw new Error("force rollback");
+      }}), { code: "managed-authoring-recovery-required" });
+    });
+    assert.ok(injected);
+    assert.equal(readFileSync(target, "utf8"), "independent after-check write\n");
+  });
+}
+
+test("a directory created after the final check is not replaced even when empty", t => {
+  const f = fixture(t);
+  const target = join(f.projectRoot, f.roots[0]);
+  let injected = false;
+  interleave(["renameSync", "mkdirSync"], (name, args, originals) => {
+    if (!injected && resolve(name === "renameSync" ? args[1] : args[0]) === target) {
+      injected = true;
+      originals.mkdirSync(target, { mode: 0o700 });
+    }
+  }, () => assert.throws(() => replaceManagedAuthoring(f), { code: "managed-authoring-recovery-required" }));
+  assert.ok(injected);
+  assert.equal(fs.statSync(target).mode & 0o777, 0o700);
+});
+
+test("a late writer through an already open original descriptor keeps its bytes", t => {
+  const f = fixture(t);
+  const fd = fs.openSync(join(f.projectRoot, "rigorloop.lock"), "w");
+  fs.writeSync(fd, "original lock\n");
+  f.basis = captureManagedBasis(f);
+  try {
+    const result = replaceManagedAuthoring(f);
+    fs.writeSync(fd, "late independent write\n");
+    assert.match(readFileSync(join(result.backupPath, "old", "3"), "utf8"), /late independent write/);
+    assert.equal(readFileSync(join(f.projectRoot, "rigorloop.lock"), "utf8"), "new lock\n");
+  } finally { fs.closeSync(fd); }
+});
+
+for (const restoring of [false, true]) {
+  test(`ancestor substitution cannot redirect ${restoring ? "rollback" : "publication"}`, t => {
+    const f = fixture(t);
+    const root = join(f.projectRoot, f.roots[0]);
+    const neighbor = join(f.projectRoot, "neighbor");
+    mkdirSync(neighbor, { mode: 0o700 });
+    writeFileSync(join(neighbor, "unrelated.txt"), "keep");
+    let injected = false;
+    interleave(["linkSync"], (_name, [from, to]) => {
+      if (!injected && resolve(to) === join(root, restoring ? "spec.md" : "design.md") && String(from).includes(restoring ? "/old/" : "/new/")) {
+        injected = true;
+        fs.renameSync(root, `${root}-detached-by-writer`);
+        symlinkSync(neighbor, root);
+      }
+    }, () => assert.throws(() => replaceManagedAuthoring({ ...f, checkpoint: phase => {
+      if (restoring && phase === "published:.opencode/skills") throw new Error("force restoration");
+    }}), { code: "managed-authoring-recovery-required" }));
+    assert.ok(injected);
+    assert.deepEqual(fs.readdirSync(neighbor), ["unrelated.txt"]);
+    assert.equal(fs.statSync(neighbor).mode & 0o777, 0o700);
+    assert.equal(readFileSync(join(neighbor, "unrelated.txt"), "utf8"), "keep");
+  });
+}
+
+test("a substituted directory is never opened for chmod", t => {
+  const f = fixture(t);
+  const root = join(f.projectRoot, f.roots[0]);
+  const neighbor = join(f.projectRoot, "neighbor");
+  mkdirSync(neighbor, { mode: 0o700 });
+  let injected = false;
+  interleave(["openSync"], (_name, [path]) => {
+    if (!injected && resolve(path) === root) {
+      injected = true;
+      fs.rmdirSync(root);
+      symlinkSync(neighbor, root);
+    }
+  }, () => { try { replaceManagedAuthoring(f); } catch (error) { assert.equal(error.code, "managed-authoring-recovery-required"); } });
+  assert.equal(fs.statSync(neighbor).mode & 0o777, 0o700);
+});
+
+test("rollback restores directory modes and the caller's restrictive umask", t => {
+  const f = fixture(t);
+  fs.chmodSync(join(f.projectRoot, f.roots[0]), 0o775);
+  f.basis = captureManagedBasis(f);
+  const previous = process.umask(0o077);
+  try {
+    assert.throws(() => replaceManagedAuthoring({ ...f, checkpoint: phase => {
+      if (phase === "published:rigorloop.lock") throw new Error("mode restoration");
+    }}), /mode restoration/);
+    assert.deepEqual(captureManagedBasis(f), f.basis);
+    assert.equal(process.umask(), 0o077);
+  } finally { process.umask(previous); }
 });
