@@ -128,7 +128,7 @@ export function workflowContextHuman(r){
 }
 export function executeWorkflowContext(args,options={}){
  const parsed=parseArgs(args),r={schema_version:2,command:'workflow-context',status:'success',configuration:null,locations:{},selection:{requested_change:parsed.change},candidates:[],scope:{mode:parsed.change===null?'discovery':'explicit',inspected_directories:0,excluded_noncurrent:0,candidate_count:0,complete:true},errors:[]};
- const fail=(code,path=null)=>{r.status='rejected';r.scope.complete=false;r.errors.push(diagnostic(code,null,path));};
+ const fail=(code,path=null)=>{r.status='rejected';r.scope.complete=false;const error=diagnostic(code,null,path);if(!r.errors.some(e=>e.code===error.code&&e.path===error.path))r.errors.push(error);};
  const budget=()=>{if(Buffer.byteLength(JSON.stringify(r))+1>8*MIB)stop('limit-exceeded');};
  try{
   if(parsed.error)stop('invalid-input');
