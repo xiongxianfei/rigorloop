@@ -10,13 +10,13 @@ argument-hint: [branch, feature name, plan path, or PR request]
 
 ## Review and Closeout application
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
 
-This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
+Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
 
 Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
 
@@ -105,7 +105,7 @@ Report requested intent, operation, actual external mutation, actual PR state, r
 
 ## Review closeout
 
-Inspect `review-log.md`. `Closeout status: open`, `needs-decision`, or open findings block; `Closeout status: closed` requires final dispositions and evidence. Summarize `review-resolution.md` as counts by disposition and do not duplicate every detailed finding. A stage-owned non-approval outcome requires a same-stage later review round or explicit reviewer or owner closeout; `review-resolution.md` alone is not a silent substitute; no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
+Inspect registered reviews, findings, owned dispositions and blockers. Required unresolved corrections or necessary owner decisions prevent reliance on closeout. A later substantive revision requires the appropriate independent reassessment; a resolution note alone cannot substitute for review. Summarize material dispositions without duplicating every finding.
 
 Treat the plan and upstream artifacts as read-only.
 
@@ -120,7 +120,7 @@ Stop on unresolved target or authority, stale verification, unsafe branch relati
 
 ## Claims this skill must not make
 
-Do not claim implementation passed, review passed, tests passed, verification passed, CI passed, generated currency, branch readiness, or lifecycle completion without current owning evidence. This skill must not mutate `change.yaml`, workflow, artifact, plan, review, merge, release, or publication state.
+Do not claim implementation passed, review passed, tests passed, verification passed, CI passed, generated currency, branch readiness, or lifecycle completion without current owning evidence. This skill must not mutate `change.json`, workflow, artifact, plan, review, merge, release, or publication state.
 
 Progress means work that has happened so far. Readiness means the next stage that can happen. Closeout means the current artifact or stage satisfied its checklist. Done means final lifecycle state after required gates are complete. Readiness is not Done.
 

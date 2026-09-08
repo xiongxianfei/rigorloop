@@ -1567,6 +1567,17 @@ def validate_installed_skill_artifact_placement_contract(
     if review_path is None:
         return errors
 
+    # Current v2 recording uses its registry; legacy Markdown document fixtures
+    # below remain an independent placement grammar, never a stored-root reader.
+    if "## Explicit recording" in body and "rigorloop-records-v2" in body:
+        placement = _extract_markdown_section(body, "Artifact placement") or ""
+        current_path = f"docs/changes/<change-id>/reviews/{skill_name}.json"
+        if current_path not in placement or "review record" not in placement:
+            errors.append(f"{path}: current review placement requires its v2 path and review record command")
+        if not _has_isolated_advisory_carveout(placement):
+            errors.append(f"{path}: current review placement must preserve isolated advisory review")
+        return errors
+
     placement_source = body
     if skill_name == "test-spec-review":
         recording_reference = (
@@ -1625,7 +1636,7 @@ def validate_installed_skill_plan_surface_contract(
         return []
     errors: list[str] = []
     missing = [
-        surface for surface in INSTALLED_SKILL_PLAN_SURFACE_PATHS if surface not in body
+        surface for surface in (tuple(p.replace("change.yaml", "change.json") for p in INSTALLED_SKILL_PLAN_SURFACE_PATHS) if "## Explicit recording" in body else INSTALLED_SKILL_PLAN_SURFACE_PATHS) if surface not in body
     ]
     if missing:
         errors.append(
@@ -3333,7 +3344,7 @@ def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
     block = _extract_markdown_section(body, "Explicit recording")
     if block is None:
         return []
-    required = ("rigorloop-records-v2", "explicit-recording-v1", "rigorloop context", "subject inspect",
+    required = ("rigorloop-records-v2", "only supported runtime record format", "rigorloop context", "subject inspect",
                 "record_contract", "expected_revision", "targeted", "does not approve", "Do not migrate")
     errors = [f"{path}: explicit recording profile missing primary contract token: {token}"
               for token in required if token not in block]

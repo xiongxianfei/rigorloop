@@ -1,5 +1,9 @@
 # Bounded workflow automation
 
+## Stored-format retirement boundary
+
+The old persistent workflow automation adapters are unsupported. Before using the conditional methods below, establish a separately supported execution context that does not call a retired store, lifecycle engine or receipt writer. No v2 automation mapping is supplied by this skill. If the invocation depends on the old adapter, stop as unsupported before creating identity, authorization, receipts or any other effects. Independent review methods below remain usable only within their separately authorized scope; they grant no legacy continuation.
+
 ## Load condition
 
 Read this procedure for an explicit `$route auto: <argument>` command or a valid active or resumable automation run. `<argument>` is a supported target stage, `status`, or `off`.

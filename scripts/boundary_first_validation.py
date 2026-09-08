@@ -339,6 +339,23 @@ def _marker_issues(
         r"(?m)^`(docs/changes/[^/]+/change\.yaml)`\s*$"
     )
     owner_pointers = tuple(owner_pointer_pattern.finditer(owner))
+    # V2 ownership pointers are document placement, not stored eligibility.
+    # The record validator and independent reviewer assess the selected store
+    # and authority separately; never decode an archive to validate this form.
+    v2_pointers = tuple(re.finditer(
+        r"(?m)^`docs/changes/[A-Za-z0-9][A-Za-z0-9._-]*/change\.json`\s*$", owner,
+    ))
+    if v2_pointers:
+        if len(v2_pointers) != 1 or owner_pointers or len(owner_markers) != 1:
+            return [_issue("BFR-MARKER-PLACEMENT", path,
+                "v2 document marker requires one exact owning pointer",
+                "ambiguous-owner", "one v2 owner followed by one marker")]
+        preceding = owner[:owner_markers[0].start()].strip().splitlines()
+        if preceding and preceding[-1].strip() == v2_pointers[0].group(0).strip():
+            return []
+        return [_issue("BFR-MARKER-PLACEMENT", path,
+            "boundary contract marker must follow the v2 owning pointer",
+            "misplaced-marker", "after normalized v2 owning pointer")]
     stage_owned = False
     if len(owner_pointers) == 1:
         stage_owned_result, authority_issue = _stage_owned_marker_authority(
@@ -1784,6 +1801,12 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
             )
         )
         if issues:
+            return tuple(issues)
+        # V2 allocates proof in the reviewed delivery plan. Document validation
+        # checks the feature grammar only; it must not recreate a retired
+        # test-spec requirement or derive delivery approval from an owner path.
+        if not is_test_spec and re.search(r"(?m)^`docs/changes/[A-Za-z0-9][A-Za-z0-9._-]*/change\.json`\s*$",
+                     _section(live_feature, "Owning change record")):
             return tuple(issues)
         if not proof_path.is_file():
             issues.append(

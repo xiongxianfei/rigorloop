@@ -261,6 +261,29 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
         self.assertEqual(issues[0].code, "BFR-MARKER-AUTHORITY")
         self.assertIn("unsupported", issues[0].message)
 
+    def test_v2_marker_placement_is_document_structure_not_record_authority(self):
+        from unittest.mock import patch
+        document = valid_feature().replace(
+            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
+            "## Owning change record\n\n`docs/changes/example/change.json`\n\nboundary_contract: boundary-first-v1",
+        )
+        with patch.object(Path, "read_text", side_effect=AssertionError("document validation must not inspect a store")):
+            self.assertEqual(validate_feature_record(document, "specs/example.md", root=Path(".")), ())
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "specs").mkdir()
+            (root / "specs/example.md").write_text(document)
+            activation = json.loads((ROOT / "specs/boundary-first-activation.yaml").read_text())
+            activation["state"] = "active"
+            (root / "specs/boundary-first-activation.yaml").write_text(json.dumps(activation))
+            # Delivery Review owns v2 plan allocation; this feature-authoring
+            # check must not require an obsolete standalone test-spec file.
+            self.assertEqual(validate_changed_spec(root, "specs/example.md"), ())
+            (root / "specs/example.test.md").write_text("malformed explicit proof map")
+            self.assertTrue(validate_changed_spec(root, "specs/example.test.md"))
+        malformed = document.replace("docs/changes/example/change.json", "docs/changes/../change.json")
+        self.assertTrue(validate_feature_record(malformed, "specs/example.md", root=Path(".")))
+
     def test_marker_must_follow_lifecycle_value_inside_status(self) -> None:
         misplaced = valid_feature().replace(
             "approved\nboundary_contract: boundary-first-v1",

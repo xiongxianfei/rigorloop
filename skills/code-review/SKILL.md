@@ -11,7 +11,7 @@ argument-hint: [branch, diff, plan path, spec path, or feature name]
 
 ## Test criteria application
 
-When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
 
 ## Quick operating guide
 
@@ -31,19 +31,19 @@ Use broader-section or full-file reading when bounded evidence is insufficient.
 
 ## Review and Closeout application
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
 
-This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
+Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
 
 Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
 
 Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
 
-Independently inspect the actual implementation, approved models, delivery allocation and current proof. Prefer a separate reviewer or fresh session. Use review record for the complete assessment and finding add/set for explicit concerns and dispositions; v2 origin retains enough basis for later actors. Review findings and change-level blockers have distinct reporters. Approval cannot close another actor’s blocker. Final Code Review must explicitly assess the integrated change.
+Independently inspect the actual implementation, approved models, delivery allocation and current proof. Prefer a separate reviewer or fresh session. Use review record for the complete assessment as a detailed review record and finding add/set for explicit concerns and dispositions; v2 origin retains enough basis for later actors. Review findings and change-level blockers have distinct reporters. Approval cannot close another actor’s blocker. Final Code Review must explicitly assess the integrated change.
 
 Review in independent-review mode with fresh eyes. Determine whether the actual implementation satisfies the approved contract safely; passing tests or plausible code alone is not sufficient.
 
@@ -63,10 +63,6 @@ Do not use for proposal, spec, architecture, plan, final verification, or PR app
 
 ## Workflow role
 
-### Compact current-state contract
-
-For `compact-current-state-v1`, consume the bounded CLI projection, exact implementation subject, required contract paths, and current evidence. Update one stable current review record for the milestone or final-code target through a transient CLI operation. Keep open findings directly in that record and retain only continuing material constraints in `material-decisions.md`. Review the exact returned correction before clearing it; explicit return means review-ready, not approved. Do not require Git or PR state, and do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or route receipts.
-
 - role_name: code-review
 - stage: review
 - upstream: implementation diff, review-requested milestone, governing artifacts, tests, and validation evidence
@@ -83,15 +79,15 @@ Read the target, tracked authority, current milestone, tests, and relevant valid
 
 ## Review authority and evidence
 
-Inspect the actual changed files, staged or unstaged diff, commit range, PR diff, or other explicit target. Read the approved spec, stable plan milestone, relevant architecture or ADR, related tests, named validation evidence, and a matching test spec only for manifest-bound v1 continuation. For planned work, read `change.yaml` for current milestone and handoff state and use the plan only for stable intent. Under registered historical contracts, use `review-resolution.md` for prior-finding disposition; under the compact contract, use stable current reviews and material decisions.
+For mixed-evidence assessments, apply the packaged judgment rule: retain supported findings while exposing missing or contradictory assessment basis.
+
+Inspect the actual changed files, staged or unstaged diff, commit range, PR diff, or other explicit target. Read the approved spec, stable plan milestone, relevant architecture or ADR, related tests, named validation evidence,. For planned work, read `change.json` for current milestone and handoff state and use the plan only for stable intent. Use registered findings, their dispositions and material decisions for prior concerns.
 
 For work governed by consolidated gates, require the current approved Design Review ID and its exact member map plus the current approved Delivery Review ID and its exact member map. Treat review-required, partial, stale, or historical artifact-review evidence as non-authorizing. These package inputs strengthen implementation review but do not merge Code Review with Design Review, Delivery Review, or Verify.
 
 Use the smallest sufficient evidence set. Begin with the diff, spec, test spec, milestone, tests, and validation. Add architecture, governance, related code, generated output, or history only when the reviewed behavior or an evidence conflict requires it. Record why substantive evidence outside that set was needed. Full-file reading is appropriate when the whole file is the target or bounded evidence is incomplete, contradictory, or context-sensitive.
 
 Apply the adopted assessment application for actual nonauthor independence. A separate session is useful only with concrete contributor separation. Historical assumption-reset fallback is available only when the selected historical contract expressly permits it; it cannot establish adopted independent approval.
-
-For registered historical contracts, tracked governing branch state is required for a clean branch-scoped conclusion. Local-only authority may provide context but cannot support that conclusion. Missing authority does not suppress an independently supported `changes-requested` or `blocked` finding; use `inconclusive` only when the gap prevents both an actionable finding and a clean result. This is the mixed-evidence rule. Compact review instead binds the explicit subject and complete-set identities supplied by the bounded projection and works without Git.
 
 ## Generated Markdown readability
 
@@ -137,18 +133,13 @@ For a changed published skill, assess description and trigger clarity, ownership
 
 ## Status, severity, and material findings
 
-For historical contracts using the following vocabulary, use exactly one first-pass status:
+Use one first-pass status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Apply the packaged assessment policy for their meaning and combined conditions. An isolated advisory conclusion does not claim governed gate approval or continuation authority.
 
-- `clean-with-notes`: no unresolved accepted fix is required.
-- `changes-requested`: one or more evidenced, in-scope, safely actionable findings exist.
-- `blocked`: safe continuation requires a product, spec, architecture, ADR, ownership, or scope decision.
-- `inconclusive`: missing evidence prevents both a credible clean result and an actionable finding.
-
-Use severity `blocker`, `major`, `minor`, `nit`, or `positive`. A material finding is a required change or decision, not a quota. Every material finding must include Finding ID, Severity, Location, evidence, required outcome, and a safe resolution path or `needs-decision` rationale naming the decision and owner. Under historical judgment rules, clearly fixable in-scope issues use `changes-requested`, not `blocked`. Adopted assessments use the shared combined-condition rule and preserve findings under blocked or inconclusive judgments.
+Use severity `blocker`, `major`, `minor`, `nit`, or `positive`. A material finding is a required change or decision, not a quota. Every material finding must include Finding ID, Severity, Location, evidence, required outcome, and a safe resolution path or `needs-decision` rationale naming the decision and owner. Apply the shared combined-condition rule and preserve supported findings under blocked or inconclusive judgments.
 
 ## Isolation and Recording
 
-The following recording and settlement procedure applies to historical profiles only. Adopted Review and Closeout assessments use the packaged application and their selected recording interface.
+The following recording procedure applies the selected v2 interface. Use packaged assessment and reliance guidance for the judgment and its consequences.
 
 Isolation governs handoff. Recording follows formal review triggers.
 
@@ -164,10 +155,6 @@ Use:
 - `Recording status: blocked` when the required review evidence could not be created or updated.
 
 `not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
-
-For `compact-current-state-v1`, update the target's stable current review record through the CLI. A clean review replaces its current judgment at the stable path. Material findings remain directly accessible in that record; only resolved decisions that continue to constrain the change belong in `material-decisions.md`. Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.
-
-For registered historical contracts, create the lightweight clean receipt or detailed review record required by that contract, index it in `review-log.md`, and create `review-resolution.md` only when triggered.
 
 Material findings must include:
 
@@ -223,12 +210,12 @@ Progress means work that has happened so far. Readiness means the next stage tha
 
 For adopted policy, identify milestone versus final whole-change scope in the judgment. Return applicable approval to route for the next implementation milestone or the distinct final-review/Verify checkpoint. Supported findings retain their correction owner even when the overall result is inconclusive. The following bullets retain historical vocabulary and routing only.
 
-- `clean-with-notes` in a workflow-managed review follows the current plan and milestone state when no stop applies.
+- `approved` in a workflow-managed review follows the current plan and milestone state when no stop applies.
 - `changes-requested` routes to review-resolution and rereview on the same milestone.
 - `blocked` stops for the named decision or constraint.
 - `inconclusive` stops for missing evidence and does not enter resolution.
 - A clean non-final milestone closes only that milestone and hands off to the next in-scope implementation milestone.
-- A clean final milestone may enter final closeout only when no implementation milestone or required resolution remains open. Final closeout always requires final holistic Code Review and any triggered CI maintenance, then current v3 routes to `verify` and PR; only successful Verify produces the final explanation. Historical contracts grant no current route. Milestone review never substitutes for final holistic review or jumps directly to final verification.
+- A clean final milestone may enter final closeout only when no implementation milestone or required resolution remains open. Final closeout always requires final holistic Code Review and any triggered CI maintenance, then route to `verify` and optional PR; only successful Verify produces the final explanation. Historical contracts grant no current route. Milestone review never substitutes for final holistic review or jumps directly to final verification.
 
 The review output must name the reviewed milestone, native status, milestone closeout, required resolution, remaining milestones, next stage, and final closeout readiness with reason. Code-review writes that evidence; workflow consumes it and changes lifecycle state.
 
@@ -281,7 +268,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 - READ `references/requirement-to-delivery-model.md` when tracing an implementation slice through allocated work to governing requirements and direction.
 - READ `references/boundary-first-method-v1.md` when approved diff-related boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for review.
 - READ `references/workflow-managed-automated-review.md` only when the invocation is a formally armed workflow-managed automated review or correction loop.
-- COPY `assets/material-finding.md` once per material finding. Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed. Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`. Do not emit unfilled placeholders.
+- COPY `assets/material-finding.md` once per material finding. Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed. Confirm the literal `Finding ID:` line in the presentation aid; preserve exact finding identity and origin when recording it. Do not emit unfilled placeholders.
 - COPY `assets/review-result-skeleton.md` when producing the review result block. Fill: status, artifacts changed, blockers, next stage, review status, material findings, recording fields, review paths, milestone fields, required review-resolution, finding IDs, and verify-readiness field. Do not emit unfilled placeholders.
 
 ## Output skeleton
@@ -297,7 +284,7 @@ Do not emit unfilled placeholders.
 
 Use the two mapped assets as the sole copy-and-fill structures. Report review inputs, actual-diff summary, findings or no-finding rationale, all checklist results, direct-proof gaps, residual risks, recording paths, milestone handoff, and stop reason when applicable. The result format comes from `assets/review-result-skeleton.md`; each material finding comes from `assets/material-finding.md`. Do not duplicate either full template inline and do not emit unfilled placeholders.
 
-The result identifies Review record, Review log, and Review resolution paths and uses the recording status defined above.
+The result identifies the review record and finding references and reports the recording outcome separately from the judgment.
 
 ## Outputs
 

@@ -1,29 +1,17 @@
-# Proposal-review recording and settlement
+# Proposal Review recording
 
-This procedure retains its named historical recording/lifecycle contract. For explicitly adopted Review and Closeout work, the parent skill selects the packaged assessment/reliance application and primary recording interface; historical commands, judgment rules and output shapes below do not override that selection.
+Load for a durable or formal review. The parent skill and packaged assessment guidance own substantive judgment, independence and findings. This reference applies v2 recording and preserves isolated advisory use.
 
-Load exactly when `durable_recording_context` is true. The parent owns judgment, modes, claims, stops, and handoff; this reference owns recording and formal CLI settlement.
+## Exact assessment basis
 
-## Recording
+Read the complete proposal and direction basis. Select the exact change through scoped `rigorloop context`; obtain complete subjects and mechanical identities through `subject inspect`. An omitted field is not evidence of absence. Resolve ambiguous placement or subject identity before claiming durable recording, while retaining supported findings.
 
-Valid modes are `advisory-durable/manual`, `formal-lifecycle/manual`, and `formal-lifecycle/workflow-managed-automated`; every other automated pair blocks. Resolve formal identity from the active owning root, reviewed metadata, explicit change ID, then a minimal recording-only fallback. Ambiguity, collision, unsafe path, or write failure reports `Recording status: blocked` and preserves findings in the result.
+## Record the judgment
 
-A generated `YYYY-MM-DD-<subject>-review-recording` fallback grants no settlement authority. Review recording and settlement must not advance workflow.
+Use `review record` with the complete assessment, reviewer attribution, exact subject basis, one overall judgment, rationale and explicit applicability. Use `finding add` or `finding set` for supported findings and owned dispositions. Preserve unresolved findings and their immutable origin. Supply the current contract, expected revision and exact reads. Use a targeted batch only for related explicit updates; no complete-file reconstruction or legacy settlement command is required.
 
-Clean formal review writes one receipt and `review-log.md` entry without empty resolution. Material or blocking outcomes write a detailed record, synchronize the log, and create `review-resolution.md` only when required. Use the mapped result asset and one finding asset per finding. An identical retry reconciles once; conflicting review-ID reuse stops unchanged. Advisory recording creates no governed settlement or continuation authority.
+Keep substantive judgment, recording outcome, applicability and continuation distinct. A successful save grants no approval or permission. Blocked and inconclusive assessments retain supported findings and remain recordable. Conflict or changed subjects require rereading and reassessment before reliance; never retarget an old approval to a revised subject.
 
-## Formal lifecycle settlement
+## Isolation and handoff
 
-After writing the review and log, run `rigorloop lifecycle context proposal-review --change <change-id> --format json`. Submit `record-review` with its lifecycle revision, exact proposal ID, review path, and `stage_authority: proposal-review`; refresh context and submit `settle-artifact` for the same target and authority. The CLI validates identity, round, findings, freshness, and authority and derives the result.
-
-Never edit settlement fields. Preserve a successfully recorded review when settlement blocks. `already-recorded` is identical success. Settlement never advances routing; route owns continuation.
-
-## Workflow-managed automated review
-
-For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any automation-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
-
-Use neutral packet and ordered receipts; corrections require separate authority, named surfaces, named proof, and rereview. Pause on owner decisions, scope expansion, stale identity, new finding classes, non-shrinking correction, or exhausted bounds. Return control to `route` without redefining settlement or continuation.
-
-## Resource failure
-
-Missing, unreadable, contradictory, escaped, or mixed-version resources block their dependent write or claim. Preserve findings and never reconstruct procedure.
+Write only this review's evidence and authorized assessment applicability. Do not edit reviewed content, another actor's evidence, activity or work state. Corrections return to the owning author and require appropriate independent reassessment. A direct review invocation stops after its requested assessment and recording. Governed execution returns to route for continuation. Advisory review without lifecycle artifacts remains available and makes no formal recording or gate claim.

@@ -4,7 +4,7 @@
 <!-- Maintained alongside: skills/proposal-review/SKILL.md -->
 
 
-<!-- Presentation only: adopted Review and Closeout uses exact subjects, scope and claim limits from the packaged application. Historical fields below remain contract-selected; do not serialize them into v2 by copying this asset. -->
+<!-- Presentation only: adopted Review and Closeout uses exact subjects, scope and claim limits from the packaged application. Use the existing v2 schema and targeted commands for storage; this asset is presentation only. -->
 
 ## Result
 
@@ -47,15 +47,11 @@
 - Record path: <path or blocked>
 - Finding-record paths: <paths or none>
 
-## Formal-settlement group
+## Formal-review group
 
 - Review ID: <review ID>
 - Review record: <path>
-- Review log: <path>
-- Review resolution: <path or not-required>
-- Proposal settlement: <settlement>
 - Governed change identity: <change identity>
-- Formal next-stage eligibility: <eligibility>
 
 ## Automated-review group
 

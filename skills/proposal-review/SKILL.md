@@ -11,13 +11,13 @@ argument-hint: [proposal path, feature idea, or review focus]
 
 ## Review and Closeout application
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
 
-This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
+Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
 
 Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
 
@@ -30,10 +30,6 @@ Independently answer: **Does this proposal provide enough evidence for a respons
 Judge whether the proposal responsibly refines the incoming RR into an IR-level direction sufficient for Design.
 
 ## Workflow role
-
-### Compact current-state contract
-
-For `compact-current-state-v1`, consume the bounded CLI projection and the proposal path it names. Update the proposal target's stable current review record through a transient CLI operation. Keep every open finding directly in that record; retain a resolved rationale in `material-decisions.md` only when it continues to constrain the change. A finding returns to proposal refinement, while a clean exact rereview approves the proposal. Do not create a round-suffixed review, `review-log.md`, `review-resolution.md`, request file, or route receipt.
 
 - role_name: proposal-review
 - stage: review
@@ -72,7 +68,7 @@ Use exactly these resource assemblies:
 
 ## Review inputs and evidence
 
-Read the complete proposal and original intent first. Add only evidence the proposal relies on: standing authority, linked research or artifacts, workflow guidance, or current code. Use prior review evidence for prior findings, and read complete `change.yaml` only for formal settlement, reconstruction, dispute, or whole-record review.
+Read the complete proposal and original intent first. Add only evidence the proposal relies on: standing authority, linked research or artifacts, workflow guidance, or current code. Use prior review evidence for prior findings, and read complete `change.json` only for formal settlement, reconstruction, dispute, or whole-record review.
 
 ## Project-local evidence
 
@@ -96,7 +92,7 @@ Bounded discovery is not evidence expansion. Record a compact reason only when r
 
 ## Artifact placement
 
-For registered historical contracts inside the RigorLoop repository, formal proposal-review records use `docs/changes/<change-id>/reviews/proposal-review-r<n>.md` and `docs/changes/<change-id>/review-log.md`, with `docs/changes/<change-id>/review-resolution.md` only when triggered. Compact placement is governed by the stable current review contract above.
+Formal proposal-review records use the selected v2 registry, normally `docs/changes/<change-id>/reviews/proposal-review.json`. Record through `review record`; do not hand-build registration or infer placement from archives.
 
 If formal review lacks a change pack, create or request `docs/changes/<change-id>/` before claiming `Recording status: recorded`. For an isolated advisory review without a durable trigger, do not create lifecycle artifacts.
 
@@ -151,7 +147,7 @@ A direction that is too vague to approve is a material finding. Content that pre
 
 ## Isolation and Recording
 
-The following recording and settlement procedure applies to historical profiles only. Adopted Review and Closeout assessments use the packaged application and their selected recording interface.
+The following recording procedure applies the selected v2 interface. Use packaged assessment and reliance guidance for the judgment and its consequences.
 
 Isolation governs handoff. Recording follows formal review triggers.
 
@@ -167,10 +163,6 @@ Use:
 - `Recording status: blocked` when the required review evidence could not be created or updated.
 
 `not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
-
-For `compact-current-state-v1`, update the target's stable current review record through the CLI. A clean review replaces its current judgment at the stable path. Material findings remain directly accessible in that record; only resolved decisions that continue to constrain the change belong in `material-decisions.md`. Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.
-
-For registered historical contracts, create the lightweight clean receipt or detailed review record required by that contract, index it in `review-log.md`, and create `review-resolution.md` only when triggered.
 
 Material findings must include:
 
@@ -211,7 +203,7 @@ Do not claim spec completion, downstream execution, implementation review, verif
 - READ `references/requirement-to-delivery-model.md` when tracing an incoming need through proposal direction or downstream Design handoff.
 - READ `references/proposal-review-recording-and-settlement.md` exactly when `durable_recording_context` is true. Stop before dependent writes, settlement, automation, or recording claims if it is missing or unreadable.
 - READ `references/conditional-proposal-gates.md` exactly when one or more specialized predicates are true. Apply every true predicate and load the reference once.
-- COPY `assets/review-result-skeleton.md` for every proposal-review result. Fill: the core group and only the specialized-gate, durable-recording, formal-settlement, and automated-review groups selected by current classification. Do not emit unfilled placeholders.
+- COPY `assets/review-result-skeleton.md` for every proposal-review result. Fill: the core group and only the specialized-gate, durable-recording, formal-review, and automated-review groups selected by current classification. Do not emit unfilled placeholders.
 - COPY `assets/material-finding.md` once per material finding. Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale. Confirm the literal `Finding ID:` line exists before linking it. Do not emit unfilled placeholders.
 
 When a trigger is false, do not load its reference. Any missing, unreadable, escaped, contradictory, or mixed-version required resource stops dependent work. Do not reconstruct procedure or layout from memory.

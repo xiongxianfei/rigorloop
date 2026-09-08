@@ -11,17 +11,17 @@ argument-hint: [change ID, delivery package, or plan path]
 
 ## Test criteria application
 
-When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
 
 ## Review and Closeout application
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
 
-This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
+Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
 
 Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
 
@@ -47,10 +47,6 @@ Do not use to author the plan, repair specification behavior, redesign architect
 
 ## Workflow role
 
-### Compact current-state contract
-
-For `compact-current-state-v1`, consume the bounded CLI projection and exact delivery-package paths. Update one stable current review record for the delivery package through a transient CLI operation. Keep open findings in that record and retain only continuing material constraints in `material-decisions.md`. A changes-requested outcome returns to plan; a clean exact rereview approves delivery. Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.
-
 - role_name: delivery-review
 - stage: review
 - upstream: one exact primary plan and the approved Design Review ID
@@ -65,7 +61,7 @@ The reviewer does not edit the execution plan, design package, implementation, o
 
 Use this skill to: review one exact primary-plan package against the approved design.
 
-Read first: `change.yaml`, `context delivery-review`, the exact primary plan, the approved Design Review ID and member map, and relevant prior findings.
+Read first: `change.json`, scoped `rigorloop context`, the exact primary plan, the approved Design Review ID and member map, and relevant prior findings.
 
 Produce: one recorded package outcome, precise findings or a no-finding rationale, and an isolated or route-owned handoff.
 
@@ -77,9 +73,9 @@ Next stage: `route` may send an approved package to implementation; otherwise ro
 
 ## Inputs to read
 
-Resolve the governed change, then obtain the package with `rigorloop lifecycle context delivery-review --change <change-id> --format json`. Read the complete exact primary plan plus the approved Design Review ID and member map it operationalizes. Read current proposal constraints, architecture, specification, ADRs, and prior review or resolution evidence as needed to validate the trace.
+Resolve the governed change, then obtain the package with the scoped primary context and exact subject inspection described above. Read the complete exact primary plan plus the approved Design Review ID and member map it operationalizes. Read current proposal constraints, architecture, specification, ADRs, and prior review or resolution evidence as needed to validate the trace.
 
-For v3, the package member map must contain exactly the registered primary-plan artifact ID and normalized repository-relative path. A standalone test-spec substitute or extra member is invalid. Historical packages remain readable but grant no current review or progression authority. Do not calculate or request aggregate revisions or content hashes.
+For a governed delivery assessment, the package must identify exactly the registered primary-plan artifact ID and normalized repository-relative path. A standalone test-spec substitute or extra member is invalid. Historical packages remain readable but grant no current review or progression authority. Use CLI subject inspection for exact identities; do not calculate an aggregate package revision.
 
 ## Review contract
 
@@ -107,23 +103,11 @@ Each finding records a stable Finding ID, Severity, Location, Evidence, Required
 
 ## Isolation and recording
 
-The following recording and settlement procedure applies to historical profiles only. Adopted Review and Closeout assessments use the packaged application and their selected recording interface.
-
-A direct or review-only invocation remains isolated by default. It records required evidence and may settle the exact package, but it does not route downstream. Workflow-managed continuation returns control to `route` after settlement.
-
-Every formal result must be recorded or explicitly blocked. For registered historical contracts, clean review uses a lightweight receipt and review-log entry, while material or blocking results use a detailed record and triggered `review-resolution.md`. Compact results update the stable current review and conditional material-decision surface described above.
-
-## Package recording and settlement
-
-The following recording and settlement procedure applies to historical profiles only. Adopted Review and Closeout assessments use the packaged application and their selected recording interface.
-
-Recording mode is `none`, `advisory-durable`, or `formal-lifecycle`. Settlement is `none` or `exact-package`. Only formal lifecycle review may settle, and loading the procedure grants no authority.
-
-For a formal review, load the mapped procedure before any write or settlement claim. `record-package-review` records the exact current member map, approved Design Review ID, review identity, outcome, findings, correction targets, and evidence path. `settle-review-package` revalidates and atomically settles that same package. Settlement never advances workflow.
+Recording mode is `none`, `advisory-durable`, or `formal-lifecycle`. Load the mapped procedure before durable recording. Use the selected v2 `review record` and finding operations with exact subjects, judgment, rationale and explicit applicability. Record supported non-approvals without requiring eligibility. There is no separate legacy settlement operation; successful recording does not advance workflow or grant authority. Isolated advisory assessments need no lifecycle artifacts.
 
 ## Outputs
 
-Produce the package identity, upstream review ID, traceability judgment, outcome, findings, correction targets, recording and settlement results, blockers, next owner, and claim limits.
+Produce the package identity, upstream review ID, traceability judgment, outcome, findings, correction targets, recording results and current applicability, blockers, next owner, and claim limits.
 
 ## Handoff
 
@@ -131,7 +115,7 @@ An approved workflow-managed review returns to `route` for implementation. `chan
 
 ## Stop conditions
 
-Stop on incomplete or unsafe member maps, missing or stale design authority, stale lifecycle revision, wrong upstream review ID, self-review or reviewer-authored member changes, unresolved proof feasibility, failed recording, or an owner decision. Preserve supported findings even when settlement blocks.
+Stop on incomplete or unsafe member maps, missing or stale design authority, stale record revision, wrong upstream review ID, self-review or reviewer-authored member changes, unresolved proof feasibility, failed recording, or an owner decision. Preserve supported findings even when reliance or recording is blocked.
 
 ## Claims this skill must not make
 
