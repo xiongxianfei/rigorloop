@@ -219,3 +219,12 @@ for(const state of ["owned","partial","third-state"]) test(`TG-02 lock write fai
   assert.equal(readFileSync(join(root,lock),"utf8"),state==="partial"?'{"pid":':"external\n");
  }
 });
+
+test('retirement shared transport rejects unknown_value without requiring a legacy stored schema',async()=>{
+ const {validateAdvancedEnvelope}=await import('../dist/lib/record-store-transport.js');
+ const result={schema_version:1,operation:'check',status:'valid',change_id:'example',revision:null,files:[],snapshot:null,observations:[],errors:[],transaction:null,claim:'storage-only'};
+ assert.equal(validateAdvancedEnvelope(result),result);
+ for(const alter of [r=>r.status='unknown_value',r=>r.errors.push({code:'unknown_value',path:null,message:'Unknown'}),r=>r.schema_version=2,r=>r.snapshot={records:[]}]) {
+  const invalid=structuredClone(result);alter(invalid);assert.throws(()=>validateAdvancedEnvelope(invalid));
+ }
+});

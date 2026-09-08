@@ -1,3 +1,4 @@
+import {validateAdvancedEnvelope} from "./record-store-transport.js";
 // Version dispatch for the advanced storage interface. No historical conversion.
 import {parseRecordStore,validateRecordStoreRecord,validateRecordStoreSet,validateRecordStoreCreation,recordStorePathKind} from "./record-store-contract.js";
 import {parseV2Record,validateV2Record,validateV2Set,validateV2Preservation,validateV2Creation,v2PathKind,parseRequestJSON} from "./record-format-v2.js";
@@ -29,11 +30,10 @@ function exact(value,keys) {
 
 export function validateAdvancedResult(result) {
   if(result?.operation!=="inspect" || result.status!=="inspected" || !(Array.isArray(result.snapshot?.records) && result.snapshot.records.some(r=>r?.path===`docs/changes/${result.change_id}/change.json`)))
-    return validateRecordStoreRecord("result",result);
-  // The advanced envelope has the unchanged v1 schema. Its legacy inspector
-  // additionally assumes YAML/Markdown snapshots, so validate the common envelope
-  // as a snapshot-free check, then validate the original v2 snapshot below.
-  validateRecordStoreRecord("result",{...result,operation:"check",status:"valid",snapshot:null});
+    return result?.operation==="inspect" && result.status==="inspected" ? validateRecordStoreRecord("result",result) : validateAdvancedEnvelope(result);
+  // Transport schema 1 is independent of stored v1. Validate the actual envelope
+  // before checking the v2 snapshot against its own representation contract.
+  validateAdvancedEnvelope(result);
   exact(result.snapshot,["records"]);
   const records=result.snapshot.records;
   if(!Array.isArray(records)||records.length!==result.files.length||records.length>65)stop("invalid-input");
