@@ -13,13 +13,13 @@ Read the request, governing behavior, current code and tests, available bug evid
 
 ## Test criteria application
 
-When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
 
-This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
+Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
 
 Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
 
@@ -104,7 +104,7 @@ On return, terminal result is exactly `diagnosis-complete`, `diagnosis-incomplet
 | Governed proof-authoring | Exact governed proof surfaces and one existing authorized evidence destination |
 | Governed production-correction | Exact governed implementation, existing authorized evidence, and only scope-named non-authoritative documentation |
 
-Proposals, specs, architecture, ADRs, plans, `change.yaml`, workflow and automation state, reviews, review resolution, explanation, verification, PR, release, deployment, and publication are read-only. Normative changes route to their owner. Missing or ambiguous governed evidence placement blocks durable recording; do not invent a path, artifact, or lifecycle state.
+Proposals, specs, architecture, ADRs, plans, `change.json`, workflow and automation state, reviews, review resolution, explanation, verification, PR, release, deployment, and publication are read-only. Normative changes route to their owner. Missing or ambiguous governed evidence placement blocks durable recording; do not invent a path, artifact, or lifecycle state.
 
 ## Completion and handoff
 

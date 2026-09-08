@@ -62,13 +62,13 @@ Context input is `{ "schema_version": 1, "select": [{ "kind": "work", "where": {
 
 A targeted write has `schema_version: 1`, `interface: targeted-recording-v1`, the observed `contract`, `change_id`, `expected_revision`, `reads: [{path, identity}]`, and `operation: {op, target, values}`. Batch replaces operation with operations. Use the read result's exact record_contract and revision, and subject inspection's identities; the CLI does not substitute newly observed content for the actor's decision basis. Each command's --help gives its exact selectors and fields. The CLI constructs registry entries and serialized bytes and preserves omitted fields, neighbors and narrative. Newly created supporting records require explicit applicability; actor judgments and dispositions are never inferred.
 
-Use `change create` only with explicit new-change authority, an absent root and contract rigorloop-records-v2. New records are change.json, reviews/<id>.json, evidence.json, material-decisions.json and success-only verify-report.json. Existing explicit-recording-v1 roots retain change.yaml, reviews/<id>.md, evidence.yaml, material-decisions.md and verify-report.md without fabricated origin or conversion. Both formats have packaged schemas/templates; targeted transport has its own targeted-recording-v1.schema.json. Templates illustrate stored shapes, not normal full-file write requests or approval. Create docs/changes/ before creating an absent change root.
+Use `change create` only with explicit new-change authority, an absent root and contract rigorloop-records-v2. New records are change.json, reviews/<id>.json, evidence.json, material-decisions.json and success-only verify-report.json. Retired stored formats are unsupported runtime input and reject without fallback or mutation. Historical records remain unchanged archival evidence. V2 has packaged schemas/templates; targeted transport has its own targeted-recording-v1.schema.json. Templates illustrate stored shapes, not normal full-file write requests or approval. Create docs/changes/ before creating an absent change root.
 
 Normal writes validate and optionally support --dry-run; preview reserves nothing. Results are compact and storage-only. Saved/unchanged/valid/inspected use exit 0, rejected 2, conflict 3, busy 4 and recovery-required 5. Reread and reassess conflicts instead of retry-merging. Observation summaries disclose omitted detail; observations show retrieves bounded detail with revision and observation-identity checks. Diagnostic volume cannot prevent an otherwise valid correction. A saved judgment, failed check or completion claim does not justify downstream reliance.
 
-Advanced `record-store inspect|check|record|recover` remains for diagnostics, complete explicit restoration and persistence maintenance. Advanced v1 creation retains its explicit compatibility contract; ordinary skills use primary v2 creation. Advanced replacements contain exact complete bytes under the selected stored version, while primary writes construct bytes. Both share containment, conflict and recovery protections. For interrupted storage use `record-store recover --root PATH --change ID --transaction ID --expected-recovery DIGEST --action restore|complete --format json` with one explicit action. Do not edit records with external tools during save/recovery; the documented limitation for external edits after the final identity check is unchanged.
+Advanced `record-store inspect|check|record|recover` remains for diagnostics, complete explicit restoration and persistence maintenance. Only v2 is accepted by advanced and primary recording. The independently versioned advanced result schema 1 and targeted-recording-v1 transport remain supported. Advanced replacements contain exact complete bytes under the selected stored version, while primary writes construct bytes. Both share containment, conflict and recovery protections. For interrupted storage use `record-store recover --root PATH --change ID --transaction ID --expected-recovery DIGEST --action restore|complete --format json` with one explicit action. Do not edit records with external tools during save/recovery; the documented limitation for external edits after the final identity check is unchanged.
 
-Historical new-change, workflow-context, compact and lifecycle commands retain their own contracts and do not register, migrate or advance this profile. Rollback before adoption can restore prior guidance; once v2 records exist, retain compatible reads/recovery and fix forward. Never use an old writer or change a discriminator to simulate rollback.
+The retired new-change, compact and lifecycle command families reject before request processing or side effects. Use v2 `change create` with explicit authority for new work. Recovery classifies the journal's recorded format selector and saved before/candidate/write/read basis; supported consistent v2 transactions recover, including initial creation with no current manifest. Retired, unknown, inconsistent or ambiguous bases stop before restore/complete writes and preserve evidence. Journal selector 1 selects retired v1; the advanced result's schema 1 is independent. Never change a discriminator to simulate recovery or rollback.
 
 ### Other command families
 
@@ -76,22 +76,14 @@ Historical new-change, workflow-context, compact and lifecycle commands retain t
 rigorloop --help
 rigorloop version
 rigorloop init codex|claude|opencode [--write-state] [--from-archive <path>] [--dry-run] [--json]
-rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
 rigorloop workflow-context [--change <id>] [--format human|json]
-rigorloop compact project --change <id> --view <view> [--requested-operation <operation>] [--format human|json]
-rigorloop compact apply (--request <path|-> | --request-json <json>) [--format human|json]
-rigorloop compact recover --change <id> [--action restore-prior|accept-candidate --expected-recovery-identity <sha256>] [--format human|json]
-rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json|concise-human|concise-json|detailed-json]
-rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json|concise-human|concise-json|detailed-json]
 rigorloop logs path [--format human|json]
 rigorloop logs show <invocation-id> [--format human|json]
 ```
 
 Registered historical lifecycle mutations use request files and their existing operations. Existing version-1 coordination remains readable under that contract. Compact operations instead accept transient arguments, standard input, or disposable request files; successful requests are not governed artifacts. The CLI validates expected revision, exact identities, semantic operation shape, and resulting consistency, but it does not grant caller permission.
 
-`workflow-context` is read-only. Without `--change` it reports the effective workflow configuration and up to 32 sorted active-change candidates without selecting one; count and truncation fields show when exact `--change` selection is required. With an exact change ID it reports deterministic lifecycle, artifact, package, milestone, blocker, operation, and bounded automation facts. Collections are capped at 32 entries and expose count/truncation metadata where caller-controlled size can vary. Compact formal reviews use one stable current review path per target; round-suffixed paths remain historical-contract behavior. An optional repository-root `rigorloop.workflow.yaml` may override supported bundled artifact locations; invalid or unsafe configuration fails closed.
-
-The `compact` command exposes the candidate `compact-current-state-v1` boundary without activating compact change creation. `project` returns bounded current views and can evaluate one requested operation separately from overall progression. `apply` accepts the same transient semantic request as an argument, standard input, or disposable file; the transport does not become governed state. `recover` reconciles an interrupted compact transaction from private local recovery state. The compact record and recovery path work without Git history, without PR access, and without local logs. Legacy changes remain on their registered lifecycle contract and reject compact writes or migration.
+`workflow-context` returns factual schema-2 discovery, never eligibility, an authoritative next stage or implicit change selection. It classifies current v2 manifests, malformed or ambiguous current stores, and unrelated YAML-only archives without running legacy validators. Explicit targets avoid unrelated enumeration. Limits are inclusive: 1,024 directories, 64 candidates and an 8 MiB response budget. Exceeding a bound reports incomplete scope and limit-exceeded without silent truncation. An optional root `rigorloop.workflow.yaml` may override supported artifact locations; retired record-slot overrides, unsafe paths and invalid configuration fail closed. Use primary context/show for complete selected current-record content.
 
 ## Local CLI logs and concise results
 
@@ -103,7 +95,7 @@ Existing v0.4.x output defaults and `--json` remain unchanged. Agents can opt in
 
 ## Target Init
 
-Version 0.5.1 is an unpublished candidate. Its bundled metadata describes route-only candidate archives and makes no claim that those archives or the npm package are publicly available yet. For an exact lockfile-managed install, rerun `init` with `--write-state` to replace `workflow` with `route`; unmanaged or drifted installs remain blocked with state-specific recovery guidance. Persisted `workflow.automation` state remains compatible.
+Version 0.5.1 is an unpublished candidate. Its bundled metadata describes route-only candidate archives and makes no claim that those archives or the npm package are publicly available yet. For an exact lockfile-managed install, rerun `init` with `--write-state` to replace `workflow` with `route`; unmanaged or drifted installs remain blocked with state-specific recovery guidance. Legacy persistent automation store adapters are unsupported; no v2 automation mapping is implied.
 
 After v0.5.1 is published, initialize target support from its verified official release archive:
 
@@ -137,21 +129,9 @@ opencode: .opencode/skills and .opencode/commands when command aliases are decla
 
 Network installs use Node `fetch()`. If download fails in a proxied environment, JSON output reports bounded diagnostics such as target name, release version, trusted archive URL, detected proxy environment variable names, Node env-proxy status, and failure class. It does not print proxy credentials or raw proxy values. On Node versions that support env-proxy, enable it with `NODE_USE_ENV_PROXY=1`, `NODE_OPTIONS=--use-env-proxy`, or `node --use-env-proxy`; otherwise use the `--from-archive` fallback.
 
-## Change Metadata Scaffold
+## New change recording
 
-Create a new change metadata scaffold:
-
-```bash
-npx @xiongxianfei/rigorloop@0.5.1 new-change my-change --title "Describe the change" --json
-```
-
-Preview the scaffold first:
-
-```bash
-npx @xiongxianfei/rigorloop@0.5.1 new-change my-change --title "Describe the change" --dry-run --json
-```
-
-`new-change` creates `docs/changes/<change-id>/change.yaml`. It does not claim that proposal, spec, review, verification, or PR readiness is complete.
+Use `rigorloop change create --help` for the targeted request shape, then submit the explicit v2 request with `--root PATH --input - --format json`. Add `--dry-run` for an optional preview. Creation requires explicit authority and an absent root; it grants no proposal, Design, review, Verify or PR judgment. The removed `new-change` scaffold is unsupported.
 
 ## Version Guidance
 

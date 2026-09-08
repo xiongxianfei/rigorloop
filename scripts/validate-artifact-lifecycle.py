@@ -188,11 +188,8 @@ def helper_mode(args: argparse.Namespace) -> bool:
 def formal_helper_evidence_file(args: argparse.Namespace, change_id: str) -> str | None:
     if args.validation_cache_evidence_file:
         return args.validation_cache_evidence_file
-    if not helper_mode(args) or change_id == "no-change-id":
-        return None
-    expected_change = ROOT / "docs" / "changes" / change_id / "change.yaml"
-    if expected_change.is_file():
-        return f"docs/changes/{change_id}/validation-cache-evidence.yaml"
+    # A local cache hit does not create an entry in a governed record store.
+    # Explicit standalone evidence remains separately requested above.
     return None
 
 

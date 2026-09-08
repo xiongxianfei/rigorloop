@@ -1,23 +1,23 @@
 # Governed plan authoring
 
-Load this reference only after the parent resolves one exact governed change with plan authority. The parent owns plan quality; this reference owns authoring registration and the existing one-time initialization exception.
+Load only when the parent skill establishes exact governed plan authority. The parent owns subject quality; this reference applies the v2 recording boundary.
 
-Governed plan authoring is available only for v3. Historical non-v3 work never re-enters plan authoring. If plan context identifies a historical contract, stop and return the context to `route` rather than authoring or routing.
+## Basis and authoring
 
-## CLI-bound authoring
+Use the parent's scoped `rigorloop context` and `subject inspect` procedure. Require the explicitly selected change, current prerequisites, exact target paths and revision authority. The CLI supplies observations, not legal authority or a permitted next stage. Stop dependent authoring when required authority or evidence is missing, stale or contradictory.
 
-Run `rigorloop lifecycle context plan --change <change-id> --format json`. Require settled inputs, exact target or unambiguous creation path, legal authority, and no blocker. Capture the current target digest before revision.
+Author only the plan and authorized authoring evidence. Preserve unrelated artifacts and historical evidence. Capture prior subject identities before revision; inspect the completed content afterward. Route changes to downstream reliance to the responsible owner rather than editing another actor's judgment.
 
-If context returns `RL_WORKFLOW_ROUTE_REQUIRED`, do not author or mutate state. Return its route facts to the route skill and resume only after context makes `record-artifact-revision` immediately available.
+## Recording
 
-Write only the plan, navigation entry, and evidence containing `Artifact path`, `Artifact identity`, and `Authoring result: complete`. Creation requires an absent primary plan. Revision preserves stable intent and requires exact prior identity; changes to relied-on milestone identity, order, kind, criteria, or evidence route to governed replan or migration.
+Use purpose-specific `change link` and `evidence record` commands, or a targeted `batch` for related updates, with the current record contract, expected revision and exact subject reads. Supply explicit applicability where required. The CLI constructs registration and serialization; it does not derive review readiness, invalidate assessments automatically or grant approval. Record impacted applicability as stale when justified without retargeting an earlier review.
 
-Refresh context and submit `record-artifact-revision` with the returned lifecycle revision, exact plan ID, `artifact_kind: plan`, `artifact_role: primary`, path, evidence path, `stage_authority: plan`, and prior digest for revision. The CLI derives `review-required`; never directly edit artifact lifecycle or review fields.
-
-## Approved-plan initialization
-
-Retain the contract's narrow authority to initialize `workflow_state.planned_work` exactly once when the approved current Delivery Review package contains the primary plan and work is absent. Set every implementation milestone to `planned`, select the first implementation milestone, set `latest_review.status: not-started` and `final_closeout.readiness: not-ready`, and bind the Delivery Review ID and plan path. Never replace existing work: plan must not replace or update existing `planned_work`; route owns every later `planned_work` decision under the stable workflow authority. If CLI enforcement rejects this exception, stop for route correction.
+Conflict requires rereading and reassessment. A busy or recovery-required result is not a successful save; use only the retained explicit v2 storage recovery procedure when authorized. Preserve partial evidence honestly and stop on ambiguous outcome. Do not emulate a retired lifecycle operation or reconstruct complete record files.
 
 ## Result
 
-Report authoring and CLI results, initialization state when applicable, blockers, and the v3 handoff: `delivery-review`. Do not settle or route.
+Report exact subjects, authoring evidence, recording outcome and the `delivery-review` handoff. Do not settle review, change routing or claim downstream readiness.
+
+## Approved-plan initialization
+
+The sole narrow exception allows plan to initialize missing work exactly once from a current approved Delivery Review package containing this primary plan. Use explicit `work add` operations for the reviewed implementation milestones only after confirming work is absent. Never initialize an unreviewed draft or replace or update existing work; route owns subsequent work decisions. A conflicting or nonempty result returns to route without rewriting it. Plans retain stable intent, not mutable progress.

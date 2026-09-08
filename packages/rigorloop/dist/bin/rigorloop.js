@@ -9,16 +9,24 @@ import { fileURLToPath } from "node:url";
 import { EXIT, exitCodeForResult } from "../lib/command-result.js";
 import { adapterDescriptor, supportedAdapterNames } from "../lib/adapters.js";
 import { parseLockfile, serializeLockfile, sha256NormalizedText } from "../lib/lockfile.js";
-import { buildNewChangeDraft, parseNewChangeArgs } from "../lib/new-change.js";
-import { runNewChangePlan } from "../lib/new-change-filesystem.js";
 import { validateOfficialArchiveUrl } from "../lib/official-archive-url.js";
 import { runObservedCli } from "../lib/cli-observability.js";
-import { isInvocationId } from "../lib/diagnostic-event.js";
+import { resolveLogConfig } from "../lib/log-config.js";
+import { isInvocationId, createInvocationId } from "../lib/diagnostic-event.js";
 import { findInvocationEvents } from "../lib/log-inspection.js";
 import { renderResult, RESULT_FORMATS } from "../lib/result-renderer.js";
 
 const RECORDING_FAMILIES = new Set(["status","context","subject","change","activity","work","review","finding","blocker","evidence","applicability","decision","decisions","verify","observations","batch"]);
 const isRecordingCommand = argv => RECORDING_FAMILIES.has(argv[0]);
+const isRetiredCommand = argv => {
+  const retired = command => ["compact", "lifecycle", "new-change"].includes(command);
+  if (retired(parseFlags(argv).positional[0])) return true;
+  try {
+    // Reuse the pure logging grammar without inspecting environment overrides
+    // or opening a sink. Leading logging options cannot restore file effects.
+    return retired(parseFlags(resolveLogConfig(argv, {env: {}}).args).positional[0]);
+  } catch { return false; }
+};
 
 const LOCKFILE_PATH = "rigorloop.lock";
 let activeOutput = {};
@@ -152,7 +160,6 @@ Usage:
   rigorloop --help
   rigorloop version
   rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
-  rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
   rigorloop workflow-context [--change <id>] [--format human|json]
   rigorloop status --root PATH --change ID [--format text|json]
   rigorloop context --root PATH --change ID --input - [--format text|json]
@@ -164,11 +171,6 @@ Usage:
   rigorloop record-store inspect --root PATH --change ID [--format text|json]
   rigorloop record-store check|record --root PATH --change ID --input - [--format text|json]
   rigorloop record-store recover --root PATH --change ID --transaction ID --expected-recovery DIGEST --action restore|complete [--format text|json]
-  rigorloop compact project --change <id> --view <view> [--requested-operation <operation>] [--format human|json]
-  rigorloop compact apply (--request <path|-> | --request-json <json>) [--format human|json]
-  rigorloop compact recover --change <id> [--action restore-prior|accept-candidate --expected-recovery-identity <sha256>] [--format human|json]
-  rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json]
-  rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json]
   rigorloop logs path [--format human|json]
   rigorloop logs show <invocation-id> [--format human|json]
 
@@ -176,13 +178,10 @@ Commands:
   version                 Print package name and version.
   init codex|claude|opencode
                           Initialize verified target support.
-  new-change              Plan a change metadata scaffold.
   workflow-context        Report read-only project or exact-change workflow facts.
   status/context/show     Inspect explicitly selected recorded information; storage only.
   add/set/record/batch     Record explicit actor decisions; use per-command --help for exact selectors.
-  record-store            Advanced inspection, replacement and recovery for v1/v2 records; storage only.
-  compact                 Project, apply, or recover the compact current-state contract.
-  lifecycle               Inspect, validate, and perform guarded governed lifecycle operations.
+  record-store            Advanced inspection, replacement and recovery for v2 records; storage only.
   logs                    Show the local log path or inspect one exact invocation.
 `;
 }
@@ -1770,49 +1769,6 @@ function invalidUsage(message, flags, command = "unknown") {
   });
 }
 
-function newChangeUsageError(error, flags) {
-  return commandError("new-change", error.message, flags, {
-    code: error.code,
-    message: error.message,
-    next_action: "Run rigorloop new-change <change-id> --title <title>.",
-  });
-}
-
-function handleNewChange(rawArgs) {
-  const parsed = parseNewChangeArgs(rawArgs, process.env);
-  if (parsed.error) {
-    return newChangeUsageError(parsed.error, parsed.flags);
-  }
-
-  const draft = buildNewChangeDraft(parsed.value);
-  const execution = runNewChangePlan({
-    cwd: process.cwd(),
-    draft,
-    flags: parsed.flags,
-    profile: parsed.value.profile,
-  });
-  const result = envelope("new-change", parsed.flags, {
-    ...execution.result,
-  });
-
-  if (parsed.flags.json) {
-    writeJson(result);
-  } else if (result.status === "blocked") {
-    writeStderr(`${result.summary}\n${result.blockers[0].message}\n`);
-  } else if (result.status === "error") {
-    writeStderr(`${result.summary}\n${result.errors[0].message}\n`);
-  } else if (parsed.flags.dryRun) {
-    writeHuman(`RigorLoop new-change dry run completed.\n${draft.planned_change_metadata.path}\n`, parsed.flags);
-  } else {
-    writeHuman(`RigorLoop change metadata scaffold created.\n${draft.change.root}\n${draft.change.metadata_path}\n`, parsed.flags);
-  }
-
-  return exitCodeForResult({
-    status: result.status,
-    exit_class: execution.exit_class,
-  });
-}
-
 function invalidArchivePath(message, flags) {
   return commandError("init", message, flags, {
     code: "invalid-archive-path",
@@ -2382,36 +2338,6 @@ async function dispatchMain(rawArgs, invocation) {
           : { stdout: "", stderr: execution.human };
       return execution.exitCode;
     }
-    if (rawArgs[0] === "compact") {
-      const { executeCompactCli } = await import("../lib/compact-cli.js");
-      const execution = executeCompactCli(rawArgs.slice(1));
-      activeOutput.terminalClass = execution.exitCode === 0 ? "success" : "expected-rejection";
-      activeOutput.deferredRender = () => execution.format === "json"
-        ? { stdout: `${JSON.stringify(execution.result, null, 2)}\n`, stderr: "" }
-        : execution.exitCode === 0
-          ? { stdout: execution.human, stderr: "" }
-          : { stdout: "", stderr: execution.human };
-      return execution.exitCode;
-    }
-    if (rawArgs[0] === "lifecycle") {
-      const { executeLifecycleCli, lifecycleTerminalClass } = await import("../lib/lifecycle-cli.js");
-      const execution = executeLifecycleCli(rawArgs.slice(1));
-      activeOutput.terminalClass = lifecycleTerminalClass(execution.result);
-      activeOutput.deferredRender = ({ invocationId, observability }) => {
-        const rendered = renderResult(execution.result, {
-          format: execution.format,
-          exitCode: execution.exitCode,
-          invocationId,
-          observability,
-          human: () => execution.human,
-        });
-        return execution.format === "human" && execution.exitCode !== 0
-          ? { stdout: "", stderr: rendered }
-          : { stdout: rendered, stderr: "" };
-      };
-      return execution.exitCode;
-    }
-
     const { flags, positional } = parseFlags(rawArgs);
     activeOutput.format = flags.format;
     if (flags.formatError) return invalidUsage("Unknown result format.", flags);
@@ -2425,9 +2351,6 @@ async function dispatchMain(rawArgs, invocation) {
     }
     if (command === "init") {
       return handleInit(flags, positional.slice(1));
-    }
-    if (command === "new-change") {
-      return handleNewChange(rawArgs.slice(rawArgs.indexOf("new-change") + 1));
     }
 
     return invalidUsage(`Unknown command: ${command}`, flags);
@@ -2452,11 +2375,12 @@ export async function main(rawArgs = process.argv.slice(2), invocation = {}) {
 
 if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const rawArgs = process.argv.slice(2);
-  if (rawArgs[0] === "record-store" || isRecordingCommand(rawArgs)) {
-    // The recorder owns its complete grammar and result envelope. Historical
+  if (rawArgs[0] === "record-store" || isRecordingCommand(rawArgs) || isRetiredCommand(rawArgs)) {
+    // Retired commands reject before any diagnostic file effects. The recorder
+    // owns its complete grammar and result envelope. Historical
     // logging flags and environment must not consume or replace either.
     const execution = await main(rawArgs);
-    const rendered = execution.render({});
+    const rendered = execution.render({ invocationId: createInvocationId(), observability: "disabled", exitCode: execution.exitCode });
     if (rendered.stdout) process.stdout.write(rendered.stdout);
     if (rendered.stderr) process.stderr.write(rendered.stderr);
     process.exitCode = execution.exitCode;

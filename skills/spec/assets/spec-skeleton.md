@@ -8,7 +8,7 @@
 
 ## Owning change record
 
-<docs/changes/change-id/change.yaml>
+<docs/changes/change-id/change.json>
 
 ## Related proposal
 

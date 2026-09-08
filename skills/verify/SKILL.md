@@ -10,17 +10,17 @@ argument-hint: [feature name, branch, plan path, spec path, or verification scop
 
 ## Test criteria application
 
-When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
 
 ## Review and Closeout application
 
-When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
 
-This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
+Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
 
 Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
 
@@ -28,7 +28,7 @@ Make your decision, then use the purpose-specific command's `--help` and submit 
 
 Assess every required model, delivery, implementation, review and proof subject before reliance. Record failed evidence with evidence record and defects with blocker add; do not fabricate a review or failed success report. After correction and independent rereview, explicitly reassess and disposition your own blocker with blocker set. Only on success use verify record for the final assessment and explanation, and explicitly request activity completion if justified. Downstream consumers retrieve the full report with verify show; decisions show includes shared material-decision narrative.
 
-Prove that the requested scope, current evidence, implementation, tests, and governing artifacts agree. For compact changes, `verify` owns lifecycle completion. For registered historical contracts, `verify` owns `branch-ready`; `pr` owns `pr-body-ready` and `pr-open-ready`.
+Prove that the requested scope, current evidence, implementation, tests, and governing artifacts agree. Verify owns justified final closeout; PR owns the separate external handoff.
 
 ## Purpose
 
@@ -36,7 +36,7 @@ Trace current evidence backward through implementation and allocated work to gov
 
 Perform either a bounded evidence check or a final readiness assessment without taking ownership from authoring, review, workflow, or PR stages. Final verification validates the reviewed final change pack before PR and creates the final durable explanation. It generates the final explanation only after successful final readiness.
 
-Final verification is scoped evidence and must not own artifact settlement, milestone state, or routing. For planned work, use `change.yaml` to assess current state and treat the plan and upstream artifacts as read-only.
+Final verification is scoped evidence and must not own artifact settlement, milestone state, or routing. For planned work, use `change.json` to assess current state and treat the plan and upstream artifacts as read-only.
 
 ## When to use
 
@@ -47,10 +47,6 @@ Use this skill for an explicit validation surface, a direct branch-readiness ass
 Do not use it to replace code-review, settle upstream artifacts, repair implementation, prepare or open a PR, or claim hosted CI that was not observed.
 
 ## Workflow role
-
-### Compact current-state contract
-
-For `compact-current-state-v1`, consume the bounded CLI projection and only its required artifacts, stable current review records, material decisions, and current evidence. Verify the exact complete-set subject without requiring Git, a branch, a remote, CI, or PR access. On success, update current evidence and write the sole `verify-report.md` through a transient CLI operation; that successful result establishes lifecycle completion. Failed or inconclusive attempts update current state or evidence as applicable but emit no final report. External PR or publication work is optional and cannot grant compact readiness. Do not create `review-log.md`, `review-resolution.md`, request files, raw-output records, or route receipts.
 
 `verify` evaluates evidence and records only verify-owned results. The `route` skill owns semantic lifecycle progression, and `pr` owns PR preparation and opening. A successful workflow-managed verification hands off to `pr`; it never invokes `pr` itself.
 
@@ -83,9 +79,9 @@ Loaded procedure and execution authority are independent:
 
 Use execution mode `isolated` for direct checks and direct branch-readiness assessments. Use `governed-final` only when current governed evidence establishes final `verify` for the same change. Never infer the mode from conversational wording.
 
-### V3 final-readiness profile (registered historical changes)
+### Final-readiness profile
 
-V3 remains the executable final-readiness compatibility contract until compact activation and for registered v3 changes afterward. Final readiness loads impact analysis and evidence applicability; successful results then load explanation guidance and use the v3 report skeleton. Failed or inconclusive attempts emit no final explanation. Scoped verification loads none of those resources. Compact verification follows the current-state contract above.
+Final readiness loads impact analysis and evidence applicability; successful results then load explanation guidance. Failed or inconclusive attempts emit no successful final explanation. Scoped verification loads none of those final-closeout resources.
 
 ## Execution authority
 
@@ -97,9 +93,9 @@ Under armed workflow automation, use fresh actual-run evidence for correctness-b
 
 ## Inputs to read
 
-Read only evidence needed for the classified outcome. This may include the relevant spec, architecture or ADR, plan and `change.yaml`, actual diff, tests, validation output, observed CI, review and review-resolution evidence, release metadata, generated artifacts, project instructions, and CI definitions.
+Read only evidence needed for the classified outcome. This may include the relevant spec, architecture or ADR, plan and `change.json`, actual diff, tests, validation output, observed CI, review and review-resolution evidence, release metadata, generated artifacts, project instructions, and CI definitions.
 
-For placement, prefer the explicit target; authoritative CLI workflow context; current change or plan metadata; governing schema; then a safe portable default. Block when authority remains ambiguous. For planned records, bounded queries may orient the read, but escalate to full `change.yaml` for whole-record review, disputed or unsupported state, or forensic reconstruction.
+For placement, prefer the explicit target; authoritative CLI workflow context; current change or plan metadata; governing schema; then a safe portable default. Block when authority remains ambiguous. For planned records, bounded queries may orient the read, but escalate to full `change.json` for whole-record review, disputed or unsupported state, or forensic reconstruction.
 
 For work governed by consolidated gates, require the current accepted proposal evidence, approved Design Review ID and exact member map, approved Delivery Review ID and exact member map, implementation and Code Review evidence, and current validation results. A review-required, partial, stale, or historical-only package blocks final readiness. This evidence requirement does not merge Verify with any earlier gate.
 
@@ -127,15 +123,11 @@ Evaluate applicable dimensions as `pass`, `concern`, or `block`: requirement and
 5. Check drift, blockers, claim limits, and the permitted handoff.
 6. Report the verdict and exact commands actually run.
 
-When `broad_smoke_required: true` appears in governing evidence, missing broad smoke blocks final readiness. Inspect `verify-report.md` for required normal-change manual proof and release metadata for release smoke or release manual proof.
+When `broad_smoke_required: true` appears in governing evidence, missing broad smoke blocks final readiness. Inspect registered v2 evidence for required normal-change manual proof and assess its subjects and applicability. Successful Verify references the supporting evidence; an existing successful Verify record is not a prerequisite for this assessment. Inspect release metadata for release smoke or release manual proof.
 
 ## Review and lifecycle closeout
 
-For registered historical contracts with material review findings, inspect `review-resolution.md`, `review-log.md`, and the project's review-artifact closeout validation. Block on `Closeout status: open`, `needs-decision`, missing final dispositions, missing required `Validation evidence`, or open findings. Block unless closeout validation passes. `Closeout status: closed` requires final dispositions and no open findings. For compact changes, use open findings in stable current review records, material decisions, and freshness-marked current evidence instead.
-
-Under registered historical contracts, a stage-owned non-approval outcome that blocks progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout; `review-resolution.md` alone is not a silent substitute. For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
-
-For governed work, verify every implementation milestone is closed and current change-local state agrees with the stable plan. A stale touched, referenced, generated, or authoritative lifecycle-managed artifact blocks readiness; unrelated baseline debt is a warning. Under registered historical contracts, required governing artifacts that exist only in untracked local state cannot support `branch-ready`. Compact verification binds exact file identities from the complete current set and does not inspect Git tracking state.
+For governed work, verify every implementation milestone is closed and current change-local state agrees with the stable plan. A stale touched, referenced, generated, or authoritative lifecycle-managed artifact blocks readiness; unrelated baseline debt is a warning. A branch-readiness assessment requires tracked governing artifacts. Governed storage closeout binds exact file identities and does not universally require Git or PR access.
 
 ## Generated Markdown readability
 
@@ -151,7 +143,7 @@ When this skill creates or updates generated or generator-shaped Markdown:
 
 Produce the classified outcome, exact target and execution mode, verdict, traceability, commands and results, CI status or gap, drift, blockers, claim limits, and permitted next stage.
 
-For `branch-readiness` and `workflow-final-verification`, emit one normalized `verification_basis` in the portable result or governed verify report. It contains immutable resolved values for:
+For `branch-readiness`, or `workflow-final-verification` that explicitly includes a Git/PR handoff assessment, emit one normalized `verification_basis` in the portable result or narrative of the existing v2 Verify record. This is supplemental external-handoff evidence, not new serialized record fields or a prerequisite for non-Git closeout. It contains immutable resolved values for:
 
 ```yaml
 repository_identity: <exact repository identity>
@@ -235,10 +227,10 @@ Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure
 - READ `references/requirement-to-delivery-model.md` when tracing final evidence backward to implementation, requirements, and proposal direction.
 - READ `references/branch-readiness-verification.md` for `branch-readiness` or `workflow-final-verification` after exact target resolution.
 - READ `references/boundary-first-method-v1.md` when the final approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient for verification.
-- READ `references/final-impact-analysis-v3.md` only for an active v3 final-readiness attempt after exact target resolution.
-- READ `references/evidence-applicability-v3.md` only for an active v3 final-readiness attempt after impact classification.
-- READ `references/successful-explanation-v3.md` only after an active v3 final-readiness attempt has succeeded.
-- COPY `assets/verify-report-v3-skeleton.md` only when recording an active v3 final-readiness result.
+- READ `references/final-impact-analysis.md` only for a selected final-readiness attempt after exact target resolution.
+- READ `references/evidence-applicability.md` only for a selected final-readiness attempt after impact classification.
+- READ `references/successful-explanation.md` only after a selected final-readiness attempt has succeeded.
+- COPY `assets/verify-report-skeleton.md` only when recording a selected final-readiness result.
 
 Conditional references specialize their activation context; they cannot override this file or each other's owned contract. A contradiction is a package defect and stops dependent work.
 

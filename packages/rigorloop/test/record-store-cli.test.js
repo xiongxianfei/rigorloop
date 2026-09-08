@@ -6,13 +6,13 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { executeRecordStoreCli } from "../dist/lib/record-store-cli.js";
-import { validateRecordStoreRecord } from "../dist/lib/record-store-contract.js";
+import { validateAdvancedResult } from "../dist/lib/record-store-format.js";
 import { RecordFiles } from "../dist/lib/record-store-files.js";
 import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
 
-const fixture=()=>JSON.parse(readFileSync(new URL("../../../tests/fixtures/explicit-recording-v1/records.json",import.meta.url),"utf8"));
-const manifest="docs/changes/example/change.yaml";
+const fixture=()=>JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v2/storage-safety.json",import.meta.url),"utf8"));
+const manifest="docs/changes/example/change.json";
 for (const level of ["off","unknown_value"]) for (const extra of [["--no-file-log"],["--console-log-level","unknown_value"],["--file-log-level","off"]]) test(`ER-M4-004 public recorder rejects historical logging flags ${extra[0]} with environment ${level}`,t=>{
   const root=setup(t);
   const result=spawnSync(process.execPath,[new URL("../dist/bin/rigorloop.js",import.meta.url).pathname,"record-store",...args(root,"record",extra)],{encoding:"utf8",input:"payload-must-not-appear",env:{...process.env,RIGORLOOP_CONSOLE_LOG_LEVEL:level}});
@@ -47,7 +47,7 @@ function request() { const r=fixture().request; r.reads=[]; return r; }
 function args(root,op,extra=[]) { return [op,"--root",root,"--change","example","--format","json",...(["record","check"].includes(op)?["--input","-"]:[]),...extra]; }
 function run(root,op,input,options={},extra=[]) {
   const execution=executeRecordStoreCli(args(root,op,extra),{...options,input:input===undefined?undefined:JSON.stringify(input)+"\n"});
-  validateRecordStoreRecord("result",execution.result);
+  validateAdvancedResult(execution.result);
   return execution;
 }
 function update(root,status="completed") {
@@ -182,7 +182,7 @@ test("ER-M2-001 malformed selectors produce truthful safe rejections before IO",
     const result=executeRecordStoreCli(argv,{readInput:()=>assert.fail("must not read stdin")});
     assert.equal(result.exitCode,2); assert.equal(result.format,format);
     assert.equal(result.result.operation,op); assert.equal(result.result.change_id,id);
-    validateRecordStoreRecord("result",result.result);
+    validateAdvancedResult(result.result);
     assert.equal(JSON.stringify(result).includes("../secret"),false);
   }
 });
@@ -191,7 +191,7 @@ test("TG-03 historical roots, unknown flags, unsafe paths and existing roots rej
   const root=setup(t), r=request();
   mkdirSync(join(root,"docs/changes/example"));
   assert.equal(run(root,"record",r).result.status,"rejected");
-  writeFileSync(join(root,manifest),'contract: stage-owned-change-local-v3\n');
+  writeFileSync(join(root,manifest),'{"contract":"stage-owned-change-local-v3"}\n');
   const historical=readFileSync(join(root,manifest));
   assert.equal(run(root,"record",r).result.errors[0].code,"unsupported-contract");
   assert.deepEqual(readFileSync(join(root,manifest)),historical);
@@ -241,7 +241,7 @@ test("TG-03 real public dispatcher supports text and JSON recording",t=>{
     const argv=args(root,op); argv[argv.indexOf("json")]=format;
     const child=spawnSync(process.execPath,[launcher,"record-store",...argv],{input,encoding:"utf8"});
     assert.equal(child.status,0,child.stderr+child.stdout);
-    if(format==="json") validateRecordStoreRecord("result",JSON.parse(child.stdout));
+    if(format==="json") validateAdvancedResult(JSON.parse(child.stdout));
   }
   const child=spawnSync(process.execPath,[new URL("../dist/bin/rigorloop.js",import.meta.url).pathname,"record-store",...args(root,"inspect")],{encoding:"utf8"});
   assert.equal(child.status,0,child.stderr+child.stdout);
@@ -250,7 +250,7 @@ test("TG-03 real public dispatcher supports text and JSON recording",t=>{
 
 test("ER-M4-005 public text names available and absent record identities",t=>{
   const root=setup(t), launcher=new URL("../dist/bin/rigorloop.js",import.meta.url).pathname;
-  const r=request(), change=JSON.parse(r.writes[0].content), path="docs/changes/example/evidence.yaml";
+  const r=request(), change=JSON.parse(r.writes[0].content), path="docs/changes/example/evidence.json";
   change.records=[{path,kind:"evidence"}];
   change.applicability=[{...fixture().change.applicability[0],path}];
   r.writes[0].content=JSON.stringify(change)+"\n";
@@ -270,14 +270,14 @@ test("ER-M4-005 public text names available and absent record identities",t=>{
 
 test("TG-03 missing registered records are visible and repairable; registry removal is rejected",t=>{
   const root=setup(t), r=request(), change=JSON.parse(r.writes[0].content), f=fixture();
-  change.records=[{path:"docs/changes/example/evidence.yaml",kind:"evidence"}];
+  change.records=[{path:"docs/changes/example/evidence.json",kind:"evidence"}];
   change.applicability=[{...f.change.applicability[0],path:change.records[0].path}];
   r.writes[0].content=JSON.stringify(change)+"\n";
   r.writes.push({path:change.records[0].path,expected_identity:null,content:JSON.stringify(f.evidence)+"\n"});
   assert.equal(run(root,"record",r).result.status,"saved");
   unlinkSync(join(root,change.records[0].path));
   const inspected=run(root,"inspect").result;
-  assert.equal(inspected.snapshot.records.find(e=>e.path.endsWith("evidence.yaml")).content,null);
+  assert.equal(inspected.snapshot.records.find(e=>e.path.endsWith("evidence.json")).content,null);
   r.expected_revision=inspected.revision; r.writes=[r.writes[1]];
   assert.equal(run(root,"record",r).result.status,"saved");
   const remove=update(root); // Original fixture would drop the existing registry.
@@ -319,7 +319,7 @@ test("TG-04 public crash and recover subprocesses preserve complete/restore in b
     argv[argv.indexOf("json")]=format;
     const recovery=spawnSync(process.execPath,[launcher,"record-store",...argv],{encoding:"utf8"});
     assert.equal(recovery.status,0,recovery.stderr+recovery.stdout);
-    if(format==="json")validateRecordStoreRecord("result",JSON.parse(recovery.stdout));
+    if(format==="json")validateAdvancedResult(JSON.parse(recovery.stdout));
     assert.equal(existsSync(join(root,manifest)),action==="complete");
   }
 });
@@ -345,7 +345,7 @@ test("TG-04 interrupted recovery is repeatable and missing/tampered/unknown_valu
 });
 
 test("TG-04 multi-record partial publication restores exact prior bytes",t=>{
-  const root=setup(t), r=request(), f=fixture(), evidence="docs/changes/example/evidence.yaml";
+  const root=setup(t), r=request(), f=fixture(), evidence="docs/changes/example/evidence.json";
   const change=JSON.parse(r.writes[0].content);
   change.records=[{path:evidence,kind:"evidence"}];
   change.applicability=[{...f.change.applicability[0],path:evidence}];
@@ -370,7 +370,7 @@ test("TG-03 public rejection is bounded and ordinary symlink launcher retains ex
   const root=setup(t), launcher=new URL("./helpers/record-store-launcher.mjs",import.meta.url).pathname;
   for(const argv of [["unknown_value","--format","json"],["inspect","--change","../sensitive","--format","json"],["inspect","--root",root,"--change","example","--input","secret","--format","json"]]) {
     const child=spawnSync(process.execPath,[launcher,"record-store",...argv],{encoding:"utf8"});
-    assert.equal(child.status,2); const result=JSON.parse(child.stdout); validateRecordStoreRecord("result",result);
+    assert.equal(child.status,2); const result=JSON.parse(child.stdout); validateAdvancedResult(result);
     assert.equal((child.stdout+child.stderr).includes("sensitive"),false);
     assert.equal(existsSync(join(root,".rigorloop")),false);
   }
@@ -408,7 +408,7 @@ test("TG-04 unexpected IO failures are safe io-failure results",t=>{
 
 test("TG-04 concurrent ancestor substitution stops publication without escaped bytes",t=>{
   const root=setup(t); run(root,"record",request()); const r=update(root);
-  const outside=join(root,"unrelated"); mkdirSync(outside); writeFileSync(join(outside,"change.yaml"),"external\n");
+  const outside=join(root,"unrelated"); mkdirSync(outside); writeFileSync(join(outside,"change.json"),"external\n");
   let substituted=false;
   const result=run(root,"record",r,{fault:point=>{
     if(point==="before-replace:0"&&!substituted) {
@@ -417,7 +417,7 @@ test("TG-04 concurrent ancestor substitution stops publication without escaped b
     }
   }});
   assert.equal(result.result.status,"recovery-required");
-  assert.equal(readFileSync(join(outside,"change.yaml"),"utf8"),"external\n");
+  assert.equal(readFileSync(join(outside,"change.json"),"utf8"),"external\n");
 });
 
 test("TG-04 inspection detects an overlapping completed writer",t=>{

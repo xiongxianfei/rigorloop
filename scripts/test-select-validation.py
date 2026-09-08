@@ -37,12 +37,10 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from validation_selection import (  # noqa: E402
     CHECK_CATALOG,
     catalog_command,
-    EvidenceClassRegistration,
     build_repository_preflight_context,
     SelectionRequest,
     normalize_path,
     select_validation,
-    validate_evidence_class_registry,
 )
 
 ADAPTER_REGRESSION_COMMAND = (
@@ -58,7 +56,7 @@ ADAPTER_REGRESSION_COMMAND = (
 EXPECTED_CATALOG = {
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
     "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/workflow/workflow.md --path docs/design/cli/cli.md --path docs/design/record-format/record-format.md",
-    "compact_contract.canonical": "python scripts/test-compact-current-state-canonical-contract.py && node --test packages/rigorloop/test/compact-contract.test.js",
+    "record_retirement.regression": "node --test packages/rigorloop/test/record-retirement.test.js",
     "boundary_first.validate": "python scripts/validate-boundary-first.py --check",
     "boundary_first.reference_regression": "python scripts/test-boundary-first-reference.py",
     "boundary_first.regression": "python scripts/test-boundary-first-validation.py",
@@ -162,7 +160,7 @@ BROAD_SMOKE_PARALLEL_BASELINE = (
 VALIDATION_PRODUCER_PATTERN = re.compile(
     r"\bpython\s+scripts/(?:test|validate|build)-[\w-]+\.py\b"
 )
-CHANGE_METADATA_PASSING_TEST = "ChangeMetadataValidatorFixtureTests.test_valid_basic_fixture_passes"
+CHANGE_METADATA_PASSING_TEST = "ChangeMetadataValidatorFixtureTests.test_measurement_valid_fixture_passes"
 CHANGE_METADATA_FAILING_TEST = "ChangeMetadataValidatorFixtureTests.test_output_contract_fixture_failure"
 
 
@@ -541,26 +539,24 @@ class ValidationSelectionTests(unittest.TestCase):
         repo = self.make_git_repo()
         shutil.copyfile(ROOT / ".gitignore", repo / ".gitignore")
         (repo / "docs/changes").mkdir(parents=True)
-        templates = json.loads((ROOT / "templates/explicit-recording/records.json").read_text())
+        templates = json.loads((ROOT / "templates/rigorloop-records-v2/records.json").read_text())
         change = templates["change"]
-        records = {"reviews/design-review.md": ("review", templates["review"]),
-                   "evidence.yaml": ("evidence", templates["evidence"]),
-                   "material-decisions.md": ("decisions", templates["decisions"]),
-                   "verify-report.md": ("verify", templates["verify"])}
+        records = {"reviews/design-review.json": ("review", templates["review"]),
+                   "evidence.json": ("evidence", templates["evidence"]),
+                   "material-decisions.json": ("decisions", templates["decisions"]),
+                   "verify-report.json": ("verify", templates["verify"])}
         prefix = "docs/changes/example/"
         change["records"] = [{"path": prefix + name, "kind": kind} for name, (kind, _) in records.items()]
         change["applicability"] = [{"path": entry["path"], "value": "current",
                                     "actor": {"id": "fixture", "role": "support"},
                                     "reason": "Structural selector fixture, not an actual approval"}
                                    for entry in change["records"]]
-        writes = [{"path": prefix + "change.yaml", "expected_identity": None,
+        writes = [{"path": prefix + "change.json", "expected_identity": None,
                    "content": json.dumps(change) + "\n"}]
         for name, (kind, record) in records.items():
             content = json.dumps(record) + "\n"
-            if kind != "evidence":
-                content = "---\n" + content + "---\n\nStructural test fixture only.\n"
             writes.append({"path": prefix + name, "expected_identity": None, "content": content})
-        request = {"schema_version": 1, "contract": "explicit-recording-v1", "change_id": "example",
+        request = {"schema_version": 2, "contract": "rigorloop-records-v2", "change_id": "example",
                    "expected_revision": None, "reads": [], "writes": writes}
         result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
                                  "record-store", "record", "--root", str(repo), "--change", "example",
@@ -606,7 +602,7 @@ class ValidationSelectionTests(unittest.TestCase):
                 self.assertEqual(result.status, "ok", result.blocking_results)
                 checks = {check["id"]: check for check in result.selected_checks}
                 self.assertIn("change_metadata.validate", checks)
-                self.assertIn("docs/changes/example/change.yaml", checks["change_metadata.validate"]["command"])
+                self.assertIn("docs/changes/example/change.json", checks["change_metadata.validate"]["command"])
                 self.assertNotIn("review_artifacts.validate", checks)
                 self.assertNotIn("artifact_lifecycle.validate", checks)
 
@@ -627,11 +623,11 @@ class ValidationSelectionTests(unittest.TestCase):
         unknown = "docs/changes/example/unknown_value.md"
         result = select_validation(SelectionRequest(mode="explicit", paths=(unknown,), repo_root=repo))
         self.assertEqual(result.status, "blocked")
-        manifest = repo / "docs/changes/example/change.yaml"
+        manifest = repo / "docs/changes/example/change.json"
         value = json.loads(manifest.read_text())
         value["contract"] = "unknown_value"
         manifest.write_text(json.dumps(value) + "\n")
-        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/changes/example/evidence.yaml",), repo_root=repo))
+        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/changes/example/evidence.json",), repo_root=repo))
         self.assertEqual(result.status, "blocked")
         self.assertTrue(any(block["code"] == "unsupported-change-contract" for block in result.blocking_results))
 
@@ -1249,7 +1245,7 @@ raise SystemExit({exit_code})
                 result = self.select([path])
                 self.assertEqual(
                     selected_ids(result.to_json_dict()),
-                    {"compact_contract.canonical", "change_metadata.regression"},
+                    {"record_retirement.regression", "change_metadata.regression"},
                 )
 
     def test_shared_preflight_context_requires_matching_repository_identity(self) -> None:
@@ -1266,213 +1262,10 @@ raise SystemExit({exit_code})
                 )
             )
 
-    def test_tracked_change_root_deletion_selects_regressions_without_missing_path_validation(self) -> None:
-        repo = self.make_git_repo()
-        change_root = repo / "docs" / "changes" / "retired-change"
-        change_root.mkdir(parents=True)
-        change_yaml = change_root / "change.yaml"
-        review_resolution = change_root / "review-resolution.md"
-        proposal = change_root / "proposal.md"
-        change_yaml.write_text("change_id: retired-change\n", encoding="utf-8")
-        review_resolution.write_text("# Review resolution\n", encoding="utf-8")
-        proposal.write_text("# Proposal\n", encoding="utf-8")
-        subprocess.run(["git", "add", "."], cwd=repo, check=True)
-        subprocess.run(
-            ["git", "commit", "-m", "add fixture"],
-            cwd=repo,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        change_yaml.unlink()
-        review_resolution.unlink()
-        proposal.unlink()
 
-        context = build_repository_preflight_context(repo)
-        result = select_validation(
-            SelectionRequest(
-                mode="explicit",
-                paths=(
-                    "docs/changes/retired-change/change.yaml",
-                    "docs/changes/retired-change/review-resolution.md",
-                    "docs/changes/retired-change/proposal.md",
-                ),
-                repo_root=repo,
-                preflight_context=context,
-            )
-        )
-        payload = result.to_json_dict()
 
-        self.assertEqual(result.status, "ok")
-        self.assertEqual(payload["blocking_results"], [])
-        self.assertEqual(
-            selected_ids(payload),
-            {
-                "artifact_lifecycle.regression",
-                "change_metadata.regression",
-                "review_artifacts.regression",
-            },
-        )
 
-    def test_change_evidence_registry_entries_are_complete_and_stable(self) -> None:
-        valid = [
-            EvidenceClassRegistration(
-                evidence_class_id="preservation",
-                patterns=("behavior-preservation.md",),
-                selector_routes=("artifact_lifecycle.validate",),
-                required_validator="validate-artifact-lifecycle",
-                lifecycle_stage="implementation",
-                allowed_when=("behavior preservation evidence is recorded",),
-            )
-        ]
-        self.assertEqual(validate_evidence_class_registry(valid), [])
 
-        invalid_cases = [
-            EvidenceClassRegistration(
-                evidence_class_id="bad id",
-                patterns=("bad-id.md",),
-                selector_routes=("artifact_lifecycle.validate",),
-                required_validator="validate-artifact-lifecycle",
-                lifecycle_stage="implementation",
-                allowed_when=("invalid ID fixture",),
-            ),
-            EvidenceClassRegistration(
-                evidence_class_id="missing-route",
-                patterns=("missing-route.md",),
-                selector_routes=(),
-                required_validator="validate-artifact-lifecycle",
-                lifecycle_stage="implementation",
-                allowed_when=("invalid route fixture",),
-            ),
-            EvidenceClassRegistration(
-                evidence_class_id="missing-validator",
-                patterns=("missing-validator.md",),
-                selector_routes=("artifact_lifecycle.validate",),
-                required_validator="",
-                lifecycle_stage="implementation",
-                allowed_when=("invalid validator fixture",),
-            ),
-            EvidenceClassRegistration(
-                evidence_class_id="missing-stage",
-                patterns=("missing-stage.md",),
-                selector_routes=("artifact_lifecycle.validate",),
-                required_validator="validate-artifact-lifecycle",
-                lifecycle_stage="",
-                allowed_when=("invalid stage fixture",),
-            ),
-            EvidenceClassRegistration(
-                evidence_class_id="missing-conditions",
-                patterns=("missing-conditions.md",),
-                selector_routes=("artifact_lifecycle.validate",),
-                required_validator="validate-artifact-lifecycle",
-                lifecycle_stage="implementation",
-            ),
-        ]
-
-        for entry in invalid_cases:
-            with self.subTest(entry=entry.evidence_class_id):
-                self.assertTrue(validate_evidence_class_registry([entry]))
-
-    def test_registered_change_evidence_patterns_and_exact_names_match_once(self) -> None:
-        paths = [
-            "docs/changes/2026-04-25-example/script-output-audit.md",
-            "docs/changes/2026-04-25-example/session-identity.txt",
-            "docs/changes/2026-04-25-example/command-output-identity.txt",
-            "docs/changes/2026-04-25-example/behavior-preservation.md",
-            "docs/changes/2026-04-25-example/adoption-surface-review.md",
-            "docs/changes/2026-04-25-example/readme-ownership-proof.md",
-            "docs/changes/2026-04-25-example/vision-readme-sync-proof.md",
-            "docs/changes/2026-04-25-example/cold-read-review.md",
-            "docs/changes/2026-04-25-example/guide-cold-read.md",
-            "docs/changes/2026-04-25-example/repository-metadata-proof.md",
-            "docs/changes/2026-04-25-example/version-sync-proof.md",
-            "docs/changes/2026-04-25-example/baseline.md",
-            "docs/changes/2026-04-25-example/script-performance-baseline.yaml",
-            "docs/changes/2026-04-25-example/token-cost.md",
-            "docs/changes/2026-04-25-example/cold-read-proof.md",
-            "docs/changes/2026-04-25-example/representative-project-map-outputs.md",
-            "docs/changes/2026-04-25-example/broad-smoke-child-classification.md",
-            "docs/changes/2026-04-25-example/release-surface-inventory.yaml",
-            "docs/changes/2026-04-25-example/release-literal-audit-baseline.yaml",
-        ]
-        result = self.select(paths)
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertFalse(payload["blocking_results"])
-        self.assertTrue(
-            all(
-                classified["category"] == "registered-change-evidence"
-                for classified in payload["classified_paths"]
-            )
-        )
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-
-    def test_change_evidence_registry_rejects_broad_and_ambiguous_patterns(self) -> None:
-        broad_entries = [
-            EvidenceClassRegistration(
-                evidence_class_id="broad-md",
-                patterns=("*.md",),
-                selector_routes=("artifact_lifecycle.validate",),
-                required_validator="validate-artifact-lifecycle",
-                lifecycle_stage="implementation",
-                allowed_when=("invalid broad fixture",),
-            ),
-            EvidenceClassRegistration(
-                evidence_class_id="broad-txt",
-                patterns=("*.txt",),
-                selector_routes=("artifact_lifecycle.validate",),
-                required_validator="validate-artifact-lifecycle",
-                lifecycle_stage="implementation",
-                allowed_when=("invalid broad fixture",),
-            ),
-        ]
-        errors = validate_evidence_class_registry(broad_entries)
-        self.assertGreaterEqual(len(errors), 2)
-        self.assertTrue(all("too broad" in error for error in errors))
-
-        ambiguous_entries = [
-            EvidenceClassRegistration(
-                evidence_class_id="preservation-a",
-                patterns=("*-preservation.md",),
-                selector_routes=("artifact_lifecycle.validate",),
-                required_validator="validate-artifact-lifecycle",
-                lifecycle_stage="implementation",
-                allowed_when=("ambiguous fixture",),
-            ),
-            EvidenceClassRegistration(
-                evidence_class_id="preservation-b",
-                patterns=("behavior-preservation.md",),
-                selector_routes=("artifact_lifecycle.validate",),
-                required_validator="validate-artifact-lifecycle",
-                lifecycle_stage="implementation",
-                allowed_when=("ambiguous fixture",),
-            ),
-        ]
-        ambiguous_result = validate_evidence_class_registry(
-            ambiguous_entries,
-            sample_paths=("behavior-preservation.md",),
-        )
-        self.assertTrue(any("ambiguous" in error for error in ambiguous_result))
-
-    def test_registered_change_evidence_selects_declared_checks_and_governing_metadata(self) -> None:
-        result = self.select(["docs/changes/2026-04-25-example/behavior-preservation.md"])
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertFalse(payload["blocking_results"])
-        self.assertIn(
-            {
-                "path": "docs/changes/2026-04-25-example/behavior-preservation.md",
-                "category": "registered-change-evidence",
-            },
-            payload["classified_paths"],
-        )
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
-        self.assertIn("docs/changes/2026-04-25-example/behavior-preservation.md", lifecycle_check["paths"])
-        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
-        self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
 
     def test_selector_preservation_surface_keeps_selected_check_identity(self) -> None:
         paths = [
@@ -1488,43 +1281,15 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertEqual(payload["blocking_results"], [])
         self.assertEqual(
-            {"artifact_lifecycle.validate", "selector.regression"},
+            {"record_retirement.regression", "selector.regression"},
             selected_ids(payload),
         )
         selector_check = next(check for check in payload["selected_checks"] if check["id"] == "selector.regression")
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
+        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "record_retirement.regression")
         self.assertEqual(selector_check["phase"], "focused")
         self.assertEqual(selector_check["cache_status"], "not-applicable")
         self.assertIn("Changed selector code requires selector regression fixtures.", selector_check["reason"])
-        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
-        self.assertIn("docs/changes/2026-04-25-example/selector-preservation.md", lifecycle_check["paths"])
 
-    def test_validation_cache_evidence_files_route_without_manual_debt(self) -> None:
-        paths = [
-            "docs/changes/2026-04-25-example/validation-cache-evidence.yaml",
-            "docs/changes/2026-04-25-example/validation-cache-measurement.yaml",
-        ]
-        result = self.select(paths)
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertFalse(payload["blocking_results"])
-        self.assertFalse(payload["registration_debt"])
-        self.assertTrue(
-            all(
-                classified["category"] == "registered-change-evidence"
-                for classified in payload["classified_paths"]
-            )
-        )
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-        self.assertIn("change_metadata.validate", selected_ids(payload))
-        self.assertIn("validation_cache.regression", selected_ids(payload))
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
-        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
-        self.assertIn("docs/changes/2026-04-25-example/validation-cache-evidence.yaml", lifecycle_check["paths"])
-        self.assertIn("docs/changes/2026-04-25-example/validation-cache-measurement.yaml", lifecycle_check["paths"])
-        metadata_check = next(check for check in payload["selected_checks"] if check["id"] == "change_metadata.validate")
-        self.assertIn("docs/changes/2026-04-25-example/validation-cache-measurement.yaml", metadata_check["paths"])
 
     def assert_registered_change_evidence_routes(self, paths: list[str]) -> None:
         result = self.select(paths)
@@ -1552,86 +1317,10 @@ raise SystemExit({exit_code})
         for path in paths:
             self.assertIn(path, lifecycle_check["paths"])
 
-    def test_selector_runtime_evidence_files_route_without_manual_debt(self) -> None:
-        self.assert_registered_change_evidence_routes(
-            [
-                "docs/changes/2026-04-25-example/selector-regression-runtime-baseline.yaml",
-                "docs/changes/2026-04-25-example/selector-regression-runtime-result.yaml",
-            ]
-        )
 
-    def test_lifecycle_closeout_evidence_files_route_without_manual_debt(self) -> None:
-        self.assert_registered_change_evidence_routes(
-            [
-                "docs/changes/2026-04-25-example/architecture-assessment.md",
-                "docs/changes/2026-04-25-example/pr.md",
-            ]
-        )
 
-    def test_unregistered_change_evidence_produces_registration_debt(self) -> None:
-        result = self.select(["docs/changes/2026-04-25-example/notes.md"])
-        payload = result.to_json_dict()
 
-        self.assertEqual(result.status, "blocked")
-        self.assertIn(
-            {
-                "path": "docs/changes/2026-04-25-example/notes.md",
-                "category": "unregistered-change-evidence",
-            },
-            payload["classified_paths"],
-        )
-        self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
-        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
-        debt = next(item for item in payload["blocking_results"] if item["code"] == "manual-routing-required")
-        self.assertEqual(debt["path"], "docs/changes/2026-04-25-example/notes.md")
-        self.assertTrue(debt["manual_routing_required"])
-        self.assertEqual(debt["path_class"], "unregistered-change-evidence")
-        self.assertEqual(debt["affected_class"], "change-local evidence")
-        self.assertEqual(debt["debt"], "evidence-registration")
-        self.assertEqual(debt["verify_readiness"], "blocked")
-        self.assertEqual(debt["deferral_status"], "none")
-        self.assertIn("selector routing", debt["next_action"])
-        self.assertIn("owner-approved deferral", debt["next_action"])
-        for required_term in ("owner", "path", "reason", "validation impact", "follow-up"):
-            self.assertIn(required_term, debt["next_action"])
 
-    def test_change_local_evidence_directory_uses_lifecycle_validation(self) -> None:
-        path = "docs/changes/2026-04-25-example/evidence/m1-implementation.md"
-        result = self.select([path])
-        payload = result.to_json_dict()
-
-        self.assertIn(
-            {"path": path, "category": "change-local-lifecycle"},
-            payload["classified_paths"],
-        )
-        self.assertNotIn(
-            "manual-routing-required",
-            {item["code"] for item in payload["blocking_results"]},
-        )
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-
-    def test_diagnostic_broad_smoke_does_not_erase_missing_route_blocker(self) -> None:
-        result = select_validation(
-            SelectionRequest(
-                mode="explicit",
-                paths=("docs/changes/2026-04-25-example/notes.md",),
-                broad_smoke=True,
-                repo_root=ROOT,
-            )
-        )
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "blocked")
-        self.assertTrue(payload["broad_smoke_required"])
-        self.assertIn("broad_smoke.repo", selected_ids(payload))
-        self.assertIn(
-            "manual-routing-required",
-            {item["code"] for item in payload["blocking_results"]},
-        )
-        debt = next(item for item in payload["blocking_results"] if item["code"] == "manual-routing-required")
-        self.assertEqual(debt["path"], "docs/changes/2026-04-25-example/notes.md")
-        self.assertEqual(debt["verify_readiness"], "blocked")
-        self.assertIn({"type": "explicit_flag", "value": "--broad-smoke"}, payload["broad_smoke"]["sources"])
 
     def write_change_with_evidence_deferral(
         self,
@@ -1659,140 +1348,10 @@ raise SystemExit({exit_code})
         )
         return repo, evidence_path
 
-    def test_unregistered_change_evidence_with_complete_deferral_unblocks_readiness(self) -> None:
-        repo, evidence_path = self.write_change_with_evidence_deferral(
-            deferral_fields={
-                "path": "docs/changes/2026-04-25-deferral/unregistered-evidence.md",
-                "owner": "plan-review",
-                "reason": "intentionally unsupported fixture",
-                "validation_impact": "explicit lifecycle coverage required",
-                "follow_up": "docs/plans/2026-04-25-deferral.md#M3",
-            }
-        )
 
-        result = select_validation(SelectionRequest(mode="explicit", paths=(evidence_path,), repo_root=repo))
-        payload = result.to_json_dict()
 
-        self.assertEqual(result.status, "ok")
-        self.assertIn(
-            {"path": evidence_path, "category": "unregistered-change-evidence"},
-            payload["classified_paths"],
-        )
-        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
-        self.assertEqual(payload["blocking_results"], [])
-        debt = next(item for item in payload["registration_debt"] if item["path"] == evidence_path)
-        self.assertTrue(debt["manual_routing_required"])
-        self.assertEqual(debt["debt"], "evidence-registration")
-        self.assertEqual(debt["verify_readiness"], "owner-deferred")
-        self.assertEqual(debt["deferral_status"], "complete")
-        self.assertEqual(debt["deferral"]["owner"], "plan-review")
-        self.assertEqual(debt["deferral"]["path"], evidence_path)
-        self.assertEqual(debt["deferral"]["reason"], "intentionally unsupported fixture")
-        self.assertEqual(debt["deferral"]["validation_impact"], "explicit lifecycle coverage required")
-        self.assertEqual(debt["deferral"]["follow_up"], "docs/plans/2026-04-25-deferral.md#M3")
 
-    def test_unregistered_change_evidence_with_incomplete_deferral_remains_blocking(self) -> None:
-        repo, evidence_path = self.write_change_with_evidence_deferral(
-            deferral_fields={
-                "path": "docs/changes/2026-04-25-deferral/unregistered-evidence.md",
-                "owner": "plan-review",
-                "reason": "missing fields fixture",
-            }
-        )
 
-        result = select_validation(SelectionRequest(mode="explicit", paths=(evidence_path,), repo_root=repo))
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "blocked")
-        debt = next(item for item in payload["blocking_results"] if item["path"] == evidence_path)
-        self.assertEqual(debt["deferral_status"], "incomplete")
-        self.assertEqual(debt["verify_readiness"], "blocked")
-        self.assertIn("validation_impact", debt["missing_deferral_fields"])
-        self.assertIn("follow_up", debt["missing_deferral_fields"])
-
-    def test_nested_change_local_evidence_with_complete_deferral_unblocks_readiness(self) -> None:
-        evidence_path = "docs/changes/2026-04-25-deferral/fixtures/scenario-contracts.yaml"
-        repo, selected_path = self.write_change_with_evidence_deferral(
-            deferral_fields={
-                "path": evidence_path,
-                "owner": "test-spec-review",
-                "reason": "one-change acceptance fixture",
-                "validation_impact": "exact test-spec command remains required",
-                "follow_up": "specs/example.test.md#CMD1",
-            },
-            evidence_relative_path="fixtures/scenario-contracts.yaml",
-        )
-
-        result = select_validation(SelectionRequest(mode="explicit", paths=(selected_path,), repo_root=repo))
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertIn(
-            {"path": evidence_path, "category": "change-local-unsupported"},
-            payload["classified_paths"],
-        )
-        self.assertEqual(payload["blocking_results"], [])
-        debt = next(item for item in payload["registration_debt"] if item["path"] == evidence_path)
-        self.assertEqual(debt["path_class"], "change-local-unsupported")
-        self.assertEqual(debt["verify_readiness"], "owner-deferred")
-        self.assertEqual(debt["deferral_status"], "complete")
-
-    def test_owner_deferral_for_different_path_does_not_unblock_evidence(self) -> None:
-        repo, evidence_path = self.write_change_with_evidence_deferral(
-            deferral_fields={
-                "path": "docs/changes/2026-04-25-deferral/other-evidence.md",
-                "owner": "plan-review",
-                "reason": "wrong path fixture",
-                "validation_impact": "explicit lifecycle coverage required",
-                "follow_up": "docs/plans/2026-04-25-deferral.md#M3",
-            }
-        )
-
-        result = select_validation(SelectionRequest(mode="explicit", paths=(evidence_path,), repo_root=repo))
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "blocked")
-        debt = next(item for item in payload["blocking_results"] if item["path"] == evidence_path)
-        self.assertEqual(debt["deferral_status"], "none")
-        self.assertEqual(debt["verify_readiness"], "blocked")
-
-    def test_local_mode_discovers_registered_evidence_not_named_by_explicit_paths(self) -> None:
-        repo = self.make_git_repo()
-        change_root = repo / "docs" / "changes" / "2026-04-25-local"
-        change_root.mkdir(parents=True)
-        (change_root / "change.yaml").write_text("change_id: 2026-04-25-local\n", encoding="utf-8")
-        (change_root / "selector-routing-proof.md").write_text("# Selector routing proof\n", encoding="utf-8")
-
-        explicit_result = select_validation(
-            SelectionRequest(
-                mode="explicit",
-                paths=("docs/changes/2026-04-25-local/change.yaml",),
-                repo_root=repo,
-            )
-        )
-        local_result = select_validation(SelectionRequest(mode="local", repo_root=repo))
-        explicit_payload = explicit_result.to_json_dict()
-        local_payload = local_result.to_json_dict()
-
-        self.assertEqual(explicit_result.status, "ok")
-        self.assertNotIn(
-            "docs/changes/2026-04-25-local/selector-routing-proof.md",
-            explicit_payload["changed_paths"],
-        )
-        self.assertEqual(local_result.status, "ok")
-        self.assertIn(
-            "docs/changes/2026-04-25-local/selector-routing-proof.md",
-            local_payload["changed_paths"],
-        )
-        self.assertIn(
-            {
-                "path": "docs/changes/2026-04-25-local/selector-routing-proof.md",
-                "category": "registered-change-evidence",
-            },
-            local_payload["classified_paths"],
-        )
-        self.assertIn("artifact_lifecycle.validate", selected_ids(local_payload))
-        self.assertIn("docs/changes/2026-04-25-local/", local_payload["affected_roots"])
 
     def test_selector_registry_changes_select_selector_regression(self) -> None:
         result = self.select(
@@ -1851,17 +1410,17 @@ raise SystemExit({exit_code})
         self.assertEqual(result.status, "ok")
         self.assertIn("documentation_prose.audit", selected_ids(payload))
         self.assertIn("skills.validate", selected_ids(payload))
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("record_retirement.regression", selected_ids(payload))
         audit_check = next(
             check for check in payload["selected_checks"] if check["id"] == "documentation_prose.audit"
         )
         self.assertEqual(
             audit_check["command"],
-            "python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-04-25-example/explain-change.md --path skills/code-review/SKILL.md",
+            "python scripts/validate-documentation-prose.py --mode audit --path skills/code-review/SKILL.md",
         )
         self.assertEqual(
             audit_check["paths"],
-            ["docs/changes/2026-04-25-example/explain-change.md", "skills/code-review/SKILL.md"],
+            ["skills/code-review/SKILL.md"],
         )
 
     def test_documentation_prose_tier_c_paths_do_not_select_first_slice_prose_validation(self) -> None:
@@ -1879,7 +1438,7 @@ raise SystemExit({exit_code})
         self.assertNotIn("documentation_prose.enforce", selected_ids(payload))
         self.assertNotIn("documentation_prose.audit", selected_ids(payload))
         self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-        self.assertIn("review_artifacts.validate", selected_ids(payload))
+        self.assertIn("record_retirement.regression", selected_ids(payload))
         self.assertIn("guide_system.validate", selected_ids(payload))
 
     def test_documentation_prose_validator_surfaces_route_without_manual_blocks(self) -> None:
@@ -1938,7 +1497,7 @@ raise SystemExit({exit_code})
             "artifact_lifecycle.regression",
             "change_record_query.regression",
             "change_metadata.regression",
-            "compact_contract.canonical",
+            "record_retirement.regression",
             "documentation_prose.regression",
             "guide_system.regression",
             "governed_lifecycle_cli_wrapper.test",
@@ -2051,7 +1610,11 @@ raise SystemExit({exit_code})
         )
         for path in paths:
             with self.subTest(path=path):
-                self.assertIn(path, lifecycle["paths"])
+                if path.startswith("docs/changes/"):
+                    self.assertNotIn(path, lifecycle["paths"])
+                    self.assertIn("record_retirement.regression", selected_ids(payload))
+                else:
+                    self.assertIn(path, lifecycle["paths"])
 
     def test_mixed_skill_and_spec_scope_each_check_to_its_owner(self) -> None:
         skill_path = "skills/spec/SKILL.md"
@@ -2265,7 +1828,7 @@ raise SystemExit({exit_code})
         checks = selected_ids(result.to_json_dict())
 
         self.assertIn("boundary_first.validate", checks)
-        self.assertIn("artifact_lifecycle.validate", checks)
+        self.assertIn("record_retirement.regression", checks)
         self.assertIn("skills.validate", checks)
         self.assertIn("adapters.regression", checks)
         self.assertIn("rigorloop_cli.test", checks)
@@ -2425,27 +1988,6 @@ raise SystemExit({exit_code})
         self.assertIn("skills.validate", selected_ids(payload))
         self.assertEqual(payload["unclassified_paths"], ["experimental/runtime/example.txt"])
 
-    def test_change_metadata_paths_select_multi_file_validator(self) -> None:
-        result = self.select(
-            [
-                "docs/changes/2026-04-25-a/change.yaml",
-                "docs/changes/2026-04-25-b/change.yaml",
-            ]
-        )
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertIn("change_metadata.validate", selected_ids(payload))
-        self.assertIn("change_metadata.regression", selected_ids(payload))
-        self.assertEqual(
-            payload["affected_roots"],
-            ["docs/changes/2026-04-25-a/", "docs/changes/2026-04-25-b/"],
-        )
-        validate_check = next(check for check in payload["selected_checks"] if check["id"] == "change_metadata.validate")
-        self.assertEqual(
-            validate_check["command"],
-            "python scripts/validate-change-metadata.py docs/changes/2026-04-25-a/change.yaml docs/changes/2026-04-25-b/change.yaml",
-        )
 
     def test_review_lifecycle_and_release_paths_select_scoped_validators(self) -> None:
         result = self.select(
@@ -2458,10 +2000,10 @@ raise SystemExit({exit_code})
         payload = result.to_json_dict()
 
         self.assertEqual(result.status, "ok")
-        self.assertIn("review_artifacts.validate", selected_ids(payload))
+        self.assertIn("record_retirement.regression", selected_ids(payload))
         self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
         self.assertIn("release.validate", selected_ids(payload))
-        self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
+        self.assertNotIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
         self.assertEqual(
             release_check["command"],
@@ -2870,258 +2412,6 @@ raise SystemExit({exit_code})
                 "checks": {"artifact_lifecycle.validate", "guide_system.validate"},
             },
             {
-                "path": "docs/changes/2026-04-25-example/plan-index-migration.md",
-                "category": "change-local-lifecycle",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/explain-change.md",
-                "category": "change-local-lifecycle",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/architecture.md",
-                "category": "change-local-lifecycle",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/verify-report.md",
-                "category": "change-local-lifecycle",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/implementation-notes.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/cold-read-report.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/adapter-packaging.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/behavior-parity-report.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/behavior-parity.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/behavior-preservation.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/vision-readme-sync-proof.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/cold-read-review.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/guide-cold-read.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/output-contract-red-test.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/script-output-audit.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/script-output-layer-audit.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/broad-smoke-child-commands-baseline.txt",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/broad-smoke-child-classification.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/broad-smoke-child-commands-post-m4.txt",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/change-metadata-validator-tests-baseline.txt",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/change-metadata-validator-tests-post-m4.txt",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/selected-tests-baseline.txt",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/selected-tests-m3.txt",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/baseline.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/script-performance-baseline.yaml",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/selector-regression-profile.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/broad-smoke-child-classification.yaml",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/broad-smoke-parallelism-baseline.yaml",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/broad-smoke-parallelism-result.yaml",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/generated-output-proof.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/historical-coverage.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/clean-install-proof.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/validator-fixtures.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/release-process-dry-run.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/routing-coverage.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/selector-routing-proof.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/skill-audit.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/token-cost.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/m2-code-review-preservation.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/m5-generated-token-cold-read-evidence.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/skill-contract-sufficiency.md",
-                "category": "registered-change-evidence",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
-                "path": "docs/changes/2026-04-25-example/diagrams/context.mmd",
-                "category": "change-local-lifecycle",
-                "status": "ok",
-                "checks": {"artifact_lifecycle.validate"},
-            },
-            {
                 "path": "docs/architecture/system/diagrams/context.mmd",
                 "category": "architecture-diagram",
                 "status": "ok",
@@ -3419,31 +2709,6 @@ raise SystemExit({exit_code})
         lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
         self.assertEqual(lifecycle_check["paths"], ["docs/plan-archive.md", "docs/plan.md"])
 
-    def test_plan_index_migration_proof_routes_with_metadata_and_index_surfaces(self) -> None:
-        result = self.select(["docs/changes/2026-04-25-example/plan-index-migration.md"])
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertEqual(payload["unclassified_paths"], [])
-        self.assertEqual(payload["blocking_results"], [])
-        self.assertIn(
-            {
-                "path": "docs/changes/2026-04-25-example/plan-index-migration.md",
-                "category": "change-local-lifecycle",
-            },
-            payload["classified_paths"],
-        )
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
-        self.assertEqual(
-            lifecycle_check["paths"],
-            [
-                "docs/changes/2026-04-25-example/change.yaml",
-                "docs/changes/2026-04-25-example/plan-index-migration.md",
-                "docs/plan-archive.md",
-                "docs/plan.md",
-            ],
-        )
 
     def test_selector_and_validation_script_paths_select_regressions(self) -> None:
         result = self.select(["scripts/select-validation.py", "scripts/validate-review-artifacts.py"])
@@ -3480,7 +2745,7 @@ raise SystemExit({exit_code})
         lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
         for path in paths:
             with self.subTest(path=path):
-                if path == "skills/workflow/SKILL.md":
+                if path == "skills/workflow/SKILL.md" or path.startswith("docs/changes/"):
                     self.assertNotIn(path, lifecycle_check["paths"])
                 else:
                     self.assertIn(path, lifecycle_check["paths"])
@@ -3699,7 +2964,7 @@ raise SystemExit({exit_code})
         self.assertIn("artifact_lifecycle.regression", selected_ids(payload))
         lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
         self.assertIn("docs/architecture/system/architecture.md", lifecycle_check["paths"])
-        self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
+        self.assertNotIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
 
     def test_workflow_refactor_surface_set_selects_expected_checks(self) -> None:
         paths = [
@@ -3755,11 +3020,11 @@ raise SystemExit({exit_code})
             "scripts/build-skills.py": "validator-skills",
             "scripts/test-build-skills.py": "validator-skills",
             "scripts/test-skill-validator.py": "validator-skills",
-            "docs/changes/2026-05-03-workflow-refactor/change.yaml": "change-metadata",
-            "docs/changes/2026-05-03-workflow-refactor/explain-change.md": "change-local-lifecycle",
-            "docs/changes/2026-05-03-workflow-refactor/verify-report.md": "change-local-lifecycle",
-            "docs/changes/2026-05-03-workflow-refactor/review-log.md": "review-artifacts",
-            "docs/changes/2026-05-03-workflow-refactor/review-resolution.md": "review-artifacts",
+            "docs/changes/2026-05-03-workflow-refactor/change.yaml": "change-records",
+            "docs/changes/2026-05-03-workflow-refactor/explain-change.md": "change-records",
+            "docs/changes/2026-05-03-workflow-refactor/verify-report.md": "change-records",
+            "docs/changes/2026-05-03-workflow-refactor/review-log.md": "change-records",
+            "docs/changes/2026-05-03-workflow-refactor/review-resolution.md": "change-records",
         }
         for path, category in expected_categories.items():
             with self.subTest(path=path):
@@ -3774,11 +3039,9 @@ raise SystemExit({exit_code})
                 "adapters.regression",
                 "adapters.drift",
                 "adapters.validate",
-                "review_artifacts.validate",
+                "record_retirement.regression",
                 "artifact_lifecycle.regression",
                 "artifact_lifecycle.validate",
-                "change_metadata.regression",
-                "change_metadata.validate",
                 "guide_system.validate",
                 "readme.validate",
                 "readme.vision_markers",
@@ -4152,26 +3415,12 @@ raise SystemExit({exit_code})
         self.assertEqual(result.returncode, 0, msg=output)
         self.assertIn("Selector mode: explicit", output)
         self.assertIn("Preflight results:", output)
-        self.assertIn("Run selected check: review_artifacts.validate", output)
-        self.assertIn("Run selected check: artifact_lifecycle.validate", output)
+        self.assertIn("Run selected check: record_retirement.regression", output)
         self.assertIn("Phase: focused", output)
         self.assertIn("Selected CI phase timing summary:", output)
-        self.assertIn(
-            "python scripts/validate-review-artifacts.py docs/changes/2026-08-31-retire-standalone-test-spec-stage/",
-            output,
-        )
-        self.assertIn(
-            "python scripts/validate-artifact-lifecycle.py --mode explicit-paths",
-            output,
-        )
-        self.assertIn(
-            "--path docs/changes/2026-08-31-retire-standalone-test-spec-stage/review-resolution.md",
-            output,
-        )
-        self.assertIn(
-            "--path docs/changes/2026-08-31-retire-standalone-test-spec-stage/change.yaml",
-            output,
-        )
+        self.assertNotIn("Run selected check: review_artifacts.validate", output)
+        self.assertNotIn("Run selected check: artifact_lifecycle.validate", output)
+        self.assertIn("node --test packages/rigorloop/test/record-retirement.test.js", output)
 
     def test_ci_wrapper_fails_on_blocked_selector_without_partial_execution(self) -> None:
         fixture = self.write_selector_fixture(
@@ -5241,7 +4490,7 @@ esac
             nonempty_lines[0],
             r"^\[PASS\] test-change-metadata-validator: 1 passed in \d+(?:\.\d+)?s$",
         )
-        self.assertNotIn("test_valid_basic_fixture_passes", output)
+        self.assertNotIn("test_measurement_valid_fixture_passes", output)
         self.assertNotIn(" ... ok", output)
 
     def test_change_metadata_validator_default_failure_is_actionable(self) -> None:
@@ -5256,7 +4505,7 @@ esac
         self.assertIn("FAILED ChangeMetadataValidatorFixtureTests.test_output_contract_fixture_failure", output)
         self.assertIn("AssertionError: intentional output-contract failure", output)
         self.assertIn("scripts/test-change-metadata-validator.py:", output)
-        self.assertNotIn("test_valid_basic_fixture_passes", output)
+        self.assertNotIn("test_measurement_valid_fixture_passes", output)
 
     def test_change_metadata_validator_verbose_preserves_full_detail(self) -> None:
         for flag in ("--verbose", "-v"):
@@ -5265,7 +4514,7 @@ esac
                 output = result.stdout + result.stderr
 
                 self.assertEqual(result.returncode, 0, msg=output)
-                self.assertIn("test_valid_basic_fixture_passes", output)
+                self.assertIn("test_measurement_valid_fixture_passes", output)
                 self.assertIn(" ... ok", output)
                 self.assertIn("Ran 1 test", output)
                 self.assertIn("OK", output)
@@ -5829,7 +5078,7 @@ raise SystemExit(3)
                 "direct proof",
             ],
             "skills/verify/SKILL.md": [
-                "verify-report.md",
+                "registered v2 evidence",
                 "manual by design",
                 "manual proof",
                 "release metadata",
@@ -5893,7 +5142,7 @@ raise SystemExit(3)
         self.assertIn("skills/workflow/SKILL.md", payload["changed_paths"])
         self.assertIn("docs/changes/2026-04-25-local/change.yaml", payload["changed_paths"])
         self.assertIn("skills.validate", selected_ids(payload))
-        self.assertIn("change_metadata.validate", selected_ids(payload))
+        self.assertIn("record_retirement.regression", selected_ids(payload))
 
     def test_normalize_path_rejects_outside_repository_paths(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-paths-"))
@@ -5976,43 +5225,6 @@ raise SystemExit(3)
                 else:
                     self.assertNotIn("--path", command)
 
-    def test_boundary_first_change_evidence_has_deterministic_routes(self) -> None:
-        repo = self.make_git_repo()
-        change_root = (
-            repo
-            / "docs"
-            / "changes"
-            / "2026-07-27-portable-boundary-first-capability"
-        )
-        paths = (
-            change_root / "change.yaml",
-            change_root / "boundary-reference-evidence.yaml",
-            change_root / "boundary-validation-evidence.yaml",
-            change_root / "boundary-activation-evidence.yaml",
-            change_root / "boundary-install-evidence.yaml",
-            change_root / "m1-implementation.md",
-            change_root / "review-invocation-code-review-m1-r1.yaml",
-        )
-        for path in paths:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text("fixture\n", encoding="utf-8")
-
-        result = select_validation(
-            SelectionRequest(
-                mode="explicit",
-                paths=tuple(path.relative_to(repo).as_posix() for path in paths),
-                repo_root=repo,
-            )
-        )
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok", payload)
-        self.assertEqual(payload["blocking_results"], [])
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-        self.assertIn("boundary_first.validate", selected_ids(payload))
-        self.assertIn("boundary_first.reference_regression", selected_ids(payload))
-        self.assertIn("adapters.regression", selected_ids(payload))
-        self.assertIn("review_artifacts.validate", selected_ids(payload))
 
     def test_output_contract_red_tests_are_unmasked_and_separate(self) -> None:
         source = Path(__file__).read_text(encoding="utf-8")

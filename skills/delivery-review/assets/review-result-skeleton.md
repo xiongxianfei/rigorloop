@@ -4,7 +4,7 @@
 <!-- Maintained alongside: skills/delivery-review/SKILL.md -->
 
 
-<!-- Presentation only: adopted Review and Closeout uses exact subjects, scope and claim limits from the packaged application. Historical fields below remain contract-selected; do not serialize them into v2 by copying this asset. -->
+<!-- Presentation only: adopted Review and Closeout uses exact subjects, scope and claim limits from the packaged application. Use the existing v2 schema and targeted commands for storage; this asset is presentation only. -->
 
 ## Result
 
@@ -17,7 +17,6 @@
 - Material findings: <finding IDs or none>
 - Correction targets: <artifact IDs and stages or none>
 - Recording status: <recorded | blocked | not-required>
-- Settlement status: <settled | withheld | blocked | not-applicable>
 - Open blockers: <blockers or none>
 - Immediate next stage: <workflow | authoring owner | evidence acquisition | isolated stop>
 - Claim limitations: <claim limitations>

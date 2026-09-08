@@ -1,19 +1,19 @@
 # Governed architecture authoring
 
-Load only for `AA2-governed-authoring`. The parent and package method own architecture judgment; this reference owns governed registration.
+Load only when the parent skill establishes exact governed architecture authority. The parent owns subject quality; this reference applies the v2 recording boundary.
 
-## Basis and manifest
+## Basis and authoring
 
-Run `rigorloop lifecycle context architecture --change <change-id> --format json`. Require the accepted Proposal Review ID, exact proposal and architecture paths, legal authority, and no blocker. Prepare one ordered authoring-evidence manifest covering each canonical or ADR target, its kind, role, path, prior digest or absence, dependencies, commit group, and independently valid commit point. Capture every prior target digest before writing.
+Use the parent's scoped `rigorloop context` and `subject inspect` procedure. Require the explicitly selected change, current prerequisites, exact target paths and revision authority. The CLI supplies observations, not legal authority or a permitted next stage. Stop dependent authoring when required authority or evidence is missing, stale or contradictory.
 
-If context returns `RL_WORKFLOW_ROUTE_REQUIRED`, do not author or mutate state. Return its route facts to the route skill and resume only after context makes `record-artifact-revision` immediately available.
+Author only the architecture and applicable ADRs and authorized authoring evidence. Preserve unrelated artifacts and historical evidence. Capture prior subject identities before revision; inspect the completed content afterward. Route changes to downstream reliance to the responsible owner rather than editing another actor's judgment.
 
-Write stage-owned diagrams, ADRs, canonical Markdown, and manifest evidence in dependency order. For each target, evidence names its artifact path, SHA-256 identity, and `Evidence state: complete`. Preserve architecture history. A partial batch may retain only targets the manifest proves independently valid; otherwise stop and route recovery.
+## Recording
 
-For each complete target, refresh context and submit `record-artifact-revision` using the returned lifecycle revision, exact target ID, kind (`architecture` or `adr`), role, path, shared evidence path, `stage_authority: architecture`, and prior digest for revision. Register targets in manifest order. The CLI derives `review-required` and invalidates replaced evidence; never edit lifecycle fields or routing directly.
+Use purpose-specific `change link` and `evidence record` commands, or a targeted `batch` for related updates, with the current record contract, expected revision and exact subject reads. Supply explicit applicability where required. The CLI constructs registration and serialization; it does not derive review readiness, invalidate assessments automatically or grant approval. Record impacted applicability as stale when justified without retargeting an earlier review.
 
-Stop on drift, dependency failure, conflicting target, rejected registration, unsafe partial group, or ambiguous retry. `already-recorded` is success only for the identical target and evidence.
+Conflict requires rereading and reassessment. A busy or recovery-required result is not a successful save; use only the retained explicit v2 storage recovery procedure when authorized. Preserve partial evidence honestly and stop on ambiguous outcome. Do not emulate a retired lifecycle operation or reconstruct complete record files.
 
 ## Result
 
-Report assessment basis, manifest, each target and CLI result, preserved partial state, blockers, and Design Review eligibility after specification reconciliation. Do not claim approval or continuation.
+Report exact subjects, authoring evidence, recording outcome and the `spec reconciliation, then design-review` handoff. Do not settle review, change routing or claim downstream readiness.

@@ -1,19 +1,21 @@
 # Governed proposal authoring
 
-Load only for `governed_proposal_candidate_context`. The parent owns proposal judgment; this reference owns the governed write boundary.
+Load only when the parent skill establishes exact governed proposal authority. The parent owns subject quality; this reference applies the v2 recording boundary.
 
-## CLI-bound authoring
+## Basis and authoring
 
-Run `rigorloop lifecycle context proposal --change <change-id> --format json`. Require one supported governed change, legal proposal authority, settled inputs, an exact target or unambiguous creation path, and no blocker. Capture the current target identity before revising.
+Use the parent's scoped `rigorloop context` and `subject inspect` procedure. Require the explicitly selected change, current prerequisites, exact target paths and revision authority. The CLI supplies observations, not legal authority or a permitted next stage. Stop dependent authoring when required authority or evidence is missing, stale or contradictory.
 
-If context returns `RL_WORKFLOW_ROUTE_REQUIRED`, do not author or mutate state. Return its route facts to the route skill and resume only after context makes `record-artifact-revision` immediately available.
+Author only the proposal and authorized authoring evidence. Preserve unrelated artifacts and historical evidence. Capture prior subject identities before revision; inspect the completed content afterward. Route changes to downstream reliance to the responsible owner rather than editing another actor's judgment.
 
-Author only the proposal and its authoring evidence. The proposal itself contains no status, ownership pointer, lifecycle identity, or reverse link. Creation requires an absent entry and non-conflicting path. Revision requires the exact current governed entry and explicit revision authority; downstream reliance first routes to `route` impact handling. Preserve history and every unrelated artifact.
+## Recording
 
-After writing and validating both files, refresh context and submit `record-artifact-revision` with the returned lifecycle revision, exact artifact ID, `artifact_kind: proposal`, role, path, evidence path, `stage_authority: proposal`, and the captured prior digest for revision. The CLI derives `review-required`, invalidates replaced evidence, and changes only the matching entry. Never edit lifecycle fields directly.
+Use purpose-specific `change link` and `evidence record` commands, or a targeted `batch` for related updates, with the current record contract, expected revision and exact subject reads. Supply explicit applicability where required. The CLI constructs registration and serialization; it does not derive review readiness, invalidate assessments automatically or grant approval. Record impacted applicability as stale when justified without retargeting an earlier review.
 
-An `already-recorded` result is success. Any stale revision, identity mismatch, conflict, unsupported partial authoring, or rejected operation stops without adoption or routing. Route owns recovery and continuation; proposal authoring never settles review or changes workflow state.
+Conflict requires rereading and reassessment. A busy or recovery-required result is not a successful save; use only the retained explicit v2 storage recovery procedure when authorized. Preserve partial evidence honestly and stop on ambiguous outcome. Do not emulate a retired lifecycle operation or reconstruct complete record files.
 
 ## Result
 
-Report artifact and evidence paths, creation or revision, CLI result, blockers, and `proposal-review` handoff. Do not claim settlement or downstream readiness.
+Report exact subjects, authoring evidence, recording outcome and the `proposal-review` handoff. Do not settle review, change routing or claim downstream readiness.
+
+The proposal contains no mutable status or reverse ownership pointer; its selected change registration owns that relationship. Standalone proposal authoring does not require lifecycle records.

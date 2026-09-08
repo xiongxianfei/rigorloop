@@ -1451,7 +1451,7 @@ Use the inputs somehow and produce a useful result.
 
         self.assertIn("## Current Handoff Summary", skeleton)
         self.assertIn(
-            "- Owning change record: <docs/changes/change-id/change.yaml>",
+            "- Owning change record: <docs/changes/change-id/change.json>",
             skeleton,
         )
         self.assertFalse((plan_dir / "assets" / "current-handoff-summary.md").exists())
@@ -2222,11 +2222,11 @@ Use the inputs somehow and produce a useful result.
         for predicate in ("vision_exception_context", "standing_artifact_context", "scope_budget_context"):
             self.assertIn(predicate, skill_text)
             self.assertIn(predicate, gates)
-        self.assertIn("generated `YYYY-MM-DD-<subject>-review-recording`", recording)
-        self.assertIn("must not advance workflow", recording.lower())
+        self.assertIn("Select the exact change", recording)
+        self.assertIn("Do not edit reviewed content", recording)
         self.assertIn("## Specialized-gate group", result)
         self.assertIn("## Durable-recording group", result)
-        self.assertIn("## Formal-settlement group", result)
+        self.assertIn("## Formal-review group", result)
         self.assertIn("## Automated-review group", result)
         self.assertNotIn("what review status means", result.lower())
 
@@ -2560,12 +2560,12 @@ Use the inputs somehow and produce a useful result.
             skills_dir / "code-review" / "assets" / "review-result-skeleton.md"
         ).read_text(encoding="utf-8")
         self.assertIn(
-            "clean-with-notes | changes-requested | blocked | inconclusive",
+            "approved | changes-requested | blocked | inconclusive",
             result_skeleton,
         )
         self.assertIn("- Reviewed milestone:", result_skeleton)
         self.assertIn("- Milestone closeout:", result_skeleton)
-        self.assertNotIn("approved | changes-requested", result_skeleton)
+        self.assertNotIn("clean-with-notes", result_skeleton)
 
     def test_proposal_review_family_assets_preserve_gate_status_vocabulary(self) -> None:
         skills_dir = ROOT / "skills"
@@ -3535,8 +3535,8 @@ Use the inputs somehow and produce a useful result.
             "depth is proportional to uncertainty",
             "No fixed word count, length, or token budget",
             "detailed behavior, architecture, APIs, commands, schemas, component design, implementation sequencing, verification design, test cases, and rollout mechanics",
-            "Portable authoring requires no `change.yaml`",
-            "`change.yaml` is the sole owner of governed proposal lifecycle state and ownership",
+            "Portable authoring requires no `change.json`",
+            "`change.json` is the sole owner of governed proposal lifecycle state and ownership",
         ]
         for term in proposal_terms:
             with self.subTest(skill="proposal", term=term):
@@ -4246,10 +4246,10 @@ Use the inputs somehow and produce a useful result.
             "Every formal lifecycle review result must be recorded or explicitly blocked.",
             "`Recording status: recorded`",
             "`Recording status: blocked`",
-            "For `compact-current-state-v1`, update the target's stable current review record through the CLI.",
-            "Do not create round-suffixed reviews, `review-log.md`, `review-resolution.md`, request files, or correction receipts.",
-            "For registered historical contracts, create the lightweight clean receipt or detailed review record",
-            "only resolved decisions that continue to constrain the change belong in `material-decisions.md`",
+            "Use the selected v2 registry and targeted review/finding commands.",
+            "Preserve unresolved findings and immutable origin",
+            "Historical records remain unchanged archives",
+            "Saving does not settle workflow",
             "Material findings must include:",
             "For an isolated review with material findings",
             "the final review output must state:",
@@ -4285,42 +4285,17 @@ Use the inputs somehow and produce a useful result.
                 self.assertNotIn(term, normalized)
 
     def test_governance_guidance_uses_broad_material_finding_rule(self) -> None:
-        required_terms = [
-            "compact-current-state-v1",
-            "stable current review",
-            "material-decisions.md",
-            "evidence.yaml",
-            "without git",
-            "without pr",
-            "registered historical",
-        ]
-        for relative_path in ["CONSTITUTION.md", "AGENTS.md"]:
-            body = (ROOT / relative_path).read_text(encoding="utf-8").lower()
-            for term in required_terms:
-                with self.subTest(path=relative_path, term=term):
-                    self.assertIn(term, body)
-            with self.subTest(path=relative_path, term="old clean review settlement"):
-                self.assertNotIn(
-                    "Clean reviews may settle artifact-locally when no detailed-record trigger applies",
-                    body,
-                )
+        for relative in ("CONSTITUTION.md", "AGENTS.md"):
+            body = (ROOT / relative).read_text().lower()
+            for term in ("rigorloop-records-v2", "whole-change code review", "historical", "verify", "targeted"):
+                self.assertIn(term, body)
 
     def test_downstream_skills_preserve_review_closeout_boundaries(self) -> None:
-        required_terms = [
-            "review-log.md",
-            "Closeout status: open",
-            "Closeout status: closed",
-            "needs-decision",
-            "stage-owned non-approval outcome",
-            "same-stage later review round or explicit reviewer or owner closeout",
-            "`review-resolution.md` alone is not a silent substitute",
-            "no-material detailed records need `review-log.md` but not an empty `review-resolution.md`",
-        ]
-        for skill_name in DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS:
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
-            for term in required_terms:
-                with self.subTest(skill=skill_name, term=term):
-                    self.assertIn(term, body)
+        for skill in DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS:
+            body = (ROOT / "skills" / skill / "SKILL.md").read_text()
+            self.assertIn("review-reliance.md", body)
+            self.assertIn("does not approve", body)
+            self.assertNotIn("review-log.md", body)
 
 
 
@@ -5630,7 +5605,7 @@ and result format.
                 self.assertIn("legacy", surface_text.lower())
 
         for term in [
-            "For governed routing, request project-phase `rigorloop workflow-context`",
+            "For governed routing, use factual `rigorloop workflow-context` discovery",
             "For a missing formal change root in portable mode, use `YYYY-MM-DD-slug`.",
         ]:
             with self.subTest(surface="skills/route/SKILL.md", term=term):
@@ -6421,10 +6396,9 @@ and result format.
 
 
     def test_change_record_catalog_m4_query_commands_exist(self) -> None:
-        helper = (ROOT / "scripts" / "query-change-record.py").read_text(encoding="utf-8")
-        for term in ["summary", "artifacts", "validation", "--latest", "--stage"]:
-            with self.subTest(term=term):
-                self.assertIn(term, helper)
+        helper = (ROOT / "scripts/query-change-record.py").read_text()
+        self.assertIn("unsupported", helper.lower())
+        self.assertNotIn("load_yaml", helper)
 
 
 
@@ -6571,18 +6545,13 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
         )
 
 
-class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
-    AUTHORING_ENTRY_KINDS = {
-        "proposal": "proposal",
-        "spec": "spec",
-        "architecture": "architecture or ADR",
-        "plan": "plan",
-    }
 
-    REVIEW_SETTLEMENT_PHRASES = {
-        "proposal-review": "settle only the matching proposal entry",
-    }
 
+
+
+class RetainedSkillAuthorityTests(unittest.TestCase):
+    # These checks protect current actor/asset boundaries or separately retained
+    # optional automation methods; they are not legacy record acceptance.
     DOWNSTREAM_READ_ONLY_PHRASES = {
         "implement": "Do not update the plan, upstream artifacts, artifact settlement, or workflow",
         "code-review": "It must not edit implementation, the plan, artifact settlement, milestone",
@@ -6590,171 +6559,6 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         "pr": "upstream artifacts as read-only",
     }
 
-    @staticmethod
-    def review_contract_body(skill_name: str) -> str:
-        skill_root = ROOT / "skills" / skill_name
-        body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
-        if skill_name in {"proposal-review", "spec-review", "architecture-review", "plan-review", "test-spec-review"}:
-            reference_name = (
-                "proposal-review-recording-and-settlement.md"
-                if skill_name == "proposal-review"
-                else (
-                    "governed-spec-review-settlement.md"
-                    if skill_name == "spec-review"
-                    else (
-                        "architecture-review-recording-and-settlement.md"
-                        if skill_name == "architecture-review"
-                        else (
-                            "governed-plan-review-settlement.md"
-                            if skill_name == "plan-review"
-                            else "test-spec-review-recording-and-settlement.md"
-                        )
-                    )
-                )
-            )
-            body = "\n".join(
-                [
-                    body,
-                    (
-                        skill_root
-                        / "references"
-                        / reference_name
-                    ).read_text(encoding="utf-8"),
-                ]
-            )
-        return body
-
-    def test_authoring_peers_define_an_executable_change_record_transition(self) -> None:
-        for skill_name, entry_kind in self.AUTHORING_ENTRY_KINDS.items():
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
-                encoding="utf-8"
-            )
-            if skill_name == "plan":
-                body += (
-                    ROOT
-                    / "skills"
-                    / "plan"
-                    / "references"
-                    / "governed-plan-authoring.md"
-                ).read_text(encoding="utf-8")
-            if skill_name == "proposal":
-                body += (
-                    ROOT
-                    / "skills"
-                    / "proposal"
-                    / "references"
-                    / "governed-proposal-authoring.md"
-                ).read_text(encoding="utf-8")
-            if skill_name == "spec":
-                body += (
-                    ROOT
-                    / "skills"
-                    / "spec"
-                    / "references"
-                    / "governed-spec-authoring.md"
-                ).read_text(encoding="utf-8")
-            if skill_name == "architecture":
-                body += (
-                    ROOT
-                    / "skills"
-                    / "architecture"
-                    / "references"
-                    / "governed-architecture-authoring.md"
-                ).read_text(encoding="utf-8")
-            normalized = " ".join(body.split())
-            with self.subTest(skill=skill_name):
-                self.assertIn(f"rigorloop lifecycle context {skill_name}", normalized)
-                self.assertIn("record-artifact-revision", normalized)
-                self.assertIn(entry_kind, normalized)
-                self.assertIn("review-required", normalized)
-                self.assertIn("prior digest", normalized.lower())
-                self.assertRegex(normalized.lower(), r"never (directly )?edit .*lifecycle")
-
-    def test_review_peers_settle_only_the_matching_change_local_entry(self) -> None:
-        for skill_name, phrase in self.REVIEW_SETTLEMENT_PHRASES.items():
-            body = self.review_contract_body(skill_name)
-            with self.subTest(skill=skill_name):
-                self.assertIn("record-review", body)
-                self.assertIn("settle-artifact", body)
-                self.assertIn(f"stage_authority: {skill_name}", body)
-                self.assertTrue(
-                    "read-only" in body
-                    or re.search(
-                        r"(must not|Do not) edit (the )?"
-                        r"(reviewed|proposal|spec|architecture|plan|test spec)",
-                        body,
-                    ),
-                    "review peer must keep the reviewed artifact read-only",
-                )
-
-    def test_review_peers_define_evidence_first_independent_settlement(self) -> None:
-        for skill_name in self.REVIEW_SETTLEMENT_PHRASES:
-            body = self.review_contract_body(skill_name)
-            normalized = " ".join(body.split())
-            with self.subTest(skill=skill_name):
-                self.assertLess(normalized.index("review record"), normalized.index("record-review"))
-                self.assertLess(normalized.index("record-review"), normalized.index("settle-artifact"))
-                self.assertIn("workflow", normalized.lower())
-                self.assertRegex(normalized.lower(), r"(never|does not).*routing")
-
-    def test_route_defines_bounded_change_record_mutation(self) -> None:
-        body = (
-            ROOT
-            / "skills"
-            / "route"
-            / "references"
-            / "governed-lifecycle-routing.md"
-        ).read_text(encoding="utf-8")
-        for phrase in (
-            "`rigorloop workflow-context --change <change-id>`",
-            "`stage-owned-change-local-v3`",
-            "Use CLI-projected artifact settlement",
-            "Update only",
-            "preserve `artifact_states`",
-            "`planned_work` only when a primary",
-            "failed available change-metadata validation",
-            "instead of repairing another",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, body)
-
-    def test_plan_initializes_planned_work_once_and_route_owns_later_updates(self) -> None:
-        plan_body = (ROOT / "skills" / "plan" / "SKILL.md").read_text(
-            encoding="utf-8"
-        )
-        plan_body += (
-            ROOT
-            / "skills"
-            / "plan"
-            / "references"
-            / "governed-plan-authoring.md"
-        ).read_text(encoding="utf-8")
-        workflow_body = (
-            ROOT
-            / "skills"
-            / "route"
-            / "references"
-            / "governed-lifecycle-routing.md"
-        ).read_text(encoding="utf-8")
-
-        for phrase in (
-            "initialize `workflow_state.planned_work` exactly once",
-            "every implementation milestone to `planned`",
-            "first implementation milestone",
-            "`latest_review.status: not-started`",
-            "`final_closeout.readiness: not-ready`",
-            "must not replace or update existing `planned_work`",
-            "route owns every later `planned_work` decision",
-        ):
-            with self.subTest(surface="plan", phrase=phrase):
-                self.assertIn(phrase, plan_body)
-
-        for phrase in (
-            "Plan owns only the one-time deterministic initialization",
-            "route owns every later `planned_work` decision",
-        ):
-            with self.subTest(surface="workflow", phrase=phrase):
-                self.assertIn(phrase, workflow_body)
 
     def test_downstream_skills_keep_upstream_surfaces_read_only(self) -> None:
         for skill_name, phrase in self.DOWNSTREAM_READ_ONLY_PHRASES.items():
@@ -6763,6 +6567,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             )
             with self.subTest(skill=skill_name):
                 self.assertIn(phrase, body)
+
 
     def test_authoring_skills_do_not_claim_review_settlement(self) -> None:
         for skill_name in ("proposal", "spec", "architecture", "plan"):
@@ -6775,6 +6580,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     body,
                     r"(?i)(authoring skill|this skill).{0,60}(approve|accept).{0,40}(its|the) (proposal|spec|architecture|plan|test spec)",
                 )
+
 
     def test_governed_artifact_assets_do_not_emit_mutable_status(self) -> None:
         asset_paths = [
@@ -6796,6 +6602,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             for phrase in forbidden:
                 with self.subTest(asset=asset_path, phrase=phrase):
                     self.assertNotIn(phrase, text)
+
 
     def test_route_uses_one_target_and_evidence_first_recovery(self) -> None:
         body = (
@@ -6821,24 +6628,6 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         for retired in ("active profile", "writable profile", "selector ledger"):
             with self.subTest(retired=retired):
                 self.assertNotIn(retired, body.lower())
-
-    def test_route_activates_stage_owned_contract_without_another_parameter(self) -> None:
-        body = (
-            ROOT
-            / "skills"
-            / "route"
-            / "references"
-            / "governed-lifecycle-routing.md"
-        ).read_text(encoding="utf-8")
-        for phrase in (
-            "For every new governed change, create",
-            "`stage-owned-change-local-v3`",
-            "without requiring another parameter",
-            "read-only historical inspection never creates or changes lifecycle state",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, body)
-
 
 
 
@@ -6894,11 +6683,11 @@ class RouteSkillCutoverContractTests(unittest.TestCase):
     def test_route_references_have_non_overlapping_owners(self) -> None:
         governed = (self.root / "references" / "governed-lifecycle-routing.md").read_text(encoding="utf-8")
         automation = (self.root / "references" / "bounded-workflow-automation.md").read_text(encoding="utf-8")
-        self.assertIn("Architecture and specification are both mandatory", governed)
+        self.assertIn("reviewed stable plan", governed)
         self.assertNotIn("architecture-required", governed)
         self.assertNotIn("architecture-not-required", governed)
         self.assertNotIn("architecture-ambiguous", governed)
-        self.assertIn("Stage transitions and settlement", governed)
+        self.assertIn("Actor-owned updates", governed)
         self.assertIn("asks governed lifecycle procedure", automation)
         self.assertIn("must not redefine stage order", automation)
 
@@ -6920,8 +6709,8 @@ class RouteSkillCutoverContractTests(unittest.TestCase):
 
     def test_route_consumes_cli_context_and_preserves_protocol_authority(self) -> None:
         self.assertIn("rigorloop workflow-context", self.skill)
-        self.assertIn("stage_authority: workflow", self.skill)
-        self.assertIn("workflow.automation", self.skill)
+        self.assertIn("Route owns explicit activity", self.skill)
+        self.assertIn("targeted", self.skill)
         self.assertNotIn("docs/workflows.md", self.skill)
 
     def test_current_skill_validator_has_no_retired_guide_parser(self) -> None:
@@ -7012,7 +6801,7 @@ class PRSkillSimplificationTests(unittest.TestCase):
         self.asset = (self.root / "assets" / "pr-body-skeleton.md").read_text(encoding="utf-8")
         self.verify_skill = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
         self.verify_reference = (ROOT / "skills" / "verify" / "references" / "branch-readiness-verification.md").read_text(encoding="utf-8")
-        self.verify_explanation = (ROOT / "skills" / "verify" / "references" / "successful-explanation-v3.md").read_text(encoding="utf-8")
+        self.verify_explanation = (ROOT / "skills" / "verify" / "references" / "successful-explanation.md").read_text(encoding="utf-8")
 
     def test_package_inventory_and_resource_map_are_exact(self) -> None:
         self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-pr-readiness.md", "review-reliance.md"])
@@ -7120,13 +6909,6 @@ class PRSkillSimplificationTests(unittest.TestCase):
         ):
             self.assertIn(phrase.lower(), (self.skill + self.reference).lower())
 
-    def test_verify_result_pair_stays_exact_but_pr_may_consume_prior_evidence(self) -> None:
-        for phrase in (
-            "exactly the report and `change.yaml#lifecycle_cli.validations.verify-result`",
-            "final-review and workflow evidence",
-            "do not become part of the Verify result registration",
-        ):
-            self.assertIn(phrase.lower(), self.verify_explanation.lower())
 
     def test_hosted_ci_result_and_claim_contracts_are_explicit(self) -> None:
         for phrase in (
@@ -7163,21 +6945,13 @@ class PRSkillSimplificationTests(unittest.TestCase):
             "stop before governed readiness judgment",
             "stop before body generation and external mutation",
             "must not reconstruct",
-            "must not mutate `change.yaml`",
+            "must not mutate `change.json`",
             "no downstream continuation",
         ):
             self.assertIn(phrase.lower(), self.skill.lower())
 
     def test_review_resolution_summary_contract_is_preserved(self) -> None:
-        for phrase in (
-            "counts by disposition",
-            "review-resolution.md",
-            "needs-decision",
-            "do not duplicate every detailed finding",
-            "stage-owned non-approval outcome",
-            "`review-resolution.md` alone is not a silent substitute",
-            "no-material detailed records need `review-log.md` but not an empty `review-resolution.md`",
-        ):
+        for phrase in ("registered reviews", "owned dispositions", "blockers", "independent reassessment", "without duplicating every finding"):
             self.assertIn(phrase, self.skill)
 
     def test_portable_and_governed_profiles_both_decrease(self) -> None:
@@ -7244,21 +7018,14 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
             "initialize-approved-plan",
         ):
             self.assertIn(operation, self.skill)
-        self.assertIn("record-artifact-revision", self.reference)
+        self.assertIn("change link", self.reference)
         self.assertIn("Conversational wording", self.skill)
         self.assertIn("does not establish governed authority", self.skill)
 
     def test_plan_simplification_governed_reference_owns_only_governed_procedure(self) -> None:
-        for phrase in (
-            "review-required",
-            "approved current Delivery Review package",
-            "record-artifact-revision",
-            "Never replace existing work",
-            "route owns every later `planned_work` decision under the stable workflow authority",
-        ):
+        for phrase in ("approved Delivery Review package", "change link", "Never initialize an unreviewed draft", "route owns subsequent work decisions", "exactly once"):
             self.assertIn(phrase, self.reference)
-        self.assertIn("Load this reference only", self.reference)
-        self.assertNotIn("branch-ready", self.reference)
+        self.assertNotIn("record-artifact-revision", self.reference)
 
     def test_plan_simplification_assets_are_stable_intent_only(self) -> None:
         milestone = (self.root / "assets" / "milestone.md").read_text(
@@ -7439,7 +7206,7 @@ class ProposalSkillSimplificationTests(unittest.TestCase):
     def test_portable_and_governed_operation_authority_is_separate(self) -> None:
         for operation in ("create-primary-proposal", "revise-primary-proposal"):
             self.assertIn(operation, self.skill)
-        self.assertIn("record-artifact-revision", self.governed)
+        self.assertIn("change link", self.governed)
         for phrase in (
             "governed_proposal_candidate_context",
             "Conversational wording alone does not establish",
@@ -7448,12 +7215,12 @@ class ProposalSkillSimplificationTests(unittest.TestCase):
             "Portable authoring writes only the proposal artifact",
         ):
             self.assertIn(phrase.lower(), self.skill.lower())
-        for phrase in ("review-required", "already-recorded", "downstream reliance", "prior digest"):
+        for phrase in ("review readiness", "Conflict requires rereading", "downstream reliance", "prior subject identities"):
             self.assertIn(phrase.lower(), self.governed.lower())
 
     def test_governed_retry_and_authorized_reset_fail_closed(self) -> None:
-        for phrase in ("unsupported partial authoring", "route owns recovery", "without adoption", "never edit lifecycle fields directly"):
-            self.assertIn(phrase.lower(), self.governed.lower())
+        for phrase in ("Conflict requires rereading and reassessment", "stop on ambiguous outcome", "Preserve partial evidence", "Do not settle review"):
+            self.assertIn(phrase, self.governed)
 
     def test_specialized_predicates_and_scope_budget_vocabulary_are_closed(self) -> None:
         for predicate in ("vision_exception_context", "standing_artifact_context", "initial_intent_table_context", "scope_budget_context"):
@@ -7522,10 +7289,9 @@ class SpecSkillSimplificationTests(unittest.TestCase):
         self.assertNotIn("change.yaml", self.method)
 
     def test_governed_transactions_restart_and_write_boundaries_are_complete(self) -> None:
-        for value in ("record-artifact-revision", "already-recorded", "review-required"):
-            self.assertIn(value, self.governed)
-        for phrase in ("artifact ID", "prior identity", "evidence containing", "competing primary", "stale context", "never edit `change.yaml` lifecycle fields directly"):
-            self.assertIn(phrase.lower(), self.governed.lower())
+        for phrase in ("change link", "evidence record", "expected revision", "Capture prior subject identities", "Preserve unrelated artifacts", "Conflict requires rereading", "Do not settle review"):
+            self.assertIn(phrase, self.governed)
+        self.assertNotIn("record-artifact-revision", self.governed)
 
     def test_universal_semantic_preservation_is_explicit(self) -> None:
         for phrase in ("later contradictory review", "Never overwrite an unrelated spec", "normative", "must not invent excluded scope", "superseded spec identifies its replacement"):
@@ -8280,7 +8046,7 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
             "single-governed-candidate",
             "invalid-or-ambiguous-governed-signal",
             "never fall back",
-            "change.yaml",
+            "change.json",
             "read-only",
             "do not invent",
         ):
@@ -8373,9 +8139,9 @@ class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
                 "cross-artifact",
                 "upstream-direction",
                 "does not edit",
-                "isolated by default",
-                "record-package-review",
-                "settle-review-package",
+                "Direct review remains isolated",
+                "review record",
+                "no separate legacy settlement operation",
             ):
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
@@ -8384,7 +8150,7 @@ class ConsolidatedReviewGateSkillContractTests(unittest.TestCase):
         route = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
         self.assertIn(
             "proposal -> proposal-review -> architecture -> spec -> design-review -> plan -> delivery-review -> implement",
-            route,
+            " ".join(route.split()),
         )
         self.assertIn("Supported targets are", route)
         for retired_target in (
@@ -8673,12 +8439,6 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
         self.assertIn("one independent decision", body)
         self.assertNotIn("one execution plan, one test specification", body)
 
-    def test_active_workflow_declares_v3_and_historical_prior_contracts(self) -> None:
-        body = (ROOT / "skills/route/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("stage-owned-change-local-v3", body)
-        self.assertIn("plan -> delivery-review", body)
-        self.assertIn("Historical v1/v2 records grant no current route", body)
-        self.assertIn("bounded preactivation closeout bootstrap", body)
 
     def test_verification_allocation_gaps_route_to_plan_without_legacy_progression(self) -> None:
         for skill_name in ("spec", "plan", "route"):
@@ -8703,18 +8463,6 @@ class RetireStandaloneTestSpecM3Tests(unittest.TestCase):
 class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
     """RTS TS-012 and TS-016 activation governance coherence."""
 
-    def test_current_governance_declares_v3_and_historical_readability(self) -> None:
-        for relative in (
-            "CONSTITUTION.md",
-            "AGENTS.md",
-            "skills/route/SKILL.md",
-            "specs/rigorloop-workflow.md",
-        ):
-            body = (ROOT / relative).read_text(encoding="utf-8")
-            with self.subTest(path=relative):
-                self.assertIn("stage-owned-change-local-v3", body)
-                self.assertIn("historical", body.lower())
-                self.assertIn("current", body.lower())
 
     def test_shared_boundary_routing_is_v3_only(self) -> None:
         required = (
@@ -8745,50 +8493,9 @@ class RetireStandaloneTestSpecM4Tests(unittest.TestCase):
         self.assertNotIn("New changes remain v1 until M5", combined)
 
 
-class FinalVerificationProtocolM2Tests(unittest.TestCase):
-    def test_verify_v3_resources_are_progressive_and_compatibility_scoped(self) -> None:
-        skill = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("V3 final-readiness profile", skill)
-        self.assertIn("executable final-readiness compatibility contract", skill)
-        self.assertIn("Compact verification follows the current-state contract", skill)
-        self.assertIn("Scoped verification loads none of those resources", skill)
-        for path in (
-            "references/final-impact-analysis-v3.md",
-            "references/evidence-applicability-v3.md",
-            "references/successful-explanation-v3.md",
-        ):
-            self.assertIn(f"READ `{path}`", skill)
-            self.assertTrue((ROOT / "skills/verify" / path).is_file())
-        self.assertIn("COPY `assets/verify-report-v3-skeleton.md`", skill)
-
-    def test_impact_guidance_forbids_filename_only_non_impact(self) -> None:
-        body = (ROOT / "skills/verify/references/final-impact-analysis-v3.md").read_text(encoding="utf-8")
-        for phrase in ("affirmative evidence", "filename", "`.gitignore`", "`unknown` expands verification"):
-            self.assertIn(phrase, body)
-
-    def test_applicability_guidance_preserves_freshness_and_cache_boundaries(self) -> None:
-        body = (ROOT / "skills/verify/references/evidence-applicability-v3.md").read_text(encoding="utf-8")
-        for phrase in ("`always-current`", "`fresh-required`", "`impact-sensitive`", "cache hit", "not an actual run"):
-            self.assertIn(phrase, body)
-        for phrase in ("`actual-run` uses `command`", "`hosted-observation` uses `hosted`", "`reused-pass` uses `prior-evidence`"):
-            self.assertIn(phrase, body)
-
-    def test_explanation_guidance_is_success_only_and_identity_safe(self) -> None:
-        body = (ROOT / "skills/verify/references/successful-explanation-v3.md").read_text(encoding="utf-8")
-        self.assertIn("must omit the explanation", body)
-        self.assertIn("must not embed its own Git commit identity", body)
-        self.assertIn("identical complete registered replay is idempotent", body)
-        self.assertIn("lifecycle_cli.validations.verify-result", body)
-        self.assertIn("unknown trailing bytes invalidate it", body)
 
 
 class FinalVerificationPackageParityM4Tests(unittest.TestCase):
-    def test_current_governance_selects_only_v3_for_executable_authority(self) -> None:
-        for path in ("CONSTITUTION.md", "AGENTS.md", "skills/route/SKILL.md", "specs/rigorloop-workflow.md"):
-            body = (ROOT / path).read_text(encoding="utf-8")
-            with self.subTest(path=path):
-                self.assertIn("stage-owned-change-local-v3", body)
-                self.assertIn("historical", body.lower())
 
     def test_verify_has_no_preverification_explanation_dependency(self) -> None:
         body = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
@@ -8801,26 +8508,13 @@ class FinalVerificationPackageParityM4Tests(unittest.TestCase):
             self.assertNotIn(forbidden, body)
         self.assertIn("final explanation only after successful final readiness", body)
 
-    def test_v3_capable_stage_skills_agree_on_verify_owned_explanation_and_handoff(self) -> None:
-        expectations = {
-            "route": ("v3", "ci-maintenance", "verify", "pr", "Historical v1/v2 records grant no current route"),
-            "code-review": ("v3", "final holistic", "verify", "Historical contracts grant no current route"),
-            "ci-maintenance": ("verify", "historical records"),
-            "verify": ("v3", "successful-explanation-v3.md", "branch-ready"),
-            "pr": ("Verify report", "competing authoritative rationale", "Historical rationale grants no current PR authority"),
-        }
-        for skill_name, phrases in expectations.items():
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
-            with self.subTest(skill=skill_name):
-                for phrase in phrases:
-                    self.assertIn(phrase, body)
 
     def test_scoped_verify_does_not_load_final_impact_or_explanation_resources(self) -> None:
         body = (ROOT / "skills/verify/SKILL.md").read_text(encoding="utf-8")
-        scoped = body.split("### V3 final-readiness profile", 1)[1].split("## Execution authority", 1)[0]
-        self.assertIn("Scoped verification loads none of those resources", scoped)
+        scoped = body.split("### Final-readiness profile", 1)[1].split("## Execution authority", 1)[0]
+        self.assertIn("Scoped verification loads none of those final-closeout resources", scoped)
         self.assertNotIn("VP0-scoped` | yes", body)
-        self.assertIn("only after an active v3 final-readiness attempt has succeeded", body)
+        self.assertIn("only after a selected final-readiness attempt has succeeded", body)
 
 
 class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
@@ -8843,26 +8537,7 @@ class RetireStandaloneTestSpecM5Tests(unittest.TestCase):
         self.assertNotIn("`plan`, `test-spec`, `delivery-review`", automation)
         self.assertFalse((ROOT / "skills/route/assets/workflows-skeleton.md").exists())
 
-    def test_governed_plan_authoring_is_v3_only_and_history_fails_closed(self) -> None:
-        reference = (
-            ROOT / "skills/plan/references/governed-plan-authoring.md"
-        ).read_text(encoding="utf-8")
 
-        self.assertIn("Governed plan authoring is available only for v3", reference)
-        self.assertIn("Historical non-v3 work never re-enters plan authoring", reference)
-        self.assertIn("stop and return the context to `route`", reference)
-        self.assertIn("handoff: `delivery-review`", reference)
-        self.assertNotIn("handoff: `test-spec`", reference)
-
-    def test_active_governance_declares_compact_preactivation_compatibility(self) -> None:
-        combined = "\n".join(
-            (ROOT / path).read_text(encoding="utf-8")
-            for path in ("CONSTITUTION.md", "AGENTS.md", "skills/route/SKILL.md")
-        )
-        self.assertIn("stage-owned-change-local-v3", combined)
-        self.assertIn("compact-current-state-v1", combined)
-        self.assertIn("bounded preactivation closeout bootstrap", combined)
-        self.assertNotIn("New changes remain v1 until M5", combined)
 
 
 class OptionalDiscoverySkillContractTests(unittest.TestCase):
@@ -9026,8 +8701,9 @@ class ExplicitRecordingGuidanceTests(unittest.TestCase):
                 text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
                 self.assertEqual(text.count("## Explicit recording\n"), 1)
                 block = text.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
-                for phrase in ("project has adopted", "explicit-recording-v1", "project's model documents", "historical", "expected identities", "does not approve", "rigorloop-records-v2", "rigorloop context", "subject inspect", "targeted", "Do not migrate"):
+                for phrase in ("project has adopted", "only supported runtime record format", "project's governing documents", "historical", "expected identities", "does not approve", "rigorloop-records-v2", "rigorloop context", "subject inspect", "targeted", "Do not migrate"):
                     self.assertIn(phrase, block)
+                self.assertNotIn("roots retain their exact compatibility contract", block)
                 self.assertNotIn("record-store check|record", block)
                 self.assertNotIn("explicit writes", block)
                 self.assertNotIn("templates/shared/", block)

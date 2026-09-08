@@ -67,7 +67,7 @@ class BuildSkillsTests(unittest.TestCase):
             output_dir / "plan" / "references" / "governed-plan-authoring.md"
         ).read_text(encoding="utf-8")
         self.assertNotIn("`plan`, `test-spec`, `delivery-review`", route_automation)
-        self.assertIn("Governed plan authoring is available only for v3", plan_authoring)
+        self.assertIn("this reference applies the v2 recording boundary", plan_authoring)
         self.assertNotIn("handoff: `test-spec`", plan_authoring)
 
     def test_check_with_output_dir_generates_and_validates_non_tracked_output(self) -> None:

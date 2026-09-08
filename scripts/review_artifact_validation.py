@@ -10,7 +10,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from change_metadata_semantics import validate_clean_receipt_root_review_metadata
 
 
 APPROVED_DISPOSITIONS = frozenset(
@@ -548,12 +547,35 @@ class ReviewEvidenceSummary:
         return self.material_count - self.open_count
 
 
+def _stored_review_boundary(path: Path, mode: str) -> ValidationFinding | None:
+    """Reject stored inputs without decoding their format or historical bytes."""
+    try:
+        locations = (path.absolute(), path.resolve())
+        for location in locations:
+            for parent in location.parents:
+                if any((parent / name).is_symlink() or (parent / name).exists()
+                       for name in ("change.yaml", "change.json", "evidence.json",
+                                    "material-decisions.json", "verify-report.json")):
+                    return ValidationFinding(path=path, line=None, mode=mode,
+                        message="stored change roots are unsupported by the legacy review adapter; use v2 record validation")
+    except (OSError, RuntimeError):
+        return ValidationFinding(path=path, line=None, mode=mode,
+            message="review input storage boundary is unavailable")
+    return None
+
+
+def _require_standalone_review_input(path: Path) -> None:
+    finding = _stored_review_boundary(path, "structure")
+    if finding is not None:
+        raise ValueError(finding.message)
+
+
 def parse_formal_review_record(
     path: Path,
 ) -> tuple[ReviewRecord | None, tuple[ValidationFinding, ...]]:
     """Parse one formal review through the repository-owned review grammar."""
 
-    review, _finding_records, findings = _parse_review_file(path.resolve(), "structure")
+    review, _finding_records, findings = _parse_review_file(path, "structure")
     return review, tuple(findings)
 
 
@@ -567,7 +589,7 @@ def parse_formal_review_findings(
     """Parse one formal review and its material findings through the canonical grammar."""
 
     review, finding_records, findings = _parse_review_file(
-        path.resolve(), "structure"
+        path, "structure"
     )
     return review, tuple(finding_records), tuple(findings)
 
@@ -577,7 +599,7 @@ def parse_formal_review_log(
 ) -> tuple[tuple[ReviewLogEntry, ...], tuple[ValidationFinding, ...]]:
     """Parse the canonical review log through the repository-owned grammar."""
 
-    entries, findings = _parse_review_log(path.resolve(), "structure")
+    entries, findings = _parse_review_log(path, "structure")
     return tuple(entries), tuple(findings)
 
 
@@ -586,7 +608,7 @@ def parse_formal_review_resolution(
 ) -> tuple[ReviewResolution, tuple[ValidationFinding, ...]]:
     """Parse review-resolution evidence through the canonical grammar."""
 
-    resolution, findings = _parse_review_resolution(path.resolve(), "structure")
+    resolution, findings = _parse_review_resolution(path, "structure")
     return resolution, tuple(findings)
 
 
@@ -612,6 +634,9 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
     if mode not in VALIDATION_MODES:
         raise ValueError(f"unsupported review artifact validation mode: {mode}")
 
+    boundary = _stored_review_boundary(change_root / "review-log.md", mode)
+    if boundary is not None:
+        return _result(change_root.absolute(), mode, [boundary], [], [], [], None)
     change_root = change_root.resolve()
     findings: list[ValidationFinding] = []
 
@@ -625,14 +650,6 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
             )
         )
         return _result(change_root, mode, findings, [], [], [], None)
-
-    metadata_path = change_root / "change.yaml"
-    try:
-        metadata = _load_change_metadata(metadata_path) if metadata_path.is_file() else None
-    except Exception:
-        metadata = None
-    if isinstance(metadata, dict) and metadata.get("lifecycle_contract") == "compact-current-state-v1":
-        return _validate_compact_change_root(change_root, metadata, mode)
 
     reviews_dir = change_root / "reviews"
     review_log_path = change_root / "review-log.md"
@@ -679,7 +696,6 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
         resolution, resolution_findings = _parse_review_resolution(resolution_path, mode)
         findings.extend(resolution_findings)
 
-    findings.extend(_validate_clean_receipt_change_metadata(change_root, finding_records, log_entries, mode))
     findings.extend(_validate_review_relationships(change_root, review_records, finding_records, log_entries, resolution, mode))
     findings.extend(_validate_finding_relationships(resolution_path, finding_records, resolution, mode))
     findings.extend(_validate_clean_receipt_resolution_absence(resolution_path, finding_records, log_entries, resolution, mode))
@@ -689,66 +705,11 @@ def validate_change_root(change_root: Path, *, mode: str = "structure") -> Revie
     return _result(change_root, mode, findings, review_records, finding_records, log_entries, resolution)
 
 
-def _validate_compact_change_root(
-    change_root: Path, metadata: dict[str, Any], mode: str
-) -> ReviewArtifactValidationResult:
-    """Validate compact stable-review placement without importing legacy ledgers."""
-
-    findings: list[ValidationFinding] = []
-    review_records: list[ReviewRecord] = []
-    for retired in ("review-log.md", "review-resolution.md"):
-        path = change_root / retired
-        if path.exists():
-            findings.append(ValidationFinding(path=path, line=None, mode=mode, message=f"compact change must not contain {retired}"))
-
-    declared = metadata.get("reviews")
-    declared = declared if isinstance(declared, dict) else {}
-    declared_paths: set[str] = set()
-    for target_id, entry in declared.items():
-        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
-            findings.append(ValidationFinding(path=change_root / "change.yaml", line=None, mode=mode, message=f"compact review {target_id} must declare path"))
-            continue
-        declared_paths.add(entry["path"])
-
-    reviews_dir = change_root / "reviews"
-    if reviews_dir.exists() and not reviews_dir.is_dir():
-        findings.append(ValidationFinding(path=reviews_dir, line=None, mode=mode, message="reviews path exists but is not a directory"))
-    elif reviews_dir.is_dir():
-        for review_path in sorted(reviews_dir.glob("*.md")):
-            relative = review_path.relative_to(change_root.parents[2]).as_posix()
-            if re.search(r"-r[1-9][0-9]*\.md$", review_path.name):
-                findings.append(ValidationFinding(path=review_path, line=None, mode=mode, message="compact review path must be stable and not round-suffixed"))
-            if relative not in declared_paths:
-                findings.append(ValidationFinding(path=review_path, line=None, mode=mode, message="compact stable review is not referenced from change.yaml"))
-            lines = _read_lines(review_path)
-            if len(lines) < 3 or lines[0] != "---" or "---" not in lines[1:]:
-                findings.append(ValidationFinding(path=review_path, line=None, mode=mode, message="compact stable review requires YAML front matter"))
-                continue
-            end = lines[1:].index("---") + 1
-            fields = _collect_fields(lines[1:end], start_line=2)
-            required = ("schema", "review_id", "target", "round", "subjects", "reviewer_authority", "outcome", "recording_status", "open_findings", "material_decisions", "limitations", "recorded_at")
-            for label in required:
-                if label not in fields:
-                    findings.append(ValidationFinding(path=review_path, line=None, mode=mode, message=f"compact stable review missing required field {label}"))
-            schema = _first_nonempty(fields, "schema")
-            if schema is not None and schema.value != "compact-review-v1":
-                findings.append(ValidationFinding(path=review_path, line=schema.line, mode=mode, message=f"compact review schema: unknown_value {schema.value}"))
-            review_id = _first_nonempty(fields, "review_id")
-            outcome = _first_nonempty(fields, "outcome")
-            round_field = _first_nonempty(fields, "round")
-            reviewer = _first_nonempty(fields, "reviewer_authority")
-            if all(item is not None for item in (review_id, outcome, round_field, reviewer)):
-                review_records.append(ReviewRecord(path=review_path, line=review_id.line, review_id=review_id.value, stage=reviewer.value, round=round_field.value, reviewer=reviewer.value, target=next((key for key, entry in declared.items() if isinstance(entry, dict) and entry.get("path") == relative), "unknown"), status=outcome.value, record_mode=None))
-
-    for path in sorted(declared_paths):
-        absolute = change_root.parents[2] / path
-        if not absolute.is_file():
-            findings.append(ValidationFinding(path=absolute, line=None, mode=mode, message="declared compact stable review does not exist"))
-    return _result(change_root, mode, findings, review_records, [], [], None)
 
 
 def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
     """Return derived material/open finding IDs from review evidence."""
+    _require_standalone_review_input(change_root / "review-log.md")
     change_root = change_root.resolve()
     material_ids: set[str] = set()
     finding_records: list[FindingRecord] = []
@@ -758,6 +719,7 @@ def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
     reviews_dir = change_root / "reviews"
     if reviews_dir.is_dir():
         for review_path in sorted(reviews_dir.glob("*.md")):
+            _require_standalone_review_input(review_path)
             _, review_findings, _ = _parse_review_file(review_path, "structure")
             finding_records.extend(review_findings)
             for finding in review_findings:
@@ -765,12 +727,14 @@ def summarize_review_evidence(change_root: Path) -> ReviewEvidenceSummary:
 
     review_log_path = change_root / "review-log.md"
     if review_log_path.exists():
+        _require_standalone_review_input(review_log_path)
         log_entries, _ = _parse_review_log(review_log_path, "structure")
         for entry in log_entries:
             material_ids.update(entry.material_finding_ids)
 
     resolution_path = change_root / "review-resolution.md"
     if resolution_path.exists():
+        _require_standalone_review_input(resolution_path)
         resolution, _ = _parse_review_resolution(resolution_path, "structure")
 
     open_ids = {
@@ -823,21 +787,13 @@ def _parse_review_file(
     path: Path,
     mode: str,
 ) -> tuple[ReviewRecord | None, list[FindingRecord], list[ValidationFinding]]:
+    boundary = _stored_review_boundary(path, mode)
+    if boundary is not None:
+        return None, [], [boundary]
+    path = path.resolve()
     lines = _read_lines(path)
     fields = _collect_fields(lines)
     findings: list[ValidationFinding] = []
-    lifecycle_contract = None
-    change_metadata = None
-    metadata_path = path.parent.parent / "change.yaml"
-    if metadata_path.is_file():
-        try:
-            metadata = _load_change_metadata(metadata_path)
-            if isinstance(metadata, dict):
-                change_metadata = metadata
-                lifecycle_contract = metadata.get("lifecycle_contract")
-        except Exception:
-            lifecycle_contract = None
-
     review_id_values = fields.get("Review ID", [])
     if len(review_id_values) != 1:
         findings.append(
@@ -916,10 +872,7 @@ def _parse_review_file(
             findings,
         )
     if stage is not None and stage.value == "test-spec-review":
-        if lifecycle_contract == "stage-owned-change-local-v2":
-            findings.append(ValidationFinding(path=path, line=stage.line, mode=mode, message="test-spec-review: unknown_value for stage-owned-change-local-v2", review_id=review_id))
-        else:
-            _validate_test_spec_review_result_fields(path, review_id, fields, mode, findings)
+        _validate_test_spec_review_result_fields(path, review_id, fields, mode, findings)
     if stage is not None and stage.value in {"design-review", "delivery-review"}:
         _validate_package_review_fields(
             path,
@@ -929,8 +882,6 @@ def _parse_review_file(
             finding_records,
             mode,
             findings,
-            lifecycle_contract=lifecycle_contract,
-            change_metadata=change_metadata,
         )
     _validate_implementation_profile_finding_fields(path, review_id, fields, finding_records, mode, findings)
 
@@ -981,9 +932,6 @@ def _validate_package_review_fields(
     finding_records: list[FindingRecord],
     mode: str,
     findings: list[ValidationFinding],
-    *,
-    lifecycle_contract: str | None = None,
-    change_metadata: dict[str, Any] | None = None,
 ) -> None:
     required = (
         "Reviewer authority", "Package kind", "Package members",
@@ -1016,21 +964,6 @@ def _validate_package_review_fields(
     members = list(member_map)
     if not members or len(members) != len(member_entries) or len(members) != len(set(members)):
         findings.append(ValidationFinding(path=path, line=values["Package members"].line if values["Package members"] else None, mode=mode, message="package members must be a non-empty unique artifact-id=path map", review_id=review_id))
-    if stage == "delivery-review" and lifecycle_contract == "stage-owned-change-local-v2":
-        states = change_metadata.get("artifact_states") if isinstance(change_metadata, dict) else None
-        primary_plans = [
-            (artifact_id, entry.get("path"))
-            for artifact_id, entry in (states.items() if isinstance(states, dict) else ())
-            if isinstance(entry, dict)
-            and entry.get("kind") == "plan"
-            and entry.get("role") == "primary"
-            and isinstance(entry.get("path"), str)
-        ]
-        expected_members = dict(primary_plans) if len(primary_plans) == 1 else None
-        if expected_members is None:
-            findings.append(ValidationFinding(path=path, line=values["Package members"].line if values["Package members"] else None, mode=mode, message="v2 Delivery Review requires exactly one primary plan registration", review_id=review_id))
-        elif member_map != expected_members:
-            findings.append(ValidationFinding(path=path, line=values["Package members"].line if values["Package members"] else None, mode=mode, message="v2 Delivery Review package members must exactly match the primary plan", review_id=review_id))
     correction_targets = _package_list(values["Correction targets"])
     if len(correction_targets) != len(set(correction_targets)):
         findings.append(ValidationFinding(path=path, line=values["Correction targets"].line if values["Correction targets"] else None, mode=mode, message="package correction targets must be unique", review_id=review_id))
@@ -2698,6 +2631,10 @@ def _validate_reconstructed_record(
 
 
 def _parse_review_log(path: Path, mode: str) -> tuple[list[ReviewLogEntry], list[ValidationFinding]]:
+    boundary = _stored_review_boundary(path, mode)
+    if boundary is not None:
+        return [], [boundary]
+    path = path.resolve()
     lines = _read_lines(path)
     entries: list[ReviewLogEntry] = []
     findings: list[ValidationFinding] = []
@@ -2897,6 +2834,10 @@ def _parse_review_resolution(
     path: Path,
     mode: str,
 ) -> tuple[ReviewResolution, list[ValidationFinding]]:
+    boundary = _stored_review_boundary(path, mode)
+    if boundary is not None:
+        return ReviewResolution(path, None, None, (), (), ()), [boundary]
+    path = path.resolve()
     lines = _read_lines(path)
     fields = _collect_fields(lines)
     findings: list[ValidationFinding] = []
@@ -3565,47 +3506,6 @@ def _validate_clean_receipt_resolution_absence(
     ]
 
 
-def _validate_clean_receipt_change_metadata(
-    change_root: Path,
-    finding_records: list[FindingRecord],
-    log_entries: list[ReviewLogEntry],
-    mode: str,
-) -> list[ValidationFinding]:
-    if finding_records:
-        return []
-    if not any(entry.recording_status == "recorded" for entry in log_entries):
-        return []
-
-    metadata_path = change_root / "change.yaml"
-    if not metadata_path.exists():
-        return [
-            ValidationFinding(
-                path=metadata_path,
-                line=None,
-                mode=mode,
-                message="change.yaml is required for clean receipt roots",
-            )
-        ]
-
-    try:
-        metadata = _load_change_metadata(metadata_path)
-    except Exception as exc:  # noqa: BLE001 - preserve parser detail as validator evidence.
-        return [
-            ValidationFinding(
-                path=metadata_path,
-                line=None,
-                mode=mode,
-                message=f"change.yaml could not be parsed: {exc}",
-            )
-        ]
-
-    return [
-        ValidationFinding(path=metadata_path, line=None, mode=mode, message=message)
-        for message in validate_clean_receipt_root_review_metadata(
-            metadata,
-            require_clean_receipt_root=True,
-        )
-    ]
 
 
 def _validate_log_finding_lists(
@@ -4077,15 +3977,6 @@ def _read_lines(path: Path) -> list[str]:
     return path.read_text(encoding="utf-8").splitlines()
 
 
-def _load_change_metadata(path: Path) -> Any:
-    script_path = Path(__file__).with_name("validate-change-metadata.py")
-    spec = importlib.util.spec_from_file_location("validate_change_metadata_for_review_artifacts", script_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError("could not load change metadata parser")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module.load_yaml(path)
 
 
 def _collect_fields(lines: list[str], *, start_line: int = 1) -> dict[str, list[FieldValue]]:
