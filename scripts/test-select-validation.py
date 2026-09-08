@@ -587,6 +587,17 @@ class ValidationSelectionTests(unittest.TestCase):
             self.assertNotIn("review_artifacts.validate", checks)
             self.assertNotIn("artifact_lifecycle.validate", checks)
 
+        (repo / "docs/plan.md").write_text("# Plan index\n")
+        (repo / "docs/plan-archive.md").write_text("# Plan archive\n")
+        subprocess.run(["git", "add", "docs"], cwd=repo, check=True, capture_output=True)
+        paths = ("docs/plan.md", *(write["path"] for write in fixture["request"]["writes"]))
+        selected = select_validation(SelectionRequest(mode="explicit", paths=paths, repo_root=repo))
+        self.assertEqual(selected.status, "ok", selected.blocking_results)
+        checks = {c["id"]: c for c in selected.selected_checks}
+        self.assertIn("docs/changes/example/change.json", checks["change_metadata.validate"]["command"])
+        self.assertIn("docs/changes/example/change.json", checks["artifact_lifecycle.validate"]["command"])
+        self.assertNotIn("docs/changes/example/change.yaml", checks["artifact_lifecycle.validate"]["command"])
+
     def test_er_m5_001_real_recording_paths_select_complete_set_validation(self):
         repo, paths = self.recording_repo()
         for path in paths:

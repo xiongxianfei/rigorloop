@@ -1,3 +1,5 @@
+<!-- Historical recording application. Adopted Review and Closeout consumers select shared assessment/reliance guidance; this block preserves historical handlers and shapes. -->
+
 ## Isolation and Recording
 
 Isolation governs handoff. Recording follows formal review triggers.

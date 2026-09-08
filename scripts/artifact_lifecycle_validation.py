@@ -246,6 +246,10 @@ def _recording_change_record_for(root: Path, path: Path, revision: str | None) -
     parts = path.relative_to(root).parts
     if len(parts) < 4 or parts[:2] != ("docs", "changes"):
         return None
+    owner_v2 = root / "docs" / "changes" / parts[2] / "change.json"
+    if _path_exists(root, owner_v2, revision):
+        # Even malformed/unknown JSON roots must reach complete-set validation.
+        return owner_v2
     owner = root / "docs" / "changes" / parts[2] / "change.yaml"
     if _path_exists(root, owner, revision):
         if _read_repo_text(root, owner, revision).lstrip("\ufeff \t\r\n").startswith("{"):
@@ -2068,18 +2072,18 @@ def validate_repository(
         # JSON-subset recording sets have no legacy lifecycle/review semantics.
         # Reuse complete-set validation even for callers that omit composition;
         # malformed/unknown contracts must not fall through to historical checks.
-        if metadata_text.lstrip("\ufeff \t\r\n").startswith("{"):
+        if path.name == "change.json" or metadata_text.lstrip("\ufeff \t\r\n").startswith("{"):
             try:
                 candidate = json.loads(metadata_text)
             except ValueError:
                 candidate = None
-            if candidate is None or (isinstance(candidate, dict) and "contract" in candidate):
-                if scope.tracked_revision is not None:
-                    # Validate raw selected blobs, never text-normalized or live bytes.
+            if path.name == "change.json" or candidate is None or (isinstance(candidate, dict) and "contract" in candidate):
+                if scope.tracked_revision is not None or path.name == "change.json":
+                    # V2 always uses complete-set validation; tracked reads use raw selected blobs.
                     try:
                         result = subprocess.run(
                             ["node", str(Path(__file__).with_name("validate-record-store.mjs")),
-                             str(path), "--revision", scope.tracked_revision],
+                             str(path)] + (["--revision", scope.tracked_revision] if scope.tracked_revision is not None else []),
                             capture_output=True, timeout=30,
                         )
                         valid = result.returncode == 0

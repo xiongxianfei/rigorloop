@@ -1,5 +1,9 @@
 # RigorLoop Workflow
 
+## Review and Closeout ownership
+
+For explicitly adopted model work, [Review and Closeout](../docs/design/review-closeout/review-closeout.md) owns shared assessment and final-closeout policy within Workflow (RC-SR-01–18). Workflow retains coordination; Record Format and CLI retain representation and mechanics. This change adopts that ownership for this repository's explicitly selected initiative; installation and distribution do not activate customer projects. The model's clause-level map identifies replacement ownership, while historical contracts and their stable IDs, judgments and stored procedures below retain their exact meaning. Specialized skills apply the owner through selectively packaged guidance; they do not define competing policy. Existing separately authorized release, PR, publication and destructive-action boundaries remain in force.
+
 ## Explicit recording
 
 For explicitly adopted RigorLoop Record Format work, [Workflow](../docs/design/workflow/workflow.md) owns actor responsibilities and decision meaning, [Record Format](../docs/design/record-format/record-format.md) owns v2 stored shapes and v1 compatibility, and [CLI](../docs/design/cli/cli.md) owns targeted construction and safe recording. Normal skills use explicit context/show selectors, subject inspection and purpose-specific operations or batch. The coordinated candidate requires explicit rigorloop-records-v2 primary creation; existing explicit-recording-v1 roots stay v1. Historical procedures below retain their exact contracts and are not prerequisites for recording corrections in the model profile. Installation alone does not activate a project or customer.

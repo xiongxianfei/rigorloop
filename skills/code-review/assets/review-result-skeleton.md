@@ -3,6 +3,9 @@
 <!-- Template status: normative -->
 <!-- Maintained alongside: skills/code-review/SKILL.md -->
 
+
+<!-- Presentation only: adopted Review and Closeout uses exact subjects, scope and claim limits from the packaged application. Historical fields below remain contract-selected; do not serialize them into v2 by copying this asset. -->
+
 ## Result
 
 - Skill: code-review
@@ -17,6 +20,7 @@
 - Review record: <path or blocked>
 - Review log: <path or blocked>
 - Review resolution: <path, not-required, or blocked>
+- Assessment scope: <milestone | final whole-change | advisory>
 - Reviewed milestone: <milestone or none>
 - Milestone closeout: <closed | resolution-needed | blocked | not-applicable>
 - Remaining implementation milestones: <milestones or none>

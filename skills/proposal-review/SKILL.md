@@ -9,9 +9,13 @@ argument-hint: [proposal path, feature idea, or review focus]
 
 # Proposal review
 
+## Review and Closeout application
+
+When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
+
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow domain owns decision meaning (Review and Closeout owns adopted assessment policy), the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
 
 This profile replaces historical package, transition, recording and output-shape procedures below, including their conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations; historical contracts keep their own procedures.
 
@@ -129,7 +133,7 @@ A material conflict, requested vision revision, or bootstrap exception that coul
 
 Compare the user's initial request with the proposal. Each material goal must remain visible in goals, scope, or the requested decision. For a broad request, an `initial goal treatment` of `in scope`, `out of scope`, `deferred follow-up`, `rejected option`, or `open question` may make the boundary explicit inside `Scope and non-goals`.
 
-Return `changes-requested` if any initial user goal disappears. Return `changes-requested` if a deferred goal has no follow-up. Return `changes-requested` if a rejected goal has no rationale. Return `changes-requested` if the proposal narrows scope but does not say why. Scope-preservation failures must return `changes-requested`.
+Identify a required scope correction when an initial goal disappears, a deferred goal has no follow-up, a rejected goal has no rationale, or scope narrows without explanation. Under adopted policy, select the overall judgment using the packaged combined-condition rule. Historical contract only: Return `changes-requested` if any initial user goal disappears. Return `changes-requested` if a deferred goal has no follow-up. Return `changes-requested` if a rejected goal has no rationale. Return `changes-requested` if the proposal narrows scope but does not say why. Scope-preservation failures must return `changes-requested`.
 
 Do not rewrite the proposal as part of proposal-review unless the user explicitly asks.
 
@@ -141,11 +145,13 @@ Report the scope-preservation result in the mapped result asset.
 
 Every material finding includes Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or a `needs-decision` rationale naming the decision and owner. Copy the finding asset once per material finding. A material finding is a required change or decision, not a quota.
 
-Use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval locks only the accepted challenge, goals, scope and non-goals, governing principle, high-level direction, sufficient feasibility, and disclosed proposal-level impacts. It authorizes architecture and specification authoring only, not that either artifact exists or is approved. Use `changes-requested` for actionable proposal or feasibility defects, `blocked` for an authority, feasibility blocker, or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
+For historical judgment rules, use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval locks only the accepted challenge, goals, scope and non-goals, governing principle, high-level direction, sufficient feasibility, and disclosed proposal-level impacts. It authorizes architecture and specification authoring only, not that either artifact exists or is approved. Use `changes-requested` for actionable proposal or feasibility defects, `blocked` for an authority, feasibility blocker, or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
 
 A direction that is too vague to approve is a material finding. Content that prematurely settles a detailed Design or Delivery decision is also a material finding. Proposal Review must not create a finding solely because downstream detail or a routine impact section is absent.
 
 ## Isolation and Recording
+
+The following recording and settlement procedure applies to historical profiles only. Adopted Review and Closeout assessments use the packaged application and their selected recording interface.
 
 Isolation governs handoff. Recording follows formal review triggers.
 
@@ -198,6 +204,9 @@ Stop on unresolved target or identity, missing or stale authority, unsafe or fai
 Do not claim spec completion, downstream execution, implementation review, verification, branch or PR readiness, or automatic handoff. Do not infer that recording grants settlement, settlement grants continuation, or package loading grants authority.
 
 ## Resource map
+
+- READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
+- READ `references/review-assessment.md` for every review under explicitly adopted Review and Closeout policy.
 
 - READ `references/requirement-to-delivery-model.md` when tracing an incoming need through proposal direction or downstream Design handoff.
 - READ `references/proposal-review-recording-and-settlement.md` exactly when `durable_recording_context` is true. Stop before dependent writes, settlement, automation, or recording claims if it is missing or unreadable.

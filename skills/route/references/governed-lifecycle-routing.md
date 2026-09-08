@@ -1,5 +1,7 @@
 # Governed lifecycle routing
 
+This procedure retains its named historical recording/lifecycle contract. For explicitly adopted Review and Closeout work, the parent skill selects the packaged assessment/reliance application and primary recording interface; historical commands, judgment rules and output shapes below do not override that selection.
+
 ## Load condition
 
 Read this procedure only when authoritative CLI context establishes a valid current governed change that must be interpreted, audited, resumed, settled, or mutated, or after a successful automation bootstrap requires reclassification. It owns canonical lifecycle applicability and transitions. It does not own automation commands.

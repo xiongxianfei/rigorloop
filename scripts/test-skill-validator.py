@@ -6995,7 +6995,9 @@ def historical_profile_body(text: str) -> str:
     The separately adopted recording profile is measured by TG-08, including
     its complete loaded guidance; it must not rewrite historical measurements.
     """
-    return re.sub(r"\n## Explicit recording\n.*?(?=^## |\Z)", "", text,
+    text = re.sub(r"^- READ `references/review-(?:assessment|reliance).md`.*\n", "", text, flags=re.MULTILINE)
+    text = re.sub(r"\n## Explicit recording\n.*?(?=^## |\Z)", "", text, flags=re.MULTILINE | re.DOTALL)
+    return re.sub(r"\n## Review and Closeout application\n.*?(?=^## |\Z)", "", text,
                   flags=re.MULTILINE | re.DOTALL)
 
 
@@ -7010,7 +7012,7 @@ class PRSkillSimplificationTests(unittest.TestCase):
         self.verify_explanation = (ROOT / "skills" / "verify" / "references" / "successful-explanation-v3.md").read_text(encoding="utf-8")
 
     def test_package_inventory_and_resource_map_are_exact(self) -> None:
-        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-pr-readiness.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-pr-readiness.md", "review-reliance.md"])
         self.assertEqual(sorted(path.name for path in (self.root / "assets").iterdir()), ["pr-body-skeleton.md"])
         self.assertIn("READ `references/governed-pr-readiness.md`", self.skill)
         self.assertIn("COPY `assets/pr-body-skeleton.md`", self.skill)
@@ -8492,6 +8494,34 @@ class RequirementDeliveryModelM2Tests(unittest.TestCase):
         for forbidden in ("approval authority", "may settle", "may advance", "automatically approves"):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, shared.lower())
+
+
+class ReviewCloseoutResourceTests(unittest.TestCase):
+    def test_unknown_value_consumer_fails_closed(self):
+        errors = skill_validation.validate_review_closeout_copies(Path("unused/SKILL.md"), "unknown_value")
+        self.assertTrue(any("unknown" in e for e in errors))
+
+    def test_missing_drifted_and_valid_resources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source"
+            source.mkdir()
+            skill = root / "skills" / "code-review" / "SKILL.md"
+            skill.parent.mkdir(parents=True)
+            for name in ("review-assessment", "review-reliance"):
+                (source / (name + ".md")).write_text(name)
+            self.assertTrue(skill_validation.validate_review_closeout_copies(skill, "code-review", source=source))
+            (skill.parent / "references").mkdir()
+            for name in ("review-assessment", "review-reliance"):
+                shutil.copyfile(source / (name + ".md"), skill.parent / "references" / (name + ".md"))
+            self.assertEqual([], skill_validation.validate_review_closeout_copies(skill, "code-review", source=source))
+            (skill.parent / "references" / "review-assessment.md").write_text("drift")
+            self.assertTrue(any("differs" in e for e in skill_validation.validate_review_closeout_copies(skill, "code-review", source=source)))
+
+    def test_all_selected_consumers_carry_exact_resources(self):
+        for name in skill_validation.REVIEW_CLOSEOUT_CONSUMERS:
+            with self.subTest(skill=name):
+                self.assertEqual([], skill_validation.validate_review_closeout_copies(ROOT / "skills" / name / "SKILL.md", name))
 
 
 class RequirementDeliveryModelM3Tests(unittest.TestCase):
