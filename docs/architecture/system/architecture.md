@@ -1,5 +1,9 @@
 # RigorLoop Canonical System Architecture
 
+## Test criteria ownership
+
+For this repository's explicitly adopted model work, [Test](../../design/test/test.md) owns shared derivation, protective-value and maintenance criteria (TEST-SR-01–13). Specialist reviewers and Verify judge actual plans, tests and evidence; Review and Closeout retains assessment authority policy, applicability and closeout consequences. Workflow retains coordination. Canonical consumers apply the criteria through selective quality and maintenance resources; those resources are application guidance, not another policy owner. This initiative's coordinated consumer adoption preserves historical contracts, required negative/regression proof and separately owned execution permissions. Installation does not adopt customer policy. Internal requirement mappings and package mechanics remain in contributor/governance surfaces rather than published skills.
+
 Record Format profile boundary: for explicitly adopted model-driven work, [Workflow](../../design/workflow/workflow.md) owns actor decisions, [Record Format](../../design/record-format/record-format.md) owns v2 JSON records and v1 compatibility, and [CLI](../../design/cli/cli.md) owns bounded reads, targeted construction and shared recoverable persistence. New primary creation explicitly selects v2; existing contracts are not migrated. The lifecycle/compact eligibility architecture below remains historical-contract scope and is not called before recording a correction. Installation or a local adoption candidate does not authorize customer/release activation.
 
 Current route amendment: `route` is the sole public semantic workflow router, `rigorloop workflow-context` supplies deterministic project-local facts, and `docs/workflows.md` and the former public `workflow` package have no current authority. Stable `stage_authority: workflow` and `workflow.automation` identifiers remain protocol state, not public skill names.

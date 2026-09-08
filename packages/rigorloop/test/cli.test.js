@@ -574,8 +574,8 @@ test("TNP-005 package version maps to bundled v0.5.1 targeted-recording candidat
   const artifact = metadata.artifacts.find((entry) => entry.adapter === "codex");
   assert.equal(artifact.archive, publicArchiveFile);
   assert.equal(artifact.install_root, ".agents/skills");
-  assert.equal(artifact.tree_sha256, "fe4f59238ce0ae230616c93b311b00961145dd21ed0b49cf998ed7f1483603ff");
-  assert.equal(artifact.file_count, 119);
+  assert.equal(artifact.tree_sha256, "d72606d63d327fb96ad67e1d7a9d6c6ad20dc5429efc8cbea16bd2c2e5786cb0");
+  assert.equal(artifact.file_count, 138);
   assert.equal(
     artifact.url,
     `https://github.com/xiongxianfei/rigorloop/releases/download/${publicReleaseTag}/${publicArchiveFile}`,

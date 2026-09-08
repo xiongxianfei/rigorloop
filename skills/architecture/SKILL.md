@@ -9,6 +9,10 @@ argument-hint: [feature spec path, proposal path, architecture question, or chan
 
 # Architecture authoring
 
+## Test criteria application
+
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+
 ## Explicit recording
 
 Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's model documents; The Workflow model owns decision meaning, the Record Format model owns stored shapes, and the CLI model owns construction and persistence. New primary roots require `rigorloop-records-v2`; existing `explicit-recording-v1` roots retain their exact compatibility contract. Do not migrate an existing root. Unknown contracts stop without fallback.
@@ -83,6 +87,8 @@ Stop on missing or unreadable required resources, unresolved placement, invalid 
 Never claim Design Review approval, ADR settlement, plan or implementation readiness, validation, verification, branch readiness, release, deployment, publication, or PR readiness.
 
 ## Resource map
+
+- READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
 
 - READ `references/requirement-to-delivery-model.md` when relating system requirements to technical realization or downstream allocation.
 - READ `references/architecture-package-method.md` for `AA1-portable-authoring` and `AA2-governed-authoring` before package judgment or writes.
