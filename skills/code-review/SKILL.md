@@ -87,7 +87,7 @@ For work governed by consolidated gates, require the current approved Design Rev
 
 Use the smallest sufficient evidence set. Begin with the diff, spec, test spec, milestone, tests, and validation. Add architecture, governance, related code, generated output, or history only when the reviewed behavior or an evidence conflict requires it. Record why substantive evidence outside that set was needed. Full-file reading is appropriate when the whole file is the target or bounded evidence is incomplete, contradictory, or context-sensitive.
 
-Apply the adopted assessment application for actual nonauthor independence. A separate session is useful only with concrete contributor separation. Historical assumption-reset fallback is available only when the selected historical contract expressly permits it; it cannot establish adopted independent approval.
+Apply the adopted assessment application for actual nonauthor independence. A separate session is useful only with concrete contributor separation. Historical assumption-reset assessments remain archival evidence and cannot establish current independent approval.
 
 ## Generated Markdown readability
 
