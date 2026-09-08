@@ -555,23 +555,21 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         root = Path(tempfile.mkdtemp(prefix="lifecycle-recording-fixture-"))
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
         (root / "docs/changes").mkdir(parents=True)
-        templates = json.loads((ROOT / "templates/explicit-recording/records.json").read_text())
+        templates = json.loads((ROOT / "templates/rigorloop-records-v2/records.json").read_text())
         prefix = "docs/changes/example/"
-        records = {"reviews/design-review.md": "review", "evidence.yaml": "evidence",
-                   "material-decisions.md": "decisions", "verify-report.md": "verify"}
+        records = {"reviews/design-review.json": "review", "evidence.json": "evidence",
+                   "material-decisions.json": "decisions", "verify-report.json": "verify"}
         change = templates["change"]
         change["records"] = [{"path": prefix + name, "kind": kind} for name, kind in records.items()]
         change["applicability"] = [{"path": entry["path"], "value": "current",
                                     "actor": {"id": "fixture", "role": "support"},
                                     "reason": "Structural fixture, not approval or completion"}
                                    for entry in change["records"]]
-        contents = {prefix + "change.yaml": json.dumps(change) + "\n"}
+        contents = {prefix + "change.json": json.dumps(change) + "\n"}
         for name, kind in records.items():
             content = json.dumps(templates[kind]) + "\n"
-            if kind != "evidence":
-                content = "---\n" + content + "---\n\nStructural fixture only.\n"
             contents[prefix + name] = content
-        request = {"schema_version": 1, "contract": "explicit-recording-v1", "change_id": "example",
+        request = {"schema_version": 2, "contract": "rigorloop-records-v2", "change_id": "example",
                    "expected_revision": None, "reads": [],
                    "writes": [{"path": path, "expected_identity": None, "content": content}
                               for path, content in contents.items()]}
@@ -637,10 +635,10 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
             for compose in (False, True):
                 with self.subTest(mutation=mutation, compose=compose):
                     root, contents = self.recording_root()
-                    manifest = root / "docs/changes/example/change.yaml"
-                    review = root / "docs/changes/example/reviews/design-review.md"
+                    manifest = root / "docs/changes/example/change.json"
+                    review = root / "docs/changes/example/reviews/design-review.json"
                     if mutation == "unknown_value":
-                        manifest.write_text(manifest.read_text().replace("explicit-recording-v1", "unknown_value"))
+                        manifest.write_text(manifest.read_text().replace("rigorloop-records-v2", "unknown_value"))
                     elif mutation == "malformed-json":
                         manifest.write_text('{"contract":')
                     elif mutation == "malformed-review":
@@ -648,7 +646,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
                     else:
                         review.unlink()
                     result = validate_repository(root, mode="explicit-paths",
-                                                 paths=["docs/changes/example/change.yaml"],
+                                                 paths=["docs/changes/example/change.json"],
                                                  compose_change_metadata=compose)
                     self.assertTrue(result.blocking_findings)
                     self.assertTrue(any(f.artifact_class == "change_metadata" for f in result.blocking_findings),
@@ -661,10 +659,10 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
             root, contents = self.recording_root()
             (root / "innocent.txt").write_text("Unrelated tracked content.\n")
             base = init_git_fixture(root)
-            manifest = root / "docs/changes/example/change.yaml"
-            review = root / "docs/changes/example/reviews/design-review.md"
+            manifest = root / "docs/changes/example/change.json"
+            review = root / "docs/changes/example/reviews/design-review.json"
             if selected == "unknown_value":
-                manifest.write_text(manifest.read_text().replace("explicit-recording-v1", "unknown_value"))
+                manifest.write_text(manifest.read_text().replace("rigorloop-records-v2", "unknown_value"))
             elif selected in {"review-crlf", "live-symlink"}:
                 review.write_bytes(review.read_bytes().replace(b"\n", b"\r\n"))
             elif selected == "manifest-bom":
@@ -673,16 +671,16 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
                 review.unlink()
             elif selected == "symlink-review":
                 review.unlink()
-                review.symlink_to("../material-decisions.md")
+                review.symlink_to("../material-decisions.json")
             elif selected == "duplicate-key":
-                manifest.write_text(manifest.read_text().replace('"schema_version": 1',
-                                                               '"schema_version": 1, "schema_version": 1'))
+                manifest.write_text(manifest.read_text().replace('"schema_version": 2',
+                                                               '"schema_version": 2, "schema_version": 2'))
             elif selected == "invalid-utf8":
                 review.write_bytes(review.read_bytes() + b"\xff")
             elif selected == "missing-evidence":
-                (manifest.parent / "evidence.yaml").unlink()
+                (manifest.parent / "evidence.json").unlink()
             elif selected in {"invalid-decisions", "invalid-verify"}:
-                name = "material-decisions.md" if selected == "invalid-decisions" else "verify-report.md"
+                name = "material-decisions.json" if selected == "invalid-decisions" else "verify-report.json"
                 (manifest.parent / name).write_bytes(b"\xff\n")
             else:
                 manifest.write_text(manifest.read_text() + "\n")
@@ -718,13 +716,14 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
 
     def test_er_pr_002_snapshot_accepts_complete_set_above_request_limit(self):
         root, contents = self.recording_root()
-        manifest = root / "docs/changes/example/change.yaml"
+        manifest = root / "docs/changes/example/change.json"
         change = json.loads(manifest.read_text())
-        review = contents["docs/changes/example/reviews/design-review.md"]
+        review = contents["docs/changes/example/reviews/design-review.json"]
         for index in range(9):
-            path = f"docs/changes/example/reviews/large-{index}.md"
-            (root / path).write_text(review.replace('"id": "design-review"',
-                                                    f'"id": "large-{index}"') + "x" * 950000 + "\n")
+            path = f"docs/changes/example/reviews/large-{index}.json"
+            large = json.loads(review)
+            large.update(id=f"large-{index}", body="x" * 950000)
+            (root / path).write_text(json.dumps(large) + "\n")
             change["records"].append({"path": path, "kind": "review"})
             change["applicability"].append({**change["applicability"][0], "path": path})
         manifest.write_text(json.dumps(change) + "\n")

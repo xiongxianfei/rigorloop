@@ -3133,9 +3133,9 @@ class ExplicitRecordingMetadataTests(unittest.TestCase):
         temporary = tempfile.TemporaryDirectory(prefix="record-metadata-")
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
-        self.path = self.root / "docs/changes/example/change.yaml"
+        self.path = self.root / "docs/changes/example/change.json"
         self.path.parent.mkdir(parents=True)
-        self.fixture = json.loads((ROOT / "tests/fixtures/explicit-recording-v1/records.json").read_text())
+        self.fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/storage-safety.json").read_text())
         self.change = json.loads(self.fixture["request"]["writes"][0]["content"])
 
     def check(self, change=None):
@@ -3164,7 +3164,7 @@ class ExplicitRecordingMetadataTests(unittest.TestCase):
 
     def test_explicit_recording_metadata_rejects_duplicate_keys_encoding_and_symlink(self):
         raw = json.dumps(self.change) + "\n"
-        for content in (raw.rstrip("\n"), raw.replace('"schema_version": 1', '"schema_version": 1, "schema_version": 1', 1)):
+        for content in (raw.rstrip("\n"), raw.replace('"schema_version": 2', '"schema_version": 2, "schema_version": 2', 1)):
             self.path.write_text(content)
             self.assertNotEqual(run_validator(self.path).returncode, 0)
             self.assertEqual(self.path.read_text(), content)
@@ -3176,7 +3176,7 @@ class ExplicitRecordingMetadataTests(unittest.TestCase):
         self.assertEqual(outside.read_text(), raw)
 
     def test_explicit_recording_metadata_validates_registered_set_not_subject_freshness(self):
-        path = "docs/changes/example/evidence.yaml"
+        path = "docs/changes/example/evidence.json"
         self.change["records"] = [{"path": path, "kind": "evidence"}]
         self.change["applicability"] = [{"path": path, "value": "stale", "actor": {"id": "author", "role": "implement"}, "reason": "Prior proof"}]
         self.assertNotEqual(self.check().returncode, 0)

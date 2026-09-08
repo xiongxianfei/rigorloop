@@ -1,8 +1,8 @@
 {
   "change": {
-    "schema_version": 1,
+    "schema_version": 2,
     "change_id": "example",
-    "contract": "explicit-recording-v1",
+    "contract": "rigorloop-records-v2",
     "proposal": {
       "path": "docs/proposals/example.md",
       "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -41,25 +41,25 @@
     ],
     "records": [
       {
-        "path": "docs/changes/example/reviews/design-review.md",
+        "path": "docs/changes/example/reviews/design-review.json",
         "kind": "review"
       },
       {
-        "path": "docs/changes/example/evidence.yaml",
+        "path": "docs/changes/example/evidence.json",
         "kind": "evidence"
       },
       {
-        "path": "docs/changes/example/material-decisions.md",
+        "path": "docs/changes/example/material-decisions.json",
         "kind": "decisions"
       },
       {
-        "path": "docs/changes/example/verify-report.md",
+        "path": "docs/changes/example/verify-report.json",
         "kind": "verify"
       }
     ],
     "applicability": [
       {
-        "path": "docs/changes/example/reviews/design-review.md",
+        "path": "docs/changes/example/reviews/design-review.json",
         "value": "stale",
         "actor": {
           "id": "author",
@@ -68,7 +68,7 @@
         "reason": "Basis changed"
       },
       {
-        "path": "docs/changes/example/evidence.yaml",
+        "path": "docs/changes/example/evidence.json",
         "value": "stale",
         "actor": {
           "id": "author",
@@ -77,7 +77,7 @@
         "reason": "Basis changed"
       },
       {
-        "path": "docs/changes/example/material-decisions.md",
+        "path": "docs/changes/example/material-decisions.json",
         "value": "stale",
         "actor": {
           "id": "author",
@@ -86,7 +86,7 @@
         "reason": "Basis changed"
       },
       {
-        "path": "docs/changes/example/verify-report.md",
+        "path": "docs/changes/example/verify-report.json",
         "value": "stale",
         "actor": {
           "id": "author",
@@ -115,12 +115,28 @@
         "evidence": "Observed gap",
         "required_outcome": "Correct the gap",
         "state": "open",
-        "resolution": null
+        "resolution": null,
+        "origin": {
+          "reporter": {
+            "id": "reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "path": "docs/design/workflow.md",
+              "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "evidence": "Observed gap",
+          "required_outcome": "Correct the gap",
+          "rationale": "Synthetic retained storage-safety scenario.",
+          "supporting_judgment": null
+        }
       }
     ]
   },
   "review": {
-    "schema_version": 1,
+    "schema_version": 2,
     "change_id": "example",
     "id": "design-review",
     "target": "design",
@@ -162,12 +178,29 @@
         "evidence": "Observed gap",
         "required_outcome": "Correct the gap",
         "state": "open",
-        "resolution": null
+        "resolution": null,
+        "origin": {
+          "reporter": {
+            "id": "reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "path": "docs/design/workflow.md",
+              "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "evidence": "Observed gap",
+          "required_outcome": "Correct the gap",
+          "rationale": "Synthetic retained storage-safety scenario.",
+          "supporting_judgment": null
+        }
       }
-    ]
+    ],
+    "body": "Synthetic storage-safety reasoning.\n"
   },
   "evidence": {
-    "schema_version": 1,
+    "schema_version": 2,
     "change_id": "example",
     "checks": [
       {
@@ -189,7 +222,7 @@
     ]
   },
   "decisions": {
-    "schema_version": 1,
+    "schema_version": 2,
     "change_id": "example",
     "decisions": [
       {
@@ -207,15 +240,16 @@
         "rationale": "Keep separation",
         "source_refs": [
           {
-            "path": "docs/changes/example/reviews/design-review.md",
+            "path": "docs/changes/example/reviews/design-review.json",
             "id": "finding-one"
           }
         ]
       }
-    ]
+    ],
+    "body": "Synthetic storage-safety reasoning.\n"
   },
   "verify": {
-    "schema_version": 1,
+    "schema_version": 2,
     "change_id": "example",
     "verifier": {
       "id": "verifier",
@@ -229,28 +263,29 @@
     ],
     "evidence_refs": [
       {
-        "path": "docs/changes/example/evidence.yaml",
+        "path": "docs/changes/example/evidence.json",
         "id": "check-one"
       }
     ],
     "review_refs": [
       {
-        "path": "docs/changes/example/reviews/design-review.md",
+        "path": "docs/changes/example/reviews/design-review.json",
         "id": "design-review"
       }
     ],
-    "outcome": "success"
+    "outcome": "success",
+    "body": "Synthetic storage-safety reasoning.\n"
   },
   "request": {
-    "schema_version": 1,
+    "schema_version": 2,
     "change_id": "example",
-    "contract": "explicit-recording-v1",
+    "contract": "rigorloop-records-v2",
     "expected_revision": null,
     "writes": [
       {
-        "path": "docs/changes/example/change.yaml",
+        "path": "docs/changes/example/change.json",
         "expected_identity": null,
-        "content": "{\"schema_version\":1,\"change_id\":\"example\",\"contract\":\"explicit-recording-v1\",\"proposal\":{\"path\":\"docs/proposals/example.md\",\"identity\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"models\":[{\"id\":\"workflow\",\"subject\":{\"path\":\"docs/design/workflow.md\",\"identity\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}}],\"activity\":{\"stage\":\"design\",\"status\":\"blocked\",\"owner\":{\"id\":\"author\",\"role\":\"design\"},\"reason\":\"Correction\"},\"plan\":null,\"work\":[{\"id\":\"m1\",\"status\":\"pending\",\"owner\":{\"id\":\"author\",\"role\":\"design\"},\"requirement_refs\":[\"WF-SR-02\"]}],\"records\":[],\"applicability\":[],\"blockers\":[{\"id\":\"finding-one\",\"reporter\":{\"id\":\"reviewer\",\"role\":\"review\"},\"owner\":{\"id\":\"author\",\"role\":\"design\"},\"subjects\":[{\"path\":\"docs/design/workflow.md\",\"identity\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"evidence\":\"Observed gap\",\"required_outcome\":\"Correct the gap\",\"state\":\"open\",\"resolution\":null}]}\n"
+        "content": "{\n  \"schema_version\": 2,\n  \"change_id\": \"example\",\n  \"contract\": \"rigorloop-records-v2\",\n  \"proposal\": {\n    \"path\": \"docs/proposals/example.md\",\n    \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n  },\n  \"models\": [\n    {\n      \"id\": \"workflow\",\n      \"subject\": {\n        \"path\": \"docs/design/workflow.md\",\n        \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n      }\n    }\n  ],\n  \"activity\": {\n    \"stage\": \"design\",\n    \"status\": \"blocked\",\n    \"owner\": {\n      \"id\": \"author\",\n      \"role\": \"design\"\n    },\n    \"reason\": \"Correction\"\n  },\n  \"plan\": null,\n  \"work\": [\n    {\n      \"id\": \"m1\",\n      \"status\": \"pending\",\n      \"owner\": {\n        \"id\": \"author\",\n        \"role\": \"design\"\n      },\n      \"requirement_refs\": [\n        \"WF-SR-02\"\n      ]\n    }\n  ],\n  \"records\": [],\n  \"applicability\": [],\n  \"blockers\": [\n    {\n      \"id\": \"finding-one\",\n      \"reporter\": {\n        \"id\": \"reviewer\",\n        \"role\": \"review\"\n      },\n      \"owner\": {\n        \"id\": \"author\",\n        \"role\": \"design\"\n      },\n      \"subjects\": [\n        {\n          \"path\": \"docs/design/workflow.md\",\n          \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n        }\n      ],\n      \"evidence\": \"Observed gap\",\n      \"required_outcome\": \"Correct the gap\",\n      \"state\": \"open\",\n      \"resolution\": null,\n      \"origin\": {\n        \"reporter\": {\n          \"id\": \"reviewer\",\n          \"role\": \"review\"\n        },\n        \"subjects\": [\n          {\n            \"path\": \"docs/design/workflow.md\",\n            \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n          }\n        ],\n        \"evidence\": \"Observed gap\",\n        \"required_outcome\": \"Correct the gap\",\n        \"rationale\": \"Synthetic retained storage-safety scenario.\",\n        \"supporting_judgment\": null\n      }\n    }\n  ]\n}\n"
       }
     ],
     "reads": [
@@ -268,7 +303,7 @@
     "revision": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "files": [
       {
-        "path": "docs/changes/example/change.yaml",
+        "path": "docs/changes/example/change.json",
         "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       }
     ],
@@ -276,7 +311,7 @@
     "observations": [
       {
         "code": "failed-evidence",
-        "path": "docs/changes/example/evidence.yaml",
+        "path": "docs/changes/example/evidence.json",
         "message": "Failed check"
       }
     ],

@@ -98,9 +98,9 @@ class CompactActivationTests(unittest.TestCase):
 
 class WrapperExecutionTests(unittest.TestCase):
     def recording_fixture(self, root):
-        path = root / "docs/changes/example/change.yaml"
+        path = root / "docs/changes/example/change.json"
         path.parent.mkdir(parents=True)
-        template = json.loads((MODULE.ROOT / "templates/explicit-recording/records.json").read_text())
+        template = json.loads((MODULE.ROOT / "templates/rigorloop-records-v2/records.json").read_text())
         path.write_text(json.dumps(template["change"]) + "\n")
         (root / "specs").mkdir()
         (root / MODULE.LIFECYCLE_ACTIVATION_MANIFEST_PATH).write_text(json.dumps({
@@ -116,7 +116,7 @@ class WrapperExecutionTests(unittest.TestCase):
             before = path.read_bytes()
             inventory, errors = MODULE.parsed_change_inventory(root)
             self.assertEqual(errors, [])
-            self.assertEqual(inventory["example"]["contract"], "explicit-recording-v1")
+            self.assertEqual(inventory["example"]["contract"], "rigorloop-records-v2")
             self.assertEqual(MODULE.governed_records(root), [])
             self.assertEqual(MODULE.activation_inventory_errors(root), [])
             self.assertEqual(path.read_bytes(), before)
@@ -132,14 +132,14 @@ class WrapperExecutionTests(unittest.TestCase):
                 elif mutation == "mixed":
                     change["lifecycle_contract"] = "stage-owned-change-local-v3"
                 elif mutation == "missing-record":
-                    change["records"] = [{"path": "docs/changes/example/evidence.yaml", "kind": "evidence"}]
-                    change["applicability"] = [{"path": "docs/changes/example/evidence.yaml", "value": "current",
+                    change["records"] = [{"path": "docs/changes/example/evidence.json", "kind": "evidence"}]
+                    change["applicability"] = [{"path": "docs/changes/example/evidence.json", "value": "current",
                                                 "actor": {"id": "fixture", "role": "support"}, "reason": "Fixture"}]
                 text = json.dumps(change) + "\n"
                 if mutation == "malformed":
                     text = '{"contract":\n'
                 elif mutation == "duplicate-key":
-                    text = text.replace('"schema_version": 1', '"schema_version": 1, "schema_version": 1')
+                    text = text.replace('"schema_version": 2', '"schema_version": 2, "schema_version": 2')
                 path.write_text(text)
                 before = path.read_bytes()
                 inventory, errors = MODULE.parsed_change_inventory(root)
@@ -194,7 +194,13 @@ class WrapperExecutionTests(unittest.TestCase):
             return result
 
         output = io.StringIO()
-        exit_code = MODULE.main(records=[("success", Path("success/change.yaml"))], runner=runner, output=output)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.recording_fixture(root)
+            (root / MODULE.FINAL_VERIFICATION_ACTIVATION_MANIFEST_PATH).write_text((root / MODULE.LIFECYCLE_ACTIVATION_MANIFEST_PATH).read_text())
+            matrix = CompactActivationTests()
+            matrix.write_matrix(root, matrix.matrix())
+            exit_code = MODULE.main(records=[("success", Path("success/change.yaml"))], runner=runner, root=root, output=output)
         rendered = output.getvalue()
         self.assertEqual(exit_code, 0)
         self.assertEqual(len(commands), 1)

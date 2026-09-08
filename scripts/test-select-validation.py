@@ -541,26 +541,24 @@ class ValidationSelectionTests(unittest.TestCase):
         repo = self.make_git_repo()
         shutil.copyfile(ROOT / ".gitignore", repo / ".gitignore")
         (repo / "docs/changes").mkdir(parents=True)
-        templates = json.loads((ROOT / "templates/explicit-recording/records.json").read_text())
+        templates = json.loads((ROOT / "templates/rigorloop-records-v2/records.json").read_text())
         change = templates["change"]
-        records = {"reviews/design-review.md": ("review", templates["review"]),
-                   "evidence.yaml": ("evidence", templates["evidence"]),
-                   "material-decisions.md": ("decisions", templates["decisions"]),
-                   "verify-report.md": ("verify", templates["verify"])}
+        records = {"reviews/design-review.json": ("review", templates["review"]),
+                   "evidence.json": ("evidence", templates["evidence"]),
+                   "material-decisions.json": ("decisions", templates["decisions"]),
+                   "verify-report.json": ("verify", templates["verify"])}
         prefix = "docs/changes/example/"
         change["records"] = [{"path": prefix + name, "kind": kind} for name, (kind, _) in records.items()]
         change["applicability"] = [{"path": entry["path"], "value": "current",
                                     "actor": {"id": "fixture", "role": "support"},
                                     "reason": "Structural selector fixture, not an actual approval"}
                                    for entry in change["records"]]
-        writes = [{"path": prefix + "change.yaml", "expected_identity": None,
+        writes = [{"path": prefix + "change.json", "expected_identity": None,
                    "content": json.dumps(change) + "\n"}]
         for name, (kind, record) in records.items():
             content = json.dumps(record) + "\n"
-            if kind != "evidence":
-                content = "---\n" + content + "---\n\nStructural test fixture only.\n"
             writes.append({"path": prefix + name, "expected_identity": None, "content": content})
-        request = {"schema_version": 1, "contract": "explicit-recording-v1", "change_id": "example",
+        request = {"schema_version": 2, "contract": "rigorloop-records-v2", "change_id": "example",
                    "expected_revision": None, "reads": [], "writes": writes}
         result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
                                  "record-store", "record", "--root", str(repo), "--change", "example",
@@ -606,7 +604,7 @@ class ValidationSelectionTests(unittest.TestCase):
                 self.assertEqual(result.status, "ok", result.blocking_results)
                 checks = {check["id"]: check for check in result.selected_checks}
                 self.assertIn("change_metadata.validate", checks)
-                self.assertIn("docs/changes/example/change.yaml", checks["change_metadata.validate"]["command"])
+                self.assertIn("docs/changes/example/change.json", checks["change_metadata.validate"]["command"])
                 self.assertNotIn("review_artifacts.validate", checks)
                 self.assertNotIn("artifact_lifecycle.validate", checks)
 
@@ -627,11 +625,11 @@ class ValidationSelectionTests(unittest.TestCase):
         unknown = "docs/changes/example/unknown_value.md"
         result = select_validation(SelectionRequest(mode="explicit", paths=(unknown,), repo_root=repo))
         self.assertEqual(result.status, "blocked")
-        manifest = repo / "docs/changes/example/change.yaml"
+        manifest = repo / "docs/changes/example/change.json"
         value = json.loads(manifest.read_text())
         value["contract"] = "unknown_value"
         manifest.write_text(json.dumps(value) + "\n")
-        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/changes/example/evidence.yaml",), repo_root=repo))
+        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/changes/example/evidence.json",), repo_root=repo))
         self.assertEqual(result.status, "blocked")
         self.assertTrue(any(block["code"] == "unsupported-change-contract" for block in result.blocking_results))
 

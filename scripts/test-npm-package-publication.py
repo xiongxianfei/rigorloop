@@ -60,17 +60,17 @@ def pack_package(destination: Path) -> Path:
 class NpmPackagePublicationTests(unittest.TestCase):
     def assert_explicit_recording(self, binary: Path, project: Path) -> None:
         package = binary.resolve().parents[2]
-        templates = json.loads((package / "dist/templates/explicit-recording/records.json").read_text())
-        self.assertEqual((package / "dist/templates/explicit-recording/records.json").read_bytes(),
-                         (ROOT / "templates/explicit-recording/records.json").read_bytes())
-        self.assertTrue((package / "dist/schemas/explicit-recording-v1.schema.json").is_file())
+        templates = json.loads((package / "dist/templates/rigorloop-records-v2/records.json").read_text())
+        self.assertEqual((package / "dist/templates/rigorloop-records-v2/records.json").read_bytes(),
+                         (ROOT / "templates/rigorloop-records-v2/records.json").read_bytes())
+        self.assertTrue((package / "dist/schemas/rigorloop-records-v2.schema.json").is_file())
         (project / "docs/changes").mkdir(parents=True)
-        manifest = project / "docs/changes/example/change.yaml"
+        manifest = project / "docs/changes/example/change.json"
         change = templates["change"]
         change["activity"]["reason"] = "Explicit installed-package test decision"
         content = json.dumps(change) + "\n"
-        request = {"schema_version": 1, "contract": "explicit-recording-v1", "change_id": "example",
-                   "expected_revision": None, "writes": [{"path": "docs/changes/example/change.yaml",
+        request = {"schema_version": 2, "contract": "rigorloop-records-v2", "change_id": "example",
+                   "expected_revision": None, "writes": [{"path": "docs/changes/example/change.json",
                    "expected_identity": None, "content": content}], "reads": []}
 
         def invoke(operation: str, request_data=None, *, change_id="example", extra=(), expected=0):
@@ -146,7 +146,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
             old_record.write_text(raw)
             invoke("inspect", change_id="historical", expected=2)
             bad = {**request, "change_id": "historical", "expected_revision": None,
-                   "writes": [{"path": "docs/changes/historical/change.yaml", "expected_identity": None, "content": content}]}
+                   "writes": [{"path": "docs/changes/historical/change.json", "expected_identity": None, "content": content}]}
             invoke("record", bad, change_id="historical", expected=2)
             self.assertEqual(old_record.read_text(), raw)
         for contract in ("unknown_value", "compact-current-state-v1"):
@@ -206,8 +206,8 @@ class NpmPackagePublicationTests(unittest.TestCase):
                    "operation": operation}
             invoke(["change", "create"], bad, expected=2, change="absent")
             self.assertFalse((project / "docs/changes/absent").exists())
-        # The primary reader reports an existing v1 contract without migration.
-        self.assertEqual(invoke(["status"], change="example")["record_contract"], "explicit-recording-v1")
+        # The primary reader reports the retained installed-package v2 store.
+        self.assertEqual(invoke(["status"], change="example")["record_contract"], "rigorloop-records-v2")
 
     def test_package_policy_rejects_lifecycle_scripts_and_runtime_dependencies(self) -> None:
         validate_package_policy(

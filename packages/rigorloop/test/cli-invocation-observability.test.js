@@ -112,7 +112,7 @@ test("T06 public command families record deterministic terminal severity and sta
   writeGovernedFixture(project);
   const cases = [
     { args: ["version"], family: "introspection", exit: 0, severity: "info", status: "success" },
-    { args: ["workflow-context", "--change", "example", "--format", "json"], family: "introspection", exit: 0, severity: "info", status: "success" },
+    { args: ["workflow-context", "--change", "example", "--format", "json"], family: "introspection", exit: 2, severity: "warning", status: "blocked" },
     { args: ["init", "unsupported", "--json"], family: "repository-setup", exit: 2, severity: "warning", status: "blocked" },
     { args: ["future-command", "--json"], family: "invalid-input", exit: 4, severity: "warning", status: "error" },
     { args: ["logs", "path"], family: "log-inspection", exit: 0, severity: "info", status: "success" },

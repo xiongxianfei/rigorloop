@@ -1387,15 +1387,13 @@ def _apply_path_selection(
             _add_check(selected, "change_metadata.regression",
                        "Recording paths retain metadata and historical compatibility regression proof.")
             affected_roots.add(_change_root(path))
-            if metadata["contract"] not in {"explicit-recording-v1", "rigorloop-records-v2"}:
+            if metadata["contract"] not in {"rigorloop-records-v2"}:
                 blocking_results.append({"code": "unsupported-change-contract", "path": manifest_path,
                                          "message": "Unknown recording contract; no historical fallback."})
                 return
             relative = path.removeprefix(_change_root(path))
-            v2 = metadata["contract"] == "rigorloop-records-v2"
-            kind = ({"evidence.json": "evidence", "material-decisions.json": "decisions", "verify-report.json": "verify"}
-                    if v2 else {"evidence.yaml": "evidence", "material-decisions.md": "decisions", "verify-report.md": "verify"}).get(relative)
-            if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\." + ("json" if v2 else "md"), relative):
+            kind = {"evidence.json": "evidence", "material-decisions.json": "decisions", "verify-report.json": "verify"}.get(relative)
+            if re.fullmatch(r"reviews/[a-z0-9][a-z0-9-]{0,79}\.json", relative):
                 kind = "review"
             records = metadata.get("records")
             registered = isinstance(records, list) and any(
