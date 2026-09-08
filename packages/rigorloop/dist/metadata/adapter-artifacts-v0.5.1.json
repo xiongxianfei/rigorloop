@@ -16,30 +16,30 @@
       "adapter": "codex",
       "archive": "rigorloop-adapter-codex-v0.5.1.zip",
       "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/rigorloop-adapter-codex-v0.5.1.zip",
-      "sha256": "e72b5adb11ce124613cdcfbcfa2fbeb6e8b69a33b1db732f93a44840b30f8167",
-      "size_bytes": 277011,
+      "sha256": "c5e5614a247db15530d37e5a2666f99df5fec2d288bd3c5c9cb63d717f33bf1b",
+      "size_bytes": 277103,
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
       "install_root": ".agents/skills",
-      "tree_sha256": "b90927db7e7c5b4765b0465cd577ea932d95969739e688fbf593eb311b0b9f89",
+      "tree_sha256": "68f3bee3a42c5c01b30dd146a152b98fff378ddbd24bc3da341102b131b40ee1",
       "file_count": 137
     },
     {
       "adapter": "claude",
       "archive": "rigorloop-adapter-claude-v0.5.1.zip",
       "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/rigorloop-adapter-claude-v0.5.1.zip",
-      "sha256": "8fd30c8cc7db31fba773f80d806386fd0e15ce3b3cf37d6bf400a60a801b7139",
-      "size_bytes": 276328,
+      "sha256": "5f0eba245c45024e2a83b19b8c744998414f70e3f7cc395fb230cca2e5ae8172",
+      "size_bytes": 276420,
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
       "install_root": ".claude/skills",
-      "tree_sha256": "acb22d3b0a60a24544f42f80c20efb644819d727ffebcf99751c6c07c9b7523a",
+      "tree_sha256": "b549da3092a25a4b59f4dd02c567cf1682fd5aaf49794a7e2dc65b8b062fc90f",
       "file_count": 137
     },
     {
       "adapter": "opencode",
       "archive": "rigorloop-adapter-opencode-v0.5.1.zip",
       "url": "https://github.com/xiongxianfei/rigorloop/releases/download/v0.5.1/rigorloop-adapter-opencode-v0.5.1.zip",
-      "sha256": "a84612ab469877b771f3de454a1a13dacc301a344ab546f3dce00e33d0e7b270",
-      "size_bytes": 279167,
+      "sha256": "12fdb726852a436e27009f0fbe84ecd115df4740215efb7f7c8ee7260c19cb0e",
+      "size_bytes": 279259,
       "tree_hash_algorithm": "rigorloop-tree-hash-v1",
       "install_roots": {
         "skills": ".opencode/skills",
@@ -47,7 +47,7 @@
       },
       "root_hashes": {
         "skills": {
-          "tree_sha256": "acb22d3b0a60a24544f42f80c20efb644819d727ffebcf99751c6c07c9b7523a",
+          "tree_sha256": "b549da3092a25a4b59f4dd02c567cf1682fd5aaf49794a7e2dc65b8b062fc90f",
           "file_count": 137
         },
         "commands": {

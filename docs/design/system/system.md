@@ -1,6 +1,6 @@
 # RigorLoop System Model Design
 
-Model validation contract: explicit-recording-v1
+Model validation contract: model-document-v1
 
 ## Introduction and Goals
 

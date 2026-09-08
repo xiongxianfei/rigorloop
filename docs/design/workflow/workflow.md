@@ -1,6 +1,6 @@
 # Workflow Model Design
 
-Model validation contract: explicit-recording-v1
+Model validation contract: model-document-v1
 
 ## Introduction and Goals
 
@@ -332,7 +332,7 @@ The diagram shows actor decisions only. Storage details are in the [CLI examples
 
 ### Model validation and proof mapping
 
-[Design DES-SR-09/10/11/12/16/19](../design/design.md#model-document-and-structural-contract) owns the unchanged `explicit-recording-v1` model-document mapping: requirement/scenario tables, closed values, path/reference checks, example pairing, historical feature-format preservation and the grandfathered-spec semantic-review handoff. This anchor remains an explicit replacement reference for WF-SR-07/08/09 consumers, not a second normative definition.
+[Design DES-SR-09/10/11/12/16/19](../design/design.md#model-document-and-structural-contract) owns the `model-document-v1` model-document mapping: requirement/scenario tables, closed values, path/reference checks, example pairing, historical feature-format preservation and the grandfathered-spec semantic-review handoff. This anchor remains an explicit replacement reference for WF-SR-07/08/09 consumers, not a second normative definition.
 
 Delivery owns concrete proof allocation; Workflow coordinates that handoff and the receiving activities. Test TEST-SR-01–13 owns shared protective-value and maintenance criteria; specialists assess actual plans/tests/evidence under Review and Closeout. No marker, structural pass, selector result or saved review independently selects continuation or proves test adequacy.
 

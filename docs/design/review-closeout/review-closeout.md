@@ -1,8 +1,8 @@
 # Review and Closeout Model Design
 
-Model validation contract: explicit-recording-v1
+Model validation contract: model-document-v1
 
-This marker versions Markdown model validation only; its older name does not select a stored format. The current runtime contract is `rigorloop-records-v2`, as defined by [Record Format](../record-format/record-format.md#record-model). Retired-format descriptions below explain historical decisions and records; they do not authorize a v1 reader, writer or continuation path.
+This marker versions Markdown model validation only; it does not select a stored format. The current runtime contract is `rigorloop-records-v2`, as defined by [Record Format](../record-format/record-format.md#record-model). Retired-format descriptions below explain historical decisions and records; they do not authorize a v1 reader, writer or continuation path.
 
 ## Introduction and Goals
 
