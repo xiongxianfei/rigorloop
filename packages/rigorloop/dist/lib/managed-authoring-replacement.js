@@ -1,8 +1,8 @@
 // Private filesystem transaction for the explicitly authorized authoring upgrade.
 // Archive trust and recorded-tree eligibility remain the installer's responsibility.
-import { lstatSync, readdirSync, readFileSync, mkdirSync, mkdtempSync, writeFileSync, renameSync, rmSync, realpathSync } from "node:fs";
+import { lstatSync, readdirSync, readFileSync, mkdirSync, mkdtempSync, writeFileSync, renameSync, linkSync, realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { resolve, join, dirname } from "node:path";
+import { resolve, join, dirname, basename } from "node:path";
 
 const STATE_PATHS = ["rigorloop.yaml", "rigorloop.lock"];
 const failure = (message, code = "managed-authoring-conflict") => Object.assign(new Error(message), { code });
@@ -31,6 +31,26 @@ function safePath(projectRoot, path) {
     }
   }
   return current;
+}
+
+
+// As in RecordFiles.withParent, the synchronous CLI pins the verified parent
+// inode as cwd. Basename-only writes cannot follow a replaced ancestor.
+function withParent(projectRoot, path, action) {
+  const target = safePath(projectRoot, path);
+  const parent = dirname(target);
+  const identity = lstatSync(parent);
+  if (!identity.isDirectory()) throw failure("Unsafe replacement parent.");
+  const cwd = process.cwd();
+  try {
+    process.chdir(parent);
+    const opened = lstatSync(".");
+    if (opened.dev !== identity.dev || opened.ino !== identity.ino) throw failure("Replacement parent changed.");
+    safePath(projectRoot, path);
+    const current = lstatSync(parent);
+    if (current.dev !== identity.dev || current.ino !== identity.ino) throw failure("Replacement parent changed.");
+    return action(basename(target));
+  } finally { process.chdir(cwd); }
 }
 
 function snapshot(path) {
@@ -90,13 +110,47 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
       if (!equal(snapshot(backup), original)) throw failure("The retained original changed during replacement.");
     }
   }
-  function move(from, to, path, after, backupChange) {
+  function saveOriginal(target, backup, path) {
     assertCurrent();
-    if (stat(to)) throw failure("A replacement destination unexpectedly exists.");
-    renameSync(from, to);
-    moves.push({ from, to, path, before: expected[path], backupChange });
-    expected[path] = after;
-    if (backupChange) saved.set(to, basis[path]);
+    if (stat(backup)) throw failure("A private backup destination unexpectedly exists.");
+    withParent(projectRoot, path, name => renameSync(name, backup));
+    moves.push({ kind: "saved", backup, path });
+    expected[path] = null;
+    saved.set(backup, basis[path]);
+    assertCurrent();
+  }
+  function publish(path, source, node, record = true) {
+    function install(relative, from, value, attach) {
+      assertCurrent();
+      safePath(projectRoot, relative);
+      if (value.kind === "file") {
+        // link is an atomic no-clobber publication on the same filesystem.
+        // rename would overwrite a writer arriving after the final check.
+        withParent(projectRoot, relative, name => linkSync(from, name));
+        attach(value);
+      } else {
+        withParent(projectRoot, relative, name => {
+          // Set the creation mode exactly; never reopen a public path to chmod.
+          // This main-thread synchronous section restores process state on error.
+          const mask = process.umask(0);
+          try { mkdirSync(name, { mode: value.mode & 0o7777 }); }
+          finally { process.umask(mask); }
+        });
+        const directory = { ...value, entries: [] };
+        attach(directory);
+        for (const [name, child] of value.entries) {
+          install(`${relative}/${name}`, join(from, name), child, entry => {
+            directory.entries.push([name, entry]);
+            directory.entries.sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
+          });
+        }
+      }
+    }
+    install(path, source, node, value => {
+      expected[path] = value;
+      if (record) moves.push({ kind: "published", path });
+    });
+    assertCurrent();
   }
   try {
     mkdirSync(join(stage, "new"));
@@ -116,12 +170,12 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
       if (i === roots.length) { verifyInstalled(); checkpoint("verified"); assertCurrent(); }
       const target = safePath(projectRoot, path);
       if (expected[path]) {
-        move(target, join(stage, "old", String(i)), path, null, true);
+        saveOriginal(target, join(stage, "old", String(i)), path);
         checkpoint(`saved:${path}`);
       }
       const source = join(stage, "new", path);
       if (!equal(snapshot(source), candidate[path])) throw failure("Staged candidate changed before publication.");
-      move(source, target, path, candidate[path], false);
+      publish(path, source, candidate[path]);
       checkpoint(`published:${path}`);
     }
     assertCurrent();
@@ -132,20 +186,31 @@ export function replaceManagedAuthoring({ projectRoot, roots, basis, files, stat
         checkpoint("rollback");
         assertCurrent();
         const last = moves.at(-1);
-        if (stat(last.from)) throw failure("Rollback destination changed independently.");
-        renameSync(last.to, last.from);
-        expected[last.path] = last.before;
-        if (last.backupChange) saved.delete(last.to);
+        if (last.kind === "published") {
+          // Detach before inspecting; never recursively delete a public path.
+          // If a writer won this source race, retain its bytes and report it.
+          const detached = join(stage, `detached-${moves.length}`);
+          const wanted = expected[last.path];
+          withParent(projectRoot, last.path, name => renameSync(name, detached));
+          expected[last.path] = null;
+          saved.set(detached, wanted);
+          assertCurrent();
+        } else {
+          // Restoring originals uses the same exclusive publication primitives.
+          publish(last.path, last.backup, basis[last.path], false);
+        }
         moves.pop();
       }
-      rmSync(stage, { recursive: true });
+      error.recoveryPath = stage;
+      error.restored = true;
     } catch (recoveryError) {
       throw Object.assign(failure(`Replacement stopped; preserve the recovery directory and operator backup, inspect intervening changes, and restore a coherent original basis before retry. ${recoveryError.message}`, "managed-authoring-recovery-required"), { recoveryPath: stage, cause: error });
     }
     throw error;
   }
-  // The target/state pair is coherent. A cleanup problem must not attempt to
-  // roll it back through a possibly partially removed backup directory.
-  try { rmSync(stage, { recursive: true }); } catch { return { cleanupPath: stage }; }
-  return {};
+  // Keep the detached originals outside the selected installation roots. An
+  // already-open writer can still write an old inode after its last check;
+  // deleting that backup automatically could lose the independent write.
+  // The operator may remove this directory after inspecting the completed pair.
+  return { backupPath: stage };
 }
