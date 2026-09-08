@@ -571,6 +571,27 @@ class CurrentRecordBoundaryTests(unittest.TestCase):
 
 
 class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
+    def test_current_v2_validation_does_not_decode_archival_baseline(self):
+        root, _ = self.v2_recording_root()
+        base = init_git_fixture(root)
+        archive = root / "docs/changes/archived"
+        archive.mkdir()
+        (archive / "change.yaml").write_bytes(b"retired archive\xff")
+        (archive / "review-log.md").write_bytes(b"unreadable historical evidence\xff")
+        manifest = root / "docs/changes/example/change.json"
+        manifest.write_text(manifest.read_text() + "\n")
+        subprocess.run(["git", "add", "."], cwd=root, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "current work beside archives"],
+                       cwd=root, check=True, capture_output=True)
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+        manifest.write_text(manifest.read_text() + "\n")
+        for mode, args in (("local", {}), ("pr-ci", {"base": base, "head": head})):
+            with self.subTest(mode=mode):
+                result = validate_repository(root, mode=mode, **args)
+                self.assertFalse(result.blocking_findings, result.blocking_findings)
+                self.assertEqual((archive / "review-log.md").read_bytes(),
+                                 b"unreadable historical evidence\xff")
+
     def recording_root(self):
         root = Path(tempfile.mkdtemp(prefix="lifecycle-recording-fixture-"))
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))

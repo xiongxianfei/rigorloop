@@ -1560,10 +1560,15 @@ def _discover_all_in_scope_artifacts(root: Path, tracked_revision: str | None = 
                 continue
         if not _is_relative_to(candidate, root):
             continue
+        relative = candidate.relative_to(root)
+        # Change records are selected and validated as complete v2 sets above.
+        # Their Markdown archives are not current document candidates, even
+        # when historical bytes cannot be decoded by today's tooling.
+        if relative.parts[:2] == ("docs", "changes"):
+            continue
         if _recording_change_record_for(root, candidate, tracked_revision) is not None:
             continue
         text = _read_repo_text(root, candidate, tracked_revision)
-        relative = candidate.relative_to(root)
         if classify_artifact(relative, text) is not None:
             results.add(candidate)
     return results

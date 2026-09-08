@@ -5078,7 +5078,7 @@ raise SystemExit(3)
                 "direct proof",
             ],
             "skills/verify/SKILL.md": [
-                "verify-report.md",
+                "registered v2 evidence",
                 "manual by design",
                 "manual proof",
                 "release metadata",
