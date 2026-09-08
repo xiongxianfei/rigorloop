@@ -19,7 +19,7 @@ Activation record identity: specs/boundary-first-activation.yaml
 
 ## Goal and context
 
-Prospective model documents explicitly marked `Model validation contract: explicit-recording-v1` use the [Workflow-owned model validation and proof mapping](../docs/design/workflow/workflow.md#model-validation-and-proof-mapping), not this feature-document serialization. That mapping retains the eight reasoning dimensions, requirement ownership, plan-owned proof allocation and independent semantic assessment without extra boundary/test-spec files. Model structural checks do not activate a lifecycle contract. Historical feature-format and activation rules remain unchanged; the mapping clarifies the structural-reporting and Design Review handoff for grandfathered amendments under PBF-R049b/PBF-R055a/PBF-R056.
+Prospective model documents explicitly marked `Model validation contract: model-document-v1` use the [Design-owned model validation and proof mapping](../docs/design/design/design.md#model-document-and-structural-contract), not this feature-document serialization. That mapping retains the eight reasoning dimensions, requirement ownership, plan-owned proof allocation and independent semantic assessment without extra boundary/test-spec files. Model structural checks do not activate a lifecycle contract. Historical feature-format and activation rules remain unchanged; the mapping clarifies the structural-reporting and Design Review handoff for grandfathered amendments under PBF-R049b/PBF-R055a/PBF-R056.
 
 This spec defines a portable boundary-first contract for behavior-changing
 feature specs, test specs, plans, implementation, review, and verification.
@@ -448,7 +448,7 @@ PBF-R049b. Structural validation MUST use the release-activation manifest to
 distinguish grandfathered feature specs from new feature specs.
 It MUST NOT infer whether an edit to a grandfathered spec is substantively
 normative.
-Changed unmarked grandfathered specs MUST produce the separate `review_required` observation defined by the Workflow-owned mapping. A `review-required` result with exit zero establishes structural success only; any structural error still fails with nonzero exit, including mixed results. Unknown markers and malformed boundary content remain errors.
+Changed unmarked grandfathered specs MUST produce the separate `review_required` observation defined by the Design-owned mapping. A `review-required` result with exit zero establishes structural success only; any structural error still fails with nonzero exit, including mixed results. Unknown markers and malformed boundary content remain errors.
 
 PBF-R050. Structural validators MUST NOT claim semantic completeness,
 applicability correctness, interaction adequacy, milestone isolation, proof

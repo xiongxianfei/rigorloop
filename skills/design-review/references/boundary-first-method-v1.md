@@ -77,7 +77,7 @@ No interaction selected: <requirement-grounded rationale>
 Downstream stages consume exact approved rows and stable IDs.
 They do not recreate applicability, rename IDs, or infer new outcomes.
 Expand the approved slice when an ID is missing, stale, unknown, ambiguous, conflicting, or cannot explain an observed outcome.
-Route a new or changed normative outcome to the feature-spec owner.
+Route a new or changed normative outcome to the design author owning that feature contract.
 Route a missing proof obligation that does not change behavior to the proof-map owner.
 
 ## Structural validation and semantic review

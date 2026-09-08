@@ -1,5 +1,9 @@
 # RigorLoop Workflow
 
+## Unified authoring adoption
+
+For the selected responsibility, [Design](../docs/design/design/design.md) replaces separate normal `spec` and `architecture` authoring with `design`, including one OpenCode `design` alias. Independent `design-review` assesses the exact affected model, legacy-source and example subjects and relevant interactions; no fixed spec/architecture/ADR tuple is required for model work. The normalized skill structure, unrelated invocation rules, historical protocol identities and downstream responsibilities below retain their meaning. Removing old invocations does not retire their documents; source authority follows the explicit Design/System displacement maps.
+
 ## V2-only runtime retirement
 
 The [Record Format](../docs/design/record-format/record-format.md), [CLI](../docs/design/cli/cli.md) and [Workflow](../docs/design/workflow/workflow.md) models select `rigorloop-records-v2` as the only supported runtime stored format. Earlier compact/lifecycle and explicit-recording-v1 acceptance, activation, projection, mutation and recovery clauses below are historical design evidence, not current execution or compatibility obligations. Their stable IDs and recorded approvals keep their original meaning. Current consumers use scoped primary reads and targeted recording, with actor-owned decisions and applicability; the CLI does not select readiness. Preserve archival records unchanged, reject explicit retired input safely and preserve v2 safety. Unrelated document/configuration/transport version domains remain supported under their own contracts.

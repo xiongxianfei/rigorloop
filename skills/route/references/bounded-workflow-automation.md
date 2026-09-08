@@ -10,7 +10,7 @@ Read this procedure for an explicit `$route auto: <argument>` command or a valid
 
 Automation is one target-driven `bounded-review-fix` mechanism under `workflow.automation`. The requested target is the complete automation boundary. Do not add a second authorization, selector, capability, or inferred continuation parameter.
 
-Supported targets are `proposal-review`, `architecture`, `spec`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `verify`.
+Supported targets are `proposal-review`, `design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `verify`.
 
 ## Command classification
 

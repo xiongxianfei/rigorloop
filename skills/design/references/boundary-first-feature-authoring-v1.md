@@ -63,4 +63,4 @@ Confirm all core dimensions are classified exactly once.
 Confirm applicable boundaries own partitions or transitions, invariants, outcomes, and a governing requirement.
 Confirm non-applicability is requirement-grounded.
 Confirm selected interactions cover actual composed hazards without creating a Cartesian product.
-Route any missing or changed normative outcome to feature-spec authoring before downstream reliance.
+Route any missing or changed normative outcome to design authoring of that retained feature contract before downstream reliance.

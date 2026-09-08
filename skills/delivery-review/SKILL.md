@@ -3,7 +3,7 @@ name: delivery-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Independently review one plan-centered delivery package before implementation. Judge safe sequencing and verification adequacy together; use plan for delivery and verification allocation and spec for behavioral gaps.
+  Independently review one plan-centered delivery package before implementation. Judge safe sequencing and verification adequacy together; use plan for delivery and verification allocation and design for behavioral gaps.
 argument-hint: [change ID, delivery package, or plan path]
 ---
 
@@ -73,7 +73,7 @@ Next stage: `route` may send an approved package to implementation; otherwise ro
 
 ## Inputs to read
 
-Resolve the governed change, then obtain the package with the scoped primary context and exact subject inspection described above. Read the complete exact primary plan plus the approved Design Review ID and member map it operationalizes. Read current proposal constraints, architecture, specification, ADRs, and prior review or resolution evidence as needed to validate the trace.
+Resolve the governed change, then obtain the package with the scoped primary context and exact subject inspection described above. Read the complete exact primary plan plus the approved Design Review ID and member map it operationalizes. Read current proposal constraints, the exact affected models and examples, applicable retained legacy contracts, and prior review or resolution evidence as needed to validate the trace.
 
 For a governed delivery assessment, the package must identify exactly the registered primary-plan artifact ID and normalized repository-relative path. A standalone test-spec substitute or extra member is invalid. Historical packages remain readable but grant no current review or progression authority. Use CLI subject inspection for exact identities; do not calculate an aggregate package revision.
 
@@ -87,7 +87,7 @@ Evaluate this exact trace for every applicable requirement and architecture risk
 
 Reject or request correction for missing SR allocation, unsafe or overly broad sequencing, unreviewable milestones, insufficient milestone or change-level verification, proof at the wrong boundary, architecture risk without validation, compatibility or migration work without evidence, unrealistic proof, and verification that requires a different implementation order than the plan. Milestone completion must not be treated as complete-change correctness. Under adopted policy, check the named final whole-change Code Review checkpoint and its implementation/correction dependencies separately from integrated proof groups, as required by the packaged closeout application.
 
-Route the correction to `plan` when verification allocation is missing or inadequate; route missing observable behavior to `spec`. Do not author the correction, accept a standalone test-spec substitute, or defer material pre-implementation coverage to final Verify.
+Route the correction to `plan` when verification allocation is missing or inadequate; route missing observable behavior to `design`. Do not author the correction, accept a standalone test-spec substitute, or defer material pre-implementation coverage to final Verify.
 
 Apply the packaged assessment rule when adopted; approval covers this exact package for authorized implementation. Under historical contracts, use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`; only approved package evidence permits reliance for implementation. Recording is not permission.
 

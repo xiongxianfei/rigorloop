@@ -1,5 +1,9 @@
 # Skill Contract
 
+## Unified authoring adoption
+
+For the selected responsibility, [Design](../docs/design/design/design.md) replaces separate normal `spec` and `architecture` authoring with `design`, including one OpenCode `design` alias. Independent `design-review` assesses the exact affected model, legacy-source and example subjects and relevant interactions; no fixed spec/architecture/ADR tuple is required for model work. The normalized skill structure, unrelated invocation rules, historical protocol identities and downstream responsibilities below retain their meaning. Removing old invocations does not retire their documents; source authority follows the explicit Design/System displacement maps.
+
 ## V2-only runtime retirement
 
 The [Record Format](../docs/design/record-format/record-format.md), [CLI](../docs/design/cli/cli.md) and [Workflow](../docs/design/workflow/workflow.md) models select `rigorloop-records-v2` as the only supported runtime stored format. Earlier compact/lifecycle and explicit-recording-v1 acceptance, activation, projection, mutation and recovery clauses below are historical design evidence, not current execution or compatibility obligations. Their stable IDs and recorded approvals keep their original meaning. Current consumers use scoped primary reads and targeted recording, with actor-owned decisions and applicability; the CLI does not select readiness. Preserve archival records unchanged, reject explicit retired input safely and preserve v2 safety. Unrelated document/configuration/transport version domains remain supported under their own contracts.
@@ -293,7 +297,7 @@ And no new blocking state, section, field, coverage obligation, or output obliga
 
 ### Example E18: architecture legacy template reference is detected
 
-Given `skills/architecture/SKILL.md` says to use `templates/architecture.md`
+Given `skills/design/SKILL.md` says to use `templates/architecture.md`
 And that reference is outside a `Resource map`
 When canonical skill validation runs during the resource-integrity pilot
 Then validation reports an unmapped legacy skill-local resource reference
@@ -308,14 +312,14 @@ Because it is not in a recognized resource-loading instruction and does not use 
 
 ### Example E20: stale generated resource fails parity
 
-Given `skills/architecture/assets/architecture-skeleton.md` is mapped in `SKILL.md`
+Given `skills/design/assets/legacy-architecture-skeleton.md` is mapped in `SKILL.md`
 And generated adapter output includes the same relative path with different bytes
 When resource parity validation compares canonical and generated output
 Then validation fails with the canonical relative path and raw-byte SHA-256 mismatch.
 
 ### Example E21: clean install uses packed release candidate
 
-Given a locally packed release candidate contains the architecture skill
+Given a locally packed release candidate contains the design skill
 When pre-publish clean-install smoke installs Codex, Claude, and opencode packages into empty temporary projects
 Then each installed skill root contains every mapped resource at the same relative path beneath that target's skill root.
 

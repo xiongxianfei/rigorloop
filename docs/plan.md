@@ -1,7 +1,7 @@
 # Plan index
 
 `docs/plan.md` is a navigation index to stable plan bodies and owning change records.
-Mutable lifecycle state, current milestones, review state, blockers, and next stages live in each plan's owning `change.yaml`.
+Mutable lifecycle state, current milestones, review state, blockers, and next stages live in each plan's owning change record (`change.json` for current v2 work).
 
 <!--
 Index policy:
@@ -24,6 +24,8 @@ Compatibility heading only.
 Current blockers are not recorded in this index.
 
 ## Current plan references
+
+- [2026-09-08 Unified Design Authoring and Bounded Model Consolidation](plans/2026-09-08-unified-design-authoring-and-bounded-model-consolidation.md) — [owning change](changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json)
 
 - [2026-09-08 V2-only Recording and Legacy Engine Retirement](plans/2026-09-08-retire-legacy-record-formats.md) — [owning change](changes/2026-09-08-retire-compact-workflow-mutations/change.json)
 

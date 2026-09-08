@@ -1,5 +1,9 @@
 # Workflow Skill Artifact-Location Map
 
+## Unified authoring compatibility
+
+The selected [Design](../docs/design/design/design.md) owns normal authoring and portable model placement. Existing `workflow-context` legacy artifact-location keys, templates and owner labels remain compatibility metadata for their retained document contracts, not public skill invocations or instructions to recreate retired authors. Current governed model subjects come from primary context and subject inspection; `design` applies an unmigrated source’s declared contract. This amendment adds no discovery kind, schema, routing engine or customer adoption.
+
 > Historical contract: superseded for current RigorLoop packages by `specs/refocus-workflow-into-route.md`. The artifact-location map and its guide-authoring behavior are retired.
 
 ## Status

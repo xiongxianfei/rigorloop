@@ -3,8 +3,8 @@ name: design-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Independently review architecture, specification, applicable ADRs, and accepted proposal constraints as one design package before delivery planning. Use design-review for design coherence and package authority; use architecture and spec for authorship.
-argument-hint: [change ID, design package, architecture path, or specification path]
+  Independently assess the exact affected Designs, scoped legacy members, examples and interactions against approved direction before delivery planning. Use design-review for design coherence and package authority; use design for authorship.
+argument-hint: [change ID, affected Design package, or authorized legacy amendment]
 ---
 
 # Design review
@@ -29,17 +29,17 @@ Make your decision, then use the purpose-specific command's `--help` and submit 
 
 Inspect the exact model package and engineering basis, including cross-model ownership and approved proposal bounds. Use review record for your independent complete judgment; use finding add/set for exact findings and dispositions. Preserve unresolved origins when a later assessment changes. Explicit applicability is your decision, not a consequence of matching hashes. Role labels do not authenticate independence.
 
-Judge whether separately authored architecture and specification form one coherent design. Review the exact package without editing its members.
+Judge whether required behavior, technical realization, important decisions and representative acceptance intent form one coherent engineering contract across the affected owners. Review the exact package without editing its members.
 
 ## Purpose
 
-Trace the approved IR-level direction into coherent SRs and architecture realization.
+Trace the approved IR-level direction into coherent requirements and their Design realization.
 
 Approve or reject one explicit design package and preserve precise finding ownership.
 
 ## When to use
 
-Use after architecture and specification have been reconciled and before plan authoring relies on them.
+Use after the affected owning Designs and relevant interactions have been reconciled and before plan authoring relies on them.
 
 ## When not to use
 
@@ -49,7 +49,7 @@ Do not use to author architecture, specification, or ADR content; review impleme
 
 - role_name: design-review
 - stage: review
-- upstream: one architecture, one specification, applicable ADRs, accepted proposal evidence, and the accepted Proposal Review ID
+- upstream: the exact affected models, scoped legacy members, relied-on examples, relevant interactions and accepted proposal evidence
 - downstream: plan authoring, author-owned correction, upstream proposal reconsideration, or isolated stop
 - summary: Decide whether the exact design package is coherent and feasible.
 - ownership: Write Design Review evidence and settle only the exact design package. Route owns semantic routing.
@@ -59,7 +59,7 @@ The reviewer does not edit architecture, specification, ADRs, proposal content, 
 
 ## Quick operating guide
 
-Use this skill to: review one exact architecture/specification package and its proposal constraints.
+Use this skill to: review one exact owning Design package and its proposal constraints.
 
 Read first: `change.json`, scoped `rigorloop context`, every member path shown there, the accepted proposal evidence, and relevant prior findings.
 
@@ -73,22 +73,28 @@ Next stage: `route` may send an approved package to plan authoring; otherwise ro
 
 ## Inputs to read
 
-Resolve the governed change, then obtain the package with the scoped primary context and exact subject inspection described above. Read the complete architecture, specification, every applicable ADR, accepted proposal evidence, and the accepted Proposal Review ID named by the context. Read project governance and prior review or resolution evidence only when they affect the judgment.
+Resolve the governed change, then obtain the package with the scoped primary context and exact subject inspection described above. Read each complete affected model and scoped legacy member, relied-on examples, relevant shared-contract owners and interactions, and accepted proposal evidence and accepted Proposal Review ID identified by the context. Expand for material missing or contradictory evidence; a whole-repository load is not the default. Read project governance and prior review or resolution evidence only when they affect the judgment.
 
-The package member map must show stable artifact IDs and exact normalized repository-relative paths in this order: architecture, specification, then applicable ADR entries ordered by artifact ID. Use CLI subject inspection for exact identities; do not calculate an aggregate package revision.
+The package member map identifies each affected owner and its exact path/subject, including retained legacy contracts and relied-on examples. Use an explicit stable order appropriate to that selected set; no fixed architecture/specification/ADR tuple is required. Use CLI subject inspection for exact identities; do not calculate an aggregate package revision.
 
 ## Review contract
 
 Evaluate all of the following as one decision:
 
-1. The architecture can support every specified behavior and failure outcome.
-2. The specification respects real technical, authority, compatibility, migration, security, and operational constraints.
-3. Architecture does not weaken an accepted proposal goal for implementation convenience.
+1. Technical realization can support each required behavior, invariant and failure outcome.
+2. Required behavior respects real technical, authority, compatibility, migration, security and operational constraints.
+3. A material feasibility constraint has not silently weakened an approved goal for implementation convenience.
 4. System, data, ownership, trust, recovery, and external boundaries are explicit and mutually consistent.
-5. Applicable ADRs are included and agree with the architecture and specification.
-6. Contradictions are resolved enough for safe delivery planning.
+5. Important decisions retain identity, context, alternatives and consequences, with one current owner. Applicable historical/legacy ADRs retain their original meaning.
+6. Shared contracts have one owner, affected consumers are reconciled, and system-wide obligations reference component contracts without overriding them.
+7. Important claims have credible assessment/feasibility bases, visible assumptions and representative local/integrated outcomes from which Delivery can derive concrete proof. Structural success alone is not approval.
+8. Migration maps preserve each displaced obligation and decision, retire only the approved selected authorities, and assign remaining consolidation. Scoped legacy amendments retain their format without forced migration.
 
 Apply the packaged assessment rule when adopted; approval covers this exact package for authorized plan authoring. Under historical contracts, use exactly one outcome: `approved`, `changes-requested`, `blocked`, or `inconclusive`; only approved package evidence permits reliance for plan authoring. Recording is not permission.
+
+Assess examples alongside their owner and exact identity. Check parse/schema limits and illustrated before/after invariants separately from review applicability. If a relied-on example changed while the parent stayed unchanged, require its new exact subject in selection/handoff; prior parent or example approval is insufficient for current reliance without the required reassessment. Mechanical selection does not decide applicability or create automatic invalidation.
+
+Representative scenarios are not a test whitelist. Apply adopted Test criteria to derived obligations and hazards and existing review policy to actual assessment/current reliance. Preserve required regression protection.
 
 ## Findings and ownership
 
@@ -128,7 +134,7 @@ Do not claim that architecture or specification is independently approved, that 
 - READ `references/review-assessment.md` for every review under explicitly adopted Review and Closeout policy.
 
 - READ `references/requirement-to-delivery-model.md` when tracing proposal direction into system requirements and architecture realization.
-- READ `references/boundary-first-method-v1.md` initially for every `design-review` invocation.
+- READ `references/boundary-first-method-v1.md` when the selected legacy contract has boundary records or a relied-on boundary identity needs interpretation.
 - READ `references/boundary-first-feature-authoring-v1.md` after the method reference when judging specification boundary completeness and example ownership.
 - READ `references/design-review-recording-and-settlement.md` for every durable or formal review before recording or settlement.
 - COPY `assets/review-result-skeleton.md` when producing every result. Omit inapplicable groups and unfilled placeholders.

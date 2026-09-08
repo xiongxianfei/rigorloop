@@ -10,10 +10,10 @@ RR → IR → SR → AR
 
 - **RR — Raw Requirement:** the incoming need, normally represented by the existing request, issue, report, or referenced source.
 - **IR — Initial Requirement:** the approved proposal-level direction. The proposal is the durable IR-level artifact.
-- **SR — System Requirement:** observable, testable behavior owned by the specification.
+- **SR — System Requirement:** observable, testable behavior owned by the living Design (or the declared source for an unmigrated responsibility).
 - **AR — Allocated Requirement:** the conceptual assignment of an SR to an architecture or delivery boundary.
 
-RR, IR, and AR do not require separate artifacts or identifiers. SR identities are the durable downstream requirement references. Architecture realizes SRs; planning allocates SRs and architecture boundaries into executable work.
+RR, IR, and AR do not require separate artifacts or identifiers. SR identities are the durable downstream requirement references. Design reconciles SRs with technical realization; planning allocates requirements and realization boundaries into executable work.
 
 ## Work decomposition
 
@@ -39,7 +39,7 @@ Use only the work levels that improve the current change. Add a work level only 
 The forward path is:
 
 ```text
-incoming need → approved proposal → SR → architecture realization
+incoming need → approved proposal → SR → Design realization
 → allocated milestone or work item → implementation
 ```
 

@@ -31,6 +31,7 @@ from boundary_first_validation import (
     validate_activation,
     validate_changed_spec,
     validate_feature_record,
+    validate_model_record,
     validate_proof_map,
 )
 
@@ -192,6 +193,40 @@ def valid_proof() -> str:
             "",
         ]
     )
+
+
+class RetiredMethodSourceTests(unittest.TestCase):
+    def fixture(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        for rel in ("specs/architecture-package-method.md", "specs/architecture-package-method.test.md", "docs/design/design/design.md", "docs/design/system/system.md"):
+            target = root / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / rel, target)
+        return root
+
+    def test_retired_method_preservation_replaces_new_feature_format(self):
+        root = self.fixture()
+        for path in ("specs/architecture-package-method.md", "specs/architecture-package-method.test.md"):
+            self.assertEqual(validate_changed_spec(root, path), ())
+
+    def test_retired_method_unknown_value_or_changed_body_cannot_escape_validation(self):
+        for suffix in ("\nunknown_value\n", "\nboundary_contract: unknown_value\n"):
+            root = self.fixture()
+            path = root / "specs/architecture-package-method.md"
+            path.write_text(path.read_text() + suffix)
+            self.assertTrue(any(i.code == "BFR-RETIRED-METHOD-CHANGED" for i in validate_changed_spec(root, "specs/architecture-package-method.test.md")))
+
+    def test_retired_method_missing_notice_partner_or_owner_blocks(self):
+        for rel in ("specs/architecture-package-method.md", "specs/architecture-package-method.test.md", "docs/design/design/design.md", "docs/design/system/system.md"):
+            root = self.fixture()
+            (root / rel).unlink()
+            self.assertTrue(validate_changed_spec(root, "specs/architecture-package-method.md"))
+        root = self.fixture()
+        path = root / "specs/architecture-package-method.md"
+        path.write_text(path.read_text().replace("## Historical method authority", "## unknown_value"))
+        self.assertTrue(validate_changed_spec(root, "specs/architecture-package-method.md"))
 
 
 class BoundaryFirstStructuralTests(unittest.TestCase):
@@ -1736,13 +1771,36 @@ class ModelRecordTests(unittest.TestCase):
         return validate_changed_spec(self.root, relative)
 
     def test_model_current_files_validate_without_activation_or_change_record(self):
-        for model in ("workflow", "cli", "record-format"):
+        for model in ("workflow", "cli", "record-format", "design", "system", "test", "review-closeout"):
             with self.subTest(model=model):
                 relative = f"docs/design/{model}/{model}.md"
                 (self.root / relative).parent.mkdir(parents=True, exist_ok=True)
                 (self.root / relative).write_bytes((ROOT / relative).read_bytes())
                 self.assertEqual(validate_changed_spec(self.root, relative), ())
         self.assertFalse((self.root / "docs/changes").exists())
+
+    def test_model_retired_marker_rejects_before_table_checks(self):
+        retired = self.text.replace("Model validation contract: model-document-v1",
+                                    "Model validation contract: explicit-recording-v1", 1)
+        for text in (retired, retired.replace("## Requirements", "## Broken requirements", 1)):
+            issues = self.check(text)
+            self.assertEqual([i.code for i in issues], ["BFR-MODEL-CONTRACT"])
+            self.assertIn("model-document-v1", issues[0].message)
+
+    def test_model_design_example_and_parent_validate_without_counting_fenced_marker(self):
+        parent = (ROOT / "docs/design/design/design.md").read_text()
+        examples = re.findall(r"```markdown\n([\s\S]*?)\n```", parent)
+        example, = [text for text in examples if text.startswith("# Label Normalization Design")]
+        self.assertEqual(validate_model_record(parent, "docs/design/design/design.md"), ())
+        self.assertEqual(validate_model_record(example, "docs/design/label-normalization/label-normalization.md"), ())
+        invalid = example.replace("Model validation contract: model-document-v1",
+                                  "Model validation contract: unknown_value", 1)
+        self.assertEqual([i.code for i in validate_model_record(invalid, "docs/design/label-normalization/label-normalization.md")],
+                         ["BFR-MODEL-CONTRACT"])
+        for source in ("skills/design/references/model-authoring.md", "skills/design/assets/design-skeleton.md"):
+            text = (ROOT / source).read_text()
+            self.assertIn("Model validation contract: model-document-v1", text)
+            self.assertNotIn("Model validation contract: explicit-recording-v1", text)
 
     def test_model_mismatched_directory_examples_and_extra_nesting_reject(self):
         for relative in ("docs/design/cli/workflow.md", "docs/design/workflow/examples/sample.md",
@@ -1759,7 +1817,7 @@ class ModelRecordTests(unittest.TestCase):
 
     def test_model_unknown_value_marker_and_dimension_fail_closed(self):
         for text in (
-            self.text.replace("Model validation contract: explicit-recording-v1", "Model validation contract: unknown_value", 1),
+            self.text.replace("Model validation contract: model-document-v1", "Model validation contract: unknown_value", 1),
             self.text.replace("| Input domain |", "| unknown_value |", 1),
         ):
             with self.subTest(text=text[:50]):
@@ -1768,8 +1826,8 @@ class ModelRecordTests(unittest.TestCase):
 
     def test_model_missing_duplicate_malformed_tables_and_references_reject(self):
         variants = (
-            self.text.replace("Model validation contract: explicit-recording-v1\n", "", 1),
-            self.text + "\nModel validation contract: explicit-recording-v1\n",
+            self.text.replace("Model validation contract: model-document-v1\n", "", 1),
+            self.text + "\nModel validation contract: model-document-v1\n",
             self.text + "\n## Requirements\n",
             self.text.replace("| Dimension | Requirement basis |", "| Dimension | unknown_value |", 1),
             self.text.replace(next(l for l in self.text.splitlines() if l.startswith("| Input domain |")), "| Input domain | not_in_vocabulary |", 1),

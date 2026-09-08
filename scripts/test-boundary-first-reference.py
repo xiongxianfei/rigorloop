@@ -35,7 +35,7 @@ resources:
     target: references/boundary-first-method-v1.md
     consumers:
       - route
-      - spec
+      - design
       - design-review
       - plan
       - delivery-review
@@ -46,7 +46,7 @@ resources:
     source: specs/references/boundary-first-feature-authoring-v1.md
     target: references/boundary-first-feature-authoring-v1.md
     consumers:
-      - spec
+      - design
       - design-review
   - id: proof
     source: specs/references/boundary-first-proof-v1.md
@@ -97,7 +97,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             GOVERNED_SKILLS,
             (
                 "route",
-                "spec",
+                "design",
                 "design-review",
                 "plan",
                 "delivery-review",
@@ -136,7 +136,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                     for skill in GOVERNED_SKILLS
                 ),
                 Path(
-                    "skills/spec/references/"
+                    "skills/design/references/"
                     "boundary-first-feature-authoring-v1.md"
                 ),
                 Path(
@@ -310,7 +310,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 (root / RESOURCE_MANIFEST).write_bytes(
                     raw.replace(needle, replacement, 1)
                 )
-                sentinel = root / "skills/spec/references/sentinel"
+                sentinel = root / "skills/design/references/sentinel"
                 sentinel.parent.mkdir(parents=True)
                 sentinel.write_bytes(b"unchanged")
                 with self.assertRaisesRegex(
@@ -355,7 +355,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         project_reference(root, mode="write")
         missing = root / "skills" / "route" / PROJECTED_REFERENCE
         missing.unlink()
-        stale = root / "skills" / "spec" / PROJECTED_REFERENCE
+        stale = root / "skills" / "design" / PROJECTED_REFERENCE
         stale.write_bytes(b"stale")
         unexpected = (
             root
@@ -375,7 +375,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             (
                 "BFR-PROJECTION-MISSING: skills/route/references/"
                 "boundary-first-method-v1.md",
-                "BFR-PROJECTION-STALE: skills/spec/references/"
+                "BFR-PROJECTION-STALE: skills/design/references/"
                 "boundary-first-method-v1.md",
                 "BFR-PROJECTION-UNEXPECTED: skills/proposal/references/"
                 "boundary-first-method-v1.md",
@@ -391,7 +391,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             root
             / "skills/route/references/boundary-first-method-v2.md",
             root
-            / "skills/spec/references/nested/boundary-first-extra.md",
+            / "skills/design/references/nested/boundary-first-extra.md",
             root
             / "specs/references/boundary-first-proof-v2.md",
         )

@@ -144,3 +144,27 @@ npm is the CLI delivery channel. The canonical workflow sources, skills, specs, 
 ```text
 https://github.com/xiongxianfei/rigorloop
 ```
+
+## Upgrading retired authoring skills
+
+The unified authoring candidate supplies `design` and withdraws `spec` and `architecture`, including OpenCode command aliases. Use a CLI and verified adapter archive from the same coherent candidate or adopting release. This source change does not publish that release. Ordinary init rejects old or mixed entries before writing; a candidate containing retired entries also rejects. Previously released archives retain their own inventory.
+
+For a managed target, **do not remove the old directories first**: that changes the installed-tree hash and correctly triggers drift protection. The installation owner’s bounded authority is [TNI-DES-01–06](../../specs/target-native-init.md#scoped-design-amendment-managed-authoring-replacement).
+
+1. Stop local writers and inspect `rigorloop.yaml`, `rigorloop.lock` and the selected target’s complete recorded roots. Codex selects `.agents/skills`; Claude selects `.claude/skills`; OpenCode selects both `.opencode/skills` and `.opencode/commands`. Custom, overlapping, missing or unsafe roots need owner reconciliation. Inspect other managed targets too: writing shared state retains their safety checks.
+2. Make a separate backup outside the project and installation roots of **every complete selected root and both state files**, preserving bytes and permissions. Record a state file’s absence explicitly. Verify that the backup is readable and complete. Preserve local additions or modifications separately; a backup does not authorize overwriting them. Keep the untouched original installation in place for eligibility checks.
+3. With explicit authority to replace those complete generated roots and update their state entry, run the following command with the selected target and matching archive. A dry run reports intent and state checks; it does not read or approve archive contents. The actual run verifies candidate trust and inventory and rechecks original hashes before replacement.
+
+```bash
+rigorloop init codex --from-archive /absolute/path/to/rigorloop-adapter-codex-v0.5.1.zip --write-state --dry-run --format json
+rigorloop init codex --from-archive /absolute/path/to/rigorloop-adapter-codex-v0.5.1.zip --write-state --format json
+```
+
+Use `claude` or `opencode` with its matching archive for those targets. The version here identifies the local candidate; select the actual coherent release when one is separately published. `--write-state` is narrowly authorized replacement, not a drift override. Modified old entries, unrecorded additions, manual pre-deletion, mixed ownership and conflicting state block before mutation. Restore the recorded original basis from a known backup only after preserving and reconciling local changes; never delete the lockfile or refresh hashes merely to bypass this check.
+
+4. Inspect the result: `design` exists, retired skills and OpenCode aliases are absent, both selected OpenCode roots agree, installed counts/hashes match the new selected lock entry, and other targets and unrelated content are unchanged. Repeating the same successful command is idempotent. Keep the separate backup and every path reported by the retained-backup diagnostic until that comparison and inspection for late writes are complete.
+5. On a caught failure, the CLI either restores the exact original roots/state or reports incomplete recovery and retained paths. A process interruption can leave a partial pair. Preserve that partial content and any independent changes in another backup before recovery. Under the installation owner’s explicit recovery authority, restore **the complete original selected roots and both original state files as one coherent basis**, including original absence; do not overlay old files on a partial new tree. Inspect and move partial selected content aside before restoring. If another actor changed shared state or other targets, preserve those changes and have their owner reconcile them before restoration; do not overwrite them with the old shared files. Then rerun the same authorized command. Private recovery evidence requires a coherent original or verified candidate basis before retry can proceed; it cannot bless a partial installation.
+
+The CLI retains private `.rigorloop-authoring-*` recovery evidence and detached original/rollback paths outside selected roots. Do not remove these to bypass recovery. Once a coherent pair and any late writes have been inspected, the operator may explicitly remove the reported retained paths and backup; the installer does not automatically delete them. Unrelated files and other targets are outside that cleanup authority.
+
+For a genuinely unmanaged installation with neither state file implicating the target, inspect and separately back up the retired skill directories and applicable command aliases, explicitly remove only those entries, then retry ordinary init. Remaining unrelated content and generated-file conflicts retain their ordinary protections. A managed or ambiguous target cannot use this manual cleanup path to escape the recorded basis.
