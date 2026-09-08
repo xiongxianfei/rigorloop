@@ -46,6 +46,29 @@ REVIEW_CLOSEOUT_CONSUMERS = frozenset({"proposal-review", "design-review", "deli
 REVIEW_ASSESSMENT_CONSUMERS = frozenset({"proposal-review", "design-review", "delivery-review", "code-review"})
 
 
+TEST_QUALITY_CONSUMERS = frozenset(['architecture', 'bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'design-review', 'implement', 'plan', 'route', 'spec', 'verify'])
+TEST_MAINTENANCE_CONSUMERS = frozenset(['bugfix', 'ci-maintenance', 'code-review', 'delivery-review', 'implement', 'plan', 'route', 'verify'])
+
+
+def validate_test_policy_copies(skill_path: Path, skill_name: str, *, source: Path | None = None) -> list[str]:
+    """Check packaged application bytes, never semantic judgment or readiness."""
+    if skill_name not in TEST_QUALITY_CONSUMERS:
+        return [f"{skill_path}: unknown test-policy consumer {skill_name!r}"]
+    source = source if source is not None else ROOT / "templates" / "shared"
+    names = ["test-quality"]
+    if skill_name in TEST_MAINTENANCE_CONSUMERS:
+        names.append("test-maintenance")
+    errors = []
+    for name in names:
+        canonical = source / f"{name}.md"
+        local = skill_path.parent / "references" / f"{name}.md"
+        if not canonical.is_file() or not local.is_file():
+            errors.append(f"{local}: test-policy reference is missing (source {canonical})")
+        elif local.read_bytes() != canonical.read_bytes():
+            errors.append(f"{local}: test-policy reference differs from canonical source")
+    return errors
+
+
 def validate_review_closeout_copies(skill_path: Path, skill_name: str, *, source: Path | None = None) -> list[str]:
     """Check packaged application bytes, never semantic judgment or readiness."""
     if skill_name not in REVIEW_CLOSEOUT_CONSUMERS:
@@ -335,6 +358,10 @@ def _is_approved_packaged_non_asset_resource(
     skill_name: str | None,
     relative_resource: str,
 ) -> bool:
+    if skill_name in TEST_QUALITY_CONSUMERS and relative_resource == "references/test-quality.md":
+        return True
+    if skill_name in TEST_MAINTENANCE_CONSUMERS and relative_resource == "references/test-maintenance.md":
+        return True
     if skill_name in REVIEW_CLOSEOUT_CONSUMERS and relative_resource == "references/review-reliance.md":
         return True
     if skill_name in REVIEW_ASSESSMENT_CONSUMERS and relative_resource == "references/review-assessment.md":
@@ -3382,6 +3409,8 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     errors.extend(validate_project_map_canonical_contract(path, metadata, body))
     if skill_name and _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
         errors.extend(validate_requirement_delivery_model_copy(path, skill_name))
+        if skill_name in TEST_QUALITY_CONSUMERS:
+            errors.extend(validate_test_policy_copies(path, skill_name))
         if skill_name in REVIEW_CLOSEOUT_CONSUMERS:
             errors.extend(validate_review_closeout_copies(path, skill_name))
         if skill_name in DISCOVERY_SUPPORT_CONSUMERS:

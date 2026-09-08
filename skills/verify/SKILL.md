@@ -8,6 +8,10 @@ argument-hint: [feature name, branch, plan path, spec path, or verification scop
 
 # Verification gate
 
+## Test criteria application
+
+When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical procedures. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+
 ## Review and Closeout application
 
 When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical contracts retain their own rules. Missing or contradictory required guidance stops dependent reliance.
@@ -222,6 +226,9 @@ Capability state controls formal adoption: `pending` never claims active adoptio
 Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure. Stop verification before readiness claims when evidence is missing or stale, an ID is unknown, or a discovery still requires upstream ownership.
 
 ## Resource map
+
+- READ `references/test-quality.md` when adopted criteria apply and this invocation authors, allocates or assesses test obligations.
+- READ `references/test-maintenance.md` when adopted criteria apply and this invocation changes tests or assesses test maintenance, removal or its impact.
 
 - READ `references/review-reliance.md` when applying adopted assessment applicability, correction or closeout policy.
 

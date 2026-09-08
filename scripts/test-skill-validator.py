@@ -6995,6 +6995,9 @@ def historical_profile_body(text: str) -> str:
     The separately adopted recording profile is measured by TG-08, including
     its complete loaded guidance; it must not rewrite historical measurements.
     """
+    text = re.sub(r"\n## Test criteria application\n.*?(?=^## |\Z)", "", text, flags=re.MULTILINE | re.DOTALL)
+    text = re.sub(r"^- READ `references/test-(?:quality|maintenance).md`.*\n", "", text, flags=re.MULTILINE)
+    text = re.sub(r"\n## Resource map\n\s*\Z", "\n", text)
     text = re.sub(r"^- READ `references/review-(?:assessment|reliance).md`.*\n", "", text, flags=re.MULTILINE)
     text = re.sub(r"\n## Explicit recording\n.*?(?=^## |\Z)", "", text, flags=re.MULTILINE | re.DOTALL)
     return re.sub(r"\n## Review and Closeout application\n.*?(?=^## |\Z)", "", text,
@@ -7503,7 +7506,7 @@ class SpecSkillSimplificationTests(unittest.TestCase):
         self.skeleton = (self.root / "assets" / "spec-skeleton.md").read_text(encoding="utf-8")
 
     def test_package_profiles_and_initial_boundary_loading_are_closed(self) -> None:
-        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["boundary-first-feature-authoring-v1.md", "boundary-first-method-v1.md", "governed-spec-authoring.md", "requirement-to-delivery-model.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["boundary-first-feature-authoring-v1.md", "boundary-first-method-v1.md", "governed-spec-authoring.md", "requirement-to-delivery-model.md", "test-quality.md"])
         for profile in ("SA0-portable", "SA1-governed"):
             self.assertIn(profile, self.skill)
         self.assertIn("READ `references/boundary-first-method-v1.md` initially", self.skill)
@@ -8120,7 +8123,7 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
 
     def test_flat_package_and_truthful_size_reporting(self) -> None:
         files = sorted(path.relative_to(self.skill_dir).as_posix() for path in self.skill_dir.rglob("*") if path.is_file())
-        self.assertEqual(files, ["SKILL.md"])
+        self.assertEqual(files, ["SKILL.md", "references/test-maintenance.md", "references/test-quality.md"])
         normalized = historical_profile_body(self.skill).replace("\r\n", "\n").replace("\r", "\n")
         self.assertGreater(len(normalized.split()), 0)
         self.assertGreater(len(normalized.encode("utf-8")), 0)
@@ -9029,6 +9032,38 @@ class ExplicitRecordingGuidanceTests(unittest.TestCase):
                 self.assertNotIn("explicit writes", block)
                 self.assertNotIn("templates/shared/", block)
                 self.assertNotIn("specs/rigorloop-workflow.md", block)
+
+
+class TestPolicyResourceTests(unittest.TestCase):
+    def test_unknown_value_test_policy_consumer_fails_closed(self):
+        errors = skill_validation.validate_test_policy_copies(Path("unused/SKILL.md"), "unknown_value")
+        self.assertTrue(any("unknown" in error for error in errors))
+
+    def test_test_policy_missing_and_drifted_resources_reject(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "shared"
+            source.mkdir()
+            skill = root / "implement" / "SKILL.md"
+            refs = skill.parent / "references"
+            refs.mkdir(parents=True)
+            for name in ("test-quality", "test-maintenance"):
+                (source / f"{name}.md").write_text("criterion\n")
+            self.assertTrue(skill_validation.validate_test_policy_copies(skill, "implement", source=source))
+            for name in ("test-quality", "test-maintenance"):
+                (refs / f"{name}.md").write_text("criterion\n")
+            self.assertEqual([], skill_validation.validate_test_policy_copies(skill, "implement", source=source))
+            (refs / "test-maintenance.md").write_text("changed\n")
+            self.assertTrue(any("differs" in error for error in skill_validation.validate_test_policy_copies(skill, "implement", source=source)))
+
+    def test_test_policy_canonical_copies_and_conditional_resources(self):
+        for name in skill_validation.TEST_QUALITY_CONSUMERS:
+            with self.subTest(name=name):
+                path = ROOT / "skills" / name / "SKILL.md"
+                self.assertEqual([], skill_validation.validate_test_policy_copies(path, name))
+                self.assertIn("READ `references/test-quality.md`", path.read_text())
+                if name in skill_validation.TEST_MAINTENANCE_CONSUMERS:
+                    self.assertIn("READ `references/test-maintenance.md`", path.read_text())
 
 
 if __name__ == "__main__":
