@@ -128,6 +128,16 @@ class ReleaseCandidateTests(unittest.TestCase):
         with self.assertRaisesRegex(CandidateError, 'identity'):
             seal_candidate(self.root, manifest)
 
+    def test_verification_receipt_uses_portable_artifact_paths(self):
+        import importlib.util
+        path = Path(__file__).parent / 'validate-release.py'
+        spec = importlib.util.spec_from_file_location('receipt_validator', path)
+        validator = importlib.util.module_from_spec(spec); spec.loader.exec_module(validator)
+        command = ['python', 'scripts/validate-npm-package.py', '--tarball', '/private/runner/candidate/package.tgz']
+        recorded = validator.recorded_command(command, Path('/private/runner/source'), Path('/private/runner/candidate'))
+        self.assertEqual(recorded, 'python scripts/validate-npm-package.py --tarball <candidate>/package.tgz')
+        self.assertNotIn('/private', recorded)
+
 
 class ReleaseCandidateIntegrationTests(unittest.TestCase):
     def test_actual_candidate_build_and_packed_metadata_chain(self):
@@ -167,6 +177,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
                 self.assertNotEqual(metadata['metadata']['sha256'], '0' * 64)
                 for archive in metadata['artifacts']:
                     self.assertEqual(archive['sha256'], file_identity(output / archive['archive'])['sha256'])
+            self.assertNotIn(str(workspace), (output / 'release-verification.json').read_text())
             self.assertIn('release-integrity', {x['id'] for x in data['checks']})
             receipt = json.loads((output / 'release-verification.json').read_text())
             self.assertTrue(any('validate-release.py' in x.get('command', '') for x in receipt['checks']))
