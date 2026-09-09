@@ -177,8 +177,8 @@ For explicitly adopted model work, [Review and Closeout](../../design/review-clo
 - C4 container diagram: `diagrams/container.mmd`
 - Published-Skill-First Repository Simplification proposal: `docs/proposals/2026-08-10-published-skill-first-repository-simplification.md`
 - Published-Skill-First Repository Simplification spec: `specs/published-skill-first-repository-simplification.md`
-- Published-Skill-First Validation Architecture ADR: `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`
-- Published-skill validation component diagram: `diagrams/component-published-skill-validation.mmd`
+- Validation responsibility and source dispositions: [System](../../design/system/system.md#necessary-design-consolidation-map); local contracts remain at their named owners.
+- Necessary-source retention and scoped proof: [Design](../../design/design/design.md#necessary-design-retention) and [Test](../../design/test/test.md#necessary-design-consolidation-proportionate-proof).
 - Code-Review Skill Simplification proposal: `docs/proposals/2026-08-10-code-review-skill-simplification.md`
 - Code-Review Skill Simplification spec: `specs/code-review-skill-simplification.md`
 - Code-Review Skill Simplification change metadata: `docs/changes/2026-08-10-code-review-skill-simplification/change.yaml`
@@ -533,25 +533,7 @@ The validation and generation container has these important internal responsibil
 - required-benchmark context: release validation determines the release-specific required dynamic benchmark set from core suite policy, transition carryover policy, changed public skills, and claimed optional coverage, then passes that context to token-cost validation in process or through a transient YAML file for CLI and debugging use.
 - first-slice script-output shaping: `scripts/test-select-validation.py` is the first standalone runner surface for compact `[PASS]` success summaries, actionable `[FAIL]` details, explicit `--verbose`, silent successful `--quiet`, reliable-only rerun guidance, and behavior-preservation evidence.
 
-See [`diagrams/component-published-skill-validation.mmd`](diagrams/component-published-skill-validation.mmd) for the target product-gate decomposition.
-
-### Level 2 White-Box: Published-Skill Validation
-
-The target validation architecture has six intentionally narrow responsibilities:
-
-- canonical skills and resources are the only authored product input;
-- Gate A owns deterministic canonical skill and resource integrity;
-- Gate B owns generation and equivalent package parity for Codex, Claude Code, and opencode;
-- Gate C composes current Gate A and Gate B proof with release-only metadata, archive, checksum, note, and rollback checks;
-- one governance owner validates deterministic change-record and lifecycle consistency, including fail-closed closed vocabularies; and
-- semantic review judges clarity, ownership, procedure, resources, stop conditions, claims, outputs, and handoffs.
-
-The gates may reuse existing parser and generation modules, but they expose one stable owner per invariant and do not preserve selectors, caches, schedulers, or meta-tests merely as an internal routing layer.
-Gate C reports the underlying Gate A or Gate B failure instead of copying their rules.
-Target-agent runtimes and LLM transcript analysis are outside this component.
-
-Migration retains current paths until each retirement ledger maps their positive and negative fixtures, active contract clauses, direct invocation sites, replacement proof, and rollback point.
-The published workflow automation product remains a sibling repository capability and is not retired by this architecture decision.
+See [System's responsibility inventory](../../design/system/system.md#responsibility-inventory) for the current skill, package, release, recording and assessment owners, and its [bounded consolidation map](../../design/system/system.md#necessary-design-consolidation-map) for the selected source dispositions.
 
 ### Level 2 White-Box: Code-Review Skill Package
 
@@ -792,17 +774,6 @@ Common content/resource behavior is owned by [Skill](../../design/skill/skill.md
 7. Before conditional interpretation or action, every triggered resource must be present and readable. Missing, contradictory, or mixed-version resources stop without fallback reconstruction.
 8. Change-local semantic and literal inventories account for every moved, retained, or removed rule and genuine exact-text dependency. Static fixtures prove valid and invalid assemblies without running a model.
 9. Gate A and Gate B accept the complete resource move before publication. Rollback restores the prior complete canonical package and regenerates all derived targets as one version.
-
-### Published-skill product-gate and retirement flow
-
-1. Gate A reads canonical skill roots and reports deterministic structural, resource, path, placeholder, closed-vocabulary, and narrowly forbidden-claim failures.
-2. Gate B runs only after current Gate A proof, generates all three supported adapter targets, and reports target-specific inventory, transformation, archive, or identity failures.
-3. Gate C runs only after current Gate A and Gate B proof and adds version, package metadata, archive inventory, checksums, tracked release notes, generated-package freshness, and rollback consistency.
-4. Semantic review runs beside the product chain and records judgment findings without becoming a validator heuristic.
-5. Lifecycle governance runs beside the product chain through one bounded deterministic owner and fails closed on unknown contractual values before consistency checks.
-6. A retirement slice inventories old checks and fixtures, maps protected failures and active clauses, dual-runs old and replacement proof, records differences and rollback, then removes only fully covered or explicitly de-contracted behavior.
-7. Unknown or contradictory protected behavior pauses the slice; failure does not fall through to deletion.
-8. The transition keeps current selector, cache, scheduler, benchmark, and meta-validation paths active until their individual contract and proof disposition is approved.
 
 ### Progressive boundary-guidance projection and activation flow
 
@@ -1370,26 +1341,6 @@ whole-record review.
 
 [Design technical reasoning](../../design/design/design.md#technical-reasoning-and-decisions) owns current text-source diagram selection and placement. Existing diagrams retain their historical identities and explanatory context; they do not impose a second current architecture layout.
 
-### Published-skill-first validation boundary
-
-Deterministic ownership is the admission rule for repository acceptance.
-Gate A owns canonical skill and resource facts, Gate B owns generated package facts for all supported targets, and Gate C owns release-candidate facts while composing rather than copying A and B semantics.
-Each invariant has one named parser or module owner even when a thin command composes several owners.
-
-Semantic review owns instruction quality: description and trigger clarity, artifact and stage ownership, prerequisites, followable procedure, resource use, stop conditions, claim boundaries, output, and handoff.
-Structural presence may inform review but cannot settle those judgments.
-
-Lifecycle governance is separate from publication proof.
-Its one entry point may reuse focused parsing modules, but externally it reports one deterministic result for change-record shape, legal transitions, review references, contradictory state, dangling evidence, and closed vocabularies.
-Unknown closed values fail before consistency evaluation.
-
-Installer proof is conditional.
-Pure copying is already covered by Gate B; only additional RigorLoop-owned materialization logic earns a filesystem smoke, and that smoke ends before any target runtime starts.
-
-Migration is proof-preserving and contract-first.
-An existing subsystem remains until a retirement ledger names its protected failures, active clauses, replacement proof, dual-run result, and rollback point.
-Measured speed or line reduction is secondary evidence and never substitutes for failure coverage.
-
 ### Generated output
 
 Canonical skills and adapter templates are authored sources. `.codex/skills/`, public adapter skill copies, adapter archives, and OpenCode command aliases are generated or installed runtime outputs produced from canonical sources and approved templates or metadata. Public adapter output may be copied into `.codex/skills/` only as local ignored runtime installation; generated output must not become an authored source of truth.
@@ -1590,7 +1541,6 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 - [ADR-20260813: Reviewed Plan Initialization and Settlement](../../adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md) amended initialization timing while preserving the then-current single-state, stage-write, and no-hash boundaries; ADR-20260824 later revises hash and direct-write mechanics only for activated supported CLI operations.
 
-- `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`: three composed deterministic product gates, one lifecycle-governance entry point, review-owned semantic quality, no target-runtime acceptance, and ledger-backed retirement slices.
 - `docs/adr/ADR-20260428-architecture-package-method.md`: historical C4/arc42/ADR method; current reasoning and decision ownership is [Design](../../design/design/design.md#material-decision-preservation).
 - `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: historical surface-simplification decision; [Design](../../design/design/design.md#material-decision-preservation) preserves its meaning and owns current model selection and scoped legacy treatment.
 - `docs/adr/ADR-20260419-repository-source-layout.md`: repository source layout and canonical-source/generated-output separation.

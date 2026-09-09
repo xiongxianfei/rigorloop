@@ -3,6 +3,13 @@
 
 # Published-Skill-First Repository Simplification
 
+
+## Necessary-design cleanup applicability
+
+For the selected [necessary-design consolidation](../docs/proposals/2026-09-09-consolidate-necessary-design-and-retire-superseded-sources.md), [Test TEST-SR-14](../docs/design/test/test.md#necessary-design-consolidation-proportionate-proof) supplies the complete scoped R14/R17–20/R22 replacement, and [System's consolidation map](../docs/design/system/system.md#necessary-design-consolidation-map) names exact sources, preserved populations and consumers. This new-profile-only amendment takes effect with reviewed coherent implementation and successful Verify. It preserves the historical feature/boundary/proof identifiers and the unselected operational remainder.
+
+For that slice only, earlier ledger, dual-run and mandatory-measurement prescriptions—including T1/T10/T13/T14, their proof-map allocations and associated acceptance instructions—do not impose a second ledger, irrelevant repeated execution or a savings benchmark. The reviewed Delivery allocation applies Test's retained protection and current Review and Closeout evidence policy. Other obligations remain under this source's current applicable amendments; the earlier stored-format retirement keeps its separate Workflow replacement. Historical input identities, judgments and recorded results are not retargeted or retrospectively changed.
+
 ## Scoped stored-format retirement amendment
 
 For the named v2-only retirement, [Workflow's scoped replacement map](../docs/design/workflow/workflow.md#existing-retirement-governance-scoped-replacement) replaces the R14/R17–20/R22–25 operational allocation. Existing v2 evidence carries check ownership, fixture/protection dispositions, actual removal proof and rollback identities. No second ledger or historical ledger rewrite is required. Dedicated retired acceptance is explicitly de-contracted; shared v2 safety and safe-rejection proof remain required. Record actual measurements and limitations without requiring another token benchmark or parity with retired behavior. All unrelated obligations remain in force.
