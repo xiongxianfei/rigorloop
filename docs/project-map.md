@@ -2,6 +2,10 @@
 
 Current design-authoring and composition navigation: [Design](design/design/design.md) owns unified authoring, model conventions and validation mapping; [System](design/system/system.md) owns the bounded composition view. Canonical `skills/design/` replaces the two old authors; remaining specs, Level 2 architecture and ADR responsibilities retain their declared contracts. Historical inventories below do not establish the current public author list.
 
+## Skill owner navigation
+
+[Skill](design/skill/skill.md) is the selected common owner under its reviewed implementation/Verify adoption boundary. [Retained Skill Contract](../specs/skill-contract.md) contains the bounded plan/boundary-method remainder; [archive navigation](archive/skill-model/2026-09-08/README.md) preserves originals and source-resolved history. The improvement pilot is only proposal/proposal-review; existing follow-ups own remaining adoption. This navigation does not own workflow stage order or grant adoption through model/package availability.
+
 ## Purpose and Scope
 
 This map describes the current repository shape for contributors and agents who need orientation before architecture, planning, implementation, or review work. It covers the RigorLoop repository as a workflow, validation, skill, adapter, release-evidence, and documentation system.

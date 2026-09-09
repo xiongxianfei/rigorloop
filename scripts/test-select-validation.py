@@ -631,6 +631,20 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertEqual(result.status, "blocked")
         self.assertTrue(any(block["code"] == "unsupported-change-contract" for block in result.blocking_results))
 
+    def test_skill_source_archive_selects_integrity_without_current_lifecycle(self):
+        from validation_selection import SKILL_SOURCE_ARCHIVE_PATHS
+        for path in SKILL_SOURCE_ARCHIVE_PATHS:
+            result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=ROOT, preflight_context=self.root_preflight_context))
+            self.assertEqual(result.status, "ok", result.blocking_results)
+            checks = {check["id"] for check in result.selected_checks}
+            self.assertIn("skills.regression", checks)
+            self.assertNotIn("artifact_lifecycle.validate", checks)
+            self.assertNotIn("documentation_prose.enforce", checks)
+        unknown = "docs/archive/skill-model/2026-09-08/unknown_value.md"
+        result = select_validation(SelectionRequest(mode="explicit", paths=(unknown,), repo_root=ROOT, preflight_context=self.root_preflight_context))
+        self.assertEqual(result.status, "blocked")
+        self.assertIn(unknown, result.unclassified_paths)
+
     def test_explicit_recording_adoption_surfaces_select_real_proof(self):
         paths = (
             "docs/design/cli/cli.md", "docs/design/workflow/workflow.md",

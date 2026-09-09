@@ -1188,6 +1188,10 @@ def _apply_path_selection(
         )
         return
 
+    if category == "skill-source-archive":
+        _add_check(selected, "skills.regression", "Skill archive changes require original-byte, retained-owner and navigation protection.")
+        return
+
     if category == "research-artifact":
         _add_check(
             selected,
@@ -1885,6 +1889,8 @@ def _path_category(path: str) -> str | None:
         return "token-cost"
     if path.startswith("docs/examples/"):
         return "retired-examples"
+    if path in SKILL_SOURCE_ARCHIVE_PATHS:
+        return "skill-source-archive"
     if path.startswith("docs/research/") and path.endswith(".md"):
         return "research-artifact"
     if path == "docs/project-map.md" or (
@@ -1983,6 +1989,17 @@ def _is_boundary_first_validation_surface(path: str) -> bool:
         "scripts/validate-boundary-first.py",
         "scripts/test-boundary-first-validation.py",
     }
+
+
+# Exact byte-preserved source snapshots and their navigation selected by the
+# Skill displacement map. Other archive paths remain unclassified/fail closed.
+SKILL_SOURCE_ARCHIVE_PATHS = frozenset({
+    "docs/archive/skill-model/2026-09-08/README.md",
+    "docs/archive/skill-model/2026-09-08/specs/skill-contract.md",
+    "docs/archive/skill-model/2026-09-08/specs/skill-readability-contract.md",
+    "docs/archive/skill-model/2026-09-08/specs/customer-portable-public-skill-evidence.md",
+    "docs/archive/skill-model/2026-09-08/docs/adr/ADR-20260623-published-skill-resource-integrity.md",
+})
 
 
 def _is_lifecycle_path(path: str) -> bool:

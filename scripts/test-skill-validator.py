@@ -4925,8 +4925,8 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(example=example_number):
                 self.assertIn(f"`E{example_number}`", body)
 
-    def test_skill_contract_source_and_generated_boundaries_are_defined(self) -> None:
-        spec = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
+    def test_historical_skill_contract_source_and_generated_boundaries_are_defined(self) -> None:
+        spec = (ROOT / "docs/archive/skill-model/2026-09-08/specs/skill-contract.md").read_text(encoding="utf-8")
         test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
         required_spec_terms = [
             "This spec owns skill-contract behavior.",
@@ -4955,8 +4955,8 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(file="test_spec", term=term):
                 self.assertIn(term, test_spec)
 
-    def test_skill_contract_first_slice_scope_stays_limited(self) -> None:
-        spec = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
+    def test_historical_skill_contract_first_slice_scope_stays_limited(self) -> None:
+        spec = (ROOT / "docs/archive/skill-model/2026-09-08/specs/skill-contract.md").read_text(encoding="utf-8")
         test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
         plan = SKILL_CONTRACT_PLAN.read_text(encoding="utf-8")
         historical_first_slice = [
@@ -5127,8 +5127,8 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(deferred_block=block_name):
                 self.assertFalse((ROOT / "templates" / "shared" / f"{block_name}.md").exists())
 
-    def test_skill_contract_token_cost_amendment_is_defined(self) -> None:
-        spec = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
+    def test_historical_skill_contract_token_cost_amendment_is_defined(self) -> None:
+        spec = (ROOT / "docs/archive/skill-model/2026-09-08/specs/skill-contract.md").read_text(encoding="utf-8")
         test_spec = SKILL_CONTRACT_TEST_SPEC.read_text(encoding="utf-8")
 
         required_spec_terms = [
@@ -8565,8 +8565,8 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
                 self.assertIn("## Claims this skill must not make", body)
 
     def test_discovery_shared_policy_is_admitted_by_skill_contract(self) -> None:
-        contract = SKILL_CONTRACT_SPEC.read_text(encoding="utf-8")
-        self.assertIn("`discovery-support`", contract)
+        contract = (ROOT / "docs/design/skill/skill.md").read_text(encoding="utf-8")
+        self.assertIn("discovery-support", contract)
 
     def test_every_discovery_package_file_omits_maintainer_only_details(self) -> None:
         forbidden = {
@@ -8654,6 +8654,38 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
         self.assertIn("must explicitly adopt", route)
         self.assertIn("does not approve", route)
         self.assertIn("does not advance lifecycle state", route)
+
+
+class SkillOwnerTransferTests(unittest.TestCase):
+    def test_skill_owner_current_contract_and_archive_identity(self):
+        import hashlib
+        archive = ROOT / "docs/archive/skill-model/2026-09-08"
+        originals = {
+            "specs/skill-contract.md": "4471eda8d1e04621710e5a0764a452670df8ba711804a3c2380ff7bdd6d1718f",
+            "specs/skill-readability-contract.md": "08ca1f804c8d877387798b0a21709951ed6096718a03db82067d3ad6749b0eb0",
+            "specs/customer-portable-public-skill-evidence.md": "d786f7bab328b82be9c65cb42d7948337fcfb6bf7bdd32df55005c61d69dacb9",
+            "docs/adr/ADR-20260623-published-skill-resource-integrity.md": "1475793203979247b7b42f22406dd681c424ea74328db6d17f5e1102bd5eb69b",
+        }
+        for relative, identity in originals.items():
+            with self.subTest(source=relative):
+                self.assertEqual(hashlib.sha256((archive / relative).read_bytes()).hexdigest(), identity)
+                if relative != "specs/skill-contract.md":
+                    self.assertEqual((ROOT / relative).read_bytes(), (archive / relative).read_bytes())
+        current = SKILL_CONTRACT_SPEC.read_text()
+        self.assertIn("../docs/design/skill/skill.md", current)
+        self.assertNotIn("R49b.", current)
+        self.assertIn("R38a.", current)
+        self.assertIn("R57c.", current)
+        model = (ROOT / "docs/design/skill/skill.md").read_text()
+        for required in ("SKL-SR-08", "SKL-SR-14", "recognized resource-loading instructions", "explicitly approved temporary exception", "New or changed skills MUST", "generator scripts, maintainer documentation", "raw-byte SHA-256"):
+            self.assertIn(required, model)
+        for required in ("non-empty string `name` and `description`", "two lines of normal prose", "exactly one authoritative fenced block or table", "complete fillable skeleton", "Full-subject reads MUST remain available", "Output caps MUST NOT substitute", "generated candidates are derived and never hand-edited", "Workflow", "Review and Closeout"):
+            self.assertIn(required, model)
+        # Links are checked mechanically; independent review owns their meaning.
+        index = archive / "README.md"
+        for relative in re.findall(r"\]\(([^)#]+)(?:#[^)]*)?\)", index.read_text()):
+            if not relative.startswith(("http:", "https:")):
+                self.assertTrue((index.parent / relative).exists(), relative)
 
 
 class ExplicitRecordingGuidanceTests(unittest.TestCase):

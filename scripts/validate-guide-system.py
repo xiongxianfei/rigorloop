@@ -101,6 +101,7 @@ def validate(repo: Path) -> ValidationResult:
         repo / "docs" / "project-map.md",
         repo / "specs" / "rigorloop-workflow.md",
         repo / "specs" / "skill-contract.md",
+        repo / "docs" / "design" / "skill" / "skill.md",
     )
     for path in current_surfaces:
         text = _read(path)
