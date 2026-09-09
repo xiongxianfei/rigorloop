@@ -142,8 +142,9 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             source, output = workspace / 'source', workspace / 'candidate'
             subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(repository), str(source)], check=True)
             # Use current authored implementation, including an uncommitted test-first slice.
-            for name in ['release_candidate.py', 'release_candidate_tests.py', 'release_transaction.py', 'test-release-transaction.py']:
-                shutil.copyfile(repository / 'scripts' / name, source / 'scripts' / name)
+            for script in (repository / 'scripts').iterdir():
+                if script.is_file() and script.suffix in {'.py', '.sh'}:
+                    shutil.copyfile(script, source / 'scripts' / script.name)
             intent = source / 'docs/releases/v0.5.1.md'
             intent.write_text('# Release v0.5.1\n\n## Version Decision\n\n- Version decision: patch\n- Change summary: Reviewed candidate fixture for integrity proof.\n')
             def git(*args):
@@ -166,6 +167,25 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
                 self.assertNotEqual(metadata['metadata']['sha256'], '0' * 64)
                 for archive in metadata['artifacts']:
                     self.assertEqual(archive['sha256'], file_identity(output / archive['archive'])['sha256'])
+            self.assertIn('release-integrity', {x['id'] for x in data['checks']})
+            receipt = json.loads((output / 'release-verification.json').read_text())
+            self.assertTrue(any('validate-release.py' in x.get('command', '') for x in receipt['checks']))
+            # Reconstruct the actual prepared source, then prove required release facts
+            # and secret-bearing notes reject independently of a good npm tarball.
+            checked = workspace / 'checked'
+            subprocess.run(['git', 'clone', '--quiet', str(output / 'source.bundle'), str(checked)], check=True)
+            import importlib.util
+            spec = importlib.util.spec_from_file_location('release_validator', repository / 'scripts/validate-release.py')
+            validator = importlib.util.module_from_spec(spec); spec.loader.exec_module(validator)
+            metadata_path = checked / 'docs/releases/v0.5.1/release.yaml'
+            before = metadata_path.read_text()
+            for bad in [before.replace('  security: pending', '  security: fail'), before.replace('  security: pending\n', '')]:
+                metadata_path.write_text(bad)
+                self.assertTrue(validator.validate_prepared_release('v0.5.1', checked, output))
+            metadata_path.write_text(before)
+            notes_path = checked / 'docs/releases/v0.5.1/release-notes.md'
+            notes_path.write_text(notes_path.read_text() + '\n-----BEGIN PRIVATE KEY-----\n')
+            self.assertTrue(validator.validate_prepared_release('v0.5.1', checked, output))
             (output / data['tarball']).write_bytes(b'changed after checks')
             with self.assertRaisesRegex(CandidateError, 'identity'):
                 verify_candidate(output, data['candidate_id'])

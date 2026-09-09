@@ -21,6 +21,16 @@ if [[ -z "$release_version" ]]; then
   exit 1
 fi
 
+# The prepared path verifies immutable archives and the already-packed tarball.
+# It cannot rebuild approved bytes or treat a dry run as a verified candidate.
+if [[ "${2:-}" == "--prepared-candidate" ]]; then
+  if [[ "$#" != 3 || "${RELEASE_VERIFY_DRY_RUN:-}" == "1" ]]; then
+    echo "prepared candidate verification requires actual checks and an output directory" >&2
+    exit 1
+  fi
+  exec python scripts/validate-release.py --version "$release_version" --prepared-candidate "$3"
+fi
+
 release_tag_commit="${RELEASE_TAG_COMMIT:-}"
 if [[ "${GITHUB_ACTIONS:-}" == "true" && "${GITHUB_REF_TYPE:-}" == "tag" && -z "$release_tag_commit" ]]; then
   echo "release gate failure: trusted workflow requires RELEASE_TAG_COMMIT" >&2

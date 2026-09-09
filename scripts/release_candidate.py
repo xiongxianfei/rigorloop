@@ -22,9 +22,7 @@ from release_transaction import (
 )
 
 VERSION_DECISIONS = frozenset({'patch', 'minor', 'major'})
-CANDIDATE_CHECKS = frozenset({'skills', 'skill-regression', 'skills-drift',
-    'adapter-regression', 'npm-regression', 'archives', 'package', 'packed-install',
-    'profile', 'preflight'})
+CANDIDATE_CHECKS = frozenset({'profile', 'preflight', 'release-integrity'})
 SOURCE_REPOSITORY = 'xiongxianfei/rigorloop'
 STABLE_VERSION = re.compile(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\Z')
 SHA = re.compile(r'[0-9a-f]{40}\Z')
@@ -197,7 +195,12 @@ def run(argv: list[str], cwd: Path, *, env: dict | None = None, timeout: int = 1
     if len(argv) > 1 and Path(argv[1]).name.startswith('test-') and re.search(r'Ran 0 tests', result.stdout + result.stderr):
         raise CandidateError('required test command discovered zero tests')
     if result.returncode:
-        raise CandidateError(f'{Path(argv[0]).name} {Path(argv[1]).name if len(argv) > 1 else ""} command failed ({result.returncode}); inspect bounded local check output')
+        # Retain diagnostic output locally with private permissions; never dump
+        # potentially sensitive tool output into an approval or public report.
+        fd, log = tempfile.mkstemp(prefix='rigorloop-release-check-', suffix='.log')
+        with os.fdopen(fd, 'w') as handle:
+            handle.write(result.stdout + '\n' + result.stderr)
+        raise CandidateError(f'{Path(argv[0]).name} {Path(argv[1]).name if len(argv) > 1 else ""} command failed ({result.returncode}); private diagnostic log: {log}')
     return result.stdout.rstrip()
 
 
@@ -233,7 +236,7 @@ def write_archive_metadata(root: Path, output: Path, tag: str, commit: str, pack
 
 
 def script_identity(directory: Path) -> str:
-    return hashlib.sha256(canonical_bytes({p.name: file_identity(p) for p in sorted(directory.glob('*.py'))})).hexdigest()
+    return hashlib.sha256(canonical_bytes({p.name: file_identity(p) for p in sorted(p for p in directory.iterdir() if p.is_file() and p.suffix in {'.py', '.sh'})})).hexdigest()
 
 
 def prepare_candidate(source: Path, source_commit: str, merged_ref: str, published_version: str,
@@ -327,19 +330,10 @@ def prepare_candidate(source: Path, source_commit: str, merged_ref: str, publish
             raise CandidateError('candidate preflight failed: ' + '; '.join(preflight.errors))
         checks.append({'id': 'preflight', 'result': 'pass'})
         run(['npm', 'ci', '--ignore-scripts', '--no-audit', '--no-fund'], root / 'packages/rigorloop')
-        for key, script, args in [
-            ('skills', 'validate-skills.py', []),
-            ('skill-regression', 'test-skill-validator.py', []),
-            ('skills-drift', 'build-skills.py', ['--check']),
-            ('adapter-regression', 'test-adapter-distribution.py', []),
-        ]:
-            checked(key, ['python', 'scripts/' + script, *args])
         run(['python', 'scripts/build-adapters.py', '--version', tag, '--output-dir', str(output)], root)
-        checked('archives', ['python', 'scripts/validate-adapters.py', '--version', tag,
-                             '--adapter-root', str(output)])
+        run(['python', 'scripts/validate-adapters.py', '--version', tag, '--adapter-root', str(output)], root)
         package = root / 'packages/rigorloop'
         write_archive_metadata(root, output, tag, commit, package)
-        checked('npm-regression', ['python', 'scripts/test-npm-package-publication.py'])
         overlay_paths = ['packages/rigorloop/dist/metadata/' + 'adapter-artifacts-' + tag + '.json',
                          'packages/rigorloop/dist/metadata/releases.json']
         actual_overlay = run(['git', 'status', '--porcelain', '--untracked-files=all'], root)
@@ -348,10 +342,13 @@ def prepare_candidate(source: Path, source_commit: str, merged_ref: str, publish
                 raise CandidateError('unexpected build overlay edit')
         packed = json.loads(run(['npm', 'pack', '--json', '--ignore-scripts', '--pack-destination', str(output)], package))
         tarball = local_file(output, packed[0]['filename'])
-        checked('package', ['python', 'scripts/validate-npm-package.py', '--package-root', str(package), '--tarball', str(tarball)])
-        # Actual bundled metadata consumption and archive materialization, not a generated pass.
-        run_packed_smoke(root, tarball, output, tag)
-        checks.append({'id': 'packed-install', 'result': 'pass'})
+        # Full composition belongs to the retained release verifier. Inputs are
+        # bound before checking; the final candidate adds its actual result.
+        (output / 'preparation.json').write_bytes(canonical_bytes({
+            'tag': tag, 'source_commit': source_commit, 'prepared_commit': commit,
+            'tarball': tarball.name,
+            'files': {p.name: file_identity(p) for p in sorted(output.iterdir()) if p.is_file()}}))
+        checked('release-integrity', ['bash', 'scripts/release-verify.sh', tag, '--prepared-candidate', str(output)])
         run(['git', 'bundle', 'create', str(output / 'source.bundle'), 'HEAD'], root)
         shutil.copyfile(profile, output / 'profile.yaml')
         shutil.copyfile(notes, output / 'release-notes.md')
