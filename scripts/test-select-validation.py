@@ -2153,6 +2153,11 @@ raise SystemExit({exit_code})
         result = self.select(
             [
                 "scripts/release_transaction.py",
+                "scripts/release_candidate.py",
+                "scripts/release_execution.py",
+                "scripts/release_provider.py",
+                "scripts/release_coordination.py",
+                "scripts/release-coordinator.py",
                 "scripts/test-release-transaction.py",
                 "scripts/prepare-release.py",
                 "scripts/release-preflight.py",
