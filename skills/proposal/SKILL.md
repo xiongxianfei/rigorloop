@@ -9,18 +9,6 @@ argument-hint: [feature idea, selected option, problem statement, or issue numbe
 
 # Change proposal
 
-## Explicit recording
-
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Author the bounded direction and feasibility proposal. With explicit new-change authority, use change create for the absent root and explicitly supply initial activity, references and empty collections as intended. Use change link for an exact revised proposal reference with its subject-inspection identity in reads. Hand the direction to Proposal Review; do not approve it yourself.
-
 Turn a problem or selected direction into a concise direction-approval artifact: why the problem matters, what outcome is sought, what direction should be pursued, and whether it is credible enough to enter Design.
 
 ## Workflow role
@@ -69,6 +57,10 @@ Operations are exactly `create-primary-proposal` and `revise-primary-proposal`. 
 Specialized predicates are exactly `vision_exception_context`, `standing_artifact_context`, `initial_intent_table_context`, and `scope_budget_context`. Truth is semantic proposal judgment. Predicates apply independently; a non-empty set loads exactly once. Resolve material ambiguity before drafting or review readiness. Record applicable detail inside `Scope and non-goals`, `Impact and major trade-offs`, or `Decision requested`; specialized predicates do not add level-two sections.
 
 The four loaded assemblies are `PA0-portable`, `PA0G-portable-gated`, `PA1-governed`, and `PA1G-governed-gated`.
+
+## Recording boundary
+
+Classify the invocation before loading recording procedure. Governed work requires the complete `references/governed-proposal-authoring.md` and validated project authority before mutation. Only the adopted `rigorloop-records-v2` profile is supported; malformed, stale or conflicting governed signals stop without portable fallback. A later governed signal requires reclassification before dependent authoring or writes. Portable authoring does not require recording instructions or lifecycle records. Loading or saving never grants approval or continuation.
 
 ## Resource map
 
