@@ -628,46 +628,8 @@ def validate_release_timing_evidence(
 
 
 def validate_release_workflow_parity(root: Path | str = Path(".")) -> list[str]:
-    repo_root = Path(root)
-    workflow_path = repo_root / ".github" / "workflows" / "release.yml"
-    if not workflow_path.exists():
-        return [f"{_repo_relative(workflow_path, repo_root)}: release workflow not found"]
-    text = workflow_path.read_text(encoding="utf-8")
-    errors: list[str] = []
-    release_verify_count = text.count("bash scripts/release-verify.sh")
-    if release_verify_count == 0:
-        errors.append(
-            ".github/workflows/release.yml: release workflow must invoke bash scripts/release-verify.sh"
-        )
-    if 'bash scripts/release-verify.sh "$GITHUB_REF_NAME"' not in text:
-        errors.append(
-            ".github/workflows/release.yml: release job must delegate readiness to bash scripts/release-verify.sh \"$GITHUB_REF_NAME\""
-        )
-    if 'bash scripts/release-verify.sh "$tag"' not in text:
-        errors.append(
-            ".github/workflows/release.yml: npm publication validation must delegate to bash scripts/release-verify.sh \"$tag\""
-        )
-    if "RELEASE_TAG_COMMIT: ${{ github.sha }}" not in text:
-        errors.append(
-            ".github/workflows/release.yml: trusted release jobs must bind RELEASE_TAG_COMMIT to github.sha"
-        )
-    if 'npm publish --provenance --access public --tag "${{ steps.context.outputs.npm_dist_tag }}"' not in text:
-        errors.append(
-            ".github/workflows/release.yml: trusted npm publication must use the profile-owned npm dist-tag"
-        )
-    forbidden_direct_checks = (
-        "python scripts/validate-release.py",
-        "python scripts/test-adapter-distribution.py",
-        "python scripts/test-npm-package-publication.py",
-        "python scripts/build-adapters.py",
-        "python scripts/validate-adapters.py",
-    )
-    for check in forbidden_direct_checks:
-        if check in text:
-            errors.append(
-                f".github/workflows/release.yml: release workflow must not duplicate release gate command directly: {check}"
-            )
-    return errors
+    from release_coordination import validate_workflow
+    return validate_workflow(Path(root))
 
 
 class NetworkPublicEvidenceProvider:

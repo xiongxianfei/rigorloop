@@ -149,21 +149,113 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
         repository = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory(prefix='release-candidate-proof-') as temporary:
             workspace = Path(temporary)
-            source, output = workspace / 'source', workspace / 'candidate'
+            source, output = workspace / 'source', workspace / 'release-candidate'
             subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(repository), str(source)], check=True)
             # Use current authored implementation, including an uncommitted test-first slice.
             for script in (repository / 'scripts').iterdir():
                 if script.is_file() and script.suffix in {'.py', '.sh'}:
                     shutil.copyfile(script, source / 'scripts' / script.name)
+            shutil.copyfile(repository / '.github/workflows/release.yml', source / '.github/workflows/release.yml')
             intent = source / 'docs/releases/v0.5.1.md'
             intent.write_text('# Release v0.5.1\n\n## Version Decision\n\n- Version decision: patch\n- Change summary: Reviewed candidate fixture for integrity proof.\n')
             def git(*args):
                 return subprocess.check_output(['git', '-C', str(source), *args], text=True, stderr=subprocess.DEVNULL).strip()
-            git('add', 'scripts', 'docs/releases/v0.5.1.md')
+            git('branch', '-M', 'main')
+            git('add', 'scripts', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml')
             git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')
             commit, ref = git('rev-parse', 'HEAD'), git('symbolic-ref', 'HEAD')
-            data = prepare_candidate(source, commit, ref, '0.5.0', output)
+            from release_coordination import prepare_operation, execute_operation, read_evidence, ExecutionError, summary
+            from release_coordination_tests import FixtureHostedServices, invoke_dispatch
+            remote = workspace / 'evidence.git'
+            subprocess.run(['git', 'init', '--bare', '--quiet', str(remote)], check=True)
+            event = {'run_id': 12, 'source_commit': commit, 'source_ref': ref, 'attempt': 1}
+            settings = {'evidence_ref': 'refs/heads/release-evidence', 'trusted_publisher': 'github:xiongxianfei/rigorloop:release.yml:release'}
+            services = FixtureHostedServices(event, remote)
+            bad = dict(settings, trusted_publisher='')
+            with self.assertRaises(ExecutionError): prepare_operation(source, output, event, bad, services)
+            self.assertFalse(output.exists())
+            status, errors, approval_summary, outputs = invoke_dispatch('prepare', source, services, event, workspace)
+            self.assertEqual(status, 0, errors)
+            self.assertIn('ready=true', outputs)
+            data = json.loads((output / 'candidate.json').read_text())
+            self.assertIn(data['candidate_id'], approval_summary)
+            self.assertEqual(services.approval_count, 0)
+            self.assertIn(data['candidate_id'], summary(data))
+            binding = services.retain_and_approve(data, output)
+            status, errors, outcome_summary, _ = invoke_dispatch('execute', source, services, event, workspace / 'executor', binding)
+            self.assertEqual(status, 0, errors)
+            self.assertIn('completed', outcome_summary)
+            state = json.loads((workspace / 'executor/release-candidate/observed-outcome.json').read_text())
+            self.assertEqual(state['status'], 'completed')
+            self.assertEqual(state['mirror']['result'], 'copied')
+            self.assertEqual(services.approval_count, 1)
+            self.assertEqual(services.publisher.writes, ['tag', 'github', 'npm'])
+            self.assertEqual(read_evidence(services, settings['evidence_ref'], data['tag'])['status'], 'completed')
+            execute_operation(source, workspace / 'duplicate', event, settings, binding, services)
+            self.assertEqual(services.publisher.writes, ['tag', 'github', 'npm'])
+            self.assertEqual(services.approval_count, 1)
+            services.retain_observations(workspace / 'executor/release-candidate', 1)
+            retry_event = dict(event, attempt=2)
+            services.facts['run']['run_attempt'] = 2
+            retried = prepare_operation(source, workspace / 'restored', retry_event, settings, services)
+            self.assertEqual(retried['candidate']['candidate_id'], data['candidate_id'])
+            execute_operation(source, workspace / 'retry', retry_event, settings, retried['binding'], services)
+            self.assertEqual(services.publisher.writes, ['tag', 'github', 'npm'])
+            self.assertEqual(services.approval_count, 1)
+            services.facts['run']['run_attempt'] = 1
+            for scenario in ['lost-response', 'failed-smoke', 'failed-reporting', 'missing-timing-mirror']:
+                case_root = workspace / scenario; case_root.mkdir()
+                case_remote = case_root / 'evidence.git'
+                subprocess.run(['git', 'init', '--bare', '--quiet', str(case_remote)], check=True)
+                case = FixtureHostedServices(event, case_remote)
+                case_binding = case.retain_and_approve(data, output)
+                if scenario == 'lost-response': case.publisher.lose_response = 'npm'
+                if scenario == 'failed-smoke': case.publisher.fail_smoke = True
+                if scenario == 'missing-timing-mirror': case.publisher.fail_mirror = True
+                if scenario == 'failed-reporting':
+                    from release_execution import GitEvidence
+                    class FailingStore(GitEvidence):
+                        calls = 0
+                        def save(self, changes):
+                            self.calls += 1
+                            if self.calls >= 7: raise ExecutionError('fixture reporting unavailable')
+                            return super().save(changes)
+                    ordinary_store = case.evidence
+                    case.evidence = lambda ref, source_ref: FailingStore(str(case_remote), ref, source_ref=source_ref)
+                code, error, _, _ = invoke_dispatch('execute', source, case, event, case_root / 'attempt1', case_binding)
+                should_fail = scenario in ['failed-smoke', 'failed-reporting']
+                self.assertEqual(code, 1 if should_fail else 0, scenario + ': ' + error)
+                observed_dir = case_root / 'attempt1/release-candidate'
+                observed = json.loads((observed_dir / 'observed-outcome.json').read_text())
+                self.assertEqual(case.publisher.writes, ['tag', 'github', 'npm'])
+                if scenario == 'missing-timing-mirror':
+                    self.assertEqual(observed['status'], 'completed')
+                    self.assertEqual(observed['mirror']['result'], 'unavailable')
+                    self.assertEqual(observed['timing_diagnostic']['result'], 'fail')
+                if should_fail:
+                    case.retain_observations(observed_dir, 1)
+                    case.facts['run']['run_attempt'] = 2
+                    if scenario == 'failed-reporting': case.evidence = ordinary_store
+                    case.publisher.fail_smoke = False
+                    code, error, _, _ = invoke_dispatch('execute', source, case, retry_event, case_root / 'attempt2', case_binding)
+                    self.assertEqual(code, 0, error)
+                    recovered = read_evidence(case, settings['evidence_ref'], data['tag'])
+                    self.assertEqual(recovered['status'], 'completed')
+                    self.assertTrue(any(e['result'] == 'incomplete' for e in recovered['events']))
+                    self.assertEqual(case.publisher.writes, ['tag', 'github', 'npm'])
+                    self.assertEqual(case.approval_count, 1)
+            services.public_version = data['version']
+            self.assertEqual(prepare_operation(source, workspace / 'noop', event, settings, services)['status'], 'already-published')
+            # Same version on a different reviewed commit is an upstream exception.
+            git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
+                '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Unclassified later reviewed change')
+            changed_commit = git('rev-parse', 'HEAD')
+            services.facts['run']['head_sha'] = changed_commit
+            changed_event = dict(event, source_commit=changed_commit)
+            with self.assertRaisesRegex(ExecutionError, 'next-version decision'):
+                prepare_operation(source, workspace / 'changed', changed_event, settings, services)
+            services.facts['run']['head_sha'] = commit
             self.assertEqual(verify_candidate(output, data['candidate_id'])['source_commit'], commit)
             self.assertEqual({x['id'] for x in data['checks']}, CANDIDATE_CHECKS)
             self.assertEqual(len(list(output.glob('*.zip'))), 3)

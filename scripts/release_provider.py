@@ -188,6 +188,21 @@ class NetworkPublisher(NetworkPublicEvidenceProvider):
                  '--access', 'public', '--tag', candidate['channel'], '--registry', 'https://registry.npmjs.org/',
                  '--ignore-scripts'], Path(temporary), env=env)
 
+    def mirror_evidence(self, candidate: dict, commit: str, payload: bytes):
+        if not __import__('re').fullmatch(r'[0-9a-f]{40}', commit):
+            raise ExecutionError('invalid durable evidence identity')
+        name = 'release-evidence-' + commit + '.zip'
+        observed = github_json(f"repos/{SOURCE_REPOSITORY}/releases/tags/{candidate['tag']}")
+        if observed is None: raise ExternalUnavailable('release evidence mirror destination unavailable')
+        matching = [a for a in observed['assets'] if a['name'] == name]
+        if matching:
+            if len(matching) != 1 or public_bytes(matching[0]['browser_download_url'], f'https://github.com/{SOURCE_REPOSITORY}/releases/download/') != payload:
+                raise ExecutionError('existing evidence mirror conflicts; no overwrite')
+            return
+        with tempfile.TemporaryDirectory(prefix='rigorloop-evidence-mirror-') as temporary:
+            path = Path(temporary) / name; path.write_bytes(payload)
+            run(['gh', 'release', 'upload', candidate['tag'], '--repo', SOURCE_REPOSITORY, str(path)], Path(temporary))
+
     def run_public_npx_smoke(self, *, command: str, cwd: Path) -> PublicSmokeResult:
         from adapter_distribution import _normalized_tree_hash_bytes, _tree_hash_for_rows
         with tempfile.TemporaryDirectory(prefix='rigorloop-fresh-npx-') as cache:
