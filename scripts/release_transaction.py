@@ -2058,6 +2058,7 @@ def _validate_release_yaml_contract(
     profile: ReleaseProfile,
     *,
     require_finalized: bool,
+    expected_publication_status: str = "pending-publication",
 ) -> list[str]:
     relative = _repo_relative(path, repo_root)
     try:
@@ -2069,7 +2070,7 @@ def _validate_release_yaml_contract(
     expected_scalars = (
         (metadata.version, profile.release_tag, "version"),
         (metadata.release_type, "final", "release_type"),
-        (metadata.publication_status, "pending-publication", "publication_status"),
+        (metadata.publication_status, expected_publication_status, "publication_status"),
     )
     for actual, expected, field in expected_scalars:
         if actual != expected:
