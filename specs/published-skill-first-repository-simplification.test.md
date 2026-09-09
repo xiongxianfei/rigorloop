@@ -4,6 +4,13 @@
 
 # Published-Skill-First Repository Simplification Test Spec
 
+
+## Necessary-design cleanup applicability
+
+For the selected [necessary-design consolidation](../docs/proposals/2026-09-09-consolidate-necessary-design-and-retire-superseded-sources.md), [Test TEST-SR-14](../docs/design/test/test.md#necessary-design-consolidation-proportionate-proof) supplies the complete scoped R14/R17–20/R22 replacement, and [System's consolidation map](../docs/design/system/system.md#necessary-design-consolidation-map) names exact sources, preserved populations and consumers. This new-profile-only amendment takes effect with reviewed coherent implementation and successful Verify. It preserves the historical feature/boundary/proof identifiers and the unselected operational remainder.
+
+For that slice only, earlier ledger, dual-run and mandatory-measurement prescriptions—including T1/T10/T13/T14, their proof-map allocations and associated acceptance instructions—do not impose a second ledger, irrelevant repeated execution or a savings benchmark. The reviewed Delivery allocation applies Test's retained protection and current Review and Closeout evidence policy. Other obligations remain under this source's current applicable amendments; the earlier stored-format retirement keeps its separate Workflow replacement. Historical input identities, judgments and recorded results are not retargeted or retrospectively changed.
+
 ## Owning change record
 
 `docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml`
