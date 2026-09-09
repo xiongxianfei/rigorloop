@@ -2048,5 +2048,7 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
 from release_candidate_tests import ReleaseCandidateTests, ReleaseCandidateIntegrationTests  # noqa: E402
 
 
+from release_execution_tests import ReleaseApprovalTests, ReleaseEvidenceStoreTests, ReleaseExecutorTests
+
 if __name__ == "__main__":
     raise SystemExit(unittest.main())
