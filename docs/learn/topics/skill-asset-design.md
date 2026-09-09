@@ -1,7 +1,7 @@
 # Skill Asset Design
 
 This topic is curated learn guidance. Authoritative packaged-resource rules
-remain in `specs/skill-contract.md`, feature-specific specs, active plans,
+remain in `docs/design/skill/skill.md`, the explicitly retained portions of `specs/skill-contract.md`, feature-specific specs, active plans,
 canonical skill files, and validator scripts.
 
 ## 2026-05-20: Require Assets To Earn Their File
