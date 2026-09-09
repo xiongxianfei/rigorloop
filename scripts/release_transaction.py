@@ -316,6 +316,7 @@ def prepare_release(
     *,
     root: Path | str = Path("."),
     check: bool = False,
+    approval_driven: bool = False,
 ) -> PrepareReleaseResult:
     repo_root = Path(root)
     profile = load_release_profile(tag, root=repo_root)
@@ -334,6 +335,30 @@ def prepare_release(
     _plan_timing_evidence(planned, repo_root, profile)
     _plan_adapter_artifact_report(planned, repo_root, profile)
     _plan_current_version_fixture(planned, repo_root, profile)
+
+    if approval_driven:
+        # Generated expectations are never observations. Preserve reviewed human
+        # sections in the existing standing record and add only missing sections.
+        import re
+        for path in list(planned):
+            if path.name == "timing.yaml":
+                # Do not emit zero-duration placeholders as measurements. Actual
+                # available timings are collected by the candidate coordinator.
+                if path.exists():
+                    planned[path] = path.read_text(encoding="utf-8")
+                else:
+                    del planned[path]
+                continue
+            if path.suffix not in {".md", ".yaml"}:
+                continue
+            content = planned[path].replace("| pass |", "| pending |").replace(": pass\n", ": pending\n")
+            if path == repo_root / "docs" / "releases" / f"{tag}.md" and path.exists():
+                existing = path.read_text(encoding="utf-8")
+                titles = set(re.findall(r"^## (.+)$", existing, re.M))
+                sections = re.split(r"(?=^## )", content, flags=re.M)[1:]
+                additions = "".join(section for section in sections if section.splitlines()[0][3:] not in titles)
+                content = existing.rstrip() + "\n\n" + additions if additions else existing
+            planned[path] = content
 
     changed_paths = tuple(
         _repo_relative(path, repo_root)
