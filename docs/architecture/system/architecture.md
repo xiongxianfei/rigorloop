@@ -4,6 +4,8 @@
 
 [System](../../design/system/system.md#exact-mixed-architecture-migration-boundary) identifies the exact selected composition sections transferred here; [Design](../../design/design/design.md#selected-replacement-map) owns the reconciled authoring method and decision mapping. This coordinated replacement covers only those selected paragraphs, bullets, tables and method decisions. Unselected Level 2, installation, distribution, validation and other responsibilities below retain their existing owners and amendments. Historical diagrams and approvals remain historical evidence; this mixed file is not wholly superseded.
 
+[Release](../../design/release/release.md) contains the selected current release contract and exact source-disposition map. Its owning change records coordinated adoption through successful final Verify; the retained adapter and publication histories below preserve their original boundaries.
+
 ## V2-only runtime retirement
 
 The [Record Format](../../design/record-format/record-format.md), [CLI](../../design/cli/cli.md) and [Workflow](../../design/workflow/workflow.md) models select `rigorloop-records-v2` as the only supported runtime stored format. Earlier compact/lifecycle and explicit-recording-v1 acceptance, activation, projection, mutation and recovery clauses below are historical design evidence, not current execution or compatibility obligations. Their stable IDs and recorded approvals keep their original meaning. Current consumers use scoped primary reads and targeted recording, with actor-owned decisions and applicability; the CLI does not select readiness. Preserve archival records unchanged, reject explicit retired input safely and preserve v2 safety. Unrelated document/configuration/transport version domains remain supported under their own contracts.
@@ -92,8 +94,6 @@ For explicitly adopted model work, [Review and Closeout](../../design/review-clo
 - Cache-Aware Inner-Loop Lifecycle Validation Helper proposal: `docs/proposals/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper.md`
 - Cache-Aware Inner-Loop Lifecycle Validation Helper change metadata: `docs/changes/2026-05-24-cache-aware-inner-loop-lifecycle-validation-helper/change.yaml`
 - Release Process Contract proposal: `docs/proposals/2026-05-23-release-process-contract.md`
-- Release Process Contract spec: `specs/release-process-contract.md`
-- Release Process Contract ADR: `docs/adr/ADR-20260523-release-process-contract.md`
 - Release Process Contract change metadata: `docs/changes/2026-05-23-release-process-contract/change.yaml`
 - Target-Native Init proposal: `docs/proposals/2026-05-24-target-native-init-commands-and-adapter-terminology-retirement.md`
 - Target-Native Init spec: `specs/target-native-init.md`
@@ -152,8 +152,6 @@ For explicitly adopted model work, [Review and Closeout](../../design/review-clo
 - Requirement-Fidelity Gate ADR: `docs/adr/ADR-20260626-requirement-fidelity-gate.md`
 - Requirement-Fidelity Gate change metadata: `docs/changes/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews/change.yaml`
 - Release Transaction Automation proposal: `docs/proposals/2026-06-29-release-transaction-automation.md`
-- Release Transaction Automation spec: `specs/release-transaction-automation.md`
-- Release Transaction Automation ADR: `docs/adr/ADR-20260629-release-transaction-profile.md`
 - Release Transaction Automation change metadata: `docs/changes/2026-06-29-release-transaction-automation/change.yaml`
 - Bounded Review-Fix Autoprogression proposal: `docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md`
 - Bounded Review-Fix Autoprogression spec: `specs/review-fix-autoprogression.md`
@@ -979,24 +977,6 @@ Common content/resource behavior is owned by [Skill](../../design/skill/skill.md
 8. The publication process records npm package URL, source commit, selected mode, trusted publishing or bootstrap details, provenance status when available, and rollback/deprecation notes.
 9. FU-010 remains open until actual non-dry-run `init --adapter codex --json` succeeds from the packed or published package against the official `v0.1.4` Codex adapter archive. Dry-run smoke is not enough.
 
-### Standing release-process flow
-
-1. A maintainer classifies the release as routine, prerelease, breaking publish, emergency, process-changing, new package/scope, new adapter target, or republish recovery before publish work begins.
-2. Routine publishes proceed only when no new product, process, package-surface, authentication, provenance, adapter-target, or publish-mechanics decision is being introduced. Otherwise the upstream change follows the normal proposal/spec/review path before release execution.
-3. For routine releases, the release operator creates or updates the release profile at `docs/releases/profiles/<tag>.yaml`; that profile records release tag, package version, target set, publication requirements, evidence classes, adapter artifact expectations, validation requirements, and timing requirements.
-4. `prepare-release` generates profile-owned release-prep surfaces, pending evidence, metadata pointers, and current-version fixture data from the profile. It preserves human-authored release-note narrative outside generated regions and does not rewrite historical release evidence.
-5. `release-preflight` runs cheap deterministic profile, schema, version, literal-audit, tag-state, pending-evidence, metadata-pointer, and release-output checks before broad release verification. It is side-effect-light and must not be used as a substitute for full release verification.
-6. The release operator records version, release type, source commit, branch, package name, npm dist-tag, publish path, provenance mode, and release evidence path before publish.
-7. The full release gate `scripts/release-verify.sh <tag>` proves a clean or intentionally release-scoped worktree, release notes or not-required rationale, generated-output currency, test or broad smoke status, package preview, packed local install smoke, selected publish path, unresolved-blocker state, archive integrity, adapter metadata, package contents, and full validation.
-8. Generated-output currency is proven by repository-owned drift or generated-output checks such as `skills.drift`, `adapters.drift`, or current equivalents. Currency is not asserted from memory.
-9. Package preview and packed install smoke inspect the exact package artifact that may be published, not repository-local source in place of package contents.
-10. Preferred publication uses trusted publishing/OIDC. Manual fallback is allowed only as a recorded fallback or emergency path and does not relax gate evidence, package preview, registry verification, or secret-suppression requirements.
-11. After publish, `close-release-publication` reads public GitHub release asset metadata and npm registry metadata, runs fresh public `npx` smoke for version and supported target init commands, writes validator-compatible published evidence, and remains rerunnable while public evidence is unavailable.
-12. Timing evidence records preflight, local release verification, GitHub release job, npm publish job, public smoke, and closeout durations when available. Initial duration targets are observation evidence, not hard release failures.
-13. Emergency releases may defer only deferrable gate items, and each deferral records owner approval, rationale, validation impact, accepted risk, follow-up location, and deadline or next lifecycle stage before publish.
-14. Release evidence remains open for deferred gate follow-up until the gate completes, an approved recovery action replaces it, or an owner closes the risk explicitly.
-15. Failed package contents recover through fix-forward, dist-tag correction when only tags are wrong, or deprecation when necessary. Published npm versions are not overwritten.
-
 ### Governed lifecycle CLI flow
 
 1. A human, governed skill, workflow operation, adapter, or CI requests read-only status/context/validation or submits a versioned semantic mutation request.
@@ -1349,24 +1329,6 @@ After `.codex/skills/` is untracked, non-release local Codex mirror validation p
 
 ### Release and adapter evidence
 
-Release verification uses tracked `docs/releases/<version>/release.yaml` and `release-notes.md` plus maintainer smoke evidence. Generated release notes are not authoritative for adapter compatibility claims.
-
-Routine release automation is profile-driven. `docs/releases/profiles/<tag>.yaml` is the durable release transaction profile for routine release state, target support, publication requirements, evidence classes, validator expectations, generated-surface ownership, and timing requirements. Tooling may derive and validate release-prep surfaces from that profile, but script constants are not a competing source of truth.
-
-Release-prep surfaces are classified as profile-owned generated, human-authored profile-checked, or historical immutable. `prepare-release` may update profile-owned generated surfaces and marked generated regions, but it must not overwrite human narrative outside generated regions or rewrite historical release evidence. Manual generated-surface overrides must be explicit, review-visible, and preflight-checked.
-
-`release-preflight` is a cheap deterministic local/profile/schema gate before broad release verification. It catches profile completeness, version agreement, metadata pointer drift, current-version literal drift, pending evidence shape, tag conflicts, and release-output state under the same inputs. Full `release-verify.sh <tag>` remains authoritative for generated outputs, archive integrity, package contents, adapter metadata, and full validation.
-
-Published closeout remains evidence generation, not publication authority. It reads public GitHub and npm metadata, runs fresh public `npx` smoke for the supported target commands, writes validator-compatible command and hash shapes, and fails clearly while public evidence is not yet available. Timing evidence is required when the profile requires it; duration targets are initial observation data rather than release-failing budgets.
-
-The standing release-process contract adds `docs/releases/v<version>.md` as the durable routine publish evidence surface. It records release type, version decision, source identity, package identity, dist-tag, publish path, provenance mode, pre-publish gate results, package contents, publication event, registry verification, smoke results, recovery notes, and follow-up. Related change records link to this release evidence when a publish is tied to a lifecycle change, but the release record remains version-scoped.
-
-Routine publish evidence is operational evidence, not a substitute for upstream lifecycle review. It can prove that already-approved work was packaged and published correctly; it cannot approve new package-surface decisions, release-process changes, new adapter targets, or changed authentication/provenance policy.
-
-Release evidence must suppress secrets and machine-local details. It records command families, public registry references, package identity, checksums or integrity values, and bounded results, but not npm tokens, OTPs, credentials, raw environment dumps, private hostnames, usernames, or machine-local absolute paths.
-
-Emergency deferrals are part of the release evidence surface. A deferral must name the deferred gate item, approving owner or owning stage, emergency rationale, reason for deferral, validation impact, accepted risk, follow-up location, and deadline or next lifecycle stage. Failed gate evidence must remain visible as failed or deferred-with-owner-risk, not rewritten as passed.
-
 Generated adapter releases have an additional artifact evidence layer. `docs/reports/adapter-artifacts/releases/<version>.yaml` records release version, source commit, generator command, canonical source, manifest path, generated archive names, SHA-256 checksums, validation command, and validation result. Public releases that distribute generated adapters publish separate per-adapter archives as release assets and may publish a combined archive for convenience. The repository tracks metadata and checksums, not generated archive files by default.
 
 The `v0.1.1` transition release does not require downloadable adapter archives. `dist/adapters/` remains the public adapter install path, and release notes or adapter docs state whether archives are absent or separately published. If a separate accepted plan publishes optional archives for `v0.1.1`, repository-tree installation from `dist/adapters/` remains the required public install path for that release and archive metadata becomes additional evidence rather than a replacement for tracked public adapter validation.
@@ -1496,8 +1458,6 @@ The npm package is a delivery artifact for the CLI. It can include runtime CLI c
 
 Publication has one selected mode. Trusted-publishing mode uses `.github/workflows/release.yml` and npm OIDC. Bootstrap mode is a one-time manual publication path for `@xiongxianfei/rigorloop@0.1.4` only when trusted publishing cannot be configured before package creation. Bootstrap mode separates release readiness ownership from npm publish execution: `release.yml` or `release-verify.sh` owns readiness, and the maintainer publishes only the exact verified tarball recorded in publication evidence.
 
-For release-process-contract releases after the bootstrap publication boundary, trusted publishing/OIDC remains the preferred npm path. Manual token or manual 2FA fallback is operationally allowed when trusted publishing is not available, but it must record the reason and satisfy the same non-deferrable evidence, package identity, registry verification, recovery, and secret-suppression boundaries. Staged publishing is deferred until trusted publishing works reliably.
-
 The npm package does not replace GitHub release assets for adapter archives. `rigorloop init codex`, `rigorloop init claude`, and `rigorloop init opencode` install generated target support from official GitHub release archives or verified local archives matched against package-bundled metadata.
 
 ### Release token-friendliness evidence
@@ -1553,7 +1513,6 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md`: descriptor-driven multi-adapter init, schema v2 mixed-root lockfile handling, opencode skills-only compatibility, and proxy-safe download diagnostics.
 - `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md`: change records as registered and queryable catalogs, with evidence-class selector routing and bounded query-helper reads.
 - `docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md`: validation cache hits for unchanged explicit-path lifecycle inputs, with a cache-aware inner-loop helper mode, canonical direct-command cache identity, local-only cache state, formal cache-hit evidence, closeout actual-run gates, and Workstream B measurement gating.
-- `docs/adr/ADR-20260523-release-process-contract.md`: standing release-process boundary, routine publish evidence under `docs/releases/v<version>.md`, preferred trusted publishing, manual fallback limits, emergency deferral contract, and fix-forward/deprecate recovery for bad package content.
 - `docs/adr/ADR-20260524-target-native-init-state-boundary.md`: target-native init, explicit state-write boundary, target-oriented state schemas, default state byte preservation with safety reads, and real non-dry-run release smoke gates.
 - `docs/adr/ADR-20260623-published-skill-resource-integrity.md`: mapped skill-local resource integrity, bounded legacy-reference lint, raw-byte parity, packed clean-install proof, and runtime fallback/package-validity separation.
 - `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`: superseded historical activation and rollback-transaction design.
@@ -1565,7 +1524,6 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`: superseded historical profile decision whose risk separation, reviewer-owned correction, fresh verify, and stop-before-PR rules remain retained.
 - `docs/adr/ADR-20260625-independent-adversarial-review-gates.md`: orchestrator-owned neutral review manifests, fresh-context enforcement, blind-first evidence staging, risk-tiered escalation, clean-review sufficiency receipts, second-review disagreement handling, and calibration for workflow-managed automated reviews.
 - `docs/adr/ADR-20260626-requirement-fidelity-gate.md`: deterministic requirement-fidelity applicability, spec-canonical packet ordering, requirement-property decomposition, multi-surface property matrices, spec-derived validator assertion matrices, and compression-defect calibration for applicable automated reviews.
-- `docs/adr/ADR-20260629-release-transaction-profile.md`: profile-driven routine release transaction boundary, generated-surface ownership, cheap preflight, authoritative full release gate, rerunnable public closeout, and timing evidence.
 - `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`: superseded historical proposal-side profile decision whose nested writer is retired by the active stage-owned contract.
 - `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`: superseded historical consolidation decision whose one-target, review-independence, recovery, migration, and stop-before-PR constraints are retained without its capability and plan-owned-state layers.
 - `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md`: active stage-owned lifecycle decision placing mutable artifact and workflow state in `change.yaml`, assigning peer transition ownership, keeping one target as sufficient repository-local consent, and removing capability, selector, hash, and write-interception layers.
@@ -1600,8 +1558,6 @@ constraints.
 ADR `docs/adr/ADR-20260625-independent-adversarial-review-gates.md` is required because this change introduces a durable workflow orchestration and review-evidence decision: automated review handoff now depends on verifiable fresh context, orchestrator-owned neutral packets and phase receipts, risk-tiered review depth, second-review disagreement gates, and calibration evidence rather than same-context review prompts or finding quotas.
 
 ADR `docs/adr/ADR-20260626-requirement-fidelity-gate.md` is required because this change introduces a durable workflow orchestration and review-evidence decision: applicable automated review handoff now depends on deterministic fidelity applicability, spec-first packet ordering, decomposed requirement properties, per-surface verification, validator assertion comparison against the spec, and compression-defect calibration rather than implementation/validator agreement.
-
-ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because this change introduces a durable release architecture decision: routine release state moves from many hand-edited surfaces into a version-scoped profile under `docs/releases/profiles/`, profile-owned surfaces become generated, preflight becomes a cheap deterministic drift gate, public closeout becomes schema-first evidence generation, and the existing full release gate remains authoritative.
 
 ADR `docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md`
 is required because this change revises durable validation and release
