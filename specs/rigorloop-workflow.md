@@ -102,7 +102,7 @@ boundaries, `test-spec` maps them to proof, implementation consumes the
 approved model, and the existing independent review and verification stages
 retain distinct semantic ownership.
 
-`specs/skill-contract.md` owns skill-contract behavior. It owns standard skill shape, claim boundaries, result output expectations, shared-block rules, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules. `specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.
+[Skill](../docs/design/skill/skill.md) owns the selected common skill contract under its reviewed-implementation and successful-Verify adoption boundary. Standard shape, claims, outputs, shared-resource and generated-content invariants, evidence reading and capability justification resolve there; `specs/skill-contract.md` retains only its explicitly unmigrated plan/boundary-method obligations. `specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.
 
 RigorLoop is a repository-local starter kit. Git, pull requests, and CI are supported integrations rather than compact correctness dependencies. It provides a repeatable path, artifact model, and validation rules so contributors can move from idea to independently reviewed and verified change with traceable current evidence.
 

@@ -1,5 +1,9 @@
 # RigorLoop Constitution
 
+## Skill ownership
+
+For this repository's selected Skill-model initiative, [Skill](docs/design/skill/skill.md) owns the mapped common skill contract with its existing applicability; new procedure improvements apply only to `proposal` and `proposal-review`. The exact transfer takes effect through reviewed coherent implementation and successful Verify, not Design approval or package availability alone. [Skill Contract](specs/skill-contract.md) retains only its explicitly bounded plan/boundary-method authority. [Archive navigation](docs/archive/skill-model/2026-09-08/README.md) identifies historical originals and their replacements; source-retained old judgments do not govern new work after adoption. Specialist policy, distribution, installation and release retain their owners. Remaining adoption stays in named follow-ups, not an inventory-wide conformance claim.
+
 ## Design and System ownership
 
 For this repository’s explicitly selected design-authoring and model-composition responsibility, [Design](docs/design/design/design.md) owns living model conventions, reconciled behavioral/technical authoring, decision preservation and validation mapping. [System](docs/design/system/system.md) owns the selected composition view and shared-owner relationships. The normal public author is `design`; `design-review` remains independent and selects the exact affected models, retained legacy contracts, examples and interactions. Workflow coordinates and consumes the mapping. Unmigrated responsibilities retain their declared owners and formats; installation does not adopt customer governance. The exact transfer is bounded by the models’ displacement maps and takes effect only with reviewed implementation and successful Verify. Historical IDs and approvals retain their original meaning.

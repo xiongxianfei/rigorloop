@@ -12,7 +12,7 @@ approved
 - Proposal review: [proposal-review-r1](../docs/changes/2026-06-18-rigorloop-guide-system-optimization-and-source-of-truth-alignment/reviews/proposal-review-r1.md)
 - Related workflow-map spec: [Workflow Skill Artifact-Location Map](workflow-skill-artifact-location-map.md)
 - Related workflow spec: [RigorLoop Workflow](rigorloop-workflow.md)
-- Related skill spec: [Skill Contract](skill-contract.md)
+- Common skill owner: [Skill](../docs/design/skill/skill.md); retained specialist obligations: [Skill Contract](skill-contract.md).
 
 ## Goal and context
 

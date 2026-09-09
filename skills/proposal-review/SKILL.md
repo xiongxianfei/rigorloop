@@ -13,18 +13,6 @@ argument-hint: [proposal path, feature idea, or review focus]
 
 When project authority explicitly adopts Review and Closeout policy, use the packaged application below for shared assessment meaning. It replaces source-local judgment, independence, applicability, concern-disposition and closeout rules in this skill and its conditional resources; retain specialist methods and contract-selected storage procedures. Historical assessments retain their original meaning but grant no current runtime support. Missing or contradictory required guidance stops dependent reliance.
 
-## Explicit recording
-
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
-
-Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
-
-Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
-
-Make your decision, then use the purpose-specific command's `--help` and submit its targeted operation on stdin. Use `batch` for related explicit updates. Supply semantic values and any required applicability; the CLI constructs registry entries, preserves neighbors and serializes records. Do not reconstruct complete files or invoke historical eligibility first. Preview is optional; normal writes validate. A save does not approve work, establish readiness or select the next actor. Conflict requires rereading and reassessment; busy/recovery-required is not a save. Use explicit `record-store recover` for interrupted storage. Missing or stale evidence prevents reliance, not recording a correction.
-
-Inspect the proposal and its relevant basis, including vision alignment. Independently assess direction, bounds and feasibility. Use review record for the complete judgment and finding add/set for your findings and dispositions. Preserve unresolved findings; v2 findings retain their supplied origin rationale and explicitly selected supporting judgment. A role label is attribution, not independent-review authentication.
-
 Independently answer: **Does this proposal provide enough evidence for a responsible decision about whether to pursue the direction?** Do not rubber-stamp formatting or demand information owned by Design or Delivery.
 
 Judge whether the proposal responsibly refines the incoming RR into an IR-level direction sufficient for Design.
@@ -65,6 +53,10 @@ Use exactly these resource assemblies:
 | `PRR0G-context-gated` | no | yes | core plus conditional gates |
 | `PRR1-recorded` | yes | no | core plus recording procedure |
 | `PRR1G-recorded-context-gated` | yes | yes | core plus both references |
+
+## Recording boundary
+
+After classification, durable or formal review requires the complete `references/proposal-review-recording-and-settlement.md` before dependent writes or recording claims. The adopted recording profile supports only `rigorloop-records-v2`; missing or conflicting authority stops without fallback to retired records. Keep supported findings visible when recording is blocked. Ordinary advisory review without a durable trigger needs no recording procedure. Recording does not grant approval or continuation.
 
 ## Review inputs and evidence
 
@@ -129,7 +121,7 @@ A material conflict, requested vision revision, or bootstrap exception that coul
 
 Compare the user's initial request with the proposal. Each material goal must remain visible in goals, scope, or the requested decision. For a broad request, an `initial goal treatment` of `in scope`, `out of scope`, `deferred follow-up`, `rejected option`, or `open question` may make the boundary explicit inside `Scope and non-goals`.
 
-Identify a required scope correction when an initial goal disappears, a deferred goal has no follow-up, a rejected goal has no rationale, or scope narrows without explanation. Under adopted policy, select the overall judgment using the packaged combined-condition rule. Historical contract only: Return `changes-requested` if any initial user goal disappears. Return `changes-requested` if a deferred goal has no follow-up. Return `changes-requested` if a rejected goal has no rationale. Return `changes-requested` if the proposal narrows scope but does not say why. Scope-preservation failures must return `changes-requested`.
+Identify a required scope correction when an initial goal disappears, a deferred goal has no follow-up, a rejected goal has no rationale, or scope narrows without explanation. Under adopted Review and Closeout policy, use the packaged combined-condition rule for the overall judgment. In a project that has not adopted that policy, these scope-preservation failures require `changes-requested`; do not impose this repository’s adoption on that project.
 
 Do not rewrite the proposal as part of proposal-review unless the user explicitly asks.
 
@@ -141,7 +133,7 @@ Report the scope-preservation result in the mapped result asset.
 
 Every material finding includes Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or a `needs-decision` rationale naming the decision and owner. Copy the finding asset once per material finding. A material finding is a required change or decision, not a quota.
 
-For historical judgment rules, use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval locks only the accepted challenge, goals, scope and non-goals, governing principle, high-level direction, sufficient feasibility, and disclosed proposal-level impacts. It authorizes Design authoring only, not that either artifact exists or is approved. Use `changes-requested` for actionable proposal or feasibility defects, `blocked` for an authority, feasibility blocker, or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
+For projects that have not adopted Review and Closeout, use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Approval locks only the accepted challenge, goals, scope and non-goals, governing principle, high-level direction, sufficient feasibility, and disclosed proposal-level impacts. It authorizes Design authoring only, not that either artifact exists or is approved. Use `changes-requested` for actionable proposal or feasibility defects, `blocked` for an authority, feasibility blocker, or owner decision, and `inconclusive` when evidence supports neither approval nor an actionable finding.
 
 A direction that is too vague to approve is a material finding. Content that prematurely settles a detailed Design or Delivery decision is also a material finding. Proposal Review must not create a finding solely because downstream detail or a routine impact section is absent.
 

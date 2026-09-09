@@ -40,6 +40,7 @@ class RouteGuideValidatorTests(unittest.TestCase):
             "docs/plan.md",
             "specs/rigorloop-workflow.md",
             "specs/skill-contract.md",
+            "docs/design/skill/skill.md",
             "skills/route/SKILL.md",
         ):
             source = ROOT / path
@@ -78,6 +79,11 @@ class RouteGuideValidatorTests(unittest.TestCase):
     def test_current_surface_cannot_restore_retired_authority(self) -> None:
         agents = self.repo / "AGENTS.md"
         agents.write_text(agents.read_text(encoding="utf-8") + "\nUse docs/workflows.md.\n", encoding="utf-8")
+        self.assertTrue(any("ROUTE-GUIDE-006" in item for item in validator.validate(self.repo).messages))
+
+    def test_current_skill_owner_cannot_restore_retired_authority(self) -> None:
+        owner = self.repo / "docs/design/skill/skill.md"
+        owner.write_text(owner.read_text() + "\nUse docs/workflows.md.\n")
         self.assertTrue(any("ROUTE-GUIDE-006" in item for item in validator.validate(self.repo).messages))
 
     def test_current_skill_cannot_restore_semantic_workflow_guide_fallback(self) -> None:
