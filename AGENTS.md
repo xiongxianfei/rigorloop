@@ -1,5 +1,9 @@
 # AGENTS.md
 
+## Skill ownership
+
+For this repository's selected Skill-model initiative, [Skill](docs/design/skill/skill.md) owns the mapped common skill contract with its existing applicability; new procedure improvements apply only to `proposal` and `proposal-review`. The exact transfer takes effect through reviewed coherent implementation and successful Verify, not Design approval or package availability alone. [Skill Contract](specs/skill-contract.md) retains only its explicitly bounded plan/boundary-method authority. [Archive navigation](docs/archive/skill-model/2026-09-08/README.md) identifies historical originals and their replacements; source-retained old judgments do not govern new work after adoption. Specialist policy, distribution, installation and release retain their owners. Remaining adoption stays in named follow-ups, not an inventory-wide conformance claim.
+
 ## Design and System ownership
 
 For this repository’s explicitly selected design-authoring and model-composition responsibility, [Design](docs/design/design/design.md) owns living model conventions, reconciled behavioral/technical authoring, decision preservation and validation mapping. [System](docs/design/system/system.md) owns the selected composition view and shared-owner relationships. The normal public author is `design`; `design-review` remains independent and selects the exact affected models, retained legacy contracts, examples and interactions. Workflow coordinates and consumes the mapping. Unmigrated responsibilities retain their declared owners and formats; installation does not adopt customer governance. The exact transfer is bounded by the models’ displacement maps and takes effect only with reviewed implementation and successful Verify. Historical IDs and approvals retain their original meaning.
@@ -46,7 +50,7 @@ Do not silently blend conflicting higher-priority instructions. Call out the con
 - Keep `.codex/skills/` untracked when copying installed Codex adapter skills there for local runtime use, and edit canonical skills under `skills/`.
 - Do not hand-edit generated public adapter package output. `dist/adapters/README.md` and `dist/adapters/manifest.yaml` are the tracked adapter support surface.
 - Historical note: `v0.1.2` kept repository-tree adapter packages during the compatibility window.
-- Follow `specs/skill-contract.md` for normalized skill structure and claim boundaries.
+- Follow `docs/design/skill/skill.md` for the adopted common skill contract; `specs/skill-contract.md` retains its explicitly unmigrated plan/boundary obligations.
 - Treat shipped skill text as user-facing. Keep repository-maintainer details about canonical source paths, generated mirrors, adapter paths, selector path constraints, drift checks, and shared-block implementation mechanics in contributor or governance surfaces, not in published skills.
 - Do not create a new skill for one-off behavior; update an existing skill unless the new skill owns a distinct artifact, gate, review responsibility, recurring action, or approved operational process.
 - `VISION.md` is the canonical project-vision artifact. Routine vision alignment is Proposal Review evidence, not a required proposal section. Material vision issues remain proposal-level decisions.

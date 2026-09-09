@@ -6,7 +6,9 @@ Model validation contract: model-document-v1
 
 RigorLoop turns engineering intent into durable, reviewable design, delivery allocation, implementation evidence and assessed outcomes. This model owns the assembled system's boundaries, responsibility relationships and integrated obligations. It uses the [Design method](../design/design.md) and references component contracts instead of becoming a higher-priority copy of them.
 
-The selected first consolidation is design authoring/model composition under the [approved proposal](../../proposals/2026-09-08-unified-design-authoring-and-bounded-model-consolidation.md). It is not a complete migration of the system architecture. Current activity, reviews and exact subjects belong to the [owning change](../../changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json). The adoption boundary below distinguishes replacement design from current activation.
+The first consolidation selected design authoring/model composition under the [approved proposal](../../proposals/2026-09-08-unified-design-authoring-and-bounded-model-consolidation.md); its [original execution evidence](../../changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json) retains its original subjects and judgments. It was not a complete migration of the system architecture.
+
+The subsequent [Skill-model and proposal-family pilot direction](../../proposals/2026-09-08-skill-model-proposal-family-pilot.md) selects a bounded common-owner amendment. Current amendment activity, reviews and exact subjects belong to the [owning change](../../changes/2026-09-08-skill-model-proposal-family-pilot/change.json). The prospective Skill references below take effect only with that initiative's reviewed implementation and successful Verify; existing owners remain operational until then.
 
 ## Architecture Constraints
 
@@ -51,7 +53,7 @@ Give each shared contract one owner and make consumers explicit. A system-wide i
 
 ### Responsibility inventory
 
-The model inventory distinguishes shared policy responsibilities from implementation boundaries. The first seven rows are model owners; subsequent rows name current unmigrated responsibilities. A source's inclusion here is not new approval of all its historical clauses. Existing adopted-profile amendments and Constitution precedence still apply.
+The model inventory distinguishes shared policy responsibilities from implementation boundaries. The first eight rows identify current or selected model owners; subsequent rows name unmigrated responsibilities. A source's inclusion here is not new approval of all its historical clauses. Existing adopted-profile amendments and Constitution precedence still apply.
 
 | Responsibility | Current or selected Design owner | Significant consumers and boundary |
 | --- | --- | --- |
@@ -62,10 +64,10 @@ The model inventory distinguishes shared policy responsibilities from implementa
 | Shared test-purpose, derivation and maintenance criteria | [Test](../test/test.md) | Design, Delivery, implementation, reviewers and Verify; not a new gate |
 | Durable recorded representation and preservation | [Record Format](../record-format/record-format.md) | CLI and workflow actors; only the supported runtime record contract |
 | Primary inspection, construction and safe persistence | [CLI](../cli/cli.md) | All recording actors and mechanical validators; not semantic selection/readiness |
-| Public skill structure and resource integrity | [Skill contract](../../../specs/skill-contract.md), current applicable clauses | Authored skills, projections, validators, generated packages and installed-resource checks; consumer reference amendments are in this slice, full model extraction is later work |
+| Public skill structure and resource integrity | [Skill](../skill/skill.md), prospectively at its bounded adoption; [Skill Contract](../../../specs/skill-contract.md) remains operational until that adoption | Common obligation transfer preserves existing applicability; new improvements initially cover proposal and proposal-review only. Skill's displacement map retains plan/method-specific clauses and separate validation/installation owners. |
 | Target installation, archive trust and project state | [Target-native init](../../../specs/target-native-init.md), [multi-adapter init](../../../specs/multi-adapter-init-and-proxy-aware-download.md), [lockfile contract](../../../specs/rigorloop-cli-lockfile.md) | CLI installer and supported target roots; consumes Design's retired-entry policy without moving transport/state ownership |
 | Adapter generation and invocation surfaces | [Adapter invocation contract](../../../specs/skill-invocation-commands-for-adapters.md), [archive install surface](../../../specs/stop-tracking-generated-public-adapter-skill-bodies.md) | Canonical skills, manifest, adapter templates and release candidates; archive publication remains separately authorized |
-| Validation selection and product gates | [Published-skill-first simplification](../../../specs/published-skill-first-repository-simplification.md), [skill contract](../../../specs/skill-contract.md), retained System architecture validation sections | Existing scripts and CI; this slice changes only authoring/model consumers and retains protective checks |
+| Validation selection and product gates | [Published-skill-first simplification](../../../specs/published-skill-first-repository-simplification.md) and retained System architecture validation sections; common content invariants resolve to [Skill](../skill/skill.md) at its adoption | Existing scripts and CI retain execution/proof policy. Pilot resource-selection checks cannot tighten other skills or remove existing protective checks. |
 | Release/publication and release evidence | [Release process contract](../../../specs/release-process-contract.md); retained system architecture Release and adapter evidence and Public npm package boundary | Maintainer and release tools; this initiative has no release authority |
 | Remaining historical feature contracts, automation, observability, measurement and support methods | Their named specs/ADRs and retained sections of [mixed system architecture](../../architecture/system/architecture.md) | Relevant feature owners; identify a precise owning contract before substantive changes, rather than infer current authority from an old status heading |
 
@@ -82,6 +84,7 @@ This document does not create a release model. The remaining-area row is a bound
 | Design to concrete proof allocation | Design DES-SR-10/16; Test TEST-SR-01–13 supplies adequacy criteria | Delivery allocates local and integrated proof; implementation provides fixtures/assertions and actual evidence |
 | Semantic decisions to persistent records | Record Format and CLI, consumed by Workflow | Actors provide decisions/applicability; mechanical tools validate/preserve them without deriving approval |
 | Authored skills to packaged and installed guidance | Skill/resource and installation owners; Design DES-SR-15/17 supplies the authoring inventory contract | Generation preserves selected resources; installer guards old/mixed inventory and applies the installation-owned, explicitly authorized managed replacement while preserving local edits and unrelated content; actors do not infer adoption from installation |
+| Common Skill owner to bounded pilot and unchanged consumers | Skill SKL-SR-01/16–23; System SYS-SR-02/04/06/07 | Reconcile the pilot's complete conditional procedure, validator dispatch and archive references. Common transfer does not certify other skills; shared policy, installation and proof ownership remain separate. |
 
 These rows identify ownership, not new priorities among the listed owners. If two owners appear to prescribe contradictory outcomes for the same obligation, the affected claim is unresolved until the owning Design activity reconciles the contract under governance.
 
@@ -94,6 +97,8 @@ A maintainer approves a change to the authoring method. The author updates Desig
 The counterexample is a `design` skill whose own document is coherent while `route` still directs authors to `spec`, Design Review insists on a separate ADR/spec tuple, or the installed target retains both old entrypoints. A single skill validation pass cannot establish SYS-SR-04/05. The observation boundary includes normal invocation guidance, exact review subject selection, plan derivation, generated inventory and the actual installer filesystem result.
 
 ### Scoped unmigrated-source change
+
+The selected Skill pilot is a further composition example: a portable proposal path reads its classification and required artifact guidance before any governed recording procedure; an independent formal review still reaches the complete recording method. If moving that method causes a validator to return early when the old body heading disappears, the locally shorter skill is not a coherent improvement. Observe the entry file, selected reference, existing asset, profile/placement validator and supported candidate together under Skill SKL-SR-09/16–20. Unchanged skill consumers retain their current procedure and validation.
 
 An unrelated feature changes an existing unmigrated contract. `design` reads its declared owner and format, authors only the justified amendment and identifies applicable structural/semantic review obligations. System references that owner without copying its feature requirements. Neither the new authoring name nor this System inventory migrates that feature into a new model or closes the deferred consolidation follow-up.
 
@@ -135,7 +140,7 @@ This package's coordinated adoption uses Design DES-SR-13/18/20. It supersedes t
 
 | Remaining consolidation | Accountable direction owner | Receiving owner and durable follow-up destination | Completion boundary for this initiative |
 | --- | --- | --- | --- |
-| Public skill/resource and validation architecture models | Repository maintainer | Route assigns a later proposal to the corresponding Design owner; `docs/follow-ups.md` if no owning active artifact exists | Record the unowned follow-up with source link and next decision; update only required consumers in this slice |
+| Public skill/resource and validation architecture models | Repository maintainer | The Skill-model owning change now receives common skill/resource extraction and the exact two-skill pilot; [follow-ups](../../follow-ups.md) retain separate validation extraction and remaining capability adoption | The original Design/System slice did not adopt these responsibilities. The Skill initiative must satisfy its own displacement and pilot proof; validation consolidation and other skill improvements remain later work. |
 | Installer, distribution and release models | Repository maintainer | Route assigns a later bounded proposal, preserving installer/release owners; same existing follow-up surface when unowned | Retired-authoring-entry guard and package coherence are required now; broader consolidation/publication is not |
 | Remaining feature specs, Level 2 architecture, ADRs, automation, observability and measurement responsibilities | Repository maintainer | Route assigns responsibility-specific proposals after inventory; existing follow-up surface for still-unowned work | Name retained owners and a follow-up to inventory remaining responsibilities; do not promise or execute full migration |
 

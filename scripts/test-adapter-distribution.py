@@ -161,11 +161,11 @@ class AdapterDistributionTests(unittest.TestCase):
             for adapter in SUPPORTED_ADAPTERS:
                 with zipfile.ZipFile(output / adapter_archive_name(adapter, "v0.5.1")) as archive:
                     for name in names:
-                        relative = "references/governed-design-authoring.md" if name == "design" else "SKILL.md"
+                        relative = {"design": "references/governed-design-authoring.md", "proposal": "references/governed-proposal-authoring.md", "proposal-review": "references/proposal-review-recording-and-settlement.md"}.get(name, "SKILL.md")
                         canonical = (ROOT / "skills" / name / relative).read_text()
                         member = ADAPTERS[adapter].skill_path(name).parent / relative
                         body = archive.read(member.as_posix()).decode()
-                        if name != "design":
+                        if relative == "SKILL.md":
                             canonical = canonical.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
                             body = body.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
                         self.assertEqual(body, canonical)

@@ -1569,7 +1569,7 @@ def validate_installed_skill_artifact_placement_contract(
 
     # Current v2 recording uses its registry; legacy Markdown document fixtures
     # below remain an independent placement grammar, never a stored-root reader.
-    if "## Explicit recording" in body and "rigorloop-records-v2" in body:
+    if (skill_name == "proposal-review" and "## Recording boundary" in body) or ("## Explicit recording" in body and "rigorloop-records-v2" in body):
         placement = _extract_markdown_section(body, "Artifact placement") or ""
         current_path = f"docs/changes/<change-id>/reviews/{skill_name}.json"
         if current_path not in placement or "review record" not in placement:
@@ -3339,15 +3339,44 @@ def validate_metadata_against_schema(metadata: dict[str, str], schema: dict, pat
     return errors
 
 
+PILOT_RECORDING_REFERENCES = {
+    "proposal": "references/governed-proposal-authoring.md",
+    "proposal-review": "references/proposal-review-recording-and-settlement.md",
+}
+
+
 def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
-    """Check the declared primary interface, not semantic workflow eligibility."""
-    block = _extract_markdown_section(body, "Explicit recording")
-    if block is None:
-        return []
+    """Check the selected primary interface, not semantic workflow eligibility."""
+    relative = PILOT_RECORDING_REFERENCES.get(path.parent.name)
+    errors: list[str] = []
+    if relative is not None:
+        resource_map = _extract_markdown_section(body, "Resource map") or ""
+        if f"READ `{relative}`" not in resource_map:
+            errors.append(f"{path}: selected recording reference must be mapped: {relative}")
+        if "## Recording boundary" not in body:
+            errors.append(f"{path}: missing body recording boundary")
+        classification = _extract_markdown_section(body, "Invocation classification") or ""
+        trigger = "governed_proposal_candidate_context" if path.parent.name == "proposal" else "durable_recording_context"
+        if trigger not in classification or trigger not in resource_map:
+            errors.append(f"{path}: selected recording reference requires its body classification and load trigger: {trigger}")
+        resource = path.parent / relative
+        try:
+            if not resource.resolve().is_relative_to(path.parent.resolve()):
+                return errors + [f"{path}: selected recording reference escapes skill root: {relative}"]
+            source = resource.read_text(encoding="utf-8")
+        except (OSError, UnicodeError, RuntimeError) as exc:
+            return errors + [f"{path}: selected recording reference unreadable: {relative}: {type(exc).__name__}"]
+        block = _extract_markdown_section(source, "Explicit recording")
+        if block is None:
+            return errors + [f"{path}: selected recording reference missing Explicit recording profile: {relative}"]
+    else:
+        block = _extract_markdown_section(body, "Explicit recording")
+        if block is None:
+            return []
     required = ("rigorloop-records-v2", "only supported runtime record format", "rigorloop context", "subject inspect",
                 "record_contract", "expected_revision", "targeted", "does not approve", "Do not migrate")
-    errors = [f"{path}: explicit recording profile missing primary contract token: {token}"
-              for token in required if token not in block]
+    errors.extend(f"{path}: explicit recording profile missing primary contract token: {token}"
+                  for token in required if token not in block)
     if "record-store check|record" in block or "explicit writes" in block:
         errors.append(f"{path}: explicit recording profile retains a normal full-record writer")
     return errors
