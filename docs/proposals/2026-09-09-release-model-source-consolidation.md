@@ -1,4 +1,4 @@
-# Establish the Release Model and Retire Superseded Design Sources
+# Establish Approval-Driven Routine Releases and Consolidate Release Design
 
 ## Challenge
 
@@ -6,7 +6,11 @@ RigorLoop's standing release responsibility is distributed across the release-pr
 
 Maintainers need a coherent current contract without reconstructing it from several generations of documents. Creating a new model while retaining duplicate current definitions would not resolve that burden. Removing old documents before their necessary meaning and readers are reconciled would risk losing publication safeguards or relied-on evidence.
 
+A documentation-only consolidation does not require the existing preparation, checking, publication and closeout mechanisms to form one complete routine path. The clarified objective is that a maintainer approves a prepared release once and CLI/CI performs and verifies that authorized release without further normal coordination. This revises the earlier no-new-automation direction; it is not a claim that every current step is manual or that operator cost has been measured.
+
 ## Goals
+
+For supported routine releases of already-reviewed and merged work, make approval of the prepared candidate the only required normal maintainer action. Automatically prepare the candidate and concise summary, obtain required evidence, publish after approval, observe the public result and report the durable outcome. Ambiguous upstream decisions and exceptional failures stop for their actual owner.
 
 Establish `docs/design/release/release.md` as the living owner of the standing Release responsibility, with precise requirements, applicability, technical relationships, meaningful rationale and representative expected outcomes.
 
@@ -16,6 +20,9 @@ Remove superseded Release design sources and redundant copies once their necessa
 
 | Item | Scope budget treatment | Boundary |
 | --- | --- | --- |
+| Approval-driven routine execution | core to this proposal | Coordinate existing Release mechanisms into one complete path; no routine manual script sequencing, metadata/hash copying, timing completion or evidence pass-marking. |
+| Candidate approval and continuation | core to this proposal | Bind authority to exact prepared identity/destinations and preserve safe invalidation, duplicate handling and uncertain-outcome recovery. |
+| Timing and generated evidence | same-slice dependency | Automatically collect available duration telemetry; its absence alone does not block a correctly verified release. Required publication facts remain mandatory; derive repeated representations from their authoritative source. |
 | Release model and source retirement | core to this proposal | Build the Release model and complete justified removal of its superseded design sources. |
 | System and direct consumers | same-slice dependency | Update ownership, navigation and necessary references or operational readers affected by the transfer. |
 | Retention and source-specific checks | same-slice dependency | Select exact amendments needed to remove redundant sources; retain the obligations and proof protecting real release operations. |
@@ -24,13 +31,27 @@ Remove superseded Release design sources and redundant copies once their necessa
 
 The initial source group is [Release Process Contract](../../specs/release-process-contract.md), [Release Transaction Automation](../../specs/release-transaction-automation.md), their matching test specifications, [standing-process ADR](../adr/ADR-20260523-release-process-contract.md) and [transaction-profile ADR](../adr/ADR-20260629-release-transaction-profile.md). Include their applicable amendments and Release portions of the mixed architecture, notably “Standing release-process flow”, “Release and adapter evidence” and “Public npm package boundary”, plus release-specific obligations in the published-skill-first contract. This is an inspection boundary, not an approved deletion list.
 
-Design selects exact clauses, related diagrams and necessary consumers. Shared documents retain their unmigrated remainder. Version-specific publication contracts enter only where they supply a still-applicable standing obligation or a direct dependency. Unrelated skill improvements, archive cleanup, broad validation redesign, new release automation and supported-behavior retirement remain outside this initiative.
+Design selects exact clauses, related diagrams and necessary consumers. Shared documents retain their unmigrated remainder. Version-specific publication contracts enter only where they supply a still-applicable standing obligation or a direct dependency. Unrelated skill improvements, archive cleanup, broad validation redesign, a general workflow engine, new hosted service and unrelated supported-behavior retirement remain outside this initiative. Bounded Release coordination and its explicit timing-policy amendment are now included. Actual publication during implementation still needs separate authorization.
 
 ## Governing principle
 
-> Give Release one complete current contract, preserve necessary engineering meaning, and remove superseded representations only when their remaining uses are resolved.
+> The maintainer approves the prepared release; the system performs and verifies that exact authorized operation, preserving necessary meaning and exposing genuine exceptions.
 
 ## Proposed direction
+
+### Deliver one complete routine path
+
+With supported release configuration, permissions and credentials already established, CLI/CI prepares reviewed and merged work under the applicable version/channel and release-note policy, runs required checks, and presents a concise summary of version/channel, exact source, user-relevant changes, artifacts, check results/limitations and approval effect. Approval is the only normal maintainer action; authorized execution then publishes, verifies public assets/registry/smoke and records the result automatically. Reuse existing profile, evidence and execution mechanisms before adding another representation. No new public command or approval UI is selected here.
+
+The system must not invent unresolved engineering, version or release-note decisions. Missing prerequisites or ambiguous inputs produce an actionable exception before requesting publication approval. Exceptional recovery must not silently choose another channel, weaker authentication, deprecation or a replacement version to maintain the appearance of one click.
+
+Approval binds exact source, release identity, artifact contents, destinations and publication path. Material changes require a new approval. Stale or contradictory required evidence stops publication; rechecking an unchanged candidate need not require another approval if the original decision and scope remain applicable. Duplicate approval or retries do not authorize duplicate publication; uncertain outcomes require external-state inspection, and a conflicting public artifact stops without overwrite or substitution.
+
+### Separate correctness evidence from duration telemetry
+
+Automatically collect timings when available. Missing duration telemetry must not by itself block an otherwise authorized, correctly verified release. Report unavailable or malformed telemetry honestly as diagnostic loss/tooling defect; it cannot fabricate a measurement or change required publication facts into optional data. Amend the current mandatory-timing owner and direct validators explicitly rather than ignoring a failed check. Preserve required identity, destination, actual check results and observed external outcomes.
+
+No duplicated manual entry is selected. For each necessary fact identify its authoritative source and generate other representations from it. Several files may serve distinct consumers; remove a representation only after its use is resolved. The routine approval view stays short while safety/exception, implementation-format and one-time source-disposition detail remain navigable in their current owners.
 
 ### Establish a distinct, bounded Release owner
 
@@ -60,25 +81,25 @@ Release profiles, schemas, manifests, templates, fixtures, release notes and pub
 
 For source-only changes, focus on semantic preservation, usable ownership, links, actual readers and exact removal boundaries. Independent assessment judges meaning; mechanical checks establish relevant structure and dependency facts. Do not require running a release, public smoke or every historical experiment merely because Release documentation changes.
 
-If an executable, packaged input, selector, schema or evidence generator changes, allocate checks protecting that boundary. Unknown impact requires investigation and broader proof where justified. Reuse applicable passing evidence under its owner's existing policy; retain explicit freshness requirements and runtime safeguards for real operations. Amend obsolete location assertions through their owner rather than skipping required failures. No new runner, permanent check catalogue or test-deletion quota is selected.
+If an executable, packaged input, selector, schema or evidence generator changes, allocate checks protecting that boundary. Unknown impact requires investigation and broader proof where justified. Reuse applicable passing evidence under its owner's existing policy; retain explicit freshness requirements and runtime safeguards for real operations. Amend obsolete location assertions through their owner rather than skipping required failures. No new general-purpose runner, permanent check catalogue or test-deletion quota is selected.
 
-Completion requires a usable adopted Release model, coherent consumers, justified source cleanup and explicit ownership of retained remainders. Fresh independent final whole-change Code Review and distinct Verify remain required. The remaining Distribution, Installation and validation work stays separately owned in the existing follow-up records.
+Completion requires the complete routine operator path as well as a usable adopted Release model, coherent consumers, justified source cleanup and explicit ownership of retained remainders. Representative proof covers one normal approval through final reporting; prerequisite failure before approval; changed candidate after approval; duplicate/lost publication response and delayed visibility; public verification failure; and unavailable timing. Safe fixtures and substituted external services can prove coordination without claiming a real public release. Separate helper passes are insufficient for the complete-path claim. Fresh independent final whole-change Code Review and distinct Verify remain required. The remaining Distribution, Installation and validation work stays separately owned in the existing follow-up records.
 
 ## Feasibility
 
-**Assessment: feasible as a bounded Release-model extraction and coordinated source cleanup.** System already identifies this coherent recurring responsibility, and the two principal specifications and ADRs provide a concrete baseline for standing process and transaction-profile ownership. No new publishing mechanism is needed to begin Design.
+**Assessment: credible for Design as bounded coordination of existing Release mechanisms, policy amendment and source cleanup.** System already identifies this coherent recurring responsibility, and the two principal specifications and ADRs provide a concrete baseline for standing process and transaction-profile ownership. Existing preparation, preflight, full release verification, tag workflow and public-closeout tools supply a concrete baseline; their existence does not prove that candidate-bound approval or complete-path coordination already works.
 
-The inspected sources do not establish a complete dependency graph, current conformance of all release tooling, or individual files safe to remove. Design must reconcile later amendments and actual consumers before selecting deletions. The minimum package is Release, scoped System changes and exact existing-owner amendments needed for retention or integration. No measured savings or safe whole-spec deletion is claimed by this proposal.
+The inspected sources do not establish a complete dependency graph, current conformance of all release tooling, or individual files safe to remove. Design must reconcile later amendments and actual consumers before selecting deletions. Design must select a credible source of release/version/summary inputs, exact approval/execution binding, continuation and diagnostic behavior, and inspect evidence consumers. The minimum package is Release, scoped System changes and exact existing-owner amendments needed for timing, retention or integration. No measured savings or safe whole-spec deletion is claimed by this proposal.
 
 ## Impact and major trade-offs
 
 One living owner can reduce competing authority, but only if it preserves useful technical depth and removes the replaced definitions. Retained exceptions may temporarily leave mixed legacy documents. That is preferable to losing necessary obligations, but each exception needs a concrete owner and reason.
 
-Release touches irreversible external operations. Proportionate proof for documentation cleanup must remain distinct from the proof and permissions required when a real release runs. This direction preserves that distinction while avoiding publication work as a prerequisite for consolidation.
+Release touches irreversible external operations. Proportionate proof for documentation cleanup must remain distinct from the proof and permissions required when a real release runs. The revised direction adds real coordination behavior and candidate-bound approval while avoiding an actual public release as implementation proof. Setup and genuine exceptions may require human decisions; they must not become a hidden checklist on every normal release.
 
 ## Decision requested
 
-Approve establishing the **Release model** and retiring its superseded design sources through one bounded, coordinated adoption. Preserve necessary rules, applicability, rationale and evidence; remove originals and redundant copies whose remaining uses are resolved, without automatic archival duplication.
+Approve an **approval-driven routine Release path** and the **Release model**, with coordinated retirement of superseded design sources. Include candidate-bound authorization, automated necessary profiles/evidence, safe continuation and an explicit non-blocking duration-telemetry policy. This supersedes the earlier exclusion of new Release coordination and behavior changes, while retaining the prohibition on unapproved publication. Preserve necessary rules, applicability, rationale and evidence; remove originals and redundant copies whose remaining uses are resolved, without automatic archival duplication.
 
 Approve the scoped System, retention and consumer amendments needed for that result, with proportionate validation and preserved independent assessment. Leave other model transfers and actual publication separately authorized.
 
