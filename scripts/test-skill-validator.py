@@ -2154,6 +2154,17 @@ Use the inputs somehow and produce a useful result.
                 },
             )
 
+            # Asset fixtures must also carry the current selected recording package.
+            for name, relative in skill_validation.PILOT_RECORDING_REFERENCES.items():
+                resource = root / name / relative
+                resource.parent.mkdir(parents=True, exist_ok=True)
+                resource.write_bytes((ROOT / "skills" / name / relative).read_bytes())
+                entry = root / name / "SKILL.md"
+                trigger = "governed_proposal_candidate_context" if name == "proposal" else "durable_recording_context"
+                body = entry.read_text().replace("## Resource map", f"## Resource map\n\n- READ `{relative}` when `{trigger}` is true.")
+                body += f"\n## Invocation classification\n\nClassify `{trigger}` before recording.\n"
+                entry.write_text(body + "\n## Recording boundary\n\nRequire the selected reference before governed work.\n")
+
             result = run_validator(root)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
@@ -5329,11 +5340,9 @@ and result format.
             "## Scope preservation review",
             "Compare the user's initial request with the proposal.",
             "Each material goal must remain visible in goals, scope, or the requested decision.",
-            "Return `changes-requested` if any initial user goal disappears.",
-            "Return `changes-requested` if a deferred goal has no follow-up.",
-            "Return `changes-requested` if a rejected goal has no rationale.",
-            "Return `changes-requested` if the proposal narrows scope but does not say why.",
-            "Scope-preservation failures must return `changes-requested`.",
+            "an initial goal disappears, a deferred goal has no follow-up, a rejected goal has no rationale, or scope narrows without explanation",
+            "Under adopted Review and Closeout policy, use the packaged combined-condition rule",
+            "In a project that has not adopted that policy, these scope-preservation failures require `changes-requested`",
             "review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`",
             "scope-preservation result",
             "Do not rewrite the proposal as part of proposal-review unless the user explicitly asks.",
@@ -8648,6 +8657,46 @@ class OptionalDiscoverySkillContractTests(unittest.TestCase):
 
 
 class ExplicitRecordingGuidanceTests(unittest.TestCase):
+    def test_targeted_pilot_reference_selection_and_failures(self):
+        # Observe the production boundary, including absent body heading.
+        import shutil
+        references = {"proposal": "governed-proposal-authoring.md", "proposal-review": "proposal-review-recording-and-settlement.md"}
+        for name, reference in references.items():
+            with self.subTest(skill=name), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp) / name
+                shutil.copytree(ROOT / "skills" / name, root)
+                path = root / "SKILL.md"
+                text = path.read_text()
+                self.assertNotIn("## Explicit recording", text)
+                self.assertEqual(skill_validation.validate_targeted_recording_profile(path, text), [])
+                self.assertTrue(skill_validation.validate_targeted_recording_profile(path, text.replace("## Recording boundary", "## Unknown boundary")))
+                trigger = "governed_proposal_candidate_context" if name == "proposal" else "durable_recording_context"
+                self.assertTrue(skill_validation.validate_targeted_recording_profile(path, text.replace(trigger, "unknown_value")))
+                resource = root / "references" / reference
+                original = resource.read_text()
+                resource.write_text(original.replace("expected_revision", "unknown_value"))
+                self.assertTrue(skill_validation.validate_targeted_recording_profile(path, text))
+                resource.unlink()
+                # Neither an unrelated complete resource nor old inline text rescues it.
+                (root / "references" / "unrelated.md").write_text(original)
+                self.assertTrue(skill_validation.validate_targeted_recording_profile(path, text + "\n" + original))
+                outside = Path(tmp) / "outside.md"
+                outside.write_text(original)
+                resource.symlink_to(outside)
+                self.assertTrue(skill_validation.validate_targeted_recording_profile(path, text))
+                resource.unlink()
+                resource.write_bytes(b"\xff")
+                self.assertTrue(skill_validation.validate_targeted_recording_profile(path, text))
+                resource.write_text(original)
+                self.assertTrue(skill_validation.validate_targeted_recording_profile(path, text.replace(reference, "unknown_value.md")))
+
+    def test_targeted_pilot_placement_uses_current_v2_without_inline_heading(self):
+        path = ROOT / "skills/proposal-review/SKILL.md"
+        body = path.read_text()
+        self.assertNotIn("## Explicit recording", body)
+        self.assertEqual(skill_validation.validate_installed_skill_artifact_placement_contract(path, "proposal-review", body), [])
+        self.assertTrue(skill_validation.validate_installed_skill_artifact_placement_contract(path, "proposal-review", body.replace("reviews/proposal-review.json", "reviews/proposal-review.md")))
+
     def test_targeted_profile_validator_rejects_retired_normal_writer(self):
         from skill_validation import validate_targeted_recording_profile
         path = ROOT / "skills/implement/SKILL.md"
@@ -8662,6 +8711,8 @@ class ExplicitRecordingGuidanceTests(unittest.TestCase):
                 text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
                 if skill == "design":
                     text = "## Explicit recording\n" + (ROOT / "skills/design/references/governed-design-authoring.md").read_text()
+                if skill in ("proposal", "proposal-review"):
+                    text = (ROOT / "skills" / skill / skill_validation.PILOT_RECORDING_REFERENCES[skill]).read_text()
                 self.assertEqual(text.count("## Explicit recording\n"), 1)
                 block = text.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
                 for phrase in ("project has adopted", "only supported runtime record format", "project's governing documents", "historical", "expected identities", "does not approve", "rigorloop-records-v2", "rigorloop context", "subject inspect", "targeted", "Do not migrate"):
