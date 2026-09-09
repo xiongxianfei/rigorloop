@@ -774,7 +774,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_architecture_contract_matches_canonical_arc42_skeleton(self) -> None:
-        skeleton = (ROOT / "skills" / "architecture" / "assets" / "architecture-skeleton.md").read_text(
+        skeleton = (ROOT / "skills" / "design" / "assets" / "legacy-architecture-skeleton.md").read_text(
             encoding="utf-8"
         )
         skeleton_sections = tuple(
