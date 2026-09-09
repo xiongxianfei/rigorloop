@@ -349,10 +349,14 @@ def prepare_release(
                 else:
                     del planned[path]
                 continue
-            if path.suffix not in {".md", ".yaml"}:
+            if path != repo_root / "docs" / "releases" / f"{tag}.md":
                 continue
-            content = planned[path].replace("| pass |", "| pending |").replace(": pass\n", ": pending\n")
-            if path == repo_root / "docs" / "releases" / f"{tag}.md" and path.exists():
+            # Only this newly constructed table has expectation-like pass values.
+            # Other planners preserve observed fields or unowned human narrative.
+            if path.exists() and _is_finalized_standing_release_record(path.read_text(encoding="utf-8"), profile):
+                continue
+            content = planned[path].replace("| pass |", "| pending |")
+            if path.exists():
                 existing = path.read_text(encoding="utf-8")
                 titles = set(re.findall(r"^## (.+)$", existing, re.M))
                 sections = re.split(r"(?=^## )", content, flags=re.M)[1:]

@@ -519,6 +519,20 @@ class PrepareReleaseTests(unittest.TestCase):
             prepare_release("v0.3.5", root=root, approval_driven=True)
             self.assertEqual(path.read_text(), first)
 
+    def test_approval_driven_preserves_human_notes_outside_generated_region(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.make_repo(root)
+            notes = root / "docs/releases/v0.3.5/release-notes.md"
+            notes.parent.mkdir(parents=True, exist_ok=True)
+            human = "# RigorLoop v0.3.5\n\n| Existing result | pass |\n\nHuman example:\nstatus: pass\n"
+            notes.write_text(human)
+            prepare_release("v0.3.5", root=root, approval_driven=True)
+            self.assertTrue(notes.read_text().startswith(human))
+            first = notes.read_bytes()
+            prepare_release("v0.3.5", root=root, approval_driven=True)
+            self.assertEqual(notes.read_bytes(), first)
+
     def relative_file_texts(self, root: Path) -> dict[str, str]:
         return {
             str(path.relative_to(root)): path.read_text(encoding="utf-8")
@@ -618,6 +632,7 @@ class PrepareReleaseTests(unittest.TestCase):
             report_path.write_text(report_text, encoding="utf-8")
 
             prepare_release("v0.3.5", root=root)
+            prepare_release("v0.3.5", root=root, approval_driven=True)
             finalized = self.relative_file_texts(root)
             checked = prepare_release("v0.3.5", root=root, check=True)
 
