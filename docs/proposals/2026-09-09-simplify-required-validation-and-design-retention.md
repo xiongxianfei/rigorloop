@@ -1,119 +1,106 @@
-# Simplify Required Validation and Retain Only Necessary Design
+# Retain Only Necessary Design with Proportionate Validation
 
 ## Challenge
 
-RigorLoop's remaining validation rules are distributed across legacy specifications, architecture sections, scripts, and later amendments. The preceding [consolidation proposal](2026-09-09-incremental-model-contract-consolidation.md) selected a bounded Validation Execution transfer, but preserved existing validation policy by default and required readable historical originals. That direction is insufficient for the user's latest decision: reconsider which checks are mandatory and retain only design information necessary for the current project.
+RigorLoop keeps current engineering meaning across living Designs, legacy specifications, architecture sections, ADRs and archive copies. Some sources still own necessary rules or evidence; others repeat content whose purpose is already satisfied elsewhere. Contributors must read and maintain more material than the current project needs.
 
-The [published-skill-first contract](../../specs/published-skill-first-repository-simplification.md) groups canonical-skill, generated-package, and release-candidate checks under Gate A, Gate B, and Gate C. Those names describe existing check groupings; they do not independently justify keeping every check, repeating every execution, or retaining every historical document. A new model that copies all old obligations and terminology would preserve the maintenance problem.
+The preceding [consolidation proposal](2026-09-09-incremental-model-contract-consolidation.md) preserved readable originals by default. The earlier version of this proposal also made validation-policy redesign a primary deliverable. Neither expresses the user's priority precisely: retain only necessary Design content, remove unnecessary duplication, and use proportionate validation to support that cleanup.
 
-The preceding proposal reports completed common Skill adoption and an outdated prospective owner reference in System. Reconcile that reference against its actual adoption basis without repeating the completed proposal-family pilot. Specialist Skill remainders retain their explicit owners until separately addressed.
+A cleanup that creates a large new validation catalogue, requires every historical experiment to run again, or copies obsolete prose into larger models would reproduce the maintenance burden. Conversely, deleting a source without understanding its remaining use could remove the only current definition of a requirement or break a real consumer.
 
 ## Goals
 
-Establish a clear Validation Design that explains necessary checks, their protected obligations, applicable circumstances, result meaning, and conditions for using existing evidence. Assess mandatory status and execution frequency rather than inheriting them solely from historical clauses.
+Keep the current behavior, significant constraints, meaningful decisions and representative expected outcomes needed to understand and evolve each selected responsibility in its living Design owner.
 
-Use direct language such as skill checks, package checks, and release checks. Keep a technical term only where it removes a real ambiguity. Do not require a glossary or named gate hierarchy merely to preserve old aliases.
+Remove superseded design-source documents and redundant archive copies when no necessary use remains. Retain supporting originals only for an explicit current need and owner; historical existence alone is insufficient.
 
-Consolidate necessary behavior, constraints, meaningful decisions, and representative acceptance outcomes into their living Design owners. Remove fully superseded design-source documents and redundant archive copies when they have no remaining current use. Keep the work bounded to Validation and its necessary ownership and consumer corrections.
+Make the cleanup easy to assess through a concise source disposition and focused checks of affected content and consumers. Validation should be sufficient for the actual change without becoming an independent redesign project or requiring unrelated execution.
 
 ## Scope and non-goals
 
-| Area | Selected treatment |
-| --- | --- |
-| Validation policy and model | Reassess the selected check families: continued necessity, mandatory applicability, advisory treatment, duplication, evidence reuse, and retirement. Design selects exact requirements and source boundaries. |
-| Necessary-design retention | Replace automatic archival preservation for the selected sources with a current-use decision. Include necessary amendments to current retention rules that would otherwise require redundant copies. |
-| System ownership | Correct completed common Skill ownership and identify the selected Validation owner without moving specialist remainders merely to remove links. |
-| Implementation and consumers | Reconcile affected runners, selectors, validators, tests, skills, resource references, candidate metadata, and current navigation. Remove obsolete exclusive machinery only within the selected responsibility. |
-| Other model transfers and skill adoption | Distribution, Installation, Release, unrelated legacy responsibilities, and the remaining skill improvements stay separately owned. Their existing contracts are dependencies, not requirements to consolidate them now. |
+The initial cleanup boundary remains the Validation-related legacy design sources identified by [System](../design/system/system.md#responsibility-inventory) and the preceding consolidation work. This is a bounded place to demonstrate necessary-design retention, not a requirement to redesign Validation or complete every remaining model transfer. Design selects the exact source set and receiving owners before removal.
 
-This is not a repository-wide validation rewrite or archive purge. It does not introduce a new runner, cache, scheduler, adoption registry, permanent per-test ledger, or historical-document service. It does not authorize publication, real customer installation, or unrelated product-behavior retirement.
+| Area | Scope budget treatment | Boundary |
+| --- | --- | --- |
+| Necessary Design content and source cleanup | core to this proposal | Reconcile surviving meaning into its owner; remove unnecessary selected specifications, architecture/ADR content and archive duplicates. |
+| Retention rules | same-slice dependency | Explicitly amend current rules where they otherwise require redundant copies for the selected sources. Do not rewrite historical decisions retroactively. |
+| System and direct consumers | same-slice dependency | Correct completed common Skill ownership, current navigation and actual readers affected by the cleanup; keep specialist remainders explicit. |
+| Proportionate validation | same-slice dependency | Check preservation of necessary meaning and affected references or consumers; revise only a directly obstructing validation obligation through its owner. |
+| Broad mandatory-check, runner or gate redesign | separate proposal | Do not inventory and reclassify every check family or make a new Validation model a prerequisite for this cleanup. |
+| Distribution, Installation, Release and remaining skill adoption | separate proposal | Existing FU-013–018 and their receiving owners retain this work. Their contracts remain dependencies where relevant. |
 
-Fresh independent final whole-change Code Review and distinct Verify remain unchanged. Current effective state, open findings, material decisions, and evidence still needed for reliance remain available under their existing owners. This proposal concerns validation-policy redesign and design-source retention, not blanket deletion of operational records, schemas, templates, resources, or recovery information.
+The latest goal of retaining only necessary Design is the primary outcome. The earlier request to reconsider excessive validation is preserved as a constraint on this cleanup and permission for necessary bounded amendments, rather than a second general policy initiative.
+
+No repository-wide archive purge, new runner, cache, scheduler, migration registry, permanent per-test ledger or historical-document service is selected. Operational records, schemas, templates, resources and recovery information are not redundant design prose. Publication, real customer installation and unrelated supported-behavior retirement remain excluded.
 
 ## Governing principle
 
-> Preserve the necessary engineering obligation, not every historical check or document used to express it. Require a check and a fresh execution when their purpose and evidence basis justify them.
+> Keep the Design information the current project needs, remove the rest when its dependencies are resolved, and validate in proportion to the change.
 
 ## Proposed direction
 
-### Use plain responsibilities instead of inherited gate terminology
+### Decide what must remain useful
 
-Validation owns selection and execution of checks, their deterministic composition, and truthful reporting of what ran and what the results establish. Component owners define the behavior and artifact invariants being checked. Test supplies protective-value criteria; Review and Closeout owns assessment authority and evidence applicability; Workflow coordinates responsible actors. Release and Installation keep their domain obligations and execution permissions.
+For each selected coherent source group, identify the current requirements, applicability, important constraints, decision rationale and failure knowledge that its consumers still need. Use existing owners first. A new model is justified only by a coherent responsibility that needs its own current contract; creating a Validation Design is not an unconditional completion requirement.
 
-Use skill checks, package checks, and release checks in ordinary guidance. Existing command names, result identifiers, and integrations that contain older terminology need an explicit compatibility disposition; changing explanatory language is not an automatic public-interface break. Do not require Gate A/B/C as a new model hierarchy or workflow stage.
+Transfer surviving meaning precisely enough that authors and maintainers can work from current artifacts without reconstructing rules from archives or version history. Preserve relevant exceptions and later amendments. Do not carry obsolete rollout conditions, every rejected alternative or repeated narrative into the living Design merely because they once appeared in a source.
 
-The selected Validation change may revise its own mandatory-check and composition policy through reviewed Design. A check tied to another owner's supported guarantee cannot be discarded by silently changing that guarantee; any necessary cross-owner amendment must be explicit and remain bounded. No passing check grants publication or engineering approval by itself.
+Use direct language. Terms such as skill checks, package checks and release checks can describe necessary obligations without introducing a glossary or inherited Gate A/B/C hierarchy. Existing interfaces retain their compatibility contract unless an explicit bounded amendment changes it.
 
-### Reassess necessity, applicability, and execution separately
+### Remove unnecessary sources without automatic archiving
 
-For each selected coherent check group, establish the current obligation or failure it protects, what it actually observes, the conditions in which that protection matters, and the consequence of failure. Assess equivalent retained protection and limitations. Use the living Design and existing change evidence; do not create an administrative record for every test function.
+Once necessary content has a complete destination and current consumers are reconciled, remove the superseded source or redundant copy from the checkout when no remaining use requires it. Do not automatically replace it with a snapshot, redirect, archive index or original-path duplicate.
 
-Select the appropriate disposition: retain a required check, restrict it to relevant changes or an operation, make genuinely advisory guidance non-blocking, consolidate equivalent checks, or retire a check whose obligation is no longer required. Existing mandatory status is a baseline to examine, not proof that it must survive unchanged. Equally, cost, age, absence of a Design label, or a passing reduced suite do not establish that protection is unnecessary.
+Retain an original only for a named need not adequately served elsewhere: an unmigrated current obligation, essential regression context, an operational reader or exact evidence still relied upon. Mixed files retain their necessary remainder. A historical citation alone does not make the cited file permanently necessary.
 
-A useful test can remain in the repository without running on every change. A required validation result can sometimes be satisfied by an applicable earlier passing result without another execution. Neither conclusion makes that test redundant. Design must distinguish these decisions rather than express all of them as keep or delete.
+Keep current rules and required evidence understandable without Git history. Historical approvals keep their original meaning; do not retarget them to replacement content. If an assessment's original subject will no longer be available, preserve the basis needed for current reliance or explicitly cease that reliance. This does not authorize erasing open findings, falsifying completed plans or rewriting old judgments.
 
-Where equivalent protection replaces a check, establish the retained detection at the required boundary. Where an obligation is explicitly retired, no substitute check must reproduce the retired behavior; preserve any safe-rejection, compatibility, or shared-safety obligations that survive. Uncertain protection needs investigation before removal, not a fabricated equivalence claim.
+Amend applicable retention requirements through their current owners before adopting a conflicting deletion policy. Operational manifests, templates, schemas, fixtures and recovery files stay with their actual consumers; path cleanup alone is not a reason to move them.
 
-### Make mandatory scope and failure consequences explicit
+### Keep validation focused on the affected obligation
 
-Define checks in terms of their actual inputs and dependencies, not filename extensions alone. A pure documentation change need not automatically require every package or runtime check; a shared resource, package selector, ignore rule, or validation change may have wider effects than its filename suggests.
+For a source-only change, the normal proof should focus on whether necessary meaning has an accessible owner and whether affected references and actual readers still work. Independent assessment judges meaning; existing mechanical checks support the relevant structure and consumer boundaries. Do not require package generation, runtime suites, release checks or historical benchmarks solely because design prose was consolidated.
 
-Unknown or ambiguous impact must select broader verification under the retained policy, rather than imply no impact. The CLI may calculate declared paths, identities, dependencies, and results mechanically; it does not decide whether engineering evidence is sufficient or whether an obligation should be retired.
+If the selected change affects a packaged resource, executable reader, validator, selector or other behavior-bearing dependency, include the checks that protect that affected boundary. Broaden investigation and proof when impact is uncertain; uncertainty is not evidence that nothing changed. File extensions alone do not establish impact.
 
-Distinguish a failure that makes an applicable artifact or operation unacceptable from an advisory improvement. Mandatory versus advisory is a reviewed policy decision, not an implementer's means of turning a failure green. Any blocking result must leave the authorized correction path available; validation must not prevent recording the defect that explains why work cannot yet be relied on.
+Reuse an earlier passing result when its subjects, dependencies, check implementation/configuration and relevant environment remain applicable under existing evidence policy. Preserve explicit freshness requirements and the original result's limits. Failed, missing or contradicted evidence is not a reusable pass. Safeguards required during an actual write or recovery still execute at that operation.
 
-### Reuse valid evidence without weakening runtime safeguards
+Where a current rule would require irrelevant or duplicate execution for this cleanup, select an explicit, bounded owner amendment rather than silently skip a required check. Remove a test or exclusive mechanism only when its obligation has a justified retirement or adequate retained protection; a useful test need not be deleted merely because this change does not require it to run.
 
-Reuse previously passing validation evidence only with an affirmative basis that the final subjects, relevant dependencies, check implementation or configuration, and relevant environment have not invalidated it. Reuse must satisfy any explicitly selected freshness obligation and preserve the original result and its limitations. Failed, missing, incomplete, or contradicted evidence is not a reusable pass.
+No new exhaustive validation inventory, benchmark programme or repeated full-suite requirement is selected. Use existing checks and concise grouped evidence. Fresh independent final whole-change Code Review and distinct Verify remain unchanged; their assessment scope follows the actual delivered change.
 
-A cached development test result is not permission to bypass safeguards during a real operation. Identity, containment, authorization, structural, and transaction checks that protect an actual write or recovery attempt still run where the supported operation requires them. The separate final whole-change review remains fresh even when some execution evidence is reused.
+### Finish with a smaller necessary documentation set
 
-The resulting guidance should explain why evidence is sufficient for the selected scope, without making every ordinary invocation read the entire validation catalogue or rerun all historical proof procedures.
+Design identifies the exact source boundaries, surviving obligations, retention/removal decisions and directly affected consumers. Delivery allocates only the changes and proof needed to adopt those decisions. An inseparable responsibility outside the selected boundary returns for a scope decision instead of expanding into every remaining model.
 
-### Keep necessary design; do not create archives by default
+A concise comparison in existing change evidence should show where necessary content now lives, what duplication was removed, what originals remain and why, and what focused proof supports the result. It must not become another permanent document catalogue duplicating the living Designs.
 
-A living Design must contain the current behavior, significant constraints, shared relationships, meaningful decision rationale, and representative expected outcomes needed to evolve its responsibility. Preserve relevant exceptions and failure knowledge. Do not copy obsolete requirements or every rejected alternative merely to maintain historical volume.
-
-Once selected source content has a complete current disposition and its consumers are reconciled, remove the superseded specification, architecture, or ADR from the current checkout when no necessary use remains. Do not automatically create a snapshot, an archive index, a redirect, or an original-path duplicate. Existing redundant archive copies within the selected scope are eligible for the same assessment; earlier archival treatment does not make them permanent.
-
-Retain an original only for an explicit remaining need that the current Design or another necessary artifact does not satisfy—for example, an unmigrated current obligation, essential regression context, an actual operational reader, or exact evidence still relied upon. Such retention should name the need and owner, not rest on the fact that a historical file exists. Mixed documents retain their necessary remainder until that portion is reconciled.
-
-Ordinary version history may preserve deleted sources, but current engineering work must not depend on reconstructing its rules from that history. Do not rewrite old approvals to pretend they assessed replacement content. A historical citation alone does not automatically require the cited file to remain in the checkout; where current reliance requires the original subject, preserve the needed basis or explicitly stop relying on that historical assessment. Do not claim the new Design proves the old review's original basis.
-
-Operational resource manifests, templates, schemas, fixtures, and recovery files are not unnecessary design prose. Preserve or deliberately relocate them with their real consumers. Amend current retention requirements explicitly where necessary; do not falsify completed plans or historical decisions to make the new policy appear retroactive.
-
-### Deliver one complete, bounded simplification
-
-Start with the Validation responsibility identified by the existing consolidation work. Design names the exact source families, selected checks, retained protections, changed mandatory conditions, source-removal decisions, and necessary consumer interactions. A newly discovered inseparable responsibility returns for a scope decision rather than recruiting all remaining models.
-
-Delivery implements the selected policy and source consolidation together with their required consumer changes. A baseline-to-final comparison must show which checks remain required, which become conditional or advisory, which are consolidated or removed, and how the surviving protection is established. The comparison can be grouped and stored in existing evidence; it is not a new permanent catalogue duplicating the Design.
-
-Completion requires an actionable current Validation contract, implemented and assessed check selection and outcomes, coherent consumers, necessary source cleanup, and explicit remaining ownership. The result must demonstrate simplification of obsolete obligation, redundant execution, or unnecessary documentation within the selected slice—not merely a renamed file. It does not require a deletion quota or promise a measured runtime or token improvement.
+Completion means the selected responsibility is understandable from necessary current Design content, redundant source material has been removed where justified, remaining owners and dependencies are explicit, and affected consumers work. A validation-policy rewrite, new model count, deletion quota or measured runtime/token improvement is not required. System's completed common Skill adoption is existing evidence to reconcile, not a reason to repeat the proposal-family pilot.
 
 ## Feasibility
 
-**Assessment: feasible as a bounded policy redesign and consolidation; exact check and deletion decisions require Design and implementation inspection.**
+**Assessment: feasible as bounded Design-content consolidation and source cleanup with proportionate validation.**
 
-The supplied contracts already identify canonical-skill, package, and release checks, separate deterministic validation from semantic assessment, and permit some reuse and scoped filesystem proof. Existing [Test](../design/test/test.md), [Review and Closeout](../design/review-closeout/review-closeout.md), [Design](../design/design/design.md), and [System](../design/system/system.md) responsibilities provide the adjacent owners.
+Existing [Design](../design/design/design.md) and [System](../design/system/system.md) conventions provide responsibility ownership and substantive source mapping. [Test](../design/test/test.md) supplies protective-value criteria, and [Review and Closeout](../design/review-closeout/review-closeout.md) governs assessment and evidence reuse. These owners provide the necessary process without a new validation or archival platform.
 
-The new work is not simply preserving that historical arrangement. It must examine which requirements remain necessary, clarify when checks are mandatory, and replace redundant source retention where its purpose has been satisfied. The available materials do not establish current execution cost, complete selection/dependency behavior, safe individual removals, or actual savings.
+The available material identifies a candidate source family, not individual documents safe to delete or a complete dependency graph. Exact necessary content, current consumers and applicable retention amendments require inspection. Such uncertainty can be resolved for the selected sources without auditing the entire repository or reopening every historical check.
 
-The minimum Design package is the selected Validation Design, scoped System corrections, and exact amendments to Design or other current owners whose validation or retention rules must change. No new general migration, archival, or validation platform is needed by this direction.
+The minimum Design package is the affected living owner or justified new owner, scoped System corrections and exact retention or validation amendments required by the cleanup. Existing runtime behavior and other model extractions need not change. No savings or safe deletion is claimed before inspection and adoption.
 
 ## Impact and major trade-offs
 
-Narrowing mandatory execution can reduce repeated work, but an incomplete impact assessment can hide regressions. Explicit applicability, adequate retained protection, conservative treatment of uncertainty, and truthful evidence reuse must be assessed together.
+A smaller maintained documentation set should reduce repeated reading and conflicting authority, but removing sources can make older reasoning less convenient to inspect. Necessary rationale belongs in the current owner; narrowly necessary originals remain. Replacing archive copies with equally large history sections would miss the objective.
 
-Removing redundant historical sources improves the maintained documentation set but can reduce convenient access to old reasoning. Necessary rationale belongs in the current owner; narrowly necessary originals remain. Replacing archival duplication with an equally large history section inside every model would not meet the goal.
+Focused validation avoids work unrelated to the cleanup, while an incomplete consumer assessment could miss a real dependency. Explicit impact assessment, proportionate checks and justified evidence reuse address that risk without making broad execution mandatory by default.
 
-This revision deliberately changes the preceding proposal's preserve-existing-validation-policy and preserve-readable-originals defaults. Within the selected scope, those arrangements may now be redesigned rather than inherited. Runtime safety, specialist authority, publication permissions, and required independent review are not silently waived by that authorization.
+This direction changes automatic archival preservation for selected sources and narrows the preceding proposal's validation-policy redesign ambition. It does not waive supported runtime safety, specialist authority, required independent assessment or current obligations before their owning amendments are adopted.
 
 ## Decision requested
 
-Approve a bounded initiative to simplify Validation: reconsider which checks are mandatory, when they apply, when existing passing evidence can be reused, and which checks or exclusive mechanisms can be consolidated or retired with an explicit protection or obligation-retirement basis.
+Approve retaining only necessary Design information and narrowly justified supporting material within the selected source boundary, with reviewed removal of superseded sources and redundant archive copies once their necessary content and consumers are reconciled.
 
-Approve retaining only necessary current design and narrowly justified supporting material, without automatic archival duplication. Permit reviewed removal of superseded design sources and redundant archive copies in the selected slice once necessary content, evidence, and consumer dependencies are resolved.
+Require proportionate validation of that cleanup: focused checks for affected obligations and dependencies, applicable evidence reuse, and only necessary bounded amendments to excessive execution requirements. Do not make broad validation-policy redesign, a new Validation model or unrelated full-suite execution a prerequisite for completion.
 
-Keep System's completed common Skill ownership correction in scope and leave other model transfers and remaining skill improvements separately owned. Preserve fresh independent whole-change Code Review, distinct Verify, truthful records, supported runtime safety, and separately authorized external actions.
+Keep System's common Skill ownership correction in scope. Leave other model transfers and remaining skill improvements with their existing follow-up owners. Preserve fresh independent final whole-change Code Review, distinct Verify, truthful records and separately authorized external actions.
 
-Approval selects this revised direction for Design. It does not itself select individual test or file deletions, waive a currently applicable failed check, establish evidence sufficiency, authorize implementation or publication, or erase historical approvals. Exact policy changes and their adoption follow the normal reviewed Design and Delivery process.
+Approval selects this direction for Design. Individual file or test removals, exact policy amendments and proof sufficiency remain subject to their owning Design, Delivery and assessment decisions; implementation and publication are not authorized by this proposal alone.
