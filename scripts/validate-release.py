@@ -230,6 +230,22 @@ def validate_prepared_release(version: str, root: Path, output: Path) -> list[st
     return errors
 
 
+def recorded_command(command: list[str], root: Path, output: Path) -> str:
+    """Describe exact arguments by declared inputs, without worker-local paths."""
+    shown = []
+    for argument in command:
+        path = Path(argument)
+        if path.is_absolute():
+            if path.is_relative_to(output):
+                argument = '<candidate>/' + path.relative_to(output).as_posix()
+            elif path.is_relative_to(root):
+                argument = path.relative_to(root).as_posix()
+            else:
+                raise ValueError('undeclared external command input cannot enter release evidence')
+        shown.append(argument)
+    return ' '.join(shown)
+
+
 def verify_prepared_release(version: str, output: Path) -> int:
     """Complete new-path composition, reached through release-verify.sh.
 
@@ -262,7 +278,7 @@ def verify_prepared_release(version: str, output: Path) -> int:
         started = time.monotonic()
         print('Release check: ' + ' '.join(command[:2]), flush=True)
         run(command, root)
-        checks.append({'command': ' '.join(command), 'result': 'pass', 'duration_seconds': time.monotonic() - started})
+        checks.append({'command': recorded_command(command, root, output), 'result': 'pass', 'duration_seconds': time.monotonic() - started})
     run_packed_smoke(root, local_file(output, facts['tarball']), output, version)
     checks.append({'command': 'packed CLI version and init codex/claude/opencode', 'result': 'pass'})
     errors = validate_prepared_release(version, root, output)
