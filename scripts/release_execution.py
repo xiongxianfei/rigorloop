@@ -53,6 +53,8 @@ def validate_approval(candidate: dict, binding: dict, facts: dict) -> dict:
     Initial support uses named individual environment reviewers. Unknown/new
     policies require an explicit integration decision; they do not fail open.
     """
+    if candidate.get('inputs', {}).get('ci_only'):
+        raise ExecutionError('CI-only candidate cannot authorize publication')
     try:
         if set(binding) != APPROVAL_FIELDS:
             raise ExecutionError('unknown or missing approval binding field')

@@ -376,7 +376,7 @@ test("TG-03 public rejection is bounded and ordinary symlink launcher retains ex
   }
   const alias=join(root,"rigorloop"); symlinkSync(new URL("../dist/bin/rigorloop.js",import.meta.url).pathname,alias);
   const version=spawnSync(process.execPath,[alias,"version"],{encoding:"utf8"});
-  assert.equal(version.status,0); assert.match(version.stdout,/0\.5\.1/);
+  assert.equal(version.status,0); assert.equal(version.stdout.trim(), `@xiongxianfei/rigorloop ${JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version}`);
 });
 
 test("TG-04 pre-journal failure changes no authoritative bytes",t=>{

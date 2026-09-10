@@ -6,6 +6,7 @@ cd "$ROOT_DIR"
 
 DEFAULT_TIMEOUT_SECONDS=300
 
+ci_original_args=("$@")
 mode=""
 base=""
 head=""
@@ -1570,6 +1571,16 @@ fi
 if ! command -v python >/dev/null 2>&1; then
   echo "python command not found; install Python or provide a python shim before running CI." >&2
   exit 1
+fi
+
+# Pending release inputs use the same isolated preparation for both runners.
+# Existing dry-run/selector-fixture modes remain non-executing test surfaces.
+if [[ "$mode" == "pr" || "$mode" == "main" ]] && [[ "${RIGORLOOP_CI_DIRECT_DRY_RUN:-}" != "1" && -z "${RIGORLOOP_SELECTOR_FIXTURE:-}" ]]; then
+  ci_preparation_status=0
+  python scripts/release-coordinator.py check-ci "${ci_original_args[@]}" || ci_preparation_status=$?
+  if [[ "$ci_preparation_status" != "3" ]]; then
+    exit "$ci_preparation_status"
+  fi
 fi
 
 case "$mode" in
