@@ -11,7 +11,6 @@ from pathlib import Path, PurePosixPath
 import re
 import shutil
 import subprocess
-import subprocess
 import tempfile
 import time
 from typing import Any
@@ -404,28 +403,59 @@ def ci_subject(output: Path, root: Path, expected_source: str | None = None) -> 
         raise CandidateError('CI checkout differs from prepared source')
     if script_identity(root / 'scripts') != data['tool_identity']:
         raise CandidateError('CI tools differ from checked candidate')
-    for name, identity in json.loads((output / 'build-overlay.json').read_text()).items():
+    overlay = json.loads((output / 'build-overlay.json').read_text())
+    for row in run(['git', 'status', '--porcelain', '--untracked-files=all'], root).splitlines():
+        if row[3:] not in overlay:
+            raise CandidateError('CI source differs from prepared source')
+    for name, identity in overlay.items():
         if file_identity(local_file(root, name)) != identity:
             raise CandidateError('CI package overlay identity mismatch')
+    import tarfile
+    with tarfile.open(local_file(output, data['tarball'])) as archive:
+        for member in archive.getmembers():
+            if member.isdir():
+                continue
+            name = PurePosixPath(member.name)
+            if not member.isfile() or not name.parts or name.parts[0] != 'package':
+                raise CandidateError('unsafe packed CI input')
+            path = local_file(root / 'packages/rigorloop', '/'.join(name.parts[1:]))
+            if path.read_bytes() != archive.extractfile(member).read():
+                raise CandidateError('CI runtime differs from packed candidate')
     return data
 
 
-def check_ci(argv: list[str], root: Path) -> int:
-    """Compose existing CI on an isolated prepared package. 3 means source mode."""
+def ci_arguments(argv: list[str], root: Path):
+    """Resolve the effective source range before entering a prepared checkout."""
     import argparse
-    import tarfile
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--mode', choices=['pr', 'main'], required=True)
     parser.add_argument('--base')
     parser.add_argument('--head')
     args, _ = parser.parse_known_args(argv)
-    argv = list(argv)
+    # Use the same effective (last supplied) range as the shell runner, but
+    # resolve it before moving into C. Main's default must refer to S, not C.
+    if args.mode == 'main' and (not args.base or not args.head):
+        args.base, args.head = 'HEAD~1', 'HEAD'
+    forwarded = []
+    iterator = iter(argv)
+    for value in iterator:
+        if value in ['--base', '--head']:
+            next(iterator)
+        elif not value.startswith(('--base=', '--head=')):
+            forwarded.append(value)
     for field in ['base', 'head']:
         value = getattr(args, field)
         if value:
             value = run(['git', 'rev-parse', '--verify', value + '^{commit}'], root)
-            argv[argv.index('--' + field) + 1] = value
+            forwarded.extend(['--' + field, value])
             setattr(args, field, value)
+    return args, forwarded
+
+
+def check_ci(argv: list[str], root: Path) -> int:
+    """Compose existing CI on an isolated prepared package. 3 means source mode."""
+    import tarfile
+    args, argv = ci_arguments(argv, root)
     context = (os.environ.get('RIGORLOOP_CI_CANDIDATE')
                if os.environ.get('RIGORLOOP_CI_WORKSPACE') == str(root.resolve()) else None)
     if context:
@@ -473,7 +503,9 @@ def check_ci(argv: list[str], root: Path) -> int:
         print('CI checks prepared source ' + data['prepared_commit'] + ' from ' + head
               + '; candidate ' + data['candidate_id'] + '; no publication authority.', flush=True)
         env = dict(os.environ, RIGORLOOP_CI_CANDIDATE=str(output), RIGORLOOP_CI_WORKSPACE=str(source))
-        return subprocess.run(['bash', 'scripts/ci.sh', *argv], cwd=source, env=env).returncode
+        result = subprocess.run(['bash', 'scripts/ci.sh', *argv], cwd=source, env=env).returncode
+        ci_subject(output, source, head)
+        return result
 
 
 LOADED_SCRIPT_IDENTITY = script_identity(Path(__file__).parent)

@@ -79,6 +79,57 @@ class ReleaseCandidateTests(unittest.TestCase):
             'files': files, 'checks': [{'id': key, 'result': 'pass'} for key in sorted(CANDIDATE_CHECKS)],
         })
 
+    def test_ci_range_resolves_main_defaults_and_repeated_head_before_preparation(self):
+        from unittest.mock import patch
+        from release_candidate import ci_arguments
+        with patch('release_candidate.run', side_effect=lambda command, root: {
+                'HEAD~1^{commit}': 'a' * 40, 'HEAD^{commit}': 'b' * 40}[command[-1]]):
+            args, forwarded = ci_arguments(['--mode', 'main'], self.root)
+            self.assertEqual((args.base, args.head), ('a' * 40, 'b' * 40))
+            self.assertEqual(forwarded, ['--mode', 'main', '--base', 'a' * 40, '--head', 'b' * 40])
+            args, forwarded = ci_arguments(['--mode', 'pr', '--base', 'HEAD~1',
+                '--head', 'discarded', '--head', 'HEAD', '--jobs', '2'], self.root)
+            self.assertEqual(forwarded, ['--mode', 'pr', '--jobs', '2',
+                '--base', 'a' * 40, '--head', 'b' * 40])
+
+    def test_ci_subject_rejects_changed_runtime_and_source(self):
+        import subprocess
+        import tarfile
+        from release_candidate import ci_subject, script_identity
+        (self.root / 'scripts').mkdir()
+        runtime = self.root / 'packages/rigorloop/dist/bin/rigorloop.js'
+        runtime.parent.mkdir(parents=True)
+        runtime.write_text('original runtime')
+        (self.root / '.gitignore').write_text('packages/rigorloop/dist/bin/rigorloop.js\n')
+        test = self.root / 'packages/rigorloop/test.js'
+        test.write_text('original test')
+        def git(*args):
+            return subprocess.check_output(['git', '-C', str(self.root), *args], stderr=subprocess.DEVNULL, text=True).strip()
+        git('init', '--quiet'); git('add', '.')
+        git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+            '-c', 'commit.gpgsign=false', 'commit', '-qm', 'Fixture')
+        commit = git('rev-parse', 'HEAD')
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            with tarfile.open(output / 'package.tgz', 'w:gz') as archive:
+                archive.add(runtime, arcname='package/dist/bin/rigorloop.js')
+            (output / 'build-overlay.json').write_text('{}')
+            data = self.candidate(); data.pop('candidate_id')
+            # Remove candidate helper artifacts from the checked source.
+            for name in ['package.tgz', 'adapter.zip', 'candidate.json']:
+                (self.root / name).unlink()
+            data.update(source_commit=commit, prepared_commit=commit,
+                        inputs={'ci_only': True}, tool_identity=script_identity(self.root / 'scripts'),
+                        tarball='package.tgz', files={p.name: file_identity(p) for p in output.iterdir()})
+            seal_candidate(output, data)
+            ci_subject(output, self.root, commit)
+            for path in [runtime, test]:
+                original = path.read_bytes()
+                path.write_text('modified after preparation')
+                with self.subTest(path=path.name), self.assertRaises(CandidateError):
+                    ci_subject(output, self.root, commit)
+                path.write_bytes(original)
+
     def test_material_change_invalidates_sealed_candidate(self):
         manifest = self.candidate()
         verify_candidate(self.root, manifest['candidate_id'])
@@ -170,6 +221,15 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
                 if script.is_file() and script.suffix in {'.py', '.sh'}:
                     shutil.copyfile(script, source / 'scripts' / script.name)
             shutil.copyfile(repository / '.github/workflows/release.yml', source / '.github/workflows/release.yml')
+            # This scenario releases the fixed 0.5.1 fixture, independently of
+            # the repository's next authored version.
+            for name in ['package.json', 'package-lock.json']:
+                path = source / 'packages/rigorloop' / name
+                package = json.loads(path.read_text())
+                package['version'] = '0.5.1'
+                if name == 'package-lock.json':
+                    package['packages']['']['version'] = '0.5.1'
+                path.write_text(json.dumps(package, indent=2) + '\n')
             intent = source / 'docs/releases/v0.5.1.md'
             intent.write_text('# Release v0.5.1\n\n## Version Decision\n\n- Version decision: patch\n- Change summary: Reviewed candidate fixture for integrity proof.\n')
             def git(*args):
@@ -177,7 +237,8 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             # GitHub PR checkouts are detached; exercise that input locally too.
             git('checkout', '--detach')
             git('checkout', '-B', 'main')
-            git('add', 'scripts', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml')
+            git('add', 'scripts', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml',
+                'packages/rigorloop/package.json', 'packages/rigorloop/package-lock.json')
             git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')
             commit, ref = git('rev-parse', 'HEAD'), git('symbolic-ref', 'HEAD')
