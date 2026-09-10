@@ -21,6 +21,8 @@ def safe_error(exc):
         message = 'required workflow input is missing'
     elif isinstance(exc, (OSError, subprocess.SubprocessError)):
         message = 'required filesystem, process or service access is unavailable'
+        if isinstance(exc, OSError) and type(exc.errno) is int:
+            message += f' (OS error {exc.errno})'
     else:
         message = 'required release input is malformed'
     return message

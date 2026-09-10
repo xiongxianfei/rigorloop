@@ -274,6 +274,10 @@ def prepare_candidate(source: Path, source_commit: str, merged_ref: str, publish
         if inputs['status'] == 'already-published':
             return inputs
         tag = inputs['tag']
+        if ci_only:
+            # Publication eligibility is not a CI check. Remove only this tag
+            # in the disposable build clone; source and published refs stay intact.
+            run(['git', 'update-ref', '-d', 'refs/tags/' + tag], root)
         profile = root / 'docs/releases/profiles' / f'{tag}.yaml'
         if profile.exists():
             # A supplied stricter or special profile is never overwritten into eligibility.
