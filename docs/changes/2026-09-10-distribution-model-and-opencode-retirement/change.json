@@ -4,8 +4,8 @@
       "id": "distribution-router",
       "role": "route"
     },
-    "reason": "M4 CI and receipt corrections have complete current proof, including actual broad children plus corrected full leaf, C8 and fresh C4; request independent correction review before renewed whole-change assessment.",
-    "stage": "code-review",
+    "reason": "All four milestones and fresh final Code Review r2 approved; reporter resolved CI correction on actual composed proof. Proceed to distinct final Verify under user PR authorization.",
+    "stage": "verify",
     "status": "in-progress"
   },
   "applicability": [
@@ -206,6 +206,24 @@
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r1.json",
       "reason": "New contradictory broad-smoke evidence arrived immediately after r1 save: scripts/ci.sh routes current v2 changed root to legacy review validator. Preserve original judgment, forbid current reliance pending bounded CI correction and fresh independent integrated final reassessment.",
       "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4-r2.json",
+      "reason": "Exact e0e89fdf M4 correction approved with explicit broad child/leaf proof composition; reporter-owned blocker and final reassessment remain separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r2.json",
+      "reason": "Fresh exact68-subject integrated final assessment through e0e89fdf, with truthful actual broad child/fresh corrected leaf/receipt proof composition; reporter blocker disposition and Verify remain separate.",
+      "value": "current"
     }
   ],
   "blockers": [
@@ -237,8 +255,20 @@
         "role": "support"
       },
       "required_outcome": "Use the existing v2 validator for current selected manifests; preserve historical auto-discovery separation and explicit/malformed/reserved input rejection. Demonstrate passing actual broad smoke and current selected CI, then obtain fresh independent integrated review.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "distribution-ci-maintainer",
+          "role": "support"
+        },
+        "evidence_refs": [
+          {
+            "id": "implementation-m4-ci-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "Reporter reassessed the current CI correction and fresh independent final whole-change r2 approval. Actual second broad smoke passed current-record dispatch and nine children; aggregate exit1 remains preserved because the old static assertion failed. Fresh corrected full109 leaf and selected delta, full163 selector, corrected complete C8 and later actual164 candidate/receipt C4 plus three-group delta satisfy current integration obligations. Accept this explicit unchanged-input child-level proof composition as the required passing broad-smoke coverage, not an invented aggregate exit0. Current manifests validate through the v2 owner; historical automatic nonactivation and reserved/explicit missing-manifest rejection have fresh regression proof. Final reviewer independently accepted the composition; no remaining corrective action or publication claim."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:1f2b513927dd16b4889943326e22bd4f9835a3eec587751221e91fbe7c8d3d37",
@@ -438,6 +468,14 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r2.json"
     }
   ],
   "schema_version": 2,
@@ -484,7 +522,7 @@
       "requirement_refs": [
         "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m4"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }
