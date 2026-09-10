@@ -4,7 +4,7 @@
       "id": "readability-router",
       "role": "route"
     },
-    "reason": "Distinct final local Verify saved and read back successfully after fresh final Code Review; M1 complete, findings resolved and actual prepared/focused proof passed. No PR or publication selected.",
+    "reason": "Final Verify now includes successful Git/PR readiness for the exact committed subject and unchanged main. User explicitly selected optional PR handoff; no merge, release or publication selected.",
     "stage": "verify",
     "status": "completed"
   },
@@ -87,7 +87,7 @@
         "role": "verify"
       },
       "path": "docs/changes/2026-09-10-readable-record-output/verify-report.json",
-      "reason": "Distinct final assessment of current exact subjects, closed finding, completed M1, approved final review and actual proof. Local closeout only.",
+      "reason": "Current exact committed subjects and unchanged base independently reviewed; fresh full prepared PR checks passed. Git/PR branch-readiness basis is recorded in the Verify narrative.",
       "value": "current"
     }
   ],
