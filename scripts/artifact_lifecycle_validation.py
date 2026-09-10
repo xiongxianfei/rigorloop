@@ -1743,6 +1743,24 @@ def _resolve_scope(
     )
 
 
+def _prepared_ci_release_tag(root: Path, revision: str | None) -> str | None:
+    if os.environ.get('RIGORLOOP_CI_WORKSPACE') != str(root.resolve()):
+        return None
+    output = os.environ.get('RIGORLOOP_CI_CANDIDATE')
+    if not output:
+        return None
+    import tarfile
+    from release_candidate import CandidateError, ci_subject
+    try:
+        candidate = ci_subject(Path(output), root)
+        if revision is not None and revision != candidate['prepared_commit']:
+            raise CandidateError('lifecycle revision differs from prepared candidate')
+        return candidate['tag']
+    except (CandidateError, OSError, KeyError, TypeError, AttributeError, ValueError,
+            subprocess.SubprocessError, tarfile.TarError) as exc:
+        raise ValidationInputError('invalid or mismatched prepared CI release context') from exc
+
+
 def validate_repository(
     root: Path,
     *,
@@ -1769,6 +1787,7 @@ def validate_repository(
     blocking_findings: list[ValidationFinding] = []
     warning_findings: list[ValidationFinding] = []
     root_resolved = root.resolve()
+    prepared_ci_tag = _prepared_ci_release_tag(root_resolved, scope.tracked_revision)
     related_paths = set(scope.related_artifact_paths)
     for path in scope.change_yaml_paths:
         try:
@@ -1802,7 +1821,9 @@ def validate_repository(
         if not _is_release_evidence_path(relative_path):
             continue
         text = _read_repo_text(root_resolved, path, scope.tracked_revision)
-        for message in _validate_release_evidence_checklist(relative_path, text):
+        for message in validate_release_evidence_checklist(
+                relative_path, text,
+                require_preflight_pass=relative_path.as_posix() != f'docs/releases/{prepared_ci_tag}.md'):
             blocking_findings.append(
                 ValidationFinding(
                     severity="block",

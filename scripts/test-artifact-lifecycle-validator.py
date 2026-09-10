@@ -2807,6 +2807,38 @@ No blocked plans.
         )
         self.assertEqual(result.checked_artifacts, [Path("docs/releases/v1.2.3.md")])
 
+    def test_verified_ci_candidate_allows_only_its_pending_preflight(self) -> None:
+        from unittest.mock import patch
+        fixture_root = Path(tempfile.mkdtemp(prefix="prepared-release-lifecycle-"))
+        self.addCleanupTree(fixture_root)
+        env = {'RIGORLOOP_CI_WORKSPACE': str(fixture_root.resolve()), 'RIGORLOOP_CI_CANDIDATE': '/fixture/candidate'}
+        candidate = {'tag': 'v1.2.3', 'prepared_commit': 'a' * 40}
+        for gate, blocked in [('pending', False), ('fail', True), ('unknown_value', True)]:
+            write_release_evidence(fixture_root, routine_release_evidence(package_preview=gate))
+            with self.subTest(gate=gate), patch.dict(os.environ, env), patch('release_candidate.ci_subject', return_value=candidate):
+                result = validate_repository(fixture_root, mode='explicit-paths', paths=['docs/releases/v1.2.3.md'])
+                self.assertEqual(bool(result.blocking_findings), blocked)
+        write_release_evidence(fixture_root, routine_release_evidence(package_preview='pending'))
+        for scoped_env, tag in [({}, 'v1.2.3'), (dict(env, RIGORLOOP_CI_WORKSPACE='/other'), 'v1.2.3'), (env, 'v9.9.9')]:
+            with patch.dict(os.environ, {'RIGORLOOP_CI_WORKSPACE': '', 'RIGORLOOP_CI_CANDIDATE': '', **scoped_env}), patch('release_candidate.ci_subject', return_value=dict(candidate, tag=tag)):
+                result = validate_repository(fixture_root, mode='explicit-paths', paths=['docs/releases/v1.2.3.md'])
+                self.assertTrue(result.blocking_findings)
+
+    def test_prepared_ci_rejects_wrong_revision_or_invalid_proof(self) -> None:
+        from unittest.mock import patch
+        from artifact_lifecycle_validation import _prepared_ci_release_tag, ValidationInputError
+        from release_candidate import CandidateError
+        root = Path(tempfile.mkdtemp(prefix='prepared-context-'))
+        self.addCleanupTree(root)
+        env = {'RIGORLOOP_CI_WORKSPACE': str(root.resolve()), 'RIGORLOOP_CI_CANDIDATE': '/fixture/candidate'}
+        cases = [{'return_value': {'tag': 'v1.2.3', 'prepared_commit': 'b' * 40}},
+                 {'side_effect': CandidateError('changed receipt or runtime identity')},
+                 {'side_effect': FileNotFoundError('/private/missing-receipt')}]
+        for case in cases:
+            with patch.dict(os.environ, env), patch('release_candidate.ci_subject', **case):
+                with self.assertRaisesRegex(ValidationInputError, '^invalid or mismatched prepared CI release context$'):
+                    _prepared_ci_release_tag(root, 'a' * 40)
+
     def test_release_evidence_blocks_missing_routine_gate_item(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="release-evidence-checklist-"))
         self.addCleanupTree(fixture_root)

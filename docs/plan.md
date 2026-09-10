@@ -25,6 +25,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [2026-09-10 Simplify release validation integration](plans/2026-09-10-release-validation-integration.md) — [owning change](changes/2026-09-10-release-validation-integration/change.json).
+
 - [2026-09-09 Approval-Driven Release and Source Consolidation](plans/2026-09-09-release-model-source-consolidation.md) — [owning change](changes/2026-09-09-release-model-source-consolidation/change.json)
 
 - [2026-09-09 Necessary Design Consolidation](plans/2026-09-09-necessary-design-consolidation.md) — [owning change](changes/2026-09-09-simplify-required-validation-and-design-retention/change.json)

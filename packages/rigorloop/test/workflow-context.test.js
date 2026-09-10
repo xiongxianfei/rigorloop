@@ -42,10 +42,23 @@ test('unsafe or unknown_value command selectors reject before repository access'
 
 test('explicit non-record placement retains unresolved and duplicate ownership rejection',t=>{const root=setup(t);for(const template of ['docs/proposals/<change-id>.md','planning/<stage>.md']){writeFileSync(join(root,'rigorloop.workflow.yaml'),'schema_version: 1\nartifact_locations:\n  plan:\n    path_template: '+template+'\n');const r=context(root,['--change','example']);assert.equal(r.exitCode,2);assert.equal(r.result.errors[0].code,'invalid-input');}});
 test('multiple invalid IDs return one redacted public diagnostic instead of an internal exception',t=>{
- const root=setup(t);directory(root,'BAD');directory(root,'OTHER');
+ const root=setup(t);for(const id of ['BAD','OTHER'])writeFileSync(join(directory(root,id),'change.json'),'{}');
  const r=spawnSync(process.execPath,[cli,'workflow-context','--json'],{cwd:root,encoding:'utf8'});
  assert.equal(r.status,2,r.stdout+r.stderr);const result=JSON.parse(r.stdout);
  assert.equal(result.schema_version,2);assert.equal(result.status,'rejected');assert.equal(result.scope.complete,false);
  assert.deepEqual(result.errors,[{code:'invalid-input',path:null,message:'Workflow context: invalid-input.'}]);
  assert.doesNotMatch(r.stdout+r.stderr,/BAD|OTHER|duplicate identity|internal-error/);
+});
+
+for(const shape of ['archive','noncurrent','current','mixed','residue'])test(`long directory names retain ${shape} classification before candidate grammar`,t=>{
+ const root=setup(t),id='historical-'.repeat(9),p=directory(root,id);
+ if(['archive','mixed','residue'].includes(shape))writeFileSync(join(p,'change.yaml'),'not: [decoded');
+ if(['current','mixed'].includes(shape))writeFileSync(join(p,'change.json'),'{}');
+ if(shape==='residue')writeFileSync(join(p,'evidence.json'),'{}');
+ const excluded=['archive','noncurrent'].includes(shape),r=context(root);
+ assert.equal(r.exitCode,excluded?0:2);assert.equal(r.result.scope.complete,excluded);
+ assert.equal(r.result.scope.excluded_noncurrent,excluded?1:0);
+ assert.deepEqual(r.result.candidates,[]);
+ const explicit=context(root,['--change',id]);
+ assert.equal(explicit.exitCode,2);assert.equal(explicit.result.errors[0].code,'invalid-input');
 });

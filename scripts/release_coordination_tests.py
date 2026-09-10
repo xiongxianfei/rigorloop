@@ -50,6 +50,21 @@ class ReleaseCoordinationTests(unittest.TestCase):
                 self.assertEqual(cli.main(['read-evidence', '--tag', 'v0.5.1'], services=FailedStorage()), 1)
             self.assertNotIn('/private/worker', error.getvalue() + summary.read_text())
 
+    def test_actual_ci_dispatch_does_not_report_private_diagnostics(self):
+        import importlib.util, io, contextlib
+        from unittest.mock import patch
+        from release_candidate import CandidateError
+        spec = importlib.util.spec_from_file_location('release_dispatcher', ROOT / 'scripts/release-coordinator.py')
+        cli = importlib.util.module_from_spec(spec); spec.loader.exec_module(cli)
+        for failure in [OSError('/private/worker/credential-file unavailable'),
+                        CandidateError('check failed; private diagnostic log: /private/worker/check.log'),
+                        KeyError('candidate_id'), TypeError('wrong object'), AttributeError('wrong shape')]:
+            error = io.StringIO()
+            with self.subTest(failure=type(failure).__name__), patch('release_candidate.check_ci', side_effect=failure), contextlib.redirect_stderr(error):
+                self.assertEqual(cli.main(['check-ci', '--mode', 'main']), 1)
+            self.assertNotIn('/private/worker', error.getvalue())
+            self.assertIn('CI release preparation stopped:', error.getvalue())
+
     def test_evidence_mirror_reuses_exact_bytes_and_rejects_conflict(self):
         from release_provider import NetworkPublisher
         from unittest.mock import patch

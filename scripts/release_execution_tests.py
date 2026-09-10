@@ -13,6 +13,11 @@ from release_execution import ExecutionError, GitEvidence, validate_approval, en
 
 
 class ReleaseApprovalTests(unittest.TestCase):
+    def test_ci_only_candidate_cannot_receive_publication_authority(self):
+        self.candidate['inputs'] = {'ci_only': True}
+        with self.assertRaisesRegex(ExecutionError, 'CI-only'):
+            validate_approval(self.candidate, self.binding, self.facts)
+
     def setUp(self):
         self.candidate = {'candidate_id': 'a' * 64, 'source_commit': 'b' * 40,
             'source_ref': 'refs/heads/main', 'repository': 'xiongxianfei/rigorloop'}
