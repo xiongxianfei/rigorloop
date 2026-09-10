@@ -97,8 +97,10 @@ class ReleaseCandidateTests(unittest.TestCase):
             with self.subTest(child=child), patch('release_candidate.run', side_effect=run), \
                     patch('release_candidate.prepare_candidate', side_effect=prepare), \
                     patch('release_candidate.ci_subject'), \
-                    patch('release_candidate.subprocess.run', return_value=SimpleNamespace(returncode=child)):
+                    patch('release_candidate.subprocess.run', return_value=SimpleNamespace(returncode=child)) as dispatch:
                 self.assertEqual(check_ci(['--mode', 'pr', '--base', 'base', '--head', 'head'], self.root), expected)
+                command = dispatch.call_args.args[0]
+                self.assertEqual(command[command.index('--head') + 1], 'b' * 40)
 
     def test_ci_range_resolves_main_defaults_and_repeated_head_before_preparation(self):
         from unittest.mock import patch

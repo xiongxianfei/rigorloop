@@ -25,6 +25,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [2026-09-10 Simplify release validation integration](plans/2026-09-10-release-validation-integration.md) — [owning change](changes/2026-09-10-release-validation-integration/change.json).
+
 - [2026-09-09 Approval-Driven Release and Source Consolidation](plans/2026-09-09-release-model-source-consolidation.md) — [owning change](changes/2026-09-09-release-model-source-consolidation/change.json)
 
 - [2026-09-09 Necessary Design Consolidation](plans/2026-09-09-necessary-design-consolidation.md) — [owning change](changes/2026-09-09-simplify-required-validation-and-design-retention/change.json)
@@ -63,8 +65,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-08-18 Explain-Change Skill Simplification](plans/2026-08-18-explain-change-skill-simplification.md)
 - [2026-08-17 Vision Skill Progressive Disclosure](plans/2026-08-17-vision-skill-progressive-disclosure.md)
 - [2026-08-17 Learn Skill Simplification](plans/2026-08-17-learn-skill-simplification.md)
-
-- [2026-09-10 Simplify release validation integration](plans/2026-09-10-release-validation-integration.md) — [owning change](changes/2026-09-10-release-validation-integration/change.json).
 
 ## Historical replacements
 

@@ -17,6 +17,12 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from retirement_ledger import load_ledger, validate_ledger  # noqa: E402
 from validation_selection import CHECK_CATALOG  # noqa: E402
 
+# Workflow's scoped stored-format retirement keeps the archival ledger bytes.
+# Project the one adopted catalog disposition back to its historical inventory
+# slot; this does not claim that legacy acceptance and v2 rejection are equivalent.
+# Current behavior has separate proof in record-retirement.test.js.
+HISTORICAL_CHECK_IDS = (set(CHECK_CATALOG) - {"record_retirement.regression"}) | {"compact_contract.canonical"}
+
 
 LEDGER = (
     ROOT
@@ -32,7 +38,7 @@ class RetirementLedgerTests(unittest.TestCase):
         self.ledger = load_ledger(LEDGER)
 
     def assert_invalid(self, ledger: dict, fragment: str) -> None:
-        errors = validate_ledger(ledger, expected_check_ids=set(CHECK_CATALOG))
+        errors = validate_ledger(ledger, expected_check_ids=HISTORICAL_CHECK_IDS)
         self.assertTrue(errors, "malformed ledger unexpectedly passed")
         self.assertTrue(
             any(fragment in error for error in errors),
@@ -54,9 +60,13 @@ class RetirementLedgerTests(unittest.TestCase):
         }
         return entry
 
+    def test_current_retirement_catalog_disposition_is_explicit(self) -> None:
+        self.assertNotIn("compact_contract.canonical", CHECK_CATALOG)
+        self.assertIn("record_retirement.regression", CHECK_CATALOG)
+
     def test_repository_ledger_is_complete(self) -> None:
         self.assertEqual(
-            validate_ledger(self.ledger, expected_check_ids=set(CHECK_CATALOG)), []
+            validate_ledger(self.ledger, expected_check_ids=HISTORICAL_CHECK_IDS), []
         )
 
     def test_ledger_loads_without_third_party_site_packages(self) -> None:
@@ -92,7 +102,7 @@ class RetirementLedgerTests(unittest.TestCase):
             for entry in self.ledger["entries"]
             for check_id in entry["check_ids"]
         ]
-        self.assertEqual(set(owned), set(CHECK_CATALOG))
+        self.assertEqual(set(owned), HISTORICAL_CHECK_IDS)
         self.assertEqual(len(owned), len(set(owned)))
 
     def test_every_top_level_proof_script_is_inventoried(self) -> None:
