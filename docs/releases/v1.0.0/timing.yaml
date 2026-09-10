@@ -1,7 +1,7 @@
 schema_version: release-timing-v1
 release_tag: v1.0.0
 release_profile: docs/releases/profiles/v1.0.0.yaml
-created_at: "2026-09-10T11:29:22.248406+00:00"
+created_at: "2026-09-10T11:29:25.716450+00:00"
 phases: []
 checks:
   - id: tag_publication-0
