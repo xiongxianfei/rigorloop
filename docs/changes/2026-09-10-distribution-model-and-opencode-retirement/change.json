@@ -4,9 +4,9 @@
       "id": "distribution-router",
       "role": "route"
     },
-    "reason": "User authorized full implementation through PR; m1 ready; exact approved plan and required independent reviews govern continuation.",
+    "reason": "M2 implementation and C2/C3/C4/C8 complete; exact committed installer, current two-target production and historical-reader preservation require independent Code Review.",
     "stage": "code-review",
-    "status": "in-progress"
+    "status": "ready"
   },
   "applicability": [
     {
@@ -125,6 +125,15 @@
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1.json",
       "reason": "M1 source/proof corrected for the three recorded findings; preserve original judgment and require reporter reassessment.",
       "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1-r2.json",
+      "reason": "Fresh M1 correction assessment resolves all three first-pass findings against current exact subjects and unchanged approved upstream basis.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -262,6 +271,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1-r2.json"
     }
   ],
   "schema_version": 2,
@@ -275,7 +288,7 @@
       "requirement_refs": [
         "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m1"
       ],
-      "status": "ready"
+      "status": "completed"
     },
     {
       "id": "m2",
@@ -286,7 +299,7 @@
       "requirement_refs": [
         "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m2"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m3",

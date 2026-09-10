@@ -276,7 +276,7 @@ STATE_END = '<!-- release-execution:end -->'
 
 def public_files(candidate: dict) -> tuple[str, ...]:
     tag = candidate['tag']
-    names = [f'rigorloop-adapter-{target}-{tag}.zip' for target in ('codex', 'claude', 'opencode')]
+    names = [f'rigorloop-adapter-{target}-{tag}.zip' for target in ('codex', 'claude')]
     names += [candidate['tarball'], f'adapter-artifacts-{tag}.json', f'archive-proof-{tag}.json',
               'release-verification.json', 'profile.yaml', 'release-notes.md']
     if len(set(names)) != len(names) or any(name not in candidate['files'] for name in names):
@@ -444,7 +444,7 @@ def archive_report(candidate: dict) -> bytes:
         lines += ['  - adapter: ' + target, '    archive: ' + name,
             '    sha256: ' + candidate['files'][name]['sha256'], '    install_root: ' + root, '    result: pass']
     lines += ['combined_artifact:', '  required: false', f'  archive: rigorloop-adapters-{tag}.tar.gz',
-        '  sha256: ""', '  included_adapters:', '    - codex', '    - claude', '    - opencode',
+        '  sha256: ""', '  included_adapters:', '    - codex', '    - claude',
         'validation:', '  command: "release_execution: validate_adapter_artifact_metadata with retained full candidate proof"',
         '  result: pass', '  validated_at: "' + date + '"']
     return ('\n'.join(lines) + '\n').encode()

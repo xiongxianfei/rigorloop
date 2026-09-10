@@ -29,7 +29,7 @@ Install support for the agent you actually use:
 npx @xiongxianfei/rigorloop@latest init codex
 ```
 
-Use `init claude` for Claude Code or `init opencode` for opencode.
+Use `init claude` for Claude Code.
 
 Pin the package version anywhere reproducibility matters:
 
@@ -89,7 +89,7 @@ npx @xiongxianfei/rigorloop@latest init codex
 
 For a new repository, use this order:
 
-1. Install the adapter for your agent: `init codex`, `init claude`, or `init opencode`.
+1. Install the adapter for your agent: `init codex` or `init claude`.
 2. Bootstrap standing repository guidance:
    - `vision` creates or updates `VISION.md` for project direction and fit checks.
    - `constitution` creates or updates `CONSTITUTION.md` for source-of-truth and governance rules.
@@ -263,11 +263,11 @@ The current CLI candidate supports:
 
 - `rigorloop --help`
 - `rigorloop version`
-- `rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]`
+- `rigorloop init codex|claude [--force] [--dry-run] [--json]`
 - `rigorloop change create --root PATH --input - --format json`
 - `rigorloop workflow-context [--change ID] --format json`
 
-`init codex` installs verified Codex support into `.agents/skills/`. The CLI uses package-bundled official metadata, downloads the official GitHub release archive, verifies archive SHA-256 and installed tree hash, and leaves `rigorloop.yaml` / `rigorloop.lock` untouched unless `--write-state` is requested.
+`init codex` installs verified Codex support into `.agents/skills/`. The CLI uses package-bundled official metadata, downloads the official GitHub release archive, verifies archive SHA-256 and installed tree hash, and leaves `rigorloop.yaml` / `rigorloop.lock` untouched without reading or writing them.
 
 `change create` constructs a new v2 record set from an explicit targeted request. It does not replace proposal, Design, review, Verify or PR judgment. See [CLI recording usage](packages/rigorloop/README.md).
 
@@ -281,15 +281,14 @@ README content between `<!-- vision:start -->` and `<!-- vision:end -->` is gene
 
 ## Adapter Packages
 
-RigorLoop ships generated adapter packages for Codex, Claude Code, and opencode as GitHub release archives. The active install contract is in `dist/adapters/README.md`.
+RigorLoop ships generated adapter packages for Codex and Claude Code as GitHub release archives. The active install contract is in `dist/adapters/README.md`.
 
 | Tool | Archive pattern | Skill directory |
 | --- | --- | --- |
 | Codex | `rigorloop-adapter-codex-<version>.zip` | `.agents/skills/` |
 | Claude Code | `rigorloop-adapter-claude-<version>.zip` | `.claude/skills/` |
-| opencode | `rigorloop-adapter-opencode-<version>.zip` | `.opencode/skills/` |
 
-The current support matrix is tracked in `dist/adapters/manifest.yaml`; it records adapter support and generated opencode command aliases under `command_aliases.opencode`.
+The current support matrix is tracked in `dist/adapters/manifest.yaml`; it records support for the two current targets.
 
 `skills/` is the only authored skill source. `.codex/skills/` is ignored local Codex runtime state; keep it untracked if you copy installed Codex adapter skills there for local runtime use.
 
@@ -297,7 +296,7 @@ For `v0.1.3` and later, generated public adapter skill bodies are release archiv
 
 Adapter compatibility claims are versioned. If external tool contracts change, update the affected adapter contract through the RigorLoop lifecycle before changing release claims.
 
-Ordinary contributors do not need all supported tools installed locally to run non-smoke validation. Maintainer smoke for Codex, Claude Code, and opencode is recorded in `docs/releases/<version>/release.yaml` before a stable release.
+Ordinary contributors do not need all supported tools installed locally to run non-smoke validation. Maintainer smoke for Codex and Claude Code is recorded in `docs/releases/<version>/release.yaml` before a stable release.
 
 ### Using Adapter Skills
 
@@ -311,25 +310,7 @@ Claude Code uses native skill slash commands after the Claude adapter is install
 /pr Prepare the verified change for pull request review.
 ```
 
-OpenCode uses generated command aliases for the curated lifecycle stages. All included portable skills remain reusable under `.opencode/skills/`; thin command aliases live under `.opencode/commands/`. TUI examples:
-
-```text
-/proposal Evaluate whether this change should be specified.
-/spec Define the observable behavior for this change.
-/implement Build the approved milestone with tests first.
-/code-review Review the current diff against the approved artifacts.
-/pr Prepare the verified change for pull request review.
-```
-
-OpenCode command aliases are generated only for `proposal`, `proposal-review`, `design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `pr`. Other portable skills remain available as skills but do not receive command aliases.
-
-OpenCode one-shot example:
-
-```text
-opencode run --command proposal "Draft a proposal for the requested change."
-```
-
-Do not use Codex `$skill` syntax for Claude Code or OpenCode. Claude Code one-shot CLI examples are intentionally omitted because no Claude one-shot form has been smoke-tested for this release.
+Existing destination skills conflict even when identical. Use `--force` for complete replacement; local changes inside replaced skill directories leave the active installation, with originals retained outside discovery for inspection. Unrelated skills and state files stay untouched. OpenCode and `--write-state` are no longer supported.
 
 ## Learn More / Contribute
 
@@ -438,4 +419,4 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 
 This repository currently ships with the MIT license.
 
-The unified authoring candidate replaces `spec` and `architecture` with `design`. Existing managed installations use the [authorized upgrade and recovery procedure](packages/rigorloop/README.md#upgrading-retired-authoring-skills); pre-deleting managed entries creates drift. The selected [Design](docs/design/design/design.md) and [System](docs/design/system/system.md) own the bounded method/composition migration. Other document consolidation remains [explicit follow-up work](docs/follow-ups.md).
+The unified authoring candidate replaces `spec` and `architecture` with `design`. Existing retired entries require [separate inspection and reconciliation](packages/rigorloop/README.md#upgrading-retired-authoring-skills); installation does not manage project state or automatically migrate those entries. The selected [Design](docs/design/design/design.md) and [System](docs/design/system/system.md) own the bounded method/composition migration. Other document consolidation remains [explicit follow-up work](docs/follow-ups.md).

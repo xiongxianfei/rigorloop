@@ -58,6 +58,26 @@ REQUIRED_PROFILE_FIELD_CASES = (
 )
 
 
+class HistoricalReleaseReaderTests(unittest.TestCase):
+    def test_unchanged_three_target_evidence_is_readable_but_not_current_profile(self):
+        for tag in ("v0.3.5", "v0.5.0"):
+            with self.subTest(tag=tag):
+                with self.assertRaises(ReleaseProfileError) as caught:
+                    load_release_profile(tag, root=ROOT)
+                self.assertIn("unknown target: opencode", caught.exception.errors)
+                self.assertFalse(validate_release_timing_evidence(tag, root=ROOT).errors)
+                self.assertEqual(validate_published_release_artifacts(tag, root=ROOT), [])
+
+    def test_unknown_value_rejects_in_historical_reader(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / "docs/releases/profiles/v0.3.5.yaml"
+            path.parent.mkdir(parents=True)
+            original = (ROOT / "docs/releases/profiles/v0.3.5.yaml").read_text()
+            path.write_text(original.replace("- opencode", "- unknown_value"))
+            self.assertIn("unknown target: unknown_value", validate_release_timing_evidence("v0.3.5", root=root).errors)
+
+
 class TrustedReleaseTagIdentityTests(unittest.TestCase):
     def make_git_repo(self, root: Path) -> str:
         subprocess.run(["git", "init", "-q", str(root)], check=True)
@@ -217,7 +237,7 @@ class ReleaseProfileTests(unittest.TestCase):
         self.assertEqual(profile.package_version, "0.3.5")
         self.assertEqual(profile.npm_dist_tag, "latest")
         self.assertEqual(profile.npm_package, "@xiongxianfei/rigorloop")
-        self.assertEqual(profile.targets, ("codex", "claude", "opencode"))
+        self.assertEqual(profile.targets, ("codex", "claude"))
         self.assertTrue(profile.adapter_artifacts["required"])
         self.assertEqual(
             profile.adapter_artifacts["metadata_file"],
@@ -904,7 +924,7 @@ class PrepareReleaseTests(unittest.TestCase):
     def test_pending_release_artifacts_reject_missing_target_row(self) -> None:
         def mutate(text: str) -> str:
             start = text.index("  claude:\n")
-            end = text.index("  opencode:\n")
+            end = text.index("\n```", start)
             return text[:start] + text[end:]
 
         self.assert_pending_evidence_error(mutate, "missing target: claude")
@@ -1561,12 +1581,6 @@ class RecordingPublicEvidenceProvider:
                 size=124,
                 sha256="sha256:provider-claude-archive",
             ),
-            GitHubReleaseAsset(
-                name="rigorloop-adapter-opencode-v0.3.5.zip",
-                url="https://provider.example/releases/opencode-provider.zip",
-                size=125,
-                sha256="sha256:provider-opencode-archive",
-            ),
         )
         self.npm_metadata = npm_metadata or NpmPackageMetadata(
             package="@xiongxianfei/rigorloop",
@@ -1680,9 +1694,6 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
             "  - target: claude\n"
             "    url: \"https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.5/rigorloop-adapter-claude-v0.3.5.zip\"\n"
             "    sha256: \"sha256:claudearchive\"\n"
-            "  - target: opencode\n"
-            "    url: \"https://github.com/xiongxianfei/rigorloop/releases/download/v0.3.5/rigorloop-adapter-opencode-v0.3.5.zip\"\n"
-            "    sha256: \"sha256:opencodearchive\"\n"
             "\n"
             "target_init_smoke:\n"
             "  - target: codex\n"
@@ -1697,12 +1708,6 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
             "    output_summary: \"created claude adapter\"\n"
             "    tree_hashes: \"sha256:claudetree\"\n"
             "    file_counts: \"13\"\n"
-            "  - target: opencode\n"
-            "    command: \"npx @xiongxianfei/rigorloop@0.3.5 init opencode\"\n"
-            "    result: pass\n"
-            "    output_summary: \"created opencode adapter\"\n"
-            "    tree_hashes: \".opencode/skills=sha256:opencodeskills;.opencode/commands=sha256:opencodecommands\"\n"
-            "    file_counts: \".opencode/skills=14;.opencode/commands=3\"\n"
         )
 
     def write_public_evidence(self, root: Path, text: str | None = None) -> Path:
@@ -1754,7 +1759,6 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
         self.assertIn("npx @xiongxianfei/rigorloop@0.3.5 init codex", text)
         self.assertNotIn("npx -y", text)
         self.assertIn("sha256:provider-codex-tree", text)
-        self.assertIn(".opencode/skills=sha256:provider-opencode-skills", text)
         self.assertIn("post_publish_closeout_blocked: false", text)
 
     def test_close_release_publication_fetches_github_release_assets(self) -> None:
@@ -1814,7 +1818,6 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
             [
                 "npx @xiongxianfei/rigorloop@0.3.5 init codex",
                 "npx @xiongxianfei/rigorloop@0.3.5 init claude",
-                "npx @xiongxianfei/rigorloop@0.3.5 init opencode",
             ],
         )
 
@@ -2024,7 +2027,7 @@ class PublishedEvidenceCloseoutTests(unittest.TestCase):
             npm_publication = root / "docs" / "releases" / "v0.3.5" / "npm-publication.md"
             text = npm_publication.read_text(encoding="utf-8")
             start = text.index("  claude:\n")
-            end = text.index("  opencode:\n")
+            end = text.index("\n```", start)
             npm_publication.write_text(text[:start] + text[end:], encoding="utf-8")
 
             errors = validate_published_release_artifacts("v0.3.5", root=root)

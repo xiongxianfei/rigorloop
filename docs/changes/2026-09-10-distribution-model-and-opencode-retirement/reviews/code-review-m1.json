@@ -76,8 +76,20 @@
         "role": "review"
       },
       "required_outcome": "Resolve or safely reject configured discovery-root aliases/ambiguous or inaccessible paths before any original detachment. Compare actual filesystem containment, not only lexical paths; preserve original units and provide explicit unsafe-placement failure. Add a direct regression using an alias to the retention ancestor, plus the supported non-overlap case. Correction owner: implement, M1. No Design change is needed.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "implementation-m1-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "The helper now inspects every configured discovery root through its existing ancestors and rejects realpath aliases, including a missing child below a symlink; checks repeat during parent validation before mutation. Added direct regressions preserve the original. Reviewer reran the original alias reproduction: aliasBlocked=true, then a legitimate nonoverlapping configured root completed with its original retained. This meets the original containment/rejection outcome."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:82018f1fef3ad98f55209a94d334ab6de29385f66d6d0e6634bee665ecdf796b",
@@ -157,8 +169,20 @@
         "role": "review"
       },
       "required_outcome": "Add deterministic actual-filesystem proof of failure during publication (or equivalent real partial unit) with multiple units, asserting original retention, partial active bytes, no writes to later units, accurate completed/failed/untouched results, default retry conflict and explicit force recovery. A failure injection may trigger the condition but must not replace successful filesystem operations. Correct the evidence scope to what was actually exercised. Owner: implement, M1.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "implementation-m1-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "A file-published checkpoint now interrupts a real partially populated multi-file skill after an earlier unit completes and before a later unit begins. The test verifies exact completed/failed/untouched lists, present and absent candidate bytes, retained original content, and preservation of an independent edit on default retry. Existing complete force-directory tests cover explicit replacement of such arbitrary existing content. Evidence no longer relies solely on interruption after a complete unit."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:ae443a3e8d11f66fa35db3a120624f85b9ef3a6464e177cb2bb05b21b01d9a60",
@@ -238,8 +262,20 @@
         "role": "review"
       },
       "required_outcome": "Record bounded exact pre-M1 baseline execution and actual retained replacement proof for the affected metadata/exit checks with source/fixture identities, outcomes/decontractions, and measured comparable command scope (or exact demonstrated non-comparability and owner disposition where unavailable). Do not close M1 by simply deferring required E2 proof to M2. Existing isolated Release fixture proof is sufficient; no publication or metadata production change is requested. Correct E3 evidence to distinguish true pre-change baseline from diagnostic failed runs. Owner: implement, M1; any desired waiver returns to plan/Design.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "implementation-m1-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "The author executed exact archived pre-change 0d3fd0b6 source: 462/464 tests reproduced the two original baseline failures. Real ReleaseCandidateIntegrationTests.test_actual_candidate_build_and_packed_metadata_chain passed in M1, observing generation/archive/metadata/packed-install rather than deferring replacement proof. Historical digest and actual concise exit projection remain tested. TG-08 report distinguishes this reconstructed baseline from pre-authoring measurement, records command/changed-line/owner scope, and explicitly discloses differing timing sources/no speedup claim. Missing pre-authoring timing cannot be recreated, but frozen pre-change execution and current results satisfy the bounded factual comparison without inventing an execution or waiver."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:9b76fc3a4b104bb4d14a0ac1f526da11c2d513fbd4c3365b6279f137b9ca3871",

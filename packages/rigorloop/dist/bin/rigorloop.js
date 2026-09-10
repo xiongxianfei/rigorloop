@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 
-import { lstatSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { lstatSync, existsSync, readFileSync, realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { captureManagedBasis, replaceManagedAuthoring, inspectManagedAuthoringRecovery, settleManagedAuthoringRecovery } from "../lib/managed-authoring-replacement.js";
+import { installCandidate } from "../lib/installer-replacement.js";
 
 import { EXIT, exitCodeForResult } from "../lib/command-result.js";
 import { adapterDescriptor, supportedAdapterNames } from "../lib/adapters.js";
-import { parseLockfile, serializeLockfile, sha256NormalizedText } from "../lib/lockfile.js";
 import { validateOfficialArchiveUrl } from "../lib/official-archive-url.js";
 import { runObservedCli } from "../lib/cli-observability.js";
 import { resolveLogConfig } from "../lib/log-config.js";
@@ -30,7 +29,6 @@ const isRetiredCommand = argv => {
   } catch { return false; }
 };
 
-const LOCKFILE_PATH = "rigorloop.lock";
 let activeOutput = {};
 
 function packageInfo() {
@@ -161,7 +159,8 @@ function usage() {
 Usage:
   rigorloop --help
   rigorloop version
-  rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
+  rigorloop init codex|claude [--force] [--dry-run] [--json]
+  --force: Replace existing destination skills. Local changes within replaced skill directories will be lost.
   rigorloop workflow-context [--change <id>] [--format human|json]
   rigorloop status --root PATH --change ID [--format text|json]
   rigorloop context --root PATH --change ID --input - [--format text|json]
@@ -178,7 +177,7 @@ Usage:
 
 Commands:
   version                 Print package name and version.
-  init codex|claude|opencode
+  init codex|claude
                           Initialize verified target support.
   workflow-context        Report read-only project or exact-change workflow facts.
   status/context/show     Inspect explicitly selected recorded information; storage only.
@@ -248,124 +247,6 @@ function releaseForPackage(version) {
   return `v${version}`;
 }
 
-function sourceForFlags(flags, info, descriptor) {
-  if (flags.fromArchiveProvided) {
-    return {
-      type: "local-archive",
-      archive: basename(flags.fromArchive),
-      inputPath: flags.fromArchive,
-    };
-  }
-
-  return {
-    type: "release-archive",
-    release: releaseForPackage(info.version),
-    archive: descriptor.archiveName(releaseForPackage(info.version)),
-  };
-}
-
-function manifestTargetBlock(source, descriptor, artifact) {
-  const sourceLines =
-    source.type === "local-archive"
-      ? [`      type: local-archive`, `      archive: "${source.archive}"`]
-      : [`      type: release-archive`, `      release: "${source.release}"`];
-  const installRoots = rootsForArtifact(descriptor, artifact);
-  const rootLines =
-    descriptor.name !== "opencode" && Object.keys(installRoots).length === 1
-      ? [`    install_root: "${Object.values(installRoots)[0]}"`]
-      : [
-          `    install_roots:`,
-          ...Object.entries(installRoots).map(([role, root]) => `      ${role}: "${root}"`),
-        ];
-
-  return `  - target: ${descriptor.name}
-${rootLines.join("\n")}
-    source:
-${sourceLines.join("\n")}`;
-}
-
-function parseManifestAdapterBlocks(content) {
-  const isLegacySchema = content.includes("schema_version: 1") && content.includes("adapters:");
-  const isTargetSchema = content.includes("schema_version: 2") && content.includes("targets:");
-  if (!isLegacySchema && !isTargetSchema) {
-    return { error: { code: "invalid-config", message: "Existing rigorloop.yaml is not compatible with the init contract." } };
-  }
-  const lines = content.replace(/\r\n?/g, "\n").split("\n");
-  const listKey = isTargetSchema ? "targets:" : "adapters:";
-  const entryPrefix = isTargetSchema ? "  - target: " : "  - name: ";
-  const adapterStart = lines.findIndex((line) => line === listKey);
-  const blocks = [];
-  let current = [];
-  for (const line of lines.slice(adapterStart + 1)) {
-    if (line.startsWith(entryPrefix)) {
-      if (current.length) {
-        blocks.push(current);
-      }
-      current = [line];
-    } else if (current.length) {
-      current.push(line);
-    } else if (line.trim() !== "") {
-      return { error: { code: "invalid-config", message: "Existing rigorloop.yaml has malformed adapter entries." } };
-    }
-  }
-  if (current.length) {
-    blocks.push(current);
-  }
-  const adapters = [];
-  for (const block of blocks) {
-    const name = block[0].slice(entryPrefix.length).trim();
-    const descriptor = adapterDescriptor(name);
-    if (!descriptor) {
-      return { error: { code: "invalid-config", message: `Existing rigorloop.yaml includes unsupported adapter ${name}.` } };
-    }
-    const blockText = isTargetSchema ? block.join("\n").replace(/\n+$/, "") : block.join("\n").replace(/\n+$/, "").replace(/^  - name:/, "  - target:");
-    adapters.push({ name, block: blockText, roots: manifestBlockRoots(blockText) });
-  }
-  return { adapters };
-}
-
-function manifestBlockRoots(block) {
-  const roots = [];
-  let inInstallRoots = false;
-  for (const line of block.split("\n")) {
-    const singleRootMatch = line.match(/^    install_root:\s+"([^"]+)"\s*$/);
-    if (singleRootMatch) {
-      roots.push(singleRootMatch[1]);
-      inInstallRoots = false;
-      continue;
-    }
-    if (line === "    install_roots:") {
-      inInstallRoots = true;
-      continue;
-    }
-    if (/^    [A-Za-z_][A-Za-z0-9_-]*:/.test(line)) {
-      inInstallRoots = false;
-    }
-    const rootMatch = inInstallRoots ? line.match(/^      [A-Za-z_][A-Za-z0-9_-]*:\s+"([^"]+)"\s*$/) : undefined;
-    if (rootMatch) {
-      roots.push(rootMatch[1]);
-    }
-  }
-  return roots;
-}
-
-function manifestContent(info, source, descriptor, existingContent) {
-  const selectedBlock = manifestTargetBlock(source, descriptor, source.artifact);
-  const parsed = existingContent ? parseManifestAdapterBlocks(existingContent) : undefined;
-  const preserved =
-    parsed && !parsed.error
-      ? parsed.adapters
-          .filter((entry) => entry.name !== descriptor.name)
-          .map((entry) => entry.block.replace(/^  - name:/, "  - target:"))
-      : [];
-  return `schema_version: 2
-rigorloop:
-  package: "${info.name}"
-  package_version: "${info.version}"
-targets:
-${[...preserved, selectedBlock].join("\n")}
-`;
-}
 
 function rootsForArtifact(descriptor, artifact) {
   if (artifact?.install_roots) {
@@ -377,134 +258,12 @@ function rootsForArtifact(descriptor, artifact) {
   return descriptor.installRoots;
 }
 
-function rootHashesForArtifact(descriptor, artifact) {
-  if (artifact?.root_hashes) {
-    return artifact.root_hashes;
-  }
-  return Object.fromEntries(
-    Object.keys(rootsForArtifact(descriptor, artifact)).map((role) => [
-      role,
-      {
-        tree_sha256: artifact?.tree_sha256 ?? "<planned-after-install>",
-        file_count: artifact?.file_count ?? "<planned-after-install>",
-      },
-    ]),
-  );
-}
-
-function usesMultiRootLockfile(descriptor, artifact) {
-  return descriptor.name === "opencode" || Object.keys(rootsForArtifact(descriptor, artifact)).length > 1;
-}
-
-function lockfileEntryForAdapter(info, source, artifact, descriptor, rootHashes = rootHashesForArtifact(descriptor, artifact)) {
-  const entry = {
-    target: descriptor.name,
-    release: releaseForPackage(info.version),
-    source: source.type,
-    archive: source.archive,
-    archive_sha256: artifact?.sha256 ?? "<planned>",
-    tree_hash_algorithm: "rigorloop-tree-hash-v1",
-  };
-  if (usesMultiRootLockfile(descriptor, artifact)) {
-    return {
-      ...entry,
-      installed_roots: rootsForArtifact(descriptor, artifact),
-      root_hashes: rootHashes,
-    };
-  }
-  const [role] = Object.keys(rootsForArtifact(descriptor, artifact));
-  return {
-    ...entry,
-    installed_root: rootsForArtifact(descriptor, artifact)[role],
-    tree_sha256: rootHashes[role].tree_sha256,
-    file_count: rootHashes[role].file_count,
-  };
-}
-
-function plannedLockfile(info, source, manifest, descriptor) {
-  const artifact = source.artifact;
-  return {
-    schema_version: 3,
-    rigorloop: {
-      package: info.name,
-      version: info.version,
-    },
-    manifest: {
-      path: "rigorloop.yaml",
-      sha256: sha256NormalizedText(manifest),
-    },
-    generated: {
-      targets: [lockfileEntryForAdapter(info, source, artifact, descriptor)],
-    },
-  };
-}
-
-function existingLockfileEntries(selectedAdapter) {
-  const lockfileAbsolutePath = resolve(process.cwd(), LOCKFILE_PATH);
-  if (!existsSync(lockfileAbsolutePath)) {
-    return [];
-  }
-  const parsed = parseLockfile(readFileSync(lockfileAbsolutePath, "utf8"));
-  if (!parsed.ok) {
-    return [];
-  }
-  const entries = parsed.lockfile.generated.targets ?? parsed.lockfile.generated.adapters;
-  return entries
-    .filter((entry) => (entry.target ?? entry.adapter) !== selectedAdapter)
-    .map((entry) => {
-      if (entry.target) {
-        return entry;
-      }
-      const { adapter, ...rest } = entry;
-      return { target: adapter, ...rest };
-    });
-}
-
-function lockfileForVerifiedInstall(info, source, manifest, artifact, rootHashes, descriptor) {
-  const adapters = [
-    ...existingLockfileEntries(descriptor.name),
-    lockfileEntryForAdapter(info, source, artifact, descriptor, rootHashes),
-  ];
-  return {
-    schema_version: 3,
-    rigorloop: {
-      package: info.name,
-      version: info.version,
-    },
-    manifest: {
-      path: "rigorloop.yaml",
-      sha256: sha256NormalizedText(manifest),
-    },
-    generated: {
-      targets: adapters,
-    },
-  };
-}
-
-function compatibleManifest(content, descriptor, artifact) {
-  if (descriptor.name === "opencode" && !rootsForArtifact(descriptor, artifact).commands && content.includes(".opencode/commands")) {
-    return false;
-  }
-  return (
-    content.includes("schema_version: 1") &&
-    content.includes(`name: ${descriptor.name}`) &&
-    content.includes(`"${Object.values(rootsForArtifact(descriptor, artifact))[0]}"`)
-  );
-}
 
 function pathState(path) {
-  if (!existsSync(path)) {
-    return "absent";
-  }
-  return statSync(path).isDirectory() ? "directory" : "file";
+  try { return lstatSync(path).isDirectory() ? "directory" : "file"; }
+  catch (error) { if (["ENOENT", "ENOTDIR"].includes(error.code)) return "absent"; throw error; }
 }
 
-function directoryKind(path, descriptor, artifact) {
-  if (Object.values(rootsForArtifact(descriptor, artifact)).includes(path)) {
-    return `${descriptor.name}-install-root`;
-  }
-  return `${descriptor.name}-adapter-root`;
-}
 
 function sha256(bytes) {
   return createHash("sha256").update(bytes).digest("hex");
@@ -716,13 +475,6 @@ function isSha256(value) {
   return typeof value === "string" && /^[0-9a-f]{64}$/i.test(value);
 }
 
-function releaseListedForSkillsOnlyCompatibility(marker, release) {
-  if (!marker) {
-    return false;
-  }
-  const releases = Array.isArray(marker) ? marker : marker.releases;
-  return Array.isArray(releases) && releases.includes(release);
-}
 
 function validateMetadata(metadata, info, descriptor) {
   const release = releaseForPackage(info.version);
@@ -780,45 +532,7 @@ function validateMetadata(metadata, info, descriptor) {
       return { error: { code: "metadata-invalid", message: `${descriptor.displayName} adapter install root is not ${descriptor.primaryInstallRoot()}.` } };
     }
   }
-  if (artifact.command_aliases?.opencode) {
-    if (descriptor.name !== "opencode" || !artifact.install_roots?.commands) {
-      return { error: { code: "metadata-invalid", message: "opencode command alias metadata requires the opencode commands root." } };
-    }
-    const aliasPaths = opencodeCommandAliasPaths(artifact);
-    if (
-      !Number.isInteger(artifact.command_aliases.opencode.count) ||
-      !Array.isArray(aliasPaths) ||
-      artifact.command_aliases.opencode.count !== aliasPaths.length ||
-      aliasPaths.some((aliasPath) => !isNonEmptyString(aliasPath) || !aliasPath.startsWith(`${descriptor.installRoots.commands}/`))
-    ) {
-      return { error: { code: "metadata-invalid", message: "opencode command alias metadata is incomplete." } };
-    }
-  }
-  // CR-M3-R2-F1: opencode commands root is valid only with declared command aliases.
-  if (descriptor.name === "opencode" && artifact.install_roots?.commands && !artifact.command_aliases?.opencode) {
-    return {
-      blocker: metadataBlocker(
-        "opencode-command-aliases-missing",
-        "Opencode commands root metadata requires command_aliases.opencode.",
-        artifact.archive,
-        "Use opencode metadata that declares command aliases, or use explicitly compatible skills-only metadata without the commands root.",
-      ),
-    };
-  }
-  // CR-M3-R1-F1: skills-only opencode compatibility must be explicit in trusted metadata.
-  if (descriptor.name === "opencode" && !artifact.command_aliases?.opencode && !rootsForArtifact(descriptor, artifact).commands) {
-    const marker = artifact.skills_only_compatibility ?? metadata.compatibility?.opencode_skills_only;
-    if (!releaseListedForSkillsOnlyCompatibility(marker, release)) {
-      return {
-        blocker: metadataBlocker(
-          "opencode-skills-only-compatibility-unmarked",
-          "Opencode skills-only archive metadata is not explicitly marked compatible.",
-          artifact.archive,
-          "Use an opencode archive with command alias metadata or bundled trusted skills-only compatibility metadata.",
-        ),
-      };
-    }
-  }
+  if (artifact.command_aliases || artifact.skills_only_compatibility) return {error: {code: "metadata-invalid", message: "Retired command aliases are unsupported."}};
   return { artifact };
 }
 
@@ -921,23 +635,6 @@ function fileRowsForTreeRoot(entries, installRoot) {
     .sort(([left], [right]) => left.localeCompare(right));
 }
 
-function opencodeCommandAliasPaths(artifact) {
-  const aliases = artifact?.command_aliases?.opencode;
-  if (!aliases) {
-    return undefined;
-  }
-  if (Array.isArray(aliases.paths)) {
-    return aliases.paths;
-  }
-  if (aliases.aliases && typeof aliases.aliases === "object") {
-    return Object.values(aliases.aliases);
-  }
-  return [];
-}
-
-function treeHashForEntries(entries, descriptor) {
-  return treeHashForRows(fileRowsForTreeRoot(entries, descriptor.primaryInstallRoot()));
-}
 
 function rootHashesForEntries(entries, descriptor, artifact) {
   return Object.fromEntries(
@@ -959,307 +656,14 @@ function treeHashForRows(rows) {
   return sha256(Buffer.from(manifest, "utf8"));
 }
 
-function rowsEqual(left, right) {
-  if (left.length !== right.length) {
-    return false;
-  }
-  return left.every(([path, hash], index) => path === right[index][0] && hash === right[index][1]);
-}
-
-function fileRowsForFilesystem(root) {
-  const rows = [];
-  function visit(relativeDirectory) {
-    const absoluteDirectory = resolve(process.cwd(), root, relativeDirectory);
-    for (const name of readdirSync(absoluteDirectory).sort()) {
-      const relativePath = relativeDirectory ? `${relativeDirectory}/${name}` : name;
-      const absolutePath = resolve(process.cwd(), root, relativePath);
-      const stat = statSync(absolutePath);
-      if (stat.isDirectory()) {
-        visit(relativePath);
-      } else if (stat.isFile()) {
-        const bytes = relativePath.endsWith(".md") ? normalizeText(readFileSync(absolutePath)) : readFileSync(absolutePath);
-        rows.push([relativePath, sha256(bytes)]);
-      }
-    }
-  }
-  visit("");
-  return rows.sort(([left], [right]) => left.localeCompare(right));
-}
-
-function treeHashForFilesystem(root) {
-  const rows = fileRowsForFilesystem(root);
-  return {
-    rows,
-    treeHash: treeHashForRows(rows),
-    fileCount: rows.length,
-  };
-}
-
-function currentLockfileEntries() {
-  const lockfileAbsolutePath = resolve(process.cwd(), LOCKFILE_PATH);
-  if (!existsSync(lockfileAbsolutePath)) {
-    return [];
-  }
-  const parsed = parseLockfile(readFileSync(lockfileAbsolutePath, "utf8"));
-  if (!parsed.ok) {
-    return [];
-  }
-  return parsed.lockfile.generated.targets ?? parsed.lockfile.generated.adapters;
-}
-
-function currentLockfileEntry(descriptor) {
-  return currentLockfileEntries().find((entry) => (entry.target ?? entry.adapter) === descriptor.name);
-}
-
-function installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCount) {
-  return {
-    code: "installed-tree-mismatch",
-    message: "Installed adapter tree does not match trusted metadata.",
-    expected_tree_sha256: expectedTreeHash,
-    actual_tree_sha256: actualTree.treeHash,
-    expected_file_count: expectedFileCount,
-    actual_file_count: actualTree.fileCount,
-  };
-}
-
-function verifyInstalledTree(entries, artifact, descriptor, { allowMissingOrEmpty = false } = {}) {
-  const expectedRootHashes = rootHashesForEntries(entries, descriptor, artifact);
-  for (const [role, root] of Object.entries(rootsForArtifact(descriptor, artifact))) {
-    const expectedRows = fileRowsForTreeRoot(entries, root);
-    const expectedTreeHash = artifact.root_hashes?.[role]?.tree_sha256 ?? artifact.tree_sha256;
-    const expectedFileCount = artifact.root_hashes?.[role]?.file_count ?? expectedRows.length;
-
-    if (!existsSync(resolve(process.cwd(), root))) {
-      if (allowMissingOrEmpty) {
-        continue;
-      }
-      return { error: installedTreeMismatchError({ treeHash: "<missing>", fileCount: 0 }, expectedTreeHash, expectedFileCount) };
-    }
-
-    const actualTree = treeHashForFilesystem(root);
-    if (allowMissingOrEmpty && actualTree.fileCount === 0) {
-      continue;
-    }
-    if (!rowsEqual(actualTree.rows, expectedRows) || actualTree.treeHash !== expectedTreeHash || actualTree.fileCount !== expectedFileCount) {
-      return { error: installedTreeMismatchError(actualTree, expectedTreeHash, expectedFileCount) };
-    }
-  }
-  return { ok: true, rootHashes: expectedRootHashes, expectedFileCount: expectedRootHashes.skills?.file_count ?? 0, treeHash: expectedRootHashes.skills?.tree_sha256 };
-}
-
-function generatedOutputConflictBlocker(entries) {
-  const directories = new Set();
-  for (const entry of entries) {
-    const parts = entry.name.split("/");
-    parts.pop();
-    while (parts.length > 2) {
-      directories.add(parts.join("/"));
-      parts.pop();
-    }
-  }
-
-  for (const directory of [...directories].sort()) {
-    if (pathState(resolve(process.cwd(), directory)) === "file") {
-      return {
-        code: "overwrite-refused",
-        message: `${directory} exists and is not a directory.`,
-        path: directory,
-        next_action: "Move the existing file before running init.",
-      };
-    }
-  }
-
-  for (const entry of entries) {
-    if (pathState(resolve(process.cwd(), entry.name)) === "directory") {
-      return {
-        code: "overwrite-refused",
-        message: `${entry.name} exists and is not a file.`,
-        path: entry.name,
-        next_action: "Move the existing directory before running init.",
-      };
-    }
-  }
-
-  return undefined;
-}
-
-function lockfileDriftBlocker(lockfileEntry) {
-  if (!lockfileEntry) {
-    return undefined;
-  }
-  if (lockfileEntry.installed_roots) {
-    for (const [role, root] of Object.entries(lockfileEntry.installed_roots)) {
-      const rootHash = lockfileEntry.root_hashes[role];
-      const blocker = lockfileDriftBlocker({
-        adapter: lockfileEntry.adapter,
-        target: lockfileEntry.target,
-        installed_root: root,
-        tree_sha256: rootHash.tree_sha256,
-        file_count: rootHash.file_count,
-      });
-      if (blocker) {
-        return blocker;
-      }
-    }
-    return undefined;
-  }
-
-  const rootState = pathState(resolve(process.cwd(), lockfileEntry.installed_root));
-  if (rootState === "absent") {
-    return {
-      code: "generated-output-missing",
-      message: "Codex generated output recorded in rigorloop.lock is missing.",
-      target: lockfileEntry.target ?? lockfileEntry.adapter,
-      installed_root: lockfileEntry.installed_root,
-      expected_tree_sha256: lockfileEntry.tree_sha256,
-      actual_tree_sha256: null,
-      next_action: "Restore the recorded generated output or resolve drift before running init.",
-    };
-  }
-  if (rootState !== "directory") {
-    return {
-      code: "overwrite-refused",
-      message: `${lockfileEntry.installed_root} exists and is not a directory.`,
-      path: lockfileEntry.installed_root,
-      next_action: "Move the existing file before running init.",
-    };
-  }
-
-  const actualTree = treeHashForFilesystem(lockfileEntry.installed_root);
-  if (actualTree.treeHash !== lockfileEntry.tree_sha256 || actualTree.fileCount !== lockfileEntry.file_count) {
-    return {
-      code: "generated-output-drift",
-      message: "Codex generated output differs from rigorloop.lock.",
-      target: lockfileEntry.target ?? lockfileEntry.adapter,
-      installed_root: lockfileEntry.installed_root,
-      expected_tree_sha256: lockfileEntry.tree_sha256,
-      actual_tree_sha256: actualTree.treeHash,
-      expected_file_count: lockfileEntry.file_count,
-      actual_file_count: actualTree.fileCount,
-      next_action: "Resolve generated output drift before running init.",
-    };
-  }
-
-  return undefined;
-}
-
-function lockfileEntryTarget(entry) {
-  return entry.target ?? entry.adapter;
-}
-
-function lockfileEntryRoots(entry) {
-  if (entry.installed_roots) {
-    return Object.values(entry.installed_roots);
-  }
-  return entry.installed_root ? [entry.installed_root] : [];
-}
-
-function rootsOverlap(leftRoots, rightRoots) {
-  return leftRoots.some((left) =>
-    rightRoots.some((right) => left === right || left.startsWith(`${right}/`) || right.startsWith(`${left}/`)),
-  );
-}
-
-function targetRootConflictBlocker(target, path, reason) {
-  return {
-    code: "target-root-conflict",
-    message: reason,
-    target,
-    path,
-    next_action: "Resolve the existing RigorLoop state before running init.",
-  };
-}
-
-function existingStateSafetyBlocker(descriptor, artifact) {
-  const targetRoots = Object.values(rootsForArtifact(descriptor, artifact));
-  const manifestPath = resolve(process.cwd(), "rigorloop.yaml");
-  if (existsSync(manifestPath)) {
-    const parsedManifest = parseManifestAdapterBlocks(readFileSync(manifestPath, "utf8"));
-    if (parsedManifest.error) {
-      return {
-        code: "state-invalid",
-        message: "Existing RigorLoop state is malformed; refusing to mutate target roots.",
-        path: "rigorloop.yaml",
-        next_action: "Fix or move rigorloop.yaml before running init.",
-      };
-    }
-    const selectedEntries = parsedManifest.adapters.filter((entry) => entry.name === descriptor.name);
-    if (selectedEntries.length > 1) {
-      return {
-        code: "duplicate-target-entry",
-        message: `Existing rigorloop.yaml contains duplicate ${descriptor.displayName} target entries.`,
-        path: "rigorloop.yaml",
-        next_action: "Remove duplicate target entries before running init.",
-      };
-    }
-    for (const entry of parsedManifest.adapters) {
-      if (entry.name === descriptor.name && entry.roots.length && !rootsOverlap(entry.roots, targetRoots)) {
-        return targetRootConflictBlocker(
-          descriptor.name,
-          "rigorloop.yaml",
-          `Existing RigorLoop state records target ${descriptor.name} with a conflicting install root.`,
-        );
-      }
-      if (entry.name !== descriptor.name && rootsOverlap(entry.roots, targetRoots)) {
-        return targetRootConflictBlocker(
-          descriptor.name,
-          "rigorloop.yaml",
-          `Existing RigorLoop state records an overlapping install root for target ${entry.name}.`,
-        );
-      }
-    }
-  }
-
-  const lockfilePath = resolve(process.cwd(), LOCKFILE_PATH);
-  if (!existsSync(lockfilePath)) {
-    return undefined;
-  }
-  const parsedLockfile = parseLockfile(readFileSync(lockfilePath, "utf8"));
-  if (!parsedLockfile.ok) {
-    return {
-      code: parsedLockfile.code,
-      message: "Existing RigorLoop lock state is malformed or unsupported; refusing to mutate target roots.",
-      path: LOCKFILE_PATH,
-      next_action: "Fix or move rigorloop.lock before running init.",
-    };
-  }
-  const entries = parsedLockfile.lockfile.generated.targets ?? parsedLockfile.lockfile.generated.adapters;
-  for (const entry of entries) {
-    const entryTarget = lockfileEntryTarget(entry);
-    const entryRoots = lockfileEntryRoots(entry);
-    const selected = entryTarget === descriptor.name;
-    const overlapping = rootsOverlap(entryRoots, targetRoots);
-    if (selected && entryRoots.length && !overlapping) {
-      return targetRootConflictBlocker(
-        descriptor.name,
-        LOCKFILE_PATH,
-        `Existing RigorLoop lock state records target ${descriptor.name} with a conflicting install root.`,
-      );
-    }
-    if (!selected && overlapping) {
-      return targetRootConflictBlocker(
-        descriptor.name,
-        LOCKFILE_PATH,
-        `Existing RigorLoop lock state records an overlapping install root for target ${entryTarget}.`,
-      );
-    }
-    if (selected || overlapping) {
-      const drift = lockfileDriftBlocker(entry);
-      if (drift) {
-        return drift;
-      }
-    }
-  }
-  return undefined;
-}
 
 function presentPath(path) {
   try { lstatSync(resolve(process.cwd(), path)); return true; }
-  catch (error) { if (error.code === "ENOENT") return false; throw error; }
+  catch (error) { if (["ENOENT", "ENOTDIR"].includes(error.code)) return false; throw error; }
 }
 
 function authoringPaths(descriptor, skill) {
-  return [`${descriptor.primaryInstallRoot()}/${skill}`, ...(descriptor.installRoots.commands ? [`${descriptor.installRoots.commands}/${skill}.md`] : [])];
+  return [`${descriptor.primaryInstallRoot()}/${skill}`];
 }
 
 function retiredAuthoringPaths(descriptor, entries) {
@@ -1267,37 +671,6 @@ function retiredAuthoringPaths(descriptor, entries) {
     entries ? entries.some(entry => entry.name === path || entry.name.startsWith(`${path}/`)) : presentPath(path));
 }
 
-function authoringTransition(descriptor) {
-  const retired = retiredAuthoringPaths(descriptor);
-  if (!retired.length) return undefined;
-  const roots = Object.values(descriptor.installRoots);
-  let basis;
-  let reason;
-  try {
-    basis = captureManagedBasis({ projectRoot: process.cwd(), roots });
-    const entry = currentLockfileEntry(descriptor);
-    const recordedRoots = entry && lockfileEntryRoots(entry);
-    if (authoringPaths(descriptor, "design").some(presentPath)) reason = "The selected target contains competing old and new authors.";
-    else if (!entry || JSON.stringify([...recordedRoots].sort()) !== JSON.stringify([...roots].sort())) reason = "The selected roots do not have an exact unambiguous managed owner.";
-    else reason = existingStateSafetyBlocker(descriptor)?.message ?? lockfileDriftBlocker(entry)?.message;
-    if (!reason) return { roots, basis, retired };
-  } catch (error) { reason = error.message; }
-  return { roots, retired, reason };
-}
-
-function authoringTransitionBlocker(descriptor, transition, candidate = false) {
-  const stateImplicated = presentPath("rigorloop.yaml") || presentPath(LOCKFILE_PATH);
-  return {
-    code: candidate ? "retired-authoring-candidate" : "retired-authoring-installation",
-    message: candidate ? "Candidate contains retired spec/architecture entrypoints or aliases; select a coherent design package." : `Selected ${descriptor.displayName} target contains retired authoring entries. ${transition.reason ?? "The original recorded installation is eligible for authorized replacement."}`,
-    path: transition.retired[0],
-    next_action: candidate ? "Use a verified package with design and without spec/architecture; no files were published." : !transition.reason
-      ? `Inspect and back up complete roots ${transition.roots.join(", ")} and both rigorloop.yaml/rigorloop.lock outside the roots (including absence); explicitly authorize their replacement, then run init ${descriptor.name} --write-state with this same candidate. Do not pre-delete old entries or reset hashes. --dry-run reports scope without writes.`
-      : stateImplicated
-        ? "Back up and inspect the managed/state-implicated installation. Restore its original recorded basis under the installation owner's recovery procedure; preserve local changes and other targets. Do not pre-delete retired entries, remove state or refresh hashes to bypass drift."
-        : `For this unmanaged target, inspect and back up first, then explicitly remove only ${transition.retired.join(", ")} and retry ordinary conflict-checked installation.`,
-  };
-}
 
 function obsoleteWorkflowSkillBlocker(descriptor, entries = []) {
   const installRoot = descriptor.primaryInstallRoot();
@@ -1328,73 +701,6 @@ function obsoleteWorkflowSkillBlocker(descriptor, entries = []) {
   };
 }
 
-function managedObsoleteWorkflowInstall(descriptor) {
-  const installRoot = descriptor.primaryInstallRoot();
-  const obsoletePath = `${installRoot}/workflow`;
-  const replacementPath = `${installRoot}/route`;
-  if (
-    pathState(resolve(process.cwd(), obsoletePath)) === "absent" ||
-    pathState(resolve(process.cwd(), replacementPath)) !== "absent"
-  ) {
-    return undefined;
-  }
-  const lockfileEntry = currentLockfileEntry(descriptor);
-  if (!lockfileEntry || lockfileDriftBlocker(lockfileEntry)) {
-    return undefined;
-  }
-  return { lockfileEntry, roots: lockfileEntryRoots(lockfileEntry) };
-}
-
-function archiveReplacesWorkflowWithRoute(descriptor, entries) {
-  const installRoot = descriptor.primaryInstallRoot();
-  const obsoletePath = `${installRoot}/workflow`;
-  const replacementPath = `${installRoot}/route`;
-  return (
-    entries.some((entry) => entry.name.startsWith(`${replacementPath}/`)) &&
-    !entries.some((entry) => entry.name === obsoletePath || entry.name.startsWith(`${obsoletePath}/`))
-  );
-}
-
-function snapshotManagedPaths(paths) {
-  const snapshot = [];
-  function visit(relativePath) {
-    const absolutePath = resolve(process.cwd(), relativePath);
-    const stat = statSync(absolutePath);
-    if (stat.isDirectory()) {
-      snapshot.push({ path: relativePath, kind: "directory" });
-      for (const name of readdirSync(absolutePath).sort()) {
-        visit(`${relativePath}/${name}`);
-      }
-    } else if (stat.isFile()) {
-      snapshot.push({ path: relativePath, kind: "file", bytes: readFileSync(absolutePath) });
-    }
-  }
-  for (const path of paths) {
-    visit(path);
-  }
-  return snapshot;
-}
-
-function restoreManagedPaths(snapshot) {
-  for (const entry of snapshot) {
-    if (entry.kind === "directory") {
-      mkdirSync(resolve(process.cwd(), entry.path), { recursive: true });
-    } else {
-      mkdirSync(dirname(resolve(process.cwd(), entry.path)), { recursive: true });
-      writeFileSync(resolve(process.cwd(), entry.path), entry.bytes);
-    }
-  }
-}
-
-function firstLockfileDriftBlocker() {
-  for (const entry of currentLockfileEntries()) {
-    const blocker = lockfileDriftBlocker(entry);
-    if (blocker) {
-      return blocker;
-    }
-  }
-  return undefined;
-}
 
 function inspectArchive(archiveBytes, artifact, descriptor) {
   if (artifact.size_bytes !== undefined && archiveBytes.length !== artifact.size_bytes) {
@@ -1438,350 +744,9 @@ function inspectArchive(archiveBytes, artifact, descriptor) {
       return { error: { code: "tree-hash-mismatch", message: "Installed tree file count does not match metadata." } };
     }
   }
-  if (descriptor.name === "opencode") {
-    for (const aliasPath of opencodeCommandAliasPaths(artifact) ?? []) {
-      if (!files.some((entry) => entry.name === aliasPath)) {
-        return {
-          error: {
-            code: "opencode-command-alias-missing",
-            message: "Declared opencode command alias is missing from archive.",
-            path: aliasPath,
-          },
-        };
-      }
-    }
-  }
   return { entries: files, archiveHash, rootHashes, treeHash: rootHashes.skills?.tree_sha256, fileCount: rootHashes.skills?.file_count ?? files.length };
 }
 
-function addArchiveActions(plan, entries, descriptor) {
-  const installRoot = descriptor.primaryInstallRoot();
-  const directories = new Set();
-  for (const entry of entries) {
-    const parts = entry.name.split("/");
-    parts.pop();
-    while (parts.length > 2) {
-      directories.add(parts.join("/"));
-      parts.pop();
-    }
-  }
-  for (const directory of [...directories].sort()) {
-    const state = pathState(resolve(process.cwd(), directory));
-    plan.actions.push({
-      type: "create-dir",
-      path: directory,
-      status: state === "absent" ? "pending" : state === "directory" ? "skipped" : "blocked",
-      reason: state === "absent" ? `Create ${directory}.` : state === "directory" ? `${directory} already exists.` : `${directory} exists and is not a directory.`,
-    });
-    plan.artifacts.push({
-      path: directory,
-      kind: "adapter-directory",
-      status: state === "absent" ? "pending" : state === "directory" ? "existing" : "blocked",
-    });
-    if (state === "file") {
-      plan.blockers.push({
-        code: "overwrite-refused",
-        message: `${directory} exists and is not a directory.`,
-        path: directory,
-        next_action: "Move the existing file before running init.",
-      });
-    }
-  }
-  for (const entry of entries) {
-    const state = pathState(resolve(process.cwd(), entry.name));
-    let existingMatches = false;
-    if (state === "file") {
-      const relativePath = entry.name.slice(`${installRoot}/`.length);
-      const existingBytes = relativePath.endsWith(".md")
-        ? normalizeText(readFileSync(resolve(process.cwd(), entry.name)))
-        : readFileSync(resolve(process.cwd(), entry.name));
-      const entryBytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
-      existingMatches = Buffer.compare(existingBytes, entryBytes) === 0;
-    }
-    plan.actions.push({
-      type: "copy",
-      path: entry.name,
-      status: state === "absent" ? "pending" : existingMatches ? "skipped" : "blocked",
-      reason:
-        state === "absent"
-          ? `Install verified ${descriptor.displayName} adapter file.`
-          : existingMatches
-            ? `${entry.name} already matches verified ${descriptor.displayName} adapter content.`
-            : `${entry.name} already exists.`,
-    });
-    plan.artifacts.push({
-      path: entry.name,
-      kind: "adapter-file",
-      status: state === "absent" ? "pending" : existingMatches ? "existing" : "blocked",
-    });
-    if (state !== "absent" && !existingMatches) {
-      plan.blockers.push({
-        code: "overwrite-refused",
-        message: `${entry.name} already exists.`,
-        path: entry.name,
-        next_action: "Move the existing file before running init.",
-      });
-    }
-  }
-}
-
-function writeArchiveEntries(entries, descriptor) {
-  const installRoot = descriptor.primaryInstallRoot();
-  for (const entry of entries) {
-    const outputPath = resolve(process.cwd(), entry.name);
-    mkdirSync(dirname(outputPath), { recursive: true });
-    const relativePath = entry.name.slice(`${installRoot}/`.length);
-    const bytes = relativePath.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes;
-    writeFileSync(outputPath, bytes);
-  }
-}
-
-function initWarnings(descriptor, artifact) {
-  if (
-    descriptor.name === "opencode" &&
-    artifact &&
-    !artifact.command_aliases?.opencode &&
-    !rootsForArtifact(descriptor, artifact).commands
-  ) {
-    return [
-      {
-        code: "opencode-command-aliases-not-declared",
-        message: "Selected opencode archive metadata does not declare command aliases; only skills were installed.",
-      },
-    ];
-  }
-  return [];
-}
-
-function directoryPlanForRoots(roots) {
-  return [...new Set(Object.values(roots).flatMap((root) => [root.split("/").slice(0, -1).join("/"), root]).filter(Boolean))];
-}
-
-function planDirectoryActions(flags, descriptor, artifact) {
-  const actions = [];
-  const artifacts = [];
-  const blockers = [];
-  let parentBlocked = false;
-
-  const directoryPlan = directoryPlanForRoots(rootsForArtifact(descriptor, artifact));
-  const rootParent = directoryPlan[0];
-  for (const relativePath of directoryPlan) {
-    const state = parentBlocked ? "blocked-by-parent" : pathState(resolve(process.cwd(), relativePath));
-    if (state === "absent") {
-      actions.push({
-        type: "create-dir",
-        path: relativePath,
-        status: flags.dryRun ? "planned" : "pending",
-        reason: `Create ${relativePath}.`,
-      });
-      artifacts.push({
-        path: relativePath,
-        kind: directoryKind(relativePath, descriptor, artifact),
-        status: flags.dryRun ? "planned" : "pending",
-      });
-    } else if (state === "directory") {
-      actions.push({
-        type: "create-dir",
-        path: relativePath,
-        status: "skipped",
-        reason: `${relativePath} already exists.`,
-      });
-      artifacts.push({
-        path: relativePath,
-        kind: directoryKind(relativePath, descriptor, artifact),
-        status: "existing",
-      });
-    } else {
-      actions.push({
-        type: "create-dir",
-        path: relativePath,
-        status: "blocked",
-        reason:
-          state === "blocked-by-parent"
-            ? `${relativePath} cannot be created because ${rootParent} is not a directory.`
-            : `${relativePath} exists and is not a directory.`,
-      });
-      artifacts.push({
-        path: relativePath,
-        kind: directoryKind(relativePath, descriptor, artifact),
-        status: "blocked",
-      });
-      if (state !== "blocked-by-parent") {
-        blockers.push({
-          code: "overwrite-refused",
-          message: `${relativePath} exists and is not a directory.`,
-          path: relativePath,
-          next_action: `Move the existing file before running init.`,
-        });
-      }
-      if (relativePath === rootParent) {
-        parentBlocked = true;
-      }
-    }
-  }
-
-  return { actions, artifacts, blockers };
-}
-
-function addLockfilePlan(flags, actions, artifacts, blockers, errors) {
-  const lockfileAbsolutePath = resolve(process.cwd(), LOCKFILE_PATH);
-  if (!existsSync(lockfileAbsolutePath)) {
-    actions.push({
-      type: "write",
-      path: LOCKFILE_PATH,
-      status: flags.dryRun ? "planned" : "pending",
-      reason: flags.dryRun
-        ? "Plan durable lockfile content."
-        : "Write durable lockfile after verified target install.",
-    });
-    artifacts.push({
-      path: LOCKFILE_PATH,
-      kind: "project-lockfile",
-      status: flags.dryRun ? "planned" : "pending",
-    });
-    return;
-  }
-
-  const parsed = parseLockfile(readFileSync(lockfileAbsolutePath, "utf8"));
-  if (parsed.ok) {
-    actions.push({
-      type: "write",
-      path: LOCKFILE_PATH,
-      status: flags.dryRun ? "planned" : "pending",
-      reason: flags.dryRun
-        ? "Plan update to supported rigorloop.lock."
-        : "Update supported rigorloop.lock after verified target install.",
-    });
-    artifacts.push({
-      path: LOCKFILE_PATH,
-      kind: "project-lockfile",
-      status: flags.dryRun ? "planned" : "pending",
-    });
-    return;
-  }
-
-  actions.push({
-    type: "write",
-    path: LOCKFILE_PATH,
-    status: "blocked",
-    reason: parsed.message,
-  });
-  artifacts.push({
-    path: LOCKFILE_PATH,
-    kind: "project-lockfile",
-    status: "blocked",
-  });
-
-  if (parsed.kind === "unsupported") {
-    blockers.push({
-      code: parsed.code,
-      message: parsed.message,
-      path: LOCKFILE_PATH,
-      next_action: "Use a compatible CLI version or resolve the unsupported lockfile shape.",
-    });
-  } else {
-    errors.push({
-      code: parsed.code,
-      message: parsed.message,
-      path: LOCKFILE_PATH,
-      next_action: "Repair or move rigorloop.lock before running init.",
-    });
-  }
-}
-
-function buildInitPlan(flags, descriptor, artifact) {
-  const info = packageInfo();
-  const source = sourceForFlags(flags, info, descriptor);
-  if (artifact) {
-    source.artifact = artifact;
-  }
-  const manifestPath = "rigorloop.yaml";
-  const manifestAbsolutePath = resolve(process.cwd(), manifestPath);
-  const existingManifest = existsSync(manifestAbsolutePath) ? readFileSync(manifestAbsolutePath, "utf8") : undefined;
-  const manifest = flags.writeState ? manifestContent(info, source, descriptor, existingManifest) : undefined;
-  const actions = [];
-  const artifacts = [];
-  const blockers = [];
-  const errors = [];
-
-  if (flags.fromArchiveProvided && (!flags.fromArchive || flags.fromArchive.startsWith("--"))) {
-    errors.push({
-      code: "invalid-archive-path",
-      message: "Missing required value for --from-archive.",
-      path: "--from-archive",
-      next_action: `Provide an existing ${descriptor.displayName} adapter archive path or omit --from-archive.`,
-    });
-  } else if (flags.fromArchiveProvided && !existsSync(resolve(process.cwd(), flags.fromArchive))) {
-    errors.push({
-      code: "invalid-archive-path",
-      message: `Local archive path does not exist: ${flags.fromArchive}`,
-      path: flags.fromArchive,
-      next_action: `Provide an existing ${descriptor.displayName} adapter archive path or omit --from-archive.`,
-    });
-  }
-
-  const directoryPlan = planDirectoryActions(flags, descriptor, artifact);
-  actions.push(...directoryPlan.actions);
-  artifacts.push(...directoryPlan.artifacts);
-  blockers.push(...directoryPlan.blockers);
-
-  if (flags.writeState) {
-    if (existingManifest !== undefined) {
-      const parsedManifest = parseManifestAdapterBlocks(existingManifest);
-      if (parsedManifest.error) {
-        errors.push({
-          code: parsedManifest.error.code,
-          message: parsedManifest.error.message,
-          path: manifestPath,
-          next_action: "Review or move the existing file before running init.",
-        });
-      } else if (parsedManifest.adapters.filter((entry) => entry.name === descriptor.name).length > 1) {
-        blockers.push({
-          code: "duplicate-target-entry",
-          message: `Existing rigorloop.yaml contains duplicate ${descriptor.displayName} target entries.`,
-          path: manifestPath,
-          next_action: "Remove duplicate target entries before running init.",
-        });
-      }
-      actions.push({
-        type: "write",
-        path: manifestPath,
-        status: flags.dryRun ? "planned" : "pending",
-        reason: `Write target-oriented rigorloop.yaml for ${descriptor.displayName} support.`,
-      });
-      artifacts.push({
-        path: manifestPath,
-        kind: "project-manifest",
-        status: flags.dryRun ? "planned" : "pending",
-      });
-    } else {
-      actions.push({
-        type: "write",
-        path: manifestPath,
-        status: flags.dryRun ? "planned" : "pending",
-        reason: "Create target-oriented RigorLoop project manifest.",
-      });
-      artifacts.push({
-        path: manifestPath,
-        kind: "project-manifest",
-        status: flags.dryRun ? "planned" : "pending",
-      });
-    }
-
-    addLockfilePlan(flags, actions, artifacts, blockers, errors);
-  }
-
-  return {
-    info,
-    source,
-    manifest,
-    actions,
-    artifacts,
-    blockers,
-    errors,
-    planned_lockfile: flags.writeState ? plannedLockfile(info, source, manifest, descriptor) : undefined,
-  };
-}
 
 function handleHelp(flags) {
   writeHuman(usage(), flags);
@@ -1829,7 +794,7 @@ function invalidArchivePath(message, flags) {
 function unsupportedAdapter(adapter, flags) {
   const result = envelope("init", flags, {
     status: "blocked",
-    summary: `Target '${adapter}' is not supported.`,
+    summary: adapter === 'opencode' ? 'OpenCode support is retired. Use Codex or Claude Code.' : `Target '${adapter}' is not supported.`,
     blockers: [
       {
         code: "target-unknown",
@@ -1880,22 +845,12 @@ function writeBlockedResult(flags, plan, summary, blockers, exitClass = "blocked
       artifact.status = "blocked";
     }
   }
-  const statePlan = flags.writeState
-    ? {
-        planned_manifest: {
-          path: "rigorloop.yaml",
-          content: plan.manifest,
-        },
-        planned_lockfile: plan.planned_lockfile,
-      }
-    : {};
   const result = envelope("init", flags, {
     status: "blocked",
     summary,
     actions: plan.actions,
     artifacts: plan.artifacts,
     blockers,
-    ...statePlan,
   });
   if (blockers[0]?.diagnostics) {
     result.diagnostics = { ...result.diagnostics, ...blockers[0].diagnostics };
@@ -1903,14 +858,11 @@ function writeBlockedResult(flags, plan, summary, blockers, exitClass = "blocked
   if (flags.json) {
     writeJson(result);
   } else {
-    writeStderr(`${result.summary}\n${blockers[0]?.next_action ?? "Resolve the blocker before running init."}\n`);
+    writeStderr(`${result.summary}\n${blockers.map(b => b.path ?? "").filter(Boolean).join("\n")}\n${blockers[0]?.next_action ?? "Resolve the blocker before running init."}\n`);
   }
   return exitCodeForResult({ ...result, exit_class: exitClass });
 }
 
-function exitClassForBlockers(blockers) {
-  return blockers.some((blocker) => blocker.code === "overwrite-refused") ? "mutation_conflict" : "blocked";
-}
 
 function writeValidationErrorResult(flags, plan, error) {
   for (const action of plan.actions) {
@@ -1924,22 +876,12 @@ function writeValidationErrorResult(flags, plan, error) {
       artifact.status = "blocked";
     }
   }
-  const statePlan = flags.writeState
-    ? {
-        planned_manifest: {
-          path: "rigorloop.yaml",
-          content: plan.manifest,
-        },
-        planned_lockfile: plan.planned_lockfile,
-      }
-    : {};
   const result = envelope("init", flags, {
     status: "error",
     summary: error.message,
     actions: plan.actions,
     artifacts: plan.artifacts,
     errors: [error],
-    ...statePlan,
   });
   if (flags.json) {
     writeJson(result);
@@ -1950,9 +892,7 @@ function writeValidationErrorResult(flags, plan, error) {
 }
 
 async function archiveWorkForInit(flags, info, descriptor) {
-  if (flags.dryRun && !flags.fromArchiveProvided) {
-    return {};
-  }
+
 
   const bundledMetadata = loadVerifiedBundledMetadata(info);
   if (bundledMetadata.blocker || bundledMetadata.error) {
@@ -1964,15 +904,11 @@ async function archiveWorkForInit(flags, info, descriptor) {
   const metadata = bundledMetadata.metadata;
   const validation = validateMetadata(metadata, info, descriptor);
   if (validation.blocker || validation.error) {
-    if (
-      flags.dryRun &&
-      !["opencode-command-aliases-missing", "opencode-skills-only-compatibility-unmarked"].includes(validation.blocker?.code)
-    ) {
-      return {};
-    }
+    if (flags.dryRun) return {};
     return validation;
   }
   const artifact = validation.artifact;
+  if (flags.dryRun) return {artifact};
 
   if (flags.fromArchiveProvided) {
     const archiveName = basename(flags.fromArchive);
@@ -1995,10 +931,6 @@ async function archiveWorkForInit(flags, info, descriptor) {
           `Use the ${descriptor.displayName} adapter archive matching the installed CLI package version.`,
         ),
       };
-    }
-    // CR-M2-R2-F1: dry-run planning must use trusted metadata roots without reading or extracting archive bytes.
-    if (flags.dryRun) {
-      return { artifact };
     }
     const archiveBytes = readFileSync(resolve(process.cwd(), flags.fromArchive));
     const inspected = inspectArchive(archiveBytes, artifact, descriptor);
@@ -2039,375 +971,49 @@ async function archiveWorkForInit(flags, info, descriptor) {
 }
 
 async function handleInit(flags, initArgs = []) {
-  if (flags.adapterOptionUsed) {
-    return removedAdapterSyntax(flags);
+  if (flags.adapterOptionUsed) return removedAdapterSyntax(flags);
+  if (flags.writeState) return writeBlockedResult(flags, {actions: [], artifacts: []}, "--write-state is retired.", [{code: "state-writing-retired", message: "Installation does not manage project state.", next_action: "Install without --write-state; use --force only for explicit destination replacement."}]);
+  if (initArgs.length !== 1) return invalidUsage(`init requires exactly one target: ${supportedAdapterNames().join(", ")}.`, flags, "init");
+  const descriptor = adapterDescriptor(initArgs[0]);
+  if (!descriptor) return unsupportedAdapter(initArgs[0], flags);
+  if (flags.fromArchiveProvided && (!flags.fromArchive || !existsSync(resolve(flags.fromArchive)))) return invalidArchivePath("Provide an existing local archive path.", flags);
+  const plan = {actions: [], artifacts: []};
+  const archive = await archiveWorkForInit(flags, packageInfo(), descriptor);
+  if (archive.error) return writeValidationErrorResult(flags, plan, archive.error);
+  if (archive.blocker) return writeBlockedResult(flags, plan, archive.blocker.message, [archive.blocker]);
+  const retired = retiredAuthoringPaths(descriptor, archive.entries);
+  const installedRetired = retiredAuthoringPaths(descriptor);
+  if (retired.length || installedRetired.length) {
+    const paths = [...new Set([...retired, ...installedRetired])];
+    return writeBlockedResult(flags, plan, "Retired authoring entries require separate inspection.", paths.map(path => ({code: retired.includes(path) ? "retired-authoring-candidate" : "retired-authoring-installation", path, message: `Retired entry: ${path}`, next_action: "Preserve local content and inspect the exact retired entry separately. Use a package containing design. --force does not remove noncandidate entries."})));
   }
-  if (initArgs.length !== 1) {
-    return invalidUsage(`init requires exactly one target: ${supportedAdapterNames().join(", ")}.`, flags, "init");
+  const obsolete = obsoleteWorkflowSkillBlocker(descriptor, archive.entries);
+  if (obsolete) return writeBlockedResult(flags, plan, obsolete.message, [obsolete]);
+  const root = descriptor.primaryInstallRoot();
+  const files = archive.entries?.map(entry => ({path: entry.name, content: entry.name.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes})) ?? (archive.artifact?.skill_names ?? []).map(name => ({path: `${root}/${name}/SKILL.md`, content: Buffer.alloc(0)}));
+  let installed = {units: [], conflicts: [], completed: [], retained: []};
+  try {
+    if (files.length) installed = installCandidate({projectRoot: process.cwd(), files, roots: [root], force: flags.force, dryRun: flags.dryRun});
+    else if (!flags.dryRun) throw new Error("Verified archive contains no installable files.");
+  } catch (error) {
+    if (error.conflicts) return writeBlockedResult(flags, plan, "Installation stopped: destination skills already exist.", error.conflicts.map(path => ({code: "destination-conflict", path, message: `Existing destination: ${path}`, next_action: "Run again with --force to replace these skills. Local changes within replaced skill directories will be lost."})), "mutation_conflict");
+    const result = envelope("init", flags, {status: "blocked", summary: error.message, completed: error.completed ?? [], failed: error.failed ?? null, untouched: error.untouched ?? [], retained: error.retained ?? [], blockers: [{code: error.code ?? "partial-installation-failed", message: error.message, next_action: "Preserve partial files and retained originals; inspect the reported paths before retrying. --force does not bypass safety checks."}]});
+    if (flags.json) writeJson(result); else writeStderr(`${result.summary}\n${JSON.stringify({completed: result.completed, failed: result.failed, untouched: result.untouched, retained: result.retained})}\n`);
+    return exitCodeForResult({...result, exit_class: "mutation_conflict"});
   }
-  const target = initArgs[0];
-  const descriptor = adapterDescriptor(target);
-  if (!descriptor) {
-    return unsupportedAdapter(target, flags);
-  }
-  if (flags.fromArchiveProvided && (!flags.fromArchive || flags.fromArchive.startsWith("--"))) {
-    return invalidArchivePath("Missing required value for --from-archive.", flags);
-  }
-  if (flags.fromArchiveProvided && !existsSync(resolve(process.cwd(), flags.fromArchive))) {
-    return invalidArchivePath(`Local archive path does not exist: ${flags.fromArchive}`, flags);
-  }
-
-  const info = packageInfo();
-  let plan = buildInitPlan(flags, descriptor);
-  if (plan.errors.length > 0) {
-    const result = envelope("init", flags, {
-      status: "error",
-      summary: plan.errors[0].message,
-      actions: plan.actions,
-      artifacts: plan.artifacts,
-      errors: plan.errors,
-      ...(flags.writeState
-        ? {
-            planned_manifest: {
-              path: "rigorloop.yaml",
-              content: plan.manifest,
-            },
-            planned_lockfile: plan.planned_lockfile,
-          }
-        : {}),
-    });
-    if (flags.json) {
-      writeJson(result);
-    } else {
-      writeStderr(`${result.summary}\n${plan.errors[0].next_action}\n`);
-    }
-    return exitCodeForResult({ ...result, exit_class: "invalid_usage" });
-  }
-  const deferrableRootBlockers =
-    descriptor.name === "opencode" &&
-    plan.blockers.length > 0 &&
-    plan.blockers.every((blocker) => String(blocker.path ?? "").startsWith(".opencode/commands"));
-  if (plan.blockers.length > 0 && !deferrableRootBlockers) {
-    return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
-  }
-  const pendingAuthoring = inspectManagedAuthoringRecovery({ projectRoot: process.cwd(), roots: Object.values(descriptor.installRoots), shared: flags.writeState });
-  if (pendingAuthoring.blocker) return writeBlockedResult(flags, plan, pendingAuthoring.blocker.message, [pendingAuthoring.blocker]);
-  const authoring = authoringTransition(descriptor);
-  if (authoring && (authoring.reason || !flags.writeState)) {
-    const blocker = authoringTransitionBlocker(descriptor, authoring);
-    return writeBlockedResult(flags, plan, blocker.message, [blocker]);
-  }
-  let authoringRecovery;
-  const managedObsoleteInstall = managedObsoleteWorkflowInstall(descriptor);
-  const obsoleteInstalledSkill = obsoleteWorkflowSkillBlocker(descriptor);
-  if (obsoleteInstalledSkill && !(flags.writeState && !flags.dryRun && managedObsoleteInstall)) {
-    if (managedObsoleteInstall) {
-      obsoleteInstalledSkill.next_action = flags.writeState
-        ? "Run init without --dry-run and keep --write-state to replace this exact lockfile-managed target with route."
-        : "Rerun init with --write-state to replace this exact lockfile-managed target with route.";
-    } else {
-      const selectedEntry = currentLockfileEntry(descriptor);
-      const selectedDrift = lockfileDriftBlocker(selectedEntry);
-      if (selectedDrift) obsoleteInstalledSkill.next_action = selectedDrift.next_action;
-    }
-    return writeBlockedResult(flags, plan, obsoleteInstalledSkill.message, [obsoleteInstalledSkill]);
-  }
-  if (flags.dryRun) {
-    const stateSafety = existingStateSafetyBlocker(descriptor);
-    if (stateSafety) {
-      return writeBlockedResult(flags, plan, stateSafety.message, [stateSafety], exitClassForBlockers([stateSafety]));
-    }
-  }
-
-  const archiveWork = await archiveWorkForInit(flags, info, descriptor);
-  if (archiveWork.artifact && !archiveWork.blocker && !archiveWork.error) {
-    plan = buildInitPlan(flags, descriptor, archiveWork.artifact);
-    if (plan.errors.length > 0) {
-      return writeValidationErrorResult(flags, plan, plan.errors[0]);
-    }
-    if (plan.blockers.length > 0) {
-      return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
-    }
-  }
-  const managedAuthoringMigration = Boolean(authoring && !authoring.reason && flags.writeState && archiveWork.entries);
-  if (archiveWork.entries) {
-    const retired = retiredAuthoringPaths(descriptor, archiveWork.entries);
-    if (retired.length) {
-      const blocker = authoringTransitionBlocker(descriptor, { retired }, true);
-      return writeBlockedResult(flags, plan, blocker.message, [blocker]);
-    }
-    if (managedAuthoringMigration && !archiveWork.entries.some(entry => entry.name.startsWith(`${descriptor.primaryInstallRoot()}/design/`))) {
-      const blocker = { code: "missing-design-candidate", message: "Managed authoring replacement requires a verified design package.", path: descriptor.primaryInstallRoot(), next_action: "Select the coherent replacement candidate; original target/state remain unchanged." };
-      return writeBlockedResult(flags, plan, blocker.message, [blocker]);
-    }
-  }
-  if (flags.dryRun && authoring && !authoring.reason && !archiveWork.entries) {
-    for (const root of authoring.roots) plan.actions.push({ type: "replace", path: root, status: "planned", reason: "Original managed basis is eligible; back up and authorize these exact roots and both state files. Candidate inventory/trust verification remains required during the actual run; dry-run does not read archive bytes." });
-  }
-  const managedWorkflowMigration = Boolean(
-    flags.writeState &&
-      managedObsoleteInstall &&
-      archiveWork.entries &&
-      archiveReplacesWorkflowWithRoute(descriptor, archiveWork.entries),
-  );
-  if (archiveWork.entries) {
-    const obsoleteArchiveSkill = obsoleteWorkflowSkillBlocker(descriptor, archiveWork.entries);
-    if (obsoleteArchiveSkill && !managedWorkflowMigration) {
-      return writeBlockedResult(flags, plan, obsoleteArchiveSkill.message, [obsoleteArchiveSkill]);
-    }
-    const conflict = (managedWorkflowMigration || managedAuthoringMigration) ? undefined : generatedOutputConflictBlocker(archiveWork.entries);
-    if (conflict) {
-      return writeBlockedResult(flags, plan, conflict.message, [conflict], "mutation_conflict");
-    }
-    const stateSafety = existingStateSafetyBlocker(descriptor, archiveWork.artifact);
-    if (stateSafety) {
-      return writeBlockedResult(flags, plan, stateSafety.message, [stateSafety], exitClassForBlockers([stateSafety]));
-    }
-    const drift = flags.writeState ? firstLockfileDriftBlocker() : undefined;
-    if (drift) {
-      return writeBlockedResult(
-        flags,
-        plan,
-        drift.message,
-        [drift],
-        drift.code === "overwrite-refused" ? "mutation_conflict" : "blocked",
-      );
-    }
-    if (managedAuthoringMigration) {
-      for (const root of authoring.roots) {
-        plan.actions.push({ type: "replace", path: root, status: flags.dryRun ? "planned" : "pending", reason: "Explicitly authorized replacement of this exact managed root after backup; preserve original basis until candidate verification." });
-        plan.artifacts.push({ path: root, kind: "adapter-root", status: flags.dryRun ? "planned" : "pending" });
-      }
-    } else if (managedWorkflowMigration) {
-      plan.actions.push({
-        type: "replace",
-        path: descriptor.primaryInstallRoot(),
-        status: flags.dryRun ? "planned" : "pending",
-        reason: `Replace exact lockfile-managed ${descriptor.displayName} workflow package with route.`,
-      });
-      plan.artifacts.push({
-        path: descriptor.primaryInstallRoot(),
-        kind: "adapter-root",
-        status: flags.dryRun ? "planned" : "pending",
-      });
-    } else {
-      const installedTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor, { allowMissingOrEmpty: true });
-      if (installedTree.error) {
-        return writeValidationErrorResult(flags, plan, installedTree.error);
-      }
-      addArchiveActions(plan, archiveWork.entries, descriptor);
-    }
-  }
-
-  if (archiveWork.blocker) {
-    return writeBlockedResult(flags, plan, archiveWork.blocker.message, [archiveWork.blocker]);
-  }
-  if (archiveWork.error) {
-    return writeValidationErrorResult(flags, plan, archiveWork.error);
-  }
-  if (plan.blockers.length > 0) {
-    return writeBlockedResult(flags, plan, plan.blockers[0].message, plan.blockers, exitClassForBlockers(plan.blockers));
-  }
-
-  if (!flags.dryRun && flags.writeState && pendingAuthoring.pending.length) {
-    try { settleManagedAuthoringRecovery({ projectRoot: process.cwd(), roots: Object.values(descriptor.installRoots), shared: true }); }
-    catch (error) { return writeValidationErrorResult(flags, plan, { code: error.code ?? "managed-authoring-recovery-required", message: error.message }); }
-  }
-  if (!flags.dryRun && managedAuthoringMigration) {
-    const lockfile = lockfileForVerifiedInstall(plan.info, plan.source, plan.manifest, archiveWork.artifact, rootHashesForEntries(archiveWork.entries, descriptor, archiveWork.artifact), descriptor);
-    try {
-      authoringRecovery = replaceManagedAuthoring({
-        projectRoot: process.cwd(), roots: authoring.roots, basis: authoring.basis,
-        files: archiveWork.entries.map(entry => ({ path: entry.name, content: entry.name.endsWith(".md") ? normalizeText(entry.bytes) : entry.bytes })),
-        state: { "rigorloop.yaml": Buffer.from(plan.manifest), "rigorloop.lock": Buffer.from(serializeLockfile(lockfile)) },
-        verifyInstalled: () => {
-          const installed = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor);
-          if (installed.error) throw new Error(installed.error.message);
-        },
-      });
-      plan.planned_lockfile = lockfile;
-      for (const action of plan.actions.filter(action => action.status === "pending")) action.status = "done";
-      for (const artifact of plan.artifacts.filter(artifact => artifact.status === "pending")) artifact.status = "updated";
-    } catch (error) {
-      const retained = (error.retainedPaths ?? []).map(item => item.backup).join(", ");
-      return writeValidationErrorResult(flags, plan, {
-        code: error.code ?? "managed-authoring-replacement-failed",
-        message: `Authoring replacement failed. ${error.restored ? "Original target/state restored; resolve the cause before retry." : "Inspect partial state and intervening changes; restore a coherent original basis from the operator backup before retry, without resetting hashes."} ${error.message} Retain staging ${error.recoveryPath ?? "(not created)"} and copies ${retained || "(none detached)"}; if an ancestor moved, locate them in its original directory.`,
-      });
-    }
-  } else if (!flags.dryRun && managedWorkflowMigration) {
-    const managedRoots = managedObsoleteInstall.roots;
-    const rootSnapshot = snapshotManagedPaths(managedRoots);
-    const manifestPath = resolve(process.cwd(), "rigorloop.yaml");
-    const lockfilePath = resolve(process.cwd(), LOCKFILE_PATH);
-    const priorManifest = existsSync(manifestPath) ? readFileSync(manifestPath) : undefined;
-    const priorLockfile = readFileSync(lockfilePath);
-    try {
-      for (const root of managedRoots) {
-        rmSync(resolve(process.cwd(), root), { recursive: true });
-      }
-      writeArchiveEntries(archiveWork.entries, descriptor);
-      const verifiedInstalledTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor);
-      if (verifiedInstalledTree.error) {
-        throw Object.assign(new Error(verifiedInstalledTree.error.message), { validationError: verifiedInstalledTree.error });
-      }
-      writeFileSync(manifestPath, plan.manifest, "utf8");
-      const lockfile = lockfileForVerifiedInstall(
-        plan.info,
-        plan.source,
-        plan.manifest,
-        archiveWork.artifact,
-        verifiedInstalledTree.rootHashes,
-        descriptor,
-      );
-      writeFileSync(lockfilePath, serializeLockfile(lockfile), "utf8");
-      plan.planned_lockfile = lockfile;
-      for (const action of plan.actions.filter((action) => action.status === "pending")) action.status = "done";
-      for (const artifact of plan.artifacts.filter((artifact) => artifact.status === "pending")) artifact.status = "updated";
-    } catch (error) {
-      for (const root of managedRoots) {
-        rmSync(resolve(process.cwd(), root), { recursive: true, force: true });
-      }
-      restoreManagedPaths(rootSnapshot);
-      if (priorManifest === undefined) rmSync(manifestPath, { force: true });
-      else writeFileSync(manifestPath, priorManifest);
-      writeFileSync(lockfilePath, priorLockfile);
-      return writeValidationErrorResult(
-        flags,
-        plan,
-        error.validationError ?? {
-          code: "managed-migration-failed",
-          message: `Managed workflow-to-route migration failed and the prior target was restored: ${error.message}`,
-        },
-      );
-    }
-  } else if (!flags.dryRun) {
-    const manifestAction = flags.writeState ? plan.actions.find((action) => action.path === "rigorloop.yaml") : undefined;
-    const directoryActions = plan.actions.filter((action) => action.type === "create-dir" && action.status === "pending");
-    for (const directoryAction of directoryActions) {
-      mkdirSync(resolve(process.cwd(), directoryAction.path));
-      directoryAction.status = "done";
-      plan.artifacts.find((artifact) => artifact.path === directoryAction.path).status = "created";
-    }
-    if (manifestAction?.status === "pending") {
-      writeFileSync(resolve(process.cwd(), "rigorloop.yaml"), plan.manifest, "utf8");
-      manifestAction.status = "done";
-      plan.artifacts.find((artifact) => artifact.path === "rigorloop.yaml").status = "created";
-    }
-    if (archiveWork.entries) {
-      try {
-        const pendingCopyPaths = new Set(
-          plan.actions.filter((action) => action.type === "copy" && action.status === "pending").map((action) => action.path),
-        );
-        writeArchiveEntries(archiveWork.entries.filter((entry) => pendingCopyPaths.has(entry.name)), descriptor);
-        for (const action of plan.actions.filter((action) => action.type === "copy" && action.status === "pending")) {
-          action.status = "done";
-          plan.artifacts.find((artifact) => artifact.path === action.path).status = "created";
-        }
-      } catch (error) {
-        const result = envelope("init", flags, {
-          status: "error",
-          summary: "Adapter installation failed after scaffold writes.",
-          actions: plan.actions,
-          artifacts: plan.artifacts,
-          errors: [
-            {
-              code: "partial-installation-failed",
-              message: error.message,
-              partial_state: "scaffold files may have been written; adapter files may be incomplete.",
-            },
-          ],
-          ...(flags.writeState
-            ? {
-                planned_manifest: {
-                  path: "rigorloop.yaml",
-                  content: plan.manifest,
-                },
-                planned_lockfile: plan.planned_lockfile,
-              }
-            : {}),
-        });
-        if (flags.json) {
-          writeJson(result);
-        } else {
-          writeStderr(`${result.summary}\n${error.message}\n`);
-        }
-        return exitCodeForResult({ ...result, exit_class: "internal" });
-      }
-    }
-    if (flags.writeState && archiveWork.entries) {
-      const lockfileAction = plan.actions.find((action) => action.path === LOCKFILE_PATH);
-      const lockfileArtifact = plan.artifacts.find((artifact) => artifact.path === LOCKFILE_PATH);
-      if (lockfileAction?.status === "pending") {
-        const lockfilePreviouslyExists = existsSync(resolve(process.cwd(), LOCKFILE_PATH));
-        const verifiedInstalledTree = verifyInstalledTree(archiveWork.entries, archiveWork.artifact, descriptor);
-        if (verifiedInstalledTree.error) {
-          return writeValidationErrorResult(flags, plan, verifiedInstalledTree.error);
-        }
-        const lockfile = lockfileForVerifiedInstall(
-          plan.info,
-          plan.source,
-          plan.manifest,
-          archiveWork.artifact,
-          verifiedInstalledTree.rootHashes,
-          descriptor,
-        );
-        writeFileSync(resolve(process.cwd(), LOCKFILE_PATH), serializeLockfile(lockfile), "utf8");
-        plan.planned_lockfile = lockfile;
-        lockfileAction.status = "done";
-        lockfileAction.reason = lockfilePreviouslyExists
-          ? `Updated durable lockfile for verified ${descriptor.displayName} adapter install.`
-          : `Wrote durable lockfile for verified ${descriptor.displayName} adapter install.`;
-        if (lockfileArtifact) {
-          lockfileArtifact.status = lockfilePreviouslyExists ? "updated" : "created";
-        }
-      }
-    }
-  }
-
-  const warnings = initWarnings(descriptor, archiveWork.artifact);
-  if (authoringRecovery) warnings.push({ code: "authoring-backups-retained", message: `Verified design installation complete. Inspect before manually removing staging ${authoringRecovery.backupPath} and retained copies: ${authoringRecovery.retainedPaths.map(item => `${item.path} -> ${item.backup}`).join(", ")}. Keep the separate operator backup until coherence is confirmed.` });
   const result = envelope("init", flags, {
-    status: warnings.length > 0 ? "warning" : "success",
-    summary: flags.dryRun
-      ? "RigorLoop init dry run completed. No files were written."
-      : archiveWork.entries
-            ? `RigorLoop initialized with verified ${descriptor.displayName} target support.`
-        : `RigorLoop initialized with ${descriptor.displayName} scaffold.`,
-    actions: plan.actions,
-    artifacts: plan.artifacts,
-    warnings,
-    state_files: flags.writeState
-      ? { action: flags.dryRun ? "planned" : "written" }
-      : { action: "skipped", reason: "Use --write-state to write rigorloop.yaml and rigorloop.lock." },
-    ...(flags.writeState
-      ? {
-          planned_manifest: {
-            path: "rigorloop.yaml",
-            content: plan.manifest,
-          },
-          planned_lockfile: plan.planned_lockfile,
-        }
-      : {}),
+    status: "success",
+    summary: flags.dryRun ? `RigorLoop init dry run: ${descriptor.displayName} installation; archive verification and complete destination preflight are unperformed.` : `Installed ${descriptor.displayName} skills.`,
+    actions: installed.units.map(path => ({path, action: installed.conflicts.includes(path) ? (flags.force ? "replace" : "conflict") : "create", status: flags.dryRun ? "planned" : "completed"})),
+    artifacts: archive.artifact ? [archive.artifact] : [],
+    planned_target: {target: descriptor.name, install_root: root},
+    completed: installed.completed, retained: installed.retained,
+    state_files: {action: "skipped", reason: "Installation does not read or write project state."},
+    ...(flags.dryRun ? {unperformed_checks: ["archive acquisition", "archive verification", "complete candidate preflight"], preliminary_conflicts: installed.conflicts} : {}),
+    warnings: flags.force ? [{code: "explicit-replacement", message: "Replace existing destination skills. Local changes within replaced skill directories will be lost."}] : [],
   });
-
-  if (flags.json) {
-    writeJson(result);
-  } else {
-    const lines = flags.dryRun
-      ? ["RigorLoop init dry run completed.", "No files were written."]
-      : [
-          archiveWork.entries
-            ? `RigorLoop initialized with verified ${descriptor.displayName} target support.`
-            : `RigorLoop initialized with ${descriptor.displayName} scaffold.`,
-          flags.writeState ? "rigorloop.yaml and rigorloop.lock were written." : "State files were not written; use --write-state to write them.",
-        ];
-    for (const warning of warnings) {
-      lines.push(`warning ${warning.code}: ${warning.message}`);
-    }
-    writeHuman(`${lines.join("\n")}\n`, flags);
-  }
-  return exitCodeForResult({ ...result, exit_class: "success" });
+  if (flags.json) writeJson(result); else writeHuman(`${result.summary}\n${result.actions.map(a => `${a.action}: ${a.path}`).join("\n")}\n${result.retained.map(r => `Retained original: ${r.path} -> ${r.backup}`).join("\n")}\n${flags.force ? result.warnings[0].message : ""}\n`, flags);
+  return EXIT.success;
 }
 
 async function dispatchMain(rawArgs, invocation) {
