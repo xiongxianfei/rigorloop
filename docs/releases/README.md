@@ -10,6 +10,8 @@ The summary identifies the reviewed and prepared source, candidate, generated so
 
 Version intent and tracked notes belong in the reviewed source change. Ordinary CI prepares an isolated candidate and checks its actual package; generated metadata, hashes and evidence are not manual release tasks. After merge, the hosted workflow prepares the exact candidate that the maintainer approves.
 
+npm may delay availability while scanning an accepted upload. The job polls for roughly 20 minutes without repeating publication; a timeout preserves the observed state for recovery.
+
 ## One-time deployment setup
 
 Before enabling routine use, a repository maintainer must establish:

@@ -573,7 +573,9 @@ def execute_candidate(output: Path, binding: dict, *, approvals, publisher, evid
                         'phase': 'publication_wait', 'duration_seconds': time.monotonic() - started,
                         'result': 'pending', 'command': boundary + ' publication of approved identity'})
                     observed = None
-                    for observation_attempt in range(6):
+                    # npm scans accepted uploads before making them installable.
+                    observation_attempts = 121 if boundary == 'npm' else 6
+                    for observation_attempt in range(observation_attempts):
                         try:
                             observed = publisher.observe(boundary, candidate)
                             disposition = classify_observation(boundary, observed, candidate)
@@ -581,7 +583,7 @@ def execute_candidate(output: Path, binding: dict, *, approvals, publisher, evid
                             disposition = 'unknown'
                         if disposition in {'matching', 'conflict'}:
                             break
-                        if observation_attempt < 5:
+                        if observation_attempt < observation_attempts - 1:
                             publisher.wait_for_visibility(observation_attempt)
                     if disposition != 'matching':
                         event(boundary, disposition)
