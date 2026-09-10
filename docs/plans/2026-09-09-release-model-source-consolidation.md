@@ -48,6 +48,7 @@ Do not create a hosted service, general workflow engine, cache, standalone test 
 | REL-SR-08–09 | M1 / TG-02: candidate proof and same command composition; M3 / TG-06 and TG-FINAL-01: complete orchestration and final evidence applicability. |
 | REL-SR-10–17 | M2 / TG-03–04: exact authorization, trusted path, public observation, durable facts, partial/uncertain outcome, recovery, deferrals and confidentiality; M3 / TG-05–06: hosted boundary and exceptional paths. |
 | REL-SR-18–19 | M1 / TG-02: explicit diagnostic timing consequence and retained format rejection; M2 / TG-04: required public facts despite telemetry loss; M3 / TG-06: real composition and compatibility. |
+| REL-SR-06/08/09/14/19/21/22, scoped standalone-command refinement | M5 / TG-09: redundant alias retirement, retained canonical/standalone protection and detached-checkout fixture; renewed TG-FINAL-01 and final assessments. |
 | REL-SR-20–21 | M4 / TG-07–08: exact source/consumer retirement and proportionate proof; TG-FINAL-01 plus final Code Review and Verify. |
 | REL-SR-22 | M1 / TG-01, M2 / TG-04, M3 / TG-05–06: automatic complete operator path with one normal approval, no duplicated entry and explicit exceptions. |
 | REL-SR-23–24 | M1 / TG-01–02: sealed candidate and factual projections; M2 / TG-03–04: approval, invalidation, deduplication and persistence; M3 / TG-05–06: actual CI composition. |
@@ -141,6 +142,26 @@ Do not create a hosted service, general workflow engine, cache, standalone test 
 - Risks: historical-path resources can be operational; a blanket link replacement can retarget an old judgment; cleanup can affect selectors or bundled resources.
 - Rollback/recovery: restore the affected source/owner/consumer slice together pending correction and reassessment. Preserve unrelated work, operational identities and historical records; do not migrate histories or revert a public version.
 
+### M5. Retire the redundant validation alias and correct detached-fixture setup
+
+- Milestone kind: implementation.
+- Engineering purpose: complete the user-requested stale-script disposition and restore the actual CI fixture path without changing publication behavior.
+- Requirements: REL-SR-06/08/09/14/19/21/22; the Release Standalone command disposition and Compatibility/migration scenario; Test protective-value criteria.
+- Architecture responsibility: canonical recorded-source validation remains in `validate-release.py`; standalone preparation, preflight and public closeout retain their distinct uses.
+- Dependencies: M1–M4 and their recorded reviews; current independent Design approval of the bounded alias retirement and Delivery approval of this additional allocation. Earlier final assessments preserve their original basis; renewed final review and Verify follow this refinement.
+- Implementation scope: remove only `scripts/validate-release-ci.py` and its exclusive wrapper-delegation test. Preserve actual canonical recorded-source validation and all distinct negative/integrity protection. Keep deleted-path selector recognition for deletion-aware proof, with an explicit explanation that it grants no command support. Fix the release candidate integration fixture to establish its `main` branch from a detached checkout, matching the hosted PR environment. Do not change production authorization, versioning, generated evidence or workflow permissions.
+- Files/components likely touched: `scripts/validate-release-ci.py`, `scripts/test-adapter-distribution.py`, `scripts/validation_selection.py`, `scripts/release_candidate_tests.py`. No other script retirement is selected. Historical commands/evidence retain original meaning; current model disposition supplies the replacement command.
+- Required verification: TG-09 — canonical recorded-source validation still checks the recorded commit and rejects invalid metadata/resources after alias removal; the real candidate/CLI proof starts from detached Git state and reaches the same protected full validation and public-service-substituted recovery outcomes. Existing retained standalone functions/CLIs continue to pass their release regression tests.
+- Evidence expectations: preserve the exact hosted failure and a local failing-before detached-branch reproduction; execute the corrected actual fixture, not a success stub. Explain removal of the delegation-only test using adjacent retained canonical and negative cases. Observe changed-path selection including the deleted script. The new final engineering range must rebuild candidate proof because script inventory and tests changed.
+- Implementation steps: reproduce detached setup; strengthen the existing integration fixture to select that input and correct its branch creation; remove the alias and exclusive test; inspect remaining callers and selector behavior; run focused and full selected proof on a committed snapshot containing the deletion.
+- Validation commands: `python scripts/test-adapter-distribution.py`; `python scripts/test-release-transaction.py`; `python scripts/test-select-validation.py`; the existing final PR-range `bash scripts/ci.sh --mode pr --base "$release_change_base" --head "$release_change_head"`, with inspected immutable revisions. The full selected run may supply these suites without repeating them separately. Model/prose/record and diff checks cover the changed governance surfaces. Observe replacement hosted PR CI after the authorized push; no live release is required.
+- Expected observable result: one canonical recorded-source command, no redundant executable alias, retained protective checks and a portable actual release fixture in local and hosted PR checkouts.
+- Completion criteria: TG-09 and affected TG-FINAL-01 proof pass, exact caller/test removal is independently assessed, and the observed CI failure has a supported correction. No stale prior final pass establishes new readiness.
+- Required evidence: removal/caller disposition, before/after detached behavior, actual selected commands/results and hosted outcome with exact head identity.
+- Review handoff: independent M5 Code Review, then fresh final whole-change Code Review and distinct Verify. Hosted CI observation supplements local proof after the PR update.
+- Optional commit boundary: `M5: retire redundant release validator and fix detached fixture`.
+- Risks and recovery: retiring shared functionality instead of the wrapper would weaken historical validation; preserve the canonical implementation/tests. Restore the bounded alias/test/selector slice if its claimed equivalence fails. Branch creation is restricted to temporary test repositories; no real branch or publication is replaced.
+
 ## Final review checkpoint
 
 - Kind: lifecycle-closeout.
@@ -155,7 +176,7 @@ This checkpoint applies the selected review policy. A verification-group non-app
 
 ### TG-FINAL-01. One approved candidate through current consumers to truthful closeout
 
-- Covers: REL-SR-01–24, scoped SYS-SR-02/04/06/07/08/09, DES-SR-13/18/19/21 and R7/R8 across M1–M4.
+- Covers: REL-SR-01–24, scoped SYS-SR-02/04/06/07/08/09, DES-SR-13/18/19/21 and R7/R8 across M1–M5.
 - Demonstrate: reviewed inputs automatically yield archives, bundled metadata/index, packed npm and immutable approval basis; the real coordinator publishes those exact outputs under one substituted approval, observes public identity and fresh smoke, persists a truthful report, and its current readers work after the selected source removals. Changes after approval, preapproval failure, lost/duplicate external response, failed public verification, diagnostic loss and reporting recovery have their required outcomes. No old tag path bypasses authority and no helper-generated pass replaces an observation.
 - Evidence expectations: M3 first supplies complete-path proof using real protected validation around substituted external services and local Git evidence persistence. M4/final assessment explicitly checks its applicability against final subjects, dependencies and current guidance. Rerun affected integrated proof when invalidated; preserve valid unchanged observations without mandatory blind repetition. Supplement with semantic source-transfer assessment and final selected CI results.
 - Non-applicability: none for the complete-path and ownership claims. Isolated helper passes cannot establish the outcome. Real hosted publication and environment configuration are not required fixtures and cannot be inferred from them.
@@ -203,7 +224,7 @@ Independent reviews judge semantic preservation and sufficient protection. Fixtu
 
 ## Dependencies
 
-M1 → M2 → M3 → M4 is the engineering order, with independent milestone assessment and required corrections between slices. Add no new model to satisfy it. Shared package/installation behavior remains with its existing owners; an inseparable new requirement returns to Design before implementation.
+M1 → M2 → M3 → M4 → M5 is the engineering order, with independent milestone assessment and required corrections between slices. Add no new model to satisfy it. Shared package/installation behavior remains with its existing owners; an inseparable new requirement returns to Design before implementation.
 
 Fresh final whole-change Code Review follows all implementation and required corrections; distinct Verify follows that review. The primary-plan work entries are initialized once only after current independent Delivery approval, through the plan-owned governed operation. Route owns subsequent activity/work transitions. No implementation work may be hidden as lifecycle-closeout or left only in chat.
 
@@ -214,6 +235,8 @@ Fresh final whole-change Code Review follows all implementation and required cor
 | 2026-09-09 | Separate candidate construction, safe execution, CI composition and source retirement. | Each boundary has an independently reviewable safe predecessor; deletion waits for working current consumers. | One large automation-and-deletion commit; source retirement before implementation. |
 | 2026-09-09 | Prove the full path using real validators and substituted external services, then assess reuse after cleanup. | Establish the one-approval outcome without publishing or repeating unrelated historical experiments. | Helper-only success; success stubs for protected validators; real publication as mandatory engineering proof. |
 | 2026-09-09 | Keep remote setup and actual publication as explicit deployment prerequisites outside engineering execution. | Approved Design selects the capability and fail-closed setup contract, not remote administration authority. | Claiming a workflow file configures protection; leaving an unguarded fallback. |
+
+The M5 refinement adds the inspected redundant-alias retirement and detached-checkout proof after the initial four-milestone delivery. Earlier milestone and final judgments retain their original subjects; current progression is governed by renewed assessments in the owning change.
 
 ## Readiness
 
