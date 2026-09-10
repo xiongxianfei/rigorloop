@@ -79,6 +79,27 @@ class ReleaseCandidateTests(unittest.TestCase):
             'files': files, 'checks': [{'id': key, 'result': 'pass'} for key in sorted(CANDIDATE_CHECKS)],
         })
 
+    def test_prepared_ci_failure_cannot_become_source_mode_sentinel(self):
+        import tarfile
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from release_candidate import check_ci
+        intent = self.root / 'docs/releases/v0.5.1.md'
+        intent.write_text(intent.read_text() + '\n- Status: pending-publication\n')
+        def prepare(source, head, ref, previous, output, **kwargs):
+            output.mkdir()
+            with tarfile.open(output / 'package.tgz', 'w:gz'):
+                pass
+            return {'tarball': 'package.tgz', 'prepared_commit': 'b' * 40, 'candidate_id': 'c' * 64}
+        def run(command, root):
+            return '' if command[:2] == ['git', 'diff'] else 'a' * 40
+        for child, expected in [(0, 0), (1, 1), (3, 1)]:
+            with self.subTest(child=child), patch('release_candidate.run', side_effect=run), \
+                    patch('release_candidate.prepare_candidate', side_effect=prepare), \
+                    patch('release_candidate.ci_subject'), \
+                    patch('release_candidate.subprocess.run', return_value=SimpleNamespace(returncode=child)):
+                self.assertEqual(check_ci(['--mode', 'pr', '--base', 'base', '--head', 'head'], self.root), expected)
+
     def test_ci_range_resolves_main_defaults_and_repeated_head_before_preparation(self):
         from unittest.mock import patch
         from release_candidate import ci_arguments
