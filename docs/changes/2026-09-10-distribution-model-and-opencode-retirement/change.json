@@ -4,7 +4,7 @@
       "id": "distribution-router",
       "role": "route"
     },
-    "reason": "M3 implementation and C3/C5/C6/C7/C8 plus TG-08 evidence complete; independent milestone review requested.",
+    "reason": "M3 runtime-overlap correction complete; C3 154 passed and all selected CI passed; independent reporter reassessment required.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -143,6 +143,15 @@
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m2.json",
       "reason": "Formal whole-M2 interaction assessment against exact c048b647 handoff, current matching implementation evidence and unchanged approved Design/Delivery package; no required finding.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3.json",
+      "reason": "M3 correction addresses dist-m3-generation-runtime-overlap; preserve original judgment and require reporter reassessment against corrected output guard and proof.",
+      "value": "stale"
     }
   ],
   "blockers": [],
@@ -288,6 +297,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3.json"
     }
   ],
   "schema_version": 2,
