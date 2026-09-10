@@ -14,14 +14,26 @@ from release_candidate import CandidateError
 from release_execution import ExecutionError
 
 
+def safe_error(exc):
+    if isinstance(exc, (ExecutionError, CandidateError)):
+        message = re.sub(r'; private diagnostic log: .*', '; inspect the failed check in the private worker diagnostics', str(exc))
+    elif isinstance(exc, KeyError):
+        message = 'required workflow input is missing'
+    elif isinstance(exc, (OSError, subprocess.SubprocessError)):
+        message = 'required filesystem, process or service access is unavailable'
+    else:
+        message = 'required release input is malformed'
+    return message
+
+
 def main(argv=None, *, services=None, root=None):
     argv = sys.argv[1:] if argv is None else argv
     if argv and argv[0] == 'check-ci':
         from release_candidate import check_ci
         try:
             return check_ci(argv[1:], root or Path(__file__).resolve().parents[1])
-        except (CandidateError, OSError, ValueError, subprocess.SubprocessError) as exc:
-            print('CI release preparation stopped: ' + str(exc), file=sys.stderr)
+        except (CandidateError, KeyError, TypeError, AttributeError, OSError, ValueError, subprocess.SubprocessError) as exc:
+            print('CI release preparation stopped: ' + safe_error(exc), file=sys.stderr)
             return 1
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('operation', choices=['prepare', 'execute', 'read-evidence'])
@@ -65,14 +77,7 @@ def main(argv=None, *, services=None, root=None):
         with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as handle: handle.write(text)
         return 0
     except (ExecutionError, CandidateError, KeyError, ValueError, OSError, subprocess.SubprocessError) as exc:
-        if isinstance(exc, (ExecutionError, CandidateError)):
-            message = re.sub(r'; private diagnostic log: .*', '; inspect the failed check in the private worker diagnostics', str(exc))
-        elif isinstance(exc, KeyError):
-            message = 'required workflow input is missing'
-        elif isinstance(exc, (OSError, subprocess.SubprocessError)):
-            message = 'required filesystem, process or service access is unavailable'
-        else:
-            message = 'required release input is malformed'
+        message = safe_error(exc)
         print('Release stopped: ' + message, file=sys.stderr)
         if os.environ.get('GITHUB_STEP_SUMMARY'):
             try:

@@ -505,7 +505,9 @@ def check_ci(argv: list[str], root: Path) -> int:
         env = dict(os.environ, RIGORLOOP_CI_CANDIDATE=str(output), RIGORLOOP_CI_WORKSPACE=str(source))
         result = subprocess.run(['bash', 'scripts/ci.sh', *argv], cwd=source, env=env).returncode
         ci_subject(output, source, head)
-        return result
+        # Exit 3 is reserved for entering the source runner, never a fallback
+        # after prepared checks failed. Preserve failure for that child code.
+        return 1 if result == 3 else result
 
 
 LOADED_SCRIPT_IDENTITY = script_identity(Path(__file__).parent)
