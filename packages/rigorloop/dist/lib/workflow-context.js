@@ -144,13 +144,15 @@ export function executeWorkflowContext(args,options={}){
    const inspect=id=>{
     const path=`docs/changes/${id}`;
     try{
-     if(!safeId(id))stop('invalid-input');
      if(reader.inspect(path,true).info){r.scope.inspected_directories++;if(r.scope.inspected_directories>1024)stop('limit-exceeded');}
-     const readCandidate=()=>withRecordSnapshot(root,id,({set,format,revision})=>{
+     const readCandidate=()=>{
+      if(!safeId(id))stop('invalid-input');
+      return withRecordSnapshot(root,id,({set,format,revision})=>{
       if(!Object.keys(set).length)return null;
       format.set(id,set);
       return {change_id:id,path:path+'/change.json',record_contract:format.contract,revision};
-     });
+      });
+     };
      let candidate;
      if(parsed.change!==null)candidate=readCandidate();
      else{

@@ -459,7 +459,9 @@ def check_ci(argv: list[str], root: Path) -> int:
     context = (os.environ.get('RIGORLOOP_CI_CANDIDATE')
                if os.environ.get('RIGORLOOP_CI_WORKSPACE') == str(root.resolve()) else None)
     if context:
-        ci_subject(Path(context), root, args.head)
+        data = ci_subject(Path(context), root)
+        if args.head != data['prepared_commit']:
+            raise CandidateError('CI requested revision differs from prepared source')
         return 3
     package_path = root / 'packages/rigorloop/package.json'
     if not package_path.is_file():
@@ -503,6 +505,9 @@ def check_ci(argv: list[str], root: Path) -> int:
         print('CI checks prepared source ' + data['prepared_commit'] + ' from ' + head
               + '; candidate ' + data['candidate_id'] + '; no publication authority.', flush=True)
         env = dict(os.environ, RIGORLOOP_CI_CANDIDATE=str(output), RIGORLOOP_CI_WORKSPACE=str(source))
+        # Snapshot readers must inspect C, not the pending authored record in S.
+        # C descends from S; the unchanged base keeps all source-change selection.
+        argv[argv.index('--head') + 1] = data['prepared_commit']
         result = subprocess.run(['bash', 'scripts/ci.sh', *argv], cwd=source, env=env).returncode
         ci_subject(output, source, head)
         # Exit 3 is reserved for entering the source runner, never a fallback
