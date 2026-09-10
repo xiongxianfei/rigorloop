@@ -19,6 +19,48 @@ const concernValues=()=>({...values(f.change.blockers[0],['reporter','owner','su
 const app=()=>values(f.change.applicability[0],['value','actor','reason']);
 const record=(root,path)=>JSON.parse(inspect(root).snapshot.records.find(r=>r.path===path).content);
 
+test('stored JSON creation and later edits retain two-space indentation', t => {
+ const root=rootFor(t,false);
+ const create={op:'change.create',target:{},values:{...values(f.change,['proposal','models','activity','plan']),work:[],blockers:[]}};
+ const assertIndented=()=>{
+  for(const {content} of inspect(root).snapshot.records){
+   assert.equal(content,JSON.stringify(JSON.parse(content),null,2)+'\n');
+  }
+ };
+ assert.equal(mutate(root,create).status,'saved');
+ assertIndented();
+ const review={op:'review.record',target:{id:'readable'},values:{...reviewValues(),body:'Paragraph one.\n\nLiteral \\n remains text.'},applicability:app()};
+ assert.equal(mutate(root,review).status,'saved');
+ assertIndented();
+ const work={op:'work.add',target:{id:'first'},values:{status:'pending',owner:{id:'author',role:'implement'},requirement_refs:[]}};
+ assert.equal(mutate(root,work).status,'saved');
+ assertIndented();
+ assert.equal(mutate(root,{...work,target:{id:'second'}}).status,'saved');
+ assertIndented();
+ const update={op:'work.set',target:{id:'first'},values:{owner:{id:'new-author',role:'implement'},requirement_refs:['CLI-SR-13','CLI-SR-17']}};
+ const reviewBefore=readFileSync(join(root,prefix+'reviews/readable.json'));
+ assert.equal(mutate(root,update).status,'saved');
+ assertIndented();
+ assert.deepEqual(readFileSync(join(root,prefix+'reviews/readable.json')),reviewBefore);
+ const before=inspect(root);
+ assert.equal(mutate(root,update).status,'unchanged');
+ assert.deepEqual(inspect(root).snapshot,before.snapshot);
+});
+
+test('compact stored JSON is not reformatted by targeted object edits or appends', t => {
+ const root=rootFor(t);
+ const current=record(root,mp);
+ const before=encode(current);
+ writeFileSync(join(root,mp),before);
+ const owner={id:'new-author',role:'implement'};
+ assert.equal(mutate(root,{op:'work.set',target:{id:'work-1'},values:{owner}}).status,'saved');
+ const after=readFileSync(join(root,mp),'utf8');
+ assert.equal(after,before.replace(JSON.stringify(current.work[0]),JSON.stringify({...current.work[0],owner})));
+ const work={op:'work.add',target:{id:'added'},values:{status:'pending',owner,requirement_refs:[]}};
+ assert.equal(mutate(root,work).status,'saved');
+ assert.equal(readFileSync(join(root,mp),'utf8').trimEnd().includes('\n'),false);
+});
+
 test('TG-05 creation is v2-only and explicit; producers construct registrations',t=>{const root=rootFor(t,false),create={op:'change.create',target:{},values:{...values(f.change,['proposal','models','activity','plan','work']),blockers:[]}};assert.equal(mutate(root,create).status,'saved');const operations=[{op:'review.record',target:{id:'new-review'},values:reviewValues(),applicability:app()},{op:'evidence.record',target:{id:'new-check'},values:values(f.evidence.checks[0],['actor','subjects','result','procedure','summary']),applicability:app()},{op:'decision.record',target:{id:'new-decision'},values:{actor:f.change.activity.owner,subjects:[],rationale:'Explicit',source_refs:[],body:'Shared explanation'},applicability:app()},{op:'verify.record',target:{},values:{...values(f.verify,['verifier','subjects','outcome','body']),evidence_refs:[],review_refs:[]},applicability:app()}];assert.equal(mutate(root,operations,[],true).status,'saved');assert.equal(record(root,mp).records.length,4);assert.equal(record(root,prefix+'material-decisions.json').body,'Shared explanation');assert.equal(record(root,mp).activity.status,'completed');});
 
 test('TG-05 all origin construction forms retain origin after reassessment',t=>{const root=rootFor(t);for(const [index,supporting_judgment]of [null,{snapshot:f.change.blockers[0].origin.supporting_judgment},{from_review:'design-review',rationale:'Finding-specific account'}].entries()){const id='new-'+index,values=concernValues();values.basis.supporting_judgment=supporting_judgment;const add={op:'finding.add',target:{review:'design-review',id},values};const r=mutate(root,add);assert.equal(r.status,'saved',JSON.stringify(r));const before=record(root,prefix+'reviews/design-review.json').findings.find(x=>x.id===id);assert.ok(before.origin);assert.equal(before.origin.supporting_judgment?.rationale??null,supporting_judgment?.from_review?'Finding-specific account':supporting_judgment?.snapshot?.rationale??null);assert.equal(mutate(root,{op:'finding.set',target:add.target,values:{evidence:'New current evidence'}}).status,'saved');assert.deepEqual(record(root,prefix+'reviews/design-review.json').findings.find(x=>x.id===id).origin,before.origin);}const before=record(root,prefix+'reviews/design-review.json').findings;assert.equal(mutate(root,{op:'review.record',target:{id:'design-review'},values:{...reviewValues(),judgment:'approved',body:'Updated reviewer explanation'}}).status,'saved');assert.deepEqual(record(root,prefix+'reviews/design-review.json').findings,before);});
