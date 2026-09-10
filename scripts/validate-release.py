@@ -270,7 +270,6 @@ def verify_prepared_release(version: str, output: Path) -> int:
     commands = [
         ['python', 'scripts/validate-skills.py'],
         ['python', 'scripts/test-skill-validator.py'],
-        ['python', 'scripts/build-skills.py', '--check'],
         ['python', 'scripts/test-adapter-distribution.py'],
         ['python', 'scripts/test-npm-package-publication.py'],
         ['python', 'scripts/validate-adapters.py', '--version', version, '--adapter-root', str(output)],

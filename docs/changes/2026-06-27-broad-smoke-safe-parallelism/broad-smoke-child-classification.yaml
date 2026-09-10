@@ -6,7 +6,8 @@
   "notes": [
     "M1 records current classification and freshness evidence only.",
     "Runtime execution remains sequential until opt-in parallel scheduling is implemented and reviewed.",
-    "Dynamic review-artifact and artifact-lifecycle children are kept sequential because their command scope depends on worktree or push-range state."
+    "Dynamic review-artifact and artifact-lifecycle children are kept sequential because their command scope depends on worktree or push-range state.",
+    "Distribution M3 retires the two local-mirror commands; retained command classifications remain operational inputs, with their original measurements unchanged. Retirement and replacement proof is recorded in the 2026-09-10 Distribution change."
   ],
   "children": [
     {
@@ -106,107 +107,10 @@
       }
     },
     {
-      "check_id": "broad_smoke.skills.generation_regression",
-      "run_check_label": "Run local skill mirror generation fixtures",
-      "command": "python scripts/test-build-skills.py",
-      "current_order": 3,
-      "required": true,
-      "estimated_duration_ms": 3559,
-      "classification": {
-        "parallel_candidate": true,
-        "confidence": "high",
-        "reason": "generation fixtures use test-managed temp roots and do not write shared repository outputs."
-      },
-      "side_effects": {
-        "mutates_tracked_files": false,
-        "mutates_generated_files": false,
-        "writes_shared_temp": false,
-        "writes_shared_output": false,
-        "changes_cwd_assumptions": false,
-        "relies_on_command_order": false,
-        "network_sensitive": false,
-        "network_hermetic": false,
-        "uses_shared_cache": false,
-        "starts_nested_parallelism": false,
-        "cpu_intensity": "medium",
-        "io_intensity": "medium",
-        "diagnostic_order_sensitive": false,
-        "failure_output_captured": true
-      },
-      "paths": {
-        "read_paths": [
-          "skills",
-          "templates",
-          "tests/fixtures"
-        ],
-        "write_paths": [],
-        "temp_roots": [
-          "test-managed temp roots"
-        ],
-        "shared_outputs": []
-      },
-      "isolation_plan": {
-        "temp_root_strategy": "test-owned unique temp roots",
-        "output_capture_strategy": "per-child capture before aggregation",
-        "environment_strategy": "inherit read-only environment",
-        "cwd_strategy": "repository root"
-      },
-      "result": {
-        "eligible_for_parallelism": true
-      }
-    },
-    {
-      "check_id": "broad_smoke.skills.drift",
-      "run_check_label": "Validate generated skill mirror output",
-      "command": "python scripts/build-skills.py --check",
-      "current_order": 4,
-      "required": true,
-      "estimated_duration_ms": 873,
-      "classification": {
-        "parallel_candidate": true,
-        "confidence": "high",
-        "reason": "check mode validates generated skill mirror output without writing shared outputs."
-      },
-      "side_effects": {
-        "mutates_tracked_files": false,
-        "mutates_generated_files": false,
-        "writes_shared_temp": false,
-        "writes_shared_output": false,
-        "changes_cwd_assumptions": false,
-        "relies_on_command_order": false,
-        "network_sensitive": false,
-        "network_hermetic": false,
-        "uses_shared_cache": false,
-        "starts_nested_parallelism": false,
-        "cpu_intensity": "medium",
-        "io_intensity": "medium",
-        "diagnostic_order_sensitive": false,
-        "failure_output_captured": true
-      },
-      "paths": {
-        "read_paths": [
-          "skills",
-          ".agents/skills"
-        ],
-        "write_paths": [],
-        "temp_roots": [],
-        "shared_outputs": []
-      },
-      "isolation_plan": {
-        "temp_root_strategy": "none required",
-        "output_capture_strategy": "per-child capture before aggregation",
-        "environment_strategy": "inherit read-only environment",
-        "cwd_strategy": "repository root"
-      },
-      "result": {
-        "eligible_for_parallelism": true
-      }
-    },
-    {
       "check_id": "broad_smoke.adapters.regression",
       "run_check_label": "Run adapter distribution fixtures",
       "command": "python scripts/test-adapter-distribution.py",
-      "current_order": 5,
+      "current_order": 3,
       "required": true,
       "estimated_duration_ms": 173108,
       "classification": {
@@ -256,7 +160,7 @@
       "check_id": "broad_smoke.adapters.build_archives",
       "run_check_label": "Build generated adapter archives",
       "command": "python scripts/build-adapters.py --version v0.1.3 --output-dir \"$adapter_release_output\"",
-      "current_order": 6,
+      "current_order": 4,
       "required": true,
       "estimated_duration_ms": 1584,
       "classification": {
@@ -309,7 +213,7 @@
       "check_id": "broad_smoke.adapters.validate_archives",
       "run_check_label": "Validate generated adapter archives",
       "command": "python scripts/validate-adapters.py --root \"$adapter_release_output\" --version v0.1.3",
-      "current_order": 7,
+      "current_order": 5,
       "required": true,
       "estimated_duration_ms": 3620,
       "classification": {
@@ -359,7 +263,7 @@
       "check_id": "broad_smoke.change_metadata.regression",
       "run_check_label": "Run change metadata validator fixtures",
       "command": "python scripts/test-change-metadata-validator.py",
-      "current_order": 8,
+      "current_order": 6,
       "required": true,
       "estimated_duration_ms": 10126,
       "classification": {
@@ -409,7 +313,7 @@
       "check_id": "broad_smoke.artifact_lifecycle.regression",
       "run_check_label": "Run artifact lifecycle validator fixtures",
       "command": "python scripts/test-artifact-lifecycle-validator.py",
-      "current_order": 9,
+      "current_order": 7,
       "required": true,
       "estimated_duration_ms": 13909,
       "classification": {
@@ -459,7 +363,7 @@
       "check_id": "broad_smoke.review_artifacts.regression",
       "run_check_label": "Run review artifact validator fixtures",
       "command": "python scripts/test-review-artifact-validator.py",
-      "current_order": 10,
+      "current_order": 8,
       "required": true,
       "estimated_duration_ms": 3741,
       "classification": {
@@ -508,7 +412,7 @@
       "check_id": "broad_smoke.review_artifacts.changed_roots",
       "run_check_label": "$review_artifact_label",
       "command": "\"${review_artifact_cmd[@]}\"",
-      "current_order": 11,
+      "current_order": 9,
       "required": true,
       "estimated_duration_ms": null,
       "classification": {
@@ -554,7 +458,7 @@
       "check_id": "broad_smoke.artifact_lifecycle.scoped",
       "run_check_label": "$artifact_lifecycle_label",
       "command": "\"${artifact_lifecycle_cmd[@]}\"",
-      "current_order": 12,
+      "current_order": 10,
       "required": true,
       "estimated_duration_ms": 149434,
       "classification": {

@@ -1690,6 +1690,20 @@ def _remove_empty_directories(root: Path) -> None:
             continue
 
 
+def _validate_generation_output(output: Path, skills_root: Path) -> None:
+    """Package generation must not become source editing or active installation."""
+    source = skills_root.resolve()
+    resolved = output.resolve()
+    if resolved == source or resolved.is_relative_to(source) or source.is_relative_to(resolved):
+        raise ValueError("unsafe output: generation must not overlap canonical skills")
+    for candidate in (output.absolute(), resolved):
+        parts = candidate.parts
+        if ".opencode" in parts or any(parts[index:index + 2] == (target, "skills")
+                                        for target in (".codex", ".agents", ".claude")
+                                        for index in range(len(parts) - 1)):
+            raise ValueError("unsafe output: generation must not write into active skill directories")
+
+
 def sync_adapter_output(
     version: str,
     *,
@@ -1699,6 +1713,7 @@ def sync_adapter_output(
 ) -> None:
     """Synchronize generated adapter output with canonical sources."""
 
+    _validate_generation_output(output_root, skills_root)
     expected = expected_adapter_files(
         version,
         skills_root=skills_root,
@@ -1756,6 +1771,7 @@ def build_adapter_archives(
 ) -> tuple[Path, ...]:
     """Build deterministic per-adapter release archives from canonical sources."""
 
+    _validate_generation_output(output_dir, skills_root)
     expected = expected_adapter_files(
         version,
         skills_root=skills_root,
@@ -1826,6 +1842,7 @@ def build_staged_v3_adapter_archives(
 ) -> tuple[Path, ...]:
     """Build the inactive v3 adapter candidate without changing tracked output."""
 
+    _validate_generation_output(output_dir, skills_root)
     expected = _staged_v3_adapter_files(
         version, skills_root=skills_root, template_root=template_root
     )

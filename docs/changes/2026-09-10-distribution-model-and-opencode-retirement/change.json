@@ -4,7 +4,7 @@
       "id": "distribution-router",
       "role": "route"
     },
-    "reason": "M2 implementation and C2/C3/C4/C8 complete; exact committed installer, current two-target production and historical-reader preservation require independent Code Review.",
+    "reason": "M3 implementation and C3/C5/C6/C7/C8 plus TG-08 evidence complete; independent milestone review requested.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -133,6 +133,15 @@
       },
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1-r2.json",
       "reason": "Fresh M1 correction assessment resolves all three first-pass findings against current exact subjects and unchanged approved upstream basis.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m2.json",
+      "reason": "Formal whole-M2 interaction assessment against exact c048b647 handoff, current matching implementation evidence and unchanged approved Design/Delivery package; no required finding.",
       "value": "current"
     }
   ],
@@ -275,6 +284,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m2.json"
     }
   ],
   "schema_version": 2,
@@ -299,7 +312,7 @@
       "requirement_refs": [
         "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m2"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m3",
@@ -310,7 +323,7 @@
       "requirement_refs": [
         "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m3"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m4",

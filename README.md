@@ -379,7 +379,6 @@ Before PR, run the same structural checks that CI runs:
 
 - `python scripts/validate-skills.py`
 - `python scripts/test-skill-validator.py`
-- `python scripts/build-skills.py --check`
 - `python scripts/test-adapter-distribution.py`
 - `python scripts/build-adapters.py --version v0.1.3 --output-dir <release-output-dir>`
 - `python scripts/validate-adapters.py --root <release-output-dir> --version v0.1.3`

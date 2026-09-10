@@ -1122,6 +1122,58 @@ release_gate:
                     any(name.startswith(f"{adapter}/") or name.startswith("dist/") for name in names)
                 )
 
+    def test_distribution_archives_have_independent_complete_resource_inventory(self) -> None:
+        # Independent filesystem oracle: do not use the producer's inventory helper.
+        canonical = {path.relative_to(ROOT / "skills").as_posix(): path.read_bytes()
+                     for path in (ROOT / "skills").rglob("*") if path.is_file()}
+        with tempfile.TemporaryDirectory() as tmp:
+            archives = build_adapter_archives("v1.0.0", Path(tmp))
+            self.assertEqual(len(archives), 2)
+            for target, archive_path in zip(("codex", "claude"), archives):
+                prefix = {"codex": ".agents/skills/", "claude": ".claude/skills/"}[target]
+                with zipfile.ZipFile(archive_path) as archive:
+                    actual = {name[len(prefix):]: archive.read(name) for name in archive.namelist() if name.startswith(prefix)}
+                self.assertEqual(set(actual), set(canonical), target)
+                for name, expected in canonical.items():
+                    if target == "codex" or not name.endswith("/SKILL.md"):
+                        self.assertEqual(actual[name], expected, f"{target}/{name}")
+                    else:
+                        # Only declared frontmatter transformations are permitted;
+                        # existing metadata tests check that projection separately.
+                        self.assertEqual(actual[name].split(b"---", 2)[2], expected.split(b"---", 2)[2], name)
+
+    def test_distribution_generated_skill_structure_is_validated_independently(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills, output = self.generate_fixture_adapters(root, ("portable-basic",))
+            for target in ("codex", "claude"):
+                skill = output / target / ADAPTERS[target].skill_root / "portable-basic/SKILL.md"
+                original = skill.read_bytes()
+                skill.write_text("# Missing frontmatter\n")
+                errors = validate_adapter_output("0.1.0-rc.1", skills_root=skills, output_root=output)
+                self.assertTrue(any("file must begin with YAML frontmatter" in error and str(skill) in error for error in errors), errors)
+                skill.write_bytes(original)
+
+    def test_distribution_generation_rejects_source_and_active_output_roots(self) -> None:
+        for operation in ("archives", "tree", "staged"):
+            for destination in ("skills", "skills/nested", ".codex/skills", ".agents/skills", ".claude/skills", ".opencode/skills", "alias"):
+                with self.subTest(operation=operation, destination=destination), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    skills = self.copy_fixture_skills(root, ("portable-with-assets",))
+                    if destination == "alias":
+                        (root / "alias").symlink_to(skills, target_is_directory=True)
+                    before = {path.relative_to(skills): path.read_bytes() for path in skills.rglob("*") if path.is_file()}
+                    with self.assertRaisesRegex(ValueError, "unsafe output"):
+                        if operation == "archives":
+                            build_adapter_archives("v1.0.0", root / destination, skills_root=skills)
+                        elif operation == "staged":
+                            build_staged_v3_adapter_archives("v1.0.0", root / destination, skills_root=skills)
+                        else:
+                            sync_adapter_output("v1.0.0", skills_root=skills, output_root=root / destination)
+                    self.assertEqual(before, {path.relative_to(skills): path.read_bytes() for path in skills.rglob("*") if path.is_file()})
+                    if destination.startswith("."):
+                        self.assertFalse((root / destination).exists())
+
     def test_adapter_archives_include_packaged_skill_assets(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -4436,7 +4488,6 @@ release_gate:
         required_commands = (
             "python scripts/validate-skills.py",
             "python scripts/test-skill-validator.py",
-            "python scripts/build-skills.py --check",
             "python scripts/test-adapter-distribution.py",
             "python scripts/build-adapters.py --version 0.1.0 --check",
             "python scripts/validate-adapters.py --version 0.1.0",

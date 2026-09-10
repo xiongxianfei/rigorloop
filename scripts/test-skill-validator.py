@@ -7849,7 +7849,7 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
         self.assertEqual(len(legacy_rows), len(set(legacy_rows)))
         for value in ("diagnose-only", "fix-applied", "code-review", "unknown_value_policy"):
             self.assertIn(value, literals)
-        for consumer in ("scripts/skill_validation.py", "scripts/test-skill-validator.py", "scripts/build-skills.py", "scripts/adapter_distribution.py"):
+        for consumer in ("scripts/skill_validation.py", "scripts/test-skill-validator.py", "scripts/adapter_distribution.py"):
             self.assertIn(consumer, literals)
 
     def test_scenario_inventory_covers_t1_through_t15(self) -> None:

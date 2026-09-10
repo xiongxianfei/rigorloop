@@ -158,7 +158,6 @@ if [[ "$release_version" == "v0.1.1" ]]; then
   )
 else
   REQUIRED_CHECK_COMMANDS+=(
-    "python scripts/build-skills.py --check"
   )
 fi
 
@@ -246,10 +245,6 @@ run_check "Validate canonical skills" \
 run_check "Run skill regression validation" \
   python scripts/test-skill-validator.py
 
-if [[ "$release_version" != "v0.1.1" ]]; then
-  run_check "Check generated Codex skill drift" \
-    python scripts/build-skills.py --check
-fi
 
 run_check "Run adapter distribution regression tests" \
   python scripts/test-adapter-distribution.py
