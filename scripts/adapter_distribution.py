@@ -9,6 +9,7 @@ import json
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -1718,8 +1719,14 @@ def _validate_generation_output(output: Path, skills_root: Path) -> None:
     for directory, dirs, files in os.walk(output, followlinks=False, onerror=unreadable):
         for name in dirs + files:
             path = Path(directory) / name
-            if path.is_symlink():
+            info = path.lstat()
+            if stat.S_ISLNK(info.st_mode):
                 raise ValueError("unsafe output: generation must not follow symlinked destinations")
+            if stat.S_ISREG(info.st_mode):
+                if info.st_nlink != 1:
+                    raise ValueError("unsafe output: generation must not write shared-inode files")
+            elif not stat.S_ISDIR(info.st_mode):
+                raise ValueError("unsafe output: generation requires regular files and directories")
             if name in runtime_parents and path.relative_to(output) not in package_parents:
                 raise ValueError("unsafe output: generation must not contain active skill directories")
 

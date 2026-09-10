@@ -1176,7 +1176,7 @@ release_gate:
 
     def test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks(self) -> None:
         for operation in ("tree", "archives", "staged"):
-            for hazard in ("parent", "ancestor", "nested-link", "archive-link"):
+            for hazard in ("parent", "ancestor", "nested-link", "archive-link", "hard-link", "special-file"):
                 with self.subTest(operation=operation, hazard=hazard), tempfile.TemporaryDirectory() as tmp:
                     root = Path(tmp)
                     skills = self.copy_fixture_skills(root, ("portable-basic",))
@@ -1191,9 +1191,17 @@ release_gate:
                     elif hazard == "nested-link":
                         (output / "codex").mkdir(parents=True)
                         (output / "codex/.agents").symlink_to(root / "project/.codex", target_is_directory=True)
-                    else:
+                    elif hazard == "archive-link":
                         output.mkdir()
                         (output / adapter_archive_name("codex", "v1.0.0")).symlink_to(runtime)
+                    elif hazard == "special-file":
+                        output.mkdir()
+                        os.mkfifo(output / adapter_archive_name("codex", "v1.0.0"))
+                    else:
+                        target = (output / "codex/.agents/skills/portable-basic/SKILL.md" if operation == "tree"
+                                  else output / adapter_archive_name("codex", "v1.0.0"))
+                        target.parent.mkdir(parents=True)
+                        os.link(runtime, target)
                     before = runtime.read_bytes()
                     with self.assertRaisesRegex(ValueError, "unsafe output"):
                         if operation == "tree":

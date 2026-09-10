@@ -4,7 +4,7 @@
       "id": "distribution-router",
       "role": "route"
     },
-    "reason": "M3 runtime-overlap correction complete; C3 154 passed and all selected CI passed; independent reporter reassessment required.",
+    "reason": "M3 shared-inode correction and full C3/C8 passed; exact implementation-m3-r3 evidence ready for independent final milestone reassessment.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -151,6 +151,15 @@
       },
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3.json",
       "reason": "M3 correction addresses dist-m3-generation-runtime-overlap; preserve original judgment and require reporter reassessment against corrected output guard and proof.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r2.json",
+      "reason": "Corrected shared-inode output writes under original M3 finding; preserve r2 judgment and require fresh reporter reassessment.",
       "value": "stale"
     }
   ],
@@ -301,6 +310,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r2.json"
     }
   ],
   "schema_version": 2,
