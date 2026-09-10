@@ -171,6 +171,125 @@ def validate_release_transaction_published_evidence(version: str) -> list[str]:
     return validate_published_release_artifacts(version)
 
 
+def validate_prepared_release(version: str, root: Path, output: Path) -> list[str]:
+    """Prepublication applicability of the retained release/evidence/security checks.
+
+    Pending public observations are expectations, never passes. Actual local
+    correctness is recorded by the full verifier, separately from those fields.
+    Historical finalized-release validation continues through validate_release_output.
+    """
+    import json
+    from release_transaction import (load_release_profile, is_routine_release_profile,
+        validate_pending_release_artifacts, _release_notes_generated_block)
+    from adapter_distribution import scan_security_paths
+    from release_candidate import file_identity, local_file, run, CandidateError
+    errors = []
+    try:
+        profile = load_release_profile(version, root=root)
+        if not is_routine_release_profile(profile):
+            return ['prepared verification requires a supported routine profile']
+        errors.extend(validate_pending_release_artifacts(version, root=root))
+        paths = [root / 'docs/releases' / version, root / 'docs/releases' / (version + '.md'), profile.path]
+        errors.extend(scan_security_paths(paths))
+        notes = (paths[0] / 'release-notes.md').read_text()
+        if not notes.startswith('# RigorLoop ' + version + '\n'):
+            errors.append('release notes version mismatch')
+        if _release_notes_generated_block(profile).strip() not in notes:
+            errors.append('release notes generated metadata does not match profile')
+        facts = json.loads((output / 'preparation.json').read_text())
+        if facts['tag'] != version or facts['prepared_commit'] != run(['git', 'rev-parse', 'HEAD'], root):
+            errors.append('prepared release source identity mismatch')
+        if run(['git', 'rev-parse', 'HEAD^'], root) != facts['source_commit']:
+            errors.append('prepared release parent identity mismatch')
+        for name, identity in facts['files'].items():
+            if file_identity(local_file(output, name)) != identity:
+                errors.append('prepared artifact identity mismatch: ' + name)
+        metadata = json.loads((output / ('adapter-artifacts-' + version + '.json')).read_text())
+        if metadata['release']['source_commit'] != facts['prepared_commit'] or metadata['release']['release_tag'] != version:
+            errors.append('adapter metadata release identity mismatch')
+        proof = output / ('archive-proof-' + version + '.json')
+        if metadata['metadata']['sha256'] != file_identity(proof)['sha256']:
+            errors.append('adapter proof identity mismatch')
+        if {a['adapter'] for a in metadata['artifacts']} != set(profile.targets):
+            errors.append('adapter metadata target inventory mismatch')
+        for artifact in metadata['artifacts']:
+            if artifact['sha256'] != file_identity(local_file(output, artifact['archive']))['sha256']:
+                errors.append('adapter metadata archive identity mismatch')
+        # The package-bound metadata must be exactly the archive-derived public
+        # metadata; its index is the trust root consumed by the installed CLI.
+        with tarfile.open(local_file(output, facts['tarball'])) as packed:
+            raw = packed.extractfile('package/dist/metadata/adapter-artifacts-' + version + '.json').read()
+            index = json.load(packed.extractfile('package/dist/metadata/releases.json'))
+            import hashlib
+            if raw != (output / ('adapter-artifacts-' + version + '.json')).read_bytes():
+                errors.append('packed/public metadata mismatch')
+            if index['releases'][version]['bundled_metadata_sha256'] != hashlib.sha256(raw).hexdigest():
+                errors.append('packed metadata trust index mismatch')
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, tarfile.TarError) as exc:
+        errors.append('missing or invalid prepared release facts: ' + str(exc))
+    return errors
+
+
+def recorded_command(command: list[str], root: Path, output: Path) -> str:
+    """Describe exact arguments by declared inputs, without worker-local paths."""
+    shown = []
+    for argument in command:
+        path = Path(argument)
+        if path.is_absolute():
+            if path.is_relative_to(output):
+                argument = '<candidate>/' + path.relative_to(output).as_posix()
+            elif path.is_relative_to(root):
+                argument = path.relative_to(root).as_posix()
+            else:
+                raise ValueError('undeclared external command input cannot enter release evidence')
+        shown.append(argument)
+    return ' '.join(shown)
+
+
+def verify_prepared_release(version: str, output: Path) -> int:
+    """Complete new-path composition, reached through release-verify.sh.
+
+    Keep the actual validators and their security/negative/regression protection;
+    only the public-event/timing applicability differs before publication.
+    """
+    import json
+    import time
+    from release_candidate import run, run_packed_smoke, timing_diagnostics, canonical_bytes, local_file
+    root = Path.cwd()
+    receipt = output / 'release-verification.json'
+    receipt.unlink(missing_ok=True)
+    errors = validate_prepared_release(version, root, output)
+    if errors:
+        for error in errors:
+            print('Release integrity: ' + error, file=sys.stderr)
+        return 1
+    facts = json.loads((output / 'preparation.json').read_text())
+    checks = []
+    commands = [
+        ['python', 'scripts/validate-skills.py'],
+        ['python', 'scripts/test-skill-validator.py'],
+        ['python', 'scripts/build-skills.py', '--check'],
+        ['python', 'scripts/test-adapter-distribution.py'],
+        ['python', 'scripts/test-npm-package-publication.py'],
+        ['python', 'scripts/validate-adapters.py', '--version', version, '--adapter-root', str(output)],
+        ['python', 'scripts/validate-npm-package.py', '--tarball', str(local_file(output, facts['tarball']))],
+    ]
+    for command in commands:
+        started = time.monotonic()
+        print('Release check: ' + ' '.join(command[:2]), flush=True)
+        run(command, root)
+        checks.append({'command': recorded_command(command, root, output), 'result': 'pass', 'duration_seconds': time.monotonic() - started})
+    run_packed_smoke(root, local_file(output, facts['tarball']), output, version)
+    checks.append({'command': 'packed CLI version and init codex/claude/opencode', 'result': 'pass'})
+    errors = validate_prepared_release(version, root, output)
+    if errors:
+        raise ValueError('; '.join(errors))
+    checks.append({'command': 'python scripts/validate-release.py --prepared-candidate (release facts, notes, evidence, metadata and security)', 'result': 'pass'})
+    receipt.write_bytes(canonical_bytes({'prepared_commit': facts['prepared_commit'], 'checks': checks,
+        'diagnostics': timing_diagnostics(root, version), 'result': 'pass'}))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Validate docs/releases/<version>/ release metadata and notes."
@@ -214,12 +333,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--npm-tarball-root",
         help="Directory containing the packed npm tarball named by bootstrap publication evidence.",
     )
+    parser.add_argument("--prepared-candidate", help="Exact local candidate output; complete prepublication checks, no publication.")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.prepared_candidate:
+        if len(args.version) != 1 or args.recorded_source_auto or args.changed_path or args.changed_paths_file or args.release_output_dir or args.release_commit or args.npm_tarball_root:
+            parser.error("prepared-candidate requires one version and no historical-mode options")
+        return verify_prepared_release(args.version[0], Path(args.prepared_candidate).resolve())
     if args.recorded_source_auto and (
         args.changed_path
         or args.changed_paths_file

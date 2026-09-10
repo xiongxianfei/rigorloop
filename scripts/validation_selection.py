@@ -1930,9 +1930,18 @@ def _path_category(path: str) -> str | None:
         "scripts/prepare-release.py",
         "scripts/release-preflight.py",
         "scripts/release_transaction.py",
+        "scripts/release_candidate.py",
+        "scripts/release_candidate_tests.py",
+        "scripts/release_execution.py",
+        "scripts/release_execution_tests.py",
+        "scripts/release_provider.py",
+        "scripts/release_coordination.py",
+        "scripts/release_coordination_tests.py",
+        "scripts/release-coordinator.py",
         "scripts/test-release-transaction.py",
     }:
         return "release-transaction"
+    # Keep the retired alias path classified so deletion diffs still select protection.
     if path in {"scripts/validate-release.py", "scripts/validate-release-ci.py", "scripts/release-verify.sh"}:
         return "release-script"
     if path.startswith("scripts/"):
