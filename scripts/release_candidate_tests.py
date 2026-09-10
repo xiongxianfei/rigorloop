@@ -228,6 +228,50 @@ class ReleaseCandidateTests(unittest.TestCase):
 
 
 class ReleaseCandidateIntegrationTests(unittest.TestCase):
+    def test_ci_candidate_preserves_published_tag_without_release_eligibility(self):
+        import shutil
+        import subprocess
+        from unittest.mock import patch
+        from release_candidate import prepare_candidate, run
+        repository = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as temporary:
+            workspace = Path(temporary)
+            source = workspace / 'source'
+            subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(repository), str(source)], check=True)
+            for script in (repository / 'scripts').iterdir():
+                if script.is_file() and script.suffix in {'.py', '.sh'}:
+                    shutil.copyfile(script, source / 'scripts' / script.name)
+            package_path = source / 'packages/rigorloop/package.json'
+            package = json.loads(package_path.read_text())
+            package['version'] = '0.5.1'
+            package_path.write_text(json.dumps(package))
+            (source / 'docs/releases/v0.5.1.md').write_text(
+                '# Release v0.5.1\n\n## Version Decision\n\n'
+                '- Version decision: patch\n- Change summary: Published-tag fixture.\n')
+            run(['git', 'checkout', '-B', 'ci-source'], source)
+            run(['git', 'add', 'scripts', 'packages/rigorloop/package.json', 'docs/releases/v0.5.1.md'], source)
+            run(['git', '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Fixture'], source)
+            commit = run(['git', 'rev-parse', 'HEAD'], source)
+            tag = 'v0.5.1'
+            run(['git', 'update-ref', 'refs/tags/' + tag, commit], source)
+
+            class BuildReached(Exception):
+                pass
+
+            def stop_after_real_preflight(argv, cwd, **kwargs):
+                if argv[:2] == ['npm', 'ci']:
+                    raise BuildReached()
+                return run(argv, cwd, **kwargs)
+
+            with patch('release_candidate.run', side_effect=stop_after_real_preflight):
+                with self.assertRaisesRegex(CandidateError, 'local tag conflict'):
+                    prepare_candidate(source, commit, 'refs/heads/ci-source', '0.5.0', workspace / 'release')
+                with self.assertRaises(BuildReached):
+                    prepare_candidate(source, commit, 'refs/heads/ci-source', None, workspace / 'ci', ci_only=True)
+            self.assertEqual(run(['git', 'rev-parse', 'refs/tags/' + tag], source), commit)
+            self.assertEqual(run(['git', 'status', '--porcelain'], source), '')
+
     def test_actual_candidate_build_and_packed_metadata_chain(self):
         """TG-01/02: real builders/validators/install consumer; no publication."""
         import shutil
