@@ -1,11 +1,16 @@
 schema_version: release-timing-v1
 release_tag: v1.0.0
 release_profile: docs/releases/profiles/v1.0.0.yaml
-created_at: "2026-09-10T11:23:31.253730+00:00"
+created_at: "2026-09-10T11:23:36.490979+00:00"
 phases: []
 checks:
   - id: tag_publication-0
     phase: "publication_wait"
     command: "tag publication of approved identity"
     duration_seconds: 1.1480382869999985
+    result: "pass"
+  - id: github_publication-1
+    phase: "publication_wait"
+    command: "github publication of approved identity"
+    duration_seconds: 2.093848223000002
     result: "pass"
