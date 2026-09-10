@@ -1,0 +1,78 @@
+{
+  "body": "M1 independent Code Review assessed the complete readability implementation against design-review-r2 and delivery-review-r2, including the current CLI amendment, retained Record Format/Workflow interactions, exact primary plan and registered proof. The reviewer authored none of the implementation, tests, Design or plan. No material findings were identified.\n\nChecklist: spec alignment, test coverage, edge cases, error handling, architecture boundaries, compatibility, security/privacy, derived artifact currency, unrelated changes and validation evidence all pass within M1. CLI-SR-11/14/17/21 map to complete public text/JSON parity, literal LF paragraphs/code and exact byte budgets. CLI-SR-03/13/17 map to sorted two-space creation and local replacement/append while semantic no-ops and neighboring bytes remain untouched. CLI-SR-02/04/05/06/08/09/16/20 retain unchanged validation, cursor/hash, publisher, conflict and recovery mechanisms with executed existing protection.\n\nIndependent command node --test packages/rigorloop/test/record-store-queries.test.js packages/rigorloop/test/record-store-targeted.test.js passed61. The reviewer independently reproduced two expected assertion failures using current tests and the three baseline encoding modules from commit6168214f83b8c89e53f2313efce7a25aaf8bfa2b; regression-counterexamples retains exact identities and procedure. This distinguishes old escaped paragraphs and compact files from required behavior. Additional direct assertions passed for append/replacement/no-op across compact, two-space, CRLF/tab and mixed multiline whitespace, retained trailing neighbor content, sorted encoding and seven YAML string round-trips including literal escapes, Unicode, control characters and whitespace. Initial disposable-layout/package-resolution mistakes were corrected before proof; they are not product failures or passing results.\n\nRegistered m1-focused records current172 passes; model-and-prose records applicable structural checks; prepared-package records actual isolated ci.sh PR execution exit0 with source b01d5fd29ba3f7252c26961c869cd4e9b34c8d49, prepared14cc2d638cfe1e6b60b06e7d4d3f555849346b71 and candidate805f6de3c83967c1276c2a90856c220dc1aa138e400c50cdde4ec155595298e7. The retained raw-checkout failures lacked generated metadata and do not establish success. Later plan metadata-only spacing has separate direct structural proof and current independent Delivery r2; recording-only additions do not change the runtime assessment basis.\n\nYAML uses an existing dependency and literal blocks for ordinary narratives, quoting unusual control-bearing values for exact preservation as the approved contract permits. Stored bodies remain escaped JSON strings; there are no Markdown exports, historical migration or canonical machine-encoding changes. Tests exercise public subprocess and storage boundaries; replacing the old text-parser assertion preserves equivalent-data protection rather than retiring it. Package README describes the actual limits, and its paragraph reflow is harmless prose compliance.\n\nM1 milestone assessment is approved; no required resolution or remaining implementation milestone exists after Route accepts this result. Route owns work/activity settlement. Next mandatory checkpoint is a distinct fresh final whole-change Code Review followed by separate Verify. This milestone review does not claim final closeout, branch/PR readiness, hosted CI or publication authority. Recording status: recorded.",
+  "change_id": "2026-09-10-readable-record-output",
+  "contributors": [
+    {
+      "id": "root-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m1-r1",
+  "independence_basis": "Independent delegated reviewer authored none of the reviewed implementation, tests, Design, plan or proof allocation; independently inspected exact diff and ran bounded current and baseline proof.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "readability-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:75546a7d260ed1f9d7f8b7e230d12653f972e00ffd709e7c64c03c9a576f174f",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:7163b170e45e6fe2cedd27c1ed431c7b318d7615bf00be50e9e87cce7bcf15a6",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+      "path": "docs/proposals/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:47a0f27650c8b6bde8963c246a61ef4b3aec82b71602a943e3058f2a35ed0298",
+      "path": "docs/plans/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:7a984e98437181022c8be1ba94c980482cd166411dd13aa2c6f79542e62eeedf",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:70a877586c64e55e9f92dc9a03738a2e0d631a4718468f91065a093cdf693944",
+      "path": "packages/rigorloop/dist/lib/recording-result.js"
+    },
+    {
+      "identity": "sha256:91af2fb9cf43fe7b3e141bfc9e013253a7309d389af469936dd4c488b5ca2dfe",
+      "path": "packages/rigorloop/dist/lib/recording-construction.js"
+    },
+    {
+      "identity": "sha256:dd2047bc7a6e3c9def8bac6901e9fafe7dddbaaee313cd5f431a371eed045cfd",
+      "path": "packages/rigorloop/dist/lib/recording-spans.js"
+    },
+    {
+      "identity": "sha256:61185496ad8a569e17123d1aa74ddea86fb22a3e530b63a1278eabe9d8a84495",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:34a385bd0edbc7c8b5ebcbc0bdc40fe7fe2c9b8adfa2219a3a9520c99b66e569",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:4f6667d5157318b292fa72e7b1050ec93922e7e48bd92515c444ea5172be322a",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:870d2f5342c22cc06d2bfb9282a30b61d66d4d72f60239021cb11a3ec9874829",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/delivery-review-r2.json"
+    },
+    {
+      "identity": "sha256:b057cffdd3a000df958c8abf79a675103ec6373adcdfc6f61c497944a0ba1e08",
+      "path": "docs/changes/2026-09-10-readable-record-output/evidence.json"
+    }
+  ],
+  "target": "code"
+}

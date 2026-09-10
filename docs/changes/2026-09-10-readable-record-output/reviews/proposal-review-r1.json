@@ -1,0 +1,34 @@
+{
+  "body": "## Result\n- Skill: proposal-review\n- Review status: approved\n- Vision alignment: aligned\n- Material findings: none\n- Open blockers: none\n- Proposal readiness: direction sufficient for Design assessment\n- Immediate next stage: route\n- Automatic downstream handoff: route owns authorized continuation\n- Claim limitations: direction approval only; no retrospective approval of earlier candidate implementation, Design, Delivery, code or Verify.\n\n## Review Dimensions\n- Challenge, goals, scope, governing principle, direction, feasibility, material impact, vision alignment, downstream authority and requested decision: pass. Terminal escaped narrative and compact stored files are concrete inspection barriers. The direction preserves machine JSON and evidence identity while selecting bounded human presentation changes. Existing formatter and isolated encoding/edit construction provide a credible feasibility basis; proof allocation remains with Delivery.\n\n## Scope Preservation Review\n- Scope-preservation result: pass. Readable terminal paragraphs, indented new JSON files and readable targeted edits remain visible. No Markdown report exports, bulk historical reformatting, schema migration or token-overhead guarantee is introduced. Preserving historical bytes is an explicit compatibility boundary, not silent narrowing.\n\n## Recommended Proposal Edits\n- Recommended edits: none.\n\n## Recommendation\n- Approve the bounded direction. It supports VISION.md commitments to inspectable durable evidence without adopting external platform dependencies. The candidate predates this review; this judgment establishes current direction sufficiency only.\n\n## Durable-recording group\n- Recording status: recorded\n- Recording blocker: none\n- Record path: docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json\n- Finding-record paths: none\n\n## Formal-review group\n- Review ID: proposal-review-r1\n- Review record: docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json\n- Governed change identity: 2026-09-10-readable-record-output\n- Modes: formal-lifecycle/manual bounded delegated assessment; route retains continuation.\n- Specialized predicates: vision_exception_context=false; standing_artifact_context=false; scope_budget_context=false. PRR1-recorded applies.\n",
+  "change_id": "2026-09-10-readable-record-output",
+  "contributors": [
+    {
+      "id": "root-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review-r1",
+  "independence_basis": "Separately delegated reviewer inspected the complete proposal and governing direction without authoring or modifying the reviewed contribution. root-author authored the candidate. Existing implementation does not establish prior gate approval.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "readability-contract-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+      "path": "docs/proposals/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:9e2d76bff364133fe34d7246c8b4dbbdc2a9c838dc89179ea74037be0a6c0501",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:334cef7a6bc3ebfd4b5b928f175e89eac7d6dcdbeccf4e5b29f0f40735b9aba1",
+      "path": "CONSTITUTION.md"
+    }
+  ],
+  "target": "proposal"
+}

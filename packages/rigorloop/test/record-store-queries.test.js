@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
+import {parse as parseYAML} from "yaml";
 import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync,unlinkSync,symlinkSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {executeRecordStore} from "../dist/lib/record-store.js";
 import {executeRecordingQueryCli} from "../dist/lib/recording-query-cli.js";
 import {scanObservations,canonicalJSON} from "../dist/lib/recording-observations.js";
-import {preparePrimaryReceipt,boundAdvancedObservations,validatePrimaryResult} from "../dist/lib/recording-result.js";
+import {preparePrimaryReceipt,boundAdvancedObservations,validatePrimaryResult,serializePrimary} from "../dist/lib/recording-result.js";
 import {RecordFiles,digest} from "../dist/lib/record-store-files.js";
 import {V2_FORMAT} from "../dist/lib/record-store-format.js";
 const prefix="docs/changes/example/",mp=prefix+"change.json",rp=prefix+"reviews/design-review.json",ep=prefix+"evidence.json";
@@ -16,6 +17,52 @@ function setup(t,version=2) {const root=mkdtempSync(join(tmpdir(),"recording-que
 function query(root,words,input,extra=[],options={}) {const x=executeRecordingQueryCli([...words,"--root",root,...(words[0]==="subject"?[]:["--change","example"]),"--format","json",...(input?["--input","-"]:[]),...extra],{...options,input:input?enc(input):undefined});validatePrimaryResult(x.result);return x.result;}
 const context=(root,select,extra=[],detail)=>query(root,["context"],{schema_version:1,select,...(detail?{detail}:{})},extra);
 const allKinds=["work","review","finding","blocker","evidence","decision","verify","decisions","model","proposal","plan","activity","applicability"];
+const parseText = text => parseYAML(text.slice(text.indexOf("\n\n") + 2));
+
+// CLI-SR-11/14/17/21: readable narrative, complete selection and unchanged JSON.
+test("primary public text renders report paragraphs and code blocks without decoding literal escapes", async t => {
+  const {spawnSync} = await import("node:child_process");
+  const root = setup(t);
+  const body = '## Result\n\n- Status: completed\n- Note: 可读文本\n\n```yaml\nbranch: main\nexample: literal \\n and /n\n```\n';
+  const paths = [rp, prefix + "verify-report.json"];
+  for (const path of paths) {
+    const record = JSON.parse(readFileSync(join(root, path)));
+    record.body = body;
+    writeFileSync(join(root, path), enc(record));
+  }
+  const before = paths.map(path => readFileSync(join(root, path)));
+  const cli = new URL("../dist/bin/rigorloop.js", import.meta.url).pathname;
+  for (const words of [["review", "show", "design-review"], ["verify", "show"], ["context", "--input", "-"]]) {
+    const args = [cli, ...words, "--root", root, "--change", "example"];
+    const options = {encoding: "utf8", input: enc({schema_version: 1, select: [{kind: "review", where: {}}, {kind: "verify", where: {}}]})};
+    const human = spawnSync(process.execPath, args, options);
+    const json = spawnSync(process.execPath, [...args, "--format", "json"], options);
+    assert.equal(human.status, 0, human.stderr);
+    assert.equal(json.status, 0, json.stderr);
+    assert.equal(human.stderr, "");
+    assert.match(human.stdout, /body: \|[-+]?\n/);
+    assert.match(human.stdout, /## Result\n\n +\- Status: completed/);
+    assert.match(human.stdout, /```yaml\n +branch: main\n +example: literal \\n and \/n\n +```/);
+    assert.doesNotMatch(human.stdout, /## Result\\n/);
+    const result = JSON.parse(json.stdout);
+    assert.deepEqual(parseText(human.stdout), result);
+    assert.ok(result.data.items.every(item => item.fields.body === body));
+    assert.equal(json.stdout, enc(result));
+  }
+  assert.deepEqual(paths.map(path => readFileSync(join(root, path))), before);
+});
+
+test("primary multiline text obeys the exact byte budget without truncation", t => {
+  const root = setup(t);
+  const result = query(root, ["verify", "show"]);
+  result.data.items[0].fields.body = "段\n".repeat(100) + "End";
+  const output = serializePrimary(result);
+  const bytes = Buffer.byteLength(output.human);
+  assert.ok(bytes > Buffer.byteLength(output.json));
+  assert.equal(serializePrimary(result, bytes, {format: "text"}).human, output.human);
+  assert.throws(() => serializePrimary(result, bytes - 1, {format: "text"}), error => error.recordStoreCode === "limit-exceeded");
+  assert.equal(serializePrimary(result, bytes - 1, {format: "json"}).json, output.json);
+});
 
 test("TG-03 explicit context covers every kind without broad shallow expansion",t=>{const root=setup(t);for(const kind of allKinds){const r=context(root,[{kind,where:{}}]);assert.equal(r.status,"inspected",JSON.stringify(r));assert.equal(r.record_contract,"rigorloop-records-v2");assert.ok(r.revision);assert.ok(r.data.items.length>0,kind);assert.ok(r.data.items.every(x=>x.kind===kind));assert.ok(r.scope.complete);assert.equal(r.scope.total,r.data.items.length);}const r=context(root,[{kind:"finding",where:{}}]);assert.ok(r.data.items[0].fields.origin);assert.equal(r.data.items[0].origin_available,true);});
 
@@ -61,7 +108,7 @@ test("TG-04 unsafe or unreadable stored subjects never become null absence",t=>{
 
 test("TG-03 subject byte limits stop before reading later subjects and observed drift conflicts",t=>{const root=setup(t,0);writeFileSync(join(root,"large"),"x".repeat(4090));writeFileSync(join(root,"later"),"y");const read=RecordFiles.prototype.read;let later=false;RecordFiles.prototype.read=function(path,...args){if(path==="later")later=true;return read.call(this,path,...args);};try{assert.equal(query(root,["subject","inspect"],undefined,["--path","large","--path","later","--content","full","--max-bytes","4096"]).errors[0].code,"limit-exceeded");assert.equal(later,false);}finally{RecordFiles.prototype.read=read;}RecordFiles.prototype.read=function(){throw Object.assign(new Error("changed"),{recordStoreCode:"identity-conflict"});};try{const r=query(root,["subject","inspect"],undefined,["--path","large","--content","full"]);assert.equal(r.status,"conflict");assert.equal(r.data,undefined);}finally{RecordFiles.prototype.read=read;}});
 
-test("TG-03 internal subprocess interface preserves JSON/text scope and outcomes",async t=>{const {spawnSync}=await import("node:child_process");const root=setup(t);const launcher=new URL("./helpers/recording-query-launcher.mjs",import.meta.url);for(const words of [["status"],["verify","show"],["context","--input","-"],["subject","inspect","--path","absent"]]){const args=[launcher.pathname,...words,"--root",root,...(words[0]==="subject"?[]:["--change","example"])],options={encoding:"utf8",input:enc({schema_version:1,select:[{kind:"finding",where:{}}]})};const j=spawnSync(process.execPath,[...args,"--format","json"],options),h=spawnSync(process.execPath,[...args,"--format","text"],options);assert.equal(j.status,0,j.stderr);assert.equal(h.status,0,h.stderr);assert.deepEqual(JSON.parse(h.stdout.slice(h.stdout.indexOf("{"))),JSON.parse(j.stdout));} });
+test("TG-03 internal subprocess interface preserves JSON/text scope and outcomes",async t=>{const {spawnSync}=await import("node:child_process");const root=setup(t);const launcher=new URL("./helpers/recording-query-launcher.mjs",import.meta.url);for(const words of [["status"],["verify","show"],["context","--input","-"],["subject","inspect","--path","absent"]]){const args=[launcher.pathname,...words,"--root",root,...(words[0]==="subject"?[]:["--change","example"])],options={encoding:"utf8",input:enc({schema_version:1,select:[{kind:"finding",where:{}}]})};const j=spawnSync(process.execPath,[...args,"--format","json"],options),h=spawnSync(process.execPath,[...args,"--format","text"],options);assert.equal(j.status,0,j.stderr);assert.equal(h.status,0,h.stderr);assert.deepEqual(parseText(h.stdout),JSON.parse(j.stdout));} });
 
 test("TG-04 primary result closed vocabularies reject unknown_value and nested extras",t=>{const root=setup(t),good=query(root,["status"]);for(const field of ["operation","status","claim","record_contract"]){const bad=structuredClone(good);bad[field]="unknown_value";assert.throws(()=>validatePrimaryResult(bad),field);}for(const edit of [r=>r.scope.view="unknown_value",r=>r.data.counts.work.by_value.unknown_value=0,r=>r.data.activity.status="unknown_value",r=>r.observation_summary.by_code.unknown_value=0,r=>r.observation_summary.scope="unknown_value",r=>r.unknown_value=true]){const bad=structuredClone(good);edit(bad);assert.throws(()=>validatePrimaryResult(bad));}const found=context(root,[{kind:"finding",where:{}}]);for(const edit of [r=>r.data.items[0].kind="unknown_value",r=>r.scope.detail="unknown_value",r=>r.data.items[0].fields.state="unknown_value",r=>r.data.items[0].fields.origin=null]){const bad=structuredClone(found);edit(bad);assert.throws(()=>validatePrimaryResult(bad));}});
 

@@ -1,0 +1,74 @@
+{
+  "body": "## Result\n- Skill: design-review\n- Review status: approved\n- Package members: cli owns the amended terminal-rendering and stored-encoding contract; record-format is the unchanged representation/preservation interaction. Exact subjects include the accepted proposal, its review, and all directly linked CLI and Record Format JSON examples.\n- Upstream review ID: proposal-review-r1\n- Review ID and round: design-review-r2, round 2\n- Material findings: no unresolved required findings; readable-text-contract independently resolved in its originating review.\n- Correction targets: none\n- Recording status: recorded\n- Open blockers: none\n- Immediate next stage: route for authorized planning\n- Claim limitations: exact Design package approval for planning only; no implementation correctness, test pass, final Verify or external publication claim. Earlier candidate implementation predates these gates.\n\nCLI-SR-17 now rejects the reported escaped-paragraph presentation. The Primary results paragraph provides a concrete realization: labeled YAML with literal multiline blocks, quoting where necessary to preserve exact values/control safety, and no global backslash replacement. The acceptance paragraph distinguishes decoded paragraph and code-block newlines from literal backslash-n, observes public review/verify/context behavior, and retains exact text budget, no-partial-output and source-byte protection. This satisfies the originating finding without weakening the approved goal.\n\nThe new-file and subsequent targeted-edit contract retains deterministic two-space JSON, compact historical edits, semantic no-op bytes, unrelated neighbors and existing size bounds. Human YAML is a presentation, not a stored format or report export. Compact machine output, digest preimages, cursors and advanced exact-byte persistence/recovery remain unchanged. These choices are consistent with RF-SR-01/03/04/07/08, the retained schema and the user exclusion of Markdown report exports.\n\nThe complete prior package was read for round 1; the complete revised CLI diff and its surrounding contract were reassessed now. All unchanged package/dependency/example identities were re-inspected and match the prior fully read subjects. CLI request/receipt and freshness examples retain their semantic illustrations; Record Format examples still demonstrate JSON bodies and retained immutable origins, and do not prescribe canonical printer bytes. No package member or example silently dropped from selection.\n\nAcross the eight Design criteria, behavior and realization are feasible and coherent; preservation, ownership, failure/recovery and compatibility boundaries remain explicit; decisions and alternatives remain in the owning CLI contract; representative protective outcomes are sufficient for Delivery to allocate proof. No migration or displaced policy responsibility is added. The known draft-before-review chronology remains explicit rather than represented as prior implementation authorization.\n",
+  "change_id": "2026-09-10-readable-record-output",
+  "contributors": [
+    {
+      "id": "root-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-r2",
+  "independence_basis": "The separately delegated reviewer authored none of the original or corrected Design. root-author made the requested CLI correction after recorded first-pass findings; this reviewer independently reassessed it and retained the exact unchanged interaction/example basis.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "readability-contract-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:75546a7d260ed1f9d7f8b7e230d12653f972e00ffd709e7c64c03c9a576f174f",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+      "path": "docs/proposals/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:3e9b3753d51658e1a58fc106e8b54f02b16aaa0bd2d3cfe2f8e1acfe3a8e6aa3",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json"
+    },
+    {
+      "identity": "sha256:1d22534396a88cb3f3edb8d19be15cc37b8fe77b458ac2344e9627816094cca8",
+      "path": "docs/design/cli/examples/observation-freshness/expected.json"
+    },
+    {
+      "identity": "sha256:4fde512f9fd9c9b25502d1e983bb9a22382812ac726af6af32e040f7c3ff8222",
+      "path": "docs/design/cli/examples/observation-freshness/scan-b.json"
+    },
+    {
+      "identity": "sha256:d271716355c2d96bd1110c24f37e01de1bfb2a53d011a2f2a884bbebda2b9593",
+      "path": "docs/design/cli/examples/observation-freshness/scan-c.json"
+    },
+    {
+      "identity": "sha256:f35f7b4c6fc54f3bbe5164b1d75ef2b786f7898a8d64199f0d15dab2c2b3018e",
+      "path": "docs/design/cli/examples/work-set/request.json"
+    },
+    {
+      "identity": "sha256:75c8d51fdb5756ad71879f183ca6c08b807b7eba3f8e4648e0adbb682a77ab96",
+      "path": "docs/design/cli/examples/work-set/response.json"
+    },
+    {
+      "identity": "sha256:c13ffa7fe8d4189f2f30f7bb5c603c50c0e8d4d783dc394013d7db81883f32e0",
+      "path": "docs/design/record-format/examples/finding-reassessment/after.json"
+    },
+    {
+      "identity": "sha256:df39c9d8cb532e8fa48f3590e3558a4308bdfd815aab09b68866247be35d2f1d",
+      "path": "docs/design/record-format/examples/finding-reassessment/before.json"
+    },
+    {
+      "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+      "path": "docs/design/record-format/examples/incomplete-review.json"
+    },
+    {
+      "identity": "sha256:523ee35620d9deb9b393ecb59c414bd25e240be81a28dc76f347d412e0201cb6",
+      "path": "docs/design/record-format/examples/minimal-change.json"
+    }
+  ],
+  "target": "design"
+}

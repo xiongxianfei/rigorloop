@@ -1,0 +1,94 @@
+{
+  "body": "Distinct fresh final whole-change Code Review after M1 completion: the reviewer reread the complete runtime/test diff, current CLI correction, proposal, stable plan/navigation, README and exact review/evidence basis, then assessed integrated behavior. All M1 engineering subjects remain exact. Evidence changed only to attribute the baseline-check record to its actual recorder root-author; the independently executed negative proof, procedure, results and identities are unchanged. This attribution correction does not invalidate the milestone assessment. Current evidence identity is included here. Approved Design r2 and Delivery r2 apply; readable-text-contract is explicitly resolved by its original independent reporter with origin preserved. No implementation milestone, open finding or blocker remains.\n\nThe complete scope is coherent. Proposal selects readable primary text and new indented JSON without Markdown exports or historical migration. CLI-SR-17 and its acceptance scenario reject escaped ordinary paragraphs while preserving intentional literals. New construction writes sorted two-space JSON; targeted edits preserve compact historical formatting, semantic no-ops and neighbors. Text consumes decoded values; machine results and canonical identities/cursors stay compact. Shared validation, prepublication receipt and recovery boundaries remain unchanged. New bytes receive new identities without retargeting historical subjects. These combined outcomes satisfy CLI-SR-03/11/13/14/17/20/21 and the retained safety allocation.\n\nFresh direct integrated proof asserted exact two-space JSON plus final LF for the actual new M1 review, invoked public review show in default text and explicit JSON, compared decoded YAML/JSON for complete equality, and confirmed unchanged source bytes. It passed. Independent61 focused passes, two expected-negative baseline assertion failures, whitespace/control-string probes and registered172 current suite passes remain applicable on unchanged engineering/test dependencies and environment. Actual prepared-package exit0 proof applies to unchanged package/runtime subjects; later plan metadata spacing has separate direct structural proof and independent Delivery r2. Earlier raw generated-metadata and disposable-probe setup failures remain disclosed diagnostic evidence.\n\nAll ten review checklist dimensions pass: specification alignment, protective tests, edge cases, error handling, architecture boundaries, compatibility, security/privacy, generated-package currency, scope and named evidence adequacy. Public/advanced recording and recovery, exact budgets, complete presentation parity, escapes and untouched bytes retain proof. Updated assertions strengthen the selected text contract without retiring safety protection. README explains actual output and limitations. Navigation adds only a stable pointer. Proposal/plan disclose catch-up chronology and keep mutable lifecycle state in records. No dependency, schema, skill, release-process or customer-adoption change is introduced. JSON still escapes multiline strings as required by the selected format; no zero-token-overhead or bulk historical-formatting promise is made.\n\nNo material findings or corrections. Final whole-change Code Review is approved. M1 is completed; remaining implementation milestones: none. Route may enter distinct Verify, which owns the final explanation and closeout assessment. No Verify success, branch/PR readiness, hosted CI or publication claim is made. Recording status: recorded.",
+  "change_id": "2026-09-10-readable-record-output",
+  "contributors": [
+    {
+      "id": "root-author",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-final-r1",
+  "independence_basis": "Nonauthor reviewer freshly inspected complete final engineering scope after M1 completion, including root-authored Design/proposal/plan; earlier milestone judgment did not substitute. Reviewer independently ran actual stored-report/public-output composition proof.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "readability-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:75546a7d260ed1f9d7f8b7e230d12653f972e00ffd709e7c64c03c9a576f174f",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:7163b170e45e6fe2cedd27c1ed431c7b318d7615bf00be50e9e87cce7bcf15a6",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+      "path": "docs/proposals/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:47a0f27650c8b6bde8963c246a61ef4b3aec82b71602a943e3058f2a35ed0298",
+      "path": "docs/plans/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:7a984e98437181022c8be1ba94c980482cd166411dd13aa2c6f79542e62eeedf",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:70a877586c64e55e9f92dc9a03738a2e0d631a4718468f91065a093cdf693944",
+      "path": "packages/rigorloop/dist/lib/recording-result.js"
+    },
+    {
+      "identity": "sha256:91af2fb9cf43fe7b3e141bfc9e013253a7309d389af469936dd4c488b5ca2dfe",
+      "path": "packages/rigorloop/dist/lib/recording-construction.js"
+    },
+    {
+      "identity": "sha256:dd2047bc7a6e3c9def8bac6901e9fafe7dddbaaee313cd5f431a371eed045cfd",
+      "path": "packages/rigorloop/dist/lib/recording-spans.js"
+    },
+    {
+      "identity": "sha256:61185496ad8a569e17123d1aa74ddea86fb22a3e530b63a1278eabe9d8a84495",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:34a385bd0edbc7c8b5ebcbc0bdc40fe7fe2c9b8adfa2219a3a9520c99b66e569",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:4f6667d5157318b292fa72e7b1050ec93922e7e48bd92515c444ea5172be322a",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:870d2f5342c22cc06d2bfb9282a30b61d66d4d72f60239021cb11a3ec9874829",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/delivery-review-r2.json"
+    },
+    {
+      "identity": "sha256:4165f8c423ed139b458b6e36ee48b38bd21c0e58938d90eacddae3236f8edefc",
+      "path": "docs/changes/2026-09-10-readable-record-output/evidence.json"
+    },
+    {
+      "identity": "sha256:1beaf2aa413aa5d12c9c984549f784d5d57afea8fd8e520a6105ff9f173d4937",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:f6003e7f6e4810b2f9988ed8919d3f83aec53717ee3e39b368e245f0569bfde5",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/code-review-m1-r1.json"
+    },
+    {
+      "identity": "sha256:c9781c7fc45d911d11bcd2227b610540d61ab088ab68801bfc4798c8dcf23f6c",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r1.json"
+    },
+    {
+      "identity": "sha256:3e9b3753d51658e1a58fc106e8b54f02b16aaa0bd2d3cfe2f8e1acfe3a8e6aa3",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json"
+    }
+  ],
+  "target": "code"
+}
