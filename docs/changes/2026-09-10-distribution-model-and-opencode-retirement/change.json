@@ -116,6 +116,15 @@
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review-r2.json",
       "reason": "Fresh complete Delivery reassessment after retained-policy allocation correction; reporter resolved original finding and upstream basis is unchanged.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1.json",
+      "reason": "M1 source/proof corrected for the three recorded findings; preserve original judgment and require reporter reassessment.",
+      "value": "stale"
     }
   ],
   "blockers": [],
@@ -249,6 +258,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1.json"
     }
   ],
   "schema_version": 2,

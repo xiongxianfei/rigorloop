@@ -56,7 +56,19 @@ export function installCandidate({projectRoot, files, roots, force=false, dryRun
     if(before.size!==after.size||before.mtimeMs!==after.mtimeMs||before.ctimeMs!==after.ctimeMs)throw failure('Destination changed during inspection.');
     closeSync(fd);handles.delete(fd);return {kind:'file',id:identity(info),mode:info.mode,hash};
   }
+  function checkDiscovery() {
+    for (const root of discoveryRoots) {
+      const path=resolve(projectRoot,root);
+      // Even an absent discovery root may have a symlinked existing ancestor.
+      let ancestor=path;
+      while(!stat(ancestor)) { const next=dirname(ancestor); if(next===ancestor)break; ancestor=next; }
+      if(realpathSync(ancestor)!==ancestor)throw failure('Configured discovery root traverses a symlink.');
+      const info=stat(ancestor);
+      if(!info?.isDirectory())throw failure('Configured discovery root is not a safe directory.');
+    }
+  }
   function checkParents() {
+    checkDiscovery();
     if(realpathSync(projectRoot)!==projectRoot)throw failure('Project root changed.');
     for(const [path,pinned] of parents) {
       const actual=stat(path==='.'?projectRoot:join(projectRoot,path));
@@ -119,6 +131,7 @@ export function installCandidate({projectRoot, files, roots, force=false, dryRun
         writeFileSync(`${retention.path}/${temporary}`,file.content,{flag:'wx',mode:0o644});
         linkSync(`${retention.path}/${temporary}`,`${p.path}/${basename(file.path)}`);
         unlinkSync(`${retention.path}/${temporary}`);
+        checkpoint(`file-published:${file.path}`);
       }
       expected[unit]=actual(unit);
       // Independent bytes and exact membership, not a tree hash calculated by
