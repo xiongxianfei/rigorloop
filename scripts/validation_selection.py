@@ -1745,7 +1745,8 @@ def _path_category(path: str) -> str | None:
         return "vision"
     if path.startswith("tests/fixtures/compact-current-state-v1/"):
         return "record-retirement"
-    if path == "scripts/test-compact-current-state-canonical-contract.py":
+    if path in {"scripts/test-compact-current-state-canonical-contract.py",
+                "scripts/test-retirement-ledger.py", "scripts/retirement_ledger.py"}:
         return "record-retirement"
     if path == "schemas/compact-current-state-v1.schema.json":
         return "record-retirement"
