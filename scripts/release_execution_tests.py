@@ -316,6 +316,26 @@ class ReleaseExecutorTests(unittest.TestCase):
         self.assertEqual(self.publisher.writes, ['tag', 'github', 'npm'])
         self.assertNotIn('private-sensitive-command', json.dumps(self.stored()))
 
+    def test_delayed_npm_visibility_completes_without_duplicate_publication(self):
+        original = self.publisher.observe
+        pending = 120
+        waits = []
+
+        def observe(boundary, candidate):
+            nonlocal pending
+            result = original(boundary, candidate)
+            if boundary == 'npm' and result is not None and pending:
+                pending -= 1
+                return None
+            return result
+
+        self.publisher.observe = observe
+        self.publisher.wait_for_visibility = waits.append
+        self.assertEqual(self.execute()['status'], 'completed')
+        self.assertEqual(pending, 0)
+        self.assertEqual(waits, list(range(120)))
+        self.assertEqual(self.publisher.writes, ['tag', 'github', 'npm'])
+
     def test_timing_diagnostic_is_reported_without_changing_publication_success(self):
         self.assertEqual(self.execute()['status'], 'completed')
         diagnostic = self.stored()['timing_diagnostic']
