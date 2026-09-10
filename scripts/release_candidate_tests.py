@@ -238,9 +238,8 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             workspace = Path(temporary)
             source = workspace / 'source'
             subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(repository), str(source)], check=True)
-            for script in (repository / 'scripts').iterdir():
-                if script.is_file() and script.suffix in {'.py', '.sh'}:
-                    shutil.copyfile(script, source / 'scripts' / script.name)
+            shutil.rmtree(source / 'scripts')
+            shutil.copytree(repository / 'scripts', source / 'scripts', ignore=shutil.ignore_patterns('__pycache__'))
             package_path = source / 'packages/rigorloop/package.json'
             package = json.loads(package_path.read_text())
             package['version'] = '0.5.1'
@@ -284,9 +283,8 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             source, output = workspace / 'source', workspace / 'release-candidate'
             subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(repository), str(source)], check=True)
             # Use current authored implementation, including an uncommitted test-first slice.
-            for script in (repository / 'scripts').iterdir():
-                if script.is_file() and script.suffix in {'.py', '.sh'}:
-                    shutil.copyfile(script, source / 'scripts' / script.name)
+            shutil.rmtree(source / 'scripts')
+            shutil.copytree(repository / 'scripts', source / 'scripts', ignore=shutil.ignore_patterns('__pycache__'))
             shutil.copyfile(repository / '.github/workflows/release.yml', source / '.github/workflows/release.yml')
             # Include the complete current installer and templates, including removals.
             for relative in ['packages/rigorloop/dist', 'scripts/adapter_templates']:

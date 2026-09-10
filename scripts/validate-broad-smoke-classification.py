@@ -24,8 +24,6 @@ DEFAULT_CLASSIFICATION = (
 CHECK_IDS_BY_RUN_CHECK_LABEL = {
     "Validate canonical skills": "broad_smoke.skills.validate",
     "Run skill validator fixtures": "broad_smoke.skills.regression",
-    "Run local skill mirror generation fixtures": "broad_smoke.skills.generation_regression",
-    "Validate generated skill mirror output": "broad_smoke.skills.drift",
     "Run adapter distribution fixtures": "broad_smoke.adapters.regression",
     "Build generated adapter archives": "broad_smoke.adapters.build_archives",
     "Validate generated adapter archives": "broad_smoke.adapters.validate_archives",

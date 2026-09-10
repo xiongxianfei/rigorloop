@@ -740,11 +740,7 @@ run_broad_smoke() {
     broad_smoke_schedule_child "$broad_smoke_result_dir" 2 "broad_smoke.skills.regression" "Run skill validator fixtures" \
       python scripts/test-skill-validator.py
 
-    broad_smoke_schedule_child "$broad_smoke_result_dir" 3 "broad_smoke.skills.generation_regression" "Run local skill mirror generation fixtures" \
-      python scripts/test-build-skills.py
 
-    broad_smoke_schedule_child "$broad_smoke_result_dir" 4 "broad_smoke.skills.drift" "Validate generated skill mirror output" \
-      python scripts/build-skills.py --check
 
     broad_smoke_schedule_child "$broad_smoke_result_dir" 5 "broad_smoke.adapters.regression" "Run adapter distribution fixtures" \
       python scripts/test-adapter-distribution.py
@@ -788,11 +784,7 @@ run_broad_smoke() {
   run_check "Run skill validator fixtures" \
     python scripts/test-skill-validator.py
 
-  run_check "Run local skill mirror generation fixtures" \
-    python scripts/test-build-skills.py
 
-  run_check "Validate generated skill mirror output" \
-    python scripts/build-skills.py --check
 
   run_check "Run adapter distribution fixtures" \
     python scripts/test-adapter-distribution.py
@@ -1485,8 +1477,6 @@ run_direct_product_gates() {
     python scripts/validate-skills.py
   run_direct_check "Gate A: canonical skill regressions" \
     python scripts/test-skill-validator.py
-  run_direct_check "Gate A: generated skill currency" \
-    python scripts/build-skills.py --check
   run_direct_check "Gate A: boundary proof structure" \
     python scripts/validate-boundary-first.py --check
 
