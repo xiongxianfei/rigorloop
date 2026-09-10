@@ -18,7 +18,7 @@ REQUIRED_PACKAGE_PATHS = frozenset(
         "package/LICENSE",
         "package/dist/bin/rigorloop.js",
         "package/dist/lib/command-result.js",
-        "package/dist/lib/lockfile.js",
+        "package/dist/lib/installer-replacement.js",
         "package/dist/lib/record-store.js",
         "package/dist/lib/record-format-v2.js",
         "package/dist/lib/recording-cli.js",

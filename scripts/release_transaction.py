@@ -24,8 +24,9 @@ EXPECTED_NPM_PACKAGE = "@xiongxianfei/rigorloop"
 RELEASE_KINDS = frozenset(("routine", "special"))
 ROUTINE_RELEASE_KIND = "routine"
 SPECIAL_RELEASE_KIND = "special"
-ROUTINE_TARGETS = ("codex", "claude", "opencode")
+ROUTINE_TARGETS = ("codex", "claude")
 SUPPORTED_TARGETS = frozenset(ROUTINE_TARGETS)
+HISTORICAL_TARGETS = ("codex", "claude", "opencode")
 NPM_DIST_TAGS = frozenset(("latest",))
 LEGACY_IMPLICIT_LATEST_PROFILES = frozenset(("v0.3.5", "v0.3.6"))
 REQUIRED_VALUE = "required"
@@ -268,6 +269,10 @@ def load_release_profile(tag: str, *, root: Path | str = Path(".")) -> ReleasePr
 
 
 def load_release_profile_file(path: Path | str) -> ReleaseProfile:
+    return _read_release_profile_file(path)
+
+
+def _read_release_profile_file(path: Path | str, *, historical: bool = False) -> ReleaseProfile:
     profile_path = Path(path)
     try:
         text = profile_path.read_text(encoding="utf-8")
@@ -284,7 +289,15 @@ def load_release_profile_file(path: Path | str) -> ReleaseProfile:
     except ValueError as exc:
         raise ReleaseProfileError(profile_path, [f"could not parse release profile: {exc}"]) from exc
 
-    return _validate_profile_data(profile_path, data)
+    return _validate_profile_data(profile_path, data, historical=historical)
+
+
+def _load_recorded_release_profile(tag: str, *, root: Path) -> ReleaseProfile:
+    # Read-only evidence context; preparation and publication use the current loader.
+    profile = _read_release_profile_file(profile_path_for_tag(tag, root=root), historical=True)
+    if profile.release_tag != tag:
+        raise ReleaseProfileError(profile.path, [f"release_tag {profile.release_tag} does not match requested tag {tag}"])
+    return profile
 
 
 def is_routine_release_profile(profile: ReleaseProfile) -> bool:
@@ -545,7 +558,7 @@ def validate_release_timing_evidence(
 ) -> ReleaseTimingValidationResult:
     repo_root = Path(root)
     try:
-        profile = load_release_profile(tag, root=repo_root)
+        profile = _load_recorded_release_profile(tag, root=repo_root)
     except ReleaseProfileError as exc:
         return ReleaseTimingValidationResult(tag, tuple(exc.errors))
 
@@ -795,7 +808,7 @@ def validate_published_release_artifacts(
 ) -> list[str]:
     repo_root = Path(root)
     errors: list[str] = []
-    profile = load_release_profile(tag, root=repo_root)
+    profile = _load_recorded_release_profile(tag, root=repo_root)
     path = repo_root / "docs" / "releases" / tag / "npm-publication.md"
     if not path.exists():
         return [f"{_repo_relative(path, repo_root)}: missing published npm-publication evidence"]
@@ -1506,7 +1519,6 @@ def _plan_package_readme_update(
         text = text.replace(f"{profile.npm_package}@{current_version}", f"{profile.npm_package}@{profile.package_version}")
         text = text.replace(f"rigorloop-adapter-codex-v{current_version}.zip", f"rigorloop-adapter-codex-{profile.release_tag}.zip")
         text = text.replace(f"rigorloop-adapter-claude-v{current_version}.zip", f"rigorloop-adapter-claude-{profile.release_tag}.zip")
-        text = text.replace(f"rigorloop-adapter-opencode-v{current_version}.zip", f"rigorloop-adapter-opencode-{profile.release_tag}.zip")
     planned[readme_path] = text
 
 
@@ -1696,7 +1708,7 @@ def _plan_standing_release_record(
         "| no new product or implementation decision | pass | approved upstream lifecycle artifacts |\n"
         "| no release-process change | pass | existing routine workflow retained |\n"
         "| no package name/scope change | pass | package scope unchanged |\n"
-        "| no adapter target/install-root change | pass | codex, claude, and opencode retained |\n"
+        "| no adapter target/install-root change | pass | codex and claude retained |\n"
         f"| upstream breaking change approval | not-applicable | {version_decision} release |\n\n"
         "## Preflight Gate\n\n"
         "| Check | Result | Evidence |\n"
@@ -1747,7 +1759,7 @@ def _plan_standing_release_record(
         f"- Notes: `{profile.release_tag}` and `v0.3.6` are never rewritten\n\n"
         "## Follow-up\n\n"
         "After authorized publication, record the immutable tag identity, GitHub assets, npm registry identity, "
-        "fresh Codex/Claude/opencode smoke, and closeout result.\n\n"
+        "fresh Codex/Claude smoke, and closeout result.\n\n"
         "## Evidence Safety Checklist\n\n"
         "Do not record tokens, OTPs, credentials, raw private environment values, usernames, hostnames, "
         "or machine-local absolute paths. Summarize command results instead of pasting raw environment output.\n"
@@ -1920,18 +1932,8 @@ def _pending_npm_publication_yaml(profile: ReleaseProfile) -> str:
 def _pending_target_init_smoke_yaml(profile: ReleaseProfile, target: str) -> str:
     roots = _target_install_roots(target)
     root_lines = "\n".join(f"      - \"{root}\"" for root in roots)
-    if target == "opencode":
-        tree_hashes = (
-            "      - \".opencode/skills=<pending skills tree sha256>\"\n"
-            "      - \".opencode/commands=<pending commands tree sha256>\""
-        )
-        file_counts = (
-            "      - \".opencode/skills=<pending skills file count>\"\n"
-            "      - \".opencode/commands=<pending commands file count>\""
-        )
-    else:
-        tree_hashes = "      - \"<pending live tree sha256>\""
-        file_counts = "      - \"<pending live file count>\""
+    tree_hashes = "      - \"<pending live tree sha256>\""
+    file_counts = "      - \"<pending live file count>\""
     return (
         f"  {target}:\n"
         f"    command: \"npx {profile.npm_package}@{profile.package_version} init {target} --json\"\n"
@@ -2006,7 +2008,7 @@ def _expected_adapter_paths(profile: ReleaseProfile) -> dict[str, str]:
 
 
 def _expected_instruction_entrypoints(profile: ReleaseProfile) -> dict[str, str]:
-    filenames = {"codex": "AGENTS.md", "claude": "CLAUDE.md", "opencode": "AGENTS.md"}
+    filenames = {"codex": "AGENTS.md", "claude": "CLAUDE.md"}
     return {
         target: f"dist/adapters/{target}/{filenames[target]}"
         for target in profile.targets
@@ -2211,9 +2213,7 @@ def _target_install_roots(target: str) -> tuple[str, ...]:
         return (".agents/skills",)
     if target == "claude":
         return (".claude/skills",)
-    if target == "opencode":
-        return (".opencode/skills", ".opencode/commands")
-    return ("pending",)
+    raise ValueError(f"unsupported target: {target}")
 
 
 def _repo_relative(path: Path, repo_root: Path) -> str:
@@ -2627,8 +2627,8 @@ def _parse_pending_table_rows(text: str) -> tuple[dict[str, str], ...]:
     return tuple(rows)
 
 
-def _validate_profile_data(path: Path, data: dict[str, Any]) -> ReleaseProfile:
-    closed_errors = _closed_vocabulary_errors(data)
+def _validate_profile_data(path: Path, data: dict[str, Any], *, historical: bool = False) -> ReleaseProfile:
+    closed_errors = _closed_vocabulary_errors(data, historical=historical)
     if closed_errors:
         raise ReleaseProfileError(path, closed_errors)
 
@@ -2691,9 +2691,10 @@ def _validate_profile_data(path: Path, data: dict[str, Any]) -> ReleaseProfile:
         if validation and validation.get(field) is not True:
             errors.append(f"validation.{field} must be true")
 
-    if release_kind == ROUTINE_RELEASE_KIND and tuple(targets) != ROUTINE_TARGETS:
+    allowed_populations = (ROUTINE_TARGETS, HISTORICAL_TARGETS) if historical else (ROUTINE_TARGETS,)
+    if release_kind == ROUTINE_RELEASE_KIND and tuple(targets) not in allowed_populations:
         errors.append(
-            "routine release targets must be codex, claude, opencode in that order"
+            "routine release targets must be codex, claude in that order"
         )
     if release_kind == SPECIAL_RELEASE_KIND and not owner_decision:
         errors.append("special release requires owner_decision")
@@ -2837,7 +2838,7 @@ def _validate_literal_audit_baseline(
     )
 
 
-def _closed_vocabulary_errors(data: dict[str, Any]) -> list[str]:
+def _closed_vocabulary_errors(data: dict[str, Any], *, historical: bool = False) -> list[str]:
     errors: list[str] = []
     release_kind = data.get("release_kind")
     if isinstance(release_kind, str) and release_kind not in RELEASE_KINDS:
@@ -2850,7 +2851,7 @@ def _closed_vocabulary_errors(data: dict[str, Any]) -> list[str]:
     targets = data.get("targets")
     if isinstance(targets, list):
         for target in targets:
-            if isinstance(target, str) and target not in SUPPORTED_TARGETS:
+            if isinstance(target, str) and target not in (HISTORICAL_TARGETS if historical else SUPPORTED_TARGETS):
                 errors.append(f"unknown target: {target}")
     return errors
 

@@ -33,7 +33,8 @@ from skill_validation import (
 )
 
 
-SUPPORTED_ADAPTERS = ("codex", "claude", "opencode")
+SUPPORTED_ADAPTERS = ("codex", "claude")
+HISTORICAL_TARGETS = ("codex", "claude", "opencode")
 DEFAULT_ADAPTER_VERSION = "v0.5.1"
 OPENCODE_COMMAND_ALIASES = (
     "proposal",
@@ -302,7 +303,7 @@ class AdapterArtifactMetadata:
     validated_at: str
 
 
-ADAPTERS = {
+HISTORICAL_ADAPTERS = {
     "codex": AdapterConfig(
         name="codex",
         package_root=PurePosixPath("dist/adapters/codex"),
@@ -322,6 +323,9 @@ ADAPTERS = {
         skill_root=PurePosixPath(".opencode/skills"),
     ),
 }
+
+
+ADAPTERS = {name: HISTORICAL_ADAPTERS[name] for name in SUPPORTED_ADAPTERS}
 
 
 RELEASE_TARGETS = {
@@ -629,7 +633,7 @@ def evaluate_skill(target: Path) -> SkillPortabilityReport:
     decisions: list[AdapterDecision] = [
         AdapterDecision(adapter="codex", included=True),
     ]
-    for adapter in ("claude", "opencode"):
+    for adapter in ("claude",):
         adapter_reasons = non_codex_reasons + target_reasons.get(adapter, ())
         decisions.append(
             AdapterDecision(
@@ -670,17 +674,6 @@ def render_manifest_yaml(
     """Render the constrained generated adapter manifest shape deterministically."""
 
     report_tuple = tuple(reports)
-    render_opencode_aliases = False
-    if _supports_opencode_command_aliases(version):
-        missing_alias_skills = _opencode_command_alias_missing_skill_errors(
-            report_tuple, command_aliases=command_aliases
-        )
-        if missing_alias_skills:
-            if not version.startswith("v"):
-                raise ValueError("\n".join(missing_alias_skills))
-        else:
-            render_opencode_aliases = True
-
     lines = [f"version: {version}", "skills:"]
     for report in sorted(report_tuple, key=lambda item: item.name):
         lines.append(f"  {report.name}:")
@@ -688,13 +681,6 @@ def render_manifest_yaml(
         lines.append(f"    adapters: [{', '.join(report.included_adapters)}]")
         if not report.portable:
             lines.append(f"    reason: {_yaml_double_quoted(report.reason)}")
-    if render_opencode_aliases:
-        lines.append("command_aliases:")
-        lines.append("  opencode:")
-        lines.append(f"    count: {len(command_aliases)}")
-        lines.append("    aliases:")
-        for alias, alias_path in _expected_opencode_command_alias_paths(command_aliases).items():
-            lines.append(f"      {alias}: {alias_path}")
     lines.append("")
     return "\n".join(lines)
 
@@ -1191,47 +1177,12 @@ def _supports_opencode_command_aliases(version: str) -> bool:
     return parsed is not None and parsed >= (0, 1, 1)
 
 
-def opencode_command_alias_relative_path(alias: str) -> Path:
-    """Return the output-root-relative path for one OpenCode command alias."""
-
-    return (
-        _adapter_package_relative_root(ADAPTERS["opencode"])
-        / _path_from_posix(OPENCODE_COMMAND_ROOT)
-        / f"{alias}.md"
-    )
 
 
-def _opencode_command_alias_contract_path(alias: str) -> str:
-    return _adapter_contract_relative_path(opencode_command_alias_relative_path(alias))
 
 
-def _expected_opencode_command_alias_paths(
-    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
-) -> dict[str, str]:
-    return {
-        alias: _opencode_command_alias_contract_path(alias)
-        for alias in command_aliases
-    }
 
 
-def _opencode_command_alias_missing_skill_errors(
-    reports: Iterable[SkillPortabilityReport],
-    *,
-    command_aliases: tuple[str, ...] = OPENCODE_COMMAND_ALIASES,
-) -> list[str]:
-    included = {
-        report.name
-        for report in reports
-        if "opencode" in report.included_adapters
-    }
-    return [
-        (
-            f"opencode command alias {alias} maps to missing included skill: "
-            f"{_opencode_command_alias_contract_path(alias)}"
-        )
-        for alias in command_aliases
-        if alias not in included
-    ]
 
 
 def _render_frontmatter_field(key: str, value: str) -> list[str]:
@@ -1276,21 +1227,6 @@ def render_skill_for_adapter(report: SkillPortabilityReport, decision: AdapterDe
     return _render_transformed_skill(report.path, drop_keys)
 
 
-def render_opencode_command_alias(alias: str) -> str:
-    """Render one deterministic thin OpenCode command alias wrapper."""
-
-    return "\n".join(
-        [
-            "---",
-            f"description: Use the RigorLoop {alias} skill.",
-            "---",
-            "",
-            f"Load and follow the `{alias}` skill for this request:",
-            "",
-            "$ARGUMENTS",
-            "",
-        ]
-    )
 
 
 def render_entrypoint_template(
@@ -1366,15 +1302,6 @@ def _expected_adapter_files_from_reports(
                     package_root
                     / _path_from_posix(config.skill_root / report.name / PurePosixPath(resource_path.as_posix()))
                 ] = text
-
-    if (
-        _supports_opencode_command_aliases(version)
-        and not _opencode_command_alias_missing_skill_errors(
-            reports, command_aliases=command_aliases
-        )
-    ):
-        for alias in command_aliases:
-            expected[opencode_command_alias_relative_path(alias)] = render_opencode_command_alias(alias)
 
     return dict(sorted(expected.items(), key=lambda item: item[0].as_posix()))
 
@@ -1461,54 +1388,7 @@ def _inspect_generated_adapter_manifest(output_root: Path) -> _AdapterManifestIn
 
 
 def _manifest_command_alias_contract_errors(version: str, manifest: AdapterManifest) -> list[str]:
-    errors: list[str] = []
-    unsupported_tools = sorted(set(manifest.command_aliases) - {"opencode"})
-    for tool in unsupported_tools:
-        errors.append(f"unsupported command alias tool: {tool}")
-
-    if not _supports_opencode_command_aliases(version):
-        if manifest.command_aliases:
-            errors.append(f"manifest command aliases are not supported for adapter version {version}")
-        return errors
-
-    section = manifest.command_aliases.get("opencode")
-    if section is None:
-        if version.startswith("v"):
-            return errors
-        errors.append("manifest missing command_aliases.opencode")
-        section_aliases: dict[str, str] = {}
-    else:
-        section_aliases = section.aliases
-        if section.count != len(section.aliases):
-            errors.append(
-                f"command_aliases.opencode.count mismatch: expected {len(section.aliases)}, "
-                f"found {section.count}"
-            )
-
-    expected_aliases = _expected_opencode_command_alias_paths()
-    for alias, expected_path in expected_aliases.items():
-        if alias not in section_aliases:
-            errors.append(f"opencode command alias missing from manifest: {alias}: {expected_path}")
-
-    for alias, alias_path in section_aliases.items():
-        if alias not in OPENCODE_COMMAND_ALIASES:
-            errors.append(f"unexpected opencode command alias in manifest: {alias}: {alias_path}")
-        if not alias_path.startswith("dist/adapters/opencode/.opencode/commands/"):
-            errors.append(
-                f"opencode command alias path must be under "
-                f"dist/adapters/opencode/.opencode/commands: {alias}: {alias_path}"
-            )
-            continue
-        if PurePosixPath(alias_path).stem != alias:
-            errors.append(f"opencode command alias filename stem mismatch: {alias}: {alias_path}")
-        expected_path = expected_aliases.get(alias)
-        if expected_path is not None and alias_path != expected_path:
-            errors.append(
-                f"opencode command alias path mismatch: {alias}: expected {expected_path}, "
-                f"found {alias_path}"
-            )
-
-    return errors
+    return ["current packages must not declare retired command aliases"] if manifest.command_aliases else []
 
 
 def _manifest_contract_entries(
@@ -2028,15 +1908,8 @@ def _generated_skill_files(output_root: Path, config: AdapterConfig) -> tuple[Pa
     return tuple(sorted(skill_root.glob("*/SKILL.md")))
 
 
-def _opencode_command_root(output_root: Path) -> Path:
-    return _adapter_root(output_root, ADAPTERS["opencode"]) / _path_from_posix(OPENCODE_COMMAND_ROOT)
 
 
-def _generated_opencode_command_alias_files(output_root: Path) -> tuple[Path, ...]:
-    command_root = _opencode_command_root(output_root)
-    if not command_root.is_dir():
-        return ()
-    return tuple(sorted(command_root.glob("*.md")))
 
 
 def _command_alias_contract_path(output_root: Path, path: Path) -> str:
@@ -2052,101 +1925,8 @@ def _command_alias_output_path(output_root: Path, contract_path: str) -> Path | 
     return output_root / _path_from_posix(relative)
 
 
-def _validate_opencode_command_alias_body(alias: str, path: Path, text: str) -> list[str]:
-    errors: list[str] = []
-    if "@" in text:
-        errors.append(f"opencode command alias file-reference interpolation: {alias}: {path}")
-    if "!" in text:
-        errors.append(f"opencode command alias shell-output interpolation: {alias}: {path}")
-    if re.search(r"(?im)^\s*model\s*:", text):
-        errors.append(f"opencode command alias model override: {alias}: {path}")
-    if re.search(r"(?im)^\s*agent\s*:", text):
-        errors.append(f"opencode command alias agent override: {alias}: {path}")
-    if re.search(r"(?im)^\s*permissions?\s*:", text):
-        errors.append(f"opencode command alias permission policy change: {alias}: {path}")
-    if text != render_opencode_command_alias(alias):
-        errors.append(f"opencode command alias body mismatch: {alias}: {path}")
-    return errors
 
 
-def _validate_opencode_command_aliases(
-    version: str,
-    manifest: AdapterManifest,
-    output_root: Path,
-    generated_by_adapter: dict[str, set[str]],
-) -> list[str]:
-    errors: list[str] = []
-    command_root = _opencode_command_root(output_root)
-    actual_files = _generated_opencode_command_alias_files(output_root)
-    actual_aliases = {
-        path.stem: _command_alias_contract_path(output_root, path)
-        for path in actual_files
-    }
-
-    unsupported_tools = sorted(set(manifest.command_aliases) - {"opencode"})
-    for tool in unsupported_tools:
-        errors.append(f"unsupported command alias tool: {tool}")
-
-    if not _supports_opencode_command_aliases(version):
-        if manifest.command_aliases:
-            errors.append(f"manifest command aliases are not supported for adapter version {version}")
-        return errors
-
-    section = manifest.command_aliases.get("opencode")
-    if section is None:
-        if version.startswith("v") and not actual_aliases:
-            return errors
-        errors.append("manifest missing command_aliases.opencode")
-        section_aliases: dict[str, str] = {}
-    else:
-        section_aliases = section.aliases
-        if section.count != len(section.aliases):
-            errors.append(
-                f"command_aliases.opencode.count mismatch: expected {len(section.aliases)}, "
-                f"found {section.count}"
-            )
-
-    expected_aliases = _expected_opencode_command_alias_paths()
-    for alias, expected_path in expected_aliases.items():
-        if alias not in section_aliases:
-            errors.append(f"opencode command alias missing from manifest: {alias}: {expected_path}")
-
-    for alias, alias_path in section_aliases.items():
-        if alias not in OPENCODE_COMMAND_ALIASES:
-            errors.append(f"unexpected opencode command alias in manifest: {alias}: {alias_path}")
-        if not alias_path.startswith("dist/adapters/opencode/.opencode/commands/"):
-            errors.append(
-                f"opencode command alias path must be under "
-                f"dist/adapters/opencode/.opencode/commands: {alias}: {alias_path}"
-            )
-            continue
-        if PurePosixPath(alias_path).stem != alias:
-            errors.append(f"opencode command alias filename stem mismatch: {alias}: {alias_path}")
-        expected_path = expected_aliases.get(alias)
-        if expected_path is not None and alias_path != expected_path:
-            errors.append(
-                f"opencode command alias path mismatch: {alias}: expected {expected_path}, "
-                f"found {alias_path}"
-            )
-        output_path = _command_alias_output_path(output_root, alias_path)
-        if output_path is None or not output_path.is_file():
-            errors.append(f"opencode command alias missing: {alias}: {alias_path}")
-
-    for alias, alias_path in actual_aliases.items():
-        if alias not in OPENCODE_COMMAND_ALIASES:
-            errors.append(f"unexpected opencode command alias: {alias}: {alias_path}")
-        if alias not in section_aliases:
-            errors.append(f"opencode command alias file is not listed in manifest: {alias}: {alias_path}")
-        if alias not in generated_by_adapter.get("opencode", set()):
-            errors.append(f"opencode command alias maps to missing skill: {alias}: {alias_path}")
-        try:
-            text = (command_root / f"{alias}.md").read_text(encoding="utf-8")
-        except UnicodeDecodeError:
-            errors.append(f"opencode command alias must be UTF-8 text: {alias}: {alias_path}")
-            continue
-        errors.extend(_validate_opencode_command_alias_body(alias, command_root / f"{alias}.md", text))
-
-    return errors
 
 
 SECURITY_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -2359,14 +2139,8 @@ def validate_adapter_output(
             for skill_name in sorted(generated_names - listed_names):
                 errors.append(f"generated skill is not listed in manifest: {adapter_name}/{skill_name}")
 
-        errors.extend(
-            _validate_opencode_command_aliases(
-                version,
-                manifest,
-                output_root,
-                generated_by_adapter,
-            )
-        )
+        if manifest.command_aliases:
+            errors.append("current packages must not declare retired command aliases")
 
     errors.extend(scan_security_paths((output_root, template_root)))
     return _dedupe_errors(errors)
@@ -2577,9 +2351,9 @@ def _validate_recorded_source_adapter_archives(
     else:
         not_applicable.append("mapped-resource-parity:no-recorded-resource-map")
 
-    for adapter_name in SUPPORTED_ADAPTERS:
-        config = ADAPTERS[adapter_name]
-        archive_path = root / adapter_archive_name(adapter_name, version)
+    for adapter_name in HISTORICAL_TARGETS:
+        config = HISTORICAL_ADAPTERS[adapter_name]
+        archive_path = root / f"rigorloop-adapter-{adapter_name}-{version}.zip"
         if not archive_path.is_file():
             errors.append(f"missing adapter archive: {adapter_name}: {archive_path}")
             continue
@@ -2729,50 +2503,9 @@ def _local_release_candidate_metadata(
             "size_bytes": archive_path.stat().st_size,
             "tree_hash_algorithm": "rigorloop-tree-hash-v1",
         }
-        command_root = OPENCODE_COMMAND_ROOT.as_posix()
-        command_tree_sha256, command_file_count = (
-            _archive_root_hash(archive_path, command_root)
-            if adapter_name == "opencode" and _supports_opencode_command_aliases(version)
-            else ("", 0)
-        )
-        if adapter_name == "opencode" and command_file_count:
-            artifact.update(
-                {
-                    "install_roots": {
-                        "skills": install_root,
-                        "commands": command_root,
-                    },
-                    "root_hashes": {
-                        "skills": {
-                            "tree_sha256": tree_sha256,
-                            "file_count": file_count,
-                        },
-                        "commands": {
-                            "tree_sha256": command_tree_sha256,
-                            "file_count": command_file_count,
-                        },
-                    },
-                    "command_aliases": {
-                        "opencode": {
-                            "count": len(command_aliases),
-                            "paths": [
-                                f"{command_root}/{alias}.md"
-                                for alias in command_aliases
-                            ],
-                        },
-                    },
-                }
-            )
-        else:
-            artifact.update(
-                {
-                    "install_root": install_root,
-                    "tree_sha256": tree_sha256,
-                    "file_count": file_count,
-                }
-            )
-            if adapter_name == "opencode":
-                artifact["skills_only_compatibility"] = {"releases": [version]}
+        artifact.update({"install_root": install_root, "tree_sha256": tree_sha256, "file_count": file_count})
+        with zipfile.ZipFile(archive_path) as archive:
+            artifact["skill_names"] = sorted({name[len(install_root) + 1:].split("/")[0] for name in archive.namelist() if name.startswith(install_root + "/")})
         artifacts.append(artifact)
 
     return {
@@ -3041,10 +2774,10 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _expected_adapter_install_roots() -> dict[str, str]:
+def _expected_adapter_install_roots(adapters=ADAPTERS) -> dict[str, str]:
     return {
         adapter: config.skill_root.as_posix().rstrip("/") + "/"
-        for adapter, config in ADAPTERS.items()
+        for adapter, config in adapters.items()
     }
 
 
@@ -3054,9 +2787,14 @@ def validate_adapter_artifact_metadata(
     *,
     metadata_root: Path = ADAPTER_ARTIFACT_REPORT_ROOT,
     release_commit: str | None = None,
+    profile: ReleaseValidationProfile = ReleaseValidationProfile.CURRENT_SOURCE,
 ) -> list[str]:
     """Validate adapter artifact metadata and checksum evidence for one release."""
 
+    if not isinstance(profile, ReleaseValidationProfile):
+        return [f"invalid release validation profile: {profile}"]
+    adapters = HISTORICAL_ADAPTERS if profile is ReleaseValidationProfile.RECORDED_SOURCE else ADAPTERS
+    targets = tuple(adapters)
     metadata_path = metadata_root / f"{version}.yaml"
     if not metadata_path.is_file():
         return [f"missing adapter artifact metadata: {metadata_path}"]
@@ -3092,18 +2830,18 @@ def validate_adapter_artifact_metadata(
         if artifact.adapter in by_adapter:
             errors.append(f"{metadata_path}: duplicate artifact adapter: {artifact.adapter}")
         by_adapter[artifact.adapter] = artifact
-    if tuple(sorted(by_adapter)) != tuple(sorted(SUPPORTED_ADAPTERS)):
+    if tuple(sorted(by_adapter)) != tuple(sorted(targets)):
         errors.append(
-            f"{metadata_path}: artifacts must include exactly {SUPPORTED_ADAPTERS}, "
+            f"{metadata_path}: artifacts must include exactly {targets}, "
             f"found {tuple(sorted(by_adapter))}"
         )
 
-    expected_roots = _expected_adapter_install_roots()
-    for adapter in SUPPORTED_ADAPTERS:
+    expected_roots = _expected_adapter_install_roots(adapters)
+    for adapter in targets:
         artifact = by_adapter.get(adapter)
         if artifact is None:
             continue
-        expected_archive = adapter_archive_name(adapter, version)
+        expected_archive = f"rigorloop-adapter-{adapter}-{version}.zip"
         if artifact.archive != expected_archive:
             errors.append(
                 f"{metadata_path}: artifact {adapter} archive mismatch: "
@@ -3134,9 +2872,9 @@ def validate_adapter_artifact_metadata(
             errors.append(f"{metadata_path}: missing required combined artifact: {combined_path}")
         elif combined.sha256 != _sha256_file(combined_path):
             errors.append(f"{metadata_path}: combined_artifact sha256 mismatch")
-    if tuple(sorted(combined.included_adapters)) != tuple(sorted(SUPPORTED_ADAPTERS)):
+    if tuple(sorted(combined.included_adapters)) != tuple(sorted(targets)):
         errors.append(
-            f"{metadata_path}: combined_artifact.included_adapters must include exactly {SUPPORTED_ADAPTERS}"
+            f"{metadata_path}: combined_artifact.included_adapters must include exactly {targets}"
         )
     if metadata.validation_result != "pass":
         errors.append(f"{metadata_path}: validation.result must be pass")
@@ -3148,17 +2886,17 @@ def validate_adapter_artifact_metadata(
     return _dedupe_errors(errors)
 
 
-def _expected_adapter_paths() -> dict[str, str]:
+def _expected_adapter_paths(adapters=ADAPTERS) -> dict[str, str]:
     return {
         adapter: f"{config.package_root.as_posix()}/"
-        for adapter, config in ADAPTERS.items()
+        for adapter, config in adapters.items()
     }
 
 
-def _expected_instruction_entrypoints() -> dict[str, str]:
+def _expected_instruction_entrypoints(adapters=ADAPTERS) -> dict[str, str]:
     return {
         adapter: f"{config.package_root.as_posix()}/{config.entrypoint.as_posix()}"
-        for adapter, config in ADAPTERS.items()
+        for adapter, config in adapters.items()
     }
 
 
@@ -3176,6 +2914,7 @@ def _release_notes_consistency_errors(
     metadata: ReleaseMetadata,
     manifest: AdapterManifest,
     notes_text: str,
+    targets: tuple[str, ...] = SUPPORTED_ADAPTERS,
 ) -> list[str]:
     errors: list[str] = []
     first_heading = next((line.strip() for line in notes_text.splitlines() if line.strip()), "")
@@ -3183,8 +2922,8 @@ def _release_notes_consistency_errors(
         errors.append(f"release notes version mismatch: expected '# RigorLoop {version}'")
 
     if version in TARGET_NATIVE_INIT_RELEASES:
-        for adapter in SUPPORTED_ADAPTERS:
-            archive = adapter_archive_name(adapter, version)
+        for adapter in targets:
+            archive = f"rigorloop-adapter-{adapter}-{version}.zip"
             if archive not in notes_text:
                 errors.append(f"{version} release notes must list adapter archive: {archive}")
         required_phrases = {
@@ -3238,8 +2977,8 @@ def _release_notes_consistency_errors(
         return errors
 
     if version in NPM_PUBLICATION_EVIDENCE_REQUIRED_RELEASES:
-        for adapter in SUPPORTED_ADAPTERS:
-            archive = adapter_archive_name(adapter, version)
+        for adapter in targets:
+            archive = f"rigorloop-adapter-{adapter}-{version}.zip"
             if archive not in notes_text:
                 errors.append(f"{version} release notes must list adapter archive: {archive}")
         required_phrases = {
@@ -3285,8 +3024,8 @@ def _release_notes_consistency_errors(
         return errors
 
     if version in UNTRACKED_PUBLIC_ADAPTER_RELEASES:
-        for adapter in SUPPORTED_ADAPTERS:
-            archive = adapter_archive_name(adapter, version)
+        for adapter in targets:
+            archive = f"rigorloop-adapter-{adapter}-{version}.zip"
             if archive not in notes_text:
                 errors.append(f"{version} release notes must list adapter archive: {archive}")
         required_phrases = {
@@ -3335,8 +3074,8 @@ def _release_notes_consistency_errors(
         if "does not require `.codex/skills/` generation as release evidence" not in notes_text:
             errors.append("v0.1.1 release notes must state that .codex/skills generation is not release evidence")
     if version == "v0.1.2":
-        for adapter in SUPPORTED_ADAPTERS:
-            archive = adapter_archive_name(adapter, version)
+        for adapter in targets:
+            archive = f"rigorloop-adapter-{adapter}-{version}.zip"
             if archive not in notes_text:
                 errors.append(f"v0.1.2 release notes must list adapter archive: {archive}")
         if "tracked `dist/adapters/**/skills` remain available" not in notes_text:
@@ -3356,7 +3095,7 @@ def _release_notes_consistency_errors(
     elif "No current non-portable skill exclusions." not in notes_text:
         errors.append("release notes must state that there are no current non-portable skill exclusions")
 
-    if _supports_opencode_command_aliases(metadata.manifest_version):
+    if "opencode" in targets and _supports_opencode_command_aliases(metadata.manifest_version):
         opencode_aliases = manifest.command_aliases.get("opencode")
         if opencode_aliases is None:
             errors.append("release notes consistency could not check missing OpenCode command aliases")
@@ -3669,9 +3408,9 @@ def _validate_npm_publication_evidence(
     unsupported_tags_rejected = _evidence_bool(workflow.get("unsupported_tags_rejected"))
     npm_published = _evidence_bool(npm.get("published"))
     if target_smoke is not None:
-        if set(target_smoke) != set(SUPPORTED_ADAPTERS):
-            errors.append(f"{path}: target_init_smoke must include exactly {SUPPORTED_ADAPTERS}")
-        for target in SUPPORTED_ADAPTERS:
+        if set(target_smoke) != set(HISTORICAL_TARGETS):
+            errors.append(f"{path}: target_init_smoke must include exactly {HISTORICAL_TARGETS}")
+        for target in HISTORICAL_TARGETS:
             row = target_smoke.get(target)
             if not isinstance(row, dict):
                 errors.append(f"{path}: target_init_smoke.{target}: expected mapping")
@@ -4278,6 +4017,8 @@ def validate_release_output(
     if not isinstance(profile, ReleaseValidationProfile):
         return [f"invalid release validation profile: {profile}"]
 
+    adapters = HISTORICAL_ADAPTERS if profile is ReleaseValidationProfile.RECORDED_SOURCE else ADAPTERS
+    targets = tuple(adapters)
     errors: list[str] = []
     target = RELEASE_TARGETS.get(version)
     if target is None:
@@ -4312,14 +4053,14 @@ def validate_release_output(
             f"{release_path}: manifest_version mismatch: expected {expected_manifest_version}, "
             f"found {metadata.manifest_version}"
         )
-    if metadata.supported_tools != SUPPORTED_ADAPTERS:
+    if metadata.supported_tools != targets:
         errors.append(
-            f"{release_path}: supported_tools must be exactly {SUPPORTED_ADAPTERS}, "
+            f"{release_path}: supported_tools must be exactly {targets}, "
             f"found {metadata.supported_tools}"
         )
-    if metadata.adapter_paths != _expected_adapter_paths():
+    if metadata.adapter_paths != _expected_adapter_paths(adapters):
         errors.append(f"{release_path}: adapter_paths mismatch")
-    if metadata.instruction_entrypoints != _expected_instruction_entrypoints():
+    if metadata.instruction_entrypoints != _expected_instruction_entrypoints(adapters):
         errors.append(f"{release_path}: instruction_entrypoints mismatch")
     if version == "v0.1.1":
         errors.extend(
@@ -4337,9 +4078,9 @@ def validate_release_output(
             tracked_files=tracked_files,
         )
         errors.extend(tracked_surface_errors)
-    if set(metadata.smoke) != set(SUPPORTED_ADAPTERS):
-        errors.append(f"{release_path}: smoke rows must be exactly {SUPPORTED_ADAPTERS}")
-    for tool in SUPPORTED_ADAPTERS:
+    if set(metadata.smoke) != set(targets):
+        errors.append(f"{release_path}: smoke rows must be exactly {targets}")
+    for tool in targets:
         row = metadata.smoke.get(tool)
         if row is not None:
             errors.extend(_validate_smoke_row(version, expected_release_type, tool, row))
@@ -4411,7 +4152,7 @@ def validate_release_output(
 
     notes_text = notes_path.read_text(encoding="utf-8")
     release_notes_errors = (
-        _release_notes_consistency_errors(version, metadata, manifest, notes_text)
+        _release_notes_consistency_errors(version, metadata, manifest, notes_text, targets)
         if manifest is not None
         else ["release notes consistency could not be checked without manifest"]
     )
@@ -4467,6 +4208,7 @@ def validate_release_output(
                 release_output_dir,
                 metadata_root=adapter_artifact_report_root,
                 release_commit=release_commit,
+                profile=profile,
             )
         errors.extend(adapter_archive_errors)
         errors.extend(adapter_artifact_metadata_errors)
