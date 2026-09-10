@@ -618,7 +618,17 @@ add_review_artifact_root() {
 
   local remainder="${path#docs/changes/}"
   local change_id="${remainder%%/*}"
-  local root="docs/changes/${change_id}"
+  local root="docs/changes/${change_id}/change.json"
+  local directory="docs/changes/${change_id}"
+  local relative="${remainder#*/}"
+  # Match the selector's current-manifest/reserved-input boundary. Historical
+  # descendants do not activate a store; ambiguous paths still reach validation.
+  if [[ ! -L "$root" && ! -e "$root" && ! -L "$directory" && -r "$directory" && -x "$directory" ]]; then
+    case "$relative" in
+      change.json|evidence.json|material-decisions.json|verify-report.json|reviews/*.json) ;;
+      *) return 0 ;;
+    esac
+  fi
   local existing=""
   for existing in "${review_artifact_cmd[@]:2}"; do
     if [[ "$existing" == "$root" ]]; then
@@ -629,14 +639,14 @@ add_review_artifact_root() {
 }
 
 determine_review_artifact_command() {
-  review_artifact_label="Validate review artifacts (changed roots)"
-  review_artifact_cmd=(python scripts/validate-review-artifacts.py)
+  review_artifact_label="Validate current change records (changed roots)"
+  review_artifact_cmd=(python scripts/validate-change-metadata.py)
 
   local -a changed_paths=()
   if [[ -n "${REVIEW_ARTIFACT_ROOTS:-}" ]]; then
     local root=""
     for root in ${REVIEW_ARTIFACT_ROOTS}; do
-      review_artifact_cmd+=("$root")
+      review_artifact_cmd+=("${root%/}/change.json")
     done
   else
     mapfile -t changed_paths < <(git diff --name-only --diff-filter=ACMRT HEAD -- .)

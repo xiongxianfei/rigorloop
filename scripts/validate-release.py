@@ -281,7 +281,7 @@ def verify_prepared_release(version: str, output: Path) -> int:
         run(command, root)
         checks.append({'command': recorded_command(command, root, output), 'result': 'pass', 'duration_seconds': time.monotonic() - started})
     run_packed_smoke(root, local_file(output, facts['tarball']), output, version)
-    checks.append({'command': 'packed CLI version and init codex/claude/opencode', 'result': 'pass'})
+    checks.append({'command': 'packed CLI version and init codex/claude', 'result': 'pass'})
     errors = validate_prepared_release(version, root, output)
     if errors:
         raise ValueError('; '.join(errors))

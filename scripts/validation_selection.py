@@ -621,6 +621,24 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             ),
         )
 
+    # Apply deletion provenance after every contributor (including plan context)
+    # has selected inputs, so another changed path cannot reintroduce a deletion.
+    lifecycle = selected.get("artifact_lifecycle.validate")
+    if lifecycle:
+        deleted = {
+            path for path in lifecycle.paths
+            if path in changed_paths and _is_lifecycle_path(path) and _proven_prose_deletion(
+                path, repo_root=repo_root,
+                tracked_deletion=path in preflight_context.tracked_paths,
+            )
+        }
+        if deleted:
+            lifecycle.paths.difference_update(deleted)
+            if not lifecycle.paths:
+                del selected["artifact_lifecycle.validate"]
+            _add_check(selected, "artifact_lifecycle.regression",
+                       "Proven lifecycle artifact deletion retains regression without reading absent inputs.")
+
     if request.mode == "pr":
         _add_check(selected, "artifact_lifecycle.validate",
                    "Every PR retains revision-bound lifecycle and baseline checks.")
