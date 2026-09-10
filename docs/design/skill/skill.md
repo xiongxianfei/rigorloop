@@ -32,6 +32,8 @@ Actors are capability authors, agents consuming installed skills, independent as
 
 No third skill becomes a pilot through a shared dependency. Distribution, Installation, Validation Execution, Release and CLI Observability model extraction, new lifecycle gates, new standalone test specs, schema changes, publication, real customer installation and inventory-wide rewriting are excluded.
 
+The separately selected [Distribution initiative](../../proposals/2026-09-10-distribution-model-and-opencode-retirement.md) amends only this model's delivery dependencies under its [owning change](../../changes/2026-09-10-distribution-model-and-opencode-retirement/change.json). At reviewed coordinated implementation and successful Verify, [Distribution](../distribution/distribution.md) replaces the mapped package/installation source owners, the current package population becomes Codex and Claude Code, and the local-mirror producer retires. Installation creates no managed state and performs no automatic managed upgrade. Existing candidate skill directories/files conflict by default, even when identical; explicit `--force` replaces complete conflicting units. Shared skill parents, unrelated skills and project state files are preserved, and state presence is not an admission rule. This changes delivery dependencies, not authored skill behavior. The original pilot exclusions above remain its historical scope, not a prohibition on this later approved direction. All Skill content/resource requirements and unchanged-skill applicability remain intact.
+
 ## Architecture Constraints
 
 The Constitution and approved owning models outrank retained legacy documents. `skills/` remains the only authored skill source; generated candidates are derived and never hand-edited. Operational projection manifests and templates stay at their current paths unless their actual consumers are coherently moved. This Design selects no such relocation.
@@ -121,7 +123,7 @@ A missing untriggered recording reference need not stop a purely portable invoca
 
 ## Deployment View
 
-Canonical skill bodies and local resources feed current local-mirror and adapter generators. Supported Codex, Claude Code and opencode candidates must contain the full mapped package, including conditional resources. Existing adapters may transform bodies under their reviewed invocation contracts; untransformed resources retain raw bytes. No live installation, registry publication, target-agent execution or new installer implementation is selected.
+Canonical skill bodies and local resources feed the selected distribution producer. Before Distribution adoption, the existing local-mirror and three-target generation contract remains applicable; after adoption, Codex and Claude Code packages carry the full mapped package, including conditional resources, through the retained adapter builder. No second runtime mirror is required for resource-integrity proof. Existing adapters may transform bodies under their reviewed invocation contracts; untransformed resources retain raw bytes. No live installation, registry publication, target-agent execution or new installer implementation is selected.
 
 Current package proof ends at Gate A/B and any independently applicable RigorLoop-owned filesystem materialization check, as selected by the validation owner. A file move cannot reinstate obsolete all-target runtime or transcript requirements. Candidate metadata may need regeneration when package bytes change; versioning/publication remains separately owned.
 
