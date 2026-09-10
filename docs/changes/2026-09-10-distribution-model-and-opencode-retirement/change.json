@@ -1,0 +1,301 @@
+{
+  "activity": {
+    "owner": {
+      "id": "distribution-router",
+      "role": "route"
+    },
+    "reason": "User authorized full implementation through PR; m1 in-progress; exact approved plan and required independent reviews govern continuation.",
+    "stage": "implement",
+    "status": "in-progress"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review.json",
+      "reason": "User explicitly expanded direction to withdraw managed-state creation and automatic upgrades. Preserve the prior review without retargeting it; renewed independent Proposal Review is required.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json",
+      "reason": "Design authoring checks and explicit baseline limitations on registered subjects; no semantic approval or final Verify.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/material-decisions.json",
+      "reason": "Author-owned Design handoff and basis; independent review remains necessary.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r2.json",
+      "reason": "User explicitly selects complete destination conflict preflight and --force replacement, superseding both state-marker rejection and identical-file no-op. Revised proposal and Design require reassessment; prior judgments remain historical.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review.json",
+      "reason": "Distribution changed to address dist-design-state-shapes. Preserve the first-pass judgment and open finding; its reporter must reassess the correction.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r2.json",
+      "reason": "User explicitly selects complete destination conflict preflight and --force replacement, superseding both state-marker rejection and identical-file no-op. Revised proposal and Design require reassessment; prior judgments remain historical.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r3.json",
+      "reason": "Fresh independent direction assessment after explicit conflict/force refinement; original approvals remain historical.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r3.json",
+      "reason": "Distribution changed to address dist-force-mutation-basis. Preserve the first-pass judgment and open finding; its reporter must reassess the correction.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r4.json",
+      "reason": "Distribution changed to address dist-retained-original-discovery. Preserve the first-pass judgment and open finding; its reporter must reassess the correction.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r5.json",
+      "reason": "Fresh complete package reassessment after outside-discovery retention correction; reporter resolved remaining finding, original judgments preserved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-plan-author",
+        "role": "plan"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review.json",
+      "reason": "Plan revised for dist-delivery-retirement-allocation; original first-pass judgment and finding preserved; fresh independent Delivery Review required.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review-r2.json",
+      "reason": "Fresh complete Delivery reassessment after retained-policy allocation correction; reporter resolved original finding and upstream basis is unchanged.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contract": "rigorloop-records-v2",
+  "models": [
+    {
+      "id": "distribution",
+      "subject": {
+        "identity": "sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7",
+        "path": "docs/design/distribution/distribution.md"
+      }
+    },
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+        "path": "docs/design/system/system.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+        "path": "docs/design/design/design.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "release",
+      "subject": {
+        "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+        "path": "docs/design/release/release.md"
+      }
+    },
+    {
+      "id": "distribution-source-amendment-1",
+      "subject": {
+        "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+        "path": "specs/single-authored-skill-source-generated-output.md"
+      }
+    },
+    {
+      "id": "distribution-source-amendment-2",
+      "subject": {
+        "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+        "path": "specs/multi-agent-adapters-first-public-release.md"
+      }
+    },
+    {
+      "id": "distribution-source-amendment-3",
+      "subject": {
+        "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+        "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+      }
+    },
+    {
+      "id": "distribution-source-amendment-4",
+      "subject": {
+        "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+        "path": "specs/rigorloop-cli-package-and-codex-init.md"
+      }
+    },
+    {
+      "id": "distribution-source-amendment-5",
+      "subject": {
+        "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+        "path": "specs/published-skill-first-repository-simplification.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:fde6279b9861bd6daf5c83575baa582ea322c051e5c9c7c840a44264acf75845",
+    "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+  },
+  "proposal": {
+    "identity": "sha256:fc098aa623a569994b0c0c18deb0af6eca55bfba19b1e1e380b3407e20135a16",
+    "path": "docs/proposals/2026-09-10-distribution-model-and-opencode-retirement.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/material-decisions.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r3.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r3.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r4.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r5.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review-r2.json"
+    }
+  ],
+  "schema_version": 2,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m1"
+      ],
+      "status": "in-progress"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m3",
+      "owner": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m3"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m4",
+      "owner": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m4"
+      ],
+      "status": "pending"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "body": "## Result\n\nSkill: design-review. Review ID: design-review-r5. Review status: approved. Package: all ten exact registered subjects below, including embedded examples and cross-model interactions. Upstream: unchanged current approved proposal-review-r3. Material findings: none open. The reporter resolves dist-retained-original-discovery with current correction evidence; dist-force-mutation-basis and dist-design-state-shapes remain resolved with their historical rationale. Prior r3/r4 changes-requested judgments and finding origins retain their exact original subjects.\n\n## Independence, package and reliance\n\nFormal-lifecycle/manual, bounded delegated reassessment. The separately delegated distribution-design-reviewer authored none of the five models, five notices or corrections; parent distribution-design-author authored them. This reviewer writes only assessment/finding evidence, not reviewed content or routing. The same nonauthor performed the separate Proposal Review r3.\n\nThe whole package is assessed through prior complete-member/source reads, the current corrected Distribution sequence and surrounding requirements/scenarios/risks, and fresh subject inspection. Exactly Distribution and the author evidence file changed among relied-on subjects since r4; all other nine package members, the proposal, proposal-review-r3 and relevant original source/ADR/code identities remain unchanged. Their previously evaluated complete bodies and scoped historical/new-profile distinctions remain applicable. No separate external example is relied on; embedded examples carry their owner's exact identity. Original helper source is feasibility context, not proof that the new two-parent extension is implemented.\n\n## Eight-criterion assessment\n\n1. Technical realization: pass. Complete verified-candidate preflight, destination snapshots, anchored mutation, direct detachment outside discovery roots, post-detach checks and no-clobber mkdir/hardlink publication give the force operation a concrete realization. The two-parent anchored move is explicitly a required capability, distinct from the existing helper; absence blocks before detachment rather than permitting an unsafe fallback. Delivery must allocate early proof of that capability and unsupported cases, not infer implementation success from this review.\n2. Constraints: pass. Exactly Codex/Claude remain current. Defaults reject any existing candidate unit including identical/empty content before installed-file changes. Force replaces complete candidate units while preserving shared parents/unrelated/state content and retaining path/symlink checks. Placement and same-filesystem prerequisites prevent old content remaining in normal supported/configured discovery roots. State is neither parsed nor an admission marker.\n3. Goal preservation: pass. All original combined-owner, superseded-source, OpenCode-removal and bounded stale-script goals remain required together with the explicit conflict/force/state refinement. Retaining detached originals for late writes is bounded filesystem preservation, not a managed upgrade, state model or automatic cleanup service.\n4. Boundaries: pass. Content ownership, archive trust, candidate-unit replacement permission, filesystem races, target discovery, engineering records and Release publication remain distinct. Both parents are anchored before direct outside-root detachment; competing public arrivals are never treated as newly authorized replacement. Detected changes fail; late writes survive in retained originals. Success is the verified active candidate at observation, not exclusion of every external writer or perpetual immutability.\n5. Decisions: pass. DIST-DEC-01–06 preserve rationale, alternatives and consequences with explicit historical supersession of read-only/no-op and marker policies. The latest retention method clarifies implementation safety without changing direction. Partial failure and separate operator cleanup are explicit; no automatic rollback or state reconciliation is promised.\n6. Shared ownership and consumers: pass. System/Skill/Design/Release and the five source notices remain coherent with Distribution's current prospective contract. Normal runtime exclusion now follows physical placement, not an unsupported assumption about RigorLoop inventory or hidden names. Current package/smoke populations and candidate approval remain separate from immutable historical releases and publication authority.\n7. Assessment and verification intent: pass. Local/integrated scenarios cover both targets and acquisition modes, real archive/packed-CLI proof, full no-force conflict preflight, complete force replacement/obsolete-file removal, empty/identical/type cases, state irrelevance, shared-parent exclusion, unsafe paths, detached originals outside discovery on success/failure/interruption, old-inode and public-arrival races, capability/filesystem failures and honest retry. Required independent resource/hash and negative/regression proof survives script retirement. These outcomes support concrete Delivery allocation without constituting a test whitelist or current runtime evidence.\n8. Migration and legacy treatment: pass. The fifteen-source retirement map, two obsolete mirror scripts, mixed architecture scope and retained-source notices remain exact. State schemas/readers/writers/managed replacement are deliberately withdrawn; shared candidate hashing and useful filesystem primitives retain actual callers. Historical evidence/readers remain bounded; unknown consumers still prevent affected deletion. No resolved finding silently restores an earlier superseded product profile.\n\n## Legacy amendment classification\n\nAll five notices remain new-profile-only amendments. Four grandfathered sources retain original named-release, measurement, package/envelope and historical obligations without forced format conversion. The fifth retains its complete boundary-first-v1 IDs, examples and interactions. Existing Test, Release and stored-format exceptions keep exact applicability. No universal check-retirement or historical-rewrite waiver is selected.\n\n## Finding disposition\n\nIndependently reassessed the current Distribution correction. Originals now move directly into a preallocated private same-filesystem retention container outside .agents/skills, .claude/skills, .codex/skills, .opencode and explicitly configured discovery roots, never to runtime siblings even temporarily. Both mutation parents must be anchored; unavailable capability, unsafe placement or filesystem mismatch rejects before detachment. Retention after success/failure/interruption preserves old-inode writes without a discoverable second skill. Operator cleanup remains explicit and no state schema, admission reader or recovery scanner is introduced. The temporal/failure scenarios and risk text make this observable. This meets dist-retained-original-discovery's required outcome without relying on hidden-name filtering or CLI inventory to control an external loader.\n\n## Evidence and limits\n\nCurrent author evidence design-retention-placement-correction records passing focused Distribution structure/reference, enforced prose and git diff --check on its new exact identity. Unchanged nine-member force-boundary observations remain bounded applicable evidence; older Distribution check identities are historical. The full legacy prose check remains failed with 33 pre-existing errors and zero introduced signatures, not a pass or a Verify waiver. Lifecycle warnings concern Release's hosted preparation after reviewed work merges, not mutable change lifecycle or a merge-triggered closeout. No runtime test was run for this prospective correction.\n\nThis approval judges a coherent feasible Design package for authorized Delivery planning. It does not prove two-parent anchoring already exists on every platform, waive its required capability/negative proof, approve implementation, establish adoption/final Verify, or authorize force execution, cleanup or publication. Unsupported capability must remain an explicit safe stop. Any realization that changes the declared safety boundary returns to the owning Design/direction rather than silently weakening it.\n\n## Recording and handoff\n\nRecording status: recorded upon successful targeted batch. Review: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r5.json. Finding resolution: reviews/design-review-r4.json. No open material finding or necessary owner decision remains at this gate. Return to Route for authorized Delivery planning; this review performs no routing mutation or automatic downstream implementation.\n\n## Exact package subjects\n\n- design: docs/design/design/design.md — sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f\n- distribution: docs/design/distribution/distribution.md — sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7\n- distribution-source-amendment-1: specs/single-authored-skill-source-generated-output.md — sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7\n- distribution-source-amendment-2: specs/multi-agent-adapters-first-public-release.md — sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff\n- distribution-source-amendment-3: specs/public-adapter-artifact-migration-examples-concise-skill-release.md — sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694\n- distribution-source-amendment-4: specs/rigorloop-cli-package-and-codex-init.md — sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0\n- distribution-source-amendment-5: specs/published-skill-first-repository-simplification.md — sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1\n- release: docs/design/release/release.md — sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c\n- skill: docs/design/skill/skill.md — sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a\n- system: docs/design/system/system.md — sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-r5",
+  "independence_basis": "Separate delegated nonauthor independently reassessed corrected Distribution and unchanged exact nine-member package against current proposal-review-r3; no reviewed-content edits.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "distribution-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7",
+      "path": "docs/design/distribution/distribution.md"
+    },
+    {
+      "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+      "path": "specs/single-authored-skill-source-generated-output.md"
+    },
+    {
+      "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+      "path": "specs/multi-agent-adapters-first-public-release.md"
+    },
+    {
+      "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+    },
+    {
+      "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+      "path": "specs/rigorloop-cli-package-and-codex-init.md"
+    },
+    {
+      "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+      "path": "docs/design/release/release.md"
+    },
+    {
+      "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+      "path": "docs/design/system/system.md"
+    }
+  ],
+  "target": "design"
+}

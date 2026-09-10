@@ -1,0 +1,96 @@
+{
+  "body": "## Result\n\n- Skill: delivery-review\n- Review status: changes-requested\n- Package members: plan -> docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md at sha256:4b50a3fc4cd51dbb89f8f8303165e265fca58856326986cf7925bbc3a3fd2966\n- Upstream review ID: design-review-r5; proposal-review-r3 is the unchanged approved direction.\n- Review ID and round: delivery-review, first independent Delivery Review.\n- Traceability result: concern limited to retained check-retirement/admission/measurement allocation.\n- Material findings: dist-delivery-retirement-allocation\n- Correction targets: plan, owning stage plan\n- Recording status: recorded upon successful targeted batch persistence\n- Open blockers: no missing direction decision or unassessable package member; one actionable allocation correction prevents approval.\n- Immediate next stage: Route returns the finding to plan authoring, then independent Delivery reassessment.\n- Claim limitations: no implementation, Code Review, runtime test success, final verification, branch readiness, adoption or publication is claimed; no route/work state is changed.\n\n## Scope and independence\n\nFormal-lifecycle/manual, bounded delegated review. Exactly the registered primary plan is the review subject; no standalone test-spec substitute or extra delivery member is introduced. The separate distribution-delivery-reviewer authored neither the plan nor its Design/proposal basis. Parent distribution-plan-author authored the plan and distribution-design-author authored the models. Prior independent proposal/design assessment does not substitute for this distinct delivery judgment.\n\nThe complete primary plan was read, including every milestone, verification group, command, risk, dependency and final checkpoint. Current scoped CLI context confirms the primary plan, approved design-review-r5/proposal-review-r3 and resolved prior findings. Approved model/source reads and exact subject inspection supply the requirement basis. The retained published-skill-first clauses and proof map were specifically inspected because this change removes checks while their policy remainder remains applicable. Existing package test discovery, CI explicit-path interface and the imported real release-candidate fixture were inspected for command credibility. No command in C1–C10 was executed as implementation proof by this review.\n\n## Implementation-readiness and verification assessment\n\nSequencing: pass. M1 proves the material two-parent/outside-discovery capability using actual filesystem operations before M2 public force dispatch can depend on it. Existing consumers retain regression checks during extraction. M2 couples installer, two-target producer and release/metadata consumers; its breadth is justified by one externally coherent support boundary, with internal test-first steps and independent Code Review. M3 transfers useful resource protection before deleting mirror production/callers. M4 retires exactly the mapped sources after implemented behavior and known consumers are reconciled. All milestones have safe rollback scope and independent review dependencies.\n\nBehavior trace: pass for Distribution DIST-SR-01–20 and reciprocal ownership requirements. M1/TG-01/02 allocates real anchored relocation, no-clobber publication, source/ancestor/new-destination races, late old-inode writes, retention placement and unsupported/filesystem rejection. It explicitly blocks downstream work if no supported success path can be realized; fake successful primitives are prohibited. M2/TG-03/04 observes both supported targets, network/local acquisition, complete default conflict preflight even for identical/empty units, complete force replacement, obsolete-file removal, state irrelevance, unrelated/shared-parent preservation, removed flags/targets and archive/hash/path/privacy failures through actual public dispatch and packed bytes. M3/TG-05/06 and M4/TG-07 allocate resource/selector/source-consumer boundaries.\n\nProof placement and commands: pass apart from the finding. C1 is explicitly a proposed focused runner with equivalent-runner mapping allowed, not a claimed existing execution. C2's package test command discovers Node tests. C3–C7 named runners exist. C4's real release-candidate integration is imported by test-release-transaction.py; production prepare_candidate invokes release-verify with --prepared-candidate, so the fixture path is credible rather than a dry-run substitute. C8 explicit repeated paths can cover intended changed/deleted files without inventing a PR base. C9/C10 distinguish structure, semantic classification and full legacy prose limitations. Parameterized commands must become fully expanded execution evidence; no test counts or production-derived hash oracle can substitute for protection.\n\nRetirement/maintenance trace: concern. The plan preserves much of the required mirror-test protection but omits the retained R14/R19/R22 allocation identified below. Test's scoped exception for another initiative does not apply automatically. Requirement-to-boundary-to-milestone-to-proof-to-command/manual evidence is therefore incomplete for the affected check-admission and retirement responsibility.\n\nWhole-change proof and closeout: pass. TG-FINAL-01/02 assess archive/packed installer/resource/selector/source-retirement composition after later slices, with explicit unchanged-surface evidence reuse and reruns on dependency changes. The separate lifecycle-closeout checkpoint requires fresh independent final whole-change Code Review after all four milestones/corrections and before distinct Verify. No milestone approval or integrated-test non-applicability can waive it. Publication, customer installation and user-runtime cleanup remain outside this plan.\n\n## Material finding\n\nFinding ID: dist-delivery-retirement-allocation; Severity: medium; scope: artifact-local; affected artifact ID: plan; owning stage: plan. Location: Requirements covered; M1/M3 Required verification and evidence; Validation plan; TG-FINAL-02. The approved Design deliberately retains published-skill-first R14/R17–20/R22 and its test/measurement remainder outside the separately scoped necessary-design and v2-only exceptions. The current plan allocates mirror-case mapping, retained negative detection and rollback, but does not allocate R14 admission/retirement-ledger records for affected added/retained checks, R19 execution of both old and replacement proof on representative retained-behavior fixtures before removal, or R22 command-count/runtime/changed-line/maintenance-owner measurements. A generic reference to other measurement owners and before/after negative detection does not identify these required outputs or their timing. Published-skill-first.test.md maps R14 to T1/T14, R19 to T13 and R22 to T10/T13. The omission permits M1 added-check admission and M3 check deletion to be called complete while retained mandatory evidence is absent. No new requirement or inventory-wide retroactive conformance is requested.\n\nRequired outcome and safe resolution: Allocate the applicable retained admission, comparison and measurement obligations to the affected milestones/groups with concrete procedure/command or manual evidence, exact scope and completion timing. Before mirror/check removal, run old and replacement paths over representative still-contractual fixtures and record differences, disposition and rollback. Map affected added/retained checks to their required admission records, reusing existing valid records when justified; record the four R22 measurement categories and limitations. Keep intentionally retired behavior explicitly de-contracted and avoid unrelated historical reruns or inventory-wide ledger rewrites. Safe resolution: plan author adds a bounded retained-contract allocation under the existing approved Design; independently reassess the new exact primary plan. If the author instead wants to waive these obligations, return that policy decision to the owning Design rather than silently applying another initiative's exception.\n\n## Evidence limitations and handoff\n\nPlan prose/lifecycle/whitespace checks are authoring checks only. All C1–C10 executions remain future implementation/verification work. The disclosed 33 unchanged legacy prose errors remain failed baseline evidence, not a full-file pass or a Verify waiver. Older model review subjects stay historical; current upstream Design approval is consumed without reapproval or modification.\n\nNo automatic downstream implementation handoff. This first-pass review and finding are recorded before author correction at docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review.json. The plan author can repair the missing allocation within approved scope without another user decision. The revised plan requires fresh independent Delivery Review before implementation relies on it.\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-plan-author",
+      "role": "plan"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: dist-delivery-retirement-allocation; Severity: medium; scope: artifact-local; affected artifact ID: plan; owning stage: plan. Location: Requirements covered; M1/M3 Required verification and evidence; Validation plan; TG-FINAL-02. The approved Design deliberately retains published-skill-first R14/R17–20/R22 and its test/measurement remainder outside the separately scoped necessary-design and v2-only exceptions. The current plan allocates mirror-case mapping, retained negative detection and rollback, but does not allocate R14 admission/retirement-ledger records for affected added/retained checks, R19 execution of both old and replacement proof on representative retained-behavior fixtures before removal, or R22 command-count/runtime/changed-line/maintenance-owner measurements. A generic reference to other measurement owners and before/after negative detection does not identify these required outputs or their timing. Published-skill-first.test.md maps R14 to T1/T14, R19 to T13 and R22 to T10/T13. The omission permits M1 added-check admission and M3 check deletion to be called complete while retained mandatory evidence is absent. No new requirement or inventory-wide retroactive conformance is requested.",
+      "id": "dist-delivery-retirement-allocation",
+      "origin": {
+        "evidence": "Finding ID: dist-delivery-retirement-allocation; Severity: medium; scope: artifact-local; affected artifact ID: plan; owning stage: plan. Location: Requirements covered; M1/M3 Required verification and evidence; Validation plan; TG-FINAL-02. The approved Design deliberately retains published-skill-first R14/R17–20/R22 and its test/measurement remainder outside the separately scoped necessary-design and v2-only exceptions. The current plan allocates mirror-case mapping, retained negative detection and rollback, but does not allocate R14 admission/retirement-ledger records for affected added/retained checks, R19 execution of both old and replacement proof on representative retained-behavior fixtures before removal, or R22 command-count/runtime/changed-line/maintenance-owner measurements. A generic reference to other measurement owners and before/after negative detection does not identify these required outputs or their timing. Published-skill-first.test.md maps R14 to T1/T14, R19 to T13 and R22 to T10/T13. The omission permits M1 added-check admission and M3 check deletion to be called complete while retained mandatory evidence is absent. No new requirement or inventory-wide retroactive conformance is requested.",
+        "rationale": "Delivery must allocate every applicable retained obligation, including published-skill-first R14/R19/R22 explicitly preserved by the approved Distribution/legacy package.",
+        "reporter": {
+          "id": "distribution-delivery-reviewer",
+          "role": "review"
+        },
+        "required_outcome": "Allocate the applicable retained admission, comparison and measurement obligations to the affected milestones/groups with concrete procedure/command or manual evidence, exact scope and completion timing. Before mirror/check removal, run old and replacement paths over representative still-contractual fixtures and record differences, disposition and rollback. Map affected added/retained checks to their required admission records, reusing existing valid records when justified; record the four R22 measurement categories and limitations. Keep intentionally retired behavior explicitly de-contracted and avoid unrelated historical reruns or inventory-wide ledger rewrites. Safe resolution: plan author adds a bounded retained-contract allocation under the existing approved Design; independently reassess the new exact primary plan. If the author instead wants to waive these obligations, return that policy decision to the owning Design rather than silently applying another initiative's exception.",
+        "subjects": [
+          {
+            "identity": "sha256:4b50a3fc4cd51dbb89f8f8303165e265fca58856326986cf7925bbc3a3fd2966",
+            "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+          }
+        ],
+        "supporting_judgment": {
+          "contributors": [
+            {
+              "id": "distribution-plan-author",
+              "role": "plan"
+            }
+          ],
+          "independence_basis": "Separate delegated nonauthor reviewer read the complete primary plan and approved Design/proposal basis; parent authored the plan and models. Reviewer changes only review/finding evidence.",
+          "judgment": "changes-requested",
+          "rationale": "One actionable artifact-local verification-allocation gap prevents implementation readiness despite otherwise safe milestone sequencing.",
+          "reviewer": {
+            "id": "distribution-delivery-reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "identity": "sha256:4b50a3fc4cd51dbb89f8f8303165e265fca58856326986cf7925bbc3a3fd2966",
+              "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+            }
+          ]
+        }
+      },
+      "owner": {
+        "id": "distribution-plan-author",
+        "role": "plan"
+      },
+      "reporter": {
+        "id": "distribution-delivery-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Allocate the applicable retained admission, comparison and measurement obligations to the affected milestones/groups with concrete procedure/command or manual evidence, exact scope and completion timing. Before mirror/check removal, run old and replacement paths over representative still-contractual fixtures and record differences, disposition and rollback. Map affected added/retained checks to their required admission records, reusing existing valid records when justified; record the four R22 measurement categories and limitations. Keep intentionally retired behavior explicitly de-contracted and avoid unrelated historical reruns or inventory-wide ledger rewrites. Safe resolution: plan author adds a bounded retained-contract allocation under the existing approved Design; independently reassess the new exact primary plan. If the author instead wants to waive these obligations, return that policy decision to the owning Design rather than silently applying another initiative's exception.",
+      "resolution": {
+        "actor": {
+          "id": "distribution-delivery-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "distribution-plan-retirement-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "Independently reread the complete revised primary plan. TG-08/E1 now allocates every affected script/check's R14 admission fields, current justified reuse and gate ownership with milestone completion requirements. E2 requires actual old/replacement representative accepted/rejected proof before deletion, names isolated exact pre-removal mirror-source execution and C3/C5 replacement paths, applies the same discipline to M2, and records source/fixture identities, results, coverage differences, approved decontractions and rollback. E3 allocates actual before/after command counts, elapsed runtime, changed-line totals and maintenance owners with baseline timing, scope/environment/run-count limitations and final reconciliation. Requirements mapping, M1–M3 completion criteria and TG-FINAL-02 consume the outputs. This satisfies the original R14/R19/R22 allocation finding without an inventory-wide rewrite, per-test ledger system or implicit waiver."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:4b50a3fc4cd51dbb89f8f8303165e265fca58856326986cf7925bbc3a3fd2966",
+          "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+        }
+      ]
+    }
+  ],
+  "id": "delivery-review",
+  "independence_basis": "Separate delegated nonauthor reviewer read the complete primary plan and approved Design/proposal basis; parent authored the plan and models. Reviewer changes only review/finding evidence.",
+  "judgment": "changes-requested",
+  "reviewer": {
+    "id": "distribution-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:4b50a3fc4cd51dbb89f8f8303165e265fca58856326986cf7925bbc3a3fd2966",
+      "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+    }
+  ],
+  "target": "delivery"
+}

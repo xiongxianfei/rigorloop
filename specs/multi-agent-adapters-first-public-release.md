@@ -1,5 +1,11 @@
 # Multi-Agent Adapters and First Public Release
 
+## Scoped Distribution adoption
+
+The [Distribution proposal](../docs/proposals/2026-09-10-distribution-model-and-opencode-retirement.md) selects the new-profile ownership and support transition in [Distribution](../docs/design/distribution/distribution.md#source-displacement-and-preservation), recorded by its [owning change](../docs/changes/2026-09-10-distribution-model-and-opencode-retirement/change.json). This notice takes effect only at reviewed coordinated implementation and successful Verify; it does not retarget the original approval or change historical release inputs. For the new profile, all installation-state interpretation, recorded-tree verification, creation, update/migration and automatic managed replacement obligations are superseded by DIST-SR-10–15. Project state is preserved without inspection or admission checks. Actual candidate skill directories/files conflict by default even when identical; all conflicts are reported after archive verification and before installed-file writes. Explicit `--force` replaces complete candidate units while preserving shared parents, unrelated files and all archive/path/symlink safeguards. The earlier marker-rejection and identical-no-op choices are superseded. Candidate/archive hashing and independently required release-evidence readers retain their owners.
+
+The named first-public-release requirements and stored judgments keep their original population and source basis. After adoption, current generation, support inventory, package validation and local-runtime-copy obligations resolve through Distribution's map: current outputs support Codex and Claude Code only, and no separate local mirror is produced. Historical three-target metadata and release-specific smoke remain historical evidence, not current installation or generation permission. The retained portable-core and canonical-content protection continues under Skill and Distribution; unrelated first-release and measurement obligations remain here.
+
 ## Status
 - approved
 

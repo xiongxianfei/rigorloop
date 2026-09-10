@@ -1,0 +1,168 @@
+{
+  "body": "## Result\n\nSkill: design-review. Review ID: design-review-r3. Review status: changes-requested. Package: all ten exact registered members below, including embedded examples and interactions. Upstream: proposal-review-r3, current approved exact direction. Material findings: dist-force-mutation-basis. Correction target: distribution; owning stage design. No missing owner decision or unassessable member prevents this scoped judgment. The actionable technical-realization gap prevents whole-package approval.\n\n## Independence and basis\n\nFormal-lifecycle/manual, bounded delegated review. The separate distribution-design-reviewer authored none of the five models, five notices or successive refinements; parent distribution-design-author authored the contribution. This reviewer writes only its own review/finding evidence and leaves content and routing untouched. The same nonauthor reviewer performed the distinct Proposal Review r3.\n\nThe complete package was assessed using the complete-member reads from the preceding rounds, complete current Distribution reading, current changes and surrounding original/prospective clauses throughout the other nine members, and fresh exact subject inspection. Original unchanged source remainders were not replaced by only notice-level assessment. Full source/ADR basis read in the preceding rounds remains attributable to its unchanged identities; state-specific source dispositions were reassessed against explicit withdrawal. Existing managed replacement code was additionally inspected for the new force mutation claim because generic preflight language alone could not establish its feasibility. No separate external example is relied on; embedded examples belong to their exact model identities.\n\n## Eight-criterion assessment\n\n1. Technical realization: concern. Package production, archive trust, complete destination-unit preflight, existence-based conflicts and no state admission are concrete. Whole-unit force replacement has no defined realizable exclusive mutation boundary despite promising preserved concurrent writes; dist-force-mutation-basis requires correction.\n2. Constraints: concern. The two-target, no-state, no-publication and bounded-force direction is respected. Force scope excludes shared parents/unrelated units and rejects symlinks and unsafe paths. However, the promised preservation of intervening edits needs the mechanism or explicit operational boundary identified in the finding.\n3. Goal preservation: pass. All four original goals and the latest explicit state/conflict/force refinement remain in scope. A default retry conflicts even when identical; --force removes obsolete contents inside candidate units. No old-state schema or marker governs admission. No silent managed upgrade or OpenCode fallback survives.\n4. Boundaries: concern. Skill content, distribution trust/materialization, project state and Release authority have separate owners. The missing concrete force critical section leaves the temporal/recovery boundary underdefined. Ordinary check-then-delete must not become an implicit destructive race acceptance.\n5. Decisions: pass. DIST-DEC-01–06 preserve rationale, alternatives and consequences, including explicit supersession of earlier read-only/no-op and marker-rejection judgments. The public compatibility break and potentially stale untouched state are disclosed. Historical judgments retain exact subjects and do not require reintroducing withdrawn schemas.\n6. Shared ownership and consumers: pass subject to Distribution correction. System, Skill, Design, Release and five source notices consistently adopt candidate-unit conflicts and explicit force while preserving current content, publication and historical-owner boundaries. System's prospective Distribution composition explicitly supersedes prior managed replacement examples/table references; those older statements do not override the new owner. Release current smoke and candidate population change coherently without shrinking historical observations or granting publication authority.\n7. Assessment and verification intent: concern limited to force mutation realization. The eight boundary dimensions and integrated hazards cover real packed CLI, archive verification before full preflight, all-conflict no-write behavior, empty/identical/existing/type cases, obsolete-file removal, shared-parent exclusion, ignored state, removed flags/targets and unsafe destinations. Independent resource/hash and negative/regression proof survive mirror retirement. Concrete concurrency outcomes cannot yet be derived reliably from an unspecified exclusive basis; the finding asks for that current engineering decision, not runtime test execution at Design review.\n8. Migration and legacy treatment: pass. The exact fifteen-source removal map, mixed architecture dispositions and two mirror scripts remain bounded. State parsing/recorded-tree/writing/managed-replacement obligations are now expressly retired, not accidentally omitted. Prior resolved dist-design-state-shapes remains history about its old read-only profile; it does not mandate restoring state support after the explicit new direction. Independently required historical release-evidence readers and shared candidate hash protection retain owners. Unknown actual consumers still block affected deletion.\n\n## Legacy amendment classification\n\nAll five retained-source notices are new-profile-only amendments. The first four remain grandfathered sources without forced boundary-format conversion; named releases, measurements, package/envelope and historical judgments retain their original populations. The fifth retains its complete boundary-first-v1 records, IDs, examples and interactions with existing Test, Release and stored-format exceptions. The new profile does not waive the remaining test-retirement or measurement obligations generally. No historical three-target fact or source identity is rewritten.\n\n## Evidence and limitations\n\nCurrent force-boundary evidence records passing model structure/reference, model/proposal prose, scoped lifecycle and source-boundary checks and whitespace. Structure is not semantic approval; the four grandfathered-source review requests are addressed by the independent classification above. Release/System After merge warnings describe Release runtime preparation from reviewed merged work, not mutable engineering lifecycle or a merge-triggered closeout. Full legacy prose remains failed on 33 unchanged baseline errors, zero introduced signatures; this is neither a pass nor a Verify waiver. Older read-only/marker check subjects remain historical. No runtime test, implementation success, adoption, final Verify or publication readiness is claimed.\n\n## Material finding\n\nFinding ID: dist-force-mutation-basis; Severity: medium; scope: artifact-local; affected artifact ID: distribution; owning stage: design. Location: DIST-SR-14, Partial failure and retry, Runtime steps 4/5 and Temporal/retry scenario. The model requires a final recheck, a bounded exclusive mutation basis, no overwritten intervening edits and whole-unit --force replacement, but does not define the operation that establishes the exclusive basis or the concurrency boundary. Checking then removing a tree can delete an edit arriving after the check; renaming a staged candidate onto the destination can replace a newly created file; deleting a detached old tree can discard writes through an already-open handle. The existing managed-authoring-replacement.js explains these exact hazards: withParent anchors mutation to the checked parent; publish uses exclusive link/mkdir rather than replacing rename; detached originals are deliberately retained because an already-open writer can modify an old inode after the last check. Distribution withdraws that managed transaction, state interpretation and recovery protocol, but supplies no current technical sequence or explicit alternative boundary for its retained protection. A generic requirement to stop when exclusivity cannot be established could leave normal force replacement unimplementable or invite a check-then-delete implementation that falsely claims protection.\n\nRequired outcome and safe resolution: Define the bounded technical realization for whole-unit force replacement: safe parent/unit identity, how the original is detached or otherwise protected, exclusive publication and new-arrival handling, the protection/disposition of concurrent old-inode writes, and observable partial-failure/retry results. Explain the supported concurrency assumptions and stop cases, with representative checks from which Delivery can derive proof. Preserve the user-approved existence-based conflicts, complete candidate-unit replacement, untouched unrelated/state content and no managed-state service. Safe resolution: Design author adds a concrete bounded sequence and reconciles its scenarios/guarantees; independently reassess the corrected exact package. No required choice of algorithm, new dependency, permanent backup framework or managed-state recovery is prescribed. If an unavoidable limitation would weaken approved no-data-loss/authority intent, disclose it to the owning direction instead of hiding it in implementation.\n\n## Recording and handoff\n\nRecording status: recorded upon successful targeted batch persistence. Record path: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r3.json. Finding path: the same record, finding dist-force-mutation-basis. This first pass is recorded before author correction. No automatic downstream handoff: return the exact finding to Design through Route; do not rely on this package for planning approval until correction and fresh independent reassessment. No new user decision is currently required for the bounded author correction.\n\n## Exact package subjects\n\n- design: docs/design/design/design.md — sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f\n- distribution: docs/design/distribution/distribution.md — sha256:fd6d8418996aed41e361ae37cf955d6998e0ba3690c1eda301aeb9df03dab6e6\n- distribution-source-amendment-1: specs/single-authored-skill-source-generated-output.md — sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7\n- distribution-source-amendment-2: specs/multi-agent-adapters-first-public-release.md — sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff\n- distribution-source-amendment-3: specs/public-adapter-artifact-migration-examples-concise-skill-release.md — sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694\n- distribution-source-amendment-4: specs/rigorloop-cli-package-and-codex-init.md — sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0\n- distribution-source-amendment-5: specs/published-skill-first-repository-simplification.md — sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1\n- release: docs/design/release/release.md — sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c\n- skill: docs/design/skill/skill.md — sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a\n- system: docs/design/system/system.md — sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: dist-force-mutation-basis; Severity: medium; scope: artifact-local; affected artifact ID: distribution; owning stage: design. Location: DIST-SR-14, Partial failure and retry, Runtime steps 4/5 and Temporal/retry scenario. The model requires a final recheck, a bounded exclusive mutation basis, no overwritten intervening edits and whole-unit --force replacement, but does not define the operation that establishes the exclusive basis or the concurrency boundary. Checking then removing a tree can delete an edit arriving after the check; renaming a staged candidate onto the destination can replace a newly created file; deleting a detached old tree can discard writes through an already-open handle. The existing managed-authoring-replacement.js explains these exact hazards: withParent anchors mutation to the checked parent; publish uses exclusive link/mkdir rather than replacing rename; detached originals are deliberately retained because an already-open writer can modify an old inode after the last check. Distribution withdraws that managed transaction, state interpretation and recovery protocol, but supplies no current technical sequence or explicit alternative boundary for its retained protection. A generic requirement to stop when exclusivity cannot be established could leave normal force replacement unimplementable or invite a check-then-delete implementation that falsely claims protection.",
+      "id": "dist-force-mutation-basis",
+      "origin": {
+        "evidence": "Finding ID: dist-force-mutation-basis; Severity: medium; scope: artifact-local; affected artifact ID: distribution; owning stage: design. Location: DIST-SR-14, Partial failure and retry, Runtime steps 4/5 and Temporal/retry scenario. The model requires a final recheck, a bounded exclusive mutation basis, no overwritten intervening edits and whole-unit --force replacement, but does not define the operation that establishes the exclusive basis or the concurrency boundary. Checking then removing a tree can delete an edit arriving after the check; renaming a staged candidate onto the destination can replace a newly created file; deleting a detached old tree can discard writes through an already-open handle. The existing managed-authoring-replacement.js explains these exact hazards: withParent anchors mutation to the checked parent; publish uses exclusive link/mkdir rather than replacing rename; detached originals are deliberately retained because an already-open writer can modify an old inode after the last check. Distribution withdraws that managed transaction, state interpretation and recovery protocol, but supplies no current technical sequence or explicit alternative boundary for its retained protection. A generic requirement to stop when exclusivity cannot be established could leave normal force replacement unimplementable or invite a check-then-delete implementation that falsely claims protection.",
+        "rationale": "Design Review criteria 1/2/4/7 require credible technical realization and representative outcomes for the approved concurrent-edit and bounded filesystem safety claims; unsupported exclusivity cannot be deferred as implementation detail.",
+        "reporter": {
+          "id": "distribution-design-reviewer",
+          "role": "review"
+        },
+        "required_outcome": "Define the bounded technical realization for whole-unit force replacement: safe parent/unit identity, how the original is detached or otherwise protected, exclusive publication and new-arrival handling, the protection/disposition of concurrent old-inode writes, and observable partial-failure/retry results. Explain the supported concurrency assumptions and stop cases, with representative checks from which Delivery can derive proof. Preserve the user-approved existence-based conflicts, complete candidate-unit replacement, untouched unrelated/state content and no managed-state service. Safe resolution: Design author adds a concrete bounded sequence and reconciles its scenarios/guarantees; independently reassess the corrected exact package. No required choice of algorithm, new dependency, permanent backup framework or managed-state recovery is prescribed. If an unavoidable limitation would weaken approved no-data-loss/authority intent, disclose it to the owning direction instead of hiding it in implementation.",
+        "subjects": [
+          {
+            "identity": "sha256:fd6d8418996aed41e361ae37cf955d6998e0ba3690c1eda301aeb9df03dab6e6",
+            "path": "docs/design/distribution/distribution.md"
+          }
+        ],
+        "supporting_judgment": {
+          "contributors": [
+            {
+              "id": "distribution-design-author",
+              "role": "design"
+            }
+          ],
+          "independence_basis": "Separate delegated nonauthor reviewer assessed all ten package members and relevant source/code basis; parent authored all contribution/refinements. No reviewed-content edits.",
+          "judgment": "changes-requested",
+          "rationale": "Fresh whole-package Design Review identifies one artifact-local force replacement feasibility/temporal-boundary gap.",
+          "reviewer": {
+            "id": "distribution-design-reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+              "path": "docs/design/design/design.md"
+            },
+            {
+              "identity": "sha256:fd6d8418996aed41e361ae37cf955d6998e0ba3690c1eda301aeb9df03dab6e6",
+              "path": "docs/design/distribution/distribution.md"
+            },
+            {
+              "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+              "path": "specs/single-authored-skill-source-generated-output.md"
+            },
+            {
+              "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+              "path": "specs/multi-agent-adapters-first-public-release.md"
+            },
+            {
+              "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+              "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+            },
+            {
+              "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+              "path": "specs/rigorloop-cli-package-and-codex-init.md"
+            },
+            {
+              "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+              "path": "specs/published-skill-first-repository-simplification.md"
+            },
+            {
+              "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+              "path": "docs/design/release/release.md"
+            },
+            {
+              "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+              "path": "docs/design/skill/skill.md"
+            },
+            {
+              "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+              "path": "docs/design/system/system.md"
+            }
+          ]
+        }
+      },
+      "owner": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "distribution-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Define the bounded technical realization for whole-unit force replacement: safe parent/unit identity, how the original is detached or otherwise protected, exclusive publication and new-arrival handling, the protection/disposition of concurrent old-inode writes, and observable partial-failure/retry results. Explain the supported concurrency assumptions and stop cases, with representative checks from which Delivery can derive proof. Preserve the user-approved existence-based conflicts, complete candidate-unit replacement, untouched unrelated/state content and no managed-state service. Safe resolution: Design author adds a concrete bounded sequence and reconciles its scenarios/guarantees; independently reassess the corrected exact package. No required choice of algorithm, new dependency, permanent backup framework or managed-state recovery is prescribed. If an unavoidable limitation would weaken approved no-data-loss/authority intent, disclose it to the owning direction instead of hiding it in implementation.",
+      "resolution": {
+        "actor": {
+          "id": "distribution-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "design-force-mutation-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "The corrected Distribution defines in-memory destination and ancestor snapshots, anchored-parent basename mutation, private detachment with post-detach basis verification, exclusive mkdir/hardlink publication, safe unsupported-primitive rejection, observed candidate verification, preservation/reporting of detached originals for late open-inode writes, and explicit partial-failure/retry outcomes without state interpretation or recovery orchestration. This satisfies dist-force-mutation-basis's original technical-realization outcome. A separate newly exposed target-discovery placement interaction is retained as dist-retained-original-discovery, not hidden by this disposition."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:fd6d8418996aed41e361ae37cf955d6998e0ba3690c1eda301aeb9df03dab6e6",
+          "path": "docs/design/distribution/distribution.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review-r3",
+  "independence_basis": "Separate delegated nonauthor reviewer assessed all ten package members and relevant source/code basis; parent authored all contribution/refinements. No reviewed-content edits.",
+  "judgment": "changes-requested",
+  "reviewer": {
+    "id": "distribution-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:fd6d8418996aed41e361ae37cf955d6998e0ba3690c1eda301aeb9df03dab6e6",
+      "path": "docs/design/distribution/distribution.md"
+    },
+    {
+      "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+      "path": "specs/single-authored-skill-source-generated-output.md"
+    },
+    {
+      "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+      "path": "specs/multi-agent-adapters-first-public-release.md"
+    },
+    {
+      "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+    },
+    {
+      "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+      "path": "specs/rigorloop-cli-package-and-codex-init.md"
+    },
+    {
+      "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+      "path": "docs/design/release/release.md"
+    },
+    {
+      "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+      "path": "docs/design/system/system.md"
+    }
+  ],
+  "target": "design"
+}

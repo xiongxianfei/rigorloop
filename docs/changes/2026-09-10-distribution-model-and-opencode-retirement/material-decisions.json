@@ -1,0 +1,620 @@
+{
+  "body": "Revise-primary-plan for Delivery finding dist-delivery-retirement-allocation. TG-08/E1–E3 allocate scoped R14 admission, R19 old/replacement execution before deletion and R22 actual measurements. No upstream behavior changes. Four implementation milestones: prove actual two-parent anchored relocation and rejection/retention outside discovery; integrate force and two-target producer/installer/Release consumers; transfer mirror protection before script/selector retirement; remove exact old sources and reconcile readers. Fresh whole-change Code Review then distinct Verify remain mandatory. No work entries are initialized before Delivery Review. The exact plan and navigation are authored; future tests, runtime functionality, deletion, final adoption and publication are not claimed. Prior design choices/checks remain scoped to their original identities, while current plan relies on Proposal Review r3 and Design Review r5 and their resolved findings.",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "decisions": [
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "id": "distribution-design-direction",
+      "rationale": "Record the exact Design package, selected source/consumer basis, bounded new-profile classification and material DIST-DEC-01–06 decisions under the approved proposal.",
+      "source_refs": [
+        {
+          "id": "proposal-review",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:3be8f7bfaaacbd5a3de5881254f930d88e60bca39a5c1fbdf074a2bd8210433b",
+          "path": "docs/design/distribution/distribution.md"
+        },
+        {
+          "identity": "sha256:fd00a0fc79d335da7099341d81b66ffbddf50068d6fe0569ae2ca44374b84789",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:10e50b51a24222977894c29f37aa11dd2edab2d313758eeca65677dd28bd81ae",
+          "path": "docs/design/design/design.md"
+        },
+        {
+          "identity": "sha256:7f5ddf90cc2a27bd77ce1ea2f5e9d03a26cceb9e8a174511517fd3bf1393a35b",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:fa7ea1ba786c6ba01bd02e45baa84fdfc2f33161502aa077c548169b59462a6e",
+          "path": "docs/design/release/release.md"
+        },
+        {
+          "identity": "sha256:a8acfd1cfb02a3719057bacff6da84f478b73cb3081ab46ef12b1122d86e1b4b",
+          "path": "specs/single-authored-skill-source-generated-output.md"
+        },
+        {
+          "identity": "sha256:8a8187de055f22cfb48208b896ddb9c1f3b44ba7dbe9a3d71f93ced250a5b4c5",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:db8edd7f9294df841383805419a3a76bebc5c28e926816aa6b12caf423363856",
+          "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+        },
+        {
+          "identity": "sha256:fb5d2aab08e09bf82dfa153577b160dd52cba40b52c762ceab3ce9774cdcc4b8",
+          "path": "specs/rigorloop-cli-package-and-codex-init.md"
+        },
+        {
+          "identity": "sha256:d3c464aa4b8504eb9639b9a34a7d657f15d80058a11ffb67b9aca3d52fd26af8",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:ff6bcaf40bf51aa80bb1b9b0a0b8da0d851b8450a555a78941c02cd331585879",
+          "path": "specs/skill-invocation-commands-for-adapters.md"
+        },
+        {
+          "identity": "sha256:a8e1a0da9b8921f0b3b2f85a821f4ff41f2aa07a91d995699492d8fbc35a15de",
+          "path": "specs/skill-invocation-commands-for-adapters.test.md"
+        },
+        {
+          "identity": "sha256:c78f8fdd449505b9a6f0fb4854de514fd60b9c3426855ad4ef39e137b809463d",
+          "path": "specs/stop-tracking-generated-public-adapter-skill-bodies.md"
+        },
+        {
+          "identity": "sha256:1532619b4e1f07dbe22660f5f88daa6cfe2e306477893d904eb4b6ad953b3fc5",
+          "path": "specs/stop-tracking-generated-public-adapter-skill-bodies.test.md"
+        },
+        {
+          "identity": "sha256:93f8e00400e5a8573b4ca9835a17b1331e3820a8f446bcbe72313838c6e61313",
+          "path": "specs/target-native-init.md"
+        },
+        {
+          "identity": "sha256:32a6b10f3c1a19fcfb128fa948cbb2fcf2fcac5fc50a4c08021aa36d9e0c4c0a",
+          "path": "specs/target-native-init.test.md"
+        },
+        {
+          "identity": "sha256:6f658d7586fa4311c64e84374d6a8f10d1bea9737373fccc7e62d265f6aa6f79",
+          "path": "specs/multi-adapter-init-and-proxy-aware-download.md"
+        },
+        {
+          "identity": "sha256:bcb5ef8cbc3a32815519c2d600fa7093c4b0c08c9c4e068ca081ddc01de79023",
+          "path": "specs/multi-adapter-init-and-proxy-aware-download.test.md"
+        },
+        {
+          "identity": "sha256:3b7735a05e53e87b8e082c29ffa54e1a18330622d0265713781a467627d14bfc",
+          "path": "specs/rigorloop-cli-lockfile.md"
+        },
+        {
+          "identity": "sha256:d24acda34447c9997a2293344a782f29549586aae8de073635efddafcf7d8125",
+          "path": "specs/rigorloop-cli-lockfile.test.md"
+        },
+        {
+          "identity": "sha256:14884135822caedc6c988d29ceb83c13dd89baf9b4b30dfdae076b2a9002e1af",
+          "path": "docs/adr/ADR-20260424-generated-adapter-packages.md"
+        },
+        {
+          "identity": "sha256:e0e588cf75ec12cfa2034ba98a00aaa9277012671beaaa2127e3106e17567d02",
+          "path": "docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md"
+        },
+        {
+          "identity": "sha256:679f8abc2b5426964780dbb9d646018d5c7083f759f89151622e20df742c3411",
+          "path": "docs/adr/ADR-20260516-rigorloop-cli-lockfile.md"
+        },
+        {
+          "identity": "sha256:abd61812a60fe004c45d2a4abcc6301af381daca38989ecde4888042fbf3fe57",
+          "path": "docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md"
+        },
+        {
+          "identity": "sha256:03d972b8ccd127a8e12dbf505df070290f6e4f4ecaeed1be027e35b2acbbea35",
+          "path": "docs/adr/ADR-20260524-target-native-init-state-boundary.md"
+        },
+        {
+          "identity": "sha256:80d9cabd1480adc3f3860c0b535404227e30da3e385f412bed28dc9facfd9c0c",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:8a18f988142e1ab27bb0f9956e0604d431b19f4bd0b7239cbe4458803b766ab3",
+          "path": "scripts/build-skills.py"
+        },
+        {
+          "identity": "sha256:d61169c710c3114e6daf4698dfee2346a095d02465d73954c8714eac07833c75",
+          "path": "scripts/test-build-skills.py"
+        },
+        {
+          "identity": "sha256:6243a5d915a962a460f5e9deb4dc776f7b56c9977601206557ea931a3691eb3a",
+          "path": "scripts/build-adapters.py"
+        },
+        {
+          "identity": "sha256:52c3c7602d29d2372250a0ff3ce9adfbdd2e446e2fff0c37f2a2a1db3565f436",
+          "path": "scripts/validate-adapters.py"
+        },
+        {
+          "identity": "sha256:ed503141bfbfd00befda50fe100be8bc952a8846054a469c56698c01e7967536",
+          "path": "packages/rigorloop/dist/lib/adapters.js"
+        },
+        {
+          "identity": "sha256:e12c02b4b2ad3c03ab1f60c022b86297087ba9de04ea7b35c992d2e4b124593f",
+          "path": "packages/rigorloop/dist/lib/lockfile.js"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "id": "distribution-install-only-refinement",
+      "rationale": "Explicit user correction supersedes the prior state-writing and managed-upgrade direction.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:73e8b9413c609eacdc71e3e8df3ed0b95a2c98aa6e24c2f2e9bcc2df5ab8bf9d",
+          "path": "docs/design/distribution/distribution.md"
+        },
+        {
+          "identity": "sha256:ea0a2c7a7370ec49e40da343c95155fe187e915a7bcc234373a06dc9e89427b4",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:28e3c35ef25b1bc7029d2a55515c0505b0aaa78e8b6028899614f5a4b80f3810",
+          "path": "docs/design/design/design.md"
+        },
+        {
+          "identity": "sha256:e6cef0ff987ca57b73ecc74659ec751133c64638e74190f6618caf9a59a046fb",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:4b7780670fa6830372e0a84936fe77458e5039669d2ec1150614f2ddeaa45e24",
+          "path": "docs/design/release/release.md"
+        },
+        {
+          "identity": "sha256:9adc26efa665002630fec06df21c35b59ac2a5dd3e7e9df35e67f9a257e5dd7e",
+          "path": "specs/single-authored-skill-source-generated-output.md"
+        },
+        {
+          "identity": "sha256:4f5baac11f40fc9fe56b28970664e9e5fffb1e0f344003efcc6bbf244cf1e7a0",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:8e0eaafd33d9b9b38105f98af76ffdf4c7f635152ef1679098da2a3d201e5aaa",
+          "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+        },
+        {
+          "identity": "sha256:3e9903841c4221dd1d0eb7216af006d6065cd74615dd6f9e1b552f2a7e858f5f",
+          "path": "specs/rigorloop-cli-package-and-codex-init.md"
+        },
+        {
+          "identity": "sha256:d1cf6148eab6bd4fa5c3a52a08fecd40398363e0cd7285faa0de4f866251be44",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:ff6bcaf40bf51aa80bb1b9b0a0b8da0d851b8450a555a78941c02cd331585879",
+          "path": "specs/skill-invocation-commands-for-adapters.md"
+        },
+        {
+          "identity": "sha256:a8e1a0da9b8921f0b3b2f85a821f4ff41f2aa07a91d995699492d8fbc35a15de",
+          "path": "specs/skill-invocation-commands-for-adapters.test.md"
+        },
+        {
+          "identity": "sha256:c78f8fdd449505b9a6f0fb4854de514fd60b9c3426855ad4ef39e137b809463d",
+          "path": "specs/stop-tracking-generated-public-adapter-skill-bodies.md"
+        },
+        {
+          "identity": "sha256:1532619b4e1f07dbe22660f5f88daa6cfe2e306477893d904eb4b6ad953b3fc5",
+          "path": "specs/stop-tracking-generated-public-adapter-skill-bodies.test.md"
+        },
+        {
+          "identity": "sha256:93f8e00400e5a8573b4ca9835a17b1331e3820a8f446bcbe72313838c6e61313",
+          "path": "specs/target-native-init.md"
+        },
+        {
+          "identity": "sha256:32a6b10f3c1a19fcfb128fa948cbb2fcf2fcac5fc50a4c08021aa36d9e0c4c0a",
+          "path": "specs/target-native-init.test.md"
+        },
+        {
+          "identity": "sha256:6f658d7586fa4311c64e84374d6a8f10d1bea9737373fccc7e62d265f6aa6f79",
+          "path": "specs/multi-adapter-init-and-proxy-aware-download.md"
+        },
+        {
+          "identity": "sha256:bcb5ef8cbc3a32815519c2d600fa7093c4b0c08c9c4e068ca081ddc01de79023",
+          "path": "specs/multi-adapter-init-and-proxy-aware-download.test.md"
+        },
+        {
+          "identity": "sha256:3b7735a05e53e87b8e082c29ffa54e1a18330622d0265713781a467627d14bfc",
+          "path": "specs/rigorloop-cli-lockfile.md"
+        },
+        {
+          "identity": "sha256:d24acda34447c9997a2293344a782f29549586aae8de073635efddafcf7d8125",
+          "path": "specs/rigorloop-cli-lockfile.test.md"
+        },
+        {
+          "identity": "sha256:14884135822caedc6c988d29ceb83c13dd89baf9b4b30dfdae076b2a9002e1af",
+          "path": "docs/adr/ADR-20260424-generated-adapter-packages.md"
+        },
+        {
+          "identity": "sha256:e0e588cf75ec12cfa2034ba98a00aaa9277012671beaaa2127e3106e17567d02",
+          "path": "docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md"
+        },
+        {
+          "identity": "sha256:679f8abc2b5426964780dbb9d646018d5c7083f759f89151622e20df742c3411",
+          "path": "docs/adr/ADR-20260516-rigorloop-cli-lockfile.md"
+        },
+        {
+          "identity": "sha256:abd61812a60fe004c45d2a4abcc6301af381daca38989ecde4888042fbf3fe57",
+          "path": "docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md"
+        },
+        {
+          "identity": "sha256:03d972b8ccd127a8e12dbf505df070290f6e4f4ecaeed1be027e35b2acbbea35",
+          "path": "docs/adr/ADR-20260524-target-native-init-state-boundary.md"
+        },
+        {
+          "identity": "sha256:80d9cabd1480adc3f3860c0b535404227e30da3e385f412bed28dc9facfd9c0c",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:8a18f988142e1ab27bb0f9956e0604d431b19f4bd0b7239cbe4458803b766ab3",
+          "path": "scripts/build-skills.py"
+        },
+        {
+          "identity": "sha256:d61169c710c3114e6daf4698dfee2346a095d02465d73954c8714eac07833c75",
+          "path": "scripts/test-build-skills.py"
+        },
+        {
+          "identity": "sha256:6243a5d915a962a460f5e9deb4dc776f7b56c9977601206557ea931a3691eb3a",
+          "path": "scripts/build-adapters.py"
+        },
+        {
+          "identity": "sha256:52c3c7602d29d2372250a0ff3ce9adfbdd2e446e2fff0c37f2a2a1db3565f436",
+          "path": "scripts/validate-adapters.py"
+        },
+        {
+          "identity": "sha256:ed503141bfbfd00befda50fe100be8bc952a8846054a469c56698c01e7967536",
+          "path": "packages/rigorloop/dist/lib/adapters.js"
+        },
+        {
+          "identity": "sha256:e12c02b4b2ad3c03ab1f60c022b86297087ba9de04ea7b35c992d2e4b124593f",
+          "path": "packages/rigorloop/dist/lib/lockfile.js"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "id": "distribution-state-shape-correction",
+      "rationale": "Address recorded finding dist-design-state-shapes without restoring any writer or managed upgrade.",
+      "source_refs": [
+        {
+          "id": "dist-design-state-shapes",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:b1bc72c2764bb1563433d0b82f6da0d18861ce77d83dcf1beac766d4adc3f23e",
+          "path": "docs/design/distribution/distribution.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "id": "distribution-presence-only-boundary",
+      "rationale": "Adopt explicit user document review: unsupported state context is detected by presence, not schema interpretation.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:463c3732e3061cf8ae7c14c9172cd227ac5c8f2799510e1f615d2a99760eeb32",
+          "path": "docs/design/distribution/distribution.md"
+        },
+        {
+          "identity": "sha256:a8f87ceae77928edfe1b5451afbc48b47bbf9ffcbbdb39ca91cc3fc9b60a4996",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:20982c46910c79bd5dddb159e703ce9a3b8bb4f41632f38cb5acb3d6741e5070",
+          "path": "docs/design/design/design.md"
+        },
+        {
+          "identity": "sha256:9a0a8677d5d8ae48db2fcc583d254c3adf562d7073e4768e05ca7ce4beb4bf9b",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:7b751ff335a49a8576708847c1bc6da4c41fce4af605e1065f1ce5e6af1e5cfb",
+          "path": "docs/design/release/release.md"
+        },
+        {
+          "identity": "sha256:5eb246236ea107837641f879e861dfb284da4a8039b10eaa1eb6b17e657b8b13",
+          "path": "specs/single-authored-skill-source-generated-output.md"
+        },
+        {
+          "identity": "sha256:cdbf870d97d4797a372d58329ca775381a3e7c5b476da246c797bd997b07be76",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:d7752e3e68586b0a0830dcfe535d55507e48fcb513db33cf94bf3f3401c2ae7d",
+          "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+        },
+        {
+          "identity": "sha256:dfc8785ae32e2d9e2253aae6181e0e9ddaf419e7922cd50a9e451a361699353f",
+          "path": "specs/rigorloop-cli-package-and-codex-init.md"
+        },
+        {
+          "identity": "sha256:cce7c4774f2d63744dc04e6647e0b0fce7fadbed539132aeb5cd97d2bb945218",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:b386d6434d1fa502a6e4d3ec086eaa7ce8072c0c87ef1058bc6b5457995a44e7",
+          "path": "docs/proposals/2026-09-10-distribution-model-and-opencode-retirement.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "id": "distribution-force-boundary",
+      "rationale": "Adopt user-agreed destination conflicts and explicit --force replacement.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:fd6d8418996aed41e361ae37cf955d6998e0ba3690c1eda301aeb9df03dab6e6",
+          "path": "docs/design/distribution/distribution.md"
+        },
+        {
+          "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+          "path": "docs/design/design/design.md"
+        },
+        {
+          "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+          "path": "docs/design/release/release.md"
+        },
+        {
+          "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+          "path": "specs/single-authored-skill-source-generated-output.md"
+        },
+        {
+          "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+          "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+        },
+        {
+          "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+          "path": "specs/rigorloop-cli-package-and-codex-init.md"
+        },
+        {
+          "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:fc098aa623a569994b0c0c18deb0af6eca55bfba19b1e1e380b3407e20135a16",
+          "path": "docs/proposals/2026-09-10-distribution-model-and-opencode-retirement.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "id": "distribution-force-mutation-correction",
+      "rationale": "Address recorded finding dist-force-mutation-basis without restoring any writer or managed upgrade.",
+      "source_refs": [
+        {
+          "id": "dist-force-mutation-basis",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r3.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:2817f9a9c87710a3c064c34f7b4a0fde627439a086c41f8c95514a43fed9602d",
+          "path": "docs/design/distribution/distribution.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "id": "distribution-retention-placement-correction",
+      "rationale": "Address recorded finding dist-retained-original-discovery without restoring any writer or managed upgrade.",
+      "source_refs": [
+        {
+          "id": "dist-retained-original-discovery",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r4.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7",
+          "path": "docs/design/distribution/distribution.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "distribution-plan-author",
+        "role": "plan"
+      },
+      "id": "distribution-delivery-sequence",
+      "rationale": "Sequence reviewed force capability before public integration, then mirror protection transfer and exact source retirement.",
+      "source_refs": [
+        {
+          "id": "proposal-review-r3",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r3.json"
+        },
+        {
+          "id": "design-review-r5",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r5.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:4b50a3fc4cd51dbb89f8f8303165e265fca58856326986cf7925bbc3a3fd2966",
+          "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+        },
+        {
+          "identity": "sha256:041b4b445f2919de3f58ea28110858a2b83e95efb8379cf4c10fcfef164f230b",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:fc098aa623a569994b0c0c18deb0af6eca55bfba19b1e1e380b3407e20135a16",
+          "path": "docs/proposals/2026-09-10-distribution-model-and-opencode-retirement.md"
+        },
+        {
+          "identity": "sha256:d911eb83f8702d867ad9a671414201469593d09364fa618c36556e5a065ec7b6",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r3.json"
+        },
+        {
+          "identity": "sha256:2e98913b84f9a5de2da03b78e440e5a07da004d82ec7f0b559ce5fc15907b550",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r5.json"
+        },
+        {
+          "identity": "sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7",
+          "path": "docs/design/distribution/distribution.md"
+        },
+        {
+          "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+          "path": "docs/design/design/design.md"
+        },
+        {
+          "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+          "path": "docs/design/release/release.md"
+        },
+        {
+          "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+          "path": "specs/single-authored-skill-source-generated-output.md"
+        },
+        {
+          "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+          "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+        },
+        {
+          "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+          "path": "specs/rigorloop-cli-package-and-codex-init.md"
+        },
+        {
+          "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "distribution-plan-author",
+        "role": "plan"
+      },
+      "id": "distribution-retirement-allocation",
+      "rationale": "Sequence reviewed force capability before public integration, then mirror protection transfer and exact source retirement.",
+      "source_refs": [
+        {
+          "id": "proposal-review-r3",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r3.json"
+        },
+        {
+          "id": "design-review-r5",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r5.json"
+        }
+      ],
+      "subjects": [
+        {
+          "identity": "sha256:fde6279b9861bd6daf5c83575baa582ea322c051e5c9c7c840a44264acf75845",
+          "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+        },
+        {
+          "identity": "sha256:041b4b445f2919de3f58ea28110858a2b83e95efb8379cf4c10fcfef164f230b",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:fc098aa623a569994b0c0c18deb0af6eca55bfba19b1e1e380b3407e20135a16",
+          "path": "docs/proposals/2026-09-10-distribution-model-and-opencode-retirement.md"
+        },
+        {
+          "identity": "sha256:d911eb83f8702d867ad9a671414201469593d09364fa618c36556e5a065ec7b6",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r3.json"
+        },
+        {
+          "identity": "sha256:2e98913b84f9a5de2da03b78e440e5a07da004d82ec7f0b559ce5fc15907b550",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r5.json"
+        },
+        {
+          "identity": "sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7",
+          "path": "docs/design/distribution/distribution.md"
+        },
+        {
+          "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+          "path": "docs/design/design/design.md"
+        },
+        {
+          "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+          "path": "docs/design/release/release.md"
+        },
+        {
+          "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+          "path": "specs/single-authored-skill-source-generated-output.md"
+        },
+        {
+          "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+          "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+        },
+        {
+          "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+          "path": "specs/rigorloop-cli-package-and-codex-init.md"
+        },
+        {
+          "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        }
+      ]
+    }
+  ],
+  "schema_version": 2
+}
