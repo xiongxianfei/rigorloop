@@ -145,6 +145,18 @@ GitHub Actions' existing environment protection is the selected human boundary: 
 
 The executor records provider approval/run identity against the candidate and checks binding, freshness, external state and permission before writes. Publish the already-checked tarball and archives, not a newly packed working directory. Preserve trusted provenance and exact tag checks appropriate to this path. Serializing by package/version limits concurrent writes, but does not replace inspecting registry/tag/asset state. A tag-triggered compatibility path must consume the same candidate authorization or stay explicitly outside this supported path; it must not race an independent unguarded publisher.
 
+### Release preparation in ordinary CI
+
+GitHub approving reviews are not required for this repository. Protect the source branch with pull requests and required CI, while retaining independently recorded engineering assessment and distinct Verify. GitHub review counts do not replace those assessments. The release environment remains the one normal human publication approval after preparation and checks.
+
+Ordinary PR and main CI MUST distinguish authored release intent, the prepared package and historical publication evidence. A pending standing record supplies the selected version, major/minor/patch rationale and notes; it does not claim generated checks or public observations have completed. Validate that intent against the source package and the existing version-decision rules. Missing, contradictory or unknown state fails before downstream reliance. Completed historical records retain their existing recorded-source checks.
+
+For selected package/release checks on a pending release, compose the existing candidate builder in an isolated checkout of the exact checked source. This local preparation has no publication or deployment authority and need not be a merged default-branch release. Use its real generated sections, archive-derived metadata/index and exact packed runtime as the check subject. Keep the original checkout unchanged. Preserve the selected checks, their failure propagation and source/evidence identities; where a command checks the prepared subject rather than the authored input, report that subject explicitly. Do not pass pending input to the historical finalized-release validator, invent publication fields, or copy an older candidate's digests into a new source.
+
+Current-version CLI fixtures derive their expectations from the actual package under test; explicitly historical and incompatible-version cases remain fixed. Generated test data may describe the current version without changing test logic during candidate preparation. After merge, hosted Release still builds from the exact merged source and binds approval to that fresh candidate; a PR pass or premerge artifact is never publication authorization.
+
+Representative proof includes a new stable major version without per-version executable edits; invalid intent, failed build/check or stale package metadata rejecting; unchanged historical checks; original checkout preservation; and the retained one-approval publication boundary. This is a bounded correction to CI integration under REL-SR-02/08/09/22–24, not a new runner, registry, approval stage or weakened check policy.
+
 ### Authoritative facts and durable evidence
 
 | Fact | Authority and generated consumers |

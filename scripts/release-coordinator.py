@@ -15,6 +15,14 @@ from release_execution import ExecutionError
 
 
 def main(argv=None, *, services=None, root=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if argv and argv[0] == 'check-ci':
+        from release_candidate import check_ci
+        try:
+            return check_ci(argv[1:], root or Path(__file__).resolve().parents[1])
+        except (CandidateError, OSError, ValueError, subprocess.SubprocessError) as exc:
+            print('CI release preparation stopped: ' + str(exc), file=sys.stderr)
+            return 1
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('operation', choices=['prepare', 'execute', 'read-evidence'])
     parser.add_argument('--tag')

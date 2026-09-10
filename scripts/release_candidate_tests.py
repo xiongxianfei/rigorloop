@@ -25,6 +25,20 @@ class ReleaseCandidateTests(unittest.TestCase):
             '# Release v0.5.1\n\n## Version Decision\n\n'
             '- Version decision: patch\n- Change summary: Fix candidate integrity checks.\n')
 
+    def test_ci_intent_checks_do_not_claim_public_version_eligibility(self):
+        data = derive_release_inputs(self.root, None, ci_only=True)
+        self.assertEqual(data['version_decision'], 'patch')
+        self.assertTrue(data['ci_only'])
+        # The publication resolver still requires an actual public version.
+        with self.assertRaises(CandidateError):
+            derive_release_inputs(self.root, None)
+
+    def test_ci_intent_unknown_value_decision_fails_closed(self):
+        p = self.root / 'docs/releases/v0.5.1.md'
+        p.write_text(p.read_text().replace('patch', 'unknown_value'))
+        with self.assertRaisesRegex(CandidateError, 'version decision'):
+            derive_release_inputs(self.root, None, ci_only=True)
+
     def test_reviewed_version_input_and_derived_profile(self):
         data = derive_release_inputs(self.root, '0.5.0')
         self.assertEqual(data['version_decision'], 'patch')
