@@ -108,14 +108,12 @@ test("T10 exact output fixture preserves retained public commands", () => {
   }
   assert.equal(fixture.baseline_revision, "fcbbfda44a89945ee06cfa0c1b16dcbd39984036");
   const cli = process.env.RIGORLOOP_COMPATIBILITY_CLI ?? new URL("../dist/bin/rigorloop.js", import.meta.url).pathname;
+  // Distribution intentionally changes init output; its current public tests
+  // cover conflict/force and dry-run facts. Preserve the historical fixture.
   const cases = [
     ["version-human-success", ["version"], "empty", false],
     ["unknown-human-failure", ["future-command"], "empty", false],
     ["unknown-json-failure", ["future-command", "--json"], "empty", true],
-    ["init-human-success", ["init", "codex", "--dry-run"], "empty", false],
-    ["init-human-blocked", ["init", "unsupported"], "empty", false],
-    ["init-json-success", ["init", "codex", "--dry-run", "--json"], "empty", true],
-    ["init-json-blocked", ["init", "unsupported", "--json"], "empty", true],
   ];
   const observed = {};
   for (const [id, args, projectKind, json] of cases) {
@@ -146,9 +144,9 @@ test("T10 exact output fixture preserves retained public commands", () => {
       }
     }
   }
-  assert.equal(Object.keys(observed).length, 7);
+  assert.equal(Object.keys(observed).length, 3);
   if (process.env.RIGORLOOP_UPDATE_COMPATIBILITY_FIXTURE !== "1") {
-    assert.deepEqual(Object.keys(observed).sort(), Object.keys(fixture.cases).filter(id => !id.startsWith("new-change-") && !id.startsWith("lifecycle-")).sort());
+    assert.deepEqual(Object.keys(observed).sort(), Object.keys(fixture.cases).filter(id => !id.startsWith("new-change-") && !id.startsWith("lifecycle-") && !id.startsWith("init-")).sort());
   }
   if (process.env.RIGORLOOP_UPDATE_COMPATIBILITY_FIXTURE === "1") {
     writeFileSync(compatibilityFixturePath, `${JSON.stringify({ ...fixture, cases: observed }, null, 2)}\n`);

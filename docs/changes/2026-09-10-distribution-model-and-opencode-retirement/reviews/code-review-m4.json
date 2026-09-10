@@ -1,0 +1,98 @@
+{
+  "body": "## Result\n\n- Skill: code-review\n- Status: completed\n- Artifacts changed: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4.json\n- Open blockers: none for M4\n- Next stage: fresh independent final whole-change Code Review through Route\n- Review status: approved\n- Material findings: none\n- Recording status: recorded\n- Recording blocker: none\n- Review record: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4.json\n- Assessment scope: milestone\n- Reviewed milestone: M4\n- Milestone closeout: closed in assessment; Route owns work state\n- Remaining implementation milestones: none after Route accepts this M4 assessment\n- Required review-resolution: no\n- Finding IDs: none\n- Verify readiness: not-claimed\n\n## Exact scope and independence\n\nFormal M4 assessment covers the frozen working-tree engineering diff against d3396a22, not a hypothetical future commit. All nineteen registered implementation-m4 subjects match current bytes. Design r6's thirteen exact members and Delivery r3's unchanged plan match current identities. Parent authored implementation, documentation and tests; separate distribution-code-reviewer authored none and made no source/route/work mutations. This new milestone judgment follows current complete M4 inspection, not merely earlier preparation messages. Additional broad smoke is final verification evidence, not silently treated as completed M4 proof.\n\n## Checklist\n\n1. Spec alignment: pass. Exactly the five approved specification/test-spec pairs and five ADRs are deleted. Mixed architecture relinquishes only Distribution's selected container/runtime/deployment and decision/navigation responsibilities; conditional governance, owner links and FU-013 receiving change match the source map. FU-013 remains open pending successful Verify, and installation does not adopt customers. No unselected source deletion is inferred from references.\n2. Test coverage: pass. C7/C8 check actual reader and selector behavior as well as documents. Current route sentence is exercised through portability evaluation and real generated archives. Added deletion-selection tests cover worktree/committed deletion, present/unproven/dangling input and plan-index composition. Actual candidate integration overlays current canonical skills, scripts, installer and templates before real generation, packing and install. Required metadata/tree/count and resource negative tests remain.\n3. Edge cases: pass. Lifecycle deletion suppression applies only to changed, genuinely absent lifecycle artifacts with tracked/history proof, after all path contributors. Present files, dangling symlinks and unproven missing paths retain validation or block. Non-lifecycle historical workflow guidance remains selected; PR mode retains its unconditional revision-bound lifecycle check. No global missing-file bypass is introduced.\n4. Error handling: pass. Intermediate failing C3/C8 runs are recorded as failures, and actual consumer corrections are followed by full green checks. Exact route matcher still rejects malformed shared arguments/identities and suspicious text. Each retained mutation must actually change source, avoiding vacuous negative evidence. Source removal is not used to suppress malformed current recording stores.\n5. Architecture boundaries: pass. Design r6 independently approves the amended ownership/navigation package; this Code Review assesses actual implementation of that source map. Distribution retains generation/install, Skill content/resources, Release publication/evidence and Workflow/CLI recording coordination/mechanics. The selector change reuses existing provenance and classification helpers rather than adding an execution model or gate.\n6. Compatibility: pass within approved withdrawal. The six removed route mutations exclusively target the retired OpenCode clause; generic obfuscated/additional text and supported-target checks remain. Historical v0.5.1 bundle/index bytes are preserved; fresh current archives need new identities rather than forced equality with historical hashes. Current metadata proof independently checks ZIP hash/size/root count/inventory, while actual candidate integration proves the fresh packed trust chain. No historical package is backfilled as two-target.\n7. Security/privacy: pass. No new external authority, secret output or installer state behavior. Deleted-source selection requires existing Git proof and current absence; it cannot turn a present or symlinked artifact into an ignored input. Source-map/navigation edits do not weaken package integrity, path containment or runtime preservation established by unchanged M1–M3 implementation.\n8. Derived artifact currency: pass within M4. Canonical route text and exact Python portability matcher agree on Codex/Claude, preventing route omission from Claude packages. Real full archive/candidate/packed checks ran against current source rather than a stale clone. Installed local skills remain unmodified. Historical records remain historical and are not regenerated.\n9. Unrelated changes: pass. Additional runtime code edits are necessary consumers of the selected source/target withdrawal: route portability recognition and lifecycle deletion selection. Fixture changes restore actual current producer inputs. No unrelated refactor or new validator/cache/catalog capability. Current operational navigation is distinguished from historical IDs and unrelated retained source remainders.\n10. Validation evidence: pass. Registered implementation-m4 contains full exact deletion identities, historical population, actual commands/results and E1/E2/E3 continuation. Original M3 C3 passed before six exclusive mutation retirements; current replacement route/resource proofs and actual candidate integration passed afterward. Existing validation owners and measured command population remain; final changed-line and measured-source evidence disclose one-run host/population limits. Required C3/C7/C8/C9/C10 checks are complete. Broader legacy prose debt is explicitly not claimed as full-file success.\n\n## Independent evidence and author-proof reliance\n\nReviewer directly compared every one of the150 historical audit paths against d3396a22: no byte changes. Independently extracted the architecture's exact complete Follow-on artifacts section up to its next level-two heading: identical11616 characters. A whole-file suffix comparison would include the separately amended Readiness section and is not the claimed Follow-on scope. Actual deletion list is exactly15 approved files. Prior model renewal inspected the removal map and all changed owner/navigation sections, with scoped legacy classification; this review confirms their actual unchanged registered bytes.\n\nReviewer ran two route portability/negative tests:2 passed2.719s. Reviewer ran final selector PR-contained-surface and plan-index-deletion tests:2 passed0.14s, after earlier three provenance/composition tests passed0.21s. The final narrowing changes only lifecycle-category applicability; earlier present/dangling/unproven proof remains valid. All reviewer fixture runs used isolated test repositories and no source edits.\n\nAuthor full C3 passed154 in467.791s; full selector passed160 in62.93s; actual current candidate/packed metadata chain passed1 in87.016s. Final C8 explicit all-path selection exited0 with every selected check passing in408.559s, including actual release/packed/CLI/selector/record/document readers. C7 boundary90/lifecycle112 passed; C9/C10 passed with their declared scope. Legacy audit308errors/115warnings is unchanged existing debt (275architecture/new-change plus33retained-spec errors), not a full legacy prose pass. Exact model/plan enforcement reports0. Added broad smoke is not claimed here as success and does not replace final Verify.\n\nThe six retained specs' format classification remains the independently recorded r6 distinction: five grandfathered, published-skill-first retaining its existing boundary/proof obligations. No blanket waiver or premature adoption follows from C9 observations. No published-skill behavioral scope changed beyond removing the unsupported OpenCode invocation example; route's description, triggers, owner, procedure, stop conditions, argument forms and handoff remain coherent for both supported targets, and transformed actual package proof confirms retained delivery.\n\n## Handoff\n\nM4 has no required finding. Route may close M4 and request the mandatory distinct fresh independent whole-change Code Review of the complete base-to-final implementation and interactions. This milestone review is not that final assessment. Distinct Verify and its final explanation/adoption judgment remain after final review; no branch, PR, publication or successful Verify readiness is claimed.\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m4",
+  "independence_basis": "Separate nonauthor reviewed complete frozen M4 diff and current exact Design/Delivery/proof, independently audited150 historical files/Follow-on preservation and ran focused route/selector tests.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "distribution-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:78467feaf8323bb478f0172e220aca168d19bd98de02b78444984d5bab419c93",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:9eacfc69e391724734e70c464a8ad97c7280daa247d1bab314314a37b722a1da",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:4d46d41c4754a3a19d451acc1e1c4f3363a85428c93ddde6e077e1c8e4928567",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:d8352376dd2ca11ed8d46ebb11a48e529e006662b0c00a865ba2bf97b0b4b682",
+      "path": "docs/architecture/system/architecture.md"
+    },
+    {
+      "identity": "sha256:c6015cd7d6aae9c76cf29d9d28f5a763a8dd3ef139f5f6549f6c8a865b7b5cca",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7",
+      "path": "docs/design/distribution/distribution.md"
+    },
+    {
+      "identity": "sha256:17f89c1acc227f95798b120dea8261dba45eb6b5294f3904dc24e394e553f2dc",
+      "path": "docs/design/release/release.md"
+    },
+    {
+      "identity": "sha256:2cebfeaaafd9b0df159fa25a69de2b5e2140d6dc4edd36f88de726e00a45d083",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:c0e1e478c55a07f43223fa7d4f97087b271a35466bf54da6f19eec08c326c057",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:51787ce185dda2ed1145cf9450ad2bde2469741cd313f0679ad6d1d75ca8d9c0",
+      "path": "docs/follow-ups.md"
+    },
+    {
+      "identity": "sha256:fde6279b9861bd6daf5c83575baa582ea322c051e5c9c7c840a44264acf75845",
+      "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+    },
+    {
+      "identity": "sha256:6ceeb57fec25b03b4d3e1edc8941e35bdb280a105ea83a79fae3cc7b7cdd4697",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:33f3d9de0847f27824bce466ce916291f04405e5a019f26186cbb0bc11e37a38",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:24e0ebbd9bb1d50b6060dcf192f92312fd08e1dffe3b8c76c93a421fb6fc74c3",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:1a2d1684c9f8b3e7e5c0e77e9f0117d1cca592da7c1fda489a4e8b19dccafe93",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:eac446e50a9fb68f1f0f51691481e2f7e4ecc5a14a00d3cd10be148c636bd3c1",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:e00006c29dd7dd5b65e0c483bcdbc699031f5d15b27e4dfbabbba999a222600b",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:b1eed69f34f4bd2e1e996df581467b040f1066286a4e98c0de3fc34510726fb6",
+      "path": "specs/rigorloop-cli-new-change.md"
+    }
+  ],
+  "target": "code"
+}

@@ -1,0 +1,58 @@
+{
+  "body": "## Result\n\n- Skill: code-review\n- Status: completed\n- Artifacts changed: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4-r2.json\n- Open blockers: distribution-ci-current-record-validation remains reporter-owned pending integrated review/disposition\n- Next stage: fresh final whole-change Code Review through Route\n- Review status: approved\n- Material findings: none newly required\n- Recording status: recorded\n- Recording blocker: none\n- Review record: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4-r2.json\n- Assessment scope: milestone\n- Reviewed milestone: corrected M4\n- Milestone closeout: correction accepted in assessment; Route owns work and blocker sequencing\n- Remaining implementation milestones: none after correction acceptance\n- Required review-resolution: no new correction; CI reporter must disposition its existing blocker\n- Finding IDs: none new\n- Verify readiness: not-claimed\n\n## Independence, exact scope and reuse\n\nIndependent nonauthor reviewed committed e0e89fdf, including final CI dispatch/discovery, static regression correction and current packed-smoke receipt label, against the previously inspected whole M4 and current Design r6/Delivery r3. All eight registered implementation-m4-ci-correction subjects match current bytes; thirteen approved Design subjects and unchanged plan match. Parent authored source/tests/evidence. Reviewer changes only review evidence. Earlier final r1 remains stale because new broad-smoke evidence defeated its basis; this milestone review does not restore that final approval.\n\nFull M4 source/disposition review remains applicable to unchanged source removals, navigation/governance and route/selector correctness, supplemented by this independent complete correction assessment. Earlier installer/generator/retirement proof is reused only for unchanged surfaces; affected CI and release receipt paths have fresh actual validation. Existing CI reporter blocker is not ours to close and is expressly not treated as resolved by this approval.\n\n## Checklist\n\n1. Spec alignment: pass. Correction restores M4/TG-07 current-record consumer alignment and DIST-SR-17 two-target evidence truth. No new record format, installation behavior, target, approval gate or release authority.\n2. Test coverage: pass. Actual current validator passed the corrected broad child; wrapper tests require exact manifest argv, force old adapter failure, preserve reserved/explicit rejection and skip unrelated historical descendants. Corrected full109 review tests and real candidate/full164 release tests exercise the changed assertions/receipt.\n3. Edge cases: pass. Automatic discovery skips only absent-manifest unrelated historical descendants under a readable non-symlink directory. Current manifest, reserved changed input, explicit roots and indeterminate/symlink paths remain validation inputs. Stable child count/ID and normal failure propagation remain. Explicit historical root failure is not converted to automatic success.\n4. Error handling: pass. Existing current validator owns complete-set/path checks; wrapper neither parses legacy schemas nor weakens rejection. Broad aggregate exit1 remains recorded even after nine children pass. Stale static test failure is corrected openly and freshly run, not hidden or counted as a historical successful aggregate.\n5. Architecture boundaries: pass. Existing CI dispatch invokes existing validate-change-metadata.py with root/change.json. Record Format/CLI retain representation/validation; CI owns selection. No new helper service, validator, selector entry, cache or parallelism/permission change.\n6. Compatibility: pass. Unrelated historical operational files do not activate current stores; explicitly selected unsupported/current-residue inputs still fail safely. Original release receipts remain immutable; only newly produced current receipt label is corrected to actual Codex/Claude smoke. Preserved historical/current package boundaries remain coherent.\n7. Security/privacy: pass. No external authority or secret-handling changes. Non-suppression for reserved/symlink/indeterminate input keeps safety delegated to the actual validator, rather than string filtering masquerading as schema trust.\n8. Derived artifact currency: pass in assessed correction scope. Actual generated release-verification.json is inspected by candidate integration for exact two-target command and absence of OpenCode rows. Actual broad current-record child is observed passing. No claim of an actual all-green broad aggregate is made.\n9. Unrelated changes: pass. Production correction is bounded CI consumer dispatch/discovery and one truthful receipt label. Test changes fix stale assertion/input projection and add meaningful current/historical/reserved coverage. Source/model/plan/installer semantics are unchanged; no unrelated cleanup.\n10. Validation evidence: pass with explicit composition. Corrected full C8 passed421.562s. Actual broad10 ran in617.270s with9passes and1static-test failure. That failed leaf then ran all109 successfully4.064s plus selected delta3.34s. Full selector163 passed63.92s. Later receipt label/test change received fresh full C4 164/136.173s and three-group selected CI delta168.52s. Nine prior successful child results remain usable on their unchanged scripts/inputs; the actual changed release-proof path is freshly rerun. This establishes corrected coverage without fabricating aggregate exit0 or rerunning unrelated nine-minute adapter proof merely for a new review.\n\n## Independent direct checks and evidence limits\n\nReviewer ran dispatch test1/0.18s, current/history/reserved tests3/0.68s, and corrected static leaf1/0.002s. An initial invocation used the wrong unittest class and failed command discovery; the corrected exact class passed, and no production defect was inferred from that command mistake. Reviewer inspected source diffs and actual proof/registered identities; expensive whole-suite results remain attributed to author evidence.\n\nE1 stays with existing CI/record/release owners and actual protected failure/trigger/repair criteria. E2 includes actual original broad failure, red-before dispatch/history cases and fresh replacement proof; no useful legacy rejection or regression suite is removed. E3 command population/owners do not grow; earlier M3 measured simplification remains scoped, with no correction runtime-saving claim. Existing whole-M4 historical150/Follow-on preservation and exact15 removal evidence remain unchanged.\n\n## Prospective ledger-only closeout\n\nReviewer inspected the exact proposed docs/follow-ups.md result sha256:fd67fe582142c8f745a58ab94e29a36c307cd5cfe7d46ed0b0a91c0b9b6ebc87 supplied at /tmp/distribution-followups-after-verify.md. It removes only FU-013 from the Open table and adds the corresponding Closed row citing the owning verify-report.json, four reviewed milestones, final Code Review and successful Verify. No other follow-up or engineering contract changes. This is a prospective classification of a narrow workflow-evidence suffix, not permission to claim success early or a path-based exemption. Actual application must wait for successful Verify and be compared to this exact content/effect; a different delta, premature claim or contradictory evidence requires reassessment. PR/Route retain current-state validation after application.\n\n## Handoff\n\nCorrected M4 accepted with no new implementation finding. Route may close its correction work and request distinct fresh final whole-change r2. CI reporter then assesses/dispositions its own blocker as required; this reviewer does not close it. Final r1 remains stale and is not silently restored. Distinct Verify still owns final evidence/closeout/adoption, and no PR/branch/publication readiness is claimed here.\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "distribution-ci-maintainer",
+      "role": "support"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m4-r2",
+  "independence_basis": "Separate nonauthor assessed complete committed M4 correction, actual CI/receipt outputs and unchanged prior-scope reliance; authored no correction and executed independent focused tests.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "distribution-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:8869906289e459514ec208d42c5d9717367f225ff0808bc94d0b4d8f3a4dbcee",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:139c6261651330913d8fb7bc55c6b40579f9457465b5bd9a759ed10dcee91860",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:ef46d5835b44aa7914fe8559467ea2142993bcf8ad31c268bda326f483c6c61b",
+      "path": "scripts/test-review-artifact-validator.py"
+    },
+    {
+      "identity": "sha256:1b935bdb866c7917050ef15134987a7eea197736794e7759fe9c12ccab970b42",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:35fce8b0e0449929ed5b540d343192a5b0b7ef2654c79b36c5c6b1cfeae0a08c",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:f5293a1b387d4d09812850d960533a6e5aeb9f0cb9060bfa5a69c748cec829ae",
+      "path": "scripts/validate-change-metadata.py"
+    },
+    {
+      "identity": "sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7",
+      "path": "docs/design/distribution/distribution.md"
+    },
+    {
+      "identity": "sha256:fde6279b9861bd6daf5c83575baa582ea322c051e5c9c7c840a44264acf75845",
+      "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+    }
+  ],
+  "target": "code"
+}

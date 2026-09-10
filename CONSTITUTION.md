@@ -1,5 +1,9 @@
 # RigorLoop Constitution
 
+## Distribution ownership
+
+For the selected Distribution initiative, [Distribution](docs/design/distribution/distribution.md) owns the mapped package generation and installation contract for Codex and Claude Code. The [owning change](docs/changes/2026-09-10-distribution-model-and-opencode-retirement/change.json) records adoption only after reviewed coherent implementation and successful Verify. Installation checks actual candidate destinations, stops on conflicts by default, and supports explicit complete replacement with `--force`; it neither interprets nor writes project state. Builds produce packages outside canonical and active skill roots. Release retains publication authority, Skill retains content invariants, and installation does not adopt customer governance. Original historical judgments retain their meaning under Distribution's exact displacement map.
+
 ## Skill ownership
 
 For this repository's selected Skill-model initiative, [Skill](docs/design/skill/skill.md) owns the mapped common skill contract with its existing applicability; new procedure improvements apply only to `proposal` and `proposal-review`. The exact transfer takes effect through reviewed coherent implementation and successful Verify, not Design approval or package availability alone. [Skill Contract](specs/skill-contract.md) retains only its explicitly bounded plan/boundary-method authority. [Archive navigation](docs/archive/skill-model/2026-09-08/README.md) identifies historical originals and their replacements; source-retained old judgments do not govern new work after adoption. Specialist policy, distribution, installation and release retain their owners. Remaining adoption stays in named follow-ups, not an inventory-wide conformance claim.

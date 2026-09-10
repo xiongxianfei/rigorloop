@@ -25,6 +25,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [2026-09-10 Distribution and Explicit Force Installation](plans/2026-09-10-distribution-model-and-opencode-retirement.md) — [owning change](changes/2026-09-10-distribution-model-and-opencode-retirement/change.json).
+
 - [2026-09-10 Readable record output](plans/2026-09-10-readable-record-output.md) — [owning change](changes/2026-09-10-readable-record-output/change.json).
 
 - [2026-09-10 Simplify release validation integration](plans/2026-09-10-release-validation-integration.md) — [owning change](changes/2026-09-10-release-validation-integration/change.json).

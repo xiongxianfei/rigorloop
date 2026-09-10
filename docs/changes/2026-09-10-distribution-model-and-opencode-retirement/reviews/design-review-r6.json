@@ -1,0 +1,78 @@
+{
+  "body": "## Result\n\n- Skill: design-review\n- Review status: approved\n- Package members: thirteen exact registered model/legacy subjects listed below\n- Upstream review ID: proposal-review-r3\n- Review ID and round: design-review-r6, navigation/source-retirement renewal\n- Material findings: none\n- Correction targets: none\n- Recording status: recorded\n- Open blockers: none for this Design package\n- Immediate next stage: separately authorized bounded Delivery Review renewal, then Route\n- Claim limitations: exact Design approval only; no implementation completion, Verify, adoption, branch, PR or publication claim\n\n## Scope and independent reliance\n\nSeparate nonauthor distribution-design-reviewer reviewed the current thirteen-member package against approved proposal-review-r3 and prior exact design-review-r5. Parent distribution-implementer/design author made all member changes; reviewer authored none. This is a new exact judgment, not retargeting prior reviewed identities. Current Distribution, System, proposal and plan bytes are unchanged. Earlier full ten-member semantic assessment remains evidence for unchanged sections; this review independently assesses all changed navigation/ownership paragraphs, newly selected scoped consumers, source-map interactions and resulting whole affected-package consistency.\n\nThe added members are Workflow's scoped historical authorship reference, mixed system architecture's selected Distribution replacement/navigation sections and the legacy CLI new-change installation dependency reference. Their whole files carry exact identities but approval scope is the selected amendment plus relevant interactions; this does not approve or migrate every unrelated legacy paragraph. Full architecture Follow-on remains historical, and remaining named-version goals/scenarios/risks/glossary are explicitly scoped as history where displaced. The unchanged Distribution source map was rechecked against removed families/ADR decision destinations and the amended consumer rows.\n\n## Eight required criteria\n\n1. Technical realization supports behavior: pass. No new installation mechanism, state format, target, acquisition route or validation execution service is introduced. Replacement navigation points to the already approved concrete Distribution implementation contract: two targets, verified candidate units, default conflicts, force scope and retained originals. Source removal does not erase necessary technical realization.\n2. Behavior respects constraints: pass. Trust/path/hash/privacy and failure/retry protections remain in Distribution; Release retains actual evidence/publication and package version decisions. Existing runtime/state preservation and Linux capability rejection are not relaxed by navigation. Historical state-writing and OpenCode passages do not reopen current support under the explicit scoped amendments.\n3. Goals not silently weakened: pass. Combined Distribution ownership, exact superseded source retirement, OpenCode withdrawal and stale mirror-script retirement remain all four direction goals. No Verification/Installation model is added. The new navigation labels apply the original approved source-displacement decision, not implementation convenience or a partial-scope redefinition.\n4. Boundaries explicit/consistent: pass. Skill supplies common content/resources; Distribution owns packaging and installation; Release consumes actual package/install proof and owns publication; System composes, Workflow coordinates, CLI retains command/record mechanics. The architecture's selected container/runtime/deployment paragraphs now reference these owners rather than maintaining withdrawn state/lockfile flows. Unrelated project scaffold/history sections keep separate owners.\n5. Decisions preserved: pass. The unchanged Distribution source map maps original stable clause and ADR identities, including withdrawn state/managed-upgrade decisions and preserved hash/privacy/release facts. Five retired ADRs' current decision navigation points to Distribution. Old judgments and original release evidence are not reinterpreted as current approval. Design explicitly introduces the old managed transition as a prior installation profile; scoped amendment controls its current applicability.\n6. One current owner: pass. Skill/Release ownership rows now explicitly consume Distribution under conditional adoption, removing current links to deleted installer sources. Workflow's historical authorship reference points to the preservation map without changing coordination semantics. CLI new-change's original lockfile dependency is identified as historical; current recording mechanics stay with CLI/Record Format. Mixed architecture no longer duplicates the selected current install/generation responsibility.\n7. Credible basis and representative outcomes: pass. Distribution's already reviewed normal/conflict/force/unsafe/partial outcomes and concrete feasibility remain unchanged. This navigation renewal uses actual source-map/consumer comparison, not structural success as approval. Author C9 and model/prose reports supplement that assessment; C7/C8 implementation runs are not treated as prerequisites or invented Design proof. Material M3 filesystem findings were resolved under Code Review, with no new behavioral Design decision hidden here.\n8. Migration map and remainders: pass. Exactly five specification families and their paired test specs plus five ADRs are selected for removal, not operational fixtures/profiles/history. Mixed architecture only relinquishes mapped Distribution sections and decision/navigation links; complete Follow-on remains. The five original retained source notices remain unchanged; additional CLI dependency edit is scoped. Follow-up owner remains responsible for any unselected consolidation. Removal does not establish project adoption before coordinated implementation and successful Verify.\n\n## Legacy format and boundary classification\n\nSix retained feature specs occur in the package. Five are activation-inventory grandfathered: single-authored-skill-source-generated-output, multi-agent-adapters-first-public-release, public-adapter-artifact-migration-examples-concise-skill-release, rigorloop-cli-package-and-codex-init, and rigorloop-cli-new-change. The four original notices are unchanged from r5; new-change changes one dependency navigation sentence and explicitly preserves original meaning. This renewal is non-substantive for their unmigrated behavior and does not require forced boundary-format conversion. C9 review-required observations are answered by this explicit semantic classification, not ignored as failures or treated as autoapproval.\n\npublished-skill-first-repository-simplification is not grandfathered in the activation inventory. It retains its existing boundary/proof format and independently applicable retirement admission/dual-proof/measurement requirements; no new waiver is inferred from other initiatives' notices. Its current subject and scoped Distribution amendment are unchanged. Existing R14/R19/R22 allocation remains in Delivery TG-08. System architecture is a scoped retained legacy architecture, not a new model-format migration; Workflow is an adopted model with a navigation-only historical-basis amendment.\n\n## Reading limits and assessment evidence\n\nPrior complete reads/assessments cover the original ten members and relevant mapped source families/decisions. Current diff, surrounding applicability notices, complete affected architecture section deltas, Workflow authorship context, CLI dependency context, activation inventory and Distribution preservation rows were inspected. Unchanged unrelated architecture and legacy recording features are not reopened or claimed newly compliant. This is sufficient bounded reliance because no changed behavior is introduced there and explicit scope notices preserve their original authority.\n\nAuthor reported 150 historical surfaces unchanged and complete architecture Follow-on unchanged. Those preservation assertions support the package but remain implementation-audit obligations for M4 Code Review. Disclosed legacy prose308 consists of275 existing architecture observations plus33 retained-spec observations; no repository-wide prose pass is claimed, and these old-format observations do not decide semantics. Models/plan enforce0 and C9 structural success remain authoring evidence, not independent semantic approval.\n\n## Exact package and handoff\n\n- design: docs/design/design/design.md (sha256:c6015cd7d6aae9c76cf29d9d28f5a763a8dd3ef139f5f6549f6c8a865b7b5cca)\n- distribution: docs/design/distribution/distribution.md (sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7)\n- distribution-architecture-navigation: docs/architecture/system/architecture.md (sha256:d8352376dd2ca11ed8d46ebb11a48e529e006662b0c00a865ba2bf97b0b4b682)\n- distribution-cli-navigation: specs/rigorloop-cli-new-change.md (sha256:b1eed69f34f4bd2e1e996df581467b040f1066286a4e98c0de3fc34510726fb6)\n- distribution-source-amendment-1: specs/single-authored-skill-source-generated-output.md (sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7)\n- distribution-source-amendment-2: specs/multi-agent-adapters-first-public-release.md (sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff)\n- distribution-source-amendment-3: specs/public-adapter-artifact-migration-examples-concise-skill-release.md (sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694)\n- distribution-source-amendment-4: specs/rigorloop-cli-package-and-codex-init.md (sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0)\n- distribution-source-amendment-5: specs/published-skill-first-repository-simplification.md (sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1)\n- release: docs/design/release/release.md (sha256:17f89c1acc227f95798b120dea8261dba45eb6b5294f3904dc24e394e553f2dc)\n- skill: docs/design/skill/skill.md (sha256:2cebfeaaafd9b0df159fa25a69de2b5e2140d6dc4edd36f88de726e00a45d083)\n- system: docs/design/system/system.md (sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2)\n- workflow: docs/design/workflow/workflow.md (sha256:c0e1e478c55a07f43223fa7d4f97087b271a35466bf54da6f19eec08c326c057)\n\nNo required Design finding exists. This renewal supplies current exact package authority for the separately requested bounded Delivery reassessment of the unchanged plan. Route owns lifecycle/routing. Later M4 Code Review, final whole-change Code Review and distinct Verify still assess actual implementation and closeout; this review does not replace them.\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-design-author",
+      "role": "design"
+    },
+    {
+      "id": "distribution-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-r6",
+  "independence_basis": "Independent same nonauthor assessor renewed the exact expanded package using current changed-content inspection and explicit unchanged-scope reliance; authored none of the models/legacy amendments.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "distribution-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:c6015cd7d6aae9c76cf29d9d28f5a763a8dd3ef139f5f6549f6c8a865b7b5cca",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7",
+      "path": "docs/design/distribution/distribution.md"
+    },
+    {
+      "identity": "sha256:d8352376dd2ca11ed8d46ebb11a48e529e006662b0c00a865ba2bf97b0b4b682",
+      "path": "docs/architecture/system/architecture.md"
+    },
+    {
+      "identity": "sha256:b1eed69f34f4bd2e1e996df581467b040f1066286a4e98c0de3fc34510726fb6",
+      "path": "specs/rigorloop-cli-new-change.md"
+    },
+    {
+      "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+      "path": "specs/single-authored-skill-source-generated-output.md"
+    },
+    {
+      "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+      "path": "specs/multi-agent-adapters-first-public-release.md"
+    },
+    {
+      "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+    },
+    {
+      "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+      "path": "specs/rigorloop-cli-package-and-codex-init.md"
+    },
+    {
+      "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:17f89c1acc227f95798b120dea8261dba45eb6b5294f3904dc24e394e553f2dc",
+      "path": "docs/design/release/release.md"
+    },
+    {
+      "identity": "sha256:2cebfeaaafd9b0df159fa25a69de2b5e2140d6dc4edd36f88de726e00a45d083",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:c0e1e478c55a07f43223fa7d4f97087b271a35466bf54da6f19eec08c326c057",
+      "path": "docs/design/workflow/workflow.md"
+    }
+  ],
+  "target": "design"
+}

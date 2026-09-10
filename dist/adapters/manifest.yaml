@@ -2,71 +2,58 @@ version: v0.5.1
 skills:
   bugfix:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   ci-maintenance:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   code-review:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   constitution:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   delivery-review:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   design:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   design-review:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   explore:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   implement:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   learn:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   plan:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   pr:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   project-map:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   proposal:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   proposal-review:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   research:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   route:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   verify:
     portable: true
-    adapters: [codex, claude, opencode]
+    adapters: [codex, claude]
   vision:
     portable: true
-    adapters: [codex, claude, opencode]
-command_aliases:
-  opencode:
-    count: 9
-    aliases:
-      proposal: dist/adapters/opencode/.opencode/commands/proposal.md
-      proposal-review: dist/adapters/opencode/.opencode/commands/proposal-review.md
-      design: dist/adapters/opencode/.opencode/commands/design.md
-      design-review: dist/adapters/opencode/.opencode/commands/design-review.md
-      plan: dist/adapters/opencode/.opencode/commands/plan.md
-      delivery-review: dist/adapters/opencode/.opencode/commands/delivery-review.md
-      implement: dist/adapters/opencode/.opencode/commands/implement.md
-      code-review: dist/adapters/opencode/.opencode/commands/code-review.md
-      pr: dist/adapters/opencode/.opencode/commands/pr.md
+    adapters: [codex, claude]

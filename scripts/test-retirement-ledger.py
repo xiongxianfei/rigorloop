@@ -20,8 +20,9 @@ from validation_selection import CHECK_CATALOG  # noqa: E402
 # Workflow's scoped stored-format retirement keeps the archival ledger bytes.
 # Project the one adopted catalog disposition back to its historical inventory
 # slot; this does not claim that legacy acceptance and v2 rejection are equivalent.
-# Current behavior has separate proof in record-retirement.test.js.
-HISTORICAL_CHECK_IDS = (set(CHECK_CATALOG) - {"record_retirement.regression"}) | {"compact_contract.canonical"}
+# Current behavior has separate proof in record-retirement.test.js. Distribution
+# retires the mirror checks; their original ledger identities remain historical.
+HISTORICAL_CHECK_IDS = (set(CHECK_CATALOG) - {"record_retirement.regression"}) | {"compact_contract.canonical", "skills.generation_regression", "skills.drift"}
 
 
 LEDGER = (
@@ -63,6 +64,9 @@ class RetirementLedgerTests(unittest.TestCase):
     def test_current_retirement_catalog_disposition_is_explicit(self) -> None:
         self.assertNotIn("compact_contract.canonical", CHECK_CATALOG)
         self.assertIn("record_retirement.regression", CHECK_CATALOG)
+        self.assertNotIn("skills.generation_regression", CHECK_CATALOG)
+        self.assertNotIn("skills.drift", CHECK_CATALOG)
+        self.assertIn("adapters.regression", CHECK_CATALOG)
 
     def test_repository_ledger_is_complete(self) -> None:
         self.assertEqual(

@@ -1,0 +1,162 @@
+{
+  "body": "## Result\n\n- Skill: code-review\n- Status: completed\n- Artifacts changed: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m2.json\n- Open blockers: none for M2\n- Next stage: implement M3 through Route\n- Review status: approved\n- Material findings: none\n- Recording status: recorded\n- Recording blocker: none\n- Review record: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m2.json\n- Assessment scope: milestone\n- Reviewed milestone: M2\n- Milestone closeout: closed in assessment; Route owns actual work state\n- Remaining implementation milestones: M3, M4\n- Required review-resolution: no\n- Finding IDs: none\n- Verify readiness: not-claimed\n\n## Independence and exact scope\n\nSeparate distribution-code-reviewer authored none of the reviewed implementation, tests, plan or evidence. Parent distribution-implementer authored M2. Review covers committed c048b647 against a7ae0897, the complete M2 producer/CLI/release/historical-reader interaction and registered implementation-m2 evidence, not just the last correction. Read-only preparation identified two historical-reader gaps before formal handoff; both corrections are present with regression proof in the reviewed commit. No formal first-pass finding was overwritten or silently resolved. Reviewer edits only this review record.\n\nFresh context records M1 completed, M2 in-progress and M3/M4 pending, code-review ready. Design Review design-review-r5 and Delivery Review delivery-review-r2 are approved/current; all ten Design subjects and the primary plan match their recorded identities. All 35 implementation-m2 evidence subjects match current bytes. M1 review remains historical evidence of the earlier helper slice; its CLI-test and removed Markdown-report identities have drifted through this expressly reviewed M2 change, so it is not relied on as approval of current CLI tests. The unchanged helper and focused tests were reread for composition. The standalone implementation-m1.md removal leaves its complete narrative in registered evidence and commits, without rewriting the original review subjects or judgment.\n\n## Actual change and checklist\n\n1. Spec alignment: pass. Distribution SR-07–18 and M2/TG-03/04 are implemented by early retired-target/flag rejection, trusted acquisition and archive verification, then the reviewed candidate-unit installer. Every existing candidate unit conflicts by default, including identical/empty directories; all conflicts are reported before absent units are installed. Force replaces complete selected units, preserving unrelated skills and project state. No automatic managed upgrade or state admission remains.\n2. Test coverage: pass. Public CLI checks directly exercise both targets, force replacement, obsolete-file removal, malformed/dangling state preservation, complete conflict reporting and noncandidate retired-authoring guards. Existing archive integrity/traversal/symlink and proxy/error tests remain. Actual generated archives, bundled metadata and installed packed CLI are composed in the real Release candidate test, including both targets, repeat conflicts and force. Helper race/partial/no-clobber tests retain ownership of their detailed filesystem cases rather than being replaced by public happy-path proof.\n3. Edge cases: pass. Rejected OpenCode, --write-state and --adapter cannot reach acquisition/mutation; pinned/local/dry-run forms do not reopen retired support. Dry-run explicitly reports archive acquisition/verification and complete preflight as unperformed, not a successful installation. Existing spec/architecture/workflow entries stop with exact paths and remain preserved. State paths are neither parsed nor consulted for admission. Retry and partial outcomes come from the inspected M1 helper with retained originals outside discovery.\n4. Error handling: pass. Archive mismatch, trusted metadata failure, invalid target, conflict, unsafe parents and partial installation have actionable envelopes and exit classifications. Force does not bypass safety checks. Linux /proc/self/fd and local hardlink capability remain explicit requirements; the package README now states the fresh/force platform boundary. No unproved portable fallback is claimed.\n5. Architecture boundaries: pass. Distribution packages/installs Codex and Claude; Release owns candidate metadata, profile, execution and historical evidence. Current generation/template/alias removal does not remove independently used historical descriptors. The profile parser separates read-only recorded evidence from current preparation. Boundary rollback selection uses the immutable v0.3.6 population and existing immutable metadata hash, so current support changes do not rewrite historical activation meaning. Its original externally referenced test command still discovers a test.\n6. Compatibility: pass within approved breaking scope. OpenCode, managed-state support, identical no-op behavior and automatic authoring migration are explicitly withdrawn. Current candidates/manifest/CLI/docs/packed metadata agree on two targets. Historical release records, profiles, artifact reports and activation bytes remain unchanged. Reviewer directly called historical timing and publication readers for v0.3.5/v0.5.0: both returned no errors; unknown vocabulary regression remains. Recorded-source archive validation now checks all historical targets, including OpenCode, while current production cannot recreate that package.\n7. Security/privacy: pass. Candidate content is verified before destination mutation and helper containment/no-clobber behavior remains. Untrusted archive data cannot authorize state changes. Proxy/download diagnostics retain bounded redaction, no new external publication or adoption permission is introduced, and retained originals are disclosed for separate operator inspection/cleanup. No current state reader or deleted-module consumer was found in the remaining production paths.\n8. Derived artifact currency: pass for M2. Current Python generation and manifest have two targets; candidate fixture overlays the actual current package/templates/readmes instead of stale committed sources. C3/C4 and packed tests exercise actual produced artifacts. Historical source builds use recorded source, and their readers preserve original populations. Mirror producer and its exclusive consumers remain deliberately allocated to M3, and selected old documents to M4; M2 does not claim that downstream removal complete.\n9. Unrelated changes: pass. Deleted lockfile/managed-helper modules and their exclusive tests match withdrawn responsibilities; support entrypoint template removal is scoped to OpenCode. Historical-reader and rollback-consumer corrections are necessary interactions exposed by the target population change, not general cleanup. Registered evidence preserves the removed redundant M1 narrative. No authored skills or unrelated installed runtime contents changed.\n10. Validation evidence: pass with stated limits. Registered implementation-m2 includes admission, original/replacement commands, retired test names and actual measurements. Representative accepted package/assets and rejected stale/missing resources/malformed canonical content passed on exact reconstructed baseline and current source before retirement. The two four-check Python invocations measured 0.167386 and 0.353365 seconds; differing target populations/concurrent load prevent a speedup inference. Command count, changed-line totals and zero new owner/system burden are recorded; M3 owns final aggregate comparison. This is executed replacement proof, not a promise to validate after deletion. Full C3/C4/C8 results are present and current, with late documentation/test-name adjustments separately checked.\n\n## Direct proof and source-reliance limits\n\nReviewer ran node --test --test-name-pattern='DIST' packages/rigorloop/test/cli.test.js: 5 tests passed, zero failures, 1097.559243 ms. Reviewer ran python3 scripts/test-boundary-first-validation.py -k rollback: 6 tests passed in 0.769 seconds. Earlier read-only direct historical calls validate_release_timing_evidence and validate_published_release_artifacts for v0.3.5 and v0.5.0 each returned no errors. Reviewer checked all registered M2 subject hashes, all ten approved Design hashes and the approved plan hash against current bytes.\n\nAuthor evidence inspected: python3 scripts/test-adapter-distribution.py passed 150 tests in 444.657 seconds; python3 scripts/test-release-transaction.py passed 164 in 130.564 seconds; python3 scripts/test-npm-package-publication.py passed 7 in 22.595 seconds; final all-path bash scripts/ci.sh --mode explicit --timeout 600 with the registered argument vector selected/passed 18 checks, including fresh full npm/Release/packed/boundary90 and documentation checks. Standalone npm previously passed 375/375 in 23.871 seconds and selected C8 refreshed the whole package suite. The final original rollback command python3 scripts/test-boundary-first-validation.py -k active_rollback_release_matches_current_adapter_metadata passed one test. Negative-fixture Gate C messages inside the exit-zero adapter suite are not public success claims. The 33 unchanged retained-spec prose observations remain disclosed upstream limitations, not an asserted repository-wide prose pass.\n\nThe exact deletion scope in a7ae0897..c048b647 is packages/rigorloop/dist/lib/lockfile.js, packages/rigorloop/dist/lib/managed-authoring-replacement.js, packages/rigorloop/test/managed-authoring-replacement.test.js, scripts/adapter_templates/opencode/AGENTS.md, and redundant docs/changes/2026-09-10-distribution-model-and-opencode-retirement/implementation-m1.md. Deleted paths have no present content hash; their removed contents and absence are reviewed through this exact commit range, while extant subjects below have mechanical identities.\n\nNo public network installation/publication result, cross-platform support, cross-mount execution or final readiness is asserted. No published skill text changed in M2, so the published-skill semantic checklist has no changed member here. Formal review is independent but relies on the named author validation for expensive whole-suite/real-candidate execution; reviewer focused checks supplement rather than impersonate those runs.\n\n## Handoff\n\nM2 has no required finding. Return to Route for M3 implementation under approved sequence; this review does not mutate work/routing state or enter M3 itself. M3/M4, their milestone reviews, fresh independent final whole-change Code Review and distinct Verify remain mandatory. No branch, PR, publication or Verify readiness is claimed.\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m2",
+  "independence_basis": "Separate delegated nonauthor inspected complete committed M2 range, upstream package, validation/retirement evidence and ran focused public and rollback checks; authored no reviewed content.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "distribution-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:365d0942bb588d943951cccd7133aeed625bd52a1e825d1de8a8e8251e3baff2",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:4fce0874a119e0e42d15b5323550d896ff7a1e9c095996a53e621068615c3d82",
+      "path": "dist/adapters/README.md"
+    },
+    {
+      "identity": "sha256:d7eb732f1528bbf7b1b57e3623a334716fb152e8747bc5ab2b3c7bc3969aa415",
+      "path": "dist/adapters/manifest.yaml"
+    },
+    {
+      "identity": "sha256:2ab42feb088744a1dd702ad51b6b226556d04f1578a532962c747b5ad2228d09",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:f3271f203831a1ce34adc56fc78c8068186aadd5691cae28b68a14eb8d6670d7",
+      "path": "packages/rigorloop/dist/bin/rigorloop.js"
+    },
+    {
+      "identity": "sha256:74d15d072d4bd08f77de5ec76f510f737824eb9fa74bcde615ca48e35ba2d221",
+      "path": "packages/rigorloop/dist/lib/adapters.js"
+    },
+    {
+      "identity": "sha256:a10766f6433f56e81574a607b4dcfe370ee2f22ec92a5ab080e438ddce7ccbdb",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:8bcd9f06d3261d15b238bb20cf63843cdedc1c25da85c3c8994f4f87f80631b8",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:5dfb27213d16784da32394e8fce6ab55a8076f0f0785fdc8ed7cd91e7d2ee203",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:0b491775212530698b41ac83f495ee0edd497103795239a8e9efe3582c231d3c",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:7ceade1f35dfb85b90d429c2d2fa291a29772f6385ed22bf1a91bf0d548dfca2",
+      "path": "scripts/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:259cb2be282b4995b52b3d227d6203a1025f994df4da18db17237d89f31e9c6f",
+      "path": "scripts/npm_package_validation.py"
+    },
+    {
+      "identity": "sha256:7263ad6533ac9fc3fedab61c0ecdeabbbefd0d1cd889b6a548a0eed3a482e009",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:c388d0e9424a51f38482ebc3ec11f529c64393a65203c5ba7f2fae31902d9ab5",
+      "path": "scripts/release_execution.py"
+    },
+    {
+      "identity": "sha256:62188811a2b1666928164dbe6ac873b3dca26e2c46d8363da7db21934cd08a36",
+      "path": "scripts/release_execution_tests.py"
+    },
+    {
+      "identity": "sha256:e7733a063ac5406771981a4124232c75ecd156a6fc55a9c29d578bce8a581e4e",
+      "path": "scripts/release_transaction.py"
+    },
+    {
+      "identity": "sha256:f5d6984920a34886359db0e5bb58b73602c347b95c29d91abe877a4d06b33cf6",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:abf0e7325074ab3fa137f77496012c928a30b584538112239833783072054f9b",
+      "path": "scripts/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:4218ba4e0d7742b32024f1b2f41380fbbe60431f8d4e0e50c285a55f6fb533c5",
+      "path": "scripts/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:e5ef120fcb4795fbf0e293bfb2500b17f4275d01f0fc4735af886fc6208e4309",
+      "path": "scripts/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:2e523c9f317c92958bfd4a06ef18aaeb6b0a495e4219c9c74c2d012f933cea01",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-adapter-artifacts.yaml"
+    },
+    {
+      "identity": "sha256:1a050268bb6e65846cbc56c877481b6941f1f504ba095b9b20ebe2d1825cc2f9",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-evidence.yaml"
+    },
+    {
+      "identity": "sha256:823a583f6a7f6843fc4e171e23e2028265fa3a69697cc8e5362b0dfb5e30958e",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-dist-tag.yaml"
+    },
+    {
+      "identity": "sha256:0ec99bc7e3e48f4c6ce62c5a7d5cba93afd6a489eaec0e4756358287142e8c09",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-package.yaml"
+    },
+    {
+      "identity": "sha256:886f9db27d3f5c48fe37647723d1cfb6f197ad19686406aea50ff7ce99b20f6a",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-package-version.yaml"
+    },
+    {
+      "identity": "sha256:453a6980e7047574ee31e41ff561c701101784ea8b8c2c84518cf282b89d7397",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-publication.yaml"
+    },
+    {
+      "identity": "sha256:ea3f2cb1d7254e0effb7a4b76f694220322042f0789478520a984bc4bc8a1474",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml"
+    },
+    {
+      "identity": "sha256:bfeb5de80bc73c482a384c4c416f4fb8deebf4afb8d3eb9540dc6273ff54abc2",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-validation.yaml"
+    },
+    {
+      "identity": "sha256:479cb2deeeef9f7b03f22334acb7b3091f1a4e02018b0445f3d6ffb7b389fe4f",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-special-release-without-rationale.yaml"
+    },
+    {
+      "identity": "sha256:71ce5368588d09ed3147443e08e7e0a41cf26e95f26e894587fdb04533b4d38a",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-npm-dist-tag.yaml"
+    },
+    {
+      "identity": "sha256:ea4d75dc1e1844bccd2151613ace0aa28214e2ea846b98ced3c35dccb916d27c",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-release-kind.yaml"
+    },
+    {
+      "identity": "sha256:a2f75710b7c65de13240cbf761810a04d1c168bc721b8aeaf85880488fdef8ff",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-target.yaml"
+    },
+    {
+      "identity": "sha256:cb3d10fb1f370d2447db6c7dc5a646085bf7d952eb0bb1bbdc5a7be2dab85529",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-wrong-package-version.yaml"
+    },
+    {
+      "identity": "sha256:b92ae3087aff57dff3d29e7426baef57cbd1afe4642124abcf4177fd8d7f9a02",
+      "path": "tests/fixtures/release-transaction/profiles/special-release-with-rationale.yaml"
+    },
+    {
+      "identity": "sha256:9bd744cf3cd24753100e021364c9837585c89f83fda149272ae67f0b1b7ac1a8",
+      "path": "tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml"
+    }
+  ],
+  "target": "code"
+}

@@ -618,7 +618,17 @@ add_review_artifact_root() {
 
   local remainder="${path#docs/changes/}"
   local change_id="${remainder%%/*}"
-  local root="docs/changes/${change_id}"
+  local root="docs/changes/${change_id}/change.json"
+  local directory="docs/changes/${change_id}"
+  local relative="${remainder#*/}"
+  # Match the selector's current-manifest/reserved-input boundary. Historical
+  # descendants do not activate a store; ambiguous paths still reach validation.
+  if [[ ! -L "$root" && ! -e "$root" && ! -L "$directory" && -r "$directory" && -x "$directory" ]]; then
+    case "$relative" in
+      change.json|evidence.json|material-decisions.json|verify-report.json|reviews/*.json) ;;
+      *) return 0 ;;
+    esac
+  fi
   local existing=""
   for existing in "${review_artifact_cmd[@]:2}"; do
     if [[ "$existing" == "$root" ]]; then
@@ -629,14 +639,14 @@ add_review_artifact_root() {
 }
 
 determine_review_artifact_command() {
-  review_artifact_label="Validate review artifacts (changed roots)"
-  review_artifact_cmd=(python scripts/validate-review-artifacts.py)
+  review_artifact_label="Validate current change records (changed roots)"
+  review_artifact_cmd=(python scripts/validate-change-metadata.py)
 
   local -a changed_paths=()
   if [[ -n "${REVIEW_ARTIFACT_ROOTS:-}" ]]; then
     local root=""
     for root in ${REVIEW_ARTIFACT_ROOTS}; do
-      review_artifact_cmd+=("$root")
+      review_artifact_cmd+=("${root%/}/change.json")
     done
   else
     mapfile -t changed_paths < <(git diff --name-only --diff-filter=ACMRT HEAD -- .)
@@ -740,11 +750,7 @@ run_broad_smoke() {
     broad_smoke_schedule_child "$broad_smoke_result_dir" 2 "broad_smoke.skills.regression" "Run skill validator fixtures" \
       python scripts/test-skill-validator.py
 
-    broad_smoke_schedule_child "$broad_smoke_result_dir" 3 "broad_smoke.skills.generation_regression" "Run local skill mirror generation fixtures" \
-      python scripts/test-build-skills.py
 
-    broad_smoke_schedule_child "$broad_smoke_result_dir" 4 "broad_smoke.skills.drift" "Validate generated skill mirror output" \
-      python scripts/build-skills.py --check
 
     broad_smoke_schedule_child "$broad_smoke_result_dir" 5 "broad_smoke.adapters.regression" "Run adapter distribution fixtures" \
       python scripts/test-adapter-distribution.py
@@ -788,11 +794,7 @@ run_broad_smoke() {
   run_check "Run skill validator fixtures" \
     python scripts/test-skill-validator.py
 
-  run_check "Run local skill mirror generation fixtures" \
-    python scripts/test-build-skills.py
 
-  run_check "Validate generated skill mirror output" \
-    python scripts/build-skills.py --check
 
   run_check "Run adapter distribution fixtures" \
     python scripts/test-adapter-distribution.py
@@ -1485,8 +1487,6 @@ run_direct_product_gates() {
     python scripts/validate-skills.py
   run_direct_check "Gate A: canonical skill regressions" \
     python scripts/test-skill-validator.py
-  run_direct_check "Gate A: generated skill currency" \
-    python scripts/build-skills.py --check
   run_direct_check "Gate A: boundary proof structure" \
     python scripts/validate-boundary-first.py --check
 

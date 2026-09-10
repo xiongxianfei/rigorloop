@@ -7,7 +7,6 @@ npm_package: "@xiongxianfei/rigorloop"
 targets:
   - codex
   - claude
-  - opencode
 
 publication:
   github_release_required: true

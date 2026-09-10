@@ -1,0 +1,62 @@
+{
+  "body": "## Result\n\nSkill: design-review. Review ID: design-review-r2. Judgment: approved. This is a fresh whole-package reassessment of all ten exact registered members, including embedded examples and cross-model interactions, against the current approved proposal-review-r2. No open material findings remain. The first-pass design-review retains its changes-requested judgment and original subjects; dist-design-state-shapes is resolved by its independent reporter with correction evidence. No prior judgment is retargeted.\n\n## Independence and package basis\n\nFormal-lifecycle recording. The separate delegated distribution-design-reviewer authored none of the package content. Parent distribution-design-author authored the models, notices and correction; this reviewer writes only review evidence and its own finding disposition. The same nonauthor performed the distinct Proposal Review r2. Route owns subsequent activity and progression.\n\nAll ten members were read completely at first pass. The corrected Distribution representation, compatibility scenario, requirements, source map and surrounding current model were reassessed. Fresh subject inspection confirms the other nine members and all relied-on original source contracts, ADRs, proposal r2 and governing documents have identical identities to their previously fully or explicitly scoped inspected basis. Only Distribution and author evidence changed. The correction was checked against the retained Lockfile R17/R18/R23c–k, MAI-R48–54/R58–73 and TNI-R56–70 obligations. No separate external example is relied on; embedded examples are part of their exact owning subjects.\n\n## Eight-criterion assessment\n\n1. Technical realization: pass. Retained Python production and Node additive installation have explicit trust, extraction, preflight, exclusive creation, retry and partial-failure behavior. The new normative read-only state table supplies complete recognized wrappers, identity keys, common and per-root fields, types and closed values for manifest v1/v2 and lockfile v1/v2/v3. Implementation no longer has to reconstruct surviving schema authority from deleted sources.\n2. Constraints: pass. Exactly Codex and Claude are current targets. Existing state is preserved, selected managed roots permit only complete identical no-ops, and state writers and automatic upgrades are withdrawn. Historical OpenCode recognition cannot authorize installation. Local manifest source.archive is a basename and does not incorrectly require a source.release field; lockfile release remains the trusted official identity.\n3. Goal preservation: pass. Combined Distribution ownership, bounded superseded-document removal, full current OpenCode withdrawal and obsolete mirror-script retirement preserve all original goals. Explicit removal of managed-state creation and automatic replacement remains in scope, including removed flags and hidden legacy paths.\n4. Boundaries: pass. Skill content, package construction, archive trust, project filesystem mutation, engineering records and Release publication have distinct owners. Strict legacy wrappers, single/multi-root exclusivity, required skills/optional commands, digest/count constraints, duplicate/unknown rejection and consistency checks now define the previously missing read-only input boundary. No migration or serialization authority follows recognition.\n5. Decisions: pass. DIST-DEC-01–06 preserve rationale, alternatives and consequences for one owner, authored-once/archive-only delivery, state-free additive installation, trusted local/network delivery, no new proxy dispatcher and bounded retirement. Old schema and upgrade decisions keep historical meaning with explicit prospective supersession.\n6. Shared ownership and consumers: pass. System, Skill, Design and Release agree on Distribution's prospective transfer. Prior TNI replacement requirements are expressly withdrawn; inventory and content-protection guards survive. The corrected state representation does not alter these unchanged interactions. Release retains versioning, fresh candidate evidence and public observation authority. Consumer correction and exact source/script retirement remain coordinated implementation obligations.\n7. Assessment and verification intent: pass. The eight boundary dimensions and material interactions map observable command, archive, filesystem, state-byte and release-consumer outcomes. Compatibility now distinguishes valid versions, skills-only/two-root history and malformed substitutions. Real packed CLI installation, independent hash/resource checks and negative/regression protection survive script retirement. Delivery must allocate concrete proof; helper-only or dry-run success does not establish the composed path.\n8. Migration and legacy treatment: pass. Complete clause/decision transfer, fifteen selected source retirements, five scoped retained-source notices, mixed architecture boundaries and preserved historical evidence are explicit. The new read-only shape table and compatibility examples close the source-transfer gap without restoring writers, deleting old state or expanding support. Unknown consumers still block source removal.\n\n## Legacy amendment classification\n\nAll five distribution-source-amendment members are new-profile-only amendments. The first four are grandfathered specifications: notices preserve named-release, measurement, package/envelope and historical remainders without forced format conversion. The fifth retains its complete boundary-first-v1 structure, stable IDs, examples and interactions. Existing Test, Release and stored-format exceptions keep their exact applicability; check-retirement/measurement protections are not generally waived. Old three-target evidence remains historical, not current support.\n\n## Finding resolution and evidence limits\n\nThe reporter independently resolves dist-design-state-shapes. Distribution now owns version wrappers and identity fields, exact manifest local/network source variants, lockfile common fields, single/multi-root allowed and prohibited fields, matching root/hash role sets, required skills/optional commands, scalar/digest/count rules and strict malformed/unknown/duplicate rejection. The compatibility scenario adds valid v1 Codex and v2/v3 OpenCode examples plus invalid substitutions with no-write outcomes. This meets the original required outcome within approved direction.\n\nAuthor evidence design-state-shape-correction records passing focused model structure/reference validation, enforced prose validation and git diff --check for the corrected Distribution identity. Earlier evidence on Distribution's former identity is historical, not current proof. The other nine members are unchanged and retain their bounded prior observations. The full retained-legacy prose run remains an explicitly failed check with 33 pre-existing errors and zero introduced signatures; this review neither calls it passed nor grants a Verify waiver. Historical material-decision drift is not treated as current approval.\n\nNo runtime test was run or needed to assess this prospective Design correction; no production conformance, implementation, adoption, final Verify or publication readiness is claimed. No open blocker or new owner decision remains at this gate. Route may consume this exact package judgment for Delivery planning within existing authorization.\n\n## Exact package subjects\n\n- design: docs/design/design/design.md — sha256:28e3c35ef25b1bc7029d2a55515c0505b0aaa78e8b6028899614f5a4b80f3810\n- distribution: docs/design/distribution/distribution.md — sha256:b1bc72c2764bb1563433d0b82f6da0d18861ce77d83dcf1beac766d4adc3f23e\n- distribution-source-amendment-1: specs/single-authored-skill-source-generated-output.md — sha256:9adc26efa665002630fec06df21c35b59ac2a5dd3e7e9df35e67f9a257e5dd7e\n- distribution-source-amendment-2: specs/multi-agent-adapters-first-public-release.md — sha256:4f5baac11f40fc9fe56b28970664e9e5fffb1e0f344003efcc6bbf244cf1e7a0\n- distribution-source-amendment-3: specs/public-adapter-artifact-migration-examples-concise-skill-release.md — sha256:8e0eaafd33d9b9b38105f98af76ffdf4c7f635152ef1679098da2a3d201e5aaa\n- distribution-source-amendment-4: specs/rigorloop-cli-package-and-codex-init.md — sha256:3e9903841c4221dd1d0eb7216af006d6065cd74615dd6f9e1b552f2a7e858f5f\n- distribution-source-amendment-5: specs/published-skill-first-repository-simplification.md — sha256:d1cf6148eab6bd4fa5c3a52a08fecd40398363e0cd7285faa0de4f866251be44\n- release: docs/design/release/release.md — sha256:4b7780670fa6830372e0a84936fe77458e5039669d2ec1150614f2ddeaa45e24\n- skill: docs/design/skill/skill.md — sha256:e6cef0ff987ca57b73ecc74659ec751133c64638e74190f6618caf9a59a046fb\n- system: docs/design/system/system.md — sha256:ea0a2c7a7370ec49e40da343c95155fe187e915a7bcc234373a06dc9e89427b4\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-r2",
+  "independence_basis": "Separate delegated nonauthor agent; authored none of the ten reviewed members or correction and writes only review evidence. Fresh whole-package reassessment with unchanged-member identities verified.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "distribution-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:28e3c35ef25b1bc7029d2a55515c0505b0aaa78e8b6028899614f5a4b80f3810",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:b1bc72c2764bb1563433d0b82f6da0d18861ce77d83dcf1beac766d4adc3f23e",
+      "path": "docs/design/distribution/distribution.md"
+    },
+    {
+      "identity": "sha256:9adc26efa665002630fec06df21c35b59ac2a5dd3e7e9df35e67f9a257e5dd7e",
+      "path": "specs/single-authored-skill-source-generated-output.md"
+    },
+    {
+      "identity": "sha256:4f5baac11f40fc9fe56b28970664e9e5fffb1e0f344003efcc6bbf244cf1e7a0",
+      "path": "specs/multi-agent-adapters-first-public-release.md"
+    },
+    {
+      "identity": "sha256:8e0eaafd33d9b9b38105f98af76ffdf4c7f635152ef1679098da2a3d201e5aaa",
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+    },
+    {
+      "identity": "sha256:3e9903841c4221dd1d0eb7216af006d6065cd74615dd6f9e1b552f2a7e858f5f",
+      "path": "specs/rigorloop-cli-package-and-codex-init.md"
+    },
+    {
+      "identity": "sha256:d1cf6148eab6bd4fa5c3a52a08fecd40398363e0cd7285faa0de4f866251be44",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:4b7780670fa6830372e0a84936fe77458e5039669d2ec1150614f2ddeaa45e24",
+      "path": "docs/design/release/release.md"
+    },
+    {
+      "identity": "sha256:e6cef0ff987ca57b73ecc74659ec751133c64638e74190f6618caf9a59a046fb",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:ea0a2c7a7370ec49e40da343c95155fe187e915a7bcc234373a06dc9e89427b4",
+      "path": "docs/design/system/system.md"
+    }
+  ],
+  "target": "design"
+}

@@ -1,0 +1,74 @@
+{
+  "body": "## Result\n\n- Skill: code-review\n- Status: completed\n- Artifacts changed: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r2.json\n- Open blockers: dist-m3-generation-runtime-overlap\n- Next stage: review-resolution through Route\n- Review status: changes-requested\n- Material findings: dist-m3-generation-runtime-overlap remains open\n- Recording status: recorded\n- Recording blocker: none\n- Review record: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r2.json\n- Assessment scope: milestone\n- Reviewed milestone: M3\n- Milestone closeout: resolution-needed\n- Remaining implementation milestones: M3 correction, M4\n- Required review-resolution: yes\n- Finding IDs: dist-m3-generation-runtime-overlap\n- Verify readiness: not-claimed\n\n## Independent reassessment\n\nSeparate nonauthor distribution-code-reviewer reassessed current 017bb144 correction against 5b045bab and whole M3 c048b647..017bb144, unchanged approved design-review-r5/delivery-review-r2, original finding and registered implementation-m3-r2 evidence. Parent distribution-implementer authored correction. Reviewer changed no implementation, tests, design, plan or route/work state. First-pass finding and judgment remain preserved; the original finding is not resolved because its runtime-preservation outcome is still violated by another concrete destination alias.\n\nThe new guard rejects target-parent output paths, existing descendant runtime roots, symlinked ancestors and all nested symlinks, while permitting exact normal package prefixes. Reviewer ran python3 scripts/test-adapter-distribution.py AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots: two tests passed in 0.486 seconds, including the twelve correction subcases and original unsafe-root cases. This confirms the reported ancestor/symlink correction rather than denying that improvement.\n\n## Remaining finding evidence\n\nFinding ID: dist-m3-generation-runtime-overlap\n\nSeverity: major\n\nLocation: scripts/adapter_distribution.py:_validate_generation_output and retained archive/tree destination writers.\n\nExact independent reproduction on 017bb144 used a TemporaryDirectory, created .codex/skills/user/SKILL.md containing USER CONTENT, made output/rigorloop-adapter-codex-v1.0.0.zip an os.link hard link to that runtime file, then called build_adapter_archives('v1.0.0', output). The call succeeded and reading the original runtime path no longer returned USER CONTENT. Observed stdout: 'hardlinked archive accepted; runtime preserved: False'. No symlink, unsafe top-level path or concurrent actor was needed. This was actual canonical generation, not a mocked writer. Only temporary fixture paths were modified.\n\nThe guard rejects symlinks but accepts multiply linked regular files. Writing/truncating an existing archive therefore modifies an inode also reachable through the active runtime path, outside the intended output. This is the original finding's destination-redirection and DIST-SR-05 runtime-preservation outcome, not a new product requirement or unrelated hardening exercise.\n\nRequired outcome: reject such shared-inode destinations before generation writes/cleanup, or use a publication strategy that demonstrably leaves existing external links untouched. Apply the protection to ordinary archives, staged archives and generated tree files, retaining valid ordinary regeneration. Add direct tests for actual hard-linked destinations and unchanged original bytes; do not infer containment from is_symlink alone.\n\nSafe resolution: bounded existing-producer correction, such as fail-closed multi-link regular-file preflight, with public helper-path negative preservation proof and positive regeneration proof. Refresh affected evidence and request independent reassessment. No upstream decision is required. Original dist-m3-generation-runtime-overlap remains open without rewriting its first-pass origin or claiming its required outcome met.\n\n## Whole-M3 checklist and evidence\n\n1. Spec alignment: concern remains for DIST-SR-05 actual runtime preservation. Mirror retirement, two-target production and no state/adoption expansion remain aligned.\n2. Test coverage: concern remains for demonstrated shared-inode output alias; the new twelve direct subcases correctly cover ancestor and symlink paths. Independent inventory, raw resource, malformed generated/canonical and missing/stale resource protection remains present.\n3. Edge cases: concern remains for hard-linked archive and analogous tree destinations. Equal/below/ancestor runtime roots and symlink paths now have direct negative proof.\n4. Error handling: concern: shared-inode overwrite returns success rather than rejecting before mutation. Other original correction failures are now fail-closed.\n5. Architecture boundaries: concern: generation can still act on active runtime inodes through output aliases. Existing producer correction is the right owner; no installer state mechanism is needed.\n6. Compatibility: pass for other scope. Current selector/CI/release commands remove only retired mirror commands; historical IDs/ledger/timings remain explicit original facts, not fake active passes. No M4 reconciliation is claimed.\n7. Security/privacy: concern limited to reproduced local integrity failure. No secrets, external publication or permission expansion is involved.\n8. Derived artifact currency: pass for inspected package/proof transfer. Current candidate tests reflect deleted scripts, actual archives and packed invocation; guard expansion does not introduce another generated mirror.\n9. Unrelated changes: pass. Correction touches existing guard/test/catalog mapping and evidence only; upstream models/plan unchanged. Previous full-M3 caller and historical-reader assessment remains applicable to unchanged members.\n10. Validation evidence: actual passing full C3 154/154 in 464.866 seconds and C8 selected checks in 310.318 seconds, plus updated E1/E2/E3 exact overlay and actual commands, support tested paths. They do not establish the missing shared-inode outcome. Prior complete retirement comparison and checklist findings remain preserved, with no invented speedup or public release claim.\n\n## Handoff\n\nCorrection review is changes-requested; no automatic downstream handoff or M3 closeout. This fresh record preserves both successful correction evidence and the remaining actual failure before further source edits. Route owns review-resolution/work state. Final whole-change review and Verify remain separately required after M3/M4. No branch, PR, final CI, adoption or publication readiness is claimed.\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m3-r2",
+  "independence_basis": "Separate nonauthor reviewed current correction/whole M3 reliance and independently executed two focused tests plus actual hardlink runtime-overwrite reproduction.",
+  "judgment": "changes-requested",
+  "reviewer": {
+    "id": "distribution-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:bf38dc6c790814bda4b922df18b9ff4359e21c71147366ad27bc63f30a7cc757",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:db7fbf4780d38d00aa7e25bd4ae3e6af5310cb19951d3b0555c8e678b9ea3ad9",
+      "path": "docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml"
+    },
+    {
+      "identity": "sha256:79cbb7ec844e4c09ad6ff7082e05524e48d02fb81e87ed94a57633d15e2d3929",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:1f2b513927dd16b4889943326e22bd4f9835a3eec587751221e91fbe7c8d3d37",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:0a92748762f3d57dde1b10dab608958a8b9f6dfb779629534beecefdce67a26a",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:8965bce48ed0d4bf889ba5debbd6e26f1d62cb005958be2e30c9949a10bf021f",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:22cc781892089043104f4853bd85014ae961c63ec855d54059d34b389ad69348",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:860b5538ee6fa142b3f076dd7d5f7fc365becea1f824f87d7e3fdcfb0b4cabfa",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:f2f8fb8dd779911dd571e78e46e929556f1ade86be4900648a0a2e985fd9bb51",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:7baa963f33e24c171c527bb847f939ffb6a6cd1abbb47180e27a72901bbe7c7c",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:d667f5e3e9176af017a006a59caaaa6454ac00e6411f475f4988fff5ba30dac6",
+      "path": "scripts/validate-broad-smoke-classification.py"
+    },
+    {
+      "identity": "sha256:4f5a635bde18e91739eab998ac256c20e747280204837fc5dff606daece46615",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:05ff9982177b574f1d1f83582d8996b88afc094e1bf59acd47726a7afc33eeb6",
+      "path": "scripts/validation_selection.py"
+    }
+  ],
+  "target": "code"
+}

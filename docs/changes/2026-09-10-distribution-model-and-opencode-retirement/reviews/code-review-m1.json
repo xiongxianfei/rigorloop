@@ -1,0 +1,322 @@
+{
+  "body": "## Result\n\n- Skill: code-review\n- Status: completed\n- Artifacts changed: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1.json\n- Open blockers: no missing owner decision; required corrections below.\n- Next stage: review-resolution on M1 through Route\n- Review status: changes-requested\n- Material findings: dist-m1-discovery-alias, dist-m1-partial-proof, dist-m1-retirement-evidence\n- Recording status: recorded upon successful targeted batch\n- Recording blocker: none\n- Review record: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1.json\n- Assessment scope: milestone\n- Reviewed milestone: M1\n- Milestone closeout: resolution-needed\n- Remaining implementation milestones: M2, M3, M4\n- Required review-resolution: yes\n- Finding IDs: dist-m1-discovery-alias, dist-m1-partial-proof, dist-m1-retirement-evidence\n- Verify readiness: not-claimed\n\n## Independent review basis and actual diff\n\nFormal-lifecycle/manual bounded nonauthor review. Separate distribution-code-reviewer authored none of M1's implementation/tests/evidence; parent distribution-implementer authored them. The exact handoff is commit c56ddae5 on reviewed-plan baseline 2520313b. Scope is the new installer-replacement.js helper, its tests, two bounded CLI test-baseline corrections and implementation-m1.md. Public dispatch and old managed helper remain unchanged. Current design-review-r5 and delivery-review-r2 supply approved exact upstream maps. Route owns work/routing state, and this record does not change it.\n\nRead full helper/direct tests and actual existing-test diffs, M1 plan and evidence, relevant approved Distribution/release/retained-test contracts and current CLI handoff context. Existing skill review application resources were verified byte-identical to the already-read Delivery resources. No published skill text changed, so the published-skill semantic checklist is not applicable.\n\n## First-pass checklist\n\n1. Spec alignment: concern. Descriptor-anchored two-parent relocation, snapshots, exclusive mkdir/hardlinks and retained originals realize the approved narrow helper boundary, but lexical-only configured discovery containment violates its non-discovery prerequisite (dist-m1-discovery-alias).\n2. Test coverage: concern. Direct tests exercise successful Linux move, directory/file replacement, no-force empty/identical conflicts, source/ancestor changes, new arrivals, unsafe paths and old-handle retention. Mid-publication/multi-unit partial accounting remains unproved (dist-m1-partial-proof).\n3. Edge cases: concern. Default conflict preflight precedes helper mutations; source detachment preserves raced originals and no-clobber publication rejects new arrivals. A configured alias escapes placement checks; true partial-unit retry has no direct proof.\n4. Error handling: concern limited to placement and partial proof. Errors carry completed/retained/failed/untouched fields and close descriptor handles. Unsupported /proc anchoring stops safely; cross-device code compares opened parent device identities before detachment. The report explicitly discloses no real cross-mount fixture. The plan permits unavailable-capability negative proof; this limitation is retained without claiming that cross-mount execution occurred.\n5. Architecture boundaries: pass apart from the placement defect. The helper has no project-state/recovery reader or public flags, reuses Node primitives without a dependency, anchors both rename endpoints and preserves old inodes. It does not revive managed state or automatically remove retained originals.\n6. Compatibility: concern limited to evidence for existing-test changes. Public installer and old managed consumer stay unchanged in M1; full package tests protect them. Removing current-source metadata assumptions aligns with Release-owned candidate preparation, but required replacement evidence cannot be postponed past affected test retirement (dist-m1-retirement-evidence).\n7. Security/privacy: concern. Random private retention directories, non-following opens and descriptor-relative paths protect mutation from common ancestry races; configured root aliasing can leave old instructions discoverable. No secrets/network/publication are introduced.\n8. Derived artifact currency: pass within M1 limits. No authored skills, archive metadata, generated package or public installer changed. Generated/packed current metadata proof is a separate Release boundary and is not established merely by the npm test pass.\n9. Unrelated changes: pass in rationale, subject to evidence correction. The two existing test changes repair identified baseline expectations, preserve historical digest and actual exit projection, and change no production behavior. No unrelated runtime directory or Design/plan edits are in the code slice.\n10. Validation evidence: concern. Author reports final npm 475/475 and focused 11/11; reviewer independently ran the focused command and obtained 11/11. The separate discovery alias reproduction succeeded incorrectly. Partial-coverage and TG-08 evidence limits remain explicit findings; no full npm rerun was needed by the reviewer to expose them.\n\n## Reviewer direct evidence\n\nExecuted node --test packages/rigorloop/test/installer-replacement.test.js: 11 passed, zero failures, 81.942782 ms. A separate node --input-type=module temporary-filesystem script created a project, an installed design/SKILL.md, and discovery-alias symlink to that project, then called installCandidate with force:true and discoveryRoots:['discovery-alias']. It returned success with retainedSkillExists=true. Temporary files were cleaned after observation; no source or installed repository files were edited. The reproduction directly establishes the alias containment defect without relying on assumed third-party hidden-name behavior.\n\n## Material findings\n\n### dist-m1-discovery-alias\n\nFinding ID: dist-m1-discovery-alias\nSeverity: major\nLocation: installer-replacement.js discoveryRoots loop (resolve-only retention containment). A configured discovery directory may be a symlink/alias to projectRoot. resolve(projectRoot, root) normalizes spelling without resolving filesystem aliases; therefore discoveryRoots:['discovery-alias'] where discovery-alias -> projectRoot passes, and the retained old SKILL.md is placed inside that configured root's actual tree. Reviewer temporary-filesystem reproduction successfully forced replacement and observed the retained skill. This contradicts outside-every-configured-root placement and unknown-placement rejection.\n\nRequired outcome and safe resolution: Resolve or safely reject configured discovery-root aliases/ambiguous or inaccessible paths before any original detachment. Compare actual filesystem containment, not only lexical paths; preserve original units and provide explicit unsafe-placement failure. Add a direct regression using an alias to the retention ancestor, plus the supported non-overlap case. Correction owner: implement, M1. No Design change is needed.\n\n### dist-m1-partial-proof\n\nFinding ID: dist-m1-partial-proof\nSeverity: minor\nLocation: interruption test and implementation-m1.md partial interruption claim. The only interruption throws at published:<unit> after its single unit is fully installed and recorded completed. It does not exercise a mid-publication failure leaving a partial unit or validate completed/failed/untouched accounting across multiple units. TG-02 explicitly allocates interrupted/partial publication and bounded recovery results, so the passing test is narrower than the handoff claim.\n\nRequired outcome and safe resolution: Add deterministic actual-filesystem proof of failure during publication (or equivalent real partial unit) with multiple units, asserting original retention, partial active bytes, no writes to later units, accurate completed/failed/untouched results, default retry conflict and explicit force recovery. A failure injection may trigger the condition but must not replace successful filesystem operations. Correct the evidence scope to what was actually exercised. Owner: implement, M1.\n\n### dist-m1-retirement-evidence\n\nFinding ID: dist-m1-retirement-evidence\nSeverity: minor\nLocation: implementation-m1.md TG-08 and metadata-test correction; cli.test.js TNP-005 assertion retirement. The handoff defers actual generated/packed replacement metadata proof to M2/C4 after removing the source-current metadata assertions, whereas approved TG-08/E2 requires representative old/replacement evidence before the affected check removal closes. The only reported baseline timing already includes eight new tests; E3 explicitly requires M1 baseline capture before changes. Disclosure of a non-comparable sample is honest but does not supply the required before/after baseline and comparison.\n\nRequired outcome and safe resolution: Record bounded exact pre-M1 baseline execution and actual retained replacement proof for the affected metadata/exit checks with source/fixture identities, outcomes/decontractions, and measured comparable command scope (or exact demonstrated non-comparability and owner disposition where unavailable). Do not close M1 by simply deferring required E2 proof to M2. Existing isolated Release fixture proof is sufficient; no publication or metadata production change is requested. Correct E3 evidence to distinguish true pre-change baseline from diagnostic failed runs. Owner: implement, M1; any desired waiver returns to plan/Design.\n\n## Handoff and limits\n\nFirst-pass evidence is recorded before fixes. No automatic downstream handoff to M2; Route sends M1 corrections to implement/review-resolution and this independent reviewer reassesses their exact subjects. No new user direction is needed for the bounded fixes. This review neither closes M1 nor claims implementation/branch/PR readiness, CI or Verify success. Final whole-change review and distinct Verify remain required after all implementation milestones.\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: dist-m1-discovery-alias; Severity: major; M1. Location: installer-replacement.js discoveryRoots loop (resolve-only retention containment). A configured discovery directory may be a symlink/alias to projectRoot. resolve(projectRoot, root) normalizes spelling without resolving filesystem aliases; therefore discoveryRoots:['discovery-alias'] where discovery-alias -> projectRoot passes, and the retained old SKILL.md is placed inside that configured root's actual tree. Reviewer temporary-filesystem reproduction successfully forced replacement and observed the retained skill. This contradicts outside-every-configured-root placement and unknown-placement rejection.",
+      "id": "dist-m1-discovery-alias",
+      "origin": {
+        "evidence": "Finding ID: dist-m1-discovery-alias; Severity: major; M1. Location: installer-replacement.js discoveryRoots loop (resolve-only retention containment). A configured discovery directory may be a symlink/alias to projectRoot. resolve(projectRoot, root) normalizes spelling without resolving filesystem aliases; therefore discoveryRoots:['discovery-alias'] where discovery-alias -> projectRoot passes, and the retained old SKILL.md is placed inside that configured root's actual tree. Reviewer temporary-filesystem reproduction successfully forced replacement and observed the retained skill. This contradicts outside-every-configured-root placement and unknown-placement rejection.",
+        "rationale": "Approved Distribution and M1/TG-01/02/TG-08 protection and evidence remain required before milestone completion.",
+        "reporter": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "required_outcome": "Resolve or safely reject configured discovery-root aliases/ambiguous or inaccessible paths before any original detachment. Compare actual filesystem containment, not only lexical paths; preserve original units and provide explicit unsafe-placement failure. Add a direct regression using an alias to the retention ancestor, plus the supported non-overlap case. Correction owner: implement, M1. No Design change is needed.",
+        "subjects": [
+          {
+            "identity": "sha256:82018f1fef3ad98f55209a94d334ab6de29385f66d6d0e6634bee665ecdf796b",
+            "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+          },
+          {
+            "identity": "sha256:ae443a3e8d11f66fa35db3a120624f85b9ef3a6464e177cb2bb05b21b01d9a60",
+            "path": "packages/rigorloop/test/installer-replacement.test.js"
+          }
+        ],
+        "supporting_judgment": {
+          "contributors": [
+            {
+              "id": "distribution-implementer",
+              "role": "implement"
+            }
+          ],
+          "independence_basis": "Separate delegated nonauthor reviewed commit c56ddae5 against approved M1; parent authored implementation/tests/evidence. Reviewer performed only read-only inspection and temporary reproduction.",
+          "judgment": "changes-requested",
+          "rationale": "First-pass independent milestone review requires bounded code/proof corrections.",
+          "reviewer": {
+            "id": "distribution-code-reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "identity": "sha256:82018f1fef3ad98f55209a94d334ab6de29385f66d6d0e6634bee665ecdf796b",
+              "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+            },
+            {
+              "identity": "sha256:ae443a3e8d11f66fa35db3a120624f85b9ef3a6464e177cb2bb05b21b01d9a60",
+              "path": "packages/rigorloop/test/installer-replacement.test.js"
+            },
+            {
+              "identity": "sha256:9b76fc3a4b104bb4d14a0ac1f526da11c2d513fbd4c3365b6279f137b9ca3871",
+              "path": "packages/rigorloop/test/cli.test.js"
+            },
+            {
+              "identity": "sha256:aabb37d499215678d42f49a58a7c0b907eea011120274a358e9c4a85284cba8e",
+              "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+            },
+            {
+              "identity": "sha256:c587aa73aa25a0a07943e4a988b5e37ca941ca19c1496206bbbe575f3dd9d01e",
+              "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/implementation-m1.md"
+            }
+          ]
+        }
+      },
+      "owner": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Resolve or safely reject configured discovery-root aliases/ambiguous or inaccessible paths before any original detachment. Compare actual filesystem containment, not only lexical paths; preserve original units and provide explicit unsafe-placement failure. Add a direct regression using an alias to the retention ancestor, plus the supported non-overlap case. Correction owner: implement, M1. No Design change is needed.",
+      "resolution": {
+        "actor": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "implementation-m1-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "The helper now inspects every configured discovery root through its existing ancestors and rejects realpath aliases, including a missing child below a symlink; checks repeat during parent validation before mutation. Added direct regressions preserve the original. Reviewer reran the original alias reproduction: aliasBlocked=true, then a legitimate nonoverlapping configured root completed with its original retained. This meets the original containment/rejection outcome."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:82018f1fef3ad98f55209a94d334ab6de29385f66d6d0e6634bee665ecdf796b",
+          "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+        },
+        {
+          "identity": "sha256:ae443a3e8d11f66fa35db3a120624f85b9ef3a6464e177cb2bb05b21b01d9a60",
+          "path": "packages/rigorloop/test/installer-replacement.test.js"
+        }
+      ]
+    },
+    {
+      "evidence": "Finding ID: dist-m1-partial-proof; Severity: minor; M1. Location: interruption test and implementation-m1.md partial interruption claim. The only interruption throws at published:<unit> after its single unit is fully installed and recorded completed. It does not exercise a mid-publication failure leaving a partial unit or validate completed/failed/untouched accounting across multiple units. TG-02 explicitly allocates interrupted/partial publication and bounded recovery results, so the passing test is narrower than the handoff claim.",
+      "id": "dist-m1-partial-proof",
+      "origin": {
+        "evidence": "Finding ID: dist-m1-partial-proof; Severity: minor; M1. Location: interruption test and implementation-m1.md partial interruption claim. The only interruption throws at published:<unit> after its single unit is fully installed and recorded completed. It does not exercise a mid-publication failure leaving a partial unit or validate completed/failed/untouched accounting across multiple units. TG-02 explicitly allocates interrupted/partial publication and bounded recovery results, so the passing test is narrower than the handoff claim.",
+        "rationale": "Approved Distribution and M1/TG-01/02/TG-08 protection and evidence remain required before milestone completion.",
+        "reporter": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "required_outcome": "Add deterministic actual-filesystem proof of failure during publication (or equivalent real partial unit) with multiple units, asserting original retention, partial active bytes, no writes to later units, accurate completed/failed/untouched results, default retry conflict and explicit force recovery. A failure injection may trigger the condition but must not replace successful filesystem operations. Correct the evidence scope to what was actually exercised. Owner: implement, M1.",
+        "subjects": [
+          {
+            "identity": "sha256:ae443a3e8d11f66fa35db3a120624f85b9ef3a6464e177cb2bb05b21b01d9a60",
+            "path": "packages/rigorloop/test/installer-replacement.test.js"
+          },
+          {
+            "identity": "sha256:c587aa73aa25a0a07943e4a988b5e37ca941ca19c1496206bbbe575f3dd9d01e",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/implementation-m1.md"
+          }
+        ],
+        "supporting_judgment": {
+          "contributors": [
+            {
+              "id": "distribution-implementer",
+              "role": "implement"
+            }
+          ],
+          "independence_basis": "Separate delegated nonauthor reviewed commit c56ddae5 against approved M1; parent authored implementation/tests/evidence. Reviewer performed only read-only inspection and temporary reproduction.",
+          "judgment": "changes-requested",
+          "rationale": "First-pass independent milestone review requires bounded code/proof corrections.",
+          "reviewer": {
+            "id": "distribution-code-reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "identity": "sha256:82018f1fef3ad98f55209a94d334ab6de29385f66d6d0e6634bee665ecdf796b",
+              "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+            },
+            {
+              "identity": "sha256:ae443a3e8d11f66fa35db3a120624f85b9ef3a6464e177cb2bb05b21b01d9a60",
+              "path": "packages/rigorloop/test/installer-replacement.test.js"
+            },
+            {
+              "identity": "sha256:9b76fc3a4b104bb4d14a0ac1f526da11c2d513fbd4c3365b6279f137b9ca3871",
+              "path": "packages/rigorloop/test/cli.test.js"
+            },
+            {
+              "identity": "sha256:aabb37d499215678d42f49a58a7c0b907eea011120274a358e9c4a85284cba8e",
+              "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+            },
+            {
+              "identity": "sha256:c587aa73aa25a0a07943e4a988b5e37ca941ca19c1496206bbbe575f3dd9d01e",
+              "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/implementation-m1.md"
+            }
+          ]
+        }
+      },
+      "owner": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Add deterministic actual-filesystem proof of failure during publication (or equivalent real partial unit) with multiple units, asserting original retention, partial active bytes, no writes to later units, accurate completed/failed/untouched results, default retry conflict and explicit force recovery. A failure injection may trigger the condition but must not replace successful filesystem operations. Correct the evidence scope to what was actually exercised. Owner: implement, M1.",
+      "resolution": {
+        "actor": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "implementation-m1-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "A file-published checkpoint now interrupts a real partially populated multi-file skill after an earlier unit completes and before a later unit begins. The test verifies exact completed/failed/untouched lists, present and absent candidate bytes, retained original content, and preservation of an independent edit on default retry. Existing complete force-directory tests cover explicit replacement of such arbitrary existing content. Evidence no longer relies solely on interruption after a complete unit."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:ae443a3e8d11f66fa35db3a120624f85b9ef3a6464e177cb2bb05b21b01d9a60",
+          "path": "packages/rigorloop/test/installer-replacement.test.js"
+        },
+        {
+          "identity": "sha256:c587aa73aa25a0a07943e4a988b5e37ca941ca19c1496206bbbe575f3dd9d01e",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/implementation-m1.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Finding ID: dist-m1-retirement-evidence; Severity: minor; M1. Location: implementation-m1.md TG-08 and metadata-test correction; cli.test.js TNP-005 assertion retirement. The handoff defers actual generated/packed replacement metadata proof to M2/C4 after removing the source-current metadata assertions, whereas approved TG-08/E2 requires representative old/replacement evidence before the affected check removal closes. The only reported baseline timing already includes eight new tests; E3 explicitly requires M1 baseline capture before changes. Disclosure of a non-comparable sample is honest but does not supply the required before/after baseline and comparison.",
+      "id": "dist-m1-retirement-evidence",
+      "origin": {
+        "evidence": "Finding ID: dist-m1-retirement-evidence; Severity: minor; M1. Location: implementation-m1.md TG-08 and metadata-test correction; cli.test.js TNP-005 assertion retirement. The handoff defers actual generated/packed replacement metadata proof to M2/C4 after removing the source-current metadata assertions, whereas approved TG-08/E2 requires representative old/replacement evidence before the affected check removal closes. The only reported baseline timing already includes eight new tests; E3 explicitly requires M1 baseline capture before changes. Disclosure of a non-comparable sample is honest but does not supply the required before/after baseline and comparison.",
+        "rationale": "Approved Distribution and M1/TG-01/02/TG-08 protection and evidence remain required before milestone completion.",
+        "reporter": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "required_outcome": "Record bounded exact pre-M1 baseline execution and actual retained replacement proof for the affected metadata/exit checks with source/fixture identities, outcomes/decontractions, and measured comparable command scope (or exact demonstrated non-comparability and owner disposition where unavailable). Do not close M1 by simply deferring required E2 proof to M2. Existing isolated Release fixture proof is sufficient; no publication or metadata production change is requested. Correct E3 evidence to distinguish true pre-change baseline from diagnostic failed runs. Owner: implement, M1; any desired waiver returns to plan/Design.",
+        "subjects": [
+          {
+            "identity": "sha256:9b76fc3a4b104bb4d14a0ac1f526da11c2d513fbd4c3365b6279f137b9ca3871",
+            "path": "packages/rigorloop/test/cli.test.js"
+          },
+          {
+            "identity": "sha256:c587aa73aa25a0a07943e4a988b5e37ca941ca19c1496206bbbe575f3dd9d01e",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/implementation-m1.md"
+          }
+        ],
+        "supporting_judgment": {
+          "contributors": [
+            {
+              "id": "distribution-implementer",
+              "role": "implement"
+            }
+          ],
+          "independence_basis": "Separate delegated nonauthor reviewed commit c56ddae5 against approved M1; parent authored implementation/tests/evidence. Reviewer performed only read-only inspection and temporary reproduction.",
+          "judgment": "changes-requested",
+          "rationale": "First-pass independent milestone review requires bounded code/proof corrections.",
+          "reviewer": {
+            "id": "distribution-code-reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "identity": "sha256:82018f1fef3ad98f55209a94d334ab6de29385f66d6d0e6634bee665ecdf796b",
+              "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+            },
+            {
+              "identity": "sha256:ae443a3e8d11f66fa35db3a120624f85b9ef3a6464e177cb2bb05b21b01d9a60",
+              "path": "packages/rigorloop/test/installer-replacement.test.js"
+            },
+            {
+              "identity": "sha256:9b76fc3a4b104bb4d14a0ac1f526da11c2d513fbd4c3365b6279f137b9ca3871",
+              "path": "packages/rigorloop/test/cli.test.js"
+            },
+            {
+              "identity": "sha256:aabb37d499215678d42f49a58a7c0b907eea011120274a358e9c4a85284cba8e",
+              "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+            },
+            {
+              "identity": "sha256:c587aa73aa25a0a07943e4a988b5e37ca941ca19c1496206bbbe575f3dd9d01e",
+              "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/implementation-m1.md"
+            }
+          ]
+        }
+      },
+      "owner": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Record bounded exact pre-M1 baseline execution and actual retained replacement proof for the affected metadata/exit checks with source/fixture identities, outcomes/decontractions, and measured comparable command scope (or exact demonstrated non-comparability and owner disposition where unavailable). Do not close M1 by simply deferring required E2 proof to M2. Existing isolated Release fixture proof is sufficient; no publication or metadata production change is requested. Correct E3 evidence to distinguish true pre-change baseline from diagnostic failed runs. Owner: implement, M1; any desired waiver returns to plan/Design.",
+      "resolution": {
+        "actor": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "implementation-m1-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "The author executed exact archived pre-change 0d3fd0b6 source: 462/464 tests reproduced the two original baseline failures. Real ReleaseCandidateIntegrationTests.test_actual_candidate_build_and_packed_metadata_chain passed in M1, observing generation/archive/metadata/packed-install rather than deferring replacement proof. Historical digest and actual concise exit projection remain tested. TG-08 report distinguishes this reconstructed baseline from pre-authoring measurement, records command/changed-line/owner scope, and explicitly discloses differing timing sources/no speedup claim. Missing pre-authoring timing cannot be recreated, but frozen pre-change execution and current results satisfy the bounded factual comparison without inventing an execution or waiver."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:9b76fc3a4b104bb4d14a0ac1f526da11c2d513fbd4c3365b6279f137b9ca3871",
+          "path": "packages/rigorloop/test/cli.test.js"
+        },
+        {
+          "identity": "sha256:c587aa73aa25a0a07943e4a988b5e37ca941ca19c1496206bbbe575f3dd9d01e",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/implementation-m1.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m1",
+  "independence_basis": "Separate delegated nonauthor reviewed commit c56ddae5 against approved M1; parent authored implementation/tests/evidence. Reviewer performed only read-only inspection and temporary reproduction.",
+  "judgment": "changes-requested",
+  "reviewer": {
+    "id": "distribution-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:82018f1fef3ad98f55209a94d334ab6de29385f66d6d0e6634bee665ecdf796b",
+      "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+    },
+    {
+      "identity": "sha256:ae443a3e8d11f66fa35db3a120624f85b9ef3a6464e177cb2bb05b21b01d9a60",
+      "path": "packages/rigorloop/test/installer-replacement.test.js"
+    },
+    {
+      "identity": "sha256:9b76fc3a4b104bb4d14a0ac1f526da11c2d513fbd4c3365b6279f137b9ca3871",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:aabb37d499215678d42f49a58a7c0b907eea011120274a358e9c4a85284cba8e",
+      "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+    },
+    {
+      "identity": "sha256:c587aa73aa25a0a07943e4a988b5e37ca941ca19c1496206bbbe575f3dd9d01e",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/implementation-m1.md"
+    }
+  ],
+  "target": "code"
+}

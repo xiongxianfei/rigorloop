@@ -7,7 +7,6 @@ npm_package: "@xiongxianfei/rigorloop"
 targets:
   - codex
   - cursor
-  - opencode
 
 adapter_artifacts:
   required: true

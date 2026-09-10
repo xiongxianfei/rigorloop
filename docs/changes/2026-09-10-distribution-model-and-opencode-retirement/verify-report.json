@@ -1,0 +1,388 @@
+{
+  "body": "# Final Distribution verification\n\nOutcome: success. Requested outcome is workflow-final-verification, governed-final mode, VP1-final-readiness. This is the distinct Verify assessment after all four implementation milestones, their independent correction reviews, and fresh independent whole-change Code Review r2. Scope is the combined Distribution initiative only; no release, merge or customer-policy adoption is authorized by this result.\n\n## Explanation and impact\n\nInstallation now supports Codex and Claude from one canonical package producer. Every existing candidate skill directory or standalone file is a default conflict, including identical or empty units. The complete conflict set is reported before mutation. Explicit --force replaces entire selected units, including obsolete files, while preserving shared parents and unrelated units. Project rigorloop.yaml and rigorloop.lock are neither admission inputs nor parsed, created, rewritten or migrated. Managed upgrades and current OpenCode generation, aliases and installation are withdrawn.\n\nPackage identity and archive verification still apply to both trusted network metadata and --from-archive. Containment, symlink and race checks precede unsafe mutation. Linux anchored filesystem capability is required; originals are retained outside discovery even after force success so old open writers cannot silently lose their changes. Partial results identify completed, failed, untouched and retained paths without claiming a global transaction. Callers must inspect the reported result before retry; no automatic upgrade or recovery framework is introduced.\n\nThe separate mirror producer and exclusive state machinery are removed. Exactly ten selected specification/test-specification files and five ADRs are displaced into the Distribution map; mixed source remainders and historical judgments retain their meaning. System, Design, Skill, Release, Workflow and current guidance agree with the delivered boundary. Successful Verify establishes only the explicitly selected Distribution ownership transfer. FU-013 may now receive its independently inspected ledger-only closeout; Release's original adoption and all other follow-ups remain separate.\n\n## Authority, review and closeout\n\nCurrent accepted Proposal r3, exact thirteen-subject Design Review r6 and Delivery Review r3 approve the unchanged plan (sha256:fde6279b9861bd6daf5c83575baa582ea322c051e5c9c7c840a44264acf75845). Earlier r5 links in stable planning history do not replace the current record's r6 package. All four work entries are completed. Current milestone review chain is code-review-m1-r2, code-review-m2, code-review-m3-r3 and code-review-m4-r2; code-review-final-r2 assesses their complete delivered interactions at engineering commit e0e89fdfefa1e7e561a502c1f59ef4d16f9b29ab. Earlier exact milestone subjects remain historical slice bases where later implementation changed them; the fresh final assessment supplies current whole-change applicability.\n\nEight original review concerns have reporter-owned resolved dispositions. The CI current-record blocker was independently reassessed and resolved by its reporting support actor after final r2. Failed historical judgments and aggregate commands remain preserved. No unresolved required concern or implementation milestone remains. This assessment consumes the independent review rather than replacing it, and owns the final explanation and readiness decision.\n\n## Coverage and actual evidence\n\n- TG-01/02, DIST-SR-08/09/13/14: actual filesystem helper and integrated CLI proof cover conflicts, complete unit replacement, obsolete-file removal, independent content preservation, retained originals outside discovery, symlink/ancestor changes, destination races, open writers, interruption and retry. Commands actually run include `node --test packages/rigorloop/test/installer-replacement.test.js` and `npm test --prefix packages/rigorloop`, plus their integrated C8 execution. Earlier M1 baseline had two reproduced failures and is not called green; corrected M1 and final integrated runtime proof passed.\n- TG-03/04 and TG-FINAL-01, DIST-SR-02–18: real generated archives, trusted metadata, packed CLI and the actual prepared-candidate release verifier exercise both supported targets and local/network acquisition. Removed targets/flags reject before effects; state contents and shapes do not affect admission. Final `python3 scripts/test-release-transaction.py` passed164 tests in136.173 seconds, including the actual candidate and generated two-target receipt. No public release or dry-run substitute was used.\n- TG-05/06, DIST-SR-03–05/17–19: `python3 scripts/test-adapter-distribution.py` passed154 tests in467.791 seconds and ran successfully again as a broad child. Independent resource/raw-byte inventory and negative fixtures retain useful mirror protection through the canonical producer. Actual symlink, hardlink, FIFO and overlapping active/canonical output cases fail before effects. `python3 scripts/test-skill-validator.py`, `python3 scripts/validate-skills.py`, `python3 scripts/test-select-validation.py` and `python3 scripts/test-validation-cache.py` ran in the allocated proof; the final complete selector suite passed163 in63.92 seconds.\n- TG-07 and TG-FINAL-02, DIST-SR-01/19/20 and amended shared-owner requirements: `python3 scripts/test-boundary-first-validation.py` passed90 in5.252 seconds and `python3 scripts/test-artifact-lifecycle-validator.py` passed112 in107.129 seconds. Exact deletion and consumer maps reconcile. All150 selected historical surfaces and the complete11616-character mixed-architecture Follow-on section remained byte-identical; independent final review repeated the audit.\n- C8: the full expanded `bash scripts/ci.sh --mode explicit --timeout 600 --path ...` command is recorded verbatim in implementation-m4-ci-correction. Its frozen-source run passed all selected checks in421.562 seconds, including CLI, actual candidate, package, selector and current governance validation. After the later static-test and receipt-only edits, `bash scripts/ci.sh --mode explicit --timeout 600 --path scripts/validate-release.py --path scripts/release_candidate_tests.py --path scripts/test-review-artifact-validator.py` passed all three selected groups in168.52 seconds. These fresh deltas cover all engineering changes after the complete C8 run.\n- C9/C10: exact expanded boundary/lifecycle/model/plan commands and outputs are recorded in implementation-m4. All selected commands exited0. Current six-model/plan prose enforcement reported0 errors and0 warnings. Retained mixed legacy prose audit reported308 errors and115 warnings, unchanged disclosed baseline; six specs are selected and five are grandfathered. No full-file legacy prose pass or blanket waiver is claimed. Selected current ownership amendments and historical classification were independently assessed.\n\n## Broad smoke composition and CI limits\n\nThe actual final `bash scripts/ci.sh --mode broad-smoke --jobs 4 --timeout 900` exited1 after617.270 seconds. Nine of ten children passed, including the corrected real current-record validator; the only failure was the old static test requiring the retired dispatch literal. That test was corrected to require current dispatch, reject the old dispatch and preserve the review-suite invocation check. `python3 scripts/test-review-artifact-validator.py` then passed109 tests in4.064 seconds; its selected CI delta passed in3.34 seconds.\n\nThe nine successful broad children are reused only for their unchanged engineering inputs. The corrected full review leaf is fresh. The subsequent receipt label has fresh complete164-test actual-candidate C4 proof and the selected adapter/review/release delta. M4r2 and final r2 independently accepted this precise composition; Verify accepts it as the required current broad coverage. The failed aggregate remains failed; no aggregate exit0 is invented. The original broad failure, intermediate selector failures and static-assertion failure remain in evidence with their corrections. Local evidence does not establish hosted CI; hosted CI is unobserved at this pre-submission assessment.\n\n## Test admission, retirement and simplification\n\nTG-08/E1 records the protected failures, existing gate ownership, triggers, repair feedback and retirement conditions for affected tests; no new standalone validator, selector or cache is introduced. E2 ran old mirror proof before removal in an isolated exact source copy and compared representative missing/stale/malformed resource cases with the retained producer. Seven old tests, independent current inventory and eighteen filesystem subcases establish retained protection; obsolete managed/OpenCode success paths are explicitly de-contracted, not silently weakened. Shared hash/archive/current package protection remains.\n\nE3 records scoped line counts, original/replacement source identities, maintenance owners and expanded measured commands in milestone evidence. The representative mirror command population falls from four to two. Single-run timings and changed fixture populations do not justify a general speed claim. Later bounded CI and receipt corrections are separately counted in implementation-m4-ci-correction and preserve ten broad children. Final scope does not claim inventory-wide conformance or simplify merely by deleting tests.\n\n## Final readiness and limitations\n\nRequirement/test coverage, architecture coherence, artifact state, implementation completion, independent review closeout, selected validation, generated-output currency, historical preservation and branch identity pass within this stated scope. Legacy prose debt is a disclosed concern with unchanged baseline. Actual cross-mount execution was unavailable; device preflight exists and Linux rename/fd/race/open-writer proof is actual. Installer portability is explicitly limited to the required Linux capability, including fresh/dry-run admission. Users should expect whole-unit force replacement and retained recovery originals. Rollback is a reviewed source/package revert, not state migration or blind filesystem overwriting.\n\nBefore this record, exact current review/model/plan identities, resolved blocker states, `git diff --check`, current record-set validation, repository/remote identity, branch ancestry and unchanged remote main were checked. The Git basis below binds the final engineering and review handoff. Only attributable current Verify/workflow evidence may follow without invalidating it. External PR creation is separately authorized by the user's request; merge and release remain outside scope.\n\n## Normalized external-handoff basis\n\n```json\n{\n  \"verification_basis\": {\n    \"repository_identity\": \"github:R_kgDOSGsVUQ\",\n    \"remote_identity\": \"https://github.com/xiongxianfei/rigorloop\",\n    \"base_branch\": \"main\",\n    \"base_revision\": \"0d3fd0b6d2930be03ae934d3f0ff3ad90be5bc3d\",\n    \"merge_base_revision\": \"0d3fd0b6d2930be03ae934d3f0ff3ad90be5bc3d\",\n    \"head_branch\": \"proposal/distribution-model-retire-opencode\",\n    \"verified_subject_revision\": \"7944671d3155173cce7cecacd8bd81daf01126a5\"\n  }\n}\n```\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "evidence_refs": [
+    {
+      "id": "implementation-m1",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    },
+    {
+      "id": "implementation-m1-correction",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    },
+    {
+      "id": "implementation-m2",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    },
+    {
+      "id": "implementation-m3",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    },
+    {
+      "id": "implementation-m3-r2",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    },
+    {
+      "id": "implementation-m3-r3",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    },
+    {
+      "id": "implementation-m4",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    },
+    {
+      "id": "implementation-m4-ci-correction",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    }
+  ],
+  "outcome": "success",
+  "review_refs": [
+    {
+      "id": "proposal-review-r3",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r3.json"
+    },
+    {
+      "id": "design-review-r6",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r6.json"
+    },
+    {
+      "id": "delivery-review-r3",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review-r3.json"
+    },
+    {
+      "id": "code-review-m1-r2",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1-r2.json"
+    },
+    {
+      "id": "code-review-m2",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m2.json"
+    },
+    {
+      "id": "code-review-m3-r3",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r3.json"
+    },
+    {
+      "id": "code-review-m4-r2",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4-r2.json"
+    },
+    {
+      "id": "code-review-final-r2",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r2.json"
+    }
+  ],
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:78467feaf8323bb478f0172e220aca168d19bd98de02b78444984d5bab419c93",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:9eacfc69e391724734e70c464a8ad97c7280daa247d1bab314314a37b722a1da",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:4d46d41c4754a3a19d451acc1e1c4f3363a85428c93ddde6e077e1c8e4928567",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:4fce0874a119e0e42d15b5323550d896ff7a1e9c095996a53e621068615c3d82",
+      "path": "dist/adapters/README.md"
+    },
+    {
+      "identity": "sha256:d7eb732f1528bbf7b1b57e3623a334716fb152e8747bc5ab2b3c7bc3969aa415",
+      "path": "dist/adapters/manifest.yaml"
+    },
+    {
+      "identity": "sha256:d8352376dd2ca11ed8d46ebb11a48e529e006662b0c00a865ba2bf97b0b4b682",
+      "path": "docs/architecture/system/architecture.md"
+    },
+    {
+      "identity": "sha256:db7fbf4780d38d00aa7e25bd4ae3e6af5310cb19951d3b0555c8e678b9ea3ad9",
+      "path": "docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml"
+    },
+    {
+      "identity": "sha256:c6015cd7d6aae9c76cf29d9d28f5a763a8dd3ef139f5f6549f6c8a865b7b5cca",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:c06a0e5b4592975f146bb056750fd229c08547411ccd2723d84c8c29cc2b41f7",
+      "path": "docs/design/distribution/distribution.md"
+    },
+    {
+      "identity": "sha256:17f89c1acc227f95798b120dea8261dba45eb6b5294f3904dc24e394e553f2dc",
+      "path": "docs/design/release/release.md"
+    },
+    {
+      "identity": "sha256:2cebfeaaafd9b0df159fa25a69de2b5e2140d6dc4edd36f88de726e00a45d083",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:c0e1e478c55a07f43223fa7d4f97087b271a35466bf54da6f19eec08c326c057",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:51787ce185dda2ed1145cf9450ad2bde2469741cd313f0679ad6d1d75ca8d9c0",
+      "path": "docs/follow-ups.md"
+    },
+    {
+      "identity": "sha256:041b4b445f2919de3f58ea28110858a2b83e95efb8379cf4c10fcfef164f230b",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:fde6279b9861bd6daf5c83575baa582ea322c051e5c9c7c840a44264acf75845",
+      "path": "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md"
+    },
+    {
+      "identity": "sha256:fc098aa623a569994b0c0c18deb0af6eca55bfba19b1e1e380b3407e20135a16",
+      "path": "docs/proposals/2026-09-10-distribution-model-and-opencode-retirement.md"
+    },
+    {
+      "identity": "sha256:2ab42feb088744a1dd702ad51b6b226556d04f1578a532962c747b5ad2228d09",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:f3271f203831a1ce34adc56fc78c8068186aadd5691cae28b68a14eb8d6670d7",
+      "path": "packages/rigorloop/dist/bin/rigorloop.js"
+    },
+    {
+      "identity": "sha256:74d15d072d4bd08f77de5ec76f510f737824eb9fa74bcde615ca48e35ba2d221",
+      "path": "packages/rigorloop/dist/lib/adapters.js"
+    },
+    {
+      "identity": "sha256:36dfb447364e3407f3ab59d6bd1b35243a0cab116d20d71fc0b159db98d3b6ec",
+      "path": "packages/rigorloop/dist/lib/installer-replacement.js"
+    },
+    {
+      "identity": "sha256:a10766f6433f56e81574a607b4dcfe370ee2f22ec92a5ab080e438ddce7ccbdb",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:aabb37d499215678d42f49a58a7c0b907eea011120274a358e9c4a85284cba8e",
+      "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+    },
+    {
+      "identity": "sha256:8bcd9f06d3261d15b238bb20cf63843cdedc1c25da85c3c8994f4f87f80631b8",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:803fee588fbe5604b16b84b9a67ecc74ae7a6bc2d55899591481ad9de8be8fd0",
+      "path": "packages/rigorloop/test/installer-replacement.test.js"
+    },
+    {
+      "identity": "sha256:5dfb27213d16784da32394e8fce6ab55a8076f0f0785fdc8ed7cd91e7d2ee203",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:6ceeb57fec25b03b4d3e1edc8941e35bdb280a105ea83a79fae3cc7b7cdd4697",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:7ceade1f35dfb85b90d429c2d2fa291a29772f6385ed22bf1a91bf0d548dfca2",
+      "path": "scripts/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:8869906289e459514ec208d42c5d9717367f225ff0808bc94d0b4d8f3a4dbcee",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:259cb2be282b4995b52b3d227d6203a1025f994df4da18db17237d89f31e9c6f",
+      "path": "scripts/npm_package_validation.py"
+    },
+    {
+      "identity": "sha256:0a92748762f3d57dde1b10dab608958a8b9f6dfb779629534beecefdce67a26a",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:35fce8b0e0449929ed5b540d343192a5b0b7ef2654c79b36c5c6b1cfeae0a08c",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:c388d0e9424a51f38482ebc3ec11f529c64393a65203c5ba7f2fae31902d9ab5",
+      "path": "scripts/release_execution.py"
+    },
+    {
+      "identity": "sha256:62188811a2b1666928164dbe6ac873b3dca26e2c46d8363da7db21934cd08a36",
+      "path": "scripts/release_execution_tests.py"
+    },
+    {
+      "identity": "sha256:e7733a063ac5406771981a4124232c75ecd156a6fc55a9c29d578bce8a581e4e",
+      "path": "scripts/release_transaction.py"
+    },
+    {
+      "identity": "sha256:24e0ebbd9bb1d50b6060dcf192f92312fd08e1dffe3b8c76c93a421fb6fc74c3",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:abf0e7325074ab3fa137f77496012c928a30b584538112239833783072054f9b",
+      "path": "scripts/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:4218ba4e0d7742b32024f1b2f41380fbbe60431f8d4e0e50c285a55f6fb533c5",
+      "path": "scripts/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:e5ef120fcb4795fbf0e293bfb2500b17f4275d01f0fc4735af886fc6208e4309",
+      "path": "scripts/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:860b5538ee6fa142b3f076dd7d5f7fc365becea1f824f87d7e3fdcfb0b4cabfa",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:ef46d5835b44aa7914fe8559467ea2142993bcf8ad31c268bda326f483c6c61b",
+      "path": "scripts/test-review-artifact-validator.py"
+    },
+    {
+      "identity": "sha256:139c6261651330913d8fb7bc55c6b40579f9457465b5bd9a759ed10dcee91860",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:7baa963f33e24c171c527bb847f939ffb6a6cd1abbb47180e27a72901bbe7c7c",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:d667f5e3e9176af017a006a59caaaa6454ac00e6411f475f4988fff5ba30dac6",
+      "path": "scripts/validate-broad-smoke-classification.py"
+    },
+    {
+      "identity": "sha256:1b935bdb866c7917050ef15134987a7eea197736794e7759fe9c12ccab970b42",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:eac446e50a9fb68f1f0f51691481e2f7e4ecc5a14a00d3cd10be148c636bd3c1",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:e00006c29dd7dd5b65e0c483bcdbc699031f5d15b27e4dfbabbba999a222600b",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+      "path": "specs/multi-agent-adapters-first-public-release.md"
+    },
+    {
+      "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+    },
+    {
+      "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:b1eed69f34f4bd2e1e996df581467b040f1066286a4e98c0de3fc34510726fb6",
+      "path": "specs/rigorloop-cli-new-change.md"
+    },
+    {
+      "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+      "path": "specs/rigorloop-cli-package-and-codex-init.md"
+    },
+    {
+      "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+      "path": "specs/single-authored-skill-source-generated-output.md"
+    },
+    {
+      "identity": "sha256:2e523c9f317c92958bfd4a06ef18aaeb6b0a495e4219c9c74c2d012f933cea01",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-adapter-artifacts.yaml"
+    },
+    {
+      "identity": "sha256:1a050268bb6e65846cbc56c877481b6941f1f504ba095b9b20ebe2d1825cc2f9",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-evidence.yaml"
+    },
+    {
+      "identity": "sha256:823a583f6a7f6843fc4e171e23e2028265fa3a69697cc8e5362b0dfb5e30958e",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-dist-tag.yaml"
+    },
+    {
+      "identity": "sha256:0ec99bc7e3e48f4c6ce62c5a7d5cba93afd6a489eaec0e4756358287142e8c09",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-npm-package.yaml"
+    },
+    {
+      "identity": "sha256:886f9db27d3f5c48fe37647723d1cfb6f197ad19686406aea50ff7ce99b20f6a",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-package-version.yaml"
+    },
+    {
+      "identity": "sha256:453a6980e7047574ee31e41ff561c701101784ea8b8c2c84518cf282b89d7397",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-publication.yaml"
+    },
+    {
+      "identity": "sha256:ea3f2cb1d7254e0effb7a4b76f694220322042f0789478520a984bc4bc8a1474",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-release-tag.yaml"
+    },
+    {
+      "identity": "sha256:bfeb5de80bc73c482a384c4c416f4fb8deebf4afb8d3eb9540dc6273ff54abc2",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-missing-validation.yaml"
+    },
+    {
+      "identity": "sha256:479cb2deeeef9f7b03f22334acb7b3091f1a4e02018b0445f3d6ffb7b389fe4f",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-special-release-without-rationale.yaml"
+    },
+    {
+      "identity": "sha256:71ce5368588d09ed3147443e08e7e0a41cf26e95f26e894587fdb04533b4d38a",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-npm-dist-tag.yaml"
+    },
+    {
+      "identity": "sha256:ea4d75dc1e1844bccd2151613ace0aa28214e2ea846b98ced3c35dccb916d27c",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-release-kind.yaml"
+    },
+    {
+      "identity": "sha256:a2f75710b7c65de13240cbf761810a04d1c168bc721b8aeaf85880488fdef8ff",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-unknown-target.yaml"
+    },
+    {
+      "identity": "sha256:cb3d10fb1f370d2447db6c7dc5a646085bf7d952eb0bb1bbdc5a7be2dab85529",
+      "path": "tests/fixtures/release-transaction/profiles/invalid-wrong-package-version.yaml"
+    },
+    {
+      "identity": "sha256:b92ae3087aff57dff3d29e7426baef57cbd1afe4642124abcf4177fd8d7f9a02",
+      "path": "tests/fixtures/release-transaction/profiles/special-release-with-rationale.yaml"
+    },
+    {
+      "identity": "sha256:9bd744cf3cd24753100e021364c9837585c89f83fda149272ae67f0b1b7ac1a8",
+      "path": "tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml"
+    },
+    {
+      "identity": "sha256:df4055f059407b29d84a68a6bc820ee039bca895f7281fe4f95d4058c80d52e8",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+    },
+    {
+      "identity": "sha256:d911eb83f8702d867ad9a671414201469593d09364fa618c36556e5a065ec7b6",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/proposal-review-r3.json"
+    },
+    {
+      "identity": "sha256:d556fec9eb24e2daf6394cee7f7f3df8d8405ced6782ecbac90c21a69bd54679",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r6.json"
+    },
+    {
+      "identity": "sha256:5ecc7bb7156be78b93dcec6b045c7a138a9f621a77aa6a88c262ee7e4c795cc3",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review-r3.json"
+    },
+    {
+      "identity": "sha256:a6f8f9fb55a7b2f3ed00c9c2e1a9ed27047cce05d1061fda028ab4d3ac62732b",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m1-r2.json"
+    },
+    {
+      "identity": "sha256:2508653da46086a091c8c9edfef09a5967bac4ba827336571ddaad0c91124e79",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m2.json"
+    },
+    {
+      "identity": "sha256:dbe51a6b2aea5c6f412c5117bfda8a933aaecb634402c966af20a8e9aa9a7826",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r3.json"
+    },
+    {
+      "identity": "sha256:8702f87ed493b354fbca8e8cad794c1668afbb97581d9c55ae566947ec23ef43",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4-r2.json"
+    },
+    {
+      "identity": "sha256:1ac7c495c1dcbdc5e636cc21a169fceabfa4ea48ffa46bcdc436d1ae10cfbaa3",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r2.json"
+    }
+  ],
+  "verifier": {
+    "id": "distribution-final-verifier",
+    "role": "verify"
+  }
+}

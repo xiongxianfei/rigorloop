@@ -49,7 +49,6 @@ from adapter_distribution import (  # noqa: E402
     format_adapter_drift_normal,
     format_adapter_drift_verbose,
     parse_manifest_yaml,
-    render_opencode_command_alias,
     render_manifest_yaml,
     sync_adapter_output,
     validate_adapter_archives,
@@ -172,25 +171,27 @@ class AdapterDistributionTests(unittest.TestCase):
                         self.assertIn("subject inspect", canonical)
                         self.assertNotIn("record-store check|record", canonical)
 
-    def test_v0_5_1_bundled_candidate_metadata_matches_generated_route_only_archives(self) -> None:
+    def test_current_candidate_metadata_matches_generated_route_only_archives(self) -> None:
         version = "v0.5.1"
-        bundled = json.loads(
-            (ROOT / "packages" / "rigorloop" / "dist" / "metadata" / f"adapter-artifacts-{version}.json").read_text(
-                encoding="utf-8"
-            )
-        )
         with tempfile.TemporaryDirectory(prefix="route-candidate-") as temp_dir:
             output = Path(temp_dir)
             archives = build_adapter_archives(version, output)
             generated = adapter_distribution_module._local_release_candidate_metadata(version, output)
 
-            # This test protects canonical archive identities. Publication/source
-            # descriptors are owned by the selected candidate builder, not the
-            # local fixture's placeholder values (proved by candidate integration).
-            for field in ('schema_version', 'artifacts', 'validation'):
-                self.assertEqual(bundled[field], generated[field])
-            for field in ('version', 'release_tag', 'source_repository'):
-                self.assertEqual(bundled['release'][field], generated['release'][field])
+            # Current canonical archives have fresh identities. Historical bundled
+            # release metadata remains immutable; packed current metadata is proved
+            # by the actual candidate integration test.
+            self.assertEqual({row['adapter'] for row in generated['artifacts']}, {'codex', 'claude'})
+            self.assertEqual(validate_adapter_archives(version, output), [])
+            for artifact in generated['artifacts']:
+                archive_path = output / artifact['archive']
+                self.assertEqual(artifact['sha256'], hashlib.sha256(archive_path.read_bytes()).hexdigest())
+                self.assertEqual(artifact['size_bytes'], archive_path.stat().st_size)
+                root = artifact['install_root'] + '/'
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = [name for name in archive.namelist() if name.startswith(root) and not name.endswith('/')]
+                self.assertEqual(artifact['file_count'], len(names))
+                self.assertEqual(artifact['skill_names'], sorted({name[len(root):].split('/')[0] for name in names}))
             for archive_path in archives:
                 with zipfile.ZipFile(archive_path) as archive:
                     names = set(archive.namelist())
@@ -418,10 +419,6 @@ class AdapterDistributionTests(unittest.TestCase):
             }
             for tool in SUPPORTED_ADAPTERS
         }
-        smoke["opencode"]["evidence"] = (
-            '"opencode run --command proposal loaded the proposal skill and '
-            'repeated ARGUMENT_MARKER_M3_SMOKE."'
-        )
         return smoke
 
     def command_alias_notes_extra(self) -> str:
@@ -789,7 +786,8 @@ adapter_install_smoke:
             "",
             "target_init_smoke:",
         ]
-        for target in SUPPORTED_ADAPTERS:
+        # Historical target-native evidence retains its original three targets.
+        for target in ("codex", "claude", "opencode"):
             lines.append(f"  {target}:")
             lines.extend(row_yaml(rows[target]))
         lines.extend(["```", ""])
@@ -837,6 +835,7 @@ adapter_install_smoke:
         artifact_overrides: dict[str, dict[str, str]] | None = None,
         combined_required: bool = False,
         validation_result: str = "pass",
+        historical: bool = False,
     ) -> Path:
         metadata_root = root / "docs" / "reports" / "adapter-artifacts" / "releases"
         metadata_root.mkdir(parents=True, exist_ok=True)
@@ -856,15 +855,16 @@ adapter_install_smoke:
             "",
             "artifacts:",
         ]
-        for adapter in SUPPORTED_ADAPTERS:
-            archive = adapter_archive_name(adapter, version)
+        adapters = adapter_distribution_module.HISTORICAL_ADAPTERS if historical else ADAPTERS
+        for adapter in adapters:
+            archive = f"rigorloop-adapter-{adapter}-{version}.zip"
             archive_path = release_output_dir / archive
             sha256 = hashlib.sha256(archive_path.read_bytes()).hexdigest()
             row = {
                 "adapter": adapter,
                 "archive": archive,
                 "sha256": sha256,
-                "install_root": ADAPTERS[adapter].skill_root.as_posix().rstrip("/") + "/",
+                "install_root": adapters[adapter].skill_root.as_posix().rstrip("/") + "/",
                 "result": "pass",
             }
             row.update(artifact_overrides.get(adapter, {}))
@@ -885,9 +885,7 @@ adapter_install_smoke:
                 f"  archive: rigorloop-adapters-{version}.tar.gz",
                 '  sha256: ""',
                 "  included_adapters:",
-                "    - codex",
-                "    - claude",
-                "    - opencode",
+                *[f"    - {name}" for name in adapters],
                 "",
                 "validation:",
                 f'  command: "python scripts/validate-adapters.py --root <release-output-dir> --version {version}"',
@@ -1055,7 +1053,7 @@ release_gate:
         )
 
     def test_adapter_model_matches_required_paths(self) -> None:
-        self.assertEqual(SUPPORTED_ADAPTERS, ("codex", "claude", "opencode"))
+        self.assertEqual(SUPPORTED_ADAPTERS, ("codex", "claude"))
 
         self.assertEqual(ADAPTERS["codex"].package_root.as_posix(), "dist/adapters/codex")
         self.assertEqual(ADAPTERS["codex"].entrypoint.as_posix(), "AGENTS.md")
@@ -1071,12 +1069,7 @@ release_gate:
             ".claude/skills/route/SKILL.md",
         )
 
-        self.assertEqual(ADAPTERS["opencode"].package_root.as_posix(), "dist/adapters/opencode")
-        self.assertEqual(ADAPTERS["opencode"].entrypoint.as_posix(), "AGENTS.md")
-        self.assertEqual(
-            ADAPTERS["opencode"].skill_path("route").as_posix(),
-            ".opencode/skills/route/SKILL.md",
-        )
+        self.assertNotIn("opencode", ADAPTERS)
 
     def test_build_adapter_archives_creates_required_release_archives(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1095,7 +1088,6 @@ release_gate:
                 [
                     "rigorloop-adapter-codex-v0.1.2.zip",
                     "rigorloop-adapter-claude-v0.1.2.zip",
-                    "rigorloop-adapter-opencode-v0.1.2.zip",
                 ],
             )
             for archive in archives:
@@ -1115,7 +1107,6 @@ release_gate:
             expected = {
                 "codex": ("AGENTS.md", ".agents/skills/portable-basic/SKILL.md"),
                 "claude": ("CLAUDE.md", ".claude/skills/portable-basic/SKILL.md"),
-                "opencode": ("AGENTS.md", ".opencode/skills/portable-basic/SKILL.md"),
             }
             for adapter, required_entries in expected.items():
                 archive_path = output_dir / adapter_archive_name(adapter, "v0.1.2")
@@ -1127,6 +1118,97 @@ release_gate:
                     any(name.startswith(f"{adapter}/") or name.startswith("dist/") for name in names)
                 )
 
+    def test_distribution_archives_have_independent_complete_resource_inventory(self) -> None:
+        # Independent filesystem oracle: do not use the producer's inventory helper.
+        canonical = {path.relative_to(ROOT / "skills").as_posix(): path.read_bytes()
+                     for path in (ROOT / "skills").rglob("*") if path.is_file()}
+        with tempfile.TemporaryDirectory() as tmp:
+            archives = build_adapter_archives("v1.0.0", Path(tmp))
+            self.assertEqual(len(archives), 2)
+            for target, archive_path in zip(("codex", "claude"), archives):
+                prefix = {"codex": ".agents/skills/", "claude": ".claude/skills/"}[target]
+                with zipfile.ZipFile(archive_path) as archive:
+                    actual = {name[len(prefix):]: archive.read(name) for name in archive.namelist() if name.startswith(prefix)}
+                self.assertEqual(set(actual), set(canonical), target)
+                for name, expected in canonical.items():
+                    if target == "codex" or not name.endswith("/SKILL.md"):
+                        self.assertEqual(actual[name], expected, f"{target}/{name}")
+                    else:
+                        # Only declared frontmatter transformations are permitted;
+                        # existing metadata tests check that projection separately.
+                        self.assertEqual(actual[name].split(b"---", 2)[2], expected.split(b"---", 2)[2], name)
+
+    def test_distribution_generated_skill_structure_is_validated_independently(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills, output = self.generate_fixture_adapters(root, ("portable-basic",))
+            for target in ("codex", "claude"):
+                skill = output / target / ADAPTERS[target].skill_root / "portable-basic/SKILL.md"
+                original = skill.read_bytes()
+                skill.write_text("# Missing frontmatter\n")
+                errors = validate_adapter_output("0.1.0-rc.1", skills_root=skills, output_root=output)
+                self.assertTrue(any("file must begin with YAML frontmatter" in error and str(skill) in error for error in errors), errors)
+                skill.write_bytes(original)
+
+    def test_distribution_generation_rejects_source_and_active_output_roots(self) -> None:
+        for operation in ("archives", "tree", "staged"):
+            for destination in ("skills", "skills/nested", ".codex/skills", ".agents/skills", ".claude/skills", ".opencode/skills", "alias"):
+                with self.subTest(operation=operation, destination=destination), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    skills = self.copy_fixture_skills(root, ("portable-with-assets",))
+                    if destination == "alias":
+                        (root / "alias").symlink_to(skills, target_is_directory=True)
+                    before = {path.relative_to(skills): path.read_bytes() for path in skills.rglob("*") if path.is_file()}
+                    with self.assertRaisesRegex(ValueError, "unsafe output"):
+                        if operation == "archives":
+                            build_adapter_archives("v1.0.0", root / destination, skills_root=skills)
+                        elif operation == "staged":
+                            build_staged_v3_adapter_archives("v1.0.0", root / destination, skills_root=skills)
+                        else:
+                            sync_adapter_output("v1.0.0", skills_root=skills, output_root=root / destination)
+                    self.assertEqual(before, {path.relative_to(skills): path.read_bytes() for path in skills.rglob("*") if path.is_file()})
+                    if destination.startswith("."):
+                        self.assertFalse((root / destination).exists())
+
+    def test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks(self) -> None:
+        for operation in ("tree", "archives", "staged"):
+            for hazard in ("parent", "ancestor", "nested-link", "archive-link", "hard-link", "special-file"):
+                with self.subTest(operation=operation, hazard=hazard), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    skills = self.copy_fixture_skills(root, ("portable-basic",))
+                    runtime = root / "project/.codex/skills/portable-basic/SKILL.md"
+                    runtime.parent.mkdir(parents=True)
+                    runtime.write_bytes(b"user runtime bytes\n")
+                    output = root / "output"
+                    if hazard == "parent":
+                        output = root / "project/.codex"
+                    elif hazard == "ancestor":
+                        output = root / "project"
+                    elif hazard == "nested-link":
+                        (output / "codex").mkdir(parents=True)
+                        (output / "codex/.agents").symlink_to(root / "project/.codex", target_is_directory=True)
+                    elif hazard == "archive-link":
+                        output.mkdir()
+                        (output / adapter_archive_name("codex", "v1.0.0")).symlink_to(runtime)
+                    elif hazard == "special-file":
+                        output.mkdir()
+                        os.mkfifo(output / adapter_archive_name("codex", "v1.0.0"))
+                    else:
+                        target = (output / "codex/.agents/skills/portable-basic/SKILL.md" if operation == "tree"
+                                  else output / adapter_archive_name("codex", "v1.0.0"))
+                        target.parent.mkdir(parents=True)
+                        os.link(runtime, target)
+                    before = runtime.read_bytes()
+                    with self.assertRaisesRegex(ValueError, "unsafe output"):
+                        if operation == "tree":
+                            sync_adapter_output("v1.0.0", skills_root=skills, output_root=output)
+                        elif operation == "archives":
+                            build_adapter_archives("v1.0.0", output, skills_root=skills)
+                        else:
+                            build_staged_v3_adapter_archives("v1.0.0", output, skills_root=skills)
+                    self.assertEqual(runtime.read_bytes(), before)
+                    self.assertFalse((output / "claude").exists())
+
     def test_adapter_archives_include_packaged_skill_assets(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -1137,7 +1219,6 @@ release_gate:
             expected = {
                 "codex": ".agents/skills/portable-with-assets/assets/template.md",
                 "claude": ".claude/skills/portable-with-assets/assets/template.md",
-                "opencode": ".opencode/skills/portable-with-assets/assets/template.md",
             }
             for adapter, asset_entry in expected.items():
                 archive_path = output_dir / adapter_archive_name(adapter, "v0.1.5")
@@ -1646,7 +1727,7 @@ release_gate:
         self.assertEqual([], errors)
         self.assertEqual(
             [command[command.index("init") + 1] for command in commands],
-            ["codex", "claude", "opencode"],
+            ["codex", "claude"],
         )
         for command in commands:
             self.assertEqual(command[0], "node")
@@ -1810,7 +1891,6 @@ release_gate:
                 extra_name = {
                     "codex": "boundary-first-compact-core.md",
                     "claude": "boundary-first-feature-authoring.md",
-                    "opencode": "boundary-first-proof.md",
                 }[adapter_name]
                 (skill_root / "references" / extra_name).parent.mkdir(
                     parents=True,
@@ -1833,7 +1913,6 @@ release_gate:
         for adapter_name, resource_name in {
             "codex": "boundary-first-compact-core.md",
             "claude": "boundary-first-feature-authoring.md",
-            "opencode": "boundary-first-proof.md",
         }.items():
             self.assertTrue(
                 any(
@@ -2137,7 +2216,7 @@ release_gate:
 
         self.assertTrue(report.portable)
         self.assertEqual(report.name, "portable-basic")
-        self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
+        self.assertEqual(report.included_adapters, ("codex", "claude"))
         self.assertEqual(report.reason, "")
 
     def test_invalid_name_description_and_body_fail_all_adapters(self) -> None:
@@ -2162,17 +2241,13 @@ release_gate:
         report = evaluate_skill(self.fixture("transformable-frontmatter"))
 
         self.assertTrue(report.portable)
-        self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
+        self.assertEqual(report.included_adapters, ("codex", "claude"))
         expected_transforms = (
             "drop frontmatter: argument-hint",
             "drop frontmatter: schema-version",
             "drop frontmatter: version",
         )
         self.assertEqual(report.adapter_decision("claude").transforms, expected_transforms)
-        self.assertEqual(
-            report.adapter_decision("opencode").transforms,
-            expected_transforms,
-        )
 
     def test_codex_only_assumptions_exclude_non_codex_adapters(self) -> None:
         cases = {
@@ -2191,7 +2266,6 @@ release_gate:
                 self.assertEqual(report.included_adapters, ("codex",))
                 self.assertTrue(report.adapter_decision("codex").included)
                 self.assertFalse(report.adapter_decision("claude").included)
-                self.assertFalse(report.adapter_decision("opencode").included)
                 self.assertIn(expected_reason, report.reason)
 
     def test_case_variant_governed_dollar_invocations_are_codex_only(self) -> None:
@@ -2348,13 +2422,13 @@ release_gate:
         report = evaluate_skill(self.fixture("generic-artifact-paths"))
 
         self.assertTrue(report.portable)
-        self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
+        self.assertEqual(report.included_adapters, ("codex", "claude"))
 
     def test_codex_skills_reference_with_adapter_alternatives_remains_portable(self) -> None:
         report = evaluate_skill(self.fixture("codex-install-with-alternatives"))
 
         self.assertTrue(report.portable)
-        self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
+        self.assertEqual(report.included_adapters, ("codex", "claude"))
         self.assertEqual(report.reason, "")
 
     def test_route_explicit_adapter_invocation_equivalents_remain_portable(
@@ -2450,11 +2524,6 @@ release_gate:
             "claude_skill": lambda text: text.replace(
                 "/route auto: <argument>",
                 "/broken auto: <argument>",
-                1,
-            ),
-            "opencode_skill": lambda text: text.replace(
-                "installed `route` skill with `auto: <argument>`",
-                "installed `broken` skill with `auto: <argument>`",
                 1,
             ),
             "shared_argument": lambda text: text.replace(
@@ -2579,11 +2648,6 @@ release_gate:
                 "Claude uses `/route auto: &#xF000;argument&#xF001;`",
                 1,
             ),
-            "encoded_opencode_sentinel": lambda text: text.replace(
-                "`auto: <argument>`",
-                "`auto: &#xF000;argument&#xF001;`",
-                1,
-            ),
             "literal_target_sentinel": lambda text: text.replace(
                 "Here `<argument>` is `<target-stage>`",
                 "Here `<argument>` is `\uf000target-stage\uf001`",
@@ -2597,16 +2661,6 @@ release_gate:
             "claude_private_use_identity": lambda text: text.replace(
                 "`/route auto: <argument>`",
                 "`/rou\uf000te auto: <argument>`",
-                1,
-            ),
-            "opencode_zero_width_identity": lambda text: text.replace(
-                "installed `route` skill",
-                "installed `rou\u200bte` skill",
-                1,
-            ),
-            "opencode_zero_width_operation": lambda text: text.replace(
-                "`auto: <argument>`",
-                "`au\u200bto: <argument>`",
                 1,
             ),
             "claude_uppercase_placeholder": lambda text: text.replace(
@@ -2627,11 +2681,6 @@ release_gate:
             "claude_encoded_placeholder": lambda text: text.replace(
                 "`/route auto: <argument>`",
                 "`/route auto: &lt;argument&gt;`",
-                1,
-            ),
-            "opencode_uppercase_placeholder": lambda text: text.replace(
-                "`auto: <argument>`",
-                "`auto: <ARGUMENT>`",
                 1,
             ),
             "uppercase_target_placeholder": lambda text: text.replace(
@@ -2657,11 +2706,6 @@ release_gate:
             "claude_tab_separator": lambda text: text.replace(
                 "`/route auto: <argument>`",
                 "`/route\tauto: <argument>`",
-                1,
-            ),
-            "opencode_nbsp_separator": lambda text: text.replace(
-                "`auto: <argument>`",
-                "`auto:\u00a0<argument>`",
                 1,
             ),
             "slash_unit_separator": lambda text: text
@@ -2731,7 +2775,6 @@ release_gate:
         nonportable = {
             "codex_skill",
             "claude_skill",
-            "opencode_skill",
             "shared_argument",
             "bare_codex",
             "non_auto_codex",
@@ -2744,23 +2787,18 @@ release_gate:
             "whitespace_claude",
             "literal_argument_sentinel",
             "encoded_argument_sentinel",
-            "encoded_opencode_sentinel",
             "literal_target_sentinel",
             "claude_zero_width_identity",
             "claude_private_use_identity",
-            "opencode_zero_width_identity",
-            "opencode_zero_width_operation",
             "claude_uppercase_placeholder",
             "claude_spaced_placeholder",
             "claude_self_closing_placeholder",
             "claude_encoded_placeholder",
-            "opencode_uppercase_placeholder",
             "uppercase_target_placeholder",
             "nested_claude_placeholder",
             "claude_nbsp_separator",
             "claude_em_space_separator",
             "claude_tab_separator",
-            "opencode_nbsp_separator",
             "codex_status_suffix",
             "codex_status_trailing_argument",
             "codex_off_prefix",
@@ -2780,10 +2818,9 @@ release_gate:
                 target = Path(tmp) / "route"
                 shutil.copytree(source.parent, target)
                 skill_file = target / "SKILL.md"
-                skill_file.write_text(
-                    mutate(source_text),
-                    encoding="utf-8",
-                )
+                mutated = mutate(source_text)
+                self.assertNotEqual(mutated, source_text, "mutation must exercise the current contract")
+                skill_file.write_text(mutated, encoding="utf-8")
 
                 report = evaluate_skill(target)
 
@@ -2852,18 +2889,13 @@ release_gate:
         self.assertEqual(report.included_adapters, ("codex",))
         self.assertIn("Codex-specific $skill invocation", report.reason)
 
-    def test_partial_portability_records_exact_adapter_decision(self) -> None:
+    def test_retired_target_exclusion_does_not_reduce_current_portability(self) -> None:
         report = evaluate_skill(self.fixture("partial-portability"))
-
-        self.assertFalse(report.portable)
+        self.assertTrue(report.portable)
         self.assertEqual(report.included_adapters, ("codex", "claude"))
         self.assertTrue(report.adapter_decision("codex").included)
         self.assertTrue(report.adapter_decision("claude").included)
-        self.assertFalse(report.adapter_decision("opencode").included)
-        self.assertEqual(
-            report.adapter_decision("opencode").reasons,
-            ("Not compatible with opencode.",),
-        )
+
 
     def test_manifest_render_records_partial_portability(self) -> None:
         portable = evaluate_skill(self.fixture("portable-basic"))
@@ -2878,12 +2910,11 @@ release_gate:
                     "version: 0.1.0-rc.1",
                     "skills:",
                     "  partial-portability:",
-                    "    portable: false",
+                    "    portable: true",
                     "    adapters: [codex, claude]",
-                    '    reason: "Not compatible with opencode."',
                     "  portable-basic:",
                     "    portable: true",
-                    "    adapters: [codex, claude, opencode]",
+                    "    adapters: [codex, claude]",
                     "",
                 ]
             ),
@@ -2979,14 +3010,6 @@ release_gate:
                 / "transformable-frontmatter"
                 / "SKILL.md"
             ).read_text(encoding="utf-8")
-            opencode_skill = (
-                output_root
-                / "opencode"
-                / ".opencode"
-                / "skills"
-                / "transformable-frontmatter"
-                / "SKILL.md"
-            ).read_text(encoding="utf-8")
 
             self.assertIn("argument-hint:", codex_skill)
             self.assertIn("schema-version:", codex_skill)
@@ -2994,85 +3017,10 @@ release_gate:
             self.assertNotIn("argument-hint:", claude_skill)
             self.assertNotIn("schema-version:", claude_skill)
             self.assertNotIn("version:", claude_skill)
-            self.assertNotIn("argument-hint:", opencode_skill)
-            self.assertNotIn("schema-version:", opencode_skill)
-            self.assertNotIn("version:", opencode_skill)
 
-    def test_opencode_generation_creates_curated_command_aliases_for_0_1_1(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            output_root = Path(tmp) / "dist" / "adapters"
 
-            sync_adapter_output("0.1.1", output_root=output_root)
 
-            command_root = output_root / "opencode" / ".opencode" / "commands"
-            aliases = {path.stem for path in command_root.glob("*.md")}
-            self.assertEqual(aliases, set(OPENCODE_COMMAND_ALIASES))
-            self.assertFalse((command_root / "workflow.md").exists())
-            self.assertFalse((command_root / "verify.md").exists())
-            self.assertFalse((output_root / "claude" / ".claude" / "commands").exists())
 
-            for alias in OPENCODE_COMMAND_ALIASES:
-                with self.subTest(alias=alias):
-                    alias_path = command_root / f"{alias}.md"
-                    skill_path = (
-                        output_root
-                        / "opencode"
-                        / ".opencode"
-                        / "skills"
-                        / alias
-                        / "SKILL.md"
-                    )
-                    self.assertTrue(skill_path.is_file())
-                    alias_text = alias_path.read_text(encoding="utf-8")
-                    self.assertEqual(alias_text, render_opencode_command_alias(alias))
-                    self.assertIn("description:", alias_text)
-                    self.assertIn("$ARGUMENTS", alias_text)
-
-    def test_opencode_alias_generation_rejects_missing_curated_skill(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            skills_root = self.copy_fixture_skills(root, ("portable-basic",))
-            output_root = root / "dist" / "adapters"
-
-            with self.assertRaisesRegex(ValueError, "opencode command alias proposal"):
-                sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
-
-            self.assertFalse(output_root.exists())
-
-    def test_manifest_records_exact_opencode_command_alias_paths(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            output_root = Path(tmp) / "dist" / "adapters"
-
-            sync_adapter_output("0.1.1", output_root=output_root)
-            manifest = parse_manifest_yaml(
-                (output_root / "manifest.yaml").read_text(encoding="utf-8"),
-                output_root / "manifest.yaml",
-            )
-
-            opencode_aliases = manifest.command_aliases["opencode"]
-            self.assertEqual(opencode_aliases.count, len(OPENCODE_COMMAND_ALIASES))
-            self.assertEqual(tuple(opencode_aliases.aliases), OPENCODE_COMMAND_ALIASES)
-            for alias in OPENCODE_COMMAND_ALIASES:
-                self.assertEqual(
-                    opencode_aliases.aliases[alias],
-                    f"dist/adapters/opencode/.opencode/commands/{alias}.md",
-                )
-
-    def test_manifest_records_opencode_command_aliases_for_v_prefixed_releases(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            output_root = Path(tmp) / "dist" / "adapters"
-
-            sync_adapter_output("v0.1.5", output_root=output_root)
-            manifest = parse_manifest_yaml(
-                (output_root / "manifest.yaml").read_text(encoding="utf-8"),
-                output_root / "manifest.yaml",
-            )
-
-            self.assertIn("opencode", manifest.command_aliases)
-            self.assertEqual(
-                tuple(manifest.command_aliases["opencode"].aliases),
-                OPENCODE_COMMAND_ALIASES,
-            )
 
     def test_adapter_generation_drift_check_detects_stale_and_unexpected_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -3217,7 +3165,7 @@ release_gate:
                 "contract",
                 lambda manifest_path: manifest_path.write_text(
                     manifest_path.read_text(encoding="utf-8").replace(
-                        "adapters: [codex, claude, opencode]",
+                        "adapters: [codex, claude]",
                         "adapters: [codex]",
                         1,
                     ),
@@ -3498,107 +3446,8 @@ release_gate:
         self.assertNotEqual(invalid_verbose.returncode, 0)
         self.assertIn("--verbose is only supported with --check", invalid_verbose.stderr)
 
-    def test_opencode_command_alias_validation_rejects_missing_extra_and_dangling_aliases(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            output_root = Path(tmp) / "dist" / "adapters"
 
-            sync_adapter_output("0.1.1", output_root=output_root)
-            proposal_alias = output_root / "opencode" / ".opencode" / "commands" / "proposal.md"
-            proposal_alias.unlink()
-            errors = validate_adapter_output("0.1.1", output_root=output_root)
-            self.assertTrue(
-                any("opencode command alias missing: proposal" in error for error in errors)
-            )
 
-            sync_adapter_output("0.1.1", output_root=output_root)
-            verify_alias = output_root / "opencode" / ".opencode" / "commands" / "verify.md"
-            verify_alias.write_text(render_opencode_command_alias("verify"), encoding="utf-8")
-            errors = validate_adapter_output("0.1.1", output_root=output_root)
-            self.assertTrue(
-                any("unexpected opencode command alias: verify" in error for error in errors)
-            )
-
-            sync_adapter_output("0.1.1", output_root=output_root)
-            shutil.rmtree(output_root / "opencode" / ".opencode" / "skills" / "proposal")
-            errors = validate_adapter_output("0.1.1", output_root=output_root)
-            self.assertTrue(
-                any("opencode command alias maps to missing skill: proposal" in error for error in errors)
-            )
-
-    def test_opencode_command_alias_manifest_validation_rejects_mismatches(self) -> None:
-        cases = (
-            (
-                "proposal: dist/adapters/opencode/.opencode/commands/proposal.md",
-                "proposal: .opencode/commands/proposal.md",
-                "path must be under dist/adapters/opencode/.opencode/commands",
-            ),
-            (
-                "proposal: dist/adapters/opencode/.opencode/commands/proposal.md",
-                "proposal: dist/adapters/opencode/.opencode/commands/spec.md",
-                "filename stem mismatch: proposal",
-            ),
-            (
-                "command_aliases:\n",
-                (
-                    "command_aliases:\n"
-                    "  claude:\n"
-                    "    count: 1\n"
-                    "    aliases:\n"
-                    "      proposal: dist/adapters/claude/.claude/commands/proposal.md\n"
-                ),
-                "unsupported command alias tool: claude",
-            ),
-            (
-                "    count: 9\n    aliases:\n",
-                (
-                    "    count: 10\n"
-                    "    aliases:\n"
-                    "      verify: dist/adapters/opencode/.opencode/commands/verify.md\n"
-                ),
-                "unexpected opencode command alias in manifest: verify",
-            ),
-        )
-
-        for old, new, expected_error in cases:
-            with self.subTest(expected_error=expected_error):
-                with tempfile.TemporaryDirectory() as tmp:
-                    output_root = Path(tmp) / "dist" / "adapters"
-                    sync_adapter_output("0.1.1", output_root=output_root)
-                    manifest_path = output_root / "manifest.yaml"
-                    manifest_path.write_text(
-                        manifest_path.read_text(encoding="utf-8").replace(old, new, 1),
-                        encoding="utf-8",
-                    )
-
-                    errors = validate_adapter_output("0.1.1", output_root=output_root)
-
-                    self.assertTrue(any(expected_error in error for error in errors), errors)
-
-    def test_opencode_command_alias_validation_rejects_unsafe_or_stale_body(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            output_root = Path(tmp) / "dist" / "adapters"
-            sync_adapter_output("0.1.1", output_root=output_root)
-            alias_path = output_root / "opencode" / ".opencode" / "commands" / "proposal.md"
-            alias_path.write_text(
-                (
-                    "---\n"
-                    "description: Use the RigorLoop proposal skill.\n"
-                    "---\n\n"
-                    "Load @README.md\n"
-                    "!pwd\n"
-                    "model: unsafe\n"
-                    "permissions: elevated\n"
-                ),
-                encoding="utf-8",
-            )
-
-            errors = validate_adapter_output("0.1.1", output_root=output_root)
-
-            self.assertTrue(any("file-reference interpolation" in error for error in errors))
-            self.assertTrue(any("shell-output interpolation" in error for error in errors))
-            self.assertTrue(any("model override" in error for error in errors))
-            self.assertTrue(any("permission policy change" in error for error in errors))
-            self.assertTrue(any("body mismatch" in error for error in errors))
 
     def test_generated_manifest_matches_version_and_generated_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -3618,7 +3467,7 @@ release_gate:
 
             self.assertIn("version: 0.1.0-rc.1", rc_manifest)
             self.assertIn("  portable-basic:", rc_manifest)
-            self.assertIn("    adapters: [codex, claude, opencode]", rc_manifest)
+            self.assertIn("    adapters: [codex, claude]", rc_manifest)
             self.assertIn("  partial-portability:", rc_manifest)
             self.assertIn("    adapters: [codex, claude]", rc_manifest)
             self.assertIn("  unsupported-frontmatter:", rc_manifest)
@@ -3680,7 +3529,7 @@ release_gate:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             skills_root, output_root = self.generate_fixture_adapters(root)
-            (output_root / "opencode" / "AGENTS.md").unlink()
+            (output_root / "claude" / "CLAUDE.md").unlink()
 
             errors = validate_adapter_output(
                 "0.1.0-rc.1",
@@ -3688,7 +3537,7 @@ release_gate:
                 output_root=output_root,
             )
 
-            self.assertTrue(any("missing instruction entrypoint: opencode" in error for error in errors))
+            self.assertTrue(any("missing instruction entrypoint: claude" in error for error in errors))
 
     def test_adapter_generation_rejects_malformed_canonical_skill_before_output(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -3750,7 +3599,7 @@ release_gate:
             manifest_path = output_root / "manifest.yaml"
             manifest_path.write_text(
                 manifest_path.read_text(encoding="utf-8").replace(
-                    "adapters: [codex, claude, opencode]",
+                    "adapters: [codex, claude]",
                     "adapters: [codex]",
                     1,
                 ),
@@ -3887,7 +3736,7 @@ release_gate:
             root = Path(tmp)
             skills_root, output_root = self.generate_fixture_adapters(root)
             release_root = root / "docs" / "releases"
-            self.write_release_artifacts(root, notes_tools=("codex", "claude"))
+            self.write_release_artifacts(root, notes_tools=("codex",))
 
             errors = validate_release_output(
                 "v0.1.0-rc.1",
@@ -3967,7 +3816,7 @@ release_gate:
             self.write_release_artifacts(
                 root,
                 smoke_overrides={
-                    "opencode": {
+                    "claude": {
                         "result": "blocked",
                         "reason": '"maintainer did not run this yet"',
                     }
@@ -3981,7 +3830,7 @@ release_gate:
                 release_root=release_root,
             )
 
-            self.assertTrue(any("smoke.opencode.reason" in error for error in errors))
+            self.assertTrue(any("smoke.claude.reason" in error for error in errors))
 
     def test_release_metadata_validation_enforces_final_smoke_strictness(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -4005,70 +3854,15 @@ release_gate:
 
             self.assertTrue(any("final release requires smoke pass" in error for error in errors))
 
-    def test_v0_1_1_release_metadata_requires_command_alias_smoke_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            skills_root = ROOT / "skills"
-            output_root = root / "dist" / "adapters"
-            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
-            release_root = root / "docs" / "releases"
-            smoke = {
-                tool: {
-                    "result": "pass",
-                    "tool_version": f'"{tool} 1.0.0"',
-                    "evidence": '"manual smoke passed"',
-                    "reason": '""',
-                    "owner": "maintainer",
-                }
-                for tool in SUPPORTED_ADAPTERS
-            }
-            self.write_release_artifacts(
-                root,
-                version="v0.1.1",
-                release_type="final",
-                manifest_version="0.1.1",
-                smoke_overrides=smoke,
-                non_portable_skill_exclusions=(),
-                notes_extra=self.v0_1_1_notes_extra(),
-            )
+    def test_historical_command_alias_smoke_preserves_original_evidence_obligation(self) -> None:
+        from types import SimpleNamespace
+        from adapter_distribution import _validate_opencode_command_alias_smoke
+        manifest = SimpleNamespace(command_aliases={"opencode": {}})
+        metadata = SimpleNamespace(smoke={"opencode": SimpleNamespace(result="pass", evidence="not observed")})
+        self.assertTrue(_validate_opencode_command_alias_smoke("v0.1.1", metadata, manifest))
+        metadata.smoke["opencode"].evidence = "opencode run --command proposal loaded the proposal skill"
+        self.assertEqual(_validate_opencode_command_alias_smoke("v0.1.1", metadata, manifest), [])
 
-            errors = validate_release_output(
-                "v0.1.1",
-                skills_root=skills_root,
-                output_root=output_root,
-                release_root=release_root,
-                changed_paths=(),
-            )
-
-            self.assertTrue(
-                any("smoke.opencode.evidence: v0.1.1 requires command alias behavior evidence" in error for error in errors),
-                errors,
-            )
-
-            smoke["opencode"]["evidence"] = (
-                '"opencode run --command proposal loaded the proposal skill and '
-                'repeated ARGUMENT_MARKER_M3_SMOKE."'
-            )
-            self.write_release_artifacts(
-                root,
-                version="v0.1.1",
-                release_type="final",
-                manifest_version="0.1.1",
-                smoke_overrides=smoke,
-                non_portable_skill_exclusions=(),
-                notes_extra=self.v0_1_1_notes_extra(),
-            )
-
-            self.assertEqual(
-                validate_release_output(
-                    "v0.1.1",
-                    skills_root=skills_root,
-                    output_root=output_root,
-                    release_root=release_root,
-                    changed_paths=(),
-                ),
-                [],
-            )
 
     def test_v0_1_1_release_validation_requires_token_cost_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -4188,7 +3982,6 @@ release_gate:
                 "skills/architecture-review/SKILL.md",
                 "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
                 "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
-                "dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md",
             ),
         )
 
@@ -4199,7 +3992,6 @@ release_gate:
             [
                 "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
                 "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
-                "dist/adapters/opencode/.opencode/skills/architecture-review/SKILL.md",
             ],
         )
         self.assertEqual(
@@ -4694,7 +4486,6 @@ release_gate:
         required_commands = (
             "python scripts/validate-skills.py",
             "python scripts/test-skill-validator.py",
-            "python scripts/build-skills.py --check",
             "python scripts/test-adapter-distribution.py",
             "python scripts/build-adapters.py --version 0.1.0 --check",
             "python scripts/validate-adapters.py --version 0.1.0",
@@ -4987,10 +4778,14 @@ release_gate:
             self.write_v0_1_3_adapter_support_surface(output_root, version="v0.1.5")
             release_output_dir = root / "release-output"
             build_adapter_archives("v0.1.5", release_output_dir, skills_root=skills_root)
+            with zipfile.ZipFile(release_output_dir / "rigorloop-adapter-claude-v0.1.5.zip") as original:
+                with zipfile.ZipFile(release_output_dir / "rigorloop-adapter-opencode-v0.1.5.zip", "w") as historical:
+                    for name in original.namelist():
+                        historical.writestr(name.replace(".claude/", ".opencode/").replace("CLAUDE.md", "AGENTS.md"), original.read(name))
             adapter_artifact_root = self.write_adapter_artifact_metadata(
                 root,
                 release_output_dir,
-                version="v0.1.5",
+                version="v0.1.5", historical=True,
             ).parent
             release_root = root / "docs" / "releases"
             shutil.copytree(ROOT / "docs" / "releases" / "v0.1.5", release_root / "v0.1.5")
@@ -5072,6 +4867,28 @@ release_gate:
 
         self.assertFalse(any("canonical skill validation failed" in error for error in recorded_errors), recorded_errors)
         self.assertTrue(any("canonical skill validation failed" in error for error in current_errors), current_errors)
+
+    def test_recorded_source_checks_retired_target_archive_resources(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills = self.copy_fixture_skills(root, ("portable-with-assets",))
+            archives = root / "archives"
+            build_adapter_archives("v0.1.5", archives, skills_root=skills)
+            reader = adapter_distribution_module._validate_recorded_source_adapter_archives
+            result = reader("v0.1.5", archives, skills_root=skills)
+            self.assertTrue(any("missing adapter archive: opencode:" in e for e in result.errors))
+            # Synthetic historical fixture only: current generation never emits this target.
+            historical = archives / "rigorloop-adapter-opencode-v0.1.5.zip"
+            with zipfile.ZipFile(archives / "rigorloop-adapter-claude-v0.1.5.zip") as source:
+                entries = {name.replace(".claude/", ".opencode/").replace("CLAUDE.md", "AGENTS.md"): source.read(name) for name in source.namelist()}
+            with zipfile.ZipFile(historical, "w") as archive:
+                for name, value in entries.items():
+                    archive.writestr(name, value)
+            self.assertEqual(reader("v0.1.5", archives, skills_root=skills).errors, ())
+            with zipfile.ZipFile(historical, "w") as archive:
+                for name, value in entries.items():
+                    archive.writestr(name, b"stale" if name.endswith("assets/template.md") else value)
+            self.assertTrue(any("mapped resource parity mismatch: opencode/" in e for e in reader("v0.1.5", archives, skills_root=skills).errors))
 
     def test_recorded_source_profile_rejects_missing_mapped_resource_in_archive(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -5183,7 +5000,7 @@ release_gate:
                 release_output_dir,
                 version="v0.1.5",
             ).parent
-            (release_output_dir / adapter_archive_name("opencode", "v0.1.5")).unlink()
+            (release_output_dir / adapter_archive_name("claude", "v0.1.5")).unlink()
             release_root = root / "docs" / "releases"
             shutil.copytree(ROOT / "docs" / "releases" / "v0.1.5", release_root / "v0.1.5")
 
@@ -5199,7 +5016,7 @@ release_gate:
             )
 
         self.assertTrue(
-            any("missing adapter archive: opencode:" in error for error in errors),
+            any("missing adapter archive: claude:" in error for error in errors),
             errors,
         )
 
@@ -5377,32 +5194,6 @@ release_gate:
             self.assertNotIn("claude -p", text)
             self.assertNotIn("opencode run --command", text)
 
-    def test_opencode_entrypoint_documents_skills_and_thin_aliases(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            output_root = Path(tmp) / "dist" / "adapters"
-            sync_adapter_output("0.1.1", output_root=output_root)
-
-            text = (output_root / "opencode" / "AGENTS.md").read_text(encoding="utf-8")
-
-            self.assertIn("Using RigorLoop skills", text)
-            self.assertIn(".opencode/skills/", text)
-            self.assertIn(".opencode/commands/", text)
-            self.assertIn("thin command aliases", text)
-            for command in ("/proposal", "/spec", "/implement", "/code-review", "/pr"):
-                self.assertIn(command, text)
-            self.assertNotIn("/route", text)
-            self.assertNotIn("/verify", text)
-            self.assertIn("opencode run --command proposal", text)
-            self.assertIn("Do not use Codex `$skill` syntax", text)
-            declared_aliases = ", ".join(
-                f"`{alias}`" for alias in OPENCODE_COMMAND_ALIASES
-            )
-            self.assertIn(
-                f"The generated aliases are limited to {declared_aliases}.",
-                text,
-            )
-            for retired_alias in ("spec-review", "plan-review", "test-spec"):
-                self.assertNotIn(f"`{retired_alias}`", text)
 
     def test_readme_exposes_the_current_compact_delivery_route(self) -> None:
         text = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -5425,18 +5216,13 @@ release_gate:
         ):
             self.assertNotIn(retired_entrypoint, recommended)
 
-    def test_readme_distinguishes_claude_and_opencode_invocation_forms(self) -> None:
+    def test_readme_describes_supported_invocation_and_conflict_forms(self) -> None:
         text = (ROOT / "README.md").read_text(encoding="utf-8")
-
         self.assertIn("Claude Code uses native skill slash commands", text)
-        self.assertIn("OpenCode uses generated command aliases", text)
-        self.assertIn(".opencode/skills/", text)
-        self.assertIn(".opencode/commands/", text)
-        for command in ("/proposal", "/spec", "/implement", "/code-review", "/pr"):
-            self.assertIn(command, text)
-        self.assertIn("opencode run --command proposal", text)
-        self.assertNotIn("claude -p", text)
-        self.assertIn("Do not use Codex `$skill` syntax", text)
+        self.assertIn("--force", text)
+        self.assertIn("OpenCode and `--write-state` are no longer supported", text)
+        self.assertNotIn("opencode run --command", text)
+
 
     def test_public_docs_describe_adapter_support_and_generated_boundaries(self) -> None:
         docs = {
@@ -5484,33 +5270,12 @@ release_gate:
         self.assertFalse(any("/commands/" in path for path in tracked), tracked)
 
     def test_public_adapter_readme_documents_archive_install_contract(self) -> None:
-        text = (ROOT / "dist" / "adapters" / "README.md").read_text(encoding="utf-8")
+        text = (ROOT / "dist/adapters/README.md").read_text(encoding="utf-8")
+        for required in ("skills/", "support matrix", "release archives", "rigorloop-adapter-codex-<version>.zip", "rigorloop-adapter-claude-<version>.zip", ".agents/skills/", ".claude/skills/", "--force", "--from-archive", "--dry-run", "outside skill discovery", "project `rigorloop.yaml` and `rigorloop.lock`"):
+            self.assertIn(required, text)
+        self.assertNotIn("rigorloop-adapter-opencode-<version>.zip", text)
+        self.assertIn("Historical archives and evidence remain unchanged", text)
 
-        self.assertIn("canonical `skills/`", text)
-        self.assertIn("`dist/adapters/manifest.yaml`", text)
-        self.assertIn("support matrix", text)
-        self.assertIn("For `v0.1.3` and later", text)
-        self.assertIn("GitHub release archives", text)
-        self.assertIn("rigorloop-adapter-codex-<version>.zip", text)
-        self.assertIn("rigorloop-adapter-claude-<version>.zip", text)
-        self.assertIn("rigorloop-adapter-opencode-<version>.zip", text)
-        self.assertIn("`.agents/skills/`", text)
-        self.assertIn("`.claude/skills/`", text)
-        self.assertIn("`.opencode/skills/`", text)
-        self.assertIn("generated public adapter skill bodies are not tracked source", text.lower())
-        self.assertIn("`docs/reports/adapter-artifacts/releases/<version>.yaml`", text)
-        self.assertIn("v0.1.2 kept repository-tree adapter packages", text)
-        self.assertIn("`.codex/skills/`", text)
-        self.assertIn("ignored local runtime install directory", text)
-        self.assertIn("not a public adapter install source", text)
-        self.assertIn("describes the non-authoritative", text)
-        self.assertIn("candidate metadata, not a publication record", text)
-        self.assertIn("Published historical release archives remain immutable", text)
-        self.assertIn("current candidate installs `route`", text)
-        self.assertIn("omits the obsolete `workflow` alias and guide-only resources", text)
-        self.assertNotIn("continues to describe the released v2 package", text)
-        self.assertNotIn("copy that adapter package root's contents", text)
-        self.assertNotIn("tracked adapter skill bodies under `dist/adapters/**/skills` remain available", text)
 
     def test_root_guidance_points_to_adapter_install_contract_surface(self) -> None:
         docs = {
@@ -6025,7 +5790,7 @@ release_gate:
 
         self.assertIn("version:", manifest)
         self.assertIn("skills:", manifest)
-        self.assertIn("command_aliases:", manifest)
+        self.assertNotIn("command_aliases:", manifest)
         self.assertNotIn("# ", manifest)
         self.assertNotIn("## ", manifest)
         self.assertNotIn("description:", manifest)

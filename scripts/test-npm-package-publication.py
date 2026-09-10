@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -33,7 +34,6 @@ METADATA_FILE = f"adapter-artifacts-{RELEASE_TAG}.json"
 TARGET_SKILL_ROOTS = {
     "codex": Path(".agents/skills"),
     "claude": Path(".claude/skills"),
-    "opencode": Path(".opencode/skills"),
 }
 
 
@@ -47,8 +47,19 @@ def run_command(
 
 
 def pack_package(destination: Path) -> Path:
+    package_root = PACKAGE_ROOT
+    if not (package_root / "dist/metadata" / METADATA_FILE).is_file():
+        # Source checkouts do not author candidate metadata. Exercise the real
+        # producer in a private fixture; prepared-candidate runs use their bytes.
+        from adapter_distribution import build_adapter_archives
+        from release_candidate import write_archive_metadata
+        package_root = destination / "candidate-package"
+        shutil.copytree(PACKAGE_ROOT, package_root, ignore=shutil.ignore_patterns("node_modules"))
+        archives = destination / "archives"
+        build_adapter_archives(RELEASE_TAG, archives, skills_root=ROOT / "skills")
+        write_archive_metadata(ROOT, archives, RELEASE_TAG, "0" * 40, package_root)
     result = run_command(
-        ["npm", "pack", "--json", "--prefix", str(PACKAGE_ROOT), "--pack-destination", str(destination), str(PACKAGE_ROOT)]
+        ["npm", "pack", "--json", "--prefix", str(package_root), "--pack-destination", str(destination), str(package_root)]
     )
     if result.returncode != 0:
         raise AssertionError(f"npm pack failed\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}")
@@ -328,9 +339,6 @@ class NpmPackagePublicationTests(unittest.TestCase):
         elif target == "claude":
             self.assertFalse((project_root / ".agents").exists())
             self.assertFalse((project_root / ".opencode").exists())
-        elif target == "opencode":
-            self.assertFalse((project_root / ".agents").exists())
-            self.assertFalse((project_root / ".claude").exists())
 
     def test_packed_package_smoke_executes_installed_binary_and_real_target_init(self) -> None:
         with tempfile.TemporaryDirectory(prefix="rigorloop-npm-pack-") as pack_temp, tempfile.TemporaryDirectory(
@@ -355,13 +363,13 @@ class NpmPackagePublicationTests(unittest.TestCase):
 
             help_result = run_command([str(bin_path), "--help"], cwd=Path(project_temp))
             self.assertEqual(help_result.returncode, 0, help_result.stderr)
-            self.assertIn("rigorloop init codex|claude|opencode", help_result.stdout)
+            self.assertIn("rigorloop init codex|claude", help_result.stdout)
 
             version_result = run_command([str(bin_path), "version"], cwd=Path(project_temp))
             self.assertEqual(version_result.returncode, 0, version_result.stderr)
             self.assertEqual(version_result.stdout.strip(), f"@xiongxianfei/rigorloop {PACKAGE_VERSION}")
 
-            for target in ("codex", "claude", "opencode"):
+            for target in ("codex", "claude"):
                 with self.subTest(target=target, mode="default"):
                     target_project = Path(project_temp) / f"default-{target}"
                     target_project.mkdir()
@@ -378,21 +386,13 @@ class NpmPackagePublicationTests(unittest.TestCase):
                     self.assert_no_state_files(target_project)
                     self.assert_explicit_recording(bin_path, target_project)
 
-                with self.subTest(target=target, mode="write-state"):
+                with self.subTest(target=target, mode="removed-write-state"):
                     state_project = Path(project_temp) / f"state-{target}"
                     state_project.mkdir()
-                    archive = release_output / f"rigorloop-adapter-{target}-{RELEASE_TAG}.zip"
-                    init_result = run_command(
-                        [str(bin_path), "init", target, "--write-state", "--from-archive", str(archive), "--json"],
-                        cwd=state_project,
-                    )
-                    self.assertEqual(init_result.returncode, 0, init_result.stderr or init_result.stdout)
-                    self.assertEqual(init_result.stderr, "")
-                    init_payload = json.loads(init_result.stdout)
-                    self.assertEqual(init_payload["command"], "init")
-                    self.assert_default_target_install(state_project, target)
-                    self.assertTrue((state_project / "rigorloop.yaml").is_file())
-                    self.assertTrue((state_project / "rigorloop.lock").is_file())
+                    result = run_command([str(bin_path), "init", target, "--write-state", "--force", "--json"], cwd=state_project)
+                    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+                    self.assert_no_state_files(state_project)
+                    self.assertFalse((state_project / TARGET_SKILL_ROOTS[target]).exists())
 
             new_change_result = run_command(
                 [str(bin_path), "new-change", "test-change", "--title", "Test change", "--dry-run", "--json"],

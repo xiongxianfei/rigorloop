@@ -13,7 +13,6 @@ npx @xiongxianfei/rigorloop@latest --help
 npx @xiongxianfei/rigorloop@latest version
 npx @xiongxianfei/rigorloop@latest init codex
 npx @xiongxianfei/rigorloop@latest init claude
-npx @xiongxianfei/rigorloop@latest init opencode
 ```
 
 Use a pinned version when you want reproducible setup:
@@ -82,7 +81,7 @@ The retired new-change, compact and lifecycle command families reject before req
 ```bash
 rigorloop --help
 rigorloop version
-rigorloop init codex|claude|opencode [--write-state] [--from-archive <path>] [--dry-run] [--json]
+rigorloop init codex|claude [--force] [--from-archive <path>] [--dry-run] [--json]
 rigorloop workflow-context [--change <id>] [--format human|json]
 rigorloop logs path [--format human|json]
 rigorloop logs show <invocation-id> [--format human|json]
@@ -102,39 +101,23 @@ Existing v0.4.x output defaults and `--json` remain unchanged. Agents can opt in
 
 ## Target Init
 
-Version 0.5.1 is an unpublished candidate. Its bundled metadata describes route-only candidate archives and makes no claim that those archives or the npm package are publicly available yet. For an exact lockfile-managed install, rerun `init` with `--write-state` to replace `workflow` with `route`; unmanaged or drifted installs remain blocked with state-specific recovery guidance. Legacy persistent automation store adapters are unsupported; no v2 automation mapping is implied.
+Use `rigorloop init codex|claude` to install verified skills into `.agents/skills/` or `.claude/skills/`. Package-bundled trusted metadata identifies the official archive. `--from-archive <path>` uses the same trusted metadata and verification for a local copy; it does not accept a substitute trust root.
 
-After v0.5.1 is published, initialize target support from its verified official release archive:
+Installation checks every candidate skill destination after archive verification. Any existing skill directory or declared file is a conflict, even if empty or identical. It lists the conflicts and installs nothing. Shared parent directories and unrelated skills are preserved.
 
-```bash
-npx @xiongxianfei/rigorloop@0.5.1 init codex --json
-npx @xiongxianfei/rigorloop@0.5.1 init claude --json
-npx @xiongxianfei/rigorloop@0.5.1 init opencode --json
-```
+The installer currently requires Linux with accessible `/proc/self/fd` directory descriptors and a filesystem supporting hard links. If those safety primitives are unavailable, installation stops without replacing existing skills. This requirement applies to fresh installation as well as force replacement.
 
-Preview the write plan without mutating files:
+Use `--force` to replace existing destination skills completely. Local changes and obsolete files within replaced skill directories leave the active installation. Originals remain at reported private paths outside skill discovery for separate inspection and cleanup. Symlinks, unsafe paths and intervening changes still stop installation. Partial failure reports what completed, what failed and what remains untouched; retry performs verification again and existing destinations still require explicit `--force`.
 
 ```bash
-npx @xiongxianfei/rigorloop@0.5.1 init opencode --dry-run --json
+rigorloop init codex --dry-run --json
+rigorloop init claude --from-archive ./rigorloop-adapter-claude-<version>.zip --json
+rigorloop init codex --force
 ```
 
-Use `--from-archive` with a matching generated candidate during local validation, or with the official archive after publication:
+Dry-run reports preliminary destination checks and unperformed archive verification without downloading, extracting or writing. Installation does not read or write `rigorloop.yaml` or `rigorloop.lock`; their presence and contents do not affect installation. `--write-state` and `--adapter` are retired, and OpenCode is unsupported, including pinned and local-archive requests through this CLI.
 
-```bash
-npx @xiongxianfei/rigorloop@0.5.1 init codex --from-archive ./rigorloop-adapter-codex-v0.5.1.zip --json
-npx @xiongxianfei/rigorloop@0.5.1 init claude --from-archive ./rigorloop-adapter-claude-v0.5.1.zip --json
-npx @xiongxianfei/rigorloop@0.5.1 init opencode --from-archive ./rigorloop-adapter-opencode-v0.5.1.zip --json
-```
-
-Default init installs verified target support without writing `rigorloop.yaml` or `rigorloop.lock`. Use `--write-state` when you want RigorLoop-managed project state files. The command verifies the selected archive before extraction and verifies the installed tree before reporting success. Runtime roots are target-specific:
-
-```text
-codex:   .agents/skills
-claude:  .claude/skills
-opencode: .opencode/skills and .opencode/commands when command aliases are declared
-```
-
-Network installs use Node `fetch()`. If download fails in a proxied environment, JSON output reports bounded diagnostics such as target name, release version, trusted archive URL, detected proxy environment variable names, Node env-proxy status, and failure class. It does not print proxy credentials or raw proxy values. On Node versions that support env-proxy, enable it with `NODE_USE_ENV_PROXY=1`, `NODE_OPTIONS=--use-env-proxy`, or `node --use-env-proxy`; otherwise use the `--from-archive` fallback.
+Network failures report bounded diagnostics without proxy credentials. Configure Node's `NODE_USE_ENV_PROXY` or `--use-env-proxy` support when needed, or download the matching official archive and use `--from-archive`.
 
 ## New change recording
 
@@ -154,24 +137,4 @@ https://github.com/xiongxianfei/rigorloop
 
 ## Upgrading retired authoring skills
 
-The unified authoring candidate supplies `design` and withdraws `spec` and `architecture`, including OpenCode command aliases. Use a CLI and verified adapter archive from the same coherent candidate or adopting release. This source change does not publish that release. Ordinary init rejects old or mixed entries before writing; a candidate containing retired entries also rejects. Previously released archives retain their own inventory.
-
-For a managed target, **do not remove the old directories first**: that changes the installed-tree hash and correctly triggers drift protection. The installation owner’s bounded authority is [TNI-DES-01–06](../../specs/target-native-init.md#scoped-design-amendment-managed-authoring-replacement).
-
-1. Stop local writers and inspect `rigorloop.yaml`, `rigorloop.lock` and the selected target’s complete recorded roots. Codex selects `.agents/skills`; Claude selects `.claude/skills`; OpenCode selects both `.opencode/skills` and `.opencode/commands`. Custom, overlapping, missing or unsafe roots need owner reconciliation. Inspect other managed targets too: writing shared state retains their safety checks.
-2. Make a separate backup outside the project and installation roots of **every complete selected root and both state files**, preserving bytes and permissions. Record a state file’s absence explicitly. Verify that the backup is readable and complete. Preserve local additions or modifications separately; a backup does not authorize overwriting them. Keep the untouched original installation in place for eligibility checks.
-3. With explicit authority to replace those complete generated roots and update their state entry, run the following command with the selected target and matching archive. A dry run reports intent and state checks; it does not read or approve archive contents. The actual run verifies candidate trust and inventory and rechecks original hashes before replacement.
-
-```bash
-rigorloop init codex --from-archive /absolute/path/to/rigorloop-adapter-codex-v0.5.1.zip --write-state --dry-run --format json
-rigorloop init codex --from-archive /absolute/path/to/rigorloop-adapter-codex-v0.5.1.zip --write-state --format json
-```
-
-Use `claude` or `opencode` with its matching archive for those targets. The version here identifies the local candidate; select the actual coherent release when one is separately published. `--write-state` is narrowly authorized replacement, not a drift override. Modified old entries, unrecorded additions, manual pre-deletion, mixed ownership and conflicting state block before mutation. Restore the recorded original basis from a known backup only after preserving and reconciling local changes; never delete the lockfile or refresh hashes merely to bypass this check.
-
-4. Inspect the result: `design` exists, retired skills and OpenCode aliases are absent, both selected OpenCode roots agree, installed counts/hashes match the new selected lock entry, and other targets and unrelated content are unchanged. Repeating the same successful command is idempotent. Keep the separate backup and every path reported by the retained-backup diagnostic until that comparison and inspection for late writes are complete.
-5. On a caught failure, the CLI either restores the exact original roots/state or reports incomplete recovery and retained paths. A process interruption can leave a partial pair. Preserve that partial content and any independent changes in another backup before recovery. Under the installation owner’s explicit recovery authority, restore **the complete original selected roots and both original state files as one coherent basis**, including original absence; do not overlay old files on a partial new tree. Inspect and move partial selected content aside before restoring. If another actor changed shared state or other targets, preserve those changes and have their owner reconcile them before restoration; do not overwrite them with the old shared files. Then rerun the same authorized command. Private recovery evidence requires a coherent original or verified candidate basis before retry can proceed; it cannot bless a partial installation.
-
-The CLI retains private `.rigorloop-authoring-*` recovery evidence and detached original/rollback paths outside selected roots. Do not remove these to bypass recovery. Once a coherent pair and any late writes have been inspected, the operator may explicitly remove the reported retained paths and backup; the installer does not automatically delete them. Unrelated files and other targets are outside that cleanup authority.
-
-For a genuinely unmanaged installation with neither state file implicating the target, inspect and separately back up the retired skill directories and applicable command aliases, explicitly remove only those entries, then retry ordinary init. Remaining unrelated content and generated-file conflicts retain their ordinary protections. A managed or ambiguous target cannot use this manual cleanup path to escape the recorded basis.
+The current package contains `design` and `route`; `spec`, `architecture` and `workflow` are retired. Candidates or installed inventories containing retired entries stop with exact-path diagnostics. `--force` replaces only current candidate skills and cannot delete unrelated retired entries. Inspect and preserve old content separately before reconciling those entries; the installer provides no migration or state-repair procedure. Historical release archives retain their original inventories.

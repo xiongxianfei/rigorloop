@@ -320,10 +320,11 @@ test("T03 private failure details are absent from stdout, stderr, retained logs,
 test("concise projections use the controller's semantic exit code", () => {
   const directory = root();
   const archive = join(directory, "invalid.zip");
-  writeFileSync(archive, "not-a-zip");
+  // Missing local archive exercises a deterministic semantic error without
+  // assuming candidate metadata is checked into the source package.
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
   const child = spawnSync(process.execPath, [cli.pathname, "init", "codex", "--from-archive", archive, "--dry-run", "--format", "concise-json", "--no-file-log"], { cwd: directory, encoding: "utf8" });
-  assert.equal(child.status, 3);
+  assert.equal(child.status, 4);
   assert.equal(JSON.parse(child.stdout).exit_code, child.status);
 });
 

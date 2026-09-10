@@ -1,0 +1,168 @@
+{
+  "body": "## Result\n\nSkill: design-review. Review ID: design-review-r4. Review status: changes-requested. Exact package: ten registered members below; upstream proposal-review-r3 remains approved/current and unchanged. Material finding: dist-retained-original-discovery (medium, artifact-local Distribution, design owner). Reporter resolves dist-force-mutation-basis with current correction evidence; prior r3 judgment and origin remain unchanged. No missing direction decision or unassessable package member prevents this actionable judgment.\n\n## Independence and assessment basis\n\nFormal-lifecycle/manual, separately delegated nonauthor distribution-design-reviewer. Parent distribution-design-author authored the package and correction; reviewer edits only review/finding evidence. Full-member assessment and relevant original source/ADR/code reading from earlier rounds remain the basis; the new Distribution replacement sequence, scenarios and risk text were independently read and evaluated with their surrounding contract. Fresh subject inspection confirms all other nine members, proposal r3 and its approval and source/code basis are unchanged. No component-only approval is claimed. Embedded examples are part of their owning subjects; no separate external example is relied on.\n\nThe new placement interaction triggered one bounded official-documentation check because existing project code cannot establish a third-party loader's exclusion rule. The fetched [official OpenAI skill documentation](https://learn.chatgpt.com/docs/build-skills), section Where Codex loads local skills, describes repository .agents/skills discovery and duplicate names appearing separately. It supplies no guarantee for the proposed private-name exclusion. This review does not claim actual hidden-directory discovery is proven; the defect is the unestablished current non-discovery boundary and reliance on the wrong inventory owner. No broader platform search or runtime certification is required to select an outside-root preservation boundary.\n\n## Eight-criterion assessment\n\n1. Technical realization: pass for corrected mutation mechanics, concern for retained-original placement. Snapshot/parent pinning, detach/recheck, exclusive mkdir/hardlink publication and preservation of old inodes now make concurrent-change protection credible without promising exclusion or rollback. Their per-skill backup placement has the separate discovery gap below.\n2. Constraints: concern. Force remains explicit and unit-bounded, state remains ignored/untouched and unsafe destinations still block. The retained originals must also remain outside the active skill population; local CLI inventory exclusion does not establish that target-runtime constraint.\n3. Goal preservation: pass. Original combined model, exact source retirement, full current OpenCode withdrawal and bounded stale scripts remain required. Latest default conflict/force/state simplification is preserved. Bounded filesystem preservation does not itself introduce managed state.\n4. Boundaries: concern. The filesystem concurrency and recovery boundary is now concrete, including late writes surviving in detached originals and no overwritten new public destination. The target-runtime discovery boundary for those preserved directories remains underdefined.\n5. Decisions: pass. Current decisions retain rationale, alternatives, consequences, public compatibility impacts and historical supersessions. Corrected snapshot data is ephemeral actual destination inspection, not withdrawn recorded ownership/state interpretation. Operator cleanup is separate authority.\n6. Shared ownership and consumers: concern limited to the new discovery interaction. The unchanged System/Skill/Design/Release and legacy notices remain coherent with the approved conflict/force policy. The current model cannot declare another tool's discoverable population merely by defining RigorLoop inventory exclusion. Otherwise current/historical release populations and all source owners remain reconciled.\n7. Assessment and verification intent: concern limited to retained-original exclusion. The updated temporal and failure scenarios cover source/new-destination races, unsupported primitives, late writes, partial publication and explicit retry. Existing archive, packed CLI, no-force full preflight, obsolete-file removal, state/unrelated preservation and negative/regression proof remain. Add a representative outcome establishing preserved originals cannot reenter either target's active skill population.\n8. Migration and legacy treatment: pass. State compatibility/writers/managed transaction are expressly superseded; shared candidate hash and actual protective primitives remain reusable. Exact fifteen-source/two-script scope, mixed remainders, protected historical readers and unknown-consumer stops remain unchanged. Prior dist-design-state-shapes stays resolved historical evidence for its former profile.\n\n## Legacy amendment classification\n\nAll five unchanged notices remain new-profile-only amendments. Four grandfathered sources preserve their historical named-release/measurement/package/envelope remainders without forced format conversion. The fifth retains its complete boundary-first-v1 IDs, examples and interactions. Existing Test/Release/stored-format exceptions keep exact applicability; no general test-retirement or historical-rewrite waiver is inferred.\n\n## Prior finding resolution\n\nThe corrected Distribution defines in-memory destination and ancestor snapshots, anchored-parent basename mutation, private detachment with post-detach basis verification, exclusive mkdir/hardlink publication, safe unsupported-primitive rejection, observed candidate verification, preservation/reporting of detached originals for late open-inode writes, and explicit partial-failure/retry outcomes without state interpretation or recovery orchestration. This satisfies dist-force-mutation-basis's original technical-realization outcome. A separate newly exposed target-discovery placement interaction is retained as dist-retained-original-discovery, not hidden by this disposition.\n\n## New material finding\n\nFinding ID: dist-retained-original-discovery; Severity: medium; scope: artifact-local; affected artifact ID: distribution; owning stage: design. Location: Partial failure and retry steps 3/5 and DIST-SR-03/13/18. Per-skill detachment to a private sibling places the original skill directory, including SKILL.md, inside the active .agents/skills or .claude/skills root. Step 5 declares those objects never installed skills because CLI/package inventory excludes reserved private names, but RigorLoop inventory does not govern target-runtime skill discovery. The old helper moved whole target roots, so its private siblings were outside those roots; applying the same location rule at per-skill granularity changes that boundary. Official OpenAI documentation describes scanning .agents/skills and separately displaying duplicate skill names; it does not establish that the proposed unnamed private-name convention is excluded. The required non-discovery behavior has no concrete supported boundary or proof. This can leave replaced/retired content discoverable and recreates the duplicate-skill problem despite a correct active-candidate hash.\n\nRequired outcome and safe resolution: Place retained originals outside every supported target skill-discovery root with a safe concrete detach/retention sequence and bounded failure behavior, or provide an exact supported exclusion mechanism and credible proof for both retained targets. CLI inventory filtering alone is insufficient. Preserve late-open-inode writes, no-clobber publication, unrelated/state content and explicit operator cleanup without restoring a managed-state service. Safe resolution: Design author reconciles retention placement and representative discovery/failure outcomes, then independent whole-package reassessment. No new user direction is needed for a bounded correction preserving the existing installed-skill boundary.\n\n## Evidence, limits and handoff\n\nAuthor evidence design-force-mutation-correction passes focused Distribution structure/reference, enforced prose and git diff --check on the corrected identity. Other nine members retain the unchanged scoped force-boundary evidence; older Distribution identities are not current proof. Full legacy prose remains explicitly failed with 33 unchanged baseline errors and zero introduced signatures, not a pass or Verify waiver. No runtime test, implementation, adoption, final verification or publication is claimed.\n\nRecording status: recorded after successful targeted batch. Review/finding record: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r4.json. Prior finding disposition lives in reviews/design-review-r3.json. The new first-pass finding is recorded before author correction. No automatic downstream handoff: return to Design through Route for bounded correction and fresh independent package reassessment before planning relies on approval. No owner decision is currently required.\n\n## Exact package subjects\n\n- design: docs/design/design/design.md — sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f\n- distribution: docs/design/distribution/distribution.md — sha256:2817f9a9c87710a3c064c34f7b4a0fde627439a086c41f8c95514a43fed9602d\n- distribution-source-amendment-1: specs/single-authored-skill-source-generated-output.md — sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7\n- distribution-source-amendment-2: specs/multi-agent-adapters-first-public-release.md — sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff\n- distribution-source-amendment-3: specs/public-adapter-artifact-migration-examples-concise-skill-release.md — sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694\n- distribution-source-amendment-4: specs/rigorloop-cli-package-and-codex-init.md — sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0\n- distribution-source-amendment-5: specs/published-skill-first-repository-simplification.md — sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1\n- release: docs/design/release/release.md — sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c\n- skill: docs/design/skill/skill.md — sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a\n- system: docs/design/system/system.md — sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: dist-retained-original-discovery; Severity: medium; scope: artifact-local; affected artifact ID: distribution; owning stage: design. Location: Partial failure and retry steps 3/5 and DIST-SR-03/13/18. Per-skill detachment to a private sibling places the original skill directory, including SKILL.md, inside the active .agents/skills or .claude/skills root. Step 5 declares those objects never installed skills because CLI/package inventory excludes reserved private names, but RigorLoop inventory does not govern target-runtime skill discovery. The old helper moved whole target roots, so its private siblings were outside those roots; applying the same location rule at per-skill granularity changes that boundary. Official OpenAI documentation describes scanning .agents/skills and separately displaying duplicate skill names; it does not establish that the proposed unnamed private-name convention is excluded. The required non-discovery behavior has no concrete supported boundary or proof. This can leave replaced/retired content discoverable and recreates the duplicate-skill problem despite a correct active-candidate hash. Source: https://learn.chatgpt.com/docs/build-skills, Where Codex loads local skills; inspected 2026-09-10.",
+      "id": "dist-retained-original-discovery",
+      "origin": {
+        "evidence": "Finding ID: dist-retained-original-discovery; Severity: medium; scope: artifact-local; affected artifact ID: distribution; owning stage: design. Location: Partial failure and retry steps 3/5 and DIST-SR-03/13/18. Per-skill detachment to a private sibling places the original skill directory, including SKILL.md, inside the active .agents/skills or .claude/skills root. Step 5 declares those objects never installed skills because CLI/package inventory excludes reserved private names, but RigorLoop inventory does not govern target-runtime skill discovery. The old helper moved whole target roots, so its private siblings were outside those roots; applying the same location rule at per-skill granularity changes that boundary. Official OpenAI documentation describes scanning .agents/skills and separately displaying duplicate skill names; it does not establish that the proposed unnamed private-name convention is excluded. The required non-discovery behavior has no concrete supported boundary or proof. This can leave replaced/retired content discoverable and recreates the duplicate-skill problem despite a correct active-candidate hash. Source: https://learn.chatgpt.com/docs/build-skills, Where Codex loads local skills; inspected 2026-09-10.",
+        "rationale": "Retained old skills must not remain in the active installed population; Distribution owns concrete filesystem placement, while CLI inventory cannot define external runtime discovery.",
+        "reporter": {
+          "id": "distribution-design-reviewer",
+          "role": "review"
+        },
+        "required_outcome": "Place retained originals outside every supported target skill-discovery root with a safe concrete detach/retention sequence and bounded failure behavior, or provide an exact supported exclusion mechanism and credible proof for both retained targets. CLI inventory filtering alone is insufficient. Preserve late-open-inode writes, no-clobber publication, unrelated/state content and explicit operator cleanup without restoring a managed-state service. Safe resolution: Design author reconciles retention placement and representative discovery/failure outcomes, then independent whole-package reassessment. No new user direction is needed for a bounded correction preserving the existing installed-skill boundary.",
+        "subjects": [
+          {
+            "identity": "sha256:2817f9a9c87710a3c064c34f7b4a0fde627439a086c41f8c95514a43fed9602d",
+            "path": "docs/design/distribution/distribution.md"
+          }
+        ],
+        "supporting_judgment": {
+          "contributors": [
+            {
+              "id": "distribution-design-author",
+              "role": "design"
+            }
+          ],
+          "independence_basis": "Separate delegated nonauthor reviewer independently reassessed corrected Distribution and exact unchanged nine-member package; no reviewed-content changes.",
+          "judgment": "changes-requested",
+          "rationale": "Fresh package reassessment identifies one required artifact-local compatibility/composition boundary correction.",
+          "reviewer": {
+            "id": "distribution-design-reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+              "path": "docs/design/design/design.md"
+            },
+            {
+              "identity": "sha256:2817f9a9c87710a3c064c34f7b4a0fde627439a086c41f8c95514a43fed9602d",
+              "path": "docs/design/distribution/distribution.md"
+            },
+            {
+              "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+              "path": "specs/single-authored-skill-source-generated-output.md"
+            },
+            {
+              "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+              "path": "specs/multi-agent-adapters-first-public-release.md"
+            },
+            {
+              "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+              "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+            },
+            {
+              "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+              "path": "specs/rigorloop-cli-package-and-codex-init.md"
+            },
+            {
+              "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+              "path": "specs/published-skill-first-repository-simplification.md"
+            },
+            {
+              "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+              "path": "docs/design/release/release.md"
+            },
+            {
+              "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+              "path": "docs/design/skill/skill.md"
+            },
+            {
+              "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+              "path": "docs/design/system/system.md"
+            }
+          ]
+        }
+      },
+      "owner": {
+        "id": "distribution-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "distribution-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Place retained originals outside every supported target skill-discovery root with a safe concrete detach/retention sequence and bounded failure behavior, or provide an exact supported exclusion mechanism and credible proof for both retained targets. CLI inventory filtering alone is insufficient. Preserve late-open-inode writes, no-clobber publication, unrelated/state content and explicit operator cleanup without restoring a managed-state service. Safe resolution: Design author reconciles retention placement and representative discovery/failure outcomes, then independent whole-package reassessment. No new user direction is needed for a bounded correction preserving the existing installed-skill boundary.",
+      "resolution": {
+        "actor": {
+          "id": "distribution-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "design-retention-placement-correction",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "Independently reassessed the current Distribution correction. Originals now move directly into a preallocated private same-filesystem retention container outside .agents/skills, .claude/skills, .codex/skills, .opencode and explicitly configured discovery roots, never to runtime siblings even temporarily. Both mutation parents must be anchored; unavailable capability, unsafe placement or filesystem mismatch rejects before detachment. Retention after success/failure/interruption preserves old-inode writes without a discoverable second skill. Operator cleanup remains explicit and no state schema, admission reader or recovery scanner is introduced. The temporal/failure scenarios and risk text make this observable. This meets dist-retained-original-discovery's required outcome without relying on hidden-name filtering or CLI inventory to control an external loader."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:2817f9a9c87710a3c064c34f7b4a0fde627439a086c41f8c95514a43fed9602d",
+          "path": "docs/design/distribution/distribution.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review-r4",
+  "independence_basis": "Separate delegated nonauthor reviewer independently reassessed corrected Distribution and exact unchanged nine-member package; no reviewed-content changes.",
+  "judgment": "changes-requested",
+  "reviewer": {
+    "id": "distribution-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:2817f9a9c87710a3c064c34f7b4a0fde627439a086c41f8c95514a43fed9602d",
+      "path": "docs/design/distribution/distribution.md"
+    },
+    {
+      "identity": "sha256:e4ebe9b64a968aaf4633a80af898fcf18c82216954adedabadface81c0e0b7b7",
+      "path": "specs/single-authored-skill-source-generated-output.md"
+    },
+    {
+      "identity": "sha256:ca11b80ad8372ece28c1ba645ddd8172c0f63999b8ba679168c41372d2c2ddff",
+      "path": "specs/multi-agent-adapters-first-public-release.md"
+    },
+    {
+      "identity": "sha256:9fa84b9f562db1be48d43e4cd34217406b2dcdb79b8e147475def1a7ad82a694",
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+    },
+    {
+      "identity": "sha256:e8e20258e96990fef8577dba146e7f9114dacdbece34f7dd9847d73fd8a2e7e0",
+      "path": "specs/rigorloop-cli-package-and-codex-init.md"
+    },
+    {
+      "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+      "path": "docs/design/release/release.md"
+    },
+    {
+      "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:0bcc1e4af5225b42b0b116cb0f238451032df08485699e5590f78010c709edc2",
+      "path": "docs/design/system/system.md"
+    }
+  ],
+  "target": "design"
+}

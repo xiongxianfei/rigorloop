@@ -1,5 +1,11 @@
 # Public Adapter Artifact Migration, Examples Relocation, and Concise Skill Release
 
+## Scoped Distribution adoption
+
+The [Distribution proposal](../docs/proposals/2026-09-10-distribution-model-and-opencode-retirement.md) selects the new-profile ownership and support transition in [Distribution](../docs/design/distribution/distribution.md#source-displacement-and-preservation), recorded by its [owning change](../docs/changes/2026-09-10-distribution-model-and-opencode-retirement/change.json). This notice takes effect only at reviewed coordinated implementation and successful Verify; it does not retarget the original approval or change historical release inputs. For the new profile, all installation-state interpretation, recorded-tree verification, creation, update/migration and automatic managed replacement obligations are superseded by DIST-SR-10–15. Project state is preserved without inspection or admission checks. Actual candidate skill directories/files conflict by default even when identical; all conflicts are reported after archive verification and before installed-file writes. Explicit `--force` replaces complete candidate units while preserving shared parents, unrelated files and all archive/path/symlink safeguards. The earlier marker-rejection and identical-no-op choices are superseded. Candidate/archive hashing and independently required release-evidence readers retain their owners.
+
+The v0.1.2 compatibility-window decision, historical release evidence, fixture/history separation and bounded skill/measurement remainders stay under their existing owners. Current packaging, archive delivery, installation and supported-target statements resolve through Distribution after adoption; they cannot require new OpenCode packages or a local Codex mirror. No original release, archive or judgment is rewritten, and no unrelated example/fixture deletion is authorized.
+
 ## Status
 
 approved

@@ -1,0 +1,74 @@
+{
+  "body": "## Result\n\n- Skill: code-review\n- Status: completed\n- Artifacts changed: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r3.json and reporter disposition in code-review-m3.json\n- Open blockers: none for M3\n- Next stage: implement M4 through Route\n- Review status: approved\n- Material findings: none open\n- Recording status: recorded\n- Recording blocker: none\n- Review record: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r3.json\n- Assessment scope: milestone\n- Reviewed milestone: M3\n- Milestone closeout: closed in assessment; Route owns actual work state\n- Remaining implementation milestones: M4\n- Required review-resolution: no\n- Finding IDs: dist-m3-generation-runtime-overlap resolved by original reporter\n- Verify readiness: not-claimed\n\n## Independence and exact whole-M3 basis\n\nSeparate nonauthor distribution-code-reviewer reviewed entire M3 c048b647..d3396a22 and both corrections, not only the last changed lines. Parent distribution-implementer authored implementation, tests and reports. Reviewer wrote no reviewed source, Design, plan or routing state. Original first-pass code-review-m3 and r2 judgments retain their identities/meaning; only original reporter disposition and this fresh assessment change.\n\nCurrent context selects implementation-m3-r3 and original open finding. All thirteen current evidence subjects match their registered hashes; all ten approved design-review-r5 subjects and unchanged delivery-review-r2 plan match. No M4 content edits have occurred. Interim reviewer execution used the same implementation bytes as d3396a22; only recording changed afterward, so its focused proof remains applicable. Unchanged caller/selector/historical-reader scope was fully examined during initial M3 review and retains its basis. The corrected production guard and actual tests were reread at each correction.\n\n## Finding disposition\n\nFinding ID: dist-m3-generation-runtime-overlap\n\nThe complete output preflight now rejects target parents/ancestor runtime containment, all nested and ancestor symlinks, regular files with link count other than one, and special entries via lstat before any tree/ordinary/staged writer. Exact allowed package prefixes preserve valid regeneration. Direct eighteen-case preservation tests cover original ancestor/nested aliases and the r2 hardlink overwrite across all three modes, with unchanged external runtime bytes; full independent archive inventory still passes. Reviewer independently ran preservation plus inventory tests (2 passed, 3.565 seconds) on unchanged engineering bytes before final handoff. Registered implementation-m3-r3 binds all 13 current implementation subjects, full C3/C8 and updated actual retirement measurements. The original required preservation outcome is satisfied within bounded preflight scope; no builder concurrency transaction is claimed.\n\n## Whole-M3 checklist\n\n1. Spec alignment: pass. DIST-SR-03–05/17–19 and M3/TG-05/06/08 are met by retiring the standalone mirror commands, retaining canonical/two-target production, and preventing generation from overwriting existing runtime/source content through inspected output paths. The corrected guard closes the previously demonstrated deletion and shared-inode overwrite paths.\n2. Test coverage: pass. Independent filesystem inventory compares complete canonical resource membership and raw bytes with both real archives, preserving allowed Claude frontmatter projection separately. Explicit malformed generated frontmatter, malformed canonical source and stale/missing resource tests replace the removed mirror protection. Direct eighteen-case preservation tests cover tree/ordinary/staged x parent/ancestor/nested symlink/archive symlink/hardlink/special-file hazards. They assert original runtime bytes and no later candidate creation, not just exception messages.\n3. Edge cases: pass within approved bounded producer scope. Existing target parents and runtime roots below output reject; symlink ancestors/descendants and shared-inode regular files cannot redirect writes. Special files reject before potentially blocking writes. Safe exact generated package prefixes permit normal drift correction. Generation does not promise external-writer exclusion or a new recovery transaction.\n4. Error handling: pass. Unsafe outputs fail before generation effects through a shared preflight applied by all three retained writers. lstat distinguishes links/types without following them, unreadable walks propagate failure, and expected ordinary output remains supported. Original actual failures no longer pass silently.\n5. Architecture boundaries: pass. Existing Distribution adapter regression owns package protection; no mirror replacement module, standalone validator, selector/cache or installer state reader is created. Audited write sites are synchronized-tree writes/stale unlink and deterministic ZIP writer invoked only by guarded ordinary/staged builders; local candidate metadata writes use fresh private temporary roots.\n6. Compatibility: pass for selected retirement. Current executable CI/release/selector catalogs omit mirror commands. Historical check IDs, timing/classification facts and retirement-ledger bytes remain original scoped evidence; current operational broad-smoke classification has ten children. Deleted script paths remain classifiable for removal diffs and select real package checks, not fake passing retired aliases. M4 remains the owner of pending mixed documentation navigation.\n7. Security/privacy: pass for reviewed filesystem integrity boundary. The guard prevents demonstrated output aliases from changing active runtime inodes. No credentials, network permissions, adoption or publication authority changed. No actual installed runtime directories were used in reviewer reproductions or evidence fixtures.\n8. Derived artifact currency: pass. Actual two-target archives, canonical raw resources, generated structure and packed candidate integration are tested. Candidate source fixtures copy current script trees so removed scripts cannot survive in a stale cloned baseline. There is no claim that M4 source retirement/navigation is already complete.\n9. Unrelated changes: pass. Complete M3 removes only scripts/build-skills.py and scripts/test-build-skills.py with their exclusive executable callers, current operational classification rows and a README instruction. Historical reader adjustments preserve original facts. Corrections stay in existing guard/test/catalog allocation and evidence; no upstream behavior or plan changes occurred.\n10. Validation evidence: pass. Registered original M3 and successive correction evidence supply E1 owner/admission, actual old/replacement E2 protection and final E3 command/runtime/changed-line/maintenance measurements. Original seven mirror tests and representative replacement failures/successes were executed on isolated source before deletion, not waived. Final measurements keep four affected commands becoming two and twelve broad children becoming ten, with exact measured overlays, actual times and host-load/population limitations. No guaranteed speedup is inferred. Fresh full C3/C8 cover affected generator/selector/release/packed consumers; unchanged C5/C6/C7 evidence is reused with identified unaffected basis.\n\n## Executed checks and limitations\n\nReviewer command python3 scripts/test-adapter-distribution.py AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory passed two tests in 3.565 seconds on current corrected bytes. The preservation test contains eighteen concrete filesystem subcases. Original independent ancestor/symlink/hardlink failure observations remain in earlier review records, rather than being rewritten as passes.\n\nAuthor final python3 scripts/test-adapter-distribution.py passed154 in471.708 seconds. Final all-path bash scripts/ci.sh --mode explicit --timeout600 with the exact registered vector passed all selected checks in316.194 seconds, including real candidate, actual packed CLI, selector and resource checks. Original C5 skill358/canonical19, C6 selector157/cache14, C7 boundary90/lifecycle112 and historical retirement-ledger17 passed; affected consumers were rerun by correction C8. Earlier red hardlink proof had exactly3 failures across the three actual writers; corrected focused4 tests passed3.914 seconds. FIFO rejection was added directly rather than deliberately running a known blocking write, an explicitly justified proof boundary.\n\nFinal isolated E3 reports old mirror check0.123970s, mirror tests0.306453s, adapter check0.532123s and representative adapter tests0.124606s; current adapter check0.490599s and expanded representative tests0.287382s. These are one-run bounded observations with different target/check populations and host load, not performance guarantees. Changed-line totals and maintenance ownership are recorded alongside them.\n\nThe two deleted mirror files have no present hash and are reviewed through exact c048b647..d3396a22 removal scope; extant engineering members below carry identities. No public release, external-writer transaction, branch/PR readiness or successful Verify is asserted. Published skill text is unchanged in M3, so its semantic checklist has no changed member.\n\n## Handoff\n\nNo required M3 finding remains. Route may close M3 and enter M4 under the approved sequence; this reviewer does not mutate workflow state. Navigation amendments that change Design engineering bytes need the responsible assessor's exact-basis renewal, preserving prior approval identities; unchanged behavioral/plan scope can be affirmed through bounded reassessment rather than reauthoring. M4 and its review, final independent whole-change Code Review and distinct Verify remain mandatory before final readiness.\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m3-r3",
+  "independence_basis": "Separate nonauthor reassessed full M3 including both corrections, exact current evidence and independently executed preservation/inventory proof; no reviewed implementation authored.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "distribution-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:bf38dc6c790814bda4b922df18b9ff4359e21c71147366ad27bc63f30a7cc757",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:db7fbf4780d38d00aa7e25bd4ae3e6af5310cb19951d3b0555c8e678b9ea3ad9",
+      "path": "docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml"
+    },
+    {
+      "identity": "sha256:ea7a8adfd25c97573241624bd35f507631c68fb8c1e1ad3b5109743a7d5abf82",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:1f2b513927dd16b4889943326e22bd4f9835a3eec587751221e91fbe7c8d3d37",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:0a92748762f3d57dde1b10dab608958a8b9f6dfb779629534beecefdce67a26a",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:8965bce48ed0d4bf889ba5debbd6e26f1d62cb005958be2e30c9949a10bf021f",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:f681500478f4ae6d754a50789c978738a03fc1dfe9a0d7147627d2f07c310b1f",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:860b5538ee6fa142b3f076dd7d5f7fc365becea1f824f87d7e3fdcfb0b4cabfa",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:f2f8fb8dd779911dd571e78e46e929556f1ade86be4900648a0a2e985fd9bb51",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:7baa963f33e24c171c527bb847f939ffb6a6cd1abbb47180e27a72901bbe7c7c",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:d667f5e3e9176af017a006a59caaaa6454ac00e6411f475f4988fff5ba30dac6",
+      "path": "scripts/validate-broad-smoke-classification.py"
+    },
+    {
+      "identity": "sha256:4f5a635bde18e91739eab998ac256c20e747280204837fc5dff606daece46615",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:05ff9982177b574f1d1f83582d8996b88afc094e1bf59acd47726a7afc33eeb6",
+      "path": "scripts/validation_selection.py"
+    }
+  ],
+  "target": "code"
+}

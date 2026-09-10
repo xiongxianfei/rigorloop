@@ -15,15 +15,7 @@ const ADAPTERS = {
     },
     directoryPlan: [".claude", ".claude/skills"],
   },
-  opencode: {
-    name: "opencode",
-    displayName: "opencode",
-    installRoots: {
-      skills: ".opencode/skills",
-      commands: ".opencode/commands",
-    },
-    directoryPlan: [".opencode", ".opencode/skills", ".opencode/commands"],
-  },
+
 };
 
 function cloneDescriptor(descriptor) {
@@ -41,7 +33,7 @@ function cloneDescriptor(descriptor) {
 }
 
 export function adapterDescriptor(name) {
-  const descriptor = ADAPTERS[name];
+  const descriptor = Object.hasOwn(ADAPTERS, name) ? ADAPTERS[name] : undefined;
   return descriptor ? cloneDescriptor(descriptor) : undefined;
 }
 

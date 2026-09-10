@@ -1,0 +1,200 @@
+{
+  "body": "## Result\n\n- Skill: code-review\n- Status: completed\n- Artifacts changed: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3.json\n- Open blockers: dist-m3-generation-runtime-overlap\n- Next stage: review-resolution through Route\n- Review status: changes-requested\n- Material findings: dist-m3-generation-runtime-overlap\n- Recording status: recorded\n- Recording blocker: none\n- Review record: docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3.json\n- Assessment scope: milestone\n- Reviewed milestone: M3\n- Milestone closeout: resolution-needed\n- Remaining implementation milestones: M3 correction, M4\n- Required review-resolution: yes\n- Finding IDs: dist-m3-generation-runtime-overlap\n- Verify readiness: not-claimed\n\n## Scope and independence\n\nIndependent nonauthor review of complete M3 commit 5b045bab against M2 c048b647. Parent distribution-implementer authored source/tests/evidence; this reviewer only inspected and executed isolated temporary reproductions. Current context selects M3 and registered implementation-m3 evidence; upstream design-review-r5 and delivery-review-r2 remain the governing approved package. No implementation, upstream content, routing or work state was edited. Initial first-pass finding is recorded before author correction, preserving exact subjects and reproductions.\n\n## Checklist\n\n1. Spec alignment: concern. Mirror producer/test removal and package protection transfer follow M3, but the new output guard does not satisfy DIST-SR-05 existing runtime preservation. The actual deletion and overwrite reproductions below contradict the report claim.\n2. Test coverage: concern. Independent canonical file/raw-byte inventory and explicit malformed generated frontmatter are valuable real replacement checks. Stale/missing resources and malformed source remain directly checked. Output guard cases cover equal/below source/active roots and a top-level source alias, but miss ancestor cleanup and symlinks beneath an otherwise safe output root.\n3. Edge cases: concern. Exact runtime roots reject; target parents and nested output aliases can still mutate installed runtime files. This is an observable safety gap, not merely a request for a larger test matrix.\n4. Error handling: concern. Guard returns success for both demonstrated unsafe output placements, after which sync_adapter_output writes/cleans runtime content. Required pre-mutation rejection is absent. Correction must cover all actual writer paths and preserve bytes on failure.\n5. Architecture boundaries: concern. The retained archive/tree producer must not become an alternative installer. Current implementation crosses that boundary through existing output paths. No new state schema or wider platform mechanism is needed; correction belongs to existing producer containment.\n6. Compatibility: pass for other inspected changes. Retired command IDs are absent from current catalog but preserved as explicit historical rows; deletion paths still classify to real replacement checks. Broad-smoke current child classification reflects ten commands while historical timing/ledger records retain original facts. M4 document links are expressly not claimed complete here.\n7. Security/privacy: concern limited to the confirmed filesystem writes/deletions. No credentials or external publication permissions changed. Temporary reviewer fixtures alone were mutated; actual installed repository runtime directories were not used for reproduction.\n8. Derived artifact currency: pass apart from unsafe output guard. Canonical independent inventory checks both supported archives; Claude body/resource comparison is separate from allowed frontmatter projection checks. Candidate tests copy the actual script tree so removed scripts cannot survive through a stale baseline clone. Real C3/C8 generated/packed proof is registered.\n9. Unrelated changes: pass. Removed files are the two approved mirror scripts; current CI/release/catalog and historical reader projections are necessary callers. Broad-smoke current configuration is operational despite its old change-directory location; original historical timing and ledger bytes are preserved. README one-line mirror command removal is scoped.\n10. Validation evidence: pass as executed observations, insufficient for approval of the missing safety cases. Report records seven old mirror checks, actual pre-deletion replacement checks, owner admission and four requested measurements. Controlled isolated comparison records four affected commands becoming two, twelve broad children becoming ten, exact line counts and maintenance ownership; different target populations and host load are disclosed without a performance guarantee. C3 153, C5 358/19, C6 157/14, C7 90/112 and selected C8 passes do not prove the untested overlap boundaries. No new runtime suite was necessary to establish the two concrete failures.\n\n## Material finding\n\nFinding ID: dist-m3-generation-runtime-overlap\n\nSeverity: major\n\nLocation: scripts/adapter_distribution.py:_validate_generation_output and sync_adapter_output (guard around line1693; output writes and stale cleanup around line1725), with applicable build_adapter_archives/build_staged_v3_adapter_archives writer interactions.\n\nEvidence: On exact handoff, a reviewer temporary fixture created <tmp>/.codex/skills/user/SKILL.md containing USER CONTENT. Calling sync_adapter_output('v1.0.0', output_root=<tmp>/.codex) returned successfully and the existing runtime file no longer existed. The guard checks whether output itself contains a .codex/skills pair, while stale cleanup traverses its descendant skills directory. A second independent fixture set output=<tmp>/out, created output/codex/.agents as a directory symlink to <tmp>/.codex, and prepopulated .codex/skills/proposal/SKILL.md. sync_adapter_output returned successfully and that file no longer contained USER CONTENT: generated writes followed a symlink below the validated output root. Both calls used real canonical skills and actual generation, without mocked validation. Stdout observations were respectively 'generation accepted; existing runtime marker preserved: False' and 'nested alias accepted; runtime content preserved: False'. Temporary trees were removed only by their context managers after observation.\n\nRequired outcome: All retained generation modes must reject unsafe overlap before any writes or cleanup, including output directories containing existing active runtime roots and symlinked descendants/destination files that redirect mutations outside the intended output. Preserve existing runtime/source bytes and inventory. A safe ordinary package output containing its expected generated package layout must still work; merely checking the top-level resolved path is insufficient.\n\nSafe resolution path: Implement the correction in the existing output preflight/writer containment, with direct temporary regressions for ancestor cleanup, nested output alias redirection and relevant archive destination aliases. Execute meaningful negative preservation and positive ordinary/staged/tree output checks, refresh affected evidence and return for independent M3 rereview. No upstream design decision is needed: DIST-SR-05 already prohibits automatic runtime deletion/copying. Do not change historical records or expand this into installer state management.\n\n## Handoff and limits\n\nM3 is not closed; first-pass judgment changes-requested. Author correction may proceed only after this record exists; Route owns work/routing. The reviewer does not automatically enter downstream implementation. M4, final independent whole-change Code Review and Verify remain required. This record claims neither branch/PR readiness nor successful final CI/adoption/publication. Deleted scripts/build-skills.py and scripts/test-build-skills.py are reviewed as removals through the exact commit range; extant engineering subjects below carry mechanical identities.\n",
+  "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
+  "contributors": [
+    {
+      "id": "distribution-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Exact 5b045bab: sync_adapter_output to a temporary .codex parent deleted preexisting .codex/skills/user/SKILL.md; separate safe output with codex/.agents symlink to temporary .codex overwrote preexisting skills/proposal/SKILL.md. Both real generation calls succeeded. Full reproduction construction and observed results are in code-review-m3 body.",
+      "id": "dist-m3-generation-runtime-overlap",
+      "origin": {
+        "evidence": "Exact 5b045bab: sync_adapter_output to a temporary .codex parent deleted preexisting .codex/skills/user/SKILL.md; separate safe output with codex/.agents symlink to temporary .codex overwrote preexisting skills/proposal/SKILL.md. Both real generation calls succeeded. Full reproduction construction and observed results are in code-review-m3 body.",
+        "rationale": "DIST-SR-05 prohibits automatic runtime deletion/copying; current guard only checks top-level lexical/resolved destination, while actual descendant writes and cleanup escape it.",
+        "reporter": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "required_outcome": "Reject output ancestor/runtime overlap and nested symlink/destination redirection before writes or cleanup across retained generation modes; preserve runtime/source bytes and retain valid package output, with direct negative/positive regression proof.",
+        "subjects": [
+          {
+            "identity": "sha256:708c894b670c76ee3677b944f2b4fcbe0d408d0552379ee55c18201e0444bbe4",
+            "path": "scripts/adapter_distribution.py"
+          },
+          {
+            "identity": "sha256:ad7a8b0f0a78ade011a9ea08225fddbe3ae2cca61945ffb142fc9ffc01a1db9c",
+            "path": "scripts/test-adapter-distribution.py"
+          }
+        ],
+        "supporting_judgment": {
+          "contributors": [
+            {
+              "id": "distribution-implementer",
+              "role": "implement"
+            }
+          ],
+          "independence_basis": "Separate nonauthor reviewer inspected complete M3 handoff, approved package and execution/retirement evidence; reproduced two actual runtime mutations only in temporary directories.",
+          "judgment": "changes-requested",
+          "rationale": "This major output-containment finding is the reason for current changes-requested judgment.",
+          "reviewer": {
+            "id": "distribution-code-reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "identity": "sha256:bf38dc6c790814bda4b922df18b9ff4359e21c71147366ad27bc63f30a7cc757",
+              "path": "README.md"
+            },
+            {
+              "identity": "sha256:db7fbf4780d38d00aa7e25bd4ae3e6af5310cb19951d3b0555c8e678b9ea3ad9",
+              "path": "docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml"
+            },
+            {
+              "identity": "sha256:708c894b670c76ee3677b944f2b4fcbe0d408d0552379ee55c18201e0444bbe4",
+              "path": "scripts/adapter_distribution.py"
+            },
+            {
+              "identity": "sha256:1f2b513927dd16b4889943326e22bd4f9835a3eec587751221e91fbe7c8d3d37",
+              "path": "scripts/ci.sh"
+            },
+            {
+              "identity": "sha256:0a92748762f3d57dde1b10dab608958a8b9f6dfb779629534beecefdce67a26a",
+              "path": "scripts/release-verify.sh"
+            },
+            {
+              "identity": "sha256:8965bce48ed0d4bf889ba5debbd6e26f1d62cb005958be2e30c9949a10bf021f",
+              "path": "scripts/release_candidate_tests.py"
+            },
+            {
+              "identity": "sha256:ad7a8b0f0a78ade011a9ea08225fddbe3ae2cca61945ffb142fc9ffc01a1db9c",
+              "path": "scripts/test-adapter-distribution.py"
+            },
+            {
+              "identity": "sha256:860b5538ee6fa142b3f076dd7d5f7fc365becea1f824f87d7e3fdcfb0b4cabfa",
+              "path": "scripts/test-retirement-ledger.py"
+            },
+            {
+              "identity": "sha256:4889e3cd54d59f9e77e5ad9c26a4c1d94cf347c8d343813886a342cdfa33a548",
+              "path": "scripts/test-select-validation.py"
+            },
+            {
+              "identity": "sha256:7baa963f33e24c171c527bb847f939ffb6a6cd1abbb47180e27a72901bbe7c7c",
+              "path": "scripts/test-skill-validator.py"
+            },
+            {
+              "identity": "sha256:d667f5e3e9176af017a006a59caaaa6454ac00e6411f475f4988fff5ba30dac6",
+              "path": "scripts/validate-broad-smoke-classification.py"
+            },
+            {
+              "identity": "sha256:4f5a635bde18e91739eab998ac256c20e747280204837fc5dff606daece46615",
+              "path": "scripts/validate-release.py"
+            },
+            {
+              "identity": "sha256:5cc034e118be3452f80f8ec77dd595deb6eba6472aafa3ac713c531abcac61c4",
+              "path": "scripts/validation_selection.py"
+            }
+          ]
+        }
+      },
+      "owner": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Reject output ancestor/runtime overlap and nested symlink/destination redirection before writes or cleanup across retained generation modes; preserve runtime/source bytes and retain valid package output, with direct negative/positive regression proof.",
+      "resolution": {
+        "actor": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "implementation-m3-r3",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "The complete output preflight now rejects target parents/ancestor runtime containment, all nested and ancestor symlinks, regular files with link count other than one, and special entries via lstat before any tree/ordinary/staged writer. Exact allowed package prefixes preserve valid regeneration. Direct eighteen-case preservation tests cover original ancestor/nested aliases and the r2 hardlink overwrite across all three modes, with unchanged external runtime bytes; full independent archive inventory still passes. Reviewer independently ran preservation plus inventory tests (2 passed, 3.565 seconds) on unchanged engineering bytes before final handoff. Registered implementation-m3-r3 binds all 13 current implementation subjects, full C3/C8 and updated actual retirement measurements. The original required preservation outcome is satisfied within bounded preflight scope; no builder concurrency transaction is claimed."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:708c894b670c76ee3677b944f2b4fcbe0d408d0552379ee55c18201e0444bbe4",
+          "path": "scripts/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:ad7a8b0f0a78ade011a9ea08225fddbe3ae2cca61945ffb142fc9ffc01a1db9c",
+          "path": "scripts/test-adapter-distribution.py"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m3",
+  "independence_basis": "Separate nonauthor reviewer inspected complete M3 handoff, approved package and execution/retirement evidence; reproduced two actual runtime mutations only in temporary directories.",
+  "judgment": "changes-requested",
+  "reviewer": {
+    "id": "distribution-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:bf38dc6c790814bda4b922df18b9ff4359e21c71147366ad27bc63f30a7cc757",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:db7fbf4780d38d00aa7e25bd4ae3e6af5310cb19951d3b0555c8e678b9ea3ad9",
+      "path": "docs/changes/2026-06-27-broad-smoke-safe-parallelism/broad-smoke-child-classification.yaml"
+    },
+    {
+      "identity": "sha256:708c894b670c76ee3677b944f2b4fcbe0d408d0552379ee55c18201e0444bbe4",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:1f2b513927dd16b4889943326e22bd4f9835a3eec587751221e91fbe7c8d3d37",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:0a92748762f3d57dde1b10dab608958a8b9f6dfb779629534beecefdce67a26a",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:8965bce48ed0d4bf889ba5debbd6e26f1d62cb005958be2e30c9949a10bf021f",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:ad7a8b0f0a78ade011a9ea08225fddbe3ae2cca61945ffb142fc9ffc01a1db9c",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:860b5538ee6fa142b3f076dd7d5f7fc365becea1f824f87d7e3fdcfb0b4cabfa",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:4889e3cd54d59f9e77e5ad9c26a4c1d94cf347c8d343813886a342cdfa33a548",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:7baa963f33e24c171c527bb847f939ffb6a6cd1abbb47180e27a72901bbe7c7c",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:d667f5e3e9176af017a006a59caaaa6454ac00e6411f475f4988fff5ba30dac6",
+      "path": "scripts/validate-broad-smoke-classification.py"
+    },
+    {
+      "identity": "sha256:4f5a635bde18e91739eab998ac256c20e747280204837fc5dff606daece46615",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:5cc034e118be3452f80f8ec77dd595deb6eba6472aafa3ac713c531abcac61c4",
+      "path": "scripts/validation_selection.py"
+    }
+  ],
+  "target": "code"
+}

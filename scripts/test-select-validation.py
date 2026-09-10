@@ -43,6 +43,9 @@ from validation_selection import (  # noqa: E402
     select_validation,
 )
 
+# Original timing/classification reports retain the retired mirror rows.
+RETIRED_MIRROR_CHECK_IDS = {"broad_smoke.skills.generation_regression", "broad_smoke.skills.drift"}
+
 ADAPTER_REGRESSION_COMMAND = (
     "python scripts/test-adapter-distribution.py "
     "AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints "
@@ -50,7 +53,12 @@ ADAPTER_REGRESSION_COMMAND = (
     "AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output "
     "AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives "
     "AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root "
-    "AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata"
+    "AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata "
+    "AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory "
+    "AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generated_skill_structure_is_validated_independently "
+    "AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes "
+    "AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource "
+    "AdapterDistributionTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills"
 )
 
 EXPECTED_CATALOG = {
@@ -62,8 +70,6 @@ EXPECTED_CATALOG = {
     "boundary_first.regression": "python scripts/test-boundary-first-validation.py",
     "skills.validate": "python scripts/validate-skills.py",
     "skills.regression": "python scripts/test-skill-validator.py",
-    "skills.generation_regression": "python scripts/test-build-skills.py",
-    "skills.drift": "python scripts/build-skills.py --check",
     "adapters.regression": ADAPTER_REGRESSION_COMMAND,
     "adapters.drift": "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
     "adapters.validate": "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root",
@@ -115,8 +121,6 @@ CI_SELECTED_POLICY_EXCEPTION = {
 BROAD_SMOKE_CHECK_IDS_BY_RUN_CHECK_LABEL = {
     "Validate canonical skills": "broad_smoke.skills.validate",
     "Run skill validator fixtures": "broad_smoke.skills.regression",
-    "Run local skill mirror generation fixtures": "broad_smoke.skills.generation_regression",
-    "Validate generated skill mirror output": "broad_smoke.skills.drift",
     "Run adapter distribution fixtures": "broad_smoke.adapters.regression",
     "Build generated adapter archives": "broad_smoke.adapters.build_archives",
     "Validate generated adapter archives": "broad_smoke.adapters.validate_archives",
@@ -763,6 +767,63 @@ class ValidationSelectionTests(unittest.TestCase):
                 self.assertNotIn("documentation_prose.audit", checks)
                 self.assertTrue({"model.validate", "rigorloop_cli.test"} <= checks.keys())
 
+    def test_proven_lifecycle_deletion_keeps_regression_without_reading_absent_file(self):
+        for path in ("specs/rigorloop-cli-lockfile.md", "docs/adr/ADR-20260516-rigorloop-cli-lockfile.md"):
+            for committed in (False, True):
+                with self.subTest(path=path, committed=committed):
+                    repo = self.make_git_repo()
+                    file = repo / path
+                    file.parent.mkdir(parents=True)
+                    file.write_text("# Retired contract\n")
+                    subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+                    subprocess.run(["git", "commit", "-m", "old contract"], cwd=repo, check=True, capture_output=True)
+                    file.unlink()
+                    if committed:
+                        subprocess.run(["git", "commit", "-am", "remove contract"], cwd=repo, check=True, capture_output=True)
+                    result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+                    checks = {c["id"]: c for c in result.selected_checks}
+                    self.assertNotIn("artifact_lifecycle.validate", checks)
+                    self.assertIn("artifact_lifecycle.regression", checks)
+
+    def test_plan_index_does_not_reintroduce_proven_deleted_lifecycle_inputs(self):
+        repo = self.make_git_repo()
+        path = "specs/rigorloop-cli-lockfile.md"
+        file = repo / path
+        file.parent.mkdir(parents=True)
+        file.write_text("# Retired contract\n")
+        for index in ("docs/plan.md", "docs/plan-archive.md"):
+            target = repo / index
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("# Plan navigation\n")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "old contract and navigation"], cwd=repo, check=True, capture_output=True)
+        file.unlink()
+        result = select_validation(SelectionRequest(mode="explicit", paths=(path, "docs/plan.md"), repo_root=repo))
+        checks = {c["id"]: c for c in result.selected_checks}
+        self.assertIn("artifact_lifecycle.regression", checks)
+        args = shlex.split(checks["artifact_lifecycle.validate"]["command"])
+        self.assertNotIn(path, args)
+        self.assertIn("docs/plan.md", args)
+        self.assertIn("docs/plan-archive.md", args)
+
+    def test_unproven_missing_or_present_lifecycle_input_is_not_suppressed(self):
+        path = "specs/rigorloop-cli-lockfile.md"
+        for kind in ("missing", "present", "dangling-symlink"):
+            with self.subTest(kind=kind):
+                repo = self.make_git_repo()
+                file = repo / path
+                file.parent.mkdir(parents=True)
+                if kind == "present":
+                    file.write_text("# Current input\n")
+                elif kind == "dangling-symlink":
+                    file.symlink_to(repo / "absent-target")
+                if kind != "missing":
+                    subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+                result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+                checks = {c["id"]: c for c in result.selected_checks}
+                self.assertTrue(result.status == "blocked" or
+                                path in shlex.split(checks["artifact_lifecycle.validate"]["command"]))
+
     def test_retired_author_deletion_keeps_package_proof_without_auditing_absent_source(self):
         repo = self.make_git_repo()
         path = "skills/spec/SKILL.md"
@@ -921,8 +982,6 @@ class ValidationSelectionTests(unittest.TestCase):
         child_scripts = [
             "scripts/validate-skills.py",
             "scripts/test-skill-validator.py",
-            "scripts/test-build-skills.py",
-            "scripts/build-skills.py",
             "scripts/test-adapter-distribution.py",
             "scripts/build-adapters.py",
             "scripts/validate-adapters.py",
@@ -930,6 +989,7 @@ class ValidationSelectionTests(unittest.TestCase):
             "scripts/test-artifact-lifecycle-validator.py",
             "scripts/test-review-artifact-validator.py",
             "scripts/validate-review-artifacts.py",
+            "scripts/validate-change-metadata.py",
             "scripts/validate-artifact-lifecycle.py",
         ]
         for relative_path in child_scripts:
@@ -959,9 +1019,9 @@ raise SystemExit({exit_code})
 """.lstrip(),
             )
 
-        change_yaml = workspace / "docs" / "changes" / "example" / "change.yaml"
-        change_yaml.parent.mkdir(parents=True)
-        change_yaml.write_text("change_id: example\n", encoding="utf-8")
+        change_json = workspace / "docs" / "changes" / "example" / "change.json"
+        change_json.parent.mkdir(parents=True)
+        change_json.write_text('{"change_id":"example"}\n', encoding="utf-8")
         subprocess.run(["git", "init"], cwd=workspace, check=True, capture_output=True, text=True)
         subprocess.run(
             ["git", "config", "user.email", "tester@example.com"],
@@ -985,7 +1045,7 @@ raise SystemExit({exit_code})
             capture_output=True,
             text=True,
         )
-        change_yaml.write_text("change_id: example\nstatus: draft\n", encoding="utf-8")
+        change_json.write_text('{"change_id":"example","fixture":"changed"}\n', encoding="utf-8")
         return workspace
 
     def write_fake_script(self, workspace: Path, relative_path: str, body: str) -> Path:
@@ -1536,7 +1596,6 @@ raise SystemExit({exit_code})
             "requirement_fidelity.spec_reads",
             "review_artifacts.regression",
             "selector.regression",
-            "skills.generation_regression",
             "skills.regression",
             "token_cost.regression",
             "token_cost.report_regression",
@@ -1580,8 +1639,7 @@ raise SystemExit({exit_code})
             {
                 "skills.validate",
                 "skills.regression",
-                "skills.generation_regression",
-                "skills.drift",
+                "adapters.regression",
             }.issubset(selected_ids(payload))
         )
         self.assertIn("adapters.drift", selected_ids(payload))
@@ -1600,8 +1658,7 @@ raise SystemExit({exit_code})
                 "boundary_first.validate",
                 "skills.validate",
                 "skills.regression",
-                "skills.generation_regression",
-                "skills.drift",
+                "adapters.regression",
                 "adapters.drift",
                 "documentation_prose.audit",
             }.issubset(selected_ids(payload))
@@ -1615,7 +1672,7 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["status"], "ok")
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
         self.assertEqual(
-            {"skills.generation_regression", "skills.drift"},
+            {"adapters.regression"},
             selected_ids(payload),
         )
 
@@ -2216,7 +2273,7 @@ raise SystemExit({exit_code})
                 "path": ".codex/skills/code-review/SKILL.md",
                 "category": "generated-skills",
                 "status": "ok",
-                "checks": {"skills.generation_regression", "skills.drift"},
+                "checks": {"adapters.regression"},
             },
             {
                 "path": "docs/workflows.md",
@@ -2228,7 +2285,7 @@ raise SystemExit({exit_code})
                 "path": ".gitignore",
                 "category": "ignore-policy",
                 "status": "ok",
-                "checks": {"skills.generation_regression"},
+                "checks": {"adapters.regression"},
             },
             {
                 "path": "CONSTITUTION.md",
@@ -2276,13 +2333,13 @@ raise SystemExit({exit_code})
                 "path": "scripts/validate-skills.py",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression", "skills.generation_regression"},
+                "checks": {"skills.regression", "adapters.regression"},
             },
             {
                 "path": "scripts/review_independence_skill_phrases.py",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression", "skills.generation_regression"},
+                "checks": {"skills.regression", "adapters.regression"},
             },
             {
                 "path": "scripts/validate-guide-system.py",
@@ -2390,19 +2447,19 @@ raise SystemExit({exit_code})
                 "path": "scripts/build-skills.py",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression", "skills.generation_regression"},
+                "checks": {"skills.regression", "adapters.regression"},
             },
             {
                 "path": "tests/fixtures/skills/skill-readability/valid-pilot/SKILL.md",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression", "skills.generation_regression"},
+                "checks": {"skills.regression", "adapters.regression"},
             },
             {
                 "path": "tests/fixtures/skills",
                 "category": "validator-skills",
                 "status": "ok",
-                "checks": {"skills.regression", "skills.generation_regression"},
+                "checks": {"skills.regression", "adapters.regression"},
             },
             {
                 "path": "scripts/validate-release.py",
@@ -3069,8 +3126,6 @@ raise SystemExit({exit_code})
             {
                 "skills.validate",
                 "skills.regression",
-                "skills.generation_regression",
-                "skills.drift",
                 "adapters.regression",
                 "adapters.drift",
                 "adapters.validate",
@@ -4050,6 +4105,49 @@ print("SECOND_STDOUT")
         self.assertIn("SKILL_VERBOSE_STDERR", output)
         self.assertIn("ADAPTER_VERBOSE_STDOUT", output)
 
+    def test_broad_smoke_routes_changed_records_to_current_v2_validator(self):
+        workspace = self.make_broad_smoke_workspace(child_bodies={
+            "scripts/validate-review-artifacts.py": "raise SystemExit(9)\n",
+            "scripts/validate-change-metadata.py":
+                "import sys\nassert sys.argv[1:] == ['docs/changes/example/change.json'], sys.argv\n",
+        })
+        # Other children isolate wrapper dispatch; current-v2 validation itself
+        # is exercised by record-store tests and the real repository smoke.
+        result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_broad_smoke_skips_unrelated_historical_descendants(self):
+        workspace = self.make_broad_smoke_workspace(child_bodies={
+            "scripts/validate-review-artifacts.py": "raise SystemExit(9)\n",
+            "scripts/validate-change-metadata.py": "raise SystemExit(9)\n",
+        })
+        current = workspace / "docs/changes/example/change.json"
+        current.unlink()
+        historical = workspace / "docs/changes/example/broad-smoke-child-classification.yaml"
+        historical.write_text("historical: unchanged-schema\n")
+        subprocess.run(["git", "add", "."], cwd=workspace, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "historical operational input"], cwd=workspace, check=True, capture_output=True)
+        historical.write_text("historical: changed-operational-input\n")
+        result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("9 checks passed", result.stdout)
+        explicit = run_ci("--mode", "broad-smoke", env={"REVIEW_ARTIFACT_ROOTS": "docs/changes/example/"},
+                          script=workspace / "scripts/ci.sh", cwd=workspace)
+        self.assertEqual(explicit.returncode, 9, explicit.stdout + explicit.stderr)
+
+    def test_broad_smoke_reserved_missing_manifest_is_not_skipped(self):
+        workspace = self.make_broad_smoke_workspace(child_bodies={
+            "scripts/validate-change-metadata.py": "raise SystemExit(9)\n",
+        })
+        (workspace / "docs/changes/example/change.json").unlink()
+        residue = workspace / "docs/changes/example/evidence.json"
+        residue.write_text("{}\n")
+        subprocess.run(["git", "add", "."], cwd=workspace, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "reserved residue"], cwd=workspace, check=True, capture_output=True)
+        residue.write_text('{"broken":true}\n')
+        result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
+        self.assertEqual(result.returncode, 9, result.stdout + result.stderr)
+
     def test_broad_smoke_default_success_captures_child_output_and_prints_aggregate(self) -> None:
         workspace = self.make_broad_smoke_workspace()
 
@@ -4064,7 +4162,7 @@ print("SECOND_STDOUT")
         self.assertEqual(result.returncode, 0, msg=output)
         nonempty_lines = [line for line in output.splitlines() if line.strip()]
         self.assertEqual(len(nonempty_lines), 1, msg=output)
-        self.assertRegex(nonempty_lines[0], r"^\[PASS\] broad-smoke: 12 checks passed in \d+(?:\.\d+)?s$")
+        self.assertRegex(nonempty_lines[0], r"^\[PASS\] broad-smoke: 10 checks passed in \d+(?:\.\d+)?s$")
         self.assertNotIn("STDOUT marker", output)
         self.assertNotIn("STDERR marker", output)
         self.assertNotIn("==>", output)
@@ -4074,8 +4172,6 @@ print("SECOND_STDOUT")
         active_children = {
             "scripts/validate-skills.py",
             "scripts/test-skill-validator.py",
-            "scripts/test-build-skills.py",
-            "scripts/build-skills.py",
         }
         workspace = self.make_broad_smoke_workspace(active_counter_children=active_children)
         active_dir = workspace / "active"
@@ -4097,8 +4193,6 @@ print("SECOND_STDOUT")
         active_children = {
             "scripts/validate-skills.py",
             "scripts/test-skill-validator.py",
-            "scripts/test-build-skills.py",
-            "scripts/build-skills.py",
         }
         workspace = self.make_broad_smoke_workspace(active_counter_children=active_children)
         active_dir = workspace / "active"
@@ -4122,8 +4216,6 @@ print("SECOND_STDOUT")
         active_children = {
             "scripts/validate-skills.py",
             "scripts/test-skill-validator.py",
-            "scripts/test-build-skills.py",
-            "scripts/build-skills.py",
         }
         workspace = self.make_broad_smoke_workspace(active_counter_children=active_children)
         active_dir = workspace / "active"
@@ -4142,7 +4234,7 @@ print("SECOND_STDOUT")
 
         self.assertEqual(result.returncode, 0, msg=output)
         self.assertGreaterEqual(self.read_max_active(active_dir), 2, msg=output)
-        self.assertRegex(output, r"^\[PASS\] broad-smoke: 11 checks passed in \d+(?:\.\d+)?s")
+        self.assertRegex(output, r"^\[PASS\] broad-smoke: 9 checks passed in \d+(?:\.\d+)?s")
 
     def test_ci_wrapper_duration_reporting_does_not_use_bash_seconds(self) -> None:
         ci_text = CI.read_text(encoding="utf-8")
@@ -4263,7 +4355,7 @@ os.kill(grandparent, signal.SIGKILL)
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 0, msg=output)
-        self.assertRegex(output, r"\[PASS\] broad-smoke: 12 checks passed in \d+(?:\.\d+)?s")
+        self.assertRegex(output, r"\[PASS\] broad-smoke: 10 checks passed in \d+(?:\.\d+)?s")
         self.assertLess(output.index("validate-skills.py STDOUT marker"), output.index("test-skill-validator.py STDOUT marker"))
         self.assertIn("validate-skills.py STDERR marker", output)
         self.assertIn("test-skill-validator.py STDERR marker", output)
@@ -4272,8 +4364,6 @@ os.kill(grandparent, signal.SIGKILL)
         active_children = {
             "scripts/validate-skills.py",
             "scripts/test-skill-validator.py",
-            "scripts/test-build-skills.py",
-            "scripts/build-skills.py",
         }
         workspace = self.make_broad_smoke_workspace(active_counter_children=active_children)
         active_dir = workspace / "active"
@@ -4331,7 +4421,8 @@ os.kill(grandparent, signal.SIGKILL)
         rows = self.parse_broad_smoke_classification_rows()
         row_ids = [row["Check ID"] for row in rows]
 
-        self.assertEqual(row_ids, ci_check_ids)
+        self.assertEqual([key for key in row_ids if key not in RETIRED_MIRROR_CHECK_IDS], ci_check_ids)
+        self.assertEqual(set(row_ids) - set(ci_check_ids), RETIRED_MIRROR_CHECK_IDS)
         for row in rows:
             with self.subTest(check_id=row["Check ID"]):
                 for field in BROAD_SMOKE_REQUIRED_CLASSIFICATION_FIELDS:
@@ -4361,7 +4452,7 @@ os.kill(grandparent, signal.SIGKILL)
         self.assertNotRegex(broad_smoke_body, r"(?m)^\s*run_check\b.*&\s*$")
         self.assertEqual(
             self.extract_broad_smoke_run_check_ids(ci_text),
-            [row["Check ID"] for row in self.parse_broad_smoke_classification_rows()],
+            [row["Check ID"] for row in self.parse_broad_smoke_classification_rows() if row["Check ID"] not in RETIRED_MIRROR_CHECK_IDS],
         )
 
     def test_broad_smoke_parallel_classification_reconciles_with_ci_inventory(self) -> None:
@@ -4413,7 +4504,7 @@ os.kill(grandparent, signal.SIGKILL)
         self.assertEqual(baseline["scenario"], "broad-smoke-sequential-baseline")
         children = baseline["children"]
         self.assertEqual(
-            [child["check_id"] for child in children],
+            [child["check_id"] for child in children if child["check_id"] not in RETIRED_MIRROR_CHECK_IDS],
             [child["check_id"] for child in self.load_broad_smoke_parallel_classification()["children"]],
         )
         for child in children:

@@ -9,7 +9,7 @@ approved
 - [RigorLoop Scaffolding CLI and Machine-Readable Workflow](../docs/proposals/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow.md)
 - Follow-up: `FU-005` in [follow-ups](../docs/follow-ups.md)
 - Builds on: [RigorLoop CLI Package and Codex Init](rigorloop-cli-package-and-codex-init.md)
-- Builds on: [RigorLoop CLI Lockfile](rigorloop-cli-lockfile.md)
+- Installation dependency: [Distribution](../docs/design/distribution/distribution.md); the original lockfile dependency is historical. The CLI/Record Format models own current recording mechanics.
 
 ## Goal and context
 
