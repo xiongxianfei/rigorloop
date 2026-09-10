@@ -1,0 +1,179 @@
+{
+  "activity": {
+    "owner": {
+      "id": "readability-router",
+      "role": "route"
+    },
+    "reason": "Distinct final local Verify saved and read back successfully after fresh final Code Review; M1 complete, findings resolved and actual prepared/focused proof passed. No PR or publication selected.",
+    "stage": "verify",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "readability-contract-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json",
+      "reason": "Exact proposal and standing direction inspected; no unresolved concern or contrary scope evidence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "readability-contract-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r1.json",
+      "reason": "Retained first-pass assessment of old CLI identity; current package assessment is design-review-r2. Original finding and basis remain preserved with explicit reporter disposition.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "readability-contract-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r2.json",
+      "reason": "Current amended CLI and unchanged Record Format/examples independently assessed; originating contract gap is resolved with explicit behavioral and acceptance clauses.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "readability-contract-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/delivery-review-r1.json",
+      "reason": "Preserved original first-pass plan assessment. Metadata whitespace correction is independently reassessed in delivery-review-r2.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "readability-contract-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/delivery-review-r2.json",
+      "reason": "Responsible assessor independently reassessed exact final plan after metadata-only whitespace correction; unchanged allocation remains adequate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "root-author",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-10-readable-record-output/evidence.json",
+      "reason": "Each check is scoped to its named current subject; later evidence entries require their own results and basis.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "readability-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/code-review-m1-r1.json",
+      "reason": "Exact M1 subjects and current approved Design/Delivery reviewed with no unresolved required findings; final whole-change checkpoint remains distinct.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "readability-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/code-review-final-r1.json",
+      "reason": "Fresh independent full-scope assessment with exact current evidence, unchanged engineering proof and closed Design correction; separate Verify remains required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "readability-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-10-readable-record-output/verify-report.json",
+      "reason": "Distinct final assessment of current exact subjects, closed finding, completed M1, approved final review and actual proof. Local closeout only.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-10-readable-record-output",
+  "contract": "rigorloop-records-v2",
+  "models": [
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+        "path": "docs/design/cli/cli.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:47a0f27650c8b6bde8963c246a61ef4b3aec82b71602a943e3058f2a35ed0298",
+    "path": "docs/plans/2026-09-10-readable-record-output.md"
+  },
+  "proposal": {
+    "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+    "path": "docs/proposals/2026-09-10-readable-record-output.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/delivery-review-r1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/delivery-review-r2.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-10-readable-record-output/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/code-review-m1-r1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/code-review-final-r1.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-10-readable-record-output/verify-report.json"
+    }
+  ],
+  "schema_version": 2,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "root-author",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "CLI-SR-02",
+        "CLI-SR-03",
+        "CLI-SR-04",
+        "CLI-SR-05",
+        "CLI-SR-06",
+        "CLI-SR-08",
+        "CLI-SR-09",
+        "CLI-SR-11",
+        "CLI-SR-13",
+        "CLI-SR-14",
+        "CLI-SR-16",
+        "CLI-SR-17",
+        "CLI-SR-20",
+        "CLI-SR-21"
+      ],
+      "status": "completed"
+    }
+  ]
+}

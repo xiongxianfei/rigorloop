@@ -1,0 +1,150 @@
+{
+  "change_id": "2026-09-10-readable-record-output",
+  "checks": [
+    {
+      "actor": {
+        "id": "root-author",
+        "role": "implement"
+      },
+      "id": "model-and-prose",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/record-format/record-format.md --path docs/design/workflow/workflow.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/cli/cli.md --path docs/proposals/2026-09-10-readable-record-output.md --path docs/plans/2026-09-10-readable-record-output.md --path packages/rigorloop/README.md; git diff --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+          "path": "docs/proposals/2026-09-10-readable-record-output.md"
+        },
+        {
+          "identity": "sha256:47a0f27650c8b6bde8963c246a61ef4b3aec82b71602a943e3058f2a35ed0298",
+          "path": "docs/plans/2026-09-10-readable-record-output.md"
+        },
+        {
+          "identity": "sha256:7a984e98437181022c8be1ba94c980482cd166411dd13aa2c6f79542e62eeedf",
+          "path": "packages/rigorloop/README.md"
+        }
+      ],
+      "summary": "Model structure/reference validation passed. Prose validation passed with zero errors/warnings after separating template metadata comments with blank lines. Patch whitespace passed. Semantic scope is independently assessed by Proposal r1, Design r2 and Delivery r2; these structural checks do not approve behavior."
+    },
+    {
+      "actor": {
+        "id": "root-author",
+        "role": "implement"
+      },
+      "id": "m1-focused",
+      "procedure": "node --test packages/rigorloop/test/record-store-v2-contract.test.js packages/rigorloop/test/record-store-v2-persistence.test.js packages/rigorloop/test/record-store-targeted.test.js packages/rigorloop/test/record-store-queries.test.js packages/rigorloop/test/record-store-interactions.test.js packages/rigorloop/test/record-store-contract.test.js packages/rigorloop/test/record-store-cli.test.js",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:70a877586c64e55e9f92dc9a03738a2e0d631a4718468f91065a093cdf693944",
+          "path": "packages/rigorloop/dist/lib/recording-result.js"
+        },
+        {
+          "identity": "sha256:91af2fb9cf43fe7b3e141bfc9e013253a7309d389af469936dd4c488b5ca2dfe",
+          "path": "packages/rigorloop/dist/lib/recording-construction.js"
+        },
+        {
+          "identity": "sha256:dd2047bc7a6e3c9def8bac6901e9fafe7dddbaaee313cd5f431a371eed045cfd",
+          "path": "packages/rigorloop/dist/lib/recording-spans.js"
+        },
+        {
+          "identity": "sha256:61185496ad8a569e17123d1aa74ddea86fb22a3e530b63a1278eabe9d8a84495",
+          "path": "packages/rigorloop/test/record-store-queries.test.js"
+        },
+        {
+          "identity": "sha256:34a385bd0edbc7c8b5ebcbc0bdc40fe7fe2c9b8adfa2219a3a9520c99b66e569",
+          "path": "packages/rigorloop/test/record-store-targeted.test.js"
+        },
+        {
+          "identity": "sha256:7a984e98437181022c8be1ba94c980482cd166411dd13aa2c6f79542e62eeedf",
+          "path": "packages/rigorloop/README.md"
+        },
+        {
+          "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:47a0f27650c8b6bde8963c246a61ef4b3aec82b71602a943e3058f2a35ed0298",
+          "path": "docs/plans/2026-09-10-readable-record-output.md"
+        }
+      ],
+      "summary": "Fresh current run: 172 tests passed, zero failed/skipped. Node v24.14.1, Python3.12.3, npm11.11.0. TG-01 covers actual public review/verify/context text and compact JSON equivalence, ordinary LF narrative, literal backslash-n and /n examples, Unicode and exact text byte boundaries. TG-02 covers sorted indented creation plus empty/nonempty array insertion and nested replacement, compact existing-record preservation, no-op and unrelated bytes. TG-03 retains contract, public, concurrency, publication/receipt and recovery proof. Earlier pre-correction author runs separately showed the public text regression and stored JSON creation regression fail against old encoding while their companion limits/preservation cases passed; corrected identical focused cases passed. Full prepared package proof remains a separate required check."
+    },
+    {
+      "actor": {
+        "id": "root-author",
+        "role": "implement"
+      },
+      "id": "regression-counterexamples",
+      "procedure": "Independent reviewer copied package and fixtures into a disposable tree, retained exact current tests, restored only recording-result.js, recording-construction.js and recording-spans.js from baseline 6168214f83b8c89e53f2313efce7a25aaf8bfa2b, then ran node --test --test-name-pattern='primary public text renders|stored JSON creation and later edits' test/record-store-queries.test.js test/record-store-targeted.test.js. Expected outcome: both selected regressions fail on their readability assertions. Parent inspected the resulting log and identities.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:70a877586c64e55e9f92dc9a03738a2e0d631a4718468f91065a093cdf693944",
+          "path": "packages/rigorloop/dist/lib/recording-result.js"
+        },
+        {
+          "identity": "sha256:91af2fb9cf43fe7b3e141bfc9e013253a7309d389af469936dd4c488b5ca2dfe",
+          "path": "packages/rigorloop/dist/lib/recording-construction.js"
+        },
+        {
+          "identity": "sha256:dd2047bc7a6e3c9def8bac6901e9fafe7dddbaaee313cd5f431a371eed045cfd",
+          "path": "packages/rigorloop/dist/lib/recording-spans.js"
+        },
+        {
+          "identity": "sha256:61185496ad8a569e17123d1aa74ddea86fb22a3e530b63a1278eabe9d8a84495",
+          "path": "packages/rigorloop/test/record-store-queries.test.js"
+        },
+        {
+          "identity": "sha256:34a385bd0edbc7c8b5ebcbc0bdc40fe7fe2c9b8adfa2219a3a9520c99b66e569",
+          "path": "packages/rigorloop/test/record-store-targeted.test.js"
+        }
+      ],
+      "summary": "Expected negative proof established: exactly two selected tests failed, no passes, process exit1; missing YAML literal body and compact instead of indented file assertions failed. Same current queries/targeted tests passed61 in independent current run; parent fresh seven-suite run passed172. Disposable first layout had an incorrect fixture path and was discarded; only corrected hierarchy with actual assertion failures establishes counterexample proof. Baseline/current identities: {\"baseline_commit\": \"6168214f83b8c89e53f2313efce7a25aaf8bfa2b\", \"baseline_modules\": {\"packages/rigorloop/dist/lib/recording-construction.js\": \"sha256:0fb8f55ac626e48647ad1337bd3601f703bb5d5777a810500544510b0fa60fcc\", \"packages/rigorloop/dist/lib/recording-result.js\": \"sha256:352fccdd52e95bba878972b39d2284d70a1dfe0e616bb1abfd9d5ca896089141\", \"packages/rigorloop/dist/lib/recording-spans.js\": \"sha256:9bd036ba14e1eea6dfb090e252b8bcb79b493523b2ece2f10ae6d9a0be358704\"}, \"current_tests\": {\"packages/rigorloop/test/record-store-queries.test.js\": \"sha256:61185496ad8a569e17123d1aa74ddea86fb22a3e530b63a1278eabe9d8a84495\", \"packages/rigorloop/test/record-store-targeted.test.js\": \"sha256:34a385bd0edbc7c8b5ebcbc0bdc40fe7fe2c9b8adfa2219a3a9520c99b66e569\"}, \"result\": \"Two selected tests failed expected readability assertions; current queries/targeted 61 pass.\"}"
+    },
+    {
+      "actor": {
+        "id": "root-author",
+        "role": "implement"
+      },
+      "id": "prepared-package",
+      "procedure": "bash scripts/ci.sh --mode pr --base 6168214f83b8c89e53f2313efce7a25aaf8bfa2b --head b01d5fd29ba3f7252c26961c869cd4e9b34c8d49",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:7a984e98437181022c8be1ba94c980482cd166411dd13aa2c6f79542e62eeedf",
+          "path": "packages/rigorloop/README.md"
+        },
+        {
+          "identity": "sha256:70a877586c64e55e9f92dc9a03738a2e0d631a4718468f91065a093cdf693944",
+          "path": "packages/rigorloop/dist/lib/recording-result.js"
+        },
+        {
+          "identity": "sha256:91af2fb9cf43fe7b3e141bfc9e013253a7309d389af469936dd4c488b5ca2dfe",
+          "path": "packages/rigorloop/dist/lib/recording-construction.js"
+        },
+        {
+          "identity": "sha256:dd2047bc7a6e3c9def8bac6901e9fafe7dddbaaee313cd5f431a371eed045cfd",
+          "path": "packages/rigorloop/dist/lib/recording-spans.js"
+        },
+        {
+          "identity": "sha256:61185496ad8a569e17123d1aa74ddea86fb22a3e530b63a1278eabe9d8a84495",
+          "path": "packages/rigorloop/test/record-store-queries.test.js"
+        },
+        {
+          "identity": "sha256:34a385bd0edbc7c8b5ebcbc0bdc40fe7fe2c9b8adfa2219a3a9520c99b66e569",
+          "path": "packages/rigorloop/test/record-store-targeted.test.js"
+        }
+      ],
+      "summary": "Actual command exited0 from a detached checkout of the exact source snapshot, preserving user workspace/index. Repository builder generated prepared commit14cc2d638cfe1e6b60b06e7d4d3f555849346b71 and candidate805f6de3c83967c1276c2a90856c220dc1aa138e400c50cdde4ec155595298e7. Release integrity and all selected CI checks passed, including model/schema, boundary and metadata regressions, package CLI tests, npm tarball/installed-binary checks, release validation/transaction regressions, guide validation and repository broad smoke. Earlier raw explicit checks exited1 because generated v1.0.0 metadata was absent; these are not represented as passing. An initial snapshot invocation from a different working HEAD was rejected; executing from the matching detached checkout satisfies exact-source preflight. The proved runtime, tests, CLI model and README are unchanged. Subsequent plan metadata blank-line formatting is separately covered by model-and-prose; subsequent changes are review/evidence/work recording only. No live publication, push, hosted CI or release authority was used."
+    }
+  ],
+  "schema_version": 2
+}

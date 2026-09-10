@@ -1,6 +1,6 @@
 import {RECORDING_SCHEMA,validate,exact} from './recording-contract.js';
 import {canonicalJSON} from './recording-observations.js';
-import {RecordDocument} from './recording-spans.js';
+import {RecordDocument,indentedJSON} from './recording-spans.js';
 import {digest,stop} from './record-store-files.js';
 import {V2_FORMAT} from './record-store-format.js';
 
@@ -90,6 +90,6 @@ export function constructMutation(request,before){
   }
   if(edits-startingEdits!==appEdits-startingAppEdits)changed.push({kind,target:op.op==='change.link'?(target.kind==='model'?{id:target.id}:{}):target});effect(path,op.op==='change.link'?(target.id?{id:target.id}:{}):target,Object.keys(values));operation_index++;
  }catch(e){e.operation_index=operation_index;throw e;}}
- const writes=[];for(const [path,doc]of docs)if(touched.has(doc)){let content=doc.source;if(!Object.hasOwn(before,path)){content=canonicalJSON(doc.data)+'\n';}writes.push({path,expected_identity:Object.hasOwn(before,path)?digest(before[path]):null,content});}
+ const writes=[];for(const [path,doc]of docs)if(touched.has(doc)){let content=doc.source;if(!Object.hasOwn(before,path)){content=indentedJSON(doc.data)+'\n';}writes.push({path,expected_identity:Object.hasOwn(before,path)?digest(before[path]):null,content});}
  return {request:{schema_version:format.version,contract:format.contract,change_id:request.change_id,expected_revision:request.expected_revision,reads:request.reads.map(r=>({path:r.path,expected_identity:r.identity})),writes},changed,effects};
 }

@@ -2,11 +2,7 @@
 
 RigorLoop CLI for repository-local AI-assisted software delivery.
 
-This package exposes the `rigorloop` binary for approved CLI workflows such as
-target initialization and change metadata scaffolding. Release archives remain
-verified GitHub release artifacts; they are not bundled into the npm package.
-npm is the CLI delivery channel, not the canonical source for workflow rules,
-skills, schemas, templates, or adapter archives.
+This package exposes the `rigorloop` binary for approved CLI workflows such as target initialization and change metadata scaffolding. Release archives remain verified GitHub release artifacts; they are not bundled into the npm package. npm is the CLI delivery channel, not the canonical source for workflow rules, skills, schemas, templates, or adapter archives.
 
 ## Quick Start
 
@@ -59,6 +55,17 @@ rigorloop decisions show --root /path/to/project --change example --format json
 ```
 
 Context input is `{ "schema_version": 1, "select": [{ "kind": "work", "where": { "ids": ["work-1"] } }] }`. Full selected fields are the default; scope reports omissions, missing content and continuation. Expand the selection when the engineering decision needs more basis. Status reports recorded activity and counts, never an authoritative next stage.
+
+For reading reports in the terminal, omit `--format json` or use `--format text`:
+
+```bash
+rigorloop review show design-review --root /path/to/project --change example
+rigorloop verify show --root /path/to/project --change example
+```
+
+Text output displays labeled YAML fields with multiline bodies as indented literal blocks, preserving paragraphs, lists and code blocks. It includes the same selected information, identities and scope as JSON. Use `--format json` for automation; JSON strings retain their required newline escapes. Display formatting does not rewrite stored records.
+
+New stored JSON records use two-space indentation. Later targeted edits preserve readable indentation in multiline files while leaving untouched fields and records unchanged. Existing compact records retain their formatting; historical files are not bulk-reformatted. JSON still escapes newlines inside string fields, and machine output remains compact.
 
 A targeted write has `schema_version: 1`, `interface: targeted-recording-v1`, the observed `contract`, `change_id`, `expected_revision`, `reads: [{path, identity}]`, and `operation: {op, target, values}`. Batch replaces operation with operations. Use the read result's exact record_contract and revision, and subject inspection's identities; the CLI does not substitute newly observed content for the actor's decision basis. Each command's --help gives its exact selectors and fields. The CLI constructs registry entries and serialized bytes and preserves omitted fields, neighbors and narrative. Newly created supporting records require explicit applicability; actor judgments and dispositions are never inferred.
 

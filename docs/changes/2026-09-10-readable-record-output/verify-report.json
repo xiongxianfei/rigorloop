@@ -1,0 +1,124 @@
+{
+  "body": "Distinct final local verification assessed the complete user-approved readability change after M1 completion and fresh independent whole-change Code Review. The proposal, corrected CLI Design, retained Record Format/Workflow boundaries and stable delivery allocation agree. The Design reviewer resolved readable-text-contract and approved r2; Delivery r2 approved the exact final plan; the independent code reviewer approved M1 and then a distinct complete final assessment. Current proposal, Design, Delivery and final-review subject identities were checked against the actual files. No open finding, blocker or remaining implementation milestone exists.\n\nPrimary text now presents decoded values as readable YAML fields with literal multiline bodies for ordinary paragraphs and code, retaining exact values and required quoting for unusual strings. New stored JSON uses sorted keys and two-space indentation; local replacement and array append retain readable layout. Existing compact files, unrelated bytes, semantic no-ops, JSON string escapes, compact machine responses and canonical hash/cursor encodings retain their contracts. No Markdown report export, schema migration or historical reformatting was introduced. Indentation uses existing byte budgets, so a near-limit input can reject rather than truncate. Token overhead varies by tokenizer; no fixed token guarantee is claimed.\n\nThe final impact assessment finds runtime presentation and stored construction affected and directly proved. Shared persistence, conflict, recovery, byte limits and prepublication receipt checks retain existing behavior with passing protective tests. No dependency, credential, publication command, release process or customer-adoption policy changes exist. The existing YAML dependency is reused. Package/build integration is affected by delivered library bytes and was tested through the actual prepared tarball and installed binary. Documentation, plan/navigation and the new change-local records are covered by independent assessment and structural checks. User-owned root verify-report.json and historical records were not changed.\n\nActual validation: the V1 node --test command across the seven record-store contract, v2 persistence, targeted, query, interaction and CLI suites passed172 with no failures or skips. Independent current queries/targeted proof passed61, and the same new regression assertions failed twice against baseline6168214f83b8c89e53f2313efce7a25aaf8bfa2b as expected. Whitespace, literal escape, Unicode and control-string probes plus public response equivalence and read-only source checks passed. Evidence records retain commands and exact baseline/test subjects.\n\nThe actual V2 command was bash scripts/ci.sh --mode pr --base 6168214f83b8c89e53f2313efce7a25aaf8bfa2b --head b01d5fd29ba3f7252c26961c869cd4e9b34c8d49, executed from an isolated matching detached checkout. It exited0 after release integrity and all selected checks, including full CLI/package compatibility and repository broad smoke. Prepared source14cc2d638cfe1e6b60b06e7d4d3f555849346b71 and candidate805f6de3c83967c1276c2a90856c220dc1aa138e400c50cdde4ec155595298e7 identify the actual generated inputs. Earlier raw-checkout tests lacked generated release metadata and failed; they are disclosed rather than called successful. Exact comparison confirms all current engineering, proposal and navigation bytes match that proved source; only the plan template-comment blank lines differ, with direct V3 validation and Delivery r2 coverage. Later changes record reviews, evidence attribution and workflow decisions, not tested runtime behavior.\n\nV3 model structure/reference validation for CLI, Record Format and Workflow passed. Documentation prose enforcement passed all four authored documents with zero errors/warnings. V4 record-store validation and git diff --check passed. An actual-record check also confirmed two-space formatting survives review/evidence updates, and the independent final reviewer proved default-text/JSON equivalence on the real M1 report without changing its bytes. Preserved old Design findings and first-pass reviews intentionally retain old subject identities; they are resolved or stale and are not reused as current approval. The final review explicitly reassessed the evidence-recorder attribution correction without changing proof results.\n\nThis is successful local storage/workflow closeout bound to the exact subjects below. It makes no hosted-CI, branch/PR-readiness, push, publication or release claim. Recover an interrupted save only through existing record-store recovery; if a presentation defect is later found, revert the scoped source correction without rewriting historical records.",
+  "change_id": "2026-09-10-readable-record-output",
+  "evidence_refs": [
+    {
+      "id": "model-and-prose",
+      "path": "docs/changes/2026-09-10-readable-record-output/evidence.json"
+    },
+    {
+      "id": "m1-focused",
+      "path": "docs/changes/2026-09-10-readable-record-output/evidence.json"
+    },
+    {
+      "id": "regression-counterexamples",
+      "path": "docs/changes/2026-09-10-readable-record-output/evidence.json"
+    },
+    {
+      "id": "prepared-package",
+      "path": "docs/changes/2026-09-10-readable-record-output/evidence.json"
+    }
+  ],
+  "outcome": "success",
+  "review_refs": [
+    {
+      "id": "proposal-review-r1",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json"
+    },
+    {
+      "id": "design-review-r2",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r2.json"
+    },
+    {
+      "id": "delivery-review-r2",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/delivery-review-r2.json"
+    },
+    {
+      "id": "code-review-m1-r1",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/code-review-m1-r1.json"
+    },
+    {
+      "id": "code-review-final-r1",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/code-review-final-r1.json"
+    }
+  ],
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+      "path": "docs/proposals/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:75546a7d260ed1f9d7f8b7e230d12653f972e00ffd709e7c64c03c9a576f174f",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:7163b170e45e6fe2cedd27c1ed431c7b318d7615bf00be50e9e87cce7bcf15a6",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:47a0f27650c8b6bde8963c246a61ef4b3aec82b71602a943e3058f2a35ed0298",
+      "path": "docs/plans/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:1beaf2aa413aa5d12c9c984549f784d5d57afea8fd8e520a6105ff9f173d4937",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:7a984e98437181022c8be1ba94c980482cd166411dd13aa2c6f79542e62eeedf",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:70a877586c64e55e9f92dc9a03738a2e0d631a4718468f91065a093cdf693944",
+      "path": "packages/rigorloop/dist/lib/recording-result.js"
+    },
+    {
+      "identity": "sha256:91af2fb9cf43fe7b3e141bfc9e013253a7309d389af469936dd4c488b5ca2dfe",
+      "path": "packages/rigorloop/dist/lib/recording-construction.js"
+    },
+    {
+      "identity": "sha256:dd2047bc7a6e3c9def8bac6901e9fafe7dddbaaee313cd5f431a371eed045cfd",
+      "path": "packages/rigorloop/dist/lib/recording-spans.js"
+    },
+    {
+      "identity": "sha256:61185496ad8a569e17123d1aa74ddea86fb22a3e530b63a1278eabe9d8a84495",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:34a385bd0edbc7c8b5ebcbc0bdc40fe7fe2c9b8adfa2219a3a9520c99b66e569",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:4165f8c423ed139b458b6e36ee48b38bd21c0e58938d90eacddae3236f8edefc",
+      "path": "docs/changes/2026-09-10-readable-record-output/evidence.json"
+    },
+    {
+      "identity": "sha256:3e9b3753d51658e1a58fc106e8b54f02b16aaa0bd2d3cfe2f8e1acfe3a8e6aa3",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json"
+    },
+    {
+      "identity": "sha256:4f6667d5157318b292fa72e7b1050ec93922e7e48bd92515c444ea5172be322a",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:870d2f5342c22cc06d2bfb9282a30b61d66d4d72f60239021cb11a3ec9874829",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/delivery-review-r2.json"
+    },
+    {
+      "identity": "sha256:f6003e7f6e4810b2f9988ed8919d3f83aec53717ee3e39b368e245f0569bfde5",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/code-review-m1-r1.json"
+    },
+    {
+      "identity": "sha256:ae2eb138f1fd964a0be2396beb240c76b05cad118d4bf6a0c7a311fbae943f81",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/code-review-final-r1.json"
+    }
+  ],
+  "verifier": {
+    "id": "readability-verifier",
+    "role": "verify"
+  }
+}

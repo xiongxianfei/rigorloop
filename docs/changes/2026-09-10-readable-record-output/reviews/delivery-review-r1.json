@@ -1,0 +1,54 @@
+{
+  "body": "## Result\n- Skill: delivery-review\n- Review status: approved\n- Package members: primary plan docs/plans/2026-09-10-readable-record-output.md; exact approved Design basis and unchanged Workflow coordination interaction are supporting subjects, not additional primary plan members.\n- Upstream review ID: design-review-r2\n- Review ID and round: delivery-review-r1, round 1\n- Traceability result: sufficient requirement-to-boundary-to-M1-to-proof allocation\n- Material findings: none\n- Correction targets: none\n- Recording status: recorded\n- Open blockers: none\n- Immediate next stage: route for authorized implementation assessment\n- Claim limitations: delivery adequacy only; no candidate implementation correctness, executed-check success, Code Review or Verify claim. Earlier candidate authorship is explicitly acknowledged rather than retrospectively authorized.\n\nThe single milestone is proportionate: primary text projection, creation encoding and exact token-span replacement/append are one small serialization change with the same integrity boundary. No intermediate schema, migration or compatibility handler is required. The shared publisher remains unchanged and rollback preserves historical records. M1 approval is followed by an explicitly separate fresh whole-change Code Review after corrections, then distinct Verify; integrated proof cannot substitute for that checkpoint.\n\nCLI-SR-11/14/17/21 map to TG-01 and V1 public text/JSON parity, decoded paragraph/code/Unicode/literal escapes, complete scope and exact byte limits. CLI-SR-03/13/17 map to TG-02 creation and later edits, sorted two-space storage, compact historical preservation and no-op/neighbor bytes. CLI-SR-02/04/05/06/08/09/16/20 map to TG-03 retained malformed/closed-vocabulary rejection, freshness, preview, concurrency/retry, transaction recovery and prepublication receipts. These objectives distinguish observable contract violations; failing-before/passing-after regressions and final subjects are required rather than inferred from test counts.\n\nV1 names the complete relevant seven suites; the plan retains safety protection and strengthens the two affected regression surfaces. V2 requires an exact isolated source snapshot, preserves the real index and unrelated files, and uses ci.sh PR mode. The inspected runner delegates PR/main preparation to release-coordinator check-ci before selected checks, so generated package inputs are prepared through the owned boundary. Raw-checkout packaging failures remain diagnostic evidence; actual prepared results and identities are mandatory. V3 addresses owning model/prose coherence, and V4 follows evidence saves for record/whitespace validity. Changed engineering subjects require renewed proof and appropriate reassessment.\n\nAll eight boundary dimensions are covered proportionately: input/limits and literal strings; current versus historical state; exact subject/record authority; public, helper and advanced composition; no-op, stale retry and concurrency; interrupted-save recovery; compact historical and indented new-file compatibility; and filesystem/package environment. No live release or deployment proof is applicable because no external publication is in scope. The current model-document contract applies, not a newly invented legacy boundary-first proof map.\n\nThe complete primary plan was read, current context confirmed no unresolved finding/blocker, and every Design r2 subject identity was checked unchanged. Review provenance is separate from the plan author. This assessment approves current allocation, not the chronology or correctness of the preexisting candidate.\n",
+  "change_id": "2026-09-10-readable-record-output",
+  "contributors": [
+    {
+      "id": "root-author",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review-r1",
+  "independence_basis": "Separately delegated reviewer authored none of the primary plan or its implementation candidate. Reviewer independently assessed the full plan, approved Design basis and relevant command dispatch after root-author supplied the plan; prior Design assessments did not author its delivery allocation.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "readability-contract-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:f406c7df57c3a1c29c7d5ec65f79635941b104277dfdb3ffc7cdef84ae9be81b",
+      "path": "docs/plans/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:75546a7d260ed1f9d7f8b7e230d12653f972e00ffd709e7c64c03c9a576f174f",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:7163b170e45e6fe2cedd27c1ed431c7b318d7615bf00be50e9e87cce7bcf15a6",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+      "path": "docs/proposals/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:4f6667d5157318b292fa72e7b1050ec93922e7e48bd92515c444ea5172be322a",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/design-review-r2.json"
+    },
+    {
+      "identity": "sha256:dbf13dcdd8e937ccbdedf90c3f8860d070bafb509f7c17fe6d7979c5a095e073",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:e521237177b0d2c31f63eb3cfa53237a7689fa52213f84290c0022ae5f3c805e",
+      "path": "scripts/validation_selection.py"
+    }
+  ],
+  "target": "delivery"
+}

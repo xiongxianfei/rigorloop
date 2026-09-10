@@ -1,0 +1,187 @@
+{
+  "body": "## Result\n- Skill: design-review\n- Review status: changes-requested\n- Package members: CLI owning amendment; unchanged Record Format interaction; complete linked CLI request/receipt and observation examples and Record Format manifest/reassessment examples, each selected in subjects.\n- Upstream review ID: proposal-review-r1\n- Review ID and round: design-review-r1, round 1\n- Material findings: readable-text-contract\n- Correction targets: cli, design author\n- Recording status: recorded\n- Open blockers: none\n- Immediate next stage: route to design owner\n- Claim limitations: no Design approval, delivery authority, implementation correctness or final verification. The existing candidate predates this assessment.\n\nThe new-file and targeted-edit encoding contract is coherent with RF-SR-01/03/04/08: same closed JSON objects and escaped stored bodies, no migration, unchanged neighbor bytes, exact-byte advanced publication/recovery, retained compact hash/cursor encodings and indentation charged against limits. Existing examples remain semantic illustrations, not canonical printer snapshots; their identities and illustrated origin/freshness invariants remain applicable. Required compatibility and failure boundaries are available for Delivery derivation.\n\nThe approved terminal-readability goal has no discriminating owning requirement. CLI-SR-11 and current text paragraphs require preserved meaning/scope but allow the old escaped JSON presentation. The only amendment governs persisted file encoding. Design must make decoded multiline human display and literal escape preservation explicit before Delivery can derive its acceptance oracle. This is a bounded artifact-local correction, not a proposal reconsideration.\n\n## Material finding\nFinding ID: readable-text-contract\nSeverity: medium\nLocation: docs/design/cli/cli.md, Primary result schema and Boundary scan sections\nEvidence: proposal Goals selects actual line breaks and intentional escape preservation; CLI-SR-11 and current text clauses only require same information/meaning and the amendment at Lossless candidate construction addresses stored files.\nRequired outcome: state the primary human-rendering contract and a representative scenario distinguishing decoded newlines from literal backslash-n while preserving complete scope and existing byte-budget/failure rules.\nSafe resolution path: design author adds a bounded CLI paragraph and acceptance scenario; independent reviewer reassesses the revised exact package.\nFinding scope: artifact-local\nAffected artifact IDs: cli\nOwning stages: design\n",
+  "change_id": "2026-09-10-readable-record-output",
+  "contributors": [
+    {
+      "id": "root-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity medium; artifact-local cli/design. Proposal requires actual narrative line breaks and literal escape preservation, but CLI-SR-11/current text clauses preserve only meaning and scope; the amendment addresses stored file encoding only. Old escaped JSON text would still satisfy these clauses.",
+      "id": "readable-text-contract",
+      "origin": {
+        "evidence": "Severity medium; artifact-local cli/design. Proposal requires actual narrative line breaks and literal escape preservation, but CLI-SR-11/current text clauses preserve only meaning and scope; the amendment addresses stored file encoding only. Old escaped JSON text would still satisfy these clauses.",
+        "rationale": "Delivery needs an owning behavioral oracle that rejects the reported terminal regression.",
+        "reporter": {
+          "id": "readability-contract-reviewer",
+          "role": "review"
+        },
+        "required_outcome": "Define primary human multiline rendering and literal escape preservation with a representative acceptance scenario; preserve complete scope and existing byte-limit/failure semantics. Design author corrects CLI; independent reviewer reassesses exact revised package.",
+        "subjects": [
+          {
+            "identity": "sha256:7d82bc215810e0b748f0f19da4b2d267b328574b1988c930b60606d316d0b724",
+            "path": "docs/design/cli/cli.md"
+          }
+        ],
+        "supporting_judgment": {
+          "contributors": [
+            {
+              "id": "root-author",
+              "role": "design"
+            }
+          ],
+          "independence_basis": "Separately delegated reviewer read complete CLI and Record Format members, accepted direction and relied-on examples without authoring target content. No prior candidate code work by this reviewer.",
+          "judgment": "changes-requested",
+          "rationale": "Exact Design package remains coherent for indented storage but lacks a discriminating terminal-readability requirement.",
+          "reviewer": {
+            "id": "readability-contract-reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "identity": "sha256:7d82bc215810e0b748f0f19da4b2d267b328574b1988c930b60606d316d0b724",
+              "path": "docs/design/cli/cli.md"
+            },
+            {
+              "identity": "sha256:75546a7d260ed1f9d7f8b7e230d12653f972e00ffd709e7c64c03c9a576f174f",
+              "path": "docs/design/record-format/record-format.md"
+            },
+            {
+              "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+              "path": "docs/proposals/2026-09-10-readable-record-output.md"
+            },
+            {
+              "identity": "sha256:3e9b3753d51658e1a58fc106e8b54f02b16aaa0bd2d3cfe2f8e1acfe3a8e6aa3",
+              "path": "docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json"
+            },
+            {
+              "identity": "sha256:1d22534396a88cb3f3edb8d19be15cc37b8fe77b458ac2344e9627816094cca8",
+              "path": "docs/design/cli/examples/observation-freshness/expected.json"
+            },
+            {
+              "identity": "sha256:4fde512f9fd9c9b25502d1e983bb9a22382812ac726af6af32e040f7c3ff8222",
+              "path": "docs/design/cli/examples/observation-freshness/scan-b.json"
+            },
+            {
+              "identity": "sha256:d271716355c2d96bd1110c24f37e01de1bfb2a53d011a2f2a884bbebda2b9593",
+              "path": "docs/design/cli/examples/observation-freshness/scan-c.json"
+            },
+            {
+              "identity": "sha256:f35f7b4c6fc54f3bbe5164b1d75ef2b786f7898a8d64199f0d15dab2c2b3018e",
+              "path": "docs/design/cli/examples/work-set/request.json"
+            },
+            {
+              "identity": "sha256:75c8d51fdb5756ad71879f183ca6c08b807b7eba3f8e4648e0adbb682a77ab96",
+              "path": "docs/design/cli/examples/work-set/response.json"
+            },
+            {
+              "identity": "sha256:c13ffa7fe8d4189f2f30f7bb5c603c50c0e8d4d783dc394013d7db81883f32e0",
+              "path": "docs/design/record-format/examples/finding-reassessment/after.json"
+            },
+            {
+              "identity": "sha256:df39c9d8cb532e8fa48f3590e3558a4308bdfd815aab09b68866247be35d2f1d",
+              "path": "docs/design/record-format/examples/finding-reassessment/before.json"
+            },
+            {
+              "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+              "path": "docs/design/record-format/examples/incomplete-review.json"
+            },
+            {
+              "identity": "sha256:523ee35620d9deb9b393ecb59c414bd25e240be81a28dc76f347d412e0201cb6",
+              "path": "docs/design/record-format/examples/minimal-change.json"
+            }
+          ]
+        }
+      },
+      "owner": {
+        "id": "root-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "readability-contract-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Define primary human multiline rendering and literal escape preservation with a representative acceptance scenario; preserve complete scope and existing byte-limit/failure semantics. Design author corrects CLI; independent reviewer reassesses exact revised package.",
+      "resolution": {
+        "actor": {
+          "id": "readability-contract-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Independently inspected CLI sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792. CLI-SR-17 and Primary result schema now require decoded readable multiline narrative, exact literal escapes/value preservation and existing scope/budget safety; Boundary scan acceptance paragraph names public text/JSON comparisons, code blocks, literal backslash-n, exact byte-boundary rejection and unchanged source bytes. Required Design outcome is satisfied; this is contract inspection evidence, not an implementation test claim."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:7d82bc215810e0b748f0f19da4b2d267b328574b1988c930b60606d316d0b724",
+          "path": "docs/design/cli/cli.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review-r1",
+  "independence_basis": "Separately delegated reviewer read complete CLI and Record Format members, accepted direction and relied-on examples without authoring target content. No prior candidate code work by this reviewer.",
+  "judgment": "changes-requested",
+  "reviewer": {
+    "id": "readability-contract-reviewer",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:7d82bc215810e0b748f0f19da4b2d267b328574b1988c930b60606d316d0b724",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:75546a7d260ed1f9d7f8b7e230d12653f972e00ffd709e7c64c03c9a576f174f",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:88e055363c1cb08287895ef685a61b22dc7f35bd51111151bc233910559d0437",
+      "path": "docs/proposals/2026-09-10-readable-record-output.md"
+    },
+    {
+      "identity": "sha256:3e9b3753d51658e1a58fc106e8b54f02b16aaa0bd2d3cfe2f8e1acfe3a8e6aa3",
+      "path": "docs/changes/2026-09-10-readable-record-output/reviews/proposal-review-r1.json"
+    },
+    {
+      "identity": "sha256:1d22534396a88cb3f3edb8d19be15cc37b8fe77b458ac2344e9627816094cca8",
+      "path": "docs/design/cli/examples/observation-freshness/expected.json"
+    },
+    {
+      "identity": "sha256:4fde512f9fd9c9b25502d1e983bb9a22382812ac726af6af32e040f7c3ff8222",
+      "path": "docs/design/cli/examples/observation-freshness/scan-b.json"
+    },
+    {
+      "identity": "sha256:d271716355c2d96bd1110c24f37e01de1bfb2a53d011a2f2a884bbebda2b9593",
+      "path": "docs/design/cli/examples/observation-freshness/scan-c.json"
+    },
+    {
+      "identity": "sha256:f35f7b4c6fc54f3bbe5164b1d75ef2b786f7898a8d64199f0d15dab2c2b3018e",
+      "path": "docs/design/cli/examples/work-set/request.json"
+    },
+    {
+      "identity": "sha256:75c8d51fdb5756ad71879f183ca6c08b807b7eba3f8e4648e0adbb682a77ab96",
+      "path": "docs/design/cli/examples/work-set/response.json"
+    },
+    {
+      "identity": "sha256:c13ffa7fe8d4189f2f30f7bb5c603c50c0e8d4d783dc394013d7db81883f32e0",
+      "path": "docs/design/record-format/examples/finding-reassessment/after.json"
+    },
+    {
+      "identity": "sha256:df39c9d8cb532e8fa48f3590e3558a4308bdfd815aab09b68866247be35d2f1d",
+      "path": "docs/design/record-format/examples/finding-reassessment/before.json"
+    },
+    {
+      "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+      "path": "docs/design/record-format/examples/incomplete-review.json"
+    },
+    {
+      "identity": "sha256:523ee35620d9deb9b393ecb59c414bd25e240be81a28dc76f347d412e0201cb6",
+      "path": "docs/design/record-format/examples/minimal-change.json"
+    }
+  ],
+  "target": "design"
+}
