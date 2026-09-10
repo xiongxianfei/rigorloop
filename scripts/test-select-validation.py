@@ -1268,6 +1268,8 @@ raise SystemExit({exit_code})
             "schemas/compact-current-state-v1.schema.json",
             "tests/fixtures/compact-current-state-v1/schema-records.json",
             "scripts/test-compact-current-state-canonical-contract.py",
+            "scripts/test-retirement-ledger.py",
+            "scripts/retirement_ledger.py",
         ):
             with self.subTest(path=path):
                 result = self.select([path])

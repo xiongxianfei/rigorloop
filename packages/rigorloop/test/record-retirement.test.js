@@ -25,3 +25,11 @@ for(const command of ['compact','lifecycle','new-change'])for(const format of ['
  const {existsSync}=await import('node:fs');for(const p of ['logs','.rigorloop','docs/changes/other'])assert.equal(existsSync(join(root,p)),false);
  assert.doesNotMatch(r.stdout+r.stderr,/private-invalid-request/);
 });
+
+// Repository-only preservation proof; these test files are not installed assets.
+test('current retirement keeps the historical inventory consumer coherent',async()=>{
+ const {spawnSync}=await import('node:child_process');
+ const root=new URL('../../../',import.meta.url);
+ const result=spawnSync('python',['scripts/test-retirement-ledger.py'],{cwd:root,encoding:'utf8'});
+ assert.equal(result.status,0,result.stdout+result.stderr);
+});
