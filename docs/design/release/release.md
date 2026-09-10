@@ -51,7 +51,7 @@ Established configuration and reviewed upstream decisions supply the release pol
 | --- | --- |
 | System composition | [System](../system/system.md) identifies actors, Release and its producers/consumers; it does not duplicate this contract. |
 | Skill and generated packages | [Skill](../skill/skill.md) owns common content; retained adapter invocation/archive contracts own generation, target layout and identities. Release consumes their proof and publishes the selected artifacts. |
-| Installation | [Target-native init](../../../specs/target-native-init.md) and its retained state/download contracts own filesystem mutation and trust. Release requires applicable packed/public installation proof without redefining installation. |
+| Installation | [Distribution](../distribution/distribution.md) owns filesystem mutation and archive trust under the scoped adoption above. Release requires applicable packed/public installation proof without redefining installation. |
 | Engineering assessment and recording | [Review and Closeout](../review-closeout/review-closeout.md) owns assessment/applicability; Workflow coordinates; Record Format/CLI own current engineering records. Release evidence retains its own version-scoped formats. |
 | Test and validation execution | [Test](../test/test.md) owns protective-value criteria. Existing selection/preflight/cache contracts own shared execution. Release owns the operation-specific composition and public evidence obligations below. |
 | Version-specific contracts | Named npm, adapter and activation release contracts may impose stricter rules for their population. They remain necessary dependencies, not automatically transferred histories. |

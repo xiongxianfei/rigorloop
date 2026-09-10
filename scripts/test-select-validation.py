@@ -767,6 +767,63 @@ class ValidationSelectionTests(unittest.TestCase):
                 self.assertNotIn("documentation_prose.audit", checks)
                 self.assertTrue({"model.validate", "rigorloop_cli.test"} <= checks.keys())
 
+    def test_proven_lifecycle_deletion_keeps_regression_without_reading_absent_file(self):
+        for path in ("specs/rigorloop-cli-lockfile.md", "docs/adr/ADR-20260516-rigorloop-cli-lockfile.md"):
+            for committed in (False, True):
+                with self.subTest(path=path, committed=committed):
+                    repo = self.make_git_repo()
+                    file = repo / path
+                    file.parent.mkdir(parents=True)
+                    file.write_text("# Retired contract\n")
+                    subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+                    subprocess.run(["git", "commit", "-m", "old contract"], cwd=repo, check=True, capture_output=True)
+                    file.unlink()
+                    if committed:
+                        subprocess.run(["git", "commit", "-am", "remove contract"], cwd=repo, check=True, capture_output=True)
+                    result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+                    checks = {c["id"]: c for c in result.selected_checks}
+                    self.assertNotIn("artifact_lifecycle.validate", checks)
+                    self.assertIn("artifact_lifecycle.regression", checks)
+
+    def test_plan_index_does_not_reintroduce_proven_deleted_lifecycle_inputs(self):
+        repo = self.make_git_repo()
+        path = "specs/rigorloop-cli-lockfile.md"
+        file = repo / path
+        file.parent.mkdir(parents=True)
+        file.write_text("# Retired contract\n")
+        for index in ("docs/plan.md", "docs/plan-archive.md"):
+            target = repo / index
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("# Plan navigation\n")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "old contract and navigation"], cwd=repo, check=True, capture_output=True)
+        file.unlink()
+        result = select_validation(SelectionRequest(mode="explicit", paths=(path, "docs/plan.md"), repo_root=repo))
+        checks = {c["id"]: c for c in result.selected_checks}
+        self.assertIn("artifact_lifecycle.regression", checks)
+        args = shlex.split(checks["artifact_lifecycle.validate"]["command"])
+        self.assertNotIn(path, args)
+        self.assertIn("docs/plan.md", args)
+        self.assertIn("docs/plan-archive.md", args)
+
+    def test_unproven_missing_or_present_lifecycle_input_is_not_suppressed(self):
+        path = "specs/rigorloop-cli-lockfile.md"
+        for kind in ("missing", "present", "dangling-symlink"):
+            with self.subTest(kind=kind):
+                repo = self.make_git_repo()
+                file = repo / path
+                file.parent.mkdir(parents=True)
+                if kind == "present":
+                    file.write_text("# Current input\n")
+                elif kind == "dangling-symlink":
+                    file.symlink_to(repo / "absent-target")
+                if kind != "missing":
+                    subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+                result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+                checks = {c["id"]: c for c in result.selected_checks}
+                self.assertTrue(result.status == "blocked" or
+                                path in shlex.split(checks["artifact_lifecycle.validate"]["command"]))
+
     def test_retired_author_deletion_keeps_package_proof_without_auditing_absent_source(self):
         repo = self.make_git_repo()
         path = "skills/spec/SKILL.md"
@@ -932,6 +989,7 @@ class ValidationSelectionTests(unittest.TestCase):
             "scripts/test-artifact-lifecycle-validator.py",
             "scripts/test-review-artifact-validator.py",
             "scripts/validate-review-artifacts.py",
+            "scripts/validate-change-metadata.py",
             "scripts/validate-artifact-lifecycle.py",
         ]
         for relative_path in child_scripts:
@@ -961,9 +1019,9 @@ raise SystemExit({exit_code})
 """.lstrip(),
             )
 
-        change_yaml = workspace / "docs" / "changes" / "example" / "change.yaml"
-        change_yaml.parent.mkdir(parents=True)
-        change_yaml.write_text("change_id: example\n", encoding="utf-8")
+        change_json = workspace / "docs" / "changes" / "example" / "change.json"
+        change_json.parent.mkdir(parents=True)
+        change_json.write_text('{"change_id":"example"}\n', encoding="utf-8")
         subprocess.run(["git", "init"], cwd=workspace, check=True, capture_output=True, text=True)
         subprocess.run(
             ["git", "config", "user.email", "tester@example.com"],
@@ -987,7 +1045,7 @@ raise SystemExit({exit_code})
             capture_output=True,
             text=True,
         )
-        change_yaml.write_text("change_id: example\nstatus: draft\n", encoding="utf-8")
+        change_json.write_text('{"change_id":"example","fixture":"changed"}\n', encoding="utf-8")
         return workspace
 
     def write_fake_script(self, workspace: Path, relative_path: str, body: str) -> Path:
@@ -4046,6 +4104,49 @@ print("SECOND_STDOUT")
         self.assertIn("SKILL_VERBOSE_STDOUT", output)
         self.assertIn("SKILL_VERBOSE_STDERR", output)
         self.assertIn("ADAPTER_VERBOSE_STDOUT", output)
+
+    def test_broad_smoke_routes_changed_records_to_current_v2_validator(self):
+        workspace = self.make_broad_smoke_workspace(child_bodies={
+            "scripts/validate-review-artifacts.py": "raise SystemExit(9)\n",
+            "scripts/validate-change-metadata.py":
+                "import sys\nassert sys.argv[1:] == ['docs/changes/example/change.json'], sys.argv\n",
+        })
+        # Other children isolate wrapper dispatch; current-v2 validation itself
+        # is exercised by record-store tests and the real repository smoke.
+        result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_broad_smoke_skips_unrelated_historical_descendants(self):
+        workspace = self.make_broad_smoke_workspace(child_bodies={
+            "scripts/validate-review-artifacts.py": "raise SystemExit(9)\n",
+            "scripts/validate-change-metadata.py": "raise SystemExit(9)\n",
+        })
+        current = workspace / "docs/changes/example/change.json"
+        current.unlink()
+        historical = workspace / "docs/changes/example/broad-smoke-child-classification.yaml"
+        historical.write_text("historical: unchanged-schema\n")
+        subprocess.run(["git", "add", "."], cwd=workspace, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "historical operational input"], cwd=workspace, check=True, capture_output=True)
+        historical.write_text("historical: changed-operational-input\n")
+        result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("9 checks passed", result.stdout)
+        explicit = run_ci("--mode", "broad-smoke", env={"REVIEW_ARTIFACT_ROOTS": "docs/changes/example/"},
+                          script=workspace / "scripts/ci.sh", cwd=workspace)
+        self.assertEqual(explicit.returncode, 9, explicit.stdout + explicit.stderr)
+
+    def test_broad_smoke_reserved_missing_manifest_is_not_skipped(self):
+        workspace = self.make_broad_smoke_workspace(child_bodies={
+            "scripts/validate-change-metadata.py": "raise SystemExit(9)\n",
+        })
+        (workspace / "docs/changes/example/change.json").unlink()
+        residue = workspace / "docs/changes/example/evidence.json"
+        residue.write_text("{}\n")
+        subprocess.run(["git", "add", "."], cwd=workspace, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "reserved residue"], cwd=workspace, check=True, capture_output=True)
+        residue.write_text('{"broken":true}\n')
+        result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
+        self.assertEqual(result.returncode, 9, result.stdout + result.stderr)
 
     def test_broad_smoke_default_success_captures_child_output_and_prints_aggregate(self) -> None:
         workspace = self.make_broad_smoke_workspace()

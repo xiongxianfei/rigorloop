@@ -171,31 +171,27 @@ class AdapterDistributionTests(unittest.TestCase):
                         self.assertIn("subject inspect", canonical)
                         self.assertNotIn("record-store check|record", canonical)
 
-    def test_v0_5_1_bundled_candidate_metadata_matches_generated_route_only_archives(self) -> None:
+    def test_current_candidate_metadata_matches_generated_route_only_archives(self) -> None:
         version = "v0.5.1"
-        bundled = json.loads(
-            (ROOT / "packages" / "rigorloop" / "dist" / "metadata" / f"adapter-artifacts-{version}.json").read_text(
-                encoding="utf-8"
-            )
-        )
         with tempfile.TemporaryDirectory(prefix="route-candidate-") as temp_dir:
             output = Path(temp_dir)
             archives = build_adapter_archives(version, output)
             generated = adapter_distribution_module._local_release_candidate_metadata(version, output)
 
-            # This test protects canonical archive identities. Publication/source
-            # descriptors are owned by the selected candidate builder, not the
-            # local fixture's placeholder values (proved by candidate integration).
-            for field in ('schema_version', 'validation'):
-                self.assertEqual(bundled[field], generated[field])
-            # Historical metadata retains its original OpenCode row. Compare
-            # retained targets' immutable archive facts, excluding new inventory hints.
+            # Current canonical archives have fresh identities. Historical bundled
+            # release metadata remains immutable; packed current metadata is proved
+            # by the actual candidate integration test.
+            self.assertEqual({row['adapter'] for row in generated['artifacts']}, {'codex', 'claude'})
+            self.assertEqual(validate_adapter_archives(version, output), [])
             for artifact in generated['artifacts']:
-                previous = next(row for row in bundled['artifacts'] if row['adapter'] == artifact['adapter'])
-                self.assertEqual({key: value for key, value in previous.items() if key != 'skill_names'},
-                                 {key: value for key, value in artifact.items() if key != 'skill_names'})
-            for field in ('version', 'release_tag', 'source_repository'):
-                self.assertEqual(bundled['release'][field], generated['release'][field])
+                archive_path = output / artifact['archive']
+                self.assertEqual(artifact['sha256'], hashlib.sha256(archive_path.read_bytes()).hexdigest())
+                self.assertEqual(artifact['size_bytes'], archive_path.stat().st_size)
+                root = artifact['install_root'] + '/'
+                with zipfile.ZipFile(archive_path) as archive:
+                    names = [name for name in archive.namelist() if name.startswith(root) and not name.endswith('/')]
+                self.assertEqual(artifact['file_count'], len(names))
+                self.assertEqual(artifact['skill_names'], sorted({name[len(root):].split('/')[0] for name in names}))
             for archive_path in archives:
                 with zipfile.ZipFile(archive_path) as archive:
                     names = set(archive.namelist())
@@ -2530,11 +2526,6 @@ release_gate:
                 "/broken auto: <argument>",
                 1,
             ),
-            "opencode_skill": lambda text: text.replace(
-                "installed `route` skill with `auto: <argument>`",
-                "installed `broken` skill with `auto: <argument>`",
-                1,
-            ),
             "shared_argument": lambda text: text.replace(
                 "Here `<argument>` is `<target-stage>`, `status`, or `off`.",
                 "Here `<argument>` is `<stage>`, `status`, or `off`.",
@@ -2657,11 +2648,6 @@ release_gate:
                 "Claude uses `/route auto: &#xF000;argument&#xF001;`",
                 1,
             ),
-            "encoded_opencode_sentinel": lambda text: text.replace(
-                "`auto: <argument>`",
-                "`auto: &#xF000;argument&#xF001;`",
-                1,
-            ),
             "literal_target_sentinel": lambda text: text.replace(
                 "Here `<argument>` is `<target-stage>`",
                 "Here `<argument>` is `\uf000target-stage\uf001`",
@@ -2675,16 +2661,6 @@ release_gate:
             "claude_private_use_identity": lambda text: text.replace(
                 "`/route auto: <argument>`",
                 "`/rou\uf000te auto: <argument>`",
-                1,
-            ),
-            "opencode_zero_width_identity": lambda text: text.replace(
-                "installed `route` skill",
-                "installed `rou\u200bte` skill",
-                1,
-            ),
-            "opencode_zero_width_operation": lambda text: text.replace(
-                "`auto: <argument>`",
-                "`au\u200bto: <argument>`",
                 1,
             ),
             "claude_uppercase_placeholder": lambda text: text.replace(
@@ -2705,11 +2681,6 @@ release_gate:
             "claude_encoded_placeholder": lambda text: text.replace(
                 "`/route auto: <argument>`",
                 "`/route auto: &lt;argument&gt;`",
-                1,
-            ),
-            "opencode_uppercase_placeholder": lambda text: text.replace(
-                "`auto: <argument>`",
-                "`auto: <ARGUMENT>`",
                 1,
             ),
             "uppercase_target_placeholder": lambda text: text.replace(
@@ -2735,11 +2706,6 @@ release_gate:
             "claude_tab_separator": lambda text: text.replace(
                 "`/route auto: <argument>`",
                 "`/route\tauto: <argument>`",
-                1,
-            ),
-            "opencode_nbsp_separator": lambda text: text.replace(
-                "`auto: <argument>`",
-                "`auto:\u00a0<argument>`",
                 1,
             ),
             "slash_unit_separator": lambda text: text
@@ -2809,7 +2775,6 @@ release_gate:
         nonportable = {
             "codex_skill",
             "claude_skill",
-            "opencode_skill",
             "shared_argument",
             "bare_codex",
             "non_auto_codex",
@@ -2822,23 +2787,18 @@ release_gate:
             "whitespace_claude",
             "literal_argument_sentinel",
             "encoded_argument_sentinel",
-            "encoded_opencode_sentinel",
             "literal_target_sentinel",
             "claude_zero_width_identity",
             "claude_private_use_identity",
-            "opencode_zero_width_identity",
-            "opencode_zero_width_operation",
             "claude_uppercase_placeholder",
             "claude_spaced_placeholder",
             "claude_self_closing_placeholder",
             "claude_encoded_placeholder",
-            "opencode_uppercase_placeholder",
             "uppercase_target_placeholder",
             "nested_claude_placeholder",
             "claude_nbsp_separator",
             "claude_em_space_separator",
             "claude_tab_separator",
-            "opencode_nbsp_separator",
             "codex_status_suffix",
             "codex_status_trailing_argument",
             "codex_off_prefix",
@@ -2858,10 +2818,9 @@ release_gate:
                 target = Path(tmp) / "route"
                 shutil.copytree(source.parent, target)
                 skill_file = target / "SKILL.md"
-                skill_file.write_text(
-                    mutate(source_text),
-                    encoding="utf-8",
-                )
+                mutated = mutate(source_text)
+                self.assertNotEqual(mutated, source_text, "mutation must exercise the current contract")
+                skill_file.write_text(mutated, encoding="utf-8")
 
                 report = evaluate_skill(target)
 

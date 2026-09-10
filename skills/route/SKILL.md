@@ -112,7 +112,7 @@ Either skill may support Proposal, Design, Delivery, Implementation, Verify, or 
 
 Classify the three predicates below from authoritative evidence. Automation command forms are portable across supported adapters:
 
-- Adapter invocation equivalents preserve the same arguments: Codex uses `$route auto: <argument>`, Claude uses `/route auto: <argument>`, and OpenCode invokes the installed `route` skill with `auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or `off`.
+- Adapter invocation equivalents preserve the same arguments: Codex uses `$route auto: <argument>` and Claude uses `/route auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or `off`.
 - `$route auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, and `verify`.
 - `$route auto: status` is read-only. `$route auto: off` durably cancels the unified run and preserves transition evidence.
 - `governed_change_context`: a valid current governed change record exists.

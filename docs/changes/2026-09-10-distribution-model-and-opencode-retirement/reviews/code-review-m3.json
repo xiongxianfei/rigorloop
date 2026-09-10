@@ -108,8 +108,20 @@
         "role": "review"
       },
       "required_outcome": "Reject output ancestor/runtime overlap and nested symlink/destination redirection before writes or cleanup across retained generation modes; preserve runtime/source bytes and retain valid package output, with direct negative/positive regression proof.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "distribution-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "implementation-m3-r3",
+            "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/evidence.json"
+          }
+        ],
+        "rationale": "The complete output preflight now rejects target parents/ancestor runtime containment, all nested and ancestor symlinks, regular files with link count other than one, and special entries via lstat before any tree/ordinary/staged writer. Exact allowed package prefixes preserve valid regeneration. Direct eighteen-case preservation tests cover original ancestor/nested aliases and the r2 hardlink overwrite across all three modes, with unchanged external runtime bytes; full independent archive inventory still passes. Reviewer independently ran preservation plus inventory tests (2 passed, 3.565 seconds) on unchanged engineering bytes before final handoff. Registered implementation-m3-r3 binds all 13 current implementation subjects, full C3/C8 and updated actual retirement measurements. The original required preservation outcome is satisfied within bounded preflight scope; no builder concurrency transaction is claimed."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:708c894b670c76ee3677b944f2b4fcbe0d408d0552379ee55c18201e0444bbe4",

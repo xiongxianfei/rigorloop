@@ -4,9 +4,9 @@
       "id": "distribution-router",
       "role": "route"
     },
-    "reason": "M3 shared-inode correction and full C3/C8 passed; exact implementation-m3-r3 evidence ready for independent final milestone reassessment.",
+    "reason": "M4 CI and receipt corrections have complete current proof, including actual broad children plus corrected full leaf, C8 and fresh C4; request independent correction review before renewed whole-change assessment.",
     "stage": "code-review",
-    "status": "ready"
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -92,12 +92,12 @@
     },
     {
       "actor": {
-        "id": "distribution-design-reviewer",
-        "role": "review"
+        "id": "distribution-implementer",
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r5.json",
-      "reason": "Fresh complete package reassessment after outside-discovery retention correction; reporter resolved remaining finding, original judgments preserved.",
-      "value": "current"
+      "reason": "M4 implements the approved source map and changes navigation in Design/Skill/Release/Workflow and scoped legacy members; renew exact package assessment without retargeting original approval.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -110,12 +110,12 @@
     },
     {
       "actor": {
-        "id": "distribution-delivery-reviewer",
-        "role": "review"
+        "id": "distribution-implementer",
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review-r2.json",
-      "reason": "Fresh complete Delivery reassessment after retained-policy allocation correction; reporter resolved original finding and upstream basis is unchanged.",
-      "value": "current"
+      "reason": "M4 navigation changes exact Design member identities; unchanged plan requires bounded assessor renewal against the refreshed Design package.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -161,9 +161,92 @@
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r2.json",
       "reason": "Corrected shared-inode output writes under original M3 finding; preserve r2 judgment and require fresh reporter reassessment.",
       "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r3.json",
+      "reason": "Fresh whole-M3 reassessment of d3396a22 resolves original runtime-preservation finding using direct current correction proof; upstream Design/Delivery basis unchanged.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r6.json",
+      "reason": "Fresh exact thirteen-member Design assessment after scoped M4 navigation/source retirement; behavior unchanged and explicit grandfathered/non-grandfathered classification recorded.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review-r3.json",
+      "reason": "Unchanged plan independently reassessed against exact Design r6 navigation/source-retirement package; existing M4 and final proof allocation remain sufficient.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4.json",
+      "reason": "Current complete M4 frozen subject assessment with all required evidence green, exact removal map and actual consumer reconciliation; no material finding.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r1.json",
+      "reason": "New contradictory broad-smoke evidence arrived immediately after r1 save: scripts/ci.sh routes current v2 changed root to legacy review validator. Preserve original judgment, forbid current reliance pending bounded CI correction and fresh independent integrated final reassessment.",
+      "value": "stale"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "evidence": "Actual bash scripts/ci.sh --mode broad-smoke --jobs 4 --timeout 900 exited1 after593.029s. Nine children passed; broad_smoke.review_artifacts.changed_roots sent current v2 root to validate-review-artifacts.py and received the intentional legacy adapter rejection. Original failure retained; no overall smoke pass claimed.",
+      "id": "distribution-ci-current-record-validation",
+      "origin": {
+        "evidence": "Actual bash scripts/ci.sh --mode broad-smoke --jobs 4 --timeout 900 exited1 after593.029s. Nine children passed; broad_smoke.review_artifacts.changed_roots sent current v2 root to validate-review-artifacts.py and received the intentional legacy adapter rejection. Original failure retained; no overall smoke pass claimed.",
+        "rationale": "Observed project-validation automation consumer mismatch; ordinary project-native coverage correction within approved M4 source/consumer reconciliation. No new commands, privilege, schema or external workflow change.",
+        "reporter": {
+          "id": "distribution-ci-maintainer",
+          "role": "support"
+        },
+        "required_outcome": "Use the existing v2 validator for current selected manifests; preserve historical auto-discovery separation and explicit/malformed/reserved input rejection. Demonstrate passing actual broad smoke and current selected CI, then obtain fresh independent integrated review.",
+        "subjects": [
+          {
+            "identity": "sha256:1f2b513927dd16b4889943326e22bd4f9835a3eec587751221e91fbe7c8d3d37",
+            "path": "scripts/ci.sh"
+          }
+        ],
+        "supporting_judgment": null
+      },
+      "owner": {
+        "id": "distribution-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "distribution-ci-maintainer",
+        "role": "support"
+      },
+      "required_outcome": "Use the existing v2 validator for current selected manifests; preserve historical auto-discovery separation and explicit/malformed/reserved input rejection. Demonstrate passing actual broad smoke and current selected CI, then obtain fresh independent integrated review.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:1f2b513927dd16b4889943326e22bd4f9835a3eec587751221e91fbe7c8d3d37",
+          "path": "scripts/ci.sh"
+        }
+      ]
+    }
+  ],
   "change_id": "2026-09-10-distribution-model-and-opencode-retirement",
   "contract": "rigorloop-records-v2",
   "models": [
@@ -184,21 +267,21 @@
     {
       "id": "design",
       "subject": {
-        "identity": "sha256:6b631f0ab71c7dbd866039730a4d1f0c47e583c0713621071c205b9c757ae79f",
+        "identity": "sha256:c6015cd7d6aae9c76cf29d9d28f5a763a8dd3ef139f5f6549f6c8a865b7b5cca",
         "path": "docs/design/design/design.md"
       }
     },
     {
       "id": "skill",
       "subject": {
-        "identity": "sha256:ab8e737f197c71d9ce29d599891dad1f46962d286948e447ef6403b3c6aa258a",
+        "identity": "sha256:2cebfeaaafd9b0df159fa25a69de2b5e2140d6dc4edd36f88de726e00a45d083",
         "path": "docs/design/skill/skill.md"
       }
     },
     {
       "id": "release",
       "subject": {
-        "identity": "sha256:b45815178b82137d19c9baf8f75221fbddc64cecce65da2efffca0b9eac3170c",
+        "identity": "sha256:17f89c1acc227f95798b120dea8261dba45eb6b5294f3904dc24e394e553f2dc",
         "path": "docs/design/release/release.md"
       }
     },
@@ -235,6 +318,27 @@
       "subject": {
         "identity": "sha256:f5c695400db7f988b5e7e94448eddcfea0cd4923485baa877950423806eb6fd1",
         "path": "specs/published-skill-first-repository-simplification.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:c0e1e478c55a07f43223fa7d4f97087b271a35466bf54da6f19eec08c326c057",
+        "path": "docs/design/workflow/workflow.md"
+      }
+    },
+    {
+      "id": "distribution-architecture-navigation",
+      "subject": {
+        "identity": "sha256:d8352376dd2ca11ed8d46ebb11a48e529e006662b0c00a865ba2bf97b0b4b682",
+        "path": "docs/architecture/system/architecture.md"
+      }
+    },
+    {
+      "id": "distribution-cli-navigation",
+      "subject": {
+        "identity": "sha256:b1eed69f34f4bd2e1e996df581467b040f1066286a4e98c0de3fc34510726fb6",
+        "path": "specs/rigorloop-cli-new-change.md"
       }
     }
   ],
@@ -314,6 +418,26 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m3-r3.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/design-review-r6.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/delivery-review-r3.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-m4.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r1.json"
     }
   ],
   "schema_version": 2,
@@ -349,7 +473,7 @@
       "requirement_refs": [
         "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m3"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m4",
@@ -360,7 +484,7 @@
       "requirement_refs": [
         "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m4"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }

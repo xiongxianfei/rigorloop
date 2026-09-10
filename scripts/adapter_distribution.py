@@ -455,8 +455,7 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
 
     expected_block = (
         "- Adapter invocation equivalents preserve the same arguments: Codex uses "
-        "`$route auto: <argument>`, Claude uses `/route auto: <argument>`, and "
-        "OpenCode invokes the installed `route` skill with `auto: <argument>`. "
+        "`$route auto: <argument>` and Claude uses `/route auto: <argument>`. "
         "Here `<argument>` is `<target-stage>`, `status`, or `off`.\n"
     )
     if equivalence_blocks[0] != expected_block:

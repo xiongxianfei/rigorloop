@@ -286,8 +286,8 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             shutil.rmtree(source / 'scripts')
             shutil.copytree(repository / 'scripts', source / 'scripts', ignore=shutil.ignore_patterns('__pycache__'))
             shutil.copyfile(repository / '.github/workflows/release.yml', source / '.github/workflows/release.yml')
-            # Include the complete current installer and templates, including removals.
-            for relative in ['packages/rigorloop/dist', 'scripts/adapter_templates']:
+            # Include complete current canonical skills, installer and templates, including removals.
+            for relative in ['skills', 'packages/rigorloop/dist', 'scripts/adapter_templates']:
                 shutil.rmtree(source / relative)
                 shutil.copytree(repository / relative, source / relative)
             for relative in ['README.md', 'packages/rigorloop/README.md', 'dist/adapters/manifest.yaml', 'dist/adapters/README.md']:
@@ -308,7 +308,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             # GitHub PR checkouts are detached; exercise that input locally too.
             git('checkout', '--detach')
             git('checkout', '-B', 'main')
-            git('add', 'scripts', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml',
+            git('add', 'scripts', 'skills', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml',
                 'packages/rigorloop', 'dist/adapters', 'README.md')
             git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')
@@ -327,6 +327,10 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             self.assertEqual(status, 0, errors)
             self.assertIn('ready=true', outputs)
             data = json.loads((output / 'candidate.json').read_text())
+            verification = json.loads((output / 'release-verification.json').read_text())
+            verified_commands = [check['command'] for check in verification['checks']]
+            self.assertIn('packed CLI version and init codex/claude', verified_commands)
+            self.assertFalse(any('opencode' in command for command in verified_commands))
             self.assertIn(data['candidate_id'], approval_summary)
             self.assertEqual(services.approval_count, 0)
             self.assertIn(data['candidate_id'], summary(data))
