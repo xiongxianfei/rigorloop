@@ -4,9 +4,9 @@
       "id": "distribution-router",
       "role": "route"
     },
-    "reason": "All four milestones and fresh final Code Review r2 approved; reporter resolved CI correction on actual composed proof. Proceed to distinct final Verify under user PR authorization.",
+    "reason": "Distinct Verify succeeded on reviewed commit 7944671d with all milestones and blockers closed. Distribution adoption and exact FU-013 ledger disposition established; separately authorized PR handoff follows. No merge or release.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -223,6 +223,15 @@
       },
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r2.json",
       "reason": "Fresh exact68-subject integrated final assessment through e0e89fdf, with truthful actual broad child/fresh corrected leaf/receipt proof composition; reporter blocker disposition and Verify remain separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "distribution-final-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/verify-report.json",
+      "reason": "Distinct final assessment of exact reviewed engineering subjects and observed current proof; normalized Git handoff basis is in the report.",
       "value": "current"
     }
   ],
@@ -476,6 +485,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/reviews/code-review-final-r2.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/verify-report.json"
     }
   ],
   "schema_version": 2,
