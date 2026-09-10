@@ -1,0 +1,32 @@
+schema_version: 1
+
+release:
+  version: v1.0.0
+  source_commit: pending
+  date: pending
+
+generator:
+  command: "python scripts/build-adapters.py --version v1.0.0 --output-dir <release-output-dir>"
+  source_skills: "skills/"
+  manifest: "dist/adapters/manifest.yaml"
+
+artifacts:
+  - adapter: codex
+    archive: rigorloop-adapter-codex-v1.0.0.zip
+    sha256: pending
+    install_root: .agents/skills
+    result: pending
+  - adapter: claude
+    archive: rigorloop-adapter-claude-v1.0.0.zip
+    sha256: pending
+    install_root: .claude/skills
+    result: pending
+  - adapter: opencode
+    archive: rigorloop-adapter-opencode-v1.0.0.zip
+    sha256: pending
+    install_root: .opencode/skills
+    result: pending
+
+validation:
+  command: "python scripts/validate-adapters.py --root <release-output-dir> --version v1.0.0"
+  result: pending
