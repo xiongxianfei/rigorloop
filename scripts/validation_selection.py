@@ -67,20 +67,9 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "skills",
         parallel_safe=True,
     ),
-    "skills.generation_regression": CheckCatalogEntry(
-        "skills.generation_regression",
-        "python scripts/test-build-skills.py",
-        "skills",
-        parallel_safe=True,
-    ),
-    "skills.drift": CheckCatalogEntry(
-        "skills.drift",
-        "python scripts/build-skills.py --check",
-        "skills",
-    ),
     "adapters.regression": CheckCatalogEntry(
         "adapters.regression",
-        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata",
+        "python scripts/test-adapter-distribution.py AdapterDistributionTests.test_adapter_generation_creates_independent_packages_and_thin_entrypoints AdapterDistributionTests.test_adapter_generation_drift_check_detects_stale_and_unexpected_files AdapterDistributionTests.test_validate_adapters_cli_rejects_retired_repository_output AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives AdapterDistributionTests.test_validate_adapters_cli_accepts_release_archive_root AdapterDistributionTests.test_v0_1_2_release_validation_checks_archives_and_artifact_metadata AdapterDistributionTests.test_distribution_archives_have_independent_complete_resource_inventory AdapterDistributionTests.test_distribution_generation_rejects_source_and_active_output_roots AdapterDistributionTests.test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks AdapterDistributionTests.test_distribution_generated_skill_structure_is_validated_independently AdapterDistributionTests.test_validate_adapter_output_rejects_stale_mapped_resource_hashes AdapterDistributionTests.test_validate_adapter_output_rejects_missing_mapped_resource AdapterDistributionTests.test_validate_adapter_output_rejects_missing_or_malformed_canonical_skills",
         "adapters",
         parallel_safe=True,
     ),
@@ -632,6 +621,24 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             ),
         )
 
+    # Apply deletion provenance after every contributor (including plan context)
+    # has selected inputs, so another changed path cannot reintroduce a deletion.
+    lifecycle = selected.get("artifact_lifecycle.validate")
+    if lifecycle:
+        deleted = {
+            path for path in lifecycle.paths
+            if path in changed_paths and _is_lifecycle_path(path) and _proven_prose_deletion(
+                path, repo_root=repo_root,
+                tracked_deletion=path in preflight_context.tracked_paths,
+            )
+        }
+        if deleted:
+            lifecycle.paths.difference_update(deleted)
+            if not lifecycle.paths:
+                del selected["artifact_lifecycle.validate"]
+            _add_check(selected, "artifact_lifecycle.regression",
+                       "Proven lifecycle artifact deletion retains regression without reading absent inputs.")
+
     if request.mode == "pr":
         _add_check(selected, "artifact_lifecycle.validate",
                    "Every PR retains revision-bound lifecycle and baseline checks.")
@@ -1065,20 +1072,18 @@ def _apply_path_selection(
         _add_check(selected, "skills.regression", "Changed canonical skill source requires skill regression fixtures.")
         _add_check(
             selected,
-            "skills.generation_regression",
-            "Changed canonical skill source requires local mirror generation regression fixtures.",
+            "adapters.regression",
+            "Changed canonical skill source requires retained package inventory and output-safety fixtures.",
         )
-        _add_check(selected, "skills.drift", "Changed canonical skill source requires generated skill mirror validation.")
         _add_check(selected, "adapters.drift", "Public adapter output can be affected by canonical skill changes.")
         return
 
     if category == "generated-skills":
         _add_check(
             selected,
-            "skills.generation_regression",
-            "Generated Codex skill output requires local mirror generation regression fixtures.",
+            "adapters.regression",
+            "Local installation path changes require retained package inventory and output-safety fixtures.",
         )
-        _add_check(selected, "skills.drift", "Generated Codex skill output must be reproducible from canonical skills.")
         return
 
     if category in {"generated-adapters", "adapters"}:
@@ -1460,8 +1465,8 @@ def _apply_path_selection(
         _add_check(selected, "skills.regression", "Changed skill generation or validation requires skill regression fixtures.")
         _add_check(
             selected,
-            "skills.generation_regression",
-            "Changed skill generation or validation requires local mirror generation regression fixtures.",
+            "adapters.regression",
+            "Changed skill generation or validation requires retained package inventory and output-safety fixtures.",
         )
         return
 
@@ -1520,8 +1525,8 @@ def _apply_path_selection(
     if category == "ignore-policy":
         _add_check(
             selected,
-            "skills.generation_regression",
-            "Changed ignore policy requires local mirror generation regression fixtures.",
+            "adapters.regression",
+            "Changed ignore policy requires retained package inventory and output-safety fixtures.",
         )
         return
 
@@ -1848,6 +1853,7 @@ def _path_category(path: str) -> str | None:
     }:
         return "workflow-automation"
     if path in {
+        # Retired paths stay classifiable for deletion diffs, never executable.
         "scripts/build-skills.py",
         "scripts/validate-skills.py",
         "scripts/skill_validation.py",

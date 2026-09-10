@@ -3258,10 +3258,11 @@ Validation target: Run tests.
             )
         self.assertCloseoutPasses(root)
 
-    def test_ci_script_invokes_review_artifact_checks_for_changed_roots(self) -> None:
+    def test_ci_script_keeps_review_regressions_and_validates_current_record_roots(self) -> None:
         ci_script = (ROOT / "scripts" / "ci.sh").read_text(encoding="utf-8")
         self.assertIn("test-review-artifact-validator.py", ci_script)
-        self.assertIn("validate-review-artifacts.py", ci_script)
+        self.assertIn("review_artifact_cmd=(python scripts/validate-change-metadata.py)", ci_script)
+        self.assertNotIn("review_artifact_cmd=(python scripts/validate-review-artifacts.py)", ci_script)
         self.assertIn("docs/changes/", ci_script)
 
 

@@ -45,7 +45,7 @@ class ReleaseCandidateTests(unittest.TestCase):
         p = self.root / 'profile.yaml'
         p.write_text(profile_text(data['tag']))
         profile = load_release_profile_file(p)
-        self.assertEqual(profile.targets, ('codex', 'claude', 'opencode'))
+        self.assertEqual(profile.targets, ('codex', 'claude'))
         self.assertEqual(profile.package_version, '0.5.1')
 
     def test_missing_version_decision_is_exception_not_inferred_from_number(self):
@@ -238,9 +238,8 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             workspace = Path(temporary)
             source = workspace / 'source'
             subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(repository), str(source)], check=True)
-            for script in (repository / 'scripts').iterdir():
-                if script.is_file() and script.suffix in {'.py', '.sh'}:
-                    shutil.copyfile(script, source / 'scripts' / script.name)
+            shutil.rmtree(source / 'scripts')
+            shutil.copytree(repository / 'scripts', source / 'scripts', ignore=shutil.ignore_patterns('__pycache__'))
             package_path = source / 'packages/rigorloop/package.json'
             package = json.loads(package_path.read_text())
             package['version'] = '0.5.1'
@@ -284,10 +283,15 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             source, output = workspace / 'source', workspace / 'release-candidate'
             subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(repository), str(source)], check=True)
             # Use current authored implementation, including an uncommitted test-first slice.
-            for script in (repository / 'scripts').iterdir():
-                if script.is_file() and script.suffix in {'.py', '.sh'}:
-                    shutil.copyfile(script, source / 'scripts' / script.name)
+            shutil.rmtree(source / 'scripts')
+            shutil.copytree(repository / 'scripts', source / 'scripts', ignore=shutil.ignore_patterns('__pycache__'))
             shutil.copyfile(repository / '.github/workflows/release.yml', source / '.github/workflows/release.yml')
+            # Include complete current canonical skills, installer and templates, including removals.
+            for relative in ['skills', 'packages/rigorloop/dist', 'scripts/adapter_templates']:
+                shutil.rmtree(source / relative)
+                shutil.copytree(repository / relative, source / relative)
+            for relative in ['README.md', 'packages/rigorloop/README.md', 'dist/adapters/manifest.yaml', 'dist/adapters/README.md']:
+                shutil.copyfile(repository / relative, source / relative)
             # This scenario releases the fixed 0.5.1 fixture, independently of
             # the repository's next authored version.
             for name in ['package.json', 'package-lock.json']:
@@ -304,8 +308,8 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             # GitHub PR checkouts are detached; exercise that input locally too.
             git('checkout', '--detach')
             git('checkout', '-B', 'main')
-            git('add', 'scripts', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml',
-                'packages/rigorloop/package.json', 'packages/rigorloop/package-lock.json')
+            git('add', 'scripts', 'skills', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml',
+                'packages/rigorloop', 'dist/adapters', 'README.md')
             git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')
             commit, ref = git('rev-parse', 'HEAD'), git('symbolic-ref', 'HEAD')
@@ -323,6 +327,10 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             self.assertEqual(status, 0, errors)
             self.assertIn('ready=true', outputs)
             data = json.loads((output / 'candidate.json').read_text())
+            verification = json.loads((output / 'release-verification.json').read_text())
+            verified_commands = [check['command'] for check in verification['checks']]
+            self.assertIn('packed CLI version and init codex/claude', verified_commands)
+            self.assertFalse(any('opencode' in command for command in verified_commands))
             self.assertIn(data['candidate_id'], approval_summary)
             self.assertEqual(services.approval_count, 0)
             self.assertIn(data['candidate_id'], summary(data))
@@ -402,7 +410,7 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             services.facts['run']['head_sha'] = commit
             self.assertEqual(verify_candidate(output, data['candidate_id'])['source_commit'], commit)
             self.assertEqual({x['id'] for x in data['checks']}, CANDIDATE_CHECKS)
-            self.assertEqual(len(list(output.glob('*.zip'))), 3)
+            self.assertEqual(len(list(output.glob('*.zip'))), 2)
             with tarfile.open(output / data['tarball']) as packed:
                 metadata_bytes = packed.extractfile('package/dist/metadata/adapter-artifacts-v0.5.1.json').read()
                 index = json.load(packed.extractfile('package/dist/metadata/releases.json'))
@@ -413,6 +421,28 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
                 self.assertNotEqual(metadata['metadata']['sha256'], '0' * 64)
                 for archive in metadata['artifacts']:
                     self.assertEqual(archive['sha256'], file_identity(output / archive['archive'])['sha256'])
+            # TG-FINAL-01: actual packed executable and generated archive bytes,
+            # default repeated conflict and explicit whole-unit replacement.
+            tooling = workspace / 'installer-proof'
+            subprocess.run(['npm', 'install', '--ignore-scripts', '--no-audit', '--no-fund', '--prefix', str(tooling), str(output / data['tarball'])], check=True, capture_output=True)
+            cli = tooling / 'node_modules/@xiongxianfei/rigorloop/dist/bin/rigorloop.js'
+            for target, skill_root in [('codex', '.agents/skills'), ('claude', '.claude/skills')]:
+                project = workspace / ('install-' + target); project.mkdir()
+                (project / 'rigorloop.yaml').write_text('malformed: [')
+                (project / 'rigorloop.lock').symlink_to(project / 'absent-state')
+                unrelated = project / skill_root / 'unrelated'; unrelated.mkdir(parents=True)
+                (unrelated / 'keep').write_text('preserve')
+                command = ['node', str(cli), 'init', target, '--from-archive', str(output / ('rigorloop-adapter-' + target + '-v0.5.1.zip')), '--json', '--no-file-log']
+                def invoke(extra=()):
+                    return subprocess.run(command + list(extra), cwd=project, text=True, capture_output=True)
+                fresh = invoke(); self.assertEqual(fresh.returncode, 0, fresh.stdout + fresh.stderr)
+                repeated = invoke(); self.assertEqual(repeated.returncode, 5, repeated.stdout + repeated.stderr)
+                obsolete = project / skill_root / 'proposal' / 'obsolete'; obsolete.write_text('local edit')
+                replaced = invoke(['--force']); self.assertEqual(replaced.returncode, 0, replaced.stdout + replaced.stderr)
+                self.assertFalse(obsolete.exists()); self.assertTrue(json.loads(replaced.stdout)['retained'])
+                self.assertEqual((unrelated / 'keep').read_text(), 'preserve')
+                self.assertEqual((project / 'rigorloop.yaml').read_text(), 'malformed: [')
+                self.assertTrue((project / 'rigorloop.lock').is_symlink())
             self.assertNotIn(str(workspace), (output / 'release-verification.json').read_text())
             self.assertIn('release-integrity', {x['id'] for x in data['checks']})
             receipt = json.loads((output / 'release-verification.json').read_text())

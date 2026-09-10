@@ -118,11 +118,10 @@ class ReleaseExecutorTests(unittest.TestCase):
         prepare_release('v0.5.1', root=self.source, approval_driven=True)
         git('add', '.'); git('commit', '--quiet', '-m', 'Prepared fixture')
         commit = git('rev-parse', 'HEAD')
-        for target in ['codex', 'claude', 'opencode']:
+        for target in ['codex', 'claude']:
             with zipfile.ZipFile(self.output / f'rigorloop-adapter-{target}-v0.5.1.zip', 'w') as archive:
-                root = {'codex': '.agents/skills', 'claude': '.claude/skills', 'opencode': '.opencode/skills'}[target]
+                root = {'codex': '.agents/skills', 'claude': '.claude/skills'}[target]
                 archive.writestr(root + '/example/SKILL.md', '# Fixture capability\n')
-                if target == 'opencode': archive.writestr('.opencode/commands/example.md', '# Fixture command\n')
         write_archive_metadata(self.source, self.output, 'v0.5.1', commit, self.source / 'packages/rigorloop')
         (self.output / 'package.tgz').write_bytes(b'isolated publication-boundary fixture, not package-validation proof')
         (self.output / 'release-verification.json').write_text(json.dumps({'prepared_commit': commit, 'result': 'pass',

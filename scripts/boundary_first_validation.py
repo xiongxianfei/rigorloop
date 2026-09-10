@@ -21,9 +21,7 @@ from boundary_first_reference import (
 )
 from adapter_distribution import (
     AdapterArtifactEntry,
-    adapter_archive_name,
     parse_adapter_artifact_metadata_yaml,
-    parse_manifest_yaml,
 )
 
 
@@ -31,6 +29,8 @@ ACTIVATION_RECORD = Path("specs/boundary-first-activation.yaml")
 PROOF_MODEL_SPEC = Path("specs/boundary-first-proof-model.md")
 ACTIVE_RELEASE_INTENT = "v0.4.0"
 ACTIVE_ROLLBACK_RELEASE = "v0.3.6"
+# Immutable rollback evidence population; current Distribution support is separate.
+ACTIVE_ROLLBACK_ADAPTERS = ("claude", "codex", "opencode")
 ACTIVE_ROLLBACK_METADATA_SHA256 = (
     "cd3de1a215b50e79f207ab9384394e22c3929e83739e305b623d6ef2bb3b20a6"
 )
@@ -1083,27 +1083,20 @@ def _rollback_package_matrix(
             ),
         )
 
-    manifest_relative = Path("dist/adapters/manifest.yaml")
     metadata_relative = (
         Path("docs/reports/adapter-artifacts/releases")
         / f"{rollback_release}.yaml"
     )
-    manifest_path, manifest_issue = _contained_regular_file(root, manifest_relative)
     metadata_path, metadata_issue = _contained_regular_file(root, metadata_relative)
     path_issues = tuple(
-        issue for issue in (manifest_issue, metadata_issue) if issue is not None
+        issue for issue in (metadata_issue,) if issue is not None
     )
     if path_issues:
         return (), path_issues
-    assert manifest_path is not None
     assert metadata_path is not None
 
     try:
         metadata_bytes = metadata_path.read_bytes()
-        manifest = parse_manifest_yaml(
-            manifest_path.read_text(encoding="utf-8"),
-            manifest_path,
-        )
         metadata = parse_adapter_artifact_metadata_yaml(
             metadata_bytes.decode("utf-8"),
             metadata_path,
@@ -1119,16 +1112,7 @@ def _rollback_package_matrix(
             ),
         )
 
-    expected_adapters = tuple(
-        sorted(
-            {
-                adapter
-                for skill in manifest.skills.values()
-                for adapter in skill.adapters
-            },
-            key=lambda value: value.encode("utf-8"),
-        )
-    )
+    expected_adapters = ACTIVE_ROLLBACK_ADAPTERS
     by_adapter: dict[str, list[AdapterArtifactEntry]] = {}
     for artifact in metadata.artifacts:
         by_adapter.setdefault(artifact.adapter, []).append(artifact)
@@ -1163,7 +1147,7 @@ def _rollback_package_matrix(
             _issue(
                 "BFR-ROLLBACK-ADAPTER-SET",
                 metadata_relative.as_posix(),
-                "rollback artifacts must match the adapter support inventory exactly",
+                "rollback artifacts must match the original rollback release inventory exactly",
                 sorted(by_adapter),
                 expected_adapters,
             )
@@ -1194,7 +1178,7 @@ def _rollback_package_matrix(
             )
             continue
         artifact = artifacts[0]
-        expected_archive = adapter_archive_name(adapter, rollback_release)
+        expected_archive = f"rigorloop-adapter-{adapter}-{rollback_release}.zip"
         if (
             artifact.archive != expected_archive
             or artifact.result != "pass"

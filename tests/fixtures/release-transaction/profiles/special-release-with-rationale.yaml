@@ -9,7 +9,6 @@ owner_decision: "Fixture owner decision for a special release path."
 targets:
   - codex
   - claude
-  - opencode
 
 adapter_artifacts:
   required: true

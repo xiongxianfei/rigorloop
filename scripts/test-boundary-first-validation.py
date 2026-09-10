@@ -1303,9 +1303,20 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 self.assertTrue(issues, name)
                 self.assertEqual(before, relevant_tree_snapshot(root))
 
+    def test_historical_rollback_does_not_read_current_distribution_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            initialize_checked_revision_active_fixture(root)
+            manifest = root / "dist/adapters/manifest.yaml"
+            manifest.unlink()
+            manifest.symlink_to("/missing-current-manifest")
+            selection, issues = rollback_package_selection(root)
+            self.assertEqual(issues, ())
+            self.assertEqual(tuple(row.adapter for row in selection.artifacts), ("claude", "codex", "opencode"))
+            self.assertTrue(manifest.is_symlink())
+
     def test_rollback_authoritative_paths_fail_closed_without_mutation(self) -> None:
         relative_paths = (
-            Path("dist/adapters/manifest.yaml"),
             Path("docs/reports/adapter-artifacts/releases/v0.3.6.yaml"),
         )
         for relative_path in relative_paths:
