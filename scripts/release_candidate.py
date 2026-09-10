@@ -62,16 +62,18 @@ def version_tuple(value: str) -> tuple[int, int, int]:
     return tuple(map(int, value.split('.')))
 
 
-def derive_release_inputs(root: Path, published_version: str) -> dict:
+def derive_release_inputs(root: Path, published_version: str | None, *, ci_only: bool = False) -> dict:
     package = json.loads((root / 'packages/rigorloop/package.json').read_text())
     if package.get('name') != EXPECTED_NPM_PACKAGE:
         raise CandidateError('unsupported package')
     version = package.get('version')
-    current, previous = version_tuple(version), version_tuple(published_version)
-    if current == previous:
-        return {'status': 'already-published', 'version': version}
-    if current < previous:
-        raise CandidateError('source version is older than public version')
+    current = version_tuple(version)
+    if not ci_only:
+        previous = version_tuple(published_version)
+        if current == previous:
+            return {'status': 'already-published', 'version': version}
+        if current < previous:
+            raise CandidateError('source version is older than public version')
     tag = 'v' + version
     path = root / 'docs/releases' / f'{tag}.md'
     if not path.is_file():
@@ -86,13 +88,14 @@ def derive_release_inputs(root: Path, published_version: str) -> dict:
         raise CandidateError('unknown or ambiguous reviewed version decision')
     if len(summary) != 1 or any(x in summary[0].lower() for x in ['pending', 'todo', 'tbd']):
         raise CandidateError('missing reviewed version decision rationale/change summary')
-    increment = 'major' if current[0] != previous[0] else 'minor' if current[1] != previous[1] else 'patch'
-    if increment != decision[0]:
-        raise CandidateError('version decision does not match reviewed increment')
+    if not ci_only:
+        increment = 'major' if current[0] != previous[0] else 'minor' if current[1] != previous[1] else 'patch'
+        if increment != decision[0]:
+            raise CandidateError('version decision does not match reviewed increment')
     return {'status': 'prepare', 'version': version, 'tag': tag,
             'version_decision': decision[0], 'summary': summary[0],
             'decision_source': path.relative_to(root).as_posix(),
-            'decision_identity': file_identity(path)}
+            'decision_identity': file_identity(path), **({'ci_only': True} if ci_only else {})}
 
 
 def profile_text(tag: str) -> str:
@@ -240,12 +243,14 @@ def script_identity(directory: Path) -> str:
 
 
 def prepare_candidate(source: Path, source_commit: str, merged_ref: str, published_version: str,
-                      output: Path, *, evidence_ref: str = 'refs/heads/release-evidence') -> dict:
+                      output: Path, *, evidence_ref: str = 'refs/heads/release-evidence', ci_only: bool = False) -> dict:
     """Build from an exact merged input in isolation; leave no publication capability."""
     from release_transaction import prepare_release, release_preflight
     if not re.fullmatch(r'refs/(heads|remotes/origin)/[a-z0-9][a-z0-9/-]*', merged_ref):
         raise CandidateError('invalid merged source ref')
     source_ref = merged_ref.replace('refs/remotes/origin/', 'refs/heads/')
+    if ci_only and source_ref != 'refs/heads/ci-source':
+        raise CandidateError('CI preparation requires its isolated source ref')
     if evidence_ref == source_ref:
         raise CandidateError('evidence ref must be separate from source')
     if not SHA.fullmatch(source_commit):
@@ -265,7 +270,7 @@ def prepare_candidate(source: Path, source_commit: str, merged_ref: str, publish
         run(['git', 'checkout', '--detach', source_commit], root)
         if script_identity(root / 'scripts') != LOADED_SCRIPT_IDENTITY or script_identity(Path(__file__).parent) != LOADED_SCRIPT_IDENTITY:
             raise CandidateError('candidate builder does not match reviewed source implementation')
-        inputs = derive_release_inputs(root, published_version)
+        inputs = derive_release_inputs(root, published_version, ci_only=ci_only)
         if inputs['status'] == 'already-published':
             return inputs
         tag = inputs['tag']
@@ -384,6 +389,130 @@ def run_packed_smoke(root: Path, tarball: Path, output: Path, tag: str) -> None:
             target_root.mkdir()
             run(['node', str(cli), 'init', target, '--from-archive',
                  str(output / f'rigorloop-adapter-{target}-{tag}.zip')], target_root)
+
+
+def ci_subject(output: Path, root: Path, expected_source: str | None = None) -> dict:
+    """Revalidate the isolated check subject; this grants no release authority."""
+    expected_id = json.loads((output / 'candidate.json').read_text())['candidate_id']
+    data = verify_candidate(output, expected_id)
+    if data.get('inputs', {}).get('ci_only') is not True:
+        raise CandidateError('ordinary CI requires a CI-only candidate')
+    if expected_source and expected_source != data['source_commit']:
+        raise CandidateError('CI source differs from requested check subject')
+    if run(['git', 'rev-parse', 'HEAD'], root) != data['prepared_commit']:
+        raise CandidateError('CI checkout differs from prepared source')
+    if script_identity(root / 'scripts') != data['tool_identity']:
+        raise CandidateError('CI tools differ from checked candidate')
+    overlay = json.loads((output / 'build-overlay.json').read_text())
+    for row in run(['git', 'status', '--porcelain', '--untracked-files=all'], root).splitlines():
+        if row[3:] not in overlay:
+            raise CandidateError('CI source differs from prepared source')
+    for name, identity in overlay.items():
+        if file_identity(local_file(root, name)) != identity:
+            raise CandidateError('CI package overlay identity mismatch')
+    import tarfile
+    with tarfile.open(local_file(output, data['tarball'])) as archive:
+        for member in archive.getmembers():
+            if member.isdir():
+                continue
+            name = PurePosixPath(member.name)
+            if not member.isfile() or not name.parts or name.parts[0] != 'package':
+                raise CandidateError('unsafe packed CI input')
+            path = local_file(root / 'packages/rigorloop', '/'.join(name.parts[1:]))
+            if path.read_bytes() != archive.extractfile(member).read():
+                raise CandidateError('CI runtime differs from packed candidate')
+    return data
+
+
+def ci_arguments(argv: list[str], root: Path):
+    """Resolve the effective source range before entering a prepared checkout."""
+    import argparse
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--mode', choices=['pr', 'main'], required=True)
+    parser.add_argument('--base')
+    parser.add_argument('--head')
+    args, _ = parser.parse_known_args(argv)
+    # Use the same effective (last supplied) range as the shell runner, but
+    # resolve it before moving into C. Main's default must refer to S, not C.
+    if args.mode == 'main' and (not args.base or not args.head):
+        args.base, args.head = 'HEAD~1', 'HEAD'
+    forwarded = []
+    iterator = iter(argv)
+    for value in iterator:
+        if value in ['--base', '--head']:
+            next(iterator)
+        elif not value.startswith(('--base=', '--head=')):
+            forwarded.append(value)
+    for field in ['base', 'head']:
+        value = getattr(args, field)
+        if value:
+            value = run(['git', 'rev-parse', '--verify', value + '^{commit}'], root)
+            forwarded.extend(['--' + field, value])
+            setattr(args, field, value)
+    return args, forwarded
+
+
+def check_ci(argv: list[str], root: Path) -> int:
+    """Compose existing CI on an isolated prepared package. 3 means source mode."""
+    import tarfile
+    args, argv = ci_arguments(argv, root)
+    context = (os.environ.get('RIGORLOOP_CI_CANDIDATE')
+               if os.environ.get('RIGORLOOP_CI_WORKSPACE') == str(root.resolve()) else None)
+    if context:
+        data = ci_subject(Path(context), root)
+        if args.head != data['prepared_commit']:
+            raise CandidateError('CI requested revision differs from prepared source')
+        return 3
+    package_path = root / 'packages/rigorloop/package.json'
+    if not package_path.is_file():
+        return 3
+    package = json.loads(package_path.read_text())
+    version_tuple(package['version'])
+    intent = root / 'docs/releases' / ('v' + package['version'] + '.md')
+    if not intent.is_file() or not re.search(r'^- Status: pending-publication\s*$', intent.read_text(), re.M):
+        return 3
+    head = run(['git', 'rev-parse', 'HEAD'], root)
+    if args.head and args.head != head:
+        raise CandidateError('CI must check the exact requested source checkout')
+    if run(['git', 'diff', 'HEAD', '--name-only'], root):
+        raise CandidateError('CI release preparation requires committed source')
+    derive_release_inputs(root, None, ci_only=True)
+    with tempfile.TemporaryDirectory(prefix='rigorloop-ci-release-') as temporary:
+        workspace = Path(temporary)
+        source, output = workspace / 'source', workspace / 'candidate'
+        run(['git', 'clone', '--quiet', '--no-hardlinks', str(root), str(source)], root)
+        run(['git', 'checkout', '-B', 'ci-source', head], source)
+        data = prepare_candidate(source, head, 'refs/heads/ci-source', None, output, ci_only=True)
+        run(['git', 'fetch', str(output / 'source.bundle'), 'HEAD'], source)
+        run(['git', 'checkout', '--detach', data['prepared_commit']], source)
+        # Restore exactly the checked runtime from the tarball; leave test source
+        # and historical fixtures in C intact. No package inputs are fabricated.
+        with tarfile.open(output / data['tarball']) as archive:
+            for member in archive.getmembers():
+                if member.isdir():
+                    continue
+                name = PurePosixPath(member.name)
+                if (not member.isfile() or name.parts[0] != 'package' or '..' in name.parts
+                        or name.is_absolute() or '\\' in member.name):
+                    raise CandidateError('unsafe packed CI input')
+                destination = source / 'packages/rigorloop' / Path(*name.parts[1:])
+                if destination.is_symlink():
+                    raise CandidateError('packed CI destination is a symlink')
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes(archive.extractfile(member).read())
+        ci_subject(output, source, head)
+        run(['npm', 'ci', '--prefix', 'packages/rigorloop', '--ignore-scripts', '--no-audit', '--no-fund'], source)
+        print('CI checks prepared source ' + data['prepared_commit'] + ' from ' + head
+              + '; candidate ' + data['candidate_id'] + '; no publication authority.', flush=True)
+        env = dict(os.environ, RIGORLOOP_CI_CANDIDATE=str(output), RIGORLOOP_CI_WORKSPACE=str(source))
+        # Snapshot readers must inspect C, not the pending authored record in S.
+        # C descends from S; the unchanged base keeps all source-change selection.
+        argv[argv.index('--head') + 1] = data['prepared_commit']
+        result = subprocess.run(['bash', 'scripts/ci.sh', *argv], cwd=source, env=env).returncode
+        ci_subject(output, source, head)
+        # Exit 3 is reserved for entering the source runner, never a fallback
+        # after prepared checks failed. Preserve failure for that child code.
+        return 1 if result == 3 else result
 
 
 LOADED_SCRIPT_IDENTITY = script_identity(Path(__file__).parent)

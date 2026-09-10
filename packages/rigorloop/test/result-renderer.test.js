@@ -98,6 +98,14 @@ test("legacy JSON and detailed JSON retain the detailed object", () => {
 
 test("T10 exact output fixture preserves retained public commands", () => {
   const fixture = JSON.parse(readFileSync(compatibilityFixturePath, "utf8"));
+  // The retained fixture owns output shape; current package identity is variable.
+  const currentPackage = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  fixture.cases["version-human-success"].stdout = `${currentPackage.name} ${currentPackage.version}`;
+  for (const value of Object.values(fixture.cases)) {
+    if (value.stdout && typeof value.stdout === "object" && value.stdout.package) {
+      value.stdout.package.version = currentPackage.version;
+    }
+  }
   assert.equal(fixture.baseline_revision, "fcbbfda44a89945ee06cfa0c1b16dcbd39984036");
   const cli = process.env.RIGORLOOP_COMPATIBILITY_CLI ?? new URL("../dist/bin/rigorloop.js", import.meta.url).pathname;
   const cases = [

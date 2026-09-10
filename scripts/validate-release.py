@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import io
+import json
+import os
 import subprocess
 import sys
 import tarfile
@@ -361,6 +363,21 @@ def main(argv: list[str] | None = None) -> int:
     release_output_dir = Path(args.release_output_dir) if args.release_output_dir else None
     npm_tarball_root = Path(args.npm_tarball_root) if args.npm_tarball_root else None
     for version in args.version:
+        context = (os.environ.get('RIGORLOOP_CI_CANDIDATE')
+                   if os.environ.get('RIGORLOOP_CI_WORKSPACE') == str(Path.cwd()) else None)
+        if context and args.recorded_source_auto:
+            from release_candidate import ci_subject
+            output = Path(context)
+            candidate_tag = json.loads((output / 'candidate.json').read_text())['tag']
+            if version == candidate_tag:
+                ci_subject(output, Path.cwd())
+                errors = validate_prepared_release(version, Path.cwd(), output)
+                if errors:
+                    for error in errors:
+                        print('Release integrity: ' + error, file=sys.stderr)
+                    return 1
+                print('Release integrity: checked prepared candidate and its full verification receipt for ' + version)
+                continue
         if args.recorded_source_auto:
             source_commit = adapter_artifact_source_commit(version)
             if source_commit is not None:

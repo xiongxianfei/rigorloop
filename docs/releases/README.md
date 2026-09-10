@@ -8,11 +8,13 @@ After reviewed work merges to `main`, `.github/workflows/release.yml` prepares a
 
 The summary identifies the reviewed and prepared source, candidate, generated source changes, checks, artifacts, publication destinations and reporting ref. An approval covers those exact inputs. Preparation on a retry restores the original artifact rather than rebuilding it. The workflow no longer publishes from a tag trigger.
 
+Version intent and tracked notes belong in the reviewed source change. Ordinary CI prepares an isolated candidate and checks its actual package; generated metadata, hashes and evidence are not manual release tasks. After merge, the hosted workflow prepares the exact candidate that the maintainer approves.
+
 ## One-time deployment setup
 
 Before enabling routine use, a repository maintainer must establish:
 
-- A protected `main` branch and the repository's existing reviewed-merge process. Release consumes that upstream assessment; it does not create another engineering approval.
+- A protected `main` branch requiring pull requests and passing `ci`, with zero required GitHub approving reviews. Independent engineering review and Verify remain in repository evidence. Release consumes those assessments; it does not create another engineering approval.
 - A pre-existing `release` environment with authorized individual required reviewers and protected-branch deployment policy. The initial integration rejects team-only or custom-branch reviewer configurations rather than infer equivalent authority.
 - npm trusted publishing for `xiongxianfei/rigorloop`, workflow `release.yml`, environment `release`, and the existing package. Set repository variable `RELEASE_TRUSTED_PUBLISHER` to `github:xiongxianfei/rigorloop:release.yml:release` after establishing that configuration. This is configuration intent, not proof that npm will authorize a write.
 - Repository variable `RELEASE_EVIDENCE_REF`, normally `refs/heads/release-evidence`. Permit the protected job to create/update that separate ref and publish its exact tag/assets; do not point it at the source branch or require a second routine approval/merge for generated evidence.
