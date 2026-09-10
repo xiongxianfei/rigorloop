@@ -57,6 +57,7 @@ class ReleaseCoordinationTests(unittest.TestCase):
         spec = importlib.util.spec_from_file_location('release_dispatcher', ROOT / 'scripts/release-coordinator.py')
         cli = importlib.util.module_from_spec(spec); spec.loader.exec_module(cli)
         for failure in [OSError('/private/worker/credential-file unavailable'),
+                        FileNotFoundError(2, 'missing file', '/private/worker/credential-file'),
                         CandidateError('check failed; private diagnostic log: /private/worker/check.log'),
                         KeyError('candidate_id'), TypeError('wrong object'), AttributeError('wrong shape')]:
             error = io.StringIO()
@@ -64,6 +65,8 @@ class ReleaseCoordinationTests(unittest.TestCase):
                 self.assertEqual(cli.main(['check-ci', '--mode', 'main']), 1)
             self.assertNotIn('/private/worker', error.getvalue())
             self.assertIn('CI release preparation stopped:', error.getvalue())
+            if isinstance(failure, OSError) and failure.errno == 2:
+                self.assertIn('OS error 2', error.getvalue())
 
     def test_evidence_mirror_reuses_exact_bytes_and_rejects_conflict(self):
         from release_provider import NetworkPublisher
