@@ -1,4 +1,4 @@
-# RigorLoop 1.0.0
+# RigorLoop v1.0.0
 
 This major release publishes the reviewed workflow and recording changes since 0.5.0.
 
@@ -6,7 +6,7 @@ This major release publishes the reviewed workflow and recording changes since 0
 
 - Runtime engineering records use rigorloop-records-v2. Retired record formats and legacy lifecycle mutation commands reject safely. Historical records remain readable as historical files; this release does not automatically convert them or provide a legacy runtime continuation path.
 - Use the targeted recording commands and explicit context/subject inspection described in the CLI guidance. Record-store remains an advanced inspection, replacement and recovery surface.
-- Use `route` for workflow coordination and `design` for unified living-model authorship. Separate architecture authoring and the older separate review progression entry points have been retired; Design Review and Delivery Review assess their complete packages.
+- The `workflow` skill is replaced by `route` for coordination. The separate `spec` and `architecture` authoring skills are replaced by `design` for unified living-model authorship. Existing `design-review` and `delivery-review` gates continue to assess their complete packages.
 
 Read current project and CLI guidance before upgrading an existing governed project. Keep original historical records intact. Installation does not authorize governance adoption or migrate project state.
 
