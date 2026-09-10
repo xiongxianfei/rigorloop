@@ -24,3 +24,12 @@ Codex, Claude Code and opencode remain the supported adapter targets. Target ins
 ## Release status
 
 These are tracked release notes for the candidate. Publication, artifact identities and public smoke results are established by the release workflow's version-scoped evidence, not by this document. npm package: `@xiongxianfei/rigorloop`; stable dist-tag: `latest`.
+
+<!-- rigorloop:generated:start release-transaction surface=release-metadata profile=docs/releases/profiles/v1.0.0.yaml -->
+- Release profile: `docs/releases/profiles/v1.0.0.yaml`
+- npm package: `@xiongxianfei/rigorloop@1.0.0`
+- npm dist-tag: `latest`
+- Supported targets: codex, claude, opencode
+- Adapter metadata: `adapter-artifacts-v1.0.0.json`
+- Pending publication evidence: `docs/releases/v1.0.0/npm-publication.md`
+<!-- rigorloop:generated:end release-transaction surface=release-metadata -->

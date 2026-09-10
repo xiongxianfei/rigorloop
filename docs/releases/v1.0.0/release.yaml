@@ -1,0 +1,58 @@
+version: v1.0.0
+release_type: final
+publication_status: pending-publication
+manifest_version: pending
+
+supported_tools:
+  - codex
+  - claude
+  - opencode
+
+adapter_paths:
+  codex: dist/adapters/codex/
+  claude: dist/adapters/claude/
+  opencode: dist/adapters/opencode/
+
+instruction_entrypoints:
+  codex: dist/adapters/codex/AGENTS.md
+  claude: dist/adapters/claude/CLAUDE.md
+  opencode: dist/adapters/opencode/AGENTS.md
+
+smoke:
+  codex:
+    result: pending
+    tool_version: "packed-package"
+    evidence: "Pending packed-package smoke for v1.0.0 codex."
+    reason: "pending release verification"
+    owner: maintainer
+  claude:
+    result: pending
+    tool_version: "packed-package"
+    evidence: "Pending packed-package smoke for v1.0.0 claude."
+    reason: "pending release verification"
+    owner: maintainer
+  opencode:
+    result: pending
+    tool_version: "packed-package"
+    evidence: "Pending packed-package smoke for v1.0.0 opencode."
+    reason: "pending release verification"
+    owner: maintainer
+
+validation:
+  generated_sync: pending
+  release_notes_consistency: pending
+  placeholder_release_check: pending
+  security: pending
+  adapter_archives: pending
+  adapter_artifact_metadata: pending
+  npm_publication_evidence: pending
+
+npm_package:
+  name: "@xiongxianfei/rigorloop"
+  version: "1.0.0"
+  release_tag: v1.0.0
+  dist_tag: latest
+
+adapter_release:
+  tag: v1.0.0
+  bundled_metadata: adapter-artifacts-v1.0.0.json
