@@ -394,7 +394,8 @@ def run_packed_smoke(root: Path, tarball: Path, output: Path, tag: str) -> None:
 
 def ci_subject(output: Path, root: Path, expected_source: str | None = None) -> dict:
     """Revalidate the isolated check subject; this grants no release authority."""
-    data = verify_candidate(output)
+    expected_id = json.loads((output / 'candidate.json').read_text())['candidate_id']
+    data = verify_candidate(output, expected_id)
     if data.get('inputs', {}).get('ci_only') is not True:
         raise CandidateError('ordinary CI requires a CI-only candidate')
     if expected_source and expected_source != data['source_commit']:
@@ -418,6 +419,13 @@ def check_ci(argv: list[str], root: Path) -> int:
     parser.add_argument('--base')
     parser.add_argument('--head')
     args, _ = parser.parse_known_args(argv)
+    argv = list(argv)
+    for field in ['base', 'head']:
+        value = getattr(args, field)
+        if value:
+            value = run(['git', 'rev-parse', '--verify', value + '^{commit}'], root)
+            argv[argv.index('--' + field) + 1] = value
+            setattr(args, field, value)
     context = (os.environ.get('RIGORLOOP_CI_CANDIDATE')
                if os.environ.get('RIGORLOOP_CI_WORKSPACE') == str(root.resolve()) else None)
     if context:
