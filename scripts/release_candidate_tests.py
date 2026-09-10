@@ -160,7 +160,9 @@ class ReleaseCandidateIntegrationTests(unittest.TestCase):
             intent.write_text('# Release v0.5.1\n\n## Version Decision\n\n- Version decision: patch\n- Change summary: Reviewed candidate fixture for integrity proof.\n')
             def git(*args):
                 return subprocess.check_output(['git', '-C', str(source), *args], text=True, stderr=subprocess.DEVNULL).strip()
-            git('branch', '-M', 'main')
+            # GitHub PR checkouts are detached; exercise that input locally too.
+            git('checkout', '--detach')
+            git('checkout', '-B', 'main')
             git('add', 'scripts', 'docs/releases/v0.5.1.md', '.github/workflows/release.yml')
             git('-c', 'user.name=Release Fixture', '-c', 'user.email=fixture@example.invalid',
                 '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-m', 'Reviewed source fixture')

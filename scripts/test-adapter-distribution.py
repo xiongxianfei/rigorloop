@@ -4943,26 +4943,6 @@ release_gate:
         self.assertIn("validated release metadata for v0.1.5 from recorded source", result.stdout)
         self.assertNotIn("sha256 mismatch", result.stdout)
 
-    def test_release_ci_compatibility_wrapper_delegates_to_canonical_validator(self) -> None:
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(ROOT / "scripts" / "validate-release-ci.py"),
-                "--version",
-                "v0.1.5",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=ROOT,
-        )
-
-        self.assertEqual(
-            result.returncode,
-            0,
-            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
-        )
-        self.assertIn("validated release metadata for v0.1.5 from recorded source", result.stdout)
-
     def test_release_ci_recorded_source_mode_preserves_release_metadata_validation(self) -> None:
         module = load_validate_release_module()
         source_commit = "0123456789abcdef0123456789abcdef01234567"
