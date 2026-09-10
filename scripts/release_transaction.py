@@ -316,6 +316,7 @@ def prepare_release(
     *,
     root: Path | str = Path("."),
     check: bool = False,
+    approval_driven: bool = False,
 ) -> PrepareReleaseResult:
     repo_root = Path(root)
     profile = load_release_profile(tag, root=repo_root)
@@ -334,6 +335,34 @@ def prepare_release(
     _plan_timing_evidence(planned, repo_root, profile)
     _plan_adapter_artifact_report(planned, repo_root, profile)
     _plan_current_version_fixture(planned, repo_root, profile)
+
+    if approval_driven:
+        # Generated expectations are never observations. Preserve reviewed human
+        # sections in the existing standing record and add only missing sections.
+        import re
+        for path in list(planned):
+            if path.name == "timing.yaml":
+                # Do not emit zero-duration placeholders as measurements. Actual
+                # available timings are collected by the candidate coordinator.
+                if path.exists():
+                    planned[path] = path.read_text(encoding="utf-8")
+                else:
+                    del planned[path]
+                continue
+            if path != repo_root / "docs" / "releases" / f"{tag}.md":
+                continue
+            # Only this newly constructed table has expectation-like pass values.
+            # Other planners preserve observed fields or unowned human narrative.
+            if path.exists() and _is_finalized_standing_release_record(path.read_text(encoding="utf-8"), profile):
+                continue
+            content = planned[path].replace("| pass |", "| pending |")
+            if path.exists():
+                existing = path.read_text(encoding="utf-8")
+                titles = set(re.findall(r"^## (.+)$", existing, re.M))
+                sections = re.split(r"(?=^## )", content, flags=re.M)[1:]
+                additions = "".join(section for section in sections if section.splitlines()[0][3:] not in titles)
+                content = existing.rstrip() + "\n\n" + additions if additions else existing
+            planned[path] = content
 
     changed_paths = tuple(
         _repo_relative(path, repo_root)
@@ -599,46 +628,8 @@ def validate_release_timing_evidence(
 
 
 def validate_release_workflow_parity(root: Path | str = Path(".")) -> list[str]:
-    repo_root = Path(root)
-    workflow_path = repo_root / ".github" / "workflows" / "release.yml"
-    if not workflow_path.exists():
-        return [f"{_repo_relative(workflow_path, repo_root)}: release workflow not found"]
-    text = workflow_path.read_text(encoding="utf-8")
-    errors: list[str] = []
-    release_verify_count = text.count("bash scripts/release-verify.sh")
-    if release_verify_count == 0:
-        errors.append(
-            ".github/workflows/release.yml: release workflow must invoke bash scripts/release-verify.sh"
-        )
-    if 'bash scripts/release-verify.sh "$GITHUB_REF_NAME"' not in text:
-        errors.append(
-            ".github/workflows/release.yml: release job must delegate readiness to bash scripts/release-verify.sh \"$GITHUB_REF_NAME\""
-        )
-    if 'bash scripts/release-verify.sh "$tag"' not in text:
-        errors.append(
-            ".github/workflows/release.yml: npm publication validation must delegate to bash scripts/release-verify.sh \"$tag\""
-        )
-    if "RELEASE_TAG_COMMIT: ${{ github.sha }}" not in text:
-        errors.append(
-            ".github/workflows/release.yml: trusted release jobs must bind RELEASE_TAG_COMMIT to github.sha"
-        )
-    if 'npm publish --provenance --access public --tag "${{ steps.context.outputs.npm_dist_tag }}"' not in text:
-        errors.append(
-            ".github/workflows/release.yml: trusted npm publication must use the profile-owned npm dist-tag"
-        )
-    forbidden_direct_checks = (
-        "python scripts/validate-release.py",
-        "python scripts/test-adapter-distribution.py",
-        "python scripts/test-npm-package-publication.py",
-        "python scripts/build-adapters.py",
-        "python scripts/validate-adapters.py",
-    )
-    for check in forbidden_direct_checks:
-        if check in text:
-            errors.append(
-                f".github/workflows/release.yml: release workflow must not duplicate release gate command directly: {check}"
-            )
-    return errors
+    from release_coordination import validate_workflow
+    return validate_workflow(Path(root))
 
 
 class NetworkPublicEvidenceProvider:
@@ -2029,6 +2020,7 @@ def _validate_release_yaml_contract(
     profile: ReleaseProfile,
     *,
     require_finalized: bool,
+    expected_publication_status: str = "pending-publication",
 ) -> list[str]:
     relative = _repo_relative(path, repo_root)
     try:
@@ -2040,7 +2032,7 @@ def _validate_release_yaml_contract(
     expected_scalars = (
         (metadata.version, profile.release_tag, "version"),
         (metadata.release_type, "final", "release_type"),
-        (metadata.publication_status, "pending-publication", "publication_status"),
+        (metadata.publication_status, expected_publication_status, "publication_status"),
     )
     for actual, expected, field in expected_scalars:
         if actual != expected:

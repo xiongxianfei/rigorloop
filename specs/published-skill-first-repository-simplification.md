@@ -4,6 +4,10 @@
 # Published-Skill-First Repository Simplification
 
 
+## Release-model ownership applicability
+
+For the selected [Release consolidation](../docs/proposals/2026-09-09-release-model-source-consolidation.md), [Release REL-SR-08/09](../docs/design/release/release.md#requirements) completely replaces the standing R7/R8 definition at reviewed coherent implementation and successful Verify. This new-profile-only amendment transfers current skill/package proof composition and deterministic version, package metadata, archive inventory/checksum, release metadata, tracked-note, generated parity and rollback/release-consistency obligations with their existing applicability. The R7/R8 transfer preserves these protective obligations, command/result aliases and explicit freshness policy. Release separately selects bounded approval-driven coordination and a diagnostic timing consequence under REL-SR-18/22–24; directly affected check implementations and consumers must adopt those exact amendments together. Passing checks still grants no publication authority. Until adoption R7/R8 remain operational here; afterward their original text below is historical identity, not a second maintained definition. All other clauses, boundary/proof IDs and their current scoped amendments retain their owners.
+
 ## Necessary-design cleanup applicability
 
 For the selected [necessary-design consolidation](../docs/proposals/2026-09-09-consolidate-necessary-design-and-retire-superseded-sources.md), [Test TEST-SR-14](../docs/design/test/test.md#necessary-design-consolidation-proportionate-proof) supplies the complete scoped R14/R17–20/R22 replacement, and [System's consolidation map](../docs/design/system/system.md#necessary-design-consolidation-map) names exact sources, preserved populations and consumers. This new-profile-only amendment takes effect with reviewed coherent implementation and successful Verify. It preserves the historical feature/boundary/proof identifiers and the unselected operational remainder.

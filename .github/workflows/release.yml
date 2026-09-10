@@ -2,88 +2,107 @@ name: release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches: [main]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: rigorloop-release
   cancel-in-progress: false
 
+env:
+  RELEASE_EVIDENCE_REF: ${{ vars.RELEASE_EVIDENCE_REF }}
+  RELEASE_TRUSTED_PUBLISHER: ${{ vars.RELEASE_TRUSTED_PUBLISHER }}
+
 jobs:
-  release:
+  prepare:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Verify release readiness
-        env:
-          RELEASE_OUTPUT_DIR: release-output
-          RELEASE_TAG_COMMIT: ${{ github.sha }}
-        run: bash scripts/release-verify.sh "$GITHUB_REF_NAME"
-
-      - name: Create GitHub release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          tag="${GITHUB_REF_NAME}"
-          notes_file="docs/releases/${tag}/release-notes.md"
-          args=("$tag" --verify-tag --notes-file "$notes_file")
-          if [[ "$tag" == *-rc.* ]]; then
-            args+=(--prerelease --latest=false)
-          fi
-          if compgen -G "release-output/*" > /dev/null; then
-            args+=(release-output/*)
-          fi
-          gh release create "${args[@]}"
-
-  publish-npm-trusted:
-    needs: release
-    if: github.ref_type == 'tag' && github.ref_name != 'v0.1.4' && !contains(github.ref_name, '-')
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
     permissions:
       contents: read
-      id-token: write
-
+      actions: read
+    outputs:
+      ready: ${{ steps.candidate.outputs.ready }}
+      candidate_id: ${{ steps.candidate.outputs.candidate_id }}
+      artifact_id: ${{ steps.artifact.outputs.artifact-id || steps.candidate.outputs.artifact_id }}
+      artifact_digest: ${{ steps.artifact.outputs.artifact-digest || steps.candidate.outputs.artifact_digest }}
     steps:
-      - name: Check out repository
+      - name: Check out reviewed source
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.sha }}
           fetch-depth: 0
-
-      - name: Set up Node for npm trusted publishing
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
-
-      - name: Validate npm trusted publication context
-        id: context
+      - name: Install check dependencies
+        run: npm ci --prefix packages/rigorloop --ignore-scripts --no-audit --no-fund
+      - name: Prepare and check candidate
+        id: candidate
         env:
-          RELEASE_TAG_COMMIT: ${{ github.sha }}
-        run: |
-          tag="${GITHUB_REF_NAME}"
-          if [[ ! "$tag" =~ ^[v][0-9]+[.][0-9]+[.][0-9]+$ ]]; then
-            echo "npm publication requires a stable semver tag, got: ${tag}" >&2
-            exit 1
-          fi
-          expected_version="${tag#v}"
-          package_version="$(node -p "require('./packages/rigorloop/package.json').version")"
-          if [[ "$package_version" != "$expected_version" ]]; then
-            echo "packages/rigorloop/package.json version ${package_version} does not match ${tag}" >&2
-            exit 1
-          fi
-          npm_dist_tag="$(python -c 'import sys; sys.path.insert(0, "scripts"); from release_transaction import load_release_profile; print(load_release_profile(sys.argv[1]).npm_dist_tag)' "$tag")"
-          echo "npm_dist_tag=${npm_dist_tag}" >> "$GITHUB_OUTPUT"
-          bash scripts/release-verify.sh "$tag"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/release-coordinator.py prepare
+      - name: Retain original candidate
+        id: artifact
+        if: steps.candidate.outputs.ready == 'true' && github.run_attempt == 1
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate-${{ github.run_id }}
+          path: ${{ runner.temp }}/release-candidate/*
+          if-no-files-found: error
+          retention-days: 30
+          overwrite: false
+          compression-level: 0
 
-      - name: Publish npm package through trusted publishing
-        run: npm publish --provenance --access public --tag "${{ steps.context.outputs.npm_dist_tag }}" ./packages/rigorloop
+  execute:
+    needs: prepare
+    if: needs.prepare.outputs.ready == 'true'
+    environment: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      actions: read
+      deployments: read
+      id-token: write
+    steps:
+      - name: Check out exact workflow source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Set up Node for trusted publishing
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install check dependencies
+        run: npm ci --prefix packages/rigorloop --ignore-scripts --no-audit --no-fund
+      - name: Publish approved candidate, observe and report
+        id: operation
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_CANDIDATE_ID: ${{ needs.prepare.outputs.candidate_id }}
+          RELEASE_ARTIFACT_ID: ${{ needs.prepare.outputs.artifact_id }}
+          RELEASE_ARTIFACT_DIGEST: ${{ needs.prepare.outputs.artifact_digest }}
+        run: python scripts/release-coordinator.py execute
+      - name: Retain observed outcomes for recovery
+        if: always() && steps.operation.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-observation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/release-candidate/observed-outcome.json
+          if-no-files-found: warn
+          retention-days: 30
+          overwrite: false
