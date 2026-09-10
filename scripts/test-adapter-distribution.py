@@ -1174,6 +1174,37 @@ release_gate:
                     if destination.startswith("."):
                         self.assertFalse((root / destination).exists())
 
+    def test_distribution_generation_preserves_runtime_under_output_parent_and_symlinks(self) -> None:
+        for operation in ("tree", "archives", "staged"):
+            for hazard in ("parent", "ancestor", "nested-link", "archive-link"):
+                with self.subTest(operation=operation, hazard=hazard), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    skills = self.copy_fixture_skills(root, ("portable-basic",))
+                    runtime = root / "project/.codex/skills/portable-basic/SKILL.md"
+                    runtime.parent.mkdir(parents=True)
+                    runtime.write_bytes(b"user runtime bytes\n")
+                    output = root / "output"
+                    if hazard == "parent":
+                        output = root / "project/.codex"
+                    elif hazard == "ancestor":
+                        output = root / "project"
+                    elif hazard == "nested-link":
+                        (output / "codex").mkdir(parents=True)
+                        (output / "codex/.agents").symlink_to(root / "project/.codex", target_is_directory=True)
+                    else:
+                        output.mkdir()
+                        (output / adapter_archive_name("codex", "v1.0.0")).symlink_to(runtime)
+                    before = runtime.read_bytes()
+                    with self.assertRaisesRegex(ValueError, "unsafe output"):
+                        if operation == "tree":
+                            sync_adapter_output("v1.0.0", skills_root=skills, output_root=output)
+                        elif operation == "archives":
+                            build_adapter_archives("v1.0.0", output, skills_root=skills)
+                        else:
+                            build_staged_v3_adapter_archives("v1.0.0", output, skills_root=skills)
+                    self.assertEqual(runtime.read_bytes(), before)
+                    self.assertFalse((output / "claude").exists())
+
     def test_adapter_archives_include_packaged_skill_assets(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

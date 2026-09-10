@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -1691,17 +1692,36 @@ def _remove_empty_directories(root: Path) -> None:
 
 
 def _validate_generation_output(output: Path, skills_root: Path) -> None:
-    """Package generation must not become source editing or active installation."""
+    """Check the complete write/cleanup surface before generation has effects."""
     source = skills_root.resolve()
     resolved = output.resolve()
     if resolved == source or resolved.is_relative_to(source) or source.is_relative_to(resolved):
         raise ValueError("unsafe output: generation must not overlap canonical skills")
+    runtime_parents = {".codex", ".agents", ".claude", ".opencode"}
     for candidate in (output.absolute(), resolved):
-        parts = candidate.parts
-        if ".opencode" in parts or any(parts[index:index + 2] == (target, "skills")
-                                        for target in (".codex", ".agents", ".claude")
-                                        for index in range(len(parts) - 1)):
-            raise ValueError("unsafe output: generation must not write into active skill directories")
+        if runtime_parents.intersection(candidate.parts):
+            raise ValueError("unsafe output: generation must not overlap active skill directories")
+    for ancestor in (output, *output.parents):
+        if ancestor.is_symlink():
+            raise ValueError("unsafe output: generation must not follow symlinked destinations")
+
+    if not output.exists():
+        return
+
+    # A synchronized package tree contains target-shaped directories itself.
+    # Only the producer's exact package prefixes are generated output; other
+    # runtime roots below the output may belong to a project and must survive.
+    package_parents = {Path("codex/.agents"), Path("claude/.claude")}
+    def unreadable(error: OSError) -> None:
+        raise error
+
+    for directory, dirs, files in os.walk(output, followlinks=False, onerror=unreadable):
+        for name in dirs + files:
+            path = Path(directory) / name
+            if path.is_symlink():
+                raise ValueError("unsafe output: generation must not follow symlinked destinations")
+            if name in runtime_parents and path.relative_to(output) not in package_parents:
+                raise ValueError("unsafe output: generation must not contain active skill directories")
 
 
 def sync_adapter_output(
