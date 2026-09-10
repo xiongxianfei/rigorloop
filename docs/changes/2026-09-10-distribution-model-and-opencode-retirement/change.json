@@ -4,8 +4,8 @@
       "id": "distribution-router",
       "role": "route"
     },
-    "reason": "User authorized full implementation through PR; m1 in-progress; exact approved plan and required independent reviews govern continuation.",
-    "stage": "implement",
+    "reason": "User authorized full implementation through PR; m1 ready; exact approved plan and required independent reviews govern continuation.",
+    "stage": "code-review",
     "status": "in-progress"
   },
   "applicability": [
@@ -262,7 +262,7 @@
       "requirement_refs": [
         "docs/plans/2026-09-10-distribution-model-and-opencode-retirement.md#m1"
       ],
-      "status": "in-progress"
+      "status": "ready"
     },
     {
       "id": "m2",

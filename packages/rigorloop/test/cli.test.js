@@ -536,33 +536,9 @@ test("T1 package metadata exposes one public binary and publishable runtime poli
   assert.deepEqual(packageJson.dependencies ?? {}, { yaml: "2.9.0" });
 });
 
-test(`TNP-005 package version maps to bundled v${publicPackageVersion} targeted-recording candidate metadata`, () => {
-  const metadataPath = join(packageRoot, "dist", "metadata", publicMetadataFile);
-  const releaseIndexPath = join(packageRoot, "dist", "metadata", "releases.json");
-  assert.equal(existsSync(metadataPath), true);
-
-  const metadataContent = readFileSync(metadataPath, "utf8");
-  const metadata = JSON.parse(metadataContent);
-  const releaseIndex = JSON.parse(readFileSync(releaseIndexPath, "utf8"));
-  const release = releaseIndex.releases?.[publicReleaseTag];
-
-  assert.equal(release?.release_tag, publicReleaseTag);
-  assert.equal(release?.bundled_metadata, publicMetadataFile);
-  assert.equal(release?.bundled_metadata_sha256, sha256(Buffer.from(metadataContent, "utf8")));
-  assert.equal(metadata.release.version, publicReleaseTag);
-  assert.equal(metadata.release.release_tag, publicReleaseTag);
-
-  const artifact = metadata.artifacts.find((entry) => entry.adapter === "codex");
-  assert.equal(artifact.archive, publicArchiveFile);
-  assert.equal(artifact.install_root, ".agents/skills");
-  // Exact source/archive parity is exercised by the adapter distribution suite.
-  assert.match(artifact.tree_sha256, /^[a-f0-9]{64}$/);
-  assert.equal(artifact.file_count, 137); // 138 - 15 retired files + 14 unified-author files.
-  assert.equal(
-    artifact.url,
-    `https://github.com/xiongxianfei/rigorloop/releases/download/${publicReleaseTag}/${publicArchiveFile}`,
-  );
-
+test('TNP-005 source metadata preserves historical release identities', () => {
+  // Current candidate metadata is produced by Release, in its isolated package.
+  // Actual packed metadata/archive parity is covered by release_candidate_tests.
   const historicalMetadata = readFileSync(join(packageRoot, "dist", "metadata", "adapter-artifacts-v0.5.0.json"));
   assert.equal(sha256(historicalMetadata), "74f2d940ce8ef358092609884e9377d0a3955c731e7f437ca63d995862227885");
 });

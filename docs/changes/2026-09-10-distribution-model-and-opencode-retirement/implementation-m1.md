@@ -1,0 +1,25 @@
+# M1 implementation evidence
+
+## Core result
+
+Skill: implement. Scope: candidate-unit filesystem helper and direct protective tests. Public dispatch and the managed replacement consumer are unchanged. Next owner: independent Code Review; no review or final verification claim.
+
+Baseline: `0d3fd0b6d2930be03ae934d3f0ff3ad90be5bc3d`; reviewed Design/plan checkpoint: `2520313b`. Rollback unit: this helper, its tests and the two bounded test-baseline corrections. No installed runtime directory was changed.
+
+## Implementation and proof
+
+The helper opens both rename parents and uses descriptor-relative paths through `/proc/self/fd`; actual successful tests exercise the kernel move on this Linux filesystem. Missing capability fails before any original is detached. Private retention is outside declared discovery roots; retained originals are never automatically deleted or parsed. Exclusive creation/linking protects destinations appearing after preflight or detachment. Snapshots and parent identities detect observed independent changes; late writes through an old inode remain in retained originals. This proves the available Linux mechanism, not portability to systems without descriptor-relative access.
+
+`node --test packages/rigorloop/test/installer-replacement.test.js`: first failed because the helper did not exist; final passed 11 tests. Cases cover fresh and complete default conflict rejection, empty/identical units, whole-tree and standalone replacement, late old-inode writes, new file/directory after detachment, source/ancestor changes, symlinks, escaped candidate paths, unsafe retention placement, unavailable capability, partial interruption and retry. Cross-filesystem rejection is implemented from opened parent device identities; no second mounted child fixture was available, so no real cross-mount success/rejection execution is claimed.
+
+`npm test --prefix packages/rigorloop`: final passed 475 tests, zero failures, 23458.763716 ms reported by Node. The first run passed 470/472 and exposed two source-baseline assumptions unrelated to the new helper. TNP-005 expected an absent current candidate metadata file even though Release now produces isolated candidate metadata; preserve the historical digest assertion and leave actual generated/packed metadata proof with `release_candidate_tests.py` and M2/C4. The concise-exit test now uses a missing local archive (configuration exit 4) rather than relying on unavailable source metadata to validate an archive during dry-run. Its initial corrected expectation of exit 2 failed; actual contract is exit 4, and the final assertion verifies it explicitly. No production observability behavior changed.
+
+## TG-08 admission and measurements
+
+| Affected check | Protected failure / owner | Admission, execution, repair and retirement basis |
+| --- | --- | --- |
+| `installer-replacement.test.js` via existing Node runner | DIST-SR-08/09/13/14; Distribution filesystem safety | Deterministic real files expose clobber, discovery leakage, stale basis and false success. Existing package test runner owns execution; no standalone CLI. Runs in C1/C2 on installer changes. Repair helper or proof; retire only if approved behavior is withdrawn or equivalent boundary proof replaces each protection. |
+| TNP-005 retained historical digest | Release historical identity | Existing CLI suite retains deterministic byte preservation. Remove only with Release-owned disposition and equivalent historical proof. The obsolete source-candidate existence/count assertion is replaced by the already-owned real generated/packed candidate boundary, explicitly allocated to C4 before integrated closeout. |
+| Concise semantic exit projection | CLI observability | Existing CLI suite observes actual child status and envelope agreement. Missing archive is a stable no-network input independent of Release generation. Repair projection/exit mapping on disagreement; retire only with equivalent public-dispatch proof. |
+
+Command population: one existing `npm test --prefix packages/rigorloop` plus one focused invocation of the same Node test runner; zero new validator CLIs, selectors or caches. Baseline first-run timing was 23442.808399 ms and final was 23458.763716 ms, one run each on the same environment; the first run included eight new tests and two pre-existing failures, so this is not a clean performance comparison or savings claim. M3 records the aggregate retirement measurements. Pre-handoff changed-line evidence against `2520313b`: existing tests +6/-29, new helper 137 lines, new test file 22 lines; evidence files are separate governance changes. Maintenance owners remain Distribution filesystem tests and CLI/Release for the retained projection/metadata checks. No maintenance owner or operational gate was removed.
