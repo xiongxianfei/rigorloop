@@ -4,7 +4,7 @@ import {scanObservations} from "./recording-observations.js";
 import {boundAdvancedObservations} from "./recording-result.js";
 import { randomBytes } from "node:crypto";
 import { RecordFiles, digest, stop, MIB } from "./record-store-files.js";
-import {V2_FORMAT,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
+import {V2_FORMAT,V3_FORMAT,storedFormat,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
 
 const decode = bytes => bytes === null ? null : new TextDecoder("utf-8",{fatal:true,ignoreBOM:true}).decode(bytes);
 const encoded = data => Buffer.from(JSON.stringify(data)+"\n");
@@ -64,7 +64,7 @@ class Store {
     let discriminator;
     try { discriminator=JSON.parse(decode(raw)); }
     catch { stop("invalid-input"); }
-    if(discriminator?.contract!==this.format.contract || (Object.hasOwn(discriminator,"schema_version") && discriminator.schema_version!==this.format.version)) stop("unsupported-contract");
+    this.selectFormat(storedFormat(discriminator));
     const change=this.format.parse("change",raw);
     if(change.change_id!==this.id) stop("invalid-input");
     const set={[this.manifest]:decode(raw)};
@@ -156,8 +156,8 @@ class Store {
     let j; try { j=JSON.parse(decode(raw)); } catch { stop("recovery-needed"); }
     if(!encoded(j).equals(raw)) stop("recovery-needed");
     exact(j,["version","id","change_id","phase","before","candidate","writes","reads","created_dirs"]);
-    if(j.version!==2 || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
-    this.selectFormat(V2_FORMAT);
+    if(![2,3].includes(j.version) || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
+    this.selectFormat(j.version===3?V3_FORMAT:V2_FORMAT);
     for(const side of ["before","candidate"]) {
       const map=j[side]; if(!map || typeof map!=="object" || Array.isArray(map) || Object.keys(map).length>65) stop("recovery-needed");
       for(const [path,entry] of Object.entries(map)) {
@@ -177,7 +177,7 @@ class Store {
     for(const path of Object.keys(before)) if(!Object.hasOwn(candidate,path)||(!j.writes.includes(path)&&digest(before[path])!==digest(candidate[path])))stop("recovery-needed");
     for(const path of Object.keys(candidate)) if(!Object.hasOwn(before,path)&&!j.writes.includes(path))stop("recovery-needed");
     // The public request schema validates the journal's declared targets and basis too.
-    validateAdvancedRequest({schema_version:this.format.version,contract:this.format.contract,change_id:this.id,expected_revision:revision(before),
+    validateAdvancedRequest({schema_version:2,contract:this.format.contract,change_id:this.id,expected_revision:revision(before),
       writes:j.writes.map(path=>({path,expected_identity:digest(before[path]??null),content:candidate[path]})),reads:j.reads});
     if(!Array.isArray(j.created_dirs)||j.created_dirs.length>2||new Set(j.created_dirs.map(d=>d.path)).size!==j.created_dirs.length)stop("recovery-needed");
     for(const d of j.created_dirs) { exact(d,["path","identity"]); if(![this.directory,`${this.directory}/reviews`].includes(d.path)||typeof d.identity!=="string"||!/^\d+:\d+$/.test(d.identity))stop("recovery-needed"); }

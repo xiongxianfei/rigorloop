@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-code-review",
+      "role": "review"
     },
-    "reason": "User authorized continuation through PR submission. Execute approved M1 first, then each reviewed milestone, independent final whole-change Code Review, distinct Verify and PR. No release or merge authorization is inferred.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M1 implementation and required validation complete as evidence; independent milestone Code Review is required before completion or the next milestone. User authorized the sequence through PR, not release/merge.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -139,7 +139,7 @@
         "RF-SR-12",
         "RF-SR-13"
       ],
-      "status": "in-progress"
+      "status": "ready"
     },
     {
       "id": "m2",
