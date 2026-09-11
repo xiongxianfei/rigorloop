@@ -159,9 +159,9 @@ test("TG-01 v2 advanced request validates candidate bytes and explicit absent cr
 });
 
 test("TG-01 model stored examples parse and reassessment retains origin", () => {
-  for(const name of ["minimal-change.json","incomplete-review.json","finding-reassessment/before.json","finding-reassessment/after.json"]) {
+  for(const name of ["v2-minimal-change/change.json","v2-review-without-subjects/review.json","v2-review-reassessment/before.json","v2-review-reassessment/after.json"]) {
     const x=readFileSync(new URL("../../../docs/design/record-format/examples/"+name,import.meta.url));
-    parseV2Record(name==="minimal-change.json"?"change":"review",x);
+    parseV2Record(name==="v2-minimal-change/change.json"?"change":"review",x);
   }
 });
 

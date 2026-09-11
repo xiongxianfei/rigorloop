@@ -1,0 +1,54 @@
+{
+  "schema_version": 3,
+  "change_id": "example-change",
+  "checks": [
+    {
+      "id": "rendering-and-preservation",
+      "actor": {
+        "id": "author-a",
+        "role": "implement"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/example/example.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "path": "src/example-renderer.js",
+          "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        {
+          "path": "tests/example-renderer.test.js",
+          "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "result": "passed",
+      "procedure": "Illustrative procedure: render a rationale containing paragraphs and a literal backslash-n; compare decoded text and JSON values, and compare source bytes before and after the read.",
+      "summary": "The fictional check observes preserved rationale and unchanged stored bytes."
+    },
+    {
+      "id": "selected-field-output",
+      "actor": {
+        "id": "verifier-a",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/example/example.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "path": "src/example-renderer.js",
+          "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        {
+          "path": "tests/example-renderer.test.js",
+          "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "result": "passed",
+      "procedure": "Illustrative procedure: request only summary and limitations; inspect the returned field names, omitted-field metadata, record identity, contract and coherent revision.",
+      "summary": "The fictional check observes exactly the requested content with explicit omissions and identity metadata."
+    }
+  ]
+}

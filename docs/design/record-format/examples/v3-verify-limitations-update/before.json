@@ -1,0 +1,37 @@
+{
+  "schema_version": 3,
+  "change_id": "example-change",
+  "verifier": {
+    "id": "verifier-a",
+    "role": "verify"
+  },
+  "subjects": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "evidence_refs": [],
+  "review_refs": [],
+  "outcome": "success",
+  "summary": "The delivered change is assessed within a local scope.",
+  "assessment_scope": "Synthetic Git/PR readiness assessment with an explicit repository, remote and base/head relationship; no actual readiness is established.",
+  "changes": [
+    "Human output presents named explanation fields readably."
+  ],
+  "rationale": [
+    "The supplied explanation distinguishes delivered changes from reasons supporting the conclusion."
+  ],
+  "limitations": [
+    "Synthetic example only; no implementation, independent review, hosted CI or publication result is established."
+  ],
+  "verification_basis": {
+    "repository_identity": "https://example.org/example/project.git",
+    "remote_identity": "https://example.org/example/project.git",
+    "base_branch": "main",
+    "base_revision": "1111111111111111111111111111111111111111",
+    "merge_base_revision": "1111111111111111111111111111111111111111",
+    "head_branch": "feature/example",
+    "verified_subject_revision": "2222222222222222222222222222222222222222"
+  }
+}

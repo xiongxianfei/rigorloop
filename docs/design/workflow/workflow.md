@@ -2,6 +2,8 @@
 
 Model validation contract: model-document-v1
 
+The [structured-assessment coordination amendment](#structured-assessment-coordination) adds prospective v3 adoption and consumer obligations. Its explicit map supersedes only the corresponding v2-only/new-store and explanation-consumption clauses after coordinated adoption; other responsibilities and historical judgments remain unchanged.
+
 ## Introduction and Goals
 
 The Workflow model defines how responsible humans and agents coordinate a direction into reviewed design, delivery work and verified outcomes. It owns activity selection, work and correction allocation and continuation authority. The [Design model](../design/design.md) owns the authoring method and model-document convention under the coordinated adoption boundary below. The [Review and Closeout model](../review-closeout/review-closeout.md) owns shared assessment policy within this domain; Workflow applies its judgments and applicability conditions when coordinating work. The purpose remains durable, inspectable reasoning and resumable work without making a command-line transition engine the decision owner.
@@ -120,6 +122,37 @@ All RC-SR references in this file resolve to the [Review and Closeout requiremen
 | WF-SR-14 | Sufficient basis and no permission inferred from observations | RC-SR-04/05/18 | Select context and interpret CLI observations for coordination |
 
 WF-SR-02/10–12/15 retain state, compatibility, targeted-interface, explicit-recording and retrieval responsibilities; WF-SR-07 now coordinates the Design-owned document method. WF-SR-16 makes consumption of the existing final-review dependency explicit. Historical policy mappings elsewhere in this file are reference history; assessment obligations they cite resolve through this table for the proposed revision. Runtime examples below illustrate application of the owning policy rather than define another policy source.
+
+## Structured assessment coordination
+
+This amendment follows the [approved proposal](../../proposals/2026-09-10-structured-assessment-explanations.md), with current activity and evidence in its [owning change](../../changes/2026-09-10-structured-assessment-explanations/change.json). Record Format owns v3 structure and v2 continuation; CLI owns operations, projection and safe publication; Review and Closeout owns explanation-edit reliance and conditional external basis. Workflow coordinates their consumers without another Report model, lifecycle stage or approval status.
+
+V3 Review findings are current problem accounts under RF-SR-13, with ID-only immutability and explicit correction/disposition. For this population, earlier references below to retained finding origin no longer require an original snapshot. V2 concerns and v3 blockers retain origin. Workflow routes by current finding ownership and reliance; it neither restores original wording nor treats a saved correction as resolution or approval. Review/Verify skill guidance, shared review-reliance resources, schemas, constructors, readers and package checks must dispatch this distinction by stored contract. The user's scoped direction revision supersedes the proposal's original finding-origin requirement for v3 only.
+
+### Continuation and adoption disposition
+
+WF-SR-10/11/15 consume RF-SR-12. Existing v2 initiatives, including this amendment's own owning change, continue with the exact v2 commands and records until their responsible actors complete or otherwise explicitly disposition them. This Design does not assert that any such work is already complete. The adopted executable supports existing-v2 reads, recording, validation and recovery while selecting v3 for new-store creation. There is no automatic body extraction, approval conversion, cross-version registration or command-result-based progression. Existing completed historical records remain unchanged by adoption; separately authorized correction does not rewrite their past assessed subjects.
+
+Retiring existing-v2 support is outside this initiative and requires a separately approved owner disposition based on then-current work and recovery obligations. That avoids forcing this change to convert or abandon its own v2 review/Verify chain. No automatic expiry, status-based rejection or hidden compatibility gate is introduced. The previously retired stored formats remain unsupported. New v3 creation starts only after coordinated governing/consumer changes, reviewed coherent implementation and successful Verify; model validation and package installation do not activate a customer project.
+
+### Required consumer reconciliation
+
+| Producer/consumer family | Required implementation treatment | Owner of meaning |
+| --- | --- | --- |
+| proposal-review, design-review, delivery-review, code-review | Supply v3 summary, scope, reasons and limitations with the existing complete judgment, provenance, subjects and findings. Read omitted required basis before claiming a complete assessment. Preserve exact v2 recording for continuing stores. | Review and Closeout RC-SR-01–10/19; Record Format RF-SR-09/10 |
+| verify and its branch-readiness/successful-explanation guidance and assets | Supply changes separately from rationale and evidence; write the conditional basis object only for applicable v3 claims. Failures retain evidence/blocker handling. | RC-SR-13–15/19/20; RF-SR-09/11 |
+| route and every authoring/support recording profile | Read the declared contract and revision, select the matching request/result profile, and never request v3 fields from v2 stores or reinterpret a projection as complete context. Do not reconstruct whole files or derive applicability from save success. | CLI-SR-22/24–27; RC-SR-04–07 |
+| Canonical shared references, review/report scaffolds and examples | Replace v3 body instructions with named actor inputs and derived presentation; keep v2 continuation explicitly selected, with no duplicated authoritative report. Trace transitive resources and validate all affected callers. | Skill retains content invariants; specialist owners retain methods |
+| Schemas, metadata validators, query helpers, selectors and package resources | Dispatch by explicit stored/transport contract, protect negative/conflict/recovery paths and package compatible consumers together. Do not run standalone legacy review validation against current stores. | Record Format and CLI; Test owns protection criteria |
+| Governing adoption surfaces and release/install support | Reconcile current v2-only statements in CONSTITUTION.md and AGENTS.md at adoption. Package generation uses canonical skills; release and customer activation keep their separate authority. | Workflow coordination, Distribution packaging/installation, Release publication |
+
+These rows are required dependency families, not an inventory-wide conformance claim. Delivery expands them into exact files and checks before implementation; a necessary consumer cannot be deferred while adopting the changed interface. Removal of the standalone legacy review validator is not part of this redesign: its existing document-only contract and callers are unaffected unless a specific changed edge requires correction.
+
+### Scoped displacement and acceptance intent
+
+WF-SR-10's earlier sole-v2 runtime statement and matching compatibility scenario are replaced only by RF-SR-12's existing-v2/new-v3 disposition. WF-SR-02/11/15 and the primary-skill interaction/record-schema sections consume named explanations and result projections for v3; v2 narration remains unchanged. WF-SR-03/04/05/06/08/09 and all Review and Closeout ownership references retain their semantic authority. The earlier retirement inventories do not authorize deletion of required v2 continuation. Other authoring, Test, Release and Distribution adoption decisions keep their original boundaries.
+
+For these requirements, demonstrate an actor resuming an unfinished v2 initiative with its existing assessment meanings while a new v3 initiative records/selects/edits named explanation. In the latter, a substantive limitation plus explicit applicability restriction publishes together and Route acts only on its own separately supplied correction decision. A mixed consumer/package that sends body to v3, fields to v2 or interprets a partial read as complete cannot support continuation. A newly failed Verify remains recordable after completion under either supported contract. Delivery must allocate these integrated outcomes in addition to the retained eight scenario dimensions.
 
 ## Building Block View
 

@@ -1,0 +1,14 @@
+{
+  "schema_version": 3,
+  "operation": "verify.set",
+  "status": "saved",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "changed": [
+    {
+      "kind": "verify",
+      "target": {}
+    }
+  ]
+}

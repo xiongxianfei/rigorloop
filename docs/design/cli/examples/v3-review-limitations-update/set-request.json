@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "interface": "targeted-recording-v1",
+  "contract": "rigorloop-records-v3",
+  "change_id": "example-change",
+  "expected_revision": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "reads": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "operation": {
+    "op": "review.set",
+    "target": {
+      "id": "design-review"
+    },
+    "values": {
+      "limitations": [
+        "The assessment covers the supplied Design only; implementation behavior has not been executed."
+      ]
+    }
+  }
+}

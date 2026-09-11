@@ -1,0 +1,20 @@
+{
+  "schema_version": 3,
+  "operation": "verify.record",
+  "status": "saved",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "changed": [
+    {
+      "kind": "verify",
+      "target": {}
+    },
+    {
+      "kind": "applicability",
+      "target": {
+        "path": "docs/changes/example-change/verify-report.json"
+      }
+    }
+  ]
+}
