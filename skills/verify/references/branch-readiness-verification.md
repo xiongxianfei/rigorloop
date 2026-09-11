@@ -4,9 +4,9 @@ Load this procedure only after `SKILL.md` classifies `branch-readiness` or `work
 
 ## Final-readiness prerequisites
 
-Resolve the repository and exact engineering subject, then bind all evidence to exactly one governed change or explicit evidence root. Resolve a branch or commit when the requested assessment includes Git/PR readiness; non-Git v2 closeout uses exact inspected subject identities without a branch or remote prerequisite. For a governed-final run, confirm the same change is currently at final `verify` and all in-scope implementation milestones are closed.
+Resolve the repository and exact engineering subject, then bind all evidence to exactly one governed change or explicit evidence root. Resolve a branch or commit when the requested assessment includes Git/PR readiness; non-Git closeout uses exact inspected subject identities without a branch or remote prerequisite. For a governed-final run, confirm the same change is currently at final `verify` and all in-scope implementation milestones are closed.
 
-Require the applicable governing spec and proof map, the affected Design models or retained legacy technical basis, stable plan, current change state, final reviewed diff, review closeout, and named validation commands. Missing, ambiguous, mismatched, or local-only governing authority blocks final readiness.
+Require the applicable governing spec and proof map, the affected Design models or retained legacy technical basis, stable plan, current change state, final reviewed diff, review closeout, and named validation commands. Missing, ambiguous, or mismatched governing authority blocks final readiness. For Git/PR readiness, governing artifacts must be tracked in the assessed repository; non-Git closeout may rely on exact inspected local authoritative files.
 
 ## Final evidence composition
 
@@ -37,9 +37,9 @@ Return `not-ready` when any required class is missing, stale, conflicting, faili
 
 ## Verdict and completion
 
-Return `branch-ready` only when every applicable prerequisite and evidence class passes for the exact target. Otherwise return `not-ready`; do not use a partial or “mostly ready” final verdict.
+Return `branch-ready` for Git/PR readiness only when every applicable prerequisite and evidence class passes for the exact target. For non-Git governed closeout, record successful Verify only for its explicitly assessed scope, without a branch-readiness claim. Otherwise return `not-ready`; do not use a partial or “mostly ready” final verdict.
 
-For a Git/PR readiness claim, record the normalized `verification_basis` owned by `SKILL.md` in the applicable result or narrative of the existing v2 Verify record. This supplies external-handoff evidence without adding serialized fields to the record schema. Bind it to the exact evidence target and current base/head relationship. Historical prose or command output that lacks the complete normalized basis remains useful context but cannot establish current branch readiness.
+For a Git/PR readiness claim, record the normalized `verification_basis` owned by `SKILL.md` in the applicable result, v3 Verify verification_basis object, or the explicitly authored normalized block in an existing v2 Verify body. The v3 object is closed and conditional; do not infer its values from prose or make Git identity mandatory for non-Git closeout. Bind it to the exact evidence target and current base/head relationship. Historical prose or command output that lacks the complete normalized basis remains useful context but cannot establish current branch readiness.
 
 In `isolated` mode, report the assessment and stop. Do not write workflow state or invoke `pr`.
 

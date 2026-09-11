@@ -1,3 +1,4 @@
+import {historicalV2} from './helpers/historical-v2.mjs';
 import assert from "node:assert/strict";
 import {test} from "node:test";
 import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync,existsSync,unlinkSync,symlinkSync,linkSync,renameSync} from "node:fs";
@@ -13,19 +14,20 @@ const encode=x=>JSON.stringify(x)+"\n";
 const fixture=()=>JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v2/records.json",import.meta.url)));
 function setup(t) {const root=mkdtempSync(join(tmpdir(),"record-v2-persistence-"));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(join(root,"docs/changes"),{recursive:true});return root;}
 const argv=(root,op,extra=[])=>[op,"--root",root,"--change","example","--format","json",...(["check","record"].includes(op)?["--input","-"]:[]),...extra];
-function run(root,op,request,options={},extra=[]) {const x=executeRecordStoreCli(argv(root,op,extra),{...options,input:request?encode(request):undefined});validateAdvancedResult(x.result);return x.result;}
+function run(root,op,request,options={},extra=[]) {const x=request?.contract==="rigorloop-records-v2"&&request.expected_revision===null?historicalV2(root,op,request,options):executeRecordStoreCli(argv(root,op,extra),{...options,input:request?encode(request):undefined});validateAdvancedResult(x.result);return x.result;}
 function create(root) {const r=fixture().request;assert.equal(run(root,"record",r).status,"saved");return r;}
 function update(root) {const s=run(root,"inspect");assert.equal(s.status,"inspected");const r=fixture().request;r.expected_revision=s.revision;r.writes=s.snapshot.records.map(x=>({path:x.path,expected_identity:digest(x.content),content:x.content}));return r;}
 function edit(r,path,fn) {const w=r.writes.find(x=>x.path===path),v=JSON.parse(w.content);fn(v);w.content=encode(v);}
 const recover=(root,s,action,options={})=>run(root,"recover",undefined,options,["--transaction",s.transaction.id,"--expected-recovery",s.transaction.recovery_identity,"--action",action]);
 function sameBytes(root,request) {for(const w of request.writes)assert.equal(readFileSync(join(root,w.path),"utf8"),w.content);}
 
-test("TG-02 v2 advanced public check/create/inspect retains version-1 storage envelope and exact bytes",t=>{
+test("TG-02 historical v2 construction and public continuation retain version-1 storage envelope and exact bytes",t=>{
  const root=setup(t),r=fixture().request;
  assert.equal(run(root,"check",r).status,"valid");assert.equal(existsSync(join(root,".rigorloop")),false);
+ create(root);const continued=update(root);
  const bin=new URL("../dist/bin/rigorloop.js",import.meta.url).pathname;
  for(const op of ["record","inspect"]) {
-  const child=spawnSync(process.execPath,[bin,"record-store",...argv(root,op)],{encoding:"utf8",input:op==="record"?encode(r):undefined});
+  const child=spawnSync(process.execPath,[bin,"record-store",...argv(root,op)],{encoding:"utf8",input:op==="record"?encode(continued):undefined});
   assert.equal(child.status,0,child.stdout+child.stderr);const result=JSON.parse(child.stdout);validateAdvancedResult(result);assert.equal(result.schema_version,1);assert.equal(result.claim,"storage-only");
  }
  sameBytes(root,r);assert.equal(existsSync(join(root,prefix+"change.yaml")),false);
@@ -59,8 +61,8 @@ for(const phase of ["after-preparation","after-replace:0","before-commit","after
  assert.equal(result.status,"recovered");sameBytes(root,action==="complete"?r:before);assert.equal(run(root,"inspect").status,"inspected");
 });
 
-for(const action of ["complete","restore"]) test(`TG-02 absent v2 creation crash recovers ${action} through subprocess`,t=>{
- const root=setup(t),r=fixture().request,launcher=new URL("./helpers/record-store-launcher.mjs",import.meta.url).pathname;
+for(const action of ["complete","restore"]) test(`TG-02 historical absent v2 creation crash recovers ${action} through subprocess`,t=>{
+ const root=setup(t),r=fixture().request,launcher=new URL("./helpers/historical-v2-launcher.mjs",import.meta.url).pathname;
  const child=spawnSync(process.execPath,[launcher,"record-store",...argv(root,"record")],{input:encode(r),encoding:"utf8",env:{...process.env,RIGORLOOP_TEST_RECORD_FAULT:"after-replace:0"}});
  assert.equal(child.status,99,child.stdout);const stopped=run(root,"inspect");assert.equal(stopped.status,"recovery-required");
  const result=recover(root,stopped,action);assert.equal(result.status,"recovered");

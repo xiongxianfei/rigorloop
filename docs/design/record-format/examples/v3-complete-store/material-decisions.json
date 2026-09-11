@@ -1,0 +1,31 @@
+{
+  "schema_version": 3,
+  "change_id": "example-change",
+  "decisions": [
+    {
+      "id": "derived-presentation",
+      "actor": {
+        "id": "designer-a",
+        "role": "design"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/example/example.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "rationale": "Render human output from named stored values so edits do not leave a second report out of sync.",
+      "source_refs": [
+        {
+          "path": "docs/changes/example-change/change.json",
+          "id": "example"
+        },
+        {
+          "path": "docs/changes/example-change/reviews/final-code-review.json",
+          "id": "final-code-review"
+        }
+      ]
+    }
+  ],
+  "body": "The retained design choice concerns presentation ownership. Record Format continues to keep material-decision explanation in body; the Review/Verify replacement does not change this record kind."
+}

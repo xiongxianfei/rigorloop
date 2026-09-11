@@ -347,6 +347,21 @@ class ExplicitRecordingMetadataTests(unittest.TestCase):
         self.path.write_text(json.dumps(self.change if change is None else change) + "\n")
         return run_validator(self.path)
 
+    def test_recording_v3_full_set_and_unknown_value_version_fail_closed(self):
+        source = ROOT / "docs/design/record-format/examples/v3-complete-store"
+        target = self.root / "docs/changes/example-change"
+        for file in source.rglob("*.json"):
+            destination = target / file.relative_to(source)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(file.read_bytes())
+        manifest = target / "change.json"
+        self.assertEqual(run_validator(manifest).returncode, 0)
+        review = target / "reviews/final-code-review.json"
+        value = json.loads(review.read_text())
+        value["schema_version"] = 2
+        review.write_text(json.dumps(value) + "\n")
+        self.assertNotEqual(run_validator(manifest).returncode, 0)
+
     def test_recording_v2_manifest_dispatch_preserves_contract_and_unknown_value_rejects(self):
         self.path = self.path.with_name("change.json")
         f = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())

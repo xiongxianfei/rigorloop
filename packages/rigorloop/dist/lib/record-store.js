@@ -4,7 +4,7 @@ import {scanObservations} from "./recording-observations.js";
 import {boundAdvancedObservations} from "./recording-result.js";
 import { randomBytes } from "node:crypto";
 import { RecordFiles, digest, stop, MIB } from "./record-store-files.js";
-import {V2_FORMAT,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
+import {V2_FORMAT,V3_FORMAT,storedFormat,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
 
 const decode = bytes => bytes === null ? null : new TextDecoder("utf-8",{fatal:true,ignoreBOM:true}).decode(bytes);
 const encoded = data => Buffer.from(JSON.stringify(data)+"\n");
@@ -64,7 +64,7 @@ class Store {
     let discriminator;
     try { discriminator=JSON.parse(decode(raw)); }
     catch { stop("invalid-input"); }
-    if(discriminator?.contract!==this.format.contract || (Object.hasOwn(discriminator,"schema_version") && discriminator.schema_version!==this.format.version)) stop("unsupported-contract");
+    this.selectFormat(storedFormat(discriminator));
     const change=this.format.parse("change",raw);
     if(change.change_id!==this.id) stop("invalid-input");
     const set={[this.manifest]:decode(raw)};
@@ -107,7 +107,10 @@ class Store {
     if(revision(before)!==request.expected_revision) stop("identity-conflict");
     const format=requestFormat(request);
     if(Object.keys(before).length && format!==this.format)stop("unsupported-contract");
-    if(!Object.keys(before).length)this.selectFormat(format);
+    if(!Object.keys(before).length){
+      if(this.creationContract&&format.contract!==this.creationContract)stop("unsupported-contract");
+      this.selectFormat(format);
+    }
     if(request.expected_revision===null) format.creation(request,!!this.fs.inspect(this.directory,true).info);
     const candidate={...before};
     for(const write of request.writes) {
@@ -117,6 +120,7 @@ class Store {
       candidate[write.path]=write.content;
     }
     preserveRecords(this.format,this.id,before,candidate);
+    this.resultVersion=this.format.version===3?3:2;
     this.basis(request.reads);
     return candidate;
   }
@@ -156,8 +160,8 @@ class Store {
     let j; try { j=JSON.parse(decode(raw)); } catch { stop("recovery-needed"); }
     if(!encoded(j).equals(raw)) stop("recovery-needed");
     exact(j,["version","id","change_id","phase","before","candidate","writes","reads","created_dirs"]);
-    if(j.version!==2 || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
-    this.selectFormat(V2_FORMAT);
+    if(![2,3].includes(j.version) || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
+    this.selectFormat(j.version===3?V3_FORMAT:V2_FORMAT);
     for(const side of ["before","candidate"]) {
       const map=j[side]; if(!map || typeof map!=="object" || Array.isArray(map) || Object.keys(map).length>65) stop("recovery-needed");
       for(const [path,entry] of Object.entries(map)) {
@@ -177,7 +181,7 @@ class Store {
     for(const path of Object.keys(before)) if(!Object.hasOwn(candidate,path)||(!j.writes.includes(path)&&digest(before[path])!==digest(candidate[path])))stop("recovery-needed");
     for(const path of Object.keys(candidate)) if(!Object.hasOwn(before,path)&&!j.writes.includes(path))stop("recovery-needed");
     // The public request schema validates the journal's declared targets and basis too.
-    validateAdvancedRequest({schema_version:this.format.version,contract:this.format.contract,change_id:this.id,expected_revision:revision(before),
+    validateAdvancedRequest({schema_version:2,contract:this.format.contract,change_id:this.id,expected_revision:revision(before),
       writes:j.writes.map(path=>({path,expected_identity:digest(before[path]??null),content:candidate[path]})),reads:j.reads});
     if(!Array.isArray(j.created_dirs)||j.created_dirs.length>2||new Set(j.created_dirs.map(d=>d.path)).size!==j.created_dirs.length)stop("recovery-needed");
     for(const d of j.created_dirs) { exact(d,["path","identity"]); if(![this.directory,`${this.directory}/reviews`].includes(d.path)||typeof d.identity!=="string"||!/^\d+:\d+$/.test(d.identity))stop("recovery-needed"); }
@@ -286,12 +290,13 @@ class Store {
   }
 }
 
-export function executeRecordStore({root,changeId,operation,request,transaction,expectedRecovery,action},options={}) {
+export function executeRecordStore({root,changeId,operation,request,transaction,expectedRecovery,action,creationContract},options={}) {
   const result=emptyRecordResult(operation,changeId); let store;
   try {
     if(!["inspect","check","record","recover"].includes(operation))stop("invalid-input");
     if(request)validateAdvancedRequest(request);
     store=new Store(root,changeId,options);
+    store.creationContract=creationContract;
     let set;
     if(operation==="inspect") {
       const snapshot=store.snapshot(); set=snapshot.set; result.observations=snapshot.observations;
@@ -330,12 +335,15 @@ export function withRecordSnapshot(root,changeId,inspect,options={}) {
 // Preview uses the coherent reader and never creates exclusion state.
 export function executeTargetedStore({root,changeId,request,preview,construct,prepare},options={}) {
  const store=new Store(root,changeId,options);
+ store.creationContract="rigorloop-records-v3";
  try {
-  const before=store.snapshot(()=>[]);
+  const before=store.snapshot(set=>{for(const [path,source] of Object.entries(set))if(source!==null)store.format.parse(store.format.pathKind(changeId,path),source);});
+  if(Object.keys(before.set).length)store.resultVersion=store.format.version===3?3:2;
+  if(['review.set','verify.set'].includes(request.operation?.op)&&!Object.keys(before.set).length)stop("target-not-found");
   if(!preview)store.acquire();
   const build=set=>{
-   if(revision(set)!==request.expected_revision)stop("identity-conflict");
    if(Object.keys(set).length&&store.format.contract!==request.contract)stop("unsupported-contract");
+   if(revision(set)!==request.expected_revision)stop("identity-conflict");
    const built=construct(request,set);
    validateAdvancedRequest(built.request);
    store.options.prepareResult=prepare(built);
@@ -360,7 +368,7 @@ export function executeTargetedStore({root,changeId,request,preview,construct,pr
     e.revision=observed.revision;e.observation_summary=observed.summary;
    }catch{/* Unverified optional metadata is never attached. */}
   }
-  e.transaction=store.recoveryInfo();throw e;
+  e.responseVersion=store.resultVersion;e.transaction=store.recoveryInfo();throw e;
  }
  finally{store.release();}
 }

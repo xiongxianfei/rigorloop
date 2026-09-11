@@ -1,0 +1,81 @@
+{
+  "schema_version": 3,
+  "operation": "verify.show",
+  "status": "inspected",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "record_contract": "rigorloop-records-v3",
+  "revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "data": {
+    "items": [
+      {
+        "kind": "verify",
+        "target": {},
+        "path": "docs/changes/example-change/verify-report.json",
+        "identity": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "applicability": {
+          "value": "current",
+          "actor": {
+            "id": "verifier-a",
+            "role": "verify"
+          },
+          "reason": "Synthetic actor declaration; no actual assessment or renewed reliance is established."
+        },
+        "fields": {
+          "changes": [
+            "Human output presents named explanation fields readably."
+          ],
+          "limitations": [
+            "Synthetic example only; no actual implementation, independent review, hosted CI, merge or publication result is established."
+          ],
+          "verification_basis": {
+            "repository_identity": "https://example.org/example/project.git",
+            "remote_identity": "https://example.org/example/project.git",
+            "base_branch": "main",
+            "base_revision": "1111111111111111111111111111111111111111",
+            "merge_base_revision": "1111111111111111111111111111111111111111",
+            "head_branch": "feature/example",
+            "verified_subject_revision": "2222222222222222222222222222222222222222"
+          }
+        }
+      }
+    ]
+  },
+  "scope": {
+    "select": [
+      {
+        "kind": "verify",
+        "where": {}
+      }
+    ],
+    "detail": "full",
+    "returned": 1,
+    "total": 1,
+    "complete": true,
+    "omitted_fields": [
+      {
+        "kind": "verify",
+        "fields": [
+          "assessment_scope",
+          "change_id",
+          "evidence_refs",
+          "outcome",
+          "rationale",
+          "review_refs",
+          "schema_version",
+          "subjects",
+          "summary",
+          "verifier"
+        ]
+      }
+    ],
+    "missing_paths": [],
+    "next": null,
+    "fields": [
+      "changes",
+      "limitations",
+      "verification_basis"
+    ],
+    "absent_fields": []
+  }
+}

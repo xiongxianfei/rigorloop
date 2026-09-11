@@ -14,6 +14,26 @@ The [Release-model direction](../../proposals/2026-09-09-release-model-source-co
 
 The [Distribution direction](../../proposals/2026-09-10-distribution-model-and-opencode-retirement.md) selects [Distribution](../distribution/distribution.md) as the combined packaging and installation owner under its [owning change](../../changes/2026-09-10-distribution-model-and-opencode-retirement/change.json). Its source transfer, OpenCode withdrawal and local-mirror retirement remain prospective until reviewed implementation and successful Verify. This selection does not adopt a separate Installation model.
 
+## Structured assessment composition
+
+The [approved structured-explanation direction](../../proposals/2026-09-10-structured-assessment-explanations.md) and its [owning change](../../changes/2026-09-10-structured-assessment-explanations/change.json) select a prospective amendment to the Record Format, CLI, Review and Closeout and Workflow relationship under SYS-SR-01/04/06/08/09. No new model, service, report store or generic JSON editing system is introduced. These additions take effect only with their coordinated implementation/Verify adoption boundary.
+
+Actors supply named explanation values; Record Format gives them one durable home; CLI validates, stores, selects and renders them; assessors apply Review and Closeout before Workflow relies on the result. Exact actors, subjects, findings, evidence and record-level applicability retain their existing owners. CLI-derived presentation and field selection do not add semantic selection, independent approval or another authoritative body.
+
+The smallest exact Design package is the amended [Record Format](../record-format/record-format.md#structured-assessment-explanations), [CLI](../cli/cli.md#structured-assessment-interface), [Review and Closeout](../review-closeout/review-closeout.md#structured-explanation-and-reliance-amendment), [Workflow](../workflow/workflow.md#structured-assessment-coordination), this composition amendment, and their indexed new examples. Existing v2 examples remain retained continuation examples. The proposal's cited v2 baseline remains identifiable; its approval is not an approval of these new subjects.
+
+| Shared boundary | Producer and consumer obligation | Owner |
+| --- | --- | --- |
+| Explanation structure and interpretation | Review/Verify supply the closed named values; readers retrieve them without duplicating facts already in judgments, findings and evidence. | Record Format RF-SR-09–11; Review and Closeout RC-SR-19/20 |
+| Finding correction | V3 Review findings keep stable IDs and an editable current account, without origin snapshots. Targeted finding updates and advanced replacement agree; explanation edits preserve the collection. V2 concerns and v3 blockers retain origin. | RF-SR-13; CLI-SR-26; Review and Closeout correction policy |
+| Field projection and editing | CLI exposes the exact selected values plus coherent identity/revision/applicability and honest omissions; actors explicitly reassess changes affecting reliance. | CLI-SR-24–26; RC-SR-05/19 |
+| Store/transport coexistence | New v3 creation and existing-v2 continuation dispatch independently from transport/document versions, with compatible clients and recoverable writes. | RF-SR-12; CLI-SR-27; Workflow coordination |
+| Packaged consumer adoption | Canonical skill instructions, shared resources, schemas and executable agree before adoption; generated packages do not adopt project policy. | Workflow consumer inventory; Skill, Distribution and Release retain their existing contracts |
+
+Integrated acceptance requires a fresh actor to retrieve a rationale/limitations projection, recognize its omissions, make an authorized whole-field edit, and observe preserved neighbors/findings without interpreting save success as renewed approval. Also exercise an unfinished v2 change alongside a new v3 change, a v3 interruption/recovery and a mixed-version client that fails safely. Local schema validity cannot establish these composed properties. Delivery allocates exact checks and evidence under Test; independent Design Review assesses this whole subject set and interactions.
+
+Design, Skill, Test, Distribution and Release need no new model requirements for this amendment: their method, content-quality, protective-value, package generation/installation and publication responsibilities remain unchanged. Their relevant consumers must still be reconciled through Workflow's inventory. Standalone legacy review-validator removal is outside this scope. This section changes the affected composition description only; the earlier source-transfer maps and historical judgments retain their original meaning.
+
 ## Architecture Constraints
 
 The Constitution governs the repository. Models do not demote governance, rewrite product direction, authenticate agents or grant permission through a stored label. Model validation, runtime record versions, installer state and release metadata are separately owned contracts. The CLI remains a mechanical interface; semantic dependency selection and readiness are actor judgments.

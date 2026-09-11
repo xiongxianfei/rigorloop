@@ -1,0 +1,13 @@
+{
+  "schema_version": 3,
+  "operation": "verify.set",
+  "status": "rejected",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "errors": [
+    {
+      "code": "invalid-input",
+      "message": "Command: invalid-input."
+    }
+  ]
+}

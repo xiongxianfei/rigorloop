@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "interface": "targeted-recording-v1",
+  "contract": "rigorloop-records-v3",
+  "change_id": "example-change",
+  "expected_revision": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "reads": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "path": "src/example-renderer.js",
+      "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "path": "tests/example-renderer.test.js",
+      "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
+  "operation": {
+    "op": "verify.record",
+    "target": {},
+    "values": {
+      "verifier": {
+        "id": "verifier-a",
+        "role": "verify"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/example/example.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "path": "src/example-renderer.js",
+          "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        {
+          "path": "tests/example-renderer.test.js",
+          "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "path": "docs/changes/example-change/evidence.json",
+          "id": "rendering-and-preservation"
+        },
+        {
+          "path": "docs/changes/example-change/evidence.json",
+          "id": "selected-field-output"
+        }
+      ],
+      "review_refs": [
+        {
+          "path": "docs/changes/example-change/reviews/final-code-review.json",
+          "id": "final-code-review"
+        }
+      ],
+      "outcome": "success",
+      "summary": "The fictional delivered change satisfies the illustrated local assessment scope.",
+      "assessment_scope": "Illustrative local final assessment of the example renderer, its selected proof and final Code Review; this collection does not demonstrate the full required lifecycle.",
+      "rationale": [
+        "The referenced rendering evidence supports preservation of the authored explanation.",
+        "The selected-output evidence and final review support the conclusion that omitted content remains visible as omitted."
+      ],
+      "limitations": [
+        "Synthetic examples only; no checks or assessments in this collection were actually executed.",
+        "No Git/PR readiness, hosted CI, merge or publication result is claimed."
+      ],
+      "changes": [
+        "Named explanation values drive readable human output.",
+        "Field projection exposes requested content with explicit omissions."
+      ]
+    },
+    "applicability": {
+      "value": "current",
+      "actor": {
+        "id": "verifier-a",
+        "role": "verify"
+      },
+      "reason": "Synthetic complete assessment declaration; no actual readiness is established."
+    }
+  }
+}

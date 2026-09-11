@@ -1,0 +1,28 @@
+{
+  "schema_version": 3,
+  "change_id": "example-change",
+  "verifier": {
+    "id": "verifier-a",
+    "role": "verify"
+  },
+  "subjects": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "evidence_refs": [],
+  "review_refs": [],
+  "outcome": "success",
+  "summary": "The delivered change is assessed within a local scope.",
+  "assessment_scope": "Illustrative local assessment; empty references do not establish adequate proof.",
+  "changes": [
+    "Human output presents named explanation fields readably."
+  ],
+  "rationale": [
+    "The supplied explanation distinguishes delivered changes from reasons supporting the conclusion."
+  ],
+  "limitations": [
+    "Synthetic example only; no implementation, independent review, hosted CI or publication result is established."
+  ]
+}

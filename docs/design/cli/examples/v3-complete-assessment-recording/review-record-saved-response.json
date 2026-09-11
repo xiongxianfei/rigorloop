@@ -1,0 +1,22 @@
+{
+  "schema_version": 3,
+  "operation": "review.record",
+  "status": "saved",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "changed": [
+    {
+      "kind": "review",
+      "target": {
+        "id": "final-code-review"
+      }
+    },
+    {
+      "kind": "applicability",
+      "target": {
+        "path": "docs/changes/example-change/reviews/final-code-review.json"
+      }
+    }
+  ]
+}

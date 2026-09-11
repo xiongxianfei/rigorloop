@@ -1,0 +1,16 @@
+{
+  "schema_version": 3,
+  "operation": "review.set",
+  "status": "saved",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "changed": [
+    {
+      "kind": "review",
+      "target": {
+        "id": "design-review"
+      }
+    }
+  ]
+}

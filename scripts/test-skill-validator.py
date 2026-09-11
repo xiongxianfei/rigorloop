@@ -4247,8 +4247,8 @@ Use the inputs somehow and produce a useful result.
             "Every formal lifecycle review result must be recorded or explicitly blocked.",
             "`Recording status: recorded`",
             "`Recording status: blocked`",
-            "Use the selected v2 registry and targeted review/finding commands.",
-            "Preserve unresolved findings and immutable origin",
+            "Use the selected v2/v3 registry and targeted review/finding commands.",
+            "Preserve finding IDs and unresolved concerns",
             "Historical records remain unchanged archives",
             "Saving does not settle workflow",
             "Material findings must include:",
@@ -8747,7 +8747,7 @@ class ExplicitRecordingGuidanceTests(unittest.TestCase):
                     text = (ROOT / "skills" / skill / skill_validation.PILOT_RECORDING_REFERENCES[skill]).read_text()
                 self.assertEqual(text.count("## Explicit recording\n"), 1)
                 block = text.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
-                for phrase in ("project has adopted", "only supported runtime record format", "project's governing documents", "historical", "expected identities", "does not approve", "rigorloop-records-v2", "rigorloop context", "subject inspect", "targeted", "Do not migrate"):
+                for phrase in ("project has adopted", "rigorloop-records-v3", "project's governing documents", "historical", "expected identities", "does not approve", "rigorloop-records-v2", "rigorloop context", "subject inspect", "targeted", "Do not migrate"):
                     self.assertIn(phrase, block)
                 self.assertNotIn("roots retain their exact compatibility contract", block)
                 self.assertNotIn("record-store check|record", block)

@@ -1,0 +1,13 @@
+{
+  "schema_version": 3,
+  "operation": "review.set",
+  "status": "conflict",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "errors": [
+    {
+      "code": "identity-conflict",
+      "message": "Record: identity-conflict."
+    }
+  ]
+}

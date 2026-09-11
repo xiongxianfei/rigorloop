@@ -7,7 +7,7 @@ import sys
 def main(argv=None):
     print(json.dumps({
         "status": "error", "code": "unsupported-record-interface",
-        "message": "Legacy change-record queries are retired. Use rigorloop status, context or show with an explicit v2 change.",
+        "message": "Legacy change-record queries are retired. Use rigorloop status, context or show with an explicitly selected supported change.",
     }))
     return 2
 

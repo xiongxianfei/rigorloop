@@ -1,0 +1,101 @@
+{
+  "schema_version": 3,
+  "contract": "rigorloop-records-v3",
+  "change_id": "example-change",
+  "proposal": {
+    "path": "docs/proposals/example.md",
+    "identity": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "models": [
+    {
+      "id": "example",
+      "subject": {
+        "path": "docs/design/example/example.md",
+        "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ],
+  "activity": {
+    "stage": "verify",
+    "status": "completed",
+    "owner": {
+      "id": "verifier-a",
+      "role": "verify"
+    },
+    "reason": "Illustrative recorded completion for explaining the five record kinds; this fixture does not establish actual lifecycle readiness."
+  },
+  "plan": {
+    "path": "docs/plans/example.md",
+    "identity": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "work": [
+    {
+      "id": "renderer-change",
+      "status": "completed",
+      "owner": {
+        "id": "author-a",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "EX-SR-01"
+      ]
+    }
+  ],
+  "records": [
+    {
+      "path": "docs/changes/example-change/reviews/final-code-review.json",
+      "kind": "review"
+    },
+    {
+      "path": "docs/changes/example-change/evidence.json",
+      "kind": "evidence"
+    },
+    {
+      "path": "docs/changes/example-change/material-decisions.json",
+      "kind": "decisions"
+    },
+    {
+      "path": "docs/changes/example-change/verify-report.json",
+      "kind": "verify"
+    }
+  ],
+  "applicability": [
+    {
+      "path": "docs/changes/example-change/reviews/final-code-review.json",
+      "value": "current",
+      "actor": {
+        "id": "reviewer-a",
+        "role": "review"
+      },
+      "reason": "Illustrative actor declaration for the exact synthetic assessment basis; not actual approval or evidence."
+    },
+    {
+      "path": "docs/changes/example-change/evidence.json",
+      "value": "current",
+      "actor": {
+        "id": "verifier-a",
+        "role": "verify"
+      },
+      "reason": "Illustrative actor declaration for the exact synthetic assessment basis; not actual approval or evidence."
+    },
+    {
+      "path": "docs/changes/example-change/material-decisions.json",
+      "value": "current",
+      "actor": {
+        "id": "designer-a",
+        "role": "design"
+      },
+      "reason": "Illustrative actor declaration for the exact synthetic assessment basis; not actual approval or evidence."
+    },
+    {
+      "path": "docs/changes/example-change/verify-report.json",
+      "value": "current",
+      "actor": {
+        "id": "verifier-a",
+        "role": "verify"
+      },
+      "reason": "Illustrative actor declaration for the exact synthetic assessment basis; not actual approval or evidence."
+    }
+  ],
+  "blockers": []
+}

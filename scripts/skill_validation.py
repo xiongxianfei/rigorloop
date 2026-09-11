@@ -3373,7 +3373,7 @@ def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
         block = _extract_markdown_section(body, "Explicit recording")
         if block is None:
             return []
-    required = ("rigorloop-records-v2", "only supported runtime record format", "rigorloop context", "subject inspect",
+    required = ("rigorloop-records-v2", "rigorloop-records-v3", "record contract", "rigorloop context", "subject inspect",
                 "record_contract", "expected_revision", "targeted", "does not approve", "Do not migrate")
     errors.extend(f"{path}: explicit recording profile missing primary contract token: {token}"
                   for token in required if token not in block)

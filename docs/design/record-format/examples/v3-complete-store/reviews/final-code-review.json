@@ -1,0 +1,42 @@
+{
+  "schema_version": 3,
+  "change_id": "example-change",
+  "id": "final-code-review",
+  "target": "code",
+  "reviewer": {
+    "id": "reviewer-a",
+    "role": "review"
+  },
+  "contributors": [
+    {
+      "id": "author-a",
+      "role": "implement"
+    }
+  ],
+  "independence_basis": "In this fictional scenario, reviewer-a did not author the supplied implementation or tests. These labels do not authenticate independence.",
+  "subjects": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "path": "src/example-renderer.js",
+      "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "path": "tests/example-renderer.test.js",
+      "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
+  "judgment": "approved",
+  "findings": [],
+  "summary": "The reviewed implementation keeps stored explanations intact while presenting selected values readably.",
+  "assessment_scope": "Illustrative final whole-change Code Review of the supplied renderer and tests against the example model.",
+  "rationale": [
+    "The renderer reads the supplied values without creating another authoritative report.",
+    "The selected-field output identifies omissions, so a partial read is distinguishable from a complete assessment."
+  ],
+  "limitations": [
+    "Synthetic Design example; no real implementation or independent review was performed."
+  ]
+}

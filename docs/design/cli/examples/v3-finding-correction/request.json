@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "interface": "targeted-recording-v1",
+  "contract": "rigorloop-records-v3",
+  "change_id": "example-change",
+  "expected_revision": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "reads": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "operation": {
+    "op": "finding.set",
+    "target": {
+      "review": "design-review",
+      "id": "finding-1"
+    },
+    "values": {
+      "evidence": "The diagnostic continuation example omits the observed identity when comparing two already-drifted subjects.",
+      "required_outcome": "Add the observed identity to the continuation example and demonstrate that a second drift invalidates its token."
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 3,
+  "operation": "verify.set",
+  "status": "rejected",
+  "claim": "storage-only",
+  "errors": [
+    {
+      "code": "unsupported-contract",
+      "message": "Command: unsupported-contract."
+    }
+  ],
+  "change_id": "example-change"
+}
