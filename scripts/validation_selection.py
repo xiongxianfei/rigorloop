@@ -1017,7 +1017,8 @@ def _apply_path_selection(
             except (OSError, ValueError):
                 metadata = None
             if isinstance(metadata, dict):
-                if (metadata.get("schema_version"), metadata.get("contract")) not in {(2, "rigorloop-records-v2"), (3, "rigorloop-records-v3")}:
+                # Compare without hashing untrusted JSON arrays/objects.
+                if (metadata.get("schema_version"), metadata.get("contract")) not in ((2, "rigorloop-records-v2"), (3, "rigorloop-records-v3")):
                     blocking_results.append({"code": "unsupported-change-contract", "path": manifest_path,
                                              "message": "Unsupported current record contract; no legacy fallback."})
                 elif path != manifest_path:
