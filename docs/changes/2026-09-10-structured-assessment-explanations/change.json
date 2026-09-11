@@ -4,7 +4,7 @@
       "id": "codex-implement",
       "role": "implement"
     },
-    "reason": "M3 independently approved with required proof; execute approved M4 next under user authorization through PR. Final whole-change review and distinct Verify remain required.",
+    "reason": "M4 review found malformed manifest discriminator crash. Regression reproduced and narrow correction committed in 92d5e279; corrected candidate proof and independent reassessment remain required. No approval or adoption is inferred from earlier passing checks.",
     "stage": "implement",
     "status": "in-progress"
   },
@@ -88,6 +88,15 @@
       },
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review-final.json",
       "reason": "Fresh independent Design assessment of the exact M4 documentation reconciliation and unchanged required behavior; existing plan allocation remains adequate without an implementation approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m4.json",
+      "reason": "Current milestone assessment of submitted M4 commit 0f7bc0ca; its explicit finding requires correction before reliance. Subsequent unreviewed selector edits are outside this assessment.",
       "value": "current"
     }
   ],
@@ -175,6 +184,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review-final.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m4.json"
     }
   ],
   "schema_version": 2,
