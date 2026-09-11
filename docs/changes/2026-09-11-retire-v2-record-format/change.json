@@ -1,0 +1,159 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-implement",
+      "role": "implement"
+    },
+    "reason": "Route selects M1 after current approved Delivery Review and approved-plan initialization. User authorizes the complete sequence through PR submission; M2 follows independent M1 review and explicit dependency disposition.",
+    "stage": "implement",
+    "status": "in-progress"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "codex-proposal-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/proposal-review.json",
+      "reason": "Independent direction-level review of the exact proposal and bounded cited basis, preserving explicit user test scope and unresolved downstream removal prerequisites.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/material-decisions.json",
+      "reason": "Bounded Design authorship and observed checks only; no independent Design Review, implementation proof or retirement adoption.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json",
+      "reason": "Bounded Design authorship and observed checks only; no independent Design Review, implementation proof or retirement adoption.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json",
+      "reason": "Independent reassessment of the corrected CLI archive-header rule and its interactions, with unchanged package identities verified. This approval applies to the exact complete Design subjects and does not establish implementation or retirement adoption.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-delivery-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/delivery-review.json",
+      "reason": "Independent combined sequencing and verification assessment of the exact registered primary plan against the current approved Design package. Required future disposition and execution gates remain explicit.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-11-retire-v2-record-format",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "record-format",
+      "subject": {
+        "identity": "sha256:a44db0abea196809b0779b56a6e38ad35d84a28f93d303b153769644a9f92184",
+        "path": "docs/design/record-format/record-format.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:528a188ab9fbd0466efdadf646dd2f5239033919ecf77434928995236ec4aded",
+        "path": "docs/design/cli/cli.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:c3c4e7139785bb346b438044006e307345bebe00335a24f568233e2ca4adeb0e",
+        "path": "docs/design/workflow/workflow.md"
+      }
+    },
+    {
+      "id": "review-closeout",
+      "subject": {
+        "identity": "sha256:05dc2bd0102552d617d6df9262da7a30538fb8c2e559f49c33afc010cf164cff",
+        "path": "docs/design/review-closeout/review-closeout.md"
+      }
+    },
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:aa62db15858ee056309121ecddb6990459ee9436380511ebd08a4b9bc4256107",
+        "path": "docs/design/system/system.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:431b9737cc8e1e9228a3c77f20b8824722f9fff2afcc311a1f3dfe3f0815130f",
+    "path": "docs/plans/2026-09-11-retire-v2-record-format.md"
+  },
+  "proposal": {
+    "identity": "sha256:3f44199e331ecb125bce514c83c81255ceffccb0670c62d7c52f578f621e0f92",
+    "path": "docs/proposals/2026-09-11-retire-v2-record-format.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/material-decisions.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/delivery-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-14",
+        "CLI-SR-28",
+        "WF-SR-18"
+      ],
+      "status": "in-progress"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-14",
+        "CLI-SR-28",
+        "WF-SR-18",
+        "RC-SR-21",
+        "SYS-SR-04"
+      ],
+      "status": "pending"
+    }
+  ]
+}

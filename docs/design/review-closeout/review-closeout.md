@@ -2,6 +2,8 @@
 
 Model validation contract: model-document-v1
 
+The [v2 retirement reliance amendment](#v2-retirement-and-assessment-reliance) prospectively displaces operational v2 assessment support; the earlier runtime and adoption descriptions retain their original scope.
+
 This marker versions Markdown model validation only; it does not select a stored format. The current runtime contract is `rigorloop-records-v2`, as defined by [Record Format](../record-format/record-format.md#record-model). Retired-format descriptions below explain historical decisions and records; they do not authorize a v1 reader, writer or continuation path.
 
 ## Introduction and Goals
@@ -62,6 +64,7 @@ Use one requirement set here, explicit consumer references, and small stage-spec
 | RC-SR-18 | Assessment and closeout decisions MUST remain understandable from current authoritative project artifacts without Git history, PR access, network access, or prior chat. Missing runtime independence provenance, inaccessible required subjects, interrupted recording, or incompatible installed guidance MUST result in a bounded stop with a responsible next action. Local/runtime permissions and separately authorized external actions MUST remain independent of any recorded review or completion. |
 | RC-SR-19 | The responsible assessor MUST judge whether an explanation edit preserves the same assessment or changes its supported reliance. A successful narrow edit MUST NOT restore applicability, establish independent review, rerun evidence or authorize continuation. Materially changed scope, newly missing basis or contradictory evidence requires explicit applicability/correction decisions; changed judgment, exact subjects, actors or evidence basis requires complete reassessment. |
 | RC-SR-20 | A Verify assessment claiming Git/PR branch readiness MUST retain the complete normalized verification basis specified below as independently addressable values. Non-Git closeout MUST NOT require those values. The responsible verifier, not a field name, object presence or CLI parser, establishes their sufficiency and freshness before reliance. |
+| RC-SR-21 | After v2 retirement adopts, historical v2 assessments MUST retain their original meaning as provenance without becoming operational current records. New assessment or correction MUST use explicit v3 reasoning and current required review; it MUST NOT inherit old approval, convert bodies or erase unresolved obligations. |
 
 ## Structured explanation and reliance amendment
 
@@ -101,6 +104,16 @@ For v3 stored Verify, Record Format RF-SR-11 owns the closed verification_basis 
 | Review/Verify result assets and successful-explanation guidance | Implementation maps actor reasoning to the named fields, retaining specialist depth and independent authority; display layout is not stored truth. |
 
 Acceptance intent for RC-SR-19: contrast an unchanged-meaning clarification with a newly missing-evidence limitation; neither field name nor successful storage chooses their consequence, and the latter requires explicit restriction/correction before reliance. For RC-SR-20: contrast a complete local non-Git Verify with a Git/PR claim lacking resolved basis; only the latter requires the conditional values. An explanation edit preserves complete findings; a separate v3 finding correction replaces the current account under its existing ID without retaining an original snapshot. These are assessment walkthroughs, not assertions that the new runtime passed tests.
+
+## V2 retirement and assessment reliance
+
+Owning change: [retire-v2-record-format](../../changes/2026-09-11-retire-v2-record-format/change.json). After [Workflow's coordinated disposition](../workflow/workflow.md#v2-retirement-coordination), historical v2 Review/Verify records remain evidence of their original judgments, scopes, subjects, limitations and procedures. They are not writable current assessment records. Current policy authority can retain that provenance without a CLI v2 reader; retirement does not revoke an adopted governing model or transfer its authority to the retirement manifest.
+
+RC-SR-05/06/16 continue to govern reliance. New work or a discovered defect requiring an assessment or correction uses a v3 initiative with explicit historical subject references and fresh actor-authored reasoning. Identify any carried obligations and their disposition; do not promote an archived approval to a current Review, copy a v2 Verify success into v3, or reinterpret body prose as supplied named fields. Unresolved dependence on a v2 operation must be settled before removal under Workflow, not disguised as historical completion. Historical files and approval identities remain unchanged.
+
+This amendment displaces only the continuing-v2 narrative verification-basis profile and operational v2 concern handling in Structured explanation and reliance amendment. V3's conditional seven-field verification_basis, success-only Verify, editable current Review findings with immutable IDs, blocker origins, independent assessment and explicit applicability remain unchanged. Portable document-only assessment procedures are independent of stored-v2 support and are not retired here.
+
+RC-DEC-06 preserves historical assessment meaning while requiring current supported recording for new reliance and correction. A permanent reader would retain an unnecessary compatibility obligation; blindly invalidating every historical adoption would confuse representation retirement with governing authority. The observable outcome under RC-SR-05/06/16 is a reviewer distinguishing provenance from current assessment without either old-byte mutation or approval inheritance.
 
 ## Building Block View
 
@@ -294,7 +307,7 @@ These rows follow the [Design-owned model validation mapping](../design/design.m
 | Composition/path | RC-SR-01, RC-SR-10, RC-SR-11, RC-SR-12, RC-SR-17, RC-SR-20 | All specialist paths and plan/route/Verify consumers agree on whole-change closeout; installed selective guidance works without internal model files; advisory scope does not acquire a full lifecycle A local non-Git Verify needs no Git basis; a branch-readiness claim retains all seven independently addressable resolved values. |
 | Temporal/retry | RC-SR-05, RC-SR-06, RC-SR-07, RC-SR-11, RC-SR-15 | A post-review engineering edit requires reassessment; a bookkeeping-only save does not automatically invalidate approval; unchanged code with new failed proof cannot retain unjustified reliance |
 | Failure/recovery | RC-SR-04, RC-SR-08, RC-SR-09, RC-SR-14, RC-SR-18 | Failed recording or recovery-required state blocks reliance without destroying supported findings; Verify's concern survives a later reviewer approval until its owner assesses disposition |
-| Compatibility/migration | RC-SR-03, RC-SR-16, RC-SR-17 | Historical IDs, vocabularies, subjects and procedural context remain archival; consumers use adopted current owners without restoring retired runtime support; no v1-to-v2 conversion or inferred origin |
+| Compatibility/migration | RC-SR-03, RC-SR-16, RC-SR-17, RC-SR-21 | Historical IDs, judgments, subjects and procedures remain provenance. After v2 retirement, current correction uses explicit v3 assessment without approval inheritance, body conversion or loss of unresolved obligations. Governing authority does not disappear merely because its adoption evidence is archival. |
 | External/environment | RC-SR-02, RC-SR-15, RC-SR-17, RC-SR-18 | Review and completion basis is understandable without Git/PR/network history; missing required provenance or changed proof environment triggers a bounded stop or new evidence rather than guessed validity |
 
 Material combined hazards include overlapping decision impediments, incomplete assessment basis and actionable defects (RC-SR-03/04); final-review correction plus a changed integrated subject (RC-SR-06/10/11); record-only revision plus newly contradictory proof (RC-SR-05/07/15); concurrent model changes plus historical approval (RC-SR-05/06/16); Verify-owned blocker plus a later clean reviewer judgment (RC-SR-08/09/14); and a single-milestone plan plus omitted closeout checkpoint (RC-SR-11/12). These require composed proof, not only isolated happy-path checks. No Cartesian scenario inventory is required.

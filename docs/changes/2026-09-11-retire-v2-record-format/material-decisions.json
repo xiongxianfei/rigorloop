@@ -1,0 +1,38 @@
+{
+  "body": "RF-DEC-08, CLI-DEC-07, WF-DEC-07 and RC-DEC-06 retain the reasons for archival preservation, bounded header classification, independent interface versions and fresh supported assessment. The five model amendments and linked owner relationships are the complete changed Design package; examples and runtime resources are mapped for coordinated implementation, not edited here. This is a Design decision, not the required final owner disposition of each old store. Remaining work before removal: assess relevant old review/Verify limitations and governance consumers, refresh work/recovery inventory, allocate exact retained checks in Delivery, and obtain required independent assessment. No project-map reliance: direct owner, code and test inspection supplies the bounded basis.",
+  "change_id": "2026-09-11-retire-v2-record-format",
+  "decisions": [
+    {
+      "actor": {
+        "id": "codex-design",
+        "role": "design"
+      },
+      "id": "v2-retirement-design-boundary",
+      "rationale": "Apply the approved retirement direction through existing owners: RF-SR-14, CLI-SR-28, WF-SR-18, RC-SR-21 and SYS-SR-02/04/06/08/09. Retire the stored contract only after explicit operational-dependency disposition and reviewed coherent implementation/Verify. Preserve independent transport versions, historical provenance and v3 safety; remove v2-only tests without adding retirement/rejection/archive-compatibility tests.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:a44db0abea196809b0779b56a6e38ad35d84a28f93d303b153769644a9f92184",
+          "path": "docs/design/record-format/record-format.md"
+        },
+        {
+          "identity": "sha256:d79fee3793db44c489feb1205ddb85b76214d4c5ac08e536c83b96ef374782bd",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:c3c4e7139785bb346b438044006e307345bebe00335a24f568233e2ca4adeb0e",
+          "path": "docs/design/workflow/workflow.md"
+        },
+        {
+          "identity": "sha256:05dc2bd0102552d617d6df9262da7a30538fb8c2e559f49c33afc010cf164cff",
+          "path": "docs/design/review-closeout/review-closeout.md"
+        },
+        {
+          "identity": "sha256:aa62db15858ee056309121ecddb6990459ee9436380511ebd08a4b9bc4256107",
+          "path": "docs/design/system/system.md"
+        }
+      ]
+    }
+  ],
+  "schema_version": 3
+}

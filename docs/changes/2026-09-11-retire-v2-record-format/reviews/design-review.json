@@ -1,0 +1,164 @@
+{
+  "assessment_scope": "Formal, manual, isolated Design Review of the complete five-model retirement amendment package and its required retained interactions: Record Format, CLI, Workflow, Review and Closeout, and System. Supporting code, schema and examples were inspected only for the retirement boundaries.",
+  "change_id": "2026-09-11-retire-v2-record-format",
+  "contributors": [
+    {
+      "id": "codex-design",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Scope: artifact-local. Affected artifact: CLI Design. Owning stage: design. Location: docs/design/cli/cli.md:635, read together with line 637. The archive rule requires every reserved JSON record to have the same contract/schema_version/change_id headers as the manifest. In schemas/rigorloop-records-v2.schema.json, the closed review, evidence, decisions and verify definitions contain schema_version and change_id but no contract property; the existing v2-review-without-subjects/review.json has that valid two-header shape. Thus normal historical v2 stores containing supporting records cannot meet the archive rule and would surface invalid-input instead of being excluded by discovery. This is a static Design contradiction, not a claim that retirement runtime behavior has been implemented or tested.",
+      "id": "design-review-f1",
+      "owner": {
+        "id": "codex-design",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "codex-design-review",
+        "role": "review"
+      },
+      "required_outcome": "Define bounded archive recognition using the actual headers for each stored kind: establish the v2 contract/version/change identity from the manifest, and check the applicable version/change identity headers of supporting records without requiring a nonexistent contract member. Preserve fail-closed malformed/mixed-header diagnostics, containment and read bounds, visible transaction residue, historical bytes and the prohibition on a full legacy validator. Reconcile the affected CLI wording against the existing closed definitions and examples; do not add v2-retirement, rejection or archive-compatibility tests contrary to the user constraint.",
+      "resolution": {
+        "actor": {
+          "id": "codex-design-review",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Independently reassessed corrected CLI identity sha256:528a188ab9fbd0466efdadf646dd2f5239033919ecf77434928995236ec4aded against the unchanged v2 schema and retained Review example. Manifest recognition owns contract/schema_version/change_id; supporting records need only schema_version/change_id, without requiring or adding contract. Bounded parsing, malformed/mixed diagnostics, containment, current-v3 validation and transaction-residue rules remain. The per-kind clarification resolves the Design contradiction with no new retirement tests or legacy validator. CLI structural validation passed; no runtime correctness claim is made."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:d79fee3793db44c489feb1205ddb85b76214d4c5ac08e536c83b96ef374782bd",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:be265e71549a69579eba68b78fb687a3115792796ce4fe663b5d81e633db58e8",
+          "path": "schemas/rigorloop-records-v2.schema.json"
+        },
+        {
+          "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+          "path": "docs/design/record-format/examples/v2-review-without-subjects/review.json"
+        }
+      ]
+    }
+  ],
+  "id": "design-review",
+  "independence_basis": "Parent /root authored the five Design amendments. This separately delegated reviewer authored none of the package and independently inspected the complete models, approved direction and scoped dependencies. Prior authorship of the Proposal Review is assessment work, not authorship of the reviewed Designs.",
+  "judgment": "approved",
+  "limitations": [
+    "This is Design assessment, not implementation, runtime recovery, package parity or completed retirement evidence. Structural validation does not establish semantic correctness.",
+    "The final current-work, recovery and governance dependency dispositions remain required before operational support removal; the bounded author inventory is not an independent completion audit.",
+    "This isolated Design assessment does not authorize planning, implementation, routing, adoption or external action. Subsequent work requires the applicable user authorization and owning workflow decision."
+  ],
+  "rationale": [
+    "Direction and scope: the five amendments preserve the approved proposal direction, historical bytes and judgment meaning, v3 operational behavior and independent transport version domains. They do not introduce migration, a permanent legacy reader or a new archive model. The explicit user constraint to remove exclusively-v2 cases and add no retirement, rejection or archive-compatibility tests is preserved; it is not treated as permission to discard shared safety coverage.",
+    "Ownership and package composition: RF-SR-14, CLI-SR-28, WF-SR-18 and RC-SR-21 identify the displaced coexistence obligations, retained responsibilities and conditional adoption boundary. System composes those owners without acquiring their representation, assessment or coordination authority. Historical retained text is scoped by explicit displacement rather than silently reinterpreted.",
+    "Behavior and realization: the separation of stored v3 from targeted request 1, advanced request 2, advanced result 1 and early primary result 2 is coherent. The removal map accounts for shared parsing, neutral path initialization, bundled resources, validators and consumers before v2 adapters are removed. Existing v3 construction, exact-byte preservation, optimistic conflicts and recovery remain required.",
+    "Archive recognition: CLI line 635 now establishes contract/schema_version/change_id from the manifest and requires only schema_version/change_id on supporting records. This matches the closed v2 stored definitions and retained example; no nonexistent contract member is required or added. The same paragraph confines recognition to per-kind format/identity fields, with no full legacy validator or assessment interpretation. Adjacent malformed/mixed-header diagnostics, containment and bounded reads, current-v3 validation and visible transaction-residue behavior remain intact. The correction satisfies design-review-f1 without expanding the selected scope.",
+    "Failure and recovery boundaries: malformed or mixed records, unsafe paths, bounded-read failures, locks and journals remain visible. Recognized archives do not imply completed work. Known v2 interruption dependencies must be resolved with the supporting executable before removal, while later unexpected residue receives an explicit owner disposition. V3 creation recovery with an absent manifest remains supported.",
+    "Governance and assessment reliance: Workflow requires explicit work, concern, recovery and governance dependency dispositions before removal, not merely completed labels or Verify filenames. Review and Closeout preserves adopted policy authority and historical provenance without converting old judgments into current operational assessments. The author twelve-store observation is appropriately bounded and does not claim the final semantic disposition.",
+    "Acceptance intent and delivery allocation: the package retains shared v3 safety and independent schema-2 proof, removes only exclusively-v2 coverage, and assigns exact allocation to Delivery. This satisfies the user constraint without inventing new retirement tests. No delivery plan or implementation is approved by this review.",
+    "Current basis: the approved Proposal Review remains evidence of the selected direction, not approval of amended Designs. Its two supporting RF/Workflow subject drifts are disclosed in author evidence and do not require rewriting that historical judgment. This assessment uses current exact subjects for all five models.",
+    "Checks and reuse: the prior complete five-model/package assessment and its recorded structure-and-reference validation remain the basis for unchanged content. Fresh subject inspect of all 22 prior subjects confirmed that only CLI and the author evidence record changed. Independently read the corrected paragraph with adjacent classification/recovery rules, checked it against the unchanged closed v2 schema and example, and inspected design-f1-header-correction. Ran python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md; structure-and-references-only validation passed. Fresh context supplied the current v3 contract and revision. No runtime suite was executed, no tests were added, and author checks are not represented as independently executed proof."
+  ],
+  "reviewer": {
+    "id": "codex-design-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:a44db0abea196809b0779b56a6e38ad35d84a28f93d303b153769644a9f92184",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:528a188ab9fbd0466efdadf646dd2f5239033919ecf77434928995236ec4aded",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:c3c4e7139785bb346b438044006e307345bebe00335a24f568233e2ca4adeb0e",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:05dc2bd0102552d617d6df9262da7a30538fb8c2e559f49c33afc010cf164cff",
+      "path": "docs/design/review-closeout/review-closeout.md"
+    },
+    {
+      "identity": "sha256:aa62db15858ee056309121ecddb6990459ee9436380511ebd08a4b9bc4256107",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:3f44199e331ecb125bce514c83c81255ceffccb0670c62d7c52f578f621e0f92",
+      "path": "docs/proposals/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:608a5960e73a038b85610533a95252d09c631a8f6c55911ef084ba714c0ca471",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:017ba8adfd47620217e75009d48d1eff09b041cbe9a8f212c9c2760f56677a40",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+    },
+    {
+      "identity": "sha256:a0914a41edd3c790ab88c207f925e953184b2e567d91612975210cfa1bd8f911",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/material-decisions.json"
+    },
+    {
+      "identity": "sha256:7da63af759d6cff299f1fd441e197465fa9e177f424fe3231d72727b7098f968",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:61ec6e61ec9bd1998f6d9a7401da5a036879ef3ca116078af6c70c4d957a48d8",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:be265e71549a69579eba68b78fb687a3115792796ce4fe663b5d81e633db58e8",
+      "path": "schemas/rigorloop-records-v2.schema.json"
+    },
+    {
+      "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+      "path": "docs/design/record-format/examples/v2-review-without-subjects/review.json"
+    },
+    {
+      "identity": "sha256:b24b4f4ea1a78c4f606c67dd72736edabd2186428c17310207724247fd88f710",
+      "path": "docs/design/record-format/examples/README.md"
+    },
+    {
+      "identity": "sha256:ead405ed14cb5c38eb57f219690251a3ebad88d7e3fe0a25fe0290f551772cd4",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:73223e1c8e2365c15c0ecb72adc1b44c24f2e2ac41874d21713fbe7dab8d277c",
+      "path": "packages/rigorloop/dist/lib/record-store-format.js"
+    },
+    {
+      "identity": "sha256:5c1ba8869c4c78d7a97147cb1dfa5c295358a12dce2e373aadeee81c6ccc4663",
+      "path": "packages/rigorloop/dist/lib/record-format-v3.js"
+    },
+    {
+      "identity": "sha256:bd827d68dddc921e46f3867ed9ec2521228a01f2fdfe336026f5521d4e023377",
+      "path": "packages/rigorloop/dist/lib/record-discovery.js"
+    },
+    {
+      "identity": "sha256:dedfd9feefd31d4fc2daf4ffaf35db83be5dddcb750c2bb237d56d552f50bb82",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:8caf5fcf0de2f013b053615a9dbd81ddf52456b7f64bf8b22c99e72249c351d8",
+      "path": "scripts/build-record-store-schema.mjs"
+    },
+    {
+      "identity": "sha256:adcd191bb4be6cf5b31e39a9b8780af3a1cfbe960b3175300c6bd5887921c407",
+      "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+    },
+    {
+      "identity": "sha256:7c6dc74002f4bb54ddf79034aeb2fcccc9de7fd71f438ea68cb096bec0843e89",
+      "path": "packages/rigorloop/test/record-store-v2-persistence.test.js"
+    }
+  ],
+  "summary": "The corrected per-kind archive-header rule resolves the identified contradiction. The complete five-model retirement package is coherent against the selected direction and its explicit dependency, historical-preservation and no-new-retirement-tests boundaries.",
+  "target": "design"
+}

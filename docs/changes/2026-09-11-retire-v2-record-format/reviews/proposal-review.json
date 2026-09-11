@@ -1,0 +1,121 @@
+{
+  "assessment_scope": "Independent Proposal Review of v2 stored-format retirement, including user scope preservation, vision fit, embedded feasibility and direction-level compatibility consequences. Recording mode formal-lifecycle; automation mode manual. This review stops before Design.",
+  "change_id": "2026-09-11-retire-v2-record-format",
+  "contributors": [
+    {
+      "id": "codex-proposal-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review",
+  "independence_basis": "Parent /root authored the proposal. Separately delegated reviewer authored none of it, read the complete proposal and governing/implementation basis independently, and records only this isolated assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "The required current-work, interrupted-storage, active-governance and shared-consumer dependency dispositions remain downstream obligations before support removal; the twelve-store observation does not settle them.",
+    "No implementation correctness, retained test coverage adequacy, recovery readiness, completed retirement, release, publication or customer adoption is claimed.",
+    "This formal manual review is isolated. The recorded direction assessment supplies no automatic downstream handoff; Design requires separately authorized continuation."
+  ],
+  "rationale": [
+    "Challenge — pass. Maintaining two operational stored contracts imposes compatibility branches, fixtures and consumer guidance after new-store creation has moved to v3. The proposal distinguishes that maintenance problem from the separate question of whether existing operational dependencies are ready for retirement.",
+    "Goals — pass. The outcomes simplify supported stored formats while preserving historical bytes, identities and judgment meaning. Removal of exclusively-v2 tests and the explicit prohibition on added v2-retirement tests remain visible as first-class user constraints, without dictating an implementation layout.",
+    "Scope — pass. The scope-budget gate is active because runtime, test resources, consumers/governance and existing-work disposition form related work families. Core work, same-slice dependencies and exclusions are explicitly classified with meaningful boundaries. Migration, permanent readers, unrelated cleanup, release and customer activation are excluded. No required goal disappears into an unnamed follow-up.",
+    "Governing principle — pass. Maintaining operational support for current work while preserving historical meaning is compatible with a deliberate supported-format retirement once required dependencies receive a responsible disposition. It does not make a completed label or a report filename sufficient authority to remove support.",
+    "Direction — pass. Retire rigorloop-records-v2 operationally, keep this initiative in a new v3 store, preserve historical artifacts without operational compatibility, and retain v3/shared behavior and independent version domains. RF-SR-12 and Workflow explicitly reserve existing-v2 removal for a separate reviewed decision; this proposal selects that next direction rather than treating the earlier amendment as retirement authorization.",
+    "Feasibility — pass. Exactly one embedded Feasibility section gives a credible assessment, inspected dispatch/shared-core basis, constraints and a bounded dependency question. The current format dispatcher distinguishes v2/v3 while retaining advanced request schema2, and the v3 adapter already uses shared mechanics. These facts support selective removal and explain why deleting every v2-named or schema2 resource would be unsafe. No missing technology or unresolved decision prevents Design from investigating the identified dependencies.",
+    "Material impact — pass. Loss of existing-v2 CLI operability is disclosed, including implications for unfinished operations and recovery. Historical file preservation is not presented as operational compatibility. The proposal requires explicit resolution of active-governance dependencies before removal, which protects continued access to governing authority as well as resumable work.",
+    "Vision alignment: aligned. Reducing obsolete operational maintenance while retaining inspectable historical reasoning and resolving current-work dependencies supports durable, traceable and resumable engineering. The proposal does not replace reviewer judgment, demand platform migration, erase historical evidence or claim that storage status establishes readiness. No vision exception or missing-standing-artifact gate applies.",
+    "Downstream authority — pass. Design owns the precise behavior, dependency and policy reconciliation; Delivery owns sequencing and retained proof allocation. The user explicitly excludes new rejection, retirement or archival-compatibility tests. The proposal preserves that constraint and calls for retained applicable suites rather than silently introducing a dedicated retirement suite. This direction approval does not certify that the final retained coverage is adequate.",
+    "Requested decision and scope preservation — pass. The requested approval is limited to the retirement direction, explicit work/recovery disposition, coordinated consumer cleanup and the stated test-removal/no-new-retirement-tests boundary. It does not approve implementation or external actions. All material incoming goals are preserved without a hidden migration, compatibility-service or unrelated document-validator workstream.",
+    "Checks and evidence scope: read the complete proposal, current VISION and CONSTITUTION, the cited RF/Workflow continuation clauses, current format dispatch and v3 adapter. Ran the public workflow-context and scoped context reads and subject inspect for 20 exact subjects. A read-only Python inventory over current docs/changes/*/change.json confirmed twelve v2 manifests with completed activity labels and Verify-report file presence. This corroborates only the proposal's bounded local observation; it is not a recovery, governance, evidence-adequacy or completion audit. No runtime test suite was executed or added for this Proposal Review."
+  ],
+  "reviewer": {
+    "id": "codex-proposal-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:3f44199e331ecb125bce514c83c81255ceffccb0670c62d7c52f578f621e0f92",
+      "path": "docs/proposals/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:9e2d76bff364133fe34d7246c8b4dbbdc2a9c838dc89179ea74037be0a6c0501",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:7da63af759d6cff299f1fd441e197465fa9e177f424fe3231d72727b7098f968",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:f2b881917b9e9ed13fe3bf4490713f1cf79504856e8973a243d807a230c6df3b",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:3160ee6ab7d27579f6d65062957fbaf07f59273736d6c5a50d8c1df4eac76615",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:73223e1c8e2365c15c0ecb72adc1b44c24f2e2ac41874d21713fbe7dab8d277c",
+      "path": "packages/rigorloop/dist/lib/record-store-format.js"
+    },
+    {
+      "identity": "sha256:5c1ba8869c4c78d7a97147cb1dfa5c295358a12dce2e373aadeee81c6ccc4663",
+      "path": "packages/rigorloop/dist/lib/record-format-v3.js"
+    },
+    {
+      "identity": "sha256:2828bd915c7947ec96098c3654248089c5634010cf4a181a9be8bc727a6c75be",
+      "path": "skills/proposal/references/governed-proposal-authoring.md"
+    },
+    {
+      "identity": "sha256:9e325e2a39ed611f6b8cb6aad19eca5beb5023134c2c289cb7264eb277090b48",
+      "path": "docs/changes/2026-09-07-unify-review-closeout-policy/change.json"
+    },
+    {
+      "identity": "sha256:82ec413b132195f69d0494af711fc1374dea2d2af1f3937b3e96809f67679962",
+      "path": "docs/changes/2026-09-08-design-derived-test-model/change.json"
+    },
+    {
+      "identity": "sha256:3fba9615b35b4e1a8f289f9170498c47a257e470bb025d2b8f4ec6c8956bf4c5",
+      "path": "docs/changes/2026-09-08-retire-compact-workflow-mutations/change.json"
+    },
+    {
+      "identity": "sha256:a3203ec3a2e692775b93e25878fd3a8d3524b9c6dff45ef4cc42096b5be9fe80",
+      "path": "docs/changes/2026-09-08-skill-model-proposal-family-pilot/change.json"
+    },
+    {
+      "identity": "sha256:b0e3d2c2254081fed5dcd720e301a65c45a1dfae8e0fcf33877bbf0916f922f0",
+      "path": "docs/changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json"
+    },
+    {
+      "identity": "sha256:e1572fada02322c96f37b15f97e54fa1b1df22ea30714bf377c3e302b26dfb80",
+      "path": "docs/changes/2026-09-09-release-model-source-consolidation/change.json"
+    },
+    {
+      "identity": "sha256:7053f2703927d8b652ffda17d4f7893fa50b12b73353cc3a4c02e93892bf510d",
+      "path": "docs/changes/2026-09-09-simplify-required-validation-and-design-retention/change.json"
+    },
+    {
+      "identity": "sha256:d41bbbf3fa864e800042eb552bf9ec186d8bdc8ee2a1e0e5e571d0df97edc1f3",
+      "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/change.json"
+    },
+    {
+      "identity": "sha256:408f73283b62e1042ff146d71332b2d25990b282f3e9d2e10347951f4bdc2382",
+      "path": "docs/changes/2026-09-10-npm-publication-visibility/change.json"
+    },
+    {
+      "identity": "sha256:4adc476e3d6fa66bccb3812e1b55102cfadad810590138dbadb04f680418e51a",
+      "path": "docs/changes/2026-09-10-readable-record-output/change.json"
+    },
+    {
+      "identity": "sha256:2f1c527c86b7ba65a2965e30da500184af1f7a5d20f00907c03becdf7271f52e",
+      "path": "docs/changes/2026-09-10-release-validation-integration/change.json"
+    },
+    {
+      "identity": "sha256:cece1a03d7e79b48686e2413943212798b4e24352d340ddbfbfff18b982c8ccc",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/change.json"
+    }
+  ],
+  "summary": "The retirement direction is sufficiently bounded and supported to proceed to separately authorized Design, with operational dependencies explicitly requiring disposition before support is removed.",
+  "target": "proposal"
+}
