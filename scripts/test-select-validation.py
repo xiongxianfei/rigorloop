@@ -590,6 +590,21 @@ class ValidationSelectionTests(unittest.TestCase):
         selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
         self.assertTrue(any(x["code"] == "unsupported-change-contract" for x in selected.blocking_results))
 
+    def test_manifest_discriminator_unknown_value_types_fail_closed(self):
+        repo = self.make_git_repo()
+        path = "docs/changes/example/change.json"
+        manifest = repo / path
+        manifest.parent.mkdir(parents=True)
+        for field in ("schema_version", "contract"):
+            for invalid in ([], {}, None, True, "unknown_value"):
+                with self.subTest(field=field, invalid=invalid):
+                    value = {"schema_version": 3, "contract": "rigorloop-records-v3"}
+                    value[field] = invalid
+                    manifest.write_text(json.dumps(value) + "\n")
+                    selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+                    self.assertEqual(selected.status, "blocked")
+                    self.assertTrue(any(x["code"] == "unsupported-change-contract" for x in selected.blocking_results))
+
     def test_v2_registered_json_paths_select_contract_owned_validator(self):
         repo, _ = self.recording_repo()
         shutil.rmtree(repo / "docs/changes/example")
