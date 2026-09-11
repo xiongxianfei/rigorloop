@@ -1443,7 +1443,7 @@
         "role": "implement"
       },
       "id": "m2-implementation",
-      "procedure": "Tests first: node --test packages/rigorloop/test/record-store-v3-mutations.test.js initially failed on missing v3 mutation support, then passed all 12 focused cases. node --test packages/rigorloop/test/record-store*.test.js packages/rigorloop/test/record-retirement.test.js passed 235/235. node scripts/build-record-store-schema.mjs --check passed. python scripts/validate-change-metadata.py docs/changes/2026-09-10-structured-assessment-explanations/change.json and git diff --check passed. This is local milestone evidence, not final Verify or hosted CI.",
+      "procedure": "Tests first: node --test packages/rigorloop/test/record-store-v3-mutations.test.js initially failed on missing v3 mutation support, then passed all 12 focused cases. node --test packages/rigorloop/test/record-store*.test.js packages/rigorloop/test/record-retirement.test.js passed 235/235. node scripts/build-record-store-schema.mjs --check passed. python scripts/validate-change-metadata.py docs/changes/2026-09-10-structured-assessment-explanations/change.json and git diff --check passed. This is local milestone evidence, not final Verify or hosted CI. Independent review code-review-m2-f1 reproduced missing optional-basis removal in receipt effects. Added --details assertion first (failed), corrected effect expansion, and reran all 12 focused mutation cases successfully; parity and whitespace passed again.",
       "result": "passed",
       "subjects": [
         {
@@ -1451,7 +1451,7 @@
           "path": "packages/rigorloop/dist/lib/record-store.js"
         },
         {
-          "identity": "sha256:aaa321a0222018b6f23cd8cd5cd29e6ed3320c77a3c7cf7f19a26c2385268a95",
+          "identity": "sha256:65b255348781df3abb9f94c1cc12d8451c39289f8bcf650aef8141e6d2e3f2ee",
           "path": "packages/rigorloop/dist/lib/recording-construction.js"
         },
         {
@@ -1471,7 +1471,7 @@
           "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json"
         },
         {
-          "identity": "sha256:12e35d2049ae71e1ef8f456286091a1c1de323a373b60fd703cff0147e4956f8",
+          "identity": "sha256:1592ca4453cc7a619a3dd8143341156c5351f1cd62591c329f3876d267817f4b",
           "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
         },
         {

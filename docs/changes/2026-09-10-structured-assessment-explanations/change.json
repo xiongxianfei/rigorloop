@@ -62,6 +62,15 @@
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m1.json",
       "reason": "Independent M1 code review of exact candidate against approved Design/Delivery and matching evidence, with focused execution and schema/template validation.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m2.json",
+      "reason": "Current independent M2 assessment against the exact commit and approved scope, with one reproduced detailed-effect receipt correction.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -136,6 +145,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m2.json"
     }
   ],
   "schema_version": 2,
