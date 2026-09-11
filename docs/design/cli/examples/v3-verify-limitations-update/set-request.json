@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "interface": "targeted-recording-v1",
+  "contract": "rigorloop-records-v3",
+  "change_id": "example-change",
+  "expected_revision": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "reads": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "operation": {
+    "op": "verify.set",
+    "target": {},
+    "values": {
+      "limitations": [
+        "Synthetic example only; no actual implementation, independent review, hosted CI, merge or publication result is established."
+      ]
+    }
+  }
+}

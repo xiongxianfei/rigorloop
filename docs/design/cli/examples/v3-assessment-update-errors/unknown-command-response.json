@@ -1,0 +1,13 @@
+{
+  "schema_version": 2,
+  "operation": null,
+  "status": "rejected",
+  "claim": "storage-only",
+  "errors": [
+    {
+      "code": "invalid-input",
+      "message": "Command: invalid-input."
+    }
+  ],
+  "change_id": "example-change"
+}

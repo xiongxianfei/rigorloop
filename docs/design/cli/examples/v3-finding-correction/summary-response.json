@@ -1,0 +1,71 @@
+{
+  "schema_version": 3,
+  "operation": "context",
+  "status": "inspected",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "record_contract": "rigorloop-records-v3",
+  "revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "data": {
+    "items": [
+      {
+        "kind": "finding",
+        "target": {
+          "review": "design-review",
+          "id": "finding-1"
+        },
+        "path": "docs/changes/example-change/reviews/design-review.json",
+        "identity": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "fields": {
+          "id": "finding-1",
+          "reporter": {
+            "id": "reviewer-a",
+            "role": "review"
+          },
+          "owner": {
+            "id": "author-a",
+            "role": "design"
+          },
+          "subjects": [
+            {
+              "path": "docs/design/example/example.md",
+              "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "state": "open",
+          "required_outcome": "Add the observed identity to the continuation example and demonstrate that a second drift invalidates its token."
+        }
+      }
+    ]
+  },
+  "scope": {
+    "select": [
+      {
+        "kind": "finding",
+        "where": {
+          "ids": [
+            "finding-1"
+          ],
+          "review_ids": [
+            "design-review"
+          ]
+        }
+      }
+    ],
+    "detail": "summary",
+    "returned": 1,
+    "total": 1,
+    "complete": true,
+    "omitted_fields": [
+      {
+        "kind": "finding",
+        "fields": [
+          "evidence",
+          "resolution"
+        ]
+      }
+    ],
+    "missing_paths": [],
+    "next": null
+  }
+}

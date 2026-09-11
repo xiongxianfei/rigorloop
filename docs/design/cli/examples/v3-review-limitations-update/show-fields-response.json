@@ -1,0 +1,79 @@
+{
+  "schema_version": 3,
+  "operation": "review.show",
+  "status": "inspected",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "record_contract": "rigorloop-records-v3",
+  "revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "data": {
+    "items": [
+      {
+        "kind": "review",
+        "target": {
+          "id": "design-review"
+        },
+        "path": "docs/changes/example-change/reviews/design-review.json",
+        "identity": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "applicability": {
+          "value": "current",
+          "actor": {
+            "id": "reviewer-a",
+            "role": "review"
+          },
+          "reason": "The responsible reviewer confirms this clarification retains the same Design assessment."
+        },
+        "fields": {
+          "limitations": [
+            "The assessment covers the supplied Design only; implementation behavior has not been executed."
+          ],
+          "rationale": [
+            "Identical drift messages can describe different subject content.\n\n```text\nobserved: B → C\nliteral text: \\n\n```\n\nBoth observed subjects differ from A, so the observed identity must participate in the digest."
+          ]
+        }
+      }
+    ]
+  },
+  "scope": {
+    "select": [
+      {
+        "kind": "review",
+        "where": {
+          "ids": [
+            "design-review"
+          ]
+        }
+      }
+    ],
+    "detail": "full",
+    "returned": 1,
+    "total": 1,
+    "complete": true,
+    "omitted_fields": [
+      {
+        "kind": "review",
+        "fields": [
+          "assessment_scope",
+          "change_id",
+          "contributors",
+          "findings",
+          "id",
+          "independence_basis",
+          "judgment",
+          "reviewer",
+          "schema_version",
+          "subjects",
+          "summary",
+          "target"
+        ]
+      }
+    ],
+    "missing_paths": [],
+    "next": null,
+    "fields": [
+      "limitations",
+      "rationale"
+    ],
+    "absent_fields": []
+  }
+}

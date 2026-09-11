@@ -1,0 +1,5 @@
+# V2 change before supporting records
+
+[change.json](change.json) is a complete v2 manifest under [RF-SR-01/02/03](../../record-format.md#requirements). It references an illustrative proposal and model, records Design in progress, and has no plan, work entries, blockers or registered supporting records yet.
+
+Empty registry and applicability arrays describe the starting state; they do not mean review or verification has occurred. The actors, external paths and repeated-digit identities are synthetic. This example illustrates a supported v2 record shape, not a real registered change or an executable workflow.

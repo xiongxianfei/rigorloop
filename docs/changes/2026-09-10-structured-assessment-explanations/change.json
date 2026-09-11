@@ -1,0 +1,185 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-implement",
+      "role": "implement"
+    },
+    "reason": "User authorized continuation through PR submission. Execute approved M1 first, then each reviewed milestone, independent final whole-change Code Review, distinct Verify and PR. No release or merge authorization is inferred.",
+    "stage": "implement",
+    "status": "in-progress"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/proposal-review.json",
+      "reason": "The user explicitly revised the proposal origin-preservation requirement for v3 findings. Preserve the original proposal and approval as evidence of their exact earlier direction; they do not approve this scoped refinement.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/material-decisions.json",
+      "reason": "Author-owned Design decisions and document/example inspection for these exact subjects; no independent approval or runtime adoption claim.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/evidence.json",
+      "reason": "Author-owned Design decisions and document/example inspection for these exact subjects; no independent approval or runtime adoption claim.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review.json",
+      "reason": "Independent integrated Design reassessment against the exact current package and explicit revised user direction; the remaining read-contract correction has been assessed.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-delivery-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/delivery-review.json",
+      "reason": "Independent complete Delivery assessment of the exact registered primary plan against current approved Design and inspected implementation/validation boundaries.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-10-structured-assessment-explanations",
+  "contract": "rigorloop-records-v2",
+  "models": [
+    {
+      "id": "record-format",
+      "subject": {
+        "identity": "sha256:b00829fe553f5bd076d3e39b7e8636964f36f1fb43c74ef1d3b31deb18513a4c",
+        "path": "docs/design/record-format/record-format.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:59890e3cfbc467fad6fd276893432a09828a22aa3c3deaaa576147744355fcb7",
+        "path": "docs/design/cli/cli.md"
+      }
+    },
+    {
+      "id": "review-closeout",
+      "subject": {
+        "identity": "sha256:40823b5356451b63be6ca23f215556337cd23d01baf517ab33c5704656aa9a76",
+        "path": "docs/design/review-closeout/review-closeout.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:3160ee6ab7d27579f6d65062957fbaf07f59273736d6c5a50d8c1df4eac76615",
+        "path": "docs/design/workflow/workflow.md"
+      }
+    },
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:30ed20e8662b475bca0fb32e8e7f6bce4522aaa29cf9bb878e1c81dcb7630ccd",
+        "path": "docs/design/system/system.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:25b98806480b7711f6dbfa379f9eb8cb3e643dab695e96016b5a5b50443776c1",
+    "path": "docs/plans/2026-09-11-structured-assessment-explanations.md"
+  },
+  "proposal": {
+    "identity": "sha256:321142e381821c22603ceaaa64dd64218a98c2c08bd041964fedd41a4aa29b8f",
+    "path": "docs/proposals/2026-09-10-structured-assessment-explanations.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/material-decisions.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/delivery-review.json"
+    }
+  ],
+  "schema_version": 2,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-09",
+        "RF-SR-11",
+        "RF-SR-12",
+        "RF-SR-13"
+      ],
+      "status": "in-progress"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "CLI-SR-25",
+        "CLI-SR-26",
+        "CLI-SR-27"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m3",
+      "owner": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "CLI-SR-24",
+        "CLI-SR-26",
+        "CLI-SR-27"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m4",
+      "owner": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-12",
+        "CLI-SR-27",
+        "RC-SR-19",
+        "RC-SR-20"
+      ],
+      "status": "pending"
+    }
+  ]
+}

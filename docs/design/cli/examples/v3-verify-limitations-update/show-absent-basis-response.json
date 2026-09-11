@@ -1,0 +1,76 @@
+{
+  "schema_version": 3,
+  "operation": "verify.show",
+  "status": "inspected",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "record_contract": "rigorloop-records-v3",
+  "revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "data": {
+    "items": [
+      {
+        "kind": "verify",
+        "target": {},
+        "path": "docs/changes/example-change/verify-report.json",
+        "identity": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "applicability": {
+          "value": "current",
+          "actor": {
+            "id": "verifier-a",
+            "role": "verify"
+          },
+          "reason": "Synthetic actor declaration; no actual assessment or renewed reliance is established."
+        },
+        "fields": {
+          "changes": [
+            "Named explanation values drive readable human output.",
+            "Field projection exposes requested content with explicit omissions."
+          ],
+          "limitations": [
+            "Synthetic examples only; no checks or assessments in this collection were actually executed.",
+            "No Git/PR readiness, hosted CI, merge or publication result is claimed."
+          ]
+        }
+      }
+    ]
+  },
+  "scope": {
+    "select": [
+      {
+        "kind": "verify",
+        "where": {}
+      }
+    ],
+    "detail": "full",
+    "returned": 1,
+    "total": 1,
+    "complete": true,
+    "omitted_fields": [
+      {
+        "kind": "verify",
+        "fields": [
+          "assessment_scope",
+          "change_id",
+          "evidence_refs",
+          "outcome",
+          "rationale",
+          "review_refs",
+          "schema_version",
+          "subjects",
+          "summary",
+          "verifier"
+        ]
+      }
+    ],
+    "missing_paths": [],
+    "next": null,
+    "fields": [
+      "changes",
+      "limitations",
+      "verification_basis"
+    ],
+    "absent_fields": [
+      "verification_basis"
+    ]
+  }
+}

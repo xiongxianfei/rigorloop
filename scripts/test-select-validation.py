@@ -697,8 +697,8 @@ class ValidationSelectionTests(unittest.TestCase):
 
     def test_model_example_selection_uses_owner_not_example_as_model(self):
         import shlex
-        for path in ("docs/design/record-format/examples/minimal-change.json",
-                     "docs/design/cli/examples/work-set/request.json",
+        for path in ("docs/design/record-format/examples/v2-minimal-change/change.json",
+                     "docs/design/cli/examples/v2-work-status-update/request.json",
                      "docs/design/cli/examples/observation-freshness/scan-b.json",
                      "docs/design/workflow/examples/correction-cycle.mmd"):
             result = select_validation(SelectionRequest(
