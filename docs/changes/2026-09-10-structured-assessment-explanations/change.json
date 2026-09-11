@@ -4,7 +4,7 @@
       "id": "codex-code-review",
       "role": "review"
     },
-    "reason": "M2 implementation and required validation complete as evidence; independent milestone Code Review is required before completion or the next milestone. User authorized the sequence through PR, not release/merge.",
+    "reason": "M3 implementation and required validation complete as evidence; independent milestone Code Review is required before completion or the next milestone. User authorized the sequence through PR, not release/merge.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -69,7 +69,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m2.json",
-      "reason": "Current independent M2 assessment against the exact commit and approved scope, with one reproduced detailed-effect receipt correction.",
+      "reason": "Independent final M2 reassessment through 752d7d36 with the detailed optional-basis removal correction and focused regression assessed.",
       "value": "current"
     }
   ],
@@ -178,7 +178,7 @@
         "CLI-SR-26",
         "CLI-SR-27"
       ],
-      "status": "ready"
+      "status": "completed"
     },
     {
       "id": "m3",
@@ -191,7 +191,7 @@
         "CLI-SR-26",
         "CLI-SR-27"
       ],
-      "status": "pending"
+      "status": "ready"
     },
     {
       "id": "m4",

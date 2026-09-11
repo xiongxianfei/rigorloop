@@ -1484,6 +1484,50 @@
         }
       ],
       "summary": "M2 implements contract-selected complete assessments, narrow whole-field explanation updates, explicit ID-only v3 finding corrections, optional Verify basis insertion/removal, and new-command schema-3 early errors. Storage-only outcomes retain explicit applicability and independent assessment boundaries. M3 reads and M4 coordinated public creation remain pending."
+    },
+    {
+      "actor": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "id": "m3-implementation",
+      "procedure": "Tests first: node --test packages/rigorloop/test/record-store-v3-reads.test.js failed on unimplemented v3 reads, then passed all 10 focused cases. Approved v3 CLI request/response examples validate through executable profiles. Tests cover exact values and byte limits, unknown/duplicate selectors, dishonest scope rejection, optional basis absence, nullable plan links, existing-v2 projection rejection, and blocker-origin observation freshness. node --test packages/rigorloop/test/record-store*.test.js packages/rigorloop/test/record-retirement.test.js passed 245/245. node scripts/build-record-store-schema.mjs --check, python scripts/validate-change-metadata.py docs/changes/2026-09-10-structured-assessment-explanations/change.json, and git diff --check passed. Local milestone evidence only; no final Verify or hosted CI claim.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:739b017ec5f054ec476591b75a5f51f2056c62e767ea3fc577d3b2d051b9493a",
+          "path": "packages/rigorloop/dist/lib/recording-contract.js"
+        },
+        {
+          "identity": "sha256:0883ff6baae548d638eb0cf134d8aaa3c42f96581047d73a0c73e43f386fdd12",
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js"
+        },
+        {
+          "identity": "sha256:6eaebbb699b32ef7256a5fee51da5aa6aebe472bcf6a318664b3e79acf09a238",
+          "path": "packages/rigorloop/dist/lib/recording-result.js"
+        },
+        {
+          "identity": "sha256:068ced8b9c9548afa42f782aeab8e47cb29f2af230f69efc82218cdeb2169bdb",
+          "path": "packages/rigorloop/dist/lib/workflow-context.js"
+        },
+        {
+          "identity": "sha256:42b4e958b88fa8cc30f3fc4ecbe344ff27c559f0d627a0473c821ec9fb92a56f",
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json"
+        },
+        {
+          "identity": "sha256:1da29208d5629c230c7314dc6cf321f50a3fa73d05d1b4fb18768908045b2203",
+          "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+        },
+        {
+          "identity": "sha256:42b4e958b88fa8cc30f3fc4ecbe344ff27c559f0d627a0473c821ec9fb92a56f",
+          "path": "schemas/targeted-recording-v1.schema.json"
+        },
+        {
+          "identity": "sha256:25b98806480b7711f6dbfa379f9eb8cb3e643dab695e96016b5a5b50443776c1",
+          "path": "docs/plans/2026-09-11-structured-assessment-explanations.md"
+        }
+      ],
+      "summary": "M3 implements exact Review/Verify field projection, coherent v3 result items and applicability, explicit selected/omitted/absent metadata, ID-only finding reads, retained blocker origin observations, derived multiline human output and v2/v3 factual discovery. Existing v2 full reads and schema2 discovery remain supported. Public v3 creation and consumer adoption await M4."
     }
   ],
   "schema_version": 2

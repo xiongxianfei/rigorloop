@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Targeted recording v1 requests and primary result v2",
+  "title": "Targeted recording v1 requests and primary results v2/v3",
   "description": "Closed primary query, mutation and result transport; stored values retain their owning record contract.",
   "$defs": {
     "changed": {
@@ -5724,6 +5724,737 @@
             "errors"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "status"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "$ref": "#/$defs/status-data"
+            },
+            "scope": {
+              "$ref": "#/$defs/status-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "context"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-item"
+                  },
+                  "minItems": 0,
+                  "maxItems": 100
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/context-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "observations.show"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "observations": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/observation"
+                  },
+                  "minItems": 0,
+                  "maxItems": 100
+                }
+              },
+              "required": [
+                "observations"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/observation-scope"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "work.show"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-item"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/context-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "review.show"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-item"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/v3-review-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "finding.show"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-item"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/context-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "blocker.show"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-item"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/context-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "evidence.show"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-item"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/context-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "decision.show"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-item"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/context-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "verify.show"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-item"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/v3-verify-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "record_contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "operation": {
+              "const": "decisions.show"
+            },
+            "status": {
+              "const": "inspected"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-item"
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false
+            },
+            "scope": {
+              "$ref": "#/$defs/context-scope"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "change_id",
+            "record_contract",
+            "revision",
+            "operation",
+            "status",
+            "data",
+            "scope"
+          ],
+          "additionalProperties": false
         }
       ]
     },
@@ -9932,6 +10663,1620 @@
         "op",
         "target",
         "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-stored-blockerState": {
+      "type": "string",
+      "enum": [
+        "open",
+        "resolved",
+        "deferred"
+      ]
+    },
+    "v3-stored-resolution": {
+      "type": "object",
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/v3-stored-actor"
+        },
+        "rationale": {
+          "$ref": "#/$defs/v3-stored-text"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/v3-stored-entryRef"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "actor",
+        "rationale",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    },
+    "v3-stored-finding": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/v3-stored-id"
+        },
+        "reporter": {
+          "$ref": "#/$defs/v3-stored-actor"
+        },
+        "owner": {
+          "$ref": "#/$defs/v3-stored-actor"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/v3-stored-subject"
+          },
+          "uniqueItems": true
+        },
+        "evidence": {
+          "$ref": "#/$defs/v3-stored-text"
+        },
+        "required_outcome": {
+          "$ref": "#/$defs/v3-stored-text"
+        },
+        "state": {
+          "$ref": "#/$defs/v3-stored-blockerState"
+        },
+        "resolution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/v3-stored-resolution"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "reporter",
+        "owner",
+        "subjects",
+        "evidence",
+        "required_outcome",
+        "state",
+        "resolution"
+      ],
+      "additionalProperties": false
+    },
+    "v3-item": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "work"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/v2-id"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "status": {
+                      "$ref": "#/$defs/v2-status"
+                    },
+                    "owner": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "requirement_refs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v2-text"
+                      },
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status",
+                    "owner",
+                    "requirement_refs"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "status": {
+                      "$ref": "#/$defs/v2-status"
+                    },
+                    "owner": {
+                      "$ref": "#/$defs/v2-actor"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status",
+                    "owner"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "review"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/v2-id"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "type": "object",
+              "properties": {
+                "schema_version": {
+                  "const": 3
+                },
+                "change_id": {
+                  "$ref": "#/$defs/v3-stored-id"
+                },
+                "id": {
+                  "$ref": "#/$defs/v3-stored-id"
+                },
+                "target": {
+                  "$ref": "#/$defs/v3-stored-target"
+                },
+                "reviewer": {
+                  "$ref": "#/$defs/v3-stored-actor"
+                },
+                "contributors": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-actor"
+                  },
+                  "uniqueItems": true
+                },
+                "independence_basis": {
+                  "$ref": "#/$defs/v3-stored-text"
+                },
+                "subjects": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-subject"
+                  },
+                  "uniqueItems": true
+                },
+                "judgment": {
+                  "$ref": "#/$defs/v3-stored-judgment"
+                },
+                "findings": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-finding"
+                  },
+                  "uniqueItems": true
+                },
+                "summary": {
+                  "$ref": "#/$defs/v3-stored-explanationText"
+                },
+                "assessment_scope": {
+                  "$ref": "#/$defs/v3-stored-explanationText"
+                },
+                "rationale": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-explanationText"
+                  },
+                  "minItems": 1
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-explanationText"
+                  },
+                  "minItems": 0
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "applicability": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "$ref": "#/$defs/v2-applicabilityValue"
+                },
+                "actor": {
+                  "$ref": "#/$defs/v2-actor"
+                },
+                "reason": {
+                  "$ref": "#/$defs/v2-text"
+                }
+              },
+              "required": [
+                "value",
+                "actor",
+                "reason"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields",
+            "applicability"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "finding"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "review": {
+                  "$ref": "#/$defs/v2-id"
+                },
+                "id": {
+                  "$ref": "#/$defs/v2-id"
+                }
+              },
+              "required": [
+                "review",
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v3-stored-id"
+                    },
+                    "reporter": {
+                      "$ref": "#/$defs/v3-stored-actor"
+                    },
+                    "owner": {
+                      "$ref": "#/$defs/v3-stored-actor"
+                    },
+                    "subjects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v3-stored-subject"
+                      },
+                      "uniqueItems": true
+                    },
+                    "evidence": {
+                      "$ref": "#/$defs/v3-stored-text"
+                    },
+                    "required_outcome": {
+                      "$ref": "#/$defs/v3-stored-text"
+                    },
+                    "state": {
+                      "$ref": "#/$defs/v3-stored-blockerState"
+                    },
+                    "resolution": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/v3-stored-resolution"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "reporter",
+                    "owner",
+                    "subjects",
+                    "evidence",
+                    "required_outcome",
+                    "state",
+                    "resolution"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v3-stored-id"
+                    },
+                    "reporter": {
+                      "$ref": "#/$defs/v3-stored-actor"
+                    },
+                    "owner": {
+                      "$ref": "#/$defs/v3-stored-actor"
+                    },
+                    "subjects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v3-stored-subject"
+                      },
+                      "uniqueItems": true
+                    },
+                    "state": {
+                      "$ref": "#/$defs/v3-stored-blockerState"
+                    },
+                    "required_outcome": {
+                      "$ref": "#/$defs/v3-stored-text"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "reporter",
+                    "owner",
+                    "subjects",
+                    "state",
+                    "required_outcome"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "blocker"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/v2-id"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "reporter": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "owner": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "subjects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v2-subject"
+                      },
+                      "uniqueItems": true
+                    },
+                    "evidence": {
+                      "$ref": "#/$defs/v2-text"
+                    },
+                    "required_outcome": {
+                      "$ref": "#/$defs/v2-text"
+                    },
+                    "state": {
+                      "$ref": "#/$defs/v2-blockerState"
+                    },
+                    "resolution": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/v2-resolution"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "$ref": "#/$defs/v2-origin"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "reporter",
+                    "owner",
+                    "subjects",
+                    "evidence",
+                    "required_outcome",
+                    "state",
+                    "resolution",
+                    "origin"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "reporter": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "owner": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "subjects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v2-subject"
+                      },
+                      "uniqueItems": true
+                    },
+                    "state": {
+                      "$ref": "#/$defs/v2-blockerState"
+                    },
+                    "required_outcome": {
+                      "$ref": "#/$defs/v2-text"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "reporter",
+                    "owner",
+                    "subjects",
+                    "state",
+                    "required_outcome"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "origin_available": {
+              "const": true
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields",
+            "origin_available"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "evidence"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/v2-id"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "actor": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "subjects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v2-subject"
+                      },
+                      "uniqueItems": true
+                    },
+                    "result": {
+                      "$ref": "#/$defs/v2-evidenceResult"
+                    },
+                    "procedure": {
+                      "$ref": "#/$defs/v2-text"
+                    },
+                    "summary": {
+                      "$ref": "#/$defs/v2-text"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "actor",
+                    "subjects",
+                    "result",
+                    "procedure",
+                    "summary"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "actor": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "subjects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v2-subject"
+                      },
+                      "uniqueItems": true
+                    },
+                    "result": {
+                      "$ref": "#/$defs/v2-evidenceResult"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "actor",
+                    "subjects",
+                    "result"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "decision"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/v2-id"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "actor": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "subjects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v2-subject"
+                      },
+                      "uniqueItems": true
+                    },
+                    "rationale": {
+                      "$ref": "#/$defs/v2-text"
+                    },
+                    "source_refs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v2-entryRef"
+                      },
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "actor",
+                    "subjects",
+                    "rationale",
+                    "source_refs"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "actor": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "subjects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v2-subject"
+                      },
+                      "uniqueItems": true
+                    },
+                    "source_refs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/v2-entryRef"
+                      },
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "actor",
+                    "subjects",
+                    "source_refs"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "verify"
+            },
+            "target": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "type": "object",
+              "properties": {
+                "schema_version": {
+                  "const": 3
+                },
+                "change_id": {
+                  "$ref": "#/$defs/v3-stored-id"
+                },
+                "verifier": {
+                  "$ref": "#/$defs/v3-stored-actor"
+                },
+                "subjects": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-subject"
+                  },
+                  "uniqueItems": true
+                },
+                "evidence_refs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-entryRef"
+                  },
+                  "uniqueItems": true
+                },
+                "review_refs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-entryRef"
+                  },
+                  "uniqueItems": true
+                },
+                "outcome": {
+                  "const": "success"
+                },
+                "summary": {
+                  "$ref": "#/$defs/v3-stored-explanationText"
+                },
+                "assessment_scope": {
+                  "$ref": "#/$defs/v3-stored-explanationText"
+                },
+                "rationale": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-explanationText"
+                  },
+                  "minItems": 1
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-explanationText"
+                  },
+                  "minItems": 0
+                },
+                "changes": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/v3-stored-explanationText"
+                  },
+                  "minItems": 1
+                },
+                "verification_basis": {
+                  "$ref": "#/$defs/v3-stored-verificationBasis"
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "applicability": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "$ref": "#/$defs/v2-applicabilityValue"
+                },
+                "actor": {
+                  "$ref": "#/$defs/v2-actor"
+                },
+                "reason": {
+                  "$ref": "#/$defs/v2-text"
+                }
+              },
+              "required": [
+                "value",
+                "actor",
+                "reason"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields",
+            "applicability"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "decisions"
+            },
+            "target": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "schema_version": {
+                      "const": 3
+                    },
+                    "change_id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "decisions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "$ref": "#/$defs/v2-id"
+                          },
+                          "actor": {
+                            "$ref": "#/$defs/v2-actor"
+                          },
+                          "subjects": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/$defs/v2-subject"
+                            },
+                            "uniqueItems": true
+                          },
+                          "rationale": {
+                            "$ref": "#/$defs/v2-text"
+                          },
+                          "source_refs": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/$defs/v2-entryRef"
+                            },
+                            "uniqueItems": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "actor",
+                          "subjects",
+                          "rationale",
+                          "source_refs"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "uniqueItems": true
+                    },
+                    "body": {
+                      "$ref": "#/$defs/v2-text"
+                    }
+                  },
+                  "required": [
+                    "schema_version",
+                    "change_id",
+                    "decisions",
+                    "body"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "schema_version": {
+                      "const": 3
+                    },
+                    "change_id": {
+                      "$ref": "#/$defs/v2-id"
+                    }
+                  },
+                  "required": [
+                    "schema_version",
+                    "change_id"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "applicability": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "$ref": "#/$defs/v2-applicabilityValue"
+                },
+                "actor": {
+                  "$ref": "#/$defs/v2-actor"
+                },
+                "reason": {
+                  "$ref": "#/$defs/v2-text"
+                }
+              },
+              "required": [
+                "value",
+                "actor",
+                "reason"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields",
+            "applicability"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "model"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/v2-id"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/v2-id"
+                    },
+                    "subject": {
+                      "$ref": "#/$defs/v2-subject"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "subject"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "proposal"
+            },
+            "target": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "$ref": "#/$defs/v2-path"
+                    },
+                    "identity": {
+                      "$ref": "#/$defs/v2-digest"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "identity"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "plan"
+            },
+            "target": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/v2-subject"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "activity"
+            },
+            "target": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "stage": {
+                      "$ref": "#/$defs/v2-stage"
+                    },
+                    "status": {
+                      "$ref": "#/$defs/v2-status"
+                    },
+                    "owner": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "reason": {
+                      "$ref": "#/$defs/v2-text"
+                    }
+                  },
+                  "required": [
+                    "stage",
+                    "status",
+                    "owner",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "applicability"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "$ref": "#/$defs/v2-path"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false
+            },
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            },
+            "identity": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "fields": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "$ref": "#/$defs/v2-path"
+                    },
+                    "value": {
+                      "$ref": "#/$defs/v2-applicabilityValue"
+                    },
+                    "actor": {
+                      "$ref": "#/$defs/v2-actor"
+                    },
+                    "reason": {
+                      "$ref": "#/$defs/v2-text"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "value",
+                    "actor",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "target",
+            "path",
+            "identity",
+            "fields"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "v3-review-scope": {
+      "type": "object",
+      "properties": {
+        "select": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/selector"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "detail": {
+          "enum": [
+            "full",
+            "summary"
+          ]
+        },
+        "returned": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "omitted_fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "work",
+                  "review",
+                  "finding",
+                  "blocker",
+                  "evidence",
+                  "decision",
+                  "verify",
+                  "decisions",
+                  "model",
+                  "proposal",
+                  "plan",
+                  "activity",
+                  "applicability"
+                ]
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/v2-text"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "kind",
+              "fields"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        },
+        "missing_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/v2-path"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "next": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "expected_revision": {
+                  "$ref": "#/$defs/v2-digest"
+                }
+              },
+              "required": [
+                "token",
+                "expected_revision"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "schema_version",
+              "change_id",
+              "id",
+              "target",
+              "reviewer",
+              "contributors",
+              "independence_basis",
+              "subjects",
+              "judgment",
+              "findings",
+              "summary",
+              "assessment_scope",
+              "rationale",
+              "limitations"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "absent_fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "schema_version",
+              "change_id",
+              "id",
+              "target",
+              "reviewer",
+              "contributors",
+              "independence_basis",
+              "subjects",
+              "judgment",
+              "findings",
+              "summary",
+              "assessment_scope",
+              "rationale",
+              "limitations"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "select",
+        "detail",
+        "returned",
+        "total",
+        "complete",
+        "omitted_fields",
+        "missing_paths",
+        "next",
+        "absent_fields"
+      ],
+      "additionalProperties": false
+    },
+    "v3-verify-scope": {
+      "type": "object",
+      "properties": {
+        "select": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/selector"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "detail": {
+          "enum": [
+            "full",
+            "summary"
+          ]
+        },
+        "returned": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "omitted_fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "work",
+                  "review",
+                  "finding",
+                  "blocker",
+                  "evidence",
+                  "decision",
+                  "verify",
+                  "decisions",
+                  "model",
+                  "proposal",
+                  "plan",
+                  "activity",
+                  "applicability"
+                ]
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/v2-text"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "kind",
+              "fields"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        },
+        "missing_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/v2-path"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "next": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "expected_revision": {
+                  "$ref": "#/$defs/v2-digest"
+                }
+              },
+              "required": [
+                "token",
+                "expected_revision"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "schema_version",
+              "change_id",
+              "verifier",
+              "subjects",
+              "evidence_refs",
+              "review_refs",
+              "outcome",
+              "summary",
+              "assessment_scope",
+              "rationale",
+              "limitations",
+              "changes",
+              "verification_basis"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "absent_fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "schema_version",
+              "change_id",
+              "verifier",
+              "subjects",
+              "evidence_refs",
+              "review_refs",
+              "outcome",
+              "summary",
+              "assessment_scope",
+              "rationale",
+              "limitations",
+              "changes",
+              "verification_basis"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "select",
+        "detail",
+        "returned",
+        "total",
+        "complete",
+        "omitted_fields",
+        "missing_paths",
+        "next",
+        "absent_fields"
       ],
       "additionalProperties": false
     }
