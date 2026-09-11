@@ -4,7 +4,7 @@
       "id": "codex-code-review",
       "role": "review"
     },
-    "reason": "M4 implementation and required validation complete as evidence; independent milestone Code Review is required before completion or the next milestone. User authorized the sequence through PR, not release/merge.",
+    "reason": "All four implementation milestones and required corrections are independently approved. Fresh independent whole-change Code Review of the complete delivered diff and cross-milestone interactions is required before distinct Verify.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -244,7 +244,7 @@
         "RC-SR-19",
         "RC-SR-20"
       ],
-      "status": "ready"
+      "status": "completed"
     }
   ]
 }
