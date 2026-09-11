@@ -1,5 +1,5 @@
 {
-  "body": "Independent M4 Code Review covers ab6225a4..0f7bc0ca against the approved primary plan and reconciled Design package. The scope includes public v3 creation, explicit existing-v2 continuation, version-aware validators and selectors, package contents, historical fixture isolation, canonical consumer guidance and governance adoption. The two selector files were corrected by the author after exact-subject inspection; this assessment retains their submitted commit identities and does not assess the unreviewed correction.\n\nPublic creation policy is enforced in primary and advanced adapters while existing v2 stores and their recovery remain supported. Test-only historical initialization preserves real public continuation and recovery assertions. Package inventory and consumer guidance account for separate stored/request/result version domains, meaningful explanation fields, partial-read omissions, explicit applicability and success-only Verify. The scoped user decision v3-finding-id-only and current Design carry the revised direction; the original proposal approval remains explicitly stale and is not treated as approval of that revision. The reviewed Design clarification leaves the Delivery allocation applicable.\n\nIndependent execution of node --test packages/rigorloop/test/record-store-v3-adoption.test.js packages/rigorloop/test/record-store-v2-persistence.test.js passed 54 cases. Inspection of m4-implementation evidence establishes the reported 432 npm tests, 256 record-store tests, selector/metadata/package/skill checks and all 21 selected PR-mode checks against the submitted candidate. These passing suites do not cover collection-valued manifest discriminators: an independent temporary-store select_validation reproduction with schema_version:[] raises TypeError rather than returning the explicit blocked result. A bounded implementation correction and regression are required at that input boundary.\n\nThis is milestone assessment only. It supplies neither final whole-change Code Review nor Verify, hosted CI, publication or merge evidence.",
+  "body": "Independent M4 reassessment covers the final engineering slice ab6225a4..92d5e279, carried by candidate cc68e26f, against the unchanged approved plan and current reconciled Design. Public creation selects v3 in both primary and advanced adapters, while existing v2 continuation and recovery remain supported. Test-only historical fixture construction does not replace the public continuation/recovery assertions. Version-aware validation, package contents, canonical skill guidance and governance remain aligned with the selected storage/request/result domains.\n\nThe bounded selector correction replaces hash-based membership with equality comparisons over supported version/contract pairs. Arbitrary array/object discriminators now reach the explicit unsupported-change-contract blocker, preserving valid v2/v3 pair selection and unsupported scalar rejection. Independently ran python scripts/test-select-validation.py ValidationSelectionTests.test_manifest_discriminator_unknown_value_types_fail_closed: one test passed with ten subcases. Earlier independent node --test packages/rigorloop/test/record-store-v3-adoption.test.js packages/rigorloop/test/record-store-v2-persistence.test.js passed 54 cases; those runtime subjects are unchanged. The original defect is corrected with regression coverage at its actual selector boundary.\n\nRead refreshed m4-implementation evidence and final CI log: the corrected source cc68e26f passed all 21 selected checks through bash scripts/ci.sh --mode pr --base d670788c894ccdfb7eec5f973b61bdc964dd52a1 --head cc68e26f55878fe15fbca926b6df4165173d5b4e. Prepared source 752158191d49cfccbd32c9f366b98f2ad06d3d10 and sealed candidate 592e0227bc3487860e1987cd35918ecc6212201a823d27eb39a64d48a87f8177 are explicit in that evidence. The full selector suite passed 165; earlier 432 npm and 256 record-store tests remain relevant to unchanged runtime subjects. These are local candidate checks and do not claim hosted CI or publication.\n\nThe refreshed design-review-final independently assesses the complete revised non-Git Verify reference: local exact authoritative files support explicitly non-Git scope, whereas tracked governing artifacts, the conditional Git basis and branch-ready verdict apply to Git/PR readiness. This clarification preserves RC-SR-20 and RF-SR-11 and the Delivery allocation. The explicit scoped user decision and current Design carry v3 Finding ID-only immutability; the original proposal approval remains stale rather than being reused for revised direction. No other material milestone defect or unresolved authority gap was found.\n\nThis assessment covers M4 only. Final whole-change Code Review and distinct successful Verify remain required; no workflow completion, PR readiness, merge or publication authority follows from this milestone assessment.",
   "change_id": "2026-09-10-structured-assessment-explanations",
   "contributors": [
     {
@@ -464,8 +464,15 @@
         "role": "review"
       },
       "required_outcome": "Reject array/object and other unsupported discriminator values through the explicit blocked selector result without an uncaught exception or legacy fallback. Use type-safe comparison and add malformed/unknown-value regressions for both schema_version and contract, preserving valid v2/v3 selection and existing unknown scalar behavior. Safe correction belongs to M4 implementation followed by independent rereview; no Design decision is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "codex-code-review",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Inspected 92d5e279 equality-based comparison and malformed discriminator regression. Independently passed the focused test covering both fields with array, object, null, boolean and unknown-string inputs; explicit blocked results replace exceptions. Final corrected candidate CI passes all 21 selected checks and full selector suite passes165. The required outcome is satisfied without changing supported version pairs."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:47cfb0fbe5afe9beade6961560cb69144b639588d01375e16341aa4fe2bcf7b2",
@@ -480,7 +487,7 @@
   ],
   "id": "code-review-m4",
   "independence_basis": "Separately delegated reviewer authored none of the M4 implementation, tests or canonical guidance; inspected the submitted exact diff and independently exercised relevant public boundaries. Parent /root authored the implementation.",
-  "judgment": "changes-requested",
+  "judgment": "approved",
   "reviewer": {
     "id": "codex-code-review",
     "role": "review"
@@ -498,10 +505,6 @@
     {
       "identity": "sha256:5a56597adb254486227c4cf7b120407b10ef14f06632e8e9c60fd18c7c246586",
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m3.json"
-    },
-    {
-      "identity": "sha256:a088fc2a7dbb8a3bc804cbdc590f2e181259567842b7e51b36b03f9319e5246c",
-      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review-final.json"
     },
     {
       "identity": "sha256:53894796bc4c8752814ea10cf132a64bd1811733df9834af29379f3a5d2811c9",
@@ -644,7 +647,7 @@
       "path": "scripts/test-npm-package-publication.py"
     },
     {
-      "identity": "sha256:47cfb0fbe5afe9beade6961560cb69144b639588d01375e16341aa4fe2bcf7b2",
+      "identity": "sha256:8e2006182956fc0cfab2de4842b7d7cffadb39611c84fd22d738d67f1203cffc",
       "path": "scripts/test-select-validation.py"
     },
     {
@@ -660,7 +663,7 @@
       "path": "scripts/validate-record-store.mjs"
     },
     {
-      "identity": "sha256:18361bacee33608af13258090c9f0fb26e542d83ef5f569c3d5b9c834179e3b7",
+      "identity": "sha256:32bcdc798e0a1127373ffc726d033e4d63ce1d810bf821fde62e83116bd42c9c",
       "path": "scripts/validation_selection.py"
     },
     {
@@ -880,10 +883,6 @@
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/material-decisions.json"
     },
     {
-      "identity": "sha256:e1c40c31ae893ff602bd8044d5beab16731a872165398db70dd5cc100d44019d",
-      "path": "docs/changes/2026-09-10-structured-assessment-explanations/evidence.json"
-    },
-    {
       "identity": "sha256:3160ee6ab7d27579f6d65062957fbaf07f59273736d6c5a50d8c1df4eac76615",
       "path": "docs/design/workflow/workflow.md"
     },
@@ -894,6 +893,14 @@
     {
       "identity": "sha256:30ed20e8662b475bca0fb32e8e7f6bce4522aaa29cf9bb878e1c81dcb7630ccd",
       "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:936d8e5a9b38d5c702353a4c5ce55e148ae28420844a02f153ff4bae9868fc06",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review-final.json"
+    },
+    {
+      "identity": "sha256:179ed54a5078d1d5242dfa937b2d65ec989cb063ca88fbe9aaa61a3b1f7fb5d5",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/evidence.json"
     }
   ],
   "target": "code"

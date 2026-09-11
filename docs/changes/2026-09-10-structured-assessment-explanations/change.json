@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-code-review",
+      "role": "review"
     },
-    "reason": "M4 review found malformed manifest discriminator crash. Regression reproduced and narrow correction committed in 92d5e279; corrected candidate proof and independent reassessment remain required. No approval or adoption is inferred from earlier passing checks.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M4 implementation and required validation complete as evidence; independent milestone Code Review is required before completion or the next milestone. User authorized the sequence through PR, not release/merge.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -87,7 +87,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review-final.json",
-      "reason": "Fresh independent Design assessment of the exact M4 documentation reconciliation and unchanged required behavior; existing plan allocation remains adequate without an implementation approval.",
+      "reason": "Independent current package reassessment includes the revised non-Git authority and verdict clauses and confirms unchanged conditional-basis policy and Delivery allocation.",
       "value": "current"
     },
     {
@@ -96,7 +96,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m4.json",
-      "reason": "Current milestone assessment of submitted M4 commit 0f7bc0ca; its explicit finding requires correction before reliance. Subsequent unreviewed selector edits are outside this assessment.",
+      "reason": "Independent reassessment of corrected exact M4 subjects, current Design reference and final candidate proof; bounded selector defect resolved.",
       "value": "current"
     }
   ],
@@ -244,7 +244,7 @@
         "RC-SR-19",
         "RC-SR-20"
       ],
-      "status": "in-progress"
+      "status": "ready"
     }
   ]
 }
