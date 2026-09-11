@@ -63,7 +63,7 @@ export function constructMutation(request,before){
  function support(path,kind,op){if(Object.hasOwn(before,path)&&before[path]===null)stop('broken-reference');let doc=docs.get(path);if(!doc){if(change.data.records.some(r=>r.path===path))stop('broken-reference');if(op.applicability===undefined)missing('applicability');if(kind==='decisions'&&op.values.body===undefined)missing('body');const base={schema_version:format.version,change_id:request.change_id};if(kind==='review')Object.assign(base,{id:op.target.id,findings:[]});if(kind==='evidence')base.checks=[];if(kind==='decisions')base.decisions=[];doc=newDoc(path,kind,base,['review','decisions','verify'].includes(kind)?op.values.body:undefined);append(change,['records'],{path,kind});effect(manifest,{path},['records'],true);}if(op.applicability!==undefined)applicable(path,op.applicability);return doc;}
  function entry(doc,collection,id,values,mode){const namespace=[...docs].find(([,d])=>d===doc)[0]+":"+collection+":"+id;const i=doc.data[collection].findIndex(x=>x.id===id);if((mode==='add'||mode==='record')&&[...assignments].some(k=>k.startsWith(namespace+':')))stop('overlapping-operation');if(mode==='add'&&i>=0)stop('target-exists');if(mode==='set'&&i<0)stop('target-not-found');if(mode==='add'||mode==='record'){if([...assignments].some(k=>k.startsWith(namespace+":")))stop('overlapping-operation');claim(namespace+":whole");}else if(assignments.has(namespace+":whole"))stop('overlapping-operation');for(const key of Object.keys(values))claim(namespace+":"+key);if(i<0)append(doc,[collection],{id,...values});else for(const [key,value]of Object.entries(values))set(doc,[collection,i,key],value);}
  for(const op of operations){try{
-  const startingEdits=edits,startingAppEdits=appEdits;const {target,values}=op;let path=manifest,kind=op.op.split('.')[0],doc=change;
+  const startingEdits=edits,startingAppEdits=appEdits;const {target,values}=op,effectFields=Object.keys(values);let path=manifest,kind=op.op.split('.')[0],doc=change;
   if(op.op==='change.create'){
    if(change)stop('target-exists');const blockers=values.blockers.map(b=>{const {id,...v}=b;return concern(v,id);});change=newDoc(manifest,'change',{schema_version:format.version,contract:format.contract,change_id:request.change_id,...values,blockers,records:[],applicability:[]});doc=change;
   }else{
@@ -85,12 +85,12 @@ export function constructMutation(request,before){
     else{
      const keys=Object.keys(fields);
      if(format.version===3&&op.op==='verify.record'&&!keys.includes('verification_basis'))keys.push('verification_basis');
-     for(const key of keys){claim(path+':'+key);if(Object.hasOwn(fields,key))set(doc,[key],fields[key]);else if(Object.hasOwn(doc.data,key)){doc.remove([key]);edits++;touched.add(doc);}}
+     for(const key of keys){claim(path+':'+key);if(Object.hasOwn(fields,key))set(doc,[key],fields[key]);else if(Object.hasOwn(doc.data,key)){doc.remove([key]);effectFields.push(key);edits++;touched.add(doc);}}
     }
     if(body!==undefined){claim(path+':body');if(Object.hasOwn(before,path)){const prior=doc.source;doc.body(body);if(doc.source!==prior)edits++;}else{doc.data.body=body;doc.newBody=body;}touched.add(doc);}
    }
   }
-  if(edits-startingEdits!==appEdits-startingAppEdits)changed.push({kind,target:op.op==='change.link'?(target.kind==='model'?{id:target.id}:{}):target});effect(path,op.op==='change.link'?(target.id?{id:target.id}:{}):target,Object.keys(values));operation_index++;
+  if(edits-startingEdits!==appEdits-startingAppEdits)changed.push({kind,target:op.op==='change.link'?(target.kind==='model'?{id:target.id}:{}):target});effect(path,op.op==='change.link'?(target.id?{id:target.id}:{}):target,effectFields);operation_index++;
  }catch(e){e.operation_index=operation_index;throw e;}}
  const writes=[];for(const [path,doc]of docs)if(touched.has(doc)){let content=doc.source;if(!Object.hasOwn(before,path)){content=indentedJSON(doc.data)+'\n';}writes.push({path,expected_identity:Object.hasOwn(before,path)?digest(before[path]):null,content});}
  return {request:{schema_version:2,contract:format.contract,change_id:request.change_id,expected_revision:request.expected_revision,reads:request.reads.map(r=>({path:r.path,expected_identity:r.identity})),writes},changed,effects};
