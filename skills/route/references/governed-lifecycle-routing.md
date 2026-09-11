@@ -1,16 +1,16 @@
 # Governed lifecycle routing
 
-Load when the parent establishes an explicitly selected governed change requiring routing. This procedure applies v2 storage and actor-owned coordination; it grants no automation authority.
+Load when the parent establishes an explicitly selected governed change requiring routing. This procedure applies contract-selected storage and actor-owned coordination; it grants no automation authority.
 
 ## Identity and basis
 
-Use `rigorloop workflow-context` only for factual discovery and explicit target resolution. It does not choose work, report eligibility or recover storage. Read the selected v2 root using scoped primary context and subject inspection. Missing or corrupt current records stop reliance; unrelated archival records are neither current candidates nor inputs to old validators. Explicit retired input stops without fallback.
+Use `rigorloop workflow-context` only for factual discovery and explicit target resolution. It does not choose work, report eligibility or recover storage. Read the selected v2/v3 root using scoped primary context and subject inspection. Missing or corrupt current records stop reliance; unrelated archival records are neither current candidates nor inputs to old validators. Explicit retired input stops without fallback.
 
 Read the current activity, work, exact engineering subjects, applicable reviews, evidence, findings and blockers needed for the decision. Expand omitted context when necessary. File existence and successful recording are not approval. Resolve missing, stale or contradictory required evidence before dependent continuation.
 
 ## Actor-owned updates
 
-Choose and record activity and work using targeted `activity set` and `work add/set`, with current contract, expected revision and exact reads. Declare affected applicability explicitly; do not edit another actor's substantive judgment or retarget an approval. Plan may initialize absent work once from its approved Delivery package; route owns later work decisions. Preserve stage-owned evidence and immutable concern origins.
+Choose and record activity and work using targeted `activity set` and `work add/set`, with current contract, expected revision and exact reads. Declare affected applicability explicitly; do not edit another actor's substantive judgment or retarget an approval. Plan may initialize absent work once from its approved Delivery package; route owns later work decisions. Preserve stage-owned evidence, finding IDs, and the immutable origins required for v2 findings and change-level blockers.
 
 Corrections return to the owning author or implementation slice. Necessary owner decisions stay visible as blockers. Revised engineering subjects require the appropriate independent reassessment. Storage bookkeeping alone does not invalidate engineering assessment, but relevant new evidence must be considered before reliance. Follow the packaged review-reliance policy.
 

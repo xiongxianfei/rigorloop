@@ -17,7 +17,7 @@ Use:
 
 `not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-Use the selected v2 registry and targeted review/finding commands. Bind the complete assessment to exact subjects and supplied applicability. Preserve unresolved findings and immutable origin; do not retarget prior approval. Saving does not settle workflow, establish current reliance or grant permission. Historical records remain unchanged archives, without old runtime handlers.
+Use the selected v2/v3 registry and targeted review/finding commands. Bind the complete assessment to exact subjects and supplied applicability. Preserve finding IDs and unresolved concerns; v3 finding current fields may be corrected explicitly, while v2 findings and all blockers retain immutable origin; do not retarget prior approval. Saving does not settle workflow, establish current reliance or grant permission. Historical records remain unchanged archives, without old runtime handlers.
 
 Material findings must include:
 

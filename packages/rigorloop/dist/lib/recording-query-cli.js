@@ -1,4 +1,4 @@
-// Prospective primary read adapters. Main dispatch/adoption is deliberately later.
+// Primary readers select the stored contract before projecting or rendering values.
 import {RECORDS_V3_SCHEMA} from "./record-format-v3.js";
 import {readSync} from "node:fs";
 import {withRecordSnapshot} from "./record-store.js";

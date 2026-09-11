@@ -1,3 +1,4 @@
+import {executeRecordStore} from '../dist/lib/record-store.js';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync} from 'node:fs';
@@ -21,7 +22,7 @@ for(const contract of ['rigorloop-records-v2'])test(`TG-FINAL-01 public correcti
  function words(op){return Array.isArray(op)?['batch']:[...op.op.split('.'),...(op.target.id?[op.target.id]:[])];}
  function mutate(op){const r=call(words(op),request(op));assert.equal(r.status,'saved');assert.ok(Buffer.byteLength(encode(r))<65536);if(r.observation_summary)assert.equal(r.observation_summary.details_included,false);revision=r.revision;return r;}
  const initial={proposal:subject,models:[],activity:{stage:'verify',status:'completed',owner:verifier,reason:'An earlier explicit completion.'},plan:null,work:[{id:'work-1',status:'completed',owner:implementer,requirement_refs:['CLI-SR-07']}],blockers:[]};
- mutate({op:'change.create',target:{},values:initial});
+ const historical={schema_version:2,contract,change_id:'example',...initial,records:[],applicability:[]};assert.equal(executeRecordStore({root,changeId:'example',operation:'record',request:{schema_version:2,contract,change_id:'example',expected_revision:null,reads:[],writes:[{path:mp,expected_identity:null,content:encode(historical)}]}}).status,'saved');
  const context=call(['context'],{schema_version:1,select:[{kind:'activity',where:{}},{kind:'work',where:{ids:['work-1']}}]});assert.equal(context.record_contract,contract);revision=context.revision;
  const inspected=call(['subject','inspect'],undefined,['--path','basis','--content','full']);assert.deepEqual(inspected.data.subjects,[subject]);
  const failed={op:'evidence.record',target:{id:'failed-check'},values:{actor:verifier,subjects:[subject],result:'failed',procedure:'Observe the interrupted correction fixture.',summary:'Required result failed.'},applicability:app(verifier)};
@@ -60,7 +61,7 @@ test('TG-FINAL-01 public correction receipt with a densely filled evidence recor
  for(let i=0;;i++){const check={id:`c${i}`,actor:implementer,subjects:[],result:'failed',procedure:'p',summary:'s'},delta=Buffer.byteLength(JSON.stringify(check))+(i?1:0);if(size+delta>1024*1024)break;evidence.checks.push(check);size+=delta;}
  assert.ok(size>1024*1024-200);
  function call(words,payload,extra=[]){const r=spawnSync(process.execPath,[cli,...words,'--root',root,'--change','example','--format','json',...(payload?['--input','-']:[]),...extra],{input:payload?encode(payload):undefined,encoding:'utf8',maxBuffer:16*1024*1024});assert.equal(r.status,0,r.stdout+r.stderr);return{result:JSON.parse(r.stdout),bytes:Buffer.byteLength(r.stdout)};}
- call(['record-store','record'],{schema_version:2,contract:'rigorloop-records-v2',change_id:'example',expected_revision:null,reads:[],writes:[{path:mp,expected_identity:null,content:encode(change)},{path:ep,expected_identity:null,content:encode(evidence)}]});
+ assert.equal(executeRecordStore({root,changeId:'example',operation:'record',request:{schema_version:2,contract:'rigorloop-records-v2',change_id:'example',expected_revision:null,reads:[],writes:[{path:mp,expected_identity:null,content:encode(change)},{path:ep,expected_identity:null,content:encode(evidence)}]}}).status,'saved');
  const context=call(['context'],{schema_version:1,select:[{kind:'activity',where:{}}]}).result;
  const correction=call(['blocker','add','dense-defect'],{schema_version:1,interface:'targeted-recording-v1',contract:context.record_contract,change_id:'example',expected_revision:context.revision,reads:[],operation:{op:'blocker.add',target:{id:'dense-defect'},values:{reporter:verifier,owner:implementer,subjects:[],evidence:'Failed dense evidence needs correction.',required_outcome:'Reassess all failed checks.',state:'open',resolution:null,basis:{rationale:'Explicit correction decision.',supporting_judgment:null}}}});
  assert.equal(correction.result.status,'saved');assert.ok(correction.bytes<65536);assert.ok(correction.result.observation_summary.total>=evidence.checks.length);

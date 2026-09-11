@@ -28,7 +28,7 @@ The repository MUST optimize for reviewability, traceability, trustworthy automa
 
 ## Source of truth order
 
-For explicitly adopted RigorLoop Record Format work, the [Workflow](docs/design/workflow/workflow.md), [Record Format](docs/design/record-format/record-format.md) and [CLI](docs/design/cli/cli.md) models own decision meaning, stored representation and recording mechanics respectively. The coordinated local candidate uses primary targeted commands and explicit `rigorloop-records-v2` creation; installation does not activate a project or customer. `rigorloop-records-v2` is the only supported runtime stored format. Retired inputs are rejected without fallback; historical records retain unchanged bytes and meaning as archives, not operational compatibility. In this scoped profile, one living Design file per model replaces separate specification/architecture/ADR truth. Actors own decisions, applicability and correction; the CLI constructs and safely records explicit edits. Use scoped primary reads and subject inspection, not manual file reconstruction or eligibility gates. Independent review, current proof, success-only Verify, permissions and historical preservation remain mandatory. Release/customer activation requires its separately authorized coherent adoption; retired stored-format procedures below grant no current runtime authority.
+For explicitly adopted RigorLoop Record Format work, the [Workflow](docs/design/workflow/workflow.md), [Record Format](docs/design/record-format/record-format.md) and [CLI](docs/design/cli/cli.md) models own decision meaning, stored representation and recording mechanics respectively. The coordinated local candidate uses primary targeted commands and explicit `rigorloop-records-v3` creation; installation does not activate a project or customer. New stores use `rigorloop-records-v3`; existing `rigorloop-records-v2` stores retain read, write and recovery support without conversion. The structured-assessment adoption takes effect after reviewed coherent implementation and successful Verify of its owning change. Retired inputs are rejected without fallback; historical records retain unchanged bytes and meaning as archives, not operational compatibility. In this scoped profile, one living Design file per model replaces separate specification/architecture/ADR truth. Actors own decisions, applicability and correction; the CLI constructs and safely records explicit edits. Use scoped primary reads and subject inspection, not manual file reconstruction or eligibility gates. Independent review, current proof, success-only Verify, permissions and historical preservation remain mandatory. Release/customer activation requires its separately authorized coherent adoption; retired stored-format procedures below grant no current runtime authority.
 
 External runtime instructions still outrank repository artifacts. Within the repository, the source-of-truth order is:
 
@@ -110,7 +110,7 @@ Plans MUST use the packaged scaffold in `skills/plan/assets/plan-skeleton.md`. T
 
 For planned initiatives, `docs/plan.md` MUST remain a navigation index and concrete files under `docs/plans/` MUST remain the stable plan bodies that carry execution intent.
 
-For current workflow-managed changes, the v2 `docs/changes/<change-id>/change.json` registry and its registered records MUST own explicit activity, work, reviews, findings, blockers, evidence and closeout assessments. Plans and other governed artifacts MUST keep stable intent and MUST NOT carry mutable workflow status or execution progress.
+For current workflow-managed changes, the contract-selected `docs/changes/<change-id>/change.json` registry and its registered records MUST own explicit activity, work, reviews, findings, blockers, evidence and closeout assessments. Plans and other governed artifacts MUST keep stable intent and MUST NOT carry mutable workflow status or execution progress.
 
 Authoring skills MUST write only their own governed content and authorized authoring evidence. Plan may initialize absent work exactly once from its current approved Delivery Review package; it MUST NOT initialize an unreviewed draft or replace existing work. Independent reviewers own their assessment evidence and findings. Route owns explicit activity and later work decisions, using targeted recording with current revision and exact reads; no save derives settlement or progression. Downstream skills treat upstream content and other actors' judgments as read-only and return corrections to the owner.
 
@@ -120,7 +120,7 @@ For lifecycle-managed artifacts, `Next artifacts` preserves planned next steps w
 
 Change-local artifacts under `docs/changes/<change-id>/` SHOULD stay concise and MUST link back to approved top-level artifacts instead of becoming a second long-form source of truth.
 
-For non-trivial governed changes, use the selected v2 manifest and registered evidence. Successful Verify owns the durable final explanation. Preserve completed historical records and recorded identities unchanged; no migration, temporary continuation or permanent legacy reader is selected.
+For non-trivial governed changes, use the selected manifest and registered evidence. Successful Verify owns the durable final explanation. Preserve completed historical records and recorded identities unchanged; no migration, temporary continuation or permanent legacy reader is selected.
 
 Architecture-affecting changes MUST update the owning Design, or the relevant unmigrated architecture document or ADR under its retained contract, in the same change.
 
@@ -162,7 +162,7 @@ Synchronization happens within the PR that performs the lifecycle transition, be
 
 For lifecycle-managed proposals, specs, test specs, architecture documents, and ADRs, `verify` MUST block on stale or inconsistent artifacts that are touched, referenced, generated, or authoritative for the changed area, and it MUST report unrelated stale baseline artifacts as warnings instead of blockers.
 
-Before draft PR text exists, `verify` MUST use pre-PR handoff surfaces such as `docs/changes/<change-id>/change.json`, the current contract's durable rationale surface, stable plan intent, and other touched or referenced authoritative artifacts. Only successful final Verify produces the final explanation in its v2 record. Final PR text MUST NOT introduce new authoritative artifact references without rerunning `verify`.
+Before draft PR text exists, `verify` MUST use pre-PR handoff surfaces such as `docs/changes/<change-id>/change.json`, the current contract's durable rationale surface, stable plan intent, and other touched or referenced authoritative artifacts. Only successful final Verify produces the final explanation in its selected-contract record. Final PR text MUST NOT introduce new authoritative artifact references without rerunning `verify`.
 
 Until repository-specific release checks replace the current conservative template behavior, contributors MUST treat `scripts/release-verify.sh` and `release.yml` as non-authoritative for broader completion claims.
 
@@ -170,7 +170,7 @@ Until repository-specific release checks replace the current conservative templa
 
 The following consolidated package-gate rules are current.
 
-Only `rigorloop-records-v2` is supported at runtime. The named legacy stored formats and their exclusive creators, readers, validators, writers, progression handlers and recovery are retired. Current discovery excludes unrelated archives and fails honestly on malformed current stores; explicit retired input is rejected safely without mutation or fallback. Independent transport and document-validation versions remain separate.
+Runtime supports existing `rigorloop-records-v2` stores and new `rigorloop-records-v3` stores. New v2 creation rejects; existing v2 continuation is not retired. The named legacy stored formats and their exclusive creators, readers, validators, writers, progression handlers and recovery are retired. Current discovery excludes unrelated archives and fails honestly on malformed current stores; explicit retired input is rejected safely without mutation or fallback. Independent transport and document-validation versions remain separate.
 
 Use scoped primary reads, subject inspection and targeted operations. Record explicit judgments and applicability without retargeting old approval or granting permission through a save. The CLI provides construction, validation and recoverable persistence; actors assess authority and adequacy. Correctness of recording and closeout does not universally depend on Git, PRs or network access.
 
@@ -204,7 +204,7 @@ For registered historical contracts, clean required formal reviews with no mater
 
 Under registered historical contracts, `review-resolution.md` MUST use top-level `Closeout status: open` or `Closeout status: closed`. `Closeout status: closed` requires final dispositions, no `review-log.md` open findings, plus the disposition-specific action, rationale, follow-up, and validation evidence records required by the governing spec.
 
-For current v2 work, a formal review MUST record its exact assessment, findings and applicability through targeted recording; storage does not settle or route the work. A review MUST NOT edit the artifact it reviewed, another artifact's state, or workflow routing.
+For current supported-contract work, a formal review MUST record its exact assessment, findings and applicability through targeted recording; storage does not settle or route the work. A review MUST NOT edit the artifact it reviewed, another artifact's state, or workflow routing.
 
 ## Documentation rules
 

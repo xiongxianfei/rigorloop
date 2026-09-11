@@ -1009,7 +1009,7 @@ def _apply_path_selection(
         reserved = relative in {"change.json", "evidence.json", "material-decisions.json", "verify-report.json"} or bool(re.fullmatch(r"reviews/[^/]+\.json", relative))
         if manifest.exists() or manifest.is_symlink() or reserved:
             _add_check(selected, "change_metadata.validate",
-                       "Validate the current v2 set, including malformed manifests and reserved residue.", path=manifest_path)
+                       "Validate the selected v2/v3 set, including malformed manifests and reserved residue.", path=manifest_path)
             _add_check(selected, "change_metadata.regression", "Retain current record validation boundary proof.")
             affected_roots.add(change_root)
             try:
@@ -1017,7 +1017,7 @@ def _apply_path_selection(
             except (OSError, ValueError):
                 metadata = None
             if isinstance(metadata, dict):
-                if metadata.get("contract") != "rigorloop-records-v2":
+                if (metadata.get("schema_version"), metadata.get("contract")) not in {(2, "rigorloop-records-v2"), (3, "rigorloop-records-v3")}:
                     blocking_results.append({"code": "unsupported-change-contract", "path": manifest_path,
                                              "message": "Unsupported current record contract; no legacy fallback."})
                 elif path != manifest_path:
@@ -1730,7 +1730,12 @@ def _path_category(path: str) -> str | None:
     if (path.startswith("docs/design/")
             or path.startswith("tests/fixtures/explicit-recording-v1/")
             or path.startswith("tests/fixtures/rigorloop-records-v2/")
-            or path in {"schemas/rigorloop-records-v2.schema.json", "templates/rigorloop-records-v2/records.json",
+            or path.startswith("tests/fixtures/rigorloop-records-v3/")
+            or path in {"schemas/rigorloop-records-v3.schema.json", "templates/rigorloop-records-v3/records.json",
+                        "packages/rigorloop/dist/schemas/rigorloop-records-v3.schema.json",
+                        "packages/rigorloop/dist/templates/rigorloop-records-v3/records.json",
+                        "packages/rigorloop/dist/lib/record-format-v3.js", "packages/rigorloop/dist/lib/record-format-core.js",
+                        "packages/rigorloop/test/helpers/v3-fixture.mjs", "packages/rigorloop/test/helpers/historical-v2.mjs", "packages/rigorloop/test/helpers/historical-v2-launcher.mjs", "schemas/rigorloop-records-v2.schema.json", "templates/rigorloop-records-v2/records.json",
                         "packages/rigorloop/dist/schemas/rigorloop-records-v2.schema.json",
                         "packages/rigorloop/dist/templates/rigorloop-records-v2/records.json",
                         "packages/rigorloop/dist/lib/record-format-v2.js"}

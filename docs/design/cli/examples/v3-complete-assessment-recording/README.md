@@ -13,4 +13,4 @@ For Verify creation, start independently at synthetic revision `b` with the comp
 
 Existing-record replacements use the same complete assessment operations. Review replacement preserves existing findings. Full Verify replacement omitting verification_basis removes an earlier object, unlike verify.set, which cannot alter it. Those rules belong to the Design; these creation examples do not simulate replacement execution.
 
-All people, judgments, check results and identities are fictional. V3 validators and commands are not yet implemented; these examples support Design review rather than claim successful runtime execution or lifecycle completion.
+All people, judgments, check results and identities are fictional. These examples specify contract behavior rather than claim successful runtime execution or lifecycle completion.

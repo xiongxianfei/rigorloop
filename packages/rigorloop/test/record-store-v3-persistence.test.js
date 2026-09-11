@@ -20,9 +20,9 @@ test('TG-02 v3 internal create and advanced inspect retain independent result ve
  const bad=structuredClone(r);bad.snapshot.records[0].content+=' ';assert.throws(()=>validateAdvancedResult(bad));
  const fresh=update(root);assert.equal(run(root,'record',{request:fresh}).status,'unchanged');assert.equal(run(root,'record',{request:req}).status,'conflict');
 });
-test('TG-02 public v3 creation stays unavailable before coordinated consumer adoption',t=>{
+test('TG-02 coordinated public v3 creation retains advanced result schema1',t=>{
  const root=setup(t),r=executeRecordStoreCli(['record','--root',root,'--change',changeId,'--input','-','--format','json'],{input:encode(creation())});
- assert.equal(r.result.errors[0].code,'unsupported-contract');assert.equal(existsSync(join(root,manifest)),false);
+ assert.equal(r.result.status,'saved');assert.equal(r.result.schema_version,1);assert.equal(existsSync(join(root,manifest)),true);
 });
 for(const phase of ['after-preparation','after-replace:0','before-commit','after-commit'])for(const action of ['restore','complete'])test(`TG-02 v3 ${phase} interruption ${action} preserves prepared bytes`,t=>{
  const root=setup(t),before=create(root),req=update(root);edit(req,'reviews/final-code-review.json',r=>r.limitations=['Changed limitation']);edit(req,'verify-report.json',r=>r.summary='Changed final explanation');

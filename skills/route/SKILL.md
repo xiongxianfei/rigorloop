@@ -31,9 +31,9 @@ When project authority explicitly adopts Review and Closeout policy, use the pac
 
 ## Explicit recording
 
-Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. `rigorloop-records-v2` is the only supported runtime record format. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
+Use this profile when the project has adopted the RigorLoop Record Format and explicitly selected the change. Read the project's governing documents. The Workflow model owns coordination, Review and Closeout owns assessment policy, Record Format owns stored shapes, and CLI owns construction and persistence. New stores use `rigorloop-records-v3`; existing `rigorloop-records-v2` stores retain reads, writes and recovery. Select the actual record contract; never mix versions within a store. Retired or unknown stored formats are rejected without fallback. Do not migrate or reinterpret historical records; preserve their bytes and meaning as archival evidence. The project need not contain RigorLoop's internal design repository.
 
-Use the v2 recording procedures in this skill and its conditional resources. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
+Use the contract-selected recording procedures in this skill and its conditional resources. Dispatch primary results by schema_version (2 or 3), then status and operation; a schema-3 error alone does not establish v3 storage. Read scope and omissions before relying on selected content. Retain substantive stage duties, permissions, independent assessment and proof obligations. Historical records grant no current execution authority.
 
 Use `rigorloop context --root PATH --change ID --input - --format json` with explicitly selected kinds/filters and full detail. Expand the selection when needed: omitted content is not evidence of absence. Copy `record_contract` and `revision` into the targeted request's `contract` and `expected_revision`. Use `rigorloop subject inspect --root PATH --path FILE --content full --format json` for the exact engineering basis and mechanical identities; supply relied-on subjects as `reads` with their expected identities.
 
@@ -55,7 +55,7 @@ proposal -> proposal-review -> design -> design-review
 
 Repeat implementation and independent review for each milestone. Route required corrections to their owning author; reconcile Design before planning. Trigger CI maintenance when needed before the final reviewed subject is established. After all implementation milestones and required corrections are complete, require fresh independent whole-change Code Review of the complete final diff and cross-milestone interactions before successful final Verify. Prior milestone judgments inform but do not replace that review.
 
-Use only the selected v2 record store for runtime recording. Preserve old records as archival evidence without execution, migration or fallback. Route owns explicit activity and work decisions; CLI observations do not select a stage or grant readiness. Successful Verify owns the final explanation and closeout assessment. PR, release and publication retain separate authority.
+Use only the selected record store for runtime recording. Preserve old records as archival evidence without execution, migration or fallback. Route owns explicit activity and work decisions; CLI observations do not select a stage or grant readiness. Successful Verify owns the final explanation and closeout assessment. PR, release and publication retain separate authority.
 
 ## When to use
 
@@ -83,7 +83,7 @@ Read only what the routing decision needs:
 - stable upstream artifacts and the active plan when relevant;
 - git, validation, CI, or external evidence only when the route depends on it.
 
-For governed routing, use factual `rigorloop workflow-context` discovery when the exact change is not selected. Resolve ambiguity explicitly. Then use primary `context` and `show` for the selected v2 registry, activity, work, reviews, findings, evidence and blockers. Inspect exact engineering subjects as needed; do not infer state from prose, filenames or prior chat. Refresh the revision and relied-on reads after mutations or observed drift. Context reports observations, not permitted operations or an automation projection.
+For governed routing, use factual `rigorloop workflow-context` discovery when the exact change is not selected. Resolve ambiguity explicitly. Then use primary `context` and `show` for the selected registry, activity, work, reviews, findings, evidence and blockers. Inspect exact engineering subjects as needed; do not infer state from prose, filenames or prior chat. Refresh the revision and relied-on reads after mutations or observed drift. Context reports observations, not permitted operations or an automation projection.
 
 Unknown artifact types and unknown lifecycle stages are blockers. In portable mode, an explicit safe target or published portable default may be used, but it grants no governed lifecycle state or project-local customization claim. If neither is available, request an explicit path rather than guessing.
 
@@ -199,7 +199,7 @@ Stop and surface the smallest concrete blocker when:
 
 Do not treat a missing resource as permission to use remembered procedure. Do not repair another stage's evidence while routing.
 
-Use targeted proof first. Run broad smoke only when an authoritative `broad_smoke.sources` trigger applies. Record required manual proof as registered v2 evidence with its subjects and applicability before final Verify; successful Verify references that evidence.
+Use targeted proof first. Run broad smoke only when an authoritative `broad_smoke.sources` trigger applies. Record required manual proof as registered evidence with its subjects and applicability before final Verify; successful Verify references that evidence.
 
 ## Handoff
 
@@ -235,7 +235,7 @@ Treat `docs/changes/<change-id>/plan.md` as a non-canonical historical or reject
 
 ## Default artifact paths
 
-Use project conventions and the selected v2 registry. These paths are orientation defaults, not inferred registration or authority:
+Use project conventions and the selected registry. These paths are orientation defaults, not inferred registration or authority:
 
 ```text
 AGENTS.md
