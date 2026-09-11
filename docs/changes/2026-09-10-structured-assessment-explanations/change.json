@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-verify",
+      "id": "codex-final-verify",
       "role": "verify"
     },
-    "reason": "Fresh independent whole-change Code Review approved the exact final engineering subjects and all required corrections. All milestones are complete; distinct final Verify must assess the full evidence chain and Git/PR basis.",
+    "reason": "Distinct successful final Verify completed this repository's structured-assessment adoption and local Git handoff assessment. All milestones and corrections are complete. The user's authorized PR submission is a separate external handoff, not another stored lifecycle stage; no merge, release, publication or customer adoption is claimed.",
     "stage": "verify",
-    "status": "ready"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -107,6 +107,15 @@
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-final.json",
       "reason": "Fresh independent whole-change Code Review of all final engineering subjects, current refined direction and Design/Delivery basis, integrated interactions and bounded independent proof. Separate final Verify remains required.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-final-verify",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/verify-report.json",
+      "reason": "Distinct successful final Verify of exact reviewed engineering, complete planned proof/current applicability and normalized local Git handoff basis; no hosted, merge or publication claim.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -201,6 +210,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-final.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/verify-report.json"
     }
   ],
   "schema_version": 2,
