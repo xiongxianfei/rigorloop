@@ -107,7 +107,10 @@ class Store {
     if(revision(before)!==request.expected_revision) stop("identity-conflict");
     const format=requestFormat(request);
     if(Object.keys(before).length && format!==this.format)stop("unsupported-contract");
-    if(!Object.keys(before).length)this.selectFormat(format);
+    if(!Object.keys(before).length){
+      if(this.creationContract&&format.contract!==this.creationContract)stop("unsupported-contract");
+      this.selectFormat(format);
+    }
     if(request.expected_revision===null) format.creation(request,!!this.fs.inspect(this.directory,true).info);
     const candidate={...before};
     for(const write of request.writes) {
@@ -287,12 +290,13 @@ class Store {
   }
 }
 
-export function executeRecordStore({root,changeId,operation,request,transaction,expectedRecovery,action},options={}) {
+export function executeRecordStore({root,changeId,operation,request,transaction,expectedRecovery,action,creationContract},options={}) {
   const result=emptyRecordResult(operation,changeId); let store;
   try {
     if(!["inspect","check","record","recover"].includes(operation))stop("invalid-input");
     if(request)validateAdvancedRequest(request);
     store=new Store(root,changeId,options);
+    store.creationContract=creationContract;
     let set;
     if(operation==="inspect") {
       const snapshot=store.snapshot(); set=snapshot.set; result.observations=snapshot.observations;
@@ -331,6 +335,7 @@ export function withRecordSnapshot(root,changeId,inspect,options={}) {
 // Preview uses the coherent reader and never creates exclusion state.
 export function executeTargetedStore({root,changeId,request,preview,construct,prepare},options={}) {
  const store=new Store(root,changeId,options);
+ store.creationContract="rigorloop-records-v3";
  try {
   const before=store.snapshot(set=>{for(const [path,source] of Object.entries(set))if(source!==null)store.format.parse(store.format.pathKind(changeId,path),source);});
   if(Object.keys(before.set).length)store.resultVersion=store.format.version===3?3:2;

@@ -44,6 +44,9 @@ test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rerevie
     for(const [path,content] of Object.entries(contents))assert.equal(readFileSync(join(root,path),"utf8"),content);
     return invoke("inspect");
   }
+  // An existing v2 store predates the public v3 creation policy.
+  mkdirSync(join(root,"docs/changes/example"),{recursive:true});
+  writeFileSync(join(root,manifest),encode(change));
   save();
   const review={...fixture.review,reviewer,contributors:[author],subjects:[subject(wf),subject(cli)],judgment:"approved",findings:[]};
   const evidence={...fixture.evidence,checks:[{...fixture.evidence.checks[0],subjects:[subject(wf),subject(cli)],result:"passed"}]};

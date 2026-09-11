@@ -1,0 +1,90 @@
+{
+  "body": "Independent M3 Code Review assesses 752d7d36..ab6225a4 against the approved M3 allocation, RF/CLI Design and current upstream review chain. The parent authored the changed implementation and tests; this reviewer authored neither. The inspected source covers selected reads, contract-specific transport validation, derived rendering and factual discovery. M4 creation and canonical-consumer adoption remain unimplemented and are not inferred from these reads.\n\nRequirement fidelity: only Review/Verify show admit the closed field-selection flag; unknown, empty, repeated, whitespace, wrong-kind and indexed selections reject. Default show retains the complete record. Explicit selection includes exactly requested present fields, normalized selection and admitted omissions, coherent containing identity/revision/contract and assessment applicability. Optional Verify basis absence is distinct from omission without synthesizing null. Context retains its deliberate Review-findings omission and summary boundaries and does not acquire arbitrary fields/absent_fields extensions. Nullable upstream links remain valid.\n\nV3 Finding items have no origin_available or fictitious origin omission; full fields match the eight-member stored object and summary omits exactly evidence/resolution. V2 findings and v2/v3 blockers retain their origin-bearing metadata and omissions. Result validation checks the closed item/scope shape as well as agreement among selected, actual, omitted and absent fields. The structural schema comparison changed only result among existing definitions and added six named v3 definitions, preserving the existing request/version domains.\n\nRendering derives meaningful headings and ordered list presentation from the decoded selection, retains literal backslash sequences and multiline content, labels explicit selection and empty limitations, and keeps scope/identity/absence visible. It does not mutate source bytes or create a second report. Exact JSON/text output-limit tests detect truncation boundaries. Read failures select response version only after a validated coherent snapshot, and discovery retains schema 2 while admitting validated v3 candidates. Current finding subjects and retained blocker-origin subjects participate in observation freshness; no nonexistent finding origin is traversed.\n\nIndependent executions: node --test packages/rigorloop/test/record-store-v3-reads.test.js passed all 10 focused cases; node scripts/build-record-store-schema.mjs --check passed. A Node stdin harness spawned the actual packages/rigorloop/dist/bin/rigorloop.js for three Review/Verify projected JSON/text reads and checked exit status, coherent revision, schema version, selected fields, absent basis and readable headings; all passed. The m3-implementation record separately reports 245 broad record-store regressions plus metadata/whitespace checks. Its exact source/test/schema identities match the inspected candidate. Broad author execution is not relabeled as a reviewer run.\n\nTest quality is adequate for the allocated boundary: tests compare complete and selected fields to supplied stored values, challenge dishonest projections and unknown fields, exercise both supported stored versions, preserve no-read-side-effects, check exact byte limits and observe changed subject identities without changing store revision. Executable approved examples cover the intended public envelope shapes. There is no removed regression protection or claimed semantic approval from a complete retrieval flag.\n\nCorrectness, contract fidelity, M1/M2 interaction, compatibility, rendering, discovery, test maintenance and schema parity are adequately assessed for M3 with no material finding or required owner decision. This is a non-final milestone judgment supporting route-owned M3 closeout and M4 continuation; it changes no work/routing state. M4 consumer/adoption proof, its review, distinct fresh whole-change Code Review and successful Verify remain required. No runtime adoption, final verification, hosted CI or PR readiness is claimed.",
+  "change_id": "2026-09-10-structured-assessment-explanations",
+  "contributors": [
+    {
+      "id": "codex-implement",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m3",
+  "independence_basis": "Parent /root authored M3 implementation and tests. This separately delegated reviewer authored neither, inspected the final exact diff and governing basis, and ran focused plus real-binary checks without editing engineering subjects.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "codex-code-review",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:0cc53cc8b5ec9a9fd0f013cdc0873e997b9828673619943111bd5b4b000378c6",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/evidence.json"
+    },
+    {
+      "identity": "sha256:76071445561b7b1cebec2d20e1ccf7184c652f31685443ddc7991354e0a5e2ed",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m2.json"
+    },
+    {
+      "identity": "sha256:739b017ec5f054ec476591b75a5f51f2056c62e767ea3fc577d3b2d051b9493a",
+      "path": "packages/rigorloop/dist/lib/recording-contract.js"
+    },
+    {
+      "identity": "sha256:0883ff6baae548d638eb0cf134d8aaa3c42f96581047d73a0c73e43f386fdd12",
+      "path": "packages/rigorloop/dist/lib/recording-query-cli.js"
+    },
+    {
+      "identity": "sha256:6eaebbb699b32ef7256a5fee51da5aa6aebe472bcf6a318664b3e79acf09a238",
+      "path": "packages/rigorloop/dist/lib/recording-result.js"
+    },
+    {
+      "identity": "sha256:068ced8b9c9548afa42f782aeab8e47cb29f2af230f69efc82218cdeb2169bdb",
+      "path": "packages/rigorloop/dist/lib/workflow-context.js"
+    },
+    {
+      "identity": "sha256:42b4e958b88fa8cc30f3fc4ecbe344ff27c559f0d627a0473c821ec9fb92a56f",
+      "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json"
+    },
+    {
+      "identity": "sha256:1da29208d5629c230c7314dc6cf321f50a3fa73d05d1b4fb18768908045b2203",
+      "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+    },
+    {
+      "identity": "sha256:42b4e958b88fa8cc30f3fc4ecbe344ff27c559f0d627a0473c821ec9fb92a56f",
+      "path": "schemas/targeted-recording-v1.schema.json"
+    },
+    {
+      "identity": "sha256:59890e3cfbc467fad6fd276893432a09828a22aa3c3deaaa576147744355fcb7",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:b00829fe553f5bd076d3e39b7e8636964f36f1fb43c74ef1d3b31deb18513a4c",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:25b98806480b7711f6dbfa379f9eb8cb3e643dab695e96016b5a5b50443776c1",
+      "path": "docs/plans/2026-09-11-structured-assessment-explanations.md"
+    },
+    {
+      "identity": "sha256:286548c736c835e181de744f271dec2e76dd184cb03fc53ee06e5e69f634a338",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:e235d6571fcdcdf17b51ec2d86d644ccee24b1dbb07b160c6d23bb9319591fa7",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:f3271f203831a1ce34adc56fc78c8068186aadd5691cae28b68a14eb8d6670d7",
+      "path": "packages/rigorloop/dist/bin/rigorloop.js"
+    },
+    {
+      "identity": "sha256:8e8da58ee13619ab84ce0161d13db193a4493f51ca125614813343322addeee9",
+      "path": "packages/rigorloop/dist/lib/recording-cli.js"
+    },
+    {
+      "identity": "sha256:7989f474f00e5894985b529d8c848b09cff4c328c85ff53236f8103331bb6c3d",
+      "path": "packages/rigorloop/dist/lib/recording-observations.js"
+    }
+  ],
+  "target": "code"
+}

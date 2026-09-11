@@ -1,6 +1,6 @@
 # Design Review recording
 
-Load for a durable or formal review. The parent skill and packaged assessment guidance own substantive judgment, independence and findings. This reference applies v2 recording and preserves isolated advisory use.
+Load for a durable or formal review. The parent skill and packaged assessment guidance own substantive judgment, independence and findings. This reference applies contract-selected recording and preserves isolated advisory use.
 
 ## Exact assessment basis
 
@@ -8,7 +8,7 @@ Read the complete Design package, accepted proposal constraints and applicable d
 
 ## Record the judgment
 
-Use `review record` with the complete assessment, reviewer attribution, exact subject basis, one overall judgment, rationale and explicit applicability. Use `finding add` or `finding set` for supported findings and owned dispositions. Preserve unresolved findings and their immutable origin. Supply the current contract, expected revision and exact reads. Use a targeted batch only for related explicit updates; no complete-file reconstruction or legacy settlement command is required.
+Use `review record` with the complete assessment, reviewer attribution, exact subject basis, one overall judgment, rationale and explicit applicability. Use `finding add` or `finding set` for supported findings and owned dispositions. Preserve finding IDs and unresolved concerns. V3 findings have editable current fields and no origin; v2 findings and all change-level blockers retain immutable origin. Supply the current contract, expected revision and exact reads. Use a targeted batch only for related explicit updates; no complete-file reconstruction or legacy settlement command is required.
 
 Keep substantive judgment, recording outcome, applicability and continuation distinct. A successful save grants no approval or permission. Blocked and inconclusive assessments retain supported findings and remain recordable. Conflict or changed subjects require rereading and reassessment before reliance; never retarget an old approval to a revised subject.
 

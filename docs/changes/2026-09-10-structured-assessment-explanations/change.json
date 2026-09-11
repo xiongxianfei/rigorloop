@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-code-review",
-      "role": "review"
+      "id": "codex-implement",
+      "role": "implement"
     },
-    "reason": "M3 implementation and required validation complete as evidence; independent milestone Code Review is required before completion or the next milestone. User authorized the sequence through PR, not release/merge.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "M3 independently approved with required proof; execute approved M4 next under user authorization through PR. Final whole-change review and distinct Verify remain required.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -71,6 +71,24 @@
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m2.json",
       "reason": "Independent final M2 reassessment through 752d7d36 with the detailed optional-basis removal correction and focused regression assessed.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m3.json",
+      "reason": "Independent exact M3 assessment of ab6225a4 against approved M3 scope, with matching evidence and direct focused/public-read checks.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review-final.json",
+      "reason": "Fresh independent Design assessment of the exact M4 documentation reconciliation and unchanged required behavior; existing plan allocation remains adequate without an implementation approval.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -80,14 +98,14 @@
     {
       "id": "record-format",
       "subject": {
-        "identity": "sha256:b00829fe553f5bd076d3e39b7e8636964f36f1fb43c74ef1d3b31deb18513a4c",
+        "identity": "sha256:f2b881917b9e9ed13fe3bf4490713f1cf79504856e8973a243d807a230c6df3b",
         "path": "docs/design/record-format/record-format.md"
       }
     },
     {
       "id": "cli",
       "subject": {
-        "identity": "sha256:59890e3cfbc467fad6fd276893432a09828a22aa3c3deaaa576147744355fcb7",
+        "identity": "sha256:53894796bc4c8752814ea10cf132a64bd1811733df9834af29379f3a5d2811c9",
         "path": "docs/design/cli/cli.md"
       }
     },
@@ -149,6 +167,14 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m3.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review-final.json"
     }
   ],
   "schema_version": 2,
@@ -191,7 +217,7 @@
         "CLI-SR-26",
         "CLI-SR-27"
       ],
-      "status": "ready"
+      "status": "completed"
     },
     {
       "id": "m4",
@@ -205,7 +231,7 @@
         "RC-SR-19",
         "RC-SR-20"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }

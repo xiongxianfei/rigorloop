@@ -55,9 +55,8 @@ export function executeRecordStoreCli(args,options={}) {
   else {
     try {
       const request=["record","check"].includes(selected.operation)?parseAdvancedRequest(options.input??(options.readInput??input)()):undefined;
-      // Public new-store adoption is coordinated with consumers in M4.
-      if(request?.contract==="rigorloop-records-v3" && request.expected_revision===null)stop("unsupported-contract");
-      result=executeRecordStore({...selected,request},options);
+      // New stores use v3; existing v2 stores retain their complete compatibility path.
+      result=executeRecordStore({...selected,request,creationContract:"rigorloop-records-v3"},options);
     } catch(e) {
       const code=e.recordStoreCode??(e.code?"io-failure":String(e.message).includes("limit")?"limit-exceeded":"invalid-input");
       result.errors=[{code,path:null,message:`Record store: ${code}.`}];

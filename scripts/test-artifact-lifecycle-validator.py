@@ -614,11 +614,11 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
                    "expected_revision": None, "reads": [],
                    "writes": [{"path": path, "expected_identity": None, "content": content}
                               for path, content in contents.items()]}
-        result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
-                                 "record-store", "record", "--root", str(root), "--change", "example",
-                                 "--input", "-", "--format", "json"],
-                                input=json.dumps(request) + "\n", text=True, capture_output=True)
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        # Existing v2 fixture, independent of today's v3-only creation API.
+        for write in request["writes"]:
+            destination = root / write["path"]
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(write["content"])
         return root, contents
 
     def v2_recording_root(self):
@@ -626,11 +626,11 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         shutil.rmtree(root / "docs/changes/example")
         fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())
         request = fixture["request"]
-        result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
-                                 "record-store", "record", "--root", str(root), "--change", "example",
-                                 "--input", "-", "--format", "json"],
-                                input=json.dumps(request) + "\n", text=True, capture_output=True)
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        # Existing v2 fixture, independent of today's v3-only creation API.
+        for write in request["writes"]:
+            destination = root / write["path"]
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(write["content"])
         return root, {w["path"]: w["content"] for w in request["writes"]}
 
     def test_v2_recording_complete_set_and_unknown_value_fail_closed(self):

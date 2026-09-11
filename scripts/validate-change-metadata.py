@@ -352,7 +352,7 @@ def validate_measurement_evidence(data: Any) -> list[str]:
 def validate_file(path: Path) -> list[str]:
     if is_measurement_file(path):
         return validate_measurement_evidence(load_yaml(path))
-    # No legacy decoder: complete-set v2 validation owns format and path safety,
+    # No legacy decoder: complete-set contract-selected validation owns format and path safety,
     # including malformed JSON, duplicate keys, symlinks and an absent manifest.
     try:
         result = subprocess.run(
@@ -361,7 +361,7 @@ def validate_file(path: Path) -> list[str]:
         )
     except (OSError, subprocess.TimeoutExpired):
         return ["current record validator unavailable"]
-    return [] if result.returncode == 0 else ["invalid or unsupported record set; only rigorloop-records-v2 is supported"]
+    return [] if result.returncode == 0 else ["invalid or unsupported record set; supported contracts are rigorloop-records-v2 and rigorloop-records-v3"]
 
 
 def main(argv: list[str]) -> int:

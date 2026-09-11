@@ -21,7 +21,7 @@ Start with the owning `change.json`, then the active plan's `Current Handoff Sum
 
 Confirm:
 
-- `record_contract: rigorloop-records-v2` with current Delivery Review authority;
+- `record_contract` explicitly selecting `rigorloop-records-v2` or `rigorloop-records-v3`, with current Delivery Review authority;
 - plan artifact identity and current milestone match;
 - the milestone is the first nonterminal implementation milestone;
 - the contract-selected Delivery Review package and review ID are current;
@@ -47,7 +47,7 @@ Run its proof first, perform the smallest scope-complete change, and execute eve
 After implementation:
 
 - record decisions, surprises, changed and unaffected surfaces, commands, and results in milestone evidence;
-- validate the selected v2 record set and affected evidence;
+- validate the selected record set and affected evidence;
 - confirm the handoff still binds the same plan and milestone;
 - report implementation-complete only as evidence, never as a milestone state.
 

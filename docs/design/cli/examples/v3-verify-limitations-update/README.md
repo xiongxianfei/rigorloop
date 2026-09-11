@@ -14,4 +14,4 @@ Only limitations changes; the complete verification_basis object and all other s
 
 [show-absent-basis-response.json](show-absent-basis-response.json) is a separate read-only scenario using the [complete collection's local Verify](../../../record-format/examples/v3-complete-store/verify-report.json), not another step in the update sequence. It uses the same --fields selection. Verification_basis is absent from item.fields and explicitly named in scope.absent_fields, while unrequested members remain in omitted_fields. No null object, Git assessment or not-applicable judgment is invented. Both response scenarios use their own synthetic `c` revision/`d` file identity; those repeated values do not equate their underlying stores.
 
-V3 runtime/schema support is not implemented. JSON parsing and these linked examples illustrate intended behavior, not executed recording, proof or approval.
+These linked examples define expected contract behavior; they do not report an executed recording, proof or approval.

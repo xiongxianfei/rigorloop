@@ -182,7 +182,7 @@ Commands:
   workflow-context        Report read-only project or exact-change workflow facts.
   status/context/show     Inspect explicitly selected recorded information; storage only.
   add/set/record/batch     Record explicit actor decisions; use per-command --help for exact selectors.
-  record-store            Advanced inspection, replacement and recovery for v2 records; storage only.
+  record-store            Advanced inspection, replacement and recovery for v2/v3 records; storage only.
   logs                    Show the local log path or inspect one exact invocation.
 `;
 }
