@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-code-review",
-      "role": "review"
+      "id": "codex-verify",
+      "role": "verify"
     },
-    "reason": "All four implementation milestones and required corrections are independently approved. Fresh independent whole-change Code Review of the complete delivered diff and cross-milestone interactions is required before distinct Verify.",
-    "stage": "code-review",
+    "reason": "Fresh independent whole-change Code Review approved the exact final engineering subjects and all required corrections. All milestones are complete; distinct final Verify must assess the full evidence chain and Git/PR basis.",
+    "stage": "verify",
     "status": "ready"
   },
   "applicability": [
@@ -98,6 +98,15 @@
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m4.json",
       "reason": "Independent reassessment of corrected exact M4 subjects, current Design reference and final candidate proof; bounded selector defect resolved.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-final.json",
+      "reason": "Fresh independent whole-change Code Review of all final engineering subjects, current refined direction and Design/Delivery basis, integrated interactions and bounded independent proof. Separate final Verify remains required.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -188,6 +197,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m4.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-final.json"
     }
   ],
   "schema_version": 2,
