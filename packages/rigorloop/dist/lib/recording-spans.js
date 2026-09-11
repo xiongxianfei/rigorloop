@@ -15,7 +15,7 @@ function index(source) {
  const space=()=>{while(/\s/.test(source[i]??'')&&i<source.length)i++;};
  function value(){space();const start=i,children=new Map();
   if(source[i]==='{'||source[i]==='['){const array=source[i++]==='[',end=array?']':'}';space();let n=0;
-   while(source[i]!==end){let key=n++;if(!array){const k=value();key=JSON.parse(source.slice(k.start,k.end));space();if(source[i++]!==':')stop('invalid-input');}children.set(key,value());space();if(source[i]===end)break;if(source[i++]!==',')stop('invalid-input');}i++;
+   while(source[i]!==end){let key=n++,keyStart;if(!array){const k=value();keyStart=k.start;key=JSON.parse(source.slice(k.start,k.end));space();if(source[i++]!==':')stop('invalid-input');}children.set(key,{...value(),keyStart});space();if(source[i]===end)break;if(source[i++]!==',')stop('invalid-input');}i++;
   }else if(source[i]==='"'){i++;while(i<source.length){if(source[i]==='\\'){i+=2;continue;}if(source[i++]==='"')break;}}
   else{while(i<source.length&&!/[\s,}\]]/.test(source[i]))i++;}
   if(i<=start)stop('invalid-input');return {start,end:i,children};
@@ -31,8 +31,25 @@ export function appendValue(source,path,value){
  const trailing=source.slice(offset,node.end-1);
  return source.slice(0,offset)+(last?',':'')+'\n'+childIndent+tokenJSON(value,childIndent)+(trailing.includes('\n')?'':'\n'+indent)+source.slice(offset);
 }
+// Optional object members need token insertion/removal, not whole-document encoding.
+function member(source,path,value,remove=false){
+ let node=index(source);for(const key of path.slice(0,-1))node=node.children.get(key);
+ if(!node||source[node.start]!=='{')stop('invalid-input');
+ const key=path.at(-1),entries=[...node.children.entries()],position=entries.findIndex(([k])=>k===key);
+ if(remove){
+  if(position<0)return source;
+  const current=entries[position][1],next=entries[position+1]?.[1],prior=entries[position-1]?.[1];
+  const start=next?current.keyStart:prior?prior.end:current.keyStart,end=next?next.keyStart:current.end;
+  return source.slice(0,start)+source.slice(end);
+ }
+ if(position>=0)return replaceValue(source,path,value);
+ const last=entries.at(-1)?.[1],offset=last?last.end:node.start+1,indent=indentation(source,node.start)+'  ';
+ const token=JSON.stringify(key)+':'+(multiline(source)?' ':'')+(multiline(source)?tokenJSON(value,indent):canonicalJSON(value));
+ return source.slice(0,offset)+(last?',':'')+(multiline(source)?'\n'+indent:'')+token+source.slice(offset);
+}
 export class RecordDocument {
  constructor(format,kind,source,data){this.format=format;this.kind=kind;this.source=source;this.data=data;}
- edit(path,value,append=false){this.source=(append?appendValue:replaceValue)(this.source,path,value);let node=this.data;for(const key of path.slice(0,-1))node=node[key];if(append){const array=path.length?node[path.at(-1)]:this.data;array.push(value);}else node[path.at(-1)]=value;}
+ edit(path,value,append=false){let node=this.data;for(const key of path.slice(0,-1))node=node[key];this.source=append?appendValue(this.source,path,value):Object.hasOwn(node,path.at(-1))?replaceValue(this.source,path,value):member(this.source,path,value);if(append){const array=path.length?node[path.at(-1)]:this.data;array.push(value);}else node[path.at(-1)]=value;}
+ remove(path){this.source=member(this.source,path,undefined,true);let node=this.data;for(const key of path.slice(0,-1))node=node[key];delete node[path.at(-1)];}
  body(value){this.edit(['body'],value);}
 }

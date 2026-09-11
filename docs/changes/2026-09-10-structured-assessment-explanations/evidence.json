@@ -1436,6 +1436,54 @@
         }
       ],
       "summary": "M1 implements closed v3 schema/template, shared strict mechanics retaining v2 semantics, independent advanced request version2, v3 typed references and finding ID preservation with blocker origins retained, coherent store/snapshot dispatch and version3 recovery. Interrupted restore/complete, stale basis, unknown/mixed journal and external third-state safeguards have direct tests. Public new-store v3 creation is deliberately unavailable until M4. M2/M3 primary construction/query profiles and M4 consumers are unchanged pending their approved milestones. Code Review is requested; no milestone approval, runtime adoption, final Verify or PR readiness is claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "id": "m2-implementation",
+      "procedure": "Tests first: node --test packages/rigorloop/test/record-store-v3-mutations.test.js initially failed on missing v3 mutation support, then passed all 12 focused cases. node --test packages/rigorloop/test/record-store*.test.js packages/rigorloop/test/record-retirement.test.js passed 235/235. node scripts/build-record-store-schema.mjs --check passed. python scripts/validate-change-metadata.py docs/changes/2026-09-10-structured-assessment-explanations/change.json and git diff --check passed. This is local milestone evidence, not final Verify or hosted CI.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:1a490c0ab7c99590fa32c9193d969f4315b8f608f5ecafcc6570759250bcdb81",
+          "path": "packages/rigorloop/dist/lib/record-store.js"
+        },
+        {
+          "identity": "sha256:aaa321a0222018b6f23cd8cd5cd29e6ed3320c77a3c7cf7f19a26c2385268a95",
+          "path": "packages/rigorloop/dist/lib/recording-construction.js"
+        },
+        {
+          "identity": "sha256:d547bde3abf728cc7f2bf3e3661bdb327963dbffed19ead145e921dcb06ac821",
+          "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+        },
+        {
+          "identity": "sha256:ea6171ff8419b233078339f055574ab86e2d48e64b926c035d7632e93f4ce2c5",
+          "path": "packages/rigorloop/dist/lib/recording-result.js"
+        },
+        {
+          "identity": "sha256:6ca90505cea69352fdf306b9ea3079d660056b772bcd620807967985165a11d8",
+          "path": "packages/rigorloop/dist/lib/recording-spans.js"
+        },
+        {
+          "identity": "sha256:5f900cbfaa0776008bd28f9984786240e3b3e3667eee19e708df5d796a0d58b9",
+          "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json"
+        },
+        {
+          "identity": "sha256:12e35d2049ae71e1ef8f456286091a1c1de323a373b60fd703cff0147e4956f8",
+          "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+        },
+        {
+          "identity": "sha256:5f900cbfaa0776008bd28f9984786240e3b3e3667eee19e708df5d796a0d58b9",
+          "path": "schemas/targeted-recording-v1.schema.json"
+        },
+        {
+          "identity": "sha256:25b98806480b7711f6dbfa379f9eb8cb3e643dab695e96016b5a5b50443776c1",
+          "path": "docs/plans/2026-09-11-structured-assessment-explanations.md"
+        }
+      ],
+      "summary": "M2 implements contract-selected complete assessments, narrow whole-field explanation updates, explicit ID-only v3 finding corrections, optional Verify basis insertion/removal, and new-command schema-3 early errors. Storage-only outcomes retain explicit applicability and independent assessment boundaries. M3 reads and M4 coordinated public creation remain pending."
     }
   ],
   "schema_version": 2

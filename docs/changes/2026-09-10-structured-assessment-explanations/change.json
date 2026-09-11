@@ -4,7 +4,7 @@
       "id": "codex-code-review",
       "role": "review"
     },
-    "reason": "M1 implementation and required validation complete as evidence; independent milestone Code Review is required before completion or the next milestone. User authorized the sequence through PR, not release/merge.",
+    "reason": "M2 implementation and required validation complete as evidence; independent milestone Code Review is required before completion or the next milestone. User authorized the sequence through PR, not release/merge.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -52,6 +52,15 @@
       },
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/delivery-review.json",
       "reason": "Independent complete Delivery assessment of the exact registered primary plan against current approved Design and inspected implementation/validation boundaries.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m1.json",
+      "reason": "Independent M1 code review of exact candidate against approved Design/Delivery and matching evidence, with focused execution and schema/template validation.",
       "value": "current"
     }
   ],
@@ -123,6 +132,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m1.json"
     }
   ],
   "schema_version": 2,
@@ -139,7 +152,7 @@
         "RF-SR-12",
         "RF-SR-13"
       ],
-      "status": "ready"
+      "status": "completed"
     },
     {
       "id": "m2",
@@ -152,7 +165,7 @@
         "CLI-SR-26",
         "CLI-SR-27"
       ],
-      "status": "pending"
+      "status": "ready"
     },
     {
       "id": "m3",

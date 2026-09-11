@@ -3332,6 +3332,286 @@
             "operation"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 1
+            },
+            "interface": {
+              "const": "targeted-recording-v1"
+            },
+            "contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "expected_revision": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "reads": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "$ref": "#/$defs/v2-path"
+                  },
+                  "identity": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/v2-digest"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "path",
+                  "identity"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 256
+            },
+            "operation": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/v3-operation-change.link"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-activity.set"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-work.add"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-work.set"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-review.record"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-finding.add"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-blocker.add"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-finding.set"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-blocker.set"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-evidence.record"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-applicability.set"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-decision.record"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-verify.record"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-review.set"
+                },
+                {
+                  "$ref": "#/$defs/v3-operation-verify.set"
+                }
+              ]
+            }
+          },
+          "required": [
+            "schema_version",
+            "interface",
+            "contract",
+            "change_id",
+            "expected_revision",
+            "reads",
+            "operation"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 1
+            },
+            "interface": {
+              "const": "targeted-recording-v1"
+            },
+            "contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "expected_revision": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "reads": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "$ref": "#/$defs/v2-path"
+                  },
+                  "identity": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/v2-digest"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "path",
+                  "identity"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 256
+            },
+            "operations": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/v3-operation-change.link"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-activity.set"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-work.add"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-work.set"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-review.record"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-finding.add"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-blocker.add"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-finding.set"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-blocker.set"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-evidence.record"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-applicability.set"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-decision.record"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-verify.record"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-review.set"
+                  },
+                  {
+                    "$ref": "#/$defs/v3-operation-verify.set"
+                  }
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 64
+            }
+          },
+          "required": [
+            "schema_version",
+            "interface",
+            "contract",
+            "change_id",
+            "expected_revision",
+            "reads",
+            "operations"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 1
+            },
+            "interface": {
+              "const": "targeted-recording-v1"
+            },
+            "contract": {
+              "const": "rigorloop-records-v3"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "expected_revision": {
+              "type": "null"
+            },
+            "reads": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "$ref": "#/$defs/v2-path"
+                  },
+                  "identity": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/v2-digest"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "path",
+                  "identity"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 256
+            },
+            "operation": {
+              "$ref": "#/$defs/v3-operation-change.create"
+            }
+          },
+          "required": [
+            "schema_version",
+            "interface",
+            "contract",
+            "change_id",
+            "expected_revision",
+            "reads",
+            "operation"
+          ],
+          "additionalProperties": false
         }
       ]
     },
@@ -4818,6 +5098,567 @@
                 "decision.show",
                 "verify.show",
                 "decisions.show"
+              ]
+            },
+            "status": {
+              "const": "recovery-required"
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/diagnostic"
+              },
+              "minItems": 1
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "revision": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            },
+            "observations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/subject-observation"
+              },
+              "minItems": 1,
+              "maxItems": 256
+            },
+            "observations_scope": {
+              "const": "selected-subjects"
+            },
+            "transaction": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{32}$"
+                },
+                "recovery_identity": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/v2-digest"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "recovery_identity"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "operation",
+            "status",
+            "errors"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "operation": {
+              "enum": [
+                "change.create",
+                "change.link",
+                "activity.set",
+                "work.add",
+                "work.set",
+                "review.record",
+                "finding.add",
+                "finding.set",
+                "blocker.add",
+                "blocker.set",
+                "evidence.record",
+                "applicability.set",
+                "decision.record",
+                "verify.record",
+                "batch",
+                "review.set",
+                "verify.set"
+              ]
+            },
+            "status": {
+              "const": "saved"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "revision": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "changed": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/changed"
+              },
+              "minItems": 0,
+              "maxItems": 128,
+              "uniqueItems": true
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            },
+            "details": {
+              "$ref": "#/$defs/details"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "operation",
+            "status",
+            "change_id",
+            "revision",
+            "changed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "operation": {
+              "enum": [
+                "change.create",
+                "change.link",
+                "activity.set",
+                "work.add",
+                "work.set",
+                "review.record",
+                "finding.add",
+                "finding.set",
+                "blocker.add",
+                "blocker.set",
+                "evidence.record",
+                "applicability.set",
+                "decision.record",
+                "verify.record",
+                "batch",
+                "review.set",
+                "verify.set"
+              ]
+            },
+            "status": {
+              "const": "unchanged"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "revision": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "changed": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/changed"
+              },
+              "minItems": 0,
+              "maxItems": 0,
+              "uniqueItems": true
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            },
+            "details": {
+              "$ref": "#/$defs/details"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "operation",
+            "status",
+            "change_id",
+            "revision",
+            "changed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "operation": {
+              "enum": [
+                "change.create",
+                "change.link",
+                "activity.set",
+                "work.add",
+                "work.set",
+                "review.record",
+                "finding.add",
+                "finding.set",
+                "blocker.add",
+                "blocker.set",
+                "evidence.record",
+                "applicability.set",
+                "decision.record",
+                "verify.record",
+                "batch",
+                "review.set",
+                "verify.set"
+              ]
+            },
+            "status": {
+              "const": "valid"
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "changed": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/changed"
+              },
+              "minItems": 0,
+              "maxItems": 128,
+              "uniqueItems": true
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            },
+            "details": {
+              "$ref": "#/$defs/details"
+            },
+            "candidate_revision": {
+              "$ref": "#/$defs/v2-digest"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "operation",
+            "status",
+            "change_id",
+            "revision",
+            "changed",
+            "candidate_revision"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "operation": {
+              "enum": [
+                "change.create",
+                "change.link",
+                "activity.set",
+                "work.add",
+                "work.set",
+                "review.record",
+                "finding.add",
+                "finding.set",
+                "blocker.add",
+                "blocker.set",
+                "evidence.record",
+                "applicability.set",
+                "decision.record",
+                "verify.record",
+                "batch",
+                "status",
+                "context",
+                "subject.inspect",
+                "observations.show",
+                "work.show",
+                "review.show",
+                "finding.show",
+                "blocker.show",
+                "evidence.show",
+                "decision.show",
+                "verify.show",
+                "decisions.show",
+                "review.set",
+                "verify.set"
+              ]
+            },
+            "status": {
+              "const": "rejected"
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/diagnostic"
+              },
+              "minItems": 1
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "revision": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            },
+            "observations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/subject-observation"
+              },
+              "minItems": 1,
+              "maxItems": 256
+            },
+            "observations_scope": {
+              "const": "selected-subjects"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "operation",
+            "status",
+            "errors"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "operation": {
+              "enum": [
+                "change.create",
+                "change.link",
+                "activity.set",
+                "work.add",
+                "work.set",
+                "review.record",
+                "finding.add",
+                "finding.set",
+                "blocker.add",
+                "blocker.set",
+                "evidence.record",
+                "applicability.set",
+                "decision.record",
+                "verify.record",
+                "batch",
+                "status",
+                "context",
+                "subject.inspect",
+                "observations.show",
+                "work.show",
+                "review.show",
+                "finding.show",
+                "blocker.show",
+                "evidence.show",
+                "decision.show",
+                "verify.show",
+                "decisions.show",
+                "review.set",
+                "verify.set"
+              ]
+            },
+            "status": {
+              "const": "conflict"
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/diagnostic"
+              },
+              "minItems": 1
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "revision": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            },
+            "observations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/subject-observation"
+              },
+              "minItems": 1,
+              "maxItems": 256
+            },
+            "observations_scope": {
+              "const": "selected-subjects"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "operation",
+            "status",
+            "errors"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "operation": {
+              "enum": [
+                "change.create",
+                "change.link",
+                "activity.set",
+                "work.add",
+                "work.set",
+                "review.record",
+                "finding.add",
+                "finding.set",
+                "blocker.add",
+                "blocker.set",
+                "evidence.record",
+                "applicability.set",
+                "decision.record",
+                "verify.record",
+                "batch",
+                "status",
+                "context",
+                "subject.inspect",
+                "observations.show",
+                "work.show",
+                "review.show",
+                "finding.show",
+                "blocker.show",
+                "evidence.show",
+                "decision.show",
+                "verify.show",
+                "decisions.show",
+                "review.set",
+                "verify.set"
+              ]
+            },
+            "status": {
+              "const": "busy"
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/diagnostic"
+              },
+              "minItems": 1
+            },
+            "change_id": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "revision": {
+              "$ref": "#/$defs/v2-digest"
+            },
+            "observation_summary": {
+              "$ref": "#/$defs/summary"
+            },
+            "observations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/subject-observation"
+              },
+              "minItems": 1,
+              "maxItems": 256
+            },
+            "observations_scope": {
+              "const": "selected-subjects"
+            }
+          },
+          "required": [
+            "schema_version",
+            "claim",
+            "operation",
+            "status",
+            "errors"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "const": 3
+            },
+            "claim": {
+              "const": "storage-only"
+            },
+            "operation": {
+              "enum": [
+                "change.create",
+                "change.link",
+                "activity.set",
+                "work.add",
+                "work.set",
+                "review.record",
+                "finding.add",
+                "finding.set",
+                "blocker.add",
+                "blocker.set",
+                "evidence.record",
+                "applicability.set",
+                "decision.record",
+                "verify.record",
+                "batch",
+                "status",
+                "context",
+                "subject.inspect",
+                "observations.show",
+                "work.show",
+                "review.show",
+                "finding.show",
+                "blocker.show",
+                "evidence.show",
+                "decision.show",
+                "verify.show",
+                "decisions.show",
+                "review.set",
+                "verify.set"
               ]
             },
             "status": {
@@ -7626,6 +8467,1473 @@
     "v2-text": {
       "type": "string",
       "minLength": 1
+    },
+    "v3-stored-id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,79}$"
+    },
+    "v3-stored-text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "v3-stored-path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[\\x20-\\x7e]+$"
+    },
+    "v3-stored-digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "v3-stored-role": {
+      "type": "string",
+      "enum": [
+        "human",
+        "proposal",
+        "design",
+        "plan",
+        "review",
+        "route",
+        "implement",
+        "verify",
+        "support"
+      ]
+    },
+    "v3-stored-judgment": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "changes-requested",
+        "blocked",
+        "inconclusive"
+      ]
+    },
+    "v3-stored-target": {
+      "type": "string",
+      "enum": [
+        "proposal",
+        "design",
+        "delivery",
+        "code"
+      ]
+    },
+    "v3-stored-actor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/v3-stored-id"
+        },
+        "role": {
+          "$ref": "#/$defs/v3-stored-role"
+        }
+      },
+      "required": [
+        "id",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "v3-stored-subject": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/v3-stored-path"
+        },
+        "identity": {
+          "$ref": "#/$defs/v3-stored-digest"
+        }
+      },
+      "required": [
+        "path",
+        "identity"
+      ],
+      "additionalProperties": false
+    },
+    "v3-stored-entryRef": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/v3-stored-path"
+        },
+        "id": {
+          "$ref": "#/$defs/v3-stored-id"
+        }
+      },
+      "required": [
+        "path",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "v3-stored-explanationText": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "v3-stored-verificationBasis": {
+      "type": "object",
+      "properties": {
+        "repository_identity": {
+          "$ref": "#/$defs/v3-stored-explanationText"
+        },
+        "remote_identity": {
+          "$ref": "#/$defs/v3-stored-explanationText"
+        },
+        "base_branch": {
+          "$ref": "#/$defs/v3-stored-explanationText"
+        },
+        "base_revision": {
+          "$ref": "#/$defs/v3-stored-explanationText"
+        },
+        "merge_base_revision": {
+          "$ref": "#/$defs/v3-stored-explanationText"
+        },
+        "head_branch": {
+          "$ref": "#/$defs/v3-stored-explanationText"
+        },
+        "verified_subject_revision": {
+          "$ref": "#/$defs/v3-stored-explanationText"
+        }
+      },
+      "required": [
+        "repository_identity",
+        "remote_identity",
+        "base_branch",
+        "base_revision",
+        "merge_base_revision",
+        "head_branch",
+        "verified_subject_revision"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-activity.set": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "activity.set"
+        },
+        "target": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "stage": {
+              "$ref": "#/$defs/v2-stage"
+            },
+            "status": {
+              "$ref": "#/$defs/v2-status"
+            },
+            "owner": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "reason": {
+              "$ref": "#/$defs/v2-text"
+            }
+          },
+          "required": [
+            "stage",
+            "status",
+            "owner",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-applicability.set": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "applicability.set"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/v2-path"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/v2-applicabilityValue"
+            },
+            "actor": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "reason": {
+              "$ref": "#/$defs/v2-text"
+            }
+          },
+          "required": [
+            "value",
+            "actor",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-blocker.add": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "blocker.add"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "reporter": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "owner": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v2-subject"
+              },
+              "uniqueItems": true
+            },
+            "evidence": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "required_outcome": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "state": {
+              "$ref": "#/$defs/v2-blockerState"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-resolution"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "basis": {
+              "type": "object",
+              "properties": {
+                "rationale": {
+                  "$ref": "#/$defs/v2-text"
+                },
+                "supporting_judgment": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "snapshot": {
+                          "$ref": "#/$defs/v2-judgmentBasis"
+                        }
+                      },
+                      "required": [
+                        "snapshot"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "from_review": {
+                          "$ref": "#/$defs/v2-id"
+                        },
+                        "rationale": {
+                          "$ref": "#/$defs/v2-text"
+                        }
+                      },
+                      "required": [
+                        "from_review",
+                        "rationale"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "rationale",
+                "supporting_judgment"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "reporter",
+            "owner",
+            "subjects",
+            "evidence",
+            "required_outcome",
+            "state",
+            "resolution",
+            "basis"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-blocker.set": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "blocker.set"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "reporter": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "owner": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v2-subject"
+              },
+              "uniqueItems": true
+            },
+            "evidence": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "required_outcome": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "state": {
+              "$ref": "#/$defs/v2-blockerState"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-resolution"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "minProperties": 1,
+          "dependentRequired": {
+            "state": [
+              "resolution"
+            ],
+            "resolution": [
+              "state"
+            ]
+          }
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-change.create": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "change.create"
+        },
+        "target": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "proposal": {
+              "$ref": "#/$defs/v2-subject"
+            },
+            "models": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "$ref": "#/$defs/v2-id"
+                  },
+                  "subject": {
+                    "$ref": "#/$defs/v2-subject"
+                  }
+                },
+                "required": [
+                  "id",
+                  "subject"
+                ],
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "activity": {
+              "type": "object",
+              "properties": {
+                "stage": {
+                  "$ref": "#/$defs/v2-stage"
+                },
+                "status": {
+                  "$ref": "#/$defs/v2-status"
+                },
+                "owner": {
+                  "$ref": "#/$defs/v2-actor"
+                },
+                "reason": {
+                  "$ref": "#/$defs/v2-text"
+                }
+              },
+              "required": [
+                "stage",
+                "status",
+                "owner",
+                "reason"
+              ],
+              "additionalProperties": false
+            },
+            "plan": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-subject"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "work": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "$ref": "#/$defs/v2-id"
+                  },
+                  "status": {
+                    "$ref": "#/$defs/v2-status"
+                  },
+                  "owner": {
+                    "$ref": "#/$defs/v2-actor"
+                  },
+                  "requirement_refs": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/v2-text"
+                    },
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "id",
+                  "status",
+                  "owner",
+                  "requirement_refs"
+                ],
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "blockers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "$ref": "#/$defs/v2-id"
+                  },
+                  "reporter": {
+                    "$ref": "#/$defs/v2-actor"
+                  },
+                  "owner": {
+                    "$ref": "#/$defs/v2-actor"
+                  },
+                  "subjects": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/v2-subject"
+                    },
+                    "uniqueItems": true
+                  },
+                  "evidence": {
+                    "$ref": "#/$defs/v2-text"
+                  },
+                  "required_outcome": {
+                    "$ref": "#/$defs/v2-text"
+                  },
+                  "state": {
+                    "$ref": "#/$defs/v2-blockerState"
+                  },
+                  "resolution": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/v2-resolution"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "basis": {
+                    "type": "object",
+                    "properties": {
+                      "rationale": {
+                        "$ref": "#/$defs/v2-text"
+                      },
+                      "supporting_judgment": {
+                        "oneOf": [
+                          {
+                            "type": "null"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "snapshot": {
+                                "$ref": "#/$defs/v2-judgmentBasis"
+                              }
+                            },
+                            "required": [
+                              "snapshot"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "from_review": {
+                                "$ref": "#/$defs/v2-id"
+                              },
+                              "rationale": {
+                                "$ref": "#/$defs/v2-text"
+                              }
+                            },
+                            "required": [
+                              "from_review",
+                              "rationale"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "rationale",
+                      "supporting_judgment"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "reporter",
+                  "owner",
+                  "subjects",
+                  "evidence",
+                  "required_outcome",
+                  "state",
+                  "resolution",
+                  "basis"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            }
+          },
+          "required": [
+            "proposal",
+            "models",
+            "activity",
+            "plan",
+            "work",
+            "blockers"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-change.link": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "change.link"
+        },
+        "target": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "proposal"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "plan"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "model"
+                },
+                "id": {
+                  "$ref": "#/$defs/v2-id"
+                }
+              },
+              "required": [
+                "kind",
+                "id"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "$ref": "#/$defs/v2-subject"
+            }
+          },
+          "required": [
+            "subject"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-decision.record": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "decision.record"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "actor": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v2-subject"
+              },
+              "uniqueItems": true
+            },
+            "rationale": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v2-entryRef"
+              },
+              "uniqueItems": true
+            },
+            "body": {
+              "$ref": "#/$defs/v2-text"
+            }
+          },
+          "required": [
+            "actor",
+            "subjects",
+            "rationale",
+            "source_refs"
+          ],
+          "additionalProperties": false
+        },
+        "applicability": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/v2-applicabilityValue"
+            },
+            "actor": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "reason": {
+              "$ref": "#/$defs/v2-text"
+            }
+          },
+          "required": [
+            "value",
+            "actor",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-evidence.record": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "evidence.record"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "actor": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v2-subject"
+              },
+              "uniqueItems": true
+            },
+            "result": {
+              "$ref": "#/$defs/v2-evidenceResult"
+            },
+            "procedure": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "summary": {
+              "$ref": "#/$defs/v2-text"
+            }
+          },
+          "required": [
+            "actor",
+            "subjects",
+            "result",
+            "procedure",
+            "summary"
+          ],
+          "additionalProperties": false
+        },
+        "applicability": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/v2-applicabilityValue"
+            },
+            "actor": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "reason": {
+              "$ref": "#/$defs/v2-text"
+            }
+          },
+          "required": [
+            "value",
+            "actor",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-finding.add": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "finding.add"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "review": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "review",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "reporter": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "owner": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v2-subject"
+              },
+              "uniqueItems": true
+            },
+            "evidence": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "required_outcome": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "state": {
+              "$ref": "#/$defs/v2-blockerState"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-resolution"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "reporter",
+            "owner",
+            "subjects",
+            "evidence",
+            "required_outcome",
+            "state",
+            "resolution"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-finding.set": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "finding.set"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "review": {
+              "$ref": "#/$defs/v2-id"
+            },
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "review",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "reporter": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "owner": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v2-subject"
+              },
+              "uniqueItems": true
+            },
+            "evidence": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "required_outcome": {
+              "$ref": "#/$defs/v2-text"
+            },
+            "state": {
+              "$ref": "#/$defs/v2-blockerState"
+            },
+            "resolution": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/v2-resolution"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "minProperties": 1,
+          "dependentRequired": {
+            "state": [
+              "resolution"
+            ],
+            "resolution": [
+              "state"
+            ]
+          }
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-review.record": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "review.record"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "$ref": "#/$defs/v3-stored-target"
+            },
+            "reviewer": {
+              "$ref": "#/$defs/v3-stored-actor"
+            },
+            "contributors": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-actor"
+              },
+              "uniqueItems": true
+            },
+            "independence_basis": {
+              "$ref": "#/$defs/v3-stored-text"
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-subject"
+              },
+              "uniqueItems": true
+            },
+            "judgment": {
+              "$ref": "#/$defs/v3-stored-judgment"
+            },
+            "summary": {
+              "$ref": "#/$defs/v3-stored-explanationText"
+            },
+            "assessment_scope": {
+              "$ref": "#/$defs/v3-stored-explanationText"
+            },
+            "rationale": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 1
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 0
+            }
+          },
+          "required": [
+            "target",
+            "reviewer",
+            "contributors",
+            "independence_basis",
+            "subjects",
+            "judgment",
+            "summary",
+            "assessment_scope",
+            "rationale",
+            "limitations"
+          ],
+          "additionalProperties": false
+        },
+        "applicability": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/v2-applicabilityValue"
+            },
+            "actor": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "reason": {
+              "$ref": "#/$defs/v2-text"
+            }
+          },
+          "required": [
+            "value",
+            "actor",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-verify.record": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "verify.record"
+        },
+        "target": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "verifier": {
+              "$ref": "#/$defs/v3-stored-actor"
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-subject"
+              },
+              "uniqueItems": true
+            },
+            "evidence_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-entryRef"
+              },
+              "uniqueItems": true
+            },
+            "review_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-entryRef"
+              },
+              "uniqueItems": true
+            },
+            "outcome": {
+              "const": "success"
+            },
+            "summary": {
+              "$ref": "#/$defs/v3-stored-explanationText"
+            },
+            "assessment_scope": {
+              "$ref": "#/$defs/v3-stored-explanationText"
+            },
+            "rationale": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 1
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 0
+            },
+            "changes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 1
+            },
+            "verification_basis": {
+              "$ref": "#/$defs/v3-stored-verificationBasis"
+            }
+          },
+          "required": [
+            "verifier",
+            "subjects",
+            "evidence_refs",
+            "review_refs",
+            "outcome",
+            "summary",
+            "assessment_scope",
+            "rationale",
+            "limitations",
+            "changes"
+          ],
+          "additionalProperties": false
+        },
+        "applicability": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/v2-applicabilityValue"
+            },
+            "actor": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "reason": {
+              "$ref": "#/$defs/v2-text"
+            }
+          },
+          "required": [
+            "value",
+            "actor",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-work.add": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "work.add"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "$ref": "#/$defs/v2-status"
+            },
+            "owner": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "requirement_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v2-text"
+              },
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "status",
+            "owner",
+            "requirement_refs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-work.set": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "work.set"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "$ref": "#/$defs/v2-status"
+            },
+            "owner": {
+              "$ref": "#/$defs/v2-actor"
+            },
+            "requirement_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v2-text"
+              },
+              "uniqueItems": true
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-review.set": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "review.set"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/v2-id"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "$ref": "#/$defs/v3-stored-explanationText"
+            },
+            "assessment_scope": {
+              "$ref": "#/$defs/v3-stored-explanationText"
+            },
+            "rationale": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 1
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 0
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "v3-operation-verify.set": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "verify.set"
+        },
+        "target": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "values": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "$ref": "#/$defs/v3-stored-explanationText"
+            },
+            "assessment_scope": {
+              "$ref": "#/$defs/v3-stored-explanationText"
+            },
+            "rationale": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 1
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 0
+            },
+            "changes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/v3-stored-explanationText"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      },
+      "required": [
+        "op",
+        "target",
+        "values"
+      ],
+      "additionalProperties": false
     }
   }
 }

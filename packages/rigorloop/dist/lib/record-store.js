@@ -117,6 +117,7 @@ class Store {
       candidate[write.path]=write.content;
     }
     preserveRecords(this.format,this.id,before,candidate);
+    this.resultVersion=this.format.version===3?3:2;
     this.basis(request.reads);
     return candidate;
   }
@@ -331,11 +332,13 @@ export function withRecordSnapshot(root,changeId,inspect,options={}) {
 export function executeTargetedStore({root,changeId,request,preview,construct,prepare},options={}) {
  const store=new Store(root,changeId,options);
  try {
-  const before=store.snapshot(()=>[]);
+  const before=store.snapshot(set=>{for(const [path,source] of Object.entries(set))if(source!==null)store.format.parse(store.format.pathKind(changeId,path),source);});
+  if(Object.keys(before.set).length)store.resultVersion=store.format.version===3?3:2;
+  if(['review.set','verify.set'].includes(request.operation?.op)&&!Object.keys(before.set).length)stop("target-not-found");
   if(!preview)store.acquire();
   const build=set=>{
-   if(revision(set)!==request.expected_revision)stop("identity-conflict");
    if(Object.keys(set).length&&store.format.contract!==request.contract)stop("unsupported-contract");
+   if(revision(set)!==request.expected_revision)stop("identity-conflict");
    const built=construct(request,set);
    validateAdvancedRequest(built.request);
    store.options.prepareResult=prepare(built);
@@ -360,7 +363,7 @@ export function executeTargetedStore({root,changeId,request,preview,construct,pr
     e.revision=observed.revision;e.observation_summary=observed.summary;
    }catch{/* Unverified optional metadata is never attached. */}
   }
-  e.transaction=store.recoveryInfo();throw e;
+  e.responseVersion=store.resultVersion;e.transaction=store.recoveryInfo();throw e;
  }
  finally{store.release();}
 }
