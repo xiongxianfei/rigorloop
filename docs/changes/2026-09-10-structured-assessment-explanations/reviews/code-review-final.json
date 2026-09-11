@@ -1,0 +1,750 @@
+{
+  "body": "Fresh independent final whole-change Code Review assesses the complete d670788c894ccdfb7eec5f973b61bdc964dd52a1..922d5dca engineering diff: 173 engineering paths, plus eight declared supporting record subjects. All four implementation milestones are recorded completed at the inspected revision. This assessment separately examines integrated behavior across their boundaries; earlier milestone judgments supply history and focused evidence rather than substitute for this final judgment. The reviewer authored none of the proposal, owner models, plan, runtime, tests or canonical consumer changes. Earlier review authorship does not replace this inspection.\n\nDirection and authority: the original proposal and its approval retain their historical meaning and stale applicability. The explicit user direction recorded in v3-finding-id-only revises only v3 Review findings to ID-only immutability and editable current accounts, without origin/supporting-judgment history. Current independently reassessed Design and the approved Delivery allocation carry that selected refinement. V2 findings and all change blockers retain their immutable origin rules. The final Design reassessment includes the exact non-Git Verify reference clarification; no stale original proposal approval or outdated reference identity is used as current authority. The plan still allocates all delivered behavior and distinct final Code Review/Verify gates.\n\nSpec alignment — pass. RF-SR-09–13, CLI-SR-24–27 and RC-SR-19/20 are represented by closed small explanation fields, complete assessment operations, narrow field replacement, precise read selection, conditional verification basis, versioned storage and explicit reliance consequences. No second body, universal paragraph-object report, transcript duplication, automatic prose migration or field-level approval system was introduced. Material decisions and structured evidence retain their owners.\n\nArchitecture boundaries — pass. The schema-selected core shares bounded parsing/reference/preservation mechanics while v2/v3 adapters retain distinct closed contracts. Primary construction and advanced replacement converge on the same candidate validation and transaction engine. Stored v3 remains separate from targeted request schema1, advanced request schema2, advanced result schema1 and primary result schema3. Recognized new set commands preserve their schema3 operation tags on early errors; retained commands and early batch/unknown dispatch follow the approved availability rule. Production new-store creation is v3 in both public adapters; existing v2 continuation does not require a hidden conversion path.\n\nIntegrated reads and mutations — pass. Complete Review replacement and explanation set preserve existing findings; explicit finding operations edit the v3 current account while preserving its ID, and advanced preservation rejects removal/rename. V2 findings and v3 blockers retain origin preservation during replacement and recovery. Narrow operations cannot retarget assessor, subjects, judgment or Verify evidence/basis. Span-based edits preserve unrelated values and bytes, and semantic no-ops preserve whole-file bytes. Complete Verify removes an omitted optional basis and reports that removal in detailed effects. Review applicability is record-level metadata; saving text does not alter judgment or restore applicability. Full, summary and named reads retain coherent identity/revision/selection and distinguish omissions from optional absence. V3 findings expose no nonexistent origin metadata; retained blockers do. Human rendering preserves supplied paragraphs, literal escapes and collection order without authoring another report.\n\nTest coverage — pass. Fresh independent execution of node --test packages/rigorloop/test/record-store-v3-*.test.js passed all 52 cases, covering schemas, dual/unknown inputs, state coupling, complete/narrow edits, early errors, current finding versus blocker origin, projection/absence, rendering limits, discovery, advanced and targeted recovery. A separately authored temporary Python proof, executed locally and not retained as a committed reproducible script, passed 15 real public CLI calls from primary v3 change.create through complete Review, finding add/correction, explanation set, stale/no-op handling, exact projection, complete Verify, conditional basis addition/removal and prohibited narrow basis edit. Expectations came from supplied fixture values and public contract, not production selector helpers. These synthetic assessments establish command behavior, not real review/verification of their fictional subjects.\n\nEdge cases and error handling — pass. Existing fault-injection coverage checks preparation, partial replacement, commit boundary, restore/complete, third-state external edits, stale retries and unknown/mixed journal versions. Final execution reran v3 recovery cases; prior independent 54-case adoption plus existing-v2 persistence proof remains relevant to unchanged runtime subjects. Unsupported schema/contract pairs reject without mixing stores. Missing records, stale basis/revision, overlapping writes, empty/unknown/null fields and response limits are explicit outcomes. The M4 selector collection-type failure was corrected with equality comparison and regressions for both discriminator keys; the independent focused regression passed ten subcases and author full selector165 proof is bound to the final source. No additional error-path gap requiring correction was identified.\n\nCompatibility — pass. Existing v2 schema and template bytes are unchanged; structural comparison of targeted schema definitions found changes only to the enclosing mutation-request/result unions, with existing v2 definitions intact. Existing-v2 fixtures now construct historical pre-adoption states through test-only helpers, while public continuation and recovery assertions remain real. Public new-v2 creation rejects. Historical record bodies and immutable origins are neither translated nor refreshed. Renamed Design examples retain their original bytes and their fixture consumers use current paths. Prior renamed-subject evidence is historical rather than promoted into current proof.\n\nSecurity/privacy and policy — pass for this scope. The shared file containment, bounded parsing, duplicate-key checks, byte/depth limits, conflict checks and journal safeguards remain in force. Early malformed arguments do not authorize repository access or echo private supplied values as explanations. This work adds no network, credential, publication or authorization mechanism. Success-only Verify and explicit actor-owned correction/applicability remain intact; incomplete or contradictory claims can still be recorded without mechanical endorsement, avoiding correction deadlocks.\n\nDerived artifacts and published consumers — pass. node scripts/build-record-store-schema.mjs --check passed independently. Canonical/bundled schemas and templates agree, and package inventory includes the v3 adapter, shared core, schema and template. Inspected final candidate evidence covers packed CLI creation, v2 continuation, adapter generation and canonical skill/shared-resource parity. Semantic inspection of changed consumer guidance found coherent triggers, owner boundaries, prerequisites, contract-selected reads/writes, stop conditions and handoffs: named explanations do not duplicate structured facts; substantive limitations require responsible reassessment; non-Git success does not imply branch readiness; conditional Git basis remains complete and explicit for Git/PR. Installation still grants no project adoption or external action authority.\n\nUnrelated changes — pass. The complete engineering diff is bounded to this redesign, its coordinated owners/examples, consumer adoption, validation and fixture maintenance. Shared-core extraction preserves v2 behavior and supports version selection; no unrelated product capability, automatic historical conversion or release operation was added. Governance text conditions adoption on reviewed coherent implementation and successful Verify, rather than treating package availability as adoption.\n\nValidation evidence — pass for Code Review. Read m1–m4 evidence, exact current Design/Delivery records and complete scoped context. Final corrected source cc68e26f55878fe15fbca926b6df4165173d5b4e has the same engineering bytes as this review target; subsequent commits contain stage evidence/routing only. The recorded bash scripts/ci.sh --mode pr --base d670788c894ccdfb7eec5f973b61bdc964dd52a1 --head cc68e26f55878fe15fbca926b6df4165173d5b4e completed all 21 selected local candidate checks; its final log ends with Selected CI checks passed. Prepared source 752158191d49cfccbd32c9f366b98f2ad06d3d10 and sealed candidate 592e0227bc3487860e1987cd35918ecc6212201a823d27eb39a64d48a87f8177 are explicitly recorded. Earlier 432 npm and 256 record-store results concern unchanged runtime subjects. The generic skill-creator validator's existing frontmatter rejection is disclosed and does not replace canonical repository validation. Final review does not relabel local candidate checks as hosted CI.\n\nNo additional material finding or unresolved owner decision remains in the inspected integrated implementation. Residual limits: this is independent Code Review, not final Verify, branch/PR readiness, publication, merge or customer adoption. Successful Verify must separately assess complete final evidence, current applicability and closeout readiness. Historical milestone findings/origins and judgments remain intact; no routing or downstream state is changed by this review recording.",
+  "change_id": "2026-09-10-structured-assessment-explanations",
+  "contributors": [
+    {
+      "id": "codex-implement",
+      "role": "implement"
+    },
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-final",
+  "independence_basis": "Separately delegated independent reviewer authored none of the complete engineering diff, owner models, plan, tests or canonical consumer guidance. This fresh whole-change review inspects integrated behavior and performs independent final proof rather than treating milestone approvals as a substitute.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "codex-code-review",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:61ec6e61ec9bd1998f6d9a7401da5a036879ef3ca116078af6c70c4d957a48d8",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:7da63af759d6cff299f1fd441e197465fa9e177f424fe3231d72727b7098f968",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:53894796bc4c8752814ea10cf132a64bd1811733df9834af29379f3a5d2811c9",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:ead405ed14cb5c38eb57f219690251a3ebad88d7e3fe0a25fe0290f551772cd4",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:9bdb8d360f0cc4ec935620cd4c7b632df4e8e0a265674c9f064088995aef7c95",
+      "path": "docs/design/cli/examples/observation-freshness/README.md"
+    },
+    {
+      "identity": "sha256:81fe662f33acbd28f2e642f994fe3ddfc21c38b40d1056745dab98b1bdd5fd50",
+      "path": "docs/design/cli/examples/v2-work-status-update/README.md"
+    },
+    {
+      "identity": "sha256:f35f7b4c6fc54f3bbe5164b1d75ef2b786f7898a8d64199f0d15dab2c2b3018e",
+      "path": "docs/design/cli/examples/v2-work-status-update/request.json"
+    },
+    {
+      "identity": "sha256:75c8d51fdb5756ad71879f183ca6c08b807b7eba3f8e4648e0adbb682a77ab96",
+      "path": "docs/design/cli/examples/v2-work-status-update/response.json"
+    },
+    {
+      "identity": "sha256:304d45a3cce55b376f61941630bae147ea6f64c92a089c1324024bb9e528d2c8",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/README.md"
+    },
+    {
+      "identity": "sha256:795080cf9a9b63fd44a77ec745ca7d10995e2bf173581df9534e3b4f395a7ccb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/invalid-change-selector-response.json"
+    },
+    {
+      "identity": "sha256:41b6e86f475fa7f278f706e0d094a6cc454f68f11de2ad34429b80acb273cfe5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/mixed-store-response.json"
+    },
+    {
+      "identity": "sha256:e47f464a85d7f13b895dfc90d84b55fe24f823844db7f147d83657a8f6be7f6a",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:4f3259cd2229ac7f2b664abcec27968e7bf736f8e45801db42ce64849ce920c5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:98d88a8763a15d25b1d0acfd5081c3d7f515b48d4c7c4e7a288ad3ec108b9eba",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-v2-store-response.json"
+    },
+    {
+      "identity": "sha256:0578d2152a2330a0bd5787659551494df819f273dc53db3be5fdceabfcdebb1d",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-command-response.json"
+    },
+    {
+      "identity": "sha256:a802cb3c67f2ac861614be88e55e8f4e6f6dfca57eaca2aec292288cfe419899",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-store-response.json"
+    },
+    {
+      "identity": "sha256:886ab0361fe5924b26f0275ec09410f916fdfc0eb788a0d60f93671fc2ab5a52",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:803c307a1ae75ba0cc8114bdc6a2c9b01bc95a8d30f063abc53e13f753fe56fb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:46c9c2554c54833d9881e8157c88987315b9dedb0eb2aaf12b2ec9353fa4d215",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-v2-store-response.json"
+    },
+    {
+      "identity": "sha256:90f1d420f5ffa7877313abadb1e59e230c6fd79d2777fadd74a97e5dd8e2534a",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/README.md"
+    },
+    {
+      "identity": "sha256:70f8883af05d13ef49e52b18209189b63f9c60a5cf381b076aeaeadd91aaad88",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-request.json"
+    },
+    {
+      "identity": "sha256:f84b71e306ec3cc8211e151184e912f1edec7b875a206cebf82dde865644dc3e",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:bcb83a7e18c18e7759d37ef713f167b6f1180dd984ff07d705a06554fcee6d55",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-request.json"
+    },
+    {
+      "identity": "sha256:8cb57d08879331bb8a520c820f73cadb08711783baae852d33c70e6f198c06de",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:424bfafe65ec9cfb70789139f3fc9322644d4f50757a9ed012b188e94ec10d21",
+      "path": "docs/design/cli/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:905ba67b50a06114325bbabaa7c939005a096473ace379cd00cfe37b2a01bd93",
+      "path": "docs/design/cli/examples/v3-finding-correction/request.json"
+    },
+    {
+      "identity": "sha256:26c1d3d2d2cab351801c76ada6428ea8ada951631304dcc97ddbd08d74b56a0e",
+      "path": "docs/design/cli/examples/v3-finding-correction/saved-response.json"
+    },
+    {
+      "identity": "sha256:8489f5ec5e7329011de4660cbcf6877b988fbb8c2d70107ae90dd3cebbb88975",
+      "path": "docs/design/cli/examples/v3-finding-correction/show-response.json"
+    },
+    {
+      "identity": "sha256:0f7e7559a9c199eb4326ecede6ebdf67dd1418970d1609e5fe37b066b062537a",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-request.json"
+    },
+    {
+      "identity": "sha256:3e39f4d99e7b3589613c78f7e23e528dd6ffbd006f81651f69d8297911c30dc3",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-response.json"
+    },
+    {
+      "identity": "sha256:c111c0302ad4b1cfe5f35030c7ad0e50a035345a8ef3dcb62a747af37d8adb1d",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:9f134ab8c53f99183053f3a0331871a70570690f93c6420e523aa61a2f5d8640",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:3a4f87555fbb0b3dcc8239941ca02442e2e85a6c436a74f4954150c758e2d05e",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:6d436ffddc2da5286f804f82a2e9190e2a376e2d28387cfaf7520d75581c2d5b",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-stale-response.json"
+    },
+    {
+      "identity": "sha256:c322d81e1248a8316bcb281457838054ac001baf30783b6c9d5bca979988c2e6",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-unchanged-response.json"
+    },
+    {
+      "identity": "sha256:c73be0db141370e7e5c5fefd34d8c338c0141bcc27a9111a41784918f4464d96",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/show-fields-response.json"
+    },
+    {
+      "identity": "sha256:2c0594b6433052b7d01b2f49a29a5e90ac229ed9054626fa2e53c71f5b2b3b7e",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:07e459967b641a8bceb4edf801ce13567ccdfbd00f30977e5931b6ec588dec33",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:21f4098320b9f237c659717044ba08ff5ac7d49a716b9eb76576839d6ff36ca2",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:e50326ce049b621467f317ab97415af8519efcb27db9c4f30c51c6b4ba2f300b",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-absent-basis-response.json"
+    },
+    {
+      "identity": "sha256:4c3047582f62c83ed9d9b87849916a4d444d381abca9c701e7843140df52aa27",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-fields-response.json"
+    },
+    {
+      "identity": "sha256:b24b4f4ea1a78c4f606c67dd72736edabd2186428c17310207724247fd88f710",
+      "path": "docs/design/record-format/examples/README.md"
+    },
+    {
+      "identity": "sha256:6781814e44fc80dc4e122cea737a3257e37b12db73eb2500a4cd88944fa1fcee",
+      "path": "docs/design/record-format/examples/v2-minimal-change/README.md"
+    },
+    {
+      "identity": "sha256:523ee35620d9deb9b393ecb59c414bd25e240be81a28dc76f347d412e0201cb6",
+      "path": "docs/design/record-format/examples/v2-minimal-change/change.json"
+    },
+    {
+      "identity": "sha256:b1d9f11e0b6ff1ba6ae61b0d7254d8fea048cd2580bb6612169135535c5a5a14",
+      "path": "docs/design/record-format/examples/v2-review-reassessment/README.md"
+    },
+    {
+      "identity": "sha256:c13ffa7fe8d4189f2f30f7bb5c603c50c0e8d4d783dc394013d7db81883f32e0",
+      "path": "docs/design/record-format/examples/v2-review-reassessment/after.json"
+    },
+    {
+      "identity": "sha256:df39c9d8cb532e8fa48f3590e3558a4308bdfd815aab09b68866247be35d2f1d",
+      "path": "docs/design/record-format/examples/v2-review-reassessment/before.json"
+    },
+    {
+      "identity": "sha256:2c04da7d3a375d9be916148a52826888fb88a6678a6500c94ba35e0033bf2bb2",
+      "path": "docs/design/record-format/examples/v2-review-without-subjects/README.md"
+    },
+    {
+      "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+      "path": "docs/design/record-format/examples/v2-review-without-subjects/review.json"
+    },
+    {
+      "identity": "sha256:71d08fe2a75b39b7d5aca7706a7ef98488da41b4dd855987e0852a6157bd41a3",
+      "path": "docs/design/record-format/examples/v3-complete-store/README.md"
+    },
+    {
+      "identity": "sha256:6dde70e3cfe5d98bd2adfbef63f8ba11c6e7f33f82ed43f23cc06ecfaef3de18",
+      "path": "docs/design/record-format/examples/v3-complete-store/change.json"
+    },
+    {
+      "identity": "sha256:b04252e754560e4d9e69f62bd1013f546051bf7dea603b15b5fe019c05f4579c",
+      "path": "docs/design/record-format/examples/v3-complete-store/evidence.json"
+    },
+    {
+      "identity": "sha256:317d54c95b1eb05e19852be20bd193f765a1514446794848149a43464def4551",
+      "path": "docs/design/record-format/examples/v3-complete-store/material-decisions.json"
+    },
+    {
+      "identity": "sha256:edff4ef7ce625a817047f979c27235f443005f11b18d177d7b02b78c88314775",
+      "path": "docs/design/record-format/examples/v3-complete-store/reviews/final-code-review.json"
+    },
+    {
+      "identity": "sha256:f35a2863075b2a1688ae1130dd310d728d78de994da6ec4e809d67d2f8f2ecf8",
+      "path": "docs/design/record-format/examples/v3-complete-store/verify-report.json"
+    },
+    {
+      "identity": "sha256:5e85ac7109652f756e00ab4c966287d0d139188aed98f75d6f0d9eb8f9ccfa76",
+      "path": "docs/design/record-format/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/record-format/examples/v3-finding-correction/stored-review.json"
+    },
+    {
+      "identity": "sha256:f34998232a1ef52b2ffb444f79a66705a1da5530490328d7102ea322897557fe",
+      "path": "docs/design/record-format/examples/v3-finding-correction/updated-review.json"
+    },
+    {
+      "identity": "sha256:13ec93c8a2c1fcf885c5a321a44b33b043b880a4e02527bf92e946b7a8cdd34e",
+      "path": "docs/design/record-format/examples/v3-review-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:0a613a0439f4895028df96120e5d375a38d41e3d8223ed04522054118fbdc77a",
+      "path": "docs/design/record-format/examples/v3-review-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/record-format/examples/v3-review-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:b9fb352b99f403293fd39d19ab973d0a518039c2128f1e96851ff4bea58339c2",
+      "path": "docs/design/record-format/examples/v3-verify-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:7b143a6b26d1b8b3db90f42f66915f065bf8e341f2a98ea69ea88d3d806227ec",
+      "path": "docs/design/record-format/examples/v3-verify-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:57b19025fc02ca889012295cdc09ddbf0d83a452bafcf38260b88d8bcd05b40e",
+      "path": "docs/design/record-format/examples/v3-verify-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:9bd6dc148835ede92b6290c524d162724f101765bcd5e5a616812fa7dda59d38",
+      "path": "docs/design/record-format/examples/v3-verify-without-evidence/README.md"
+    },
+    {
+      "identity": "sha256:99940ecf563be59427e1a4b56f7da9348949ebde8c84507192ba8793dcbf3bd3",
+      "path": "docs/design/record-format/examples/v3-verify-without-evidence/verify-report.json"
+    },
+    {
+      "identity": "sha256:f2b881917b9e9ed13fe3bf4490713f1cf79504856e8973a243d807a230c6df3b",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:40823b5356451b63be6ca23f215556337cd23d01baf517ab33c5704656aa9a76",
+      "path": "docs/design/review-closeout/review-closeout.md"
+    },
+    {
+      "identity": "sha256:30ed20e8662b475bca0fb32e8e7f6bce4522aaa29cf9bb878e1c81dcb7630ccd",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:3160ee6ab7d27579f6d65062957fbaf07f59273736d6c5a50d8c1df4eac76615",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:e855e932cbc43bcd42dfd40246805204a2a643d45c326117054bb6788f707e3f",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:25b98806480b7711f6dbfa379f9eb8cb3e643dab695e96016b5a5b50443776c1",
+      "path": "docs/plans/2026-09-11-structured-assessment-explanations.md"
+    },
+    {
+      "identity": "sha256:321142e381821c22603ceaaa64dd64218a98c2c08bd041964fedd41a4aa29b8f",
+      "path": "docs/proposals/2026-09-10-structured-assessment-explanations.md"
+    },
+    {
+      "identity": "sha256:d54aee85b3c71a6ba503a93bcf58c9b4679097efd70560f652f71f1fa30b19b4",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:1adea2a89d5aff9d3cb88aaac38bf4fa05dabcfdcf24f36656dece99fa61c266",
+      "path": "packages/rigorloop/dist/bin/rigorloop.js"
+    },
+    {
+      "identity": "sha256:8e1cd6556200956c7a95cad30920051491c099bb05e796958d17201b718e3801",
+      "path": "packages/rigorloop/dist/lib/record-format-core.js"
+    },
+    {
+      "identity": "sha256:16a77685606dd3643da88c5b9f8b988cea8d2df48df7ecc8869b6ba48a8b6673",
+      "path": "packages/rigorloop/dist/lib/record-format-v2.js"
+    },
+    {
+      "identity": "sha256:5c1ba8869c4c78d7a97147cb1dfa5c295358a12dce2e373aadeee81c6ccc4663",
+      "path": "packages/rigorloop/dist/lib/record-format-v3.js"
+    },
+    {
+      "identity": "sha256:1ea68ec9d4d5fae89c404bd9f8abe7d96325375b622bc872917da9a1a13310df",
+      "path": "packages/rigorloop/dist/lib/record-store-cli.js"
+    },
+    {
+      "identity": "sha256:73223e1c8e2365c15c0ecb72adc1b44c24f2e2ac41874d21713fbe7dab8d277c",
+      "path": "packages/rigorloop/dist/lib/record-store-format.js"
+    },
+    {
+      "identity": "sha256:dedfd9feefd31d4fc2daf4ffaf35db83be5dddcb750c2bb237d56d552f50bb82",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:65b255348781df3abb9f94c1cc12d8451c39289f8bcf650aef8141e6d2e3f2ee",
+      "path": "packages/rigorloop/dist/lib/recording-construction.js"
+    },
+    {
+      "identity": "sha256:739b017ec5f054ec476591b75a5f51f2056c62e767ea3fc577d3b2d051b9493a",
+      "path": "packages/rigorloop/dist/lib/recording-contract.js"
+    },
+    {
+      "identity": "sha256:4c31cf0719defa69873aa925bf88742cae86610ed539d9f180921b0ff81195c8",
+      "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+    },
+    {
+      "identity": "sha256:50f83d32fb81c14536d9b5ceb7f5384f9db3c4f1f7b4e15b8a82c068427c4531",
+      "path": "packages/rigorloop/dist/lib/recording-query-cli.js"
+    },
+    {
+      "identity": "sha256:6eaebbb699b32ef7256a5fee51da5aa6aebe472bcf6a318664b3e79acf09a238",
+      "path": "packages/rigorloop/dist/lib/recording-result.js"
+    },
+    {
+      "identity": "sha256:6ca90505cea69352fdf306b9ea3079d660056b772bcd620807967985165a11d8",
+      "path": "packages/rigorloop/dist/lib/recording-spans.js"
+    },
+    {
+      "identity": "sha256:068ced8b9c9548afa42f782aeab8e47cb29f2af230f69efc82218cdeb2169bdb",
+      "path": "packages/rigorloop/dist/lib/workflow-context.js"
+    },
+    {
+      "identity": "sha256:e36a234ad803ab714e558cd159863a3557d03811aa22cbd32307f8313829fdfd",
+      "path": "packages/rigorloop/dist/schemas/rigorloop-records-v3.schema.json"
+    },
+    {
+      "identity": "sha256:42b4e958b88fa8cc30f3fc4ecbe344ff27c559f0d627a0473c821ec9fb92a56f",
+      "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json"
+    },
+    {
+      "identity": "sha256:ea4b5c52e9d0badcb09aef4fff1a471269119f4ceb1161fac4685475ad605d3e",
+      "path": "packages/rigorloop/dist/templates/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:31dd7d3ccddb06b004edc19097d6ce372173fbba6c63b2e69cade140557c7342",
+      "path": "packages/rigorloop/test/helpers/historical-v2-launcher.mjs"
+    },
+    {
+      "identity": "sha256:236c9afba30e091d4c2ddc4168b3efff05ab3f92a54108bf7ca519cf94e36791",
+      "path": "packages/rigorloop/test/helpers/historical-v2.mjs"
+    },
+    {
+      "identity": "sha256:4c2d6aecf236634bec63fba3545d25354cfc0528f707cb4d0fae46da0b664984",
+      "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+    },
+    {
+      "identity": "sha256:308d3df4dc64d5a940750d82641f9d6cbabb46cd235b6bfe47a7ab75bd04ac34",
+      "path": "packages/rigorloop/test/helpers/v3-fixture.mjs"
+    },
+    {
+      "identity": "sha256:574a112ceb2523f33416e379638469c2768438182cb30284b6e0f903cf0da27e",
+      "path": "packages/rigorloop/test/record-store-adoption.test.js"
+    },
+    {
+      "identity": "sha256:df47c4006831dd79b385b3f34866f1f26353e4478b4bccf51940f44a2f0342ce",
+      "path": "packages/rigorloop/test/record-store-cli.test.js"
+    },
+    {
+      "identity": "sha256:5ad45db07ac5ab1f4f01755487234882e4be7a9f25effe84b10ddbd9eb922848",
+      "path": "packages/rigorloop/test/record-store-model-examples.test.js"
+    },
+    {
+      "identity": "sha256:f58c9df1c43a2790fefccc4157e9c555fc8b5685b62b23a4b320362334bb7051",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:5ef405a65acbec0cf9be165e5c1d432559defe52e2141573d2d0d5b861dcd7ba",
+      "path": "packages/rigorloop/test/record-store-v2-contract.test.js"
+    },
+    {
+      "identity": "sha256:7c6dc74002f4bb54ddf79034aeb2fcccc9de7fd71f438ea68cb096bec0843e89",
+      "path": "packages/rigorloop/test/record-store-v2-persistence.test.js"
+    },
+    {
+      "identity": "sha256:5595ea4c71a161d8869e23cedef49c56c24988ead298b98c42f3f649eeefd774",
+      "path": "packages/rigorloop/test/record-store-v3-adoption.test.js"
+    },
+    {
+      "identity": "sha256:a33afe2c06632999cc4f514744672b23801b8566bc101bf017fa2d7ac8e80607",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:1592ca4453cc7a619a3dd8143341156c5351f1cd62591c329f3876d267817f4b",
+      "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+    },
+    {
+      "identity": "sha256:adcd191bb4be6cf5b31e39a9b8780af3a1cfbe960b3175300c6bd5887921c407",
+      "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+    },
+    {
+      "identity": "sha256:1da29208d5629c230c7314dc6cf321f50a3fa73d05d1b4fb18768908045b2203",
+      "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+    },
+    {
+      "identity": "sha256:68f37ab48c5d1fd1f6d591407749fb96d52341e32055485bad07bc53e02c25ea",
+      "path": "packages/rigorloop/test/record-store-workflow.test.js"
+    },
+    {
+      "identity": "sha256:e36a234ad803ab714e558cd159863a3557d03811aa22cbd32307f8313829fdfd",
+      "path": "schemas/rigorloop-records-v3.schema.json"
+    },
+    {
+      "identity": "sha256:42b4e958b88fa8cc30f3fc4ecbe344ff27c559f0d627a0473c821ec9fb92a56f",
+      "path": "schemas/targeted-recording-v1.schema.json"
+    },
+    {
+      "identity": "sha256:8caf5fcf0de2f013b053615a9dbd81ddf52456b7f64bf8b22c99e72249c351d8",
+      "path": "scripts/build-record-store-schema.mjs"
+    },
+    {
+      "identity": "sha256:27f2bac0be32bdbb558c4426c94ad761aad7077e182bcd84efb5b0e53fa48c5a",
+      "path": "scripts/npm_package_validation.py"
+    },
+    {
+      "identity": "sha256:4e9596037bb50c69e9af9d502fdd434f8ddb10ad75f8e693ffbf35446821d6dd",
+      "path": "scripts/query-change-record.py"
+    },
+    {
+      "identity": "sha256:490d313cc5255ecc2f15214f2930d7acb6449dab4c790b885c245c2290413a6f",
+      "path": "scripts/skill_validation.py"
+    },
+    {
+      "identity": "sha256:99ce600d6b479a49f8b7e6d804987d1960e5d1cbaad97f80fd0983144a66403c",
+      "path": "scripts/test-artifact-lifecycle-validator.py"
+    },
+    {
+      "identity": "sha256:88cd34494437975e168e6f9f8798e506cea65453e983b7511d1d5f3465c86945",
+      "path": "scripts/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:ab13cffe14ee24137ed5dc124b1bc3ca4b055c2e82744cd8c173f944b4dfdc4f",
+      "path": "scripts/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:8e2006182956fc0cfab2de4842b7d7cffadb39611c84fd22d738d67f1203cffc",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:f49989447629ba4908920e8c9f98a10d708e33f938ec0d2eab69a1b3cc094d22",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:0492367446ee8f549c4ccda0e01dd88b34cc89ccff932a577a3ad822056f8218",
+      "path": "scripts/validate-change-metadata.py"
+    },
+    {
+      "identity": "sha256:8290b942f0afc430de6b604e0f2e2fdcf82c3a2166a3213ae7882e225665c3a0",
+      "path": "scripts/validate-record-store.mjs"
+    },
+    {
+      "identity": "sha256:32bcdc798e0a1127373ffc726d033e4d63ce1d810bf821fde62e83116bd42c9c",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:debbaa9c80b3d5d46f57c4a0ccabee508896f3a5bf66ebe048140a4f28c2218d",
+      "path": "skills/bugfix/SKILL.md"
+    },
+    {
+      "identity": "sha256:a95b43a67f54b4057a883e85665aa5aed545f84038f894bbafa4ea1081ff3643",
+      "path": "skills/ci-maintenance/SKILL.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/ci-maintenance/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:0559c440e4d4a8dd803fb70a88f6093745b5cb385055967b86978e8f00c213d3",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:69d15f3af3d6d4eee4a6220a78c784c0deb40818128c235531f894c72ff4d0d9",
+      "path": "skills/code-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:3bcba3cc33836cd001205dd8b05c67a46aaff74ae405c9e58c84cec4786324b3",
+      "path": "skills/code-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:1d04d76c998eeb8ee4e5ed4cb496d52e23cc47fcb350f90eb6b6b79d8960f069",
+      "path": "skills/code-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/code-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:8835a9cb6a2ce75a4c8b809af1bab5f534b2e04ba35efc8d14e4cdc9b1f5886d",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:238979f9f7baa4af72370da0f19d69ecfe855cacac44d3fd08d39bef897af835",
+      "path": "skills/delivery-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:d8551b3f4f3228fd37de61c15695118d8e390a3e61cc030f58cfc26172b74e06",
+      "path": "skills/delivery-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:e97274080e301e9ca5e1e5cd6bd09268aa1cca871403c55de0ff692c70e38634",
+      "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:1d04d76c998eeb8ee4e5ed4cb496d52e23cc47fcb350f90eb6b6b79d8960f069",
+      "path": "skills/delivery-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/delivery-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:155cb6af2c9eab34dcad330cff5bb5d083a4bc23fdddff3a3d667233dc425dd2",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:1a40d18438452d64bd395938d70d4fdc1c2a86dc948f002ece72042feebb86de",
+      "path": "skills/design-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:011d7c9d2662d7f19806bc4d19141bb50becf1327cac24f0926409fa3b9c4681",
+      "path": "skills/design-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:21478e6bfca8a9effaa65076f61f4f8505c1e6a35b93a6005294a05788706df0",
+      "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:1d04d76c998eeb8ee4e5ed4cb496d52e23cc47fcb350f90eb6b6b79d8960f069",
+      "path": "skills/design-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/design-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:e024ceb3a940d7ca3ec5fc7a1863e0608e075039f441080a2debe4b0ea63f38e",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:31b27b8be47f4590321c8fce915b58154a01bf10e660c0904de4087d0865df27",
+      "path": "skills/explore/SKILL.md"
+    },
+    {
+      "identity": "sha256:9822b423ca303fab626afbc9d43ee2458e2b7e8b97b0214ab531ed50dc961e60",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:11c06924f01b53f1c5c58ff2ef2c055b95c27d65d9285792fe9ed99b58d9c5c1",
+      "path": "skills/implement/references/planned-milestone-implementation.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/implement/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:03b30156f2fdcf3b81afd02219448199e4c59dd46c51ff7d9f47cb18fdbf1533",
+      "path": "skills/learn/SKILL.md"
+    },
+    {
+      "identity": "sha256:698199635e402d41b56c08525479dff4449f765492a7195a36dd5f0c8c743363",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:87d9c81f215ea8c7d4f86675e1450175058c2f44e902235bb1700e7e340389a2",
+      "path": "skills/plan/references/governed-plan-authoring.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/plan/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:5ddb6d7ebb76951525d4893da5a4ff784574ac51453b7abb207eee7137dd3039",
+      "path": "skills/pr/SKILL.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/pr/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:2925c6b74bf09805eada74ea9511c6e1891c91704421a02c45998663979aeae2",
+      "path": "skills/proposal-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:d518a86f03d043d88e78e52bd2482882c81ffd82c486915be4567517ad5f4667",
+      "path": "skills/proposal-review/assets/material-finding.md"
+    },
+    {
+      "identity": "sha256:c2c95c45e032f1d4359ac2a0ddd784035658b621af84a4e04c483386d4b93754",
+      "path": "skills/proposal-review/assets/review-result-skeleton.md"
+    },
+    {
+      "identity": "sha256:c68d993ee534c836311e2ffeea4856878947c3b8077ce57f6f94204ced727290",
+      "path": "skills/proposal-review/references/proposal-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:1d04d76c998eeb8ee4e5ed4cb496d52e23cc47fcb350f90eb6b6b79d8960f069",
+      "path": "skills/proposal-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/proposal-review/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:0d0f5210bffa3d46819d9b8eda25b4d1d1a5a5c3fe6aa6fc644fa8bdc17e24a8",
+      "path": "skills/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:2828bd915c7947ec96098c3654248089c5634010cf4a181a9be8bc727a6c75be",
+      "path": "skills/proposal/references/governed-proposal-authoring.md"
+    },
+    {
+      "identity": "sha256:7686a8553670cf39010d041c4a0a471489df26baf5a5f7548e308c110bc96715",
+      "path": "skills/research/SKILL.md"
+    },
+    {
+      "identity": "sha256:85bb8b4221b0d2ab800a721d2253df2ffd1f768a0c15b7f476984ad5d9ad0a4f",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:10e1cb7a8932e1b9339be54385ee94c3d7895de5053d3175e6ff168c246f9155",
+      "path": "skills/route/references/governed-lifecycle-routing.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/route/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:c6ff935b4c0cdb066c0cb1bae125adfeb41412e4283321cadee93cfff2d7869a",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:0555d0faa7bd43db14c8432efbaca9499bb8679c3512e1ebaff23a67ce595a16",
+      "path": "skills/verify/assets/verify-report-skeleton.md"
+    },
+    {
+      "identity": "sha256:fa1d6ac3f4917104193dd8d8b654dc6f99a463e0f42f0426d6d0aa421e6f5a94",
+      "path": "skills/verify/references/branch-readiness-verification.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "skills/verify/references/review-reliance.md"
+    },
+    {
+      "identity": "sha256:d2e875322c6fe4a133a46b2a7994160793bbc6ed8cff6ceffcc0843c0193c693",
+      "path": "skills/verify/references/successful-explanation.md"
+    },
+    {
+      "identity": "sha256:ea4b5c52e9d0badcb09aef4fff1a471269119f4ceb1161fac4685475ad605d3e",
+      "path": "templates/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:1d04d76c998eeb8ee4e5ed4cb496d52e23cc47fcb350f90eb6b6b79d8960f069",
+      "path": "templates/shared/review-assessment.md"
+    },
+    {
+      "identity": "sha256:748c95a8260d36cf0eaf10a0ad377303f359f067b5dca1b40b600fe06cc62595",
+      "path": "templates/shared/review-isolation-and-recording.md"
+    },
+    {
+      "identity": "sha256:0ac3e3ccc77aee7e6d60d5d56dd61a1d7424aa3443910cb85d198993bdd82818",
+      "path": "templates/shared/review-reliance.md"
+    },
+    {
+      "identity": "sha256:179ed54a5078d1d5242dfa937b2d65ec989cb063ca88fbe9aaa61a3b1f7fb5d5",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/evidence.json"
+    },
+    {
+      "identity": "sha256:0dba4da0fc980021255691fb92b6050f64d8f9c3c9de6829253face5d037beb4",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/material-decisions.json"
+    },
+    {
+      "identity": "sha256:936d8e5a9b38d5c702353a4c5ce55e148ae28420844a02f153ff4bae9868fc06",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review-final.json"
+    },
+    {
+      "identity": "sha256:e235d6571fcdcdf17b51ec2d86d644ccee24b1dbb07b160c6d23bb9319591fa7",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:14700e1b1fb0e22ac2bb7446bb7c260cf0434e5e67b2a44063dac620c8477987",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m1.json"
+    },
+    {
+      "identity": "sha256:76071445561b7b1cebec2d20e1ccf7184c652f31685443ddc7991354e0a5e2ed",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m2.json"
+    },
+    {
+      "identity": "sha256:5a56597adb254486227c4cf7b120407b10ef14f06632e8e9c60fd18c7c246586",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m3.json"
+    },
+    {
+      "identity": "sha256:cc2185169a56767fbf38374be5a09d497171ca6aabc0713d83eee335bf004f57",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m4.json"
+    }
+  ],
+  "target": "code"
+}

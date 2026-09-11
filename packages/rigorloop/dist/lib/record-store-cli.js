@@ -1,7 +1,7 @@
 import { readSync } from "node:fs";
 import { executeRecordStore, emptyRecordResult } from "./record-store.js";
 import { parseAdvancedRequest } from "./record-store-format.js";
-import { MIB } from "./record-store-files.js";
+import { MIB, stop } from "./record-store-files.js";
 
 const OPERATIONS = ["inspect","check","record","recover"];
 const EXITS = {inspected:0,valid:0,saved:0,unchanged:0,recovered:0,rejected:2,conflict:3,busy:4,"recovery-required":5};
@@ -55,7 +55,8 @@ export function executeRecordStoreCli(args,options={}) {
   else {
     try {
       const request=["record","check"].includes(selected.operation)?parseAdvancedRequest(options.input??(options.readInput??input)()):undefined;
-      result=executeRecordStore({...selected,request},options);
+      // New stores use v3; existing v2 stores retain their complete compatibility path.
+      result=executeRecordStore({...selected,request,creationContract:"rigorloop-records-v3"},options);
     } catch(e) {
       const code=e.recordStoreCode??(e.code?"io-failure":String(e.message).includes("limit")?"limit-exceeded":"invalid-input");
       result.errors=[{code,path:null,message:`Record store: ${code}.`}];

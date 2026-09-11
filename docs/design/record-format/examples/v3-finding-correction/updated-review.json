@@ -1,0 +1,55 @@
+{
+  "schema_version": 3,
+  "change_id": "example-change",
+  "id": "design-review",
+  "target": "design",
+  "reviewer": {
+    "id": "reviewer-a",
+    "role": "review"
+  },
+  "contributors": [
+    {
+      "id": "author-a",
+      "role": "design"
+    }
+  ],
+  "independence_basis": "Reviewer A authored none of the supplied design.",
+  "subjects": [
+    {
+      "path": "docs/design/example/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "judgment": "changes-requested",
+  "findings": [
+    {
+      "id": "finding-1",
+      "reporter": {
+        "id": "reviewer-a",
+        "role": "review"
+      },
+      "owner": {
+        "id": "author-a",
+        "role": "design"
+      },
+      "subjects": [
+        {
+          "path": "docs/design/example/example.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": "The diagnostic continuation example omits the observed identity when comparing two already-drifted subjects.",
+      "required_outcome": "Add the observed identity to the continuation example and demonstrate that a second drift invalidates its token.",
+      "state": "open",
+      "resolution": null
+    }
+  ],
+  "summary": "The stated freshness guarantee needs a complete observation basis.",
+  "assessment_scope": "Design assessment of diagnostic continuation; implementation was not executed.",
+  "rationale": [
+    "Identical drift messages can describe different subject content.\n\n```text\nobserved: B → C\nliteral text: \\n\n```\n\nBoth observed subjects differ from A, so the observed identity must participate in the digest."
+  ],
+  "limitations": [
+    "The assessment covers the supplied Design."
+  ]
+}

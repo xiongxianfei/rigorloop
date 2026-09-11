@@ -1,0 +1,13 @@
+{
+  "schema_version": 3,
+  "operation": "review.set",
+  "status": "rejected",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "errors": [
+    {
+      "code": "target-not-found",
+      "message": "Change store: target-not-found."
+    }
+  ]
+}

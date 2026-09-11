@@ -1,6 +1,6 @@
 # Final verification explanation
 
-Presentation aid for a successful assessment; use the CLI's existing v2 fields for storage, not a new report protocol.
+Presentation aid for a successful assessment; use the CLI's selected stored fields. For v3, supply summary, assessment_scope, rationale, limitations and changes directly; keep commands/results in evidence. This aid is not a stored body or a second report protocol.
 
 ## Change and rationale
 

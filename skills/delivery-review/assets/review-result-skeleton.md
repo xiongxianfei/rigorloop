@@ -4,7 +4,7 @@
 <!-- Maintained alongside: skills/delivery-review/SKILL.md -->
 
 
-<!-- Presentation only: adopted Review and Closeout uses exact subjects, scope and claim limits from the packaged application. Use the existing v2 schema and targeted commands for storage; this asset is presentation only. -->
+<!-- Presentation only: adopted Review and Closeout uses exact subjects, scope and claim limits from the packaged application. Use the selected stored schema and targeted commands for storage; this asset is presentation only. -->
 
 ## Result
 

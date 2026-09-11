@@ -3,7 +3,8 @@ import { basename, dirname, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { executeRecordStore } from "../packages/rigorloop/dist/lib/record-store.js";
 
-import { parseV2Record, validateV2Set } from "../packages/rigorloop/dist/lib/record-format-v2.js";
+import { storedFormat } from "../packages/rigorloop/dist/lib/record-store-format.js";
+const formatFor = bytes => storedFormat(JSON.parse(bytes.toString()));
 
 function snapshotFiles(root, changeId, revision) {
   if (!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(revision)) throw new Error();
@@ -25,7 +26,7 @@ function snapshotFiles(root, changeId, revision) {
   if(git(["ls-tree", "-z", commit, "--", `:(literal)${prefix}change.yaml`]).length) throw new Error();
   const manifest = prefix+"change.json";
   const files = {[manifest]: read(manifest)};
-  const change = parseV2Record("change", files[manifest]);
+  const change = formatFor(files[manifest]).parse("change", files[manifest]);
   if (change.change_id !== changeId) throw new Error();
   // Parsing validates the bounded registry before any supporting blob is read.
   for (const record of change.records) files[record.path] = read(record.path);
@@ -46,7 +47,7 @@ try {
     if (result.status !== "inspected" || result.revision === null || !result.files.some(file=>file.path===`docs/changes/${changeId}/${basename(path)}`)) throw new Error();
     files = Object.fromEntries(result.snapshot.records.map(record => [record.path, record.content]));
   }
-  validateV2Set(changeId, files);
+  formatFor(files[`docs/changes/${changeId}/change.json`]).set(changeId, files);
   process.stdout.write("Explicit recording structure and references valid; no readiness judgment.\n");
 } catch {
   process.stderr.write("Invalid or unavailable explicit recording set.\n");

@@ -1,0 +1,283 @@
+{
+  "change": {
+    "schema_version": 3,
+    "contract": "rigorloop-records-v3",
+    "change_id": "example-change",
+    "proposal": {
+      "path": "docs/proposals/example.md",
+      "identity": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "models": [
+      {
+        "id": "example",
+        "subject": {
+          "path": "docs/design/example/example.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    ],
+    "activity": {
+      "stage": "verify",
+      "status": "completed",
+      "owner": {
+        "id": "verifier-a",
+        "role": "verify"
+      },
+      "reason": "Illustrative recorded completion for explaining the five record kinds; this fixture does not establish actual lifecycle readiness."
+    },
+    "plan": {
+      "path": "docs/plans/example.md",
+      "identity": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    },
+    "work": [
+      {
+        "id": "renderer-change",
+        "status": "completed",
+        "owner": {
+          "id": "author-a",
+          "role": "implement"
+        },
+        "requirement_refs": [
+          "EX-SR-01"
+        ]
+      }
+    ],
+    "records": [
+      {
+        "path": "docs/changes/example-change/reviews/final-code-review.json",
+        "kind": "review"
+      },
+      {
+        "path": "docs/changes/example-change/evidence.json",
+        "kind": "evidence"
+      },
+      {
+        "path": "docs/changes/example-change/material-decisions.json",
+        "kind": "decisions"
+      },
+      {
+        "path": "docs/changes/example-change/verify-report.json",
+        "kind": "verify"
+      }
+    ],
+    "applicability": [
+      {
+        "path": "docs/changes/example-change/reviews/final-code-review.json",
+        "value": "current",
+        "actor": {
+          "id": "reviewer-a",
+          "role": "review"
+        },
+        "reason": "Illustrative actor declaration for the exact synthetic assessment basis; not actual approval or evidence."
+      },
+      {
+        "path": "docs/changes/example-change/evidence.json",
+        "value": "current",
+        "actor": {
+          "id": "verifier-a",
+          "role": "verify"
+        },
+        "reason": "Illustrative actor declaration for the exact synthetic assessment basis; not actual approval or evidence."
+      },
+      {
+        "path": "docs/changes/example-change/material-decisions.json",
+        "value": "current",
+        "actor": {
+          "id": "designer-a",
+          "role": "design"
+        },
+        "reason": "Illustrative actor declaration for the exact synthetic assessment basis; not actual approval or evidence."
+      },
+      {
+        "path": "docs/changes/example-change/verify-report.json",
+        "value": "current",
+        "actor": {
+          "id": "verifier-a",
+          "role": "verify"
+        },
+        "reason": "Illustrative actor declaration for the exact synthetic assessment basis; not actual approval or evidence."
+      }
+    ],
+    "blockers": []
+  },
+  "review": {
+    "schema_version": 3,
+    "change_id": "example-change",
+    "id": "final-code-review",
+    "target": "code",
+    "reviewer": {
+      "id": "reviewer-a",
+      "role": "review"
+    },
+    "contributors": [
+      {
+        "id": "author-a",
+        "role": "implement"
+      }
+    ],
+    "independence_basis": "In this fictional scenario, reviewer-a did not author the supplied implementation or tests. These labels do not authenticate independence.",
+    "subjects": [
+      {
+        "path": "docs/design/example/example.md",
+        "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "path": "src/example-renderer.js",
+        "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      {
+        "path": "tests/example-renderer.test.js",
+        "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "judgment": "approved",
+    "findings": [],
+    "summary": "The reviewed implementation keeps stored explanations intact while presenting selected values readably.",
+    "assessment_scope": "Illustrative final whole-change Code Review of the supplied renderer and tests against the example model.",
+    "rationale": [
+      "The renderer reads the supplied values without creating another authoritative report.",
+      "The selected-field output identifies omissions, so a partial read is distinguishable from a complete assessment."
+    ],
+    "limitations": [
+      "Synthetic Design example; no real implementation or independent review was performed."
+    ]
+  },
+  "evidence": {
+    "schema_version": 3,
+    "change_id": "example-change",
+    "checks": [
+      {
+        "id": "rendering-and-preservation",
+        "actor": {
+          "id": "author-a",
+          "role": "implement"
+        },
+        "subjects": [
+          {
+            "path": "docs/design/example/example.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "path": "src/example-renderer.js",
+            "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          {
+            "path": "tests/example-renderer.test.js",
+            "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ],
+        "result": "passed",
+        "procedure": "Illustrative procedure: render a rationale containing paragraphs and a literal backslash-n; compare decoded text and JSON values, and compare source bytes before and after the read.",
+        "summary": "The fictional check observes preserved rationale and unchanged stored bytes."
+      },
+      {
+        "id": "selected-field-output",
+        "actor": {
+          "id": "verifier-a",
+          "role": "verify"
+        },
+        "subjects": [
+          {
+            "path": "docs/design/example/example.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "path": "src/example-renderer.js",
+            "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          {
+            "path": "tests/example-renderer.test.js",
+            "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ],
+        "result": "passed",
+        "procedure": "Illustrative procedure: request only summary and limitations; inspect the returned field names, omitted-field metadata, record identity, contract and coherent revision.",
+        "summary": "The fictional check observes exactly the requested content with explicit omissions and identity metadata."
+      }
+    ]
+  },
+  "decisions": {
+    "schema_version": 3,
+    "change_id": "example-change",
+    "decisions": [
+      {
+        "id": "derived-presentation",
+        "actor": {
+          "id": "designer-a",
+          "role": "design"
+        },
+        "subjects": [
+          {
+            "path": "docs/design/example/example.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "rationale": "Render human output from named stored values so edits do not leave a second report out of sync.",
+        "source_refs": [
+          {
+            "path": "docs/changes/example-change/change.json",
+            "id": "example"
+          },
+          {
+            "path": "docs/changes/example-change/reviews/final-code-review.json",
+            "id": "final-code-review"
+          }
+        ]
+      }
+    ],
+    "body": "The retained design choice concerns presentation ownership. Record Format continues to keep material-decision explanation in body; the Review/Verify replacement does not change this record kind."
+  },
+  "verify": {
+    "schema_version": 3,
+    "change_id": "example-change",
+    "verifier": {
+      "id": "verifier-a",
+      "role": "verify"
+    },
+    "subjects": [
+      {
+        "path": "docs/design/example/example.md",
+        "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "path": "src/example-renderer.js",
+        "identity": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      {
+        "path": "tests/example-renderer.test.js",
+        "identity": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "evidence_refs": [
+      {
+        "path": "docs/changes/example-change/evidence.json",
+        "id": "rendering-and-preservation"
+      },
+      {
+        "path": "docs/changes/example-change/evidence.json",
+        "id": "selected-field-output"
+      }
+    ],
+    "review_refs": [
+      {
+        "path": "docs/changes/example-change/reviews/final-code-review.json",
+        "id": "final-code-review"
+      }
+    ],
+    "outcome": "success",
+    "summary": "The fictional delivered change satisfies the illustrated local assessment scope.",
+    "assessment_scope": "Illustrative local final assessment of the example renderer, its selected proof and final Code Review; this collection does not demonstrate the full required lifecycle.",
+    "rationale": [
+      "The referenced rendering evidence supports preservation of the authored explanation.",
+      "The selected-output evidence and final review support the conclusion that omitted content remains visible as omitted."
+    ],
+    "limitations": [
+      "Synthetic examples only; no checks or assessments in this collection were actually executed.",
+      "No Git/PR readiness, hosted CI, merge or publication result is claimed."
+    ],
+    "changes": [
+      "Named explanation values drive readable human output.",
+      "Field projection exposes requested content with explicit omissions."
+    ]
+  }
+}

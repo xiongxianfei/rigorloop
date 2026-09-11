@@ -209,7 +209,7 @@ export function validateWorkflowContextResult(r){
  if(!Array.isArray(r.candidates))stop('invalid-input');
  for(const [i,c]of r.candidates.entries()){
   exact(c,['change_id','path','record_contract','revision']);
-  if(!safeId(c.change_id)||c.path!==`docs/changes/${c.change_id}/change.json`||c.record_contract!=='rigorloop-records-v2'||!isDigest(c.revision)||(i&&r.candidates[i-1].change_id>=c.change_id))stop('invalid-input');
+  if(!safeId(c.change_id)||c.path!==`docs/changes/${c.change_id}/change.json`||!['rigorloop-records-v2','rigorloop-records-v3'].includes(c.record_contract)||!isDigest(c.revision)||(i&&r.candidates[i-1].change_id>=c.change_id))stop('invalid-input');
  }
  validateAdvancedEnvelope({...emptyRecordResult('inspect','discovery'),errors:r.errors});
  if(r.scope.candidate_count!==r.candidates.length||(r.status==='success')!==(r.errors.length===0)||r.scope.complete!==(r.status==='success')||(r.scope.mode==='explicit')!==(r.selection.requested_change!==null))stop('invalid-input');

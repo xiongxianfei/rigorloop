@@ -1,0 +1,17 @@
+{
+  "schema_version": 3,
+  "operation": "finding.set",
+  "status": "saved",
+  "claim": "storage-only",
+  "change_id": "example-change",
+  "revision": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "changed": [
+    {
+      "kind": "finding",
+      "target": {
+        "review": "design-review",
+        "id": "finding-1"
+      }
+    }
+  ]
+}

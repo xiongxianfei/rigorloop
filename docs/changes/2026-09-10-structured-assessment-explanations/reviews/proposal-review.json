@@ -1,0 +1,58 @@
+{
+  "body": "Assessment scope: independent first-pass direction review of the complete proposal against the supplied initial request, Constitution, Vision, and its cited Record Format, CLI, Review and Closeout, and Verify basis. This assesses sufficiency for Design authorship, not implementation or the replacement contract's adoption.\n\nReview dimensions:\n- Challenge: pass. The proposal distinguishes poor field addressability from readable rendering and identifies the remaining explanation without duplicating already structured assessment facts.\n- Goals: pass. Direct access, one authoritative home, preserved integrity and explicit compatibility treatment address that challenge.\n- Scope: pass. The five-field vocabulary, projections and two narrow updates are bounded; supporting consumer and version work remains explicitly included. Generic reports, unrestricted patches, evidence redesign and automatic narrative conversion are excluded with clear reasons.\n- Governing principle: pass. Meaningful explanation homes preserve the responsible actor's assessment authority independently of implementation mechanics.\n- Direction: pass. The requested stored-record replacement is concrete; complete reassessment and narrow updates retain distinct purposes, while readable output is derived without a competing report.\n- Feasibility: pass. One embedded evaluation cites existing complete assessment construction, explicit partial reads, revision conflicts and lossless value edits. The closed v2 schema establishes the need for an incompatible stored-version decision. These are a credible design basis, not executed proof of the proposed operations.\n- Material impact: pass. Coordinated consumer adoption, historical preservation, conditional verification basis and unfinished v2 work are disclosed. The initiative itself is included in unfinished-work disposition if registered under v2.\n- Vision alignment: pass; aligned. Directly accessible reasoning improves durable, human-understandable and resumable artifacts while preserving actor ownership and avoiding mandatory Git or hosted-service dependence.\n- Downstream authority: pass. The named fields and update boundaries preserve the user's selected direction. Exact schemas, command envelopes, remaining cardinality, adoption mechanics and proof allocation remain Design and Delivery responsibilities.\n- Requested decision: pass. The proposal asks for direction-level acceptance with explicit integrity and compatibility constraints, without claiming new-format implementation or adoption.\n\nScope preservation: every material requested goal remains visible. Whole-field replacement, honest projection omissions, unknown-field rejection, semantic no-op bytes, stale conflicts, immutable finding origins across replacement/recovery, multiline values, success-only Verify and separation of save from reliance are retained. Verification-basis disposition and unfinished-v2-work treatment remain required in-scope decisions before implementation, not unnamed follow-ups.\n\nSpecialized gates: scope_budget_context applies because Record Format, CLI, policy and consumer alignment are coordinated workstreams. Its explicit core/dependency/exclusion treatment passes and leaves implementation slice allocation to Delivery. vision_exception_context and standing_artifact_context do not apply: current standing authority exists and the direction is aligned. There is no trigger ambiguity.\n\nRecommendation: pursue this bounded direction through a separately authorized Design activity. No proposal edits are required. Before implementation, the owning designers must reconcile conditional independently addressable verification-basis needs and explicit disposition of unfinished v2 work; those downstream decisions do not prevent assessing the proposal's direction.\n\nClaim limitations: no code execution, new-field behavior, test adequacy, hosted CI, branch readiness, final verification or release result is assessed here. Current v2 body storage remains authoritative for this review; the proposed v3 fields are not used prematurely. This manual formal review is isolated and supplies no automatic downstream handoff. Repository orientation relies on the directly inspected owning models and cited skill basis, not the older project-map inventory.",
+  "change_id": "2026-09-10-structured-assessment-explanations",
+  "contributors": [
+    {
+      "id": "codex-proposal-author",
+      "role": "proposal"
+    },
+    {
+      "id": "requesting-user",
+      "role": "human"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review",
+  "independence_basis": "The requesting user supplied the direction and parent agent /root authored the proposal. Reviewer sub-agent /root/proposal_review was separately delegated by /root after explicit user authorization, did not author or edit the proposal, and independently inspected the complete unchanged subject and cited governing basis. Actor IDs provide attribution, not authentication.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "codex-proposal-review",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:321142e381821c22603ceaaa64dd64218a98c2c08bd041964fedd41a4aa29b8f",
+      "path": "docs/proposals/2026-09-10-structured-assessment-explanations.md"
+    },
+    {
+      "identity": "sha256:9eacfc69e391724734e70c464a8ad97c7280daa247d1bab314314a37b722a1da",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:9e2d76bff364133fe34d7246c8b4dbbdc2a9c838dc89179ea74037be0a6c0501",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:75546a7d260ed1f9d7f8b7e230d12653f972e00ffd709e7c64c03c9a576f174f",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:81415e142116d43f5428e549f714a0e9a8ba06adafb50371e580ac6172f00792",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:8896f14b2ea36c0e54080ed079886b5c1b01b5e77301bf780bd0eeef943ce071",
+      "path": "docs/design/review-closeout/review-closeout.md"
+    },
+    {
+      "identity": "sha256:8bb1a934aef1176bcd8066eb3966ed4915486c1a7a364a8ad355fc2c246947a4",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:d28cde1d8f8c94fd0c5597072701e877120ada29923f729ce506716d0eec7d19",
+      "path": "skills/verify/references/branch-readiness-verification.md"
+    }
+  ],
+  "target": "proposal"
+}

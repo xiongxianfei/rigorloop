@@ -1,0 +1,243 @@
+{
+  "body": "Independent M2 reassessment, round 2, covers the final implementation through 752d7d36 from baseline 8d052069. The complete first-pass implementation assessment is retained on unchanged exact subjects; fresh inspection confirms only the constructor, mutation test and author evidence changed among the declared basis. The approved RF/CLI Design and primary plan remain unchanged. This reviewer authored no implementation or tests.\n\nThe bounded correction now carries an explicit effectFields list and appends verification_basis when a complete Verify reassessment actually removes that existing optional member. The emitted effect uses that expanded list. It does not invent removal when the member was already absent and does not broaden narrow Verify updates. The regression invokes the mutation CLI with --details, asserts the field appears in the effect and confirms stored values after removal. This satisfies code-review-m2-f1 while retaining overlap, byte-preservation and assessment/basis separation.\n\nIntegrated M2 review continues to find contract-selected complete/narrow mutation schemas, whole-field edits, semantic no-ops, explicit finding versus assessment edits and explicit applicability coherent with TG-03. V2 definitions and vocabulary remain unchanged except the enclosing supported-version unions. New-command schema-3 errors precede store validation; retained commands attach schema 3 only after validated v3 selection. Duplicate selectors do not fabricate identity, and the existing shared engine retains revision/read conflicts, preview and persistence protections. Optional basis insertion/removal remains exclusive to complete reassessment. Public new-store v3 creation stays gated for coordinated M4 adoption.\n\nIndependent validation for this correction: node --test packages/rigorloop/test/record-store-v3-mutations.test.js passed all 12 cases, including the new detailed-removal assertion. The earlier independent eight real-binary outcomes remain applicable to unchanged binary/family routing and error dispatch; the only runtime correction changes receipt field enumeration after construction, and the rerun directly observes that receipt. The author's broader 235-test result remains scoped to its recorded run; this review does not claim it was rerun after correction. Existing tested mutation paths and the focused regression adequately cover this small correction without treating a pass count as proof of every remaining milestone.\n\nCorrectness, contract fidelity, test quality, preservation, response closure and M1 interaction are adequately assessed for this M2 slice with no remaining required correction or unresolved owner decision. The actual v2 finding origin remains immutable; its disposition records the new assessment rather than rewriting the original report. M3 reads, M4 consumer adoption and their reviews remain required, followed by fresh whole-change Code Review and distinct Verify. This milestone assessment permits route-owned M2 closeout but makes no work-state update, adoption, final Verify, hosted CI or PR-readiness claim.",
+  "change_id": "2026-09-10-structured-assessment-explanations",
+  "contributors": [
+    {
+      "id": "codex-implement",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: code-review-m2-f1\nSeverity: minor\nLocation: packages/rigorloop/dist/lib/recording-construction.js:87-92, optional Verify removal and effect emission. CLI receipt contract at docs/design/cli/cli.md:276.\nA complete verify.record against a record containing verification_basis omits that optional field to remove it. The constructor expands keys and deletes the member, but the final effect uses Object.keys(values). Independently reproduced: candidate has no verification_basis while effects.changed_fields lists only verifier, subjects, evidence_refs, review_refs, outcome, summary, assessment_scope, rationale, limitations and changes. The detailed mutation receipt therefore fails to report the actual basis removal. Ordinary changed target and stored values remain correct.",
+      "id": "code-review-m2-f1",
+      "origin": {
+        "evidence": "Finding ID: code-review-m2-f1\nSeverity: minor\nLocation: packages/rigorloop/dist/lib/recording-construction.js:87-92, optional Verify removal and effect emission. CLI receipt contract at docs/design/cli/cli.md:276.\nA complete verify.record against a record containing verification_basis omits that optional field to remove it. The constructor expands keys and deletes the member, but the final effect uses Object.keys(values). Independently reproduced: candidate has no verification_basis while effects.changed_fields lists only verifier, subjects, evidence_refs, review_refs, outcome, summary, assessment_scope, rationale, limitations and changes. The detailed mutation receipt therefore fails to report the actual basis removal. Ordinary changed target and stored values remain correct.",
+        "rationale": "Detailed effects must describe the actual explicit reassessment changes, including the contract-defined optional basis removal; submitted member names alone are insufficient.",
+        "reporter": {
+          "id": "codex-code-review",
+          "role": "review"
+        },
+        "required_outcome": "Include the optional verification_basis removal in the emitted explicit field effects for complete Verify reassessment. Add a regression observing --details on the public mutation boundary, asserting candidate/stored absence and that changed_fields contains verification_basis; retain no-op, byte-preservation and narrow-update restrictions. Safe resolution path: bounded M2 implementation correction and independent rereview; no owner decision is needed.",
+        "subjects": [
+          {
+            "identity": "sha256:aaa321a0222018b6f23cd8cd5cd29e6ed3320c77a3c7cf7f19a26c2385268a95",
+            "path": "packages/rigorloop/dist/lib/recording-construction.js"
+          },
+          {
+            "identity": "sha256:d547bde3abf728cc7f2bf3e3661bdb327963dbffed19ead145e921dcb06ac821",
+            "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+          },
+          {
+            "identity": "sha256:59890e3cfbc467fad6fd276893432a09828a22aa3c3deaaa576147744355fcb7",
+            "path": "docs/design/cli/cli.md"
+          }
+        ],
+        "supporting_judgment": {
+          "contributors": [
+            {
+              "id": "codex-implement",
+              "role": "implement"
+            }
+          ],
+          "independence_basis": "Parent /root authored the M2 implementation and tests. Separately delegated reviewer authored neither, inspected final exact subjects and performed independent tests without editing engineering files.",
+          "judgment": "changes-requested",
+          "rationale": "Independent M2 review identified this reproducible receipt omission despite passing mutation cases.",
+          "reviewer": {
+            "id": "codex-code-review",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "identity": "sha256:edff2a7c297ca00863c70937fd5a0eb8bf871bd391b37a724daf049660a6b0bc",
+              "path": "docs/changes/2026-09-10-structured-assessment-explanations/evidence.json"
+            },
+            {
+              "identity": "sha256:14700e1b1fb0e22ac2bb7446bb7c260cf0434e5e67b2a44063dac620c8477987",
+              "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m1.json"
+            },
+            {
+              "identity": "sha256:1a490c0ab7c99590fa32c9193d969f4315b8f608f5ecafcc6570759250bcdb81",
+              "path": "packages/rigorloop/dist/lib/record-store.js"
+            },
+            {
+              "identity": "sha256:aaa321a0222018b6f23cd8cd5cd29e6ed3320c77a3c7cf7f19a26c2385268a95",
+              "path": "packages/rigorloop/dist/lib/recording-construction.js"
+            },
+            {
+              "identity": "sha256:d547bde3abf728cc7f2bf3e3661bdb327963dbffed19ead145e921dcb06ac821",
+              "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+            },
+            {
+              "identity": "sha256:ea6171ff8419b233078339f055574ab86e2d48e64b926c035d7632e93f4ce2c5",
+              "path": "packages/rigorloop/dist/lib/recording-result.js"
+            },
+            {
+              "identity": "sha256:6ca90505cea69352fdf306b9ea3079d660056b772bcd620807967985165a11d8",
+              "path": "packages/rigorloop/dist/lib/recording-spans.js"
+            },
+            {
+              "identity": "sha256:5f900cbfaa0776008bd28f9984786240e3b3e3667eee19e708df5d796a0d58b9",
+              "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json"
+            },
+            {
+              "identity": "sha256:12e35d2049ae71e1ef8f456286091a1c1de323a373b60fd703cff0147e4956f8",
+              "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+            },
+            {
+              "identity": "sha256:5f900cbfaa0776008bd28f9984786240e3b3e3667eee19e708df5d796a0d58b9",
+              "path": "schemas/targeted-recording-v1.schema.json"
+            },
+            {
+              "identity": "sha256:59890e3cfbc467fad6fd276893432a09828a22aa3c3deaaa576147744355fcb7",
+              "path": "docs/design/cli/cli.md"
+            },
+            {
+              "identity": "sha256:b00829fe553f5bd076d3e39b7e8636964f36f1fb43c74ef1d3b31deb18513a4c",
+              "path": "docs/design/record-format/record-format.md"
+            },
+            {
+              "identity": "sha256:25b98806480b7711f6dbfa379f9eb8cb3e643dab695e96016b5a5b50443776c1",
+              "path": "docs/plans/2026-09-11-structured-assessment-explanations.md"
+            },
+            {
+              "identity": "sha256:286548c736c835e181de744f271dec2e76dd184cb03fc53ee06e5e69f634a338",
+              "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review.json"
+            },
+            {
+              "identity": "sha256:e235d6571fcdcdf17b51ec2d86d644ccee24b1dbb07b160c6d23bb9319591fa7",
+              "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/delivery-review.json"
+            },
+            {
+              "identity": "sha256:f3271f203831a1ce34adc56fc78c8068186aadd5691cae28b68a14eb8d6670d7",
+              "path": "packages/rigorloop/dist/bin/rigorloop.js"
+            },
+            {
+              "identity": "sha256:8e8da58ee13619ab84ce0161d13db193a4493f51ca125614813343322addeee9",
+              "path": "packages/rigorloop/dist/lib/recording-cli.js"
+            },
+            {
+              "identity": "sha256:9c1c45c5c58e0d3e604d3ef7fc6061abcc40214c302bffc7e3fe3a4bad3841b2",
+              "path": "packages/rigorloop/dist/lib/recording-contract.js"
+            }
+          ]
+        }
+      },
+      "owner": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-code-review",
+        "role": "review"
+      },
+      "required_outcome": "Include the optional verification_basis removal in the emitted explicit field effects for complete Verify reassessment. Add a regression observing --details on the public mutation boundary, asserting candidate/stored absence and that changed_fields contains verification_basis; retain no-op, byte-preservation and narrow-update restrictions. Safe resolution path: bounded M2 implementation correction and independent rereview; no owner decision is needed.",
+      "resolution": {
+        "actor": {
+          "id": "codex-code-review",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Inspected constructor effectFields expansion and reran all 12 focused mutation tests. The complete Verify removal now appends verification_basis only when it deletes an existing member; --details regression observes that field alongside the correct stored absence. Narrow-update and preservation behavior remain unchanged. The required receipt correction is satisfied."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:aaa321a0222018b6f23cd8cd5cd29e6ed3320c77a3c7cf7f19a26c2385268a95",
+          "path": "packages/rigorloop/dist/lib/recording-construction.js"
+        },
+        {
+          "identity": "sha256:d547bde3abf728cc7f2bf3e3661bdb327963dbffed19ead145e921dcb06ac821",
+          "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+        },
+        {
+          "identity": "sha256:59890e3cfbc467fad6fd276893432a09828a22aa3c3deaaa576147744355fcb7",
+          "path": "docs/design/cli/cli.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m2",
+  "independence_basis": "Parent /root authored the M2 implementation and tests. Separately delegated reviewer authored neither, inspected final exact subjects and performed independent tests without editing engineering files.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "codex-code-review",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:91b88676eec9a54b91b05b676b4714ad8d9710758660f078c1e463c5977a926f",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/evidence.json"
+    },
+    {
+      "identity": "sha256:14700e1b1fb0e22ac2bb7446bb7c260cf0434e5e67b2a44063dac620c8477987",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/code-review-m1.json"
+    },
+    {
+      "identity": "sha256:1a490c0ab7c99590fa32c9193d969f4315b8f608f5ecafcc6570759250bcdb81",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:65b255348781df3abb9f94c1cc12d8451c39289f8bcf650aef8141e6d2e3f2ee",
+      "path": "packages/rigorloop/dist/lib/recording-construction.js"
+    },
+    {
+      "identity": "sha256:d547bde3abf728cc7f2bf3e3661bdb327963dbffed19ead145e921dcb06ac821",
+      "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+    },
+    {
+      "identity": "sha256:ea6171ff8419b233078339f055574ab86e2d48e64b926c035d7632e93f4ce2c5",
+      "path": "packages/rigorloop/dist/lib/recording-result.js"
+    },
+    {
+      "identity": "sha256:6ca90505cea69352fdf306b9ea3079d660056b772bcd620807967985165a11d8",
+      "path": "packages/rigorloop/dist/lib/recording-spans.js"
+    },
+    {
+      "identity": "sha256:5f900cbfaa0776008bd28f9984786240e3b3e3667eee19e708df5d796a0d58b9",
+      "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json"
+    },
+    {
+      "identity": "sha256:1592ca4453cc7a619a3dd8143341156c5351f1cd62591c329f3876d267817f4b",
+      "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+    },
+    {
+      "identity": "sha256:5f900cbfaa0776008bd28f9984786240e3b3e3667eee19e708df5d796a0d58b9",
+      "path": "schemas/targeted-recording-v1.schema.json"
+    },
+    {
+      "identity": "sha256:59890e3cfbc467fad6fd276893432a09828a22aa3c3deaaa576147744355fcb7",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:b00829fe553f5bd076d3e39b7e8636964f36f1fb43c74ef1d3b31deb18513a4c",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:25b98806480b7711f6dbfa379f9eb8cb3e643dab695e96016b5a5b50443776c1",
+      "path": "docs/plans/2026-09-11-structured-assessment-explanations.md"
+    },
+    {
+      "identity": "sha256:286548c736c835e181de744f271dec2e76dd184cb03fc53ee06e5e69f634a338",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:e235d6571fcdcdf17b51ec2d86d644ccee24b1dbb07b160c6d23bb9319591fa7",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:f3271f203831a1ce34adc56fc78c8068186aadd5691cae28b68a14eb8d6670d7",
+      "path": "packages/rigorloop/dist/bin/rigorloop.js"
+    },
+    {
+      "identity": "sha256:8e8da58ee13619ab84ce0161d13db193a4493f51ca125614813343322addeee9",
+      "path": "packages/rigorloop/dist/lib/recording-cli.js"
+    },
+    {
+      "identity": "sha256:9c1c45c5c58e0d3e604d3ef7fc6061abcc40214c302bffc7e3fe3a4bad3841b2",
+      "path": "packages/rigorloop/dist/lib/recording-contract.js"
+    }
+  ],
+  "target": "code"
+}

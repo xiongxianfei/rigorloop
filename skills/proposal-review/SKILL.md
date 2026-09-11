@@ -56,7 +56,7 @@ Use exactly these resource assemblies:
 
 ## Recording boundary
 
-After classification, durable or formal review requires the complete `references/proposal-review-recording-and-settlement.md` before dependent writes or recording claims. The adopted recording profile supports only `rigorloop-records-v2`; missing or conflicting authority stops without fallback to retired records. Keep supported findings visible when recording is blocked. Ordinary advisory review without a durable trigger needs no recording procedure. Recording does not grant approval or continuation.
+After classification, durable or formal review requires the complete `references/proposal-review-recording-and-settlement.md` before dependent writes or recording claims. The adopted recording profiles support existing `rigorloop-records-v2` and new `rigorloop-records-v3` stores; missing or conflicting authority stops without fallback to retired records. Keep supported findings visible when recording is blocked. Ordinary advisory review without a durable trigger needs no recording procedure. Recording does not grant approval or continuation.
 
 ## Review inputs and evidence
 
@@ -84,7 +84,7 @@ Bounded discovery is not evidence expansion. Record a compact reason only when r
 
 ## Artifact placement
 
-Formal proposal-review records use the selected v2 registry, normally `docs/changes/<change-id>/reviews/proposal-review.json`. Record through `review record`; do not hand-build registration or infer placement from archives.
+Formal proposal-review records use the selected registry, normally `docs/changes/<change-id>/reviews/proposal-review.json`. Record through `review record`; do not hand-build registration or infer placement from archives.
 
 If formal review lacks a change pack, create or request `docs/changes/<change-id>/` before claiming `Recording status: recorded`. For an isolated advisory review without a durable trigger, do not create lifecycle artifacts.
 
@@ -139,7 +139,7 @@ A direction that is too vague to approve is a material finding. Content that pre
 
 ## Isolation and Recording
 
-The following recording procedure applies the selected v2 interface. Use packaged assessment and reliance guidance for the judgment and its consequences.
+The following recording procedure applies the selected recording interface. Use packaged assessment and reliance guidance for the judgment and its consequences.
 
 Isolation governs handoff. Recording follows formal review triggers.
 

@@ -1,0 +1,126 @@
+{
+  "body": "Independent M1 Code Review covers f0c09f23..8d052069 against the unchanged five owner models, primary plan, current design-review/delivery-review and m1-implementation evidence. The parent authored the implementation and tests; this reviewer authored neither. Scope is the stored-contract and transaction foundation, with M2 primary operations, M3 queries and M4 consumers/adoption remaining separately required.\n\nThe schema delta satisfies RF-SR-09/11/12/13: closed named explanations replace only Review/Verify bodies, non-whitespace values and rationale/change cardinality reject invalid input, repeated reasons remain valid, and optional verification basis is complete and closed when supplied. V3 Finding has eight current fields and stable ID without origin; v2 concerns and v3 blockers retain origin. Typed reference validation retains authoritative namespaces. The canonical template contains all five valid record kinds and package copies match their canonical producer.\n\nDirect comparison of the extracted core with the previous v2 implementation found its strict JSON, Unicode, containment, limits, required membership and preservation protections retained. Every v2 array declares uniqueness, so schema-selected uniqueness preserves v2 behavior while permitting explanation repetition. Optional-member validation now validates only present fields; v2 required lists remain intact. Unknown kinds, fields and vocabularies fail closed.\n\nAdvanced request schema 2 is separated from stored version 3. Manifest dispatch selects parsing and snapshot validation; candidate construction rejects cross-version requests against an existing store. Preservation retains existing registry members and concern IDs, checks origin for v2 concerns and v3 blockers, and allows valid non-ID v3 Finding corrections. Journal selection applies the same contract to before/candidate states and reconstructs its validation request with envelope schema 2. Recovery restores or completes exact prepared bytes without regenerating explanation. The public advanced creation path rejects null-revision v3 creation until M4; internal engine fixtures operate only in temporary roots. This avoids premature public new-store adoption while preserving existing-v2 operation and recovery.\n\nContract tests exercise Design examples, required/unknown/dual representation failures, optional basis, mutable finding fields versus immutable IDs/blocker origins, mixed versions and typed references. Persistence tests observe exact bytes through prepared, partially published, precommit and committed interruptions, both recovery requests, refusal of postcommit restore, stale basis, unknown/mixed journals and third-state protection. Their expectations are explicit rather than derived from the same production dispatch. Four model-example fixture references changed to the already-renamed v2 scenario; assertions and existing protections were retained. No tests were removed.\n\nReviewer executions: node --test packages/rigorloop/test/record-store-v3-contract.test.js packages/rigorloop/test/record-store-v3-persistence.test.js passed 19 tests; node scripts/build-record-store-schema.mjs --check passed; Node stdin validation using validateV3Record passed each of the five canonical template kinds. Author evidence m1-implementation separately records the complete V1 command with 223 passes after its observed stale-fixture failure was corrected, plus metadata and whitespace checks. All 16 author-evidence subject identities match the inspected candidate. That broader author execution is not claimed as a reviewer run.\n\nCorrectness, scope, compatibility, recovery, test quality/maintenance and schema/template parity are adequate for M1; no material correction or unresolved owner decision was found. The approved Design and plan engineering members are unchanged. Expected implementation changes to supporting source inspection subjects are assessed here rather than treated as a rewrite of upstream design decisions. Historical approvals and actual v2 origins remain preserved. This non-final assessment supports route-owned M1 closeout and continuation to M2, without changing work state. M2–M4, their reviews, fresh whole-change Code Review and distinct Verify remain required; no final verification, adoption, hosted CI or PR readiness is claimed.",
+  "change_id": "2026-09-10-structured-assessment-explanations",
+  "contributors": [
+    {
+      "id": "codex-implement",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m1",
+  "independence_basis": "Parent /root authored this implementation and tests; independently delegated reviewer authored neither and made no engineering edits. Prior independent Design/Delivery review authorship is assessment evidence, not implementation authorship. This uses supported v2 recording, without a retired automation adapter.",
+  "judgment": "approved",
+  "reviewer": {
+    "id": "codex-code-review",
+    "role": "review"
+  },
+  "schema_version": 2,
+  "subjects": [
+    {
+      "identity": "sha256:5834da25752b12281d44c66596ffe040bb5ee202916f806ed31b68826a139e7f",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/evidence.json"
+    },
+    {
+      "identity": "sha256:8e1cd6556200956c7a95cad30920051491c099bb05e796958d17201b718e3801",
+      "path": "packages/rigorloop/dist/lib/record-format-core.js"
+    },
+    {
+      "identity": "sha256:16a77685606dd3643da88c5b9f8b988cea8d2df48df7ecc8869b6ba48a8b6673",
+      "path": "packages/rigorloop/dist/lib/record-format-v2.js"
+    },
+    {
+      "identity": "sha256:5c1ba8869c4c78d7a97147cb1dfa5c295358a12dce2e373aadeee81c6ccc4663",
+      "path": "packages/rigorloop/dist/lib/record-format-v3.js"
+    },
+    {
+      "identity": "sha256:458696568669ec2add6e27f5318625f0188ba15ee0b613310c179320d4d32903",
+      "path": "packages/rigorloop/dist/lib/record-store-cli.js"
+    },
+    {
+      "identity": "sha256:73223e1c8e2365c15c0ecb72adc1b44c24f2e2ac41874d21713fbe7dab8d277c",
+      "path": "packages/rigorloop/dist/lib/record-store-format.js"
+    },
+    {
+      "identity": "sha256:53c66d3bbc89cb3fbd3bac861cef15c5a19d216920e25052b71befb530a9ba72",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:e36a234ad803ab714e558cd159863a3557d03811aa22cbd32307f8313829fdfd",
+      "path": "packages/rigorloop/dist/schemas/rigorloop-records-v3.schema.json"
+    },
+    {
+      "identity": "sha256:ea4b5c52e9d0badcb09aef4fff1a471269119f4ceb1161fac4685475ad605d3e",
+      "path": "packages/rigorloop/dist/templates/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:308d3df4dc64d5a940750d82641f9d6cbabb46cd235b6bfe47a7ab75bd04ac34",
+      "path": "packages/rigorloop/test/helpers/v3-fixture.mjs"
+    },
+    {
+      "identity": "sha256:5ad45db07ac5ab1f4f01755487234882e4be7a9f25effe84b10ddbd9eb922848",
+      "path": "packages/rigorloop/test/record-store-model-examples.test.js"
+    },
+    {
+      "identity": "sha256:a33afe2c06632999cc4f514744672b23801b8566bc101bf017fa2d7ac8e80607",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:b9af7c5f0e1a5719a990f5ab23274643b0448088bc205bab62fcaa3258cd55c0",
+      "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+    },
+    {
+      "identity": "sha256:e36a234ad803ab714e558cd159863a3557d03811aa22cbd32307f8313829fdfd",
+      "path": "schemas/rigorloop-records-v3.schema.json"
+    },
+    {
+      "identity": "sha256:8caf5fcf0de2f013b053615a9dbd81ddf52456b7f64bf8b22c99e72249c351d8",
+      "path": "scripts/build-record-store-schema.mjs"
+    },
+    {
+      "identity": "sha256:ea4b5c52e9d0badcb09aef4fff1a471269119f4ceb1161fac4685475ad605d3e",
+      "path": "templates/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:b00829fe553f5bd076d3e39b7e8636964f36f1fb43c74ef1d3b31deb18513a4c",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:59890e3cfbc467fad6fd276893432a09828a22aa3c3deaaa576147744355fcb7",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:3160ee6ab7d27579f6d65062957fbaf07f59273736d6c5a50d8c1df4eac76615",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:30ed20e8662b475bca0fb32e8e7f6bce4522aaa29cf9bb878e1c81dcb7630ccd",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:40823b5356451b63be6ca23f215556337cd23d01baf517ab33c5704656aa9a76",
+      "path": "docs/design/review-closeout/review-closeout.md"
+    },
+    {
+      "identity": "sha256:25b98806480b7711f6dbfa379f9eb8cb3e643dab695e96016b5a5b50443776c1",
+      "path": "docs/plans/2026-09-11-structured-assessment-explanations.md"
+    },
+    {
+      "identity": "sha256:286548c736c835e181de744f271dec2e76dd184cb03fc53ee06e5e69f634a338",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:e235d6571fcdcdf17b51ec2d86d644ccee24b1dbb07b160c6d23bb9319591fa7",
+      "path": "docs/changes/2026-09-10-structured-assessment-explanations/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:be265e71549a69579eba68b78fb687a3115792796ce4fe663b5d81e633db58e8",
+      "path": "schemas/rigorloop-records-v2.schema.json"
+    },
+    {
+      "identity": "sha256:bd827d68dddc921e46f3867ed9ec2521228a01f2fdfe336026f5521d4e023377",
+      "path": "packages/rigorloop/dist/lib/record-discovery.js"
+    }
+  ],
+  "target": "code"
+}

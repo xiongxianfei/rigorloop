@@ -562,23 +562,59 @@ class ValidationSelectionTests(unittest.TestCase):
             writes.append({"path": prefix + name, "expected_identity": None, "content": content})
         request = {"schema_version": 2, "contract": "rigorloop-records-v2", "change_id": "example",
                    "expected_revision": None, "reads": [], "writes": writes}
-        result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
-                                 "record-store", "record", "--root", str(repo), "--change", "example",
-                                 "--input", "-", "--format", "json"],
-                                input=json.dumps(request) + "\n", text=True, capture_output=True)
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        # Existing v2 fixture, independent of today's v3-only creation API.
+        for write in request["writes"]:
+            destination = repo / write["path"]
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(write["content"])
         return repo, tuple(write["path"] for write in writes)
+
+    def test_v3_registered_paths_select_owner_and_unknown_value_versions_fail_closed(self):
+        repo = self.make_git_repo()
+        source = ROOT / "docs/design/record-format/examples/v3-complete-store"
+        target = repo / "docs/changes/example-change"
+        for file in source.rglob("*.json"):
+            destination = target / file.relative_to(source)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(file.read_bytes())
+        path = "docs/changes/example-change/reviews/final-code-review.json"
+        selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+        self.assertEqual(selected.status, "ok", selected.blocking_results)
+        checks = {c["id"] for c in selected.selected_checks}
+        self.assertIn("change_metadata.validate", checks)
+        self.assertNotIn("review_artifacts.validate", checks)
+        manifest = target / "change.json"
+        value = json.loads(manifest.read_text())
+        value["schema_version"] = 2
+        manifest.write_text(json.dumps(value) + "\n")
+        selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+        self.assertTrue(any(x["code"] == "unsupported-change-contract" for x in selected.blocking_results))
+
+    def test_manifest_discriminator_unknown_value_types_fail_closed(self):
+        repo = self.make_git_repo()
+        path = "docs/changes/example/change.json"
+        manifest = repo / path
+        manifest.parent.mkdir(parents=True)
+        for field in ("schema_version", "contract"):
+            for invalid in ([], {}, None, True, "unknown_value"):
+                with self.subTest(field=field, invalid=invalid):
+                    value = {"schema_version": 3, "contract": "rigorloop-records-v3"}
+                    value[field] = invalid
+                    manifest.write_text(json.dumps(value) + "\n")
+                    selected = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+                    self.assertEqual(selected.status, "blocked")
+                    self.assertTrue(any(x["code"] == "unsupported-change-contract" for x in selected.blocking_results))
 
     def test_v2_registered_json_paths_select_contract_owned_validator(self):
         repo, _ = self.recording_repo()
         shutil.rmtree(repo / "docs/changes/example")
         (repo / "docs/changes").mkdir(parents=True, exist_ok=True)
         fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())
-        result = subprocess.run(["node", str(ROOT / "packages/rigorloop/dist/bin/rigorloop.js"),
-                                 "record-store", "record", "--root", str(repo), "--change", "example",
-                                 "--input", "-", "--format", "json"],
-                                input=json.dumps(fixture["request"])+"\n", text=True, capture_output=True)
-        self.assertEqual(result.returncode, 0, result.stdout)
+        # Existing v2 fixture, independent of today's v3-only creation API.
+        for write in fixture["request"]["writes"]:
+            destination = repo / write["path"]
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(write["content"])
         for write in fixture["request"]["writes"]:
             selected = select_validation(SelectionRequest(mode="explicit", paths=(write["path"],), repo_root=repo))
             self.assertEqual(selected.status, "ok", selected.blocking_results)
@@ -658,6 +694,8 @@ class ValidationSelectionTests(unittest.TestCase):
             "scripts/validate-record-store.mjs",
             "tests/fixtures/explicit-recording-v1/records.json",
             "templates/explicit-recording/records.json",
+            "schemas/rigorloop-records-v3.schema.json",
+            "templates/rigorloop-records-v3/records.json",
             "schemas/rigorloop-records-v2.schema.json",
             "templates/rigorloop-records-v2/records.json",
             "tests/fixtures/rigorloop-records-v2/records.json",
@@ -697,8 +735,8 @@ class ValidationSelectionTests(unittest.TestCase):
 
     def test_model_example_selection_uses_owner_not_example_as_model(self):
         import shlex
-        for path in ("docs/design/record-format/examples/minimal-change.json",
-                     "docs/design/cli/examples/work-set/request.json",
+        for path in ("docs/design/record-format/examples/v2-minimal-change/change.json",
+                     "docs/design/cli/examples/v2-work-status-update/request.json",
                      "docs/design/cli/examples/observation-freshness/scan-b.json",
                      "docs/design/workflow/examples/correction-cycle.mmd"):
             result = select_validation(SelectionRequest(
@@ -5204,7 +5242,7 @@ raise SystemExit(3)
                 "direct proof",
             ],
             "skills/verify/SKILL.md": [
-                "registered v2 evidence",
+                "registered evidence",
                 "manual by design",
                 "manual proof",
                 "release metadata",

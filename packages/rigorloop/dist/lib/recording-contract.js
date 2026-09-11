@@ -1,3 +1,4 @@
+import {RECORDS_V3_SCHEMA} from "./record-format-v3.js";
 import {readFileSync} from "node:fs";
 import {stop,digest} from "./record-store-files.js";
 import {canonicalJSON} from "./recording-observations.js";
@@ -37,6 +38,29 @@ export function validatePrimaryResult(r){
  if(scope.complete!==(scope.next===null&&!(scope.missing_paths?.length)))stop("invalid-input");
  if(r.operation==="observations.show")return r;
  if((scope.total===null)!==(scope.missing_paths.length>0))stop("invalid-input");
- for(const item of rows){if(item.fields?.schema_version!==undefined&&item.fields.schema_version!==2)stop("invalid-input");if(item.origin_available!==undefined&&item.origin_available!==(r.record_contract==="rigorloop-records-v2"))stop("invalid-input");if(r.operation.endsWith(".show")&&item.kind!==r.operation.split(".")[0])stop("invalid-input");}
+ for(const item of rows){if(item.fields?.schema_version!==undefined&&item.fields.schema_version!==(r.schema_version===3?3:2))stop("invalid-input");if(item.origin_available!==undefined&&item.origin_available!==true)stop("invalid-input");if(r.operation.endsWith(".show")&&item.kind!==r.operation.split(".")[0])stop("invalid-input");}
+ if(r.schema_version===3){
+  for(const item of rows){
+   const kind=item.kind,show=r.operation===kind+'.show';
+   if(['review','verify'].includes(kind)){
+    const admitted=Object.keys(RECORDS_V3_SCHEMA.$defs[kind].properties).sort();
+    const summary=kind==='review'?['id','target','reviewer','subjects','judgment']:['schema_version','change_id','verifier','subjects','evidence_refs','review_refs','outcome'];
+    const selected=scope.fields??(scope.detail==='summary'?summary:admitted.filter(k=>show||kind!=='review'||k!=='findings'));
+    if(canonicalJSON([...selected].sort())!==canonicalJSON(selected)&&scope.fields)stop('invalid-input');
+    const actual=Object.keys(item.fields).sort(),absent=selected.filter(k=>k==='verification_basis'&&!actual.includes(k));
+    if(canonicalJSON(actual)!==canonicalJSON(selected.filter(k=>!absent.includes(k)).sort()))stop('invalid-input');
+    const omitted=admitted.filter(k=>!selected.includes(k)),declared=scope.omitted_fields.filter(x=>x.kind===kind);
+    if(canonicalJSON(declared)!==canonicalJSON(omitted.length?[{kind,fields:omitted}]:[]))stop('invalid-input');
+    if(show&&canonicalJSON(scope.absent_fields)!==canonicalJSON(absent))stop('invalid-input');
+   }
+   if(['finding','blocker'].includes(kind)){
+    const all=Object.keys(RECORDS_V3_SCHEMA.$defs[kind==='finding'?'finding':'concern'].properties).sort(),summary=['id','reporter','owner','subjects','state','required_outcome'];
+    const expected=scope.detail==='summary'?summary.sort():all;
+    if(canonicalJSON(Object.keys(item.fields).sort())!==canonicalJSON(expected))stop('invalid-input');
+    const omitted=all.filter(k=>!expected.includes(k));
+    if(canonicalJSON(scope.omitted_fields.filter(x=>x.kind===kind))!==canonicalJSON(omitted.length?[{kind,fields:omitted}]:[]))stop('invalid-input');
+   }
+  }
+ }
  return r;
 }
