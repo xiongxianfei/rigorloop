@@ -1,7 +1,7 @@
 # Plan index
 
 `docs/plan.md` is a navigation index to stable plan bodies and owning change records.
-Mutable lifecycle state, current milestones, review state, blockers, and next stages live in each plan's owning change record (`change.json` for current v2 work).
+Mutable lifecycle state, current milestones, review state, blockers, and next stages live in each plan's owning change record (`change.json` for current record-format work).
 
 <!--
 Index policy:
@@ -24,6 +24,8 @@ Compatibility heading only.
 Current blockers are not recorded in this index.
 
 ## Current plan references
+
+- [2026-09-11 Retire the v2 stored-record format](plans/2026-09-11-retire-v2-record-format.md) — [owning change](changes/2026-09-11-retire-v2-record-format/change.json).
 
 - [2026-09-11 Structured assessment explanations](plans/2026-09-11-structured-assessment-explanations.md) — [owning change](changes/2026-09-10-structured-assessment-explanations/change.json).
 

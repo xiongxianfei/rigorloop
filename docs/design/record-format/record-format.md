@@ -2,6 +2,8 @@
 
 Model validation contract: model-document-v1
 
+The [v2 retirement amendment](#v2-stored-format-retirement) defines the separately selected replacement for the continuation clauses below. It does not remove runtime support through Design approval.
+
 The [structured-assessment amendment](#structured-assessment-explanations) selects the prospective v3 extension under its own adoption boundary. Existing v2 definitions below remain the exact continuation contract; they are not silently reinterpreted as v3.
 
 ## Introduction and Goals
@@ -58,6 +60,7 @@ The CLI constructs registry and serialization mechanically from explicit operati
 | RF-SR-11 | V3 Verify MAY contain the closed conditional verification_basis object below. Its necessity for reliance is owned by Review and Closeout RC-SR-20; absence is structurally valid, null or partial objects are not. It MUST NOT become a universal Git requirement or be inferred from prose. |
 | RF-SR-12 | Adoption MUST preserve existing v2 stores and their exact contract, including required continuation and recovery, without automatic conversion. New v2 creation is withdrawn only at coordinated v3 adoption. Removal of existing-v2 support requires a separately reviewed owner disposition; this amendment does not retire it. |
 | RF-SR-13 | V3 Review findings MUST use the closed current-account shape and ID-only immutability defined below. Explicit corrections may edit all non-ID fields; removal/renaming, origin snapshots and implicit edits through review recording MUST reject. V2 concerns and v3 blocker origins remain unchanged. |
+| RF-SR-14 | After Workflow's explicit retirement disposition and coordinated adoption, operational storage MUST accept only rigorloop-records-v3. V2 records MUST retain their historical bytes and meaning without a reader, writer, validator, recovery path or automatic conversion. Shared definitions and independently versioned interfaces MUST remain available to supported consumers. |
 
 These requirements realize Workflow's actor-owned recording and retained-basis obligations (WF-SR-02/03/05/06/10/12/13/15). CLI-SR-02/03/09/18/21 consume them for construction, inspection and safe publication. Workflow retains decision ownership; RF-SR identifiers own representation and preservation.
 
@@ -320,6 +323,20 @@ This model creates no daemon, database or additional authoritative sidecar. Stor
 
 Delivery removes exclusive legacy stored definitions and reconciles consumers while retaining the existing v2 schema and safety validation. Shared transport definitions must survive independently. Installation and release infrastructure remain separately owned; the reviewed retirement implementation must adopt this support break coherently.
 
+## V2 stored-format retirement
+
+Owning change: [retire-v2-record-format](../../changes/2026-09-11-retire-v2-record-format/change.json), following the [approved direction](../../proposals/2026-09-11-retire-v2-record-format.md).
+
+After the coordinated adoption disposition in [Workflow](../workflow/workflow.md#v2-retirement-coordination), `rigorloop-records-v3` with stored schema_version 3 is the sole operational contract for the entire change store, including every registered record. No v4 is introduced. V3 explanation fields, conditional verification_basis, Review finding ID-only immutability and immutable blocker origins remain unchanged. Retiring v2 does not reinstate Review finding snapshots or redesign other records.
+
+This amendment adds v2 to RF-SR-06's retired set and replaces only RF-SR-12's existing-v2 read/write/validation/recovery guarantee, the corresponding Version adoption and preservation paragraphs, and their continuation scenarios. RF-DEC-06 retains the reason that immediate retirement would have stranded its original initiative; that guarantee ends through this separate disposition, not retroactively. Earlier sole-v2 clauses and examples describe the superseded operational profile. All other RF-SR-01–13 obligations apply to the remaining v3 population as already amended.
+
+Historical v2 records remain unchanged repository artifacts. They are not accepted by primary reads, targeted recording, advanced replacement, store validation or recovery; no conversion, body extraction or permanent legacy reader remains. A necessary new assessment is actor-authored in a distinct v3 initiative, with historical subjects identified as evidence when relevant. It neither replaces old bytes nor inherits their approval. Plain file access to history does not constitute supported stored-record validation.
+
+Remove the exclusive v2 schema, template and codec only after extracting definitions needed by v3 or independent interfaces. The v3 schema must be self-contained with respect to the retired stored schema. JSON parsing, actor/subject definitions, safe serialization and shared candidate/preservation machinery remain where they serve v3. Numeric request/result/document versions and internal observation versions are separate domains under CLI; their value 2 is not a retirement target.
+
+RF-DEC-08 selects removal of operational v2 support with archival preservation after an explicit dependency disposition. Permanent dual dispatch perpetuates the maintenance problem; automatic conversion changes the assessed representation and cannot migrate approval. The representative outcome is unchanged historical bytes alongside a fully usable v3 store, with no operational path requiring a v2 schema or codec. This is acceptance intent, not a request for new retirement tests; Workflow defines the selected test-removal scope.
+
 ## Crosscutting Concepts
 
 ### Serialization, identity and narrative
@@ -337,8 +354,8 @@ File identity, stored format version and current workflow applicability are dist
 | Identity/authority | RF-SR-03, RF-SR-04, RF-SR-10, RF-SR-13 | Changed review subjects never rewrite historical origin; actor labels do not establish reviewer independence. V2 retains origin. V3 explanation replacement leaves complete findings unchanged; explicit finding correction may replace the reported basis under the same ID (RF-SR-13). |
 | Composition/path | RF-SR-02, RF-SR-07, RF-SR-08, RF-SR-09, RF-SR-10, RF-SR-11 | Targeted and advanced candidates enforce identical invariants, including field-specific references and same-batch target creation; full selected Verify/decisions reads retain narratives without unrelated record bodies. V3 full/selected reads preserve the one authoritative explanation and conditional basis. |
 | Temporal/retry | RF-SR-04, RF-SR-08 | A later review preserves an existing concern's basis; stale retries conflict through the CLI without duplicated effects. |
-| Failure/recovery | RF-SR-02, RF-SR-04, RF-SR-08, RF-SR-12 | Interrupted publication restores exact before-state or completes the prepared candidate; neither outcome leaves mixed versions or partially registered authority. The journal selects the exact v2 or v3 contract; recovery never upgrades the before-state. |
-| Compatibility/migration | RF-SR-01, RF-SR-06, RF-SR-12 | Every named retired contract rejects through current runtime boundaries without writes, fallback or conversion; primary and advanced v2 operations retain their contract. Archived bytes and recorded identities remain unchanged; mixed and malformed v2 records reject. After this amendment adopts, new stores select v3 and existing v2 operations continue under the exact original contract without conversion. |
+| Failure/recovery | RF-SR-02, RF-SR-04, RF-SR-08, RF-SR-14 | Interrupted v3 publication restores exact before-state or completes the prepared candidate without mixed versions or partial registration. Known v2 recovery dependencies are settled before removal; retired or unknown journals never upgrade the before-state. |
+| Compatibility/migration | RF-SR-01, RF-SR-06, RF-SR-12, RF-SR-14 | The v2 retirement amendment replaces continuation after the explicit disposition and coordinated adoption. V3 stores retain their closed contract; historical v2 bytes and identities remain unchanged without operational acceptance or conversion. Independent interface versions survive. Workflow excludes new retirement tests from this initiative. |
 | External/environment | RF-SR-05, RF-SR-07, RF-SR-08 | Missing external subject is distinguishable from dangling internal reference; another actor reads the retained basis without Git, network or prior chat. |
 
 Material combined hazards include a new concern after completed work (RF-SR-04/05), a newly registered record with missing applicability (RF-SR-02/03), and an interrupted multi-record update (RF-SR-01/08). Delivery allocates proof jointly with the CLI's conflict and publication scenarios. These are acceptance obligations, not reported runtime test results.

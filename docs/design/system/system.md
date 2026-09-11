@@ -2,6 +2,8 @@
 
 Model validation contract: model-document-v1
 
+The [v2 retirement composition amendment](#v2-retirement-composition) prospectively replaces the existing-v2 coexistence boundary identified below.
+
 ## Introduction and Goals
 
 RigorLoop turns engineering intent into durable, reviewable design, delivery allocation, implementation evidence and assessed outcomes. This model owns the assembled system's boundaries, responsibility relationships and integrated obligations. It uses the [Design method](../design/design.md) and references component contracts instead of becoming a higher-priority copy of them.
@@ -33,6 +35,16 @@ The smallest exact Design package is the amended [Record Format](../record-forma
 Integrated acceptance requires a fresh actor to retrieve a rationale/limitations projection, recognize its omissions, make an authorized whole-field edit, and observe preserved neighbors/findings without interpreting save success as renewed approval. Also exercise an unfinished v2 change alongside a new v3 change, a v3 interruption/recovery and a mixed-version client that fails safely. Local schema validity cannot establish these composed properties. Delivery allocates exact checks and evidence under Test; independent Design Review assesses this whole subject set and interactions.
 
 Design, Skill, Test, Distribution and Release need no new model requirements for this amendment: their method, content-quality, protective-value, package generation/installation and publication responsibilities remain unchanged. Their relevant consumers must still be reconciled through Workflow's inventory. Standalone legacy review-validator removal is outside this scope. This section changes the affected composition description only; the earlier source-transfer maps and historical judgments retain their original meaning.
+
+## V2 retirement composition
+
+Owning change: [retire-v2-record-format](../../changes/2026-09-11-retire-v2-record-format/change.json). Under SYS-SR-02/04/06/08/09, this separate initiative replaces only the existing-v2 coexistence row and unfinished-v2 integrated scenario in Structured assessment composition. Its exact Design package consists of this section and the retirement amendments in [Record Format](../record-format/record-format.md#v2-stored-format-retirement), [CLI](../cli/cli.md#v2-runtime-retirement), [Workflow](../workflow/workflow.md#v2-retirement-coordination) and [Review and Closeout](../review-closeout/review-closeout.md#v2-retirement-and-assessment-reliance). Other composition and source-transfer maps retain their scope.
+
+Record Format selects v3-only operational storage; CLI owns version dispatch, archival classification and safe recovery rejection; Workflow owns dependency disposition and coordinated consumer/test removal; Review and Closeout distinguishes historical provenance from current reliance. Test, Skill, Distribution and Release retain their existing responsibilities. No new Retirement, Report, archive-ledger or compatibility component is introduced.
+
+The integrated condition is a fresh actor locating current policy through reconciled governance references, discovering v3 work, reading/editing its named explanation and handling conflicts/recovery through a package with no v2 operational dependency. Historical adoption links remain meaningful without a v2 validator; their original approvals do not cover the retirement Design or implementation. A remaining skill, validator or packaging import requiring v2 prevents the composed adoption claim even if a local v3 schema check passes. Workflow's explicit no-new-retirement-tests scope applies; Delivery allocates retained checks and dependency evidence rather than inventing a new retirement suite.
+
+The existing SYS-SR-09 interruption rule includes known v2 transactions at the removal boundary: their required disposition precedes removal, while retained v3 recovery protects new work. Unknown external repositories are outside a local completion claim. Model approval, build availability, final Verify, release publication and customer activation remain distinct decisions.
 
 ## Architecture Constraints
 
