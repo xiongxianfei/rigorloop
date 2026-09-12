@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-reviewer",
+      "id": "independent-final-reviewer",
       "role": "review"
     },
-    "reason": "Route hands the exact consolidated five-model package and affected example navigation to independent Design Review. Runtime and approved delivery allocation are unchanged; assess this preservation claim before final whole-change review and renewed Verify.",
-    "stage": "design-review",
+    "reason": "Route accepts current independent Design consolidation review. The unchanged approved plan and completed milestones remain applicable: no runtime behavior or new proof family changed. Request fresh independent whole-change Code Review of base5c4bda94 through consolidated sourcec502e146 and their interactions before distinct renewed Verify/PR187 refresh.",
+    "stage": "code-review",
     "status": "ready"
   },
   "applicability": [
@@ -38,12 +38,12 @@
     },
     {
       "actor": {
-        "id": "codex-design-review",
-        "role": "review"
+        "id": "codex-route",
+        "role": "route"
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json",
-      "reason": "Independent reassessment of the corrected CLI archive-header rule and its interactions, with unchanged package identities verified. This approval applies to the exact complete Design subjects and does not establish implementation or retirement adoption.",
-      "value": "current"
+      "reason": "Preserve this original assessment of its exact subjects. The consolidated Design changes its documentation basis; current reliance requires the new Design/final whole-change assessment, not automatic reuse of this approval.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -74,12 +74,12 @@
     },
     {
       "actor": {
-        "id": "codex-final-code-review",
-        "role": "review"
+        "id": "codex-route",
+        "role": "route"
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-code-review.json",
-      "reason": "Fresh independent whole-change assessment of the exact final engineering package and current attributable evidence after both milestones completed. Distinct Verify remains required.",
-      "value": "current"
+      "reason": "Preserve this original assessment of its exact subjects. The consolidated Design changes its documentation basis; current reliance requires the new Design/final whole-change assessment, not automatic reuse of this approval.",
+      "value": "stale"
     },
     {
       "actor": {
@@ -89,6 +89,15 @@
       "path": "docs/changes/2026-09-11-retire-v2-record-format/verify-report.json",
       "reason": "Documentation subjects will change under the authorized consolidation; previous successful Verify remains evidence of its exact earlier basis, not current PR readiness.",
       "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-design-consolidation-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-consolidation-review.json",
+      "reason": "Independent complete-package assessment of the consolidated five-model v3 contract and indexed examples at c502e146; unchanged Delivery allocation remains applicable within the documentation-only scope.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -175,6 +184,10 @@
     {
       "kind": "verify",
       "path": "docs/changes/2026-09-11-retire-v2-record-format/verify-report.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-consolidation-review.json"
     }
   ],
   "schema_version": 3,
