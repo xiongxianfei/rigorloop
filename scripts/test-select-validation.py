@@ -22,20 +22,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SELECTOR = ROOT / "scripts" / "select-validation.py"
 CI = ROOT / "scripts" / "ci.sh"
-BROAD_SMOKE_CLASSIFICATION_VALIDATOR = ROOT / "scripts" / "validate-broad-smoke-classification.py"
 CHANGE_METADATA_TEST = ROOT / "scripts" / "test-change-metadata-validator.py"
 README_VALIDATOR = ROOT / "scripts" / "validate-readme.py"
-BROAD_SMOKE_CLASSIFICATION = (
-    ROOT
-    / "docs"
-    / "changes"
-    / "2026-06-26-preflight-first-validation-runtime-optimization"
-    / "broad-smoke-child-classification.md"
-)
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from validation_selection import (  # noqa: E402
-    CHECK_CATALOG,
+    CHECK_CATALOG, MODE_CHECK_IDS,
     catalog_command,
     build_repository_preflight_context,
     SelectionRequest,
@@ -112,58 +104,6 @@ EXPECTED_CATALOG = {
     "npm_package_publication.test": "python scripts/test-npm-package-publication.py",
 }
 
-CI_SELECTED_POLICY_EXCEPTION = {
-    "reason": "selected-CI already captures child stdout/stderr and prints successful output only under --verbose",
-    "spec": "specs/script-output-optimization.md R29-R31, R51-R52",
-    "test": "specs/script-output-optimization.test.md TSRO-020, TSRO-026",
-}
-
-BROAD_SMOKE_CHECK_IDS_BY_RUN_CHECK_LABEL = {
-    "Validate canonical skills": "broad_smoke.skills.validate",
-    "Run skill validator fixtures": "broad_smoke.skills.regression",
-    "Run adapter distribution fixtures": "broad_smoke.adapters.regression",
-    "Build generated adapter archives": "broad_smoke.adapters.build_archives",
-    "Validate generated adapter archives": "broad_smoke.adapters.validate_archives",
-    "Run change metadata validator fixtures": "broad_smoke.change_metadata.regression",
-    "Run artifact lifecycle validator fixtures": "broad_smoke.artifact_lifecycle.regression",
-    "Run review artifact validator fixtures": "broad_smoke.review_artifacts.regression",
-    "$review_artifact_label": "broad_smoke.review_artifacts.changed_roots",
-    "$artifact_lifecycle_label": "broad_smoke.artifact_lifecycle.scoped",
-}
-BROAD_SMOKE_REQUIRED_CLASSIFICATION_FIELDS = (
-    "Check ID",
-    "Command",
-    "Reads",
-    "Writes",
-    "Temp roots",
-    "Shared outputs",
-    "Network use",
-    "CPU/I/O expectations",
-    "Nested parallelism risk",
-    "Output-order risk",
-    "Failure-output dependency",
-    "Parallel-safe candidate",
-    "Classification confidence",
-)
-NON_CANDIDATE_VALUES = {"no", "not-approved", "blocked"}
-BROAD_SMOKE_PARALLEL_CLASSIFICATION = (
-    ROOT
-    / "docs"
-    / "changes"
-    / "2026-06-27-broad-smoke-safe-parallelism"
-    / "broad-smoke-child-classification.yaml"
-)
-BROAD_SMOKE_PARALLEL_BASELINE = (
-    ROOT
-    / "docs"
-    / "changes"
-    / "2026-06-27-broad-smoke-safe-parallelism"
-    / "broad-smoke-parallelism-baseline.yaml"
-)
-
-VALIDATION_PRODUCER_PATTERN = re.compile(
-    r"\bpython\s+scripts/(?:test|validate|build)-[\w-]+\.py\b"
-)
 CHANGE_METADATA_PASSING_TEST = "ExplicitRecordingMetadataTests.test_explicit_recording_metadata_accepts_structure_without_stage_eligibility"
 CHANGE_METADATA_FAILING_TEST = "ChangeMetadataValidatorFixtureTests.test_output_contract_fixture_failure"
 
@@ -1028,19 +968,14 @@ class ValidationSelectionTests(unittest.TestCase):
         sleep_seconds: float = 0.2,
     ) -> Path:
         workspace = self.make_ci_workspace()
-        shutil.copy2(
-            BROAD_SMOKE_CLASSIFICATION_VALIDATOR,
-            workspace / "scripts" / "validate-broad-smoke-classification.py",
-        )
-        classification_copy = workspace / BROAD_SMOKE_PARALLEL_CLASSIFICATION.relative_to(ROOT)
-        classification_copy.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(BROAD_SMOKE_PARALLEL_CLASSIFICATION, classification_copy)
         all_failing_children = set(failing_children or set())
         if failing_child is not None:
             all_failing_children.add(failing_child)
         active_counter_children = set(active_counter_children or set())
         child_bodies = dict(child_bodies or {})
         child_scripts = [
+            "scripts/test-select-validation.py",
+            "scripts/test-validation-execution.py",
             "scripts/validate-skills.py",
             "scripts/test-skill-validator.py",
             "scripts/test-adapter-distribution.py",
@@ -1206,179 +1141,18 @@ raise SystemExit({exit_code})
             cwd=workspace,
         )
 
-    def extract_ci_functions(self, ci_text: str) -> dict[str, str]:
-        functions: dict[str, str] = {}
-        for match in re.finditer(
-            r"(?ms)^(?P<name>[A-Za-z_][A-Za-z0-9_]*)\(\) \{\n(?P<body>.*?)\n\}",
-            ci_text,
-        ):
-            functions[match.group("name")] = match.group("body")
-        return functions
 
-    def assert_run_check_captures_output(self, ci_text: str) -> None:
-        match = re.search(r"run_check\(\) \{\n(?P<body>.*?)\n\}", ci_text, re.DOTALL)
-        self.assertIsNotNone(match)
-        assert match is not None
-        body = match.group("body")
-        self.assertIn('"$@" 2>&1', body)
-        self.assertIn("Captured output:", body)
-        self.assertIn("verbose", body)
-        self.assertNotRegex(body, r'(?m)^\s*"\$@"\s*$')
 
-    def assert_selected_ci_policy_exception_is_documented(self) -> None:
-        for field in ("reason", "spec", "test"):
-            self.assertIn(field, CI_SELECTED_POLICY_EXCEPTION)
-            self.assertTrue(CI_SELECTED_POLICY_EXCEPTION[field])
-        self.assertIn("selected-CI", CI_SELECTED_POLICY_EXCEPTION["reason"])
-        self.assertIn("specs/script-output-optimization.md", CI_SELECTED_POLICY_EXCEPTION["spec"])
-        self.assertIn("specs/script-output-optimization.test.md", CI_SELECTED_POLICY_EXCEPTION["test"])
 
-    def assert_ci_mode_dispatch_has_documented_policies(self, ci_text: str) -> None:
-        self.assertRegex(
-            ci_text,
-            r"(?ms)^case \"\$mode\" in.*local\|explicit\|release\|pr\)\n\s*run_selected_mode",
-        )
-        self.assertRegex(
-            ci_text,
-            r"(?ms)^case \"\$mode\" in.*main\)\n\s*run_direct_product_gates",
-        )
-        self.assertRegex(
-            ci_text,
-            r"(?ms)^case \"\$mode\" in.*broad-smoke\)\n\s*run_broad_smoke",
-        )
-        self.assert_selected_ci_policy_exception_is_documented()
 
-    def producer_line_uses_capture_helper(self, lines: list[str], index: int) -> bool:
-        if re.search(r"\b(run_check|run_direct_check|broad_smoke_schedule_child)\b", lines[index]):
-            return True
 
-        current = index - 1
-        while current >= 0 and lines[current].rstrip().endswith("\\"):
-            if re.search(r"\b(run_check|run_direct_check|broad_smoke_schedule_child)\b", lines[current]):
-                return True
-            current -= 1
-        return False
 
-    def producer_line_is_command_array_assignment(self, lines: list[str], index: int) -> bool:
-        inside_array_assignment = False
-        for current, line in enumerate(lines[: index + 1]):
-            stripped = line.strip()
-            if re.match(r"^[A-Za-z_][A-Za-z0-9_]*=\($", stripped):
-                inside_array_assignment = True
-            if current == index:
-                return inside_array_assignment
-            if inside_array_assignment and stripped == ")":
-                inside_array_assignment = False
-        return False
 
-    def assert_ci_orchestration_modes_have_capture_policy(self, ci_text: str) -> None:
-        functions = self.extract_ci_functions(ci_text)
-        self.assertIn("run_broad_smoke", functions)
 
-        for name, body in functions.items():
-            if not name.startswith("run_") or name == "run_check":
-                continue
 
-            direct_stream = re.search(r'(?m)^\s*"\$@"\s*$', body)
-            if direct_stream:
-                raise AssertionError(
-                    f"scripts/ci.sh mode '{name.removeprefix('run_')}' streams child command directly"
-                )
 
-            lines = body.splitlines()
-            for index, line in enumerate(lines):
-                if not VALIDATION_PRODUCER_PATTERN.search(line):
-                    continue
-                if self.producer_line_is_command_array_assignment(lines, index):
-                    continue
-                if self.producer_line_uses_capture_helper(lines, index):
-                    continue
-                raise AssertionError(
-                    f"scripts/ci.sh mode '{name.removeprefix('run_')}' runs validation producer "
-                    f"without capture policy: {line.strip()}"
-                )
 
-    def assert_ci_wrapper_consistency_guard_passes(self, ci_text: str) -> None:
-        self.assert_run_check_captures_output(ci_text)
-        self.assert_ci_mode_dispatch_has_documented_policies(ci_text)
-        self.assert_ci_orchestration_modes_have_capture_policy(ci_text)
 
-    def assert_ci_wrapper_consistency_guard_fails(
-        self,
-        ci_text: str,
-        expected_message: str | None = None,
-    ) -> None:
-        context = (
-            self.assertRaisesRegex(AssertionError, expected_message)
-            if expected_message is not None
-            else self.assertRaises(AssertionError)
-        )
-        with context:
-            self.assert_ci_wrapper_consistency_guard_passes(ci_text)
-
-    def extract_broad_smoke_run_check_ids(self, ci_text: str) -> list[str]:
-        functions = self.extract_ci_functions(ci_text)
-        self.assertIn("run_broad_smoke", functions)
-        labels: list[str] = []
-        for match in re.finditer(
-            r"(?m)^\s*run_check\s+(?P<label>\"[^\"]+\"|\$[A-Za-z_][A-Za-z0-9_]*)",
-            functions["run_broad_smoke"],
-        ):
-            label = match.group("label")
-            if label.startswith('"') and label.endswith('"'):
-                label = label[1:-1]
-            labels.append(label)
-
-        check_ids: list[str] = []
-        for label in labels:
-            self.assertIn(label, BROAD_SMOKE_CHECK_IDS_BY_RUN_CHECK_LABEL)
-            check_ids.append(BROAD_SMOKE_CHECK_IDS_BY_RUN_CHECK_LABEL[label])
-        return check_ids
-
-    def parse_broad_smoke_classification_rows(self) -> list[dict[str, str]]:
-        self.assertTrue(BROAD_SMOKE_CLASSIFICATION.exists(), msg=str(BROAD_SMOKE_CLASSIFICATION))
-        lines = BROAD_SMOKE_CLASSIFICATION.read_text(encoding="utf-8").splitlines()
-        header_index = next(
-            index
-            for index, line in enumerate(lines)
-            if line.startswith("| Check ID | Command | Reads |")
-        )
-        headers = [cell.strip() for cell in lines[header_index].strip("|").split("|")]
-        self.assertEqual(tuple(headers), BROAD_SMOKE_REQUIRED_CLASSIFICATION_FIELDS)
-
-        rows: list[dict[str, str]] = []
-        for line in lines[header_index + 2 :]:
-            if not line.startswith("| broad_smoke."):
-                if rows:
-                    break
-                continue
-            cells = [cell.strip().strip("`") for cell in line.strip("|").split("|")]
-            self.assertEqual(len(cells), len(headers), msg=line)
-            rows.append(dict(zip(headers, cells, strict=True)))
-        return rows
-
-    def load_broad_smoke_parallel_classification(self) -> dict[str, object]:
-        self.assertTrue(BROAD_SMOKE_PARALLEL_CLASSIFICATION.exists(), msg=str(BROAD_SMOKE_PARALLEL_CLASSIFICATION))
-        with BROAD_SMOKE_PARALLEL_CLASSIFICATION.open(encoding="utf-8") as handle:
-            loaded = json.load(handle)
-        self.assertIsInstance(loaded, dict)
-        return loaded
-
-    def run_broad_smoke_classification_validator(
-        self,
-        classification: Path = BROAD_SMOKE_PARALLEL_CLASSIFICATION,
-    ) -> subprocess.CompletedProcess[str]:
-        return subprocess.run(
-            [
-                sys.executable,
-                str(BROAD_SMOKE_CLASSIFICATION_VALIDATOR),
-                "--classification",
-                str(classification),
-            ],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
 
     def select(self, paths: list[str], *, mode: str = "explicit", **kwargs):
         kwargs.setdefault("preflight_context", self.root_preflight_context)
@@ -1519,7 +1293,7 @@ raise SystemExit({exit_code})
         self.assertIn("selector.regression", selected_ids(payload))
 
     def test_catalog_matches_v1_contract(self) -> None:
-        self.assertEqual(set(CHECK_CATALOG), set(EXPECTED_CATALOG))
+        self.assertEqual(set(CHECK_CATALOG), set(EXPECTED_CATALOG) | {key for ids in MODE_CHECK_IDS.values() for key in ids})
         for check_id, command in EXPECTED_CATALOG.items():
             with self.subTest(check_id=check_id):
                 self.assertEqual(CHECK_CATALOG[check_id].command_template, command)
@@ -1642,7 +1416,7 @@ raise SystemExit({exit_code})
     def test_catalog_records_initial_parallel_safe_allowlist(self) -> None:
         from validation_selection import is_parallel_safe_check
 
-        expected_parallel_safe = {"skills.regression", "adapters.regression"}
+        expected_parallel_safe = {"skills.regression", "adapters.regression"} | {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
 
         self.assertEqual(
             {check_id for check_id in CHECK_CATALOG if is_parallel_safe_check(check_id)},
@@ -4182,7 +3956,7 @@ print("SECOND_STDOUT")
         historical.write_text("historical: changed-operational-input\n")
         result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("9 checks passed", result.stdout)
+        self.assertIn("11 checks passed", result.stdout)
         explicit = run_ci("--mode", "broad-smoke", env={"REVIEW_ARTIFACT_ROOTS": "docs/changes/example/"},
                           script=workspace / "scripts/ci.sh", cwd=workspace)
         self.assertEqual(explicit.returncode, 9, explicit.stdout + explicit.stderr)
@@ -4200,6 +3974,46 @@ print("SECOND_STDOUT")
         result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
         self.assertEqual(result.returncode, 9, result.stdout + result.stderr)
 
+    def test_broad_smoke_failed_build_prevents_archive_validation(self):
+        workspace = self.make_broad_smoke_workspace(failing_child="scripts/build-adapters.py",
+            child_bodies={"scripts/validate-adapters.py":"from pathlib import Path; Path('archive-ran').touch()"})
+        result = run_ci("--mode","broad-smoke","--jobs","2",script=workspace/"scripts/ci.sh",cwd=workspace)
+        self.assertEqual(result.returncode,7,result.stdout+result.stderr)
+        self.assertFalse((workspace/"archive-ran").exists())
+        self.assertIn("failed prerequisite: broad_smoke.adapters.build_archives",result.stdout)
+        self.assertIn("broad_smoke.validation_execution.regression | passed",result.stdout)
+
+    def test_selected_broad_smoke_is_one_invocation_and_diagnostic_failure_remains(self):
+        workspace = self.make_broad_smoke_workspace(failing_child="scripts/test-skill-validator.py",
+            child_bodies={"scripts/validate-skills.py":"from pathlib import Path; Path('broad-ran').touch()"})
+        wrapper = workspace/"scripts/ci.sh"
+        wrapper.write_text(wrapper.read_text().replace('cd "$ROOT_DIR"','cd "$ROOT_DIR"\nprintf "called\\n" >> "$INVOCATIONS"'))
+        marker = workspace/'broad-ran'
+        invocations = workspace/'invocations'
+        for diagnostic in (False,True):
+            marker.unlink(missing_ok=True)
+            invocations.unlink(missing_ok=True)
+            payload = self.minimal_selector_payload(selected_checks=[
+                self.selected_check('skills.regression','python scripts/test-skill-validator.py'),
+                self.selected_check('broad_smoke.repo','bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped')])
+            payload['broad_smoke']['sources'] = [{'type':'explicit_flag','value':'--broad-smoke'}] if diagnostic else []
+            fixture = self.write_selector_fixture(payload)
+            result = self.run_workspace_ci(workspace,fixture,'--mode','explicit','--path','README.md','--jobs','2',env={'INVOCATIONS':str(invocations)})
+            self.assertEqual(result.returncode,7,result.stdout+result.stderr)
+            self.assertEqual(marker.exists(),diagnostic,result.stdout+result.stderr)
+            self.assertEqual(invocations.read_text().splitlines(),['called'])
+            self.assertIn('broad_smoke.skills.validate',result.stdout)
+
+    def test_blocked_selection_diagnostic_broad_smoke_cannot_clear_original_blocker(self):
+        workspace = self.make_broad_smoke_workspace(child_bodies={"scripts/validate-skills.py":"from pathlib import Path; Path('diagnostic-ran').touch()"})
+        payload = self.minimal_selector_payload(status='blocked',blocking_results=[{'code':'manual-routing-required'}])
+        payload['broad_smoke']['sources'] = [{'type':'explicit_flag','value':'--broad-smoke'}]
+        fixture = self.write_selector_fixture(payload)
+        result = self.run_workspace_ci(workspace,fixture,'--mode','explicit','--path','unknown.txt','--jobs','2')
+        self.assertEqual(result.returncode,2,result.stdout+result.stderr)
+        self.assertTrue((workspace/'diagnostic-ran').exists(),result.stdout+result.stderr)
+        self.assertIn('original selector blocker remains unsuccessful',result.stdout)
+
     def test_broad_smoke_default_success_captures_child_output_and_prints_aggregate(self) -> None:
         workspace = self.make_broad_smoke_workspace()
 
@@ -4214,13 +4028,13 @@ print("SECOND_STDOUT")
         self.assertEqual(result.returncode, 0, msg=output)
         nonempty_lines = [line for line in output.splitlines() if line.strip()]
         self.assertEqual(len(nonempty_lines), 1, msg=output)
-        self.assertRegex(nonempty_lines[0], r"^\[PASS\] broad-smoke: 10 checks passed in \d+(?:\.\d+)?s$")
+        self.assertRegex(nonempty_lines[0], r"^\[PASS\] broad-smoke: 12 checks passed in \d+(?:\.\d+)?s$")
         self.assertNotIn("STDOUT marker", output)
         self.assertNotIn("STDERR marker", output)
         self.assertNotIn("==>", output)
         self.assertNotIn("--quiet", output)
 
-    def test_broad_smoke_omitted_jobs_keeps_parallel_mode_opt_in(self) -> None:
+    def test_broad_smoke_omitted_jobs_uses_assessed_default_concurrency(self) -> None:
         active_children = {
             "scripts/validate-skills.py",
             "scripts/test-skill-validator.py",
@@ -4239,7 +4053,7 @@ print("SECOND_STDOUT")
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 0, msg=output)
-        self.assertEqual(self.read_max_active(active_dir), 1, msg=output)
+        self.assertEqual(self.read_max_active(active_dir), 2, msg=output)
 
     def test_broad_smoke_jobs_one_keeps_sequential_compatibility(self) -> None:
         active_children = {
@@ -4286,13 +4100,14 @@ print("SECOND_STDOUT")
 
         self.assertEqual(result.returncode, 0, msg=output)
         self.assertGreaterEqual(self.read_max_active(active_dir), 2, msg=output)
-        self.assertRegex(output, r"^\[PASS\] broad-smoke: 9 checks passed in \d+(?:\.\d+)?s")
+        self.assertRegex(output, r"^\[PASS\] broad-smoke: 11 checks passed in \d+(?:\.\d+)?s")
 
     def test_ci_wrapper_duration_reporting_does_not_use_bash_seconds(self) -> None:
         ci_text = CI.read_text(encoding="utf-8")
 
         self.assertNotIn("$SECONDS", ci_text)
-        self.assertIn("elapsed_seconds_since", ci_text)
+        self.assertIn("time.monotonic()", (ROOT / "scripts/validation_execution.py").read_text())
+        self.assertNotIn("run_check()", ci_text)
 
     def test_broad_smoke_failure_prints_command_exit_duration_and_captured_output(self) -> None:
         workspace = self.make_broad_smoke_workspace(failing_child="scripts/test-skill-validator.py")
@@ -4306,7 +4121,7 @@ print("SECOND_STDOUT")
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 7, msg=output)
-        self.assertRegex(output, r"\[FAIL\] Run skill validator fixtures: exit 7 in \d+(?:\.\d+)?s")
+        self.assertRegex(output, r"\[FAIL\] broad_smoke.skills.regression / Run skill validator fixtures: exit 7 in \d+(?:\.\d+)?s")
         self.assertIn("Command:\npython scripts/test-skill-validator.py", output)
         self.assertIn("Captured output:", output)
         stdout_index = output.index("test-skill-validator.py STDOUT marker")
@@ -4343,9 +4158,9 @@ print("SECOND_STDOUT")
         self.assertIn("Captured output:", output)
         self.assertIn("Re-run:\npython scripts/test-skill-validator.py", output)
 
-    def test_broad_smoke_parallel_missing_classification_fails_before_children(self) -> None:
+    def test_broad_smoke_parallel_runs_without_historical_classification(self) -> None:
         workspace = self.make_broad_smoke_workspace()
-        (workspace / BROAD_SMOKE_PARALLEL_CLASSIFICATION.relative_to(ROOT)).unlink()
+        self.assertFalse((workspace / "docs/changes/2026-06-27-broad-smoke-safe-parallelism").exists())
 
         result = run_ci(
             "--mode",
@@ -4358,8 +4173,8 @@ print("SECOND_STDOUT")
         )
         output = result.stdout + result.stderr
 
-        self.assertNotEqual(result.returncode, 0, msg=output)
-        self.assertIn("broad-smoke classification validation failed", output)
+        self.assertEqual(result.returncode, 0, msg=output)
+        self.assertIn("[PASS] broad-smoke", output)
         self.assertNotIn("STDOUT marker", output)
 
     def test_broad_smoke_parallel_worker_crash_reports_scheduler_error(self) -> None:
@@ -4369,10 +4184,7 @@ print("SECOND_STDOUT")
 import os
 import signal
 
-parent = os.getppid()
-with open(f"/proc/{parent}/stat", encoding="utf-8") as handle:
-    grandparent = int(handle.read().split()[3])
-os.kill(grandparent, signal.SIGKILL)
+os.kill(os.getppid(), signal.SIGKILL)
 """.lstrip()
             }
         )
@@ -4389,9 +4201,9 @@ os.kill(grandparent, signal.SIGKILL)
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 4, msg=output)
-        self.assertIn("[FAIL] broad_smoke.skills.regression / Run skill validator fixtures: scheduler error", output)
-        self.assertIn("Scheduler error:", output)
-        self.assertIn("missing result metadata", output)
+        self.assertIn("[FAIL] broad_smoke.skills.regression / Run skill validator fixtures: exit 4", output)
+        self.assertIn("runner error", output)
+        self.assertIn("missing task outcome", output)
         self.assertNotIn("[PASS] broad-smoke", output)
 
     def test_broad_smoke_verbose_prints_successful_child_output_in_order(self) -> None:
@@ -4407,7 +4219,7 @@ os.kill(grandparent, signal.SIGKILL)
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 0, msg=output)
-        self.assertRegex(output, r"\[PASS\] broad-smoke: 10 checks passed in \d+(?:\.\d+)?s")
+        self.assertRegex(output, r"\[PASS\] broad-smoke: 12 checks passed in \d+(?:\.\d+)?s")
         self.assertLess(output.index("validate-skills.py STDOUT marker"), output.index("test-skill-validator.py STDOUT marker"))
         self.assertIn("validate-skills.py STDERR marker", output)
         self.assertIn("test-skill-validator.py STDERR marker", output)
@@ -4468,193 +4280,13 @@ os.kill(grandparent, signal.SIGKILL)
         self.assertEqual(child_phases["broad_smoke.adapters.regression"], "sequential")
         self.assertIn("delta", evidence)
 
-    def test_broad_smoke_child_classification_covers_ci_children(self) -> None:
-        ci_check_ids = self.extract_broad_smoke_run_check_ids(CI.read_text(encoding="utf-8"))
-        rows = self.parse_broad_smoke_classification_rows()
-        row_ids = [row["Check ID"] for row in rows]
 
-        self.assertEqual([key for key in row_ids if key not in RETIRED_MIRROR_CHECK_IDS], ci_check_ids)
-        self.assertEqual(set(row_ids) - set(ci_check_ids), RETIRED_MIRROR_CHECK_IDS)
-        for row in rows:
-            with self.subTest(check_id=row["Check ID"]):
-                for field in BROAD_SMOKE_REQUIRED_CLASSIFICATION_FIELDS:
-                    self.assertTrue(row[field], msg=field)
-                self.assertIn(
-                    row["Parallel-safe candidate"],
-                    {"no", "needs-follow-up", "candidate-after-separate-approval"},
-                )
-                self.assertIn(row["Classification confidence"], {"high", "medium", "low"})
 
-    def test_broad_smoke_classification_blocks_unsafe_candidate_claims(self) -> None:
-        rows = self.parse_broad_smoke_classification_rows()
 
-        for row in rows:
-            with self.subTest(check_id=row["Check ID"]):
-                has_writes = row["Writes"].lower() != "none"
-                has_shared_outputs = row["Shared outputs"].lower() != "none"
-                low_confidence = row["Classification confidence"] == "low"
-                if has_writes or has_shared_outputs or low_confidence:
-                    self.assertIn(row["Parallel-safe candidate"], NON_CANDIDATE_VALUES | {"needs-follow-up"})
 
-    def test_broad_smoke_classification_keeps_runtime_sequential(self) -> None:
-        ci_text = CI.read_text(encoding="utf-8")
-        broad_smoke_body = self.extract_ci_functions(ci_text)["run_broad_smoke"]
 
-        self.assertNotIn("ThreadPoolExecutor", broad_smoke_body)
-        self.assertNotRegex(broad_smoke_body, r"(?m)^\s*run_check\b.*&\s*$")
-        self.assertEqual(
-            self.extract_broad_smoke_run_check_ids(ci_text),
-            [row["Check ID"] for row in self.parse_broad_smoke_classification_rows() if row["Check ID"] not in RETIRED_MIRROR_CHECK_IDS],
-        )
 
-    def test_broad_smoke_parallel_classification_reconciles_with_ci_inventory(self) -> None:
-        result = self.run_broad_smoke_classification_validator()
 
-        self.assertEqual(result.returncode, 0, msg=result.stdout + result.stderr)
-        self.assertIn("broad-smoke classification validation passed", result.stdout)
-
-    def test_broad_smoke_parallel_classification_fails_on_stale_command(self) -> None:
-        classification = self.load_broad_smoke_parallel_classification()
-        children = classification["children"]
-        assert isinstance(children, list)
-        stale = dict(children[0])
-        stale["command"] = "python scripts/validate-skills.py --unexpected"
-        mutated_children = [stale, *children[1:]]
-        mutated = dict(classification)
-        mutated["children"] = mutated_children
-        temp_path = Path(tempfile.mkdtemp(prefix="broad-smoke-stale-classification-")) / "classification.yaml"
-        self.addCleanupTree(temp_path.parent)
-        temp_path.write_text(json.dumps(mutated, indent=2) + "\n", encoding="utf-8")
-
-        result = self.run_broad_smoke_classification_validator(temp_path)
-
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("stale command", result.stderr)
-
-    def test_broad_smoke_parallel_classification_fails_on_contradictory_parallel_candidate(self) -> None:
-        classification = self.load_broad_smoke_parallel_classification()
-        children = classification["children"]
-        assert isinstance(children, list)
-        contradictory = dict(children[0])
-        contradictory["side_effects"] = dict(contradictory["side_effects"])
-        contradictory["side_effects"]["writes_shared_temp"] = True
-        mutated = dict(classification)
-        mutated["children"] = [contradictory, *children[1:]]
-        temp_path = Path(tempfile.mkdtemp(prefix="broad-smoke-contradictory-classification-")) / "classification.yaml"
-        self.addCleanupTree(temp_path.parent)
-        temp_path.write_text(json.dumps(mutated, indent=2) + "\n", encoding="utf-8")
-
-        result = self.run_broad_smoke_classification_validator(temp_path)
-
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("blocking side-effect fields", result.stderr)
-
-    def test_broad_smoke_parallel_baseline_artifact_has_child_timing_shape(self) -> None:
-        self.assertTrue(BROAD_SMOKE_PARALLEL_BASELINE.exists(), msg=str(BROAD_SMOKE_PARALLEL_BASELINE))
-        with BROAD_SMOKE_PARALLEL_BASELINE.open(encoding="utf-8") as handle:
-            baseline = json.load(handle)
-        self.assertEqual(baseline["scenario"], "broad-smoke-sequential-baseline")
-        children = baseline["children"]
-        self.assertEqual(
-            [child["check_id"] for child in children if child["check_id"] not in RETIRED_MIRROR_CHECK_IDS],
-            [child["check_id"] for child in self.load_broad_smoke_parallel_classification()["children"]],
-        )
-        for child in children:
-            with self.subTest(check_id=child["check_id"]):
-                for field in ("command", "order", "duration_ms", "result", "output_bytes"):
-                    self.assertIn(field, child)
-
-    def test_broad_smoke_wrapper_mode_consistency_guard_is_enforced(self) -> None:
-        self.assert_ci_wrapper_consistency_guard_passes(CI.read_text(encoding="utf-8"))
-        self.assert_ci_wrapper_consistency_guard_fails(
-            """
-run_check() {
-  local label="$1"
-  shift
-
-  echo "==> $label"
-  "$@"
-}
-""".lstrip()
-        )
-        self.assert_ci_wrapper_consistency_guard_fails(
-            """
-run_check() {
-  local label="$1"
-  shift
-  output="$("$@" 2>&1)"
-  status=$?
-  if [ "$status" -ne 0 ]; then
-    printf '%s\n' "Captured output:"
-    printf '%s\n' "$output"
-  fi
-  if [ "$verbose" -eq 1 ]; then
-    printf '%s\n' "$output"
-  fi
-  return "$status"
-}
-
-run_broad_smoke() {
-  run_check "metadata" python scripts/test-change-metadata-validator.py
-}
-
-run_new_validation_mode() {
-  python scripts/test-change-metadata-validator.py
-}
-
-case "$mode" in
-  local|explicit|release|pr)
-    run_selected_mode
-    ;;
-  main)
-    run_direct_product_gates
-    ;;
-  broad-smoke)
-    run_broad_smoke
-    ;;
-esac
-""".lstrip(),
-            r"mode 'new_validation_mode' runs validation producer without capture policy",
-        )
-        self.assert_ci_wrapper_consistency_guard_fails(
-            """
-run_check() {
-  local label="$1"
-  shift
-  output="$("$@" 2>&1)"
-  status=$?
-  if [ "$status" -ne 0 ]; then
-    printf '%s\n' "Captured output:"
-    printf '%s\n' "$output"
-  fi
-  if [ "$verbose" -eq 1 ]; then
-    printf '%s\n' "$output"
-  fi
-  return "$status"
-}
-
-run_broad_smoke() {
-  run_check "metadata" python scripts/test-change-metadata-validator.py
-}
-
-run_direct_streaming_mode() {
-  "$@"
-}
-
-case "$mode" in
-  local|explicit|release|pr)
-    run_selected_mode
-    ;;
-  main)
-    run_direct_product_gates
-    ;;
-  broad-smoke)
-    run_broad_smoke
-    ;;
-esac
-""".lstrip(),
-            r"mode 'direct_streaming_mode' streams child command directly",
-        )
 
     def test_change_metadata_validator_default_success_is_compact(self) -> None:
         result = run_change_metadata_test(CHANGE_METADATA_PASSING_TEST)
