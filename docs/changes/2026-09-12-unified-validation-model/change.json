@@ -4,7 +4,7 @@
       "id": "root",
       "role": "implement"
     },
-    "reason": "User authorizes full approved implementation through submitted PR. Current milestone validation-m1: remove cache and measurements; independent review precedes each next milestone.",
+    "reason": "User authorized progression through submitted PR. M1 independently approved with required correction closed; begin reviewed plan validation-m2. Final whole-change review and Verify remain mandatory.",
     "stage": "implement",
     "status": "in-progress"
   },
@@ -33,7 +33,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json",
-      "reason": "Actual M1 tests and reader correction on exact source subjects; deletion/recovery scope recorded in linked evidence.",
+      "reason": "Exact selected executor/catalog/wrapper engineering subjects and actual corrected proof; no downstream readiness inferred.",
       "value": "current"
     },
     {
@@ -97,6 +97,15 @@
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m1-code-review.json",
       "reason": "Complete M1 implementation independently reassessed after historical-consumer correction; direct proof and bounded removal evidence satisfy its approved scope.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m2-code-review.json",
+      "reason": "Exact final M2 code, direct corrected edge proofs and durable author evidence independently assessed; historical reviews retained with their bounded scope.",
       "value": "current"
     }
   ],
@@ -237,6 +246,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m2-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -278,7 +291,7 @@
         "VAL-SR-13",
         "VAL-SR-14"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "validation-m2",
@@ -295,7 +308,7 @@
         "VAL-SR-09",
         "VAL-SR-10"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "validation-m3",

@@ -1,0 +1,241 @@
+{
+  "assessment_scope": "Independent complete M2 Code Review against base28866324, approved validation-delivery-review and unchanged Design semantics with directory-design-review path applicability. Includes selected wrapper extraction, catalog constraints, actual process supervisor, executor and selector tests, historical inventory projection and final execution evidence. Broad/main composition and real case adoption remain later milestones.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Location: run_scheduled_checks, assignment of stopped only after group cleanup/results publication. Actual counterexample: jobs2/fail_fast=True starts a parent that spawns a SIGTERM-ignoring child then exits7, and a peer that exits0 after .5s; a queued marker task launches while the failed group spends five seconds in cleanup. Results are [7,0,0], contrary to stopping launches after observed failure.",
+      "id": "validation-m2-fail-fast",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Set the no-new-launch decision when a failure is observed, independently of pending descendant cleanup/report finalization; still await/reap started tasks and preserve their outcomes. Add a direct process regression with lingering descendants and available budget, then rerun wrapper/executor proof. Safe bounded correction belongs to implement; no new upstream product decision required.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "validation-m2-execution",
+            "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+          }
+        ],
+        "rationale": "Current fail-fast observation precedes cleanup and independent permanent regression passes."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:0a0340179dd0f72a65ae8ac18f6ee73776beb59431a2c668f6fe77ab86087683",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:527ebdcce34b9310eed824889d2de7cf44acb6ce4d15e373681f83cebb04e93d",
+          "path": "scripts/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:3cca86dbb4ced53d5848c4d1b19171ed6164f6aa771d0f7c848145375c311469",
+          "path": "scripts/ci.sh"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity: major. Location: _signal_group/_reap_group and run_scheduled_checks cleanup. A child launched with start_new_session=True is outside the task pgid. Independent actual timeout run returned124 while that child remained alive; Linux subreaper adoption does not help because signaling and waiting still target only the original process group. Such sessions are used by nested runners. Reassessment: original inherited-environment session probe now passes. Additional real parent immediately launching child with start_new_session=True, env={} and exiting returned0 while child remained alive. Reviewer cleaned PID255908. _discover_owned cannot attribute this fast adopted orphan because ancestry was lost before snapshot and explicit env omits token.",
+      "id": "validation-m2-descendant-ownership",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Own and terminate/reap the complete declared child tree, including descendants that create sessions/groups, without killing another task or unrelated process. Preserve task attribution and bounded graceful/escalated cleanup on timeout/interruption/defensive failure. Add real nested-session descendant proof; a same-pgid-only test or superficial subreaper setting is insufficient. Safe bounded correction belongs to implement; no new upstream product decision required.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "validation-m2-execution",
+            "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+          }
+        ],
+        "rationale": "Dedicated per-task supervisor/subreaper removes environment-token dependence and retains descendant ownership through cleanup. Original session timeout, exact fast env={} orphan and unrelated-child proof pass; 60 independent fast-orphan repetitions had zero survivors."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:121c014e323ceca842aa01e88d334cc8ef8d4d780991a6662ebb2e0434089521",
+          "path": "scripts/validation_execution.py"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity: major. Location: selected_main selected_checks truthiness branch before list validation. Independent subprocess with selected_checks={} and otherwise valid explicit/ok selector envelope returned0 and No selected checks to run. Null/other falsy malformed values enter the same branch instead of failing closed.",
+      "id": "validation-m2-selector-shape",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Validate required selected_checks array shape and relevant closed input structure before any empty-success branch or consistency/execution. Add public selected-wrapper negative cases for falsy malformed values plus valid empty-array control; malformed scope must reject with nonzero outcome before task launch. Safe bounded correction belongs to implement; no new upstream product decision required.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "validation-m2-execution",
+            "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+          }
+        ],
+        "rationale": "Required selected_checks array validation precedes empty handling; independent malformed-empty/unknown-label regression passes."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:0a0340179dd0f72a65ae8ac18f6ee73776beb59431a2c668f6fe77ab86087683",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:527ebdcce34b9310eed824889d2de7cf44acb6ce4d15e373681f83cebb04e93d",
+          "path": "scripts/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:3cca86dbb4ced53d5848c4d1b19171ed6164f6aa771d0f7c848145375c311469",
+          "path": "scripts/ci.sh"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity: major. Location: run_scheduled_checks returncode gated on supervisor_code plus timeout branch. Independent actual task exits7 after .2s with a TERM-ignoring descendant; jobs1 timeout1 fail_fast=True returns124 timeout after1s, overwriting already published exit7 while supervisor is performing its four-second cleanup. Before supervisor correction, actual parent returncode preserved this failure.",
+      "id": "validation-m2-cleanup-outcome",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Separate observed command outcome from supervisor cleanup completion. Preserve observed command exit/signal/unavailable outcome while awaiting bounded descendant cleanup; apply execution timeout only to unfinished execution, and keep cleanup grace explicit. Add direct regression with command failure before timeout and cleanup extending beyond timeout, then rerun existing fail-fast/timeout/ownership proof. Bounded implement correction; no upstream scope change.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "validation-m2-execution",
+            "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+          }
+        ],
+        "rationale": "Published command outcome now immediately sets observed returncode while supervisor remains tracked until cleanup. Independent permanent regression preserves both success0 and failure7 when four-second descendant cleanup exceeds timeout1; timeout/ownership/fail-fast tests also pass."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:ecb939632c56172a2323703975ed35d46e15f402d8d5f79de7e8f6ae599d154f",
+          "path": "scripts/validation_execution.py"
+        }
+      ]
+    }
+  ],
+  "id": "validation-m2-code-review",
+  "independence_basis": "Separate authorized nonauthor reviewer inspected root implementation and independently ran bounded process/input counterexamples without changing repository code/tests. Prior Delivery authorship remains with root.",
+  "judgment": "approved",
+  "limitations": [
+    "Linux /proc and subreaper support are currently required by orchestrated ownership; unsupported platforms fail before launch and direct domain tools retain their platform contracts.",
+    "Only audited skills/adapters command scopes are concurrently eligible in M2; other opaque work remains serial pending the approved case audit. Broad/main flattening, real three-suite case adoption and actual remaining source/consumer cleanup are M3–M5.",
+    "This is a milestone review, not the fresh final whole-change Code Review or distinct Verify required for initiative completion. No workflow routing/activity was changed by reviewer."
+  ],
+  "rationale": [
+    "Spec alignment — pass: selected execution moved to one internal module, catalog owns trusted argv/dependencies/closed resource constraints and literal normalized command/adapter bases. This fulfills bounded M2 allocation of VAL-SR02/04–10/12/17/18 without claiming broad/main or individual-case completion.",
+    "Test coverage — pass: permanent real process regressions cover overlap, serial exclusion, dependency failure/cycles, fail-fast, timeout/interruption reaping, session escape, fast explicit-environment orphans, retry, output failures and malformed selection. Both original counterexamples and corrected newly discovered cases are retained. Author final executor and complete selector evidence are read with their exact scope, not treated as a substitute for behavioral review.",
+    "Edge cases — pass: independent 60-run fast setsid/env={} orphan exercise found no surviving children, and a separate unrelated preexisting child remained alive. Independently reran permanent cleanup-outcome, lingering-child fail-fast and session-timeout tests: three passed in14.046s. Earlier malformed-empty and fail-fast pair passed; shape correction remains unchanged. Tests assert actual PID liveness/outcomes and queue markers, not only command strings.",
+    "Error handling — pass: published command returncode is observed immediately and preserved while supervisor cleanup completes; success0 and failure7 remain unchanged when cleanup exceeds execution timeout. Timeout124 still applies to unfinished execution; unavailable127, signal status, runner errors, invalid encoding, missing capture and not-started125 remain distinct. Unknown metadata rejects before launch; unsupported ownership platforms reject actionably.",
+    "Architecture boundaries — pass: per-task supervisor is internal to the common execution module and establishes a dedicated Linux adoption boundary for descendants independently of environment inheritance. It remains alive through graceful/escalated cleanup, while the parent preserves budgets and stable reporting. No public runner, daemon or lifecycle mutation was introduced; broad/main consolidation is expressly M3.",
+    "Compatibility — pass: contributor wrapper commands and release interception retained; catalog command identity/phase cannot be overridden by selected payload. Unassessed legacy concurrency conservatively serializes with a reason. New executor ID/script is excluded explicitly from original historical inventory population; historical ledger content is unchanged, with original retired cache ID preserved in historical projection only.",
+    "Security/privacy — pass for scope: exact catalog argv prevents payload command substitution; task scratch/streams are invocation-owned. Supervisor adoption plus parent/birth identity protects distinct task ownership; unrelated process survival directly checked. This is process isolation, not a malicious-code security sandbox; no credentials, publication or installed governance authority added.",
+    "Derived artifact currency — pass for scope: this slice changes internal source scripts and regression readers, with no generated adapter/skill body changes. Wrapper fixtures copy the new executor dependency; complete selector proof exercises actual isolated reader integration. Package adoption remains M5/final verification, not implicitly approved here.",
+    "Unrelated changes — pass: reviewed code delta against28866324 stays within M2 scheduler extraction, required catalog/resource controls, regression registration, and narrowly explicit historical test projection. Existing prior milestone and review records preserve their original scopes. No cache restoration or additional historical migration.",
+    "Validation evidence — pass for M2: final validation-m2-execution and validation-m2-evidence.md supply actual author command results; independent process checks and focused permanent regressions corroborate the corrected edges. git diff --check passed. All four recorded findings are resolved on this exact package. Root owns milestone/routing; clean nonfinal review allows its next approved milestone decision, not final Verify/PR readiness."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:8c7f70f9cd84256024013f553c029e82e0175bb9d74b082c6fcc0b63c837fb10",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:3eb25564b0e9737573a8693059a29415ff4845d5186adb85ed0dd9e2d7663ce7",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:4beabf9879b03172b23265fa83cd974b24b2598698be9016032290d18f5ffe39",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:3cca86dbb4ced53d5848c4d1b19171ed6164f6aa771d0f7c848145375c311469",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:cc7f6a4731f4f1b61992b9a9fd397bfbc15e2a0f56465f5ada17e079c36c0080",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:518968b27230cdf0f5b4485ae2dac7c27bcbb802ae585cb2c9424cd28b5dda1c",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+      "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+    },
+    {
+      "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:dda77d97cfea12b9167896fbbc0653a5ddc620c037691915888ce37819cf30ef",
+      "path": "docs/changes/2026-09-12-unified-validation-model/validation-m2-evidence.md"
+    },
+    {
+      "identity": "sha256:de36938c40c9d1e6ec0f74ec18d5ae564a9bec49523903f2cdde9d99435cb8ed",
+      "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+    },
+    {
+      "identity": "sha256:9aa81165db0ec7c717f8c910d5428d44c00fd878c6f3661a0f4794b01c21c32b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-delivery-review.json"
+    },
+    {
+      "identity": "sha256:b80af37047c4a3cff87b729f592826984d731263e69d3d1accc359984d6644a2",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:ffaa1680e66f0d4f008bbbb9ca5fdbeefb5f7e764b0440716cd3416930b2b20b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-design-review.json"
+    }
+  ],
+  "summary": "M2 selected executor and catalog implementation approved after independent reassessment of all four findings; complete initiative remains subject to M3–M5 and final gates.",
+  "target": "code"
+}

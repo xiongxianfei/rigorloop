@@ -628,6 +628,54 @@
         }
       ],
       "summary": "M1 removes cache/measurement runtime and exclusive fixtures; retained lifecycle 108, metadata 7, selector 167 and historical ledger 17 passed. Full CLI 423/424 before historical-reader fix; corrected actual retirement consumer 25/25. Exact root cache safely removed, historical evidence preserved. No later milestone or final readiness claimed."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "implement"
+      },
+      "id": "validation-m2-execution",
+      "procedure": "Execute the real process/catalog, complete selector and focused output commands recorded in validation-m2-evidence.md; retain first-pass review counterexamples and corrected outcomes.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:dda77d97cfea12b9167896fbbc0653a5ddc620c037691915888ce37819cf30ef",
+          "path": "docs/changes/2026-09-12-unified-validation-model/validation-m2-evidence.md"
+        },
+        {
+          "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        },
+        {
+          "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:3cca86dbb4ced53d5848c4d1b19171ed6164f6aa771d0f7c848145375c311469",
+          "path": "scripts/ci.sh"
+        },
+        {
+          "identity": "sha256:4beabf9879b03172b23265fa83cd974b24b2598698be9016032290d18f5ffe39",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:8c7f70f9cd84256024013f553c029e82e0175bb9d74b082c6fcc0b63c837fb10",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:3eb25564b0e9737573a8693059a29415ff4845d5186adb85ed0dd9e2d7663ce7",
+          "path": "scripts/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:cc7f6a4731f4f1b61992b9a9fd397bfbc15e2a0f56465f5ada17e079c36c0080",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:518968b27230cdf0f5b4485ae2dac7c27bcbb802ae585cb2c9424cd28b5dda1c",
+          "path": "scripts/test-retirement-ledger.py"
+        }
+      ],
+      "summary": "Common selected executor and trusted constraints implemented. Executor22, selector168, final output3 and ledger17 pass. All four review counterexamples corrected with permanent regressions. Linux descendant ownership and platform limit explicit; broad/main and case adoption remain later milestones."
     }
   ],
   "schema_version": 3
