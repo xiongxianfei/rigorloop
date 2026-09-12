@@ -6,12 +6,12 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { digest } from "../dist/lib/record-store-files.js";
-import { validateV2Record } from "../dist/lib/record-format-v2.js";
+import { validateV3Record } from "../dist/lib/record-format-v3.js";
 
 // These actors are scenario data, not proof of an actual independent review.
 const author={id:"author",role:"design"}, reviewer={id:"reviewer",role:"review"}, verifier={id:"verifier",role:"verify"};
 const encode=value=>JSON.stringify(value)+"\n";
-const markdown=value=>encode({...value,body:'Fixture reasoning; actor labels alone do not establish independent review.\n'});
+const markdown=value=>encode({...value,summary:'Fixture reasoning; actor labels alone do not establish independent review.\n'});
 
 test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rereview and complete",t=>{
   const root=mkdtempSync(join(tmpdir(),"rigorloop-workflow-"));
@@ -22,7 +22,7 @@ test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rerevie
   writeFileSync(join(root,proposal),"Fixture direction\n");
   const subject=path=>({path,identity:digest(readFileSync(join(root,path)))});
   const manifest="docs/changes/example/change.json", reviewPath="docs/changes/example/reviews/design-review.json", evidencePath="docs/changes/example/evidence.json", verifyPath="docs/changes/example/verify-report.json";
-  const fixture=JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v2/storage-safety.json",import.meta.url)));
+  const fixture=JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v3/storage-safety.json",import.meta.url)));
   const change=JSON.parse(fixture.request.writes[0].content);
   Object.assign(change,{proposal:subject(proposal),models:[{id:"workflow",subject:subject(wf)},{id:"cli",subject:subject(cli)}],blockers:[]});
   change.activity={stage:"design",status:"completed",owner:author,reason:"Explicit prior completion"};
@@ -36,7 +36,7 @@ test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rerevie
   function save(sidecars={}) {
     const before=invoke("inspect"), identities=new Map(before.files.map(f=>[f.path,f.identity]));
     const contents={[manifest]:encode(change),...sidecars};
-    const request={schema_version:2,contract:"rigorloop-records-v2",change_id:"example",expected_revision:before.revision,
+    const request={schema_version:2,contract:"rigorloop-records-v3",change_id:"example",expected_revision:before.revision,
       writes:Object.entries(contents).map(([path,content])=>({path,content,expected_identity:identities.get(path)??null})),
       reads:[wf,cli].map(path=>({path,expected_identity:subject(path).identity}))};
     const result=invoke("record",request);
@@ -44,7 +44,7 @@ test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rerevie
     for(const [path,content] of Object.entries(contents))assert.equal(readFileSync(join(root,path),"utf8"),content);
     return invoke("inspect");
   }
-  // An existing v2 store predates the public v3 creation policy.
+  // Start with the supported synthetic store.
   mkdirSync(join(root,"docs/changes/example"),{recursive:true});
   writeFileSync(join(root,manifest),encode(change));
   save();
@@ -107,9 +107,9 @@ test("TG-05 actors explicitly invalidate, reopen, report Verify failure, rerevie
 
 test("TG-05 reviewer role text is recordable attribution, not authenticated independence",()=>{
   // Actual independence is assessed by the separate M3 walkthrough, not this fixture.
-  const fixture=JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v2/storage-safety.json",import.meta.url)));
+  const fixture=JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v3/storage-safety.json",import.meta.url)));
   fixture.review.reviewer={id:"author",role:"review"};
-  assert.doesNotThrow(()=>validateV2Record("review",fixture.review));
+  assert.doesNotThrow(()=>validateV3Record("review",fixture.review));
   assert.equal(fixture.review.reviewer.id,fixture.review.contributors[0].id);
   assert.notEqual(fixture.review.reviewer.role,fixture.review.contributors[0].role);
 });

@@ -35,7 +35,7 @@ function validate(schema, value) {
     for (const [key, child] of Object.entries(schema.properties)) if (Object.hasOwn(value,key)) validate(child, value[key]);
   }
   if (schema.type === "array") {
-    if(version===3 && (!Array.isArray(value) || (schema.minItems!==undefined && value.length<schema.minItems))) fail("invalid array shape");
+    if(!Array.isArray(value) || (schema.minItems!==undefined && value.length<schema.minItems)) fail("invalid array shape");
     if (!Array.isArray(value) || (schema.minItems !== undefined && value.length < schema.minItems) || (schema.maxItems !== undefined && value.length > schema.maxItems)) fail("invalid array limit");
     const seen = new Set();
     for (const child of value) {
@@ -185,7 +185,7 @@ function preserve(changeId, beforeFiles, afterFiles) {
       for(const concern of data[collection]??[]) {
         const retained=next[collection]?.find(x=>x.id===concern.id);
         if(!retained) fail("existing concern identity must be preserved");
-        if((version===2 || collection==="blockers") && !isDeepStrictEqual(concern.origin,retained.origin)) fail("concern origin must be preserved");
+        if(collection==="blockers" && !isDeepStrictEqual(concern.origin,retained.origin)) fail("concern origin must be preserved");
       }
     }
   }

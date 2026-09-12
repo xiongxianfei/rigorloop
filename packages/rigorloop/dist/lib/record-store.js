@@ -4,7 +4,7 @@ import {scanObservations} from "./recording-observations.js";
 import {boundAdvancedObservations} from "./recording-result.js";
 import { randomBytes } from "node:crypto";
 import { RecordFiles, digest, stop, MIB } from "./record-store-files.js";
-import {V2_FORMAT,V3_FORMAT,storedFormat,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
+import {V3_FORMAT,storedFormat,requestFormat,validateAdvancedRequest,validateAdvancedResult,preserveRecords} from "./record-store-format.js";
 
 const decode = bytes => bytes === null ? null : new TextDecoder("utf-8",{fatal:true,ignoreBOM:true}).decode(bytes);
 const encoded = data => Buffer.from(JSON.stringify(data)+"\n");
@@ -160,8 +160,8 @@ class Store {
     let j; try { j=JSON.parse(decode(raw)); } catch { stop("recovery-needed"); }
     if(!encoded(j).equals(raw)) stop("recovery-needed");
     exact(j,["version","id","change_id","phase","before","candidate","writes","reads","created_dirs"]);
-    if(![2,3].includes(j.version) || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
-    this.selectFormat(j.version===3?V3_FORMAT:V2_FORMAT);
+    if(j.version!==3 || j.id!==id || !/^[a-f0-9]{32}$/.test(j.id) || j.change_id!==this.id || !["prepared","committed"].includes(j.phase)) stop("recovery-needed");
+    this.selectFormat(V3_FORMAT);
     for(const side of ["before","candidate"]) {
       const map=j[side]; if(!map || typeof map!=="object" || Array.isArray(map) || Object.keys(map).length>65) stop("recovery-needed");
       for(const [path,entry] of Object.entries(map)) {

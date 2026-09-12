@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFileSync} from 'node:fs';
 import {parseV3Record, validateV3Record, validateV3Set, validateV3Preservation, validateV3Creation} from '../dist/lib/record-format-v3.js';
-import {validateV2Record} from '../dist/lib/record-format-v2.js';
 import {requestFormat, V3_FORMAT} from '../dist/lib/record-store-format.js';
 const read=p=>JSON.parse(readFileSync(new URL(`../../../docs/design/record-format/examples/${p}`,import.meta.url),'utf8'));
 const encode=x=>JSON.stringify(x)+'\n';
@@ -39,13 +38,12 @@ test('TG-02 v3 finding current fields can change while identity and blockers ret
  const after=structuredClone(before);edit(after,'reviews/final-code-review.json',r=>{r.findings[0].evidence='Corrected evidence';r.findings[0].reporter.id='correct-reporter';r.findings[0].subjects=[];r.findings[0].state='resolved';r.findings[0].resolution={actor:{id:'reviewer-a',role:'review'},rationale:'Withdraw mistaken report',evidence_refs:[]};});
  validateV3Preservation('example-change',before,after);
  for(const fn of [r=>r.findings=[],r=>r.findings[0].id='renamed',r=>r.findings[0].origin={},r=>r.findings[0].state='open']){const bad=structuredClone(after);edit(bad,'reviews/final-code-review.json',fn);fail(()=>validateV3Preservation('example-change',before,bad));}
- const v2=JSON.parse(readFileSync(new URL('../../../tests/fixtures/rigorloop-records-v2/records.json',import.meta.url))).change;
- const blocker=v2.blockers[0];assert.ok(blocker?.origin);edit(before,'change.json',r=>r.blockers=[blocker]);
+ const stored=JSON.parse(readFileSync(new URL('../../../tests/fixtures/rigorloop-records-v3/records.json',import.meta.url))).change;
+ const blocker=stored.blockers[0];assert.ok(blocker?.origin);edit(before,'change.json',r=>r.blockers=[blocker]);
  const bad=structuredClone(before);edit(bad,'change.json',r=>r.blockers[0].origin.rationale='rewrite');fail(()=>validateV3Preservation('example-change',before,bad));
 });
-test('TG-02 mixed versions and broken typed references reject without reinterpreting v2',()=>{
+test('TG-02 mixed versions and broken typed references reject reject',()=>{
  const files=fixture();edit(files,'evidence.json',r=>r.schema_version=2);fail(()=>validateV3Set('example-change',files));
- const r=read('v3-review-limitations-update/before.json');fail(()=>validateV2Record('review',r));
  const bad=fixture();edit(bad,'verify-report.json',r=>r.evidence_refs=[{path:prefix+'reviews/final-code-review.json',id:'final-code-review'}]);fail(()=>validateV3Set('example-change',bad));
 });
 test('TG-02 advanced request schema remains 2 while v3 stored schema is 3',()=>{

@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+from record_store_classification import is_archival_record_store
+
 import json
 import fnmatch
 import re
@@ -1008,8 +1010,10 @@ def _apply_path_selection(
         relative = path.removeprefix(change_root)
         reserved = relative in {"change.json", "evidence.json", "material-decisions.json", "verify-report.json"} or bool(re.fullmatch(r"reviews/[^/]+\.json", relative))
         if manifest.exists() or manifest.is_symlink() or reserved:
+            if is_archival_record_store(repo_root, Path(manifest_path).parent.name):
+                return
             _add_check(selected, "change_metadata.validate",
-                       "Validate the selected v2/v3 set, including malformed manifests and reserved residue.", path=manifest_path)
+                       "Validate the selected v3 set, including malformed manifests and reserved residue.", path=manifest_path)
             _add_check(selected, "change_metadata.regression", "Retain current record validation boundary proof.")
             affected_roots.add(change_root)
             try:
@@ -1018,7 +1022,7 @@ def _apply_path_selection(
                 metadata = None
             if isinstance(metadata, dict):
                 # Compare without hashing untrusted JSON arrays/objects.
-                if (metadata.get("schema_version"), metadata.get("contract")) not in ((2, "rigorloop-records-v2"), (3, "rigorloop-records-v3")):
+                if (metadata.get("schema_version"), metadata.get("contract")) not in ((3, "rigorloop-records-v3"),):
                     blocking_results.append({"code": "unsupported-change-contract", "path": manifest_path,
                                              "message": "Unsupported current record contract; no legacy fallback."})
                 elif path != manifest_path:
@@ -1730,16 +1734,13 @@ def _path_category(path: str) -> str | None:
         return "isolated-recording-evidence"
     if (path.startswith("docs/design/")
             or path.startswith("tests/fixtures/explicit-recording-v1/")
-            or path.startswith("tests/fixtures/rigorloop-records-v2/")
             or path.startswith("tests/fixtures/rigorloop-records-v3/")
             or path in {"schemas/rigorloop-records-v3.schema.json", "templates/rigorloop-records-v3/records.json",
                         "packages/rigorloop/dist/schemas/rigorloop-records-v3.schema.json",
                         "packages/rigorloop/dist/templates/rigorloop-records-v3/records.json",
                         "packages/rigorloop/dist/lib/record-format-v3.js", "packages/rigorloop/dist/lib/record-format-core.js",
-                        "packages/rigorloop/test/helpers/v3-fixture.mjs", "packages/rigorloop/test/helpers/historical-v2.mjs", "packages/rigorloop/test/helpers/historical-v2-launcher.mjs", "schemas/rigorloop-records-v2.schema.json", "templates/rigorloop-records-v2/records.json",
-                        "packages/rigorloop/dist/schemas/rigorloop-records-v2.schema.json",
-                        "packages/rigorloop/dist/templates/rigorloop-records-v2/records.json",
-                        "packages/rigorloop/dist/lib/record-format-v2.js"}
+                        "packages/rigorloop/test/helpers/v3-fixture.mjs", "packages/rigorloop/test/helpers/record-store-launcher.mjs",
+                        "packages/rigorloop/dist/lib/record-json.js", "scripts/classify-record-store.mjs", "scripts/record_store_classification.py"}
             or path in {"schemas/targeted-recording-v1.schema.json", "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json", "schemas/explicit-recording-v1.schema.json", "scripts/build-record-store-schema.mjs", "scripts/validate-record-store.mjs",
                         "templates/explicit-recording/records.json", "packages/rigorloop/dist/templates/explicit-recording/records.json",
                         "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json"}
