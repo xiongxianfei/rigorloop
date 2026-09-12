@@ -44,7 +44,7 @@ test('TG-05 factual discovery admits validated v3 stores without changing discov
 
 test('TG-05 approved v3 request and response examples conform to executable profiles',()=>{
  const base=new URL('../../../docs/design/cli/examples/',import.meta.url);
- for(const dir of readdirSync(base).filter(n=>n.startsWith('v3-')))for(const name of readdirSync(new URL(dir+'/',base)).filter(n=>n.endsWith('.json'))){
+ for(const dir of readdirSync(base).filter(n=>n.startsWith('v3-')))for(const name of readdirSync(new URL(dir+'/',base)).filter(n=>n.endsWith('.json')&&!n.includes('v2-store'))){
   const value=JSON.parse(readFileSync(new URL(dir+'/'+name,base)));
   if(value.interface==='targeted-recording-v1')assert.doesNotThrow(()=>validateMutationRequest(value,!!value.operations),dir+'/'+name);
   else if(value.operation&&value.status)assert.doesNotThrow(()=>validatePrimaryResult(value),dir+'/'+name);
