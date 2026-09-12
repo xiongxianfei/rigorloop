@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-reviewer",
+      "id": "independent-final-reviewer",
       "role": "review"
     },
-    "reason": "Route returns the bounded design-consolidation-f1 correction for independent disposition and current eight-model package reassessment before final whole-change review/Verify.",
-    "stage": "design-review",
+    "reason": "Route accepts approved current eight-model Design reassessment and resolved design-consolidation-f1. Completed implementation and unchanged delivery allocation remain applicable. Request fresh complete base5c4bda94..sourceff9154a6 Code Review, including consumer consolidation and resolved correction, before distinct renewed Verify and PR187 refresh.",
+    "stage": "code-review",
     "status": "ready"
   },
   "applicability": [
@@ -96,7 +96,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-consolidation-review.json",
-      "reason": "Current independent expanded-package assessment at ff914115 identifies one unresolved Design-owned consumer instruction; the prior five-model approval does not approve this expanded package.",
+      "reason": "Independent complete eight-model reassessment at ff9154a6 after the identified current-context correction; exact unchanged package basis retained and finding explicitly resolved.",
       "value": "current"
     }
   ],

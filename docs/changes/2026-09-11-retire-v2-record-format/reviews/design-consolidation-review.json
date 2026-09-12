@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "Independent reassessment of the expanded eight-model package and indexed examples at ff914115: original five models unchanged from c502e146, with newly selected Design, Skill and Test consumer clauses. Includes current author evidence, exact proposal and unchanged approved Delivery allocation.",
+  "assessment_scope": "Independent complete-package Design reassessment at ff9154a6 of eight owning models, indexed examples and the corrected governed-authoring resource interaction. The original five models remain unchanged from c502e146; Skill and Test remain unchanged from ff914115. Reuses the inspected unchanged package basis after exact identity comparison.",
   "change_id": "2026-09-11-retire-v2-record-format",
   "contributors": [
     {
@@ -20,8 +20,20 @@
         "role": "review"
       },
       "required_outcome": "Reconcile this Design-owned resource row with the current Record Format/CLI contract, using current or v3 context wording while preserving exact subject inspection, targeted author recording, authority and no-fallback duties. Safe resolution: a narrow Design prose correction followed by independent reassessment of the affected package. No runtime or test change is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "codex-design-consolidation-review",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "design-consolidation-correction",
+            "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+          }
+        ],
+        "rationale": "Independently inspected ff9154a6: Design:76 replaces the operational v2 context instruction with current context under Record Format and CLI and preserves subject inspection, targeted author recording and excluded authority duties. The canonical resource agrees. No other engineering subject changed, so the complete eight-model package remains coherent."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:515d7f130ab1d32434375b777d6abc8f978eb359ad24acdeaafa98901ea7bf65",
@@ -32,14 +44,14 @@
   ],
   "id": "design-consolidation-review",
   "independence_basis": "Parent /root authored the consolidated models and navigation. This reviewer authored none of the engineering package. Prior independent retirement assessments supply historical comparison context; this is a new assessment of the current complete package, not retargeting an earlier approval.",
-  "judgment": "changes-requested",
+  "judgment": "approved",
   "limitations": [
     "This is Design package approval, not implementation correctness, final verification, branch readiness or PR readiness. Fresh whole-change Code Review and distinct Verify remain separate responsibilities.",
     "This review added or executed no retirement-specific tests or manual replacement probes. Mechanical structure and example parsing checks do not establish runtime behavior; unchanged implementation proof retains its original scope and attribution.",
     "Historical reviews and examples retain their original exact subjects and meaning. This new record does not retarget earlier judgments or refresh historical findings, governance adoption evidence or external outcomes."
   ],
   "rationale": [
-    "Expanded consumer assessment — Skill now follows Record Format/CLI v3 storage and its pilot read/write procedure without broadening the two-skill improvement population. Test distinguishes historical v2 adoption from current evidence/decision storage and preserves all protective-value criteria and scoped proof rules. Design correctly separates marker rollback from the independently owned stored contract. However, its Building Block View still calls the governed authoring resource a v2 context path, contradicting both its current owner and the actual canonical resource. This is a bounded actionable consumer correction, not a new direction or runtime requirement.",
+    "Expanded consumer reassessment — The corrected Design Building Block View now selects current context under Record Format and CLI, preserving exact subject inspection and targeted author-owned recording. This agrees with its canonical governed authoring resource and the current v3-only owner contract without confusing schema2 response metadata with stored format. Skill retains current v3 procedure within the two-skill pilot boundary; Test retains explicit historical v2 adoption and current evidence/decision storage. No new method, runtime behavior, test obligation or adoption scope is introduced.",
     "Direction and scope — The accepted retirement proposal and proposal-review select removal of operational v2 support with unchanged historical bytes and meaning. This consolidation makes that adopted boundary direct in the living models instead of requiring readers to reconcile obsolete operational clauses against later amendments. It introduces no new model, report representation, runtime behavior, migration or archival service. The original structured-assessment direction and later ID-only Finding decision retain distinct historical meaning; older approvals are not represented as approvals of the present subjects.",
     "Record contract and realization — Record Format now directly defines closed v3 record kinds and their common types. Review/Verify have one named explanation representation, with nonempty summary/scope/rationale, nonempty Verify changes, explicitly empty limitations allowed, ordered string collections and preserved multiline content. Material decisions retain body. Findings retain their eight-field current account with stable IDs and no origin snapshot; blockers retain immutable origin and supporting judgment. Complete assessment writes preserve findings, while explicit finding operations and advanced candidates may correct non-ID fields. The current schema/runtime boundary supports these definitions; no old v2 concern or body contract competes with them.",
     "CLI and cross-owner integrity — Complete/named reads preserve exact metadata, applicability, honest omissions and optional absence. Finding summaries expose six current fields and omit evidence/resolution without inventing origin metadata; blocker origin remains distinct. Whole-field explanation edits cannot retarget assessment subjects or evidence, merge arrays, rewrite unrelated bytes or renew applicability. Optional conditional Verify basis remains closed and independently owned, with full-record omission removing it and narrow edits preserving it. Rendering derives readable output without a second authoritative report or semantic extraction. Review and Closeout assigns substantive reassessment and Workflow assigns coordination rather than allowing storage success to approve reliance.",
@@ -47,7 +59,7 @@
     "Examples and acceptance — Inspected the changed navigation and the retained representative examples against their owners, reusing unchanged example semantics from the prior complete-package assessment after checking current identities. Independently parsed all 49 Record Format/CLI example JSON files and confirmed none changed in 698364b9..c502e146. Projection, correction, early-error and before/after examples remain illustrative contracts, not real approvals or runtime results. Stable local requirement/decision ID comparison found no removed owner-local IDs. The structure/reference command for all five models passed. These mechanical checks support, but do not substitute for, the semantic package assessment.",
     "Delivery applicability and proof limits — The unchanged approved primary plan already allocates coordinated model/consumer reconciliation and retained shared/package proof under M2 and final closeout. This documentation-only consolidation introduces no new behavior, hazard, milestone or proof family requiring a revised allocation. Compared packages, schemas, tests, skills and scripts between 698364b9 and c502e146: no changes. The explicit prohibition on new v2-retirement, rejection or archive-compatibility tests and disguised manual substitutes remains intact; no such checks were added or run for this review. Existing Delivery evidence is used only for its unchanged allocation, not renewed as approval of these Design subjects. Fresh final whole-change Code Review and distinct Verify must assess the resulting complete final package before PR reliance.",
     "Validation basis — Independently ran python scripts/validate-boundary-first.py --check with --path for docs/design/record-format/record-format.md, docs/design/cli/cli.md, docs/design/workflow/workflow.md, docs/design/review-closeout/review-closeout.md and docs/design/system/system.md: passed structure-and-references-only. Also performed read-only JSON parsing, stable-ID and unchanged-example/source comparisons described above. Author evidence separately reports prose and whitespace success. Exact subject identities were obtained through subject inspect and current context before recording; the five registered model identities agree with the assessed package.",
-    "Expanded validation and applicability — Read the added Design/Skill/Test models and their relevant current resource interaction, and checked all case-insensitive v2/version2 occurrences there. The remaining Skill source-map and Test adoption mentions are explicitly historical; the Design resource row is the sole current mismatch found in this bounded scan. Independently ran python scripts/validate-boundary-first.py --check with --path for docs/design/design/design.md, docs/design/skill/skill.md and docs/design/test/test.md: passed structure-and-references-only. Original five model identities remain unchanged from c502e146. The existing plan allocation still covers this prose-only consumer reconciliation, but expanded package reliance waits for the recorded correction and reassessment; no new test/proof family is needed."
+    "Correction evidence and applicability — Independently inspected the exact ff914115..ff9154a6 documentation diff: only the identified Design resource row changed. Current subject inspection confirms the original five models, added Skill/Test models and relied-on examples remain unchanged. Author evidence design-consolidation-correction records focused model/prose and whitespace checks passed. The earlier independent three-model structural check and original five-model checks remain applicable because the correction changes only this owner reference, with no structural or runtime effect. The existing plan still allocates this bounded consumer reconciliation; no new Delivery allocation or test family is required. This current complete-package judgment follows actual reassessment of the correction, not automatic retargeting or test success."
   ],
   "reviewer": {
     "id": "codex-design-consolidation-review",
@@ -64,7 +76,7 @@
       "path": "CONSTITUTION.md"
     },
     {
-      "identity": "sha256:a0a8d23fe46cac955f3c8ab539be164d83fa8ef2ac4e8e95f197be1db7237d1e",
+      "identity": "sha256:c7c22ba01300bba4d1c50a75126de50e0e2c9084764e8bc6d12b609a07d20175",
       "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
     },
     {
@@ -252,7 +264,7 @@
       "path": "docs/design/cli/examples/v3-verify-limitations-update/show-fields-response.json"
     },
     {
-      "identity": "sha256:515d7f130ab1d32434375b777d6abc8f978eb359ad24acdeaafa98901ea7bf65",
+      "identity": "sha256:db6b8ddc07c035390f5b2ecc517c67b4dc976ff37a1cb6b5c106f38d63bc5297",
       "path": "docs/design/design/design.md"
     },
     {
@@ -412,6 +424,6 @@
       "path": "skills/design/references/governed-design-authoring.md"
     }
   ],
-  "summary": "The expanded consolidation preserves the current contract in the original five models and corrected Skill/Test clauses, but Design retains one operational v2 context instruction.",
+  "summary": "The expanded eight-model consolidation coherently follows the current v3 recording owner while preserving historical meaning, shared safety and separate authority boundaries.",
   "target": "design"
 }
