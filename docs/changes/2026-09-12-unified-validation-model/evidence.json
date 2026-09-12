@@ -572,6 +572,62 @@
         }
       ],
       "summary": "Plan prose has zero errors/warnings; whitespace check passed. Current 12 model identities match registry; concrete runtime/retirement consumers and three-suite adoption are allocated to five ordered milestones. Existing commands were checked against repository files; C4 is explicitly a new planned regression entrypoint. No implementation checks claimed executed; required execution remains allocated work."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "implement"
+      },
+      "id": "validation-m1-execution",
+      "procedure": "Execute the commands and bounded cache inspection recorded in validation-m1-evidence.md; preserve failures and independently reviewed correction.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:474ac7962d27b30ecf5a5275c2e22fdd0b5a1ebf0f2a86c67e57f8f21b4e71cb",
+          "path": "docs/changes/2026-09-12-unified-validation-model/validation-m1-evidence.md"
+        },
+        {
+          "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        },
+        {
+          "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:5151d53116460288dcc4896fa832664662045f9fdaa14b2d1796581cecaed30e",
+          "path": ".gitignore"
+        },
+        {
+          "identity": "sha256:6afef91c5ccd28f03536f6de96ffc84848810e76a60e63888ccc8cfd8110a588",
+          "path": "scripts/validate-artifact-lifecycle.py"
+        },
+        {
+          "identity": "sha256:854ec86b200da3540a07d9c7df95aea696a114d4e4ff574f213e85c393a44db2",
+          "path": "scripts/validate-change-metadata.py"
+        },
+        {
+          "identity": "sha256:3f03f849dd9ecd01797a8d6f985e10dc970974a35b8e8f7558ae3262e1a8ba17",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:2da1cb956074e8a3e28a35692a1b3d67ec80dae337ff5bb07078f0284bd5c28f",
+          "path": "scripts/test-artifact-lifecycle-validator.py"
+        },
+        {
+          "identity": "sha256:1c584c2b30e46afba61f06502da74a11801b394333061e052cf1ebcd20e2c01e",
+          "path": "scripts/test-change-metadata-validator.py"
+        },
+        {
+          "identity": "sha256:49f48a18122ecfc22829270429f2734d5f7b78ddbfa52bf9a4e6394830edc0f8",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:b882bdb1c283a947a45ed83d24cc8c0ded65fbf644e65be9ce3da9d9c37c3f36",
+          "path": "scripts/test-retirement-ledger.py"
+        }
+      ],
+      "summary": "M1 removes cache/measurement runtime and exclusive fixtures; retained lifecycle 108, metadata 7, selector 167 and historical ledger 17 passed. Full CLI 423/424 before historical-reader fix; corrected actual retirement consumer 25/25. Exact root cache safely removed, historical evidence preserved. No later milestone or final readiness claimed."
     }
   ],
   "schema_version": 3

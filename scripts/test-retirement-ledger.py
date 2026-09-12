@@ -21,8 +21,9 @@ from validation_selection import CHECK_CATALOG  # noqa: E402
 # Project the one adopted catalog disposition back to its historical inventory
 # slot; this does not claim that legacy acceptance and v2 rejection are equivalent.
 # Current behavior has separate proof in record-retirement.test.js. Distribution
-# retires the mirror checks; their original ledger identities remain historical.
-HISTORICAL_CHECK_IDS = (set(CHECK_CATALOG) - {"record_retirement.regression"}) | {"compact_contract.canonical", "skills.generation_regression", "skills.drift"}
+# retires the mirror checks; Validation retires the cache check. Their original
+# ledger identities remain historical and are not runnable catalog entries.
+HISTORICAL_CHECK_IDS = (set(CHECK_CATALOG) - {"record_retirement.regression"}) | {"compact_contract.canonical", "skills.generation_regression", "skills.drift", "validation_cache.regression"}
 
 
 LEDGER = (
@@ -67,6 +68,8 @@ class RetirementLedgerTests(unittest.TestCase):
         self.assertNotIn("skills.generation_regression", CHECK_CATALOG)
         self.assertNotIn("skills.drift", CHECK_CATALOG)
         self.assertIn("adapters.regression", CHECK_CATALOG)
+        self.assertNotIn("validation_cache.regression", CHECK_CATALOG)
+        self.assertIn("validation_cache.regression", HISTORICAL_CHECK_IDS)
 
     def test_repository_ledger_is_complete(self) -> None:
         self.assertEqual(

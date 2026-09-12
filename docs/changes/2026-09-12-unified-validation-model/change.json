@@ -2,11 +2,11 @@
   "activity": {
     "owner": {
       "id": "root",
-      "role": "route"
+      "role": "implement"
     },
-    "reason": "Remaining Validation implementation plan is independently Delivery-approved. Preserve completed directory work; five reviewed validation milestones are pending, beginning with validation-m1 cache retirement. User-requested planning is complete; no runtime implementation or final readiness is claimed.",
+    "reason": "User authorizes full approved implementation through submitted PR. Current milestone validation-m1: remove cache and measurements; independent review precedes each next milestone.",
     "stage": "implement",
-    "status": "pending"
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -30,10 +30,10 @@
     {
       "actor": {
         "id": "root",
-        "role": "plan"
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json",
-      "reason": "New remaining-work allocation follows current approved Design and preserves completed directory intent, work and scoped reviews. Author checks do not approve delivery or implementation.",
+      "reason": "Actual M1 tests and reader correction on exact source subjects; deletion/recovery scope recorded in linked evidence.",
       "value": "current"
     },
     {
@@ -88,6 +88,15 @@
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-delivery-review.json",
       "reason": "Complete exact registered remaining-work plan independently assessed against approved current Design semantics and concrete source boundaries; sequencing, required proof, cleanup and final closeout allocation are adequate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m1-code-review.json",
+      "reason": "Complete M1 implementation independently reassessed after historical-consumer correction; direct proof and bounded removal evidence satisfy its approved scope.",
       "value": "current"
     }
   ],
@@ -224,6 +233,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m1-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -265,7 +278,7 @@
         "VAL-SR-13",
         "VAL-SR-14"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "validation-m2",
