@@ -1,0 +1,420 @@
+{
+  "assessment_scope": "Independent milestone M2 Code Review of 93bfff4b..68cc2025. Engineering source is 05b72446; the final suffix adds current evidence and review-ready routing only. Approved primary plan docs/plans/2026-09-11-retire-v2-record-format.md, Design Review and Delivery Review govern this slice. This assessment is distinct from the required later fresh final whole-change review.",
+  "change_id": "2026-09-11-retire-v2-record-format",
+  "contributors": [
+    {
+      "id": "codex-implement",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m2-code-review",
+  "independence_basis": "Parent /root authored the M2 implementation, test maintenance and consumer changes. This separately delegated reviewer authored none of the reviewed engineering content and independently inspected the actual diff, challenged its proof allocation and ran existing supported checks. Prior review authorship is assessment work, not implementation authorship.",
+  "judgment": "approved",
+  "limitations": [
+    "This is M2 milestone assessment only. Route owns settlement; the fresh whole-change Code Review and distinct final Verify remain mandatory before adoption and any separately authorized PR handoff.",
+    "Per the explicit user constraint, no new v2 retirement, rejection or archive-compatibility tests or manual replacement probes were run. Retirement-specific classifier and safe-stop conclusions rely on static inspection; retained supported/shared proof and its limits remain visible.",
+    "Local selected CI and author package checks are evidence, not hosted CI, release, publication, installation or customer activation claims. Historical dependency disposition is bounded to the selected local stores."
+  ],
+  "rationale": [
+    "Spec alignment — pass. RF-SR-14, CLI-SR-28, WF-SR-18, RC-SR-21 and the System composition obligations are realized together. The sole operational adapter is v3; old schemas/templates/helpers are removed from canonical and bundled inputs without converting historical records. The five normative models and primary plan retain their approved behavior. The TG-00 responsible decision explicitly precedes removal and preserves outstanding external-scope limits and separately owned follow-ups.",
+    "Test coverage — pass within the selected constraint. Shared parsing, Unicode, nesting, path/count limits, references, missing-record repair, public calls and recovery cases are retargeted to v3 fixtures. Compared removed partitions with retained assertions: deleted cases establish exclusively-v2 schema, body, origin, creation or continuation behavior; v3 ID-only findings and retained blocker origins remain separately protected. Existing model-example and selector cases use current examples. No new v2 retirement/rejection/archive-compatibility tests or synthetic manual substitutes were introduced.",
+    "Edge cases — pass for supported/shared behavior. Independently executed node --test packages/rigorloop/test/record-store-format.test.js packages/rigorloop/test/record-store-v3-mutations.test.js packages/rigorloop/test/record-store-v3-reads.test.js packages/rigorloop/test/record-store-persistence.test.js: 80/80 passed. This covers retained unknown/invalid values, exact projections/omissions, optional basis updates, neighbor preservation, no-ops, stale revisions, locks, interruptions, unsafe targets and third-state recovery. It does not constitute executable proof of v2 retirement branches.",
+    "Error handling — pass by implementation inspection and retained proof. The classifier strictly reads manifest contract/schema_version/change_id, then supporting schema_version/change_id without inventing contract. It bounds reserved files, per-file bytes and immediate review entries; malformed or mixed members fail closed, and lock/journal attention remains visible. Explicit selected archives are unsupported. Current v3 manifests still enter complete validation. Recovery admits only version 3 and retains exact candidate, basis, ownership and third-state checks before writes. These retirement-specific conclusions are static inspection, as required by the user test boundary.",
+    "Architecture — pass. CLI discovery and Python lifecycle/selection consumers share record-discovery through the repository classifier bridge. The Git-backed reader inspects exact tree modes and bounded blobs rather than validating historical assessments. Classification errors do not produce archival exclusion in Python callers; current set validation remains responsible. Shared parsing and transport validation do not import a retired stored schema.",
+    "Compatibility and version domains — pass. Static structural schema comparison confirms all eighteen neutral shared definitions preserve the previous v2-prefixed type definitions after reference normalization. Common v3 definitions change only references; substantive profile changes are confined to mutation-request, result and item removal of v2 storage. Targeted request 1, advanced request 2, advanced result 1 and early primary result 2 remain independent. Recognized review.set/verify.set retain schema-3 early errors and operation tags. Historical file identities and meaning are preserved rather than mechanically promoted to current assessments.",
+    "Security/privacy — pass. Classifier live/Git readers retain safe path and file-mode checks, strict encoding and bounded reads. Git revisions are checked as exact commits and commands use argument arrays. Recovery residue is not cleaned implicitly. No new credentials, remote authority, content logging or customer activation path is introduced. Existing unsafe-path and publication/recovery tests remain applicable.",
+    "Derived artifacts and consumer coherence — pass for the milestone. Canonical and bundled targeted schemas agree, v2 resources/build inputs are removed, and canonical skills/shared guidance adopt current v3 while retaining historical provenance and independently versioned document/transport contracts. Review/Verify explanation, finding versus blocker and conditional verification-basis guidance remains coherent. The author exact-source selected checks include package generation, selectors and broad smoke; these supply package evidence without claiming installed customer adoption.",
+    "Unrelated changes — pass. The diff consists of coordinated runtime removal, retained-test retargeting, scoped governance/consumer wording, resource cleanup and owning evidence. TG-00 records real operational dependency inspection and a separate responsible disposition, not a new test suite. Its historical byte comparison covers 4511 tracked files with zero changes; this is attributed author evidence, not an independently repeated inventory. No unrelated document-validator retirement or change in assessment/publication authority is present.",
+    "Validation evidence — pass with exact scope. m2-implementation records V1 288/288, V2 424/424, V3 parity and all seven V4 Python families. Final test-only example changes were checked locally and V5 reran on source05b72446e189ac4403dfa5f8abfa2b23202f7556, prepared f4c723bc7aa5de172972ace7739e626600ee763e, candidate bf573ce2a80561e851e971ec27575599633e0fbbee458f7ab5978cc65faaf785; the inspected log ends with selected-check success. Broader author executions are distinguished from the reviewer 80-case run. Fresh context is complete for its selection; subject inspect captured 95 exact subjects and all ninety m2-implementation subject identities match. Earlier approval supporting-source drifts are expected from implementation; unchanged governing Design and Delivery authority is not retargeted or represented as prior code proof."
+  ],
+  "reviewer": {
+    "id": "codex-m2-code-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:f89a44b73376a41d7214108fcb803e9e2c22fc723c2db0790e7a8821eb7dc070",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:00054811fbc8ab9780f605313f55104af83dba174ba7a90b5d74a6d483b51016",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:528a188ab9fbd0466efdadf646dd2f5239033919ecf77434928995236ec4aded",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:ba164a38ba8958b415428b11aa4144fce9b7e701e7fb2517a758dd29b1a05f0c",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:a2e1774f250b89aea4b3c862e7e5fae2acb78cc6486cb51cb05f9ec136337bd5",
+      "path": "docs/design/cli/examples/v2-work-status-update/README.md"
+    },
+    {
+      "identity": "sha256:4ca7b7009e240d088b3fe2ee5c4669f35d64a36ababafb2fa12cc01c858605f0",
+      "path": "docs/design/cli/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:e3a7ec6c8f6654e8f3575ce181366f8ac63d278e263ba5823d25e62abf16be52",
+      "path": "docs/design/record-format/examples/README.md"
+    },
+    {
+      "identity": "sha256:58cc914d0f7d51ed8b89c60766df493286b24f77e9c2c8e3317d446c1fc49254",
+      "path": "docs/design/record-format/examples/v2-minimal-change/README.md"
+    },
+    {
+      "identity": "sha256:7a27cff6e9363795195d95f209a654a43e5e83460f5e455410665c2c4faf048f",
+      "path": "docs/design/record-format/examples/v2-review-reassessment/README.md"
+    },
+    {
+      "identity": "sha256:45c9bc805f72107c8c4c507206217ee4b7d5d5d0e15f2e7247aba4a5c93e9241",
+      "path": "docs/design/record-format/examples/v2-review-without-subjects/README.md"
+    },
+    {
+      "identity": "sha256:a44db0abea196809b0779b56a6e38ad35d84a28f93d303b153769644a9f92184",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:05dc2bd0102552d617d6df9262da7a30538fb8c2e559f49c33afc010cf164cff",
+      "path": "docs/design/review-closeout/review-closeout.md"
+    },
+    {
+      "identity": "sha256:aa62db15858ee056309121ecddb6990459ee9436380511ebd08a4b9bc4256107",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:c3c4e7139785bb346b438044006e307345bebe00335a24f568233e2ca4adeb0e",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:af834f6d65b688a21372609a12fa23c415cdde1299ca959aaff949f89826f36a",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:431b9737cc8e1e9228a3c77f20b8824722f9fff2afcc311a1f3dfe3f0815130f",
+      "path": "docs/plans/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:3f44199e331ecb125bce514c83c81255ceffccb0670c62d7c52f578f621e0f92",
+      "path": "docs/proposals/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:2de7a33dcc0853c7d34ecfd2909c03be36f6a2b668ea10e0058f769cd2f42df1",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:c4f225bc1e179364ddaa9d782af451569025f20d14fc348e585702f9b4533ba4",
+      "path": "packages/rigorloop/dist/lib/record-discovery.js"
+    },
+    {
+      "identity": "sha256:770cee8be82303a55c28e7bad84f12386889236ac2762b5c783bfb31a2e02104",
+      "path": "packages/rigorloop/dist/lib/record-format-core.js"
+    },
+    {
+      "identity": "sha256:33c93f3de398908ecb5c8a50c1b98c898786c94899f9fb2f6f89bb9a4ab4c2b2",
+      "path": "packages/rigorloop/dist/lib/record-json.js"
+    },
+    {
+      "identity": "sha256:cb78fbbffa93e530c5db8544d30917d70a8f56033151cb4dc7396ea57b753105",
+      "path": "packages/rigorloop/dist/lib/record-store-cli.js"
+    },
+    {
+      "identity": "sha256:09ab18abff64694c9306c93b8dab15cbd52165eaa589d0ce73f9bbffe98307ce",
+      "path": "packages/rigorloop/dist/lib/record-store-format.js"
+    },
+    {
+      "identity": "sha256:343b516ff34de23990f9897faa19e4a0f127fbfff9a0c814039140138280efb6",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:fceb842e64cc0a8b656b7dc0b30139021975e2d38af0b43ad3f1d9781e1ab4c4",
+      "path": "packages/rigorloop/dist/lib/recording-construction.js"
+    },
+    {
+      "identity": "sha256:15c4a99d5ec1aa95ca585bb66be1c4a2f8b9cc3f9f19acb8dae32a3b768d0dbf",
+      "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+    },
+    {
+      "identity": "sha256:a455d2512ae08479992e49e075a12899a0a2a03b69b48d799c5224715d18a88d",
+      "path": "packages/rigorloop/dist/lib/recording-query-cli.js"
+    },
+    {
+      "identity": "sha256:69fed2db6cdcd10109d9a74b92e025700725a1448bd67d13e73da1a345d49072",
+      "path": "packages/rigorloop/dist/lib/workflow-context.js"
+    },
+    {
+      "identity": "sha256:2b56c50a5fae9b9b992aa71305a952ee98fb07905f0e74a54671cd1f9308fede",
+      "path": "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json"
+    },
+    {
+      "identity": "sha256:62205b52d647c3368e64775aeac214a76cb82926bd2bc6aafa1fe1cac92ea36c",
+      "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+    },
+    {
+      "identity": "sha256:6397c7500e1fab938849f54a05551999a0b0f511e4c7d099dedd76b01d100f08",
+      "path": "packages/rigorloop/test/record-store-adoption.test.js"
+    },
+    {
+      "identity": "sha256:d14e93a9cd9496d62877a8d9845308d284f7774a2676b0f8368cf0272d78b072",
+      "path": "packages/rigorloop/test/record-store-cli.test.js"
+    },
+    {
+      "identity": "sha256:fd98cbbb84e0c2b44d9f5ec460689c93c63b9184b870761609310f19d8d6286b",
+      "path": "packages/rigorloop/test/record-store-contract.test.js"
+    },
+    {
+      "identity": "sha256:6bba4fd98fc77d54f9cd9d51367f55b89544faf01822ab0886568bf40fe42e6b",
+      "path": "packages/rigorloop/test/record-store-format.test.js"
+    },
+    {
+      "identity": "sha256:6ec371f548982e21a5e9ff9e136024a37065239a8384e2f02e60af30c38174bc",
+      "path": "packages/rigorloop/test/record-store-model-examples.test.js"
+    },
+    {
+      "identity": "sha256:0100a5fee3cb9dd681faa594dff6bfa31b8988f994f5a96b0352ae7a4e4d67ed",
+      "path": "packages/rigorloop/test/record-store-persistence.test.js"
+    },
+    {
+      "identity": "sha256:e9b06c9e37dc6a17a3894a1c50b05111e0f10f5f3cf0d54e4c9f1a1a59281e76",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:937598402a28dbfd0d01c3ed989383665ebd74953802130f602375cb5fe49669",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:979dd6fc4e794bd03969b7423af7b2f15545264a26b203dc77572386831bdac6",
+      "path": "packages/rigorloop/test/record-store-v3-adoption.test.js"
+    },
+    {
+      "identity": "sha256:9fa4c155d8e92f3c84b6051cee464329654490cd3c3c472439567555f7bb28eb",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:7b354b83c08b43d3440320b41ffd46d76788628b5ad30353f6b0626ae9d2a8ea",
+      "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+    },
+    {
+      "identity": "sha256:e8fc32f81d1c0d65e773d059c32fe0010815826354455cef0e85ea6feec694a2",
+      "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+    },
+    {
+      "identity": "sha256:7681c11290e0203f84a3e1d9aa850e5e326ff46e1c570d6ce4b9a788c690c9b3",
+      "path": "packages/rigorloop/test/record-store-workflow.test.js"
+    },
+    {
+      "identity": "sha256:b22df71fc469a9ba88e0c88d356919802b252e359d5407b71221d123bfad9e6a",
+      "path": "packages/rigorloop/test/workflow-context.test.js"
+    },
+    {
+      "identity": "sha256:2b56c50a5fae9b9b992aa71305a952ee98fb07905f0e74a54671cd1f9308fede",
+      "path": "schemas/targeted-recording-v1.schema.json"
+    },
+    {
+      "identity": "sha256:4572f8d1967ae3ea79d201643f7b8d328ae937174881488b417c105e1ced42fc",
+      "path": "scripts/artifact_lifecycle_validation.py"
+    },
+    {
+      "identity": "sha256:a3ddb46a496499228ce8aeaa02f53f062a208ad9bb9144fd6d70144650575641",
+      "path": "scripts/build-record-store-schema.mjs"
+    },
+    {
+      "identity": "sha256:e5d7369dab3717577c965318d049fc088c1b88693b6ba8399ef99c90c361cd99",
+      "path": "scripts/classify-record-store.mjs"
+    },
+    {
+      "identity": "sha256:88265d284dc554c8f73b64df1309c54493f2e3ad27ce5248942c34b6bc37474a",
+      "path": "scripts/npm_package_validation.py"
+    },
+    {
+      "identity": "sha256:90908d4a8d08a34b765ee2636baa5c87ceb3c55f4e6af9c72d635382677fcd9a",
+      "path": "scripts/record_store_classification.py"
+    },
+    {
+      "identity": "sha256:6a3b3a7dde274319428b050917d8399bc17e8208e727a8f5649427c3a306ebaa",
+      "path": "scripts/skill_validation.py"
+    },
+    {
+      "identity": "sha256:d03d6da58c028f1e33474bfe31bd15a8fed18920fefa46293a44568dcb0bdc12",
+      "path": "scripts/test-artifact-lifecycle-validator.py"
+    },
+    {
+      "identity": "sha256:c0c25bc13b1df4d63d0ca49487df3d71a72070470109437c5bf08257b43d5d50",
+      "path": "scripts/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:1078e2505d2f27d1a7f2032c4b51e09f7f76ea45e7d5fcb4c229b3480c67ee6f",
+      "path": "scripts/test-governed-lifecycle-cli-validator.py"
+    },
+    {
+      "identity": "sha256:b557caedbada6571a1a26df51b0e422285e848ebd9447597c8d476d1eea5566c",
+      "path": "scripts/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:fb5a5250c4b063aa3a269c393b6f4da72435169ea1b5e0e90ee03d9663457a01",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:c76eea420b94681806084b806521a93e062ffb3afe24530b7067c6c736430719",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:ddd51ae2a5bce82e56c02a8dfd4eaa8e20dd89df8637f600d4e10d30c34ad98d",
+      "path": "scripts/validate-change-metadata.py"
+    },
+    {
+      "identity": "sha256:e092aa8f20af4809325a962e7a4ae29dc109d8e8da13b6fc2d44ffa3b7639096",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:7a1371d3136c3ba453c33e8f5afd365bfc2d1c3c4b6390be93a9ff4bb47e99df",
+      "path": "skills/bugfix/SKILL.md"
+    },
+    {
+      "identity": "sha256:2ea9c8645f33241caa2fae1754ff17cf89c1b18e3538454394bd75467f69bde0",
+      "path": "skills/ci-maintenance/SKILL.md"
+    },
+    {
+      "identity": "sha256:17da441b994de4e05e1d7391c01d57ed3a4a1b9aeb30554654405cc3dc2de304",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/code-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:f9ab0d5c6534a315bbec010e068146bd5c7977ccd68c778b08229aeece6c1c96",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:3369bbc37d27736ec57500c85e1f1fa6c33fb73e3b4ea96ba6bce8d55a91eb3e",
+      "path": "skills/delivery-review/references/delivery-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/delivery-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:9c2b057e430a8192ec8bf552a59a539c277f8e90daf54220067846713c48c56a",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:36cb880ffebe096937325f40ab15f0182142514bab266ec23b6d2e08f7e5206d",
+      "path": "skills/design-review/references/design-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/design-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+      "path": "skills/design/references/governed-design-authoring.md"
+    },
+    {
+      "identity": "sha256:08e4dc85ade67f0dcaf6ee429e1c40a4c7f4ed41904fe49136000223e6fd79ed",
+      "path": "skills/explore/SKILL.md"
+    },
+    {
+      "identity": "sha256:485384da6c6c16c42ea359c2db3f5e0a6c61cbf3c62718bf66e80bde3fa05521",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:3fbdfcf4de28c316af271109d4798797d3b11c3a198478fad3e8c25ea507cc71",
+      "path": "skills/implement/references/planned-milestone-implementation.md"
+    },
+    {
+      "identity": "sha256:7e5badeb2da12fece4cfe441a97ac5e08459ddb80575eb86ffe3d73c5fb831c2",
+      "path": "skills/learn/SKILL.md"
+    },
+    {
+      "identity": "sha256:b5a9e65696a96c68077aa828281d2f697b710ca77670cb8cb0047bed51a66a23",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:948e12262daf061361febfba9c3f3bd366576cd3403343fce6d5d50e51643128",
+      "path": "skills/pr/SKILL.md"
+    },
+    {
+      "identity": "sha256:c7e434c2491525502091fbc6a4da4cc7eb971e81af6166c8a4a29c14ec7fb3d4",
+      "path": "skills/proposal-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:a41826013c56d59f98abaab1909399582b7c771dcdb016b7f7c1f8560595bba8",
+      "path": "skills/proposal-review/references/proposal-review-recording-and-settlement.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "skills/proposal-review/references/review-assessment.md"
+    },
+    {
+      "identity": "sha256:d060a266b4c6b19c4000f43cad1d486ad1eec94ba96856a7696e2302341c06aa",
+      "path": "skills/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:a2005e6f6e095ee33947e68b848ee9597730f4e1403580b63c9c549c13260cc0",
+      "path": "skills/proposal/references/governed-proposal-authoring.md"
+    },
+    {
+      "identity": "sha256:8c515351026597bf999020bf25ae493df4429e21bc0f6b7d341a4ef975c01ecd",
+      "path": "skills/research/SKILL.md"
+    },
+    {
+      "identity": "sha256:cec86ddb59ee82d5bb7d112bc1a5030d143582ca693731d3042ee26748474602",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:9b87caeadf713953a47ec019f6ac1972fe656b09d32bfae83122dd87d4b15b56",
+      "path": "skills/route/references/governed-lifecycle-routing.md"
+    },
+    {
+      "identity": "sha256:4b2a6db5d48959480dfc770599343f66ba6d1e68292546ac0c9fe3f5b41f910a",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:920ba4df53ff35ac846dfc6f43ab562ef33c494b7b91c9ebd398978901009543",
+      "path": "skills/verify/references/branch-readiness-verification.md"
+    },
+    {
+      "identity": "sha256:82e302a3a915f10d05b229a3550f462ca6b35a9e3f7e892ec7a393733c2c64e0",
+      "path": "templates/shared/review-assessment.md"
+    },
+    {
+      "identity": "sha256:b52c7ee1d217eb65a5db649dc8f945c11d5b9907a049690cad99ffbc335b8512",
+      "path": "templates/shared/review-isolation-and-recording.md"
+    },
+    {
+      "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+      "path": "tests/fixtures/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:adb156b8e2b196c9e82195b3eac059852ca7a941382fa41e355ff3803bf9ba87",
+      "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
+    },
+    {
+      "identity": "sha256:20e0cd799478d49c739b051ed79b06aa136075f32449a557e50036072870dad5",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:9175a096d6e4bdf52c8d1afd813288e9e87bac234943da7fbf7b6e853e269368",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:65a1d986663a856786047d461959780e7de911d31e907a918feb0341db798ef9",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m1-code-review.json"
+    },
+    {
+      "identity": "sha256:cd41e2606e04c32969e52208026f68fcbaaa75d07adbe53e9c71316dfd047cae",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+    },
+    {
+      "identity": "sha256:d3fd768a5c5d4948a107b45d9e05e380e9a2d42d0e99f4c0918e867774eb85c0",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/material-decisions.json"
+    }
+  ],
+  "summary": "M2 coherently removes operational v2 dependencies while preserving v3/shared safety, independent transport versions and historical provenance within the explicitly constrained verification scope.",
+  "target": "code"
+}

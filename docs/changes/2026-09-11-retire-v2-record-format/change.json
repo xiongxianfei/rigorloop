@@ -1,10 +1,10 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-code-review",
+      "id": "independent-final-code-review",
       "role": "review"
     },
-    "reason": "Route requests independent M2 Code Review of source05b72446 with recorded TG00 disposition and m2-implementation evidence. All required exact-source selected CI checks passed. This does not settle M2 or replace the later fresh whole-change review and final Verify.",
+    "reason": "Route settles M2 after independent m2-code-review approved/current with no findings. Both in-scope milestones are completed. Request the mandatory fresh independent whole-change Code Review of the complete delivered diff and M1/M2 interactions before distinct final Verify and user-authorized PR handoff.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -61,6 +61,15 @@
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m1-code-review.json",
       "reason": "Independent assessment of the exact final M1 engineering subjects and retained compatibility proof. Applies to M1 preparation only; M2 and final closeout remain separately required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-m2-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m2-code-review.json",
+      "reason": "Independent M2 assessment of the exact final engineering subjects, recorded prerequisite disposition and current candidate evidence; final whole-change review and Verify remain separate.",
       "value": "current"
     }
   ],
@@ -136,6 +145,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m2-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -166,7 +179,7 @@
         "RC-SR-21",
         "SYS-SR-04"
       ],
-      "status": "ready"
+      "status": "completed"
     }
   ]
 }
