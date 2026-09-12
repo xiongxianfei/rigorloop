@@ -62,6 +62,7 @@ ADAPTER_REGRESSION_COMMAND = (
 )
 
 EXPECTED_CATALOG = {
+    "validation_execution.regression": "python scripts/test-validation-execution.py",
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
     "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/skill/workflow.md --path docs/design/cli/cli.md --path docs/design/cli/records.md",
     "record_retirement.regression": "node --test packages/rigorloop/test/record-retirement.test.js",
@@ -1012,6 +1013,7 @@ class ValidationSelectionTests(unittest.TestCase):
         (workspace / "scripts").mkdir()
         shutil.copy2(CI, workspace / "scripts" / "ci.sh")
         shutil.copy2(ROOT / "scripts" / "validation_selection.py", workspace / "scripts" / "validation_selection.py")
+        shutil.copy2(ROOT / "scripts" / "validation_execution.py", workspace / "scripts" / "validation_execution.py")
         shutil.copy2(ROOT / "scripts" / "record_store_classification.py", workspace / "scripts" / "record_store_classification.py")
         shutil.copy2(ROOT / "scripts" / "model_layout.py", workspace / "scripts" / "model_layout.py")
         return workspace
@@ -1430,7 +1432,7 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertEqual(payload["blocking_results"], [])
         self.assertEqual(
-            {"record_retirement.regression", "selector.regression"},
+            {"record_retirement.regression", "selector.regression", "validation_execution.regression"},
             selected_ids(payload),
         )
         selector_check = next(check for check in payload["selected_checks"] if check["id"] == "selector.regression")
@@ -1640,25 +1642,7 @@ raise SystemExit({exit_code})
     def test_catalog_records_initial_parallel_safe_allowlist(self) -> None:
         from validation_selection import is_parallel_safe_check
 
-        expected_parallel_safe = {
-            "record_store.schema", "model.validate",
-            "adapters.regression",
-            "artifact_lifecycle.regression",
-            "change_record_query.regression",
-            "change_metadata.regression",
-            "record_retirement.regression",
-            "documentation_prose.regression",
-            "guide_system.regression",
-            "governed_lifecycle_cli_wrapper.test",
-            "markdown_readability.regression",
-            "release_transaction.regression",
-            "requirement_fidelity.spec_reads",
-            "review_artifacts.regression",
-            "selector.regression",
-            "skills.regression",
-            "token_cost.regression",
-            "token_cost.report_regression",
-        }
+        expected_parallel_safe = {"skills.regression", "adapters.regression"}
 
         self.assertEqual(
             {check_id for check_id in CHECK_CATALOG if is_parallel_safe_check(check_id)},
@@ -3817,6 +3801,16 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
             output.index("artifact_lifecycle.regression | passed | ok |"),
         )
 
+    def test_ci_wrapper_default_budget_is_capped_and_parent_allocation_bounds_override(self):
+        fixture = self.write_selector_fixture(self.minimal_selector_payload())
+        for extra, parent, expected in (([], None, 4), (["--jobs", "8"], "2", 2)):
+            env = {"RIGORLOOP_SELECTOR_FIXTURE": str(fixture), "RIGORLOOP_CI_CPU_COUNT_FIXTURE": "8"}
+            if parent:
+                env["RIGORLOOP_VALIDATION_WORKERS"] = parent
+            result = run_ci("--mode", "explicit", "--path", "README.md", *extra, env=env)
+            self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
+            self.assertIn(f"Worker budget: {expected}", result.stdout)
+
     def test_ci_wrapper_default_jobs_uses_cpu_minus_one_fixture(self) -> None:
         workspace = self.make_ci_workspace()
         active_dir = workspace / "active"
@@ -4906,6 +4900,7 @@ raise SystemExit(3)
         (temp_root / "scripts").mkdir()
         shutil.copy2(CI, temp_root / "scripts" / "ci.sh")
         shutil.copy2(ROOT / "scripts" / "validation_selection.py", temp_root / "scripts" / "validation_selection.py")
+        shutil.copy2(ROOT / "scripts" / "validation_execution.py", temp_root / "scripts" / "validation_execution.py")
         shutil.copy2(ROOT / "scripts" / "record_store_classification.py", temp_root / "scripts" / "record_store_classification.py")
         shutil.copy2(ROOT / "scripts" / "model_layout.py", temp_root / "scripts" / "model_layout.py")
         fixture = self.write_selector_fixture(

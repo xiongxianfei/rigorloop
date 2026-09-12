@@ -7,11 +7,12 @@ from record_store_classification import is_archival_record_store
 from model_layout import PROJECT_MODEL_PATHS
 
 import json
+import hashlib
 import fnmatch
 import re
 import shlex
 import subprocess
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -23,11 +24,28 @@ ROOT_VISION_PATH = "VISION.md"
 
 
 @dataclass(frozen=True)
+class ExecutionConstraints:
+    unit: str = "command"
+    mode: str = "serial"
+    demand: int = 1
+    isolation: str = ""
+    basis: str = ""
+    shared_writes: bool = False
+
+
+def command_basis(template: str, unit: str) -> str:
+    normalized = shlex.join(shlex.split(template))
+    return hashlib.sha256((normalized + "\n" + unit + "\nexecutor-adapter-v1").encode()).hexdigest()
+
+
+@dataclass(frozen=True)
 class CheckCatalogEntry:
     id: str
     command_template: str
     category: str
     parallel_safe: bool = False
+    dependencies: tuple[str, ...] = ()
+    constraints: ExecutionConstraints | None = None
 
 
 CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
@@ -260,6 +278,73 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "rigorloop-cli",
     ),
 }
+
+# These two complete command scopes use per-test temporary trees, read immutable
+# source fixtures, restore process-local environment, have no external services,
+# and invoke children sequentially. Other old allowlist entries remain serial
+# until a current isolation assessment covers their nested resource demand.
+# Literal bases deliberately do not update when a template or adapter changes.
+_COMMAND_ASSESSMENTS = {
+    'skills.regression': ('9c4ffbab147aa1e13f1edd27bbcd224b21254b9c73c37d76bbfd9c94ce27a6e7', 'Skill validator fixtures use owned temporary trees; subprocess validators run sequentially; no shared writes or services.'),
+    'adapters.regression': ('4ac8b3234ec905ec97dc1603d847b04af163c206509fad625765c4e3ecb6fe72', 'Selected adapter cases build and validate owned temporary outputs; read canonical resources; sequential subprocesses, no active-root writes or services.'),
+}
+for _id, _entry in tuple(CHECK_CATALOG.items()):
+    _assessment = _COMMAND_ASSESSMENTS.get(_id)
+    CHECK_CATALOG[_id] = replace(_entry, parallel_safe=_assessment is not None,
+        constraints=ExecutionConstraints(mode="bounded", isolation=_assessment[1], basis=_assessment[0])
+        if _assessment else None)
+CHECK_CATALOG["validation_execution.regression"] = CheckCatalogEntry(
+    "validation_execution.regression", "python scripts/test-validation-execution.py", "selector")
+
+
+def validate_catalog(catalog=None) -> None:
+    catalog = CHECK_CATALOG if catalog is None else catalog
+    for key, entry in catalog.items():
+        if not isinstance(entry, CheckCatalogEntry) or key != entry.id:
+            raise ValueError(f"invalid catalog identity: {key}")
+        if not isinstance(entry.command_template, str) or not entry.command_template.strip():
+            raise ValueError(f"missing command: {key}")
+        if type(entry.parallel_safe) is not bool:
+            raise ValueError(f"invalid parallel safety: {key}")
+        if not isinstance(entry.dependencies, tuple) or any(not isinstance(x,str) for x in entry.dependencies) or len(set(entry.dependencies)) != len(entry.dependencies):
+            raise ValueError(f"invalid dependencies: {key}")
+        if any(x not in catalog for x in entry.dependencies):
+            raise ValueError(f"missing catalog dependency: {key}")
+        c = entry.constraints
+        if c is None:
+            if entry.parallel_safe:
+                raise ValueError(f"unassessed parallel safety: {key}")
+            continue
+        if not isinstance(c, ExecutionConstraints):
+            raise ValueError(f"unknown constraint fields: {key}")
+        if c.unit not in {"command", "python-unittest", "node-test"}:
+            raise ValueError(f"unknown execution unit: {key}")
+        if c.mode not in {"serial", "exclusive", "bounded"}:
+            raise ValueError(f"unknown execution mode: {key}")
+        if type(c.demand) is not int or c.demand < 1 or type(c.shared_writes) is not bool:
+            raise ValueError(f"invalid resource constraint: {key}")
+        if not isinstance(c.isolation,str) or not c.isolation.strip():
+            raise ValueError(f"missing isolation rationale: {key}")
+        if c.mode == "bounded" and c.shared_writes:
+            raise ValueError(f"contradictory shared writes: {key}")
+        if entry.parallel_safe != (c.mode == "bounded"):
+            raise ValueError(f"contradictory parallel constraint: {key}")
+        if c.basis != command_basis(entry.command_template, c.unit):
+            raise ValueError(f"stale command/adapter basis: {key}")
+    visiting, visited = set(), set()
+    def visit(key):
+        if key in visiting:
+            raise ValueError(f"catalog dependency cycle: {key}")
+        if key in visited:
+            return
+        visiting.add(key)
+        for dependency in catalog[key].dependencies:
+            visit(dependency)
+        visiting.remove(key)
+        visited.add(key)
+    for key in catalog:
+        visit(key)
+
 
 BOUNDARY_CHECK_IDS = frozenset(
     {
@@ -1304,6 +1389,7 @@ def _apply_path_selection(
             else "Changed selector code requires selector regression fixtures."
         )
         _add_check(selected, "selector.regression", reason)
+        _add_check(selected, "validation_execution.regression", reason)
         return
 
     if category == "boundary-first":
@@ -1809,6 +1895,8 @@ def _path_category(path: str) -> str | None:
     if path in {
         "scripts/select-validation.py",
         "scripts/validation_selection.py",
+        "scripts/validation_execution.py",
+        "scripts/test-validation-execution.py",
         "scripts/test-select-validation.py",
         "scripts/validate-broad-smoke-classification.py",
         "scripts/validate-readme.py",
