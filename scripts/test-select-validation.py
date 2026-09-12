@@ -77,7 +77,6 @@ EXPECTED_CATALOG = {
     "review_artifacts.validate": "python scripts/validate-review-artifacts.py <change-root>...",
     "artifact_lifecycle.regression": "python scripts/test-artifact-lifecycle-validator.py",
     "artifact_lifecycle.validate": "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>...",
-    "validation_cache.regression": "python scripts/test-validation-cache.py",
     "change_metadata.regression": "python scripts/test-change-metadata-validator.py",
     "change_metadata.validate": "python scripts/validate-change-metadata.py <change-yaml>...",
     "change_record_query.regression": "python scripts/test-query-change-record.py",
@@ -164,7 +163,7 @@ BROAD_SMOKE_PARALLEL_BASELINE = (
 VALIDATION_PRODUCER_PATTERN = re.compile(
     r"\bpython\s+scripts/(?:test|validate|build)-[\w-]+\.py\b"
 )
-CHANGE_METADATA_PASSING_TEST = "ChangeMetadataValidatorFixtureTests.test_measurement_valid_fixture_passes"
+CHANGE_METADATA_PASSING_TEST = "ExplicitRecordingMetadataTests.test_explicit_recording_metadata_accepts_structure_without_stage_eligibility"
 CHANGE_METADATA_FAILING_TEST = "ChangeMetadataValidatorFixtureTests.test_output_contract_fixture_failure"
 
 
@@ -1659,7 +1658,6 @@ raise SystemExit({exit_code})
             "skills.regression",
             "token_cost.regression",
             "token_cost.report_regression",
-            "validation_cache.regression",
         }
 
         self.assertEqual(
@@ -2379,15 +2377,15 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "scripts/validation_cache.py",
-                "category": "validation-cache",
+                "category": "validation-retirement",
                 "status": "ok",
-                "checks": {"validation_cache.regression"},
+                "checks": {"artifact_lifecycle.regression", "change_metadata.regression"},
             },
             {
                 "path": "scripts/test-validation-cache.py",
-                "category": "validation-cache",
+                "category": "validation-retirement",
                 "status": "ok",
-                "checks": {"validation_cache.regression"},
+                "checks": {"artifact_lifecycle.regression", "change_metadata.regression"},
             },
             {
                 "path": "scripts/validate-skills.py",
@@ -4676,7 +4674,7 @@ esac
             nonempty_lines[0],
             r"^\[PASS\] test-change-metadata-validator: 1 passed in \d+(?:\.\d+)?s$",
         )
-        self.assertNotIn("test_measurement_valid_fixture_passes", output)
+        self.assertNotIn("test_explicit_recording_metadata_accepts_structure_without_stage_eligibility", output)
         self.assertNotIn(" ... ok", output)
 
     def test_change_metadata_validator_default_failure_is_actionable(self) -> None:
@@ -4691,7 +4689,7 @@ esac
         self.assertIn("FAILED ChangeMetadataValidatorFixtureTests.test_output_contract_fixture_failure", output)
         self.assertIn("AssertionError: intentional output-contract failure", output)
         self.assertIn("scripts/test-change-metadata-validator.py:", output)
-        self.assertNotIn("test_measurement_valid_fixture_passes", output)
+        self.assertNotIn("test_explicit_recording_metadata_accepts_structure_without_stage_eligibility", output)
 
     def test_change_metadata_validator_verbose_preserves_full_detail(self) -> None:
         for flag in ("--verbose", "-v"):
@@ -4700,7 +4698,7 @@ esac
                 output = result.stdout + result.stderr
 
                 self.assertEqual(result.returncode, 0, msg=output)
-                self.assertIn("test_measurement_valid_fixture_passes", output)
+                self.assertIn("test_explicit_recording_metadata_accepts_structure_without_stage_eligibility", output)
                 self.assertIn(" ... ok", output)
                 self.assertIn("Ran 1 test", output)
                 self.assertIn("OK", output)
