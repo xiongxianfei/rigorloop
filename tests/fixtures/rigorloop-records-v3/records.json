@@ -1,0 +1,349 @@
+{
+  "change": {
+    "schema_version": 3,
+    "contract": "rigorloop-records-v3",
+    "change_id": "example",
+    "proposal": {
+      "path": "docs/proposals/example.md",
+      "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "models": [
+      {
+        "id": "model-1",
+        "subject": {
+          "path": "docs/design/workflow/workflow.md",
+          "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    ],
+    "activity": {
+      "stage": "proposal",
+      "status": "completed",
+      "owner": {
+        "id": "author",
+        "role": "proposal"
+      },
+      "reason": "Example only; replace with the responsible actor's decision"
+    },
+    "plan": null,
+    "work": [
+      {
+        "id": "work-1",
+        "status": "completed",
+        "owner": {
+          "id": "author",
+          "role": "implement"
+        },
+        "requirement_refs": [
+          "RF-SR-01"
+        ]
+      }
+    ],
+    "records": [
+      {
+        "path": "docs/changes/example/reviews/design-review.json",
+        "kind": "review"
+      },
+      {
+        "path": "docs/changes/example/evidence.json",
+        "kind": "evidence"
+      },
+      {
+        "path": "docs/changes/example/material-decisions.json",
+        "kind": "decisions"
+      },
+      {
+        "path": "docs/changes/example/verify-report.json",
+        "kind": "verify"
+      }
+    ],
+    "applicability": [
+      {
+        "path": "docs/changes/example/reviews/design-review.json",
+        "value": "current",
+        "actor": {
+          "id": "author",
+          "role": "implement"
+        },
+        "reason": "Explicit fixture declaration."
+      },
+      {
+        "path": "docs/changes/example/evidence.json",
+        "value": "current",
+        "actor": {
+          "id": "author",
+          "role": "implement"
+        },
+        "reason": "Explicit fixture declaration."
+      },
+      {
+        "path": "docs/changes/example/material-decisions.json",
+        "value": "current",
+        "actor": {
+          "id": "author",
+          "role": "implement"
+        },
+        "reason": "Explicit fixture declaration."
+      },
+      {
+        "path": "docs/changes/example/verify-report.json",
+        "value": "current",
+        "actor": {
+          "id": "author",
+          "role": "implement"
+        },
+        "reason": "Explicit fixture declaration."
+      }
+    ],
+    "blockers": [
+      {
+        "id": "blocker-1",
+        "reporter": {
+          "id": "reviewer",
+          "role": "review"
+        },
+        "owner": {
+          "id": "author",
+          "role": "implement"
+        },
+        "subjects": [
+          {
+            "path": "docs/proposals/example.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "evidence": "Observed failure.",
+        "required_outcome": "Demonstrate correction.",
+        "state": "resolved",
+        "resolution": {
+          "actor": {
+            "id": "reviewer",
+            "role": "review"
+          },
+          "rationale": "Explicit reassessment.",
+          "evidence_refs": [
+            {
+              "path": "docs/changes/example/evidence.json",
+              "id": "check-1"
+            }
+          ]
+        },
+        "origin": {
+          "reporter": {
+            "id": "reviewer",
+            "role": "review"
+          },
+          "subjects": [
+            {
+              "path": "docs/proposals/example.md",
+              "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "evidence": "Observed failure.",
+          "required_outcome": "Demonstrate correction.",
+          "rationale": "Failure invalidates the guarantee.",
+          "supporting_judgment": {
+            "reviewer": {
+              "id": "reviewer",
+              "role": "review"
+            },
+            "contributors": [
+              {
+                "id": "author",
+                "role": "implement"
+              }
+            ],
+            "independence_basis": "Separate reviewer.",
+            "subjects": [
+              {
+                "path": "docs/proposals/example.md",
+                "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "judgment": "changes-requested",
+            "rationale": "The failure needs correction."
+          }
+        }
+      }
+    ]
+  },
+  "review": {
+    "schema_version": 3,
+    "change_id": "example",
+    "id": "design-review",
+    "target": "design",
+    "reviewer": {
+      "id": "reviewer",
+      "role": "review"
+    },
+    "contributors": [
+      {
+        "id": "author",
+        "role": "design"
+      }
+    ],
+    "independence_basis": "Example only; supply actual independent review provenance",
+    "subjects": [
+      {
+        "path": "docs/proposals/example.md",
+        "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "judgment": "blocked",
+    "findings": [
+      {
+        "id": "finding-1",
+        "reporter": {
+          "id": "reviewer",
+          "role": "review"
+        },
+        "owner": {
+          "id": "author",
+          "role": "implement"
+        },
+        "subjects": [
+          {
+            "path": "docs/proposals/example.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "evidence": "Observed failure.",
+        "required_outcome": "Demonstrate correction.",
+        "state": "resolved",
+        "resolution": {
+          "actor": {
+            "id": "reviewer",
+            "role": "review"
+          },
+          "rationale": "Explicit reassessment.",
+          "evidence_refs": [
+            {
+              "path": "docs/changes/example/evidence.json",
+              "id": "check-1"
+            }
+          ]
+        }
+      }
+    ],
+    "summary": "Example only; supply the responsible actor's explanation.",
+    "assessment_scope": "Synthetic fixture assessment of example subjects.",
+    "rationale": [
+      "Synthetic fixture rationale for exercising stored-record mechanics."
+    ],
+    "limitations": []
+  },
+  "evidence": {
+    "schema_version": 3,
+    "change_id": "example",
+    "checks": [
+      {
+        "id": "check-1",
+        "actor": {
+          "id": "author",
+          "role": "implement"
+        },
+        "subjects": [
+          {
+            "path": "docs/proposals/example.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "result": "failed",
+        "procedure": "Observed check.",
+        "summary": "Failed result remains recordable."
+      }
+    ]
+  },
+  "decisions": {
+    "schema_version": 3,
+    "change_id": "example",
+    "decisions": [
+      {
+        "id": "decision-1",
+        "actor": {
+          "id": "author",
+          "role": "implement"
+        },
+        "subjects": [
+          {
+            "path": "docs/proposals/example.md",
+            "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "rationale": "Record a bounded choice.",
+        "source_refs": [
+          {
+            "path": "docs/changes/example/reviews/design-review.json",
+            "id": "finding-1"
+          }
+        ]
+      }
+    ],
+    "body": "Example only; supply the responsible actor's explanation."
+  },
+  "verify": {
+    "schema_version": 3,
+    "change_id": "example",
+    "verifier": {
+      "id": "verifier",
+      "role": "verify"
+    },
+    "subjects": [],
+    "evidence_refs": [
+      {
+        "path": "docs/changes/example/evidence.json",
+        "id": "check-1"
+      }
+    ],
+    "review_refs": [
+      {
+        "path": "docs/changes/example/reviews/design-review.json",
+        "id": "design-review"
+      }
+    ],
+    "outcome": "success",
+    "summary": "Example only; supply the responsible actor's explanation.",
+    "assessment_scope": "Synthetic fixture assessment of example subjects.",
+    "rationale": [
+      "Synthetic fixture rationale for exercising stored-record mechanics."
+    ],
+    "limitations": [],
+    "changes": [
+      "Synthetic fixture delivery for exercising stored-record mechanics."
+    ]
+  },
+  "request": {
+    "schema_version": 2,
+    "contract": "rigorloop-records-v3",
+    "change_id": "example",
+    "expected_revision": null,
+    "writes": [
+      {
+        "path": "docs/changes/example/change.json",
+        "expected_identity": null,
+        "content": "{\"schema_version\": 3, \"contract\": \"rigorloop-records-v3\", \"change_id\": \"example\", \"proposal\": {\"path\": \"docs/proposals/example.md\", \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}, \"models\": [{\"id\": \"model-1\", \"subject\": {\"path\": \"docs/design/workflow/workflow.md\", \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}}], \"activity\": {\"stage\": \"proposal\", \"status\": \"completed\", \"owner\": {\"id\": \"author\", \"role\": \"proposal\"}, \"reason\": \"Example only; replace with the responsible actor's decision\"}, \"plan\": null, \"work\": [{\"id\": \"work-1\", \"status\": \"completed\", \"owner\": {\"id\": \"author\", \"role\": \"implement\"}, \"requirement_refs\": [\"RF-SR-01\"]}], \"records\": [{\"path\": \"docs/changes/example/reviews/design-review.json\", \"kind\": \"review\"}, {\"path\": \"docs/changes/example/evidence.json\", \"kind\": \"evidence\"}, {\"path\": \"docs/changes/example/material-decisions.json\", \"kind\": \"decisions\"}, {\"path\": \"docs/changes/example/verify-report.json\", \"kind\": \"verify\"}], \"applicability\": [{\"path\": \"docs/changes/example/reviews/design-review.json\", \"value\": \"current\", \"actor\": {\"id\": \"author\", \"role\": \"implement\"}, \"reason\": \"Explicit fixture declaration.\"}, {\"path\": \"docs/changes/example/evidence.json\", \"value\": \"current\", \"actor\": {\"id\": \"author\", \"role\": \"implement\"}, \"reason\": \"Explicit fixture declaration.\"}, {\"path\": \"docs/changes/example/material-decisions.json\", \"value\": \"current\", \"actor\": {\"id\": \"author\", \"role\": \"implement\"}, \"reason\": \"Explicit fixture declaration.\"}, {\"path\": \"docs/changes/example/verify-report.json\", \"value\": \"current\", \"actor\": {\"id\": \"author\", \"role\": \"implement\"}, \"reason\": \"Explicit fixture declaration.\"}], \"blockers\": [{\"id\": \"blocker-1\", \"reporter\": {\"id\": \"reviewer\", \"role\": \"review\"}, \"owner\": {\"id\": \"author\", \"role\": \"implement\"}, \"subjects\": [{\"path\": \"docs/proposals/example.md\", \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}], \"evidence\": \"Observed failure.\", \"required_outcome\": \"Demonstrate correction.\", \"state\": \"resolved\", \"resolution\": {\"actor\": {\"id\": \"reviewer\", \"role\": \"review\"}, \"rationale\": \"Explicit reassessment.\", \"evidence_refs\": [{\"path\": \"docs/changes/example/evidence.json\", \"id\": \"check-1\"}]}, \"origin\": {\"reporter\": {\"id\": \"reviewer\", \"role\": \"review\"}, \"subjects\": [{\"path\": \"docs/proposals/example.md\", \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}], \"evidence\": \"Observed failure.\", \"required_outcome\": \"Demonstrate correction.\", \"rationale\": \"Failure invalidates the guarantee.\", \"supporting_judgment\": {\"reviewer\": {\"id\": \"reviewer\", \"role\": \"review\"}, \"contributors\": [{\"id\": \"author\", \"role\": \"implement\"}], \"independence_basis\": \"Separate reviewer.\", \"subjects\": [{\"path\": \"docs/proposals/example.md\", \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}], \"judgment\": \"changes-requested\", \"rationale\": \"The failure needs correction.\"}}}]}\n"
+      },
+      {
+        "path": "docs/changes/example/reviews/design-review.json",
+        "expected_identity": null,
+        "content": "{\n  \"schema_version\": 3,\n  \"change_id\": \"example\",\n  \"id\": \"design-review\",\n  \"target\": \"design\",\n  \"reviewer\": {\n    \"id\": \"reviewer\",\n    \"role\": \"review\"\n  },\n  \"contributors\": [\n    {\n      \"id\": \"author\",\n      \"role\": \"design\"\n    }\n  ],\n  \"independence_basis\": \"Example only; supply actual independent review provenance\",\n  \"subjects\": [\n    {\n      \"path\": \"docs/proposals/example.md\",\n      \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n    }\n  ],\n  \"judgment\": \"blocked\",\n  \"findings\": [\n    {\n      \"id\": \"finding-1\",\n      \"reporter\": {\n        \"id\": \"reviewer\",\n        \"role\": \"review\"\n      },\n      \"owner\": {\n        \"id\": \"author\",\n        \"role\": \"implement\"\n      },\n      \"subjects\": [\n        {\n          \"path\": \"docs/proposals/example.md\",\n          \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n        }\n      ],\n      \"evidence\": \"Observed failure.\",\n      \"required_outcome\": \"Demonstrate correction.\",\n      \"state\": \"resolved\",\n      \"resolution\": {\n        \"actor\": {\n          \"id\": \"reviewer\",\n          \"role\": \"review\"\n        },\n        \"rationale\": \"Explicit reassessment.\",\n        \"evidence_refs\": [\n          {\n            \"path\": \"docs/changes/example/evidence.json\",\n            \"id\": \"check-1\"\n          }\n        ]\n      }\n    }\n  ],\n  \"summary\": \"Example only; supply the responsible actor's explanation.\",\n  \"assessment_scope\": \"Synthetic fixture assessment of example subjects.\",\n  \"rationale\": [\n    \"Synthetic fixture rationale for exercising stored-record mechanics.\"\n  ],\n  \"limitations\": []\n}\n"
+      },
+      {
+        "path": "docs/changes/example/evidence.json",
+        "expected_identity": null,
+        "content": "{\"schema_version\": 3, \"change_id\": \"example\", \"checks\": [{\"id\": \"check-1\", \"actor\": {\"id\": \"author\", \"role\": \"implement\"}, \"subjects\": [{\"path\": \"docs/proposals/example.md\", \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}], \"result\": \"failed\", \"procedure\": \"Observed check.\", \"summary\": \"Failed result remains recordable.\"}]}\n"
+      },
+      {
+        "path": "docs/changes/example/material-decisions.json",
+        "expected_identity": null,
+        "content": "{\"schema_version\": 3, \"change_id\": \"example\", \"decisions\": [{\"id\": \"decision-1\", \"actor\": {\"id\": \"author\", \"role\": \"implement\"}, \"subjects\": [{\"path\": \"docs/proposals/example.md\", \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}], \"rationale\": \"Record a bounded choice.\", \"source_refs\": [{\"path\": \"docs/changes/example/reviews/design-review.json\", \"id\": \"finding-1\"}]}], \"body\": \"Example only; supply the responsible actor's explanation.\"}\n"
+      },
+      {
+        "path": "docs/changes/example/verify-report.json",
+        "expected_identity": null,
+        "content": "{\n  \"schema_version\": 3,\n  \"change_id\": \"example\",\n  \"verifier\": {\n    \"id\": \"verifier\",\n    \"role\": \"verify\"\n  },\n  \"subjects\": [],\n  \"evidence_refs\": [\n    {\n      \"path\": \"docs/changes/example/evidence.json\",\n      \"id\": \"check-1\"\n    }\n  ],\n  \"review_refs\": [\n    {\n      \"path\": \"docs/changes/example/reviews/design-review.json\",\n      \"id\": \"design-review\"\n    }\n  ],\n  \"outcome\": \"success\",\n  \"summary\": \"Example only; supply the responsible actor's explanation.\",\n  \"assessment_scope\": \"Synthetic fixture assessment of example subjects.\",\n  \"rationale\": [\n    \"Synthetic fixture rationale for exercising stored-record mechanics.\"\n  ],\n  \"limitations\": [],\n  \"changes\": [\n    \"Synthetic fixture delivery for exercising stored-record mechanics.\"\n  ]\n}\n"
+      }
+    ],
+    "reads": []
+  }
+}

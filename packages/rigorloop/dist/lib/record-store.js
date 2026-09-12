@@ -22,9 +22,9 @@ export function emptyRecordResult(operation,changeId) {
 
 class Store {
   constructor(root,id,options) {
-    V2_FORMAT.pathKind(id,`docs/changes/${id}/change.json`);
+    V3_FORMAT.pathKind(id,`docs/changes/${id}/change.json`);
     this.fs=new RecordFiles(root); this.id=id; this.options=options;
-    this.directory=`docs/changes/${id}`; this.selectFormat(V2_FORMAT);
+    this.directory=`docs/changes/${id}`; this.selectFormat(V3_FORMAT);
     this.private=`.rigorloop/record-store/${id}`;
     this.journal=`${this.private}/journal.json`; this.lock=`${this.private}/lock`; this.epoch=`${this.private}/epoch`;
     this.token=null;

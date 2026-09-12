@@ -4,7 +4,7 @@ import {readSync} from "node:fs";
 import {withRecordSnapshot} from "./record-store.js";
 import {RecordFiles,digest,stop} from "./record-store-files.js";
 import {validateQueryInput} from "./recording-contract.js";
-import {parseRequestJSON} from "./record-format-v2.js";
+import {parseRequestJSON} from "./record-json.js";
 import {scanObservations,canonicalJSON,compare} from "./recording-observations.js";
 import {exact,id,isDigest,safePath,QUERY_KINDS,serializePrimary} from "./recording-result.js";
 const VOCAB={status:["pending","in-progress","blocked","ready","completed","cancelled"],state:["open","resolved","deferred"],target:["proposal","design","delivery","code"],judgment:["approved","changes-requested","blocked","inconclusive"],result:["passed","failed","inconclusive"],value:["current","stale","not-applicable"]};
