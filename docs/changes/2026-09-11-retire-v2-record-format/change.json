@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-final-reviewer",
-      "role": "review"
+      "id": "codex-final-verify",
+      "role": "verify"
     },
-    "reason": "Route accepts approved current eight-model Design reassessment and resolved design-consolidation-f1. Completed implementation and unchanged delivery allocation remain applicable. Request fresh complete base5c4bda94..sourceff9154a6 Code Review, including consumer consolidation and resolved correction, before distinct renewed Verify and PR187 refresh.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Route selects distinct final Verify after approved current fresh whole-change Code Review of sourceff9154a6, approved corrected eight-model Design and resolved concerns. Both implementation milestones and their unchanged plan allocation remain complete. Assess exact final proof and PR187 refresh basis; no merge or release authority.",
+    "stage": "verify",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -97,6 +97,15 @@
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-consolidation-review.json",
       "reason": "Independent complete eight-model reassessment at ff9154a6 after the identified current-context correction; exact unchanged package basis retained and finding explicitly resolved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-final-consolidation-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-consolidation-code-review.json",
+      "reason": "Fresh independent whole-change assessment of the complete final M1/M2/consolidation package at ff9154a6 with current Design authority, unchanged Delivery allocation and attributable final-source proof. Distinct Verify remains required.",
       "value": "current"
     }
   ],
@@ -209,6 +218,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-consolidation-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-consolidation-code-review.json"
     }
   ],
   "schema_version": 3,
