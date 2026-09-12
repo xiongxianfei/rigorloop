@@ -250,9 +250,42 @@ class CatalogTests(unittest.TestCase):
                 validate_catalog({entry.id:candidate})
         with self.assertRaises(TypeError):
             ExecutionConstraints(unknown_value=True)
+        with self.assertRaisesRegex(ValueError,'mode membership'):
+            validate_catalog({entry.id:dataclasses.replace(entry,modes=('unknown_value',))})
         candidate = dataclasses.replace(entry, command_template=entry.command_template+' --changed')
         with self.assertRaisesRegex(ValueError, 'basis'):
             validate_catalog({entry.id:candidate})
+
+
+class CompositionTests(unittest.TestCase):
+    def test_catalog_composes_broad_and_main_with_distinct_preserved_package_versions(self):
+        from validation_execution import compose_mode
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for mode,version in [('broad-smoke','v0.1.3'),('main','v0.1.5')]:
+                plans = compose_mode(mode,root,base='before',head='after')
+                build = next(p for p in plans if p.check_id.endswith('adapters.build_archives'))
+                check = next(p for p in plans if p.check_id.endswith('adapters.validate_archives'))
+                self.assertIn(version,build.args)
+                self.assertIn(version,check.args)
+                output = build.args[build.args.index('--output-dir')+1]
+                self.assertIn(output,check.args)
+                self.assertIn(build.check_id,check.dependencies)
+                self.assertFalse(any(p.args[:2] == ['bash','scripts/ci.sh'] for p in plans))
+            self.assertIn('main.rigorloop_cli.test',{p.check_id for p in plans})
+            self.assertIn('main.workflow_automation.engine_regression',{p.check_id for p in plans})
+
+    def test_unknown_value_composed_mode_rejects(self):
+        from validation_execution import compose_mode
+        with tempfile.TemporaryDirectory() as temporary, self.assertRaises(ValueError):
+            compose_mode('unknown_value',Path(temporary))
+
+    def test_retired_classification_override_rejects_before_work(self):
+        env = dict(os.environ,RIGORLOOP_BROAD_SMOKE_CLASSIFICATION='/no/retired/classification')
+        result = subprocess.run(['bash','scripts/ci.sh','--mode','broad-smoke','--jobs','2'],env=env,capture_output=True,text=True)
+        self.assertEqual(result.returncode,4)
+        self.assertIn('retired',result.stderr)
+        self.assertNotIn('==>',result.stdout)
 
 
 if __name__ == '__main__':

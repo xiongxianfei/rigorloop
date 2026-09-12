@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from retirement_ledger import load_ledger, validate_ledger  # noqa: E402
-from validation_selection import CHECK_CATALOG  # noqa: E402
+from validation_selection import CHECK_CATALOG, MODE_CHECK_IDS  # noqa: E402
 
 # Workflow's scoped stored-format retirement keeps the archival ledger bytes.
 # Project the one adopted catalog disposition back to its historical inventory
@@ -23,7 +23,7 @@ from validation_selection import CHECK_CATALOG  # noqa: E402
 # Current behavior has separate proof in record-retirement.test.js. Distribution
 # retires the mirror checks; Validation retires the cache check. Their original
 # ledger identities remain historical and are not runnable catalog entries.
-HISTORICAL_CHECK_IDS = (set(CHECK_CATALOG) - {"record_retirement.regression", "validation_execution.regression"}) | {"compact_contract.canonical", "skills.generation_regression", "skills.drift", "validation_cache.regression"}
+HISTORICAL_CHECK_IDS = (set(CHECK_CATALOG) - {"record_retirement.regression", "validation_execution.regression"} - {key for ids in MODE_CHECK_IDS.values() for key in ids}) | {"compact_contract.canonical", "skills.generation_regression", "skills.drift", "validation_cache.regression"}
 
 
 LEDGER = (

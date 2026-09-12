@@ -9,6 +9,7 @@ import ctypes
 import codecs
 import json
 import os
+import platform
 from pathlib import Path
 import shlex
 import signal
@@ -18,7 +19,7 @@ import tempfile
 import time
 import shutil
 
-from validation_selection import (CHECK_CATALOG, BOUNDARY_CHECK_IDS, DEFAULT_ADAPTER_VERSION, catalog_command,
+from validation_selection import (CHECK_CATALOG, MODE_CHECK_IDS, BOUNDARY_CHECK_IDS, DEFAULT_ADAPTER_VERSION, catalog_command,
                                   is_parallel_safe_check, validate_catalog)
 
 
@@ -37,6 +38,7 @@ class CheckPlan:
     parallel_safe: bool
     dependencies: tuple[str, ...] = ()
     demand: int = 1
+    after: tuple[str, ...] = ()
 
 
 @dataclass
@@ -67,7 +69,10 @@ def validate_plans(plans, *, jobs):
             raise ValueError(f'invalid dependencies: {p.check_id}')
         if any(d not in ids for d in p.dependencies):
             raise ValueError(f'missing dependency: {p.check_id}')
-    graph = {p.check_id:p.dependencies for p in plans}
+    for p in plans:
+        if not isinstance(p.after,tuple) or len(set(p.after)) != len(p.after) or any(d not in ids for d in p.after):
+            raise ValueError(f"invalid diagnostic ordering: {p.check_id}")
+    graph = {p.check_id:(*p.dependencies,*p.after) for p in plans}
     visiting, visited = set(), set()
     def visit(key):
         if key in visiting:
@@ -352,7 +357,7 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                     results[plan.check_id] = _not_started(plan, 'failed prerequisite: ' + ', '.join(failed))
                     pending.remove(plan)
                     continue
-                if any(d not in results for d in plan.dependencies):
+                if any(d not in results for d in (*plan.dependencies,*plan.after)):
                     continue
                 demand = min(plan.demand, jobs) if plan.parallel_safe else jobs
                 used = sum(t['demand'] for t in running.values())
@@ -366,6 +371,7 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                 streams = [p.open('wb') for p in paths]
                 env = os.environ.copy()
                 env['RIGORLOOP_VALIDATION_WORKERS'] = str(demand)
+                env['PYTHONDONTWRITEBYTECODE'] = '1'
                 # Native Node tests cannot create an independent CPU-sized pool.
                 args = list(plan.args)
                 if plan.check_id == 'broad_smoke.repo':
@@ -484,6 +490,182 @@ def print_result_output(results, *, verbose):
             print('(no captured output)')
 
 
+def _git(*args, optional=False):
+    result = subprocess.run(['git',*args],capture_output=True,text=True,timeout=300)
+    if result.returncode:
+        if optional:
+            return ''
+        raise ValueError('unable to resolve validation scope: '+result.stderr.strip())
+    return result.stdout.rstrip('\n')
+
+
+def _current_roots(paths):
+    roots = []
+    for raw in paths:
+        parts = Path(raw).parts
+        if len(parts)<4 or parts[:2] != ('docs','changes'):
+            continue
+        directory = Path(*parts[:3])
+        manifest = directory/'change.json'
+        relative = '/'.join(parts[3:])
+        reserved = relative in {'change.json','evidence.json','material-decisions.json','verify-report.json'} or (relative.startswith('reviews/') and relative.endswith('.json'))
+        if not manifest.exists() and not manifest.is_symlink() and not directory.is_symlink() and directory.is_dir() and os.access(directory,os.R_OK|os.X_OK) and not reserved:
+            continue
+        if str(manifest) not in roots:
+            roots.append(str(manifest))
+    return roots
+
+
+def compose_mode(mode, scratch, *, base='', head='', skip_diff_scoped=False):
+    validate_catalog()
+    if mode not in MODE_CHECK_IDS:
+        raise ValueError(f'unknown composed mode: {mode}')
+    if 'RIGORLOOP_BROAD_SMOKE_CLASSIFICATION' in os.environ:
+        raise ValueError('RIGORLOOP_BROAD_SMOKE_CLASSIFICATION is retired; current catalog owns constraints')
+    if mode == 'broad-smoke' and os.environ.get('RIGORLOOP_CI_BROAD_SMOKE_STUB') == '1':
+        print('Broad smoke stub (test fixture; no validation evidence)')
+        return []
+    output = str(scratch / ('adapters-'+mode))
+    values = {'<adapter-output>':[output]}
+    roots = []
+    if os.environ.get('RIGORLOOP_CI_DIRECT_DRY_RUN') != '1':
+        from validation_selection import _preflight_results, _git_local_changed_paths
+        checks = _preflight_results(_git_local_changed_paths(Path.cwd()),repo_root=Path.cwd())
+        blocked = [item for item in checks if item.get('result') == 'blocked']
+        if blocked:
+            fail('Preflight blocked: '+json.dumps(blocked),2)
+    if mode == 'main':
+        if not base or not head:
+            base,head = _git('rev-parse','--verify','HEAD~1'),_git('rev-parse','--verify','HEAD')
+        values.update({'<base>':[base],'<head>':[head]})
+    else:
+        dirty = _git('diff','--name-only','-z','--diff-filter=ACMRT','HEAD','--','.').split('\0')
+        dirty = [x for x in dirty if x]
+        previous = _git('rev-parse','--verify','HEAD~1',optional=True)
+        if not skip_diff_scoped:
+            if os.environ.get('REVIEW_ARTIFACT_ROOTS'):
+                roots = [x.rstrip('/')+'/change.json' for x in os.environ['REVIEW_ARTIFACT_ROOTS'].split()]
+            else:
+                changed = dirty or (_git('diff','--name-only','-z','--diff-filter=ACMRT','HEAD~1','HEAD','--','.').split('\0') if previous else [])
+                roots = _current_roots(changed)
+        authored = [x for x in dirty if not x.startswith(('.codex/skills/','dist/adapters/'))]
+        if authored and (not skip_diff_scoped or not previous):
+            lifecycle = ['--mode','explicit-paths']
+            for path in authored:
+                lifecycle.extend(['--path',path])
+        elif previous:
+            lifecycle = ['--mode','push-main-ci','--before',previous,'--after',_git('rev-parse','--verify','HEAD')]
+        else:
+            raise ValueError('Unable to determine artifact lifecycle validation scope')
+        values.update({'<roots>':roots,'<lifecycle-args>':lifecycle})
+    plans = []
+    for key in MODE_CHECK_IDS[mode]:
+        if key.endswith('review_artifacts.changed_roots') and not roots:
+            continue
+        entry = CHECK_CATALOG[key]
+        args = []
+        for token in shlex.split(entry.command_template):
+            if token.startswith('<') and token.endswith('>'):
+                if token not in values:
+                    raise ValueError(f'unresolved catalog scope: {token}')
+                args.extend(values[token])
+            else:
+                args.append(token)
+        constraints = entry.constraints
+        plans.append(CheckPlan(key,command_display(args),args,entry.label,'focused',entry.parallel_safe,
+            entry.dependencies,constraints.demand if constraints else 1))
+    preflight = [p for p in plans if p.check_id.endswith('review_artifacts.changed_roots')]
+    for plan in preflight:
+        plan.phase = 'preflight'
+    for plan in plans:
+        if plan not in preflight:
+            plan.dependencies = tuple(dict.fromkeys((*plan.dependencies,*(p.check_id for p in preflight))))
+    return preflight + [p for p in plans if p not in preflight]
+
+
+def expand_groups(plans, scratch, *, diagnostic=False):
+    expanded = []
+    aliases = {}
+    for plan in plans:
+        if plan.check_id != 'broad_smoke.repo':
+            expanded.append(plan)
+            continue
+        children = compose_mode('broad-smoke',scratch,skip_diff_scoped=True)
+        aliases[plan.check_id] = tuple(child.check_id for child in children)
+        for child in children:
+            child.phase = plan.phase
+            if diagnostic:
+                child.after = plan.dependencies
+            else:
+                child.dependencies = tuple(dict.fromkeys((*child.dependencies,*plan.dependencies)))
+            child.reason = '; '.join(x for x in (plan.reason,child.reason) if x)
+        expanded.extend(children)
+    for plan in expanded:
+        plan.dependencies = tuple(dict.fromkeys(d for dependency in plan.dependencies for d in aliases.get(dependency,(dependency,))))
+    return expanded
+
+
+def _write_mode_result(results, *, mode, jobs, elapsed, code, skip_diff_scoped):
+    destination = os.environ.get('RIGORLOOP_BROAD_SMOKE_RESULT_JSON')
+    if mode != 'broad-smoke' or not destination:
+        return
+    children = [dict(check_id=r.plan.check_id,command=command_display(r.plan.args),duration_ms=round(r.elapsed_seconds*1000),
+        phase='parallel' if r.plan.parallel_safe and jobs>1 else 'sequential',
+        result='passed' if r.exit_code==0 else 'failed',exit_code=r.exit_code,
+        output_bytes=sum(p.stat().st_size for p in (r.stdout_path,r.stderr_path) if p and p.exists()),
+        cache_status='not-applicable',status=r.status,exit_reason=r.exit_reason) for r in results]
+    payload = dict(scenario='broad-smoke-safe-parallelism',
+        command=f'bash scripts/ci.sh --mode broad-smoke '+('--skip-diff-scoped ' if skip_diff_scoped else '')+f'--jobs {jobs}',
+        environment=dict(os=platform.platform(),shell=os.environ.get('SHELL','unknown'),cpu_class=f'{os.cpu_count() or 1} logical CPUs',local_or_ci='ci' if os.environ.get('CI') else 'local'),
+        repository_state=dict(head=_git('rev-parse','HEAD',optional=True),worktree_state='dirty' if _git('status','--short',optional=True) else 'clean'),
+        baseline=dict(total_duration_ms=None,child_durations=[]),
+        parallel=dict(jobs=jobs,total_duration_ms=round(elapsed*1000),exit_code=code,child_durations=children),
+        delta=dict(duration_ms=None,percent=None),
+        preservation=dict(child_set_preserved=True,exit_behavior_preserved=code==0,diagnostics_preserved=True,output_order_preserved=True),
+        notes=dict(variance='Current invocation only; historical baseline unavailable by design.',low_confidence_children=[],
+            sequential_only_children=[r.plan.check_id for r in results if not r.plan.parallel_safe or jobs==1],default_promotion_decision='assessed_independent_work_uses_shared_budget'))
+    Path(destination).write_text(json.dumps(payload,indent=2)+'\n')
+
+
+def composed_main(argv):
+    mode, jobs, timeout, fast, verbose, base, head, skip = argv
+    jobs,timeout,fast,verbose,skip = int(jobs),int(timeout),bool(int(fast)),bool(int(verbose)),bool(int(skip))
+    with tempfile.TemporaryDirectory(prefix='rigorloop-validation-') as temporary:
+        scratch = Path(temporary)
+        plans = compose_mode(mode,scratch,base=base,head=head,skip_diff_scoped=skip)
+        validate_plans(plans,jobs=jobs)
+        if mode == 'main':
+            print(f'Direct deterministic product and governance gates ({mode})')
+        if os.environ.get('RIGORLOOP_CI_DIRECT_DRY_RUN') == '1':
+            for plan in plans:
+                print('==> '+(plan.reason or plan.check_id))
+                print('+ '+command_display(plan.args))
+            print('[PASS] direct gate graph selected without execution')
+            return
+        started = time.monotonic()
+        results = run_scheduled_checks(plans,jobs=jobs,timeout_seconds=timeout,fail_fast=fast,scratch=scratch)
+        for result in results:
+            if result.exit_code or verbose:
+                label = result.plan.reason or result.plan.check_id
+                if result.exit_code:
+                    print(f'[FAIL] {result.plan.check_id} / {label}: exit {result.exit_code} in {result.elapsed_seconds:.2f}s')
+                    print('Check ID:\n'+result.plan.check_id)
+                    print('Command:\n'+command_display(result.plan.args))
+                    print('Execution phase:\n'+('parallel' if result.plan.parallel_safe and jobs>1 else 'sequential'))
+                    print('Captured output:')
+                    print('Re-run:\n'+command_display(result.plan.args))
+                else:
+                    print(f'==> {label} (passed)')
+                print_result_output([result],verbose=True)
+        code = next((r.exit_code for r in results if r.exit_code),0)
+        if code or verbose or mode == "main":
+            print_summary(results)
+        _write_mode_result(results,mode=mode,jobs=jobs,elapsed=time.monotonic()-started,code=code,skip_diff_scoped=skip)
+        if not code:
+            print(f'[PASS] {mode}: {len(results)} checks passed in {time.monotonic()-started:.2f}s')
+        raise SystemExit(code)
+
+
 def selected_main(argv):
     selector_output = Path(argv[0])
     selector_exit = int(argv[1])
@@ -518,6 +700,8 @@ def selected_main(argv):
     if missing:
         fail(f"Selector JSON missing required fields: {', '.join(missing)}")
 
+    if not isinstance(payload.get("broad_smoke",{}),dict) or not isinstance(payload.get("broad_smoke",{}).get("sources",[]),list):
+        fail("Invalid broad_smoke metadata")
     mode = payload["mode"]
     if mode not in {"local", "explicit", "pr", "main", "release"}:
         fail(f"Unknown selector mode: {mode}")
@@ -544,9 +728,16 @@ def selected_main(argv):
                 line += f"; action: {result.get('corrective_action')}"
             print(line)
 
+    diagnostic = any(source == {"type":"explicit_flag","value":"--broad-smoke"} for source in payload.get("broad_smoke",{}).get("sources",[]))
     if status == "blocked":
         for result in payload["blocking_results"]:
             print(f"Blocking result: {result}", file=sys.stderr)
+        if diagnostic:
+            print('Diagnostic broad smoke: original selector blocker remains unsuccessful.')
+            try:
+                composed_main(['broad-smoke',str(jobs),str(timeout_seconds),str(int(fail_fast)),str(int(verbose)),requested_base,requested_head,'1'])
+            except (Exception,SystemExit) as exc:
+                print(f'Diagnostic scope completed or blocked: {exc}')
         raise SystemExit(2)
     if status == "fallback":
         print("Selector status: fallback; fallback execution is not supported in v1.", file=sys.stderr)
@@ -646,9 +837,11 @@ def selected_main(argv):
         print(f"Phase: {plan.phase}")
         if plan.reason:
             print(f"Reason: {plan.reason}")
-        print("+ " + command_display(plan.args))
+        if plan.check_id != "broad_smoke.repo":
+            print("+ " + command_display(plan.args))
 
     with tempfile.TemporaryDirectory(prefix="rigorloop-validation-") as temporary:
+        plans = expand_groups(plans,Path(temporary),diagnostic=diagnostic)
         results = run_scheduled_checks(
             plans,
             jobs=jobs,
