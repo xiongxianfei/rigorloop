@@ -1,6 +1,7 @@
+import {parseRequestJSON} from "./record-json.js";
 import {validateAdvancedEnvelope} from "./record-store-transport.js";
 // Version dispatch for the advanced storage interface. No historical conversion.
-import {parseV2Record,validateV2Record,validateV2Set,validateV2Preservation,validateV2Creation,v2PathKind,parseRequestJSON} from "./record-format-v2.js";
+import {parseV2Record,validateV2Record,validateV2Set,validateV2Preservation,validateV2Creation,v2PathKind} from "./record-format-v2.js";
 import {parseV3Record,validateV3Record,validateV3Set,validateV3Preservation,validateV3Creation,v3PathKind} from "./record-format-v3.js";
 import {digest,stop} from "./record-store-files.js";
 

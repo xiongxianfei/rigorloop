@@ -1,4 +1,3 @@
-import {historicalV2} from './helpers/historical-v2.mjs';
 import assert from "node:assert/strict";
 import {test} from "node:test";
 import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync,existsSync,unlinkSync,symlinkSync,linkSync,renameSync} from "node:fs";
@@ -11,17 +10,17 @@ import {validateAdvancedResult} from "../dist/lib/record-store-format.js";
 
 const prefix="docs/changes/example/", manifest=prefix+"change.json", review=prefix+"reviews/design-review.json", evidence=prefix+"evidence.json";
 const encode=x=>JSON.stringify(x)+"\n";
-const fixture=()=>JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v2/records.json",import.meta.url)));
-function setup(t) {const root=mkdtempSync(join(tmpdir(),"record-v2-persistence-"));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(join(root,"docs/changes"),{recursive:true});return root;}
+const fixture=()=>JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v3/records.json",import.meta.url)));
+function setup(t) {const root=mkdtempSync(join(tmpdir(),"record-persistence-"));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(join(root,"docs/changes"),{recursive:true});return root;}
 const argv=(root,op,extra=[])=>[op,"--root",root,"--change","example","--format","json",...(["check","record"].includes(op)?["--input","-"]:[]),...extra];
-function run(root,op,request,options={},extra=[]) {const x=request?.contract==="rigorloop-records-v2"&&request.expected_revision===null?historicalV2(root,op,request,options):executeRecordStoreCli(argv(root,op,extra),{...options,input:request?encode(request):undefined});validateAdvancedResult(x.result);return x.result;}
+function run(root,op,request,options={},extra=[]) {const x=executeRecordStoreCli(argv(root,op,extra),{...options,input:request?encode(request):undefined});validateAdvancedResult(x.result);return x.result;}
 function create(root) {const r=fixture().request;assert.equal(run(root,"record",r).status,"saved");return r;}
 function update(root) {const s=run(root,"inspect");assert.equal(s.status,"inspected");const r=fixture().request;r.expected_revision=s.revision;r.writes=s.snapshot.records.map(x=>({path:x.path,expected_identity:digest(x.content),content:x.content}));return r;}
 function edit(r,path,fn) {const w=r.writes.find(x=>x.path===path),v=JSON.parse(w.content);fn(v);w.content=encode(v);}
 const recover=(root,s,action,options={})=>run(root,"recover",undefined,options,["--transaction",s.transaction.id,"--expected-recovery",s.transaction.recovery_identity,"--action",action]);
 function sameBytes(root,request) {for(const w of request.writes)assert.equal(readFileSync(join(root,w.path),"utf8"),w.content);}
 
-test("TG-02 historical v2 construction and public continuation retain version-1 storage envelope and exact bytes",t=>{
+test("TG-02 public construction and updates retain version-1 storage envelope and exact bytes",t=>{
  const root=setup(t),r=fixture().request;
  assert.equal(run(root,"check",r).status,"valid");assert.equal(existsSync(join(root,".rigorloop")),false);
  create(root);const continued=update(root);
@@ -35,7 +34,7 @@ test("TG-02 historical v2 construction and public continuation retain version-1 
  const bad=structuredClone(s);bad.snapshot.records[0].content+=" ";assert.throws(()=>validateAdvancedResult(bad));
 });
 
-test("TG-02 v2 stale revision target/read basis and lost-success retry never merge",t=>{
+test("TG-02 v3 stale revision target/read basis and lost-success retry never merge",t=>{
  const root=setup(t),r=create(root);assert.equal(run(root,"record",r).status,"conflict");
  const next=update(root);assert.equal(run(root,"record",next).status,"unchanged");
  next.writes[0].expected_identity=null;assert.equal(run(root,"record",next).status,"conflict");
@@ -44,15 +43,15 @@ test("TG-02 v2 stale revision target/read basis and lost-success retry never mer
 });
 
 test("TG-02 advanced origin preservation and missing evidence restoration share candidate validation",t=>{
- const root=setup(t);create(root);const r=update(root);edit(r,review,x=>x.findings[0].origin.rationale="rewrite");
+ const root=setup(t);create(root);const r=update(root);edit(r,manifest,x=>x.blockers[0].origin.rationale="rewrite");
  assert.equal(run(root,"check",r).errors[0].code,"invalid-input");assert.equal(run(root,"record",r).status,"rejected");
  unlinkSync(join(root,evidence));const s=run(root,"inspect");assert.equal(s.snapshot.records.find(x=>x.path===evidence).content,null);
  const repair=fixture().request;repair.expected_revision=s.revision;repair.writes=repair.writes.filter(w=>w.path===evidence);
  assert.equal(run(root,"record",repair).status,"saved");
- const correction=update(root);edit(correction,review,x=>{x.judgment="approved";x.body="New explicit judgment";});assert.equal(run(root,"record",correction).status,"saved");
+ const correction=update(root);edit(correction,review,x=>{x.judgment="approved";x.summary="New explicit judgment";});assert.equal(run(root,"record",correction).status,"saved");
 });
 
-for(const phase of ["after-preparation","after-replace:0","before-commit","after-commit"]) for(const action of ["restore","complete"]) test(`TG-02 v2 ${phase} interruption ${action} preserves exact coherent state`,t=>{
+for(const phase of ["after-preparation","after-replace:0","before-commit","after-commit"]) for(const action of ["restore","complete"]) test(`TG-02 v3 ${phase} interruption ${action} preserves exact coherent state`,t=>{
  const root=setup(t),before=create(root),r=update(root);edit(r,manifest,x=>x.activity.reason="Correction");edit(r,evidence,x=>x.checks[0].summary="New observed result");
  const stopped=run(root,"record",r,{fault:p=>p===phase?"crash":undefined});assert.equal(stopped.status,"recovery-required");
  assert.equal(run(root,"inspect").snapshot,null);
@@ -61,15 +60,15 @@ for(const phase of ["after-preparation","after-replace:0","before-commit","after
  assert.equal(result.status,"recovered");sameBytes(root,action==="complete"?r:before);assert.equal(run(root,"inspect").status,"inspected");
 });
 
-for(const action of ["complete","restore"]) test(`TG-02 historical absent v2 creation crash recovers ${action} through subprocess`,t=>{
- const root=setup(t),r=fixture().request,launcher=new URL("./helpers/historical-v2-launcher.mjs",import.meta.url).pathname;
+for(const action of ["complete","restore"]) test(`TG-02 absent creation crash recovers ${action} through subprocess`,t=>{
+ const root=setup(t),r=fixture().request,launcher=new URL("./helpers/record-store-launcher.mjs",import.meta.url).pathname;
  const child=spawnSync(process.execPath,[launcher,"record-store",...argv(root,"record")],{input:encode(r),encoding:"utf8",env:{...process.env,RIGORLOOP_TEST_RECORD_FAULT:"after-replace:0"}});
  assert.equal(child.status,99,child.stdout);const stopped=run(root,"inspect");assert.equal(stopped.status,"recovery-required");
  const result=recover(root,stopped,action);assert.equal(result.status,"recovered");
  if(action==="complete")sameBytes(root,r);else assert.equal(existsSync(join(root,prefix)),false);
 });
 
-test("TG-02 v2 readers and mixed-version contenders share writer exclusion",t=>{
+test("TG-02 v3 readers and mixed-version contenders share writer exclusion",t=>{
  const root=setup(t),r=fixture().request;let reached=false;
  const bin=new URL("../dist/bin/rigorloop.js",import.meta.url).pathname;
  const result=run(root,"record",r,{fault:p=>{if(p!=="after-preparation")return;reached=true;
@@ -81,20 +80,20 @@ test("TG-02 v2 readers and mixed-version contenders share writer exclusion",t=>{
  }});assert.ok(reached);assert.equal(result.status,"saved");sameBytes(root,r);
 });
 
-test("TG-02 observed v2 basis drift after publication restores before bytes",t=>{
+test("TG-02 observed v3 basis drift after publication restores before bytes",t=>{
  const root=setup(t),before=create(root),r=update(root);edit(r,evidence,x=>x.checks[0].summary="candidate");writeFileSync(join(root,"basis"),"before");r.reads=[{path:"basis",expected_identity:digest("before")}];
  const result=run(root,"record",r,{fault:p=>{if(p==="before-commit")writeFileSync(join(root,"basis"),"after");}});
  assert.equal(result.status,"conflict");sameBytes(root,before);assert.equal(readFileSync(join(root,"basis"),"utf8"),"after");
 });
 
-for(const mutate of [j=>j.version=1,j=>j.version=99,j=>j.phase="unknown_value",j=>{const x=JSON.parse(j.candidate[review].content);x.findings[0].origin.rationale="tampered";j.candidate[review].content=encode(x);j.candidate[review].identity=digest(j.candidate[review].content);}]) test("TG-02 unknown_value or rewritten-origin recovery journal fails closed",t=>{
+for(const mutate of [j=>j.version=1,j=>j.version=99,j=>j.phase="unknown_value",j=>{const x=JSON.parse(j.candidate[manifest].content);x.blockers[0].origin.rationale="tampered";j.candidate[manifest].content=encode(x);j.candidate[manifest].identity=digest(j.candidate[manifest].content);}]) test("TG-02 unknown_value or rewritten-origin recovery journal fails closed",t=>{
  const root=setup(t),before=create(root),r=update(root);edit(r,evidence,x=>x.checks[0].summary="candidate");
  const stopped=run(root,"record",r,{fault:p=>p==="after-preparation"?"crash":undefined});
  const path=join(root,".rigorloop/record-store/example/journal.json"),j=JSON.parse(readFileSync(path));mutate(j);writeFileSync(path,encode(j));stopped.transaction.recovery_identity=digest(readFileSync(path));
  assert.equal(recover(root,stopped,"complete").status,"recovery-required");sameBytes(root,before);
 });
 
-for(const fault of ["symlink","hardlink","ancestor","EACCES","ENOSPC"]) test(`TG-02 v2 ${fault} cannot overwrite unsafe or failed targets`,t=>{
+for(const fault of ["symlink","hardlink","ancestor","EACCES","ENOSPC"]) test(`TG-02 v3 ${fault} cannot overwrite unsafe or failed targets`,t=>{
  const root=setup(t),r=create(root),next=update(root);edit(next,evidence,x=>x.checks[0].summary="candidate");
  if(fault==="symlink"||fault==="hardlink") {writeFileSync(join(root,"outside"),"outside");unlinkSync(join(root,evidence));(fault==="symlink"?symlinkSync:linkSync)(join(root,"outside"),join(root,evidence));assert.equal(run(root,"record",next).errors[0].code,"unsafe-path");assert.equal(readFileSync(join(root,"outside"),"utf8"),"outside");}
  else if(fault==="ancestor") {mkdirSync(join(root,"outside"));writeFileSync(join(root,"outside/evidence.json"),"outside");const x=run(root,"record",next,{fault:p=>{if(p==="before-replace:0"){renameSync(join(root,prefix),join(root,"aside"));symlinkSync(join(root,"outside"),join(root,prefix));}}});assert.equal(x.status,"recovery-required");assert.equal(readFileSync(join(root,"outside/evidence.json"),"utf8"),"outside");}
@@ -108,14 +107,14 @@ test("TG-02 dual manifests and cross-contract writes never migrate roots",t=>{
  for(const op of ["inspect","check","record"])assert.equal(run(root,op,op==="inspect"?undefined:r).errors[0].code,"invalid-input");
 });
 
-test("TG-02 standalone v2 validation cannot read through an unfinished transaction",t=>{
+test("TG-02 standalone v3 validation cannot read through an unfinished transaction",t=>{
  const root=setup(t);create(root);const r=update(root);edit(r,evidence,x=>x.checks[0].summary="candidate");
  const stopped=run(root,"record",r,{fault:p=>p==="after-replace:0"?"crash":undefined});assert.equal(stopped.status,"recovery-required");
  const child=spawnSync(process.execPath,[new URL("../../../scripts/validate-record-store.mjs",import.meta.url).pathname,join(root,manifest)],{encoding:"utf8"});
  assert.notEqual(child.status,0);
 });
 
-test("TG-02 completed v2 save performs no fallible diagnostic reads after commit",t=>{
+test("TG-02 completed v3 save performs no fallible diagnostic reads after commit",t=>{
  const root=setup(t);create(root);const r=update(root);edit(r,evidence,x=>x.checks[0].summary="candidate");
  const hash=RecordFiles.prototype.hash;let committed=false,lateReads=0;
  RecordFiles.prototype.hash=function(path,...args){if(committed && path==="docs/proposals/example.md")lateReads++;return hash.call(this,path,...args);};
@@ -161,12 +160,12 @@ test("TG-02 failure writing exclusion epoch releases the owned lock before retur
 
 test("TG-02 malformed advanced requests and unknown_value version pairs reject precisely",t=>{
  const root=setup(t);
- for(const input of [null,{},[],{schema_version:2},{contract:"rigorloop-records-v2"}]) {
+ for(const input of [null,{},[],{schema_version:2},{contract:"rigorloop-records-v3"}]) {
   const x=executeRecordStoreCli(argv(root,"record"),{input:encode(input)}).result;
   assert.equal(x.status,"rejected");assert.equal(x.errors[0].code,"invalid-input");
  }
- for(const version of [1,2,99])for(const contract of ["explicit-recording-v1","rigorloop-records-v2","unknown_value"]) {
-  if(version===2&&contract==="rigorloop-records-v2")continue;
+ for(const version of [1,2,99])for(const contract of ["explicit-recording-v1","rigorloop-records-v3","unknown_value"]) {
+  if(version===2&&contract==="rigorloop-records-v3")continue;
   const r=fixture().request;r.schema_version=version;r.contract=contract;
   assert.equal(run(root,"check",r).errors[0].code,"unsupported-contract");
  }
@@ -182,7 +181,7 @@ test("TG-02 current version mismatch and selected standalone path fail closed",t
  assert.notEqual(child.status,0);
 });
 
-test("TG-02 v2 recovery can be interrupted again and restores on observed late basis drift",t=>{
+test("TG-02 v3 recovery can be interrupted again and restores on observed late basis drift",t=>{
  const root=setup(t),before=create(root),r=update(root);edit(r,evidence,x=>x.checks[0].summary="candidate");writeFileSync(join(root,"basis"),"before");r.reads=[{path:"basis",expected_identity:digest("before")}];
  const stopped=run(root,"record",r,{fault:p=>p==="after-preparation"?"crash":undefined});
  assert.equal(recover(root,stopped,"complete",{fault:p=>p==="after-replace:0"?"crash":undefined}).status,"recovery-required");
@@ -193,7 +192,7 @@ test("TG-02 v2 recovery can be interrupted again and restores on observed late b
  assert.equal(readFileSync(join(root,"basis"),"utf8"),"after");
 });
 
-test("TG-02 public v2 text and JSON report the same storage outcome and identities",t=>{
+test("TG-02 public v3 text and JSON report the same storage outcome and identities",t=>{
  const root=setup(t),r=create(root),bin=new URL("../dist/bin/rigorloop.js",import.meta.url).pathname;
  const args=argv(root,"inspect");args[args.indexOf("json")]="text";
  const child=spawnSync(process.execPath,[bin,"record-store",...args],{encoding:"utf8"});assert.equal(child.status,0,child.stderr);
@@ -222,7 +221,7 @@ for(const state of ["owned","partial","third-state"]) test(`TG-02 lock write fai
  }
 });
 
-test('retirement shared transport rejects unknown_value without requiring a legacy stored schema',async()=>{
+test('shared transport rejects unknown_value without requiring a legacy stored schema',async()=>{
  const {validateAdvancedEnvelope}=await import('../dist/lib/record-store-transport.js');
  const result={schema_version:1,operation:'check',status:'valid',change_id:'example',revision:null,files:[],snapshot:null,observations:[],errors:[],transaction:null,claim:'storage-only'};
  assert.equal(validateAdvancedEnvelope(result),result);

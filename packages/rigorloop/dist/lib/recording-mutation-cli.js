@@ -1,5 +1,5 @@
 import {readSync} from 'node:fs';
-import {parseRequestJSON} from './record-format-v2.js';
+import {parseRequestJSON} from './record-json.js';
 import {validateMutationRequest,constructMutation} from './recording-construction.js';
 import {executeTargetedStore} from './record-store.js';
 import {MUTATIONS,serializePrimary,primaryReceiptPreparer,id} from './recording-result.js';

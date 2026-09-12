@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-implement",
-      "role": "implement"
+      "id": "codex-review",
+      "role": "review"
     },
-    "reason": "Route selects M1 after current approved Delivery Review and approved-plan initialization. User authorizes the complete sequence through PR submission; M2 follows independent M1 review and explicit dependency disposition.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "Route requests independent M1 Code Review after focused, recording-family, full package and bundle parity checks passed. M2 remains pending until clean M1 review and TG-00 disposition.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -138,7 +138,7 @@
         "CLI-SR-28",
         "WF-SR-18"
       ],
-      "status": "in-progress"
+      "status": "ready"
     },
     {
       "id": "m2",

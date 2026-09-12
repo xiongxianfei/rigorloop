@@ -208,6 +208,50 @@
         }
       ],
       "summary": "Created primary plan with M1 shared-dependency/coverage preparation and M2 coordinated v2 removal. TG-00 requires responsible work/recovery/governance disposition before removal; TG-01/02/03 and TG-FINAL-01 allocate existing retained proof, packages, current v3 safety and integrated checks. Explicitly prohibits new v2 retirement/rejection/archive-compatibility tests and manual replacement probes; removal of v2-only cases cannot erase distinct shared protection. Fresh final whole-change Code Review precedes distinct Verify. Prose validation returned zero errors/warnings; source/scaffold/requirement and metadata checks passed. No implementation suites executed, tests added, work initialized, routing changed or Delivery judgment claimed. Direct owner/source inspection supplies orientation without project-map reliance. Appending this plan evidence changes evidence-file bytes but not prior Design explanations, proof entries, reviewed engineering subjects or judgments; no review is refreshed or retargeted. Plan allocation requires independent Delivery Review before reliance."
+    },
+    {
+      "actor": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "id": "m1-implementation",
+      "procedure": "Baseline recording family: 294/294. After retargeting/extraction: node --test packages/rigorloop/test/record-store-persistence.test.js packages/rigorloop/test/record-store-v3-persistence.test.js (55/55); node --test packages/rigorloop/test/record-store*.test.js packages/rigorloop/test/record-retirement.test.js packages/rigorloop/test/workflow-context.test.js (294/294); npm test --prefix packages/rigorloop (432/432); node scripts/build-record-store-schema.mjs --check; git diff --check. All passed.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:33c93f3de398908ecb5c8a50c1b98c898786c94899f9fb2f6f89bb9a4ab4c2b2",
+          "path": "packages/rigorloop/dist/lib/record-json.js"
+        },
+        {
+          "identity": "sha256:a7a02c62efe3cc0d4bb6414b181904ad015b61e61557088dc5228723659eded1",
+          "path": "packages/rigorloop/dist/lib/record-format-core.js"
+        },
+        {
+          "identity": "sha256:8b7343b73d1229108b4d118e12235637892ab037dc792382898238e8de8d3ef1",
+          "path": "packages/rigorloop/dist/lib/record-store-format.js"
+        },
+        {
+          "identity": "sha256:1dff3995c5534c508301bb3bbffa5edcaabd8e87888e5e5faf46df158e9d1fbb",
+          "path": "packages/rigorloop/dist/lib/record-store.js"
+        },
+        {
+          "identity": "sha256:0ecb46af5dffb209930f67f53f3f1a91b42e18a7c77ac4846b8730106e8d6461",
+          "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+        },
+        {
+          "identity": "sha256:add0c953d01f358c82337bd2b1a7bafa5b6f41bfa329f6b3a5f8220550f827c9",
+          "path": "packages/rigorloop/dist/lib/recording-query-cli.js"
+        },
+        {
+          "identity": "sha256:0100a5fee3cb9dd681faa594dff6bfa31b8988f994f5a96b0352ae7a4e4d67ed",
+          "path": "packages/rigorloop/test/record-store-persistence.test.js"
+        },
+        {
+          "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+          "path": "tests/fixtures/rigorloop-records-v3/records.json"
+        }
+      ],
+      "summary": "M1 extracts unchanged strict JSON decoding into record-json.js and routes primary/advanced readers to it; store initialization uses the current v3 path classifier while actual v2 selection and recovery remain. Retargeted the existing 42-case persistence family from synthetic v2 to synthetic v3 without adding cases; origin assertions exercise retained blocker-origin protection. Existing v3 persistence retains its 13 cases (55 focused total). V2-exclusive contract/continuation remains in dedicated contract and adoption tests until M2. Shared schema definitions remain local and need no separate extraction in M1. Canonical policies and package inputs are unaffected; no historical record edits. Captured 4511 tracked historical byte identities for later comparison."
     }
   ],
   "schema_version": 3
