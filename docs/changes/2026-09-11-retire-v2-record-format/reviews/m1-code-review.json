@@ -1,0 +1,144 @@
+{
+  "assessment_scope": "Independent milestone M1 Code Review of bd634da5..93bfff4b for the approved retirement plan. Engineering content matches 06859ef3; the handoff suffix records implementation evidence and review-ready state. This is not final whole-change Code Review.",
+  "change_id": "2026-09-11-retire-v2-record-format",
+  "contributors": [
+    {
+      "id": "codex-implement",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "m1-code-review",
+  "independence_basis": "Parent /root authored the M1 implementation and fixture changes. This separately delegated reviewer authored none of the reviewed implementation, tests, plan or Design content, inspected the actual diff independently and ran retained proof. This is an ordinary independent milestone review through the supported CLI, not a claim to the historical automation-adapter protocol.",
+  "judgment": "approved",
+  "limitations": [
+    "M1 approval covers shared preparation only. M2 removal still requires TG-00 responsible work/recovery/governance disposition and its own coordinated implementation evidence and independent review.",
+    "No new v2 retirement/rejection/archive-compatibility tests were added or executed. No final whole-change judgment, Verify, CI, branch or PR readiness is claimed.",
+    "The reviewer records assessment only; Route owns milestone settlement and any authorized continuation. Existing unrelated historical subject drift is not silently retargeted or treated as current implementation proof."
+  ],
+  "rationale": [
+    "Spec alignment — pass. The diff realizes M1 shared preparation under RF-SR-14, CLI-SR-28 and WF-SR-18. No v2 dispatch, schema, resource or recovery adapter is removed. The unchanged exact primary plan and five owner Designs remain the governing basis, with approved/current design-review and delivery-review and no unresolved prerequisite findings. Changed implementation subjects are expected realization of that authority; prior supporting implementation hashes are not claimed as approval of this diff.",
+    "Test coverage — pass. Compared the renamed persistence family with its prior v2 form: the same 42 cases preserve assertions for exact bytes, stale targets/read basis, lost-success retry, interruption phases, lock ownership, external state and result timing. The synthetic v3 fixture supplies complete records and retained blocker origins. Origin mutation checks now target blockers rather than incorrectly requiring v3 Finding origins. Existing v3 persistence adds distinct explanation/journal checks. No new retirement or rejection case was added.",
+    "Edge cases — pass. Independently ran the two retained persistence files: 55/55 passed, including absent-root subprocess recovery, all selected restore/complete phases, late basis drift, malformed journal and third-state protections. Fixture changes preserve complete assessment meaning and the independent advanced request version 2. Synthetic failed evidence and contradictory workflow claims remain recordable without endorsement.",
+    "Error handling — pass. Extracted decode, Unicode, JSON-domain, depth, byte-limit and duplicate-key logic retains its previous function bodies and error mapping. Primary query/mutation and advanced dispatch import the neutral module; the core still exposes parseRequestJSON for retained adapter compatibility. No fallback or relaxed parsing path is introduced.",
+    "Architecture — pass. Shared strict JSON no longer requires a v2 stored adapter through primary/advanced callers. Default Store initialization uses the common v3 path classifier and manifest path, while readSet selects the actual discriminator and loadJournal selects the actual supported journal version before validation. The extraction does not change stored or transport schemas.",
+    "Compatibility — pass. Existing-v2 operation remains selected by storedFormat/requestFormat and journal version. Independently ran node --test packages/rigorloop/test/record-store-adoption.test.js: 2/2 passed, directly exercising real public v2 correction, interrupted batch recovery and subsequent explanation recording. Retained targeted tests also contain v2 interruption coverage. M1 therefore does not rely solely on v3 helper behavior to justify compatibility.",
+    "Security/privacy — pass. The changed module preserves strict Unicode/JSON limits and existing failure classification. Retargeted tests still assert no external overwrite through symlinks, hardlinks, changed ancestors and third-state journals. Lock and recovery ownership protections remain in their existing implementation. No credentials, new logging surface, network action or permission mechanism is introduced.",
+    "Derived artifact currency — pass for M1 scope. Authored package code and a synthetic fixture are the only engineering changes. No schema/template, canonical skill or public adapter input changed. The registered implementation evidence reports existing schema-bundle parity and full package checks; this review does not infer installed-package currency or retirement adoption from those checks.",
+    "Unrelated changes — pass. Eight engineering paths comprise six runtime files, one test-family rename and one new synthetic fixture. The handoff commit adds only owning evidence/state. Historical real stores are untouched by the implementation diff. TG-00 disposition and coordinated runtime/consumer retirement remain M2 obligations.",
+    "Validation evidence — pass within the milestone. m1-implementation reports focused 55/55, the allocated recording/workflow family 294/294, full package 432/432, schema parity and whitespace checks. Its exact eight engineering subjects match the inspected handoff. Independently executed node --test packages/rigorloop/test/record-store-persistence.test.js packages/rigorloop/test/record-store-v3-persistence.test.js (55/55) and node --test packages/rigorloop/test/record-store-adoption.test.js (2/2). Fresh context and subject inspect captured 26 exact subjects. Broader author results are attributed evidence, not represented as reviewer executions."
+  ],
+  "reviewer": {
+    "id": "codex-m1-code-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:a44db0abea196809b0779b56a6e38ad35d84a28f93d303b153769644a9f92184",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:528a188ab9fbd0466efdadf646dd2f5239033919ecf77434928995236ec4aded",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:c3c4e7139785bb346b438044006e307345bebe00335a24f568233e2ca4adeb0e",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:05dc2bd0102552d617d6df9262da7a30538fb8c2e559f49c33afc010cf164cff",
+      "path": "docs/design/review-closeout/review-closeout.md"
+    },
+    {
+      "identity": "sha256:aa62db15858ee056309121ecddb6990459ee9436380511ebd08a4b9bc4256107",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:431b9737cc8e1e9228a3c77f20b8824722f9fff2afcc311a1f3dfe3f0815130f",
+      "path": "docs/plans/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:3f44199e331ecb125bce514c83c81255ceffccb0670c62d7c52f578f621e0f92",
+      "path": "docs/proposals/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:20e0cd799478d49c739b051ed79b06aa136075f32449a557e50036072870dad5",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:9175a096d6e4bdf52c8d1afd813288e9e87bac234943da7fbf7b6e853e269368",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:c14cd17477786138fe6ea8f45128085d1f02ee23e57b72fc4b6e6d7c4705d763",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+    },
+    {
+      "identity": "sha256:a0914a41edd3c790ab88c207f925e953184b2e567d91612975210cfa1bd8f911",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/material-decisions.json"
+    },
+    {
+      "identity": "sha256:7da63af759d6cff299f1fd441e197465fa9e177f424fe3231d72727b7098f968",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:61ec6e61ec9bd1998f6d9a7401da5a036879ef3ca116078af6c70c4d957a48d8",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:a7a02c62efe3cc0d4bb6414b181904ad015b61e61557088dc5228723659eded1",
+      "path": "packages/rigorloop/dist/lib/record-format-core.js"
+    },
+    {
+      "identity": "sha256:33c93f3de398908ecb5c8a50c1b98c898786c94899f9fb2f6f89bb9a4ab4c2b2",
+      "path": "packages/rigorloop/dist/lib/record-json.js"
+    },
+    {
+      "identity": "sha256:8b7343b73d1229108b4d118e12235637892ab037dc792382898238e8de8d3ef1",
+      "path": "packages/rigorloop/dist/lib/record-store-format.js"
+    },
+    {
+      "identity": "sha256:1dff3995c5534c508301bb3bbffa5edcaabd8e87888e5e5faf46df158e9d1fbb",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:0ecb46af5dffb209930f67f53f3f1a91b42e18a7c77ac4846b8730106e8d6461",
+      "path": "packages/rigorloop/dist/lib/recording-mutation-cli.js"
+    },
+    {
+      "identity": "sha256:add0c953d01f358c82337bd2b1a7bafa5b6f41bfa329f6b3a5f8220550f827c9",
+      "path": "packages/rigorloop/dist/lib/recording-query-cli.js"
+    },
+    {
+      "identity": "sha256:dde4b6b431c783ac6b7a642ce7455458d13397a2b24f72cbe0bc7d016a4ed9ab",
+      "path": "tests/fixtures/rigorloop-records-v3/records.json"
+    },
+    {
+      "identity": "sha256:0100a5fee3cb9dd681faa594dff6bfa31b8988f994f5a96b0352ae7a4e4d67ed",
+      "path": "packages/rigorloop/test/record-store-persistence.test.js"
+    },
+    {
+      "identity": "sha256:adcd191bb4be6cf5b31e39a9b8780af3a1cfbe960b3175300c6bd5887921c407",
+      "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+    },
+    {
+      "identity": "sha256:574a112ceb2523f33416e379638469c2768438182cb30284b6e0f903cf0da27e",
+      "path": "packages/rigorloop/test/record-store-adoption.test.js"
+    },
+    {
+      "identity": "sha256:f58c9df1c43a2790fefccc4157e9c555fc8b5685b62b23a4b320362334bb7051",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:16a77685606dd3643da88c5b9f8b988cea8d2df48df7ecc8869b6ba48a8b6673",
+      "path": "packages/rigorloop/dist/lib/record-format-v2.js"
+    },
+    {
+      "identity": "sha256:5c1ba8869c4c78d7a97147cb1dfa5c295358a12dce2e373aadeee81c6ccc4663",
+      "path": "packages/rigorloop/dist/lib/record-format-v3.js"
+    }
+  ],
+  "summary": "M1 isolates shared JSON parsing and initialization without retiring operational support, and the retargeted persistence family preserves its shared safety checks against supported v3 records.",
+  "target": "code"
+}

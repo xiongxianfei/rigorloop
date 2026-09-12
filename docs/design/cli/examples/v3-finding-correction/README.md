@@ -6,9 +6,9 @@ The hypothetical registered v3 store starts at revision b and saves at revision 
 
 The caller may explicitly correct any non-ID finding field. Supplying id, origin, basis or an unknown field in values rejects. State/resolution updates supply both and retain the existing consistency rules. Stale revisions conflict; equal values preserve bytes. Advanced complete-record replacement accepts the same valid correction, but rejects removal or renaming of an existing finding. Neither write path grants review approval or independently confirms the correction.
 
-These are complete v3 envelopes with synthetic inputs. Existing v2 finding.set retains its separate origin-preservation contract.
+These are complete v3 envelopes with synthetic inputs. Historical v2 finding operations are retired.
 
 
 The complete [finding.show response](show-response.json) reads the corrected finding at revision c. The complete [summary context request](summary-request.json) and [response](summary-response.json) select that same finding and revision with fewer fields. Invoke finding show finding-1 --review design-review, or context --input - for the summary request, with the same root/change/format selectors. The d file identity remains synthetic.
 
-Full fields equal the updated stored finding exactly. Summary omits only evidence and resolution and declares those omissions; complete:true means the requested selection was retrieved, not that its evidence was read. Neither response contains origin_available or lists nonexistent origin as omitted. Finding reads have no absent_fields extension. V2 findings and v2/v3 blockers retain their existing origin_available:true metadata and origin-bearing full fields; their summary scope still declares omitted origin. These examples do not change that retained transport contract.
+Full fields equal the updated stored finding exactly. Summary omits only evidence and resolution and declares those omissions; complete:true means the requested selection was retrieved, not that its evidence was read. Neither response contains origin_available or lists nonexistent origin as omitted. Finding reads have no absent_fields extension. V3 blockers retain their existing origin_available:true metadata and origin-bearing full fields; their summary scope still declares omitted origin. These examples do not change that retained transport contract.

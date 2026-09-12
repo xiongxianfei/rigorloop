@@ -44,22 +44,15 @@ test('TG-05 factual discovery admits validated v3 stores without changing discov
 
 test('TG-05 approved v3 request and response examples conform to executable profiles',()=>{
  const base=new URL('../../../docs/design/cli/examples/',import.meta.url);
- for(const dir of readdirSync(base).filter(n=>n.startsWith('v3-')))for(const name of readdirSync(new URL(dir+'/',base)).filter(n=>n.endsWith('.json'))){
+ for(const dir of readdirSync(base).filter(n=>n.startsWith('v3-')))for(const name of readdirSync(new URL(dir+'/',base)).filter(n=>n.endsWith('.json')&&!n.includes('v2-store'))){
   const value=JSON.parse(readFileSync(new URL(dir+'/'+name,base)));
   if(value.interface==='targeted-recording-v1')assert.doesNotThrow(()=>validateMutationRequest(value,!!value.operations),dir+'/'+name);
   else if(value.operation&&value.status)assert.doesNotThrow(()=>validatePrimaryResult(value),dir+'/'+name);
  }
 });
-test('TG-05 existing v2 full reads continue while valid field projection rejects unsupported-contract',t=>{
- const root=mkdtempSync(join(tmpdir(),'v2-projection-'));t.after(()=>rmSync(root,{recursive:true,force:true}));mkdirSync(join(root,'docs/changes'),{recursive:true});
- const files=Object.fromEntries(Object.entries(fixture()).map(([p,s])=>{const r=JSON.parse(s);r.schema_version=2;if(r.contract)r.contract='rigorloop-records-v2';if(r.summary){r.body=r.summary;for(const k of ['summary','assessment_scope','rationale','limitations','changes','verification_basis'])delete r[k];}return[p,encode(r)];}));
- assert.equal(executeRecordStore({root,changeId,operation:'record',request:{schema_version:2,contract:'rigorloop-records-v2',change_id:changeId,expected_revision:null,reads:[],writes:Object.entries(files).map(([path,content])=>({path,content,expected_identity:null}))}}).status,'saved');
- const full=read(root);assert.equal(full.result.schema_version,2);assert.equal(typeof item(full).fields.body,'string');
- for(const kind of ['review','verify']){const r=read(root,kind,['--fields','summary']);assert.equal(r.result.schema_version,2);assert.equal(r.result.errors[0].code,'unsupported-contract');}
-});
 
 test('TG-05 retained blocker origins remain readable and contribute to observation freshness',t=>{
- const blocker=JSON.parse(readFileSync(new URL('../../../tests/fixtures/rigorloop-records-v2/records.json',import.meta.url))).change.blockers[0];blocker.resolution.evidence_refs=[];blocker.origin.subjects=[{path:'origin-only.txt',identity:'sha256:'+'a'.repeat(64)}];
+ const blocker=JSON.parse(readFileSync(new URL('../../../tests/fixtures/rigorloop-records-v3/records.json',import.meta.url))).change.blockers[0];blocker.resolution.evidence_refs=[];blocker.origin.subjects=[{path:'origin-only.txt',identity:'sha256:'+'a'.repeat(64)}];
  const {origin,...finding}=structuredClone(blocker);finding.subjects=[{path:'current-only.txt',identity:'sha256:'+'b'.repeat(64)}];
  const {root}=setup(t,r=>{r[prefix+'change.json'].blockers=[blocker];r[reviewPath].findings=[finding];});
  const full=executeRecordingQueryCli(['blocker','show',blocker.id,'--root',root,'--change',changeId,'--format','json']);assert.equal(item(full).origin_available,true);assert.deepEqual(item(full).fields.origin,blocker.origin);

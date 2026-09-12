@@ -55,7 +55,7 @@ export function executeRecordStoreCli(args,options={}) {
   else {
     try {
       const request=["record","check"].includes(selected.operation)?parseAdvancedRequest(options.input??(options.readInput??input)()):undefined;
-      // New stores use v3; existing v2 stores retain their complete compatibility path.
+      // Only v3 storage is operational; transport versions remain independent.
       result=executeRecordStore({...selected,request,creationContract:"rigorloop-records-v3"},options);
     } catch(e) {
       const code=e.recordStoreCode??(e.code?"io-failure":String(e.message).includes("limit")?"limit-exceeded":"invalid-input");

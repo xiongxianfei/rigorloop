@@ -1,0 +1,144 @@
+{
+  "assessment_scope": "Formal-lifecycle, manual, isolated Delivery Review, round 1. The single registered primary-plan package is docs/plans/2026-09-11-retire-v2-record-format.md, identity sha256:431b9737cc8e1e9228a3c77f20b8824722f9fff2afcc311a1f3dfe3f0815130f, with upstream review ID design-review. Assessment covers sequencing and verification together against the complete approved five-model amendment package.",
+  "change_id": "2026-09-11-retire-v2-record-format",
+  "contributors": [
+    {
+      "id": "codex-plan",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review",
+  "independence_basis": "Parent /root authored the primary plan and Design amendments. This separately delegated reviewer authored none of those engineering artifacts. Prior Proposal and Design assessment authorship does not constitute plan or Design authorship.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval assesses allocation and safe sequencing, not implementation correctness, actual retained-test equivalence or completed operational disposition. TG-00 must still be satisfied before removal.",
+    "The explicit no-new-retirement-tests boundary limits direct executable proof of newly retired branches; implementation review and Verify must keep that limitation visible while assessing retained supported protection and static inspection.",
+    "This isolated review initializes no work and grants no implementation, routing, adoption, publication or external-action permission."
+  ],
+  "rationale": [
+    "Authority and package identity: the registered primary plan matches the inspected file. The current Design Review has approved judgment and current applicability, and its sole finding is explicitly resolved. All engineering subjects from that review still match; only the supporting evidence container changed by appending plan-author-validation. That bounded addition introduces no contrary Design evidence or change to the approved models. Earlier proposal supporting-subject drift remains historical direction evidence, not a retargeted Design approval.",
+    "Traceability: the requirement table maps RF-SR-14, CLI-SR-28, WF-SR-18, RC-SR-21 and the System composition obligations through M1/M2 and TG-00/01/02/03/FINAL-01 to exact commands or scoped manual evidence. Retained explanation, finding/blocker, transport, conflict and recovery obligations have explicit preservation allocations. This model-document package does not consume a legacy boundary-first-v1 proof map; the loaded boundary method informs the hazard assessment without introducing new boundary records.",
+    "Safe sequence: M1 extracts shared parsing, transport and initialization dependencies while keeping pre-retirement v2/v3 operation and recovery usable. It establishes retained protection before deletion, requires an independent milestone review, and permits restoration if equivalence is uncertain. M2 depends on reviewed M1 and an explicit TG-00 disposition before support removal. Its coherent runtime/consumer/package unit avoids a half-retired executable or required consumers stranded for a later milestone.",
+    "Dependency and authority boundary: TG-00 refreshes the selected real-store inventory and accounts for work, concerns, relevant limitations, governance and private state with exact identities and complete context. A responsible owner records the disposition separately from implementation observations. Live or unassessed obligations block removal. Supporting executable identity and rollback are preserved without shipping permanent legacy support. This prerequisite can remain future implementation work because the plan forbids the dependent removal until it is satisfied.",
+    "Proof and maintenance: TG-01 requires distinct assertion and counterexample comparison before shared protection is removed, including public-path behavior, limits, stale read basis, no-ops, writer exclusion and interrupted/third-state recovery. The population table distinguishes v2-exclusive assertions from shared behavior and identifies concrete retained JavaScript and Python families. Unknown protection is retained pending assessment; file names, counts and passing reduced suites cannot establish equivalence.",
+    "User constraint and compatibility: the plan explicitly prohibits new v2-retirement, rejection or archival-compatibility tests, including disguised manual replacement probes. It uses existing applicable suites, permissible retargeting of shared fixtures and clearly labeled static retirement-branch inspection. The corrected manifest-versus-supporting-header rule, unsafe/malformed-current detection and transaction visibility remain required implementation review subjects. Existing real-work disposition is an operational prerequisite, not a synthetic retirement suite.",
+    "Integrated coverage: TG-02 protects v3 complete assessments, projections, updates, optional basis, finding ID stability, blocker distinctions and restore/complete recovery. Independent early schema-2 and recognized-set schema-3 outcomes remain explicitly allocated. TG-03 binds imports, schemas, builders, selectors, governing references, canonical consumers and generated payload inspection, including stale output that copy-only generation could leave. Historical before/after byte comparison supports preservation without rewriting real records.",
+    "Commands and realism: V1 discovers the retained recording and workflow families, V2 executes the full npm package runner, V3 checks generated schema parity, V4 lists concrete affected Python suites, and V5 uses the existing exact-candidate PR check with named source/base variables. V6 checks actual v3 metadata and whitespace; V7 is explicitly pre-removal old-store inspection and supported owning-store inspection afterward. The listed literal script paths exist and npm test delegates to node --test. These are feasible allocated commands, not claimed execution results.",
+    "Closeout and reversibility: M1 and M2 each require independent milestone Code Review. The separate final checkpoint requires a fresh whole-change assessment after every milestone/correction and before distinct Verify. TG-FINAL-01 cannot be waived or substituted by M2 approval. Reuse needs affirmative unchanged-basis evidence, required fresh checks remain fresh, and rollback requires applicability reassessment. Publication and external integration remain separately authorized.",
+    "Checks performed: read the full plan, canonical Delivery Review skill and triggered resources, approved Design review with finding disposition, current registration/applicability and plan-author evidence. Reused previously read unchanged Design and dependency content after CLI subject inspect confirmed identities. Fresh scoped context returned all 18 selected items with no missing paths; full saved Design findings were separately inspected. Captured 26 exact subjects. Ran python scripts/validate-documentation-prose.py --mode enforce --path docs/plans/2026-09-11-retire-v2-record-format.md; zero errors and warnings. No implementation suite or retirement probe was executed or added."
+  ],
+  "reviewer": {
+    "id": "codex-delivery-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:a44db0abea196809b0779b56a6e38ad35d84a28f93d303b153769644a9f92184",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:528a188ab9fbd0466efdadf646dd2f5239033919ecf77434928995236ec4aded",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:c3c4e7139785bb346b438044006e307345bebe00335a24f568233e2ca4adeb0e",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:05dc2bd0102552d617d6df9262da7a30538fb8c2e559f49c33afc010cf164cff",
+      "path": "docs/design/review-closeout/review-closeout.md"
+    },
+    {
+      "identity": "sha256:aa62db15858ee056309121ecddb6990459ee9436380511ebd08a4b9bc4256107",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:3f44199e331ecb125bce514c83c81255ceffccb0670c62d7c52f578f621e0f92",
+      "path": "docs/proposals/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:608a5960e73a038b85610533a95252d09c631a8f6c55911ef084ba714c0ca471",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:42f95e953e036d9c85d10a716b2913ef778372ad001b5751491d21f190948cb5",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+    },
+    {
+      "identity": "sha256:a0914a41edd3c790ab88c207f925e953184b2e567d91612975210cfa1bd8f911",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/material-decisions.json"
+    },
+    {
+      "identity": "sha256:7da63af759d6cff299f1fd441e197465fa9e177f424fe3231d72727b7098f968",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:61ec6e61ec9bd1998f6d9a7401da5a036879ef3ca116078af6c70c4d957a48d8",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:be265e71549a69579eba68b78fb687a3115792796ce4fe663b5d81e633db58e8",
+      "path": "schemas/rigorloop-records-v2.schema.json"
+    },
+    {
+      "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+      "path": "docs/design/record-format/examples/v2-review-without-subjects/review.json"
+    },
+    {
+      "identity": "sha256:b24b4f4ea1a78c4f606c67dd72736edabd2186428c17310207724247fd88f710",
+      "path": "docs/design/record-format/examples/README.md"
+    },
+    {
+      "identity": "sha256:ead405ed14cb5c38eb57f219690251a3ebad88d7e3fe0a25fe0290f551772cd4",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:73223e1c8e2365c15c0ecb72adc1b44c24f2e2ac41874d21713fbe7dab8d277c",
+      "path": "packages/rigorloop/dist/lib/record-store-format.js"
+    },
+    {
+      "identity": "sha256:5c1ba8869c4c78d7a97147cb1dfa5c295358a12dce2e373aadeee81c6ccc4663",
+      "path": "packages/rigorloop/dist/lib/record-format-v3.js"
+    },
+    {
+      "identity": "sha256:bd827d68dddc921e46f3867ed9ec2521228a01f2fdfe336026f5521d4e023377",
+      "path": "packages/rigorloop/dist/lib/record-discovery.js"
+    },
+    {
+      "identity": "sha256:dedfd9feefd31d4fc2daf4ffaf35db83be5dddcb750c2bb237d56d552f50bb82",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:8caf5fcf0de2f013b053615a9dbd81ddf52456b7f64bf8b22c99e72249c351d8",
+      "path": "scripts/build-record-store-schema.mjs"
+    },
+    {
+      "identity": "sha256:adcd191bb4be6cf5b31e39a9b8780af3a1cfbe960b3175300c6bd5887921c407",
+      "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+    },
+    {
+      "identity": "sha256:7c6dc74002f4bb54ddf79034aeb2fcccc9de7fd71f438ea68cb096bec0843e89",
+      "path": "packages/rigorloop/test/record-store-v2-persistence.test.js"
+    },
+    {
+      "identity": "sha256:431b9737cc8e1e9228a3c77f20b8824722f9fff2afcc311a1f3dfe3f0815130f",
+      "path": "docs/plans/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:20e0cd799478d49c739b051ed79b06aa136075f32449a557e50036072870dad5",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:2712953eb34943a51c0b7212d56d0ed99bf0050cae393aca040b453396e03d76",
+      "path": "docs/design/test/test.md"
+    },
+    {
+      "identity": "sha256:a10766f6433f56e81574a607b4dcfe370ee2f22ec92a5ab080e438ddce7ccbdb",
+      "path": "packages/rigorloop/package.json"
+    }
+  ],
+  "summary": "The plan safely separates shared preparation from coordinated retirement and allocates adequate retained proof, dependency disposition and independent closeout within the explicit test constraint.",
+  "target": "delivery"
+}

@@ -1,0 +1,258 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-final-verify",
+      "role": "verify"
+    },
+    "reason": "Route closes the documentation refinement after current successful final Verify, independent eight-model Design approval and fresh whole-change Code Review with both Design findings resolved. The user-authorized next action is PR187 refresh; no merge, release or customer activation is implied.",
+    "stage": "verify",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "codex-proposal-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/proposal-review.json",
+      "reason": "Independent direction-level review of the exact proposal and bounded cited basis, preserving explicit user test scope and unresolved downstream removal prerequisites.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/material-decisions.json",
+      "reason": "Bounded Design authorship and observed checks only; no independent Design Review, implementation proof or retirement adoption.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json",
+      "reason": "Exact authored documentation subjects and recorded structural/prose checks; no implementation or review approval claim.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-route",
+        "role": "route"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json",
+      "reason": "Preserve this original assessment of its exact subjects. The consolidated Design changes its documentation basis; current reliance requires the new Design/final whole-change assessment, not automatic reuse of this approval.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-delivery-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/delivery-review.json",
+      "reason": "Independent combined sequencing and verification assessment of the exact registered primary plan against the current approved Design package. Required future disposition and execution gates remain explicit.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-m1-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m1-code-review.json",
+      "reason": "Independent assessment of the exact final M1 engineering subjects and retained compatibility proof. Applies to M1 preparation only; M2 and final closeout remain separately required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-m2-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m2-code-review.json",
+      "reason": "Independent M2 assessment of the exact final engineering subjects, recorded prerequisite disposition and current candidate evidence; final whole-change review and Verify remain separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-route",
+        "role": "route"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-code-review.json",
+      "reason": "Preserve this original assessment of its exact subjects. The consolidated Design changes its documentation basis; current reliance requires the new Design/final whole-change assessment, not automatic reuse of this approval.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-final-verify",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/verify-report.json",
+      "reason": "Fresh final assessment of exact consolidated subjects, current independent review and proof, and PR refresh basis.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-design-consolidation-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-consolidation-review.json",
+      "reason": "Independent complete eight-model reassessment at ff9154a6 after the identified current-context correction; exact unchanged package basis retained and finding explicitly resolved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-final-consolidation-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-consolidation-code-review.json",
+      "reason": "Fresh independent whole-change assessment of the complete final M1/M2/consolidation package at ff9154a6 with current Design authority, unchanged Delivery allocation and attributable final-source proof. Distinct Verify remains required.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-11-retire-v2-record-format",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "record-format",
+      "subject": {
+        "identity": "sha256:b021a86b073815e934a467ef1588806dbeae47033d0b4d37c8dd480a47b733f4",
+        "path": "docs/design/record-format/record-format.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:c4cd40f5523c8d4d79a4e0d62464552be57ecd023a74f8e664f3274f02f91bed",
+        "path": "docs/design/cli/cli.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:05fb58a5f790399d5396b8cb58b6b207e240b1f9eec019f0601f29ac47d1b468",
+        "path": "docs/design/workflow/workflow.md"
+      }
+    },
+    {
+      "id": "review-closeout",
+      "subject": {
+        "identity": "sha256:4ab2aca0b2f7aebc72ef0d2bb975975208f6451fd8ab975ad645b59191bfb251",
+        "path": "docs/design/review-closeout/review-closeout.md"
+      }
+    },
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:1a1d75a6a4dab9fca9e73082b8cc78259e2b7be76495aa9f0fc201dd3cff5c10",
+        "path": "docs/design/system/system.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:db6b8ddc07c035390f5b2ecc517c67b4dc976ff37a1cb6b5c106f38d63bc5297",
+        "path": "docs/design/design/design.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:4f6f8acb58f55c3483724f6d6f1d98ed804cae875ba90d2589ad3e2e1ce27012",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "test",
+      "subject": {
+        "identity": "sha256:ef0958b743c39ccd458572073e97792fd57052f3a3762007323d2cb864920dd0",
+        "path": "docs/design/test/test.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:431b9737cc8e1e9228a3c77f20b8824722f9fff2afcc311a1f3dfe3f0815130f",
+    "path": "docs/plans/2026-09-11-retire-v2-record-format.md"
+  },
+  "proposal": {
+    "identity": "sha256:3f44199e331ecb125bce514c83c81255ceffccb0670c62d7c52f578f621e0f92",
+    "path": "docs/proposals/2026-09-11-retire-v2-record-format.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/material-decisions.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m2-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/verify-report.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-consolidation-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-consolidation-code-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-14",
+        "CLI-SR-28",
+        "WF-SR-18"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "codex-implement",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "RF-SR-14",
+        "CLI-SR-28",
+        "WF-SR-18",
+        "RC-SR-21",
+        "SYS-SR-04"
+      ],
+      "status": "completed"
+    }
+  ]
+}

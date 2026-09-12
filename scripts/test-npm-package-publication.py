@@ -71,14 +71,17 @@ def pack_package(destination: Path) -> Path:
 class NpmPackagePublicationTests(unittest.TestCase):
     def assert_explicit_recording(self, binary: Path, project: Path) -> None:
         package = binary.resolve().parents[2]
-        templates = json.loads((package / "dist/templates/rigorloop-records-v2/records.json").read_text())
-        self.assertEqual((package / "dist/templates/rigorloop-records-v2/records.json").read_bytes(),
-                         (ROOT / "templates/rigorloop-records-v2/records.json").read_bytes())
-        self.assertTrue((package / "dist/schemas/rigorloop-records-v2.schema.json").is_file())
+        templates = json.loads((package / "dist/templates/rigorloop-records-v3/records.json").read_text())
+        self.assertEqual((package / "dist/templates/rigorloop-records-v3/records.json").read_bytes(),
+                         (ROOT / "templates/rigorloop-records-v3/records.json").read_bytes())
+        self.assertTrue((package / "dist/schemas/rigorloop-records-v3.schema.json").is_file())
         (project / "docs/changes").mkdir(parents=True)
         manifest = project / "docs/changes/example/change.json"
         change = templates["change"]
         change["schema_version"] = 3
+        change["change_id"] = "example"
+        change["records"] = []
+        change["applicability"] = []
         change["contract"] = "rigorloop-records-v3"
         change["activity"]["reason"] = "Explicit installed-package test decision"
         content = json.dumps(change) + "\n"
@@ -174,8 +177,6 @@ class NpmPackagePublicationTests(unittest.TestCase):
         for relative, canonical in (
             ("dist/templates/rigorloop-records-v3/records.json", "templates/rigorloop-records-v3/records.json"),
             ("dist/schemas/rigorloop-records-v3.schema.json", "schemas/rigorloop-records-v3.schema.json"),
-            ("dist/templates/rigorloop-records-v2/records.json", "templates/rigorloop-records-v2/records.json"),
-            ("dist/schemas/rigorloop-records-v2.schema.json", "schemas/rigorloop-records-v2.schema.json"),
             ("dist/schemas/targeted-recording-v1.schema.json", "schemas/targeted-recording-v1.schema.json"),
         ):
             self.assertEqual((package / relative).read_bytes(), (ROOT / canonical).read_bytes())
@@ -216,7 +217,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
                          "Explicit installed-package explanation.\n")
         self.assertTrue((project / "docs/changes/primary/change.json").is_file())
         self.assertFalse((project / "docs/changes/primary/change.yaml").exists())
-        for unsupported in ("rigorloop-records-v2", "explicit-recording-v1", "unknown_value"):
+        for unsupported in ("explicit-recording-v1", "unknown_value"):
             bad = {**request, "contract": unsupported, "change_id": "absent", "expected_revision": None,
                    "operation": operation}
             invoke(["change", "create"], bad, expected=2, change="absent")
@@ -228,18 +229,6 @@ class NpmPackagePublicationTests(unittest.TestCase):
         request["expected_revision"] = projected["revision"]
         request["operation"] = {"op": "verify.set", "target": {}, "values": {"limitations": ["Packaged caller scope"]}}
         self.assertEqual(invoke(["verify", "set"], request)["status"], "saved")
-        # Seed an existing v2 store, then exercise the installed continuation API.
-        old = json.loads((package / "dist/templates/rigorloop-records-v2/records.json").read_text())["change"]
-        old.update(change_id="existing-v2", records=[], applicability=[], blockers=[])
-        old_path = project / "docs/changes/existing-v2/change.json"
-        old_path.parent.mkdir(parents=True)
-        old_path.write_text(json.dumps(old) + "\n")
-        current = invoke(["status"], change="existing-v2")
-        self.assertEqual(current["record_contract"], "rigorloop-records-v2")
-        continuation = {"schema_version": 1, "interface": "targeted-recording-v1", "contract": current["record_contract"],
-                        "change_id": "existing-v2", "expected_revision": current["revision"], "reads": [],
-                        "operation": {"op": "activity.set", "target": {}, "values": {**old["activity"], "reason": "Continued existing work"}}}
-        self.assertEqual(invoke(["activity", "set"], continuation, change="existing-v2")["status"], "saved")
         # The primary reader reports the installed-package v3 store.
         self.assertEqual(invoke(["status"], change="example")["record_contract"], "rigorloop-records-v3")
 

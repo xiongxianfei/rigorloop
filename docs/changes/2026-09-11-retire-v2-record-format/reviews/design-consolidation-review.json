@@ -1,0 +1,429 @@
+{
+  "assessment_scope": "Independent complete-package Design reassessment at ff9154a6 of eight owning models, indexed examples and the corrected governed-authoring resource interaction. The original five models remain unchanged from c502e146; Skill and Test remain unchanged from ff914115. Reuses the inspected unchanged package basis after exact identity comparison.",
+  "change_id": "2026-09-11-retire-v2-record-format",
+  "contributors": [
+    {
+      "id": "codex-design",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: minor. Scope: artifact-local. Affected artifact: design. Owning stage: design. Location: docs/design/design/design.md:76, Building Block View row for references/governed-design-authoring.md. Its current responsibility says \"Explicitly selected governed change: v2 context, subject inspection and targeted author-owned recording\". RF-SR-14/CLI-SR-28 select v3-only operational storage, and the canonical governed-design-authoring reference explicitly uses rigorloop-records-v3. This row is a current resource mapping, not historical provenance, so the expanded consolidation leaves conflicting operational guidance.",
+      "id": "design-consolidation-f1",
+      "owner": {
+        "id": "codex-design",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "codex-design-consolidation-review",
+        "role": "review"
+      },
+      "required_outcome": "Reconcile this Design-owned resource row with the current Record Format/CLI contract, using current or v3 context wording while preserving exact subject inspection, targeted author recording, authority and no-fallback duties. Safe resolution: a narrow Design prose correction followed by independent reassessment of the affected package. No runtime or test change is required.",
+      "resolution": {
+        "actor": {
+          "id": "codex-design-consolidation-review",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "design-consolidation-correction",
+            "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+          }
+        ],
+        "rationale": "Independently inspected ff9154a6: Design:76 replaces the operational v2 context instruction with current context under Record Format and CLI and preserves subject inspection, targeted author recording and excluded authority duties. The canonical resource agrees. No other engineering subject changed, so the complete eight-model package remains coherent."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:515d7f130ab1d32434375b777d6abc8f978eb359ad24acdeaafa98901ea7bf65",
+          "path": "docs/design/design/design.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-consolidation-review",
+  "independence_basis": "Parent /root authored the consolidated models and navigation. This reviewer authored none of the engineering package. Prior independent retirement assessments supply historical comparison context; this is a new assessment of the current complete package, not retargeting an earlier approval.",
+  "judgment": "approved",
+  "limitations": [
+    "This is Design package approval, not implementation correctness, final verification, branch readiness or PR readiness. Fresh whole-change Code Review and distinct Verify remain separate responsibilities.",
+    "This review added or executed no retirement-specific tests or manual replacement probes. Mechanical structure and example parsing checks do not establish runtime behavior; unchanged implementation proof retains its original scope and attribution.",
+    "Historical reviews and examples retain their original exact subjects and meaning. This new record does not retarget earlier judgments or refresh historical findings, governance adoption evidence or external outcomes."
+  ],
+  "rationale": [
+    "Expanded consumer reassessment — The corrected Design Building Block View now selects current context under Record Format and CLI, preserving exact subject inspection and targeted author-owned recording. This agrees with its canonical governed authoring resource and the current v3-only owner contract without confusing schema2 response metadata with stored format. Skill retains current v3 procedure within the two-skill pilot boundary; Test retains explicit historical v2 adoption and current evidence/decision storage. No new method, runtime behavior, test obligation or adoption scope is introduced.",
+    "Direction and scope — The accepted retirement proposal and proposal-review select removal of operational v2 support with unchanged historical bytes and meaning. This consolidation makes that adopted boundary direct in the living models instead of requiring readers to reconcile obsolete operational clauses against later amendments. It introduces no new model, report representation, runtime behavior, migration or archival service. The original structured-assessment direction and later ID-only Finding decision retain distinct historical meaning; older approvals are not represented as approvals of the present subjects.",
+    "Record contract and realization — Record Format now directly defines closed v3 record kinds and their common types. Review/Verify have one named explanation representation, with nonempty summary/scope/rationale, nonempty Verify changes, explicitly empty limitations allowed, ordered string collections and preserved multiline content. Material decisions retain body. Findings retain their eight-field current account with stable IDs and no origin snapshot; blockers retain immutable origin and supporting judgment. Complete assessment writes preserve findings, while explicit finding operations and advanced candidates may correct non-ID fields. The current schema/runtime boundary supports these definitions; no old v2 concern or body contract competes with them.",
+    "CLI and cross-owner integrity — Complete/named reads preserve exact metadata, applicability, honest omissions and optional absence. Finding summaries expose six current fields and omit evidence/resolution without inventing origin metadata; blocker origin remains distinct. Whole-field explanation edits cannot retarget assessment subjects or evidence, merge arrays, rewrite unrelated bytes or renew applicability. Optional conditional Verify basis remains closed and independently owned, with full-record omission removing it and narrow edits preserving it. Rendering derives readable output without a second authoritative report or semantic extraction. Review and Closeout assigns substantive reassessment and Workflow assigns coordination rather than allowing storage success to approve reliance.",
+    "Versions, safety and recovery — V3-only operational storage remains independent of targeted request schema1, advanced request schema2, advanced result schema1 and the retained schema2 discovery/early-response domains. Recognized new set commands retain schema3 early failures; retained command/batch dispatch does not infer validated storage from a tag. Exact revision/read binding, semantic no-op preservation, bounded receipts, writer exclusion and v3 journal recovery remain owned by CLI/Record Format. Archive recognition preserves the previously corrected manifest contract/schema_version/change_id versus supporting schema_version/change_id distinction, bounded traversal and size limits, no legacy semantic validator, and visible malformed/mixed stores or lock/journal residue. There is no operational v2 continuation or recovery fallback.",
+    "Examples and acceptance — Inspected the changed navigation and the retained representative examples against their owners, reusing unchanged example semantics from the prior complete-package assessment after checking current identities. Independently parsed all 49 Record Format/CLI example JSON files and confirmed none changed in 698364b9..c502e146. Projection, correction, early-error and before/after examples remain illustrative contracts, not real approvals or runtime results. Stable local requirement/decision ID comparison found no removed owner-local IDs. The structure/reference command for all five models passed. These mechanical checks support, but do not substitute for, the semantic package assessment.",
+    "Delivery applicability and proof limits — The unchanged approved primary plan already allocates coordinated model/consumer reconciliation and retained shared/package proof under M2 and final closeout. This documentation-only consolidation introduces no new behavior, hazard, milestone or proof family requiring a revised allocation. Compared packages, schemas, tests, skills and scripts between 698364b9 and c502e146: no changes. The explicit prohibition on new v2-retirement, rejection or archive-compatibility tests and disguised manual substitutes remains intact; no such checks were added or run for this review. Existing Delivery evidence is used only for its unchanged allocation, not renewed as approval of these Design subjects. Fresh final whole-change Code Review and distinct Verify must assess the resulting complete final package before PR reliance.",
+    "Validation basis — Independently ran python scripts/validate-boundary-first.py --check with --path for docs/design/record-format/record-format.md, docs/design/cli/cli.md, docs/design/workflow/workflow.md, docs/design/review-closeout/review-closeout.md and docs/design/system/system.md: passed structure-and-references-only. Also performed read-only JSON parsing, stable-ID and unchanged-example/source comparisons described above. Author evidence separately reports prose and whitespace success. Exact subject identities were obtained through subject inspect and current context before recording; the five registered model identities agree with the assessed package.",
+    "Correction evidence and applicability — Independently inspected the exact ff914115..ff9154a6 documentation diff: only the identified Design resource row changed. Current subject inspection confirms the original five models, added Skill/Test models and relied-on examples remain unchanged. Author evidence design-consolidation-correction records focused model/prose and whitespace checks passed. The earlier independent three-model structural check and original five-model checks remain applicable because the correction changes only this owner reference, with no structural or runtime effect. The existing plan still allocates this bounded consumer reconciliation; no new Delivery allocation or test family is required. This current complete-package judgment follows actual reassessment of the correction, not automatic retargeting or test success."
+  ],
+  "reviewer": {
+    "id": "codex-design-consolidation-review",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:f89a44b73376a41d7214108fcb803e9e2c22fc723c2db0790e7a8821eb7dc070",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:00054811fbc8ab9780f605313f55104af83dba174ba7a90b5d74a6d483b51016",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:c7c22ba01300bba4d1c50a75126de50e0e2c9084764e8bc6d12b609a07d20175",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+    },
+    {
+      "identity": "sha256:d3fd768a5c5d4948a107b45d9e05e380e9a2d42d0e99f4c0918e867774eb85c0",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/material-decisions.json"
+    },
+    {
+      "identity": "sha256:9175a096d6e4bdf52c8d1afd813288e9e87bac234943da7fbf7b6e853e269368",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:20e0cd799478d49c739b051ed79b06aa136075f32449a557e50036072870dad5",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:608a5960e73a038b85610533a95252d09c631a8f6c55911ef084ba714c0ca471",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:c4cd40f5523c8d4d79a4e0d62464552be57ecd023a74f8e664f3274f02f91bed",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:0de076649bc1f0fd1233bd97ec166ac41578b129232b0a19d92b4ad5ae7c09a6",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:9bdb8d360f0cc4ec935620cd4c7b632df4e8e0a265674c9f064088995aef7c95",
+      "path": "docs/design/cli/examples/observation-freshness/README.md"
+    },
+    {
+      "identity": "sha256:1d22534396a88cb3f3edb8d19be15cc37b8fe77b458ac2344e9627816094cca8",
+      "path": "docs/design/cli/examples/observation-freshness/expected.json"
+    },
+    {
+      "identity": "sha256:4fde512f9fd9c9b25502d1e983bb9a22382812ac726af6af32e040f7c3ff8222",
+      "path": "docs/design/cli/examples/observation-freshness/scan-b.json"
+    },
+    {
+      "identity": "sha256:d271716355c2d96bd1110c24f37e01de1bfb2a53d011a2f2a884bbebda2b9593",
+      "path": "docs/design/cli/examples/observation-freshness/scan-c.json"
+    },
+    {
+      "identity": "sha256:a2e1774f250b89aea4b3c862e7e5fae2acb78cc6486cb51cb05f9ec136337bd5",
+      "path": "docs/design/cli/examples/v2-work-status-update/README.md"
+    },
+    {
+      "identity": "sha256:f35f7b4c6fc54f3bbe5164b1d75ef2b786f7898a8d64199f0d15dab2c2b3018e",
+      "path": "docs/design/cli/examples/v2-work-status-update/request.json"
+    },
+    {
+      "identity": "sha256:75c8d51fdb5756ad71879f183ca6c08b807b7eba3f8e4648e0adbb682a77ab96",
+      "path": "docs/design/cli/examples/v2-work-status-update/response.json"
+    },
+    {
+      "identity": "sha256:f4bd6a92c07d69f06efc9336eb678e241888d20541fbaf2bd115e1153543a469",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/README.md"
+    },
+    {
+      "identity": "sha256:795080cf9a9b63fd44a77ec745ca7d10995e2bf173581df9534e3b4f395a7ccb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/invalid-change-selector-response.json"
+    },
+    {
+      "identity": "sha256:41b6e86f475fa7f278f706e0d094a6cc454f68f11de2ad34429b80acb273cfe5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/mixed-store-response.json"
+    },
+    {
+      "identity": "sha256:e47f464a85d7f13b895dfc90d84b55fe24f823844db7f147d83657a8f6be7f6a",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:4f3259cd2229ac7f2b664abcec27968e7bf736f8e45801db42ce64849ce920c5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:98d88a8763a15d25b1d0acfd5081c3d7f515b48d4c7c4e7a288ad3ec108b9eba",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-v2-store-response.json"
+    },
+    {
+      "identity": "sha256:0578d2152a2330a0bd5787659551494df819f273dc53db3be5fdceabfcdebb1d",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-command-response.json"
+    },
+    {
+      "identity": "sha256:a802cb3c67f2ac861614be88e55e8f4e6f6dfca57eaca2aec292288cfe419899",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-store-response.json"
+    },
+    {
+      "identity": "sha256:886ab0361fe5924b26f0275ec09410f916fdfc0eb788a0d60f93671fc2ab5a52",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:803c307a1ae75ba0cc8114bdc6a2c9b01bc95a8d30f063abc53e13f753fe56fb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:46c9c2554c54833d9881e8157c88987315b9dedb0eb2aaf12b2ec9353fa4d215",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-v2-store-response.json"
+    },
+    {
+      "identity": "sha256:90f1d420f5ffa7877313abadb1e59e230c6fd79d2777fadd74a97e5dd8e2534a",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/README.md"
+    },
+    {
+      "identity": "sha256:70f8883af05d13ef49e52b18209189b63f9c60a5cf381b076aeaeadd91aaad88",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-request.json"
+    },
+    {
+      "identity": "sha256:f84b71e306ec3cc8211e151184e912f1edec7b875a206cebf82dde865644dc3e",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:bcb83a7e18c18e7759d37ef713f167b6f1180dd984ff07d705a06554fcee6d55",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-request.json"
+    },
+    {
+      "identity": "sha256:8cb57d08879331bb8a520c820f73cadb08711783baae852d33c70e6f198c06de",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:4ca7b7009e240d088b3fe2ee5c4669f35d64a36ababafb2fa12cc01c858605f0",
+      "path": "docs/design/cli/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:905ba67b50a06114325bbabaa7c939005a096473ace379cd00cfe37b2a01bd93",
+      "path": "docs/design/cli/examples/v3-finding-correction/request.json"
+    },
+    {
+      "identity": "sha256:26c1d3d2d2cab351801c76ada6428ea8ada951631304dcc97ddbd08d74b56a0e",
+      "path": "docs/design/cli/examples/v3-finding-correction/saved-response.json"
+    },
+    {
+      "identity": "sha256:8489f5ec5e7329011de4660cbcf6877b988fbb8c2d70107ae90dd3cebbb88975",
+      "path": "docs/design/cli/examples/v3-finding-correction/show-response.json"
+    },
+    {
+      "identity": "sha256:0f7e7559a9c199eb4326ecede6ebdf67dd1418970d1609e5fe37b066b062537a",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-request.json"
+    },
+    {
+      "identity": "sha256:3e39f4d99e7b3589613c78f7e23e528dd6ffbd006f81651f69d8297911c30dc3",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-response.json"
+    },
+    {
+      "identity": "sha256:c111c0302ad4b1cfe5f35030c7ad0e50a035345a8ef3dcb62a747af37d8adb1d",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:9f134ab8c53f99183053f3a0331871a70570690f93c6420e523aa61a2f5d8640",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:3a4f87555fbb0b3dcc8239941ca02442e2e85a6c436a74f4954150c758e2d05e",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:6d436ffddc2da5286f804f82a2e9190e2a376e2d28387cfaf7520d75581c2d5b",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-stale-response.json"
+    },
+    {
+      "identity": "sha256:c322d81e1248a8316bcb281457838054ac001baf30783b6c9d5bca979988c2e6",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-unchanged-response.json"
+    },
+    {
+      "identity": "sha256:c73be0db141370e7e5c5fefd34d8c338c0141bcc27a9111a41784918f4464d96",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/show-fields-response.json"
+    },
+    {
+      "identity": "sha256:fff6581c8d8b9e8f7160faa2845b26719bcf16aea29132c3c0ca62f04a26299a",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:07e459967b641a8bceb4edf801ce13567ccdfbd00f30977e5931b6ec588dec33",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:21f4098320b9f237c659717044ba08ff5ac7d49a716b9eb76576839d6ff36ca2",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:e50326ce049b621467f317ab97415af8519efcb27db9c4f30c51c6b4ba2f300b",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-absent-basis-response.json"
+    },
+    {
+      "identity": "sha256:4c3047582f62c83ed9d9b87849916a4d444d381abca9c701e7843140df52aa27",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-fields-response.json"
+    },
+    {
+      "identity": "sha256:db6b8ddc07c035390f5b2ecc517c67b4dc976ff37a1cb6b5c106f38d63bc5297",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:76e9c57315e9c23adb33caf13bfabc6fa5cbb61e5c162c99d05447f682ccde78",
+      "path": "docs/design/record-format/examples/README.md"
+    },
+    {
+      "identity": "sha256:bc0d43907b010faeab0b40a21319f363bade408a1599b3951b56d1a7d9b0a9f9",
+      "path": "docs/design/record-format/examples/v2-minimal-change/README.md"
+    },
+    {
+      "identity": "sha256:523ee35620d9deb9b393ecb59c414bd25e240be81a28dc76f347d412e0201cb6",
+      "path": "docs/design/record-format/examples/v2-minimal-change/change.json"
+    },
+    {
+      "identity": "sha256:914224534450b9561aa144ce5da1a553c7a50a5845ddc5b41f607481c6fddbfb",
+      "path": "docs/design/record-format/examples/v2-review-reassessment/README.md"
+    },
+    {
+      "identity": "sha256:c13ffa7fe8d4189f2f30f7bb5c603c50c0e8d4d783dc394013d7db81883f32e0",
+      "path": "docs/design/record-format/examples/v2-review-reassessment/after.json"
+    },
+    {
+      "identity": "sha256:df39c9d8cb532e8fa48f3590e3558a4308bdfd815aab09b68866247be35d2f1d",
+      "path": "docs/design/record-format/examples/v2-review-reassessment/before.json"
+    },
+    {
+      "identity": "sha256:648ca7b19d32ed0c322d039f3aa410ba35a67b7c5a2257a9cb8ee1495423c554",
+      "path": "docs/design/record-format/examples/v2-review-without-subjects/README.md"
+    },
+    {
+      "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+      "path": "docs/design/record-format/examples/v2-review-without-subjects/review.json"
+    },
+    {
+      "identity": "sha256:fa0d4afe58facd732293be98d24afc287a4116f23c0423bf7c8f112a9918830a",
+      "path": "docs/design/record-format/examples/v3-complete-store/README.md"
+    },
+    {
+      "identity": "sha256:6dde70e3cfe5d98bd2adfbef63f8ba11c6e7f33f82ed43f23cc06ecfaef3de18",
+      "path": "docs/design/record-format/examples/v3-complete-store/change.json"
+    },
+    {
+      "identity": "sha256:b04252e754560e4d9e69f62bd1013f546051bf7dea603b15b5fe019c05f4579c",
+      "path": "docs/design/record-format/examples/v3-complete-store/evidence.json"
+    },
+    {
+      "identity": "sha256:317d54c95b1eb05e19852be20bd193f765a1514446794848149a43464def4551",
+      "path": "docs/design/record-format/examples/v3-complete-store/material-decisions.json"
+    },
+    {
+      "identity": "sha256:edff4ef7ce625a817047f979c27235f443005f11b18d177d7b02b78c88314775",
+      "path": "docs/design/record-format/examples/v3-complete-store/reviews/final-code-review.json"
+    },
+    {
+      "identity": "sha256:f35a2863075b2a1688ae1130dd310d728d78de994da6ec4e809d67d2f8f2ecf8",
+      "path": "docs/design/record-format/examples/v3-complete-store/verify-report.json"
+    },
+    {
+      "identity": "sha256:50c9491cf19f694bb023532b6ad392cd16baea4fe199d6089edd8d610351233a",
+      "path": "docs/design/record-format/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/record-format/examples/v3-finding-correction/stored-review.json"
+    },
+    {
+      "identity": "sha256:f34998232a1ef52b2ffb444f79a66705a1da5530490328d7102ea322897557fe",
+      "path": "docs/design/record-format/examples/v3-finding-correction/updated-review.json"
+    },
+    {
+      "identity": "sha256:13ec93c8a2c1fcf885c5a321a44b33b043b880a4e02527bf92e946b7a8cdd34e",
+      "path": "docs/design/record-format/examples/v3-review-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:0a613a0439f4895028df96120e5d375a38d41e3d8223ed04522054118fbdc77a",
+      "path": "docs/design/record-format/examples/v3-review-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/record-format/examples/v3-review-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:b9fb352b99f403293fd39d19ab973d0a518039c2128f1e96851ff4bea58339c2",
+      "path": "docs/design/record-format/examples/v3-verify-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:7b143a6b26d1b8b3db90f42f66915f065bf8e341f2a98ea69ea88d3d806227ec",
+      "path": "docs/design/record-format/examples/v3-verify-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:57b19025fc02ca889012295cdc09ddbf0d83a452bafcf38260b88d8bcd05b40e",
+      "path": "docs/design/record-format/examples/v3-verify-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:9bd6dc148835ede92b6290c524d162724f101765bcd5e5a616812fa7dda59d38",
+      "path": "docs/design/record-format/examples/v3-verify-without-evidence/README.md"
+    },
+    {
+      "identity": "sha256:99940ecf563be59427e1a4b56f7da9348949ebde8c84507192ba8793dcbf3bd3",
+      "path": "docs/design/record-format/examples/v3-verify-without-evidence/verify-report.json"
+    },
+    {
+      "identity": "sha256:b021a86b073815e934a467ef1588806dbeae47033d0b4d37c8dd480a47b733f4",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:4ab2aca0b2f7aebc72ef0d2bb975975208f6451fd8ab975ad645b59191bfb251",
+      "path": "docs/design/review-closeout/review-closeout.md"
+    },
+    {
+      "identity": "sha256:4f6f8acb58f55c3483724f6d6f1d98ed804cae875ba90d2589ad3e2e1ce27012",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:1a1d75a6a4dab9fca9e73082b8cc78259e2b7be76495aa9f0fc201dd3cff5c10",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:ef0958b743c39ccd458572073e97792fd57052f3a3762007323d2cb864920dd0",
+      "path": "docs/design/test/test.md"
+    },
+    {
+      "identity": "sha256:05fb58a5f790399d5396b8cb58b6b207e240b1f9eec019f0601f29ac47d1b468",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:431b9737cc8e1e9228a3c77f20b8824722f9fff2afcc311a1f3dfe3f0815130f",
+      "path": "docs/plans/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:3f44199e331ecb125bce514c83c81255ceffccb0670c62d7c52f578f621e0f92",
+      "path": "docs/proposals/2026-09-11-retire-v2-record-format.md"
+    },
+    {
+      "identity": "sha256:c4f225bc1e179364ddaa9d782af451569025f20d14fc348e585702f9b4533ba4",
+      "path": "packages/rigorloop/dist/lib/record-discovery.js"
+    },
+    {
+      "identity": "sha256:5c1ba8869c4c78d7a97147cb1dfa5c295358a12dce2e373aadeee81c6ccc4663",
+      "path": "packages/rigorloop/dist/lib/record-format-v3.js"
+    },
+    {
+      "identity": "sha256:09ab18abff64694c9306c93b8dab15cbd52165eaa589d0ce73f9bbffe98307ce",
+      "path": "packages/rigorloop/dist/lib/record-store-format.js"
+    },
+    {
+      "identity": "sha256:343b516ff34de23990f9897faa19e4a0f127fbfff9a0c814039140138280efb6",
+      "path": "packages/rigorloop/dist/lib/record-store.js"
+    },
+    {
+      "identity": "sha256:e36a234ad803ab714e558cd159863a3557d03811aa22cbd32307f8313829fdfd",
+      "path": "schemas/rigorloop-records-v3.schema.json"
+    },
+    {
+      "identity": "sha256:d7598a7af645b395db8332e64743d3c19c1529c705a0b2e7a349bae1d1d889f9",
+      "path": "skills/design/references/governed-design-authoring.md"
+    }
+  ],
+  "summary": "The expanded eight-model consolidation coherently follows the current v3 recording owner while preserving historical meaning, shared safety and separate authority boundaries.",
+  "target": "design"
+}

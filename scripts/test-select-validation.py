@@ -543,7 +543,7 @@ class ValidationSelectionTests(unittest.TestCase):
         repo = self.make_git_repo()
         shutil.copyfile(ROOT / ".gitignore", repo / ".gitignore")
         (repo / "docs/changes").mkdir(parents=True)
-        templates = json.loads((ROOT / "templates/rigorloop-records-v2/records.json").read_text())
+        templates = json.loads((ROOT / "tests/fixtures/rigorloop-records-v3/records.json").read_text())
         change = templates["change"]
         records = {"reviews/design-review.json": ("review", templates["review"]),
                    "evidence.json": ("evidence", templates["evidence"]),
@@ -560,9 +560,9 @@ class ValidationSelectionTests(unittest.TestCase):
         for name, (kind, record) in records.items():
             content = json.dumps(record) + "\n"
             writes.append({"path": prefix + name, "expected_identity": None, "content": content})
-        request = {"schema_version": 2, "contract": "rigorloop-records-v2", "change_id": "example",
+        request = {"schema_version": 2, "contract": "rigorloop-records-v3", "change_id": "example",
                    "expected_revision": None, "reads": [], "writes": writes}
-        # Existing v2 fixture, independent of today's v3-only creation API.
+        # Supported synthetic fixture.
         for write in request["writes"]:
             destination = repo / write["path"]
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -605,12 +605,12 @@ class ValidationSelectionTests(unittest.TestCase):
                     self.assertEqual(selected.status, "blocked")
                     self.assertTrue(any(x["code"] == "unsupported-change-contract" for x in selected.blocking_results))
 
-    def test_v2_registered_json_paths_select_contract_owned_validator(self):
+    def test_v3_registered_json_paths_select_contract_owned_validator(self):
         repo, _ = self.recording_repo()
         shutil.rmtree(repo / "docs/changes/example")
         (repo / "docs/changes").mkdir(parents=True, exist_ok=True)
-        fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())
-        # Existing v2 fixture, independent of today's v3-only creation API.
+        fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v3/records.json").read_text())
+        # Supported synthetic fixture.
         for write in fixture["request"]["writes"]:
             destination = repo / write["path"]
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -696,9 +696,9 @@ class ValidationSelectionTests(unittest.TestCase):
             "templates/explicit-recording/records.json",
             "schemas/rigorloop-records-v3.schema.json",
             "templates/rigorloop-records-v3/records.json",
-            "schemas/rigorloop-records-v2.schema.json",
-            "templates/rigorloop-records-v2/records.json",
-            "tests/fixtures/rigorloop-records-v2/records.json",
+            "schemas/rigorloop-records-v3.schema.json",
+            "templates/rigorloop-records-v3/records.json",
+            "tests/fixtures/rigorloop-records-v3/records.json",
         )
         for path in paths:
             with self.subTest(path=path):
@@ -716,9 +716,9 @@ class ValidationSelectionTests(unittest.TestCase):
                      "packages/rigorloop/dist/lib/recording-query-cli.js",
                      "packages/rigorloop/dist/schemas/targeted-recording-v1.schema.json",
                      "packages/rigorloop/test/helpers/recording-query-launcher.mjs",
-                     "packages/rigorloop/dist/lib/record-format-v2.js",
-                     "packages/rigorloop/dist/schemas/rigorloop-records-v2.schema.json",
-                     "packages/rigorloop/dist/templates/rigorloop-records-v2/records.json",
+                     "packages/rigorloop/dist/lib/record-json.js",
+                     "packages/rigorloop/dist/schemas/rigorloop-records-v3.schema.json",
+                     "packages/rigorloop/dist/templates/rigorloop-records-v3/records.json",
                      "packages/rigorloop/dist/templates/explicit-recording/records.json",
                      "packages/rigorloop/dist/schemas/explicit-recording-v1.schema.json",
                      "packages/rigorloop/test/record-store-cli.test.js",
@@ -735,8 +735,8 @@ class ValidationSelectionTests(unittest.TestCase):
 
     def test_model_example_selection_uses_owner_not_example_as_model(self):
         import shlex
-        for path in ("docs/design/record-format/examples/v2-minimal-change/change.json",
-                     "docs/design/cli/examples/v2-work-status-update/request.json",
+        for path in ("docs/design/record-format/examples/v3-complete-store/change.json",
+                     "docs/design/cli/examples/v3-review-limitations-update/request.json",
                      "docs/design/cli/examples/observation-freshness/scan-b.json",
                      "docs/design/workflow/examples/correction-cycle.mmd"):
             result = select_validation(SelectionRequest(
@@ -993,6 +993,7 @@ class ValidationSelectionTests(unittest.TestCase):
         (workspace / "scripts").mkdir()
         shutil.copy2(CI, workspace / "scripts" / "ci.sh")
         shutil.copy2(ROOT / "scripts" / "validation_selection.py", workspace / "scripts" / "validation_selection.py")
+        shutil.copy2(ROOT / "scripts" / "record_store_classification.py", workspace / "scripts" / "record_store_classification.py")
         return workspace
 
     def make_broad_smoke_workspace(
@@ -4143,13 +4144,13 @@ print("SECOND_STDOUT")
         self.assertIn("SKILL_VERBOSE_STDERR", output)
         self.assertIn("ADAPTER_VERBOSE_STDOUT", output)
 
-    def test_broad_smoke_routes_changed_records_to_current_v2_validator(self):
+    def test_broad_smoke_routes_changed_records_to_current_v3_validator(self):
         workspace = self.make_broad_smoke_workspace(child_bodies={
             "scripts/validate-review-artifacts.py": "raise SystemExit(9)\n",
             "scripts/validate-change-metadata.py":
                 "import sys\nassert sys.argv[1:] == ['docs/changes/example/change.json'], sys.argv\n",
         })
-        # Other children isolate wrapper dispatch; current-v2 validation itself
+        # Other children isolate wrapper dispatch; current-v3 validation itself
         # is exercised by record-store tests and the real repository smoke.
         result = run_ci("--mode", "broad-smoke", script=workspace / "scripts/ci.sh", cwd=workspace)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -4886,6 +4887,7 @@ raise SystemExit(3)
         (temp_root / "scripts").mkdir()
         shutil.copy2(CI, temp_root / "scripts" / "ci.sh")
         shutil.copy2(ROOT / "scripts" / "validation_selection.py", temp_root / "scripts" / "validation_selection.py")
+        shutil.copy2(ROOT / "scripts" / "record_store_classification.py", temp_root / "scripts" / "record_store_classification.py")
         fixture = self.write_selector_fixture(
             self.minimal_selector_payload(
                 selected_checks=[
