@@ -1,10 +1,11 @@
 {
-  "assessment_scope": "Final assessment of the complete local v2-retirement implementation, current governance and package consumers, required independent reviews and exact Git/PR handoff basis.",
+  "assessment_scope": "Final local assessment of the complete retirement implementation, consolidated eight-model Design and example navigation, current independent reviews, required validation and PR187 refresh basis.",
   "change_id": "2026-09-11-retire-v2-record-format",
   "changes": [
     "RigorLoop operates on v3 stores and removes the v2 validator, dispatch, recovery, schemas, templates and exclusive test resources.",
     "Discovery and provenance consumers recognize historical archives through bounded format headers while preserving current-store errors and transaction attention.",
-    "Canonical skills, governance, package inputs and example guidance use the supported contract; shared safety tests retain their protection on v3."
+    "Canonical skills, governance, package inputs and example guidance use the supported contract; shared safety tests retain their protection on v3.",
+    "Living Designs directly define the current v3 fields, commands and preservation rules; obsolete v2 continuation clauses are removed and current examples are separated from historical navigation."
   ],
   "evidence_refs": [
     {
@@ -20,21 +21,29 @@
       "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
     },
     {
-      "id": "final-verification",
+      "id": "design-consolidation",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+    },
+    {
+      "id": "design-consolidation-correction",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
+    },
+    {
+      "id": "final-consolidation-verification",
       "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json"
     }
   ],
   "limitations": [
-    "No new v2-retirement, rejection or archival-compatibility tests were added, as requested; retirement-specific branches were assessed statically.",
-    "Historical dependency closure covers the inspected local repository; no completion or migration is claimed for external v2 stores.",
-    "Local validation does not establish hosted CI, PR creation, merge, release publication or customer activation."
+    "No new v2-retirement, rejection or archive-compatibility tests were added; retirement-specific branches retain static assessment under the requested scope.",
+    "Historical dependency closure covers the inspected local repository, not unknown external v2 stores.",
+    "Hosted CI passed on the previous PR head only; local verification of this revision does not establish its hosted CI, merge, publication or customer activation."
   ],
   "outcome": "success",
   "rationale": [
-    "The responsible pre-removal disposition accounts for the selected historical work and recovery obligations without converting old judgments.",
-    "The retained execution evidence and independently reviewed implementation agree on v3 behavior, safe storage mechanics and separately versioned request/response contracts.",
-    "Fresh whole-change Code Review assesses both milestones and their interactions; the final engineering subjects match the exact tested candidate.",
-    "Current workflow, concerns and applicability support closeout, and later evidence-only commits do not change the verified engineering basis."
+    "The explicit historical-dependency disposition and unchanged implementation evidence support the bounded support removal.",
+    "Current independent Design Review confirms the consolidated text preserves the adopted behavior and existing delivery allocation.",
+    "Fresh whole-change Code Review and final-source repository checks establish coherence across implementation, documentation, retained tests and package consumers.",
+    "Exact subject inspection and current workflow/concern assessment support this local handoff; later attributable evidence writes do not alter the engineering basis."
   ],
   "review_refs": [
     {
@@ -42,8 +51,8 @@
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/proposal-review.json"
     },
     {
-      "id": "design-review",
-      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-review.json"
+      "id": "design-consolidation-review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-consolidation-review.json"
     },
     {
       "id": "delivery-review",
@@ -58,8 +67,8 @@
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m2-code-review.json"
     },
     {
-      "id": "final-code-review",
-      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-code-review.json"
+      "id": "final-consolidation-code-review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-consolidation-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -73,11 +82,11 @@
       "path": "CONSTITUTION.md"
     },
     {
-      "identity": "sha256:528a188ab9fbd0466efdadf646dd2f5239033919ecf77434928995236ec4aded",
+      "identity": "sha256:c4cd40f5523c8d4d79a4e0d62464552be57ecd023a74f8e664f3274f02f91bed",
       "path": "docs/design/cli/cli.md"
     },
     {
-      "identity": "sha256:ba164a38ba8958b415428b11aa4144fce9b7e701e7fb2517a758dd29b1a05f0c",
+      "identity": "sha256:0de076649bc1f0fd1233bd97ec166ac41578b129232b0a19d92b4ad5ae7c09a6",
       "path": "docs/design/cli/examples/README.md"
     },
     {
@@ -85,39 +94,67 @@
       "path": "docs/design/cli/examples/v2-work-status-update/README.md"
     },
     {
+      "identity": "sha256:f4bd6a92c07d69f06efc9336eb678e241888d20541fbaf2bd115e1153543a469",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/README.md"
+    },
+    {
       "identity": "sha256:4ca7b7009e240d088b3fe2ee5c4669f35d64a36ababafb2fa12cc01c858605f0",
       "path": "docs/design/cli/examples/v3-finding-correction/README.md"
     },
     {
-      "identity": "sha256:e3a7ec6c8f6654e8f3575ce181366f8ac63d278e263ba5823d25e62abf16be52",
+      "identity": "sha256:fff6581c8d8b9e8f7160faa2845b26719bcf16aea29132c3c0ca62f04a26299a",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:db6b8ddc07c035390f5b2ecc517c67b4dc976ff37a1cb6b5c106f38d63bc5297",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:76e9c57315e9c23adb33caf13bfabc6fa5cbb61e5c162c99d05447f682ccde78",
       "path": "docs/design/record-format/examples/README.md"
     },
     {
-      "identity": "sha256:58cc914d0f7d51ed8b89c60766df493286b24f77e9c2c8e3317d446c1fc49254",
+      "identity": "sha256:bc0d43907b010faeab0b40a21319f363bade408a1599b3951b56d1a7d9b0a9f9",
       "path": "docs/design/record-format/examples/v2-minimal-change/README.md"
     },
     {
-      "identity": "sha256:7a27cff6e9363795195d95f209a654a43e5e83460f5e455410665c2c4faf048f",
+      "identity": "sha256:914224534450b9561aa144ce5da1a553c7a50a5845ddc5b41f607481c6fddbfb",
       "path": "docs/design/record-format/examples/v2-review-reassessment/README.md"
     },
     {
-      "identity": "sha256:45c9bc805f72107c8c4c507206217ee4b7d5d5d0e15f2e7247aba4a5c93e9241",
+      "identity": "sha256:648ca7b19d32ed0c322d039f3aa410ba35a67b7c5a2257a9cb8ee1495423c554",
       "path": "docs/design/record-format/examples/v2-review-without-subjects/README.md"
     },
     {
-      "identity": "sha256:a44db0abea196809b0779b56a6e38ad35d84a28f93d303b153769644a9f92184",
+      "identity": "sha256:fa0d4afe58facd732293be98d24afc287a4116f23c0423bf7c8f112a9918830a",
+      "path": "docs/design/record-format/examples/v3-complete-store/README.md"
+    },
+    {
+      "identity": "sha256:50c9491cf19f694bb023532b6ad392cd16baea4fe199d6089edd8d610351233a",
+      "path": "docs/design/record-format/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:b021a86b073815e934a467ef1588806dbeae47033d0b4d37c8dd480a47b733f4",
       "path": "docs/design/record-format/record-format.md"
     },
     {
-      "identity": "sha256:05dc2bd0102552d617d6df9262da7a30538fb8c2e559f49c33afc010cf164cff",
+      "identity": "sha256:4ab2aca0b2f7aebc72ef0d2bb975975208f6451fd8ab975ad645b59191bfb251",
       "path": "docs/design/review-closeout/review-closeout.md"
     },
     {
-      "identity": "sha256:aa62db15858ee056309121ecddb6990459ee9436380511ebd08a4b9bc4256107",
+      "identity": "sha256:4f6f8acb58f55c3483724f6d6f1d98ed804cae875ba90d2589ad3e2e1ce27012",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:1a1d75a6a4dab9fca9e73082b8cc78259e2b7be76495aa9f0fc201dd3cff5c10",
       "path": "docs/design/system/system.md"
     },
     {
-      "identity": "sha256:c3c4e7139785bb346b438044006e307345bebe00335a24f568233e2ca4adeb0e",
+      "identity": "sha256:ef0958b743c39ccd458572073e97792fd57052f3a3762007323d2cb864920dd0",
+      "path": "docs/design/test/test.md"
+    },
+    {
+      "identity": "sha256:05fb58a5f790399d5396b8cb58b6b207e240b1f9eec019f0601f29ac47d1b468",
       "path": "docs/design/workflow/workflow.md"
     },
     {
@@ -425,7 +462,7 @@
       "path": "tests/fixtures/rigorloop-records-v3/storage-safety.json"
     }
   ],
-  "summary": "The delivered change retires operational v2 storage while preserving historical records and supported v3 recording safety.",
+  "summary": "The delivered change retires operational v2 storage and gives readers a coherent current v3 Design while preserving historical records and supported recording safety.",
   "verification_basis": {
     "base_branch": "main",
     "base_revision": "5c4bda94d1b43fd668b435d7061a620e28214d51",
@@ -433,7 +470,7 @@
     "merge_base_revision": "5c4bda94d1b43fd668b435d7061a620e28214d51",
     "remote_identity": "git@github.com:xiongxianfei/rigorloop.git",
     "repository_identity": "https://github.com/xiongxianfei/rigorloop",
-    "verified_subject_revision": "05b72446e189ac4403dfa5f8abfa2b23202f7556"
+    "verified_subject_revision": "ff9154a661183a88ee0afbb17330761b2c6d4c58"
   },
   "verifier": {
     "id": "codex-final-verify",

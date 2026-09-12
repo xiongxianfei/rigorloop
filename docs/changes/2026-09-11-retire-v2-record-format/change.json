@@ -4,9 +4,9 @@
       "id": "codex-final-verify",
       "role": "verify"
     },
-    "reason": "Route selects distinct final Verify after approved current fresh whole-change Code Review of sourceff9154a6, approved corrected eight-model Design and resolved concerns. Both implementation milestones and their unchanged plan allocation remain complete. Assess exact final proof and PR187 refresh basis; no merge or release authority.",
+    "reason": "Route closes the documentation refinement after current successful final Verify, independent eight-model Design approval and fresh whole-change Code Review with both Design findings resolved. The user-authorized next action is PR187 refresh; no merge, release or customer activation is implied.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -83,12 +83,12 @@
     },
     {
       "actor": {
-        "id": "codex-route",
-        "role": "route"
+        "id": "codex-final-verify",
+        "role": "verify"
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/verify-report.json",
-      "reason": "Documentation subjects will change under the authorized consolidation; previous successful Verify remains evidence of its exact earlier basis, not current PR readiness.",
-      "value": "stale"
+      "reason": "Fresh final assessment of exact consolidated subjects, current independent review and proof, and PR refresh basis.",
+      "value": "current"
     },
     {
       "actor": {
