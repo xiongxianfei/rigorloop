@@ -1,5 +1,5 @@
 {
-  "body": "RF-DEC-08, CLI-DEC-07, WF-DEC-07 and RC-DEC-06 retain the reasons for archival preservation, bounded header classification, independent interface versions and fresh supported assessment. The five model amendments and linked owner relationships are the complete changed Design package; examples and runtime resources are mapped for coordinated implementation, not edited here. This is a Design decision, not the required final owner disposition of each old store. Remaining work before removal: assess relevant old review/Verify limitations and governance consumers, refresh work/recovery inventory, allocate exact retained checks in Delivery, and obtain required independent assessment. No project-map reliance: direct owner, code and test inspection supplies the bounded basis.",
+  "body": "All registered work is completed, no open or deferred findings/blockers remain, and each final Verify is current with passed referenced evidence and approved referenced reviews under current record-level applicability. No private journal/lock requires recovery. Earlier failed proof and drift remain historical and are not relabeled; old Verify limits exclude hosted/publication/customer claims and broader follow-ups. FU-012–018 and unrelated baseline prose/legacy debt retain their owning follow-up surfaces and do not require reopening these v2 stores; future selected work receives a new v3 assessment. Existing RC/Test/Skill/Design/Release/Distribution authority remains in current governing models; linked adoption records remain readable provenance. M2 must reconcile the identified artifact-lifecycle/metadata/selector and canonical skill/package consumers in the same removal unit so that they no longer operationally validate these archived roots. This is not new adoption or renewed correctness of those models. No external customer-root completion is inferred. Supporting baseline 93bfff4b retains original v2 operations if a concrete contrary dependency is found before removal; do not migrate or ship a fallback reader. The selected historical files must remain byte-identical. Exact inspected store revisions:\n2026-09-07-unify-review-closeout-policy sha256:bb357e3dccab1b8add7e1ee2a1da58f5c50735ce1011fea6d3c2a6c0ed6c3ae6\n2026-09-08-design-derived-test-model sha256:4f297aaa0d5ff0cd2a88761fa4ef2062cfb2902d4810e189f6a7d3b36db1df45\n2026-09-08-retire-compact-workflow-mutations sha256:c6dea1ba039663a4deba5ac3bc19374344fa82c148c1a70a7c4689db300ed428\n2026-09-08-skill-model-proposal-family-pilot sha256:c486cfeb4f590ab0fc30ad135027f2111b69e6ba52c0a75b8c2b0463e98ecba0\n2026-09-08-unified-design-authoring-and-bounded-model-consolidation sha256:7a1e5e70313953ee2217bd00a9ddb26e76efc5c73fbdf54fb2a3a3f1d9fcb8a7\n2026-09-09-release-model-source-consolidation sha256:4e947a0aadcd71b0fe321e719db128269059e831b33c6424aef80eada699e0be\n2026-09-09-simplify-required-validation-and-design-retention sha256:8510b9780e8aabd4ba661f75e216f43593e10de020bdf3942106f693ff175e7e\n2026-09-10-distribution-model-and-opencode-retirement sha256:659c293776ef220012b3b286012f010e57728b5e0f6e8f267bb11c9a74022ae6\n2026-09-10-npm-publication-visibility sha256:36b887380587ef89e11b45ca4da802a283c8337c7f303d2ae4b7eb6deb73ecbd\n2026-09-10-readable-record-output sha256:02717028d215b7aaf1e9a2b51992d57cec99e64e314ef32d3dc3b396c0fe1e0c\n2026-09-10-release-validation-integration sha256:d94924986d1b0fe9e08e5f28ff7fc8c24ad200ff79829fa497774cc2b0d95bd0\n2026-09-10-structured-assessment-explanations sha256:3e15c89b3678ea1390bdda7a7607f906d8c6056db1a96d134b38ba7039e43412",
   "change_id": "2026-09-11-retire-v2-record-format",
   "decisions": [
     {
@@ -30,6 +30,137 @@
         {
           "identity": "sha256:aa62db15858ee056309121ecddb6990459ee9436380511ebd08a4b9bc4256107",
           "path": "docs/design/system/system.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "codex-route",
+        "role": "route"
+      },
+      "id": "v2-operational-dependency-disposition",
+      "rationale": "Under the user-authorized retirement and approved WF-SR-18/TG-00 boundary, disposition the twelve exact selected local v2 stores as historical evidence eligible for operational support removal. This is an explicit responsible coordination decision based on complete selected CLI context, final referenced proof/judgments, applicable Verify limits and current recovery observations, not completion inferred from labels.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:9e325e2a39ed611f6b8cb6aad19eca5beb5023134c2c289cb7264eb277090b48",
+          "path": "docs/changes/2026-09-07-unify-review-closeout-policy/change.json"
+        },
+        {
+          "identity": "sha256:e7c155f932d6e0360555271a874173813982f2e9b02cb594e0bf17c4f3beef30",
+          "path": "docs/changes/2026-09-07-unify-review-closeout-policy/verify-report.json"
+        },
+        {
+          "identity": "sha256:82ec413b132195f69d0494af711fc1374dea2d2af1f3937b3e96809f67679962",
+          "path": "docs/changes/2026-09-08-design-derived-test-model/change.json"
+        },
+        {
+          "identity": "sha256:d42448d1744706bc53a84f680e7814d88702d0272daa9029ccb5793ed89a46e2",
+          "path": "docs/changes/2026-09-08-design-derived-test-model/verify-report.json"
+        },
+        {
+          "identity": "sha256:3fba9615b35b4e1a8f289f9170498c47a257e470bb025d2b8f4ec6c8956bf4c5",
+          "path": "docs/changes/2026-09-08-retire-compact-workflow-mutations/change.json"
+        },
+        {
+          "identity": "sha256:fc403a2011b8bc02968af8147624672b0a73cd9695c92f3ecb51d94266da8e1f",
+          "path": "docs/changes/2026-09-08-retire-compact-workflow-mutations/verify-report.json"
+        },
+        {
+          "identity": "sha256:a3203ec3a2e692775b93e25878fd3a8d3524b9c6dff45ef4cc42096b5be9fe80",
+          "path": "docs/changes/2026-09-08-skill-model-proposal-family-pilot/change.json"
+        },
+        {
+          "identity": "sha256:1ada6340a9977efccd05e8f8aa100c4af73b071c3d2f10a4a75b0f8158c4ea72",
+          "path": "docs/changes/2026-09-08-skill-model-proposal-family-pilot/verify-report.json"
+        },
+        {
+          "identity": "sha256:b0e3d2c2254081fed5dcd720e301a65c45a1dfae8e0fcf33877bbf0916f922f0",
+          "path": "docs/changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/change.json"
+        },
+        {
+          "identity": "sha256:24243892ca16d3426b4144a420e15203e482ec2683ce20605754ed7094966687",
+          "path": "docs/changes/2026-09-08-unified-design-authoring-and-bounded-model-consolidation/verify-report.json"
+        },
+        {
+          "identity": "sha256:e1572fada02322c96f37b15f97e54fa1b1df22ea30714bf377c3e302b26dfb80",
+          "path": "docs/changes/2026-09-09-release-model-source-consolidation/change.json"
+        },
+        {
+          "identity": "sha256:e103541ceae514c08f2be6ca03088e7aa1c74cf2ad9652a70b946ab5aa8b73a9",
+          "path": "docs/changes/2026-09-09-release-model-source-consolidation/verify-report.json"
+        },
+        {
+          "identity": "sha256:7053f2703927d8b652ffda17d4f7893fa50b12b73353cc3a4c02e93892bf510d",
+          "path": "docs/changes/2026-09-09-simplify-required-validation-and-design-retention/change.json"
+        },
+        {
+          "identity": "sha256:a8483998302d03161963a9a0dfa4ae1b26ce94dfa588132967311a4404a2fc60",
+          "path": "docs/changes/2026-09-09-simplify-required-validation-and-design-retention/verify-report.json"
+        },
+        {
+          "identity": "sha256:d41bbbf3fa864e800042eb552bf9ec186d8bdc8ee2a1e0e5e571d0df97edc1f3",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/change.json"
+        },
+        {
+          "identity": "sha256:414b96ba70a03841e6e30543da16110c53ae2595ec005d44b1cb71b695eb4660",
+          "path": "docs/changes/2026-09-10-distribution-model-and-opencode-retirement/verify-report.json"
+        },
+        {
+          "identity": "sha256:408f73283b62e1042ff146d71332b2d25990b282f3e9d2e10347951f4bdc2382",
+          "path": "docs/changes/2026-09-10-npm-publication-visibility/change.json"
+        },
+        {
+          "identity": "sha256:11fd2895a3b1b62e9dad4ef4bc57a3c02539e888dbbd5b6f156b03fb5e255f59",
+          "path": "docs/changes/2026-09-10-npm-publication-visibility/verify-report.json"
+        },
+        {
+          "identity": "sha256:4adc476e3d6fa66bccb3812e1b55102cfadad810590138dbadb04f680418e51a",
+          "path": "docs/changes/2026-09-10-readable-record-output/change.json"
+        },
+        {
+          "identity": "sha256:a5342810569e373d3b4fc7eebf59ca3e2f37d7d794f476596ef62da8403dbc43",
+          "path": "docs/changes/2026-09-10-readable-record-output/verify-report.json"
+        },
+        {
+          "identity": "sha256:2f1c527c86b7ba65a2965e30da500184af1f7a5d20f00907c03becdf7271f52e",
+          "path": "docs/changes/2026-09-10-release-validation-integration/change.json"
+        },
+        {
+          "identity": "sha256:c18b9597ef96b15011ed5efbcd45353bd74f7c2abdf475a67dcb1d66836af160",
+          "path": "docs/changes/2026-09-10-release-validation-integration/verify-report.json"
+        },
+        {
+          "identity": "sha256:cece1a03d7e79b48686e2413943212798b4e24352d340ddbfbfff18b982c8ccc",
+          "path": "docs/changes/2026-09-10-structured-assessment-explanations/change.json"
+        },
+        {
+          "identity": "sha256:1404693b0c33cae71c87454371cb72bc933e6550f3119145adbaefbaa81ea439",
+          "path": "docs/changes/2026-09-10-structured-assessment-explanations/verify-report.json"
+        },
+        {
+          "identity": "sha256:61ec6e61ec9bd1998f6d9a7401da5a036879ef3ca116078af6c70c4d957a48d8",
+          "path": "AGENTS.md"
+        },
+        {
+          "identity": "sha256:7da63af759d6cff299f1fd441e197465fa9e177f424fe3231d72727b7098f968",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:431b9737cc8e1e9228a3c77f20b8824722f9fff2afcc311a1f3dfe3f0815130f",
+          "path": "docs/plans/2026-09-11-retire-v2-record-format.md"
+        },
+        {
+          "identity": "sha256:e8690a06e78cac5838271e241fb3724f046d8839c199e42dce2c7ec68d0af9b1",
+          "path": "scripts/artifact_lifecycle_validation.py"
+        },
+        {
+          "identity": "sha256:32bcdc798e0a1127373ffc726d033e4d63ce1d810bf821fde62e83116bd42c9c",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:0492367446ee8f549c4ccda0e01dd88b34cc89ccff932a577a3ad822056f8218",
+          "path": "scripts/validate-change-metadata.py"
         }
       ]
     }

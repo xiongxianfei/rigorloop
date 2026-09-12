@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+from record_store_classification import is_archival_record_store
+
 import importlib.util
 import json
 import os
@@ -216,15 +218,15 @@ def _recording_change_record_for(root: Path, path: Path, revision: str | None) -
     parts = path.relative_to(root).parts
     if len(parts) < 4 or parts[:2] != ("docs", "changes"):
         return None
-    owner_v2 = root / "docs" / "changes" / parts[2] / "change.json"
-    if _path_exists(root, owner_v2, revision):
+    owner_record = root / "docs" / "changes" / parts[2] / "change.json"
+    if _path_exists(root, owner_record, revision):
         # Even malformed/unknown JSON roots must reach complete-set validation.
-        return owner_v2
-    relative = path.relative_to(owner_v2.parent).as_posix()
+        return owner_record
+    relative = path.relative_to(owner_record.parent).as_posix()
     if relative in {"change.json", "evidence.json", "material-decisions.json", "verify-report.json"} or (
         len(Path(relative).parts) == 2 and relative.startswith("reviews/") and relative.endswith(".json")
     ):
-        return owner_v2
+        return owner_record
     return None
 
 
@@ -1561,7 +1563,7 @@ def _discover_all_in_scope_artifacts(root: Path, tracked_revision: str | None = 
         if not _is_relative_to(candidate, root):
             continue
         relative = candidate.relative_to(root)
-        # Change records are selected and validated as complete v2 sets above.
+        # Change records are selected and validated as complete current sets above.
         # Their Markdown archives are not current document candidates, even
         # when historical bytes cannot be decoded by today's tooling.
         if relative.parts[:2] == ("docs", "changes"):
@@ -1685,6 +1687,8 @@ def _resolve_scope(
 
         relative = current.relative_to(root)
         recording_owner = _recording_change_record_for(root, current, current_revision)
+        if recording_owner is not None and is_archival_record_store(root, recording_owner.parent.name, current_revision):
+            continue
         if recording_owner is not None:
             change_yaml_paths.add(recording_owner)
             continue

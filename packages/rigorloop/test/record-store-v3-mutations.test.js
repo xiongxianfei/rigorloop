@@ -22,12 +22,11 @@ const values=(record)=>Object.fromEntries(Object.entries(record).filter(([k])=>!
 for(const kind of ['review','verify'])test(`TG-04 ${kind}.set selector errors use schema3 before any input or filesystem access`,()=>{
  for(const extra of [['--unknown','private'],['--change',changeId],['--format','bad']]){let read=false;const argv=[kind,'set',...(kind==='review'?['final-code-review']:[]),'--root','/does-not-exist','--change',changeId,'--input','-','--format','json',...extra];const r=executeRecordingMutationCli(argv,{readInput:()=>{read=true;throw Error('read');}});assert.equal(read,false);assert.equal(r.result.schema_version,3);assert.equal(r.result.operation,kind+'.set');assert.equal(r.result.errors[0].code,'invalid-input');assert.equal('change_id' in r.result,extra[0]!=='--change');assert.doesNotMatch(r.json,/private/);}
 });
-for(const kind of ['review','verify'])test(`TG-04 ${kind}.set missing v2 unknown and mixed stores reject through new interface`,t=>{
+for(const kind of ['review','verify'])test(`TG-04 ${kind}.set missing unknown and mixed stores reject through new interface`,t=>{
  const root=setup(t,false);const op=set(kind,{limitations:[]});const requestRevision='sha256:'+'b'.repeat(64);
  const absent=run(root,op,{expected_revision:requestRevision});assert.equal(absent.result.schema_version,3);assert.equal(absent.result.errors[0].code,'target-not-found');assert.equal(existsSync(join(root,manifest)),false);
  mkdirSync(join(root,prefix),{recursive:true});
- for(const object of [{schema_version:2,contract:'rigorloop-records-v2'},{schema_version:3,contract:'unknown_value'}]){const change=JSON.parse(fixture()[manifest]);Object.assign(change,object);writeFileSync(join(root,manifest),encode(change));const r=run(root,op,{expected_revision:requestRevision});assert.equal(r.result.schema_version,3);assert.equal(r.result.errors[0].code,'unsupported-contract');assert.equal('record_contract' in r.result,false);}
- const v2=run(root,op,{contract:'rigorloop-records-v2',expected_revision:requestRevision});assert.equal(v2.result.errors[0].code,'unsupported-contract');
+ for(const object of [{schema_version:3,contract:'unknown_value'}]){const change=JSON.parse(fixture()[manifest]);Object.assign(change,object);writeFileSync(join(root,manifest),encode(change));const r=run(root,op,{expected_revision:requestRevision});assert.equal(r.result.schema_version,3);assert.equal(r.result.errors[0].code,'unsupported-contract');assert.equal('record_contract' in r.result,false);}
 });
 test('TG-03 narrow edits preserve neighbor bytes and semantic no-ops preserve all files',t=>{
  const root=setup(t),before=readFileSync(join(root,reviewPath),'utf8'),original=stored(root,reviewPath),manifestBefore=readFileSync(join(root,manifest));

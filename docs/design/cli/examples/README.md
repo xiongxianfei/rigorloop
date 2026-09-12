@@ -4,7 +4,7 @@ These examples belong to the [CLI design](../cli.md). Stored objects are indexed
 
 | Scenario | Contract | What it illustrates |
 | --- | --- | --- |
-| [Work status update](v2-work-status-update/README.md) | V2 continuation | Existing targeted request schema 1 and result schema 2, with a v2 stored contract. |
+| [Work status update](v2-work-status-update/README.md) | Historical, non-operational | Original targeted request schema 1 and result schema 2 with a retired v2 stored contract; do not execute. |
 | [Observation freshness](observation-freshness/README.md) | Internal digest contract | Same record revision and messages, different observed subjects; these JSON files are digest inputs/expectations, not public envelopes. |
 | [Complete assessment recording](v3-complete-assessment-recording/README.md) | V3 | Complete review.record and verify.record values, explicit creation applicability and saved receipts. |
 | [Review limitations update](v3-review-limitations-update/README.md) | V3 | Whole-field edit, saved result, selected-field read, stale retry and semantic no-op. |

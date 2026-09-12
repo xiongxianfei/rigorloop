@@ -571,8 +571,8 @@ class CurrentRecordBoundaryTests(unittest.TestCase):
 
 
 class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
-    def test_current_v2_validation_does_not_decode_archival_baseline(self):
-        root, _ = self.v2_recording_root()
+    def test_current_v3_validation_does_not_decode_archival_baseline(self):
+        root, _ = self.v3_recording_root()
         base = init_git_fixture(root)
         archive = root / "docs/changes/archived"
         archive.mkdir()
@@ -596,7 +596,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         root = Path(tempfile.mkdtemp(prefix="lifecycle-recording-fixture-"))
         self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
         (root / "docs/changes").mkdir(parents=True)
-        templates = json.loads((ROOT / "templates/rigorloop-records-v2/records.json").read_text())
+        templates = json.loads((ROOT / "tests/fixtures/rigorloop-records-v3/records.json").read_text())
         prefix = "docs/changes/example/"
         records = {"reviews/design-review.json": "review", "evidence.json": "evidence",
                    "material-decisions.json": "decisions", "verify-report.json": "verify"}
@@ -610,36 +610,36 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         for name, kind in records.items():
             content = json.dumps(templates[kind]) + "\n"
             contents[prefix + name] = content
-        request = {"schema_version": 2, "contract": "rigorloop-records-v2", "change_id": "example",
+        request = {"schema_version": 2, "contract": "rigorloop-records-v3", "change_id": "example",
                    "expected_revision": None, "reads": [],
                    "writes": [{"path": path, "expected_identity": None, "content": content}
                               for path, content in contents.items()]}
-        # Existing v2 fixture, independent of today's v3-only creation API.
+        # Supported synthetic fixture.
         for write in request["writes"]:
             destination = root / write["path"]
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(write["content"])
         return root, contents
 
-    def v2_recording_root(self):
+    def v3_recording_root(self):
         root, _ = self.recording_root()
         shutil.rmtree(root / "docs/changes/example")
-        fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())
+        fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v3/records.json").read_text())
         request = fixture["request"]
-        # Existing v2 fixture, independent of today's v3-only creation API.
+        # Supported synthetic fixture.
         for write in request["writes"]:
             destination = root / write["path"]
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(write["content"])
         return root, {w["path"]: w["content"] for w in request["writes"]}
 
-    def test_v2_recording_complete_set_and_unknown_value_fail_closed(self):
+    def test_v3_recording_complete_set_and_unknown_value_fail_closed(self):
         for mutation in (None, "unknown_value", "malformed", "missing-record"):
-            root, contents = self.v2_recording_root()
+            root, contents = self.v3_recording_root()
             manifest = root / "docs/changes/example/change.json"
             review = next(path for path in contents if "/reviews/" in path)
             if mutation == "unknown_value":
-                manifest.write_text(manifest.read_text().replace("rigorloop-records-v2", "unknown_value"))
+                manifest.write_text(manifest.read_text().replace("rigorloop-records-v3", "unknown_value"))
             elif mutation == "malformed":
                 manifest.write_text("not-json\n")
             elif mutation == "missing-record":
@@ -648,11 +648,11 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
                 result = validate_repository(root, mode="explicit-paths", paths=[review], compose_change_metadata=compose)
                 self.assertEqual(bool(result.blocking_findings), mutation is not None, (mutation, result.blocking_findings))
 
-    def test_v2_recording_tracked_snapshot_ignores_valid_live_replacement(self):
-        root, contents = self.v2_recording_root()
+    def test_v3_recording_tracked_snapshot_ignores_valid_live_replacement(self):
+        root, contents = self.v3_recording_root()
         base = init_git_fixture(root)
         manifest = root / "docs/changes/example/change.json"
-        manifest.write_text(manifest.read_text().replace("rigorloop-records-v2", "unknown_value"))
+        manifest.write_text(manifest.read_text().replace("rigorloop-records-v3", "unknown_value"))
         subprocess.run(["git", "add", "."], cwd=root, check=True, capture_output=True)
         subprocess.run(["git", "commit", "-m", "invalid selected contract"], cwd=root, check=True, capture_output=True)
         head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
@@ -679,7 +679,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
                     manifest = root / "docs/changes/example/change.json"
                     review = root / "docs/changes/example/reviews/design-review.json"
                     if mutation == "unknown_value":
-                        manifest.write_text(manifest.read_text().replace("rigorloop-records-v2", "unknown_value"))
+                        manifest.write_text(manifest.read_text().replace("rigorloop-records-v3", "unknown_value"))
                     elif mutation == "malformed-json":
                         manifest.write_text('{"contract":')
                     elif mutation == "malformed-review":
@@ -703,7 +703,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
             manifest = root / "docs/changes/example/change.json"
             review = root / "docs/changes/example/reviews/design-review.json"
             if selected == "unknown_value":
-                manifest.write_text(manifest.read_text().replace("rigorloop-records-v2", "unknown_value"))
+                manifest.write_text(manifest.read_text().replace("rigorloop-records-v3", "unknown_value"))
             elif selected in {"review-crlf", "live-symlink"}:
                 review.write_bytes(review.read_bytes().replace(b"\n", b"\r\n"))
             elif selected == "manifest-bom":
@@ -714,8 +714,8 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
                 review.unlink()
                 review.symlink_to("../material-decisions.json")
             elif selected == "duplicate-key":
-                manifest.write_text(manifest.read_text().replace('"schema_version": 2',
-                                                               '"schema_version": 2, "schema_version": 2'))
+                manifest.write_text(manifest.read_text().replace('"schema_version": 3',
+                                                               '"schema_version": 3, "schema_version": 3'))
             elif selected == "invalid-utf8":
                 review.write_bytes(review.read_bytes() + b"\xff")
             elif selected == "missing-evidence":
@@ -763,7 +763,7 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         for index in range(9):
             path = f"docs/changes/example/reviews/large-{index}.json"
             large = json.loads(review)
-            large.update(id=f"large-{index}", body="x" * 950000)
+            large.update(id=f"large-{index}", summary="x" * 950000)
             (root / path).write_text(json.dumps(large) + "\n")
             change["records"].append({"path": path, "kind": "review"})
             change["applicability"].append({**change["applicability"][0], "path": path})

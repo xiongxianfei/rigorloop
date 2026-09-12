@@ -1567,13 +1567,13 @@ def validate_installed_skill_artifact_placement_contract(
     if review_path is None:
         return errors
 
-    # Current v2 recording uses its registry; legacy Markdown document fixtures
+    # Current v3 recording uses its registry; legacy Markdown document fixtures
     # below remain an independent placement grammar, never a stored-root reader.
-    if (skill_name == "proposal-review" and "## Recording boundary" in body) or ("## Explicit recording" in body and "rigorloop-records-v2" in body):
+    if (skill_name == "proposal-review" and "## Recording boundary" in body) or ("## Explicit recording" in body and "rigorloop-records-v3" in body):
         placement = _extract_markdown_section(body, "Artifact placement") or ""
         current_path = f"docs/changes/<change-id>/reviews/{skill_name}.json"
         if current_path not in placement or "review record" not in placement:
-            errors.append(f"{path}: current review placement requires its v2 path and review record command")
+            errors.append(f"{path}: current review placement requires its v3 path and review record command")
         if not _has_isolated_advisory_carveout(placement):
             errors.append(f"{path}: current review placement must preserve isolated advisory review")
         return errors
@@ -3373,7 +3373,7 @@ def validate_targeted_recording_profile(path: Path, body: str) -> list[str]:
         block = _extract_markdown_section(body, "Explicit recording")
         if block is None:
             return []
-    required = ("rigorloop-records-v2", "rigorloop-records-v3", "record contract", "rigorloop context", "subject inspect",
+    required = ("rigorloop-records-v3", "record contract", "rigorloop context", "subject inspect",
                 "record_contract", "expected_revision", "targeted", "does not approve", "Do not migrate")
     errors.extend(f"{path}: explicit recording profile missing primary contract token: {token}"
                   for token in required if token not in block)

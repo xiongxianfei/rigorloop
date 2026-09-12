@@ -1,11 +1,11 @@
 import {spawnSync} from 'node:child_process';
-import {parseV2Record,validateV2Record} from '../dist/lib/record-format-v2.js';
+import {parseV3Record,validateV3Record} from '../dist/lib/record-format-v3.js';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {test} from 'node:test';
 import {digest} from '../dist/lib/record-store-files.js';
 import {validateAdvancedResult} from '../dist/lib/record-store-format.js';
-const fixtures=()=>JSON.parse(readFileSync(new URL('../../../tests/fixtures/rigorloop-records-v2/storage-safety.json',import.meta.url)));
+const fixtures=()=>JSON.parse(readFileSync(new URL('../../../tests/fixtures/rigorloop-records-v3/storage-safety.json',import.meta.url)));
 const root='docs/changes/example/';
 const encode=(kind,data)=>JSON.stringify(data)+'\n';
 function fileSet(){const f=fixtures();return {[root+'change.json']:encode('change',f.change),...Object.fromEntries(f.change.records.map(r=>[r.path,encode(r.kind,f[r.kind])]))};}
@@ -85,44 +85,44 @@ test("TG-01 exact file and stdin byte boundaries", () => {
     const content = encode(kind, fixtures()[kind]);
     const atLimit = content.slice(0, -1) + " ".repeat(limit - Buffer.byteLength(content)) + "\n";
     assert.equal(Buffer.byteLength(atLimit), limit);
-    assert.doesNotThrow(() => parseV2Record(kind, atLimit));
-    assert.throws(() => parseV2Record(kind, " " + atLimit), /byte limit/);
+    assert.doesNotThrow(() => parseV3Record(kind, atLimit));
+    assert.throws(() => parseV3Record(kind, " " + atLimit), /byte limit/);
   }
 });
 
 test("TG-01 exact ID, path, registry, write and read count limits", () => {
   const f = fixtures();
   f.review.id = "a".repeat(80);
-  assert.doesNotThrow(() => validateV2Record("review", f.review));
+  assert.doesNotThrow(() => validateV3Record("review", f.review));
   f.review.id += "a";
-  assert.throws(() => validateV2Record("review", f.review));
+  assert.throws(() => validateV3Record("review", f.review));
   f.change.proposal.path = "a".repeat(1024);
-  assert.doesNotThrow(() => validateV2Record("change", f.change));
+  assert.doesNotThrow(() => validateV3Record("change", f.change));
   f.change.proposal.path += "a";
-  assert.throws(() => validateV2Record("change", f.change));
+  assert.throws(() => validateV3Record("change", f.change));
   const change = fixtures().change;
   change.records = Array.from({length:64}, (_,i) => ({path:root+`reviews/r-${i}.json`,kind:"review"}));
   change.applicability = change.records.map(r => ({...fixtures().change.applicability[0],path:r.path}));
-  assert.doesNotThrow(() => validateV2Record("change", change));
+  assert.doesNotThrow(() => validateV3Record("change", change));
   const request = fixtures().request;
   request.writes = [{...request.writes[0],content:encode("change",change)}, ...change.records.map((r,i) => ({
     path:r.path,expected_identity:null,content:encode("review",{...fixtures().review,id:`r-${i}`}),
   }))];
   request.reads = Array.from({length:256},(_,i)=>({path:`docs/basis-${i}.json`,expected_identity:null}));
-  assert.doesNotThrow(() => validateV2Record("request", request));
+  assert.doesNotThrow(() => validateV3Record("request", request));
   request.reads.push({path:"docs/excess.json",expected_identity:null});
-  assert.throws(() => validateV2Record("request", request));
+  assert.throws(() => validateV3Record("request", request));
   request.reads.pop();
   request.writes.push({...request.writes[1],path:root+"reviews/excess.json"});
-  assert.throws(() => validateV2Record("request", request));
+  assert.throws(() => validateV3Record("request", request));
   change.records.push({path:root+"reviews/excess.json",kind:"review"});
   change.applicability.push({...change.applicability[0],path:root+"reviews/excess.json"});
-  assert.throws(() => validateV2Record("change", change));
+  assert.throws(() => validateV3Record("change", change));
 });
 
 test("ER-M1-001 decision-basis and write paths are disjoint", () => {
   const request = fixtures().request;
-  assert.doesNotThrow(() => validateV2Record("request", request));
+  assert.doesNotThrow(() => validateV3Record("request", request));
   request.reads = [{path:request.writes[0].path,expected_identity:null}];
-  assert.throws(() => validateV2Record("request", request), /overlap/);
+  assert.throws(() => validateV3Record("request", request), /overlap/);
 });

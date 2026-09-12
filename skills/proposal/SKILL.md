@@ -60,7 +60,7 @@ The four loaded assemblies are `PA0-portable`, `PA0G-portable-gated`, `PA1-gover
 
 ## Recording boundary
 
-Classify the invocation before loading recording procedure. Governed work requires the complete `references/governed-proposal-authoring.md` and validated project authority before mutation. The selected `rigorloop-records-v2` or `rigorloop-records-v3` profile is supported; malformed, stale or conflicting governed signals stop without portable fallback. A later governed signal requires reclassification before dependent authoring or writes. Portable authoring does not require recording instructions or lifecycle records. Loading or saving never grants approval or continuation.
+Classify the invocation before loading recording procedure. Governed work requires the complete `references/governed-proposal-authoring.md` and validated project authority before mutation. The selected `rigorloop-records-v3` profile is supported; malformed, stale or conflicting governed signals stop without portable fallback. A later governed signal requires reclassification before dependent authoring or writes. Portable authoring does not require recording instructions or lifecycle records. Loading or saving never grants approval or continuation.
 
 ## Resource map
 

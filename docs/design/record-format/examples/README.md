@@ -1,6 +1,6 @@
 # Stored-record examples
 
-These examples belong to [Record Format](../record-format.md). V2 examples describe existing-store continuation; v3 examples describe the replacement stored contract. Validate each against its selected schema, not by interpreting its version through another contract. Every assessment, result and identity here is illustrative; none approves real work.
+These examples belong to [Record Format](../record-format.md). V2 examples are non-operational historical illustrations; their stored validators and continuation commands are retired. V3 examples describe the supported stored contract and can be validated against its schema. Do not convert or execute the historical examples. Every assessment, result and identity here is illustrative; none approves real work.
 
 | Example | Version | Purpose and scope |
 | --- | --- | --- |

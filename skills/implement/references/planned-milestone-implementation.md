@@ -21,7 +21,7 @@ Start with the owning `change.json`, then the active plan's `Current Handoff Sum
 
 Confirm:
 
-- `record_contract` explicitly selecting `rigorloop-records-v2` or `rigorloop-records-v3`, with current Delivery Review authority;
+- `record_contract` explicitly selecting `rigorloop-records-v3`, with current Delivery Review authority;
 - plan artifact identity and current milestone match;
 - the milestone is the first nonterminal implementation milestone;
 - the contract-selected Delivery Review package and review ID are current;

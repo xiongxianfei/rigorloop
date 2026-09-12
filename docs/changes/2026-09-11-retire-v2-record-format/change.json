@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-review",
-      "role": "review"
+      "id": "codex-implement",
+      "role": "implement"
     },
-    "reason": "Route requests independent M1 Code Review after focused, recording-family, full package and bundle parity checks passed. M2 remains pending until clean M1 review and TG-00 disposition.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Route settles M1 after independent m1-code-review approval and selects M2 under recorded TG-00 operational-dependency disposition. User authorizes remaining implementation, required reviews, final Verify and PR submission.",
+    "stage": "implement",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -52,6 +52,15 @@
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/delivery-review.json",
       "reason": "Independent combined sequencing and verification assessment of the exact registered primary plan against the current approved Design package. Required future disposition and execution gates remain explicit.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-m1-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m1-code-review.json",
+      "reason": "Independent assessment of the exact final M1 engineering subjects and retained compatibility proof. Applies to M1 preparation only; M2 and final closeout remain separately required.",
       "value": "current"
     }
   ],
@@ -123,6 +132,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m1-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -138,7 +151,7 @@
         "CLI-SR-28",
         "WF-SR-18"
       ],
-      "status": "ready"
+      "status": "completed"
     },
     {
       "id": "m2",
@@ -153,7 +166,7 @@
         "RC-SR-21",
         "SYS-SR-04"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }
