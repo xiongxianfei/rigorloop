@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-final-verify",
-      "role": "verify"
+      "id": "independent-reviewer",
+      "role": "review"
     },
-    "reason": "Route closes the initiative after successful current final Verify, approved independent whole-change Code Review and both completed milestones. Reviewed coherent implementation and successful Verify adopt the bounded v2 retirement. Next action is the user-authorized PR handoff; merge and release remain separate.",
-    "stage": "verify",
-    "status": "completed"
+    "reason": "Route hands the exact consolidated five-model package and affected example navigation to independent Design Review. Runtime and approved delivery allocation are unchanged; assess this preservation claim before final whole-change review and renewed Verify.",
+    "stage": "design-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -33,7 +33,7 @@
         "role": "design"
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/evidence.json",
-      "reason": "Bounded Design authorship and observed checks only; no independent Design Review, implementation proof or retirement adoption.",
+      "reason": "Exact authored documentation subjects and recorded structural/prose checks; no implementation or review approval claim.",
       "value": "current"
     },
     {
@@ -83,12 +83,12 @@
     },
     {
       "actor": {
-        "id": "codex-final-verify",
-        "role": "verify"
+        "id": "codex-route",
+        "role": "route"
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/verify-report.json",
-      "reason": "Distinct final assessment of exact delivered subjects, required review/proof chain and current local Git/PR basis.",
-      "value": "current"
+      "reason": "Documentation subjects will change under the authorized consolidation; previous successful Verify remains evidence of its exact earlier basis, not current PR readiness.",
+      "value": "stale"
     }
   ],
   "blockers": [],
@@ -98,35 +98,35 @@
     {
       "id": "record-format",
       "subject": {
-        "identity": "sha256:a44db0abea196809b0779b56a6e38ad35d84a28f93d303b153769644a9f92184",
+        "identity": "sha256:b021a86b073815e934a467ef1588806dbeae47033d0b4d37c8dd480a47b733f4",
         "path": "docs/design/record-format/record-format.md"
       }
     },
     {
       "id": "cli",
       "subject": {
-        "identity": "sha256:528a188ab9fbd0466efdadf646dd2f5239033919ecf77434928995236ec4aded",
+        "identity": "sha256:c4cd40f5523c8d4d79a4e0d62464552be57ecd023a74f8e664f3274f02f91bed",
         "path": "docs/design/cli/cli.md"
       }
     },
     {
       "id": "workflow",
       "subject": {
-        "identity": "sha256:c3c4e7139785bb346b438044006e307345bebe00335a24f568233e2ca4adeb0e",
+        "identity": "sha256:05fb58a5f790399d5396b8cb58b6b207e240b1f9eec019f0601f29ac47d1b468",
         "path": "docs/design/workflow/workflow.md"
       }
     },
     {
       "id": "review-closeout",
       "subject": {
-        "identity": "sha256:05dc2bd0102552d617d6df9262da7a30538fb8c2e559f49c33afc010cf164cff",
+        "identity": "sha256:4ab2aca0b2f7aebc72ef0d2bb975975208f6451fd8ab975ad645b59191bfb251",
         "path": "docs/design/review-closeout/review-closeout.md"
       }
     },
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:aa62db15858ee056309121ecddb6990459ee9436380511ebd08a4b9bc4256107",
+        "identity": "sha256:1a1d75a6a4dab9fca9e73082b8cc78259e2b7be76495aa9f0fc201dd3cff5c10",
         "path": "docs/design/system/system.md"
       }
     }

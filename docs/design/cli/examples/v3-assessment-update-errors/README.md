@@ -1,6 +1,6 @@
 # Assessment update failures
 
-These complete proposed JSON responses illustrate [CLI-SR-27](../../cli.md#version-domains-and-dispatch). They are independent failure scenarios, not a transaction sequence or recorded execution. No v3 executable schema is available. A schema-3 response does not imply a v3 store was found.
+These complete example JSON responses illustrate [CLI-SR-27](../../cli.md#version-domains-and-dispatch). They are independent failure scenarios, not a transaction sequence or recorded execution. The current targeted schema defines these response envelopes. A schema-3 response does not imply a v3 store was found.
 
 Use the complete [Review update request](../v3-review-limitations-update/set-request.json) or [Verify update request](../v3-verify-limitations-update/set-request.json) for the corresponding command, with --root ., --change example-change, --input - and --format json in a synthetic repository. For Review use review set design-review; for Verify use verify set. The request and repeated-digit subject/revision values are illustrative. The valid-request store scenarios reach store dispatch; prior request or selector errors take precedence.
 
@@ -8,10 +8,10 @@ Use the complete [Review update request](../v3-review-limitations-update/set-req
 | --- | --- | --- |
 | review.set: invalid-arguments | Add --unknown-option; reject before reading stdin or the repository. | [review-invalid-arguments-response.json](review-invalid-arguments-response.json) |
 | review.set: missing-store | The selected change store is absent. | [review-missing-store-response.json](review-missing-store-response.json) |
-| review.set: v2-store | The selected existing store is valid v2; this v3-only operation rejects. | [review-v2-store-response.json](review-v2-store-response.json) |
+| review.set: v2-store | The selected store identifies retired v2; the operation rejects without validating its historical assessment. | [review-v2-store-response.json](review-v2-store-response.json) |
 | verify.set: invalid-arguments | Add --unknown-option; reject before reading stdin or the repository. | [verify-invalid-arguments-response.json](verify-invalid-arguments-response.json) |
 | verify.set: missing-store | The selected change store is absent. | [verify-missing-store-response.json](verify-missing-store-response.json) |
-| verify.set: v2-store | The selected existing store is valid v2; this v3-only operation rejects. | [verify-v2-store-response.json](verify-v2-store-response.json) |
+| verify.set: v2-store | The selected store identifies retired v2; the operation rejects without validating its historical assessment. | [verify-v2-store-response.json](verify-v2-store-response.json) |
 | review.set: unknown-store | The stored discriminator is rigorloop-records-unknown. | [unknown-store-response.json](unknown-store-response.json) |
 | verify.set: mixed-store | The manifest selects v3 but a registered record has schema_version 2. | [mixed-store-response.json](mixed-store-response.json) |
 | verify.set: invalid-change-selector | Use verify set with --change ../invalid; omit the invalid change identity and reject before I/O. | [invalid-change-selector-response.json](invalid-change-selector-response.json) |

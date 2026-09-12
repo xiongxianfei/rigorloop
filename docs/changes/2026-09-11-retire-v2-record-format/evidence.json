@@ -1152,6 +1152,74 @@
         }
       ],
       "summary": "Distinct final Verify finds the complete direction, reviewed implementation, retained proof, historical disposition and current branch basis coherent for the assessed local handoff."
+    },
+    {
+      "actor": {
+        "id": "codex-design",
+        "role": "design"
+      },
+      "id": "design-consolidation",
+      "procedure": "Documentation-only consolidation under explicit user authorization. Current v3 record and interface definitions replace obsolete operational v2 prose; stable requirement/decision IDs, independent transport/document versions, exact projection metadata, finding-ID/blocker-origin distinction and historical JSON bytes preserved. Approved delivery allocation, runtime, tests and package sources unchanged. Ran python scripts/validate-boundary-first.py --check and python scripts/validate-documentation-prose.py --mode enforce, each with --path for record-format, cli, workflow, review-closeout and system models: passed; prose errors=0 warnings=0. Ran git diff --check: passed. Checked local Markdown file links and labeled removed historical source paths without presenting broken current dependencies. No new v2 retirement tests or manual substitutes. Independent semantic review and refreshed Verify required before PR reliance.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:c4cd40f5523c8d4d79a4e0d62464552be57ecd023a74f8e664f3274f02f91bed",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:0de076649bc1f0fd1233bd97ec166ac41578b129232b0a19d92b4ad5ae7c09a6",
+          "path": "docs/design/cli/examples/README.md"
+        },
+        {
+          "identity": "sha256:f4bd6a92c07d69f06efc9336eb678e241888d20541fbaf2bd115e1153543a469",
+          "path": "docs/design/cli/examples/v3-assessment-update-errors/README.md"
+        },
+        {
+          "identity": "sha256:fff6581c8d8b9e8f7160faa2845b26719bcf16aea29132c3c0ca62f04a26299a",
+          "path": "docs/design/cli/examples/v3-verify-limitations-update/README.md"
+        },
+        {
+          "identity": "sha256:76e9c57315e9c23adb33caf13bfabc6fa5cbb61e5c162c99d05447f682ccde78",
+          "path": "docs/design/record-format/examples/README.md"
+        },
+        {
+          "identity": "sha256:bc0d43907b010faeab0b40a21319f363bade408a1599b3951b56d1a7d9b0a9f9",
+          "path": "docs/design/record-format/examples/v2-minimal-change/README.md"
+        },
+        {
+          "identity": "sha256:914224534450b9561aa144ce5da1a553c7a50a5845ddc5b41f607481c6fddbfb",
+          "path": "docs/design/record-format/examples/v2-review-reassessment/README.md"
+        },
+        {
+          "identity": "sha256:648ca7b19d32ed0c322d039f3aa410ba35a67b7c5a2257a9cb8ee1495423c554",
+          "path": "docs/design/record-format/examples/v2-review-without-subjects/README.md"
+        },
+        {
+          "identity": "sha256:fa0d4afe58facd732293be98d24afc287a4116f23c0423bf7c8f112a9918830a",
+          "path": "docs/design/record-format/examples/v3-complete-store/README.md"
+        },
+        {
+          "identity": "sha256:50c9491cf19f694bb023532b6ad392cd16baea4fe199d6089edd8d610351233a",
+          "path": "docs/design/record-format/examples/v3-finding-correction/README.md"
+        },
+        {
+          "identity": "sha256:b021a86b073815e934a467ef1588806dbeae47033d0b4d37c8dd480a47b733f4",
+          "path": "docs/design/record-format/record-format.md"
+        },
+        {
+          "identity": "sha256:4ab2aca0b2f7aebc72ef0d2bb975975208f6451fd8ab975ad645b59191bfb251",
+          "path": "docs/design/review-closeout/review-closeout.md"
+        },
+        {
+          "identity": "sha256:1a1d75a6a4dab9fca9e73082b8cc78259e2b7be76495aa9f0fc201dd3cff5c10",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:05fb58a5f790399d5396b8cb58b6b207e240b1f9eec019f0601f29ac47d1b468",
+          "path": "docs/design/workflow/workflow.md"
+        }
+      ],
+      "summary": "Consolidated current v3 Designs and example navigation; structural and prose checks pass."
     }
   ],
   "schema_version": 3
