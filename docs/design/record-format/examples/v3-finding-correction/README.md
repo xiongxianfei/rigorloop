@@ -1,6 +1,6 @@
 # Correct a finding’s current account
 
-[Stored review](stored-review.json) is the initial complete proposed v3 record. [Updated review](updated-review.json) is the complete record after an explicit finding correction. Under [RF-SR-13](../../record-format.md#v3-finding-identity-and-correction), finding-1 keeps its ID while its evidence and required outcome become more precise. The review judgment, explanation, other finding fields and applicability remain unchanged. Neither record contains origin or an embedded supporting judgment.
+[Stored review](stored-review.json) is the initial complete example v3 record. [Updated review](updated-review.json) is the complete record after an explicit finding correction. Under [RF-SR-13](../../record-format.md#v3-finding-identity-and-correction), finding-1 keeps its ID while its evidence and required outcome become more precise. The review judgment, explanation, other finding fields and applicability remain unchanged. Neither record contains origin or an embedded supporting judgment.
 
 The actor has narrowed the finding to an example defect; this is an authored correction, not automatic extraction or proof that the implementation works. The responsible assessor must decide whether the retained assessment remains usable. This synthetic scenario assumes the clarified concern still supports changes-requested. No original finding snapshot is required in the actual store; these two files explain the operation for readers and are not a proposed history mechanism.
 

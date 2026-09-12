@@ -39,7 +39,7 @@ Return `not-ready` when any required class is missing, stale, conflicting, faili
 
 Return `branch-ready` for Git/PR readiness only when every applicable prerequisite and evidence class passes for the exact target. For non-Git governed closeout, record successful Verify only for its explicitly assessed scope, without a branch-readiness claim. Otherwise return `not-ready`; do not use a partial or “mostly ready” final verdict.
 
-For a Git/PR readiness claim, record the normalized `verification_basis` owned by `SKILL.md` in the applicable result, v3 Verify verification_basis object, or the explicitly authored normalized block in an existing v2 Verify body. The v3 object is closed and conditional; do not infer its values from prose or make Git identity mandatory for non-Git closeout. Bind it to the exact evidence target and current base/head relationship. Historical prose or command output that lacks the complete normalized basis remains useful context but cannot establish current branch readiness.
+For a Git/PR readiness claim, record the normalized `verification_basis` owned by `SKILL.md` in the applicable result or v3 Verify verification_basis object. The v3 object is closed and conditional; do not infer its values from prose or make Git identity mandatory for non-Git closeout. Bind it to the exact evidence target and current base/head relationship. Historical prose or command output that lacks the complete normalized basis remains useful context but cannot establish current branch readiness.
 
 In `isolated` mode, report the assessment and stop. Do not write workflow state or invoke `pr`.
 

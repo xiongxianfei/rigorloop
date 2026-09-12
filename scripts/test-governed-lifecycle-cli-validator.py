@@ -28,7 +28,7 @@ class CurrentRecordDiscoveryTests(unittest.TestCase):
         archive = self.root / "docs/changes/old/change.yaml"
         archive.parent.mkdir()
         archive.write_bytes(b"malformed archived bytes\xff")
-        fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())["change"]
+        fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v3/records.json").read_text())["change"]
         fixture.update(records=[], applicability=[], blockers=[])
         target = self.root / "docs/changes/example/change.json"
         target.parent.mkdir()

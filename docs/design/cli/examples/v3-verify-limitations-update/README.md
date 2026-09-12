@@ -1,6 +1,6 @@
 # Proposed v3 Verify limitations update
 
-This scenario applies [CLI-SR-24–27](../../cli.md#requirements) to the [stored Verify before](../../../record-format/examples/v3-verify-limitations-update/before.json) and [after](../../../record-format/examples/v3-verify-limitations-update/after.json). These complete proposed records contain an optional Git basis but no real proof of branch readiness. The edit clarifies the existing synthetic limitation; it does not add missing proof or change the basis.
+This scenario applies [CLI-SR-24–27](../../cli.md#requirements) to the [stored Verify before](../../../record-format/examples/v3-verify-limitations-update/before.json) and [after](../../../record-format/examples/v3-verify-limitations-update/after.json). These complete example records contain an optional Git basis but no real proof of branch readiness. The edit clarifies the existing synthetic limitation; it does not add missing proof or change the basis.
 
 The omitted v3 store registers `docs/changes/example-change/verify-report.json` at synthetic revision `b`. Its subject matches the declared `a` identity, and its existing applicability equals the actor/value/reason shown in the response. The update preserves that declaration.
 

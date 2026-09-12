@@ -1,8 +1,8 @@
 {
   "change": {
-    "schema_version": 2,
+    "schema_version": 3,
     "change_id": "example",
-    "contract": "rigorloop-records-v2",
+    "contract": "rigorloop-records-v3",
     "proposal": {
       "path": "docs/proposals/example.md",
       "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -136,7 +136,7 @@
     ]
   },
   "review": {
-    "schema_version": 2,
+    "schema_version": 3,
     "change_id": "example",
     "id": "design-review",
     "target": "design",
@@ -178,29 +178,18 @@
         "evidence": "Observed gap",
         "required_outcome": "Correct the gap",
         "state": "open",
-        "resolution": null,
-        "origin": {
-          "reporter": {
-            "id": "reviewer",
-            "role": "review"
-          },
-          "subjects": [
-            {
-              "path": "docs/design/workflow.md",
-              "identity": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            }
-          ],
-          "evidence": "Observed gap",
-          "required_outcome": "Correct the gap",
-          "rationale": "Synthetic retained storage-safety scenario.",
-          "supporting_judgment": null
-        }
+        "resolution": null
       }
     ],
-    "body": "Synthetic storage-safety reasoning.\n"
+    "summary": "Synthetic storage-safety reasoning.\n",
+    "assessment_scope": "Synthetic storage-safety assessment.",
+    "rationale": [
+      "The supplied fixture demonstrates the assessed storage boundary."
+    ],
+    "limitations": []
   },
   "evidence": {
-    "schema_version": 2,
+    "schema_version": 3,
     "change_id": "example",
     "checks": [
       {
@@ -222,7 +211,7 @@
     ]
   },
   "decisions": {
-    "schema_version": 2,
+    "schema_version": 3,
     "change_id": "example",
     "decisions": [
       {
@@ -249,7 +238,7 @@
     "body": "Synthetic storage-safety reasoning.\n"
   },
   "verify": {
-    "schema_version": 2,
+    "schema_version": 3,
     "change_id": "example",
     "verifier": {
       "id": "verifier",
@@ -274,18 +263,26 @@
       }
     ],
     "outcome": "success",
-    "body": "Synthetic storage-safety reasoning.\n"
+    "summary": "Synthetic storage-safety reasoning.\n",
+    "assessment_scope": "Synthetic storage-safety assessment.",
+    "rationale": [
+      "The supplied fixture demonstrates the assessed storage boundary."
+    ],
+    "limitations": [],
+    "changes": [
+      "Recorded the assessed storage correction."
+    ]
   },
   "request": {
     "schema_version": 2,
     "change_id": "example",
-    "contract": "rigorloop-records-v2",
+    "contract": "rigorloop-records-v3",
     "expected_revision": null,
     "writes": [
       {
         "path": "docs/changes/example/change.json",
         "expected_identity": null,
-        "content": "{\n  \"schema_version\": 2,\n  \"change_id\": \"example\",\n  \"contract\": \"rigorloop-records-v2\",\n  \"proposal\": {\n    \"path\": \"docs/proposals/example.md\",\n    \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n  },\n  \"models\": [\n    {\n      \"id\": \"workflow\",\n      \"subject\": {\n        \"path\": \"docs/design/workflow.md\",\n        \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n      }\n    }\n  ],\n  \"activity\": {\n    \"stage\": \"design\",\n    \"status\": \"blocked\",\n    \"owner\": {\n      \"id\": \"author\",\n      \"role\": \"design\"\n    },\n    \"reason\": \"Correction\"\n  },\n  \"plan\": null,\n  \"work\": [\n    {\n      \"id\": \"m1\",\n      \"status\": \"pending\",\n      \"owner\": {\n        \"id\": \"author\",\n        \"role\": \"design\"\n      },\n      \"requirement_refs\": [\n        \"WF-SR-02\"\n      ]\n    }\n  ],\n  \"records\": [],\n  \"applicability\": [],\n  \"blockers\": [\n    {\n      \"id\": \"finding-one\",\n      \"reporter\": {\n        \"id\": \"reviewer\",\n        \"role\": \"review\"\n      },\n      \"owner\": {\n        \"id\": \"author\",\n        \"role\": \"design\"\n      },\n      \"subjects\": [\n        {\n          \"path\": \"docs/design/workflow.md\",\n          \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n        }\n      ],\n      \"evidence\": \"Observed gap\",\n      \"required_outcome\": \"Correct the gap\",\n      \"state\": \"open\",\n      \"resolution\": null,\n      \"origin\": {\n        \"reporter\": {\n          \"id\": \"reviewer\",\n          \"role\": \"review\"\n        },\n        \"subjects\": [\n          {\n            \"path\": \"docs/design/workflow.md\",\n            \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n          }\n        ],\n        \"evidence\": \"Observed gap\",\n        \"required_outcome\": \"Correct the gap\",\n        \"rationale\": \"Synthetic retained storage-safety scenario.\",\n        \"supporting_judgment\": null\n      }\n    }\n  ]\n}\n"
+        "content": "{\n  \"schema_version\": 3,\n  \"change_id\": \"example\",\n  \"contract\": \"rigorloop-records-v3\",\n  \"proposal\": {\n    \"path\": \"docs/proposals/example.md\",\n    \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n  },\n  \"models\": [\n    {\n      \"id\": \"workflow\",\n      \"subject\": {\n        \"path\": \"docs/design/workflow.md\",\n        \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n      }\n    }\n  ],\n  \"activity\": {\n    \"stage\": \"design\",\n    \"status\": \"blocked\",\n    \"owner\": {\n      \"id\": \"author\",\n      \"role\": \"design\"\n    },\n    \"reason\": \"Correction\"\n  },\n  \"plan\": null,\n  \"work\": [\n    {\n      \"id\": \"m1\",\n      \"status\": \"pending\",\n      \"owner\": {\n        \"id\": \"author\",\n        \"role\": \"design\"\n      },\n      \"requirement_refs\": [\n        \"WF-SR-02\"\n      ]\n    }\n  ],\n  \"records\": [],\n  \"applicability\": [],\n  \"blockers\": [\n    {\n      \"id\": \"finding-one\",\n      \"reporter\": {\n        \"id\": \"reviewer\",\n        \"role\": \"review\"\n      },\n      \"owner\": {\n        \"id\": \"author\",\n        \"role\": \"design\"\n      },\n      \"subjects\": [\n        {\n          \"path\": \"docs/design/workflow.md\",\n          \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n        }\n      ],\n      \"evidence\": \"Observed gap\",\n      \"required_outcome\": \"Correct the gap\",\n      \"state\": \"open\",\n      \"resolution\": null,\n      \"origin\": {\n        \"reporter\": {\n          \"id\": \"reviewer\",\n          \"role\": \"review\"\n        },\n        \"subjects\": [\n          {\n            \"path\": \"docs/design/workflow.md\",\n            \"identity\": \"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n          }\n        ],\n        \"evidence\": \"Observed gap\",\n        \"required_outcome\": \"Correct the gap\",\n        \"rationale\": \"Synthetic retained storage-safety scenario.\",\n        \"supporting_judgment\": null\n      }\n    }\n  ]\n}\n"
       }
     ],
     "reads": [

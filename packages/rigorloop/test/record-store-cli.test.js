@@ -1,4 +1,3 @@
-import {historicalV2} from './helpers/historical-v2.mjs';
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync, unlinkSync, symlinkSync, linkSync, renameSync } from "node:fs";
@@ -12,7 +11,7 @@ import { RecordFiles } from "../dist/lib/record-store-files.js";
 import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
 
-const fixture=()=>JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v2/storage-safety.json",import.meta.url),"utf8"));
+const fixture=()=>JSON.parse(readFileSync(new URL("../../../tests/fixtures/rigorloop-records-v3/storage-safety.json",import.meta.url),"utf8"));
 const manifest="docs/changes/example/change.json";
 for (const level of ["off","unknown_value"]) for (const extra of [["--no-file-log"],["--console-log-level","unknown_value"],["--file-log-level","off"]]) test(`ER-M4-004 public recorder rejects historical logging flags ${extra[0]} with environment ${level}`,t=>{
   const root=setup(t);
@@ -47,7 +46,7 @@ function setup(t) {
 function request() { const r=fixture().request; r.reads=[]; return r; }
 function args(root,op,extra=[]) { return [op,"--root",root,"--change","example","--format","json",...(["record","check"].includes(op)?["--input","-"]:[]),...extra]; }
 function run(root,op,input,options={},extra=[]) {
-  const execution=input?.contract==="rigorloop-records-v2"&&input.expected_revision===null?historicalV2(root,op,input,options):executeRecordStoreCli(args(root,op,extra),{...options,input:input===undefined?undefined:JSON.stringify(input)+"\n"});
+  const execution=executeRecordStoreCli(args(root,op,extra),{...options,input:input===undefined?undefined:JSON.stringify(input)+"\n"});
   validateAdvancedResult(execution.result);
   return execution;
 }
@@ -237,7 +236,7 @@ test("TG-04 committed transaction refuses rollback and permits cleanup",t=>{
 
 test("TG-03 real public dispatcher supports text and JSON recording",t=>{
   const root=setup(t), launcher=new URL("../dist/bin/rigorloop.js",import.meta.url).pathname;
-  run(root,"record",request()); // Existing v2 fixture, then real public continuation.
+  run(root,"record",request()); // Supported fixture, then real public update.
   for (const format of ["text","json"]) for (const op of ["inspect","check","record"]) {
     const input=op==="inspect"?undefined:JSON.stringify(existsSync(join(root,manifest))?update(root):request())+"\n";
     const argv=args(root,op); argv[argv.indexOf("json")]=format;
@@ -289,7 +288,7 @@ test("TG-03 missing registered records are visible and repairable; registry remo
 });
 
 test("TG-04 competing subprocess is busy; stale contender cannot overwrite the winner",t=>{
-  const root=setup(t), r=request(), launcher=new URL("./helpers/historical-v2-launcher.mjs",import.meta.url).pathname;
+  const root=setup(t), r=request(), launcher=new URL("./helpers/record-store-launcher.mjs",import.meta.url).pathname;
   let competitor;
   const result=run(root,"record",r,{fault:point=>{
     if(point==="after-preparation")competitor=spawnSync(process.execPath,[launcher,"record-store",...args(root,"record")],{input:JSON.stringify(r)+"\n",encoding:"utf8"});
@@ -312,7 +311,7 @@ test("TG-04 drift after replacement restores before bytes and leaves decision ba
 });
 
 test("TG-04 historical creation crash and public recover subprocesses preserve complete/restore in both formats",t=>{
-  const launcher=new URL("./helpers/historical-v2-launcher.mjs",import.meta.url).pathname;
+  const launcher=new URL("./helpers/record-store-launcher.mjs",import.meta.url).pathname;
   for(const format of ["text","json"]) for(const action of ["complete","restore"]) {
     const root=setup(t), r=request();
     const child=spawnSync(process.execPath,[launcher,"record-store",...args(root,"record")],{input:JSON.stringify(r)+"\n",encoding:"utf8",env:{...process.env,RIGORLOOP_TEST_RECORD_FAULT:"after-replace:0"}});
@@ -370,7 +369,7 @@ test("TG-04 multi-record partial publication restores exact prior bytes",t=>{
 });
 
 test("TG-03 public rejection is bounded and ordinary symlink launcher retains existing behavior",t=>{
-  const root=setup(t), launcher=new URL("./helpers/historical-v2-launcher.mjs",import.meta.url).pathname;
+  const root=setup(t), launcher=new URL("./helpers/record-store-launcher.mjs",import.meta.url).pathname;
   for(const argv of [["unknown_value","--format","json"],["inspect","--change","../sensitive","--format","json"],["inspect","--root",root,"--change","example","--input","secret","--format","json"]]) {
     const child=spawnSync(process.execPath,[launcher,"record-store",...argv],{encoding:"utf8"});
     assert.equal(child.status,2); const result=JSON.parse(child.stdout); validateAdvancedResult(result);

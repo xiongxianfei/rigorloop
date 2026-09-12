@@ -1,39 +1,10 @@
 import { isDeepStrictEqual } from "node:util";
-import { parseDocument } from "yaml";
+import {MIB,fail,plain,jsonDomain,decode,strictJSON,parseRequestJSON} from "./record-json.js";
 
 
 // Shared mechanics; each selected schema retains its own closed contract.
 export function createRecordFormat(schemaDocument, {version, contract}) {
 const KINDS = new Set(["change", "review", "evidence", "decisions", "verify", "request"]);
-const MIB = 1024 * 1024;
-const fail = (message) => {
-  const code = /limit/.test(message) ? "limit-exceeded" : /unsafe-path|cross-change|unsupported record path/.test(message) ? "unsafe-path"
-    : message === "unsupported-contract" ? "unsupported-contract" : message === "broken-reference" ? "broken-reference" : "invalid-input";
-  throw Object.assign(new Error(`record-store: ${message}`), {recordStoreCode:code});
-};
-const plain = v => v !== null && typeof v === "object" && !Array.isArray(v) && [Object.prototype, null].includes(Object.getPrototypeOf(v));
-
-function unicode(text) {
-  for (let i = 0; i < text.length; i++) {
-    const c = text.charCodeAt(i);
-    if (c >= 0xd800 && c <= 0xdbff) {
-      const next = text.charCodeAt(++i);
-      if (!(next >= 0xdc00 && next <= 0xdfff)) fail("invalid Unicode");
-    } else if (c >= 0xdc00 && c <= 0xdfff) fail("invalid Unicode");
-  }
-}
-
-function jsonDomain(value, depth = 0, ancestors = new Set()) {
-  if (value === null || typeof value === "boolean") return;
-  if (typeof value === "string") return unicode(value);
-  if (typeof value === "number") { if (!Number.isFinite(value)) fail("nonfinite number"); return; }
-  if ((!plain(value) && !Array.isArray(value)) || ancestors.has(value)) fail("invalid JSON value");
-  if (depth >= 32) fail("nesting limit exceeded");
-  ancestors.add(value);
-  for (const [key, child] of Object.entries(value)) { unicode(key); jsonDomain(child, depth + 1, ancestors); }
-  ancestors.delete(value);
-}
-
 function safePath(path) {
   if (typeof path !== "string" || !/^[\x20-\x7e]+$/.test(path) || path.length > 1024 || path.includes("\\") || path.startsWith("/") || /^[A-Za-z]:/.test(path) || path.split("/").some(p => !p || p === "." || p === "..")) fail("unsafe-path");
 }
@@ -64,7 +35,7 @@ function validate(schema, value) {
     for (const [key, child] of Object.entries(schema.properties)) if (Object.hasOwn(value,key)) validate(child, value[key]);
   }
   if (schema.type === "array") {
-    if(version===3 && (!Array.isArray(value) || (schema.minItems!==undefined && value.length<schema.minItems))) fail("invalid array shape");
+    if(!Array.isArray(value) || (schema.minItems!==undefined && value.length<schema.minItems)) fail("invalid array shape");
     if (!Array.isArray(value) || (schema.minItems !== undefined && value.length < schema.minItems) || (schema.maxItems !== undefined && value.length > schema.maxItems)) fail("invalid array limit");
     const seen = new Set();
     for (const child of value) {
@@ -125,36 +96,6 @@ function validateRecord(kind, value) {
   const ids = kind === "change" ? [...value.models, ...value.work, ...value.blockers].map(x=>x.id)
     : kind === "review" ? [value.id, ...value.findings.map(x=>x.id)] : [];
   if (new Set(ids).size !== ids.length) fail("ambiguous referenceable identity");
-  return value;
-}
-
-function decode(input, limit) {
-  if (!(typeof input === "string" || Buffer.isBuffer(input))) fail("expected UTF-8 text");
-  if (Buffer.byteLength(input) > limit) fail("byte limit exceeded");
-  let text;
-  try { text = typeof input === "string" ? input : new TextDecoder("utf-8", {fatal:true, ignoreBOM:true}).decode(input); }
-  catch { fail("invalid UTF-8"); }
-  unicode(text);
-  if (text.startsWith("\ufeff") || text.includes("\r") || !text.endsWith("\n")) fail("invalid record encoding");
-  return text;
-}
-
-function strictJSON(text) {
-  // Bound nesting before either parser sees the payload, ignoring quoted delimiters.
-  let depth=0, quoted=false, escaped=false;
-  for (const c of text) {
-    if (quoted) { if (escaped) escaped=false; else if (c === "\\") escaped=true; else if (c === '"') quoted=false; }
-    else if (c === '"') quoted=true;
-    else if (c === "{" || c === "[") { if (++depth > 32) fail("nesting limit exceeded"); }
-    else if (c === "}" || c === "]") depth--;
-  }
-  let value;
-  try {
-    value = JSON.parse(text); // YAML extensions are never admitted.
-    const document = parseDocument(text, {uniqueKeys:true, strict:true, prettyErrors:false});
-    if (document.errors.length) fail("duplicate or invalid JSON keys");
-  } catch { fail("invalid JSON or duplicate keys"); }
-  jsonDomain(value);
   return value;
 }
 
@@ -244,16 +185,11 @@ function preserve(changeId, beforeFiles, afterFiles) {
       for(const concern of data[collection]??[]) {
         const retained=next[collection]?.find(x=>x.id===concern.id);
         if(!retained) fail("existing concern identity must be preserved");
-        if((version===2 || collection==="blockers") && !isDeepStrictEqual(concern.origin,retained.origin)) fail("concern origin must be preserved");
+        if(collection==="blockers" && !isDeepStrictEqual(concern.origin,retained.origin)) fail("concern origin must be preserved");
       }
     }
   }
   return after;
-}
-
-// Shared strict, bounded decoding before advanced request version dispatch.
-function parseRequestJSON(input) {
-  return strictJSON(decode(input,8*MIB));
 }
 
 return {parseRecord,validateRecord,validateSet,preserve,creation,pathKind,validateRequest,parseRequestJSON};

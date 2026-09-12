@@ -12,8 +12,9 @@ function rootFor(t){const root=mkdtempSync(join(tmpdir(),'v3-adoption-'));t.afte
 function call(root,words,input,expected=0){const r=spawnSync(process.execPath,[cli,...words,'--root',root,'--change',changeId,'--format','json',...(input?['--input','-']:[])],{input:input?encode(input):undefined,encoding:'utf8',maxBuffer:16*1024*1024});assert.equal(r.status,expected,r.stdout+r.stderr);return JSON.parse(r.stdout);}
 const createValues=()=>Object.fromEntries(Object.entries(JSON.parse(fixture()[manifest])).filter(([k])=>!['schema_version','contract','change_id','records','applicability'].includes(k)));
 const envelope=(operation,revision=null,contract='rigorloop-records-v3')=>({schema_version:1,interface:'targeted-recording-v1',contract,change_id:changeId,expected_revision:revision,reads:[],operation});
-test('TG-07 public creation selects v3 and new v2 creation rejects without changing an absent store',t=>{
- for(const contract of ['rigorloop-records-v2','rigorloop-records-v3']){const root=rootFor(t),request=envelope({op:'change.create',target:{},values:createValues()},null,contract);const r=call(root,['change','create'],request,contract.endsWith('v2')?2:0);if(contract.endsWith('v2')){assert.equal(r.errors[0].code,'unsupported-contract');assert.equal(existsSync(join(root,manifest)),false);}else{assert.equal(r.schema_version,3);assert.equal(r.status,'saved');assert.equal(call(root,['status']).record_contract,contract);}}
+test('TG-07 public creation selects v3',t=>{
+ const contract='rigorloop-records-v3',root=rootFor(t),request=envelope({op:'change.create',target:{},values:createValues()},null,contract);
+ const r=call(root,['change','create'],request);assert.equal(r.schema_version,3);assert.equal(r.status,'saved');assert.equal(call(root,['status']).record_contract,contract);
 });
 test('TG-FINAL-01 public advanced v3 creation and named updates share the adopted candidate boundary',t=>{
  const root=rootFor(t),files=fixture(),advanced={schema_version:2,contract:'rigorloop-records-v3',change_id:changeId,expected_revision:null,reads:[],writes:Object.entries(files).map(([path,content])=>({path,content,expected_identity:null}))};
@@ -22,10 +23,6 @@ test('TG-FINAL-01 public advanced v3 creation and named updates share the adopte
  const selected=call(root,['verify','show','--fields','limitations']);assert.deepEqual(selected.data.items[0].fields,op.values);assert.equal(selected.scope.complete,true);assert.ok(selected.scope.omitted_fields.length);assert.deepEqual(selected.data.items[0].applicability,before.data.items[0].applicability);
  const stale=call(root,['verify','set'],envelope(op,before.revision),3);assert.equal(stale.status,'conflict');assert.equal(call(root,['verify','set'],envelope(op,changed.revision)).status,'unchanged');
  const validation=spawnSync(process.execPath,[new URL('../../../scripts/validate-record-store.mjs',import.meta.url).pathname,join(root,manifest)],{encoding:'utf8'});assert.equal(validation.status,0,validation.stderr);
-});
-test('TG-07 public advanced v2 creation is rejected while its contract stays available for existing stores',t=>{
- const root=rootFor(t),change=JSON.parse(fixture()[manifest]);change.schema_version=2;change.contract='rigorloop-records-v2';change.records=[];change.applicability=[];
- const r=call(root,['record-store','record'],{schema_version:2,contract:'rigorloop-records-v2',change_id:changeId,expected_revision:null,reads:[],writes:[{path:manifest,expected_identity:null,content:encode(change)}]},2);assert.equal(r.errors[0].code,'unsupported-contract');assert.equal(existsSync(join(root,manifest)),false);
 });
 
 for(const phase of ['after-preparation','after-replace:0','before-commit','after-commit'])for(const action of ['restore','complete'])test(`TG-06 v3 targeted batch ${phase} recovery ${action} retains explicit assessment values`,t=>{

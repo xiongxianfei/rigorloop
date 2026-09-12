@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate current v2 record sets and independent validation-cache measurements."""
+"""Validate current v3 record sets and independent validation-cache measurements."""
 from __future__ import annotations
 import json
 import re
@@ -361,7 +361,7 @@ def validate_file(path: Path) -> list[str]:
         )
     except (OSError, subprocess.TimeoutExpired):
         return ["current record validator unavailable"]
-    return [] if result.returncode == 0 else ["invalid or unsupported record set; supported contracts are rigorloop-records-v2 and rigorloop-records-v3"]
+    return [] if result.returncode == 0 else ["invalid or unsupported record set; supported contract is rigorloop-records-v3"]
 
 
 def main(argv: list[str]) -> int:

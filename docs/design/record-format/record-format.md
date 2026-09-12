@@ -2,13 +2,13 @@
 
 Model validation contract: model-document-v1
 
-The [structured-assessment amendment](#structured-assessment-explanations) selects the prospective v3 extension under its own adoption boundary. Existing v2 definitions below remain the exact continuation contract; they are not silently reinterpreted as v3.
+The current stored contract is `rigorloop-records-v3`. [Retirement provenance](#v2-stored-format-retirement) records the support boundary and owning change; historical decisions do not supply an alternate operational profile.
 
 ## Introduction and Goals
 
 Define the durable representation of RigorLoop decisions, findings, evidence and final explanations. A new actor can understand current records and retained concern origin without prior chat, Git history or review archives.
 
-The model ID is `record-format`. Its selected format is **RigorLoop Record Format v2** (`rigorloop-records-v2`). This document is the authoritative stored-format design, combining requirements, data structure, invariants and compatibility decisions. The document-validation marker above is independent of the stored version.
+The model ID is `record-format`. Its selected format is **RigorLoop Record Format v3** (`rigorloop-records-v3`). This document is the authoritative stored-format design, combining requirements, data structure, invariants and compatibility decisions. The document-validation marker above is independent of the stored version.
 
 | Reader question | Definition |
 | --- | --- |
@@ -33,11 +33,11 @@ In scope are change, review, evidence, material-decisions and success-only Verif
 
 Preserve historical record bytes and recorded identities as archival evidence. Closed objects and vocabularies reject unknown members and values; missing decisions are not filled by defaults. Actor labels remain attribution. Current workflow contradictions and external subject drift are distinct from malformed structure.
 
-V2 is the retained operational format. The retirement amendment selects a v2-only runtime after coordinated removal; drafting this model does not itself remove compatibility code or activate that boundary.
+V3 is the sole operational stored format. Historical v2 records remain archival evidence; their former continuation contract is not a current reader, writer or recovery interface.
 
 ## Solution Strategy
 
-Use one explicit version per change and its registered records. Separate current concern fields and disposition from immutable origin. Store narrative in explicit fields within the same JSON object, and retain exact subjects and explicit record-level applicability. Structural validation admits incomplete or contradictory workflow claims without endorsing them.
+Use one explicit version per change and its registered records. Review findings retain immutable IDs and explicitly editable current fields; change-level blockers additionally retain immutable origin. Store narrative in explicit fields within the same JSON object, and retain exact subjects and explicit record-level applicability. Structural validation admits incomplete or contradictory workflow claims without endorsing them.
 
 The CLI constructs registry and serialization mechanically from explicit operations. This model owns what must survive those operations, independently of which supported write path performs them.
 
@@ -45,19 +45,20 @@ The CLI constructs registry and serialization mechanically from explicit operati
 
 | ID | Required behavior |
 | --- | --- |
-| RF-SR-01 | Every stored change MUST identify its contract and every record its schema version. V2 records MUST be plain JSON objects at the listed .json paths, with narrative inside explicit string fields and no front matter or trailing Markdown. The exact closed record/type definitions below MUST govern all supported writers and readers; unknown fields, vocabularies, versions and mixed-version stores MUST reject structurally. |
-| RF-SR-02 | The manifest MUST enumerate all supporting authoritative records with matching kind/change identity and exactly one explicit record-level applicability declaration each. Every v2 EntryRef MUST select exactly one admissible object using the field-specific resolution table and disjoint per-file referenceable IDs; missing, unsupported or ambiguous targets MUST reject in the complete candidate; extra physical files MUST NOT become authority through discovery. |
+| RF-SR-01 | Every stored change MUST identify its contract and every record its schema version. V3 records MUST be plain JSON objects at the listed .json paths, with narrative inside explicit string fields and no front matter or trailing Markdown. The exact closed record/type definitions below MUST govern all supported writers and readers; unknown fields, vocabularies, versions and mixed-version stores MUST reject structurally. |
+| RF-SR-02 | The manifest MUST enumerate all supporting authoritative records with matching kind/change identity and exactly one explicit record-level applicability declaration each. Every EntryRef MUST select exactly one admissible object using the field-specific resolution table and disjoint per-file referenceable IDs; missing, unsupported or ambiguous targets MUST reject in the complete candidate; extra physical files MUST NOT become authority through discovery. |
 | RF-SR-03 | Records MUST preserve actor-supplied subjects, provenance, decisions and narrative without inferring approval, applicability or completion. Finding and blocker identity and disposition representation MUST retain the distinction between reporter and correction owner. |
-| RF-SR-04 | Each v2 concern MUST retain its complete immutable Origin for its lifetime, including after disposition. Current judgments or concern fields MUST NOT rewrite that basis; supporting judgment MUST be explicitly absent or embedded with its relevant rationale and provenance. |
+| RF-SR-04 | Each change-level blocker MUST retain its complete immutable Origin for its lifetime, including after disposition. Current judgments or concern fields MUST NOT rewrite that basis; supporting judgment MUST be explicitly absent or embedded with its relevant rationale and provenance. |
 | RF-SR-05 | Structural validity MUST remain separate from workflow adequacy. A completed activity, failed evidence or changed external subject MUST NOT alone invalidate a correction candidate; malformed internal references still reject. |
-| RF-SR-06 | The sole supported runtime stored contract after retirement MUST be rigorloop-records-v2. The retired set below MUST NOT remain available for creation, inspection, validation, mutation, progression or recovery through a compatibility handler. Historical record bytes and identities MUST remain archival evidence without conversion, inferred origin or renewed authority. CLI owns explicit rejection and current discovery mechanics. |
-| RF-SR-07 | Selected records MUST retain sufficient structured and narrative content for normal targeted reads, including concern origin, shared material-decision explanation and the complete success-only Verify report. Partial query projections MUST NOT alter the stored record. |
-| RF-SR-08 | Construction, advanced replacement and v2 recovery MUST share these structural and preservation obligations. Retirement MUST align schemas, validators, CLI, templates, skills and adapters while preserving v2 invariants. Document validation MUST NOT imply activation or require legacy stored-format support. |
-| RF-SR-09 | After coordinated adoption, new stores MUST use rigorloop-records-v3 with schema_version 3 throughout the change and registered records. V3 MUST replace Review/Verify body with the closed explanation fields defined below, preserving other assessment facts and applying the v3 finding identity rules below. Missing required values, unknown fields, body, dual representations and mixed-version stores MUST reject. |
+| RF-SR-06 | The sole supported runtime stored contract MUST be rigorloop-records-v3. The retired set below MUST NOT remain available for creation, inspection, validation, mutation, progression or recovery through a compatibility handler. Historical record bytes and identities MUST remain archival evidence without conversion, inferred origin or renewed authority. CLI owns explicit rejection and current discovery mechanics. |
+| RF-SR-07 | Selected records MUST retain sufficient structured and narrative content for normal targeted reads, including blocker origin, shared material-decision explanation and the complete success-only Verify report. Partial query projections MUST NOT alter the stored record. |
+| RF-SR-08 | Construction, advanced replacement and v3 recovery MUST share these structural and preservation obligations. Retirement MUST align schemas, validators, CLI, templates, skills and adapters while preserving v3 invariants. Document validation MUST NOT imply activation or require legacy stored-format support. |
+| RF-SR-09 | New stores MUST use rigorloop-records-v3 with schema_version 3 throughout the change and registered records. Review and Verify MUST use the closed explanation fields defined below, preserving other assessment facts and applying the v3 finding identity rules below. Missing required values, unknown fields, body, dual representations and mixed-version stores MUST reject. |
 | RF-SR-10 | V3 explanation values MUST retain actor-supplied meaning, collection order and multiline content. Whole-field explanation updates MUST preserve omitted values and complete findings; neither rendering nor a projection may become another authoritative report. |
 | RF-SR-11 | V3 Verify MAY contain the closed conditional verification_basis object below. Its necessity for reliance is owned by Review and Closeout RC-SR-20; absence is structurally valid, null or partial objects are not. It MUST NOT become a universal Git requirement or be inferred from prose. |
-| RF-SR-12 | Adoption MUST preserve existing v2 stores and their exact contract, including required continuation and recovery, without automatic conversion. New v2 creation is withdrawn only at coordinated v3 adoption. Removal of existing-v2 support requires a separately reviewed owner disposition; this amendment does not retire it. |
-| RF-SR-13 | V3 Review findings MUST use the closed current-account shape and ID-only immutability defined below. Explicit corrections may edit all non-ID fields; removal/renaming, origin snapshots and implicit edits through review recording MUST reject. V2 concerns and v3 blocker origins remain unchanged. |
+| RF-SR-12 | Historical stores MUST remain unchanged without automatic conversion or operational continuation. Required local work and recovery dependencies MUST be explicitly dispositioned before support removal; RF-SR-14 owns the resulting v3-only boundary. |
+| RF-SR-13 | V3 Review findings MUST use the closed current-account shape and ID-only immutability defined below. Explicit corrections may edit all non-ID fields; removal/renaming, origin snapshots and implicit edits through review recording MUST reject. Change-level blocker origins remain immutable; historical v2 records remain unchanged. |
+| RF-SR-14 | After Workflow's explicit retirement disposition and coordinated adoption, operational storage MUST accept only rigorloop-records-v3. V2 records MUST retain their historical bytes and meaning without a reader, writer, validator, recovery path or automatic conversion. Shared definitions and independently versioned interfaces MUST remain available to supported consumers. |
 
 These requirements realize Workflow's actor-owned recording and retained-basis obligations (WF-SR-02/03/05/06/10/12/13/15). CLI-SR-02/03/09/18/21 consume them for construction, inspection and safe publication. Workflow retains decision ownership; RF-SR identifiers own representation and preservation.
 
@@ -65,16 +66,16 @@ These requirements realize Workflow's actor-owned recording and retained-basis o
 
 ### Record model
 
-**RigorLoop Record Format v2** is the selected stored-record design. Its complete record layouts are defined below, with `contract: rigorloop-records-v2` in change.json and `schema_version: 2` in every record. This is a data-format contract: it defines stored fields, relationships and preservation invariants. It does not select a workflow stage or version the CLI command interface.
+**RigorLoop Record Format v3** is the selected stored-record design. Its complete record layouts are defined below, with `contract: rigorloop-records-v3` in change.json and `schema_version: 3` in every record. This is a data-format contract: it defines stored fields, relationships and preservation invariants. It does not select a workflow stage or version the CLI command interface.
 
 | Versioned surface | Identifier | Meaning |
 | --- | --- | --- |
-| Selected stored-record design | `rigorloop-records-v2`, stored schema_version 2 | Complete current design, including immutable concern origin |
+| Selected stored-record design | `rigorloop-records-v3`, stored schema_version 3 | Complete current design, with ID-only Review findings and immutable blocker origin |
 | Retired stored formats | Exact set in Compatibility and adoption | Archival evidence only; no runtime reader or writer |
 | Model-document validation | `Model validation contract: model-document-v1` | Document structure checked by the model validator; not the selected stored-record version |
-| Primary CLI transport | `targeted-recording-v1`, request schema_version 1, result schema_version 2 | Transient requests and receipts, defined by the CLI model |
+| Primary CLI transport | `targeted-recording-v1`, request schema_version 1, result schema_version 2 or 3 | Transient requests and receipts, defined by the CLI model |
 
-Version numbers belong to their own surface. A targeted request with schema_version 1 can explicitly select rigorloop-records-v2; its request version does not change the stored version. The document-validation marker `model-document-v1` versions Markdown structure separately. Its version 1 does not make the selected stored-record format v1. Retirement changes supported stored inputs, not these independent version domains.
+Version numbers belong to their own surface. A targeted request with schema_version 1 explicitly selects rigorloop-records-v3; its request version does not change the stored version. The document-validation marker `model-document-v1` versions Markdown structure separately. Its version 1 does not make the selected stored-record format v1. Retirement changes supported stored inputs, not these independent version domains.
 
 The change record is the registry and coordination entry point. It contains activity, work and change-level blockers; it references the proposal, affected models and optional plan. Its registry identifies supporting records, each with an explicitly declared applicability entry. Review findings belong to their containing review. Reviews and evidence name exact engineering subjects; those subject identities do not become automatically current when files change.
 
@@ -105,7 +106,7 @@ flowchart TB
 
 This conceptual view illustrates RF-SR-01/02/03; it is not a second schema. Subjects may also include implementation and other proof inputs admitted by the exact Subject type. Supporting records are conditional, and their arrows do not imply that every record must exist before a correction can be saved.
 
-| Stored record | Semantic responsibility | Definition in the [v2 JSON Schema](../../../schemas/rigorloop-records-v2.schema.json) |
+| Stored record | Semantic responsibility | Definition in the [v3 JSON Schema](../../../schemas/rigorloop-records-v3.schema.json) |
 | --- | --- | --- |
 | Change | Recorded coordination, work, blockers, registry and applicability | `$defs.change` |
 | Review | Independent judgment, exact subjects and review-scoped findings | `$defs.review` |
@@ -113,33 +114,33 @@ This conceptual view illustrates RF-SR-01/02/03; it is not a second schema. Subj
 | Material decisions | Rationale and source references that constrain work | `$defs.decisions` |
 | Verify report | Successful final assessment and supporting references | `$defs.verify` |
 
-This model owns stored field shapes, relationships and preservation invariants. The [Workflow model](../workflow/workflow.md#requirements) owns the engineering meaning of decisions and the obligations for relying on them. The JSON Schema expresses structural shapes; the [CLI model](../cli/cli.md#advanced-candidate-update-contract) owns byte encoding, containment, identity computation and persistence. Advanced request/result definitions are separately owned transport contracts, not additional stored record kinds; shared validation must be separated from retired stored definitions before their removal. V2 stores one JSON object per file. Narrative is a string field in that object, not a separate Markdown document or front-matter section. Structural validity does not establish workflow readiness.
+This model owns stored field shapes, relationships and preservation invariants. The [Workflow model](../workflow/workflow.md#requirements) owns the engineering meaning of decisions and the obligations for relying on them. The JSON Schema expresses structural shapes; the [CLI model](../cli/cli.md#advanced-candidate-update-contract) owns byte encoding, containment, identity computation and persistence. Advanced request/result definitions are separately owned transport contracts, not additional stored record kinds; shared validation must be separated from retired stored definitions before their removal. V3 stores one JSON object per file. Narrative is a string field in that object, not a separate Markdown document or front-matter section. Structural validity does not establish workflow readiness.
 
 ### Explicit record schema
 
-RF-SR-01/02/03/04 own this stored-record definition. The table defines v2 directly; the compatibility subsection below defines the retirement boundary. It is not a CLI request schema. Every object is closed: only listed fields are admitted, all fields are required unless marked optional, and duplicate keys or IDs are invalid. Empty arrays represent no entries; there are no inferred defaults. IDs use lowercase letters, digits and hyphens, start with a letter or digit, and contain 1–80 characters. Change IDs follow the same grammar. Paths are repository-relative and subject to CLI containment rules. A digest is `sha256:` followed by 64 lowercase hexadecimal digits.
+RF-SR-01/02/03/04 own this stored-record definition. The table defines v3 directly; the compatibility subsection below defines the retirement boundary. It is not a CLI request schema. Every object is closed: only listed fields are admitted, all fields are required unless marked optional, and duplicate keys or IDs are invalid. Empty arrays represent no entries; there are no inferred defaults. IDs use lowercase letters, digits and hyphens, start with a letter or digit, and contain 1–80 characters. Change IDs follow the same grammar. Paths are repository-relative and subject to CLI containment rules. A digest is `sha256:` followed by 64 lowercase hexadecimal digits.
 
 Common types are `Subject = {path, identity}` and `Actor = {id, role}`. `identity` is a digest of exact file bytes; `role` is one of `human`, `proposal`, `design`, `plan`, `review`, `route`, `implement`, `verify`, `support`. A reference to a record entry is `EntryRef = {path, id}`; it identifies the entry, not a claim about freshness. Narrative fields are nonempty strings. IDs are unique within their containing array. Referenced subject files may have changed or disappeared; those are observations, unlike a dangling reference to an entry inside the candidate record set.
 
 | Record | Exact structured fields |
 | --- | --- |
-| `change.json` | `schema_version: 2`, `contract: rigorloop-records-v2`, `change_id`, `proposal: Subject`, `models: [{id, subject: Subject}]`, `activity: {stage, status, owner: Actor, reason}`, `plan: Subject or null`, `work: [{id, status, owner: Actor, requirement_refs: [string]}]`, `records: [{path, kind}]`, `applicability: [{path, value, actor: Actor, reason}]`, `blockers: [Concern]` |
-| `reviews/<review-id>.json` | `schema_version: 2`, `change_id`, `id`, `target`, `reviewer: Actor`, `contributors: [Actor]`, `independence_basis`, `subjects: [Subject]`, `judgment`, `findings: [Concern]`, `body: string` |
-| `evidence.json` | `schema_version: 2`, `change_id`, `checks: [{id, actor: Actor, subjects: [Subject], result, procedure, summary}]` |
-| `material-decisions.json` | `schema_version: 2`, `change_id`, `decisions: [{id, actor: Actor, subjects: [Subject], rationale, source_refs: [EntryRef]}]`, `body: string` |
-| `verify-report.json` | `schema_version: 2`, `change_id`, `verifier: Actor`, `subjects: [Subject]`, `evidence_refs: [EntryRef]`, `review_refs: [EntryRef]`, `outcome: success`, `body: string` |
+| `change.json` | `schema_version: 3`, `contract: rigorloop-records-v3`, `change_id`, `proposal: Subject`, `models: [{id, subject: Subject}]`, `activity: {stage, status, owner: Actor, reason}`, `plan: Subject or null`, `work: [{id, status, owner: Actor, requirement_refs: [string]}]`, `records: [{path, kind}]`, `applicability: [{path, value, actor: Actor, reason}]`, `blockers: [Concern]` |
+| `reviews/<review-id>.json` | `schema_version: 3`, `change_id`, `id`, `target`, `reviewer: Actor`, `contributors: [Actor]`, `independence_basis`, `subjects: [Subject]`, `judgment`, `findings: [Finding]`, `summary: string`, `assessment_scope: string`, `rationale: [string]`, `limitations: [string]` |
+| `evidence.json` | `schema_version: 3`, `change_id`, `checks: [{id, actor: Actor, subjects: [Subject], result, procedure, summary}]` |
+| `material-decisions.json` | `schema_version: 3`, `change_id`, `decisions: [{id, actor: Actor, subjects: [Subject], rationale, source_refs: [EntryRef]}]`, `body: string` |
+| `verify-report.json` | `schema_version: 3`, `change_id`, `verifier: Actor`, `subjects: [Subject]`, `evidence_refs: [EntryRef]`, `review_refs: [EntryRef]`, `outcome: success`, `summary: string`, `assessment_scope: string`, `rationale: [string]`, `limitations: [string]`, `changes: [string]`, optional `verification_basis: VerificationBasis` |
 
-`Concern` has exactly `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution, origin: Origin}`. Origin and its immutable preservation rules are defined below. `reporter` identifies the actor responsible for disposition assessment and `owner` identifies who must perform correction; these are deliberately distinct. `state` is `open`, `resolved` or `deferred`; `resolution` is null for open work or `{actor: Actor, rationale, evidence_refs: [EntryRef]}` otherwise. The CLI checks this representation, not whether the resolution is justified. An empty evidence-reference array is valid for a reasoned disposition but does not prove the disposition adequate. Review-record blockers are findings; change-record blockers allow any stage to record a defect without inventing a review.
+`Finding` has exactly `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution}`. Only its ID is immutable; the correction rules below preserve existing IDs. A change-level blocker uses `Concern`, which has exactly `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution, origin: Origin}`. Origin and its immutable preservation rules are defined below. `reporter` identifies the actor responsible for disposition assessment and `owner` identifies who must perform correction; these are deliberately distinct. `state` is `open`, `resolved` or `deferred`; `resolution` is null for open work or `{actor: Actor, rationale, evidence_refs: [EntryRef]}` otherwise. The CLI checks this representation, not whether the resolution is justified. An empty evidence-reference array is valid for a reasoned disposition but does not prove the disposition adequate. Review-record blockers are findings; change-record blockers allow any stage to record a defect without inventing a review.
 
 `stage` is `proposal`, `proposal-review`, `design`, `design-review`, `plan`, `delivery-review`, `implement`, `code-review`, `verify` or `support`. `status` is `pending`, `in-progress`, `blocked`, `ready`, `completed` or `cancelled`. These are labels, not a transition graph: any well-formed old/new label pair is recordable. `target` is `proposal`, `design`, `delivery` or `code`; `judgment` is `approved`, `changes-requested`, `blocked` or `inconclusive`. Evidence `result` is `passed`, `failed` or `inconclusive`. Applicability `value` is `current`, `stale` or `not-applicable`. Record `kind` is `review`, `evidence`, `decisions` or `verify`.
 
 The `records` array declares every supporting authoritative record for this change; `change.json` is implicit. Each declared record must exist in the candidate set and have the matching kind and change identity. Each supporting record has exactly one explicit applicability entry in `change.json`. Extra physical files are not discovered as authority. A new supporting record and its registry/applicability entries are published together. The targeted command constructs registry bookkeeping, but the requesting actor explicitly supplies applicability value, actor and reason. Applicability remains at supporting-record level; individual checks or findings do not acquire a separate applicability field. These are referential checks, not review prerequisites.
 
-The CLI model owns bytes and encoding. Review, material-decisions and Verify objects require a nonempty body string containing human-readable reasoning. All fields belong to the same JSON object. Body explains the judgment or shared rationale; it must not maintain a second status, finding list or reviewer roster. The named structured fields remain authoritative for those facts. Avoiding narrative duplication is an authoring responsibility, not a CLI semantic rejection gate. Markdown formatting may occur inside a narrative string but adds no separate serialization layer. Subject and evidence arrays may be empty while recording incomplete work; Workflow actors must not use incomplete records to justify approval or completion. A Verify report's outcome admits only success, but the CLI does not establish that its assertion is true.
+The CLI model owns bytes and encoding. Review and Verify require the named explanation fields in [Structured assessment explanations](#structured-assessment-explanations); neither admits body. Material decisions retains its nonempty shared body string. Structured facts remain authoritative; explanations must not maintain competing status, finding lists or reviewer rosters. This is authoring policy, not CLI prose inference. Subject and evidence arrays may be empty while recording incomplete work; actors must not rely on incomplete records for approval or completion. Verify admits only outcome success, without the CLI establishing that the assertion is true.
 
 ### Entry reference resolution
 
-RF-SR-02 owns v2 EntryRef interpretation. The representation remains exactly `{path, id}`; no kind field, inferred namespace or search across files is introduced. Path selects the exact authoritative file in the same change's complete candidate: the implicit change.json or a registered supporting file. ID then selects the exact case-sensitive ID of an admissible object in that file, as defined by the referencing field below.
+RF-SR-02 owns EntryRef interpretation. The representation remains exactly `{path, id}`; no kind field, inferred namespace or search across files is introduced. Path selects the exact authoritative file in the same change's complete candidate: the implicit change.json or a registered supporting file. ID then selects the exact case-sensitive ID of an admissible object in that file, as defined by the referencing field below.
 
 | Referencing field | Admissible target file and object |
 | --- | --- |
@@ -148,7 +149,7 @@ RF-SR-02 owns v2 EntryRef interpretation. The representation remains exactly `{p
 | verify-report.json review_refs[] | A registered reviews/<review-id>.json, its root review object selected by the root id; never a finding |
 | material-decisions.json decisions[].source_refs[] | change.json models[], work[] or blockers[]; a registered review's root object or findings[]; evidence.json checks[]; or material-decisions.json decisions[] |
 
-All IDs of referenceable objects within a v2 file MUST be disjoint, including a review's root id versus finding IDs and the manifest's model, work and blocker IDs. Array-local uniqueness still applies. The same ID may occur in different files because path is part of identity. Actor IDs, change_id, applicability entries, activity, Origin and JudgmentBasis are not referenceable objects. A Verify report has no entry id and is not an EntryRef target. Its full content remains available through normal targeted reads. Subject references identify engineering files separately; they are not EntryRef targets.
+All IDs of referenceable objects within a stored file MUST be disjoint, including a review's root id versus finding IDs and the manifest's model, work and blocker IDs. Array-local uniqueness still applies. The same ID may occur in different files because path is part of identity. Actor IDs, change_id, applicability entries, activity, Origin and JudgmentBasis are not referenceable objects. A Verify report has no entry id and is not an EntryRef target. Its full content remains available through normal targeted reads. Subject references identify engineering files separately; they are not EntryRef targets.
 
 | Resolution case | Structural result |
 | --- | --- |
@@ -161,70 +162,27 @@ Resolution validates the final combined candidate, so a reference and its target
 
 For example, review_refs pointing at review file design-review.json with id finding-1 rejects even if that finding exists; the field permits only the review root. A decision's source_refs may select that same finding. A review root and finding both named design-review reject rather than making either field ambiguous. A new check and a disposition referencing that check resolve together after complete candidate construction.
 
-These target namespaces remain the v2 contract. Earlier v1 path/ID membership validation is retired under RF-SR-06; no current reader applies either its permissive interpretation or v2 semantics to historical records. Historical bytes and reviewed identities are preserved without runtime validation, inferred target meaning or migration.
+These target namespaces define the current contract. Historical records are not interpreted or validated under these rules; their recorded identities and meaning remain unchanged.
 
 ### Examples
 
-The [stored-record example index](examples/README.md) distinguishes supported v2, proposed v3, complete collections and isolated update scenarios.
-
-These complete JSON objects illustrate the stored format; they are not registered change records or additional normative definitions. Hashes are synthetic, syntactically valid identities, not hashes of repository files. Each file illustrates one record, not a complete registered store. Example change/subject identities connect scenarios conceptually; the CLI work example has its own stated starting state.
-
-| Example | Question answered | Requirement basis |
-| --- | --- | --- |
-| [Minimal change](examples/v2-minimal-change/change.json) | What does the complete manifest look like before supporting records exist? | RF-SR-01/02/03 |
-| [Incomplete review](examples/v2-review-without-subjects/review.json) | How is missing assessment basis recorded without inventing approval? | RF-SR-01/03/05/07 |
-| [V2 review before reassessment](examples/v2-review-reassessment/before.json) and [after reassessment](examples/v2-review-reassessment/after.json) | How can a new approval preserve an unresolved finding and its immutable origin? | RF-SR-03/04/05/07 |
-
-The reassessment pair intentionally leaves the finding open and byte-equivalent as a JSON value. The current review changes subjects, judgment and body; no finding disposition or applicability is implied. The recordable after-state does not itself justify progression. Supporting-record registration and explicit applicability are required in a containing store, as specified above.
-
-Examples use JSON directly, without commentary properties or Markdown wrappers. The CLI owns [request/receipt examples](../cli/cli.md#examples), and Workflow owns [actor sequencing](../workflow/workflow.md#examples). Readers load only the example relevant to their question.
+The [stored-record example index](examples/README.md) separates current v3 examples from historical v2 examples. The complete collection and focused correction examples below illustrate the current contract. Historical JSON remains unchanged and is not a supported input or current acceptance scenario. All examples use synthetic identities and do not establish real assessment results. CLI owns request/response examples; Workflow owns actor sequencing.
 
 ### Retained judgments for unresolved findings
 
-The finding itself retains enough origin basis for the next actor to understand the concern. It does not depend on a chain of prior review rounds, an assessment archive, Git history or chat. This replaces the earlier proposed named-assessment collection and current-assessment pointer; neither becomes part of the selected stored representation. A current review judgment can change while its unresolved findings keep the original basis that made them actionable.
-
-#### Selected record-format revision
-
-The v2 record table above and the types below form one stored-format definition. Every review finding and change-level blocker carries its own origin; no review assessment array or current pointer is added. Retirement removes the old stored definitions without changing this v2 concern representation.
+Review findings are current problem accounts under RF-SR-13: complete review recording preserves them, while explicit finding corrections may change every non-ID field. They do not contain origin snapshots. The retained heading preserves existing links; immutable original-basis retention applies to change-level blockers only.
 
 | Type | Exact shape |
 | --- | --- |
-| Concern | `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution, origin: Origin}` |
+| Concern (change-level blocker) | `{id, reporter: Actor, owner: Actor, subjects: [Subject], evidence, required_outcome, state, resolution, origin: Origin}` |
 | Origin | `{reporter: Actor, subjects: [Subject], evidence, required_outcome, rationale, supporting_judgment: JudgmentBasis or null}` |
 | JudgmentBasis | `{reviewer: Actor, contributors: [Actor], independence_basis, subjects: [Subject], judgment, rationale}` |
 
-Objects are closed, listed fields are required, and the existing Actor, Subject, text and judgment types apply. The origin rationale is a concise, actor-supplied explanation of why the observed evidence matters for the required outcome. Supporting judgment is an optional fact represented by explicit null when none is cited; a concern does not need a fabricated overall review judgment to be recorded. When supplied, that judgment's complete relevant rationale and provenance are embedded, not represented solely by a mutable link or hash. The finding's original observed evidence and required outcome are retained even if its current fields later evolve.
+Objects are closed and all listed fields required, using the common Actor, Subject, text and judgment types. At blocker creation the CLI copies reporter, subjects, evidence and required_outcome into origin. The actor supplies a nonempty rationale and explicitly chooses null, an embedded supporting judgment, or an exact review plus blocker-specific rationale through the [CLI basis input](../cli/cli.md#finding-origin-construction). The CLI never infers an assessment or selects a favorable review.
 
-At creation the CLI copies reporter, subjects, evidence and required_outcome from the actor's concern values into origin. The actor supplies the rationale and explicitly chooses whether a supporting judgment is absent, supplied directly, or constructed from the provenance/outcome of an exact selected review plus actor-supplied finding-specific rationale. Copying the selected content is mechanical preservation; selecting its significance is the actor's decision. No actor is required to retype another review or assemble serialized metadata to retain it. The [CLI contract](../cli/cli.md#finding-origin-construction) defines those input forms.
+Origin is immutable for the blocker's lifetime, including after resolution. Current evidence, subjects, owner and required outcome can change without rewriting it. Supporting judgment preserves its original relevant rationale and provenance, not a link to an evolving assessment. A mistaken original report is addressed through current explanation and explicit disposition. All writers reject removal or mutation of existing blocker origins; recovery restores exact prepared bytes.
 
-#### Preservation and reliance
-
-Origin is immutable for the lifetime of a concern ID in v2, including after an explicit disposition. New reviews preserve the complete origin along with the finding. They may update their current judgment and narrative without carrying every prior review round. A correction to the concern's current subjects, evidence or required outcome leaves origin intact. A mistaken original report is addressed through current explanation and explicit disposition, not by falsifying its history; a distinct concern receives a distinct ID.
-
-Supporting judgment can be null while the origin remains useful: the reporter, exact subjects, evidence, rationale and required outcome explain the original defect. If a formal reviewer cites an actual supporting assessment, it preserves that assessment's relevant content within the origin. No automatic inference supplies a judgment, independence basis, applicability value or disposition. Later judgment does not become new origin simply because hashes match or a review is approved.
-
-The current state and resolution fields say what the responsible actor now concluded. A resolved/deferred disposition retains the actor, rationale and explicit evidence references under the existing resolution type. That outcome does not overwrite origin or automatically close another actor's concern. Origin preservation applies to targeted and advanced writers and exact-byte recovery; attempts to mutate/remove it under an existing ID are structural preservation errors. This invariant applies regardless of open/resolved state, so it does not create a readiness prerequisite for correction recording.
-
-A normal finding read returns current fields and origin together. This is sufficient to understand the reported concern and its origin without replaying review history, but it does not replace reading the current engineering subjects needed to assess a fix. The existing size limits apply to embedded basis; a limit error does not permit silently truncating rationale or dropping provenance. Actors provide the relevant finding-specific basis, not a dump of all earlier records.
-
-```mermaid
-flowchart LR
-    Review["Current review judgment"]:::system -->|"contains"| Finding["Finding: current concern and disposition"]:::container
-    Finding -->|"retains directly"| Origin["Origin: reporter, exact subjects, evidence, required outcome and rationale"]:::container
-    Origin -->|"if explicitly cited"| Judgment["Embedded supporting judgment and provenance"]:::container
-    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
-    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
-```
-
-#### Example: a later approval does not erase a concern
-
-| Moment | Current review | Finding f1 | Origin available in f1 |
-| --- | --- | --- | --- |
-| Original report | changes-requested | Open, with actionable evidence and required outcome | Original reporter, subject identities, evidence, rationale and explicitly cited judgment |
-| Later review | approved | Still open until its responsible reviewer decides otherwise | The same origin, without reading the old review body |
-| Explicit reassessment | approved | Resolved with the reviewer's current rationale and evidence references | The original basis remains alongside the current disposition |
-
-The middle row is recordable but does not establish justified progression. This example illustrates RF-SR-03/04/05; a saved later approval never disposes the finding automatically.
+A normal blocker read exposes current fields and origin together without a history lookup. Size limits reject excess rather than truncate basis. Review findings instead expose their current account and explicit disposition, with no claim that original wording survives. A later approved review does not implicitly resolve either kind of concern. Resolution evidence references and record-level applicability remain separate actor decisions.
 
 #### Compatibility and adoption
 
@@ -232,30 +190,25 @@ RF-SR-06 owns the exact retirement set:
 
 | Stored contract | Selected runtime support |
 | --- | --- |
-| `rigorloop-records-v2` | Retain creation, reading, validation, updates and recovery under the existing v2 invariants |
+| `rigorloop-records-v3` | Creation, reading, validation, updates and recovery under the current definitions |
+| `rigorloop-records-v2` | Archival only; no operational reader, writer, validator or recovery path |
 | `explicit-recording-v1` | Retire all runtime acceptance, including advanced creation and compatible reads/updates |
 | `compact-current-state-v1` | Retire all runtime acceptance and its exclusive projection/progression/recovery machinery |
 | `stage-owned-change-local-v1`, `stage-owned-change-local-v2`, `stage-owned-change-local-v3`, `legacy-unversioned` | Retire all runtime acceptance and their exclusive lifecycle machinery |
 
 Historical files remain unchanged evidence. Preservation does not require decoding them through the current CLI, executing their validators, converting approvals, or reconstructing missing concern origin. There is no migration, export facility, temporary reader, recovery compatibility service or new archive schema. The owner's completed-work baseline supplies the retirement direction; concrete contrary residue encountered during removal receives the bounded Workflow disposition.
 
-Remove exclusive legacy stored schemas and codecs only after extracting definitions actually consumed by v2. The advanced schema_version 1 result envelope and targeted-recording-v1 request interface are CLI transport contracts; the model-validation marker is a document contract. None is retired by its spelling. The CLI model owns their retained validation, safe unsupported-input outcomes and archive/current-work classification.
+Remove exclusive legacy stored schemas and codecs only after extracting definitions actually consumed by v3. The advanced schema_version 1 result envelope and targeted-recording-v1 request interface are CLI transport contracts; the model-validation marker is a document contract. None is retired by its spelling. The CLI model owns their retained validation, safe unsupported-input outcomes and archive/current-work classification.
 
-No v2 stored field, schema version, path, origin invariant or EntryRef interpretation changes. Mixed stores and malformed current records remain errors. Earlier RF-SR-06 and RF-DEC-04 compatibility-retention text is replaced by this deliberate support break; the IDs remain stable and prior approvals still identify their original subjects.
+Historical bytes and judgments retain their exact subjects. Current v3 stores use the direct definitions above; mixed stores and malformed current records reject. Independent CLI transport and document versions are not stored-format compatibility promises.
 
 ## Structured assessment explanations
 
-This amendment follows the [approved proposal](../../proposals/2026-09-10-structured-assessment-explanations.md), under its [owning change](../../changes/2026-09-10-structured-assessment-explanations/change.json). It defines a prospective stored contract, not an implemented schema or adopted runtime. Governance continues to select v2 until reviewed coherent implementation and successful Verify authorize the coordinated local adoption. Publication and customer adoption remain separate.
+The [structured-assessment direction](../../proposals/2026-09-10-structured-assessment-explanations.md) and [its owning change](../../changes/2026-09-10-structured-assessment-explanations/change.json) preserve decision provenance. The fields below are the current v3 contract, not a prospective extension of v2.
 
 ### Exact v3 record definition
 
-RF-SR-09–13 extend RF-SR-01–08 as mapped below. V3 retains every v2 path, record kind, Actor, Subject, EntryRef, enum, registry and applicability rule except the explicit finding replacement below. Change-level blockers retain the v2 Concern/Origin/JudgmentBasis definitions; Review findings use the v3 Finding type. Every record instead has `schema_version: 3`; the manifest has `contract: rigorloop-records-v3`. No new record kind is introduced. The only record-member changes are the following closed replacements; all other v2 members remain required with their existing types.
-
-| Record | Remove | Add |
-| --- | --- | --- |
-| Review | `body`; each finding’s `origin` | Required `summary: string`, `assessment_scope: string`, `rationale: [string]`, `limitations: [string]` |
-| Verify | `body` | The same four required fields; required `changes: [string]`; optional `verification_basis: VerificationBasis` |
-| Change, evidence and material decisions | Nothing except version discriminator values | No explanation fields; material-decisions `body` remains required |
+RF-SR-09–13 define the explanation and Finding types used directly by the record table above. Review requires summary, assessment_scope, rationale and limitations. Verify requires those fields plus changes and permits optional verification_basis. Material decisions retains body; Review and Verify reject body and dual representations.
 
 Summary and assessment_scope must contain at least one non-whitespace character. Every array item must also contain at least one non-whitespace character. Rationale and Verify changes each require at least one item; limitations may explicitly be empty. Strings may contain paragraphs, line breaks, Unicode and code examples. Arrays are ordered collections; duplicate strings are allowed and never silently deduplicated. Structural checks reject empty/whitespace-only values without trimming or normalizing supplied text. They do not decide whether a reason is substantive, a change was delivered, or the limitations are sufficient.
 
@@ -265,38 +218,31 @@ Summary explains the conclusion; assessment_scope explains coverage and supporte
 
 ### V3 finding identity and correction
 
-RF-SR-13: A v3 Review finding MUST contain exactly `id`, `reporter`, `owner`, `subjects`, `evidence`, `required_outcome`, `state` and `resolution`, with their retained v2 types and requiredness. Only `id` is immutable. `origin`, embedded `supporting_judgment`, extension fields and per-finding history MUST reject. No original wording or original assessment snapshot is guaranteed. The current evidence and required outcome explain the problem sufficiently to act; no new rationale field or audit log is required.
+RF-SR-13: A v3 Review finding MUST contain exactly `id`, `reporter`, `owner`, `subjects`, `evidence`, `required_outcome`, `state` and `resolution`, with the common types and requiredness defined above. Only `id` is immutable. `origin`, embedded `supporting_judgment`, extension fields and per-finding history MUST reject. No original wording or original assessment snapshot is guaranteed. The current evidence and required outcome explain the problem sufficiently to act; no new rationale field or audit log is required.
 
 Existing finding IDs remain present in their review. Removing or renaming an existing finding rejects; a distinct problem receives a new ID. All non-ID fields may be corrected explicitly, including reporter attribution and subjects, without claiming another actor supplied an assessment. State/resolution consistency and typed reference checks remain required. Withdraw a mistaken report using `state: resolved` and a resolution explaining the withdrawal; retain the existing enum, with no separate withdrawn status. A save does not prove a fix or approve a review.
 
-Review explanation updates and complete review recording preserve the entire findings collection. Explicit finding operations update current fields; advanced replacement may perform the same valid corrections while retaining existing IDs. Recovery restores exact before/candidate bytes, not an original narrative. V2 finding origin and v3 change-level blocker origin remain unchanged; this selected simplification concerns Review findings only.
+Review explanation updates and complete review recording preserve the entire findings collection. Explicit finding operations update current fields; advanced replacement may perform the same valid corrections while retaining existing IDs. Recovery restores exact before/candidate bytes, not an original narrative. Change-level blocker origin remains immutable; ID-only preservation concerns Review findings only.
 
 This is the user's scoped direction revision to the proposal's original origin-preservation requirement. It favors a useful current problem account over a guaranteed original account. The proposal and its approval remain historical evidence of their exact earlier direction; neither is rewritten or claimed to approve this refinement.
 
 ### Version adoption and preservation
 
-New-store creation after adoption selects v3 explicitly. A v3 store may not register v2 reviews, evidence, decisions or Verify reports even where their non-version fields otherwise match. Existing v2 stores retain current reads, complete recording, edits already in their catalogue, validation and recovery; they do not gain v3 explanation operations. This initiative can therefore complete its assessments under its original v2 contract without converting its own approval. Existing completed records receive no automatic rewrite or reinterpretation; any separately authorized correction uses their original contract and leaves other records untouched.
+Creation selects v3 explicitly. Every registered record must have schema_version 3 and the same change_id; matching non-version fields do not permit mixed stores. Historical records receive no rewrite, narrative extraction or approval conversion. Necessary new assessments use distinct v3 work and identify relevant historical subjects without inheriting approval.
 
-This is an explicit continuation disposition, not a claim that v2 work is complete. Existing-v2 runtime removal is outside this change. It needs a separately approved retirement decision after inspecting then-current work and recovery needs; neither stage labels nor file existence authorize removal. The earlier retired formats remain retired. Restoring an older executable cannot read v3; rollback must retain access to a compatible executable for any created v3 stores and must not down-convert them.
-
-| Earlier clause | Exact prospective disposition |
-| --- | --- |
-| RF-SR-01/02, explicit record schema and version table | Preserve v2 definitions for existing stores; add the closed v3 definition above and per-store version dispatch. |
-| RF-SR-03/04/05/07/08 and Origin/EntryRef definitions | Retain v2 unchanged. RF-SR-13 replaces original-basis retention for v3 Review findings only; v3 blockers retain Origin. Semantic separation, current references and transaction safety remain. |
-| RF-SR-06 and compatibility table's v2-only/create policy | RF-SR-12 replaces only exclusive-v2 support/new creation at coordinated adoption; all earlier retirement exclusions remain. |
-| RF-DEC-02/05 | Retain exact v2 meaning; RF-DEC-06 selects v3 rather than changing those historical decisions. |
+RF-SR-12 retains the obligation to disposition dependencies before retirement; RF-SR-14 defines the current support boundary. Its earlier v2 continuation promise is historical, not another operating profile. Rollback must retain a v3-capable executable for current stores and their journals; it must not down-convert them. [Retirement provenance](#v2-stored-format-retirement) identifies the separate retirement decision.
 
 ### V3 examples and integrated outcomes
 
 The [finding correction example](examples/v3-finding-correction/README.md) shows a complete stored and updated Review plus its linked CLI operation. It exercises RF-SR-13: the same finding ID retains an editable current account without an origin snapshot.
 
-The [complete five-kind collection](examples/v3-complete-store/README.md) provides a linked proposed [change](examples/v3-complete-store/change.json), [Review](examples/v3-complete-store/reviews/final-code-review.json), [evidence](examples/v3-complete-store/evidence.json), [material decisions](examples/v3-complete-store/material-decisions.json) and [Verify](examples/v3-complete-store/verify-report.json). Each is a complete record under RF-SR-01/02/03/07/09–12, with a consistent virtual registry, explicit applicability and resolvable EntryRefs. Its README defines the synthetic identities, omitted external subjects and incomplete lifecycle-proof scope. The collection illustrates relationships without claiming actual review, execution or justified completion.
+The [complete five-kind collection](examples/v3-complete-store/README.md) provides a linked [change](examples/v3-complete-store/change.json), [Review](examples/v3-complete-store/reviews/final-code-review.json), [evidence](examples/v3-complete-store/evidence.json), [material decisions](examples/v3-complete-store/material-decisions.json) and [Verify](examples/v3-complete-store/verify-report.json). Each is a complete record under RF-SR-01/02/03/07/09–12, with a consistent virtual registry, explicit applicability and resolvable EntryRefs. Its README defines the synthetic identities, omitted external subjects and incomplete lifecycle-proof scope. The collection illustrates relationships without claiming actual review, execution or justified completion.
 
-The [V3 review before a limitations update](examples/v3-review-limitations-update/before.json) and [after the update](examples/v3-review-limitations-update/after.json) are complete proposed v3 Review objects using synthetic identities. Only limitations differs; findings and all other values remain identical, with no v3 finding origin. They illustrate RF-SR-09/10/13, not executed byte-preservation proof. The [Verify example](examples/v3-verify-without-evidence/verify-report.json) is a complete proposed non-Git v3 report with explicit empty supporting-reference arrays to illustrate recordability rather than justified success. The [conditional-basis example](examples/v3-verify-limitations-update/before.json) adds the complete optional object for an explicitly synthetic Git/PR claim; its branch labels and revisions are illustrative, not resolved repository facts. None is a registered record or new judgment. Executable schema conformance and transition proof belong to implementation evidence; JSON parsing or Design inspection alone cannot establish them. Earlier examples remain complete v2 continuation examples.
+The [V3 review before a limitations update](examples/v3-review-limitations-update/before.json) and [after the update](examples/v3-review-limitations-update/after.json) are complete v3 Review objects using synthetic identities. Only limitations differs; findings and all other values remain identical, with no v3 finding origin. They illustrate RF-SR-09/10/13, not executed byte-preservation proof. The [Verify example](examples/v3-verify-without-evidence/verify-report.json) is a complete non-Git v3 report with explicit empty supporting-reference arrays to illustrate recordability rather than justified success. The [conditional-basis example](examples/v3-verify-limitations-update/before.json) adds the complete optional object for an explicitly synthetic Git/PR claim; its branch labels and revisions are illustrative, not resolved repository facts. None is a registered record or new judgment. Executable schema conformance and transition proof belong to implementation evidence; JSON parsing or Design inspection alone cannot establish them. Earlier v2 examples are historical illustrations only.
 
-The [Verify limitations-update example](examples/v3-verify-limitations-update/README.md) pairs a complete proposed after record with the indexed conditional-basis before record. It illustrates RF-SR-09/10/11 by changing only limitations and retaining the complete optional basis. The corresponding CLI requests and projections are owned by the [CLI example index](../cli/examples/README.md).
+The [Verify limitations-update example](examples/v3-verify-limitations-update/README.md) pairs a complete after record with the indexed conditional-basis before record. It illustrates RF-SR-09/10/11 by changing only limitations and retaining the complete optional basis. The corresponding CLI requests and projections are owned by the [CLI example index](../cli/examples/README.md).
 
-For RF-SR-09/10, demonstrate named field selection and a limitations replacement while every finding and unselected byte span stays unchanged; a semantic no-op preserves whole-file bytes. For RF-SR-11, a complete conditional basis survives full reads and complete reassessment, while partial/null/unknown basis members reject and absence never authorizes branch readiness. For RF-SR-12, complete an existing v2 change while creating a separate v3 change; neither support path can insert the other's records or convert during recovery. These combined outcomes supplement the eight model dimensions below; concrete checks remain Delivery-owned.
+For RF-SR-09/10, demonstrate named field selection and a limitations replacement while every finding and unselected byte span stays unchanged; a semantic no-op preserves whole-file bytes. For RF-SR-11, a complete conditional basis survives full reads and complete reassessment, while partial/null/unknown basis members reject and absence never authorizes branch readiness. For RF-SR-12/14, preserve historical bytes and the v3-only support boundary without conversion or operational continuation; Workflow defines the bounded retirement-proof allocation. These combined outcomes supplement the eight model dimensions below; concrete checks remain Delivery-owned.
 
 ## Runtime View
 
@@ -308,7 +254,7 @@ A normal read returns selected current fields and retained narrative/origin. The
 
 ### Reassess a concern
 
-A later review may explicitly replace its current judgment while preserving existing findings and their origin. A finding's current evidence or required outcome can change without rewriting the original basis. Explicit resolved/deferred disposition adds its current rationale and evidence references; neither later approval nor a matching subject hash closes it automatically (RF-SR-03/04/05).
+A later review may replace its current judgment and explanation while preserving complete findings. Explicit finding correction may change current evidence or required outcome under the same ID. A blocker's current fields may change while its origin remains immutable. Resolved/deferred disposition retains the responsible actor's rationale and evidence references; neither approval nor matching hashes automatically closes a concern (RF-SR-03/04/05/13).
 
 ### Conflict, retry and recovery
 
@@ -318,13 +264,27 @@ The CLI checks expected revision and declared subject identities before acceptin
 
 This model creates no daemon, database or additional authoritative sidecar. Stored files remain repository-local at the paths defined above and contained by the CLI contract.
 
-Delivery removes exclusive legacy stored definitions and reconciles consumers while retaining the existing v2 schema and safety validation. Shared transport definitions must survive independently. Installation and release infrastructure remain separately owned; the reviewed retirement implementation must adopt this support break coherently.
+Delivery removes exclusive legacy stored definitions and reconciles consumers while retaining v3 schema and shared safety validation. Shared transport definitions must survive independently. Installation and release infrastructure remain separately owned; the reviewed retirement implementation must adopt this support break coherently.
+
+## V2 stored-format retirement
+
+Owning change: [retire-v2-record-format](../../changes/2026-09-11-retire-v2-record-format/change.json), following the [approved direction](../../proposals/2026-09-11-retire-v2-record-format.md).
+
+After the coordinated adoption disposition in [Workflow](../workflow/workflow.md#v2-retirement-coordination), `rigorloop-records-v3` with stored schema_version 3 is the sole operational contract for the entire change store, including every registered record. No v4 is introduced. V3 explanation fields, conditional verification_basis, Review finding ID-only immutability and immutable blocker origins remain unchanged. Retiring v2 does not reinstate Review finding snapshots or redesign other records.
+
+RF-SR-06/12/14 and the current compatibility table incorporate the retirement decision directly. RF-DEC-06 preserves why continuation was necessary for its original initiative; RF-DEC-08 ends that operational promise through a separate dependency disposition. Prior approvals retain their original subjects, not authority over this consolidated text.
+
+Historical v2 records remain unchanged repository artifacts. They are not accepted by primary reads, targeted recording, advanced replacement, store validation or recovery; no conversion, body extraction or permanent legacy reader remains. A necessary new assessment is actor-authored in a distinct v3 initiative, with historical subjects identified as evidence when relevant. It neither replaces old bytes nor inherits their approval. Plain file access to history does not constitute supported stored-record validation.
+
+Remove the exclusive v2 schema, template and codec only after extracting definitions needed by v3 or independent interfaces. The v3 schema must be self-contained with respect to the retired stored schema. JSON parsing, actor/subject definitions, safe serialization and shared candidate/preservation machinery remain where they serve v3. Numeric request/result/document versions and internal observation versions are separate domains under CLI; their value 2 is not a retirement target.
+
+RF-DEC-08 selects removal of operational v2 support with archival preservation after an explicit dependency disposition. Permanent dual dispatch perpetuates the maintenance problem; automatic conversion changes the assessed representation and cannot migrate approval. The representative outcome is unchanged historical bytes alongside a fully usable v3 store, with no operational path requiring a v2 schema or codec. This is acceptance intent, not a request for new retirement tests; Workflow defines the selected test-removal scope.
 
 ## Crosscutting Concepts
 
 ### Serialization, identity and narrative
 
-The [CLI encoding and candidate contract](../cli/cli.md#lossless-candidate-construction-and-shared-engine) owns plain JSON encoding for v2, exact-byte identities, lossless edits and limits. Record Format owns the resulting object structure and preservation requirements. A formatting-only rewrite is still subject to the CLI's byte-preservation rules. Narrative cannot override structured identity or enumerated values.
+The [CLI encoding and candidate contract](../cli/cli.md#lossless-candidate-construction-and-shared-engine) owns plain JSON encoding for v3, exact-byte identities, lossless edits and limits. Record Format owns the resulting object structure and preservation requirements. A formatting-only rewrite is still subject to the CLI's byte-preservation rules. Narrative cannot override structured identity or enumerated values.
 
 File identity, stored format version and current workflow applicability are distinct. Changing one does not implicitly decide another. External historical subjects may drift; internal record references must resolve within the candidate.
 
@@ -332,13 +292,13 @@ File identity, stored format version and current workflow applicability are dist
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
-| Input domain | RF-SR-01, RF-SR-02, RF-SR-09, RF-SR-11 | V2 front matter, trailing Markdown, wrong file extensions, missing/empty body and unknown members/enums reject; escaped multiline body round-trips as a JSON string; every declared record has matching kind, identity and explicit applicability. EntryRef rejects missing, unsupported and ambiguous targets, including review-root/finding and manifest collection ID collisions. V3 rejects missing/whitespace-only explanation, unknown or dual body fields and partial/null conditional basis; multiline strings remain intact. |
-| State/lifecycle | RF-SR-03, RF-SR-04, RF-SR-05 | Completed work can receive a new blocker; resolving a concern preserves origin and cannot implicitly close another concern. |
-| Identity/authority | RF-SR-03, RF-SR-04, RF-SR-10, RF-SR-13 | Changed review subjects never rewrite historical origin; actor labels do not establish reviewer independence. V2 retains origin. V3 explanation replacement leaves complete findings unchanged; explicit finding correction may replace the reported basis under the same ID (RF-SR-13). |
+| Input domain | RF-SR-01, RF-SR-02, RF-SR-09, RF-SR-11 | Front matter, trailing Markdown, wrong file extensions and unknown members/enums reject; escaped multiline strings round-trip; every declared record has matching kind, identity and explicit applicability. EntryRef rejects missing, unsupported and ambiguous targets, including review-root/finding and manifest collection ID collisions. V3 rejects missing/whitespace-only explanation, unknown or dual body fields and partial/null conditional basis; multiline strings remain intact. |
+| State/lifecycle | RF-SR-03, RF-SR-04, RF-SR-05 | Completed work can receive a new blocker; resolving a blocker preserves origin and cannot implicitly close another concern. |
+| Identity/authority | RF-SR-03, RF-SR-04, RF-SR-10, RF-SR-13 | Changed review subjects never rewrite blocker origin; actor labels do not establish reviewer independence. V3 explanation replacement leaves complete findings unchanged; explicit finding correction may replace the reported basis under the same ID (RF-SR-13). |
 | Composition/path | RF-SR-02, RF-SR-07, RF-SR-08, RF-SR-09, RF-SR-10, RF-SR-11 | Targeted and advanced candidates enforce identical invariants, including field-specific references and same-batch target creation; full selected Verify/decisions reads retain narratives without unrelated record bodies. V3 full/selected reads preserve the one authoritative explanation and conditional basis. |
-| Temporal/retry | RF-SR-04, RF-SR-08 | A later review preserves an existing concern's basis; stale retries conflict through the CLI without duplicated effects. |
-| Failure/recovery | RF-SR-02, RF-SR-04, RF-SR-08, RF-SR-12 | Interrupted publication restores exact before-state or completes the prepared candidate; neither outcome leaves mixed versions or partially registered authority. The journal selects the exact v2 or v3 contract; recovery never upgrades the before-state. |
-| Compatibility/migration | RF-SR-01, RF-SR-06, RF-SR-12 | Every named retired contract rejects through current runtime boundaries without writes, fallback or conversion; primary and advanced v2 operations retain their contract. Archived bytes and recorded identities remain unchanged; mixed and malformed v2 records reject. After this amendment adopts, new stores select v3 and existing v2 operations continue under the exact original contract without conversion. |
+| Temporal/retry | RF-SR-04, RF-SR-08 | A later review preserves complete findings, and blocker corrections preserve origin; stale retries conflict through the CLI without duplicated effects. |
+| Failure/recovery | RF-SR-02, RF-SR-04, RF-SR-08, RF-SR-14 | Interrupted v3 publication restores exact before-state or completes the prepared candidate without mixed versions or partial registration. Known v2 recovery dependencies are settled before removal; retired or unknown journals never upgrade the before-state. |
+| Compatibility/migration | RF-SR-01, RF-SR-06, RF-SR-12, RF-SR-14 | The v2 retirement amendment replaces continuation after the explicit disposition and coordinated adoption. V3 stores retain their closed contract; historical v2 bytes and identities remain unchanged without operational acceptance or conversion. Independent interface versions survive. Workflow excludes new retirement tests from this initiative. |
 | External/environment | RF-SR-05, RF-SR-07, RF-SR-08 | Missing external subject is distinguishable from dangling internal reference; another actor reads the retained basis without Git, network or prior chat. |
 
 Material combined hazards include a new concern after completed work (RF-SR-04/05), a newly registered record with missing applicability (RF-SR-02/03), and an interrupted multi-record update (RF-SR-01/08). Delivery allocates proof jointly with the CLI's conflict and publication scenarios. These are acceptance obligations, not reported runtime test results.
@@ -348,39 +308,38 @@ Material combined hazards include a new concern after completed work (RF-SR-04/0
 | ID | Decision | Rationale and trade-off |
 | --- | --- | --- |
 | RF-DEC-01 | Give stored representation its own model. | Workflow meaning and CLI mechanics consume one field contract; neither maintains a second normative layout. |
-| RF-DEC-02 | Use rigorloop-records-v2 with schema_version 2 for the selected format. | Required concern origin changes persisted structure, so a document rename or silent extension of closed v1 records is insufficient. |
-| RF-DEC-05 | Store v2 as plain JSON with body strings. | A single structured object eliminates dual JSON/Markdown sections and repeated decision facts; CLI human rendering provides readable explanations. Existing v1 files are not converted. |
-| RF-DEC-03 | Embed immutable origin in each concern. | Preserves actionable basis without an assessment archive; consumes record space and requires explicit finding-specific rationale. |
+| RF-DEC-02 | Historical: selected rigorloop-records-v2 with schema_version 2; superseded by RF-DEC-06/08. | Required concern origin changes persisted structure, so a document rename or silent extension of closed v1 records is insufficient. |
+| RF-DEC-05 | Historical: v2 used plain JSON with body strings; RF-DEC-06 replaces Review/Verify bodies. | A single structured object eliminates dual JSON/Markdown sections and repeated decision facts; CLI human rendering provides readable explanations. Existing v1 files are not converted. |
+| RF-DEC-03 | Retain immutable origin in change-level blockers; RF-DEC-07 supersedes the original all-concern scope. | Preserves actionable basis without an assessment archive; consumes record space and requires explicit finding-specific rationale. |
 | RF-DEC-04 | Retire legacy runtime acceptance while preserving archival truth. | Owner-confirmed completed legacy work removes the need for ongoing compatibility handlers. Replaces the earlier v1-reader retention decision without converting records or retargeting approvals. |
-| RF-DEC-06 | Replace Review/Verify explanation in a distinct v3 stored contract; retain existing v2 continuation. | Named fields expose meaning without universal reports or duplicate facts. Silent v2 redefinition and automatic narrative extraction would reinterpret assessments; immediate v2 removal would strand ongoing work. Conditional verification basis preserves an existing specific consumer need without universal Git dependence. |
-
+| RF-DEC-06 | Replace Review/Verify explanation in a distinct v3 stored contract; historically retained existing v2 continuation, ended by RF-DEC-08. | Named fields expose meaning without universal reports or duplicate facts. Silent v2 redefinition and automatic narrative extraction would reinterpret assessments; immediate v2 removal would strand ongoing work. Conditional verification basis preserves an existing specific consumer need without universal Git dependence. |
 | RF-DEC-07 | Use ID-only immutability for v3 Review findings; omit origin and embedded supporting judgment. | User-selected simplification: maintain the current actionable account without mandatory original snapshots or revision history. Retain explicit disposition, stable references and v2 historical meaning; blockers are outside this change. |
 
 ## Quality Requirements
 
 | Quality | Acceptance condition | Requirement coverage |
 | --- | --- | --- |
-| Resumability | A selected concern explains its origin without review-round replay or chat. | RF-SR-04, RF-SR-07 |
+| Resumability | A selected blocker explains its origin; a finding explains its current account without review-round replay or chat. | RF-SR-04, RF-SR-07 |
 | Correctability | Workflow contradictions do not prevent structurally valid correction records. | RF-SR-05 |
-| Integrity | All write paths preserve origin, registry coherence and exact contract identity. | RF-SR-01, RF-SR-02, RF-SR-08 |
-| Compatibility | Historical v1 content remains truthful and distinguishable. | RF-SR-06 |
+| Integrity | All write paths preserve blocker origin, finding IDs, registry coherence and exact contract identity. | RF-SR-01, RF-SR-02, RF-SR-08 |
+| Compatibility | Historical content remains truthful and distinguishable. | RF-SR-06 |
 | Usability | Final explanations remain complete normal deliverables. | RF-SR-07 |
 
 ## Risks and Technical Debt
 
-Embedded rationale can reach the existing per-record size limit; the CLI must reject excess explicitly without truncation. Preservation cannot establish that an original assessment was correct. The removal dependency analysis and v2 regression proof remain delivery obligations; the operational v2 baseline is not proof of the future removal. Model-document validation uses `model-document-v1`; the Design model owns its structural contract, independently of stored-format dispatch.
+Embedded rationale can reach the existing per-record size limit; the CLI must reject excess explicitly without truncation. Preservation cannot establish that an original assessment was correct. Retirement-specific branches are assessed under the owning plan’s explicit no-new-retirement-tests boundary; preserved shared safety proof does not imply exhaustive retirement coverage. Model-document validation uses `model-document-v1`; the Design model owns its structural contract, independently of stored-format dispatch.
 
 ## Glossary
 
-Stored format: versioned durable data contract. Concern: review finding or change-level blocker with current fields and retained origin. Origin: immutable original basis for a concern. Applicability: actor-declared usability of an entire supporting record. Subject identity: digest of the exact assessed file bytes. Transport: transient CLI request or response, independently versioned.
+Stored format: versioned durable data contract. Finding: current review problem account with immutable ID. Concern: change-level blocker with current fields and retained origin. Origin: immutable original basis for a blocker. Applicability: actor-declared usability of an entire supporting record. Subject identity: digest of the exact assessed file bytes. Transport: transient CLI request or response, independently versioned.
 
 ## Drafting basis and authority
 
-This revision follows the [approved retirement direction](../../proposals/2026-09-08-retire-compact-workflow-mutations.md), its independent Proposal Review and the user's continuation into focused Design. Owning record: [change.json](../../changes/2026-09-08-retire-compact-workflow-mutations/change.json). The exact package comprises Record Format, CLI and Workflow; Review and Closeout and Test remain unchanged policy dependencies. The owner confirms that legacy work is complete and v2 is operational; this is an attributed operating baseline, not an independently executed completion query. The selected retirement supersedes earlier compatibility-retention clauses prospectively. Prior subjects, approvals and archival records retain their original meaning. This Design does not implement retirement, activate a release or authorize publication.
+The [v2 retirement change](../../changes/2026-09-11-retire-v2-record-format/change.json) owns this consolidation. Earlier [compact retirement](../../changes/2026-09-08-retire-compact-workflow-mutations/change.json) and [structured-assessment adoption](../../changes/2026-09-10-structured-assessment-explanations/change.json) remain historical provenance for their exact decisions and subjects. Current requirements above integrate their surviving obligations. Model text grants neither release publication nor customer activation.
 
 ## Next artifacts
 
-Independent Design Review assesses the exact Record Format, CLI and Workflow package, including removal dependencies, archival separation and retained v2 safety. Delivery planning follows Design approval and authorized continuation; implementation and final closeout require their normal independent assessments.
+Independent Design Review assesses the exact revised owning models and relied-on examples. The owning retirement plan carries delivery and verification allocation; current routing and actual results belong to the owning change and stage evidence.
 
 ## Follow-on artifacts
 

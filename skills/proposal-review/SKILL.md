@@ -56,7 +56,7 @@ Use exactly these resource assemblies:
 
 ## Recording boundary
 
-After classification, durable or formal review requires the complete `references/proposal-review-recording-and-settlement.md` before dependent writes or recording claims. The adopted recording profiles support existing `rigorloop-records-v2` and new `rigorloop-records-v3` stores; missing or conflicting authority stops without fallback to retired records. Keep supported findings visible when recording is blocked. Ordinary advisory review without a durable trigger needs no recording procedure. Recording does not grant approval or continuation.
+After classification, durable or formal review requires the complete `references/proposal-review-recording-and-settlement.md` before dependent writes or recording claims. The adopted recording profile supports `rigorloop-records-v3` stores; missing or conflicting authority stops without fallback to retired records. Keep supported findings visible when recording is blocked. Ordinary advisory review without a durable trigger needs no recording procedure. Recording does not grant approval or continuation.
 
 ## Review inputs and evidence
 

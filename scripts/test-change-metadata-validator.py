@@ -340,7 +340,7 @@ class ExplicitRecordingMetadataTests(unittest.TestCase):
         self.root = Path(temporary.name)
         self.path = self.root / "docs/changes/example/change.json"
         self.path.parent.mkdir(parents=True)
-        self.fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/storage-safety.json").read_text())
+        self.fixture = json.loads((ROOT / "tests/fixtures/rigorloop-records-v3/storage-safety.json").read_text())
         self.change = json.loads(self.fixture["request"]["writes"][0]["content"])
 
     def check(self, change=None):
@@ -362,9 +362,9 @@ class ExplicitRecordingMetadataTests(unittest.TestCase):
         review.write_text(json.dumps(value) + "\n")
         self.assertNotEqual(run_validator(manifest).returncode, 0)
 
-    def test_recording_v2_manifest_dispatch_preserves_contract_and_unknown_value_rejects(self):
+    def test_recording_v3_manifest_dispatch_preserves_contract_and_unknown_value_rejects(self):
         self.path = self.path.with_name("change.json")
-        f = json.loads((ROOT / "tests/fixtures/rigorloop-records-v2/records.json").read_text())
+        f = json.loads((ROOT / "tests/fixtures/rigorloop-records-v3/records.json").read_text())
         self.change = f["change"]
         self.change.update(records=[], applicability=[], blockers=[])
         self.assertEqual(self.check().returncode, 0)
@@ -384,7 +384,7 @@ class ExplicitRecordingMetadataTests(unittest.TestCase):
 
     def test_explicit_recording_metadata_rejects_duplicate_keys_encoding_and_symlink(self):
         raw = json.dumps(self.change) + "\n"
-        for content in (raw.rstrip("\n"), raw.replace('"schema_version": 2', '"schema_version": 2, "schema_version": 2', 1)):
+        for content in (raw.rstrip("\n"), raw.replace('"schema_version": 3', '"schema_version": 3, "schema_version": 3', 1)):
             self.path.write_text(content)
             self.assertNotEqual(run_validator(self.path).returncode, 0)
             self.assertEqual(self.path.read_text(), content)
