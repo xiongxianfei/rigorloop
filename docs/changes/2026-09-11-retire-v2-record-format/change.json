@@ -4,9 +4,9 @@
       "id": "codex-final-verify",
       "role": "verify"
     },
-    "reason": "Route selects distinct final Verify after approved/current fresh final-code-review with no findings and both implementation milestones completed. Assess the unchanged source05b72446, current proof and user-authorized Git/PR handoff; no release or merge authority.",
+    "reason": "Route closes the initiative after successful current final Verify, approved independent whole-change Code Review and both completed milestones. Reviewed coherent implementation and successful Verify adopt the bounded v2 retirement. Next action is the user-authorized PR handoff; merge and release remain separate.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -79,6 +79,15 @@
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-code-review.json",
       "reason": "Fresh independent whole-change assessment of the exact final engineering package and current attributable evidence after both milestones completed. Distinct Verify remains required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-final-verify",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/verify-report.json",
+      "reason": "Distinct final assessment of exact delivered subjects, required review/proof chain and current local Git/PR basis.",
       "value": "current"
     }
   ],
@@ -162,6 +171,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/verify-report.json"
     }
   ],
   "schema_version": 3,
