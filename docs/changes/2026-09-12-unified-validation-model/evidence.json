@@ -1,0 +1,578 @@
+{
+  "change_id": "2026-09-12-unified-validation-model",
+  "checks": [
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "design-structure-and-prose",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/design/design.md --path docs/design/engineering/engineering.md --path docs/design/installation/installation.md --path docs/design/packaging/packaging.md --path docs/design/record-format/record-format.md --path docs/design/release/release.md --path docs/design/review-closeout/review-closeout.md --path docs/design/skill/skill.md --path docs/design/system/system.md --path docs/design/validation/validation.md --path docs/design/workflow/workflow.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/cli/cli.md --path docs/design/design/design.md --path docs/design/engineering/engineering.md --path docs/design/installation/installation.md --path docs/design/packaging/packaging.md --path docs/design/record-format/record-format.md --path docs/design/release/release.md --path docs/design/review-closeout/review-closeout.md --path docs/design/skill/skill.md --path docs/design/system/system.md --path docs/design/validation/validation.md --path docs/design/workflow/workflow.md",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:2265ebdb1499fe037fba67fdd1d092738b838669cba1ced73af4a42d85d98ac4",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:d12c69b6b3b2144cf4a0db09134c7f79af67102d4c19cf3397e13eb3081f2baa",
+          "path": "docs/design/design/design.md"
+        },
+        {
+          "identity": "sha256:0b364be2852bc13c2558023362fcf68b38594b345e85ac8256cad5f10b18c469",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:546ef8d97f7d2d09c973260b0c52d5ec201509bbf0b9fa734e2388cff8c916a2",
+          "path": "docs/design/installation/installation.md"
+        },
+        {
+          "identity": "sha256:149146a6631a2d9d4457e6abdf3e355d48ef74386461db5f729b72df9e533b79",
+          "path": "docs/design/packaging/packaging.md"
+        },
+        {
+          "identity": "sha256:8678c6cb7e6e8599770e5a010039c2c4185ba9af08f4a0f07fdb69f9d3961d85",
+          "path": "docs/design/record-format/record-format.md"
+        },
+        {
+          "identity": "sha256:18a9944ee98fc544b7a1dfd90c63b037ef74152a534a252ad0b062b3fcb5630b",
+          "path": "docs/design/release/release.md"
+        },
+        {
+          "identity": "sha256:1bfa89fdb4bf9057c6cb78994a92d1b503ca50c39bf8454484be64aae381a777",
+          "path": "docs/design/review-closeout/review-closeout.md"
+        },
+        {
+          "identity": "sha256:4e798650f7ed54a994567e376f8ab36a5e43d6d2e722613196a0ce09529226b8",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:50c5502225b0d6f2e987e161053fd69adf99e137d46dfa2a0a7d666a6d924c06",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:ef36130eb01af14810fe1bfe29b87392036593f170ee9404e8e56206b4b805ef",
+          "path": "docs/design/validation/validation.md"
+        },
+        {
+          "identity": "sha256:bb211b39c144a6d6d1219b47efbfbbb86169af37bc111cce00b4b2535182c8ae",
+          "path": "docs/design/workflow/workflow.md"
+        }
+      ],
+      "summary": "All twelve current models pass structure and prose (0 errors/0 warnings); no semantic-approval claim."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "design-legacy-prose-audit",
+      "procedure": "Run validate-documentation-prose.py segment_prose_blocks/analyze_block on every surviving touched document and compare findings against HEAD",
+      "result": "failed",
+      "subjects": [
+        {
+          "identity": "sha256:093bc37310c7249d5b091ec7a13b7cc0b300fad68818abfc825b9ff696ab2018",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:f7495f1cc3ca97cd4e650dc76f4c866a0b8572876e8704cf96d708d9a6f31d2c",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:a6e11e66e7a9a5125041a20e9318b02d9f4e9cc6d88f4dd2f90af3aacff80b79",
+          "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+        },
+        {
+          "identity": "sha256:d2cc15d3fc370cd8501b9adf60553fb580c66554d17538bcfcb61b103bb5fec3",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:802e8f9b470ce150447a7aaf8e9f7348d0a84d9b1d9e2e1cfeeaaf22db31338b",
+          "path": "specs/published-skill-first-repository-simplification.test.md"
+        },
+        {
+          "identity": "sha256:e27c6c836c55c6af00bd54daa4564ad5df0d595876d7b1c69888bdf93fb932bd",
+          "path": "specs/rigorloop-cli-new-change.md"
+        },
+        {
+          "identity": "sha256:a3e3ee8a5722836a69c583bc22bd82aae5fed1b432e0947f538b33b9876eeb2a",
+          "path": "specs/rigorloop-cli-package-and-codex-init.md"
+        },
+        {
+          "identity": "sha256:f17cd3fdca63f0634899904a8a990774bca0499cfc2ad8110d929149b4e9b30e",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:9db6156a499d5647a38bf357405d3001b48fda6bc9cf7929e9b810c0fed94296",
+          "path": "specs/single-authored-skill-source-generated-output.md"
+        }
+      ],
+      "summary": "[{\"path\": \"docs/architecture/system/architecture.md\", \"errors\": 268, \"warnings\": 115, \"introduced\": 0}, {\"path\": \"specs/multi-agent-adapters-first-public-release.md\", \"errors\": 7, \"warnings\": 0, \"introduced\": 0}, {\"path\": \"specs/public-adapter-artifact-migration-examples-concise-skill-release.md\", \"errors\": 8, \"warnings\": 0, \"introduced\": 0}, {\"path\": \"specs/published-skill-first-repository-simplification.md\", \"errors\": 1, \"warnings\": 0, \"introduced\": 0}, {\"path\": \"specs/published-skill-first-repository-simplification.test.md\", \"errors\": 2, \"warnings\": 0, \"introduced\": 0}, {\"path\": \"specs/rigorloop-cli-new-change.md\", \"errors\": 7, \"warnings\": 0, \"introduced\": 0}, {\"path\": \"specs/rigorloop-cli-package-and-codex-init.md\", \"errors\": 10, \"warnings\": 0, \"introduced\": 0}, {\"path\": \"specs/rigorloop-workflow.md\", \"errors\": 0, \"warnings\": 39, \"introduced\": 0}, {\"path\": \"specs/single-authored-skill-source-generated-output.md\", \"errors\": 7, \"warnings\": 0, \"introduced\": 0}]; all introduced counts are zero. These are real baseline full-file failures, not passing whole-file claims."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "design-preservation-delta",
+      "procedure": "Compare all original requirement rows from inspected /tmp/rigorloop-optimization-baseline.json against current Designs; compare all 67 model example files to git show HEAD:<path>; resolve Markdown targets and fragments in all current model files; compare prose parser findings against HEAD for all touched surviving docs; git diff --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:a3b7bc20f985dca21bebd932460cb31fbe4db557393e923c8f55d016a8b21728",
+          "path": "AGENTS.md"
+        },
+        {
+          "identity": "sha256:1d763c6c2cda95248f45e9c1df5b3351ab54b7ca11d3b7f4539b5ae1a1d78256",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:287651451e6075a178d71598871fba4dd0461af82adc96f94799e8e47d3b2e5f",
+          "path": "README.md"
+        },
+        {
+          "identity": "sha256:093bc37310c7249d5b091ec7a13b7cc0b300fad68818abfc825b9ff696ab2018",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:b1e66e9fe045dbe31faf8b061cb0a3db428cfec2c9162bd48b20c651ea3036a4",
+          "path": "docs/changes/2026-09-12-unified-validation-model/design-reconciliation.md"
+        },
+        {
+          "identity": "sha256:2265ebdb1499fe037fba67fdd1d092738b838669cba1ced73af4a42d85d98ac4",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:d12c69b6b3b2144cf4a0db09134c7f79af67102d4c19cf3397e13eb3081f2baa",
+          "path": "docs/design/design/design.md"
+        },
+        {
+          "identity": "sha256:0b364be2852bc13c2558023362fcf68b38594b345e85ac8256cad5f10b18c469",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:546ef8d97f7d2d09c973260b0c52d5ec201509bbf0b9fa734e2388cff8c916a2",
+          "path": "docs/design/installation/installation.md"
+        },
+        {
+          "identity": "sha256:149146a6631a2d9d4457e6abdf3e355d48ef74386461db5f729b72df9e533b79",
+          "path": "docs/design/packaging/packaging.md"
+        },
+        {
+          "identity": "sha256:8678c6cb7e6e8599770e5a010039c2c4185ba9af08f4a0f07fdb69f9d3961d85",
+          "path": "docs/design/record-format/record-format.md"
+        },
+        {
+          "identity": "sha256:18a9944ee98fc544b7a1dfd90c63b037ef74152a534a252ad0b062b3fcb5630b",
+          "path": "docs/design/release/release.md"
+        },
+        {
+          "identity": "sha256:1bfa89fdb4bf9057c6cb78994a92d1b503ca50c39bf8454484be64aae381a777",
+          "path": "docs/design/review-closeout/review-closeout.md"
+        },
+        {
+          "identity": "sha256:4e798650f7ed54a994567e376f8ab36a5e43d6d2e722613196a0ce09529226b8",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:50c5502225b0d6f2e987e161053fd69adf99e137d46dfa2a0a7d666a6d924c06",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:ef36130eb01af14810fe1bfe29b87392036593f170ee9404e8e56206b4b805ef",
+          "path": "docs/design/validation/validation.md"
+        },
+        {
+          "identity": "sha256:bb211b39c144a6d6d1219b47efbfbbb86169af37bc111cce00b4b2535182c8ae",
+          "path": "docs/design/workflow/workflow.md"
+        },
+        {
+          "identity": "sha256:05a1b38d6bb758ed75e716f1aca956f79718edb1a39db51e99c435596d17a9b3",
+          "path": "docs/proposals/2026-09-12-skill-cli-engineering-model-hierarchy.md"
+        },
+        {
+          "identity": "sha256:f7495f1cc3ca97cd4e650dc76f4c866a0b8572876e8704cf96d708d9a6f31d2c",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:a6e11e66e7a9a5125041a20e9318b02d9f4e9cc6d88f4dd2f90af3aacff80b79",
+          "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+        },
+        {
+          "identity": "sha256:d2cc15d3fc370cd8501b9adf60553fb580c66554d17538bcfcb61b103bb5fec3",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:802e8f9b470ce150447a7aaf8e9f7348d0a84d9b1d9e2e1cfeeaaf22db31338b",
+          "path": "specs/published-skill-first-repository-simplification.test.md"
+        },
+        {
+          "identity": "sha256:e27c6c836c55c6af00bd54daa4564ad5df0d595876d7b1c69888bdf93fb932bd",
+          "path": "specs/rigorloop-cli-new-change.md"
+        },
+        {
+          "identity": "sha256:a3e3ee8a5722836a69c583bc22bd82aae5fed1b432e0947f538b33b9876eeb2a",
+          "path": "specs/rigorloop-cli-package-and-codex-init.md"
+        },
+        {
+          "identity": "sha256:f17cd3fdca63f0634899904a8a990774bca0499cfc2ad8110d929149b4e9b30e",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:9db6156a499d5647a38bf357405d3001b48fda6bc9cf7929e9b810c0fed94296",
+          "path": "specs/single-authored-skill-source-generated-output.md"
+        },
+        {
+          "identity": "sha256:8c210d28d94cb0207d068bf951568136514525f49f34ad67995a3d7570c374a6",
+          "path": "specs/skill-contract.md"
+        }
+      ],
+      "summary": "All original requirement rows except explicitly superseded DIST-SR-01 preserved verbatim; 67 examples byte-identical; current model links/fragments valid; zero introduced prose findings; whitespace check passed."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "design-case-entrypoint-feasibility",
+      "procedure": "python scripts/test-select-validation.py ValidationSelectionTests.test_catalog_matches_v1_contract",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:fb5a5250c4b063aa3a269c393b6f4da72435169ea1b5e0e90ee03d9663457a01",
+          "path": "scripts/test-select-validation.py"
+        }
+      ],
+      "summary": "One named existing case executed: 1 passed. Supports current single-case entrypoint feasibility only; no suite-wide parallel-safety or implementation claim."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "system-graph-render",
+      "procedure": "Extract both System Mermaid sources; npx --yes --package @mermaid-js/mermaid-cli mmdc -i /tmp/rigorloop-optimized-system-N.mmd -o /tmp/rigorloop-optimized-system-N.png -p /tmp/rigorloop-mermaid-puppeteer.json -b white -w 1600 for N=1,2; inspect both PNGs with view_image",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:50c5502225b0d6f2e987e161053fd69adf99e137d46dfa2a0a7d666a6d924c06",
+          "path": "docs/design/system/system.md"
+        }
+      ],
+      "summary": "Both updated diagrams render; hierarchy, optional-CLI product use and quality-building path visually inspected."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "proposal"
+      },
+      "id": "three-model-direction-author-check",
+      "procedure": "Check the seven required proposal headings plus optional Impact in the permitted order, inspect feasibility and scope allocations, resolve local Markdown links, and run python scripts/validate-documentation-prose.py --mode enforce --path docs/proposals/2026-09-12-skill-cli-engineering-model-hierarchy.md; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:c6e67c0b8cdbe1739c57bcd9df4b6e6192b206bebb5ae79fe7c67611f01725a7",
+          "path": "docs/proposals/2026-09-12-skill-cli-engineering-model-hierarchy.md"
+        }
+      ],
+      "summary": "Expanded direction preserves three-model hierarchy, nested contracts and all prior validation/cleanup goals. Proposal sections and links pass; prose has no findings. This author check does not grant independent Proposal Review approval."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "implement"
+      },
+      "id": "directory-layout-proof",
+      "procedure": "python scripts/test-boundary-first-validation.py; python scripts/test-select-validation.py; python scripts/test-change-metadata-validator.py; five focused node --test record-store suites and corrected Workflow rerun; both model validators on all 12 mapped paths, with final CLI-only document rerun; git diff --check; exact pre-move payload/link/requirement comparison. Full commands and failed-run dispositions: docs/changes/2026-09-12-unified-validation-model/directory-layout-evidence.md",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:24af7c0c81bdba70b2212a1a437b8dfaa77064e3b54cff2b3a01b0ebfaf7b5eb",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:0b8d25d6f4555a27f15a0d8f39e10161ca932fc1c76470433e465cec8e4acb92",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:b129f1558234aea5d7abe643dee09422cf4b748aaab860fd84c45e3356b01ec7",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:a73d0c4232811df739ce9bab2e3bb75115f82f4ed4ecc02bf9b45d19475b97a9",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:9d63c43239c192cf09613d7ed26c881830f77abb174dd142f2e262fcd5bcabfd",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:f0c791be2adf0724c532183d6b6742c220a9aff677151bf889bcee69a207cfab",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:51a166ef0e6dff284a9e1981bb91bae6c1084270eb84c44ad14a005bcd53b523",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:088626d15d98db155d2ecdb581411fec20e8bc06db51e0b2a45a3b5376904de9",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:beaa9f0f7536b83a7edc5117c3168c5aeaa02763483a2e4c93b53acf17b2469c",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:fe211297da8533a8620535abee9b8d47fd512da99ac7e9f7fd08878606ff340b",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:8282450f2f859405c017fc98638e53ec7bddc4dad67b394a84f5ee1eae6ca814",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:480307c5371e23ccf8bd46d2d1712e8906d360431f8550091670d8ef103a3aa2",
+          "path": "scripts/model_layout.py"
+        },
+        {
+          "identity": "sha256:b68084a3e8be4ec1daa6976bf1f0ad7c3e0d1cf97058db60080f25489175caa3",
+          "path": "scripts/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:0691e1f65ca9b3a029ff7711d2dfe9c314b3b2bddf744a6837f699490fe25784",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:455e9bf110183bb510713faa845acb99d1f09b2d5a47bc151bab58e206ea77e4",
+          "path": "scripts/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:68665f50945f6e1f252deb6f02e65b8431094d31d491d098673dd6bac6a9140c",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:382010132e00438545e2b6d207ea9927db4c02d1b1e2a31975d36b54d67f6222",
+          "path": "scripts/test-change-metadata-validator.py"
+        },
+        {
+          "identity": "sha256:ce1143e682d6227071b42bd60a0d3c642f6e0e3d49ea5c0a6cf399478b97a24f",
+          "path": "scripts/release_candidate.py"
+        },
+        {
+          "identity": "sha256:6d7d86df4eceae63dee63dfa900f6d45c7075fe4169db2b18c91dc8c7d2618a5",
+          "path": "docs/plans/2026-09-12-design-directory-layout.md"
+        },
+        {
+          "identity": "sha256:039df2859969a9c3e485665636780a05ed5461b3cdb367afda3cb1ad353cd819",
+          "path": "docs/changes/2026-09-12-unified-validation-model/directory-layout-evidence.md"
+        },
+        {
+          "identity": "sha256:c10cd261d2abfdf68f1b49ca65254c0dea493d2d72d4f0d6ce51bc086e1a4069",
+          "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+        },
+        {
+          "identity": "sha256:25d0a748a129276358a298a004ed0e70deaf7a5de8b578795bde8ce7b97d3fb3",
+          "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+        },
+        {
+          "identity": "sha256:10f7b38e69bec2c1b85ce2b3741af215fdf25b7d19c2acc9ae9cbb5b74d18354",
+          "path": "packages/rigorloop/test/record-store-workflow.test.js"
+        },
+        {
+          "identity": "sha256:420cc141bb3e125443fcf9874d6479512a0d24955b23bbd8b41b51124da3ba0b",
+          "path": "packages/rigorloop/test/helpers/v3-fixture.mjs"
+        }
+      ],
+      "summary": "Boundary 90 passed, selector 167 passed, metadata 8 passed. Initial CLI 30/31 and corrected Workflow 2/2 closes sole failure. All 12 model/prose checks pass. Preserved 50 JSON/Mermaid payloads and stable requirements. Initial selector dependency failure corrected using shared dependency-free module and real fixture coverage. No runtime executor or whole-initiative readiness claim."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "verify"
+      },
+      "id": "directory-final-check",
+      "procedure": "Inspect exact current directory-layout-proof subjects; read independent directory Design/Delivery/Code assessments and resolved finding; assess complete focused command results, payload and requirement preservation, and git diff --check. This is a bounded direct check, not a whole-change Verify report.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:24af7c0c81bdba70b2212a1a437b8dfaa77064e3b54cff2b3a01b0ebfaf7b5eb",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:0b8d25d6f4555a27f15a0d8f39e10161ca932fc1c76470433e465cec8e4acb92",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:b129f1558234aea5d7abe643dee09422cf4b748aaab860fd84c45e3356b01ec7",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:a73d0c4232811df739ce9bab2e3bb75115f82f4ed4ecc02bf9b45d19475b97a9",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:9d63c43239c192cf09613d7ed26c881830f77abb174dd142f2e262fcd5bcabfd",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:f0c791be2adf0724c532183d6b6742c220a9aff677151bf889bcee69a207cfab",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:51a166ef0e6dff284a9e1981bb91bae6c1084270eb84c44ad14a005bcd53b523",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:088626d15d98db155d2ecdb581411fec20e8bc06db51e0b2a45a3b5376904de9",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:beaa9f0f7536b83a7edc5117c3168c5aeaa02763483a2e4c93b53acf17b2469c",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:fe211297da8533a8620535abee9b8d47fd512da99ac7e9f7fd08878606ff340b",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:8282450f2f859405c017fc98638e53ec7bddc4dad67b394a84f5ee1eae6ca814",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:480307c5371e23ccf8bd46d2d1712e8906d360431f8550091670d8ef103a3aa2",
+          "path": "scripts/model_layout.py"
+        },
+        {
+          "identity": "sha256:b68084a3e8be4ec1daa6976bf1f0ad7c3e0d1cf97058db60080f25489175caa3",
+          "path": "scripts/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:0691e1f65ca9b3a029ff7711d2dfe9c314b3b2bddf744a6837f699490fe25784",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:455e9bf110183bb510713faa845acb99d1f09b2d5a47bc151bab58e206ea77e4",
+          "path": "scripts/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:68665f50945f6e1f252deb6f02e65b8431094d31d491d098673dd6bac6a9140c",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:382010132e00438545e2b6d207ea9927db4c02d1b1e2a31975d36b54d67f6222",
+          "path": "scripts/test-change-metadata-validator.py"
+        },
+        {
+          "identity": "sha256:ce1143e682d6227071b42bd60a0d3c642f6e0e3d49ea5c0a6cf399478b97a24f",
+          "path": "scripts/release_candidate.py"
+        },
+        {
+          "identity": "sha256:6d7d86df4eceae63dee63dfa900f6d45c7075fe4169db2b18c91dc8c7d2618a5",
+          "path": "docs/plans/2026-09-12-design-directory-layout.md"
+        },
+        {
+          "identity": "sha256:039df2859969a9c3e485665636780a05ed5461b3cdb367afda3cb1ad353cd819",
+          "path": "docs/changes/2026-09-12-unified-validation-model/directory-layout-evidence.md"
+        },
+        {
+          "identity": "sha256:c10cd261d2abfdf68f1b49ca65254c0dea493d2d72d4f0d6ce51bc086e1a4069",
+          "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+        },
+        {
+          "identity": "sha256:25d0a748a129276358a298a004ed0e70deaf7a5de8b578795bde8ce7b97d3fb3",
+          "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+        },
+        {
+          "identity": "sha256:10f7b38e69bec2c1b85ce2b3741af215fdf25b7d19c2acc9ae9cbb5b74d18354",
+          "path": "packages/rigorloop/test/record-store-workflow.test.js"
+        },
+        {
+          "identity": "sha256:420cc141bb3e125443fcf9874d6479512a0d24955b23bbd8b41b51124da3ba0b",
+          "path": "packages/rigorloop/test/helpers/v3-fixture.mjs"
+        },
+        {
+          "identity": "sha256:b816b647959e52af75a3d33c51e47e769f0f8bb891d2358a0f4b8920441e20e4",
+          "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-code-review.json"
+        }
+      ],
+      "summary": "Reviewed directory layout and actual-reader support agree with user-approved hierarchy and bounded plan. All source identities match tested subjects. Remaining unified executor/cache cleanup and whole-initiative final review/Verify are not completed by this slice."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "plan"
+      },
+      "id": "validation-plan-author-check",
+      "procedure": "python scripts/validate-documentation-prose.py --mode enforce --path docs/plans/2026-09-12-unified-validation-implementation.md; git diff --check; inspect existing catalog/wrapper, three suite entrypoints, cache/measurement/classification callers and exact model identities; verify named existing command paths and plan requirement/verification allocation.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        },
+        {
+          "identity": "sha256:6d7d86df4eceae63dee63dfa900f6d45c7075fe4169db2b18c91dc8c7d2618a5",
+          "path": "docs/plans/2026-09-12-design-directory-layout.md"
+        },
+        {
+          "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:24af7c0c81bdba70b2212a1a437b8dfaa77064e3b54cff2b3a01b0ebfaf7b5eb",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:0b8d25d6f4555a27f15a0d8f39e10161ca932fc1c76470433e465cec8e4acb92",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:088626d15d98db155d2ecdb581411fec20e8bc06db51e0b2a45a3b5376904de9",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:beaa9f0f7536b83a7edc5117c3168c5aeaa02763483a2e4c93b53acf17b2469c",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:b129f1558234aea5d7abe643dee09422cf4b748aaab860fd84c45e3356b01ec7",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:fe211297da8533a8620535abee9b8d47fd512da99ac7e9f7fd08878606ff340b",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:8282450f2f859405c017fc98638e53ec7bddc4dad67b394a84f5ee1eae6ca814",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:f0c791be2adf0724c532183d6b6742c220a9aff677151bf889bcee69a207cfab",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:51a166ef0e6dff284a9e1981bb91bae6c1084270eb84c44ad14a005bcd53b523",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:9d63c43239c192cf09613d7ed26c881830f77abb174dd142f2e262fcd5bcabfd",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:a73d0c4232811df739ce9bab2e3bb75115f82f4ed4ecc02bf9b45d19475b97a9",
+          "path": "docs/design/skill/assessment.md"
+        }
+      ],
+      "summary": "Plan prose has zero errors/warnings; whitespace check passed. Current 12 model identities match registry; concrete runtime/retirement consumers and three-suite adoption are allocated to five ordered milestones. Existing commands were checked against repository files; C4 is explicitly a new planned regression entrypoint. No implementation checks claimed executed; required execution remains allocated work."
+    }
+  ],
+  "schema_version": 3
+}

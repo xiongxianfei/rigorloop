@@ -1,0 +1,71 @@
+{
+  "assessment_scope": "Expanded direction only: three main models with cohesive children, product/engineering interfaces, feasibility and preservation of accepted user constraints. Formal-lifecycle review; no detailed hierarchy Design approval. PRR1G-recorded-context-gated.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "proposal"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: hierarchy-cli-usage-boundary. Severity: medium. Location: expanded proposal Goals, Scope and non-goals, Decision requested. Evidence: the accepted product graph and System Selected model hierarchy/Product integration contract distinguish individual skill use without CLI from CLI-required current governed recording and CLI-based installation. The complete expanded proposal reallocates Skill/CLI boundaries but does not preserve that compatibility constraint.",
+      "id": "hierarchy-cli-usage-boundary",
+      "owner": {
+        "id": "root",
+        "role": "proposal"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Explicitly retain individual skill usability without CLI, the CLI requirement for current governed recording, and the fact that CLI-based installation requires it only for that method. Safe resolution path: proposal author adds this direction-level interface constraint to scope or direction, links the revised exact proposal, then the independent reviewer reassesses it. No command implementation design or new owner decision is needed.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Independently reread the complete revised proposal at sha256:05a1b38d6bb758ed75e716f1aca956f79718edb1a39db51e99c435596d17a9b3. Its Scope and non-goals now explicitly preserves individual skills without CLI, requires CLI for current governed recording without claiming governed completion for independent use, and limits CLI-installation dependency to that installation method. This fully satisfies the recorded outcome without changing commands or detailed Design. No additional correction is needed."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:c6e67c0b8cdbe1739c57bcd9df4b6e6192b206bebb5ae79fe7c67611f01725a7",
+          "path": "docs/proposals/2026-09-12-skill-cli-engineering-model-hierarchy.md"
+        }
+      ]
+    }
+  ],
+  "id": "hierarchy-proposal-review",
+  "independence_basis": "The separately authorized proposal-reviewer agent independently assessed the complete expanded proposal authored by root. The reviewer did not author or edit the proposal or selected System hierarchy.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval of exact child contracts, Design source dispositions, implementation, performance, suite parallel safety and removal safety is outside this assessment.",
+    "This review records evidence and findings only, does not change activity or start downstream execution, and grants no external publication or customer governance authority."
+  ],
+  "rationale": [
+    "Challenge and goals: pass. Current Skill common-content and CLI recording contracts corroborate the fragmented responsibility framing. Two implementation deliverables exist under skills/ and packages/rigorloop/; the latter declares the rigorloop executable. The direction targets understandable ownership rather than another runtime.",
+    "Governing principle and direction: pass. Skill defines capability behavior, CLI defines executable behavior, Engineering realizes and proves both. Cohesive submodels and a System composition root avoid forcing all obligations into three large files. Distinguishing skill assessment behavior from repository assessment requirements and installation from package production identifies the central boundaries without deciding detailed transfers.",
+    "Scope and scope preservation: pass. All earlier independent-test, bounded concurrency, no-validation-cache and required cleanup goals remain explicit, with core/dependency/separate-slice allocations. The corrected Scope and non-goals explicitly retains individual skills without CLI, CLI-required current governed recording, no governed-completion claim from individual use, and CLI-installation dependence only for that method. The independently reassessed correction satisfies the recorded finding; no material goal silently narrows or becomes an untracked deferral.",
+    "Feasibility: pass. Exactly one embedded Feasibility section states its assessment, basis, uncertainties and lack of technical blocker for Design. Existing models and product surfaces support obligation reallocation; mixed proof, assessment, packaging and installation ownership are explicitly deferred to exact Design rather than assumed solved. Reviewed implementation slices are required; no safe-deletion or complete dependency-audit claim is made.",
+    "Material impact and downstream authority: pass. The proposal expressly expands beyond the earlier reviewed subject, preserves its original judgment, conditions adoption, and requires exact source transfer, governance and cleanup. The main-model count does not dictate file count, directory migration or one child per skill. Design and Delivery retain realization and sequencing.",
+    "Vision alignment: aligned. One owner per behavior and observable proof for both published products support traceable, resumable and inspectable engineering without a hosted orchestration system or automatic publication. No standing-artifact exception or vision exception is required.",
+    "Scope-budget gate: applicable and passes explicit workstream treatment and boundaries; vision_exception_context and standing_artifact_context are false. Trigger ambiguity: none. Requested decision: pass. The accepted expanded direction and its limits are explicit, with detailed transfer Design and Delivery still required. No remaining required proposal edits.",
+    "Current context contains earlier Design proof and a failed legacy prose audit; neither supplies direction approval nor contradicts the bounded feasibility assessment. Legacy source cleanup and actual Design adequacy remain downstream scope. The original proposal-review record remains unchanged and applies only to its original subject.",
+    "Reassessment read the entire revised proposal and confirmed the added CLI usage paragraph is the bounded correction. Existing source/consumer proof observations remain outside this direction-only judgment; this approval is not a renewal of earlier Design evidence."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:05a1b38d6bb758ed75e716f1aca956f79718edb1a39db51e99c435596d17a9b3",
+      "path": "docs/proposals/2026-09-12-skill-cli-engineering-model-hierarchy.md"
+    }
+  ],
+  "summary": "The expanded Skill, CLI and Engineering direction is valuable, bounded and feasible for Design; the corrected proposal preserves the accepted optional-CLI usage boundary.",
+  "target": "proposal"
+}

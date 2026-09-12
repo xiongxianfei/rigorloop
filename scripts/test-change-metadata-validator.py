@@ -348,7 +348,7 @@ class ExplicitRecordingMetadataTests(unittest.TestCase):
         return run_validator(self.path)
 
     def test_recording_v3_full_set_and_unknown_value_version_fail_closed(self):
-        source = ROOT / "docs/design/record-format/examples/v3-complete-store"
+        source = ROOT / "docs/design/cli/examples/records/v3-complete-store"
         target = self.root / "docs/changes/example-change"
         for file in source.rglob("*.json"):
             destination = target / file.relative_to(source)

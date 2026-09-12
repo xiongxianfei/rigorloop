@@ -4,35 +4,24 @@ Model validation contract: model-document-v1
 
 ## Introduction and Goals
 
-Skill owns the common contract by which a published capability presents its purpose, invocation conditions, procedure, inputs, outputs, conditional resources and claim limits. It reconciles the shared structure, readability, portability and resource-integrity responsibilities selected by the [approved proposal](../../proposals/2026-09-08-skill-model-proposal-family-pilot.md). Current activity, subject identities and assessment evidence belong to the [owning change](../../changes/2026-09-08-skill-model-proposal-family-pilot/change.json).
+Skill owns what the published capabilities accept, do and produce, including their applicability, handoffs, failures and claim limits. Common conventions and specialist behavior are composed under one product boundary. The CLI is optional for individual skill use; current governed recording requires its supported interface. Engineering builds, tests and publishes the skills without becoming a competing owner of their behavior.
 
-The selected improvement pilot is exactly `proposal` and `proposal-review`. Establishing a common owner transfers unchanged obligations; it does not certify all consumers or require the whole inventory to adopt pilot improvements. Success requires a useful, assessed improvement in the pair, preservation of specialist behavior, and one current definition for every transferred obligation.
-
-### Applicability and activation
-
-Replacement authority is conditional on coherent adoption. Until reviewed implementation and successful Verify establish coherent adoption, existing governing contracts remain operational. Saving this model or approving its Design does not activate replacement authority. At adoption, preserved common requirements below apply to exactly the populations to which their source clauses already applied, including existing normalization exemptions and reviewed equivalent structures. They do not retroactively normalize a skill or invalidate historical artifacts. SKL-SR-16–19 select new or revised requirements for the named pair only; SKL-SR-20–23 govern this initiative's integration, displacement and follow-up work. Other requirements consolidate preserved common obligations and reference their specialist owners.
-
-The source-qualified mappings below, together with the current adopted-profile amendments, define the transfer. There is no second adoption registry, new frontmatter version, public command, or customer policy activation. A future skill-family adoption requires an explicit owning change that identifies its differences and evidence.
+Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Context and Scope
 
-Actors are capability authors, agents consuming installed skills, independent assessors, and contributors generating and validating packages. Inputs are user intent, project authority, canonical skill content and declared resources. Outputs are usable capability instructions, specialist-owned artifacts or actions, and separately assessed package/implementation evidence. Skill is a documentation and package-content responsibility, not an executable service or agent-selection engine.
+Users supply intent, project authority and the evidence needed by the selected capability. An agent follows published instructions and produces the scoped artifact, implementation, assessment or explanation. A skill is not an autonomous service; neither installation nor a valid output grants permission for another action. The inventory remains the existing published capabilities, not a new skill for every submodel.
 
-| Relationship | Owning source and retained boundary |
-| --- | --- |
-| Model authoring, displacement and examples | [Design](../design/design.md); this model uses its convention and does not define another authoring method. |
-| Composition across capabilities and packages | [System](../system/system.md); references Skill's common contract without duplicating it. |
-| Coordination, current activity and continuation | [Workflow](../workflow/workflow.md); the skill exposes applicable procedure without acquiring routing authority. |
-| Independent judgment, findings and closeout | [Review and Closeout](../review-closeout/review-closeout.md); Skill governs presentation and complete access, not judgment precedence or reviewer authority. |
-| Test derivation, protective value and maintenance | [Test](../test/test.md); Delivery allocates concrete proof and assessors judge adequacy. |
-| Recording | [Record Format](../record-format/record-format.md) and [CLI](../cli/cli.md); retain schemas, identity, persistence, conflict and recovery mechanics. |
-| Proposal content and specialist assessment | [Simplified Proposal Contract](../../../specs/simplified-proposal-contract.md), the retained proposal-family/simplification contracts under current governance, and Review and Closeout. Exact proposal sections, feasibility, scope gates and review dimensions do not move to Skill. |
-| Package production and target installation | [Distribution](../distribution/distribution.md) owns the mapped package and installation contract under the scoped adoption below. The [generated-source remainder](../../../specs/single-authored-skill-source-generated-output.md) retains its historical and measurement scope. Skill supplies content/resource invariants, not transport or release authority. |
-| Validation execution and release proof policy | [Published-skill-first simplification](../../../specs/published-skill-first-repository-simplification.md) and release owners retain gate composition, execution selection and exclusions. |
+| Submodel | Contract location | Product behavior |
+| --- | --- | --- |
+| Capability Contract | [Common requirements](#requirements) and [capability contract](#capability-contract) | Invocation, evidence access, resources, outputs, errors, portability and common limits. |
+| Workflow | [Workflow](workflow.md) | Activity selection, prerequisites, handoffs, correction and continuation. |
+| Authoring | [Authoring](#authoring) and its [Design method](authoring/design.md) | Produce proposals, coherent Designs and delivery plans from authorized intent. |
+| Implementation | [Implementation](#implementation) | Implement, diagnose and repair scoped changes with appropriate proof. |
+| Assessment | [Assessment](#assessment) and [Review and Closeout](assessment.md) | Judge exact work and evidence independently and report justified conclusions. |
+| Project Support | [Project support](#project-support) | Establish project direction, investigate uncertainty, orient contributors, capture learning and perform authorized external handoff. |
 
-No third skill becomes a pilot through a shared dependency. Distribution, Installation, Validation Execution, Release and CLI Observability model extraction, new lifecycle gates, new standalone test specs, schema changes, publication, real customer installation and inventory-wide rewriting are excluded.
-
-The separately selected [Distribution initiative](../../proposals/2026-09-10-distribution-model-and-opencode-retirement.md) amends only this model's delivery dependencies under its [owning change](../../changes/2026-09-10-distribution-model-and-opencode-retirement/change.json). At reviewed coordinated implementation and successful Verify, [Distribution](../distribution/distribution.md) replaces the mapped package/installation source owners, the current package population becomes Codex and Claude Code, and the local-mirror producer retires. Installation creates no managed state and performs no automatic managed upgrade. Existing candidate skill directories/files conflict by default, even when identical; explicit `--force` replaces complete conflicting units. Shared skill parents, unrelated skills and project state files are preserved, and state presence is not an admission rule. This changes delivery dependencies, not authored skill behavior. The original pilot exclusions above remain its historical scope, not a prohibition on this later approved direction. All Skill content/resource requirements and unchanged-skill applicability remain intact.
+A child may be a named section here or a separately maintained model document. Detailed contracts are defined once at those locations. Capability IDs and existing resource paths remain stable; hierarchy alone does not rename public invocations. The historical proposal-family pilot improved only its named pair. Its SKL-SR-16–23 applicability and original judgments remain unchanged; the product behavior composition applies to the existing inventory without claiming an inventory-wide implementation audit.
 
 ## Architecture Constraints
 
@@ -69,6 +58,58 @@ Only `rigorloop-records-v3` is supported runtime stored input in the adopted pro
 | SKL-SR-21 | Adoption MUST retire every mapped duplicate current authority only after its obligation and decision have a complete destination, explicit supersession or justified retention. Useful original bytes and historical identities MUST remain directly readable with necessary related navigation; mixed and operational sources MUST retain clearly bounded ownership. No whole-directory deletion is permitted. |
 | SKL-SR-22 | Governance, System references, contributor navigation, exact-text validator consumers and source-retirement evidence MUST agree on the adopted owner before final reliance. Previous approvals MUST NOT be retargeted to changed subjects. Reviewed implementation, independent milestone and final whole-change review, and distinct successful Verify remain prerequisites under their existing owners. |
 | SKL-SR-23 | Remaining adoption MUST identify actual remaining skills or bounded families, receiving owner, relevant differences and next decision through existing follow-up records. Completion of this pilot MUST NOT imply their improvement or universal conformance. |
+| SKL-SR-24 | Every published capability MUST have one behavioral owner under the submodel inventory and expose its required inputs, scoped action, usable output, failure disposition and handoff; shared conventions MUST NOT substitute for its specialist behavior. |
+| SKL-SR-25 | Individual skills MUST support their authorized portable output without requiring CLI recording. A governed recording trigger MUST instead load and use the supported CLI procedure, retain its prerequisites, and stop on missing or conflicting authority; portable output MUST NOT claim governed completion. |
+| SKL-SR-26 | Published instructions that use the CLI MUST match its supported commands, selectors, request and response contracts. The agent MUST inspect scope and operation results, supply explicit decisions and handle conflicts without inferring approval from persistence. |
+| SKL-SR-27 | Capability implementation MUST preserve the action and output boundaries in Authoring, Implementation, Assessment and Project Support. A shared helper, resource or parent model MUST NOT silently authorize a downstream activity or external action. |
+
+## Behavioral submodels
+
+### Capability Contract
+
+SKL-SR-01–15 define the reusable invocation and resource contract. A capability establishes applicable project authority, selects sufficient evidence and resources, performs its bounded work and reports the actual output and limits. Missing required resources stop dependent work; missing RigorLoop internals in a customer project is normal when a portable invocation is valid. SKL-SR-16–23 retain the original proposal-family improvement scope. SKL-SR-24–27 establish the product-wide behavior composition without changing the stored record format.
+
+### Workflow
+
+The [Workflow child](workflow.md) owns coordination. Manual invocation produces only its scoped result by default. Governed continuation consumes explicit assessments and authoritative project state; it does not manufacture another actor's conclusion. The `route` capability applies this behavior. Every other capability uses its required handoff without acquiring route ownership.
+
+### Authoring
+
+| Capability | Required input and action | Output and failure boundary |
+| --- | --- | --- |
+| `proposal` | Clarify authorized intent, scope, governing principle and proportionate feasibility before detailed design. | A direction proposal with explicit limits; material missing direction remains an owner question. It does not approve itself or select implementation details. |
+| `design` | Reconcile approved direction or an authorized correction with behavior, realization, dependencies and acceptance intent using the [Design child](authoring/design.md). | Exact affected Designs and assessment basis; material changes to approved product direction return to its decision owner. |
+| `plan` | Allocate settled requirements and boundaries to reviewable work, concrete checks, evidence and recovery using the retained plan/boundary contract. | A stable execution plan and verification allocation; no implementation, upstream approval or mutable lifecycle status in the plan. |
+
+The retained [proposal content contract](../../../specs/simplified-proposal-contract.md), [proposal procedure](../../../specs/proposal-skill-simplification.md), [proposal review procedure](../../../specs/proposal-review-skill-simplification.md), [proposal-family assets](../../../specs/proposal-family-assets-progressive-disclosure.md), [plan procedure](../../../specs/plan-skill-simplification.md) and [remaining plan/boundary contract](../../../specs/skill-contract.md) retain their explicitly unmigrated detailed obligations until transferred. This parent owns the capability interface and delegates those details; it does not replace them with a generic artifact template. Design is the common model-authoring method, not the owner of every product requirement.
+
+### Implementation
+
+| Capability | Required input and action | Output and failure boundary |
+| --- | --- | --- |
+| `implement` | Implement one approved milestone or an explicitly bounded implementation request against its actual behavioral contract, with proof first where feasible. | Scoped code/tests and actual execution evidence for independent review; a specification gap returns to authoring instead of becoming an invented requirement. |
+| `bugfix` | Establish the failing behavior and relevant authority, diagnose the cause and make the bounded correction. | Reproduction/regression evidence and a scoped fix or precise blocker; no widening of external permissions or unrelated refactoring. |
+| `ci-maintenance` | Inspect the actual repository automation contract and coverage, execution, trigger, permission or maintenance defect. | A scoped CI/configuration correction and applicable validation evidence; an unobserved hosted check is not reported as passed. |
+
+All three use the reusable criteria in [Validation](../engineering/validation.md#proof-quality-maintenance-and-evidence). They report commands actually run, preserve user changes and distinguish observation from review approval. Engineering Development defines this repository's invocation allocation; it does not redefine these capability behaviors.
+
+### Assessment
+
+[Review and Closeout](assessment.md) is the detailed assessment child. `proposal-review`, `design-review`, `delivery-review`, `code-review` and `verify` assess their exact direction, model package, delivery allocation, implementation and final integrated basis respectively. The reviewer retains independence from the work it judges. Findings identify actionable gaps and correction ownership; a passing structural check cannot replace semantic assessment. Only successful Verify owns the final closeout explanation under the adopted workflow. Assessment does not grant publication permission.
+
+### Project Support
+
+| Capability | Scoped behavior and usable outcome |
+| --- | --- |
+| `vision` | Define project identity, audience, commitments and falsifiable outcomes; reconcile generated README vision content without substituting a roadmap. |
+| `constitution` | Define or revise governing engineering principles under the user's authority; expose conflicts instead of silently overriding higher-priority rules. |
+| `explore` | Expand a materially unclear decision space into distinct choices and trade-offs without selecting an owning-stage decision. |
+| `research` | Reduce a bounded factual uncertainty with attributable evidence, confidence and remaining limitations; do not claim to settle product direction. |
+| `project-map` | Describe observed repository structure, entrypoints and boundaries with bounded inferences; do not invent future architecture or lifecycle state. |
+| `learn` | Capture durable lessons and accountable follow-up from observed work without replacing the action-owning stage. |
+| `pr` | Prepare the actual reviewed/verified change and perform the explicitly authorized PR handoff; missing readiness or external authority stops that action. |
+
+These capability contracts preserve their existing standalone and conditional artifact behavior. Their published specialist procedures remain the realization to reconcile and check, not an excuse to invent extra required artifacts for ordinary work.
 
 ## Solution Strategy
 
@@ -171,7 +212,7 @@ Every range below is inclusive and includes letter-suffixed clauses unless a row
 | R10–R13f | SKL-SR-04 and Common contract details preserve local claim limits, summary fields/equivalents, local handoffs and Workflow-owned progress/readiness/closeout distinctions. No independent redefinition of specialist approval. |
 | R14–R15d | SKL-SR-13 preserves canonical templates/shared sources, copied parity and subordinate policy ownership. Initial v1 allowed/deferred block inventories and no-generation rollout constraint remain historical, not a prohibition on subsequently approved projections. discovery-support's current copies remain under its existing owner, unchanged. |
 | R16–R17b; R21–R24c | SKL-SR-06/07/12: bounded reading, full-subject escapes, bounded examples, no new gate, no reduced proof, caps versus selection, retrievable omitted detail. |
-| R18–R18d; R25–R26b | SKL-SR-14 and Test/Review owners: positive-first narrow incident checks, negative-guidance false-positive protection, no semantic scoring; a process finding still requires concrete noisy evidence and a safer strategy without weakening proof. |
+| R18–R18d; R25–R26b | SKL-SR-14 and Validation/Review owners: positive-first narrow incident checks, negative-guidance false-positive protection, no semantic scoring; a process finding still requires concrete noisy evidence and a safer strategy without weakening proof. |
 | R19–R19c | SKL-SR-02: distinct responsibility needed for a new skill; one-off advice belongs in existing guidance. Contributor creation examples stay contributor-facing. |
 | R32–R32d; R34–R34c | SKL-SR-08/09/12: full resource map, script I/O/failure, no absence boilerplate, bounded examples and output preservation. |
 | R35–R35g | R35c/d transfer to SKL-SR-14; the other prospective routing/transcript requirements are already superseded by published-skill-first R26. Preserve historical meaning, not a new runtime oracle. |

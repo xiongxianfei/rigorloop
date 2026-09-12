@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from record_store_classification import is_archival_record_store
+from model_layout import PROJECT_MODEL_PATHS
 
 import json
 import fnmatch
@@ -35,7 +36,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "model.validate": CheckCatalogEntry(
         "model.validate",
-        "python scripts/validate-boundary-first.py --check --path docs/design/workflow/workflow.md --path docs/design/cli/cli.md --path docs/design/record-format/record-format.md",
+        "python scripts/validate-boundary-first.py --check --path docs/design/skill/workflow.md --path docs/design/cli/cli.md --path docs/design/cli/records.md",
         "explicit-recording", parallel_safe=True,
     ),
     "record_retirement.regression": CheckCatalogEntry(
@@ -481,19 +482,37 @@ def catalog_command(
         return _join(*args)
     if check_id == "model.validate":
         args = ["python", "scripts/validate-boundary-first.py", "--check"]
-        models = {"docs/design/workflow/workflow.md", "docs/design/cli/cli.md",
-                  "docs/design/record-format/record-format.md"}
+        models = {"docs/design/skill/workflow.md", "docs/design/cli/cli.md",
+                  "docs/design/cli/records.md"}
         for path in paths:
+            # Records is a child of CLI, with its own examples. Match it before CLI.
+            example_owners = {
+                "docs/design/cli/examples/records/": PROJECT_MODEL_PATHS["record-format"],
+                "docs/design/skill/examples/workflow/": PROJECT_MODEL_PATHS["workflow"],
+                "docs/design/cli/examples/": PROJECT_MODEL_PATHS["cli"],
+            }
+            owner = next((owner for prefix, owner in example_owners.items() if path.startswith(prefix)), None)
             example = re.fullmatch(r"docs/design/([a-z0-9][a-z0-9-]{0,79})/examples/.+", path)
-            if example:
+            if owner:
+                models.add(owner)
+            elif example:
                 model = example.group(1)
-                models.add(f"docs/design/{model}/{model}.md")
+                models.add(PROJECT_MODEL_PATHS.get(model, f"docs/design/{model}/{model}.md"))
             elif path.startswith("docs/design/"):
-                # Only an absent historical alias selects the current owner.
-                # A present flat input must be validated under its exact path.
-                flat = re.fullmatch(r"docs/design/(workflow|cli|record-format)\.md", path)
+                # Aliases route deleted sources only. Existing files/symlinks must
+                # be checked at their exact path, not hidden by a valid receiver.
+                old = re.fullmatch(r"docs/design/(?P<model>[a-z0-9][a-z0-9-]{0,79})(?:/(?P=model))?\.md", path)
                 absent = not (repo_root / path).exists() and not (repo_root / path).is_symlink()
-                models.add(f"docs/design/{flat.group(1)}/{flat.group(1)}.md" if flat and absent else path)
+                if old and absent:
+                    model = old.group("model")
+                    if model == "test":
+                        models.add(PROJECT_MODEL_PATHS["validation"])
+                    elif model == "distribution":
+                        models.update((PROJECT_MODEL_PATHS["packaging"], PROJECT_MODEL_PATHS["installation"]))
+                    else:
+                        models.add(PROJECT_MODEL_PATHS.get(model, path))
+                else:
+                    models.add(path)
         for path in sorted(models):
             args.extend(["--path", path])
         return _join(*args)
@@ -1791,6 +1810,8 @@ def _path_category(path: str) -> str | None:
         "scripts/validate-adapters.py",
     }:
         return "adapters"
+    if path == "scripts/model_layout.py":
+        return "selector"
     if _is_boundary_first_reference_surface(path) or _is_boundary_first_validation_surface(path):
         return "boundary-first"
     if path in {
@@ -1981,6 +2002,7 @@ def _is_boundary_first_surface(path: str) -> bool:
         or path
         in {
             "scripts/boundary_first_validation.py",
+            "scripts/model_layout.py",
             "scripts/validate-boundary-first.py",
             "scripts/test-boundary-first-validation.py",
             "scripts/boundary_first_reference.py",
@@ -2009,6 +2031,7 @@ def _is_boundary_first_reference_surface(path: str) -> bool:
 def _is_boundary_first_validation_surface(path: str) -> bool:
     return path.startswith("scripts/fixtures/boundary-first/") or path in {
         "scripts/boundary_first_validation.py",
+        "scripts/model_layout.py",
         "scripts/validate-boundary-first.py",
         "scripts/test-boundary-first-validation.py",
     }

@@ -1,26 +1,33 @@
 # RigorLoop Canonical System Architecture
 
+Current product composition and three-parent ownership are defined by [System](../../design/system.md). The former combined Distribution contract is split into [Engineering Packaging](../../design/engineering/packaging.md) and [CLI Installation](../../design/cli/installation.md); references below to its earlier combination retain their source-qualified historical scope. This notice does not transfer unmapped legacy obligations.
+
+
 ## Bounded Design and System replacement
 
-[System](../../design/system/system.md#exact-mixed-architecture-migration-boundary) identifies the exact selected composition sections transferred here; [Design](../../design/design/design.md#selected-replacement-map) owns the reconciled authoring method and decision mapping. This coordinated replacement covers only those selected paragraphs, bullets, tables and method decisions. Unselected Level 2, installation, distribution, validation and other responsibilities below retain their existing owners and amendments. Historical diagrams and approvals remain historical evidence; this mixed file is not wholly superseded.
+[System](../../design/system.md#exact-mixed-architecture-migration-boundary) identifies the exact selected composition sections transferred here; [Design](../../design/skill/authoring/design.md#selected-replacement-map) owns the reconciled authoring method and decision mapping. This coordinated replacement covers only those selected paragraphs, bullets, tables and method decisions. Unselected Level 2, installation, distribution, validation and other responsibilities below retain their existing owners and amendments. Historical diagrams and approvals remain historical evidence; this mixed file is not wholly superseded.
 
-[Release](../../design/release/release.md) contains the selected current release contract and exact source-disposition map. Its owning change records coordinated adoption through successful final Verify; the retained adapter and publication histories below preserve their original boundaries.
+[Release](../../design/engineering/release.md) contains the selected current release contract and exact source-disposition map. Its owning change records coordinated adoption through successful final Verify; the retained adapter and publication histories below preserve their original boundaries.
 
 ## Distribution replacement boundary
 
-[Distribution](../../design/distribution/distribution.md) replaces the mapped generation and installation responsibilities, including the five retired specification families and five ADRs. Its [source map](../../design/distribution/distribution.md#source-displacement-and-preservation) preserves original decisions and identifies superseded behavior. The [owning change](../../changes/2026-09-10-distribution-model-and-opencode-retirement/change.json) establishes adoption through reviewed implementation and successful Verify. Remaining named-version goals, quality scenarios, risks, glossary entries and Follow-on artifacts about three targets, local mirrors, state writing or managed replacement retain historical meaning only; current installation has two targets, destination conflicts and explicit `--force`, with no state interpretation or automatic upgrade. Unrelated architecture remains with its existing owner.
+[Engineering Packaging](../../design/engineering/packaging.md) and [CLI Installation](../../design/cli/installation.md) receive the mapped generation and installation responsibilities respectively, including the five retired specification families and five ADRs. The preserved [source map](../../design/engineering/packaging.md#source-displacement-and-preservation) preserves original decisions and identifies superseded behavior. The [owning change](../../changes/2026-09-10-distribution-model-and-opencode-retirement/change.json) establishes adoption through reviewed implementation and successful Verify. Remaining named-version goals, quality scenarios, risks, glossary entries and Follow-on artifacts about three targets, local mirrors, state writing or managed replacement retain historical meaning only; current installation has two targets, destination conflicts and explicit `--force`, with no state interpretation or automatic upgrade. Unrelated architecture remains with its existing owner.
 
 ## V2-only runtime retirement
 
-The [Record Format](../../design/record-format/record-format.md), [CLI](../../design/cli/cli.md) and [Workflow](../../design/workflow/workflow.md) models select `rigorloop-records-v2` as the only supported runtime stored format. Earlier compact/lifecycle and explicit-recording-v1 acceptance, activation, projection, mutation and recovery clauses below are historical design evidence, not current execution or compatibility obligations. Their stable IDs and recorded approvals keep their original meaning. Current consumers use scoped primary reads and targeted recording, with actor-owned decisions and applicability; the CLI does not select readiness. Preserve archival records unchanged, reject explicit retired input safely and preserve v2 safety. Unrelated document/configuration/transport version domains remain supported under their own contracts.
+The [Record Format](../../design/cli/records.md), [CLI](../../design/cli/cli.md) and [Workflow](../../design/skill/workflow.md) models select `rigorloop-records-v2` as the only supported runtime stored format. Earlier compact/lifecycle and explicit-recording-v1 acceptance, activation, projection, mutation and recovery clauses below are historical design evidence, not current execution or compatibility obligations. Their stable IDs and recorded approvals keep their original meaning. Current consumers use scoped primary reads and targeted recording, with actor-owned decisions and applicability; the CLI does not select readiness. Preserve archival records unchanged, reject explicit retired input safely and preserve v2 safety. Unrelated document/configuration/transport version domains remain supported under their own contracts.
 
 Specialist authoring and review responsibilities remain. Each governed change requires fresh independent whole-change Code Review after all implementation milestones and corrections, then distinct successful final Verify. Installed skills must contain usable v2 procedures and selective portable resources, without private internal requirement IDs or a dependency on this design repository.
 
+## Selected unified Validation replacement
+
+The [Validation model](../../design/engineering/validation.md#source-disposition-and-decision-preservation), selected by its [owning change](../../changes/2026-09-12-unified-validation-model/change.json), replaces only the exact validation execution/cache descriptions named in its source map at reviewed coherent implementation and successful Verify. This new-profile-only amendment preserves the mixed architecture's other responsibilities and the original historical evidence. The runtime cache, historical broad-smoke classification reader and duplicated scheduling implementation remain implementation cleanup targets; their existence does not require a separate current Test Design. Current product invariants, recording safety, release/publication and package generation keep their declared owners; this is not a whole-file retirement.
+
 ## Test criteria ownership
 
-For this repository's explicitly adopted model work, [Test](../../design/test/test.md) owns shared derivation, protective-value and maintenance criteria (TEST-SR-01–13). Specialist reviewers and Verify judge actual plans, tests and evidence; Review and Closeout retains assessment authority policy, applicability and closeout consequences. Workflow retains coordination. Canonical consumers apply the criteria through selective quality and maintenance resources; those resources are application guidance, not another policy owner. This initiative's coordinated consumer adoption preserves historical contracts, required negative/regression proof and separately owned execution permissions. Installation does not adopt customer policy. Internal requirement mappings and package mechanics remain in contributor/governance surfaces rather than published skills.
+For this repository's explicitly adopted model work, [Validation](../../design/engineering/validation.md) preserves the adopted shared derivation, protective-value and maintenance criteria (TEST-SR-01–13) formerly owned by Test. The Test document is removed as a Design-stage consolidation; new VAL-SR execution behavior remains subject to independent review, implementation and successful Verify under the unified Validation change. Specialist reviewers and Verify judge actual plans, tests and evidence; Review and Closeout retains assessment authority policy, applicability and closeout consequences. Workflow retains coordination. Canonical consumers apply the criteria through selective quality and maintenance resources; those resources are application guidance, not another policy owner. This initiative's coordinated consumer adoption preserves historical contracts, required negative/regression proof and separately owned execution permissions. Installation does not adopt customer policy. Internal requirement mappings and package mechanics remain in contributor/governance surfaces rather than published skills.
 
-Record Format profile boundary: for explicitly adopted model-driven work, [Workflow](../../design/workflow/workflow.md) owns actor decisions, [Record Format](../../design/record-format/record-format.md) owns v2 JSON records, and [CLI](../../design/cli/cli.md) owns bounded reads, targeted construction and shared recoverable persistence. New primary creation explicitly selects v2; existing contracts are not migrated. The lifecycle/compact eligibility architecture below remains historical-contract scope and is not called before recording a correction. Installation or a local adoption candidate does not authorize customer/release activation.
+Record Format profile boundary: for explicitly adopted model-driven work, [Workflow](../../design/skill/workflow.md) owns actor decisions, [Record Format](../../design/cli/records.md) owns v2 JSON records, and [CLI](../../design/cli/cli.md) owns bounded reads, targeted construction and shared recoverable persistence. New primary creation explicitly selects v2; existing contracts are not migrated. The lifecycle/compact eligibility architecture below remains historical-contract scope and is not called before recording a correction. Installation or a local adoption candidate does not authorize customer/release activation.
 
 Current route amendment: `route` is the sole public semantic workflow router, `rigorloop workflow-context` supplies deterministic project-local facts, and `docs/workflows.md` and the former public `workflow` package have no current authority. Stable `stage_authority: workflow` and `workflow.automation` identifiers remain protocol state, not public skill names.
 
@@ -28,7 +35,7 @@ Historical compact current-state amendment (not executable): `compact-current-st
 
 ## Review and Closeout ownership
 
-For explicitly adopted model work, [Review and Closeout](../../design/review-closeout/review-closeout.md) owns shared assessment and final-closeout policy within Workflow (RC-SR-01–18). Workflow retains coordination; Record Format and CLI retain representation and mechanics. This change adopts that ownership for this repository's explicitly selected initiative; installation and distribution do not activate customer projects. The model's clause-level map identifies replacement ownership, while historical contracts and their stable IDs, judgments and stored procedures below retain their exact meaning. Specialized skills apply the owner through selectively packaged guidance; they do not define competing policy. Existing separately authorized release, PR, publication and destructive-action boundaries remain in force.
+For explicitly adopted model work, [Review and Closeout](../../design/skill/assessment.md) owns shared assessment and final-closeout policy within Workflow (RC-SR-01–18). Workflow retains coordination; Record Format and CLI retain representation and mechanics. This change adopts that ownership for this repository's explicitly selected initiative; installation and distribution do not activate customer projects. The model's clause-level map identifies replacement ownership, while historical contracts and their stable IDs, judgments and stored procedures below retain their exact meaning. Specialized skills apply the owner through selectively packaged guidance; they do not define competing policy. Existing separately authorized release, PR, publication and destructive-action boundaries remain in force.
 
 ## Owning change record
 
@@ -36,7 +43,7 @@ For explicitly adopted model work, [Review and Closeout](../../design/review-clo
 
 ## Related artifacts
 
-- Current generation/installation contract and retired-source decisions: [Distribution](../../design/distribution/distribution.md).
+- Current generation contract and retired-source decisions: [Packaging](../../design/engineering/packaging.md); executable acquisition and destination writes: [Installation](../../design/cli/installation.md).
 
 - Proposal: `docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md`
 - Proposal refinement: `docs/proposals/2026-04-29-c4-arc42-package-quality.md`
@@ -173,8 +180,8 @@ For explicitly adopted model work, [Review and Closeout](../../design/review-clo
 - C4 container diagram: `diagrams/container.mmd`
 - Published-Skill-First Repository Simplification proposal: `docs/proposals/2026-08-10-published-skill-first-repository-simplification.md`
 - Published-Skill-First Repository Simplification spec: `specs/published-skill-first-repository-simplification.md`
-- Validation responsibility and source dispositions: [System](../../design/system/system.md#necessary-design-consolidation-map); local contracts remain at their named owners.
-- Necessary-source retention and scoped proof: [Design](../../design/design/design.md#necessary-design-retention) and [Test](../../design/test/test.md#necessary-design-consolidation-proportionate-proof).
+- Validation responsibility and source dispositions: [System](../../design/system.md#necessary-design-consolidation-map); local contracts remain at their named owners.
+- Necessary-source retention and scoped proof: [Design](../../design/skill/authoring/design.md#necessary-design-retention) and [Validation](../../design/engineering/validation.md#proof-quality-maintenance-and-evidence).
 - Code-Review Skill Simplification proposal: `docs/proposals/2026-08-10-code-review-skill-simplification.md`
 - Code-Review Skill Simplification spec: `specs/code-review-skill-simplification.md`
 - Code-Review Skill Simplification change metadata: `docs/changes/2026-08-10-code-review-skill-simplification/change.yaml`
@@ -193,7 +200,7 @@ For explicitly adopted model work, [Review and Closeout](../../design/review-clo
 
 ## Introduction and Goals
 
-Current external boundaries, system responsibilities and composition goals are owned by [System](../../design/system/system.md). [Design](../../design/design/design.md) owns the smallest justified living-model set, structural/runtime reasoning and embedded decision preservation.
+Current external boundaries, system responsibilities and composition goals are owned by [System](../../design/system.md). [Design](../../design/skill/authoring/design.md) owns the smallest justified living-model set, structural/runtime reasoning and embedded decision preservation.
 
 Retained additional goals:
 
@@ -239,7 +246,7 @@ Retained additional goals:
 
 ## Architecture Constraints
 
-- [Design](../../design/design/design.md) owns model layout, technical reasoning, decisions and scoped legacy authoring; [Workflow](../../design/workflow/workflow.md) coordinates the handoff. Contributor scaffolds remain under `templates/`; required portable legacy aids are packaged inside `design`. Historical deltas cannot compete with a migrated current owner.
+- [Design](../../design/skill/authoring/design.md) owns model layout, technical reasoning, decisions and scoped legacy authoring; [Workflow](../../design/skill/workflow.md) coordinates the handoff. Contributor scaffolds remain under `templates/`; required portable legacy aids are packaged inside `design`. Historical deltas cannot compete with a migrated current owner.
 - `CONSTITUTION.md` is the highest-priority repository governance artifact below external runtime instructions.
 - `specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md`
   owns governed artifact-state placement, transition authority, workflow
@@ -380,11 +387,11 @@ Retained additional goals:
 
 ## Context and Scope
 
-[System Context and Scope](../../design/system/system.md#context-and-scope) owns the external actors, included responsibilities and target-agent interpretation boundary. The existing [context diagram](diagrams/context.mmd) remains historical structural evidence; it is not a second current composition contract.
+[System Context and Scope](../../design/system.md#context-and-scope) owns the external actors, included responsibilities and target-agent interpretation boundary. The existing [context diagram](diagrams/context.mmd) remains historical structural evidence; it is not a second current composition contract.
 
 ## Solution Strategy
 
-Use [Design](../../design/design/design.md) for unified behavioral and technical authoring, scoped model selection, decision rationale, affected-consumer reconciliation and independent review. [System](../../design/system/system.md) owns the assembled responsibility view and integrated obligations. Retained local contracts below continue under their declared owners; the living models do not silently migrate them.
+Use [Design](../../design/skill/authoring/design.md) for unified behavioral and technical authoring, scoped model selection, decision rationale, affected-consumer reconciliation and independent review. [System](../../design/system.md) owns the assembled responsibility view and integrated obligations. Retained local contracts below continue under their declared owners; the living models do not silently migrate them.
 
 For published skills, use a one-way proof chain: Gate A validates canonical skill and resource integrity; Gate B generates and proves Codex, Claude Code, and opencode package parity; Gate C composes current A and B proof with release-only metadata and archive checks.
 Lifecycle records flow to one bounded governance validation owner, while semantic skill questions flow to formal review.
@@ -402,7 +409,7 @@ for a governing requirement, material risk, or explicit request.
 
 ## Building Block View
 
-The current system inventory and responsibility relationships are owned by [System](../../design/system/system.md#responsibility-inventory). The [container diagram](diagrams/container.mmd) is retained historical evidence. The following Level 2 details remain unmigrated under their existing contract amendments.
+The current system inventory and responsibility relationships are owned by [System](../../design/system.md#responsibility-inventory). The [container diagram](diagrams/container.mmd) is retained historical evidence. The following Level 2 details remain unmigrated under their existing contract amendments.
 
 ### Level 2 White-Box: Project-Map Skill Package
 
@@ -456,7 +463,7 @@ new manifest, service, or publication path:
 
 ### Level 2 White-Box: RigorLoop CLI Package
 
-The CLI package remains an additive executable delivery container. [Distribution](../../design/distribution/distribution.md#building-block-view) owns its target descriptors, trusted metadata, acquisition, extraction and bounded destination mutation. The CLI retains command parsing and the shared output envelope for help, version, `init`, recording commands, JSON, human output, warnings, errors and exit codes.
+The CLI package remains an additive executable delivery container. [Packaging](../../design/engineering/packaging.md#building-block-view) owns its target descriptors and trusted metadata; [Installation](../../design/cli/installation.md) owns acquisition, extraction and bounded destination mutation. The CLI retains command parsing and the shared output envelope for help, version, `init`, recording commands, JSON, human output, warnings, errors and exit codes.
 
 ### Level 2 White-Box: Governed Lifecycle CLI
 
@@ -510,7 +517,7 @@ The validation and generation container has these important internal responsibil
   `docs/plan.md` as stable intent and navigation rather than live-state
   projections;
 - change-record query helper: `scripts/query-change-record.py` exposes bounded `summary`, `artifacts`, `validation --latest`, and `validation --stage <stage>` reads over valid legacy and compact metadata shapes without executing validation commands;
-- package generation: `scripts/build-adapters.py` and `scripts/adapter_distribution.py` implement Distribution’s canonical-to-package path; builds do not install runtime skills, and retained adapter regression owns complete resource and safe-output proof;
+- package generation: `scripts/build-adapters.py` and `scripts/adapter_distribution.py` implement Packaging’s canonical-to-package path; builds do not install runtime skills, and retained adapter regression owns complete resource and safe-output proof;
 - release preparation, closeout, and validation: release tooling reads `docs/releases/profiles/<tag>.yaml` as the routine release transaction source of truth, generates profile-owned release-prep surfaces, checks human-authored surfaces for profile consistency, records timing evidence, and generates published evidence from public GitHub/npm/`npx` data after publication. `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, package preview, registry verification, emergency deferral records, checksums, and smoke evidence. Release preflight owns cheap deterministic profile/schema/state checks before broad verification. For public releases, `release-verify.sh` is the maintainer-facing full gate and `validate-release.py` owns structured release validation delegated from that gate. For `v0.1.3` and later, these checks validate generated temporary or release-output adapter packages and release archives instead of tracked adapter package trees.
 - published skill resource integrity: [Skill](../../design/skill/skill.md) owns common content/resource invariants; validation and generation consume SKL-SR-08–14. Installer smoke remains only when RigorLoop-owned materialization logic exceeds package copying and ends at filesystem inspection.
 - checked-revision boundary activation: `scripts/boundary_first_validation.py` owns the repository-internal pure `derive_grandfathered_specs(root, baseline_revision)` authoring function. It accepts a repository root and an exact 40-character lowercase commit identity, performs read-only Git object inspection, and returns `(sorted_paths, issues)`, where `sorted_paths` is the complete raw-UTF-8-byte-sorted tuple of eligible top-level accepted, approved, or active feature-spec paths and `issues` is empty on success or contains bounded validation issues on failure. The function writes nothing, has no CLI surface, and is called only during the one-time activation implementation step and its regression fixtures. Separately, `scripts/validate-boundary-first.py --check` validates the current activation snapshot, canonical and projected resources, governed skill inventory, adapter support, and rollback metadata without inspecting Git history, tags, remote state, or network services; it never calls the derivation function and reads the frozen record directly.
@@ -519,7 +526,7 @@ The validation and generation container has these important internal responsibil
 - required-benchmark context: release validation determines the release-specific required dynamic benchmark set from core suite policy, transition carryover policy, changed public skills, and claimed optional coverage, then passes that context to token-cost validation in process or through a transient YAML file for CLI and debugging use.
 - first-slice script-output shaping: `scripts/test-select-validation.py` is the first standalone runner surface for compact `[PASS]` success summaries, actionable `[FAIL]` details, explicit `--verbose`, silent successful `--quiet`, reliable-only rerun guidance, and behavior-preservation evidence.
 
-See [System's responsibility inventory](../../design/system/system.md#responsibility-inventory) for the current skill, package, release, recording and assessment owners, and its [bounded consolidation map](../../design/system/system.md#necessary-design-consolidation-map) for the selected source dispositions.
+See [System's responsibility inventory](../../design/system.md#responsibility-inventory) for the current skill, package, release, recording and assessment owners, and its [bounded consolidation map](../../design/system.md#necessary-design-consolidation-map) for the selected source dispositions.
 
 ### Level 2 White-Box: Code-Review Skill Package
 
@@ -607,7 +614,7 @@ Deterministic compatibility validators reject unknown values before consistency 
 
 ### Design authoring flow
 
-Follow [Design Runtime View](../../design/design/design.md#runtime-view) for the reconciled engineering contract and exact review handoff. [System](../../design/system/system.md#integrated-authoring-change) explains the composition with planning, implementation and verification.
+Follow [Design Runtime View](../../design/skill/authoring/design.md#runtime-view) for the reconciled engineering contract and exact review handoff. [System](../../design/system.md#integrated-authoring-change) explains the composition with planning, implementation and verification.
 
 ### Workflow and review flow
 
@@ -923,7 +930,7 @@ Common content/resource behavior is owned by [Skill](../../design/skill/skill.md
 
 ### CLI target-native installation and release smoke
 
-[Distribution's Runtime View](../../design/distribution/distribution.md#runtime-view) owns `init codex` and `init claude`: verify the selected archive, preflight every candidate skill directory/file, report all existing units as conflicts, or replace complete conflicting units with explicit `--force`. Project state is neither inspected nor written. Shared command/result envelopes remain with CLI. [Release](../../design/release/release.md) requires actual packed and public installation proof and retains publication authority.
+[Installation’s Runtime View](../../design/cli/installation.md#runtime-and-deployment) owns `init codex` and `init claude`: verify the selected archive, preflight every candidate skill directory/file, report all existing units as conflicts, or replace complete conflicting units with explicit `--force`. Project state is neither inspected nor written. Shared command/result envelopes remain with CLI. [Release](../../design/engineering/release.md) requires actual packed and public installation proof and retains publication authority.
 
 ### CLI new-change flow
 
@@ -1062,7 +1069,7 @@ Rollback before public CLI publication removes or disables the package candidate
 
 ### Source of truth
 
-[Design](../../design/design/design.md) owns living-model conventions and their validation mapping. [System](../../design/system/system.md) owns system composition; [Workflow](../../design/workflow/workflow.md) coordinates actors and [CLI](../../design/cli/cli.md) owns recording mechanics under [Record Format](../../design/record-format/record-format.md). Unmigrated details retain their declared source contracts; historical package/ADR evidence grants no second current owner.
+[Design](../../design/skill/authoring/design.md) owns living-model conventions and their validation mapping. [System](../../design/system.md) owns system composition; [Workflow](../../design/skill/workflow.md) coordinates actors and [CLI](../../design/cli/cli.md) owns recording mechanics under [Record Format](../../design/cli/records.md). Unmigrated details retain their declared source contracts; historical package/ADR evidence grants no second current owner.
 
 ### Smallest sufficient Design scope
 
@@ -1291,17 +1298,17 @@ whole-record review.
 
 ### Diagram source policy
 
-[Design technical reasoning](../../design/design/design.md#technical-reasoning-and-decisions) owns current text-source diagram selection and placement. Existing diagrams retain their historical identities and explanatory context; they do not impose a second current architecture layout.
+[Design technical reasoning](../../design/skill/authoring/design.md#technical-reasoning-and-decisions) owns current text-source diagram selection and placement. Existing diagrams retain their historical identities and explanatory context; they do not impose a second current architecture layout.
 
 ### Generated output
 
-Canonical skills and thin templates feed [Distribution](../../design/distribution/distribution.md). The retained package builder produces Codex and Claude Code archives in temporary or explicit safe output, never canonical or active skill roots. No separate local runtime mirror is generated. `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain the tracked support surfaces.
+Canonical skills and thin templates feed [Packaging](../../design/engineering/packaging.md). The retained package builder produces Codex and Claude Code archives in temporary or explicit safe output, never canonical or active skill roots. No separate local runtime mirror is generated. `dist/adapters/README.md` and `dist/adapters/manifest.yaml` remain the tracked support surfaces.
 
 Historically, `v0.1.2` retained repository-tree packages for its archive compatibility window. From `v0.1.3`, public installation uses release archives and package validation uses temporary or release output. Historical release evidence keeps its original population and source basis.
 
 ### Release and adapter evidence
 
-[Distribution](../../design/distribution/distribution.md) owns generated package identities and verification; [Release](../../design/release/release.md) owns candidate evidence, authorized publication and observed results. Current artifacts contain exactly the two supported target packages. Tracked metadata and checksums describe generated archives; builds and installation do not authorize publication.
+[Packaging](../../design/engineering/packaging.md) owns generated package identities and verification; [Release](../../design/engineering/release.md) owns candidate evidence, authorized publication and observed results. Current artifacts contain exactly the two supported target packages. Tracked metadata and checksums describe generated archives; builds and installation do not authorize publication.
 
 The `v0.1.1` transition release does not require downloadable adapter archives. `dist/adapters/` remains the public adapter install path, and release notes or adapter docs state whether archives are absent or separately published. If a separate accepted plan publishes optional archives for `v0.1.1`, repository-tree installation from `dist/adapters/` remains the required public install path for that release and archive metadata becomes additional evidence rather than a replacement for tracked public adapter validation.
 
@@ -1309,7 +1316,7 @@ The `v0.1.2` archive-introduction release keeps repository-tree adapter packages
 
 ### CLI package and project scaffold boundary
 
-The CLI package is an additive delivery surface. It can carry executable command code, small project scaffolds, and bundled official adapter metadata, but it does not own canonical workflow content, skill bodies, adapter generation rules, validation authority, or release readiness. Current installation and archive trust belong to [Distribution](../../design/distribution/distribution.md); smoke and publication belong to [Release](../../design/release/release.md).
+The CLI package is an additive delivery surface. It can carry executable command code, small project scaffolds, and bundled official adapter metadata, but it does not own canonical workflow content, skill bodies, adapter generation rules, validation authority, or release readiness. Current installation and archive trust belong to [Installation](../../design/cli/installation.md); smoke and publication belong to [Release](../../design/engineering/release.md).
 
 `rigorloop new-change` is also a scaffold command, but it scaffolds change-local traceability rather than project installation state. It creates only `docs/changes/<change-id>/change.yaml` in the first slice, with empty `artifacts`, `requirements`, `tests`, `validation`, and `changed_files` until later workflow stages produce real evidence. It deliberately omits `explain-change.md` and `artifacts.explain_change` so a placeholder file cannot be mistaken for durable reasoning.
 
@@ -1452,7 +1459,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 ## Architecture Decisions
 
-- [Distribution decisions](../../design/distribution/distribution.md#architecture-decisions) preserve the five retired ADRs’ mapped rationale and current support boundary.
+- [Distribution decisions](../../design/engineering/packaging.md#architecture-decisions) preserve the five retired ADRs’ mapped rationale and current support boundary.
 - [ADR-20260825: Local CLI Observability and Result Projection Boundary](../../adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md) establishes one invocation controller, allowlist event model, bounded synchronous local sink, shared result projection, and compatibility-gated concise-default decision.
 
 - [ADR-20260824: Governed Lifecycle CLI Transaction Boundary](../../adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) establishes one lifecycle interpreter, versioned identity and operation contracts, guarded single-record replacement and recovery, validator convergence, skill-mechanics migration, and phased enforcement.
@@ -1461,8 +1468,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 - [ADR-20260813: Reviewed Plan Initialization and Settlement](../../adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md) amended initialization timing while preserving the then-current single-state, stage-write, and no-hash boundaries; ADR-20260824 later revises hash and direct-write mechanics only for activated supported CLI operations.
 
-- `docs/adr/ADR-20260428-architecture-package-method.md`: historical C4/arc42/ADR method; current reasoning and decision ownership is [Design](../../design/design/design.md#material-decision-preservation).
-- `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: historical surface-simplification decision; [Design](../../design/design/design.md#material-decision-preservation) preserves its meaning and owns current model selection and scoped legacy treatment.
+- `docs/adr/ADR-20260428-architecture-package-method.md`: historical C4/arc42/ADR method; current reasoning and decision ownership is [Design](../../design/skill/authoring/design.md#material-decision-preservation).
+- `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: historical surface-simplification decision; [Design](../../design/skill/authoring/design.md#material-decision-preservation) preserves its meaning and owns current model selection and scoped legacy treatment.
 - `docs/adr/ADR-20260419-repository-source-layout.md`: repository source layout and canonical-source/generated-output separation.
 - `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md`: staged migration from tracked generated skill mirrors to untracked local mirrors and generated release artifacts.
 - `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md`: one-package CLI boundary, bundled metadata for local Codex archive verification, planned lockfile-only behavior, and npm publication block.
@@ -1872,7 +1879,7 @@ decisions from ADR-20260728 and ADR-20260729.
 - Plan-review for the 2026-04-29 package-quality refinement: approved on 2026-04-29 after PR-F1 corrected M5 sequencing.
 - Plan-review for the 2026-05-08 workflow-governance execution plan: approved in `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r2.md` with no material findings.
 - Test spec update: `specs/architecture-package-method.test.md` active on 2026-04-29 for R76-R118 and AC14-AC20.
-- Historical architecture skill surface simplification (current replacement: [Design decision preservation](../../design/design/design.md#material-decision-preservation)): proposal accepted and spec amendment approved on 2026-05-09; canonical architecture and ADR update approved in this package revision.
+- Historical architecture skill surface simplification (current replacement: [Design decision preservation](../../design/skill/authoring/design.md#material-decision-preservation)): proposal accepted and spec amendment approved on 2026-05-09; canonical architecture and ADR update approved in this package revision.
 - Architecture-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md` with no material findings.
 - Plan-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r2.md` after PR-F1 corrected milestone review sequencing.
 - Token-cost measurement baseline and proposal scope preservation: accepted proposal and approved spec add repository-local measurement scripts, token-cost baseline reports under `docs/reports/token-cost/`, and proposal/proposal-review scope-preservation guidance.
