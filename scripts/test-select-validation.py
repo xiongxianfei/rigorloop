@@ -63,7 +63,7 @@ ADAPTER_REGRESSION_COMMAND = (
 
 EXPECTED_CATALOG = {
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
-    "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/workflow/workflow.md --path docs/design/cli/cli.md --path docs/design/record-format/record-format.md",
+    "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/skill/workflow.md --path docs/design/cli/cli.md --path docs/design/cli/records.md",
     "record_retirement.regression": "node --test packages/rigorloop/test/record-retirement.test.js",
     "boundary_first.validate": "python scripts/validate-boundary-first.py --check",
     "boundary_first.reference_regression": "python scripts/test-boundary-first-reference.py",
@@ -571,7 +571,7 @@ class ValidationSelectionTests(unittest.TestCase):
 
     def test_v3_registered_paths_select_owner_and_unknown_value_versions_fail_closed(self):
         repo = self.make_git_repo()
-        source = ROOT / "docs/design/record-format/examples/v3-complete-store"
+        source = ROOT / "docs/design/cli/examples/records/v3-complete-store"
         target = repo / "docs/changes/example-change"
         for file in source.rglob("*.json"):
             destination = target / file.relative_to(source)
@@ -687,7 +687,7 @@ class ValidationSelectionTests(unittest.TestCase):
 
     def test_explicit_recording_adoption_surfaces_select_real_proof(self):
         paths = (
-            "docs/design/cli/cli.md", "docs/design/workflow/workflow.md",
+            "docs/design/cli/cli.md", "docs/design/skill/workflow.md",
             "schemas/explicit-recording-v1.schema.json",
             "schemas/targeted-recording-v1.schema.json",
             "scripts/build-record-store-schema.mjs",
@@ -733,12 +733,18 @@ class ValidationSelectionTests(unittest.TestCase):
                     "model.validate", "boundary_first.regression", "change_metadata.regression",
                 })
 
+    def test_model_layout_change_selects_all_actual_readers(self):
+        result = self.select(["scripts/model_layout.py"])
+        checks = {c["id"] for c in result.selected_checks}
+        self.assertTrue({"boundary_first.regression", "selector.regression"} <= checks, checks)
+        self.assertFalse(result.to_json_dict()["unclassified_paths"])
+
     def test_model_example_selection_uses_owner_not_example_as_model(self):
         import shlex
-        for path in ("docs/design/record-format/examples/v3-complete-store/change.json",
+        for path in ("docs/design/cli/examples/records/v3-complete-store/change.json",
                      "docs/design/cli/examples/v3-review-limitations-update/request.json",
                      "docs/design/cli/examples/observation-freshness/scan-b.json",
-                     "docs/design/workflow/examples/correction-cycle.mmd"):
+                     "docs/design/skill/examples/workflow/correction-cycle.mmd"):
             result = select_validation(SelectionRequest(
                 mode="explicit", paths=(path,), repo_root=ROOT,
                 preflight_context=self.root_preflight_context))
@@ -746,13 +752,27 @@ class ValidationSelectionTests(unittest.TestCase):
             check = next(c for c in result.selected_checks if c["id"] == "model.validate")
             command = shlex.split(check["command"])
             self.assertNotIn(path, command)
-            owner = path.split("/")[2]
-            self.assertIn(f"docs/design/{owner}/{owner}.md", command)
+            owner = ("docs/design/cli/records.md" if "/examples/records/" in path else
+                     "docs/design/skill/workflow.md" if path.startswith("docs/design/skill/") else
+                     "docs/design/cli/cli.md")
+            self.assertIn(owner, command)
+
+    def test_model_selection_deleted_layout_paths_and_examples_select_current_owner(self):
+        for old, current in (
+            ("docs/design/system/system.md", "docs/design/system.md"),
+            ("docs/design/workflow/workflow.md", "docs/design/skill/workflow.md"),
+            ("docs/design/record-format/examples/v3-complete-store/change.json", "docs/design/cli/records.md"),
+            ("docs/design/workflow/examples/correction-cycle.mmd", "docs/design/skill/workflow.md"),
+        ):
+            with self.subTest(old=old):
+                result = self.select([old])
+                command = shlex.split(next(c["command"] for c in result.selected_checks if c["id"] == "model.validate"))
+                self.assertIn(current, command)
+                self.assertNotIn(old, command)
 
     def test_model_selection_validates_present_historical_flat_input(self):
         repo = self.make_git_repo()
-        for model in ("workflow", "cli", "record-format"):
-            owner = f"docs/design/{model}/{model}.md"
+        for owner in ("docs/design/skill/workflow.md", "docs/design/cli/cli.md", "docs/design/cli/records.md"):
             (repo / owner).parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / owner, repo / owner)
         flat = "docs/design/workflow.md"
@@ -771,7 +791,7 @@ class ValidationSelectionTests(unittest.TestCase):
         result = self.select(["docs/design/workflow.md"])
         command = shlex.split(next(c["command"] for c in result.selected_checks if c["id"] == "model.validate"))
         self.assertNotIn("docs/design/workflow.md", command)
-        self.assertIn("docs/design/workflow/workflow.md", command)
+        self.assertIn("docs/design/skill/workflow.md", command)
 
     def test_model_selection_rejects_historical_flat_symlink(self):
         for dangling in (False, True):
@@ -890,10 +910,10 @@ class ValidationSelectionTests(unittest.TestCase):
 
     def test_model_selection_retains_authoritative_tracking_preflight(self):
         repo = self.make_git_repo()
-        path = repo / "docs/design/workflow/workflow.md"
+        path = repo / "docs/design/skill/workflow.md"
         path.parent.mkdir(parents=True)
         path.write_text("# Model fixture\n")
-        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/design/workflow/workflow.md",), repo_root=repo))
+        result = select_validation(SelectionRequest(mode="explicit", paths=("docs/design/skill/workflow.md",), repo_root=repo))
         self.assertIn("untracked-authoritative-artifacts", {item.get("code") for item in result.blocking_results})
 
     def test_isolated_recording_evidence_selects_proof_without_formal_settlement(self):
@@ -994,6 +1014,7 @@ class ValidationSelectionTests(unittest.TestCase):
         shutil.copy2(CI, workspace / "scripts" / "ci.sh")
         shutil.copy2(ROOT / "scripts" / "validation_selection.py", workspace / "scripts" / "validation_selection.py")
         shutil.copy2(ROOT / "scripts" / "record_store_classification.py", workspace / "scripts" / "record_store_classification.py")
+        shutil.copy2(ROOT / "scripts" / "model_layout.py", workspace / "scripts" / "model_layout.py")
         return workspace
 
     def make_broad_smoke_workspace(
@@ -4888,6 +4909,7 @@ raise SystemExit(3)
         shutil.copy2(CI, temp_root / "scripts" / "ci.sh")
         shutil.copy2(ROOT / "scripts" / "validation_selection.py", temp_root / "scripts" / "validation_selection.py")
         shutil.copy2(ROOT / "scripts" / "record_store_classification.py", temp_root / "scripts" / "record_store_classification.py")
+        shutil.copy2(ROOT / "scripts" / "model_layout.py", temp_root / "scripts" / "model_layout.py")
         fixture = self.write_selector_fixture(
             self.minimal_selector_payload(
                 selected_checks=[

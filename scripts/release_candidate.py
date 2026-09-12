@@ -1,6 +1,6 @@
 """Repository-owned immutable Release candidate construction.
 
-Policy: docs/design/release/release.md. No publication or remote writes here.
+Policy: docs/design/engineering/release.md. No publication or remote writes here.
 """
 from __future__ import annotations
 

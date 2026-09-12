@@ -1,6 +1,6 @@
 # Correct a finding through the CLI
 
-[Request](request.json) explicitly updates finding-1 in design-review. [Saved response](saved-response.json) records storage success. The matching [stored and updated Review records](../../../record-format/examples/v3-finding-correction/README.md) show exactly what changes under [CLI-SR-26](../../cli.md#v3-finding-operations).
+[Request](request.json) explicitly updates finding-1 in design-review. [Saved response](saved-response.json) records storage success. The matching [stored and updated Review records](../records/v3-finding-correction/README.md) show exactly what changes under [CLI-SR-26](../../cli.md#v3-finding-operations).
 
 The hypothetical registered v3 store starts at revision b and saves at revision c; repeated-digit hashes and external subjects are synthetic. The request declares the current subject read separately from the finding’s reported basis. No basis or origin input is supplied, and no snapshot is constructed. Review assessment fields and applicability are preserved. This example assumes a validated v3 store. The [assessment update failure examples](../v3-assessment-update-errors/README.md) illustrate response dispatch before store validation.
 

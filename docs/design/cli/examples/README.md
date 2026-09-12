@@ -1,6 +1,6 @@
 # CLI request and response examples
 
-These examples belong to the [CLI design](../cli.md). Stored objects are indexed separately in [Record Format](../../record-format/examples/README.md). Each request/response below is a complete envelope; the surrounding scenario supplies omitted repository state. Identities and decisions are synthetic unless a computed internal digest is explicitly identified. No example reports actual execution or approval.
+These examples belong to the [CLI design](../cli.md). Stored objects are indexed separately in [Record Format](records/README.md). Each request/response below is a complete envelope; the surrounding scenario supplies omitted repository state. Identities and decisions are synthetic unless a computed internal digest is explicitly identified. No example reports actual execution or approval.
 
 | Scenario | Contract | What it illustrates |
 | --- | --- | --- |

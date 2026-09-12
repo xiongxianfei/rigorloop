@@ -1,6 +1,6 @@
 # Proposed v3 review limitations update
 
-This scenario applies [CLI-SR-24–27](../../cli.md#requirements) to the [stored Review before](../../../record-format/examples/v3-review-limitations-update/before.json) and [after](../../../record-format/examples/v3-review-limitations-update/after.json). Messages are complete v3 envelopes with synthetic values, not actual assessments.
+This scenario applies [CLI-SR-24–27](../../cli.md#requirements) to the [stored Review before](../records/v3-review-limitations-update/before.json) and [after](../records/v3-review-limitations-update/after.json). Messages are complete v3 envelopes with synthetic values, not actual assessments.
 
 The omitted v3 store example-change registers design-review at `docs/changes/example-change/reviews/design-review.json`. Its starting revision is the synthetic `b` digest, and the declared external subject matches the `a` identity. Applicability is already current with the actor and reason shown in the read response; the narrow edit does not change it. The fictional reviewer has determined that this particular clarification preserves meaning. New missing evidence would require a separate explicit applicability/correction decision.
 
