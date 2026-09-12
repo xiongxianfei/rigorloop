@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-final-reviewer",
+      "id": "independent-reviewer",
       "role": "review"
     },
-    "reason": "Route accepts current independent Design consolidation review. The unchanged approved plan and completed milestones remain applicable: no runtime behavior or new proof family changed. Request fresh independent whole-change Code Review of base5c4bda94 through consolidated sourcec502e146 and their interactions before distinct renewed Verify/PR187 refresh.",
-    "stage": "code-review",
+    "reason": "Route expands the documentation package to Design, Skill and Test current-storage consumers. Their narrow references now agree with the five core v3 owners. No runtime, plan or proof-family change; independent expanded Design review precedes fresh whole-change review and Verify.",
+    "stage": "design-review",
     "status": "ready"
   },
   "applicability": [
@@ -137,6 +137,27 @@
       "subject": {
         "identity": "sha256:1a1d75a6a4dab9fca9e73082b8cc78259e2b7be76495aa9f0fc201dd3cff5c10",
         "path": "docs/design/system/system.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:515d7f130ab1d32434375b777d6abc8f978eb359ad24acdeaafa98901ea7bf65",
+        "path": "docs/design/design/design.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:4f6f8acb58f55c3483724f6d6f1d98ed804cae875ba90d2589ad3e2e1ce27012",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "test",
+      "subject": {
+        "identity": "sha256:ef0958b743c39ccd458572073e97792fd57052f3a3762007323d2cb864920dd0",
+        "path": "docs/design/test/test.md"
       }
     }
   ],

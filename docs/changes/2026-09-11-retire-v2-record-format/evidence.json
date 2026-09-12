@@ -1159,7 +1159,7 @@
         "role": "design"
       },
       "id": "design-consolidation",
-      "procedure": "Documentation-only consolidation under explicit user authorization. Current v3 record and interface definitions replace obsolete operational v2 prose; stable requirement/decision IDs, independent transport/document versions, exact projection metadata, finding-ID/blocker-origin distinction and historical JSON bytes preserved. Approved delivery allocation, runtime, tests and package sources unchanged. Ran python scripts/validate-boundary-first.py --check and python scripts/validate-documentation-prose.py --mode enforce, each with --path for record-format, cli, workflow, review-closeout and system models: passed; prose errors=0 warnings=0. Ran git diff --check: passed. Checked local Markdown file links and labeled removed historical source paths without presenting broken current dependencies. No new v2 retirement tests or manual substitutes. Independent semantic review and refreshed Verify required before PR reliance.",
+      "procedure": "Documentation-only consolidation under explicit user authorization. Current v3 record and interface definitions replace obsolete operational v2 prose; stable requirement/decision IDs, independent transport/document versions, exact projection metadata, finding-ID/blocker-origin distinction and historical JSON bytes preserved. Approved delivery allocation, runtime, tests and package sources unchanged. Ran python scripts/validate-boundary-first.py --check and python scripts/validate-documentation-prose.py --mode enforce, each with --path for record-format, cli, workflow, review-closeout and system models, then design, skill and test consumer models: passed; prose errors=0 warnings=0. Ran git diff --check: passed. Checked local Markdown file links and labeled removed historical source paths without presenting broken current dependencies. No new v2 retirement tests or manual substitutes. Independent semantic review and refreshed Verify required before PR reliance.",
       "result": "passed",
       "subjects": [
         {
@@ -1177,6 +1177,10 @@
         {
           "identity": "sha256:fff6581c8d8b9e8f7160faa2845b26719bcf16aea29132c3c0ca62f04a26299a",
           "path": "docs/design/cli/examples/v3-verify-limitations-update/README.md"
+        },
+        {
+          "identity": "sha256:515d7f130ab1d32434375b777d6abc8f978eb359ad24acdeaafa98901ea7bf65",
+          "path": "docs/design/design/design.md"
         },
         {
           "identity": "sha256:76e9c57315e9c23adb33caf13bfabc6fa5cbb61e5c162c99d05447f682ccde78",
@@ -1211,15 +1215,23 @@
           "path": "docs/design/review-closeout/review-closeout.md"
         },
         {
+          "identity": "sha256:4f6f8acb58f55c3483724f6d6f1d98ed804cae875ba90d2589ad3e2e1ce27012",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
           "identity": "sha256:1a1d75a6a4dab9fca9e73082b8cc78259e2b7be76495aa9f0fc201dd3cff5c10",
           "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:ef0958b743c39ccd458572073e97792fd57052f3a3762007323d2cb864920dd0",
+          "path": "docs/design/test/test.md"
         },
         {
           "identity": "sha256:05fb58a5f790399d5396b8cb58b6b207e240b1f9eec019f0601f29ac47d1b468",
           "path": "docs/design/workflow/workflow.md"
         }
       ],
-      "summary": "Consolidated current v3 Designs and example navigation; structural and prose checks pass."
+      "summary": "Consolidated eight current v3 owning/consumer Designs and example navigation; structural and prose checks pass."
     }
   ],
   "schema_version": 3
