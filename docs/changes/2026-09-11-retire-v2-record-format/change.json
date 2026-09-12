@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-final-code-review",
-      "role": "review"
+      "id": "codex-final-verify",
+      "role": "verify"
     },
-    "reason": "Route settles M2 after independent m2-code-review approved/current with no findings. Both in-scope milestones are completed. Request the mandatory fresh independent whole-change Code Review of the complete delivered diff and M1/M2 interactions before distinct final Verify and user-authorized PR handoff.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Route selects distinct final Verify after approved/current fresh final-code-review with no findings and both implementation milestones completed. Assess the unchanged source05b72446, current proof and user-authorized Git/PR handoff; no release or merge authority.",
+    "stage": "verify",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -70,6 +70,15 @@
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m2-code-review.json",
       "reason": "Independent M2 assessment of the exact final engineering subjects, recorded prerequisite disposition and current candidate evidence; final whole-change review and Verify remain separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-final-code-review",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-code-review.json",
+      "reason": "Fresh independent whole-change assessment of the exact final engineering package and current attributable evidence after both milestones completed. Distinct Verify remains required.",
       "value": "current"
     }
   ],
@@ -149,6 +158,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/m2-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/final-code-review.json"
     }
   ],
   "schema_version": 3,
