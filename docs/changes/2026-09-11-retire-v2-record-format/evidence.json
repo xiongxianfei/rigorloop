@@ -1232,6 +1232,22 @@
         }
       ],
       "summary": "Consolidated eight current v3 owning/consumer Designs and example navigation; structural and prose checks pass."
+    },
+    {
+      "actor": {
+        "id": "codex-design",
+        "role": "design"
+      },
+      "id": "design-consolidation-correction",
+      "procedure": "Changed only the current v2 context label to current context under Record Format and CLI; exact subject inspection, targeted recording and no-fallback duties remain. Ran python scripts/validate-boundary-first.py --check --path docs/design/design/design.md and python scripts/validate-documentation-prose.py --mode enforce --path docs/design/design/design.md: passed; prose errors=0 warnings=0. git diff --check passed. No executable, test, schema, package or plan edits. Independent reviewer owns finding disposition and renewed package judgment.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:db6b8ddc07c035390f5b2ecc517c67b4dc976ff37a1cb6b5c106f38d63bc5297",
+          "path": "docs/design/design/design.md"
+        }
+      ],
+      "summary": "Corrected the remaining governed-authoring resource-map reference identified by design-consolidation-f1."
     }
   ],
   "schema_version": 3

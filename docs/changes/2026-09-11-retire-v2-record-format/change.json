@@ -4,7 +4,7 @@
       "id": "independent-reviewer",
       "role": "review"
     },
-    "reason": "Route expands the documentation package to Design, Skill and Test current-storage consumers. Their narrow references now agree with the five core v3 owners. No runtime, plan or proof-family change; independent expanded Design review precedes fresh whole-change review and Verify.",
+    "reason": "Route returns the bounded design-consolidation-f1 correction for independent disposition and current eight-model package reassessment before final whole-change review/Verify.",
     "stage": "design-review",
     "status": "ready"
   },
@@ -96,7 +96,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-11-retire-v2-record-format/reviews/design-consolidation-review.json",
-      "reason": "Independent complete-package assessment of the consolidated five-model v3 contract and indexed examples at c502e146; unchanged Delivery allocation remains applicable within the documentation-only scope.",
+      "reason": "Current independent expanded-package assessment at ff914115 identifies one unresolved Design-owned consumer instruction; the prior five-model approval does not approve this expanded package.",
       "value": "current"
     }
   ],
@@ -142,7 +142,7 @@
     {
       "id": "design",
       "subject": {
-        "identity": "sha256:515d7f130ab1d32434375b777d6abc8f978eb359ad24acdeaafa98901ea7bf65",
+        "identity": "sha256:db6b8ddc07c035390f5b2ecc517c67b4dc976ff37a1cb6b5c106f38d63bc5297",
         "path": "docs/design/design/design.md"
       }
     },
