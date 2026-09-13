@@ -12,6 +12,14 @@ Use one level-three `Boundary scan and acceptance scenarios` section with exactl
 
 Refer to a scenario using its model path and exact dimension label. Describe material combined hazards in concise requirement-linked prose nearby; no additional boundary/proof ID series is required. Delivery allocates every affected requirement, scenario and integrated hazard to concrete proof; structural checks cannot judge semantic adequacy.
 
+## Architecture views
+
+Every model needs an Architecture Overview with a concise graph. Orient readers to principal responsibilities, externally significant products or interfaces and the important relationships through which the system delivers and assures its outcomes. Enclose owned responsibilities in a model boundary; keep external owners, inputs and consumers outside. Label significant edges with the shared subject and purpose. Internal boxes represent actual responsibilities, not automatically services or new models.
+
+For Context, Building Block, Runtime and Deployment, record whether the view is necessary, why, and where its detail belongs. Draw each necessary view. The overview may summarize these views, but cannot replace a necessary supporting view or become duplicate detailed authority. Resolve every material element and relationship to an owning section or model. Parents own child composition; child contracts own their internals. Reuse diagrams by reference and preserve anchors.
+
+Keep decisions proportional: a small leaf still needs an overview, but may have a bounded reason for no deployment diagram. Reassess view necessity when relevant interfaces, behavior or environment change. Existing project authority and retained legacy formats remain applicable; installation does not convert documents or adopt project governance.
+
 ## Decisions and references
 
 Record important decisions once in the owning model with stable identity, context, selected outcome, meaningful alternatives, consequences and still-applicable constraints. Explain why the choice fits the required behavior. Do not require a duplicate current ADR. Preserve requirement/decision references across revisions or give explicit replacement mappings. Retain historical decisions and judgments with their original subjects.

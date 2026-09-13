@@ -6503,7 +6503,6 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
             "normal Markdown paragraphs",
             "Do not split a sentence across physical source lines",
             "stable IDs",
-            "Diagrams are optional",
             "Do not require manual-proof contracts",
         ]
 
@@ -6512,6 +6511,12 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
             for term in required_terms:
                 with self.subTest(skill=skill_path, term=term):
                     self.assertIn(term, text)
+
+            if skill_path.parent.name == "design":
+                self.assertIn("Living models require the overview and every supporting view judged necessary", text)
+                self.assertIn("other diagrams are optional", text)
+            else:
+                self.assertIn("Diagrams are optional", text)
 
             with self.subTest(skill=skill_path, term="legacy clause-per-line guidance"):
                 self.assertNotIn("one sentence or natural clause per source line", text)

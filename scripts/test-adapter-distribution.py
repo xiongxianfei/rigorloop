@@ -167,6 +167,11 @@ class AdapterDistributionTests(unittest.TestCase):
                         if relative == "SKILL.md":
                             canonical = canonical.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
                             body = body.split("## Explicit recording\n", 1)[1].split("\n## ", 1)[0]
+                        if name == "design":
+                            for resource in ("references/architecture-view-examples.md", "assets/design-skeleton.md"):
+                                expected = (ROOT / "skills" / name / resource).read_bytes()
+                                actual = archive.read((ADAPTERS[adapter].skill_path(name).parent / resource).as_posix())
+                                self.assertEqual(actual, expected)
                         self.assertEqual(body, canonical)
                         self.assertIn("subject inspect", canonical)
                         self.assertNotIn("record-store check|record", canonical)
