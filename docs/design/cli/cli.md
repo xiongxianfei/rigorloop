@@ -4,9 +4,34 @@ Model validation contract: model-document-v1
 
 The CLI operates on `rigorloop-records-v3`. The current definitions below integrate structured assessments and stored-format retirement. [Retirement provenance](#v2-runtime-retirement) preserves the owning decision; independently versioned interfaces remain separate.
 
+## Product responsibility and submodels
+
+CLI owns the observable behavior of the `rigorloop` executable: commands, requests, responses, side effects and failure/recovery contracts. Individual skills can be used without it. Current governed recording uses it for inspection and safe updates; `init` is one explicitly chosen method of installing skills. Record operations do not make engineering judgments, and installation does not interpret engineering state.
+
+Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+
+| Submodel | Contract location | Boundary |
+| --- | --- | --- |
+| Command Interface | [Command interface](#command-interface) and the exact command/request/result sections below | Externally observable arguments, selectors, input/output, diagnostics and exit behavior. |
+| Records | [Records](#records) and [Record Format](records.md) | Durable data structure, meaning-preserving representation and supported stored versions. |
+| Persistence | [Persistence](#persistence) and the existing construction/save/recovery sections | Lossless candidate construction, concurrency, atomicity and safe recovery. |
+| Installation | [Installation](installation.md) | Verified package acquisition and explicit target filesystem changes; never workflow-state adoption. |
+
+### Command interface
+
+The [primary command contract](#primary-public-command-contract) and targeted requests/results define record access. Installation has its own `init` input/diagnostic contract; command-family differences such as help and mutation flags remain explicit. The executable dispatches each family to its owning behavior. Shared parser code cannot introduce a generic permission or broaden an operation's side effects.
+
+### Records
+
+[Record Format](records.md) owns the sole operational stored contract and its preservation invariants. Transport/document versions remain independent. Skill Workflow and Assessment own the meaning of actor decisions; Records owns their representation, not readiness selection. Examples stay with their owning interface/data contract.
+
+### Persistence
+
+[Lossless construction](#lossless-candidate-construction-and-shared-engine), [batch and retry](#batch-composition-no-op-and-retry) and [save safety](#save-safety-and-recovery-boundary) own explicit edits, neighbor preservation, conflicts and interruption. The same guarantees apply to targeted and advanced record writes. Installation uses its own filesystem safety contract, not the record-store transaction or project eligibility engine.
+
 ## Introduction and Goals
 
-Make the CLI a small repository-local tool that reads records, reports observations, validates explicit updates and persists them safely. The user or agent supplies status and decisions. The CLI never chooses a stage or turns another edit into a workflow decision.
+The recording subsystem reads records, reports observations, validates explicit updates and persists them safely. The user or agent supplies status and decisions. The CLI never chooses a stage or turns another edit into a workflow decision.
 
 Simplicity means removing semantic transition orchestration, not removing schema validation, concurrency protection or recovery. A lifecycle may need human judgment; safely writing bytes must not require the lifecycle first to become semantically complete.
 
@@ -23,7 +48,7 @@ The CLI turns an actor's explicit decision into a safely stored update. Humans a
 | What does a query return or omit? | [Bounded queries](#bounded-queries-and-scope) |
 | What does a save or preview mean? | [Primary results](#primary-result-schema-diagnostics-and-preview) |
 | How are neighboring content, conflicts and recovery handled? | [Candidate construction](#lossless-candidate-construction-and-shared-engine), [retry](#batch-composition-no-op-and-retry) and [save safety](#save-safety-and-recovery-boundary) |
-| How does this interact with workflow decisions? | [Correction walkthrough](#correction-walkthrough-recording-behavior) and the [Workflow model](../workflow/workflow.md) |
+| How does this interact with workflow decisions? | [Correction walkthrough](#correction-walkthrough-recording-behavior) and the [Workflow model](../skill/workflow.md) |
 | Where is the maintenance interface? | [Advanced requests](#advanced-candidate-update-contract) and [advanced results](#advanced-result-schema-and-exit-behavior) |
 
 ## Context and Scope
@@ -36,8 +61,8 @@ The primary public surface is `status`, `context`, purpose-specific `show` and m
 
 | Concern | Owning model | This model's relationship |
 | --- | --- | --- |
-| Meaning of activity, work, findings, blockers, judgments and applicability | [Workflow](../workflow/workflow.md#context-and-scope) | Accept and preserve explicitly supplied values |
-| Stored record types, relationships, versions and preservation | [Record Format](../record-format/record-format.md) | Consume the stored-record contract |
+| Meaning of activity, work, findings, blockers, judgments and applicability | [Workflow](../skill/workflow.md#context-and-scope) | Accept and preserve explicitly supplied values |
+| Stored record types, relationships, versions and preservation | [Record Format](records.md) | Consume the stored-record contract |
 | Command syntax, request/result shapes and bounded selection | CLI | Define the public interface |
 | Encoding, byte preservation, identities, publication and recovery | CLI | Define and enforce mechanical storage safety |
 | Adequacy of evidence and justified progression | Workflow | Return observations without making those decisions |
@@ -48,7 +73,7 @@ The public documentation calls stored data the **RigorLoop Record Format**. V3 i
 
 | Surface | Existing or designed discriminator | Contract owner |
 | --- | --- | --- |
-| Stored records | rigorloop-records-v3 / schema_version 3. | Record Format owns the [complete stored-record definition](../record-format/record-format.md#explicit-record-schema); CLI owns encoding and safety |
+| Stored records | rigorloop-records-v3 / schema_version 3. | Record Format owns the [complete stored-record definition](records.md#explicit-record-schema); CLI owns encoding and safety |
 | Primary targeted requests | `interface: targeted-recording-v1`, `schema_version: 1` | CLI targeted request definitions |
 | Primary query/mutation results | `schema_version: 2` or `3`, selected by Version domains and dispatch | CLI primary result definitions |
 | Advanced record-store requests/results | Requests use schema 2 and rigorloop-records-v3; advanced results retain schema 1 | CLI advanced definitions |
@@ -61,7 +86,7 @@ The [v3 stored schema](../../../schemas/rigorloop-records-v3.schema.json), [targ
 
 The [CLI example index](examples/README.md) separates current v3 public messages, internal observation-digest examples and historical v2 messages. Current examples cover complete recording, explanation updates/projections, finding correction and early-error dispatch; each declares its own starting state and stored-record owner.
 
-The [observation freshness example](examples/observation-freshness/README.md) supplies internal digest inputs where historical subject A differs from observed B and C while revision and diagnostics remain identical (CLI-SR-14/20). Internal observation schema 2 is not a retired stored record. Digests are synthetic; examples are not runtime evidence or workflow approval. Historical v2 request/response files remain unchanged and do not document supported commands. Stored representations belong to [Record Format](../record-format/record-format.md#examples), and actor sequencing to [Workflow](../workflow/workflow.md#examples).
+The [observation freshness example](examples/observation-freshness/README.md) supplies internal digest inputs where historical subject A differs from observed B and C while revision and diagnostics remain identical (CLI-SR-14/20). Internal observation schema 2 is not a retired stored record. Digests are synthetic; examples are not runtime evidence or workflow approval. Historical v2 request/response files remain unchanged and do not document supported commands. Stored representations belong to [Record Format](records.md#examples), and actor sequencing to [Workflow](../skill/workflow.md#examples).
 
 ## Architecture Constraints
 
@@ -165,7 +190,7 @@ Creation/link are the two deliberate administrative verbs beyond show/add/set/re
 
 ### Finding origin construction
 
-Record Format's [blocker-origin contract](../record-format/record-format.md#retained-judgments-for-unresolved-findings) owns immutable change-level blocker origin. The retained heading preserves existing links; Review findings have no basis/origin input and follow the current-account rules below.
+Record Format's [blocker-origin contract](records.md#retained-judgments-for-unresolved-findings) owns immutable change-level blocker origin. The retained heading preserves existing links; Review findings have no basis/origin input and follow the current-account rules below.
 
 On blocker.add, values contain the current Concern fields except id and origin plus required `basis: {rationale, supporting_judgment}`. This input is not a stored field. Supporting_judgment is exactly null, `{snapshot: JudgmentBasis}`, or `{from_review: ID, rationale}`. The last form selects a registered review in the coherent candidate at that operation, including explicitly supplied earlier batch operations. The CLI copies reviewer, contributors, independence_basis, subjects and judgment, using the actor-supplied blocker-specific rationale. It never selects a favorable/latest review or derives rationale from its explanation. Missing/unreadable source rejects; the expected revision binds the before-state and batch order fixes the selected content. Later operations do not retarget captured origin.
 
@@ -313,7 +338,7 @@ No adapter writes files independently or calls compact/lifecycle eligibility fir
 
 ### Batch composition, no-op and retry
 
-Batch constructs operations in listed order against an in-memory candidate based on one revision. Internal references use the [Record Format resolution table](../record-format/record-format.md#entry-reference-resolution) and are validated against the complete final candidate, permitting a new review and its finding or a check and referencing blocker in one transaction. An operation can select an entry created earlier in the batch. Each selected semantic field may be assigned at most once: overlapping writes, two adds with the same ID, two recordings of the same check or review, or duplicate or incompatible applicability assignments reject with `overlapping-operation`, even if supplied values agree. An ancestor replacement overlaps any descendant edit except the expressly separate review assessment/findings and decision entry/shared-body spans. Adding a new review and then its findings is permitted because new empty findings are representation scaffolding, not an explicit clearing operation. Changes to distinct named fields/entries in the same file compose deterministically. Physical registry construction is coalesced once; each applicability value remains an explicit actor assignment.
+Batch constructs operations in listed order against an in-memory candidate based on one revision. Internal references use the [Record Format resolution table](records.md#entry-reference-resolution) and are validated against the complete final candidate, permitting a new review and its finding or a check and referencing blocker in one transaction. An operation can select an entry created earlier in the batch. Each selected semantic field may be assigned at most once: overlapping writes, two adds with the same ID, two recordings of the same check or review, or duplicate or incompatible applicability assignments reject with `overlapping-operation`, even if supplied values agree. An ancestor replacement overlaps any descendant edit except the expressly separate review assessment/findings and decision entry/shared-body spans. Adding a new review and then its findings is permitted because new empty findings are representation scaffolding, not an explicit clearing operation. Changes to distinct named fields/entries in the same file compose deterministically. Physical registry construction is coalesced once; each applicability value remains an explicit actor assignment.
 
 No intermediate candidate is published, and structural validation is not applied as a workflow eligibility check between operations. Invalid final references, missing applicability decisions, limits or conflicts reject the entire batch. A batch cannot include raw record-store requests, recovery, queries, arbitrary engineering edits or cross-change writes. Individual commands remain sufficient for independent decisions; no transaction requires Route or every responsible actor to participate.
 
@@ -379,7 +404,7 @@ rigorloop context --root "$ROOT" --change "$CHANGE" \
 JSON
 
 rigorloop subject inspect --root "$ROOT" \
-  --path docs/design/cli/cli.md --path docs/design/workflow/workflow.md --path docs/design/record-format/record-format.md \
+  --path docs/design/cli/cli.md --path docs/design/skill/workflow.md --path docs/design/cli/records.md \
   --content full --format json
 ```
 
@@ -398,7 +423,7 @@ A single context request may instead select `{kind: "verify", where: {}}` and `{
 
 ### Correction walkthrough: recording behavior
 
-This is the same example as Workflow's [actor-decision walkthrough](../workflow/workflow.md#correction-walkthrough-actor-decisions). The selected change has a recorded completed activity, and a later Verify attempt detects a defect. The rows illustrate CLI-SR-03/04/05/07/08/12–17; they add no new command, status or ownership rule. Requests carry the explicit revision and decision basis required by their normal contracts.
+This is the same example as Workflow's [actor-decision walkthrough](../skill/workflow.md#correction-walkthrough-actor-decisions). The selected change has a recorded completed activity, and a later Verify attempt detects a defect. The rows illustrate CLI-SR-03/04/05/07/08/12–17; they add no new command, status or ownership rule. Requests carry the explicit revision and decision basis required by their normal contracts.
 
 | Step | Public interaction | CLI records or returns | Preserved boundary |
 | --- | --- | --- | --- |
@@ -591,7 +616,7 @@ For CLI-SR-24–27, observe a limitations-only read/edit/read cycle with preserv
 
 ## V2 runtime retirement
 
-Owning change: [retire-v2-record-format](../../changes/2026-09-11-retire-v2-record-format/change.json). The retirement decision is owned by RF and [Workflow's disposition](../workflow/workflow.md#v2-retirement-coordination); original Design approval is distinct from the owning implementation and Verify evidence.
+Owning change: [retire-v2-record-format](../../changes/2026-09-11-retire-v2-record-format/change.json). The retirement decision is owned by RF and [Workflow's disposition](../skill/workflow.md#v2-retirement-coordination); original Design approval is distinct from the owning implementation and Verify evidence.
 
 ### Version domains and dispatch after retirement
 
@@ -640,7 +665,7 @@ Structural references resolve to record identities; subject hashes describe eval
 
 ### Boundary scan and acceptance scenarios
 
-These rows use the [Workflow-owned model validation and proof mapping](../workflow/workflow.md#model-validation-and-proof-mapping). CLI-SR IDs remain local to this model; all eight dimensions apply. Delivery maps these rows and the combined hazards below to concrete checks and evidence. This document does not duplicate the mapping rule or claim that its validator is implemented.
+These rows use the [Workflow-owned model validation and proof mapping](../skill/workflow.md#model-validation-and-proof-mapping). CLI-SR IDs remain local to this model; all eight dimensions apply. Delivery maps these rows and the combined hazards below to concrete checks and evidence. This document does not duplicate the mapping rule or claim that its validator is implemented.
 
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |

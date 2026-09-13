@@ -4116,155 +4116,56 @@ Leave this draft stale.
         self.assertIn("Governance (lifecycle consistency)", result.stderr)
         self.assertIn("requires at least one --path", result.stderr + result.stdout)
 
-    def test_cli_accepts_inner_loop_helper_mode_with_explicit_paths(self) -> None:
-        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
-        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
-        cache_env = dict(os.environ)
-        cache_env["RIGORLOOP_VALIDATION_CACHE_DIR"] = str(cache_dir)
-        cache_env.pop("CI", None)
+    def test_retired_cache_options_and_unknown_value_mode_reject_without_writes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            cache = Path(temporary) / "old-cache"
+            cache.mkdir()
+            sentinel = cache / "validation-cache.json"
+            sentinel.write_bytes(b"historical cache bytes")
+            env = dict(os.environ, RIGORLOOP_VALIDATION_CACHE_DIR=str(cache))
+            retired = [
+                ["--mode", "explicit-paths-inner-loop"],
+                ["--mode", "unknown_value"],
+            ]
+            for flag, value in (("--use-validation-cache", None),
+                                ("--validation-cache-dir", str(cache)),
+                                ("--validation-cache-change-id", "example"),
+                                ("--validation-cache-context", "inner-loop"),
+                                ("--validation-cache-current-stage", "test"),
+                                ("--validation-cache-current-evidence", "evidence"),
+                                ("--validation-cache-evidence-file", "evidence.yaml"),
+                                ("--validation-cache-hit-id", "hit"),
+                                ("--validation-cache-ttl-seconds", "1")):
+                retired.append(["--mode", "explicit-paths", flag] + ([] if value is None else [value]))
+            for args in retired:
+                with self.subTest(args=args):
+                    result = run_cli(*args, "--path", "docs/design/system.md", env=env)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertNotIn("validated", result.stdout)
+                    self.assertEqual(list(cache.iterdir()), [sentinel])
+                    self.assertEqual(sentinel.read_bytes(), b"historical cache bytes")
 
-        result = run_cli(
-            "--mode",
-            "explicit-paths-inner-loop",
-            "--path",
-            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
-            "--path",
-            "specs/validation-idempotency-and-cache-hit-safety.md",
-            "--path",
-            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
-            env=cache_env,
-        )
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Governance (lifecycle consistency): validated", result.stdout)
-        self.assertIn("explicit-paths-inner-loop mode", result.stdout)
-
-    def test_cli_helper_mode_requires_explicit_paths(self) -> None:
-        result = run_cli("--mode", "explicit-paths-inner-loop")
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("requires at least one --path", result.stderr + result.stdout)
-
-    def test_cli_cache_hits_on_second_identical_explicit_path_run(self) -> None:
-        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
-        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
-        cache_env = dict(os.environ)
-        cache_env.pop("CI", None)
-        args = (
-            "--mode",
-            "explicit-paths",
-            "--path",
-            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
-            "--path",
-            "specs/validation-idempotency-and-cache-hit-safety.md",
-            "--path",
-            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
-            "--use-validation-cache",
-            "--validation-cache-dir",
-            str(cache_dir),
-            "--validation-cache-change-id",
-            "2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later",
-            "--validation-cache-current-stage",
-            "unit-pass",
-            "--validation-cache-current-evidence",
-            "docs/changes/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later/change.yaml#validation-events",
-        )
-
-        first = run_cli(*args, env=cache_env)
-        self.assertEqual(first.returncode, 0, first.stderr)
-        self.assertIn("validated", first.stdout)
-        self.assertNotIn("[CACHE HIT]", first.stdout)
-
-        second = run_cli(*args, env=cache_env)
-        self.assertEqual(second.returncode, 0, second.stderr)
-        self.assertIn("[CACHE HIT] artifact-lifecycle", second.stdout)
-        self.assertIn("prior result pass", second.stdout)
-
-    def test_cli_helper_mode_cache_hits_without_long_cache_flags(self) -> None:
-        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
-        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
-        cache_env = dict(os.environ)
-        cache_env.pop("CI", None)
-        cache_env["RIGORLOOP_VALIDATION_CACHE_DIR"] = str(cache_dir)
-        args = (
-            "--mode",
-            "explicit-paths-inner-loop",
-            "--path",
-            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
-            "--path",
-            "specs/validation-idempotency-and-cache-hit-safety.md",
-            "--path",
-            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
-        )
-
-        first = run_cli(*args, env=cache_env)
-        self.assertEqual(first.returncode, 0, first.stderr)
-        self.assertIn("[CACHE MISS] artifact-lifecycle", first.stdout)
-        self.assertIn("running validator", first.stdout)
-        self.assertIn("validated", first.stdout)
-
-        second = run_cli(*args, env=cache_env)
-        self.assertEqual(second.returncode, 0, second.stderr)
-        self.assertIn("[CACHE HIT] artifact-lifecycle", second.stdout)
-        self.assertNotIn("validated", second.stdout)
-
-
-    def test_cli_helper_mode_ad_hoc_cache_hit_writes_no_formal_evidence(self) -> None:
-        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
-        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
-        cache_env = dict(os.environ)
-        cache_env.pop("CI", None)
-        cache_env["RIGORLOOP_VALIDATION_CACHE_DIR"] = str(cache_dir)
-        args = (
-            "--mode",
-            "explicit-paths-inner-loop",
-            "--path",
-            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
-            "--path",
-            "specs/validation-idempotency-and-cache-hit-safety.md",
-            "--path",
-            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
-        )
-
-        evidence_files_before = set((ROOT / "docs/changes").glob("*/validation-cache-evidence.yaml"))
-
-        self.assertEqual(run_cli(*args, env=cache_env).returncode, 0)
-        second = run_cli(*args, env=cache_env)
-        self.assertEqual(second.returncode, 0, second.stderr)
-        self.assertIn("[CACHE HIT] artifact-lifecycle", second.stdout)
-        evidence_files_after = set((ROOT / "docs/changes").glob("*/validation-cache-evidence.yaml"))
-        self.assertEqual(evidence_files_after, evidence_files_before)
-
-    def test_cli_cache_runs_validation_in_ci_environment(self) -> None:
-        cache_dir = Path(tempfile.mkdtemp(prefix="artifact-lifecycle-cache-"))
-        self.addCleanup(lambda: shutil.rmtree(cache_dir, ignore_errors=True))
-        ci_env = dict(os.environ)
-        ci_env["CI"] = "true"
-        args = (
-            "--mode",
-            "explicit-paths",
-            "--path",
-            "docs/proposals/2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later.md",
-            "--path",
-            "specs/validation-idempotency-and-cache-hit-safety.md",
-            "--path",
-            "docs/plans/2026-05-23-validation-idempotency-cache-hit-safety.md",
-            "--use-validation-cache",
-            "--validation-cache-dir",
-            str(cache_dir),
-            "--validation-cache-change-id",
-            "2026-05-23-validation-idempotency-first-conservative-edit-scoped-validation-later",
-        )
-
-        first = run_cli(*args, env=ci_env)
-        self.assertEqual(first.returncode, 0, first.stderr)
-        self.assertIn("validated", first.stdout)
-        self.assertNotIn("[CACHE HIT]", first.stdout)
-
-        second = run_cli(*args, env=ci_env)
-        self.assertEqual(second.returncode, 0, second.stderr)
-        self.assertIn("validated", second.stdout)
-        self.assertNotIn("[CACHE HIT]", second.stdout)
-
-
+    def test_repeated_explicit_validation_observes_current_failure_and_preserves_cache(self):
+        root, manifest = self.v3_recording_root()
+        cache = root / "old-cache"
+        cache.mkdir()
+        sentinel = cache / "validation-cache.json"
+        sentinel.write_bytes(b"unchanged cache evidence")
+        driver = ("import runpy,sys; from pathlib import Path; "
+                  "ns=runpy.run_path(sys.argv[1]); ns['main'].__globals__['ROOT']=Path(sys.argv[2]); "
+                  "raise SystemExit(ns['main'](['--mode','explicit-paths','--path','docs/changes/example/change.json']))")
+        env = dict(os.environ, RIGORLOOP_VALIDATION_CACHE_DIR=str(cache))
+        command = [sys.executable, "-c", driver, str(VALIDATOR), str(root)]
+        for iteration in range(2):
+            result = subprocess.run(command, cwd=ROOT, env={**env, "PYTHONPATH": str(ROOT / "scripts")}, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("validated", result.stdout)
+        target = root / "docs/changes/example/change.json"
+        target.write_text('{"schema_version":"unknown_value"}')
+        failed = subprocess.run(command, cwd=ROOT, env={**env, "PYTHONPATH": str(ROOT / "scripts")}, capture_output=True, text=True)
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertEqual(sentinel.read_bytes(), b"unchanged cache evidence")
+        self.assertEqual(list(cache.iterdir()), [sentinel])
 
 
 if __name__ == "__main__":

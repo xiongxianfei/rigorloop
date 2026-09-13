@@ -1,0 +1,9 @@
+# Correct a finding’s current account
+
+[Stored review](stored-review.json) is the initial complete example v3 record. [Updated review](updated-review.json) is the complete record after an explicit finding correction. Under [RF-SR-13](../../../records.md#v3-finding-identity-and-correction), finding-1 keeps its ID while its evidence and required outcome become more precise. The review judgment, explanation, other finding fields and applicability remain unchanged. Neither record contains origin or an embedded supporting judgment.
+
+The actor has narrowed the finding to an example defect; this is an authored correction, not automatic extraction or proof that the implementation works. The responsible assessor must decide whether the retained assessment remains usable. This synthetic scenario assumes the clarified concern still supports changes-requested. No original finding snapshot is required in the actual store; these two files explain the operation for readers and are not a proposed history mechanism.
+
+The [CLI scenario](../../v3-finding-correction/README.md) supplies the matching complete request and receipt. As with the other isolated Review examples, the surrounding virtual store registers this review at docs/changes/example-change/reviews/design-review.json with explicit current applicability; external subjects and repeated-digit identities are synthetic. Schema conformance does not establish a real assessment or correction.
+
+An advanced candidate with the same updated record is accepted under the same finding rules. Removing finding-1, changing its ID, adding origin, or making state/resolution inconsistent rejects. A withdrawal uses the existing resolved state with a resolution actor, rationale explaining the mistaken report and explicit evidence_refs; it does not delete the finding or require a new status.

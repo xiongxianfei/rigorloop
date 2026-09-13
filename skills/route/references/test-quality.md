@@ -1,6 +1,6 @@
 # Test quality application
 
-Apply this guidance when the project explicitly adopts Test-model criteria and the invoked work authors, allocates or assesses test obligations. The project's governing Design remains authoritative. This guidance defines useful-test criteria; responsible specialists assess actual plans, tests and evidence under the project's review policy. It grants no suite approval, evidence applicability, review waiver or execution permission. Historical contracts retain their meaning.
+Apply this guidance when the project explicitly adopts Validation-model test criteria and the invoked work authors, allocates or assesses test obligations. The project's governing Design remains authoritative. This guidance defines useful-test criteria; responsible specialists assess actual plans, tests and evidence under the project's review policy. It grants no suite approval, evidence applicability, review waiver or execution permission. Historical contracts retain their meaning.
 
 ## Derive the protection
 

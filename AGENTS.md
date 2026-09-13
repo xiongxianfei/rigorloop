@@ -1,8 +1,10 @@
 # AGENTS.md
 
-## Distribution ownership
+## Product model hierarchy
 
-For the selected Distribution initiative, [Distribution](docs/design/distribution/distribution.md) owns the mapped package generation and installation contract for Codex and Claude Code. The [owning change](docs/changes/2026-09-10-distribution-model-and-opencode-retirement/change.json) records adoption only after reviewed coherent implementation and successful Verify. Installation checks actual candidate destinations, stops on conflicts by default, and supports explicit complete replacement with `--force`; it neither interprets nor writes project state. Builds produce packages outside canonical and active skill roots. Release retains publication authority, Skill retains content invariants, and installation does not adopt customer governance. Original historical judgments retain their meaning under Distribution's exact displacement map.
+[System](docs/design/system.md) composes three main models: [Skill](docs/design/skill/skill.md) owns published capability behavior; [CLI](docs/design/cli/cli.md) owns executable behavior; [Engineering](docs/design/engineering/engineering.md) owns this repository's development, validation, packaging and release. Parents delegate detailed contracts to the named child sections/documents in System. Individual skills remain usable without CLI recording; current governed recording and CLI-based installation use the executable. Installation does not adopt customer governance.
+
+The [owning change](docs/changes/2026-09-12-unified-validation-model/change.json) records review and adoption of the hierarchy and its exact source transfers. The former combined Distribution Design is replaced by [Packaging](docs/design/engineering/packaging.md) under Engineering and [Installation](docs/design/cli/installation.md) under CLI. The original [Distribution initiative](docs/changes/2026-09-10-distribution-model-and-opencode-retirement/change.json) retains its judgments and implementation provenance. Installation still checks actual candidate destinations, defaults to conflicts and permits explicit complete replacement with `--force`; it does not interpret or write project state. Existing operational permissions and historical evidence remain unchanged.
 
 ## Skill ownership
 
@@ -10,11 +12,11 @@ For this repository's selected Skill-model initiative, [Skill](docs/design/skill
 
 ## Design and System ownership
 
-For this repository’s explicitly selected design-authoring and model-composition responsibility, [Design](docs/design/design/design.md) owns living model conventions, reconciled behavioral/technical authoring, decision preservation and validation mapping. [System](docs/design/system/system.md) owns the selected composition view and shared-owner relationships. The normal public author is `design`; `design-review` remains independent and selects the exact affected models, retained legacy contracts, examples and interactions. Workflow coordinates and consumes the mapping. Unmigrated responsibilities retain their declared owners and formats; installation does not adopt customer governance. The exact transfer is bounded by the models’ displacement maps and takes effect only with reviewed implementation and successful Verify. Historical IDs and approvals retain their original meaning.
+For this repository’s explicitly selected design-authoring and model-composition responsibility, [Design](docs/design/skill/authoring/design.md) owns living model conventions, reconciled behavioral/technical authoring, decision preservation and validation mapping. [System](docs/design/system.md) owns the selected composition view and shared-owner relationships. The normal public author is `design`; `design-review` remains independent and selects the exact affected models, retained legacy contracts, examples and interactions. Workflow coordinates and consumes the mapping. Unmigrated responsibilities retain their declared owners and formats; installation does not adopt customer governance. The exact transfer is bounded by the models’ displacement maps and takes effect only with reviewed implementation and successful Verify. Historical IDs and approvals retain their original meaning.
 
 ## Test criteria ownership
 
-For this repository's explicitly adopted model work, [Test](docs/design/test/test.md) owns shared derivation, protective-value and maintenance criteria (TEST-SR-01–13). Specialist reviewers and Verify judge actual plans, tests and evidence; Review and Closeout retains assessment authority policy, applicability and closeout consequences. Workflow retains coordination. Canonical consumers apply the criteria through selective quality and maintenance resources; those resources are application guidance, not another policy owner. This initiative's coordinated consumer adoption preserves historical contracts, required negative/regression proof and separately owned execution permissions. Installation does not adopt customer policy. Internal requirement mappings and package mechanics remain in contributor/governance surfaces rather than published skills.
+For this repository's explicitly adopted model work, [Validation](docs/design/engineering/validation.md) preserves the adopted shared derivation, protective-value and maintenance criteria (TEST-SR-01–13) formerly owned by Test. The unified Validation change consolidates proof criteria and selected execution ownership; its exact source/consumer transfer takes effect through reviewed coherent implementation and successful Verify. The owning change records adoption and final closeout. Specialist reviewers and Verify judge actual plans, tests and evidence; Review and Closeout retains assessment authority policy, applicability and closeout consequences. Workflow retains coordination. Canonical consumers apply the criteria through selective quality and maintenance resources; those resources are application guidance, not another policy owner. This initiative's coordinated consumer adoption preserves historical contracts, required negative/regression proof and separately owned execution permissions. Installation does not adopt customer policy. Internal requirement mappings and package mechanics remain in contributor/governance surfaces rather than published skills.
 
 This repository uses Codex to help maintain a public open source project.
 
@@ -24,7 +26,7 @@ Detailed governance lives in `CONSTITUTION.md`. `AGENTS.md` stays concise and po
 
 ## Review and Closeout ownership
 
-For explicitly adopted model work, [Review and Closeout](docs/design/review-closeout/review-closeout.md) owns shared assessment and final-closeout policy within Workflow (RC-SR-01–18). Workflow retains coordination; Record Format and CLI retain representation and mechanics. This change adopts that ownership for this repository's explicitly selected initiative; installation and distribution do not activate customer projects. The model's clause-level map identifies replacement ownership, while historical contracts and their stable IDs, judgments and stored procedures below retain their exact meaning. Specialized skills apply the owner through selectively packaged guidance; they do not define competing policy. Existing separately authorized release, PR, publication and destructive-action boundaries remain in force.
+For explicitly adopted model work, [Review and Closeout](docs/design/skill/assessment.md) owns shared assessment and final-closeout policy within Workflow (RC-SR-01–18). Workflow retains coordination; Record Format and CLI retain representation and mechanics. This change adopts that ownership for this repository's explicitly selected initiative; installation and distribution do not activate customer projects. The model's clause-level map identifies replacement ownership, while historical contracts and their stable IDs, judgments and stored procedures below retain their exact meaning. Specialized skills apply the owner through selectively packaged guidance; they do not define competing policy. Existing separately authorized release, PR, publication and destructive-action boundaries remain in force.
 
 ## Instruction precedence
 
@@ -41,6 +43,8 @@ When instructions conflict, follow this order:
 Do not silently blend conflicting higher-priority instructions. Call out the conflict, explain the impact, and follow the highest-priority source that already implies the answer.
 
 ## Repository defaults
+
+- This repository uses the explicit [System directory layout](docs/design/system.md#repository-directory-layout) instead of the generic `docs/design/M/M.md` default. Preserve stable model IDs and use the declared example-to-owner map.
 
 - Prefer the smallest change that fully satisfies the request.
 - Do not add unrelated refactors while implementing a scoped task.

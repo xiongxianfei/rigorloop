@@ -40,13 +40,13 @@ test('TG-03 unknown_value explanation members empty and null inputs reject witho
  const op=set('review',{summary:'x'});op.target.id='missing';assert.equal(run(root,op).result.errors[0].code,'target-not-found');
 });
 test('TG-03 complete Verify adds and removes conditional basis without rewriting unrelated bytes',t=>{
- const root=setup(t),initial=stored(root,verifyPath),basis=JSON.parse(readFileSync(new URL('../../../docs/design/record-format/examples/v3-verify-limitations-update/before.json',import.meta.url))).verification_basis;
+ const root=setup(t),initial=stored(root,verifyPath),basis=JSON.parse(readFileSync(new URL('../../../docs/design/cli/examples/records/v3-verify-limitations-update/before.json',import.meta.url))).verification_basis;
  const r=run(root,{op:'verify.record',target:{},values:{...values(initial),verification_basis:basis}});assert.equal(r.result.status,'saved');assert.deepEqual(stored(root,verifyPath).verification_basis,basis);
  assert.equal(run(root,set('verify',{verification_basis:basis})).result.status,'rejected');
  const current=stored(root,verifyPath);delete current.verification_basis;const removed=run(root,{op:'verify.record',target:{},values:values(current)},{},['--details']);assert.equal(removed.result.status,'saved');assert.ok(removed.result.details.effects.find(e=>e.path===verifyPath).changed_fields.includes('verification_basis'));assert.deepEqual(stored(root,verifyPath),initial);
 });
 test('TG-03 explicit finding edits and complete review replacement preserve their separate targets',t=>{
- const root=setup(t),f=JSON.parse(readFileSync(new URL('../../../docs/design/record-format/examples/v3-finding-correction/stored-review.json',import.meta.url))).findings[0],target={review:'final-code-review',id:f.id},fv={...f};delete fv.id;
+ const root=setup(t),f=JSON.parse(readFileSync(new URL('../../../docs/design/cli/examples/records/v3-finding-correction/stored-review.json',import.meta.url))).findings[0],target={review:'final-code-review',id:f.id},fv={...f};delete fv.id;
  assert.equal(run(root,{op:'finding.add',target,values:fv}).result.status,'saved');const before=stored(root,reviewPath);
  assert.equal(run(root,{op:'review.record',target:{id:'final-code-review'},values:{...values(before),summary:'Updated explanation'}}).result.status,'saved');assert.deepEqual(stored(root,reviewPath).findings,before.findings);
  assert.equal(run(root,{op:'finding.set',target,values:{evidence:'More precise',reporter:{id:'corrected-reporter',role:'review'}}}).result.status,'saved');assert.equal(stored(root,reviewPath).summary,'Updated explanation');

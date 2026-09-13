@@ -4,7 +4,7 @@ import {test} from 'node:test';
 import {readFileSync} from 'node:fs';
 import {parseV3Record, validateV3Record, validateV3Set, validateV3Preservation, validateV3Creation} from '../dist/lib/record-format-v3.js';
 import {requestFormat, V3_FORMAT} from '../dist/lib/record-store-format.js';
-const read=p=>JSON.parse(readFileSync(new URL(`../../../docs/design/record-format/examples/${p}`,import.meta.url),'utf8'));
+const read=p=>JSON.parse(readFileSync(new URL(`../../../docs/design/cli/examples/records/${p}`,import.meta.url),'utf8'));
 const encode=x=>JSON.stringify(x)+'\n';
 const prefix='docs/changes/example-change/';
 const edit=(files,path,fn)=>{const value=JSON.parse(files[prefix+path]);fn(value);files[prefix+path]=encode(value);};
