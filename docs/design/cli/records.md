@@ -6,7 +6,9 @@ Parent model: [CLI — Records](cli.md#records).
 
 This child owns the stored representation and preservation contract. CLI Command Interface and Persistence implement access to it; Skill Workflow and Assessment supply the meaning of recorded decisions.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 The current stored contract is `rigorloop-records-v3`. [Retirement provenance](#v2-stored-format-retirement) records the support boundary and owning change; historical decisions do not supply an alternate operational profile.
 
@@ -23,6 +25,35 @@ The model ID is `record-format`. Its selected format is **RigorLoop Record Forma
 | How is old data handled? | [Compatibility and adoption](#compatibility-and-adoption) |
 | Who owns adjacent behavior? | [Context and Scope](#context-and-scope) |
 | What must be demonstrated? | [Boundary scenarios](#boundary-scan-and-acceptance-scenarios) |
+
+## Architecture Overview
+
+```mermaid
+flowchart TB
+    Change["Change: activity, work and blockers"]:::system
+    Subjects["Proposal, models and optional plan"]:::external
+    Registry["Registered paths and explicit applicability"]:::container
+    Review["Reviews and their findings"]:::container
+    Evidence["Evidence checks"]:::container
+    Decisions["Material decisions"]:::container
+    Verify["Successful Verify report"]:::container
+    Change -->|"references"| Subjects
+    Change -->|"contains"| Registry
+    Registry --> Review
+    Registry --> Evidence
+    Registry --> Decisions
+    Registry --> Verify
+    Review -->|"reviewed subjects"| Subjects
+    Evidence -->|"evaluated subjects"| Subjects
+    Verify -->|"supporting references"| Review
+    Verify -->|"supporting references"| Evidence
+    classDef person fill:#08427b,stroke:#073b6f,color:#fff
+    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+    classDef external fill:#999,stroke:#666,color:#fff
+    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
+```
+
+Records owns the stored change registry, supporting record types and their identity/reference invariants. Supporting records are conditional; the graph does not require all of them to exist before a correction can be saved. Workflow and Assessment own semantic decisions, while CLI owns transport, byte preservation and recoverable writes. The [record model](#record-model) below defines the exact stored representation, including stable Review finding IDs and immutable change-level blocker origin.
 
 ## Context and Scope
 
@@ -85,32 +116,9 @@ Version numbers belong to their own surface. A targeted request with schema_vers
 
 The change record is the registry and coordination entry point. It contains activity, work and change-level blockers; it references the proposal, affected models and optional plan. Its registry identifies supporting records, each with an explicitly declared applicability entry. Review findings belong to their containing review. Reviews and evidence name exact engineering subjects; those subject identities do not become automatically current when files change.
 
-```mermaid
-flowchart TB
-    Change["Change: activity, work and blockers"]:::system
-    Subjects["Proposal, models and optional plan"]:::external
-    Registry["Registered paths and explicit applicability"]:::container
-    Review["Reviews and their findings"]:::container
-    Evidence["Evidence checks"]:::container
-    Decisions["Material decisions"]:::container
-    Verify["Successful Verify report"]:::container
-    Change -->|"references"| Subjects
-    Change -->|"contains"| Registry
-    Registry --> Review
-    Registry --> Evidence
-    Registry --> Decisions
-    Registry --> Verify
-    Review -->|"reviewed subjects"| Subjects
-    Evidence -->|"evaluated subjects"| Subjects
-    Verify -->|"supporting references"| Review
-    Verify -->|"supporting references"| Evidence
-    classDef person fill:#08427b,stroke:#073b6f,color:#fff
-    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
-    classDef external fill:#999,stroke:#666,color:#fff
-    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
-```
 
-This conceptual view illustrates RF-SR-01/02/03; it is not a second schema. Subjects may also include implementation and other proof inputs admitted by the exact Subject type. Supporting records are conditional, and their arrows do not imply that every record must exist before a correction can be saved.
+
+The [Architecture Overview](#architecture-overview) illustrates RF-SR-01/02/03; it is not a second schema. Subjects may also include implementation and other proof inputs admitted by the exact Subject type. Supporting records are conditional, and their arrows do not imply that every record must exist before a correction can be saved.
 
 | Stored record | Semantic responsibility | Definition in the [v3 JSON Schema](../../../schemas/rigorloop-records-v3.schema.json) |
 | --- | --- | --- |

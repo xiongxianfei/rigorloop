@@ -21,7 +21,9 @@ Inputs are authorized product direction, exact affected contracts, the selected 
 | Packaging | [Packaging](packaging.md) | Reproducible skill archives, CLI package composition and installer metadata. |
 | Release | [Release](release.md) | Candidate qualification, publication authority, observed public identity and recovery. |
 
-## Subsystem design graph
+## Architecture Overview
+
+### Subsystem design graph
 
 ```mermaid
 flowchart TB

@@ -19,7 +19,9 @@ Original composition adoption: [three-model reconciliation](../../changes/2026-0
 | Persistence | [Persistence](#persistence) and the existing construction/save/recovery sections | Lossless candidate construction, concurrency, atomicity and safe recovery. |
 | Installation | [Installation](installation.md) | Verified package acquisition and explicit target filesystem changes; never workflow-state adoption. |
 
-## Subsystem design graph
+## Architecture Overview
+
+### Subsystem design graph
 
 ```mermaid
 flowchart LR

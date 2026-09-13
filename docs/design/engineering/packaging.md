@@ -4,11 +4,35 @@ Model validation contract: model-document-v1
 
 Parent model: [Engineering](engineering.md#packaging).
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Introduction and Goals
 
 Packaging owns deterministic generation of supported skill archives, CLI candidate composition and the shared metadata/identity contract consumed by CLI Installation and Release. It does not install into a project or authorize publication. The former Distribution contract is split by responsibility: its installation requirements and filesystem behavior now live in [Installation](../cli/installation.md). Original DIST requirement identities are retained; DIST-SR-01's combined ownership and DIST-DEC-01's no-split decision are superseded by the approved three-model direction.
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    Skills["External: canonical skills and mapped resources"]
+    CLI["External: CLI package sources"]
+    Descriptors["Supported target descriptors and transforms"]
+    Generation["Isolated package generation"]
+    Artifacts["Skill archives and CLI npm candidate"]
+    Metadata["Inventory, checksums and trusted metadata"]
+    Consumers["External: Validation, Installation and Release"]
+    Skills --> Generation
+    CLI --> Generation
+    Descriptors --> Generation
+    Generation --> Artifacts
+    Artifacts --> Metadata
+    Artifacts --> Consumers
+    Metadata --> Consumers
+```
+
+Packaging owns canonical-to-artifact generation and the shared artifact/metadata representation. Generated outputs stay outside canonical and active installation roots. Consumers check, install or publish under their own contracts; generated metadata records actual facts and does not manufacture successful validation or publication authority.
 
 ## Context and Scope
 
