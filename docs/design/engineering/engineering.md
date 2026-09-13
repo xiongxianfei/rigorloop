@@ -21,6 +21,34 @@ Inputs are authorized product direction, exact affected contracts, the selected 
 | Packaging | [Packaging](packaging.md) | Reproducible skill archives, CLI package composition and installer metadata. |
 | Release | [Release](release.md) | Candidate qualification, publication authority, observed public identity and recovery. |
 
+## Subsystem design graph
+
+```mermaid
+flowchart TB
+    Behavior["External: Skill and CLI behavior contracts"]
+    Development["Development: allocate and implement reviewed work"]
+    Validation["Validation: protective proof and independent execution"]
+    Packaging["Packaging: skill archives and CLI candidate"]
+    Release["Release: qualification, publication and observation"]
+    Assessment["External: Skill Assessment contract"]
+    Authorization["External: maintainer publication authorization"]
+    Products["External: published skills and CLI"]
+    Behavior -->|"required behavior"| Development
+    Development -->|"candidate sources"| Packaging
+    Development -->|"candidate checks and proof allocation"| Validation
+    Packaging -->|"exact candidate artifacts"| Validation
+    Validation -->|"observations and limitations"| Development
+    Assessment -->|"independent review and Verify duties"| Development
+    Development -->|"applicable assessed engineering basis"| Release
+    Packaging -->|"exact release artifacts"| Release
+    Release -->|"candidate-specific qualification checks"| Validation
+    Validation -->|"actual qualification results"| Release
+    Authorization -->|"candidate-specific permission"| Release
+    Release -->|"publish and observe"| Products
+```
+
+Engineering owns these four children's composition under [System's parent graph rule](../system.md#parent-graph-ownership); the submodel table links each contract. Development performs repository work using published behaviors and obtains independent assessment under Skill Assessment. Validation reports proof; assessors judge it. Release consumes an applicable engineering basis, qualifies its exact candidate and retains separate publication authority. Feedback edges describe interactions, not permission to bypass milestone reviews, final Code Review or Verify. Internal Validation execution belongs in Validation, and artifact formats remain in Packaging.
+
 ## Architecture Constraints
 
 Canonical skill content remains in `skills/`; executable source remains under `packages/rigorloop/`. Repository scripts implement development validation and package production; hosted CI delegates to them. Shared criteria can be referenced by published capabilities, but repository-specific operations are not a customer prerequisite. Original adoption and historical review identities remain scoped to their actual subjects.
