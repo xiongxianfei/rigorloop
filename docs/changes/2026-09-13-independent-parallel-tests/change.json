@@ -4,7 +4,7 @@
       "id": "root",
       "role": "plan"
     },
-    "reason": "Independent Design Review approved detailed Validation graphs, execution-sharing structures and corrected reporting contract; both findings resolved. Exact package ready for Delivery planning; no runtime implementation initialized.",
+    "reason": "Independent Design Review approved simplified canonical-ID composition, existing executor/reporting and purposeful permanent tests; prior unimplemented general sharing machinery is superseded. Ready for Delivery planning.",
     "stage": "plan",
     "status": "ready"
   },
@@ -33,7 +33,7 @@
         "role": "design"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/material-decisions.json",
-      "reason": "Exact author correction pending independent finding disposition.",
+      "reason": "User-authorized simpler Design correction, pending independent review.",
       "value": "current"
     },
     {
@@ -42,7 +42,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json",
-      "reason": "Current detailed package and corrected report projections independently reassessed against actual producer/consumer and unchanged owner boundaries; both recorded Design findings resolved, no remaining material gap.",
+      "reason": "User-directed concise realization independently assessed as current package; prior general equivalence/projection mechanisms explicitly superseded, original goals and required protection retained, no unresolved findings.",
       "value": "current"
     }
   ],
@@ -53,21 +53,21 @@
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:d3b803efeb1018551c55f0aac92ec8e37c95e085a452de00e18bde7ae1bc61bc",
+        "identity": "sha256:c5e7c15118f28636e1b5b05b3cd70881e2e0d812cfe2da695ce50cd0a3c68b77",
         "path": "docs/design/system.md"
       }
     },
     {
       "id": "engineering",
       "subject": {
-        "identity": "sha256:af317d9c87fbb2aff782f784ec787f6864002206ab58859ba46d06100a4e8468",
+        "identity": "sha256:66727d985fdc580a74afeae5a8d0c4c16fd437968c2107876c2dc77226c99240",
         "path": "docs/design/engineering/engineering.md"
       }
     },
     {
       "id": "validation",
       "subject": {
-        "identity": "sha256:40220c27099e171e5523a7fa557594e002314d9b7ef37c098b2ab4fa70d62d53",
+        "identity": "sha256:5008d34a83ba4157c12586e9423bacf8dd6ced7a143e0e3ee603ff40457b427c",
         "path": "docs/design/engineering/validation.md"
       }
     },

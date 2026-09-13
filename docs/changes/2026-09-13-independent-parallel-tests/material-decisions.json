@@ -1,5 +1,5 @@
 {
-  "body": "Canonical executions supply physical outcomes; child_durations is a derived projection referencing execution_id. Representative check_id is earliest selected/discovered consumer preserving expanded case identity. Legacy phase retains parallel/sequential classification; request phase stays preflight/focused/boundary and execution launch_phase identifies first eligible launching consumer. Aliases cannot grant eligibility; counts/timings derive once and projection mismatches fail. Concrete selected/broad and jobs/order examples support reader reconciliation.",
+  "body": "Revised VAL-SR-19/20 and VAL-DEC-06: canonical catalog IDs, stable set composition F then B minus F, one existing CheckPlan/CheckResult and scheduler. Known duplicate broad executor catalog entry converges on validation_execution.regression; actual current readers updated downstream. Different configurations/preparation/fresh observations retain explicit IDs. Removed execution families, input-fingerprint comparisons, proof-request/consumer state machines and canonical-versus-legacy result collections. Keep existing report shapes and one physical result row, phase gates and preparation safety. Full-suite normal/sequential/reversed comparisons are migration proof, recurring only for a distinct documented protective contribution. Earlier detailed mechanism/report decisions are superseded for implementation by this current owner decision; original review identities remain historical. No runtime work or deletion performed.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "decisions": [
     {
@@ -144,6 +144,29 @@
         {
           "identity": "sha256:40220c27099e171e5523a7fa557594e002314d9b7ef37c098b2ab4fa70d62d53",
           "path": "docs/design/engineering/validation.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "simple-canonical-validation",
+      "rationale": "User explicitly rejects unnecessary validation complexity and asks for a simple concise design; preserve original three goals while removing general equivalence machinery.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:5008d34a83ba4157c12586e9423bacf8dd6ced7a143e0e3ee603ff40457b427c",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:66727d985fdc580a74afeae5a8d0c4c16fd437968c2107876c2dc77226c99240",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:c5e7c15118f28636e1b5b05b3cd70881e2e0d812cfe2da695ce50cd0a3c68b77",
+          "path": "docs/design/system.md"
         }
       ]
     }

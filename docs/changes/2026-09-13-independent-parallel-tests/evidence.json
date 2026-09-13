@@ -228,6 +228,30 @@
         }
       ],
       "summary": "Both models pass structural/reference and prose checks; zero prose errors/warnings, diff check clean. Corrected representative identity and legacy concurrency phase contract, canonical-versus-derived collections, launch phase and concrete ordering/jobs examples. Added projection equality and count/phase acceptance conditions. Actual code/tests unchanged; no runtime or compatibility pass claimed. Reviewer owns finding disposition and new exact package judgment."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "simple-validation-author-check",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/engineering/validation.md --path docs/design/engineering/engineering.md --path docs/design/system.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/engineering/validation.md --path docs/design/engineering/engineering.md --path docs/design/system.md; git diff --check; author review of canonical-ID, F/B composition and maintenance-proof preservation.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:5008d34a83ba4157c12586e9423bacf8dd6ced7a143e0e3ee603ff40457b427c",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:66727d985fdc580a74afeae5a8d0c4c16fd437968c2107876c2dc77226c99240",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:c5e7c15118f28636e1b5b05b3cd70881e2e0d812cfe2da695ce50cd0a3c68b77",
+          "path": "docs/design/system.md"
+        }
+      ],
+      "summary": "All three selected model checks passed; prose zero errors/warnings; diff check clean. Scope preserves System structural/end-to-end views and parent graphs, simplifying Validation internal structure/flow. Retained selector modes/exits/triggers and release interception, catalog safety constraints, independent-case full-inventory scope, subprocess cleanup, required negative/regression protection and historical source maps. Removed general request/alias/fingerprint/projection mechanism; canonical-ID conflicts reject and different observation points stay distinct. No performance, runtime implementation or test-removal claim. Untracked docs/design.zip is outside this work."
     }
   ],
   "schema_version": 3
