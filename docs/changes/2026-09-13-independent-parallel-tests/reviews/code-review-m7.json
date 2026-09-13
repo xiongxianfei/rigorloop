@@ -1,0 +1,96 @@
+{
+  "assessment_scope": "Complete M7 a86e32c4..a0deb393 implementation including approved Validation amendment, fixed coverage bases, composition, controlled selector fixtures, separate recurring overlap CI, contributor guidance and final parent-report correction. Assessed registered m7-implementation, retained failed ownership observation and final actual caller reconciliation. This is the final milestone review, not fresh whole-change Code Review or Verify.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m7",
+  "independence_basis": "Root authored M7 implementation and evidence. Separate proposal-reviewer inspected the actual final diff, exact current record and caller reconciliation, and independently ran eleven composition/report-ownership tests. Reviewer did not author or edit code, CI, plan, Design or routing. Prior amendment Design/Delivery assessment is not implementation authorship.",
+  "judgment": "approved",
+  "limitations": [
+    "Used registered full author gates and population reconciliation plus independent eleven-test execution and source/report checks; did not redundantly rerun all1901 cases. Timings reflect local concurrent author invocations, not hosted CI or a universal performance result.",
+    "This final milestone review is not the required fresh whole-change review or Verify. Original failed ownership evidence remains preserved; reviewer made no source/routing changes."
+  ],
+  "rationale": [
+    "1 Alignment — pass: finite reviewed pairs only normalize when both scopes are already required. Narrow-only calls stay unchanged; full precedence selects an already-required covering scope. Independent literal bases, live command/unit, bounded demand1, nonshared writes and unchanged no-catalog-prerequisite assumptions reject incompatible edits. No inferred subset analysis, cache, new scheduler or public behavior expansion is introduced.",
+    "2 Tests — pass: independent CompositionTests plus ExecutionTests.test_parent_report_destination_is_private_and_nested_reports_are_owned passed11 in13.564s. Three new allocation cases cover narrow/both/full precedence, stale definition, reason retention, union/rebound dependencies, real post-merge cycle rejection, separate fresh scope, failed preparation and one launch. Four new M7 cases have current normal/single/reversed adoption proof. Existing canonical conflict, diagnostic focused failure and distinct release configuration tests remain.",
+    "3 Identity/phase edges — pass: every participating actual plan is checked before replacement; duplicate same-ID prerequisite conflicts reject. Union/rebinding preserves inbound consumer dependencies and ordering constraints. Ordinary same-ID merge retains all reasons and earliest phase; phase gates are added afterward. Missing/self/cyclic dependencies are rejected by existing validate_plans before case execution. Current main/broad membership contains no overlapping finite pairs, while selected composition applies allocation before discovery.",
+    "4 Error/output ownership — pass: actual nested report overwrite is preserved as failed evidence against904d15df, despite its suites passing. Correction removes only the inherited RIGORLOOP_BROAD_SMOKE_RESULT_JSON from copied child environments. Parent environment, worker allocation and unrelated variables survive; nested invocations may choose owned destinations. New actual-child regression proved red/green sentinel behavior, explicit nested output and parent final rows. Final broad monitor first observed the complete955-row/jobs2 report, not a nested empty result.",
+    "5 Architecture/resources — pass: existing CheckPlan/CheckResult and Python scheduler remain owners; normalization precedes existing merge and native/Python discovery. Phase promotion cannot remove preparation; separate archive build dependencies remain untouched. CI overlap proof runs only after ci.sh returns, with its own explicit2-worker invocation of two small existing cases. It adds distinct overlap detection lost inside demand1 case allocation without overriding a live nested budget or replaying the whole52-case executor suite.",
+    "6 Compatibility — pass: selector controlled workspaces explicitly bind their actual command fixtures, preserving resource constraints. Actual final PR exercises real coverage normalization, so stubs do not stand in for integration. Contributor guidance now covers independently adopted Python and Node cases and separately bounded validator/audit commands. Existing pull_request/push-main triggers, contents read permission, Node24/Python3.11 setup, npm dependency install and leaf timeout remain. Hosted CI is not yet observed.",
+    "7 Security/authority — pass: invocation-owned report separation prevents accidental child overwrite without introducing a global destination whitelist or broad environment deletion. No historical store rewrite, public release/publication, customer governance adoption or user-file cleanup is introduced. Release interception and independently required versions/destinations remain; synthetic candidate proof is not live authorization.",
+    "8 Actual integration — pass: final main1510, broad955 and committed-range PR1828 executions pass. Reviewer independently checked all report IDs are unique and every row passed. Main includes1500 cases plus10 commands; broad adds executor52/selector163, and seven direct-only families add186, reconciling1482 Python plus419 Node cases. Actual full npm419/executor52 and synthetic package/release tests passed. Required case presence is reconciled to discovery, not inferred merely from use of ci.sh.",
+    "9 Scope/preservation — pass: no M7 case body is deleted. Known same-method subset execution is replaced by named covering canonical scope with all reasons and prerequisites; release-specific fresh/configuration checks remain distinct. No new inventory ledger or permanent full-suite comparison is added. Model amendment is independently approved and CI/contributor changes support final caller integration. Earlier milestone duplicate removals retain their separately recorded protective basis.",
+    "10 Evidence applicability — pass: author source subjects match current files. Final main/broad/PR were rerun on corrected a0deb393; earlier ownership failure remains failed, not relabeled. M3–M6 unchanged case/fixture/loader/receipt evidence remains applicable because M7 changes pre-discovery composition and only strips the parent-owned output destination at child launch; its new environment hazard has direct fresh proof and actual caller reruns. M1/M2 exact unchanged diagrams/examples/guidance retain their render/semantic/package basis. The bounded default4-worker29-case measurement reports its5.41s observed wall time and concurrent-load limits, not universal speedup.",
+    "Milestone handoff — M7 approved with no required milestone resolution. Route may close the final implementation milestone. Fresh independent whole-change Code Review of the complete final diff and cross-milestone interactions must still precede distinct Verify; this judgment grants neither final closeout nor branch/PR/publication readiness."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:2d0c0fbdfef2eab2ece82c3b0eeaa7e5742581846418dc374d120a4b9e7d86f6",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "identity": "sha256:44642a943b6907d9336f0a97147bec1ab814ab6cb11088d65c9c0207421baf57",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:6d1d8b981ce863dea927b4dc6b76455109d188b28bff6ad76542f9226f3b5d13",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:f04dfaccfab8a6566197d69655d07c456ec64eecaddc7f78320ec0ad93783c6b",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:4526cb906d90fc87be8293294102e93757fa416234ccb090a7ebf5fd1039196d",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:eafd8979f154fe6d263e269d41188198346812735693a6b039bfd48ff1a42aa0",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:8f109ff25f99431780fb1e04b3bbf1ebdc6a5be9c246d5422df69ff150827e72",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:3be18f702ed98c35c998c0d47166b5ad4cfdac36843d3650ce7c270cf64e8465",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:8631bde8fa1bef38726e648ebb920b6400963b86ed117751d39e90e5a1698376",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review-m7-allocation.json"
+    },
+    {
+      "identity": "sha256:53c9c784c8da335191fe16fd64db7eba716ff547fe93a086fe167355fb04af33",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review-m7-allocation.json"
+    },
+    {
+      "identity": "sha256:eff205ce26fe021b6819da756055d6430edd7a974dc21d28918661999c634e71",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m6.json"
+    },
+    {
+      "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:4ff0c3964282dcd004ff906dfdfacb9e5c9c4ef0ede5a2bda9be1e7c71381da4",
+      "path": "scripts/validation_node_adapter.mjs"
+    },
+    {
+      "identity": "sha256:b0e1816753865cdee8ac3cb2514b7b3bb96584d9098ca0cfc9745463ec80b999",
+      "path": "scripts/test-retirement-ledger.py"
+    }
+  ],
+  "summary": "M7 implements the approved finite coverage allocation, preserves phase/dependency and report ownership, and reconciles all 1901 retained cases with actual composed and direct proof. No material milestone Code Review finding remains.",
+  "target": "code"
+}
