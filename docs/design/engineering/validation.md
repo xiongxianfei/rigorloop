@@ -111,6 +111,8 @@ flowchart TB
 
 Validation owns the five responsibilities inside its boundary; they are not separate models or services. Product contracts, Delivery allocation and independent assessment remain external owners. The criteria guide authors maintaining checks; they do not automatically judge test adequacy. `scripts/validation_selection.py` owns the catalog and selection. `scripts/validation_execution.py` owns scheduling, subprocess cleanup and results. `scripts/ci.sh` remains the wrapper. Authors and reviewers apply the TEST-SR criteria; passing checks never supply semantic approval. [Engineering](engineering.md#subsystem-design-graph) owns how Validation supports Development, Packaging and Release.
 
+The [Context and Scope](#context-and-scope) owns product-contract, Delivery and assessor boundaries. [Proof criteria and maintenance](#requirements) define Criteria; [Solution Strategy](#solution-strategy) defines the shared catalog/selection/executor realization, and [Runtime View](#runtime-view) owns execution and result flow. [Deployment View](#deployment-view) owns process and environment constraints. These references supply detail without making the overview another execution contract.
+
 Catalog execution units remain `command`, `python-unittest` and `node-test`. Retain the current command/adapter basis, isolation rationale, dependencies and serial/exclusive/bounded resource constraints. Stale or contradictory metadata and unknown fields/units reject before execution. Missing isolation assessment keeps work conservatively serial until corrected; it does not satisfy the current case-independence completion requirement.
 
 ## Runtime View

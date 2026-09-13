@@ -54,24 +54,34 @@ Retire current calls to the standalone `build-skills.py` mirror check only after
 ## Architecture Overview
 
 ```mermaid
-flowchart LR
-    Basis["External: reviewed source and release policy"]
-    Coordination["Release coordination and transaction profile"]
-    Candidate["Exact candidate preparation and qualification"]
-    Proof["External: Packaging, Validation and Installation proof"]
-    Permission["External: candidate-specific maintainer authorization"]
-    Execution["Publication, public observation and recovery"]
-    Evidence["Release evidence and actual outcome"]
-    Basis --> Coordination
-    Coordination --> Candidate
-    Proof --> Candidate
-    Candidate -->|"qualified candidate"| Execution
-    Permission -->|"required publication authority"| Execution
-    Execution --> Evidence
-    Evidence -->|"observed transaction state"| Coordination
+flowchart TB
+    Basis["Reviewed engineering basis and established release policy"]
+    Packaging["Packaging<br/>Exact candidate artifacts and identities"]
+    Validation["Validation and Installation<br/>Required qualification observations"]
+    Authority["Maintainer<br/>Candidate-specific publication authorization"]
+    subgraph Release["Release — qualification and authorized publication"]
+        Coordination["Transaction coordination<br/>Profile and operation scope"]
+        Candidate["Candidate qualification<br/>Immutable basis and required proof"]
+        Publication["Publication execution<br/>Authorized candidate and provider actions"]
+        Observation["Public observation and recovery<br/>Actual outcomes and incomplete work"]
+        Evidence["Release evidence<br/>Candidate identity and observed results"]
+        Coordination -->|"selected transaction requirements"| Candidate
+        Candidate -->|"qualified candidate"| Publication
+        Publication -->|"actual provider outcomes"| Observation
+        Candidate -->|"qualification basis and limitations"| Evidence
+        Observation -->|"public results and recovery state"| Evidence
+        Evidence -->|"observed transaction state"| Coordination
+    end
+    Basis -->|"reviewed source and release constraints"| Coordination
+    Packaging -->|"candidate bytes and metadata"| Candidate
+    Candidate -->|"required candidate checks"| Validation
+    Validation -->|"actual evidence and limitations"| Candidate
+    Authority -->|"required permission for this candidate"| Publication
+    Publication -->|"publish exact artifacts"| Products["Public skills and CLI"]
+    Products -->|"publicly observable state"| Observation
 ```
 
-Release owns qualification, publication and truthful public outcomes through its existing coordinator and transaction helpers. Packaging and Validation remain separate proof owners; successful engineering Verify is not publication permission. The operation-flow graph above explains ordering and exception paths; this overview identifies the responsibilities and external boundaries.
+Release owns the transaction responsibilities inside the boundary. [Routine coordination and immutable candidate](#routine-coordination-and-immutable-candidate), the [Building Block View](#building-block-view), [Runtime View](#runtime-view) and [Deployment View](#deployment-view) own qualification, execution and recovery detail. [Packaging](packaging.md) supplies artifacts; [Validation](validation.md) and [Installation](../cli/installation.md) retain check execution and install behavior. [Engineering Development](engineering.md#development) supplies the assessed source basis. Candidate-specific maintainer authorization remains a separate required input; neither an engineering Verify nor candidate qualification grants it. [Authoritative facts and durable evidence](#authoritative-facts-and-durable-evidence) owns the actual release account.
 
 ## Context and Scope
 

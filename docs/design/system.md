@@ -19,7 +19,9 @@ System has three main models: [Skill](skill/skill.md), [CLI](cli/cli.md) and [En
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 25, "nodeSpacing": 25}}}%%
 flowchart TB
-    System["System<br/>Product composition and shared interfaces"]
+    Intent["User needs and project authority"]
+
+    subgraph Project["RigorLoop — product behavior and engineering assurance"]
 
     subgraph Skill["Skill — published capability behavior"]
         direction TB
@@ -50,9 +52,13 @@ flowchart TB
         E1 ~~~ E2 ~~~ E3 ~~~ E4
     end
 
-    System --> Skill
-    System --> CLI
-    System --> Engineering
+    Skill -->|"skill behavior to realize and protect"| Engineering
+    CLI -->|"executable behavior to realize and protect"| Engineering
+    end
+
+    Intent -->|"required capabilities and constraints"| Skill
+    Intent -->|"required commands and constraints"| CLI
+    Intent -->|"authorized engineering and publication scope"| Engineering
 
     subgraph Products["Published products"]
         PublishedSkills["Published skills<br/>Individual skill use:<br/>CLI not required"]
@@ -64,7 +70,7 @@ flowchart TB
 
 ```
 
-This structural overview shows the three main models, their immediate submodels and the two published products. Containment expresses responsibility ownership; the invisible layout links inside each group carry no behavioral or execution-order meaning. The product arrows distinguish behavior definition from Engineering's implementation, validation and release responsibility. Individual skill use does not require the CLI; current governed recording does.
+This structural overview shows the three main models, their immediate submodels and the two published products. The outer boundary separates project responsibilities from user authority and delivered products; nested containment expresses responsibility ownership; the invisible layout links inside each group carry no behavioral or execution-order meaning. The product arrows distinguish behavior definition from Engineering's implementation, validation and release responsibility. Individual skill use does not require the CLI; current governed recording does.
 
 The [end-to-end system design](#end-to-end-system-design) below explains how these responsibilities cooperate to deliver the products. [Skill](skill/skill.md#subsystem-design-graph), [CLI](cli/cli.md#subsystem-design-graph) and [Engineering](engineering/engineering.md#subsystem-design-graph) own their detailed internal interaction graphs. Showing their child names here provides orientation and does not transfer ownership of those contracts.
 

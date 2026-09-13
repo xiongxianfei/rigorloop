@@ -24,12 +24,14 @@ Original composition adoption: [three-model reconciliation](../../changes/2026-0
 ### Subsystem design graph
 
 ```mermaid
-flowchart LR
+flowchart TB
+    subgraph Owned["CLI — executable behavior"]
+        Interface["Command Interface: requests, results and dispatch"]
+        Records["Records: stored representation and invariants"]
+        Persistence["Persistence: reads, safe writes and recovery"]
+        Installation["Installation: trusted packages and destination writes"]
+    end
     Actor["External: user or skill-guided agent"]
-    Interface["Command Interface: requests, results and dispatch"]
-    Records["Records: stored representation and invariants"]
-    Persistence["Persistence: reads, safe writes and recovery"]
-    Installation["Installation: trusted packages and destination writes"]
     Packages["External: Engineering Packaging"]
     State["External: project records"]
     Destinations["External: installed skill destinations"]
@@ -46,6 +48,8 @@ flowchart LR
 ```
 
 CLI owns the composition of its four children under [System's parent graph rule](../system.md#parent-graph-ownership); the submodel table links their detailed contracts. External nodes mark consumed interfaces, not CLI-owned subsystems. Records defines representation; Persistence enforces it through the shared recording engine. Installation has its own filesystem safety contract and does not write project workflow records. A successful operation does not establish an engineering judgment.
+
+The [Context and Scope](#context-and-scope) and [Runtime View](#runtime-view) own external requests and command interactions; [Deployment View](#deployment-view) owns execution placement. Command results report actual observations and limitations to the requesting user or skill-guided actor.
 
 ### Command interface
 

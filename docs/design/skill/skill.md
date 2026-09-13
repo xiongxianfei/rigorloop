@@ -31,12 +31,14 @@ A child may be a named section here or a separately maintained model document. D
 
 ```mermaid
 flowchart TB
-    Contract["Capability Contract: invocation, resources and limits"]
-    Workflow["Workflow: coordination and handoffs"]
-    Authoring["Authoring: proposals, Designs and plans"]
-    Implementation["Implementation: changes, diagnosis and repair"]
-    Assessment["Assessment: independent judgments and closeout"]
-    Support["Project Support: direction, investigation and learning"]
+    subgraph Owned["Skill — published capability behavior"]
+        Contract["Capability Contract: invocation, resources and limits"]
+        Workflow["Workflow: coordination and handoffs"]
+        Authoring["Authoring: proposals, Designs and plans"]
+        Implementation["Implementation: changes, diagnosis and repair"]
+        Assessment["Assessment: independent judgments and closeout"]
+        Support["Project Support: direction, investigation and learning"]
+    end
     Contract -->|"common contract applied by"| Workflow
     Contract -->|"common contract applied by"| Authoring
     Contract -->|"common contract applied by"| Implementation
@@ -49,9 +51,22 @@ flowchart TB
     Authoring -->|"authored subjects"| Assessment
     Implementation -->|"changes and evidence"| Assessment
     Assessment -->|"judgments and correction owners"| Workflow
+    User["User intent, project authority and evidence"]
+    CLI["CLI and Records<br/>Governed inspection and recording"]
+    Outputs["Project artifacts, changes and assessments"]
+    Engineering["Engineering<br/>Implementation, packaging and release"]
+    User -->|"scoped invocation and authority"| Contract
+    Workflow -->|"explicit governed coordination"| CLI
+    Authoring -->|"authored artifacts"| Outputs
+    Implementation -->|"changes and evidence"| Outputs
+    Assessment -->|"independent conclusions"| Outputs
+    Support -->|"direction and supporting knowledge"| Outputs
+    Contract -.->|"published content and invocation invariants"| Engineering
 ```
 
 Skill owns these six children's composition under [System's parent graph rule](../system.md#parent-graph-ownership). The submodel table above links each node to its contract; [Authoring](#authoring) owns its nested Design-method view. Workflow coordinates governed work, while individual capabilities retain their scoped invocation behavior. CLI and Engineering are external siblings whose shared relationships are owned by System.
+
+Overview outputs are defined by the [behavioral submodels](#behavioral-submodels); [Context and Scope](#context-and-scope) owns user inputs, [Runtime View](#runtime-view) owns invocation behavior, and [Deployment View](#deployment-view) describes the packaged skill boundary. [CLI](../cli/cli.md) supports governed recording, while [Engineering](../engineering/engineering.md) realizes and delivers the published behavior. Individual skill use remains independent of CLI recording.
 
 ## Architecture Constraints
 

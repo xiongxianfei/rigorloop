@@ -27,11 +27,13 @@ Inputs are authorized product direction, exact affected contracts, the selected 
 
 ```mermaid
 flowchart TB
+    subgraph Owned["Engineering — build and assure both products"]
+        Development["Development: allocate and implement reviewed work"]
+        Validation["Validation: protective proof and independent execution"]
+        Packaging["Packaging: skill archives and CLI candidate"]
+        Release["Release: qualification, publication and observation"]
+    end
     Behavior["External: Skill and CLI behavior contracts"]
-    Development["Development: allocate and implement reviewed work"]
-    Validation["Validation: protective proof and independent execution"]
-    Packaging["Packaging: skill archives and CLI candidate"]
-    Release["Release: qualification, publication and observation"]
     Assessment["External: Skill Assessment contract"]
     Authorization["External: maintainer publication authorization"]
     Products["External: published skills and CLI"]
@@ -50,6 +52,8 @@ flowchart TB
 ```
 
 Engineering owns these four children's composition under [System's parent graph rule](../system.md#parent-graph-ownership); the submodel table links each contract. Development performs repository work using published behaviors and obtains independent assessment under Skill Assessment. Validation reports proof; assessors judge it. Release consumes an applicable engineering basis, qualifies its exact candidate and retains separate publication authority. Feedback edges describe interactions, not permission to bypass milestone reviews, final Code Review or Verify. Internal Validation execution belongs in Validation, and artifact formats remain in Packaging.
+
+[Skill](../skill/skill.md) and [CLI](../cli/cli.md) own behavior inputs; [Assessment](../skill/assessment.md) owns independent judgment policy. [Integrated operation and failure](#integrated-operation-and-failure) owns the end-to-end cooperation and exception paths; [Deployment and maintenance](#deployment-and-maintenance) owns the repository execution context.
 
 ## Architecture Constraints
 
