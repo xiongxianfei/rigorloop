@@ -4,9 +4,9 @@
       "id": "proposal-reviewer",
       "role": "review"
     },
-    "reason": "M5 complete with actual required proof, exact source/consumer cleanup and registered evidence consolidation. Independent M5 review precedes fresh whole-change review, Verify and user-authorized PR.",
+    "reason": "All directory and M1–M5 implementation milestones independently approved and completed. Require fresh independent whole-change Code Review before distinct Verify; user authorized progression through submitted PR.",
     "stage": "code-review",
-    "status": "ready"
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -142,6 +142,15 @@
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-delivery-review.json",
       "reason": "Exact unchanged plan adequately allocates the independently approved supplemental map, its preserved obligations and final proof without a new work sequence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m5-code-review.json",
+      "reason": "Complete M5 diff, exact deletion map, current registered evidence and unchanged semantic owner relationships independently assessed; all preserved content and tested source identities corroborated.",
       "value": "current"
     }
   ],
@@ -302,6 +311,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m5-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -410,7 +423,7 @@
         "ENG-SR-07",
         "ENG-SR-12"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }

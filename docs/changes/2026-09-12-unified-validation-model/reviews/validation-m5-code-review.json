@@ -1,0 +1,251 @@
+{
+  "assessment_scope": "Complete independent validation-m5 Code Review of commit2872765f against383368f3, unchanged M5 plan and approved supplemental exact map. Includes15 source deletions, mapped mixed architecture, ten skill consumers/shared projections, governance/current links, two demonstrated fixture repairs and v3 narrative consolidation. Fresh whole-change review and final Verify remain separate, and this does not approve branch/PR readiness.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "validation-m5-code-review",
+  "independence_basis": "Separate user-authorized nonauthor reviewer inspected complete root-authored M5 diff, exact approved source map, final evidence and consumer fixtures; independently verified evidence content/hash preservation and proof checkout byte equality. Reviewer authored no M5 code, tests, skills, models or plan. Prior independent Design/Delivery/Code judgments remain their own historical assessments.",
+  "judgment": "approved",
+  "limitations": [
+    "Full integration ran on identical production/test/spec/package source in a Linux filesystem checkout. Previously documented mounted-filesystem adapter timeout remains an environment limit; no performance claim, timeout increase or mounted-filesystem broad success is inferred.",
+    "This record explicitly reassesses current reliance after lossless narrative relocation; it does not rewrite historical review subjects or claim their former physical files still exist. Registered current records and exact preserved content support the present assessment.",
+    "Actual final branch selector/PR wrapper proof and fresh independent whole-change Code Review remain separate before Verify. M5 approval is not branch readiness, final Verify, adoption closeout or PR approval.",
+    "Reviewer recorded only its assessment. No lifecycle work/activity, plan, model or routing state was changed.",
+    "Retained legacy full-file prose errors/warnings remain visible baseline debt under their own formats; current introduced-finding delta is zero. Final Verify must preserve this explicit scope and enforce independently applicable current checks rather than treating the historical failed audit as passed."
+  ],
+  "rationale": [
+    "Spec alignment — pass: seven exact spec/test-spec pairs and cache ADR are removed, matching the approved15-source map. Mixed architecture edits match original plus independently approved supplemental clauses: cache goals/constraints/locations/scenarios/risks/glossary retire, actual-run/privacy/command identity and Assessment protections remain, selected mode applicability resolves to current Validation. No whole mixed architecture or unrelated domain responsibility is retired.",
+    "Test coverage — pass: M1–M4 replacement behavior and actual278-case adoption precede M5 deletion. Final C1/C2/C3 retain163/7/108 cases; selector fixture now uses an existing independently applicable lifecycle spec while retaining all routing assertions. Actual release candidate fixture copies templates/shared with canonical skills and commits the coherent input, preserving parity rather than weakening assertions. Failed runs are disclosed and complete corrected C9 passes164.",
+    "Edge cases/retention — pass: current implementation, package, skills, templates and model search for every removed filename found only intended source-qualified disposition citations in Validation, not an undisposed runnable reader. Historical grandfathered inventory and June classification/baseline identities remain unchanged by the complete diff. No cache-exclusive diagram was removed by inference; historical composition diagrams remain. Neighboring query Workstream A/B, token-cost reports, release remote-state cache prohibition and unselected scope exceptions are preserved.",
+    "Error handling — pass: no production error-handling code changes in M5. Existing closed v3 path rules correctly rejected9 ad hoc current change-root files; correction conforms to RF-SR01/02 rather than relaxing schema or treating arbitrary files as registered authority. Existing failed retired-input/current-record, missing-resource, parity and case-result proof remains required. Generic skill-creator frontmatter rejection is explicitly outside the adopted repository Skill format and did not cause a schema workaround.",
+    "Architecture and current Design reliance — pass: four System/Engineering/Packaging/Installation edits change only reconciliation navigation to registered evidence entry design-preservation-delta; current requirements, decisions and split ownership are unchanged. As the earlier independent Design assessor, I explicitly inspected these exact current link edits and preserved reconciliation contents and find prior approved semantics applicable. No new behavior or source-map expansion is inferred; earlier Design records retain original subject identities.",
+    "Compatibility and evidence reliance — pass: independently verified all9 original narratives/JSON match their claimed SHA256 and are included verbatim with original path/hash in the expected existing evidence summaries. All prior review references to those narrative paths match the preserved exact identity; no older mismatched narrative basis was found. Prior review bodies are byte-unchanged in the M5 diff. Deleted physical paths remain historical source identities, not live files; current reliance is on these explicitly assessed registered subjects and identical content. Case IDs, failure/pass distinctions and original judgments survive without a new live discovery inventory or cache.",
+    "Security/privacy and published-skill semantics — pass: all changed skill lines were inspected; updates replace Test-model owner wording with Validation-model test criteria and preserve procedure, triggers, selective resources, prerequisites, stop/claim/handoff authority and portability. No internal requirement IDs, repository runtime mechanics, forced CLI dependency or publication permission was added. Ten mapped consumers and shared quality/maintenance projections remain consistent; independent skill use and governed recording boundaries retain their owners.",
+    "Derived artifacts — pass: actual canonical skill/resource/guide/model boundaries and full CLI/package tests pass. C7 includes358 skill-validator,9 guide,28 reference and90 model regression tests; CLI424, adapter154 and npm package7 pass. Actual candidate and packed metadata/resource scenarios execute rather than asserting source markers. Generated archives remain outputs, not hand-edited authored sources. Four later navigation and evidence-only changes do not alter the tested runtime/package basis.",
+    "Unrelated changes — pass: FU-012 is linked to the existing owning plan/change as planned rather than falsely closed; neighboring FU-014 receives only a stale System path repair. Two current dependency links resolve to Validation while source-qualified amendment IDs remain historical. No user-owned image, external cache, unrelated source archive or prior review body is deleted. The complete diff has no production behavior changes beyond earlier approved milestones.",
+    "Validation evidence — pass: all46 validation-m5-execution subjects independently match current bytes. All14 listed required commands returned0. Actual C5/C6 each pass286 tasks, including full current38-test executor integration and278 selected cases, with no filter/stub/bypass; other required C1/C2/C3/C7/C8/C9/C10 pass. Independently compared all changed script/skill/template/spec/package paths to the Linux proof checkout and found no differences. git diff --check passes. Code review is clean for M5; root owns routing to fresh whole-change review and distinct Verify.",
+    "Legacy prose applicability — assessed nonblocking for this bounded M5: design-legacy-prose-audit remains a failed historical whole-file audit, never relabeled passed. The final rename-aware actual analyzer delta reports13 surviving changed files with baseline findings and zero introduced findings. Approved Design explicitly retains unselected mixed legacy clauses/formats; M5 and C11 do not require wholesale legacy format conversion, while current plan prose and TierA README checks retain their required enforcement. New authored paragraphs and affected semantic changes were inspected. This is a scoped applicability decision, not a claim that those whole files pass prose validation or a general waiver for future edits."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:ee59ff3a3dc4b0bda8379503a574963e8fafc06169acec433ece8443ad747f4c",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:fe848ca3b53efd50f060157a225157a5003462d1d8bca2b08368a6ab424f0cab",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:22ca3fee3ceae9813e818dff4b74171b58d2aca70ed4a5d68c07f68ff83e7ed8",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:9d2573f0c8ca757771d10486fdb7f28fbc94e9beb53b1b41d0f9734e085da268",
+      "path": "docs/architecture/system/architecture.md"
+    },
+    {
+      "identity": "sha256:bd3bc8bbe578ec5958e54bb51274ace64ef88c3ae4724ac4c28e9146754efe16",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-delivery-review.json"
+    },
+    {
+      "identity": "sha256:4992f7f5cbf3e2b8dd2cb8d862c2a662bb0dd0540b29d2e75b0e0293fd551eaf",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:a530e4975362a9cb0ef5fbfb5b8944145288ce6fe78afdc28253cc1763462476",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:b4d942ab3289a61ba8b3f7c3bd3452c7bd75c22218d7e0b9278362f73a33e96d",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1c1d62ada1d5b45e1dc87db59cedd8ba13d4e90a0c6afe535ae46d5553f7deea",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:944a7c3200764ac7da6607011ccdd1b515b654a976bfbc4a6a0036b5fa430bd2",
+      "path": "docs/follow-ups.md"
+    },
+    {
+      "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+      "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+    },
+    {
+      "identity": "sha256:62e2945ba15a9559ff8947fb36a5096ed5bd204b0ba22301df92e2962f08d428",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:71880764d26a941ec1f614f020f74f30ddfab8ae6fea9006b2a3d7530121c82f",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:cdb5afbdb7164a3dc1c7ed4759bd013b0922c6c900515da540bfc87af05eec05",
+      "path": "skills/bugfix/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/bugfix/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/bugfix/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:c008afcc679e337de9c885dbfba583b7cee94d86766ef9bbdce546cabc703ac9",
+      "path": "skills/ci-maintenance/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/ci-maintenance/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/ci-maintenance/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:8b62de7d295562d13f438418aaf54b77adf46d20aa5e1749f5651bd4b58f2e63",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/code-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/code-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+      "path": "skills/delivery-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/delivery-review/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/delivery-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:4ee566acd6545b677de45540a97999986ce1156c3dbac4e4b25048d746d13bf5",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design-review/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:f50e7811f0d5231cc4db99c5ba648dc8f6abbb7b9f199feafaaaba4cd0ca1a38",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/design/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:a0757bff813a7d7e555071465c7bb3cb19a00b031e95a9c88ae80b5bb11ae7bd",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/implement/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/implement/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:78deb783e840523c8d1d286f2fdf5e9ce78a1df5f0b45b2edad3e8f7a1168531",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/plan/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/plan/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:7c31aa6b71a6b31f978934c696398130eeda4de8325d15ce2f5bd81c161ed057",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/route/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/route/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:5d4d5ff7171c0f5f8dc56ae8e9afe3484f2e73a4f8e33fb766c8323165a704f3",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "skills/verify/references/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "skills/verify/references/test-quality.md"
+    },
+    {
+      "identity": "sha256:b7a602cbcc6a50e16b8876a5c12c3b68b6241b60f0bafdb752c32c1d977c03bd",
+      "path": "specs/change-record-catalog-registration-and-bounded-read-model.md"
+    },
+    {
+      "identity": "sha256:28d8fd58f1354560508572aefddb4c4eff6d70c39b809559cc4e7dc2c0e96abc",
+      "path": "specs/progressive-boundary-first-skill-guidance.md"
+    },
+    {
+      "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+      "path": "templates/shared/test-maintenance.md"
+    },
+    {
+      "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+      "path": "templates/shared/test-quality.md"
+    },
+    {
+      "identity": "sha256:6e1d0ccc431fd55436a22e43dd3e79bd350aeb0546068fbdd506d13b9f470933",
+      "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+    },
+    {
+      "identity": "sha256:9d63c43239c192cf09613d7ed26c881830f77abb174dd142f2e262fcd5bcabfd",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:e110dc65fec990cf31228d20e7e2fa25b74fbc35c74413bbbb4bd2a2fdbe9884",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-map-design-review.json"
+    },
+    {
+      "identity": "sha256:7dfc777b6d92c3079119bf11e8e4ab6749894f5d036aaf9c908cd6983120f36b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m4-code-review.json"
+    },
+    {
+      "identity": "sha256:b80af37047c4a3cff87b729f592826984d731263e69d3d1accc359984d6644a2",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:ffaa1680e66f0d4f008bbbb9ca5fdbeefb5f7e764b0440716cd3416930b2b20b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-design-review.json"
+    }
+  ],
+  "summary": "M5 approved with no unresolved findings: exact source retirement and portable consumer updates are implemented, required product/integration proof passes, and nine ad hoc narratives are losslessly consolidated into registered v3 evidence with explicitly reassessed current reliance.",
+  "target": "code"
+}
