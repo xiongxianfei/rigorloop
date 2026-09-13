@@ -342,9 +342,35 @@ class ExecutionTests(unittest.TestCase):
         gate = self.root / 'gate'
         body = f'import pathlib,time; p=pathlib.Path({str(gate)!r}); assert not p.exists(); p.touch(); time.sleep(.12); p.unlink()'
         plans = [self.plan('a', body), dataclasses.replace(self.plan('serial', body), parallel_safe=False), self.plan('b', body)]
-        results = self.run_plans(plans)
+        from validation_execution import CheckResult
+        clock_reads, launches, completions = [], [], []
+        popen = subprocess.Popen
+
+        def observe_clock():
+            clock_reads.append(time.monotonic())
+            return clock_reads[-1]
+
+        def observe_launch(*args, **kwargs):
+            launches.append(clock_reads[-1])
+            return popen(*args, **kwargs)
+
+        def observe_result(*args, **kwargs):
+            completions.append(clock_reads[-1])
+            return CheckResult(*args, **kwargs)
+
+        # Observe the scheduler clock and real launch boundaries. Process startup
+        # and cleanup may take any duration; queue time must still be excluded.
+        with patch('validation_execution.time') as clock, patch(
+                'validation_execution.subprocess.Popen', side_effect=observe_launch), patch(
+                'validation_execution.CheckResult', side_effect=observe_result):
+            clock.monotonic.side_effect = observe_clock
+            clock.sleep.side_effect = time.sleep
+            results = self.run_plans(plans)
         self.assertEqual([r.exit_code for r in results], [0, 0, 0])
-        self.assertLess(results[2].elapsed_seconds, .3)
+        self.assertEqual(len(launches), 3)
+        self.assertGreater(launches[2], clock_reads[0])
+        self.assertEqual(len(completions), 3)
+        self.assertEqual(results[2].elapsed_seconds, completions[2] - launches[2])
 
     def test_fail_fast_awaits_started_failure_and_marks_every_queued_task(self):
         results = self.run_plans([self.plan('a', 'raise SystemExit(7)'),
