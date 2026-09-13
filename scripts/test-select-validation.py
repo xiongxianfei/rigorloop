@@ -1430,10 +1430,7 @@ raise SystemExit({exit_code})
         expected_parallel_safe = {"skills.regression", "adapters.regression"} | {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
 
         expected_cases = {
-            'artifact_lifecycle.regression','change_metadata.regression','selector.regression',
-            'broad_smoke.artifact_lifecycle.regression','broad_smoke.change_metadata.regression',
-            'broad_smoke.selector.regression','main.artifact_lifecycle.regression',
-            'main.change_metadata.regression',
+            'artifact_lifecycle.regression','change_metadata.regression','selector.regression','validation_execution.regression',
         }
         self.assertEqual({key for key,entry in CHECK_CATALOG.items()
                           if entry.constraints and entry.constraints.unit=='python-unittest'},expected_cases)
@@ -3666,13 +3663,13 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
         workspace = self.make_ci_workspace()
         active_dir = workspace / "active"
         self.write_active_counter_script(workspace, "scripts/test-skill-validator.py", "skills-regression")
-        self.write_active_counter_script(workspace, "scripts/validate-skills.py", "skills-validate")
+        self.write_active_counter_script(workspace, "scripts/validate-boundary-first.py", "boundary-validate")
         self.write_active_counter_script(workspace, "scripts/test-adapter-distribution.py", "adapters-regression")
         fixture = self.write_selector_fixture(
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("skills.validate", "python scripts/validate-skills.py"),
+                    self.selected_check("boundary_first.validate", "python scripts/validate-boundary-first.py --check"),
                     self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                 ]
             )
@@ -3694,7 +3691,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
 
         self.assertEqual(result.returncode, 0, msg=output)
         self.assertEqual(self.read_max_active(active_dir), 1)
-        self.assertIn("skills.validate | passed | ok |", output)
+        self.assertIn("boundary_first.validate | passed | ok |", output)
 
     def test_ci_wrapper_parallel_default_waits_for_started_check_after_failure(self) -> None:
         workspace = self.make_ci_workspace()
@@ -4002,7 +3999,7 @@ print("SECOND_STDOUT")
         self.assertEqual(result.returncode,7,result.stdout+result.stderr)
         self.assertFalse((workspace/"archive-ran").exists())
         self.assertIn("failed prerequisite: broad_smoke.adapters.build_archives",result.stdout)
-        self.assertIn("broad_smoke.validation_execution.regression | passed",result.stdout)
+        self.assertIn("validation_execution.regression | passed",result.stdout)
 
     def test_selected_broad_smoke_is_one_invocation_and_diagnostic_failure_remains(self):
         workspace = self.make_broad_smoke_workspace(failing_child="scripts/test-skill-validator.py",
@@ -4023,7 +4020,7 @@ print("SECOND_STDOUT")
             self.assertEqual(result.returncode,7,result.stdout+result.stderr)
             self.assertEqual(marker.exists(),diagnostic,result.stdout+result.stderr)
             self.assertEqual(invocations.read_text().splitlines(),['called'])
-            self.assertIn('broad_smoke.skills.validate',result.stdout)
+            self.assertIn('skills.validate',result.stdout)
 
     def test_blocked_selection_diagnostic_broad_smoke_cannot_clear_original_blocker(self):
         workspace = self.make_broad_smoke_workspace(child_bodies={"scripts/validate-skills.py":"from pathlib import Path; Path('diagnostic-ran').touch()"})
@@ -4142,7 +4139,7 @@ print("SECOND_STDOUT")
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 7, msg=output)
-        self.assertRegex(output, r"\[FAIL\] broad_smoke.skills.regression / Run skill validator fixtures: exit 7 in \d+(?:\.\d+)?s")
+        self.assertRegex(output, r"\[FAIL\] skills.regression / Run skill validator fixtures: exit 7 in \d+(?:\.\d+)?s")
         self.assertIn("Command:\npython scripts/test-skill-validator.py", output)
         self.assertIn("Captured output:", output)
         stdout_index = output.index("test-skill-validator.py STDOUT marker")
@@ -4169,13 +4166,13 @@ print("SECOND_STDOUT")
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 7, msg=output)
-        first_failure = output.index("[FAIL] broad_smoke.skills.regression")
-        second_failure = output.index("[FAIL] broad_smoke.adapters.regression")
+        first_failure = output.index("[FAIL] skills.regression")
+        second_failure = output.index("[FAIL] adapters.full_regression")
         self.assertLess(first_failure, second_failure)
         self.assertIn("Execution phase:\n" + ("parallel" if allocated_workers(2)>1 else "sequential"), output)
         self.assertIn("Execution phase:\nsequential", output)
-        self.assertIn("Check ID:\nbroad_smoke.skills.regression", output)
-        self.assertIn("Check ID:\nbroad_smoke.adapters.regression", output)
+        self.assertIn("Check ID:\nskills.regression", output)
+        self.assertIn("Check ID:\nadapters.full_regression", output)
         self.assertIn("Captured output:", output)
         self.assertIn("Re-run:\npython scripts/test-skill-validator.py", output)
 
@@ -4222,7 +4219,7 @@ os.kill(os.getppid(), signal.SIGKILL)
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 4, msg=output)
-        self.assertIn("[FAIL] broad_smoke.skills.regression / Run skill validator fixtures: exit 4", output)
+        self.assertIn("[FAIL] skills.regression / Run skill validator fixtures: exit 4", output)
         self.assertIn("runner error", output)
         self.assertIn("missing task outcome", output)
         self.assertNotIn("[PASS] broad-smoke", output)
@@ -4297,8 +4294,8 @@ os.kill(os.getppid(), signal.SIGKILL)
             child["check_id"]: child["phase"]
             for child in evidence["parallel"]["child_durations"]
         }
-        self.assertEqual(child_phases["broad_smoke.skills.validate"], "parallel" if allocated_workers(3)>1 else "sequential")
-        self.assertEqual(child_phases["broad_smoke.adapters.regression"], "sequential")
+        self.assertEqual(child_phases["skills.validate"], "parallel" if allocated_workers(3)>1 else "sequential")
+        self.assertEqual(child_phases["adapters.full_regression"], "sequential")
         self.assertIn("delta", evidence)
 
 

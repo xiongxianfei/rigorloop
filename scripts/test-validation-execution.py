@@ -147,9 +147,16 @@ class CaseAdapterTests(unittest.TestCase):
         results = run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=self.root/'run')
         self.assertEqual([r.exit_code for r in results],[0,0])
 
-    def exercise_real_suite(self, name):
+    def test_normal_and_isolated_fixture_preserve_hooks_population_and_parallelism(self):
+        path = self.fixture('class Example(unittest.TestCase):\n'
+            ' def setUp(self):\n  import tempfile\n  self.root=tempfile.TemporaryDirectory()\n  self.addCleanup(self.root.cleanup)\n'
+            ' def test_a(self):\n  from pathlib import Path\n  import time\n  p=Path(self.root.name)/"owned"\n  self.assertFalse(p.exists())\n  p.touch()\n  time.sleep(.1)\n'
+            ' def test_b(self): self.test_a()')
+        self.exercise_fixture(path)
+
+    def exercise_fixture(self, path):
         from validation_execution import discover_cases, case_plans, _case_command
-        args = [sys.executable, str(Path(__file__).resolve().parent/name)]
+        args = [sys.executable, str(path)]
         ids = discover_cases(args,self.root/'discovery',jobs=2,timeout=300)
         baseline = self.root/'baseline.json'
         command = _case_command('observe',baseline,args)
@@ -178,18 +185,10 @@ class CaseAdapterTests(unittest.TestCase):
             intervals = sorted((x['started_at'],x['completed_at']) for x in receipts)
             overlap = any(start < earlier_end for (_,earlier_end),(start,_) in zip(intervals,intervals[1:]))
             available = min(jobs,int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS',str(jobs))))
-            self.assertEqual(overlap,available>1, f'{name}: expected actual case overlap only with multiple workers')
-            print(f'CASE POPULATION {name}: jobs={available} discovered={len(ids)} started={len(started)} completed={len(completed)} overlap={overlap}',flush=True)
-        print('CASE IDS '+json.dumps({'suite':name,'ids':ids}),flush=True)
+            self.assertEqual(overlap,available>1, f'{path.name}: expected actual case overlap only with multiple workers')
+            print(f'CASE POPULATION {path.name}: jobs={available} discovered={len(ids)} started={len(started)} completed={len(completed)} overlap={overlap}',flush=True)
+        print('CASE IDS '+json.dumps({'suite':path.name,'ids':ids}),flush=True)
 
-    def test_real_selector_cases_match_direct_sequential_and_reverse_parallel(self):
-        self.exercise_real_suite('test-select-validation.py')
-
-    def test_real_lifecycle_cases_match_direct_sequential_and_reverse_parallel(self):
-        self.exercise_real_suite('test-artifact-lifecycle-validator.py')
-
-    def test_real_metadata_cases_match_direct_sequential_and_reverse_parallel(self):
-        self.exercise_real_suite('test-change-metadata-validator.py')
 
 
 class ExecutionTests(unittest.TestCase):
@@ -455,6 +454,74 @@ class CatalogTests(unittest.TestCase):
 
 
 class CompositionTests(unittest.TestCase):
+    def test_canonical_overlap_runs_once_with_reasons_and_failure_gate(self):
+        from validation_execution import expand_groups
+        for diagnostic in (False, True):
+            with self.subTest(diagnostic=diagnostic), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                marker = root/'executions'
+                args = [sys.executable, '-c', f'from pathlib import Path; p=Path({str(marker)!r}); p.write_text(p.read_text()+"x" if p.exists() else "x")']
+                shared = CheckPlan('shared', 'fixture', args, 'focused reason', 'focused', True)
+                failed = CheckPlan('failed', 'fixture', [sys.executable,'-c','raise SystemExit(7)'], None, 'focused', True)
+                tail = CheckPlan('tail', 'fixture', [sys.executable,'-c','pass'], None, 'focused', True)
+                group = CheckPlan('broad_smoke.repo', 'fixture', ['unused'], 'boundary reason', 'boundary', False)
+                with patch('validation_execution.compose_mode', return_value=[dataclasses.replace(shared,reason='catalog reason'),tail]):
+                    plans = expand_groups([shared,failed,group],root,diagnostic=diagnostic)
+                self.assertEqual([p.check_id for p in plans],['shared','failed','tail'])
+                self.assertEqual(plans[0].phase,'focused')
+                for reason in ('focused reason','boundary reason','catalog reason'):
+                    self.assertIn(reason,plans[0].reason)
+                results = run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=root/'run')
+                self.assertEqual(marker.read_text(),'x')
+                self.assertEqual([r.exit_code for r in results],[0,7,0 if diagnostic else 125])
+                import io
+                from contextlib import redirect_stdout
+                from validation_execution import print_summary
+                output = io.StringIO()
+                with redirect_stdout(output):
+                    # The boundary may contain only already-run overlap.
+                    print_summary(results[:2],boundary_required=True)
+                self.assertIn('Boundary scope: unsuccessful',output.getvalue())
+
+    def test_overlap_preserves_preparation_and_distinct_observations(self):
+        from validation_execution import expand_groups
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            prep = CheckPlan('prep','fixture',[sys.executable,'-c','raise SystemExit(9)'],None,'focused',True)
+            shared = CheckPlan('shared','fixture',[sys.executable,'-c','pass'],None,'focused',True,('prep',))
+            separate = dataclasses.replace(shared,check_id='separate')
+            group = CheckPlan('broad_smoke.repo','fixture',['unused'],None,'boundary',False)
+            with patch('validation_execution.compose_mode',return_value=[dataclasses.replace(shared),separate]):
+                plans = expand_groups([prep,shared,group],root)
+            self.assertEqual([p.check_id for p in plans],['prep','shared','separate'])
+            self.assertIn('prep',plans[1].dependencies)
+            results=run_scheduled_checks(plans,jobs=1,timeout_seconds=5,fail_fast=False,scratch=root/'run')
+            self.assertEqual([r.exit_code for r in results],[9,125,125])
+
+    def test_conflicting_same_id_arguments_or_constraints_reject_before_launch(self):
+        from validation_execution import expand_groups
+        first=CheckPlan('same','fixture',[sys.executable,'-c','pass'],None,'focused',True)
+        for changes in ({'args':[sys.executable,'-c','raise SystemExit(7)']},
+                        {'demand':2},{'demand':True},{'parallel_safe':False},{'parallel_safe':1},{'dependencies':('prep',)}):
+            with self.subTest(changes=changes), tempfile.TemporaryDirectory() as temporary:
+                with self.assertRaisesRegex(ValueError,'conflicting.*same'):
+                    expand_groups([first,dataclasses.replace(first,**changes)],Path(temporary))
+
+    def test_boundary_only_and_new_invocation_execute_again(self):
+        from validation_execution import expand_groups
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            marker=root/'count'
+            args=[sys.executable,'-c',f'from pathlib import Path; p=Path({str(marker)!r}); p.write_text(p.read_text()+"x" if p.exists() else "x")']
+            shared=CheckPlan('shared','fixture',args,None,'focused',True)
+            group=CheckPlan('broad_smoke.repo','fixture',['unused'],None,'boundary',False)
+            for index in range(2):
+                with patch('validation_execution.compose_mode',return_value=[dataclasses.replace(shared)]):
+                    plans=expand_groups([group],root)
+                results=run_scheduled_checks(plans,jobs=1,timeout_seconds=5,fail_fast=False,scratch=root/str(index))
+                self.assertEqual([r.exit_code for r in results],[0])
+            self.assertEqual(marker.read_text(),'xx')
+
     def test_catalog_composes_broad_and_main_with_distinct_preserved_package_versions(self):
         from validation_execution import compose_mode
         with tempfile.TemporaryDirectory() as temporary:
@@ -469,8 +536,8 @@ class CompositionTests(unittest.TestCase):
                 self.assertIn(output,check.args)
                 self.assertIn(build.check_id,check.dependencies)
                 self.assertFalse(any(p.args[:2] == ['bash','scripts/ci.sh'] for p in plans))
-            self.assertIn('main.rigorloop_cli.test',{p.check_id for p in plans})
-            self.assertIn('main.workflow_automation.engine_regression',{p.check_id for p in plans})
+            self.assertIn('rigorloop_cli.test',{p.check_id for p in plans})
+            self.assertIn('workflow_automation.engine_regression',{p.check_id for p in plans})
 
     def test_unknown_value_composed_mode_rejects(self):
         from validation_execution import compose_mode
