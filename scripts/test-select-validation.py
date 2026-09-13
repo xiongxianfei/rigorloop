@@ -1917,7 +1917,7 @@ raise SystemExit({exit_code})
         result = self.select(
             [
                 "docs/changes/2026-04-25-example/review-resolution.md",
-                "specs/test-layering-and-change-scoped-validation.test.md",
+                "specs/artifact-status-lifecycle-ownership.test.md",
                 "docs/releases/v0.1.1/release.yaml",
             ]
         )
