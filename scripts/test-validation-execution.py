@@ -243,6 +243,32 @@ class ExecutionTests(unittest.TestCase):
                                     timeout_seconds=kwargs.pop('timeout_seconds', 5),
                                     fail_fast=kwargs.pop('fail_fast', False), scratch=self.root, **kwargs)
 
+    def test_parent_report_destination_is_private_and_nested_reports_are_owned(self):
+        from validation_execution import _write_mode_result
+        parent = self.root/'parent.json'
+        nested = self.root/'nested.json'
+        parent.write_text('parent sentinel')
+        body = ('import os,sys; from pathlib import Path; '
+                f'sys.path.insert(0,{str(Path(__file__).resolve().parent)!r}); '
+                'inherited=os.environ.get("RIGORLOOP_BROAD_SMOKE_RESULT_JSON"); '
+                'Path(inherited).write_text("overwritten") if inherited else None; '
+                'assert os.environ["RIGORLOOP_VALIDATION_WORKERS"] == "1"; '
+                'assert os.environ["OWNED_REPORT_FIXTURE"] == "preserved"; '
+                f'os.environ["RIGORLOOP_BROAD_SMOKE_RESULT_JSON"]={str(nested)!r}; '
+                'from validation_execution import _write_mode_result; '
+                '_write_mode_result([],mode="broad-smoke",jobs=1,elapsed=.1,code=0,skip_diff_scoped=True)')
+        with patch.dict(os.environ, {'RIGORLOOP_BROAD_SMOKE_RESULT_JSON':str(parent),
+                                     'OWNED_REPORT_FIXTURE':'preserved'}):
+            results=self.run_plans([self.plan('child',body)])
+            self.assertEqual([r.exit_code for r in results],[0])
+            self.assertEqual(parent.read_text(),'parent sentinel')
+            self.assertEqual(json.loads(nested.read_text())['parallel']['jobs'],1)
+            _write_mode_result(results,mode='broad-smoke',jobs=2,elapsed=.2,code=0,skip_diff_scoped=True)
+            self.assertEqual(os.environ['RIGORLOOP_BROAD_SMOKE_RESULT_JSON'],str(parent))
+        report=json.loads(parent.read_text())
+        self.assertEqual(report['parallel']['jobs'],2)
+        self.assertEqual([r['check_id'] for r in report['parallel']['child_durations']],['child'])
+
     def test_nested_budget_caps_actual_children_and_unknown_value_rejects_before_launch(self):
         gate = self.root/'active'
         body = (f'import os,pathlib,time; p=pathlib.Path({str(gate)!r}); '
