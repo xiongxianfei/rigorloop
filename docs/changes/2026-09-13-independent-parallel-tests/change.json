@@ -4,7 +4,7 @@
       "id": "proposal-reviewer",
       "role": "review"
     },
-    "reason": "M3 complete named validation and bounded adoption proof pass; request exact independent milestone Code Review before M4.",
+    "reason": "Recorded M3 evidence-surface correction complete with exact preservation and passing real selector/CI proof; request independent finding disposition and reassessment.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -70,6 +70,15 @@
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m2.json",
       "reason": "Complete committed M2 document delivery independently assessed against corrected Design and unchanged-plan allocation, with current exact proof and preservation comparison.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m3.json",
+      "reason": "Current complete M3 slice independently assessed; one reproduced recording-path integration correction required before approval.",
       "value": "current"
     }
   ],
@@ -198,6 +207,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m2.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m3.json"
     }
   ],
   "schema_version": 3,

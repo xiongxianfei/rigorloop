@@ -1,0 +1,118 @@
+{
+  "assessment_scope": "First-pass complete M3 Code Review of8984f099..9ad9864a under plan M3/TG03. Assessed catalog/runner/test/actual-consumer changes, bounded full-population evidence and registered workflow surfaces. Independent checks: seven CompositionTests passed; selecting the new evidence file produced a real unregistered-recording-path blocker. No broad suite rerun or final readiness claim.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity major. New current change-root narrative docs/changes/2026-09-13-independent-parallel-tests/m3-validation-evidence.md is not a registered recording type. Actual command python scripts/select-validation.py --mode explicit --path docs/changes/2026-09-13-independent-parallel-tests/m3-validation-evidence.md returns status blocked with blocking_results code unregistered-recording-path and message Recording paths must be explicitly registered. This defeats composed branch selection; source-only203-case proof does not assess this changed path. Records closed supporting-type/named narrative contract remains unchanged.",
+      "id": "m3-unregistered-evidence-surface",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Through current CLI, preserve the entire narrative, exact reproduction procedure, case IDs, timing limitations and original path/hash inside the existing m3-implementation evidence summary/procedure or another already-authorized registered narrative field; remove the extra file. Preserve original failed selector observation and existing proof meaning. Re-run selection for the actual corrected recording surface and commit/range basis as applicable. Do not widen schema/selector rules or discard population evidence. Request independent reassessment before M3 approval.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:9d2d32f210efecd153b42a8a698ec37f1361e59b51043e5b608feda9edc08656",
+          "path": "docs/changes/2026-09-13-independent-parallel-tests/m3-validation-evidence.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m3",
+  "independence_basis": "Root authored M3 implementation/tests/evidence. Separate nonauthor reviewer inspected the complete committed slice and ran focused independent composition/selection checks; reviewer wrote no implementation or correction. Prior independent Design/Delivery assessments are not authorship.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "M3 approval withheld for reproduced current-recording-path integration failure; original successful test evidence remains evidence of its stated source/population scope.",
+    "Reviewed source and author complete suite/adoption results plus independently ran seven focused composition tests and read-only selection reproduction; did not redundantly rerun all production suites.",
+    "Future M4 fidelity-audit command allocation requires its separate plan correction and Delivery reassessment; M4–M7 and final closeout remain outstanding."
+  ],
+  "rationale": [
+    "Alignment and architecture — pass on inspected code: canonical identity is authored in catalog entries/mode membership, not inferred at runtime. Selected adapter subset remains distinct from full regression; v0.1.3/v0.1.5 builds and output-scoped validators retain separate IDs/preparation. Shared skills and current adopted cases merge once. expand_groups compares same-ID args/resource/dependency/case fields before retaining reasons and earliest phase, then applies phase gates, avoiding self-dependency from pre-dedup gating. No cache, extra request graph or new public runner is introduced.",
+    "Negative execution and reports — pass on current focused evidence: independent python scripts/test-validation-execution.py CompositionTests ran7 tests in8.696s and passed. Actual markers demonstrate once-only overlap and fresh later invocation; failing focused7 blocks remaining boundary125 while diagnostics run the remainder without erasing7. Preparation failure and explicit distinct IDs are retained. Conflicting same-ID args, demand, bool/int resource types and dependencies reject. Boundary summaries remain unsuccessful if focused work failed even when overlapping required checks passed. Existing scheduler cleanup, outcomes and case receipts remain unchanged.",
+    "Test maintenance and case adoption — pass within inspected M3 scope: three expensive recurring production-population comparisons are replaced by a real two-case fixture observing normal/individual/reversed execution, hook isolation and actual overlap, with separate real metadata-wrapper discovery/filtering and negative receipt/skip/loader proof retained. Existing failure/timing/reaping regression cases survive. Author bounded observations cover exact executor40/selector163/lifecycle108/metadata7 normal/single/reversed sets plus direct commands and203 selected cases, without a blanket speed claim. Production-scope observations remain adoption evidence rather than a mandatory recurring triple run; this review does not approve unassessed M4–M6 populations.",
+    "Consumers/compatibility — pass on inspected changes: adapter lookup follows the new explicit full-regression ID; selected wrapper expectations retain failure/output/order meaning under canonical names. Serial barrier test uses an actually serial command after skill validation gains the existing read-only safety assessment. The retirement-ledger test now freezes its original46-ID population instead of subtracting current mode memberships that now share selected IDs; archive bytes and strict historical behavior remain unchanged. No installer/publication/data-model behavior is altered.",
+    "Recording/integration — concern: independently selecting docs/changes/2026-09-13-independent-parallel-tests/m3-validation-evidence.md reports status blocked with code unregistered-recording-path. Current Records permits only registered closed supporting types and existing narrative fields. Committing this separate579-line evidence narrative means real branch selection encounters an invalid current recording path, despite the source-only explicit check passing. Preserve complete reproduction, hashes, case population and disposition content in the existing evidence entry, remove the extra surface and demonstrate corrected current selection; do not loosen selector/schema rules.",
+    "Evidence and boundaries — current author results support their bounded scopes but do not override the reproduced selection failure. No security/permission expansion, hidden runtime scope or generated public output change is identified; required evidence placement is the material remaining M3 correction. Parent separately identified a future M4 plan command error for the fidelity audit; that is not an M3 implementation defect, but affected downstream Delivery reliance must be corrected before M4. Current assessment neither waives that gap nor routes subsequent work. Final whole-change Code Review and distinct Verify remain mandatory."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:d6a9821abfe6b6863a3ae335ca5cbcd0d45f1e36d30c9eb9293b671b2a363933",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:70fbeaf2c58254f36d5b20c632f43df639040527f73cccd45bc9d3eabac1c968",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:a725c90405cdc7512b92560dd01120ebc81c4701dbd76fefcb7b569f3fd3d2d8",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:7ff4277ed8aa58c3d7298f0e3e346b68368e490a94163a0fb558db049dd68c9f",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:2da1cb956074e8a3e28a35692a1b3d67ec80dae337ff5bb07078f0284bd5c28f",
+      "path": "scripts/test-artifact-lifecycle-validator.py"
+    },
+    {
+      "identity": "sha256:1c584c2b30e46afba61f06502da74a11801b394333061e052cf1ebcd20e2c01e",
+      "path": "scripts/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:56fc61dfc57f543b0f106b079ae339a44da9ed383d90b77cdb928b682e87afb2",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:b0e1816753865cdee8ac3cb2514b7b3bb96584d9098ca0cfc9745463ec80b999",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:9d2d32f210efecd153b42a8a698ec37f1361e59b51043e5b608feda9edc08656",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/m3-validation-evidence.md"
+    },
+    {
+      "identity": "sha256:f6359a0c802798f9b84bfe853bf225ee7fa218bd866937e7e887deacb89d913b",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:5a59a9355f510fea316d1bcad0a2dec2debcecab114966757de577b6ca41a3f0",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:1d7725033f71929ec339735a69589e7ef8f30d257f15d47d0baf0aa7c10500cb",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:3d94ffcb20e7a183d8285550aba80f3c95c5b54a08ceab4d6bf3e19f044267e1",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:0084463d8561bb0273bee09d67c70c53897f1f3371724536b0cfb4ea9f4774cc",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    }
+  ],
+  "summary": "M3 has one confirmed recording/selection integration defect: the new narrative Markdown under the current change root is unregistered and blocks real selection. Canonical composition and retained regression design otherwise appear coherent on the inspected basis; current milestone approval waits for the evidence-surface correction.",
+  "target": "code"
+}
