@@ -387,6 +387,9 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                 paths = (directory/'stdout', directory/'stderr')
                 streams = [p.open('wb') for p in paths]
                 env = os.environ.copy()
+                # Only this invocation's final writer owns its report destination.
+                # Nested checks may explicitly select a new destination of their own.
+                env.pop('RIGORLOOP_BROAD_SMOKE_RESULT_JSON', None)
                 env['RIGORLOOP_VALIDATION_WORKERS'] = str(demand)
                 env['PYTHONDONTWRITEBYTECODE'] = '1'
                 # Native Node tests cannot create an independent CPU-sized pool.
