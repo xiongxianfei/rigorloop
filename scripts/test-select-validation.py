@@ -236,6 +236,11 @@ def parse_runner_args(argv: list[str]) -> tuple[RunnerConfig | None, int]:
     return RunnerConfig(verbose=verbose, quiet=quiet, names=names, pattern=pattern), 0
 
 
+def allocated_workers(requested: int) -> int:
+    """Nested proof uses the outer invocation's actual allocation."""
+    return min(requested, int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS', requested)))
+
+
 def build_test_suite(config: RunnerConfig) -> unittest.TestSuite:
     loader = unittest.defaultTestLoader
     previous_patterns = loader.testNamePatterns
@@ -3565,7 +3570,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 0, msg=output)
-        self.assertEqual(self.read_max_active(active_dir), 2, msg=(active_dir / "events.txt").read_text(encoding="utf-8"))
+        self.assertEqual(self.read_max_active(active_dir), allocated_workers(2), msg=(active_dir / "events.txt").read_text(encoding="utf-8"))
         self.assertLess(
             output.index("skills.regression | passed | ok |"),
             output.index("adapters.regression | passed | ok |"),
@@ -3580,10 +3585,10 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
         for extra, parent, expected in (([], None, 4), (["--jobs", "8"], "2", 2)):
             env = {"RIGORLOOP_SELECTOR_FIXTURE": str(fixture), "RIGORLOOP_CI_CPU_COUNT_FIXTURE": "8"}
             if parent:
-                env["RIGORLOOP_VALIDATION_WORKERS"] = parent
+                env["RIGORLOOP_VALIDATION_WORKERS"] = str(allocated_workers(int(parent)))
             result = run_ci("--mode", "explicit", "--path", "README.md", *extra, env=env)
             self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
-            self.assertIn(f"Worker budget: {expected}", result.stdout)
+            self.assertIn(f"Worker budget: {allocated_workers(expected)}", result.stdout)
 
     def test_ci_wrapper_default_jobs_uses_cpu_minus_one_fixture(self) -> None:
         workspace = self.make_ci_workspace()
@@ -3639,7 +3644,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
         )
         assert isinstance(three_cpu.stdout, str)
         self.assertEqual(three_cpu.returncode, 0, msg=three_cpu.stdout + three_cpu.stderr)
-        self.assertEqual(self.read_max_active(active_dir), 2)
+        self.assertEqual(self.read_max_active(active_dir), allocated_workers(2))
 
     def test_ci_wrapper_non_allowlisted_checks_run_alone(self) -> None:
         workspace = self.make_ci_workspace()
@@ -3690,7 +3695,7 @@ marker_dir = Path(os.environ["MARKER_DIR"])
 marker_dir.mkdir(parents=True, exist_ok=True)
 (marker_dir / "skills-started").write_text("started", encoding="utf-8")
 deadline = time.monotonic() + 2
-while not (marker_dir / "adapters-started").exists():
+while int(os.environ["EXPECTED_PEER_WORKERS"]) > 1 and not (marker_dir / "adapters-started").exists():
     if time.monotonic() > deadline:
         raise SystemExit(9)
     time.sleep(0.02)
@@ -3731,7 +3736,7 @@ print("adapters finished")
             "scripts/test-skill-validator.py",
             "--jobs",
             "2",
-            env={"MARKER_DIR": str(marker_dir)},
+            env={"MARKER_DIR": str(marker_dir), "EXPECTED_PEER_WORKERS": str(allocated_workers(2))},
         )
         assert isinstance(result.stdout, str)
         output = result.stdout + result.stderr
@@ -3756,7 +3761,7 @@ marker_dir = Path(os.environ["MARKER_DIR"])
 marker_dir.mkdir(parents=True, exist_ok=True)
 (marker_dir / "skills-started").write_text("started", encoding="utf-8")
 deadline = time.monotonic() + 2
-while not (marker_dir / "adapters-started").exists():
+while int(os.environ["EXPECTED_PEER_WORKERS"]) > 1 and not (marker_dir / "adapters-started").exists():
     if time.monotonic() > deadline:
         raise SystemExit(9)
     time.sleep(0.02)
@@ -3814,16 +3819,16 @@ marker_dir.mkdir(parents=True, exist_ok=True)
             "--jobs",
             "2",
             "--fail-fast",
-            env={"MARKER_DIR": str(marker_dir)},
+            env={"MARKER_DIR": str(marker_dir), "EXPECTED_PEER_WORKERS": str(allocated_workers(2))},
         )
         assert isinstance(result.stdout, str)
         output = result.stdout + result.stderr
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertTrue((marker_dir / "adapters-finished").exists(), msg=output)
+        self.assertEqual((marker_dir / "adapters-finished").exists(), allocated_workers(2)>1, msg=output)
         self.assertFalse((marker_dir / "artifact-started").exists(), msg=output)
         self.assertIn("skills.regression | exited | exit code 7 |", output)
-        self.assertIn("adapters.regression | passed | ok |", output)
+        self.assertIn("adapters.regression | " + ("passed | ok |" if allocated_workers(2)>1 else "not started | fail-fast cancelled remaining queue |"), output)
         self.assertIn(
             "artifact_lifecycle.regression | not started | fail-fast cancelled remaining queue | 0.00s",
             output,
@@ -4053,7 +4058,7 @@ print("SECOND_STDOUT")
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 0, msg=output)
-        self.assertEqual(self.read_max_active(active_dir), 2, msg=output)
+        self.assertEqual(self.read_max_active(active_dir), allocated_workers(2), msg=output)
 
     def test_broad_smoke_jobs_one_keeps_sequential_compatibility(self) -> None:
         active_children = {
@@ -4099,7 +4104,7 @@ print("SECOND_STDOUT")
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 0, msg=output)
-        self.assertGreaterEqual(self.read_max_active(active_dir), 2, msg=output)
+        self.assertEqual(self.read_max_active(active_dir), allocated_workers(2), msg=output)
         self.assertRegex(output, r"^\[PASS\] broad-smoke: 11 checks passed in \d+(?:\.\d+)?s")
 
     def test_ci_wrapper_duration_reporting_does_not_use_bash_seconds(self) -> None:
@@ -4151,7 +4156,7 @@ print("SECOND_STDOUT")
         first_failure = output.index("[FAIL] broad_smoke.skills.regression")
         second_failure = output.index("[FAIL] broad_smoke.adapters.regression")
         self.assertLess(first_failure, second_failure)
-        self.assertIn("Execution phase:\nparallel", output)
+        self.assertIn("Execution phase:\n" + ("parallel" if allocated_workers(2)>1 else "sequential"), output)
         self.assertIn("Execution phase:\nsequential", output)
         self.assertIn("Check ID:\nbroad_smoke.skills.regression", output)
         self.assertIn("Check ID:\nbroad_smoke.adapters.regression", output)
@@ -4246,7 +4251,7 @@ os.kill(os.getppid(), signal.SIGKILL)
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 0, msg=output)
-        self.assertGreaterEqual(self.read_max_active(active_dir), 2, msg=output)
+        self.assertEqual(self.read_max_active(active_dir), allocated_workers(2), msg=output)
         self.assertLess(output.index("==> Validate canonical skills (passed)"), output.index("==> Run skill validator fixtures (passed)"))
         self.assertLess(output.index("validate-skills.py done"), output.index("test-skill-validator.py done"))
         self.assertNotRegex(output, r"validate-skills.py done.*==> Run skill validator fixtures", msg=output)
@@ -4271,12 +4276,12 @@ os.kill(os.getppid(), signal.SIGKILL)
         with result_path.open(encoding="utf-8") as handle:
             evidence = json.load(handle)
         self.assertEqual(evidence["scenario"], "broad-smoke-safe-parallelism")
-        self.assertEqual(evidence["parallel"]["jobs"], 3)
+        self.assertEqual(evidence["parallel"]["jobs"], allocated_workers(3))
         child_phases = {
             child["check_id"]: child["phase"]
             for child in evidence["parallel"]["child_durations"]
         }
-        self.assertEqual(child_phases["broad_smoke.skills.validate"], "parallel")
+        self.assertEqual(child_phases["broad_smoke.skills.validate"], "parallel" if allocated_workers(3)>1 else "sequential")
         self.assertEqual(child_phases["broad_smoke.adapters.regression"], "sequential")
         self.assertIn("delta", evidence)
 

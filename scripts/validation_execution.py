@@ -258,6 +258,11 @@ def supervise(notice_path, args):
 
 def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
     validate_plans(plans, jobs=jobs)
+    if 'RIGORLOOP_VALIDATION_WORKERS' in os.environ:
+        parent = os.environ['RIGORLOOP_VALIDATION_WORKERS']
+        if not parent.isascii() or not parent.isdigit() or int(parent) < 1:
+            raise ValueError('parent worker allocation must be a positive integer')
+        jobs = min(jobs, int(parent))
     if type(timeout_seconds) is not int or timeout_seconds < 1:
         raise ValueError('timeout must be a positive integer')
     if type(fail_fast) is not bool:
