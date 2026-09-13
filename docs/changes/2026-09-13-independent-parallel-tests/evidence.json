@@ -896,6 +896,30 @@
         }
       ],
       "summary": "Corrected selection is ok, selecting change_metadata.regression and change_metadata.validate; actual CI passes all 7 metadata cases plus current record validation. Narrative preserved exactly in allowed record and removed from extra path. No implementation/test source, schema, selector rule or closed recording surface changed. Existing complete M3 population observations remain unchanged; independent assessor owns finding disposition."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "plan"
+      },
+      "id": "p4-audit-allocation-correction",
+      "procedure": "Inspected required audit argparse arguments and existing requirement_fidelity.spec_reads argv. Ran python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads: validates 1 log. Prose enforce on primary plan passes.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
+          "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+        },
+        {
+          "identity": "sha256:22be989f1ffbcf569c41c2a0b75d3de98eacc86a8aac31898fdd496ef064e2ab",
+          "path": "scripts/test-fidelity-gate-spec-reads.py"
+        },
+        {
+          "identity": "sha256:d6a9821abfe6b6863a3ae335ca5cbcd0d45f1e36d30c9eb9293b671b2a363933",
+          "path": "scripts/validation_selection.py"
+        }
+      ],
+      "summary": "Narrow future-M4 allocation correction: nine unittest entrypoints plus one read-only audit command with exact existing required args. Preserve audit inputs, failures and independence proof; do not invent case discovery for a validator. No changed direction, model behavior, milestone ID/order/dependency, completed M1–M3 intent or work initialization. Independent Delivery Review required before M4."
     }
   ],
   "schema_version": 3

@@ -4,8 +4,8 @@
       "id": "proposal-reviewer",
       "role": "review"
     },
-    "reason": "Recorded M3 evidence-surface correction complete with exact preservation and passing real selector/CI proof; request independent finding disposition and reassessment.",
-    "stage": "code-review",
+    "reason": "Exact plan corrected only future P4 audit invocation/classification; request Delivery Review before opening M4.",
+    "stage": "delivery-review",
     "status": "ready"
   },
   "applicability": [
@@ -78,7 +78,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m3.json",
-      "reason": "Current complete M3 slice independently assessed; one reproduced recording-path integration correction required before approval.",
+      "reason": "Exact evidence relocation and corrected actual selection independently verified; unchanged M3 source/protection proof remains applicable and the sole M3 finding is resolved.",
       "value": "current"
     }
   ],
@@ -172,7 +172,7 @@
     }
   ],
   "plan": {
-    "identity": "sha256:3d94ffcb20e7a183d8285550aba80f3c95c5b54a08ceab4d6bf3e19f044267e1",
+    "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
     "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
   },
   "proposal": {
@@ -256,7 +256,7 @@
         "VAL-SR-22",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m4",
