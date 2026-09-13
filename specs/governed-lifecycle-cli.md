@@ -1,6 +1,6 @@
 # Governed Lifecycle CLI
 
-Contract boundary: this document governs its registered historical lifecycle contract. Adopted RigorLoop Record Format work instead uses the [Workflow](../docs/design/skill/workflow.md), [Record Format](../docs/design/cli/records.md) and [CLI](../docs/design/cli/cli.md) models with actor-owned decisions and targeted recording. Historical eligibility does not gate that recorder, and no root is converted by this amendment.
+Contract boundary: this document governs its registered historical lifecycle contract. Adopted RigorLoop Record Format work instead uses the [Workflow](../docs/design/workflow/workflow.md), [Record Format](../docs/design/record-format/record-format.md) and [CLI](../docs/design/cli/cli.md) models with actor-owned decisions and targeted recording. Historical eligibility does not gate that recorder, and no root is converted by this amendment.
 
 ## Owning change record
 

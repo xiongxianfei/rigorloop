@@ -30,7 +30,7 @@ This spec is a focused amendment to:
 - [Boundary-First Proof Model](boundary-first-proof-model.md);
 - [Skill Contract](skill-contract.md);
 - [RigorLoop Workflow](rigorloop-workflow.md); and
-- [Validation](../docs/design/engineering/validation.md), the current owner of the validation responsibilities originally amended below.
+- [Test Layering and Change-Scoped Validation](test-layering-and-change-scoped-validation.md).
 
 On approval, `PBS-R001` through `PBS-R038` govern the refined behavior.
 They supersede conflicting full-reference, explicit-trigger, and skill-path
