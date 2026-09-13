@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { rmSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -9,8 +9,10 @@ import { projectConciseResult, projectDetailedResult, renderResult, RESULT_FORMA
 
 const compatibilityFixturePath = join(import.meta.dirname, "fixtures", "observability", "v0.4.x-output-compatibility-v1.json");
 
-function compatibilityProject() {
-  return mkdtempSync(join(tmpdir(), "rigorloop-compatibility-"));
+function compatibilityProject(t) {
+  const directory = mkdtempSync(join(tmpdir(), "rigorloop-compatibility-"));
+  t.after(() => rmSync(directory, {recursive:true, force:true}));
+  return directory;
 }
 
 function normalizeCompatibilityOutput(child, project) {
@@ -55,12 +57,12 @@ const detailed = {
   effective_state: { active_milestone: "M2" },
 };
 
-test("result formats are a closed vocabulary", () => {
+test("result formats are a closed vocabulary", (t) => {
   assert.deepEqual(RESULT_FORMATS, ["human", "json", "concise-human", "concise-json", "detailed-json"]);
   assert.throws(() => renderResult(detailed, { format: "verbose" }), /Unknown result format/);
 });
 
-test("concise JSON uses schema 2, closed applicable fields, and compact encoding", () => {
+test("concise JSON uses schema 2, closed applicable fields, and compact encoding", (t) => {
   const projected = projectConciseResult(detailed, { invocationId: "a1b2c3d4e5f60718", exitCode: 2, observability: "recorded" });
   assert.deepEqual(projected, {
     schema_version: 2,
@@ -82,7 +84,7 @@ test("concise JSON uses schema 2, closed applicable fields, and compact encoding
   assert.equal(rendered, `${JSON.stringify({ ...projected, observability: "disabled" })}\n`);
 });
 
-test("concise human output is actionable and at most two lines", () => {
+test("concise human output is actionable and at most two lines", (t) => {
   const output = renderResult(detailed, { format: "concise-human", invocationId: "a1b2c3d4e5f60718", exitCode: 2, observability: "recorded" });
   assert.ok(output.includes("settle-artifact blocked"));
   assert.ok(output.includes("RL_UNRESOLVED_MATERIAL_FINDING"));
@@ -91,12 +93,12 @@ test("concise human output is actionable and at most two lines", () => {
   assert.ok(output.trim().split("\n").length <= 2);
 });
 
-test("legacy JSON and detailed JSON retain the detailed object", () => {
+test("legacy JSON and detailed JSON retain the detailed object", (t) => {
   assert.equal(renderResult(detailed, { format: "json" }), `${JSON.stringify(detailed, null, 2)}\n`);
   assert.deepEqual(JSON.parse(renderResult(detailed, { format: "detailed-json", observability: "recorded" })), { ...detailed, observability: "recorded" });
 });
 
-test("T10 exact output fixture preserves retained public commands", () => {
+test("T10 exact output fixture preserves retained public commands", (t) => {
   const fixture = JSON.parse(readFileSync(compatibilityFixturePath, "utf8"));
   // The retained fixture owns output shape; current package identity is variable.
   const currentPackage = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
@@ -117,7 +119,7 @@ test("T10 exact output fixture preserves retained public commands", () => {
   ];
   const observed = {};
   for (const [id, args, projectKind, json] of cases) {
-    const project = compatibilityProject(projectKind);
+    const project = compatibilityProject(t);
     const child = spawnSync(process.execPath, [cli, ...args], {
       cwd: project,
       encoding: "utf8",
@@ -127,7 +129,7 @@ test("T10 exact output fixture preserves retained public commands", () => {
     if (process.env.RIGORLOOP_UPDATE_COMPATIBILITY_FIXTURE !== "1") {
       assert.deepEqual(observed[id], fixture.cases[id], id);
       if (json) {
-        const detailedProject = compatibilityProject(projectKind);
+        const detailedProject = compatibilityProject(t);
         const detailed = spawnSync(process.execPath, [cli, ...detailedArgs(args)], {
           cwd: detailedProject,
           encoding: "utf8",
@@ -153,7 +155,7 @@ test("T10 exact output fixture preserves retained public commands", () => {
   }
 });
 
-test("T11 state_changed reflects authoritative mutation facts only", () => {
+test("T11 state_changed reflects authoritative mutation facts only", (t) => {
   const cases = [
     ["planned", false],
     ["already-recorded", false],
@@ -173,7 +175,7 @@ test("T11 state_changed reflects authoritative mutation facts only", () => {
   assert.equal("state_changed" in read, false);
 });
 
-test("T11 next_operation requires one deterministic continuation", () => {
+test("T11 next_operation requires one deterministic continuation", (t) => {
   const base = { command: "lifecycle", operation: "status", status: "blocked" };
   const options = { invocationId: "a1b2c3d4e5f60718", exitCode: 2, observability: "recorded" };
   assert.equal(projectConciseResult({ ...base, permitted_operations: [] }, options).next_operation, undefined);
@@ -186,7 +188,7 @@ test("T11 next_operation requires one deterministic continuation", () => {
   ] }, options).next_operation, undefined);
 });
 
-test("T11 every concise terminal result requires common mandatory fields", () => {
+test("T11 every concise terminal result requires common mandatory fields", (t) => {
   const complete = { command: "lifecycle", operation: "status", status: "success" };
   const options = { invocationId: "a1b2c3d4e5f60718", exitCode: 0, observability: "recorded" };
   assert.doesNotThrow(() => projectConciseResult(complete, options));
@@ -196,7 +198,7 @@ test("T11 every concise terminal result requires common mandatory fields", () =>
   assert.throws(() => projectConciseResult(complete, { ...options, exitCode: undefined }), /mandatory terminal field/);
 });
 
-test("T11 shared facts remain equivalent across result classes", () => {
+test("T11 shared facts remain equivalent across result classes", (t) => {
   const cases = [
     { command: "lifecycle", operation: "status", status: "success", exit: 0 },
     { command: "lifecycle", operation: "settle-artifact", status: "blocked", exit: 2, blockers: [{ code: "RL_BLOCKED" }] },
@@ -220,7 +222,7 @@ test("T11 shared facts remain equivalent across result classes", () => {
   }
 });
 
-test("T11 explicit detailed projection materializes authoritative mutation truth without changing legacy JSON", () => {
+test("T11 explicit detailed projection materializes authoritative mutation truth without changing legacy JSON", (t) => {
   for (const stateChanged of [false, true]) {
     const result = { schema_version: 1, command: "lifecycle", operation: "migrate", status: stateChanged ? "success" : "error" };
     Object.defineProperty(result, "state_changed", { value: stateChanged, enumerable: false });
@@ -234,7 +236,7 @@ test("T11 explicit detailed projection materializes authoritative mutation truth
   }
 });
 
-test("T11 every new projection carries a closed observability state", () => {
+test("T11 every new projection carries a closed observability state", (t) => {
   const result = { schema_version: 1, command: "lifecycle", operation: "status", status: "success" };
   for (const observability of ["recorded", "degraded", "disabled"]) {
     assert.equal(projectConciseResult(result, { invocationId: "a1b2c3d4e5f60718", exitCode: 0, observability }).observability, observability);

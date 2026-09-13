@@ -390,6 +390,16 @@ for _key, _basis in _CASE_ASSESSMENTS.items():
             isolation='Fresh normal-loader case process; owned temporary fixtures; immutable source inputs; nested workers consume the case allocation.',
             basis=_basis))
 
+# Native case scopes assessed through the normal package/file entrypoints.
+_NODE_ASSESSMENTS = {
+    'rigorloop_cli.test': '92cc1d98945b4cef969b71643189017536f66108f1b0a0f8813b4b9d8d0598e3',
+    'record_retirement.regression': '875171555af9d01e6580134dd9b5a9264a897b81677bb92aff09a735eee73065',
+}
+for _key, _basis in _NODE_ASSESSMENTS.items():
+    CHECK_CATALOG[_key] = replace(CHECK_CATALOG[_key], parallel_safe=True,
+        constraints=ExecutionConstraints(unit='node-test',mode='bounded',basis=_basis,
+            isolation='One native test worker per case, owned fixture roots and complete hooks; fixed product-subject subprocesses are bounded and reaped, not nested test pools.'))
+
 MODE_CHECK_IDS = {
     mode: tuple(key for key, entry in CHECK_CATALOG.items() if mode in entry.modes)
     for mode in ("broad-smoke", "main")
@@ -424,6 +434,13 @@ def validate_catalog(catalog=None) -> None:
             argv = shlex.split(entry.command_template)
             if len(argv)<2 or not re.fullmatch(r'python(?:3(?:\.\d+)?)?',Path(argv[0]).name) or not argv[1].endswith('.py'):
                 raise ValueError(f"contradictory case command: {key}")
+        if c.unit == "node-test":
+            argv = shlex.split(entry.command_template)
+            direct = (len(argv)>2 and argv[:2]==['node','--test'] and
+                      all(not x.startswith('-') and x.endswith(('.js','.mjs','.cjs')) for x in argv[2:]))
+            package = len(argv)==4 and argv[:3]==['npm','test','--prefix']
+            if not (direct or package):
+                raise ValueError(f"contradictory Node case command: {key}")
         if c.mode not in {"serial", "exclusive", "bounded"}:
             raise ValueError(f"unknown execution mode: {key}")
         if type(c.demand) is not int or c.demand < 1 or type(c.shared_writes) is not bool:
@@ -1242,6 +1259,7 @@ def _apply_path_selection(
         # Noncurrent archival evidence has no operational validation route.
         # Dedicated removal checks remain selected for archive-path changes.
         _add_check(selected, "record_retirement.regression", "Archival paths must not restore execution or obstruct current records.")
+        _add_check(selected, "main.retirement_ledger.regression", "Preserve the historical inventory through its canonical Python check.")
         return
     if _is_boundary_first_surface(path):
         _add_check(
@@ -1581,6 +1599,7 @@ def _apply_path_selection(
         return
 
     if category == "record-retirement":
+        _add_check(selected, "main.retirement_ledger.regression", "Retirement changes require canonical historical inventory proof.")
         _add_check(
             selected,
             "record_retirement.regression",
@@ -2006,6 +2025,7 @@ def _path_category(path: str) -> str | None:
         "scripts/select-validation.py",
         "scripts/validation_selection.py",
         "scripts/validation_execution.py",
+        "scripts/validation_node_adapter.mjs",
         "scripts/test-validation-execution.py",
         "scripts/test-select-validation.py",
         "scripts/validate-broad-smoke-classification.py",

@@ -683,6 +683,77 @@ def _validate_case_receipt(plan):
         raise ValueError('invalid required case receipt: '+str(exc)) from exc
 
 
+def _node_command(mode, receipt, scope, expected=None):
+    return ['node',str(Path(__file__).with_name('validation_node_adapter.mjs')),
+            mode,str(receipt),json.dumps(scope),expected or '']
+
+
+def _node_scope(args):
+    if len(args)>2 and args[:2]==['node','--test'] and all(not x.startswith('-') and Path(x).is_file() for x in args[2:]):
+        return {'files':[str(Path(x).resolve()) for x in args[2:]]}
+    if len(args)==4 and args[:3]==['npm','test','--prefix']:
+        root=Path(args[3]).resolve()
+        package=json.loads((root/'package.json').read_text())
+        command=shlex.split(package.get('scripts',{}).get('test',''))
+        if command!=['node','--test','test/**/*.test.js']:
+            raise ValueError('Node package test entrypoint requires assessed native glob')
+        return {'cwd':str(root),'globPatterns':['test/**/*.test.js']}
+    raise ValueError('unsupported native Node case command')
+
+
+def discover_node_cases(args, scratch, *, jobs, timeout):
+    scope=_node_scope(args)
+    scratch.mkdir(parents=True,exist_ok=True)
+    receipt=scratch/'node-collection.json'
+    receipt.unlink(missing_ok=True)
+    # No collection state from a previous attempt may survive a missing child.
+    shutil.rmtree(str(receipt)+'.declarations',ignore_errors=True)
+    command=_node_command('collect',receipt,scope)
+    plan=CheckPlan('node-collection',command_display(command),command,'native Node collection','focused',True)
+    result=run_scheduled_checks([plan],jobs=jobs,timeout_seconds=timeout,fail_fast=False,scratch=scratch)[0]
+    if result.exit_code:
+        raise ValueError('Node collection failed: '+result.stderr_path.read_text()[:4000])
+    try:
+        data=json.loads(receipt.read_text());groups=data['groups']
+        if set(data)!={'mode','groups'} or data['mode']!='collect' or not isinstance(groups,list) or not groups:
+            raise ValueError('invalid Node collection receipt')
+        files=[]
+        for group in groups:
+            if set(group)!={'file','ids'} or not isinstance(group['file'],str) or not Path(group['file']).is_absolute():
+                raise ValueError('invalid Node file identity')
+            files.append(group['file']);ids=group['ids']
+            if not isinstance(ids,list) or not ids or any(not isinstance(x,str) or not x for x in ids) or len(ids)!=len(set(ids)):
+                raise ValueError('zero or duplicate Node case identity')
+        if len(files)!=len(set(files)):
+            raise ValueError('duplicate Node file identity')
+        if 'files' in scope and set(files)!=set(scope['files']):
+            raise ValueError('Node file discovery disagrees with required files')
+        return groups
+    except (OSError,KeyError,TypeError) as exc:
+        raise ValueError('missing or invalid Node collection receipt') from exc
+
+
+def node_case_plans(parent, groups, scratch):
+    import re
+    scope=_node_scope(parent.args)
+    scratch.mkdir(parents=True,exist_ok=True)
+    plans=[]
+    for group in groups:
+        file=group['file']
+        label=os.path.relpath(file,Path.cwd())
+        for name in group['ids']:
+            native=['node','--test','--test-concurrency=1','--test-name-pattern=^'+re.sub(r'([.*+?^${}()|\[\]\\])',r'\\\1',name)+'$',file]
+            rerun=native
+            if 'cwd' in scope:
+                rerun=['bash','-c','cd '+shlex.quote(scope['cwd'])+' && exec '+shlex.join(native)]
+            receipt=scratch/f'case-{len(plans)}.json'
+            selected={'files':[file],**({'cwd':scope['cwd']} if 'cwd' in scope else {})}
+            plans.append(CheckPlan(parent.check_id+'::'+label+'::'+name,command_display(rerun),
+                _node_command('case',receipt,selected,name),parent.reason,parent.phase,parent.parallel_safe,
+                parent.dependencies,parent.demand,parent.after,receipt,name,rerun))
+    return plans
+
+
 def expand_cases(plans, scratch, *, jobs, timeout):
     """Replace only catalog-adopted suites and rebind all group dependencies."""
     validate_catalog()
@@ -694,6 +765,10 @@ def expand_cases(plans, scratch, *, jobs, timeout):
             owned = scratch/f'suite-{index}'
             ids = discover_cases(plan.args,owned/'collection',jobs=jobs,timeout=timeout)
             groups[plan.check_id] = case_plans(plan,ids,owned/'cases')
+        elif entry and entry.constraints and entry.constraints.unit == 'node-test':
+            owned = scratch/f'suite-{index}'
+            population = discover_node_cases(plan.args,owned/'collection',jobs=jobs,timeout=timeout)
+            groups[plan.check_id] = node_case_plans(plan,population,owned/'cases')
         else:
             groups[plan.check_id] = [plan]
     expanded = [p for group in groups.values() for p in group]

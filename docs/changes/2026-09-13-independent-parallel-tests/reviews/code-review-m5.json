@@ -1,0 +1,132 @@
+{
+  "assessment_scope": "Complete M5 diff 6c1bb56f..75af660d and registered m5-implementation proof, including twelve population assessments, six changed engineering files and current upstream Design/Delivery applicability. Prior M4 review record included in the commit range is existing independent evidence, not M5 implementation authorship.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m5",
+  "independence_basis": "Root authored the M5 code, test and execution evidence. Separate proposal-reviewer inspected the actual diff, fixture ownership and current evidence, and independently ran two retained acceptance/negative cases. Reviewer did not author or alter implementation, catalog, plan, models or routing.",
+  "judgment": "approved",
+  "limitations": [
+    "Relied on complete registered author population evidence, direct selected-wrapper proof and final executor/selector suites, plus independent source/fixture inspection and two focused retained tests; did not redundantly replay all321 cases. Local elapsed times are observations, not a universal performance claim.",
+    "Scope is M5 only; later Node and integrated caller work remains. Reviewer changed no implementation or routing."
+  ],
+  "rationale": [
+    "1 Alignment — pass: P5 twelve-entrypoint allocation and TG-05 are fulfilled by twelve explicitly assessed catalog scopes and all 321 retained cases. Existing canonical IDs, native loaders, one scheduler and bounded case resources remain. No new cache, equivalence engine or product behavior was introduced.",
+    "2 Test adequacy — pass: registered native normal/single/reversed observations enumerate the same complete retained populations: workflow state13, engine31, code-state12, vocabulary67, policy20, wrapper3, review109, query2, ledger17, CLI measurement4, token measurement25 and report18. Reviewer checked all twelve counts, unique IDs, three modes and empty failure lists. Actual selected CLI measurement wrapper passed all29 cases, not merely selector membership assertions.",
+    "3 Edge cases — pass: removed generic valid-state case had the exact same fresh input and acceptance assertion as the retained no-prior-review case. The retained case now asserts its premise explicitly; later-capability missing-review rejection remains separate. Reviewer independently ran those two exact cases successfully. Changed-profile vocabulary, fixture identity, baseline provenance and retired measurement rejection remain in the four actual CLI measurement cases.",
+    "4 Failure and cleanup — pass: benchmark report output now uses a unique context-managed repository-local directory, preserving real relative-path sanitization assertions; actual skill and benchmark execution roots remain outside the repository. Original shared directory deletion is eliminated. Existing repository-local-temp rejection and cleanup proof remain. Author two simultaneous direct invocations passed, providing cross-invocation isolation evidence beyond reversed case scheduling.",
+    "5 Architecture and resources — pass: fresh process isolation covers process-local mocks, imports, cwd and environment; fixture inspection confirms owned temporary Git repositories, copied record trees and unique analyzer/report files. No fixed port, nested worker pool or external provider was added. Existing executor budgets and cleanup machinery remain unchanged. Catalog literal argv/adapter constraints are retained and validated; the unassessed-command assertion now names a genuinely unassessed boundary command.",
+    "6 Compatibility — pass: review-validator composition test now looks up canonical review_artifacts.regression while retaining exact command and preflight dependency assertions. The missing CLI measurement catalog command is routed only for its two source/test paths, retaining token measurement coverage as well. Expected catalog/output fixtures were aligned rather than removed. Main and broad memberships are intentionally unchanged here; M7 owns final caller reconciliation.",
+    "7 Security and permission boundaries — pass: no public publication, retired runtime reactivation, customer governance or historic record mutation occurs. Retired/current/unknown record wrappers retain failure-sensitive cases and unrelated-byte preservation. Measurement tests continue rejecting new claims from retired profiles; temporary output remains test-owned and automatically removed.",
+    "8 Derived artifact currency — pass within scope: no published skill, archive or generated schema changes require new package rebuild proof in M5. Existing normal-loader adoption and final executor42/selector163 proof support catalog integration on exact final sources. Candidate/public release and Node execution are not inferred from these Python observations.",
+    "9 Scope and maintenance — pass: only one demonstrated duplicate is removed; no unknown-protection deletion follows from AST similarity. Remaining historical fixtures are immutable inputs and their obligations are preserved. Changes are confined to isolation, explicit case assessments and actual broken/missing callers. Evidence stays in registered evidence.json, with no unsupported narrative file or new permanent ledger.",
+    "10 Evidence and current reliance — pass: all six author subject hashes match current files. Final executor42 passed46.515s and selector163 passed90.91s. Earlier six selector failures from missing golden catalog expectation and dependent formatting fixtures remain explained, with final full proof green. Earlier benchmark inside-repository execution-root rejection and old alias consumer failure remain recorded and corrected without relaxing production guards. Population observations concern unchanged test/executor semantics; later literal catalog promotion and expectation alignment are covered by final suites and actual29-case wrapper. Approved Design and unchanged Delivery still allocate this behavior; no upstream amendment is needed.",
+    "Milestone handoff — M5 approved with no required review-resolution. Route may close M5 and proceed to M6 under existing user authority. M6 Node case independence, M7 complete caller integration, fresh whole-change Code Review and distinct Verify remain mandatory. This review does not claim final branch, PR or publication readiness."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b753e59c537716d61fe89c1b895cbc437e3df42553507b4aa5027e9c1857caaf",
+      "path": "scripts/test-token-cost-measurement.py"
+    },
+    {
+      "identity": "sha256:add6bb1e2d177ce6de604cb1f1dc82e2e64b035e246b6db16837a2c12f8c2842",
+      "path": "scripts/test-validate-workflow-automation.py"
+    },
+    {
+      "identity": "sha256:5e2696378c8941da47d3415047e1eac3d357175269c8afe9c2bc5d683975f83c",
+      "path": "scripts/test-review-artifact-validator.py"
+    },
+    {
+      "identity": "sha256:a58506ea6c1b4671066e99127bd1053ef75967631a82bb7ba0a210da5e86d012",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:90de805c93629de8732bbf7c4d1141a709a0c02985b8deb52c860f823edd483c",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:aea32acad1948124f88a888171fb8b86b9f08ff92c91352cedf53d9618e97287",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:515a12b4ad452c08547d1d34e6e27263c5abb51038723d0c753bd06f1478b226",
+      "path": "scripts/test-workflow-automation-state.py"
+    },
+    {
+      "identity": "sha256:5ade6f1eff8221c8a77ca485f9b72d55302640be9e458c7fbc1209faa409ca14",
+      "path": "scripts/test-workflow-automation.py"
+    },
+    {
+      "identity": "sha256:9bbeb9f274bff92f4c9af40376a9419ec0784b786a2bf228c81bc60f0f75c69d",
+      "path": "scripts/test-workflow-code-state.py"
+    },
+    {
+      "identity": "sha256:c9e6e4d3422499fb5c8fec71f8b2134399b87a0570c385377a0726d100bc7857",
+      "path": "scripts/test-workflow-automation-policy.py"
+    },
+    {
+      "identity": "sha256:1078e2505d2f27d1a7f2032c4b51e09f7f76ea45e7d5fcb4c229b3480c67ee6f",
+      "path": "scripts/test-governed-lifecycle-cli-validator.py"
+    },
+    {
+      "identity": "sha256:a34015ec9c1f2b49324ac4d0797f13e32ffa438ffdc2d49aa2e123f0fda1e448",
+      "path": "scripts/test-query-change-record.py"
+    },
+    {
+      "identity": "sha256:b0e1816753865cdee8ac3cb2514b7b3bb96584d9098ca0cfc9745463ec80b999",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:4a8e8b95ef78a9fa42d82d4dd6ba19c26c7b26ff5a96296650617ba118b007a5",
+      "path": "scripts/test-cli-result-measurement.py"
+    },
+    {
+      "identity": "sha256:abd45de0e51bd7950559adad76f7f7280a69a4c979a87e617d71e0c656f0d7d4",
+      "path": "scripts/test-token-cost-report-validation.py"
+    },
+    {
+      "identity": "sha256:315a76a9054a905a86a12f0f5fdc11230f095ae06d59c388a58029cec395031e",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:d65432f265154e6e381b95297b1d0710dab826172bec2f25db40111a3187f512",
+      "path": "scripts/measure-cli-result-bytes.py"
+    },
+    {
+      "identity": "sha256:14ff736db9cd39cf53ad83f9566aafccf083691340e281fce0e456e85390894d",
+      "path": "scripts/run-token-cost-benchmarks.py"
+    },
+    {
+      "identity": "sha256:073bb893c4c3ae60aea67a7709275a53eb6bdcb6999181adbf7bdd8b070e6c3d",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:5a59a9355f510fea316d1bcad0a2dec2debcecab114966757de577b6ca41a3f0",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:33e34828816eebafc0de6d5804daf58357001cd1986158e633846e71e30266bc",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:0084463d8561bb0273bee09d67c70c53897f1f3371724536b0cfb4ea9f4774cc",
+      "path": "docs/design/engineering/validation.md"
+    }
+  ],
+  "summary": "M5 adopts all twelve P5 entrypoints with 321 retained independently observed cases, removes one exact duplicate without losing protection, isolates benchmark output and restores missing/current catalog consumers. No material Code Review finding.",
+  "target": "code"
+}

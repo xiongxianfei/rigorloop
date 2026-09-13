@@ -4,7 +4,7 @@
       "id": "proposal-reviewer",
       "role": "review"
     },
-    "reason": "M5 complete:321-case normal/individual/reverse proof, protected duplicate consolidation, owned measurement roots and actual caller correction; independent review requested.",
+    "reason": "M6 complete with native419-case proof, cleaned fixtures, canonical retirement preservation, final npm/native/executor/selector and actual wrapper results; independent review requested.",
     "stage": "code-review",
     "status": "in-progress"
   },
@@ -88,6 +88,15 @@
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m4.json",
       "reason": "Exact final M4 source and complete P4 evidence independently assessed; scoped stable release rerun resolves source-change failure while unchanged full-suite paths remain affirmatively applicable.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m5.json",
+      "reason": "Exact final M5 code and complete twelve-population evidence independently assessed; no outstanding milestone finding or new upstream requirement.",
       "value": "current"
     }
   ],
@@ -224,6 +233,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m4.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m5.json"
     }
   ],
   "schema_version": 3,
@@ -297,7 +310,7 @@
         "TEST-SR-08",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m6",
@@ -311,7 +324,7 @@
         "TEST-SR-08",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m7",

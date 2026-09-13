@@ -965,7 +965,7 @@ class ValidationSelectionTests(unittest.TestCase):
         # These fixtures provide controlled command bodies, not unittest suites.
         # Keep that distinction explicit in the fixture's trusted catalog.
         with (workspace/'scripts/validation_selection.py').open('a') as catalog:
-            catalog.write("\nfor key in _CASE_ASSESSMENTS:\n"
+            catalog.write("\nfor key in (*_CASE_ASSESSMENTS, *_NODE_ASSESSMENTS):\n"
                           " entry = CHECK_CATALOG[key]\n"
                           " CHECK_CATALOG[key] = replace(entry,constraints=replace(entry.constraints,unit='command',basis=command_basis(entry.command_template,'command')))\n")
         return workspace
@@ -1182,7 +1182,7 @@ raise SystemExit({exit_code})
                 result = self.select([path])
                 self.assertEqual(
                     selected_ids(result.to_json_dict()),
-                    {"record_retirement.regression", "change_metadata.regression"},
+                    {"record_retirement.regression", "main.retirement_ledger.regression", "change_metadata.regression"},
                 )
 
     def test_shared_preflight_context_requires_matching_repository_identity(self) -> None:
@@ -1218,7 +1218,7 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertEqual(payload["blocking_results"], [])
         self.assertEqual(
-            {"record_retirement.regression", "selector.regression", "validation_execution.regression"},
+            {"record_retirement.regression", "main.retirement_ledger.regression", "selector.regression", "validation_execution.regression"},
             selected_ids(payload),
         )
         selector_check = next(check for check in payload["selected_checks"] if check["id"] == "selector.regression")
@@ -1294,6 +1294,7 @@ raise SystemExit({exit_code})
         result = self.select(
             [
                 "scripts/validation_selection.py",
+                "scripts/validation_node_adapter.mjs",
                 "scripts/test-select-validation.py",
                 "scripts/validate-broad-smoke-classification.py",
             ]
@@ -1459,7 +1460,10 @@ raise SystemExit({exit_code})
         }
         self.assertEqual({key for key,entry in CHECK_CATALOG.items()
                           if entry.constraints and entry.constraints.unit=='python-unittest'},expected_cases)
-        expected_parallel_safe |= expected_cases
+        expected_node = {"rigorloop_cli.test", "record_retirement.regression"}
+        self.assertEqual({key for key,entry in CHECK_CATALOG.items()
+                          if entry.constraints and entry.constraints.unit=="node-test"}, expected_node)
+        expected_parallel_safe |= expected_cases | expected_node
 
         self.assertEqual(
             {check_id for check_id in CHECK_CATALOG if is_parallel_safe_check(check_id)},
