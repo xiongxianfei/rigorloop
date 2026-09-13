@@ -176,6 +176,22 @@
         }
       ],
       "summary": "System structural/reference check passed; prose zero errors/warnings; diff check passed. The whole-system graph now traces intended behavior to actual published products while referencing child views for internal detail. Milestone reviews, fresh whole-change review, distinct Verify, Release qualification, candidate-specific publication permission and uncertain-write recovery are preserved. Parent-owned graphs and all runtime files unchanged. Mermaid source inspected; no rendering, runtime test or release execution claimed."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "structural-overview-author-check",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/system.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/system.md; git diff --check; compare restored Mermaid source with original d5f32523 System graph and user-supplied example.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d3b803efeb1018551c55f0aac92ec8e37c95e085a452de00e18bde7ae1bc61bc",
+          "path": "docs/design/system.md"
+        }
+      ],
+      "summary": "Structure/reference and prose checks passed, zero prose errors/warnings; diff check passed. Restored original 3main/14submodel structural overview and separate products. Whole-system flow and all parent-owned interaction graphs retained. Clarified ownership versus orientation and linked complementary views. Mermaid source checked; no rendered-image, runtime, CI or publication result claimed."
     }
   ],
   "schema_version": 3

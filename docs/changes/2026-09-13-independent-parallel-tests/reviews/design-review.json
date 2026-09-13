@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "Independent current-package reassessment after the explicit user correction that subsystem graphs supplement, rather than replace, the whole System design. Exact System diff against0d66ba36 and surrounding composition/acceptance contracts are assessed with unchanged Skill, CLI, Engineering, Validation, two legacy notices and relied-on child/Assessment/Packaging/Release boundaries. The seven affected documents remain one package; only System changes in this correction. Original finding and dispositions remain preserved.",
+  "assessment_scope": "Bounded independent reassessment of System-only correction against19591805 within the current seven-document package. Explicit user direction retains the supplied three-main/fourteen-child/two-product structural graph as well as the separately restored end-to-end graph. Unchanged parent graphs, Validation refinement, legacy notices and product/review/release boundaries remain relied-on current package members; no implementation or whole legacy re-audit is claimed.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "contributors": [
     {
@@ -77,7 +77,10 @@
     "Current applicability and handoff — the approved proposal still supports refining the design while preserving independent cases, proof-sensitive deduplication and no cache. The explicit subsequent user direction supplies authority for local parent graphs; it does not change product behavior or relax original scope. The prior resolved maintenance finding stays represented. This current expanded package is suitable for authorized Delivery planning, including SYS-SR10 graph/child coherence and existing VAL-SR19–22 obligations. No implementation or final adoption follows merely from this save.",
     "Whole-system view preservation — pass: SYS-SR10 now explicitly requires the end-to-end design in System in addition to recursive parent-owned graphs. Ownership and integrated flow are complementary views with one authored source each, not competing local contracts. The new System graph traces approved need through Skill/CLI behavior, reconciled/reviewed delivery, implementation, exact packaged candidate, actual proof, independent Code Review and distinct Verify, release qualification, explicit candidate-specific authorization, publication and observed products. Parent graphs still provide internal detail; their links no longer substitute for the integrated System design.",
     "Restored flow semantics and authority — pass: Delivery label and surrounding text retain independent Design/Delivery review, repeated implementation/milestone review and fresh whole-change Code Review before Verify. The path to Release requires a verified engineering basis and reviewed merged source, matching existing Release routine-source policy without granting merge permission. Qualification remains separate from publication authorization; public identity/availability is observed after publication. Failed proof, assessment findings and qualification gaps route to the affected owner; surrounding prose requires appropriate correction/reassessment and Release recovery for uncertain public writes. Self-use and pass labels cannot approve themselves. No new runtime or mandatory customer lifecycle behavior is introduced.",
-    "Current package and prior reliance — unchanged parent/submodel graphs, Validation sharing/isolation, scoped legacy maintenance amendment and their source identities remain applicable. Earlier rationale that a child graph link could replace the System-wide view is superseded by this exact user correction, not silently carried forward. The original proposal still supports refined design and its unchanged test goals; direct user clarification supplies this composition requirement. Current inline graph and acceptance scenario satisfy the expanded SYS-SR10, with author structure/prose/whitespace evidence matched to current System. No new material concern or unresolved finding remains. Return to route for authorized Delivery planning only."
+    "Current package and prior reliance — unchanged parent/submodel graphs, Validation sharing/isolation, scoped legacy maintenance amendment and their source identities remain applicable. Earlier rationale that a child graph link could replace the System-wide view is superseded by this exact user correction, not silently carried forward. The original proposal still supports refined design and its unchanged test goals; direct user clarification supplies this composition requirement. Current inline graph and acceptance scenario satisfy the expanded SYS-SR10, with author structure/prose/whitespace evidence matched to current System. No new material concern or unresolved finding remains. Return to route for authorized Delivery planning only.",
+    "Full structural overview restoration — pass: independently compared the first Mermaid block to d5f32523 and found it exactly identical; the end-to-end block is byte-identical to19591805. System again shows3 main owners,14 immediate submodels and2 distinct published products, including individual Skill use without CLI. Containment and invisible layout links explicitly express ownership/layout rather than execution sequence. Product arrows distinguish behavioral definitions from Engineering realization. Detailed parent graphs and nested Authoring view remain unchanged and linked.",
+    "Complementary System/parent ownership — pass: revised SYS-SR10 and Parent graph ownership expressly require both structural overview and integrated product flow, allow descendant summaries for orientation, and leave detailed internal relationships with the nearest owning parent. Each view has one authored source; repeated names are references, not competing behavioral contracts. This clarifies and supersedes any prior interpretation restricting System to immediate-child-only orientation. The updated acceptance scenario requires locating all parents/children, tracing the complete flow and following owner detail. The existing end-to-end graph preserves mandatory independent review/Verify, candidate qualification and separate publication authority without changed runtime behavior.",
+    "Current reliance and disposition — exact System author structure/prose evidence matches; unchanged package contracts remain applicable. The original proposal direction is unchanged and direct user clarification supplies the bounded view requirement. No new material finding arose, and parallel-maintenance-allocation-scope retains its recorded resolution. This current review supports authorized Delivery planning of the complete package; no routing, implementation, adoption or external permission follows from recording."
   ],
   "reviewer": {
     "id": "proposal-reviewer",
@@ -86,7 +89,7 @@
   "schema_version": 3,
   "subjects": [
     {
-      "identity": "sha256:0ac9556a0a724b656f4e7b3696a1152c195ca36cb6d8538c419ba75cbd6d970d",
+      "identity": "sha256:d3b803efeb1018551c55f0aac92ec8e37c95e085a452de00e18bde7ae1bc61bc",
       "path": "docs/design/system.md"
     },
     {
@@ -106,7 +109,7 @@
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
     },
     {
-      "identity": "sha256:65886c9963e56d992af89dd1eed0cbd3e8865381c241e9b56513bc8d5b6c316a",
+      "identity": "sha256:28d7603f6f02993978f4d5cc42deb23845fa8882727829dc085079a15cc34d2c",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
     },
     {
@@ -158,6 +161,6 @@
       "path": "docs/design/cli/installation.md"
     }
   ],
-  "summary": "Current Design package approved with System retaining the end-to-end product design alongside parent-owned subsystem graphs. The complementary views preserve complete delivery, independent assessment and separate candidate-specific publication authority. Prior maintenance finding remains resolved; no new material finding.",
+  "summary": "Current Design package approved with both full System structural overview and end-to-end delivery flow preserved. Parent-owned graphs supplement them with detailed internal interactions. No additional material finding; earlier maintenance finding remains resolved.",
   "target": "design"
 }
