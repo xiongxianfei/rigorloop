@@ -2,7 +2,9 @@
 
 Model validation contract: model-document-v1
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Introduction and Goals
 
@@ -49,6 +51,8 @@ The approved proposal and exact affected Designs feed a stable delivery plan and
 ## Validation
 
 [Validation](validation.md) is the sole owner of reusable proof criteria and repository check execution. Skill capabilities consume the reusable criteria under their applicability; this repository's plan allocates the concrete tests. All workers, nested invocations and independent cases share the declared budget; deterministic summaries expose missing, skipped, failed and interrupted work. No cache restores prior execution as a current pass.
+
+For the current refinement, Development allocates the complete remaining automated test inventory in bounded groups under [Validation VAL-SR-19–22](validation.md#requirements). Validation owns which proof requests may share execution and which cases can be consolidated; product owners retain the protected behavior. Assessment judges equivalence and actual isolation. Candidate changes, package-build dependencies and Release freshness obligations remain visible, even when equivalent focused and broad requests share one physical execution. An unassessed serial remainder cannot become a completed delivery claim.
 
 ## Packaging
 

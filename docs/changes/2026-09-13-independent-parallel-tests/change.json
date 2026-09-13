@@ -2,10 +2,10 @@
   "activity": {
     "owner": {
       "id": "root",
-      "role": "proposal"
+      "role": "plan"
     },
-    "reason": "User requested a new branch and proposal for design refinement, duplicate-test removal and remaining serial-case refinement. Draft is prepared for independent Proposal Review; this isolated authoring request does not authorize downstream implementation or record review approval.",
-    "stage": "proposal",
+    "reason": "Independent corrected Design Review approved/current and its single finding resolved; exact five-document package is ready for Delivery planning. No implementation work or automation run is initialized.",
+    "stage": "plan",
     "status": "ready"
   },
   "applicability": [
@@ -17,12 +17,61 @@
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json",
       "reason": "Exact new proposal and inspected merged-main basis; author checks only, without approval or implementation claims.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json",
+      "reason": "Complete exact new proposal, user intent, current standing authority, scoped source feasibility and author observations independently assessed; no material correction or necessary unresolved proposal decision.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/material-decisions.json",
+      "reason": "Exact author correction, pending independent finding disposition.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json",
+      "reason": "Complete corrected five-document package, inline scenarios, exact legacy clauses and unchanged shared-owner interfaces independently reassessed; recorded finding resolved and original proposal direction remains applicable.",
+      "value": "current"
     }
   ],
   "blockers": [],
   "change_id": "2026-09-13-independent-parallel-tests",
   "contract": "rigorloop-records-v3",
-  "models": [],
+  "models": [
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:83063498c53be82b8733a653530ad213d615c8061b47c31920f1b8e073e6f6a9",
+        "path": "docs/design/system.md"
+      }
+    },
+    {
+      "id": "engineering",
+      "subject": {
+        "identity": "sha256:a01a90593910ff8e00437d8de3d73b5418bee9e698c85f1990916f7276752e83",
+        "path": "docs/design/engineering/engineering.md"
+      }
+    },
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:99f346d1eafb857c273306c56546742321bb2883330cf4b9cc055fc2dfb6b153",
+        "path": "docs/design/engineering/validation.md"
+      }
+    }
+  ],
   "plan": null,
   "proposal": {
     "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
@@ -32,6 +81,18 @@
     {
       "kind": "evidence",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/material-decisions.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
     }
   ],
   "schema_version": 3,

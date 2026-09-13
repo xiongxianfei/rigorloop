@@ -1,0 +1,135 @@
+{
+  "assessment_scope": "Formal isolated Design Review of the complete affected system, engineering and validation models plus exact new-profile-only amendments in published-skill-first-repository-simplification.md and its test spec. Upstream proposal-review f7234887a6dcae08b003ac7f80b1f907383b60bb7bfd8d89fd16b0291334db42 remains direction authority. Unchanged Assessment/Packaging/Release/CLI dependencies are selected for affected interfaces. Inline scenarios are included in model subjects; historical example/boundary/proof blocks are retained, not approved as new behavior or migrated.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: parallel-maintenance-allocation-scope. Severity: major. Scope: cross-artifact. Affected artifact IDs: validation, published-skill-first-repository-simplification, published-skill-first-repository-simplification.test. Owning stage: design. Location: Validation Proof quality/maintenance, Source disposition, VAL-SR21/22; retained spec Unified Validation applicability and R14/R19/R22; retained test-spec Necessary-design cleanup applicability and associated T1/T10/T13/T14. Both old applicability notices limit relaxed ledger/dual-proof/measurement procedures to earlier exact populations. New full-inventory cleanup extends beyond those populations but supplies no new exact maintenance map. An inherited historical exception cannot discharge current applicable clauses.",
+      "id": "parallel-maintenance-allocation-scope",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Add a bounded current new-profile maintenance allocation at Validation and reconcile retained spec/test-spec current applicability to it. Identify current automated test/check/fixture/consumer population, exact affected R14/R17–20/R22 and any R15/R25 implications and corresponding proof/acceptance instructions. Preserve protected failure mapping, unknown-protection stop, established retained detection, recovery and actual measured claims; explicitly state which procedural ledger/mandatory old-run/measurement prescriptions change. Retain unselected clauses, original historical IDs/rows/evidence and separate earlier maps. Do not invent new mandatory inventory ledgers or weaken required freshness. No runtime test removal is authorized by the notice.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "design-correction-check",
+            "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+          }
+        ],
+        "rationale": "Current Validation maintenance allocation names the new inventory, exact legacy clauses and related test/acceptance prescriptions; both retained notices select it explicitly. Protection, uncertainty stops, prior maps, historical blocks/IDs, R15/R16 and R21 remain intact. All five author check subjects match. This resolves the cross-artifact scope conflict without weakening proof or extending original deletion authority."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:9db92e15e3b990c06b346dd8d7985f766dec49d6bbec582f37d10193d60e8ad9",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:6c40df6ee403e25587e7fe6726018eae2d5432a7aaa98cf96c967bcba8f04e0c",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:b47aa4fe0e14bd8810afe2ee98cea13eb7b34c08a3dff55f2b347ee73c3f439d",
+          "path": "specs/published-skill-first-repository-simplification.test.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review",
+  "independence_basis": "Separate authorized nonauthor reviewer inspected the three complete changed models and actual diff, approved proposal, inline scenarios and scoped retained Assessment/Packaging/Release/CLI and legacy maintenance contracts. Reviewer did not author the package, its source map or correction.",
+  "judgment": "approved",
+  "limitations": [
+    "Design approval establishes the five-document contract and affected shared-owner coherence, not completed case isolation or proven test redundancy. Delivery must reconcile actual current inventory and allocate retained-protection, graph, resource, discovery and product-consumer proof before implementation.",
+    "No runtime tests or expensive CI rerun were performed for this documentation-only assessment. Author structure/prose/whitespace proof applies to exact current five-document subjects; semantic judgment is independent of those checks.",
+    "Only scoped new-profile legacy notices are current amendment members; unchanged historical requirement/boundary/example/proof material retains original meaning and prior population applicability. No second ledger, benchmark or historical fixture deletion is inferred.",
+    "Recorded proposal approval is preserved byte-for-byte with original subjects; this review explicitly assesses continued direction reliance and supplies the new Design package basis. Reviewer changed only review/finding evidence and applicability; route owns subsequent activity and planning handoff."
+  ],
+  "rationale": [
+    "1. Realization — pass: VAL-SR19/20 distinguish request identity/eligibility from physical execution identity. Canonical family, resolved input/case/configuration/candidate/output identity, observation and preparation establish equivalence; unknown or conflicting claims remain separate or reject. Normalization after scope expansion preserves both consumer graphs and physical prerequisites, rejects cycles and avoids unioning a boundary gate back into its focused execution.",
+    "2. Constraints — pass: one catalog/internal executor remains, no cache or new public runner. Different candidates, post-mutation observations and mandated freshness prevent sharing; failures remain nonzero and blocked consumers remain visibly unsatisfied. Shared durations count once. Existing per-task budgets, process isolation, timeout/interrupt cleanup and direct-entrypoint completeness remain required.",
+    "3. Scope preservation — pass: VAL-SR21/22 extend the actual remaining repository-owned automated population across direct, selected, main, broad and release callers. Delivery must reconcile discovery, additions and omissions in bounded groups. Unknown serial safety is only a migration state; irreducible required conflicts block completion rather than become permanent exemptions or unjustified deletion. Ordered internal scenarios and resource-limited scheduling remain valid.",
+    "4. Boundaries — pass: System and Engineering delegate the new rules to Validation while preserving Skill/CLI product authority. Assessment RC-SR15 retains applicability/freshness and independent approval. Packaging retains real candidate/output identity and build dependencies; Release retains preparation, exact authorization and public fresh observations. CLI record semantics are unchanged: new ephemeral execution references do not add judgment or stored schema authority. Domain obligations and actual product-consumer proof remain independently protected.",
+    "5. Decisions — pass: VAL-DEC06/07 preserve context, alternatives and consequences for phase sharing and full-population isolation. Current maintenance allocation explicitly selects its new automated inventory and necessary executor/selector/fixture/reader population without enlarging historical cache/source deletion maps. Historical TEST/VAL/System decisions, earlier applicability maps and original adoption provenance retain their identities and scopes.",
+    "6. Shared contracts — pass after correction: Validation Current maintenance allocation maps R14/R17–20/R22/R25 and matching unnumbered/acceptance/test-spec prescriptions to retained protection and current Delivery/evidence. No new ledger or compulsory repeated exhaustive old-path/measurement programme is imposed. Protected failures, unknown-protection stops, assessed retained detection, recovery and true measured claims remain. R15/R16 single-owner admission, R21 publication and all unselected populations remain with their prior owners. Both retained notices point to this exact map, resolving the recorded scope gap without copying a competing policy.",
+    "7. Acceptance/feasibility — pass: local and integrated scenarios cover shared aliases with failed phase gate, same argv with changed candidate, missing discovery, lost distinct negative protection, isolated temporary identities, budget1 and irreducible resources. Python hooks/receipts and conditional native Node selection are grounded in existing mechanisms without asserting every suite is already safe. Real loader/hook/receipt integration must remain when exhaustive comparisons change. These are sufficient inputs to Delivery rather than mandatory triple full-suite replay per invocation.",
+    "8. Migration and legacy classification — pass after correction: exact spec/test-spec diffs add only the current scoped applicability notice and blank lines separating existing header comments. Original R/T/AC/PRF/BND/INT rows, examples, command histories and input judgments are unchanged. These edits are explicitly new-profile-only for the named current inventory; they neither modify historical boundary serialization nor migrate the whole legacy contract. Current map discharges only the selected procedures, not their distinct protection. Historical ledger fixture data is not a deletion target by filename. Both older population maps remain separate. All five-document author structure/prose checks are passed evidence and their subjects independently match current bytes.",
+    "Proposal reliance — explicitly current for its original direction scope: the proposal body and its approved user goals are unchanged; current source feasibility still uses the same executor/catalog mechanisms. Expected downstream Design evolution of model subjects does not change the previously assessed initial direction or retarget its evidence. As the same independent proposal assessor, I affirm its approved challenge, goals, scope, no-cache/freshness limits and Design feasibility remain applicable. This exact new Design assessment supplies current package coherence; the old proposal review is not misrepresented as approval of changed model details.",
+    "Finding disposition and handoff — parallel-maintenance-allocation-scope is resolved by the explicit current owner map and two bounded notices. First-pass finding facts and subjects remain represented. No additional material issue found on the corrected whole package and interactions. Return approved package to route for authorized Delivery planning; no runtime implementation, test deletion, model adoption, Verify or external action is approved by this review."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:83063498c53be82b8733a653530ad213d615c8061b47c31920f1b8e073e6f6a9",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:a01a90593910ff8e00437d8de3d73b5418bee9e698c85f1990916f7276752e83",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:99f346d1eafb857c273306c56546742321bb2883330cf4b9cc055fc2dfb6b153",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
+      "path": "docs/proposals/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:f7234887a6dcae08b003ac7f80b1f907383b60bb7bfd8d89fd16b0291334db42",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:1df36b276ed3a74d10e77e5f65564b3253b28db5472f3f0af758c9c2d12d0cb0",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:fe848ca3b53efd50f060157a225157a5003462d1d8bca2b08368a6ab424f0cab",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:a73d0c4232811df739ce9bab2e3bb75115f82f4ed4ecc02bf9b45d19475b97a9",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:b4d942ab3289a61ba8b3f7c3bd3452c7bd75c22218d7e0b9278362f73a33e96d",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:088626d15d98db155d2ecdb581411fec20e8bc06db51e0b2a45a3b5376904de9",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:fe211297da8533a8620535abee9b8d47fd512da99ac7e9f7fd08878606ff340b",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:5b08ce71c66a0519d7384f85f1165ad1bec05ea27d2c2f0749aeafff5311027a",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:e6454aa501a7db02051a3e2df6f53ac5013cb285bfb1d786429bb8e587920ec5",
+      "path": "specs/published-skill-first-repository-simplification.test.md"
+    }
+  ],
+  "summary": "Exact five-document Design package approved after correction: coherent cross-phase execution sharing and complete remaining-case independence retain protection, freshness and honest consumer eligibility; the current maintenance map explicitly reconciles both retained legacy notices. No unresolved finding remains.",
+  "target": "design"
+}

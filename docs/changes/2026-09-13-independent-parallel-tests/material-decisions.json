@@ -1,0 +1,61 @@
+{
+  "body": "Validation Current maintenance allocation explicitly maps current inventory R14/R17–20/R22/R25 and corresponding unnumbered/test-spec prescriptions to preserved protection and existing Delivery/evidence surfaces. Added scoped notices in the retained mixed spec and test spec. New-profile-only amendment, historical requirements/boundary/proof IDs and previous scopes unchanged. R15/R16 and R21 unchanged. Adoption requires reviewed implementation and successful current Verify.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "decisions": [
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "execution-and-case-refinement",
+      "rationale": "Preserve the three product/realization owners while resolving repeated equivalent execution and the remaining serial case population under the approved proposal.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:83063498c53be82b8733a653530ad213d615c8061b47c31920f1b8e073e6f6a9",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:a01a90593910ff8e00437d8de3d73b5418bee9e698c85f1990916f7276752e83",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:9db92e15e3b990c06b346dd8d7985f766dec49d6bbec582f37d10193d60e8ad9",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "current-maintenance-allocation",
+      "rationale": "Correct Design Review finding parallel-maintenance-allocation-scope without expanding historical exceptions implicitly.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:83063498c53be82b8733a653530ad213d615c8061b47c31920f1b8e073e6f6a9",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:a01a90593910ff8e00437d8de3d73b5418bee9e698c85f1990916f7276752e83",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:99f346d1eafb857c273306c56546742321bb2883330cf4b9cc055fc2dfb6b153",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:5b08ce71c66a0519d7384f85f1165ad1bec05ea27d2c2f0749aeafff5311027a",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:e6454aa501a7db02051a3e2df6f53ac5013cb285bfb1d786429bb8e587920ec5",
+          "path": "specs/published-skill-first-repository-simplification.test.md"
+        }
+      ]
+    }
+  ],
+  "schema_version": 3
+}
