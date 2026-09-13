@@ -1,9 +1,11 @@
 """Candidate boundary proof (REL-SR-01–09, 18–19, 22–24)."""
 import hashlib
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from release_candidate import (
     CANDIDATE_CHECKS, CandidateError, derive_release_inputs, profile_text, file_identity,
@@ -228,6 +230,21 @@ class ReleaseCandidateTests(unittest.TestCase):
 
 
 class ReleaseCandidateIntegrationTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix='package-case-')
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        # npm's own files and CLI diagnostics belong to this case, including
+        # real packed installs. No validation result is retained or reused.
+        environment = patch.dict(os.environ, {
+            'npm_config_cache': str(root/'npm'),
+            'npm_config_audit': 'false', 'npm_config_fund': 'false',
+            'npm_config_update_notifier': 'false',
+            'RIGORLOOP_LOG_DIR': str(root/'logs'),
+        })
+        environment.start()
+        self.addCleanup(environment.stop)
+
     def test_ci_candidate_preserves_published_tag_without_release_eligibility(self):
         import shutil
         import subprocess

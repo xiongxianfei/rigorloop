@@ -966,7 +966,7 @@ class ValidationSelectionTests(unittest.TestCase):
         with (workspace/'scripts/validation_selection.py').open('a') as catalog:
             catalog.write("\nfor key in _CASE_ASSESSMENTS:\n"
                           " entry = CHECK_CATALOG[key]\n"
-                          " CHECK_CATALOG[key] = replace(entry,parallel_safe=False,constraints=None)\n")
+                          " CHECK_CATALOG[key] = replace(entry,constraints=replace(entry.constraints,unit='command',basis=command_basis(entry.command_template,'command')))\n")
         return workspace
 
     def make_broad_smoke_workspace(
@@ -1427,9 +1427,21 @@ raise SystemExit({exit_code})
     def test_catalog_records_audited_commands_and_initial_case_population(self) -> None:
         from validation_selection import is_parallel_safe_check
 
-        expected_parallel_safe = {"skills.regression", "adapters.regression"} | {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
+        expected_parallel_safe = {"requirement_fidelity.spec_reads"} | {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
 
         expected_cases = {
+            'skills.regression',
+            'adapters.regression',
+            'adapters.drift',
+            'adapters.validate',
+            'adapters.full_regression',
+            'release_transaction.regression',
+            'npm_package_publication.test',
+            'boundary_first.reference_regression',
+            'boundary_first.regression',
+            'documentation_prose.regression',
+            'markdown_readability.regression',
+            'guide_system.regression',
             'artifact_lifecycle.regression','change_metadata.regression','selector.regression','validation_execution.regression',
         }
         self.assertEqual({key for key,entry in CHECK_CATALOG.items()
@@ -4150,6 +4162,7 @@ print("SECOND_STDOUT")
         workspace = self.make_broad_smoke_workspace(
             failing_children={
                 "scripts/test-skill-validator.py",
+                "scripts/validate-artifact-lifecycle.py",
                 "scripts/test-adapter-distribution.py",
             }
         )
@@ -4171,6 +4184,7 @@ print("SECOND_STDOUT")
         self.assertLess(first_failure, second_failure)
         self.assertIn("Execution phase:\n" + ("parallel" if allocated_workers(2)>1 else "sequential"), output)
         self.assertIn("Execution phase:\nsequential", output)
+        self.assertIn("[FAIL] broad_smoke.artifact_lifecycle.scoped", output)
         self.assertIn("Check ID:\nskills.regression", output)
         self.assertIn("Check ID:\nadapters.full_regression", output)
         self.assertIn("Captured output:", output)
@@ -4295,7 +4309,7 @@ os.kill(os.getppid(), signal.SIGKILL)
             for child in evidence["parallel"]["child_durations"]
         }
         self.assertEqual(child_phases["skills.validate"], "parallel" if allocated_workers(3)>1 else "sequential")
-        self.assertEqual(child_phases["adapters.full_regression"], "sequential")
+        self.assertEqual(child_phases["adapters.full_regression"], "parallel" if allocated_workers(3)>1 else "sequential")
         self.assertIn("delta", evidence)
 
 
