@@ -8,9 +8,22 @@ Model validation contract: model-document-v1
 
 <Responsibility, direction and stable owning-change pointer when governed.>
 
+## Architecture Overview
+
+<Required concise graph: model boundary, principal responsibilities, external products/interfaces, labeled relationships and links to detailed owners.>
+
+### Supporting-view decisions
+
+| View | Necessary and why | Owning detail |
+| --- | --- | --- |
+| Context | <Reasoned decision.> | <Draw if necessary; link to owned detail.> |
+| Building Block | <Reasoned decision.> | <Draw if necessary; link to owned detail.> |
+| Runtime | <Reasoned decision.> | <Draw if necessary; link to owned detail.> |
+| Deployment | <Reasoned decision.> | <Draw if necessary; link to owned detail.> |
+
 ## Context and Scope
 
-<External boundaries, inputs/outputs, owner relationships, scope and non-goals.>
+<External boundaries, inputs/outputs, owner relationships, scope and non-goals. Draw the Context View when necessary.>
 
 ## Architecture Constraints
 
@@ -28,15 +41,15 @@ Model validation contract: model-document-v1
 
 ## Building Block View
 
-<Coherent local responsibilities and references to shared-contract owners.>
+<Coherent local responsibilities and references to shared-contract owners. Draw the Building Block View when necessary.>
 
 ## Runtime View
 
-<Representative normal and failure/recovery flows, including affected interactions.>
+<Representative normal and failure/recovery flows, including affected interactions. Draw the Runtime View when necessary.>
 
 ## Deployment View
 
-<Relevant environment, packaging and trust boundaries, or bounded non-applicability.>
+<Relevant environment, packaging and trust boundaries, or bounded non-applicability. Draw the Deployment View when necessary.>
 
 ## Crosscutting Concepts
 

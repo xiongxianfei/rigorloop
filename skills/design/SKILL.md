@@ -30,7 +30,7 @@ Resolve project authority and existing exact targets first. For a new model, the
 ## Reconciliation procedure
 
 1. Read the approved direction, affected owners and relied-on evidence. Explain required observable outcomes, invariants, interfaces, compatibility, authority, failures, retries, recovery and prohibited side effects where material. Keep stable requirement identities.
-2. Reconcile behavior with technical realization: structure, dependencies, operational flows and constraints. A feasibility issue that materially changes an approved product goal returns to its direction owner with evidence and alternatives. Implementation convenience cannot authorize weakening that goal.
+2. Reconcile behavior with technical realization: structure, dependencies, operational flows and constraints. For each living model, draw an Architecture Overview identifying owned responsibilities, external inputs/outputs and meaningful relationships. Evaluate Context, Building Block, Runtime and Deployment views with reasons, and draw each necessary view; keep every material overview element linked to its detailed owner. A feasibility issue that materially changes an approved product goal returns to its direction owner with evidence and alternatives. Implementation convenience cannot authorize weakening that goal.
 3. Identify changed producers, consumers, shared assumptions and system-wide obligations. Reconcile each affected relationship or explain an evidence-backed unaffected disposition. Load only relevant owners and interactions.
 4. Explain how important claims can be assessed. Use walkthroughs, counterexamples and targeted feasibility evidence proportional to uncertainty. Expose assumptions and unresolved decisions. Structural validation alone is neither credibility nor approval.
 5. Define representative realization conditions and observable expected outcomes, including integrated properties that local checks cannot establish. Design owns intent and observation boundaries; Delivery allocates concrete checks, commands, milestones and evidence; implementation supplies fixtures/assertions. Actual results stay in evidence records.
@@ -53,11 +53,12 @@ A pre-implementation verification-allocation gap routes to `plan`. Historical co
 
 ## Generated Markdown readability
 
-Write normal Markdown paragraphs with complete sentences. Do not split a sentence across physical source lines merely for wrapping. Use stable IDs and tables for repeated mappings. Diagrams are optional and should clarify the claim. Do not require manual-proof contracts from readability guidance.
+Write normal Markdown paragraphs with complete sentences. Do not split a sentence across physical source lines merely for wrapping. Use stable IDs and tables for repeated mappings. Living models require the overview and every supporting view judged necessary; other diagrams are optional. Diagrams clarify claims and never replace requirements or independent assessment. Do not require manual-proof contracts from readability guidance.
 
 ## Resource map
 
 - READ `references/model-authoring.md` when creating or revising a living model or its examples.
+- READ `references/architecture-view-examples.md` when constructing or revising a living-model overview or evaluating supporting views.
 - READ `references/technical-design.md` when significant structure, interfaces, runtime, deployment, trust or quality choices need explanation.
 - READ `references/system-composition.md` when several owners, a shared contract or a system-wide claim is affected.
 - READ `references/legacy-source-reconciliation.md` when amending an unmigrated source, reconciling invocation coexistence or performing an explicitly approved authority migration.

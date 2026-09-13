@@ -536,6 +536,110 @@
         }
       ],
       "summary": "Registered work m1 through m7 correspond in order to plan milestones M1 through M7. No existing work replaced, no implementation performed and no completion claim. Plan body remains stable intent; mutable work lives only in the change record."
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "id": "m1-portable-view-semantic-exercise",
+      "procedure": "Generate isolated Codex/Claude candidate archives with existing build-adapters.py; inspect actual ZIP members and compare selected resource/skeleton bytes to source; independently walk both packaged synthetic excerpts and six negative contrasts against packaged author/reviewer rules; record exact source and candidate identities. No paid/runtime agent or whole-suite test execution.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:a83862ec20aaa6f2c7cfab96dfd427e88ed73960d1d777e7e9eab5a39d33ad1d",
+          "path": "skills/design/assets/design-skeleton.md"
+        },
+        {
+          "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+          "path": "skills/design/references/technical-design.md"
+        },
+        {
+          "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+          "path": "skills/design/references/system-composition.md"
+        },
+        {
+          "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+          "path": "skills/design/references/architecture-view-examples.md"
+        },
+        {
+          "identity": "sha256:6243a5d915a962a460f5e9deb4dc776f7b56c9977601206557ea931a3691eb3a",
+          "path": "scripts/build-adapters.py"
+        },
+        {
+          "identity": "sha256:6ceeb57fec25b03b4d3e1edc8941e35bdb280a105ea83a79fae3cc7b7cdd4697",
+          "path": "scripts/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:3d94ffcb20e7a183d8285550aba80f3c95c5b54a08ceab4d6bf3e19f044267e1",
+          "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+        }
+      ],
+      "summary": "Independent TG-01 semantic exercise passed for the exact candidate-packaged guidance and explicitly excerpted synthetic examples. Reviewer proposal-reviewer did not author the skill changes or examples. This is bounded semantic and package-content evidence, not M1 Code Review, archive-wide parity certification, target-agent success, runtime validation or final adoption.\n\nActual candidate generation: python scripts/build-adapters.py --output-dir /tmp/reviewer-m1-semantic-candidates exited0. Generated Claude v0.5.1 archive sha256:9089730cfdc8f8b20be3e2ac3f14bcc5eea09ae5f7737ba86be0c267f52dfcf1 and Codex v0.5.1 archive sha256:e1b00ed37f5646acc379bed7bd4c53020172df315d53e4ada3fa10a968eff4e1. Inspected seven members in each: design and design-review SKILL.md; design/assets/design-skeleton.md; design/references/model-authoring.md, technical-design.md, system-composition.md, architecture-view-examples.md. Resource/skeleton bytes exactly match their registered canonical subjects. Packaged entrypoint bodies contain the new required-overview/necessary-view rules, example-load trigger and independent review criterion. No internal repository Design was needed to understand this exercise. Broader transitive package integrity remains subject to the author regression suite.\n\nComposed sample assessment: assume documents governed by a product contract, caller-requested scope and an independent acceptance owner. Its emitted excerpt places Criteria/Catalog/Selection/Executor/Results inside Validation, keeps contract/caller/assessor external, labels guidance separately from executable information flow and resolves detailed ownership through local context/building-block/runtime links. Context and structural detail are necessary because authority and internal responsibilities differ; runtime is necessary because failed prerequisite must prevent dependent work. The supplied runtime graph shows invalid preflight rejecting before launch and prerequisite failure producing an explicit not-started account. No passing result grants acceptance. Deployment is justifiably unselected for this abstract excerpt, which declares no executable placement and explicitly requires reassessment for an actual process implementation. This is not approval of an unspecified deployed runner.\n\nLeaf sample assessment: assume a pure function trims only outer ASCII spaces, preserves interior characters, rejects non-strings and has no external state. Trace input '  a b  ' to 'a b'; trace a non-string to rejection without transformation; neither outcome requires storage or authorization inside the function. The overview shows input/type boundary and return/error responsibility, while the caller owns storage and presentation. Four unnecessary separate-view decisions are credible for this exact deterministic one-responsibility scope; no state/retry/concurrency/deployment protocol is omitted. Locale dependence, shared state or asynchronous interaction would defeat these dispositions and require reassessment. This accepts an explicit excerpt, not an incomplete full model disguised as conformant.\n\nCounterexample exercise, applying only the packaged rules to the example assumptions: (1) omit Runtime detail while keeping Runtime necessary and prerequisite failure: reject, because overview cannot explain ordered failure/no-launch obligations; supply the owned runtime view. (2) add an unowned store/service to the overview: reject missing responsibility/detail authority, requiring an actual owner or removal of the unsupported element. (3) put approve-change in Executor: reject because evidence production now usurps external assessment. (4) copy the parent detailed rules into each child as separate authority: reject and retain one detailed owner with references. (5) let Context and Runtime assign different publication initiators: reject the authority contradiction; relabeling cannot invent permission. (6) four empty leaf diagrams do not cure absent necessity reasoning; reject the filler and retain reasoned decisions plus the required overview. These are reviewer semantic contrasts, not executable defect tests or claims of target-agent detection.\n\nThe candidate skeleton provides a required overview and all four reason/location fields without fabricating deployed nodes. Authoring, technical and composition guidance consistently require every necessary supporting diagram, one detailed owner and exact changed-example assessment. The examples explicitly disclaim complete-model conformance, use synthetic project assumptions, and remain portable. No material semantic finding identified in this exercise. Relevant later guidance, example, model-boundary or package changes require affected reassessment; current evidence cannot approve future M2 model views or replace full M1 regression/Code Review. No Mermaid rendering claim is made by this reviewer exercise."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "implement"
+      },
+      "id": "m1-implementation",
+      "procedure": "python scripts/test-skill-validator.py (358 passed,18.733s); python scripts/validate-skills.py (19 skills); python scripts/test-adapter-distribution.py (154 passed,432.916s); python scripts/test-skill-validator.py UnifiedDesignResourceTests (5 passed); python scripts/validate-boundary-first.py --check; documentation prose enforce for seven changed skill Markdown files; five Mermaid example renders; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+          "path": "skills/design/references/model-authoring.md"
+        },
+        {
+          "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+          "path": "skills/design/references/technical-design.md"
+        },
+        {
+          "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+          "path": "skills/design/references/system-composition.md"
+        },
+        {
+          "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+          "path": "skills/design/references/architecture-view-examples.md"
+        },
+        {
+          "identity": "sha256:a83862ec20aaa6f2c7cfab96dfd427e88ed73960d1d777e7e9eab5a39d33ad1d",
+          "path": "skills/design/assets/design-skeleton.md"
+        },
+        {
+          "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:14cea6e986a78daf8daa1d76b01291486a340d1a8129c0a0377c92da05e8b61b",
+          "path": "scripts/skill_validation.py"
+        },
+        {
+          "identity": "sha256:cefecf13c52e26d0523d779c188b4739ddbb418fcb20fc33e8b7117bc5b85d91",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:0d92d71e999dcbe10a755ef8988301bff7d0a0fe4dbdc1ec47ab4f69ffb4e509",
+          "path": "scripts/test-adapter-distribution.py"
+        }
+      ],
+      "summary": "M1 implements required overview and reasoned/drawn necessary supporting views in portable author/reviewer guidance, skeleton and indexed examples. New archive-resource parity assertion failed before missing example implementation, then full package tests passed. Existing resource catalog now includes example; missing-each and unknown-resource negatives remain. One old readability assertion required retired optional-diagram wording; updated only Design expectation and reran full suite. Selector initially blocked untracked example, passed after staging; selected regressions covered by complete suites. Independent TG-01 package-only semantic evidence recorded separately. Constitution/AGENTS/CLI workflow context are unaffected: they already delegate authoring conventions to Design and recording/permission mechanics did not change. Shared projections and retained legacy aids are unchanged; new content is skill-local, not copied policy. No deployment/publication or deterministic agent-quality claim."
     }
   ],
   "schema_version": 3

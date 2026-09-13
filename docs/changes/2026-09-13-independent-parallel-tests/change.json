@@ -1,21 +1,21 @@
 {
   "activity": {
     "owner": {
-      "id": "root",
-      "role": "implement"
+      "id": "proposal-reviewer",
+      "role": "review"
     },
-    "reason": "Exact seven-milestone Delivery plan independently approved and initialized. M1 portable architecture authoring/review guidance is the first implementation scope; remaining milestones and final gates remain required.",
-    "stage": "implement",
+    "reason": "M1 complete implementation/proof handoff; independent Code Review required before milestone closure or M2.",
+    "stage": "code-review",
     "status": "ready"
   },
   "applicability": [
     {
       "actor": {
-        "id": "root",
-        "role": "proposal"
+        "id": "proposal-reviewer",
+        "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json",
-      "reason": "Exact new proposal and inspected merged-main basis; author checks only, without approval or implementation claims.",
+      "reason": "Exact candidate guidance and examples independently inspected with portable synthetic assumptions; scope is TG-01 semantic/content evidence only, before full milestone review.",
       "value": "current"
     },
     {
@@ -188,7 +188,7 @@
         "DES-SR-18",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m2",
