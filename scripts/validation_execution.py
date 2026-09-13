@@ -4,7 +4,7 @@ No public runner CLI, result cache, lifecycle transition or publication authorit
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 import ctypes
 import codecs
 import json
@@ -461,7 +461,7 @@ def command_display(args):
     return shlex.join(args)
 
 
-def print_summary(results):
+def print_summary(results, *, boundary_required=False):
     print('Selected CI check summary:')
     print('check ID | status | exit reason | elapsed')
     for r in results:
@@ -475,6 +475,13 @@ def print_summary(results):
     print('Selected CI phase timing summary:')
     for phase in sorted(totals):
         print(f'{phase} | {totals[phase]:.2f}s')
+    if boundary_required:
+        if any(r.status != 'passed' and r.plan.phase in {'preflight','focused'} for r in results):
+            print('Boundary scope: unsuccessful; prerequisite scope failed, including during diagnostic execution.')
+        elif any(r.status != 'passed' for r in results):
+            print('Boundary scope: unsuccessful; required work failed or is incomplete.')
+        else:
+            print('Boundary scope: passed.')
 
 
 def print_result_output(results, *, verbose):
@@ -765,25 +772,48 @@ def compose_mode(mode, scratch, *, base='', head='', skip_diff_scoped=False):
 
 
 def expand_groups(plans, scratch, *, diagnostic=False):
-    expanded = []
-    aliases = {}
-    for plan in plans:
+    """Compose canonical IDs once, then apply the focused/boundary gate."""
+    expanded, groups = [], {}
+    for original in plans:
+        plan = replace(original)
         if plan.check_id != 'broad_smoke.repo':
             expanded.append(plan)
             continue
         children = compose_mode('broad-smoke',scratch,skip_diff_scoped=True)
-        aliases[plan.check_id] = tuple(child.check_id for child in children)
-        for child in children:
-            child.phase = plan.phase
-            if diagnostic:
-                child.after = plan.dependencies
-            else:
-                child.dependencies = tuple(dict.fromkeys((*child.dependencies,*plan.dependencies)))
+        groups[plan.check_id] = tuple(child.check_id for child in children)
+        for original_child in children:
+            child = replace(original_child, phase=plan.phase)
+            child.dependencies = tuple(dict.fromkeys((*child.dependencies,*plan.dependencies)))
+            child.after = tuple(dict.fromkeys((*child.after,*plan.after)))
             child.reason = '; '.join(x for x in (plan.reason,child.reason) if x)
-        expanded.extend(children)
+            expanded.append(child)
+    retained = {}
     for plan in expanded:
-        plan.dependencies = tuple(dict.fromkeys(d for dependency in plan.dependencies for d in aliases.get(dependency,(dependency,))))
-    return expanded
+        for field in ('dependencies','after'):
+            setattr(plan,field,tuple(dict.fromkeys(d for key in getattr(plan,field) for d in groups.get(key,(key,)))))
+        if plan.phase not in {'preflight','focused','boundary'}:
+            raise ValueError(f'unknown phase: {plan.phase}')
+        previous = retained.get(plan.check_id)
+        if previous is None:
+            retained[plan.check_id] = plan
+            continue
+        # Same ID is an authored contract, never inferred command equivalence.
+        for field in ('args','parallel_safe','demand','dependencies','after','case_receipt','case_id','rerun'):
+            if type(getattr(previous,field)) is not type(getattr(plan,field)) or getattr(previous,field) != getattr(plan,field):
+                raise ValueError(f'conflicting {field} for canonical check {plan.check_id}')
+        previous.reason = '; '.join(dict.fromkeys(x for x in (previous.reason,plan.reason) if x)) or None
+        previous.phase = min((previous.phase,plan.phase),key=('preflight','focused','boundary').index)
+    result = list(retained.values())
+    preflight = [p.check_id for p in result if p.phase == 'preflight']
+    focused = [p.check_id for p in result if p.phase == 'focused']
+    for plan in result:
+        if plan.phase == 'focused':
+            plan.dependencies = tuple(dict.fromkeys((*plan.dependencies,*preflight)))
+        elif plan.phase == 'boundary':
+            plan.dependencies = tuple(dict.fromkeys((*plan.dependencies,*preflight)))
+            field = 'after' if diagnostic else 'dependencies'
+            setattr(plan,field,tuple(dict.fromkeys((*getattr(plan,field),*focused))))
+    return result
 
 
 def _write_mode_result(results, *, mode, jobs, elapsed, code, skip_diff_scoped):
@@ -1003,15 +1033,6 @@ def selected_main(argv):
             )
         )
 
-    # Phases are dependencies, not labels: cheap failures block boundary work.
-    prior = [p.check_id for p in plans if p.phase == "preflight"]
-    focused = [p.check_id for p in plans if p.phase == "focused"]
-    for plan in plans:
-        if plan.phase == "focused":
-            plan.dependencies = tuple(dict.fromkeys((*plan.dependencies, *prior)))
-        elif plan.phase == "boundary":
-            plan.dependencies = tuple(dict.fromkeys((*plan.dependencies, *prior, *focused)))
-    validate_plans(plans, jobs=jobs)
     for plan in plans:
         if not plan.parallel_safe:
             print(f"Serial: {plan.check_id}: " + (CHECK_CATALOG[plan.check_id].constraints.isolation if CHECK_CATALOG[plan.check_id].constraints else "isolation/nested demand not yet assessed"))
@@ -1022,6 +1043,7 @@ def selected_main(argv):
         if plan.check_id != "broad_smoke.repo":
             print("+ " + command_display(plan.args))
 
+    boundary_required = any(p.phase == "boundary" for p in plans)
     with tempfile.TemporaryDirectory(prefix="rigorloop-validation-") as temporary:
         plans = expand_groups(plans,Path(temporary),diagnostic=diagnostic)
         plans = expand_cases(plans,Path(temporary),jobs=jobs,timeout=timeout_seconds)
@@ -1033,7 +1055,7 @@ def selected_main(argv):
             scratch=Path(temporary),
         )
 
-        print_summary(results)
+        print_summary(results, boundary_required=boundary_required)
         print_result_output(results, verbose=verbose)
 
         failed_results = [result for result in results if result.status != "passed"]

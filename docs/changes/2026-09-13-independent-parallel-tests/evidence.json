@@ -836,6 +836,54 @@
         }
       ],
       "summary": "M2 delivers supporting-view assessments and necessary diagrams for all12 models under authoring ownership. Existing detailed graphs remain single authored sources and required hierarchy/Validation views are preserved. First-pass finding about force/safety was corrected before acceptance and independently resolved. Unchanged execution/product contracts retain their owners; no published/runtime changes in this milestone. This is documentation implementation evidence for distinct Code Review, not milestone closure."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "implement"
+      },
+      "id": "m3-implementation",
+      "procedure": "Named M3 direct commands; explicit CI jobs=2; real normal/single/reversed full-population observation via existing internal executor; exact commands, case IDs and outcomes in m3-validation-evidence.md. Refreshed composition and wrapper/ledger consumer regressions, metadata and whitespace validation.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d6a9821abfe6b6863a3ae335ca5cbcd0d45f1e36d30c9eb9293b671b2a363933",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:70fbeaf2c58254f36d5b20c632f43df639040527f73cccd45bc9d3eabac1c968",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:a725c90405cdc7512b92560dd01120ebc81c4701dbd76fefcb7b569f3fd3d2d8",
+          "path": "scripts/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:7ff4277ed8aa58c3d7298f0e3e346b68368e490a94163a0fb558db049dd68c9f",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:2da1cb956074e8a3e28a35692a1b3d67ec80dae337ff5bb07078f0284bd5c28f",
+          "path": "scripts/test-artifact-lifecycle-validator.py"
+        },
+        {
+          "identity": "sha256:1c584c2b30e46afba61f06502da74a11801b394333061e052cf1ebcd20e2c01e",
+          "path": "scripts/test-change-metadata-validator.py"
+        },
+        {
+          "identity": "sha256:56fc61dfc57f543b0f106b079ae339a44da9ed383d90b77cdb928b682e87afb2",
+          "path": "scripts/test-adapter-distribution.py"
+        },
+        {
+          "identity": "sha256:b0e1816753865cdee8ac3cb2514b7b3bb96584d9098ca0cfc9745463ec80b999",
+          "path": "scripts/test-retirement-ledger.py"
+        },
+        {
+          "identity": "sha256:9d2d32f210efecd153b42a8a698ec37f1361e59b51043e5b608feda9edc08656",
+          "path": "docs/changes/2026-09-13-independent-parallel-tests/m3-validation-evidence.md"
+        }
+      ],
+      "summary": "Consolidated 83 to 54 catalog entries with unchanged 12 broad/27 main memberships; canonical F then B minus F with preserved failure and preparation. Removed 3 recurring full-suite comparisons, retaining focused mechanism/real wrapper proof; executor 38 to 40 cases. Full independent populations: executor40, selector163, lifecycle108, metadata7, all three observations pass. Executor cases now bounded; no cache, runtime equivalence, historical record rewrite or product/permission change. All initial failures and timing limitations recorded. Implementation evidence only; M3 independent Code Review required."
     }
   ],
   "schema_version": 3

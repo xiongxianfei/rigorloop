@@ -3722,7 +3722,7 @@ release_gate:
                                     cwd=root, env=env, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
             plans = {p['id']:p for p in json.loads(result.stdout)}
-            self.assertEqual(plans['broad_smoke.adapters.regression']['args'],
+            self.assertEqual(plans['adapters.full_regression']['args'],
                              ['python','scripts/test-adapter-distribution.py'])
             self.assertEqual(plans['broad_smoke.adapters.build_archives']['args'],
                              ['python','scripts/build-adapters.py','--version','v0.1.3',

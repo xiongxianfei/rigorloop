@@ -15,15 +15,60 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from retirement_ledger import load_ledger, validate_ledger  # noqa: E402
-from validation_selection import CHECK_CATALOG, MODE_CHECK_IDS  # noqa: E402
+from validation_selection import CHECK_CATALOG  # noqa: E402
 
-# Workflow's scoped stored-format retirement keeps the archival ledger bytes.
-# Project the one adopted catalog disposition back to its historical inventory
-# slot; this does not claim that legacy acceptance and v2 rejection are equivalent.
-# Current behavior has separate proof in record-retirement.test.js. Distribution
-# retires the mirror checks; Validation retires the cache check. Their original
-# ledger identities remain historical and are not runnable catalog entries.
-HISTORICAL_CHECK_IDS = (set(CHECK_CATALOG) - {"record_retirement.regression", "validation_execution.regression"} - {key for ids in MODE_CHECK_IDS.values() for key in ids}) | {"compact_contract.canonical", "skills.generation_regression", "skills.drift", "validation_cache.regression"}
+# Frozen original ledger inventory, reconciled against the pre-consolidation
+# catalog at 8984f099. Historical ownership is independent of today's mode
+# membership: a canonical check can now serve both selected and direct modes.
+# Keep archive bytes and original identities; current behavior has separate proof.
+HISTORICAL_CHECK_IDS = frozenset({
+    'adapters.drift',
+    'adapters.regression',
+    'adapters.validate',
+    'artifact_lifecycle.regression',
+    'artifact_lifecycle.validate',
+    'boundary_first.reference_regression',
+    'boundary_first.regression',
+    'boundary_first.validate',
+    'broad_smoke.repo',
+    'change_metadata.regression',
+    'change_metadata.validate',
+    'change_record_query.regression',
+    'compact_contract.canonical',
+    'documentation_prose.audit',
+    'documentation_prose.enforce',
+    'documentation_prose.regression',
+    'governed_lifecycle_cli_wrapper.test',
+    'guide_system.regression',
+    'guide_system.validate',
+    'markdown_readability.regression',
+    'markdown_readability.validate',
+    'model.validate',
+    'npm_package_publication.test',
+    'readme.validate',
+    'readme.vision_markers',
+    'record_store.schema',
+    'release.validate',
+    'release_transaction.regression',
+    'requirement_fidelity.spec_reads',
+    'review_artifacts.regression',
+    'review_artifacts.validate',
+    'rigorloop_cli.test',
+    'selector.regression',
+    'skills.drift',
+    'skills.generation_regression',
+    'skills.regression',
+    'skills.validate',
+    'token_cost.regression',
+    'token_cost.report_regression',
+    'token_cost.report_validate',
+    'validation_cache.regression',
+    'workflow_automation.code_state_regression',
+    'workflow_automation.engine_regression',
+    'workflow_automation.policy_regression',
+    'workflow_automation.state_regression',
+    'workflow_automation.validator_regression',
+})
 
 
 LEDGER = (

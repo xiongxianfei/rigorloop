@@ -67,7 +67,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     "boundary_first.validate": CheckCatalogEntry(
         "boundary_first.validate",
         "python scripts/validate-boundary-first.py --check",
-        "boundary-first",
+        "boundary-first", label='Gate A: boundary proof structure', modes=('main',),
     ),
     "boundary_first.reference_regression": CheckCatalogEntry(
         "boundary_first.reference_regression",
@@ -82,13 +82,13 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     "skills.validate": CheckCatalogEntry(
         "skills.validate",
         "python scripts/validate-skills.py",
-        "skills",
+        "skills", label='Validate canonical skills', modes=('broad-smoke', 'main'),
     ),
     "skills.regression": CheckCatalogEntry(
         "skills.regression",
         "python scripts/test-skill-validator.py",
         "skills",
-        parallel_safe=True,
+        parallel_safe=True, label='Run skill validator fixtures', modes=('broad-smoke', 'main'),
     ),
     "adapters.regression": CheckCatalogEntry(
         "adapters.regression",
@@ -110,7 +110,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "review_artifacts.regression",
         "python scripts/test-review-artifact-validator.py",
         "review-artifacts",
-        parallel_safe=True,
+        parallel_safe=True, label='Run review artifact validator fixtures', modes=('broad-smoke', 'main'),
     ),
     "review_artifacts.validate": CheckCatalogEntry(
         "review_artifacts.validate",
@@ -121,7 +121,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "artifact_lifecycle.regression",
         "python scripts/test-artifact-lifecycle-validator.py",
         "lifecycle",
-        parallel_safe=True,
+        parallel_safe=True, label='Run artifact lifecycle validator fixtures', modes=('broad-smoke', 'main'),
     ),
     "artifact_lifecycle.validate": CheckCatalogEntry(
         "artifact_lifecycle.validate",
@@ -132,7 +132,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "change_metadata.regression",
         "python scripts/test-change-metadata-validator.py",
         "change-metadata",
-        parallel_safe=True,
+        parallel_safe=True, label='Run change metadata validator fixtures', modes=('broad-smoke', 'main'),
     ),
     "change_metadata.validate": CheckCatalogEntry(
         "change_metadata.validate",
@@ -143,32 +143,32 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "change_record_query.regression",
         "python scripts/test-query-change-record.py",
         "change-record-query",
-        parallel_safe=True,
+        parallel_safe=True, label='Governance: change-record query', modes=('main',),
     ),
     "workflow_automation.code_state_regression": CheckCatalogEntry(
         "workflow_automation.code_state_regression",
         "python scripts/test-workflow-code-state.py",
-        "workflow-automation",
+        "workflow-automation", label='Governance: workflow code state', modes=('main',),
     ),
     "workflow_automation.engine_regression": CheckCatalogEntry(
         "workflow_automation.engine_regression",
         "python scripts/test-workflow-automation.py",
-        "workflow-automation",
+        "workflow-automation", label='Governance: workflow engine', modes=('main',),
     ),
     "workflow_automation.policy_regression": CheckCatalogEntry(
         "workflow_automation.policy_regression",
         "python scripts/test-workflow-automation-policy.py",
-        "workflow-automation",
+        "workflow-automation", label='Governance: workflow policy', modes=('main',),
     ),
     "workflow_automation.state_regression": CheckCatalogEntry(
         "workflow_automation.state_regression",
         "python scripts/test-workflow-automation-state.py",
-        "workflow-automation",
+        "workflow-automation", label='Governance: workflow state', modes=('main',),
     ),
     "workflow_automation.validator_regression": CheckCatalogEntry(
         "workflow_automation.validator_regression",
         "python scripts/test-validate-workflow-automation.py",
-        "workflow-automation",
+        "workflow-automation", label='Governance: workflow metadata', modes=('main',),
     ),
     "release.validate": CheckCatalogEntry(
         "release.validate",
@@ -179,17 +179,17 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "release_transaction.regression",
         "python scripts/test-release-transaction.py",
         "release-transaction",
-        parallel_safe=True,
+        parallel_safe=True, label='Gate C: release integrity regressions', modes=('main',),
     ),
     "readme.validate": CheckCatalogEntry(
         "readme.validate",
         "python scripts/validate-readme.py README.md",
-        "readme",
+        "readme", label='Contributor surface: README structure', modes=('main',),
     ),
     "readme.vision_markers": CheckCatalogEntry(
         "readme.vision_markers",
         "python scripts/validate-readme.py README.md --vision-markers",
-        "readme",
+        "readme", label='Contributor surface: vision markers', modes=('main',),
     ),
     "markdown_readability.validate": CheckCatalogEntry(
         "markdown_readability.validate",
@@ -200,18 +200,18 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "markdown_readability.regression",
         "python scripts/test-markdown-readability-validator.py",
         "markdown-readability",
-        parallel_safe=True,
+        parallel_safe=True, label='Contributor surface: markdown structure regressions', modes=('main',),
     ),
     "guide_system.regression": CheckCatalogEntry(
         "guide_system.regression",
         "python scripts/test-guide-system-validator.py",
         "guide-system",
-        parallel_safe=True,
+        parallel_safe=True, label='Contributor surface: guide regressions', modes=('main',),
     ),
     "guide_system.validate": CheckCatalogEntry(
         "guide_system.validate",
         "python scripts/validate-guide-system.py",
-        "guide-system",
+        "guide-system", label='Contributor surface: guide structure', modes=('main',),
     ),
     "documentation_prose.enforce": CheckCatalogEntry(
         "documentation_prose.enforce",
@@ -233,13 +233,13 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "selector.regression",
         "python scripts/test-select-validation.py",
         "selector",
-        parallel_safe=True,
+        parallel_safe=True, label='Run selector and wrapper fixtures', modes=('broad-smoke',),
     ),
     "requirement_fidelity.spec_reads": CheckCatalogEntry(
         "requirement_fidelity.spec_reads",
         "python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads",
         "requirement-fidelity",
-        parallel_safe=True,
+        parallel_safe=True, label='Governance: review fidelity', modes=('main',),
     ),
     "token_cost.regression": CheckCatalogEntry(
         "token_cost.regression",
@@ -266,13 +266,13 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     "rigorloop_cli.test": CheckCatalogEntry(
         "rigorloop_cli.test",
         "npm test --prefix packages/rigorloop",
-        "rigorloop-cli",
+        "rigorloop-cli", label='Public package regressions', modes=('main',),
     ),
     "governed_lifecycle_cli_wrapper.test": CheckCatalogEntry(
         "governed_lifecycle_cli_wrapper.test",
         "python scripts/test-governed-lifecycle-cli-validator.py",
         "governed-lifecycle-cli-wrapper",
-        parallel_safe=True,
+        parallel_safe=True, label='Governance: lifecycle validation wrapper regressions', modes=('main',),
     ),
     "npm_package_publication.test": CheckCatalogEntry(
         "npm_package_publication.test",
@@ -287,6 +287,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
 # until a current isolation assessment covers their nested resource demand.
 # Literal bases deliberately do not update when a template or adapter changes.
 _COMMAND_ASSESSMENTS = {
+    'skills.validate': ('a8c706629176acda626a4dff2c77ba5805f21058a767fa755c8567315234555f', 'Canonical skill validation reads sources without writes, services or nested workers.'),
     'skills.regression': ('9c4ffbab147aa1e13f1edd27bbcd224b21254b9c73c37d76bbfd9c94ce27a6e7', 'Skill validator fixtures use owned temporary trees; subprocess validators run sequentially; no shared writes or services.'),
     'adapters.regression': ('4ac8b3234ec905ec97dc1603d847b04af163c206509fad625765c4e3ecb6fe72', 'Selected adapter cases build and validate owned temporary outputs; read canonical resources; sequential subprocesses, no active-root writes or services.'),
 }
@@ -296,23 +297,16 @@ for _id, _entry in tuple(CHECK_CATALOG.items()):
         constraints=ExecutionConstraints(mode="bounded", isolation=_assessment[1], basis=_assessment[0])
         if _assessment else None)
 CHECK_CATALOG["validation_execution.regression"] = CheckCatalogEntry(
-    "validation_execution.regression", "python scripts/test-validation-execution.py", "selector")
+    "validation_execution.regression", "python scripts/test-validation-execution.py", "selector", label='Run validation executor fixtures', modes=('broad-smoke',),
+    )
 
 
 # Current direct-mode membership is authored here, alongside selected checks.
 # The old Bash inventory and historical classification are no longer readers.
-CHECK_CATALOG['broad_smoke.skills.validate'] = CheckCatalogEntry(
-    'broad_smoke.skills.validate', 'python scripts/validate-skills.py', 'broad-smoke',
-    parallel_safe=True, dependencies=(), constraints=ExecutionConstraints(mode="bounded", isolation='Canonical skill validation reads source/resources without writes, external services or nested workers.', basis='a8c706629176acda626a4dff2c77ba5805f21058a767fa755c8567315234555f'),
-    label='Validate canonical skills', modes=('broad-smoke',))
-CHECK_CATALOG['broad_smoke.skills.regression'] = CheckCatalogEntry(
-    'broad_smoke.skills.regression', 'python scripts/test-skill-validator.py', 'broad-smoke',
-    parallel_safe=True, dependencies=(), constraints=ExecutionConstraints(mode="bounded", isolation='Skill validator fixtures use owned temporary trees, process-local environment, sequential children and no external service.', basis='9c4ffbab147aa1e13f1edd27bbcd224b21254b9c73c37d76bbfd9c94ce27a6e7'),
-    label='Run skill validator fixtures', modes=('broad-smoke',))
-CHECK_CATALOG['broad_smoke.adapters.regression'] = CheckCatalogEntry(
-    'broad_smoke.adapters.regression', 'python scripts/test-adapter-distribution.py', 'broad-smoke',
+CHECK_CATALOG['adapters.full_regression'] = CheckCatalogEntry(
+    'adapters.full_regression', 'python scripts/test-adapter-distribution.py', 'broad-smoke',
     parallel_safe=False, dependencies=(), constraints=None,
-    label='Run adapter distribution fixtures', modes=('broad-smoke',))
+    label='Run adapter distribution fixtures', modes=('broad-smoke','main'))
 CHECK_CATALOG['broad_smoke.adapters.build_archives'] = CheckCatalogEntry(
     'broad_smoke.adapters.build_archives', "python scripts/build-adapters.py --version v0.1.3 --output-dir '<adapter-output>'", 'broad-smoke',
     parallel_safe=True, dependencies=(), constraints=ExecutionConstraints(mode="bounded", isolation='Reads canonical sources and writes or validates only the invocation-owned package output; build-success dependency protects the shared artifact; no services or nested worker pool.', basis='d62367012cc0d1a44d1ca1d9491870d4c010df7224a2383cfa9f1d361f09f1fa'),
@@ -321,18 +315,6 @@ CHECK_CATALOG['broad_smoke.adapters.validate_archives'] = CheckCatalogEntry(
     'broad_smoke.adapters.validate_archives', "python scripts/validate-adapters.py --root '<adapter-output>' --version v0.1.3", 'broad-smoke',
     parallel_safe=True, dependencies=('broad_smoke.adapters.build_archives',), constraints=ExecutionConstraints(mode="bounded", isolation='Reads canonical sources and writes or validates only the invocation-owned package output; build-success dependency protects the shared artifact; no services or nested worker pool.', basis='20ea1accdb465c0f8761bfd7c5dd4418345563bd5a1d5e930181299ed23f3ca9'),
     label='Validate generated adapter archives', modes=('broad-smoke',))
-CHECK_CATALOG['broad_smoke.change_metadata.regression'] = CheckCatalogEntry(
-    'broad_smoke.change_metadata.regression', 'python scripts/test-change-metadata-validator.py', 'broad-smoke',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Run change metadata validator fixtures', modes=('broad-smoke',))
-CHECK_CATALOG['broad_smoke.artifact_lifecycle.regression'] = CheckCatalogEntry(
-    'broad_smoke.artifact_lifecycle.regression', 'python scripts/test-artifact-lifecycle-validator.py', 'broad-smoke',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Run artifact lifecycle validator fixtures', modes=('broad-smoke',))
-CHECK_CATALOG['broad_smoke.review_artifacts.regression'] = CheckCatalogEntry(
-    'broad_smoke.review_artifacts.regression', 'python scripts/test-review-artifact-validator.py', 'broad-smoke',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Run review artifact validator fixtures', modes=('broad-smoke',))
 CHECK_CATALOG['broad_smoke.review_artifacts.changed_roots'] = CheckCatalogEntry(
     'broad_smoke.review_artifacts.changed_roots', "python scripts/validate-change-metadata.py '<roots>'", 'broad-smoke',
     parallel_safe=False, dependencies=(), constraints=None,
@@ -341,30 +323,6 @@ CHECK_CATALOG['broad_smoke.artifact_lifecycle.scoped'] = CheckCatalogEntry(
     'broad_smoke.artifact_lifecycle.scoped', "python scripts/validate-artifact-lifecycle.py '<lifecycle-args>'", 'broad-smoke',
     parallel_safe=False, dependencies=(), constraints=None,
     label='Validate artifact lifecycle (scoped)', modes=('broad-smoke',))
-CHECK_CATALOG['broad_smoke.selector.regression'] = CheckCatalogEntry(
-    'broad_smoke.selector.regression', 'python scripts/test-select-validation.py', 'broad-smoke',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Run selector and wrapper fixtures', modes=('broad-smoke',))
-CHECK_CATALOG['broad_smoke.validation_execution.regression'] = CheckCatalogEntry(
-    'broad_smoke.validation_execution.regression', 'python scripts/test-validation-execution.py', 'broad-smoke',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Run validation executor fixtures', modes=('broad-smoke',))
-CHECK_CATALOG['main.skills.validate'] = CheckCatalogEntry(
-    'main.skills.validate', 'python scripts/validate-skills.py', 'main',
-    parallel_safe=True, dependencies=(), constraints=ExecutionConstraints(mode="bounded", isolation='Canonical skill validation reads source/resources without writes, external services or nested workers.', basis='a8c706629176acda626a4dff2c77ba5805f21058a767fa755c8567315234555f'),
-    label='Gate A: canonical skill integrity', modes=('main',))
-CHECK_CATALOG['main.skills.regression'] = CheckCatalogEntry(
-    'main.skills.regression', 'python scripts/test-skill-validator.py', 'main',
-    parallel_safe=True, dependencies=(), constraints=ExecutionConstraints(mode="bounded", isolation='Skill validator fixtures use owned temporary trees, process-local environment, sequential children and no external service.', basis='9c4ffbab147aa1e13f1edd27bbcd224b21254b9c73c37d76bbfd9c94ce27a6e7'),
-    label='Gate A: canonical skill regressions', modes=('main',))
-CHECK_CATALOG['main.boundary_first.validate'] = CheckCatalogEntry(
-    'main.boundary_first.validate', 'python scripts/validate-boundary-first.py --check', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Gate A: boundary proof structure', modes=('main',))
-CHECK_CATALOG['main.adapters.regression'] = CheckCatalogEntry(
-    'main.adapters.regression', 'python scripts/test-adapter-distribution.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Gate B: adapter parity regressions', modes=('main',))
 CHECK_CATALOG['main.adapters.build_archives'] = CheckCatalogEntry(
     'main.adapters.build_archives', "python scripts/build-adapters.py --version v0.1.5 --output-dir '<adapter-output>'", 'main',
     parallel_safe=True, dependencies=(), constraints=ExecutionConstraints(mode="bounded", isolation='Reads canonical sources and writes or validates only the invocation-owned package output; build-success dependency protects the shared artifact; no services or nested worker pool.', basis='8fb2d9cf5eeda804bb972a03447bd547e1e9bd6e3ebc97d1dba68ecf971293f1'),
@@ -373,86 +331,14 @@ CHECK_CATALOG['main.adapters.validate_archives'] = CheckCatalogEntry(
     'main.adapters.validate_archives', "python scripts/validate-adapters.py --version v0.1.5 --adapter-root '<adapter-output>'", 'main',
     parallel_safe=True, dependencies=('main.adapters.build_archives',), constraints=ExecutionConstraints(mode="bounded", isolation='Reads canonical sources and writes or validates only the invocation-owned package output; build-success dependency protects the shared artifact; no services or nested worker pool.', basis='8de166b66cc49f8aed72d966ae70c1d9b8871f52ce2bf90f88f512f4218dadf7'),
     label='Gate B: validate all adapter archives', modes=('main',))
-CHECK_CATALOG['main.release_transaction.regression'] = CheckCatalogEntry(
-    'main.release_transaction.regression', 'python scripts/test-release-transaction.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Gate C: release integrity regressions', modes=('main',))
-CHECK_CATALOG['main.rigorloop_cli.test'] = CheckCatalogEntry(
-    'main.rigorloop_cli.test', 'npm test --prefix packages/rigorloop', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Public package regressions', modes=('main',))
-CHECK_CATALOG['main.governed_lifecycle_cli_wrapper.test'] = CheckCatalogEntry(
-    'main.governed_lifecycle_cli_wrapper.test', 'python scripts/test-governed-lifecycle-cli-validator.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: lifecycle validation wrapper regressions', modes=('main',))
 CHECK_CATALOG['main.governed_lifecycle_cli.validate'] = CheckCatalogEntry(
     'main.governed_lifecycle_cli.validate', 'python scripts/validate-governed-lifecycle-cli.py', 'main',
     parallel_safe=False, dependencies=(), constraints=None,
     label='Governance: public lifecycle validation', modes=('main',))
-CHECK_CATALOG['main.change_metadata.regression'] = CheckCatalogEntry(
-    'main.change_metadata.regression', 'python scripts/test-change-metadata-validator.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: change metadata regressions', modes=('main',))
-CHECK_CATALOG['main.artifact_lifecycle.regression'] = CheckCatalogEntry(
-    'main.artifact_lifecycle.regression', 'python scripts/test-artifact-lifecycle-validator.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: lifecycle regressions', modes=('main',))
-CHECK_CATALOG['main.review_artifacts.regression'] = CheckCatalogEntry(
-    'main.review_artifacts.regression', 'python scripts/test-review-artifact-validator.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: review evidence regressions', modes=('main',))
 CHECK_CATALOG['main.retirement_ledger.regression'] = CheckCatalogEntry(
     'main.retirement_ledger.regression', 'python scripts/test-retirement-ledger.py', 'main',
     parallel_safe=False, dependencies=(), constraints=None,
     label='Governance: retirement ledger', modes=('main',))
-CHECK_CATALOG['main.change_record_query.regression'] = CheckCatalogEntry(
-    'main.change_record_query.regression', 'python scripts/test-query-change-record.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: change-record query', modes=('main',))
-CHECK_CATALOG['main.workflow_automation.engine_regression'] = CheckCatalogEntry(
-    'main.workflow_automation.engine_regression', 'python scripts/test-workflow-automation.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: workflow engine', modes=('main',))
-CHECK_CATALOG['main.workflow_automation.code_state_regression'] = CheckCatalogEntry(
-    'main.workflow_automation.code_state_regression', 'python scripts/test-workflow-code-state.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: workflow code state', modes=('main',))
-CHECK_CATALOG['main.workflow_automation.policy_regression'] = CheckCatalogEntry(
-    'main.workflow_automation.policy_regression', 'python scripts/test-workflow-automation-policy.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: workflow policy', modes=('main',))
-CHECK_CATALOG['main.workflow_automation.state_regression'] = CheckCatalogEntry(
-    'main.workflow_automation.state_regression', 'python scripts/test-workflow-automation-state.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: workflow state', modes=('main',))
-CHECK_CATALOG['main.workflow_automation.validator_regression'] = CheckCatalogEntry(
-    'main.workflow_automation.validator_regression', 'python scripts/test-validate-workflow-automation.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: workflow metadata', modes=('main',))
-CHECK_CATALOG['main.requirement_fidelity.spec_reads'] = CheckCatalogEntry(
-    'main.requirement_fidelity.spec_reads', 'python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Governance: review fidelity', modes=('main',))
-CHECK_CATALOG['main.readme.validate'] = CheckCatalogEntry(
-    'main.readme.validate', 'python scripts/validate-readme.py README.md', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Contributor surface: README structure', modes=('main',))
-CHECK_CATALOG['main.readme.vision_markers'] = CheckCatalogEntry(
-    'main.readme.vision_markers', 'python scripts/validate-readme.py README.md --vision-markers', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Contributor surface: vision markers', modes=('main',))
-CHECK_CATALOG['main.markdown_readability.regression'] = CheckCatalogEntry(
-    'main.markdown_readability.regression', 'python scripts/test-markdown-readability-validator.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Contributor surface: markdown structure regressions', modes=('main',))
-CHECK_CATALOG['main.guide_system.regression'] = CheckCatalogEntry(
-    'main.guide_system.regression', 'python scripts/test-guide-system-validator.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Contributor surface: guide regressions', modes=('main',))
-CHECK_CATALOG['main.guide_system.validate'] = CheckCatalogEntry(
-    'main.guide_system.validate', 'python scripts/validate-guide-system.py', 'main',
-    parallel_safe=False, dependencies=(), constraints=None,
-    label='Contributor surface: guide structure', modes=('main',))
 CHECK_CATALOG['main.artifact_lifecycle.scoped'] = CheckCatalogEntry(
     'main.artifact_lifecycle.scoped', "python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before '<base>' --after '<head>'", 'main',
     parallel_safe=False, dependencies=(), constraints=None,
@@ -460,20 +346,16 @@ CHECK_CATALOG['main.artifact_lifecycle.scoped'] = CheckCatalogEntry(
 
 for _mode_prefix in ('broad_smoke','main'):
     _key = _mode_prefix + '.adapters.build_archives'
-    CHECK_CATALOG[_key] = replace(CHECK_CATALOG[_key],dependencies=(_mode_prefix+'.skills.validate',))
+    CHECK_CATALOG[_key] = replace(CHECK_CATALOG[_key],dependencies=('skills.validate',))
 
 # Audited initial case population: normal loaders, fresh process per case, owned
 # temporary Git/record fixtures, process-local environment and sequential child
 # validation. Selector wrapper probes obey their allocated nested worker budget.
 _CASE_ASSESSMENTS = {
+    'validation_execution.regression': '092d25fa433d7af08ebe938dbd3837a8914bb7ad871dc4d4bf2a01f470014e79',
     'artifact_lifecycle.regression': '0d3bf319c63835687a034b94f2003918fddbb599b456a8894d98fa5784f262bf',
     'change_metadata.regression': 'ff7f4d79be49f9635e51521fbf36df43f6276a04e55863c56163746e49726586',
     'selector.regression': 'ce40ab4944eed966a2dba006e9d2545614eef23e6e6767e9f9ed2bee294158f2',
-    'broad_smoke.change_metadata.regression': 'ff7f4d79be49f9635e51521fbf36df43f6276a04e55863c56163746e49726586',
-    'broad_smoke.artifact_lifecycle.regression': '0d3bf319c63835687a034b94f2003918fddbb599b456a8894d98fa5784f262bf',
-    'broad_smoke.selector.regression': 'ce40ab4944eed966a2dba006e9d2545614eef23e6e6767e9f9ed2bee294158f2',
-    'main.change_metadata.regression': 'ff7f4d79be49f9635e51521fbf36df43f6276a04e55863c56163746e49726586',
-    'main.artifact_lifecycle.regression': '0d3bf319c63835687a034b94f2003918fddbb599b456a8894d98fa5784f262bf',
 }
 for _key, _basis in _CASE_ASSESSMENTS.items():
     CHECK_CATALOG[_key] = replace(CHECK_CATALOG[_key], parallel_safe=True,
@@ -854,7 +736,7 @@ def catalog_command(
             args.extend(["--path", path])
         return _join(*args)
 
-    if CHECK_CATALOG[check_id].modes:
+    if any(token.startswith("<") and token.endswith(">") for token in shlex.split(CHECK_CATALOG[check_id].command_template)):
         raise ValueError("direct-mode leaf requires composition scope")
     return CHECK_CATALOG[check_id].command_template
 

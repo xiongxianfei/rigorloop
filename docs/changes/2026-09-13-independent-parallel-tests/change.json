@@ -4,7 +4,7 @@
       "id": "proposal-reviewer",
       "role": "review"
     },
-    "reason": "M2 exact Design package approved after recorded Installation safety correction. Distinct Code Review of delivered documentation and cross-view effects required.",
+    "reason": "M3 complete named validation and bounded adoption proof pass; request exact independent milestone Code Review before M4.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -51,7 +51,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json",
-      "reason": "Exact primary plan independently assessed against current approved Design; complete seven-milestone work/proof allocation and explicit native-adapter feasibility checkpoints are adequate without presuming implementation success.",
+      "reason": "Unchanged plan explicitly anticipated M1/M2 guidance and necessary views; corrected approved current Design introduces no new behavioral or verification-allocation gap.",
       "value": "current"
     },
     {
@@ -61,6 +61,15 @@
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m1.json",
       "reason": "Complete M1 implementation and test diff independently assessed against current approved Design/Delivery; full applicable author proof and independent portable candidate semantic exercise match current subjects.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m2.json",
+      "reason": "Complete committed M2 document delivery independently assessed against corrected Design and unchanged-plan allocation, with current exact proof and preservation comparison.",
       "value": "current"
     }
   ],
@@ -185,6 +194,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m2.json"
     }
   ],
   "schema_version": 3,
@@ -215,7 +228,7 @@
         "SYS-SR-11",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m3",
@@ -230,7 +243,7 @@
         "VAL-SR-22",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m4",
