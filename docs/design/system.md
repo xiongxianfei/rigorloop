@@ -70,7 +70,7 @@ The [end-to-end system design](#end-to-end-system-design) below explains how the
 
 ### Architecture overview convention
 
-Every model in this repository contains an Architecture Overview explaining its responsibility, internal structure and important external relationships with a concise graph. For a parent, show child models; for a leaf, show its own concepts or implementation responsibilities without inventing new submodels. Existing structural graphs serve as the overview and keep their link anchors. Flow graphs remain complementary views rather than replacements. This is a repository design convention, not a new public skill behavior or validator schema.
+Every model in this repository applies [Design's Architecture Overview View and supporting-view convention](skill/authoring/design.md#architecture-overview-view-and-necessary-supporting-views), DES-SR-22. The overview orients readers to principal responsibilities, externally significant products or interfaces, and delivery/assurance relationships. Each material element or relationship resolves to its owning view or model. Authors evaluate Context, Building Block, Runtime and Deployment views with reasons and draw each necessary view; the overview does not replace them. Existing overview headings and anchors remain valid. System owns the actual project composition and parent allocation below; Design owns the reusable method.
 
 ### Parent graph ownership
 
@@ -78,7 +78,7 @@ For this repository, every model with child models owns the authoritative system
 
 System retains both the whole-system structural overview and the end-to-end product flow. Parent-owned interaction graphs supplement those views. Each view has one authored source, and shared names and boundaries remain consistent across views. This preserves a complete system design without maintaining competing definitions of subsystem behavior.
 
-The Design method supplies authoring conventions; System owns this project's composition allocation under SYS-SR-10. The rule does not introduce a universal diagram requirement into published skills. Inline Mermaid is the single authored source for these views. A relationship change reconciles the owning parent graph and affected child contracts in the same reviewed package.
+The Design method supplies authoring conventions; System owns this project's composition allocation under SYS-SR-10. The selected Design refinement defines the reusable overview and necessary-view obligation; coordinated skill guidance adoption belongs to Delivery. Inline Mermaid is the single authored source for these views. A relationship change reconciles the owning parent graph and affected child contracts in the same reviewed package.
 
 ### Repository directory layout
 
@@ -124,7 +124,7 @@ The reusable proof criteria in Validation are referenced by Skill capabilities; 
 | SYS-SR-08 | The Design and System slice MUST include representative integrated acceptance outcomes and sufficient observation boundaries to distinguish coherent operation from a local-only success. Validation owns proof-quality criteria; Delivery and specialists retain concrete allocation and assessment. |
 | SYS-SR-09 | Interruption, conflicting ownership, stale consumer basis or an incomplete candidate package MUST prevent reliance on the affected composed claim and retain a safe owned correction path. Recovery or rollback MUST preserve historical evidence and unrelated state under existing permissions. |
 | SYS-SR-10 | Every parent model in this repository MUST own the authoritative system design graph of its subsystem, including parents represented by named sections. The graph MUST identify immediate children, their responsibilities, significant relationships and relevant external boundaries, and link to child-owned detail. Detailed internal decomposition MUST remain with the nested parent; a structural overview MAY summarize descendants without taking ownership of their behavior. Cross-subsystem composition MUST remain with the nearest shared parent. System MUST retain both the full structural overview and the end-to-end design from intended product behavior through implementation, proof, independent assessment and authorized publication; links to subsystem graphs MUST NOT replace it. A graph change MUST remain consistent with affected contracts and receive their scoped assessment. |
-| SYS-SR-11 | Each repository model MUST contain an Architecture Overview with its responsibility, internal structure, significant external relationships and a concise graph. Parent overviews MUST identify their child models; leaf overviews MUST use actual owned concepts or responsibilities without inventing submodels or services. Existing structural views MUST be reused where suitable, with one authored source and working links; overview and flow views MUST remain consistent. |
+| SYS-SR-11 | Each repository model MUST apply Design DES-SR-22 for its Architecture Overview View and evaluation of necessary Context, Building Block, Runtime and Deployment views. Parent overviews MUST identify their child models; leaf overviews MUST use actual owned concepts or responsibilities without inventing submodels or services. Views MUST preserve one detailed owner, consistent relationships and working links. |
 
 ## Product and environment boundaries
 
