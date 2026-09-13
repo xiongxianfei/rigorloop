@@ -1,0 +1,40 @@
+{
+  "assessment_scope": "Primary-plan singleton docs/plans/2026-09-12-design-directory-layout.md against approved directory-design-review. This is a bounded directory migration delivery package, not allocation or approval of the later unified validation executor initiative.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "directory-delivery-review",
+  "independence_basis": "Separately authorized reviewer agent assessed the author root's relocation and Design amendment without editing any Design, moved example, plan or implementation. Prior hierarchy assessment remains its own preserved subject-specific judgment.",
+  "judgment": "approved",
+  "limitations": [
+    "Implementation results, runtime correctness and milestone completion remain unassessed; expected failing new-path proof does not establish repaired behavior.",
+    "Approval is scoped to the registered directory plan. Executor/cache/script cleanup outside this migration remains later allocated work; no whole-change readiness, Verify or publication claim follows."
+  ],
+  "rationale": [
+    "The exact primary plan is registered and linked by path/identity in the current v3 change. Its upstream directory-design-review approves the explicit project layout while preserving logical contracts and portable defaults. Actual author is root; reviewer did not edit the plan or Design.",
+    "M1 establishes document/example relocation, current navigation and stable model registry reconciliation; independent Design assessment precedes reliance. M2 repairs actual validators, selector defaults/deleted paths/example-owner pairing and fixture consumers, with failing new-path regressions before implementation. This order makes intermediate unsupported paths explicit rather than claiming early completion.",
+    "Trace is adequate for this bounded maintenance obligation: System directory ownership and SYS-SR-01/04/06/09 map to M1 coordinated relocation, current identity/preservation checks and recovery; DES-SR-11/12/18/19 path structure, example pairing and fail-closed safety map to M2 boundary/selector/fixture regression commands. The plan names the maintenance obligation directly without inventing another SR series or executor allocation.",
+    "Boundary proof covers accepted mapped and retained portable paths, rejected unknown nesting and symlinks, existing invalid old paths versus absent-path selection, example-to-owner pairing, unchanged payloads and requirement rows, live current navigation and preserved historical records. Actual CLI fixture consumers supplement helper/model checks, protecting composed reader behavior and avoiding a vacuous reduced-suite pass.",
+    "Named commands include boundary-first validation tests, selector tests, five actual CLI fixture consumer files, all twelve model/prose checks and git diff --check. Snapshot/content comparison and source-reader inspection supply appropriate manual preservation evidence. No network, publication, package generation or unrelated benchmark is necessary for this path-only slice.",
+    "Independent review is allocated after the complete directory/reader migration; whole-initiative final independent Code Review and distinct Verify remain required after all later implementation and corrections. A directory checkpoint cannot substitute for those final gates or establish overall readiness.",
+    "Risks and recovery identify missed readers, omitted protection and current/historical reference confusion. The exact pre-move content/path snapshot supports reversible restoration, while unknown impacts require source-reader investigation. No old test oracle, runtime authority or historical record may be rewritten merely to obtain passing relocation checks. No material Delivery finding remains."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:6d7d86df4eceae63dee63dfa900f6d45c7075fe4169db2b18c91dc8c7d2618a5",
+      "path": "docs/plans/2026-09-12-design-directory-layout.md"
+    }
+  ],
+  "summary": "The registered directory-layout plan provides safe sequencing and adequate focused proof for document relocation and bounded reader repair.",
+  "target": "delivery"
+}

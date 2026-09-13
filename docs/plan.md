@@ -25,6 +25,10 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [2026-09-12 Unified Validation implementation](plans/2026-09-12-unified-validation-implementation.md) — [owning change](changes/2026-09-12-unified-validation-model/change.json).
+
+- [2026-09-12 Design directory organization](plans/2026-09-12-design-directory-layout.md) — [owning change](changes/2026-09-12-unified-validation-model/change.json).
+
 - [2026-09-11 Retire the v2 stored-record format](plans/2026-09-11-retire-v2-record-format.md) — [owning change](changes/2026-09-11-retire-v2-record-format/change.json).
 
 - [2026-09-11 Structured assessment explanations](plans/2026-09-11-structured-assessment-explanations.md) — [owning change](changes/2026-09-10-structured-assessment-explanations/change.json).

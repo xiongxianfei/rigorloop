@@ -1,0 +1,464 @@
+{
+  "assessment_scope": "Independent integrated Code Review of both M1 document/example relocation and M2 reader implementation under directory-design-review and directory-delivery-review, after correction. This is the complete directory slice, not final whole-unified-validation-initiative Code Review.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Location: scripts/validation_selection.py:7 and isolated CI-workspace fixtures in scripts/test-select-validation.py. New unconditional import of PROJECT_MODEL_PATHS from boundary_first_validation adds an undeclared runtime dependency to copied selector workspaces. /tmp/layout-selector.log reports 23 failed / 143 passed; representative test_boundary_sibling_failures_each_block_selected_execution fails with ModuleNotFoundError: No module named boundary_first_validation before any Run selected check output. This prevents real wrapper integration coverage and violates coordinated-reader M2 proof.",
+      "id": "directory-selector-dependency",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Support the path map dependency in every actual selector/CI workspace consumer while retaining independent real-wrapper assertions. Use a bounded dependency-free shared owner or explicitly provide necessary module closure; preserve exact-map and fail-closed behavior. Run the focused reproducer and complete selector suite, then reassess the full bounded slice. No new product/Design decision is required.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "directory-layout-proof",
+            "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+          }
+        ],
+        "rationale": "The full boundary-validator import was replaced with dependency-free scripts/model_layout.py. Both consumers and both isolated workspace constructors include the bounded dependency; new module-change selection test protects both reader suites. Full selector rerun passes all 167 cases after the original 23 integration failures, boundary 90 and metadata 8 also pass. Independent complete-directory reassessment finds the required outcome satisfied; original finding identity, subjects and failure evidence remain preserved."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:acadc183575dae4eeb8f9dc88845fbe59653c6657f5ce94f93bbd59fad3371dc",
+          "path": "scripts/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:f84f5291ee420e888720201aa93918eeb996f807e746b79562fac9cc19616e0f",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:5a45f24372783c45b38edba43b0ab25e70b124c6bf9250b319a795a4a4b8fa29",
+          "path": "scripts/test-select-validation.py"
+        }
+      ]
+    }
+  ],
+  "id": "directory-code-review",
+  "independence_basis": "Separate user-authorized nonauthor agent reviewed root's implementation and actual diffs; reviewer did not author or modify code, fixtures or plan. Earlier independent Design/Delivery assessment did not contribute implementation.",
+  "judgment": "approved",
+  "limitations": [
+    "No whole-initiative completion, final Verify, CI/branch/PR readiness, cache/executor implementation, measured performance, package publication or customer adoption is claimed.",
+    "Assessment concerns the actual complete directory slice and exact subjects. Existing historical drift and unrelated legacy prose debt retain their own applicability and are not erased by this review."
+  ],
+  "rationale": [
+    "Spec alignment: pass. Exact System project layout and Design portable-default override remain on approved subjects; all twelve model locations and unique Records/Workflow example namespaces are supported. Neither user-facing skill behavior nor record JSON format changed.",
+    "Test coverage: pass. New-path failure-first proof exposed eight rejected mapped paths; deleted-source/example selection also failed before repair. Current model boundary suite passes 90, selector suite passes 167 and metadata fixture suite passes 8. Unknown nested paths, example-as-model, present historical invalid files, missing paths and symlinks retain direct negative coverage.",
+    "Edge cases: pass. Current examples select the precise Records owner before CLI; historical absent paths map to current owners without hiding present invalid/symlinked inputs. New map changes select both actual reader regression groups. Portable flat/matching model paths remain accepted under their existing semantics.",
+    "Error handling: pass. Existing contained-regular-file, root traversal and symlink safeguards remain in validation. Shared map has no imports or execution effects; both isolated selector fixture constructors copy it. Invalid model bodies continue through the existing fail-closed structural checks rather than being waived by a recognized path.",
+    "Architecture boundaries: pass. scripts/model_layout.py holds only the exact declared constant, consumed by validator and selector. It replaces the problematic full-validator import, avoiding transitive loader dependencies. Retired-method source validation resolves current Design/System owners while preserving original frozen source hashes.",
+    "Compatibility: pass. Compared pre-move baseline to current mapped files: all 50 JSON/Mermaid payloads and numbered requirement rows remain exact. Prior Design assessment also established 311 preserved local link targets/anchors. Fixture-reader path updates retain original data and behavioral assertions; historical reviews/proposals/plans/archives retain original subjects rather than being silently reapproved.",
+    "Security/privacy: pass. No credentials, network, release write, installation capability, new parser relaxation or record mutation path is introduced. Exact path allowlisting remains distinct from arbitrary nested acceptance; symlink and containment checks apply equally to mapped and portable paths.",
+    "Derived artifact currency: pass within scope. Moved model/example source and current Markdown links are the affected artifacts; no published skill or generated package input behavior changes. Release candidate edit is a policy-path comment only. Package publication/build currency and customer adoption are not claimed.",
+    "Unrelated changes: pass. Inspected executable/test diffs are bounded path mapping, selector support, moved fixture consumers and corresponding regression allocation. Full M1/M2 interaction was assessed after correction. The larger previously approved hierarchy/Validation proposal remains later implementation scope and is not declared complete.",
+    "Validation evidence: pass for bounded slice. Original selector run had 23 failures and 143 passes caused by missing heavy import dependency; that failure is retained. Current full rerun passes 167. CLI initial selected run had one Workflow path failure; root fixed the fixture parent/source path and focused Workflow rerun passes both cases, with other successful selected CLI results unaffected. Metadata 8 and boundary 90 current passes corroborate direct readers. No original failing run is relabeled passed.",
+    "directory-selector-dependency resolved. Independent code inspection confirms dependency-free shared map, explicit inclusion in both isolated workspaces, and direct check-selection regression for both consumers. Complete selector rerun exercises the previously failing wrapper path rather than suppressing assertions or mocking required work.",
+    "Milestone handoff: both M1 relocation and M2 reader repair now have a clean independent integrated assessment. No review resolution remains for this slice. Route owns work/activity closeout; later validation executor implementation and final whole-initiative Code Review followed by distinct Verify remain mandatory. This approval cannot serve as their completed proof.",
+    "Durable directory-layout-proof and directory-layout-evidence.md record the exact failure/correction/final command outcomes above. Final CLI example path-only correction was independently reassessed and directory-design-review renewed; the unchanged primary plan and directory-delivery-review remain applicable."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:fe211297da8533a8620535abee9b8d47fd512da99ac7e9f7fd08878606ff340b",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:0b8d25d6f4555a27f15a0d8f39e10161ca932fc1c76470433e465cec8e4acb92",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:8282450f2f859405c017fc98638e53ec7bddc4dad67b394a84f5ee1eae6ca814",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:f0c791be2adf0724c532183d6b6742c220a9aff677151bf889bcee69a207cfab",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:51a166ef0e6dff284a9e1981bb91bae6c1084270eb84c44ad14a005bcd53b523",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:9d63c43239c192cf09613d7ed26c881830f77abb174dd142f2e262fcd5bcabfd",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:088626d15d98db155d2ecdb581411fec20e8bc06db51e0b2a45a3b5376904de9",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:a73d0c4232811df739ce9bab2e3bb75115f82f4ed4ecc02bf9b45d19475b97a9",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:beaa9f0f7536b83a7edc5117c3168c5aeaa02763483a2e4c93b53acf17b2469c",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:24af7c0c81bdba70b2212a1a437b8dfaa77064e3b54cff2b3a01b0ebfaf7b5eb",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:b129f1558234aea5d7abe643dee09422cf4b748aaab860fd84c45e3356b01ec7",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:2341f5ba61c027ed311ec2c830bc3892af163c94fcaa390ed77a82f72f40d91a",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:1d22534396a88cb3f3edb8d19be15cc37b8fe77b458ac2344e9627816094cca8",
+      "path": "docs/design/cli/examples/observation-freshness/expected.json"
+    },
+    {
+      "identity": "sha256:9bdb8d360f0cc4ec935620cd4c7b632df4e8e0a265674c9f064088995aef7c95",
+      "path": "docs/design/cli/examples/observation-freshness/README.md"
+    },
+    {
+      "identity": "sha256:4fde512f9fd9c9b25502d1e983bb9a22382812ac726af6af32e040f7c3ff8222",
+      "path": "docs/design/cli/examples/observation-freshness/scan-b.json"
+    },
+    {
+      "identity": "sha256:d271716355c2d96bd1110c24f37e01de1bfb2a53d011a2f2a884bbebda2b9593",
+      "path": "docs/design/cli/examples/observation-freshness/scan-c.json"
+    },
+    {
+      "identity": "sha256:a2e1774f250b89aea4b3c862e7e5fae2acb78cc6486cb51cb05f9ec136337bd5",
+      "path": "docs/design/cli/examples/v2-work-status-update/README.md"
+    },
+    {
+      "identity": "sha256:f35f7b4c6fc54f3bbe5164b1d75ef2b786f7898a8d64199f0d15dab2c2b3018e",
+      "path": "docs/design/cli/examples/v2-work-status-update/request.json"
+    },
+    {
+      "identity": "sha256:75c8d51fdb5756ad71879f183ca6c08b807b7eba3f8e4648e0adbb682a77ab96",
+      "path": "docs/design/cli/examples/v2-work-status-update/response.json"
+    },
+    {
+      "identity": "sha256:795080cf9a9b63fd44a77ec745ca7d10995e2bf173581df9534e3b4f395a7ccb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/invalid-change-selector-response.json"
+    },
+    {
+      "identity": "sha256:41b6e86f475fa7f278f706e0d094a6cc454f68f11de2ad34429b80acb273cfe5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/mixed-store-response.json"
+    },
+    {
+      "identity": "sha256:f4bd6a92c07d69f06efc9336eb678e241888d20541fbaf2bd115e1153543a469",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/README.md"
+    },
+    {
+      "identity": "sha256:e47f464a85d7f13b895dfc90d84b55fe24f823844db7f147d83657a8f6be7f6a",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:4f3259cd2229ac7f2b664abcec27968e7bf736f8e45801db42ce64849ce920c5",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:98d88a8763a15d25b1d0acfd5081c3d7f515b48d4c7c4e7a288ad3ec108b9eba",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/review-v2-store-response.json"
+    },
+    {
+      "identity": "sha256:0578d2152a2330a0bd5787659551494df819f273dc53db3be5fdceabfcdebb1d",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-command-response.json"
+    },
+    {
+      "identity": "sha256:a802cb3c67f2ac861614be88e55e8f4e6f6dfca57eaca2aec292288cfe419899",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/unknown-store-response.json"
+    },
+    {
+      "identity": "sha256:886ab0361fe5924b26f0275ec09410f916fdfc0eb788a0d60f93671fc2ab5a52",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-invalid-arguments-response.json"
+    },
+    {
+      "identity": "sha256:803c307a1ae75ba0cc8114bdc6a2c9b01bc95a8d30f063abc53e13f753fe56fb",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-missing-store-response.json"
+    },
+    {
+      "identity": "sha256:46c9c2554c54833d9881e8157c88987315b9dedb0eb2aaf12b2ec9353fa4d215",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/verify-v2-store-response.json"
+    },
+    {
+      "identity": "sha256:9c72b798118812582b3189718f9da989340d805a8f880ca898bd0438146de55b",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/README.md"
+    },
+    {
+      "identity": "sha256:70f8883af05d13ef49e52b18209189b63f9c60a5cf381b076aeaeadd91aaad88",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-request.json"
+    },
+    {
+      "identity": "sha256:f84b71e306ec3cc8211e151184e912f1edec7b875a206cebf82dde865644dc3e",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/review-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:bcb83a7e18c18e7759d37ef713f167b6f1180dd984ff07d705a06554fcee6d55",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-request.json"
+    },
+    {
+      "identity": "sha256:8cb57d08879331bb8a520c820f73cadb08711783baae852d33c70e6f198c06de",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/verify-record-saved-response.json"
+    },
+    {
+      "identity": "sha256:da6db0d17fff62c7a8ea7e1a34ab7ea45d7be96e289e817bbb4b5819ed7fcecf",
+      "path": "docs/design/cli/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:905ba67b50a06114325bbabaa7c939005a096473ace379cd00cfe37b2a01bd93",
+      "path": "docs/design/cli/examples/v3-finding-correction/request.json"
+    },
+    {
+      "identity": "sha256:26c1d3d2d2cab351801c76ada6428ea8ada951631304dcc97ddbd08d74b56a0e",
+      "path": "docs/design/cli/examples/v3-finding-correction/saved-response.json"
+    },
+    {
+      "identity": "sha256:8489f5ec5e7329011de4660cbcf6877b988fbb8c2d70107ae90dd3cebbb88975",
+      "path": "docs/design/cli/examples/v3-finding-correction/show-response.json"
+    },
+    {
+      "identity": "sha256:0f7e7559a9c199eb4326ecede6ebdf67dd1418970d1609e5fe37b066b062537a",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-request.json"
+    },
+    {
+      "identity": "sha256:3e39f4d99e7b3589613c78f7e23e528dd6ffbd006f81651f69d8297911c30dc3",
+      "path": "docs/design/cli/examples/v3-finding-correction/summary-response.json"
+    },
+    {
+      "identity": "sha256:735a74388932c2dec2d9a5050d30de43c2f4ce0bef6651f12e4ba6d9bd43e50c",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:9f134ab8c53f99183053f3a0331871a70570690f93c6420e523aa61a2f5d8640",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:3a4f87555fbb0b3dcc8239941ca02442e2e85a6c436a74f4954150c758e2d05e",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:6d436ffddc2da5286f804f82a2e9190e2a376e2d28387cfaf7520d75581c2d5b",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-stale-response.json"
+    },
+    {
+      "identity": "sha256:c322d81e1248a8316bcb281457838054ac001baf30783b6c9d5bca979988c2e6",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/set-unchanged-response.json"
+    },
+    {
+      "identity": "sha256:c73be0db141370e7e5c5fefd34d8c338c0141bcc27a9111a41784918f4464d96",
+      "path": "docs/design/cli/examples/v3-review-limitations-update/show-fields-response.json"
+    },
+    {
+      "identity": "sha256:3a4a63ff341043e76d4d13306c17f08c4722770a0fef87c622aae90f7a9c30c5",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:07e459967b641a8bceb4edf801ce13567ccdfbd00f30977e5931b6ec588dec33",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-request.json"
+    },
+    {
+      "identity": "sha256:21f4098320b9f237c659717044ba08ff5ac7d49a716b9eb76576839d6ff36ca2",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/set-saved-response.json"
+    },
+    {
+      "identity": "sha256:e50326ce049b621467f317ab97415af8519efcb27db9c4f30c51c6b4ba2f300b",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-absent-basis-response.json"
+    },
+    {
+      "identity": "sha256:4c3047582f62c83ed9d9b87849916a4d444d381abca9c701e7843140df52aa27",
+      "path": "docs/design/cli/examples/v3-verify-limitations-update/show-fields-response.json"
+    },
+    {
+      "identity": "sha256:4de9d5dc8f9e8c25ac5c0838b5e351f38467d11ff41220a831fe434ece9487f2",
+      "path": "docs/design/cli/examples/records/README.md"
+    },
+    {
+      "identity": "sha256:523ee35620d9deb9b393ecb59c414bd25e240be81a28dc76f347d412e0201cb6",
+      "path": "docs/design/cli/examples/records/v2-minimal-change/change.json"
+    },
+    {
+      "identity": "sha256:20b6576be594afa31b410c5258d4d453521c6af6bc63925ceabf2e0814d1a1ef",
+      "path": "docs/design/cli/examples/records/v2-minimal-change/README.md"
+    },
+    {
+      "identity": "sha256:c13ffa7fe8d4189f2f30f7bb5c603c50c0e8d4d783dc394013d7db81883f32e0",
+      "path": "docs/design/cli/examples/records/v2-review-reassessment/after.json"
+    },
+    {
+      "identity": "sha256:df39c9d8cb532e8fa48f3590e3558a4308bdfd815aab09b68866247be35d2f1d",
+      "path": "docs/design/cli/examples/records/v2-review-reassessment/before.json"
+    },
+    {
+      "identity": "sha256:cda984a4940320d34d75cb38d4de1e56ffa0e6ea5f90b12edf452efc49355463",
+      "path": "docs/design/cli/examples/records/v2-review-reassessment/README.md"
+    },
+    {
+      "identity": "sha256:d479e679aad0c6437864c14a57898ecb83f296d9863f73a18962426f11a8cc23",
+      "path": "docs/design/cli/examples/records/v2-review-without-subjects/README.md"
+    },
+    {
+      "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+      "path": "docs/design/cli/examples/records/v2-review-without-subjects/review.json"
+    },
+    {
+      "identity": "sha256:6dde70e3cfe5d98bd2adfbef63f8ba11c6e7f33f82ed43f23cc06ecfaef3de18",
+      "path": "docs/design/cli/examples/records/v3-complete-store/change.json"
+    },
+    {
+      "identity": "sha256:b04252e754560e4d9e69f62bd1013f546051bf7dea603b15b5fe019c05f4579c",
+      "path": "docs/design/cli/examples/records/v3-complete-store/evidence.json"
+    },
+    {
+      "identity": "sha256:317d54c95b1eb05e19852be20bd193f765a1514446794848149a43464def4551",
+      "path": "docs/design/cli/examples/records/v3-complete-store/material-decisions.json"
+    },
+    {
+      "identity": "sha256:f91e6afaeb796d51896d54894f4c4f293307a55601030fb382808df4ddc82782",
+      "path": "docs/design/cli/examples/records/v3-complete-store/README.md"
+    },
+    {
+      "identity": "sha256:f35a2863075b2a1688ae1130dd310d728d78de994da6ec4e809d67d2f8f2ecf8",
+      "path": "docs/design/cli/examples/records/v3-complete-store/verify-report.json"
+    },
+    {
+      "identity": "sha256:29457ded3761783e9def2cfdadf30ea990fe1af55257b4617bc9c00126e27e6c",
+      "path": "docs/design/cli/examples/records/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/cli/examples/records/v3-finding-correction/stored-review.json"
+    },
+    {
+      "identity": "sha256:f34998232a1ef52b2ffb444f79a66705a1da5530490328d7102ea322897557fe",
+      "path": "docs/design/cli/examples/records/v3-finding-correction/updated-review.json"
+    },
+    {
+      "identity": "sha256:0a613a0439f4895028df96120e5d375a38d41e3d8223ed04522054118fbdc77a",
+      "path": "docs/design/cli/examples/records/v3-review-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/cli/examples/records/v3-review-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:238c7be9f06c47a6ada365c974a092bbfd17b41fc479d2b43fd015c665796758",
+      "path": "docs/design/cli/examples/records/v3-review-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:7b143a6b26d1b8b3db90f42f66915f065bf8e341f2a98ea69ea88d3d806227ec",
+      "path": "docs/design/cli/examples/records/v3-verify-limitations-update/after.json"
+    },
+    {
+      "identity": "sha256:57b19025fc02ca889012295cdc09ddbf0d83a452bafcf38260b88d8bcd05b40e",
+      "path": "docs/design/cli/examples/records/v3-verify-limitations-update/before.json"
+    },
+    {
+      "identity": "sha256:a49052ab501285bcdae2c0e1b3d388fbf2bb9ca3df8ab80d695da00b3c8c7d3c",
+      "path": "docs/design/cli/examples/records/v3-verify-limitations-update/README.md"
+    },
+    {
+      "identity": "sha256:4598cfe6e111925f02bb7da60167587512c28ae78b497cf215fba2a22b983508",
+      "path": "docs/design/cli/examples/records/v3-verify-without-evidence/README.md"
+    },
+    {
+      "identity": "sha256:99940ecf563be59427e1a4b56f7da9348949ebde8c84507192ba8793dcbf3bd3",
+      "path": "docs/design/cli/examples/records/v3-verify-without-evidence/verify-report.json"
+    },
+    {
+      "identity": "sha256:edff4ef7ce625a817047f979c27235f443005f11b18d177d7b02b78c88314775",
+      "path": "docs/design/cli/examples/records/v3-complete-store/reviews/final-code-review.json"
+    },
+    {
+      "identity": "sha256:2a42da7884e3aeff0020f814fcb36b98f88ad80fc385a8f52a2b5ddaf4aa0ca9",
+      "path": "docs/design/skill/examples/workflow/correction-cycle.mmd"
+    },
+    {
+      "identity": "sha256:0a2e2d921779377d4e0557ae6511526c6db91b3af22ea19a17dbca68cf4c8b7e",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:56d2526ac5f6d5a6d993c4d0ed07de969593463ede18e5f639b9a346e9b5c9fb",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:a206c5cf7e99d3bd0ad208575b3ebb68cd265454dcd5cde0eca0f2ecd5304a71",
+      "path": "docs/architecture/system/architecture.md"
+    },
+    {
+      "identity": "sha256:b68084a3e8be4ec1daa6976bf1f0ad7c3e0d1cf97058db60080f25489175caa3",
+      "path": "scripts/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:0691e1f65ca9b3a029ff7711d2dfe9c314b3b2bddf744a6837f699490fe25784",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:455e9bf110183bb510713faa845acb99d1f09b2d5a47bc151bab58e206ea77e4",
+      "path": "scripts/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:68665f50945f6e1f252deb6f02e65b8431094d31d491d098673dd6bac6a9140c",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:382010132e00438545e2b6d207ea9927db4c02d1b1e2a31975d36b54d67f6222",
+      "path": "scripts/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:ce1143e682d6227071b42bd60a0d3c642f6e0e3d49ea5c0a6cf399478b97a24f",
+      "path": "scripts/release_candidate.py"
+    },
+    {
+      "identity": "sha256:420cc141bb3e125443fcf9874d6479512a0d24955b23bbd8b41b51124da3ba0b",
+      "path": "packages/rigorloop/test/helpers/v3-fixture.mjs"
+    },
+    {
+      "identity": "sha256:c10cd261d2abfdf68f1b49ca65254c0dea493d2d72d4f0d6ce51bc086e1a4069",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:25d0a748a129276358a298a004ed0e70deaf7a5de8b578795bde8ce7b97d3fb3",
+      "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+    },
+    {
+      "identity": "sha256:10f7b38e69bec2c1b85ce2b3741af215fdf25b7d19c2acc9ae9cbb5b74d18354",
+      "path": "packages/rigorloop/test/record-store-workflow.test.js"
+    },
+    {
+      "identity": "sha256:6d7d86df4eceae63dee63dfa900f6d45c7075fe4169db2b18c91dc8c7d2618a5",
+      "path": "docs/plans/2026-09-12-design-directory-layout.md"
+    },
+    {
+      "identity": "sha256:480307c5371e23ccf8bd46d2d1712e8906d360431f8550091670d8ef103a3aa2",
+      "path": "scripts/model_layout.py"
+    },
+    {
+      "identity": "sha256:039df2859969a9c3e485665636780a05ed5461b3cdb367afda3cb1ad353cd819",
+      "path": "docs/changes/2026-09-12-unified-validation-model/directory-layout-evidence.md"
+    }
+  ],
+  "summary": "The complete bounded directory migration and reader repair satisfy the approved layout plan; the selector dependency finding is independently resolved with full passing regression evidence.",
+  "target": "code"
+}

@@ -1,0 +1,122 @@
+{
+  "assessment_scope": "Targeted final Design classification for actual PR BFR-GRANDFATHERED-REVIEW observations against57653f7b through0d65cd674fb2b02128887ff47b56d83541572a79. Exact nine listed spec subjects, receiving Design/System/Validation/Packaging/Installation/Records relationships and restored two historical spec bodies. Not full feature-format migration, structural-error waiver, runtime implementation approval or final readiness.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "final-legacy-design-classification",
+  "independence_basis": "Separate authorized nonauthor Design assessor inspected every exact full-branch diff for the nine reported grandfathered files, their current receiving model relationships and the two exact restored historical sources. Reviewer authored neither files nor restoration; prior assessments do not replace this per-file semantic classification.",
+  "judgment": "approved",
+  "limitations": [
+    "No file here is classified substantive historical requiring boundary-format adoption; that would require a real behavioral/structural amendment absent from these exact diffs. Future edits require their own current classification.",
+    "Historical v2/source-qualified text remains provenance under current adopted owners, not authorization to restore retired runtime support. Original judgments and grandfathered inventory bytes are unchanged.",
+    "This review records Design classification only. Corrected PR CI and final Code Review remain pending; no routing or lifecycle state changed."
+  ],
+  "rationale": [
+    "Observation count: parsing the actual boundary_first.validate JSON from the initial PR run yields nine review_required spec paths. Earlier narrative count10 was mistaken; original failed-run evidence remains unchanged, with this correction explicit. None of the nine classifications excuses the two separate structural errors; those were addressed by removing out-of-scope navigation-only changes through exact restoration.",
+    "Non-substantive historical — specs/multi-agent-adapters-first-public-release.md: only the existing Distribution notice link/label resolves to the preserved Packaging source map. Original installation behavior, requirements, scenarios, approval and historical release inputs are unchanged. No feature-format adoption is needed.",
+    "Non-substantive historical — specs/public-adapter-artifact-migration-examples-concise-skill-release.md: same existing Distribution notice navigation correction; original source-qualified meaning and release proof remain. No new requirement or historical behavior changes.",
+    "Non-substantive historical — specs/single-authored-skill-source-generated-output.md: existing Distribution notice navigation changes to preserved source map only; original source/generation obligations and identities remain unchanged.",
+    "New-profile-only, historical remainder preserved — specs/change-record-catalog-registration-and-bounded-read-model.md: dependency navigation names Validation as current receiver of selection/output responsibilities with explicit historical source-qualified judgment preservation. No existing catalog/query requirement or Workstream sequencing changes.",
+    "New-profile-only, historical remainder preserved — specs/rigorloop-cli-new-change.md: existing installer dependency resolves to CLI Installation while original lockfile dependency remains historical; current recording mechanics still resolve to CLI/Records. No new-change behavior, output, test obligation or original approval changes.",
+    "New-profile-only, historical remainder preserved — specs/rigorloop-cli-package-and-codex-init.md: current installation receiver is CLI Installation, consumed representation is Packaging, and the existing Distribution notice points at preserved source map. Original historical first-slice and retained package/command/exit obligations are unchanged; old OpenCode/state-writing semantics are not reopened.",
+    "New-profile-only, historical remainder preserved — specs/rigorloop-workflow.md: selected authoring/Workflow/Assessment/Records navigation follows the approved hierarchy and directory; Test ownership resolves to Validation with original TEST criteria and explicit implementation/Verify adoption boundary. Existing historical versioned procedures/IDs remain their own contracts, not current v3 runtime authority. Current adopted Records/CLI and Constitution govern runtime; no legacy grammar conversion or semantic stage change occurs in this amendment.",
+    "New-profile-only, historical remainder preserved — specs/skill-contract.md: selected owner paragraph follows approved Design/Workflow/Assessment/Validation/Records receivers and current paths. Historical clauses and unmigrated plan/boundary obligations remain; no general Skill pilot expansion, user CLI requirement or installation adoption is introduced.",
+    "New-profile-only, historical remainder preserved — specs/workflow-skill-artifact-location-map.md: existing selected Design owner link follows physical relocation; preserved legacy workflow-context keys remain compatibility metadata for their existing document contracts. No discovery kind, schema, routing mechanism or customer adoption is added.",
+    "Restored unsupported/pending sources: independently compared specs/governed-lifecycle-cli.md and specs/progressive-boundary-first-skill-guidance.md to57653f7b and both are byte-exact. Former owning-change marker and original amendment references retain historical provenance. This initiative no longer amends either body or supplies marker adoption; current model authority/navigation remains elsewhere. No validator, grandfather snapshot, schema or retired-record reader was changed to avoid failure.",
+    "Coherence and downstream applicability: Design explicitly permits exact new-profile-only and non-substantive historical classifications while retaining unselected formats and source obligations. Receiving model behaviors/scenarios/examples remain unchanged from their approved package. These classifications support current reliance for the nine exact amendments only; the actual corrected PR boundary command must still pass structurally, then fresh whole-change Code Review and Verify must settle their separate duties."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b7a602cbcc6a50e16b8876a5c12c3b68b6241b60f0bafdb752c32c1d977c03bd",
+      "path": "specs/change-record-catalog-registration-and-bounded-read-model.md"
+    },
+    {
+      "identity": "sha256:aeb28a72f794bf9771551f1e3b7f9ff2e8f3ba5b7debdf6f1da6c220021cfda8",
+      "path": "specs/multi-agent-adapters-first-public-release.md"
+    },
+    {
+      "identity": "sha256:f3fe5801ed5f28dfe50335d0f958394bb4d3410a58847abdf1007f011c472ba3",
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+    },
+    {
+      "identity": "sha256:8fbcde1c67e00b855b6837583300a326362d6a44eaae73caab3135f136a3f572",
+      "path": "specs/rigorloop-cli-new-change.md"
+    },
+    {
+      "identity": "sha256:61032b715680a1f0a76e420e45c7d3bd12ea4c063783d49ca864da4fd9ebfbc9",
+      "path": "specs/rigorloop-cli-package-and-codex-init.md"
+    },
+    {
+      "identity": "sha256:d22a3ef49eaea6d9fbbc85739be51e402ad1c84fa2f46ba67fb3f45c1c2f141b",
+      "path": "specs/rigorloop-workflow.md"
+    },
+    {
+      "identity": "sha256:4ac4ac53451c729f279110e85c0711b98b0f175123be691501379340dcc35c81",
+      "path": "specs/single-authored-skill-source-generated-output.md"
+    },
+    {
+      "identity": "sha256:e5cad273e9648487ef6d998642b01c7dcab41bdec72e01f2230b6dcc9e48080d",
+      "path": "specs/skill-contract.md"
+    },
+    {
+      "identity": "sha256:ddb345daede44dad149226c928d2dd138eb65d03ec8d397c3aa2b4ef05680c87",
+      "path": "specs/workflow-skill-artifact-location-map.md"
+    },
+    {
+      "identity": "sha256:4dff8478a17c5689516f22ad9f29d92311a38e2f73e84c40319f9bf5faab5714",
+      "path": "specs/governed-lifecycle-cli.md"
+    },
+    {
+      "identity": "sha256:983a6cab29dd12ff18866f06a2a818ab9c198dd3a3ccddccc06c8e95516d2dd2",
+      "path": "specs/progressive-boundary-first-skill-guidance.md"
+    },
+    {
+      "identity": "sha256:1c1d62ada1d5b45e1dc87db59cedd8ba13d4e90a0c6afe535ae46d5553f7deea",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:0b8d25d6f4555a27f15a0d8f39e10161ca932fc1c76470433e465cec8e4acb92",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:4992f7f5cbf3e2b8dd2cb8d862c2a662bb0dd0540b29d2e75b0e0293fd551eaf",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:b4d942ab3289a61ba8b3f7c3bd3452c7bd75c22218d7e0b9278362f73a33e96d",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:9d63c43239c192cf09613d7ed26c881830f77abb174dd142f2e262fcd5bcabfd",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:e110dc65fec990cf31228d20e7e2fa25b74fbc35c74413bbbb4bd2a2fdbe9884",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-map-design-review.json"
+    },
+    {
+      "identity": "sha256:b80af37047c4a3cff87b729f592826984d731263e69d3d1accc359984d6644a2",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:ffaa1680e66f0d4f008bbbb9ca5fdbeefb5f7e764b0440716cd3416930b2b20b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-design-review.json"
+    }
+  ],
+  "summary": "Nine actual grandfathered observations classified independently: three non-substantive historical navigation amendments and six new-profile-only owner/navigation amendments preserving historical remainder. Neither restored legacy spec is adopted or given new marker authority.",
+  "target": "design"
+}

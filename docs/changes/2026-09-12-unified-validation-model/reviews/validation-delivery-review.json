@@ -1,0 +1,46 @@
+{
+  "assessment_scope": "Formal Delivery Review of registered primary-plan singleton docs/plans/2026-09-12-unified-validation-implementation.md. Upstream directory-design-review supplies the exact current model package and original design-review preserves the complete approved logical semantics. Review concerns remaining Validation allocation and final initiative integration, not runtime implementation or work initialization.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "validation-delivery-review",
+  "independence_basis": "User-authorized separate reviewer agent independently read the complete plan authored by root and did not author or edit the plan, approved model amendment, implementation allocation or work state. Earlier independent reviews are separate assessments and are not authorship of this plan.",
+  "judgment": "approved",
+  "limitations": [
+    "No implementation, process cleanup success, actual case independence, generated candidate success, performance improvement or final Verify is claimed. All C1–C10 runtime commands are future proof allocations, not executions during this review.",
+    "Exact case audit, removal safety and additional actual-reader discoveries remain implementation obligations within the approved scope. New undecidable behavior or unapproved compatibility changes require the appropriate upstream correction.",
+    "This review initializes no work and changes no activity. The user requested plan authoring/review; implementation, PR, publication and remote operations do not begin from this record alone."
+  ],
+  "rationale": [
+    "Authority and scope: pass. Primary plan matches registered exact identity. Current context supplies approved original and directory Design Reviews; relocated Validation remains the approved governing contract, including TEST-SR-01–14, VAL-SR-01–18 and source maps. The completed directory plan/work retains its original identities and review meaning; five distinct validation-m1 through validation-m5 items allocate only remaining work.",
+    "Requirement traceability: pass. The Requirements covered table maps every VAL-SR and scoped TEST group to milestones and TG-CACHE/EXEC/COMPOSE/CASES/ADOPT/FINAL. Stable SYS/ENG/SKL composition obligations join M5 rather than reopening unselected product features. Every milestone identifies governing requirements, concrete components, dependencies, required command groups, completion outcome, review handoff and recovery.",
+    "Sequencing: pass. M1 retires cache/measurement before isolation auditing; M2 extracts selected execution into the Design-named internal module with graph/process proof; M3 composes broad/main into that engine and retires historical runtime readers; M4 enables audited real cases; M5 completes source and public-consumer adoption with packed-product proof. Temporary dual scheduling exists only as an explicit intermediate state before M3. Independent milestone review and correction closure separate slices.",
+    "Cache and retirement protection: pass. TG-CACHE observes actual repeated execution including second-run failure, no-write retired-input rejection and preserved current v3 negatives. Default-cache deletion requires a fresh no-symlink/content inspection, while arbitrary caches and historical evidence remain untouched. Exact seven specification/test-specification pairs, cache ADR, cache helper/test/measurement functionality, classification checker/readers and redundant scheduler membership are mapped to retained proof or explicit retirement. Mixed source remainders, immutable old evidence and unknown protection remain protected. TEST-SR-14 prior scope is explicitly separate from VAL-SR-13.",
+    "Executor proof: pass. TG-EXEC allocates complete prelaunch closed-vocabulary and graph validation, trusted command basis, missing/cyclic dependencies, resource/isolation conflicts, stable output and first-required-failure meaning, fail-fast unfinished work, positive overrides/defaults, controlled child/grandchild cleanup, five-second grace, unavailable/invalid result paths and unrelated-resource preservation. Real wrapper/module boundary proof complements process fixtures; a success mock or self-derived expected result is not sufficient.",
+    "Composition proof: pass. TG-COMPOSE preserves distinct mode/phase identity, preflight and focused gating, diagnostic failure origin, deleted/shared source selection, reason-preserving deduplication, Release check-ci interception and shared build/validation output with explicit success dependency. Actual jobs=1 and jobs=2 broad runs supplement isolated wrapper regressions. Runtime operation with historical classifications absent and override rejection demonstrate removal rather than mere changed documentation.",
+    "Case adoption: pass. M4 explicitly audits normal loaders/custom hooks, class/module/setup state, fixtures, environment, nested subprocess demand and external resources for all three selected real suites. It requires each surviving case through its original Class.test_method selector, complete direct/individual/sequential/concurrent discovered-started-completed set agreement, actual overlap and diagnostic preservation. Remaining justified external constraints may serialize; metadata-only changes, universal serial declaration and unaudited populations cannot satisfy completion. Ordinary ordered scenarios remain one independent case.",
+    "Command feasibility and observation boundaries: pass. Existing named lifecycle/metadata/selector, skill/resource, model, adapter/npm and full CLI test entrypoints are concrete repository commands; only explicitly allocated test-validation-execution.py is new. Direct source inspection corroborates current cache dispatch, embedded selected/broad scheduling and historical baseline readers. C4 owns controlled graph/process/three-suite integration, while C5/C6/C7/C8/C10 prove real composed candidates. Conditional C9 retains Release authority without live publication. No new public discovery service or runner CLI is invented.",
+    "Consumer and product integration: pass. M5 names current governance/model readers, ten existing skill consumers, shared source and projections, FU-012 and actual generated archives/packed CLI. TG-ADOPT preserves selectively loaded portable criteria and optional individual-skill CLI use, resource/hash parity, actual command/record/installation boundaries and separate assessment/publication authority. Canonical correction and regeneration precede candidate claims; unknown live readers block removal.",
+    "Final closeout: pass. TG-FINAL and a distinct lifecycle checkpoint require all directory and five Validation milestones/corrections, fresh independent final whole-change Code Review of the complete hierarchy/directory/Validation diff and interactions, then separate Verify of current source/generated/evidence authority. Earlier reviews or passing local subsets cannot replace these gates. Failed proof remains failed until an owned correction or supported applicability disposition.",
+    "Boundaries and recovery: pass. All eight Validation dimensions and combined hazards have group-level allocation. Coherent source/reader/test restoration preserves unrelated and historical state; jobs=1 cannot conceal missing semantics. Unknown behavior or a new public interface routes to Design, while settled fixture/isolation correction remains M4. No speed threshold, new ledger, hosted worker, cache replacement, publication or customer-governance adoption is authorized.",
+    "No material Delivery findings remain. This independently recorded plan approval supports only the requested authoring/review handoff; root retains workflow routing and the user-selected execution boundary."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+      "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+    }
+  ],
+  "summary": "The five-milestone remaining Validation plan adequately allocates the approved independent-case execution, cache and source retirement, product integration and complete-initiative closeout obligations.",
+  "target": "delivery"
+}

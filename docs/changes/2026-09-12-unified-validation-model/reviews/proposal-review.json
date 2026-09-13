@@ -1,0 +1,41 @@
+{
+  "assessment_scope": "Complete proposal against user intent, Constitution, Vision and its cited ownership/operational/code basis. Formal-lifecycle/manual; PRR1G-recorded-context-gated.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review",
+  "independence_basis": "User-authorized separate reviewer agent proposal-reviewer did not author or edit the contribution authored by root; it independently inspected the complete proposal and cited basis.",
+  "judgment": "approved",
+  "limitations": [
+    "Direction-level review only; exact retirement inventory, compatibility, implementation, suite parallel safety and performance remain unproved downstream work.",
+    "Manual isolated assessment does not start Design, update activity, grant external permissions or establish final verification/branch readiness."
+  ],
+  "rationale": [
+    "Challenge and goals: pass. Fragmented criteria and execution authority cause maintenance burden; consolidation, independence, concurrency and actual cleanup directly address it.",
+    "Scope and scope preservation: pass. All user goals remain explicit: one Validation owner merging Test and execution, independent tests and bounded parallelism, no validation cache, and removal of superseded designs/scripts/exclusive machinery. Consumer reconciliation is a same-slice dependency; unrelated cleanup and dependency-download caches are excluded. scope_budget_context applies and passes the explicit treatment/boundary table. No hidden deferral. vision_exception_context and standing_artifact_context are false; no trigger ambiguity.",
+    "Governing principle and direction: pass. A single necessary contract combines proof quality and execution while product invariants, Delivery allocation, assessment/applicability, recording and operational permissions retain their owners.",
+    "Feasibility: pass. Exactly one embedded Feasibility section supplies assessment, evidence and constraints without an unresolved proposal-level blocker. Test already defines TEST-SR-01 through TEST-SR-14 (the latter scoped to its selected cleanup); System identifies operational sources. Linked selection, preflight and parallelism contracts provide starting points. validation_selection.py declares parallel_safe metadata; validate-artifact-lifecycle.py imports and calls validation_cache.py. Thus coordinated retirement is credible without claiming a complete caller inventory or existing suite-wide parallel safety.",
+    "Material impact: pass. The changed Test-separation direction and potential cache-removal runtime cost are disclosed. Removal requires replacements or explicit retirement with retained ownership and protection; historical record bytes/identities/judgments remain intact, and required current reliance basis must survive or reliance explicitly cease. No unsupported performance or deletion quota.",
+    "Vision alignment: aligned. Understandable current authority, protection and durable evidence support traceable/resumable engineering without a hosted runtime, new gate or mandatory test ledger.",
+    "Downstream authority and requested decision: pass. Exact dispositions, resource policy, compatibility, realization, sequencing and proof allocation remain with Design and Delivery. Adoption requires reviewed implementation and successful Verify. No required correction or recommended proposal edit.",
+    "Evidence remained bounded to the complete proposal, standing authority and its cited current models/contracts/code; no project-map reliance because the proposal records its pre-v3-runtime limitation."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:0287b251bc487a51f9cfd5031952c3711d124d0efc0a44e1e04d79a63d9dc47d",
+      "path": "docs/proposals/2026-09-12-unified-validation-model.md"
+    }
+  ],
+  "summary": "A coherent combined validation direction with required protection-preserving cleanup is sufficiently bounded and feasible for Design.",
+  "target": "proposal"
+}

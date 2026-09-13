@@ -3259,11 +3259,33 @@ Validation target: Run tests.
         self.assertCloseoutPasses(root)
 
     def test_ci_script_keeps_review_regressions_and_validates_current_record_roots(self) -> None:
-        ci_script = (ROOT / "scripts" / "ci.sh").read_text(encoding="utf-8")
-        self.assertIn("test-review-artifact-validator.py", ci_script)
-        self.assertIn("review_artifact_cmd=(python scripts/validate-change-metadata.py)", ci_script)
-        self.assertNotIn("review_artifact_cmd=(python scripts/validate-review-artifacts.py)", ci_script)
-        self.assertIn("docs/changes/", ci_script)
+        import os
+        from validation_execution import compose_mode
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            subprocess.run(['git','init','--quiet',str(root)], check=True)
+            (root/'README.md').write_text('before')
+            subprocess.run(['git','-C',str(root),'add','.'], check=True)
+            subprocess.run(['git','-C',str(root),'-c','user.name=Fixture',
+                '-c','user.email=fixture@example.invalid','-c','commit.gpgsign=false',
+                'commit','--quiet','-m','Fixture'], check=True)
+            (root/'README.md').write_text('after')
+            previous = Path.cwd()
+            try:
+                os.chdir(root)
+                with patch.dict(os.environ, {'REVIEW_ARTIFACT_ROOTS':'docs/changes/current',
+                                            'RIGORLOOP_CI_BROAD_SMOKE_STUB':'0'}):
+                    plans = {p.check_id:p for p in compose_mode('broad-smoke', root/'output')}
+            finally:
+                os.chdir(previous)
+            self.assertEqual(plans['broad_smoke.review_artifacts.regression'].args,
+                             ['python','scripts/test-review-artifact-validator.py'])
+            check = plans['broad_smoke.review_artifacts.changed_roots']
+            self.assertEqual(check.args, ['python','scripts/validate-change-metadata.py',
+                                         'docs/changes/current/change.json'])
+            self.assertEqual(check.phase, 'preflight')
+            self.assertIn(check.check_id, plans['broad_smoke.review_artifacts.regression'].dependencies)
 
 
 

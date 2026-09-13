@@ -1,6 +1,6 @@
 # RigorLoop Project Map
 
-Current design-authoring and composition navigation: [Design](design/design/design.md) owns unified authoring, model conventions and validation mapping; [System](design/system/system.md) owns the bounded composition view. Canonical `skills/design/` replaces the two old authors; remaining specs, Level 2 architecture and ADR responsibilities retain their declared contracts. Historical inventories below do not establish the current public author list.
+Current design-authoring and composition navigation: [Design](design/skill/authoring/design.md) owns unified authoring, model conventions and validation mapping; [System](design/system.md) owns the bounded composition view. Canonical `skills/design/` replaces the two old authors; remaining specs, Level 2 architecture and ADR responsibilities retain their declared contracts. Historical inventories below do not establish the current public author list.
 
 ## Skill owner navigation
 

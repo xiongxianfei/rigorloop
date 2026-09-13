@@ -1,0 +1,100 @@
+{
+  "assessment_scope": "Independent complete validation-m4 Code Review against5c9de93b and approved validation-delivery-review/M3, with unchanged Validation Design and directory relocation applicability. Includes current38-test executor basis, eight catalog identities for exactly three suites, explicit controlled-command fixtures, parent serial/demand and command-unit corrections, actual selected wrapper and full broad evidence. M5 and final initiative gates excluded.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "validation-m4-code-review",
+  "independence_basis": "User-authorized separate nonauthor reviewer inspected root implementation and tests, ran seven focused real-process/constraint checks, and independently compared final proof clone bytes and evidence subjects. Reviewer authored no implementation, tests, Design or plan.",
+  "judgment": "approved",
+  "limitations": [
+    "Final complete broad proof ran in an identical-source Linux filesystem checkout; previously documented mounted-filesystem timeout limits remain and no performance promise or mounted-filesystem broad success is claimed.",
+    "Current broad proof has script-only dirty scope and therefore no changed-current-root preflight leaf; M3 separately proved that conditional root branch.286 is the actual required current population, not a missing conditional task.",
+    "Only these three suites have complete case-level adoption. M5 exact source/consumer cleanup and product integration, fresh final whole-change Code Review and distinct Verify remain mandatory. This record does not claim PR readiness, final closeout or customer-policy activation."
+  ],
+  "rationale": [
+    "Spec alignment — pass: eight selected/broad/main catalog identities adopt only selector163, lifecycle108 and metadata7 cases. Original scripts/loaders remain the authority; unit type and literal command/adapter bases are catalog-owned. Actual scenario subtests stay inside their case and no additional suite is declared independent. VAL-SR01/02/04/05/07–10/12/14/17/18 and the bounded M4 population allocation are fulfilled.",
+    "Test coverage — pass: all three actual normal full entrypoints agree with individually executed jobs1 and reverse-order jobs2 identity sets. Historical case population evidence contains278 unique cases:108 lifecycle,7 metadata,163 selector. Captured standalone C4 logs show equal discovered/started/completed counts and no overlap at jobs1, actual overlap at jobs2 for each suite. Original direct suites independently remain163/108/7 passing. No case was retired, skipped or replaced by a stub to establish adoption.",
+    "Edge cases — pass: independently ran five real adapter regressions covering zero/duplicate/loader failure, skipped/missing/disagreeing workers, stale/unknown receipt rejection, failed-case consumer blocking, and original custom pattern/dynamic fixture discovery; all5 passed3.053s. Later independently ran serial/demand marker proof and contradictory case-command rejection with recomputed matching basis; both pass. Group dependencies and diagnostic ordering rebind to every required case, preserving required consumer blocking.",
+    "Error handling — pass: collection runs under the common process controller with configured timeout, not as passing test proof. Worker receipt requires exact identity, one actual run, complete start/stop, successful outcome and no skip; every fresh launch removes old receipt. Missing/malformed/unknown/disagreeing receipts reject even when process returns0. Original runners own setup/teardown/subtests and failure diagnostics; nested runners are not intercepted. Existing cleanup/signal/timeout/encoding and stable failure semantics remain shared.",
+    "Architecture boundaries — pass: internal adapter runs the normal __main__ entrypoint and intercepts only its outer TextTestRunner. Fresh subprocess per case isolates module/environment mutations; nested workers consume the inherited share. Catalog unit expansion retains explicit parent serial flag and demand rather than promoting work automatically. Only supported Python script argv may declare this unit; no public runner or daemon added.",
+    "Compatibility — pass: original direct/name/pattern entrypoints remain usable; per-case results retain actual bootstrap argv and a distinct usable original-script rerun. Synthetic wrapper fixtures explicitly declare their controlled scripts command units, while actual repository wrapper metadata expansion and full broad execution prove real adoption separately. This separation preserves existing wrapper-test purpose without treating synthetic bodies as real individual-suite proof.",
+    "Security/privacy — pass for scope: actual suite isolation uses owned temporary Git/record/workspace fixtures and fresh processes; shared source is read and scenario order remains inside each test. Receipt files and captures are invocation-owned and removed after execution, not a validation cache. No external service or shared installation destination required; no new authorization/publication path. Process isolation retains the supported Linux ownership boundary and does not claim a malicious-code sandbox.",
+    "Derived artifact currency — pass for scope: this slice changes internal executor/catalog/regression source only. No published skill or generated package source is altered. Source/consumer retirement and product candidate coherence remain M5. Durable population JSON is explicitly historical current-run evidence and has no active discovery or result-reuse reader.",
+    "Unrelated changes — pass: complete diff against5c9de93b is limited to case adapter/catalog/fixtures/regressions and demonstrated serial/resource and command-shape corrections. M3 wrapper composition and historical classification/cache retirement remain intact. M4 changes no source-displacement authority; the separately identified M5 architecture-map clarification requires its own bounded Design assessment.",
+    "Validation evidence — pass: validation-m4-execution is passed and all10 subjects independently match current SHA256 bytes. Full standalone36-test basis plus two later red/green constraints produces current38-test entrypoint, which ran unfiltered as a required command in both final broad invocations. C5 jobs1 and C6 jobs2 each passed286 required tasks (278 individual cases plus8 other commands), at336.13s and253.12s respectively. Independently compared all changed scripts with exact Linux proof clone and found no byte differences. git diff --check passed. No supported unresolved finding; root retains routing authority."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:a404a722981986cfdc7a56aa486e16bca763fcb422a203098c27b71d658916f7",
+      "path": "docs/changes/2026-09-12-unified-validation-model/validation-m4-evidence.md"
+    },
+    {
+      "identity": "sha256:0c77ac8f2bac4ba5cfefa119401954d285ed4828d33e125bf5206f34e733ec68",
+      "path": "docs/changes/2026-09-12-unified-validation-model/validation-m4-case-populations.json"
+    },
+    {
+      "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+      "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+    },
+    {
+      "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:b0ade111be6b4ec9ab8704a04a91737843ad91af89afff2a86c78a8a0c669fb4",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:15d960b886b1dc97a9299e1e43813538f895521bb5ebd56acb445dd45ab1d54f",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:2da1cb956074e8a3e28a35692a1b3d67ec80dae337ff5bb07078f0284bd5c28f",
+      "path": "scripts/test-artifact-lifecycle-validator.py"
+    },
+    {
+      "identity": "sha256:1c584c2b30e46afba61f06502da74a11801b394333061e052cf1ebcd20e2c01e",
+      "path": "scripts/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:0881ff3de0134ccd73df2218c3d7892869d36db1c8004dcfe812df9dfe00bdaf",
+      "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+    },
+    {
+      "identity": "sha256:9aa81165db0ec7c717f8c910d5428d44c00fd878c6f3661a0f4794b01c21c32b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-delivery-review.json"
+    },
+    {
+      "identity": "sha256:94fbae7ecb136d8cd20cffaf580f3bba630ca6747f98c11e50f2f565f28d53ce",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m3-code-review.json"
+    },
+    {
+      "identity": "sha256:b80af37047c4a3cff87b729f592826984d731263e69d3d1accc359984d6644a2",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:ffaa1680e66f0d4f008bbbb9ca5fdbeefb5f7e764b0440716cd3416930b2b20b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-design-review.json"
+    }
+  ],
+  "summary": "M4 approved: all278 surviving cases in the three selected suites have normal-loader discovery, fresh-process individual execution, receipt validation and observed complete sequential/concurrent proof. No unresolved findings.",
+  "target": "code"
+}

@@ -1,0 +1,308 @@
+{
+  "assessment_scope": "Formal whole-package Design reassessment against accepted hierarchy-proposal-review: twelve complete model documents assessed in first pass, exact author corrections and scoped consumer changes reassessed, retained Test meaning compared to original source and directly relevant unchanged examples inspected. Approval is for this exact Design package only.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: medium. Scope: cross-artifact. Affected artifact IDs: packaging, installation, release, system-architecture, design-reconciliation. Owning stage: design. Locations: Packaging Stable representations Failure classes row; Release Context and Scope Installation relationship row; mixed architecture Distribution replacement boundary and Related artifacts; reconciliation exact shared representation allocation. Packaging retains executable installer exit classes and state-path diagnostics. Release actively assigns filesystem mutation and archive trust to Distribution via the Packaging link; architecture current navigation directs combined installation authority there. Reconciliation says Packaging owns proxy representation although its actual contract is Installation-owned. These contradict the approved CLI executable boundary and the new owners.",
+      "id": "hierarchy-installation-owner",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Move the complete installer failure-class contract to Installation without losing its guarantees; make active Release/architecture references distinguish Packaging artifact generation/representation from Installation acquisition, writes and diagnostics; correct reconciliation proxy ownership. Safe resolution is a bounded Design/consumer correction preserving historical source-qualified references and stable DIST IDs. No upstream decision needed.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "hierarchy-installation-owner resolved: the exact Failure classes contract now resides in Installation Diagnostics alongside proxy diagnostics. Packaging owns archive generation/representation; Release and mixed architecture current links direct acquisition, destination mutation and diagnostics to Installation. Reconciliation assigns proxy representation correctly. The runtime anchor is corrected to the actual Installation section. Default conflicts, force scope, no state interpretation, retained originals and trust protections remain unchanged. Current corrected identities are captured in this renewed design-review subject set; original finding subjects and problem statement remain preserved."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:b28f64b8b24af9809011bde5b52cd13404b7ea35d5031176045d2a0dd3b06df1",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:2af9096138cdf6149f7b64ee018f1b55f471d3e74f6a88c45234b7e481e3ca03",
+          "path": "docs/changes/2026-09-12-unified-validation-model/design-reconciliation.md"
+        },
+        {
+          "identity": "sha256:d05191c5f1a09f81f6c04ef12c04b8fb6f578702ee6fd06eb533ca3318458ea8",
+          "path": "docs/design/installation/installation.md"
+        },
+        {
+          "identity": "sha256:0681726f4a24a972d73a156e4d7d09f90f4928736065cd7b189f1e3f86572232",
+          "path": "docs/design/packaging/packaging.md"
+        },
+        {
+          "identity": "sha256:27547bc4281c2dc74810e2ea6aedd68b874302251e407d0eaf308a36d8008ec1",
+          "path": "docs/design/release/release.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity: medium. Scope: cross-artifact. Affected artifact IDs: workflow, record-format, review-closeout. Owning stage: design. Locations: Workflow Building Block View Current judgment and open findings row; Temporal/retry and External/environment acceptance scenarios. Active prose requires a retained origin basis for every finding and preservation of current fields and origin. Workflow structured-assessment coordination, RF-SR-13 and RC-SR-08 instead define editable current v3 findings with immutable IDs and no origin snapshot. A downstream implementation cannot satisfy both current prescriptions.",
+      "id": "hierarchy-v3-finding-semantics",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Reconcile current Workflow finding language with v3 current editable fields and immutable finding IDs; distinguish immutable change-level blocker origins and historical provenance. Preserve substantive unresolved findings, evidence and required outcome without inventing a v3 origin field. Inspect directly related current scenarios for the same contradiction. No upstream decision needed.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "hierarchy-v3-finding-semantics resolved: Workflow current-object, retry, environment and diagram explanations distinguish immutable v3 finding IDs/editable current fields from immutable change-level blocker origins. Records and Assessment remain the authoritative matching owners. Historical examples are explicitly non-operational and keep their original meaning. Current corrected identities are captured in this renewed design-review subject set; original finding subjects and problem statement remain preserved."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:8678c6cb7e6e8599770e5a010039c2c4185ba9af08f4a0f07fdb69f9d3961d85",
+          "path": "docs/design/record-format/record-format.md"
+        },
+        {
+          "identity": "sha256:1bfa89fdb4bf9057c6cb78994a92d1b503ca50c39bf8454484be64aae381a777",
+          "path": "docs/design/review-closeout/review-closeout.md"
+        },
+        {
+          "identity": "sha256:ae0ae099e6a9fa20aa4c8bd22e3a94b6fe45debebaa95675f7e3af57657e5e68",
+          "path": "docs/design/workflow/workflow.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity: medium. Scope: cross-artifact. Affected artifact IDs: validation, system, published-skill-first-repository-simplification, published-skill-first-repository-simplification-test, design-reconciliation. Owning stage: design. Locations: Validation Proof quality maintenance and evidence; System necessary-design map Test complete retained-contract table reference; both published-skill-first Necessary-design cleanup applicability notices. Original HEAD docs/design/test/test.md Necessary-design consolidation proportionate proof contains a complete five-row scoped retained contract and following source-only/package/runtime applicability. The replacement summary omits such explicit obligations as why deterministic proof is appropriate, simpler existing owner considered, precise population bounds and source-only impact allocation, yet consumer amendments assert the complete scoped R14/R17-20/R22 replacement exists. VAL-SR-13 for this new initiative cannot silently replace the earlier separate scope.",
+      "id": "hierarchy-test14-preservation",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Restore the complete retained TEST-SR-14 meaning and precise applicability in Validation, including its five-row contract or a semantically complete equivalent and source-only/package/runtime distinctions. Keep the earlier scope separate from VAL-SR-13 and update exact consumer anchors/maps. Preserve historic IDs and RC-SR-15 reuse authority without a new ledger or mandatory savings benchmark. No upstream decision needed.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "hierarchy-test14-preservation resolved: independently compared original HEAD Test necessary-design prose with current Validation. Its full five-row contract and following source/package/runtime/applicability paragraphs match verbatim except the guidance owner label. Earlier TEST-SR-14 scope remains distinct from VAL-SR-13; protected failure, simpler owner consideration, retained detection, explicit retirement, unknown impact, recovery and honest measurements are preserved without a new ledger or mandatory benchmark. Current corrected identities are captured in this renewed design-review subject set; original finding subjects and problem statement remain preserved."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:2af9096138cdf6149f7b64ee018f1b55f471d3e74f6a88c45234b7e481e3ca03",
+          "path": "docs/changes/2026-09-12-unified-validation-model/design-reconciliation.md"
+        },
+        {
+          "identity": "sha256:50c5502225b0d6f2e987e161053fd69adf99e137d46dfa2a0a7d666a6d924c06",
+          "path": "docs/design/system/system.md"
+        },
+        {
+          "identity": "sha256:6516be5fde34655e5dd6046bc60cbb4f24a2797bc0964bea474cc0ecbbc69c66",
+          "path": "docs/design/validation/validation.md"
+        },
+        {
+          "identity": "sha256:d2cc15d3fc370cd8501b9adf60553fb580c66554d17538bcfcb61b103bb5fec3",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:802e8f9b470ce150447a7aaf8e9f7348d0a84d9b1d9e2e1cfeeaaf22db31338b",
+          "path": "specs/published-skill-first-repository-simplification.test.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review",
+  "independence_basis": "User-authorized separate reviewer agent independently read the Design package authored by root and did not edit any reviewed model or consumer. Prior proposal review does not supply Design authorship or component approval.",
+  "judgment": "approved",
+  "limitations": [
+    "No runtime implementation, package build, process isolation, measured speedup, hosted release, full current-suite execution or final Verify is claimed. Concrete delivery allocation and implementation proof remain downstream responsibilities.",
+    "Mixed legacy artifacts are approved only for declared current amendments and relied-on interactions. Unchanged examples were assessed proportionately for ownership/semantic compatibility, not all reexecuted or newly certified against runtime schemas.",
+    "This isolated review writes only its evidence, dispositions and applicability. It does not advance activity, establish operational adoption or authorize plan/implementation/PR work beyond the user-selected Design scope."
+  ],
+  "rationale": [
+    "The approved hierarchy proposal remains sha256:05a1b38d6bb758ed75e716f1aca956f79718edb1a39db51e99c435596d17a9b3. Three parents and fourteen logical children have concrete behavioral or engineering homes; detailed stable models remain delegated owners rather than new placeholder files. Individual skill invocation remains possible without CLI, while current governed recording and the selected CLI installation method require it.",
+    "Skill capability contracts define input/output, failure and handoff behavior. Engineering Development specifies repository development and integrated proof for both published outputs while Skill Assessment retains shared independent judgment policy. Explicit retained proposal and plan/boundary links now make the unmigrated specialist ownership directly discoverable.",
+    "Validation preserves TEST-SR-01–14 and adds independent case execution, explicit isolation, bounded shared scheduling, failure/timeout/descendant cleanup, no persistent cache and reader-based required cleanup. Conservative serial execution where independence is unknown is a safe compatibility boundary, not a substitute for the selected independent-case work. No runtime safety or measured performance result is inferred from Design.",
+    "hierarchy-installation-owner resolved: the exact Failure classes contract now resides in Installation Diagnostics alongside proxy diagnostics. Packaging owns archive generation/representation; Release and mixed architecture current links direct acquisition, destination mutation and diagnostics to Installation. Reconciliation assigns proxy representation correctly. The runtime anchor is corrected to the actual Installation section. Default conflicts, force scope, no state interpretation, retained originals and trust protections remain unchanged.",
+    "hierarchy-v3-finding-semantics resolved: Workflow current-object, retry, environment and diagram explanations distinguish immutable v3 finding IDs/editable current fields from immutable change-level blocker origins. Records and Assessment remain the authoritative matching owners. Historical examples are explicitly non-operational and keep their original meaning.",
+    "hierarchy-test14-preservation resolved: independently compared original HEAD Test necessary-design prose with current Validation. Its full five-row contract and following source/package/runtime/applicability paragraphs match verbatim except the guidance owner label. Earlier TEST-SR-14 scope remains distinct from VAL-SR-13; protected failure, simpler owner consideration, retained detection, explicit retirement, unknown impact, recovery and honest measurements are preserved without a new ledger or mandatory benchmark.",
+    "Independently compared all 67 model example files to HEAD: all byte-identical. Read both example indexes, correction-cycle diagram and directly relevant v3 finding correction descriptions/request/stored pair/full response. Exact request values transform only the stated finding fields and reproduce the updated record; full response equals that finding. These samples directly corroborate the corrected finding/blocker boundary. Other unchanged examples retain unchanged parent serialization/dispatch scope; this hierarchy change does not reinterpret them or assert their execution.",
+    "Release keeps separately authorized candidate publication and observed public proof; Design approval does not publish, install, adopt governance or approve executable implementation. Preserved original requirement IDs, exact displacement maps and current consumers support feasible downstream allocation without moving historical judgments. Old source/script/cache cleanup deferred to implementation remains required work, not silently completed by Markdown deletion.",
+    "All three first-pass findings have independently supported resolution. Broader source reading and first-pass concerns were retained through this reassessment; no additional material Design defect remains. Author structural/prose/link evidence supports document integrity only. Old failed legacy prose evidence and historical subject-drift observations retain their original scope and do not contradict this current Design judgment."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:a3b7bc20f985dca21bebd932460cb31fbe4db557393e923c8f55d016a8b21728",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:1d763c6c2cda95248f45e9c1df5b3351ab54b7ca11d3b7f4539b5ae1a1d78256",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:287651451e6075a178d71598871fba4dd0461af82adc96f94799e8e47d3b2e5f",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:093bc37310c7249d5b091ec7a13b7cc0b300fad68818abfc825b9ff696ab2018",
+      "path": "docs/architecture/system/architecture.md"
+    },
+    {
+      "identity": "sha256:b1e66e9fe045dbe31faf8b061cb0a3db428cfec2c9162bd48b20c651ea3036a4",
+      "path": "docs/changes/2026-09-12-unified-validation-model/design-reconciliation.md"
+    },
+    {
+      "identity": "sha256:2265ebdb1499fe037fba67fdd1d092738b838669cba1ced73af4a42d85d98ac4",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:d12c69b6b3b2144cf4a0db09134c7f79af67102d4c19cf3397e13eb3081f2baa",
+      "path": "docs/design/design/design.md"
+    },
+    {
+      "identity": "sha256:0b364be2852bc13c2558023362fcf68b38594b345e85ac8256cad5f10b18c469",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:546ef8d97f7d2d09c973260b0c52d5ec201509bbf0b9fa734e2388cff8c916a2",
+      "path": "docs/design/installation/installation.md"
+    },
+    {
+      "identity": "sha256:149146a6631a2d9d4457e6abdf3e355d48ef74386461db5f729b72df9e533b79",
+      "path": "docs/design/packaging/packaging.md"
+    },
+    {
+      "identity": "sha256:8678c6cb7e6e8599770e5a010039c2c4185ba9af08f4a0f07fdb69f9d3961d85",
+      "path": "docs/design/record-format/record-format.md"
+    },
+    {
+      "identity": "sha256:18a9944ee98fc544b7a1dfd90c63b037ef74152a534a252ad0b062b3fcb5630b",
+      "path": "docs/design/release/release.md"
+    },
+    {
+      "identity": "sha256:1bfa89fdb4bf9057c6cb78994a92d1b503ca50c39bf8454484be64aae381a777",
+      "path": "docs/design/review-closeout/review-closeout.md"
+    },
+    {
+      "identity": "sha256:4e798650f7ed54a994567e376f8ab36a5e43d6d2e722613196a0ce09529226b8",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:50c5502225b0d6f2e987e161053fd69adf99e137d46dfa2a0a7d666a6d924c06",
+      "path": "docs/design/system/system.md"
+    },
+    {
+      "identity": "sha256:ef36130eb01af14810fe1bfe29b87392036593f170ee9404e8e56206b4b805ef",
+      "path": "docs/design/validation/validation.md"
+    },
+    {
+      "identity": "sha256:bb211b39c144a6d6d1219b47efbfbbb86169af37bc111cce00b4b2535182c8ae",
+      "path": "docs/design/workflow/workflow.md"
+    },
+    {
+      "identity": "sha256:05a1b38d6bb758ed75e716f1aca956f79718edb1a39db51e99c435596d17a9b3",
+      "path": "docs/proposals/2026-09-12-skill-cli-engineering-model-hierarchy.md"
+    },
+    {
+      "identity": "sha256:f7495f1cc3ca97cd4e650dc76f4c866a0b8572876e8704cf96d708d9a6f31d2c",
+      "path": "specs/multi-agent-adapters-first-public-release.md"
+    },
+    {
+      "identity": "sha256:a6e11e66e7a9a5125041a20e9318b02d9f4e9cc6d88f4dd2f90af3aacff80b79",
+      "path": "specs/public-adapter-artifact-migration-examples-concise-skill-release.md"
+    },
+    {
+      "identity": "sha256:d2cc15d3fc370cd8501b9adf60553fb580c66554d17538bcfcb61b103bb5fec3",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:802e8f9b470ce150447a7aaf8e9f7348d0a84d9b1d9e2e1cfeeaaf22db31338b",
+      "path": "specs/published-skill-first-repository-simplification.test.md"
+    },
+    {
+      "identity": "sha256:e27c6c836c55c6af00bd54daa4564ad5df0d595876d7b1c69888bdf93fb932bd",
+      "path": "specs/rigorloop-cli-new-change.md"
+    },
+    {
+      "identity": "sha256:a3e3ee8a5722836a69c583bc22bd82aae5fed1b432e0947f538b33b9876eeb2a",
+      "path": "specs/rigorloop-cli-package-and-codex-init.md"
+    },
+    {
+      "identity": "sha256:f17cd3fdca63f0634899904a8a990774bca0499cfc2ad8110d929149b4e9b30e",
+      "path": "specs/rigorloop-workflow.md"
+    },
+    {
+      "identity": "sha256:9db6156a499d5647a38bf357405d3001b48fda6bc9cf7929e9b810c0fed94296",
+      "path": "specs/single-authored-skill-source-generated-output.md"
+    },
+    {
+      "identity": "sha256:8c210d28d94cb0207d068bf951568136514525f49f34ad67995a3d7570c374a6",
+      "path": "specs/skill-contract.md"
+    },
+    {
+      "identity": "sha256:0de076649bc1f0fd1233bd97ec166ac41578b129232b0a19d92b4ad5ae7c09a6",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:76e9c57315e9c23adb33caf13bfabc6fa5cbb61e5c162c99d05447f682ccde78",
+      "path": "docs/design/record-format/examples/README.md"
+    },
+    {
+      "identity": "sha256:2a42da7884e3aeff0020f814fcb36b98f88ad80fc385a8f52a2b5ddaf4aa0ca9",
+      "path": "docs/design/workflow/examples/correction-cycle.mmd"
+    },
+    {
+      "identity": "sha256:4ca7b7009e240d088b3fe2ee5c4669f35d64a36ababafb2fa12cc01c858605f0",
+      "path": "docs/design/cli/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:50c9491cf19f694bb023532b6ad392cd16baea4fe199d6089edd8d610351233a",
+      "path": "docs/design/record-format/examples/v3-finding-correction/README.md"
+    },
+    {
+      "identity": "sha256:905ba67b50a06114325bbabaa7c939005a096473ace379cd00cfe37b2a01bd93",
+      "path": "docs/design/cli/examples/v3-finding-correction/request.json"
+    },
+    {
+      "identity": "sha256:8489f5ec5e7329011de4660cbcf6877b988fbb8c2d70107ae90dd3cebbb88975",
+      "path": "docs/design/cli/examples/v3-finding-correction/show-response.json"
+    },
+    {
+      "identity": "sha256:c70b1cc46c1a3ecbfc49e4dba1f694c2a3ed992652cda40e7d58aa6c1b43f7a3",
+      "path": "docs/design/record-format/examples/v3-finding-correction/stored-review.json"
+    },
+    {
+      "identity": "sha256:f34998232a1ef52b2ffb444f79a66705a1da5530490328d7102ea322897557fe",
+      "path": "docs/design/record-format/examples/v3-finding-correction/updated-review.json"
+    }
+  ],
+  "summary": "The corrected twelve-model Design package coherently realizes Skill, CLI and Engineering with fourteen logical children, preserves independent skill use and validation constraints, and resolves all three first-pass findings.",
+  "target": "design"
+}

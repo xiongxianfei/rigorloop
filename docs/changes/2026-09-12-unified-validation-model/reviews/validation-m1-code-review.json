@@ -1,0 +1,133 @@
+{
+  "assessment_scope": "Independent complete validation-m1 Code Review after correction, diff from 26ac6404 under validation-delivery-review. Includes lifecycle/metadata/cache helper and fixture retirement, selector/actual consumer integration, default-cache cleanup and all M1 corrections. Milestone scope only; M2-M5 and final whole-initiative review/Verify remain pending.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Location: scripts/test-retirement-ledger.py HISTORICAL_CHECK_IDS and test_every_selector_check_id_has_exactly_one_owner/test_repository_ledger_is_complete; packages/rigorloop/test/record-retirement.test.js:30. M1 removes validation_cache.regression from live CHECK_CATALOG. The historical inventory projection does not retain that removed identity, so preserved retirement-ledger.json is rejected with unknown catalog entries and mismatched owned IDs. /tmp/m1-cli.log full CLI run reports the delegated Python failures inside the actual current retirement integration test.",
+      "id": "validation-m1-historical-catalog",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Reconcile this active reader with explicitly approved cache retirement while preserving the historical ledger bytes and strict closed-vocabulary checks. Declare the historical cache ID disposition without restoring cache execution or silently ignoring arbitrary extra IDs. Run the focused ledger/CLI consumer and affected full proof, then independently reassess M1 before M2. No new product direction or historical migration is needed.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "validation-m1-execution",
+            "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+          }
+        ],
+        "rationale": "Independent correction inspection confirms the exact retired cache ID is retained only in HISTORICAL_CHECK_IDS, with explicit absence from CHECK_CATALOG, strict inventory checks unchanged and ledger bytes equal 26ac6404. Ledger17 and actual Node consumer25 now pass, with full selector167 exercising the previously failing wrapper path. Current M1 reassessment records the exact corrected subjects."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:3f03f849dd9ecd01797a8d6f985e10dc970974a35b8e8f7558ae3262e1a8ba17",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:860b5538ee6fa142b3f076dd7d5f7fc365becea1f824f87d7e3fdcfb0b4cabfa",
+          "path": "scripts/test-retirement-ledger.py"
+        },
+        {
+          "identity": "sha256:61b1e66a42f030e60ed7657de3e5bb836bbd46bd0dd8ffc6ccba930f3242ff8c",
+          "path": "packages/rigorloop/test/record-retirement.test.js"
+        }
+      ]
+    }
+  ],
+  "id": "validation-m1-code-review",
+  "independence_basis": "Separately authorized nonauthor reviewer independently inspected root-authored M1 changes and existing reader tests; did not edit implementation, test or work state. Prior Delivery assessment does not constitute implementation authorship.",
+  "judgment": "approved",
+  "limitations": [
+    "This is M1 approval, not final whole-initiative Code Review, Verify, branch readiness, PR submission or publication. Executor, process-budget integration, three-suite case adoption and remaining source/consumer retirement are not claimed complete.",
+    "Default-cache disposal relies on the recorded bounded inspection and exact pre-unlink digest; the deleted disposable file is not reconstructed. Surviving historical source/evidence and arbitrary user caches remain outside removal."
+  ],
+  "rationale": [
+    "Spec alignment: pass. Lifecycle no longer imports or dispatches cache logic, accepts no retired flags/helper mode, and directly invokes existing repository validation. Metadata rejects the retired measurement basename before reading its contents, while current record sets retain the unchanged Node validator boundary. VAL-SR-11 behavior and M1 scope are implemented without a replacement cache.",
+    "Test coverage: pass. All removed lifecycle/measurement/cache tests concern explicitly retired functionality. Existing current-record, unknown-vocabulary, containment and integrity negatives remain. New actual subprocess checks preserve cache sentinels across retired inputs and repeated supported validation, and demonstrate a subsequent changed current-record failure. Metadata malformed-byte rejection failed before repair and passes after filename-first rejection.",
+    "Edge cases and error handling: pass. Removed options/helper mode reject through argument parsing before validator entry; retained explicit-path and other modes keep normal validation/error semantics. Retired measurement input does not decode or mutate its historical bytes. Existing missing/unavailable current-record validator handling remains. No old cache result supplies a successful current run.",
+    "Architecture boundaries: pass. Exclusive helper, helper regression and fourteen measurement fixtures are removed; deletion-path selection routes to surviving lifecycle and metadata proof. Current catalog has no cache check. Domain validation, record hashing/persistence and download caching remain separately owned and untouched.",
+    "Compatibility: pass. Historical catalog projection now explicitly retains validation_cache.regression as an archival ID while asserting its absence from executable CHECK_CATALOG. Independent byte comparison confirms original retirement-ledger.json equals engineering base 26ac6404. Unknown-ID/strict inventory assertions are unchanged; no historical migration or cache reactivation occurs.",
+    "Security/privacy and cleanup: pass within the one-time scope. Author inspection identifies exactly one regular default-cache JSON file, schema 1 and eleven valid disposable records, no symlinks/unrelated entries, with digest 38cd0db670097cc67494d05df1625f0559167dd83f343316dd30b4be04dc50c6 rechecked before unlink. Empty default directory and exclusive ignore line are removed; independent inspection confirms absence. No arbitrary cache destination or historical record was deleted. Routine sentinels stay unchanged.",
+    "Derived artifacts and unrelated changes: pass within M1. No generated package or public skill content was edited; later source/consumer consolidation remains M5. Selector output-format tests retain concise/verbose/actionable failure assertions using a surviving current-record case instead of the retired measurement case. All inspected implementation changes remain inside cache removal and its actual-reader corrections.",
+    "Validation evidence: pass. Current metadata 7, lifecycle 108 and complete selector 167 pass. Baseline lifecycle112 differs by justified cache-only retirement/replacement. Original npm test run passed423 and failed the ledger consumer; corrected ledger17 and actual Node consumer25 pass. The correction changes only historical inventory projection and selector output test selection, so unaffected prior CLI passes retain a concrete unchanged engineering basis. No failed initial run is relabeled passed.",
+    "Finding validation-m1-historical-catalog resolved: exact historical identity disposition and strict-current-catalog absence repair the failed consumer; complete selector rerun also exercises the wrapper path that previously failed. Durable validation-m1-execution and validation-m1-evidence.md preserve failure, correction, current results and cleanup scope.",
+    "Milestone handoff: clean independent M1 assessment supports route-owned M1 closeout and the already user-authorized M2 under the approved plan. M2-M5, required corrections and their milestone reviews remain, followed by fresh final whole-change Code Review and distinct Verify before PR readiness. This review does not perform those transitions or substitute for final review."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:6afef91c5ccd28f03536f6de96ffc84848810e76a60e63888ccc8cfd8110a588",
+      "path": "scripts/validate-artifact-lifecycle.py"
+    },
+    {
+      "identity": "sha256:854ec86b200da3540a07d9c7df95aea696a114d4e4ff574f213e85c393a44db2",
+      "path": "scripts/validate-change-metadata.py"
+    },
+    {
+      "identity": "sha256:3f03f849dd9ecd01797a8d6f985e10dc970974a35b8e8f7558ae3262e1a8ba17",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:2da1cb956074e8a3e28a35692a1b3d67ec80dae337ff5bb07078f0284bd5c28f",
+      "path": "scripts/test-artifact-lifecycle-validator.py"
+    },
+    {
+      "identity": "sha256:1c584c2b30e46afba61f06502da74a11801b394333061e052cf1ebcd20e2c01e",
+      "path": "scripts/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:49f48a18122ecfc22829270429f2734d5f7b78ddbfa52bf9a4e6394830edc0f8",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:b882bdb1c283a947a45ed83d24cc8c0ded65fbf644e65be9ce3da9d9c37c3f36",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:61b1e66a42f030e60ed7657de3e5bb836bbd46bd0dd8ffc6ccba930f3242ff8c",
+      "path": "packages/rigorloop/test/record-retirement.test.js"
+    },
+    {
+      "identity": "sha256:5151d53116460288dcc4896fa832664662045f9fdaa14b2d1796581cecaed30e",
+      "path": ".gitignore"
+    },
+    {
+      "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+      "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+    },
+    {
+      "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:474ac7962d27b30ecf5a5275c2e22fdd0b5a1ebf0f2a86c67e57f8f21b4e71cb",
+      "path": "docs/changes/2026-09-12-unified-validation-model/validation-m1-evidence.md"
+    },
+    {
+      "identity": "sha256:b68eb8bdc1d4e54df60d7dfac9e959c90b9453d5f913fcfbddc1408216c0a70a",
+      "path": "docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json"
+    }
+  ],
+  "summary": "Validation M1 cache and measurement retirement is complete for its approved scope; the historical catalog consumer finding is independently resolved with preserved ledger bytes and current passing proof.",
+  "target": "code"
+}

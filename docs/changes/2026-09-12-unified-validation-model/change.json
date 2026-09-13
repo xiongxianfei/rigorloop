@@ -1,0 +1,468 @@
+{
+  "activity": {
+    "owner": {
+      "id": "root",
+      "role": "route"
+    },
+    "reason": "All seven work entries complete, required independent reviews approved and final Verify successful on exact current subjects. The approved mapped hierarchy and Validation transfer is adopted for this repository. User-authorized PR submission follows as a separate external operation; no release, merge or customer governance activation is authorized.",
+    "stage": "support",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/proposal-review.json",
+      "reason": "Unchanged inspected proposal and directly corroborated basis; no material finding or contradictory evidence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "plan"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/material-decisions.json",
+      "reason": "New remaining-work allocation follows current approved Design and preserves completed directory intent, work and scoped reviews. Author checks do not approve delivery or implementation.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json",
+      "reason": "Complete corrected PR command against exact authored/current candidate inputs and independently classified historical spec scope. Final review and Verify remain distinct.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/hierarchy-proposal-review.json",
+      "reason": "Independent full-proposal reassessment of the corrected exact subject; recorded CLI usage finding explicitly resolved and no remaining material concern.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/design-review.json",
+      "reason": "Complete previously read package reassessed against exact corrected subjects and relevant examples; all supported first-pass findings independently resolved, upstream hierarchy direction unchanged.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-design-review.json",
+      "reason": "Exact final runnable CLI example independently reassessed against approved directory map; remaining package semantics and source subjects unaffected.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-delivery-review.json",
+      "reason": "Registered exact primary plan assessed against newly approved directory Design; sequencing, focused proof and bounded closeout dependencies are adequate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-code-review.json",
+      "reason": "Complete directory slice independently reassessed after supported dependency correction; exact approved Design/plan and current implementation proof support clean bounded reliance.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-delivery-review.json",
+      "reason": "Complete exact registered remaining-work plan independently assessed against approved current Design semantics and concrete source boundaries; sequencing, required proof, cleanup and final closeout allocation are adequate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m1-code-review.json",
+      "reason": "Complete M1 implementation independently reassessed after historical-consumer correction; direct proof and bounded removal evidence satisfy its approved scope.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m2-code-review.json",
+      "reason": "Exact final M2 code, direct corrected edge proofs and durable author evidence independently assessed; historical reviews retained with their bounded scope.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m3-code-review.json",
+      "reason": "Exact final M3 code and required integration evidence independently inspected; all recorded subject identities current and no supported unresolved finding.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m4-code-review.json",
+      "reason": "Exact current M4 code and required complete actual population/broad proof independently assessed; no unresolved material finding.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-map-design-review.json",
+      "reason": "Exact corrected supplemental map and retained owner interactions independently assessed; named source omission resolved without new behavior or scope beyond selected cleanup.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-delivery-review.json",
+      "reason": "Exact unchanged plan adequately allocates the independently approved supplemental map, its preserved obligations and final proof without a new work sequence.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m5-code-review.json",
+      "reason": "Complete M5 diff, exact deletion map, current registered evidence and unchanged semantic owner relationships independently assessed; all preserved content and tested source identities corroborated.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-final-code-review.json",
+      "reason": "Fresh complete final diff, current model/delivery authority, direct integration tests, preserved exact historical evidence and corrected actual PR proof independently assessed; all recorded Code findings resolved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/final-legacy-design-classification.json",
+      "reason": "All nine exact changed grandfathered sources independently classified by actual amendment semantics, with two out-of-scope navigation changes independently confirmed restored to original bytes.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/verify-report.json",
+      "reason": "Distinct final assessment of exact current subjects, independently approved whole change, complete applicable proof and corrected current registry. No remaining required work or unresolved finding.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-12-unified-validation-model",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+        "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:1c1d62ada1d5b45e1dc87db59cedd8ba13d4e90a0c6afe535ae46d5553f7deea",
+        "path": "docs/design/system.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:0b8d25d6f4555a27f15a0d8f39e10161ca932fc1c76470433e465cec8e4acb92",
+        "path": "docs/design/skill/authoring/design.md"
+      }
+    },
+    {
+      "id": "release",
+      "subject": {
+        "identity": "sha256:088626d15d98db155d2ecdb581411fec20e8bc06db51e0b2a45a3b5376904de9",
+        "path": "docs/design/engineering/release.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:beaa9f0f7536b83a7edc5117c3168c5aeaa02763483a2e4c93b53acf17b2469c",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:b129f1558234aea5d7abe643dee09422cf4b748aaab860fd84c45e3356b01ec7",
+        "path": "docs/design/skill/workflow.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:fe211297da8533a8620535abee9b8d47fd512da99ac7e9f7fd08878606ff340b",
+        "path": "docs/design/cli/cli.md"
+      }
+    },
+    {
+      "id": "engineering",
+      "subject": {
+        "identity": "sha256:a530e4975362a9cb0ef5fbfb5b8944145288ce6fe78afdc28253cc1763462476",
+        "path": "docs/design/engineering/engineering.md"
+      }
+    },
+    {
+      "id": "installation",
+      "subject": {
+        "identity": "sha256:4992f7f5cbf3e2b8dd2cb8d862c2a662bb0dd0540b29d2e75b0e0293fd551eaf",
+        "path": "docs/design/cli/installation.md"
+      }
+    },
+    {
+      "id": "packaging",
+      "subject": {
+        "identity": "sha256:b4d942ab3289a61ba8b3f7c3bd3452c7bd75c22218d7e0b9278362f73a33e96d",
+        "path": "docs/design/engineering/packaging.md"
+      }
+    },
+    {
+      "id": "record-format",
+      "subject": {
+        "identity": "sha256:9d63c43239c192cf09613d7ed26c881830f77abb174dd142f2e262fcd5bcabfd",
+        "path": "docs/design/cli/records.md"
+      }
+    },
+    {
+      "id": "review-closeout",
+      "subject": {
+        "identity": "sha256:a73d0c4232811df739ce9bab2e3bb75115f82f4ed4ecc02bf9b45d19475b97a9",
+        "path": "docs/design/skill/assessment.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+    "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+  },
+  "proposal": {
+    "identity": "sha256:05a1b38d6bb758ed75e716f1aca956f79718edb1a39db51e99c435596d17a9b3",
+    "path": "docs/proposals/2026-09-12-skill-cli-engineering-model-hierarchy.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-12-unified-validation-model/material-decisions.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/hierarchy-proposal-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m1-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m2-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m3-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m4-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-map-design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m5-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-final-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/final-legacy-design-classification.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-12-unified-validation-model/verify-report.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "directory-m1",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "SYS-SR-01",
+        "DES-SR-05"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "directory-m2",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "DES-SR-11",
+        "DES-SR-12"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "validation-m1",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-03",
+        "VAL-SR-04",
+        "VAL-SR-11",
+        "VAL-SR-13",
+        "VAL-SR-14"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "validation-m2",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-02",
+        "VAL-SR-04",
+        "VAL-SR-05",
+        "VAL-SR-07",
+        "VAL-SR-08",
+        "VAL-SR-09",
+        "VAL-SR-10"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "validation-m3",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-03",
+        "VAL-SR-05",
+        "VAL-SR-06",
+        "VAL-SR-07",
+        "VAL-SR-12",
+        "VAL-SR-13",
+        "VAL-SR-15"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "validation-m4",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-01",
+        "VAL-SR-02",
+        "VAL-SR-07",
+        "VAL-SR-08",
+        "VAL-SR-10",
+        "VAL-SR-14",
+        "VAL-SR-17"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "validation-m5",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-11",
+        "VAL-SR-13",
+        "VAL-SR-16",
+        "TEST-SR-13",
+        "ENG-SR-07",
+        "ENG-SR-12"
+      ],
+      "status": "completed"
+    }
+  ]
+}

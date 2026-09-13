@@ -3693,12 +3693,43 @@ release_gate:
         self.assertIn("missing adapter directory", result.stdout)
 
     def test_ci_script_runs_adapter_checks_and_filters_generated_paths(self) -> None:
-        ci_text = (ROOT / "scripts" / "ci.sh").read_text(encoding="utf-8")
-
-        self.assertIn("python scripts/test-adapter-distribution.py", ci_text)
-        self.assertIn("python scripts/build-adapters.py --version v0.1.3 --output-dir", ci_text)
-        self.assertIn("python scripts/validate-adapters.py --root", ci_text)
-        self.assertIn('"$path" == dist/adapters/*', ci_text)
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            def git(*args):
+                subprocess.run(['git', *args], cwd=root, check=True, capture_output=True)
+            git('init', '--quiet')
+            for name in ['README.md', 'dist/adapters/example.txt']:
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('before')
+            git('add', '.')
+            git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+                '-c', 'commit.gpgsign=false', 'commit', '-m', 'Fixture')
+            for name in ['README.md', 'dist/adapters/example.txt']:
+                (root / name).write_text('after')
+            driver = ("import json,sys; from pathlib import Path; "
+                      "sys.path.insert(0,sys.argv[1]); from validation_execution import compose_mode; "
+                      "print(json.dumps([dict(id=p.check_id,args=p.args,deps=p.dependencies) "
+                      "for p in compose_mode('broad-smoke',Path(sys.argv[2]))]))")
+            env = {k:v for k,v in os.environ.items() if not k.startswith('RIGORLOOP_CI_')
+                   and k not in {'REVIEW_ARTIFACT_ROOTS','RIGORLOOP_BROAD_SMOKE_CLASSIFICATION'}}
+            result = subprocess.run([sys.executable, '-c', driver, str(ROOT/'scripts'), str(root/'output')],
+                                    cwd=root, env=env, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
+            plans = {p['id']:p for p in json.loads(result.stdout)}
+            self.assertEqual(plans['broad_smoke.adapters.regression']['args'],
+                             ['python','scripts/test-adapter-distribution.py'])
+            self.assertEqual(plans['broad_smoke.adapters.build_archives']['args'],
+                             ['python','scripts/build-adapters.py','--version','v0.1.3',
+                              '--output-dir',str(root/'output/adapters-broad-smoke')])
+            self.assertEqual(plans['broad_smoke.adapters.validate_archives']['args'],
+                             ['python','scripts/validate-adapters.py','--root',
+                              str(root/'output/adapters-broad-smoke'),'--version','v0.1.3'])
+            self.assertIn('broad_smoke.adapters.build_archives',
+                          plans['broad_smoke.adapters.validate_archives']['deps'])
+            self.assertEqual(plans['broad_smoke.artifact_lifecycle.scoped']['args'],
+                             ['python','scripts/validate-artifact-lifecycle.py','--mode',
+                              'explicit-paths','--path','README.md'])
 
     def test_release_metadata_validation_accepts_rc_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

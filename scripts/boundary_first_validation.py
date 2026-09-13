@@ -11,6 +11,8 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
+from model_layout import PROJECT_MODEL_PATHS
+
 from boundary_first_reference import (
     CANONICAL_REFERENCE,
     GOVERNED_SKILLS,
@@ -1686,7 +1688,7 @@ def validate_model_record(text: str, path: str) -> tuple[ValidationIssue, ...]:
 
 
 def validate_model_path(root: Path, relative_path: str) -> tuple[ValidationIssue, ...]:
-    if not re.fullmatch(r"docs/design/(?P<model>[a-z0-9][a-z0-9-]{0,79})(?:/(?P=model))?\.md", relative_path):
+    if relative_path not in PROJECT_MODEL_PATHS.values() and not re.fullmatch(r"docs/design/(?P<model>[a-z0-9][a-z0-9-]{0,79})(?:/(?P=model))?\.md", relative_path):
         return (_issue("BFR-MODEL-PATH", "<model-path>", "invalid model path", relative_path),)
     root = root.resolve()
     path = root
@@ -1721,7 +1723,7 @@ def _validate_retired_method_sources(root: Path) -> tuple[ValidationIssue, ...]:
             return (_issue("BFR-RETIRED-METHOD-CHANGED", relative,
                            "preserved retired method source or replacement notice changed or is missing",
                            "changed-or-missing", "reviewed immutable historical source"),)
-    for relative in ("docs/design/design/design.md", "docs/design/system/system.md"):
+    for relative in (PROJECT_MODEL_PATHS["design"], PROJECT_MODEL_PATHS["system"]):
         path, issue = _contained_regular_file(root, Path(relative))
         if issue:
             return (_issue("BFR-RETIRED-METHOD-OWNER", relative,

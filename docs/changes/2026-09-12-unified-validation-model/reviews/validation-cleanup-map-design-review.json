@@ -1,0 +1,119 @@
+{
+  "assessment_scope": "Targeted new-profile Design reassessment of the supplemental exact mixed-architecture map only. Package includes amended Validation, scoped mixed architecture, unchanged System/Engineering/Assessment relationships and upstream approved hierarchy/Design. No new runtime/requirement/scenario approval, no whole-architecture retirement and no retargeting of M1–M4 implementation reviews.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Architecture Level2 White-Box: Validation and Generation Scripts, bullet beginning direct hosted gates and compatibility selection, currently says ci.sh invokes direct gates for PR and main and selector remains compatibility owner only for local/explicit/release until retirement. The original map selects only validation-idempotency bullet in this section, and supplemental table omits this distinct active bullet. Retaining it contradicts approved selected PR/shared executor behavior; editing it would exceed enumerated source boundary.",
+      "id": "cleanup-map-hosted-mode-consumer",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Add this exact active bullet to the supplemental map with bounded current PR/explicit/local/release selection and main catalog composition ownership. Preserve Release interception, domain checks and unselected generation responsibilities. Then independently reassess the amended map before Delivery/M5 reliance. Root Design authorship owns the correction; existing user direction suffices, no new product decision required.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "validation-cleanup-map-authorship",
+            "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+          }
+        ],
+        "rationale": "Supplemental applicability row explicitly names the exact active hosted-gates/compatibility-selection bullet and assigns current selected Validation applicability to its existing catalog/executor owner. M5 can reconcile this contradictory consumer within the enumerated map while preserving surrounding owners."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:5db42b9596ea86cc92fefcfd7cc61df04e1d473ef0f3290c67d7e5fc40a9f327",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:a206c5cf7e99d3bd0ad208575b3ebb68cd265454dcd5cde0eca0f2ecd5304a71",
+          "path": "docs/architecture/system/architecture.md"
+        }
+      ]
+    }
+  ],
+  "id": "validation-cleanup-map-design-review",
+  "independence_basis": "Separate user-authorized nonauthor reviewer inspected root-authored supplemental source map and exact mixed-architecture clauses; reviewer did not author/edit models, architecture or plan. Earlier independent implementation reviews retain their original scope.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval covers only the enumerated exact supplemental source map and its unchanged model relationships. No architecture/source clauses have yet been removed by this amendment.",
+    "No new product direction or user approval is required; existing selected cleanup direction supports the refinement. Delivery reliance, M5 implementation, fresh final Code Review and Verify remain separate required responsibilities.",
+    "No lifecycle activity or route mutation made by reviewer. Historical unselected clauses, approvals and release/query boundaries retain their original meanings."
+  ],
+  "rationale": [
+    "Behavior/technical realization: supplemental exact clause enumeration is consistent with approved no-cache unified execution direction and already specified VAL-SR11/13. It retires cache-only mechanisms without reinstating legacy record vocabulary or another deterministic cache-hit gate. Required behavior and technical runtime design remain unchanged.",
+    "Authority/compatibility: actual execution, command identity, truthful evidence, privacy and assessment applicability survive under VAL-SR12/15/17 and Assessment. System retains composition, Engineering repository development/proof and external/publication boundaries remain separate. No document or check pass activates customer governance.",
+    "Migration preservation: ten cache constraint bullets, cache-only evidence/measurement locations, three quality rows, six risks and nine glossary entries are precisely named. Token-cost reports, neighboring query-helper Workstream A/B constraints, remote release-state cache prohibition and historical follow-on/provenance are explicitly retained. Actual-run semantics survive while obsolete evidence-kind coupling retires. Readiness ADR summaries are enumerated without transferring adjacent ADRs.",
+    "Decision/evidence/scenario coherence: unchanged requirements, decisions, representative scenarios and model examples retain prior Design review meaning; no model example is changed or relied on for a new semantic claim. Existing author structural check supports formatting only. Exact actual source wording, accepted model ownership and prior implementation scope provide the assessment basis.",
+    "Corrected consumer/migration coherence: the supplemental applicability row now explicitly selects Level2 Validation and Generation Scripts direct hosted gates and compatibility selection bullet. Its current mode applicability can therefore resolve to the existing catalog/executor owner, including selected PR and composed main, without editing an unlisted clause. Release interception, actual domain proof and neighboring generation responsibilities remain governed by their existing owners. Finding cleanup-map-hosted-mode-consumer is resolved.",
+    "Feasibility and boundaries: this is exact source-disposition refinement of the accepted no-cache/current Validation architecture, with no new requirement, runtime behavior, scenario, model example or public API. It neither weakens approved goals nor permits wholesale mixed architecture removal. Existing M5 reader reconciliation can implement the map; Delivery must independently assess its allocation before that reliance.",
+    "Evidence/current applicability: refreshed validation-cleanup-map-authorship passed, and all four author evidence subjects independently match current bytes. The exact model package additionally includes unchanged System, Engineering, Assessment and accepted proposal/Design relationships. Previously reviewed examples remain unchanged and create no new acceptance burden for this map-only amendment. Earlier M1–M4 judgments keep their original subjects, not an invented retrospective approval of this refinement."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:6b2aa336f6e71988d145380de69bcfcca8d0af132f26adb1248309d3c3e82d2f",
+      "path": "docs/changes/2026-09-12-unified-validation-model/validation-cleanup-map-evidence.md"
+    },
+    {
+      "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:a206c5cf7e99d3bd0ad208575b3ebb68cd265454dcd5cde0eca0f2ecd5304a71",
+      "path": "docs/architecture/system/architecture.md"
+    },
+    {
+      "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+      "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+    },
+    {
+      "identity": "sha256:a73d0c4232811df739ce9bab2e3bb75115f82f4ed4ecc02bf9b45d19475b97a9",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:24af7c0c81bdba70b2212a1a437b8dfaa77064e3b54cff2b3a01b0ebfaf7b5eb",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:8282450f2f859405c017fc98638e53ec7bddc4dad67b394a84f5ee1eae6ca814",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:dbee5fc79ff31ae48267c9bb9b3957669c2b71b0b7e009144bcd40eb7ece8887",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/hierarchy-proposal-review.json"
+    },
+    {
+      "identity": "sha256:ffaa1680e66f0d4f008bbbb9ca5fdbeefb5f7e764b0440716cd3416930b2b20b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-design-review.json"
+    },
+    {
+      "identity": "sha256:b80af37047c4a3cff87b729f592826984d731263e69d3d1accc359984d6644a2",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:79614570227471c51b7e6714beb8459ed264e6d39625bb535990acfcd7532fca",
+      "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+    }
+  ],
+  "summary": "Targeted cleanup-map Design amendment approved after explicitly mapping the active hosted-mode consumer; scoped retirement and retained protections form a coherent package.",
+  "target": "design"
+}
