@@ -17,6 +17,96 @@ RigorLoop delivers published skills and a CLI for AI-assisted software engineeri
 System has three main models: [Skill](skill/skill.md), [CLI](cli/cli.md) and [Engineering](engineering/engineering.md). Each parent owns its children's integration; each child owns its detailed contract once. Logical children may be named sections or stable separate documents. The project directory layout mirrors these three main owners; stable model and requirement IDs remain unchanged when a document moves.
 
 ```mermaid
+flowchart TB
+    Intent["User needs and project authority"]
+    subgraph System["RigorLoop — product composition"]
+        Skill["Skill<br/>Published capability behavior"]
+        CLI["CLI<br/>Executable behavior"]
+        Engineering["Engineering<br/>Build, prove, package and release"]
+        Skill -->|"behavior to realize and protect"| Engineering
+        CLI -->|"behavior to realize and protect"| Engineering
+    end
+    Intent -->|"required capabilities and commands"| Skill
+    Intent -->|"required commands and constraints"| CLI
+    Intent -->|"authorized engineering scope"| Engineering
+    Engineering -->|"qualified and authorized delivery"| Products["Published skills and CLI"]
+```
+
+This overview shows the three main owners and the delivered products. The [Building Block View](#building-block-view) retains the complete hierarchy and descendant orientation, with one authored source for that detail. Its invisible layout links carry no behavioral or execution-order meaning. The product arrows distinguish behavior definition from Engineering's implementation, validation and release responsibility. Individual skill use does not require the CLI; current governed recording does.
+
+The [end-to-end system design](#end-to-end-system-design) below explains how these responsibilities cooperate to deliver the products. [Skill](skill/skill.md#subsystem-design-graph), [CLI](cli/cli.md#subsystem-design-graph) and [Engineering](engineering/engineering.md#subsystem-design-graph) own their detailed internal interaction graphs. The linked complete hierarchy provides descendant orientation without transferring ownership of those contracts.
+
+### Architecture overview convention
+
+Every model in this repository applies [Design's Architecture Overview View and supporting-view convention](skill/authoring/design.md#architecture-overview-view-and-necessary-supporting-views), DES-SR-22. The overview orients readers to principal responsibilities, externally significant products or interfaces, and delivery/assurance relationships. Each material element or relationship resolves to its owning view or model. Authors evaluate Context, Building Block, Runtime and Deployment views with reasons and draw each necessary view; the overview does not replace them. Existing overview headings and anchors remain valid. System owns the actual project composition and parent allocation below; Design owns the reusable method.
+
+### Parent graph ownership
+
+For this repository, every model with child models owns the authoritative system design views of its subsystem. This applies recursively to parents represented by named sections as well as separate documents. The views explain child responsibilities, significant interactions and relevant external boundaries, with links to child-owned detail. A structural overview may summarize descendants for orientation; detailed internal relationships and behavior stay with the parent and child that own them. Cross-subsystem relationships belong to their nearest shared parent. Leaves need no artificial child graph.
+
+System retains both the whole-system structural overview and the end-to-end product flow. Parent-owned interaction graphs supplement those views. Each view has one authored source, and shared names and boundaries remain consistent across views. This preserves a complete system design without maintaining competing definitions of subsystem behavior.
+
+The Design method supplies authoring conventions; System owns this project's composition allocation under SYS-SR-10. The selected Design refinement defines the reusable overview and necessary-view obligation; coordinated skill guidance adoption belongs to Delivery. Inline Mermaid is the single authored source for these views. A relationship change reconciles the owning parent graph and affected child contracts in the same reviewed package.
+
+### Repository directory layout
+
+This repository explicitly selects `docs/design/system.md` as its composition root. Main owners are `skill/skill.md`, `cli/cli.md` and `engineering/engineering.md` under `docs/design/`. Skill owns `workflow.md`, `assessment.md` and `authoring/design.md`; CLI owns `records.md` and `installation.md`; Engineering owns `validation.md`, `packaging.md` and `release.md`. Smaller logical children remain named sections in their parent. This project-specific layout does not change the portable Design skill default.
+
+CLI examples remain under `cli/examples/`; Records examples have the distinct `cli/examples/records/` namespace. Workflow examples live under `skill/examples/workflow/`. Each namespace has one owning model and selection must validate that owner. Historical record subjects and example payload identities retain their original meaning; current registries and navigation follow the new paths without rewriting prior approval.
+
+The [directory plan](../plans/2026-09-12-design-directory-layout.md) allocates the coordinated moves and actual-reader corrections. New model path exceptions are exact declared paths, not permission for arbitrary nested or example documents to become normative models. Missing or symlinked targets still fail validation.
+
+### Responsibility inventory
+
+| Parent | Submodel and authoritative contract | Contribution to the product |
+| --- | --- | --- |
+| Skill | [Capability Contract](skill/skill.md#capability-contract) | Common invocation, resources, outputs, portability, failures and limits. |
+| Skill | [Workflow](skill/workflow.md) | Published activity coordination, handoffs and correction. |
+| Skill | [Authoring](skill/skill.md#authoring), including the [Design method](skill/authoring/design.md) | Proposal, design and delivery-plan behavior. |
+| Skill | [Implementation](skill/skill.md#implementation) | Scoped implementation, bugfix and CI-maintenance behavior. |
+| Skill | [Assessment](skill/assessment.md) | Independent review, findings, evidence applicability and closeout behavior. |
+| Skill | [Project Support](skill/skill.md#project-support) | Vision, governance, discovery, research, orientation, learning and authorized PR handoff. |
+| CLI | [Command Interface](cli/cli.md#command-interface) | Commands, selectors, inputs, results and diagnostics. |
+| CLI | [Records](cli/records.md) | Stored data, identities, versions and preservation invariants. |
+| CLI | [Persistence](cli/cli.md#persistence) | Lossless updates, concurrency, atomic writes and recovery. |
+| CLI | [Installation](cli/installation.md) | Trusted skill acquisition, destination conflicts and safe replacement. |
+| Engineering | [Development](engineering/engineering.md#development) | Use the product to implement and independently assess this repository. |
+| Engineering | [Validation](engineering/validation.md) | Useful proof and isolated, bounded parallel check execution without a cache. |
+| Engineering | [Packaging](engineering/packaging.md) | Canonical sources to reproducible skill archives and CLI candidates. |
+| Engineering | [Release](engineering/release.md) | Candidate qualification, authorization, publication and observed public results. |
+
+The reusable proof criteria in Validation are referenced by Skill capabilities; repository executor details stay in Engineering. Assessment defines behavior we publish, while Development allocates and performs those assessments here. Packaging defines the archive/metadata representation; Installation consumes it and owns project writes. A shared executable or resource does not merge those contracts.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Product users, project decision owners and public delivery interfaces cross the system boundary. | [Context view](#context-view) |
+| Building Block | Necessary: The three product/engineering owners and their children must remain visible without merging their contracts. | [Building Block view](#building-block-view) |
+| Runtime | Necessary: Product delivery crosses authored behavior, implementation, independent proof and publication boundaries. | [Runtime view](#end-to-end-system-design) |
+| Deployment | Necessary: Published skills, the executable and repository CI occupy different environments with different write authority. | [Deployment view](#deployment-view) |
+
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    User["User and project decision owner"] -->|"intent and authorized scope"| System["RigorLoop"]
+    System -->|"published capability guidance"| Agent["Supported agent environment"]
+    System -->|"CLI commands and results"| Project["Project filesystem and records"]
+    Maintainer["Maintainer"] -->|"candidate-specific publication permission"| System
+    System -->|"authorized release artifacts"| Public["Public registry and release assets"]
+```
+
+Product users, project decision owners and public delivery interfaces cross the system boundary. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block View
+
+```mermaid
 %%{init: {"flowchart": {"rankSpacing": 25, "nodeSpacing": 25}}}%%
 flowchart TB
     Intent["User needs and project authority"]
@@ -70,50 +160,21 @@ flowchart TB
 
 ```
 
-This structural overview shows the three main models, their immediate submodels and the two published products. The outer boundary separates project responsibilities from user authority and delivered products; nested containment expresses responsibility ownership; the invisible layout links inside each group carry no behavioral or execution-order meaning. The product arrows distinguish behavior definition from Engineering's implementation, validation and release responsibility. Individual skill use does not require the CLI; current governed recording does.
+The three product/engineering owners and their children must remain visible without merging their contracts. Detailed requirements and scenarios in this model remain authoritative.
 
-The [end-to-end system design](#end-to-end-system-design) below explains how these responsibilities cooperate to deliver the products. [Skill](skill/skill.md#subsystem-design-graph), [CLI](cli/cli.md#subsystem-design-graph) and [Engineering](engineering/engineering.md#subsystem-design-graph) own their detailed internal interaction graphs. Showing their child names here provides orientation and does not transfer ownership of those contracts.
+### Deployment View
 
-### Architecture overview convention
+```mermaid
+flowchart TB
+    Source["Canonical skill and CLI sources"] -->|"Packaging builds"| Candidates["Isolated candidate archives and npm tarball"]
+    Candidates -->|"Validation and Release qualification"| CI["Repository local or CI processes"]
+    Candidates -->|"authorized Release publication"| Public["Public registry and assets"]
+    Public -->|"CLI acquisition and Installation"| Target["Supported agent skill directories"]
+    Public -->|"CLI package installation"| CLI["User CLI process"]
+    CLI -->|"explicit record operations"| Records["Project-local record files"]
+```
 
-Every model in this repository applies [Design's Architecture Overview View and supporting-view convention](skill/authoring/design.md#architecture-overview-view-and-necessary-supporting-views), DES-SR-22. The overview orients readers to principal responsibilities, externally significant products or interfaces, and delivery/assurance relationships. Each material element or relationship resolves to its owning view or model. Authors evaluate Context, Building Block, Runtime and Deployment views with reasons and draw each necessary view; the overview does not replace them. Existing overview headings and anchors remain valid. System owns the actual project composition and parent allocation below; Design owns the reusable method.
-
-### Parent graph ownership
-
-For this repository, every model with child models owns the authoritative system design views of its subsystem. This applies recursively to parents represented by named sections as well as separate documents. The views explain child responsibilities, significant interactions and relevant external boundaries, with links to child-owned detail. A structural overview may summarize descendants for orientation; detailed internal relationships and behavior stay with the parent and child that own them. Cross-subsystem relationships belong to their nearest shared parent. Leaves need no artificial child graph.
-
-System retains both the whole-system structural overview and the end-to-end product flow. Parent-owned interaction graphs supplement those views. Each view has one authored source, and shared names and boundaries remain consistent across views. This preserves a complete system design without maintaining competing definitions of subsystem behavior.
-
-The Design method supplies authoring conventions; System owns this project's composition allocation under SYS-SR-10. The selected Design refinement defines the reusable overview and necessary-view obligation; coordinated skill guidance adoption belongs to Delivery. Inline Mermaid is the single authored source for these views. A relationship change reconciles the owning parent graph and affected child contracts in the same reviewed package.
-
-### Repository directory layout
-
-This repository explicitly selects `docs/design/system.md` as its composition root. Main owners are `skill/skill.md`, `cli/cli.md` and `engineering/engineering.md` under `docs/design/`. Skill owns `workflow.md`, `assessment.md` and `authoring/design.md`; CLI owns `records.md` and `installation.md`; Engineering owns `validation.md`, `packaging.md` and `release.md`. Smaller logical children remain named sections in their parent. This project-specific layout does not change the portable Design skill default.
-
-CLI examples remain under `cli/examples/`; Records examples have the distinct `cli/examples/records/` namespace. Workflow examples live under `skill/examples/workflow/`. Each namespace has one owning model and selection must validate that owner. Historical record subjects and example payload identities retain their original meaning; current registries and navigation follow the new paths without rewriting prior approval.
-
-The [directory plan](../plans/2026-09-12-design-directory-layout.md) allocates the coordinated moves and actual-reader corrections. New model path exceptions are exact declared paths, not permission for arbitrary nested or example documents to become normative models. Missing or symlinked targets still fail validation.
-
-### Responsibility inventory
-
-| Parent | Submodel and authoritative contract | Contribution to the product |
-| --- | --- | --- |
-| Skill | [Capability Contract](skill/skill.md#capability-contract) | Common invocation, resources, outputs, portability, failures and limits. |
-| Skill | [Workflow](skill/workflow.md) | Published activity coordination, handoffs and correction. |
-| Skill | [Authoring](skill/skill.md#authoring), including the [Design method](skill/authoring/design.md) | Proposal, design and delivery-plan behavior. |
-| Skill | [Implementation](skill/skill.md#implementation) | Scoped implementation, bugfix and CI-maintenance behavior. |
-| Skill | [Assessment](skill/assessment.md) | Independent review, findings, evidence applicability and closeout behavior. |
-| Skill | [Project Support](skill/skill.md#project-support) | Vision, governance, discovery, research, orientation, learning and authorized PR handoff. |
-| CLI | [Command Interface](cli/cli.md#command-interface) | Commands, selectors, inputs, results and diagnostics. |
-| CLI | [Records](cli/records.md) | Stored data, identities, versions and preservation invariants. |
-| CLI | [Persistence](cli/cli.md#persistence) | Lossless updates, concurrency, atomic writes and recovery. |
-| CLI | [Installation](cli/installation.md) | Trusted skill acquisition, destination conflicts and safe replacement. |
-| Engineering | [Development](engineering/engineering.md#development) | Use the product to implement and independently assess this repository. |
-| Engineering | [Validation](engineering/validation.md) | Useful proof and isolated, bounded parallel check execution without a cache. |
-| Engineering | [Packaging](engineering/packaging.md) | Canonical sources to reproducible skill archives and CLI candidates. |
-| Engineering | [Release](engineering/release.md) | Candidate qualification, authorization, publication and observed public results. |
-
-The reusable proof criteria in Validation are referenced by Skill capabilities; repository executor details stay in Engineering. Assessment defines behavior we publish, while Development allocates and performs those assessments here. Packaging defines the archive/metadata representation; Installation consumes it and owns project writes. A shared executable or resource does not merge those contracts.
+Published skills, the executable and repository CI occupy different environments with different write authority. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 

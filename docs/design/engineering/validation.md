@@ -34,6 +34,51 @@ The Constitution and adopted owners govern. Authored validation logic stays in r
 
 Use one in-process orchestration implementation with subprocess execution of validators and test cases. Reuse the current selector catalog and scheduler logic; remove competing broad-smoke scheduling and historical metadata readers once their protection is established in the replacement. Isolation is process/fixture isolation, not a security sandbox. Tests run only with the invocation's existing permissions.
 
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Contracts["Product contract owners"] -->|"protected behavior"| Validation["Validation"]
+    Delivery["Delivery allocation"] -->|"required proof scope"| Validation
+    Sources["Candidate sources and artifacts"] -->|"subjects to check"| Validation
+    Validation -->|"actual outcomes and incomplete work"| Assessment["Independent assessment"]
+```
+
+Behavioral obligations, requested proof and assessment remain distinct external inputs/consumers. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block View
+
+```mermaid
+flowchart TB
+    Criteria["TEST-SR proof and maintenance criteria"] -.->|"guides authors and reviewers"| Catalog["validation_selection.py catalog"]
+    Catalog -->|"available checks and routing"| Selector["select-validation.py"]
+    Selector -->|"trusted selection payload"| Executor["validation_execution.py"]
+    Catalog -->|"commands, dependencies and constraints"| Executor
+    Wrapper["ci.sh"] -->|"invocation mode and budget"| Executor
+    Executor -->|"isolated check or case"| Domain["Domain validators and test runners"]
+    Domain -->|"actual outcome and diagnostics"| Executor
+```
+
+Catalog/selection and execution code have distinct trusted responsibilities and domain validators remain separate. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment diagram
+
+```mermaid
+flowchart TB
+    Local["Local shell or CI job"] -->|"one invocation budget"| Executor["Executor process"]
+    Executor -->|"allocated worker share"| Cases["Isolated check/case processes"]
+    Cases -->|"bounded nested share"| Children["Owned subprocess trees"]
+    Executor -->|"per-invocation results and scratch"| Temp["Owned temporary root"]
+    Cases -->|"separate output and receipts"| Temp
+    Executor -->|"timeout or interruption: terminate and reap"| Children
+```
+
+One invocation budget spans supervisor, isolated cases and nested children; temporary ownership and cleanup are material. Detailed requirements and scenarios in this model remain authoritative.
+
 ## Requirements
 
 | ID | Required behavior |
@@ -114,6 +159,16 @@ Validation owns the five responsibilities inside its boundary; they are not sepa
 The [Context and Scope](#context-and-scope) owns product-contract, Delivery and assessor boundaries. [Proof criteria and maintenance](#requirements) define Criteria; [Solution Strategy](#solution-strategy) defines the shared catalog/selection/executor realization, and [Runtime View](#runtime-view) owns execution and result flow. [Deployment View](#deployment-view) owns process and environment constraints. These references supply detail without making the overview another execution contract.
 
 Catalog execution units remain `command`, `python-unittest` and `node-test`. Retain the current command/adapter basis, isolation rationale, dependencies and serial/exclusive/bounded resource constraints. Stale or contradictory metadata and unknown fields/units reject before execution. Missing isolation assessment keeps work conservatively serial until corrected; it does not satisfy the current case-independence completion requirement.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Behavioral obligations, requested proof and assessment remain distinct external inputs/consumers. | [Context view](#context-view) |
+| Building Block | Necessary: Catalog/selection and execution code have distinct trusted responsibilities and domain validators remain separate. | [Building Block view](#building-block-view) |
+| Runtime | Necessary: Focused gates, dependency failure and diagnostic continuation determine which work may start. | [Runtime view](#invocation-flow-graph) |
+| Deployment | Necessary: One invocation budget spans supervisor, isolated cases and nested children; temporary ownership and cleanup are material. | [Deployment view](#deployment-diagram) |
+
 
 ## Runtime View
 

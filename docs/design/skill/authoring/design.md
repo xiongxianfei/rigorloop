@@ -48,6 +48,16 @@ flowchart TB
 
 Design owns the method responsibilities inside the boundary, realized through the [public resource composition](#building-block-view). [Responsibility abstraction](#responsibility-abstraction), [technical reasoning and views](#technical-reasoning-and-decisions), and [decision/reference preservation](#model-document-and-structural-contract) own the detailed authoring rules; the [Runtime View](#runtime-view) owns the reconciliation procedure. [Context and Scope](#context-and-scope) identifies external contract owners. [Assessment](../assessment.md) owns independent review; [Authoring](../skill.md#authoring) owns Delivery planning. Package production does not authorize that downstream work. [System](../../system.md) applies the reusable convention to this project.
 
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Direction, shared-contract owners, review and Delivery are separate decision boundaries. | [Context view](#context-view) |
+| Building Block | Necessary: A compact public entrypoint conditionally loads complete methods and examples; loading boundaries are part of portability. | [Building Block view](#building-block-diagram) |
+| Runtime | Necessary: Reconciliation must distinguish an engineering choice from a material change to approved direction. | [Runtime view](#runtime-diagram) |
+| Deployment | No separate deployment view: Design owns an authoring method, while Skill owns packaged invocation and Packaging/Installation own artifact placement. The retained deployment prose describes compatibility, not a Design-owned runtime service. | Existing deployment/context prose and the named external owner. |
+
+
 ## Context and Scope
 
 | Responsibility | Design owns | Separate owner or boundary |
@@ -73,6 +83,55 @@ Under DES-SR-02/05/07/08, begin a system composition with what the product deliv
 Retain a distinct model when it has a clear contract and a meaningful reason to change independently. Consolidate overlapping ownership when both models decide the same outcome; sharing a caller or executable alone does not establish overlap. Identify whether a relationship is composition, policy use, representation, tool use or artifact transfer, and name the shared subject and its owner. A diagram illustrates those established boundaries rather than determining them.
 
 A main model may delegate coherent responsibilities to submodels. The parent owns their composition and shared boundary; each child owns its detailed contract once. Logical nesting does not require immediate file relocation, and a child does not become another peer product merely because it has a separate Design. System owns the project's actual decomposition. Assess it with an end-to-end example and a failure that separates neighboring responsibilities, such as correct check execution with inadequate evidence or a justified decision whose persistence conflicts. Keep method requirements here and project-specific relationships in System; do not invent one model per lifecycle activity to fill an apparent diagram gap.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Direction["Direction owner"] -->|"approved goals or scoped correction"| Design["Design author"]
+    Owners["Affected model owners"] -->|"contracts and interactions"| Design
+    Design -->|"exact model/example subjects and rationale"| Review["Independent Design Review"]
+    Design -->|"reviewed requirements and observation intent"| Delivery["Delivery author"]
+```
+
+Direction, shared-contract owners, review and Delivery are separate decision boundaries. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block diagram
+
+```mermaid
+flowchart TB
+    Entry["design entrypoint"] -->|"living-model work"| Model["Model authoring and skeleton"]
+    Entry -->|"overview and view selection"| Examples["Portable architecture-view examples"]
+    Entry -->|"significant realization choices"| Technical["Technical-design method"]
+    Entry -->|"shared owners"| Composition["System composition method"]
+    Entry -->|"retained legacy source"| Legacy["Legacy reconciliation and conditional methods"]
+    Entry -->|"valid governed change"| Records["Governed authoring procedure"]
+    Model -->|"reconciled subject"| Package["Exact Design package"]
+    Technical -->|"realization and views"| Package
+    Composition -->|"owner interactions"| Package
+    Legacy -->|"preserved contracts"| Package
+```
+
+A compact public entrypoint conditionally loads complete methods and examples; loading boundaries are part of portability. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Read["Read direction and affected owners"] --> Reconcile["Reconcile behavior, views and realization"]
+    Reconcile --> Gap{"Changes approved direction?"}
+    Gap -->|"yes"| Owner["Return evidence and alternatives to direction owner"]
+    Gap -->|"no"| Intent["Preserve decisions and acceptance intent"]
+    Intent --> Inspect["Inspect exact models and relied-on examples"]
+    Inspect --> Review["Hand package to independent Design Review"]
+    Review -->|"required correction"| Reconcile
+```
+
+Reconciliation must distinguish an engineering choice from a material change to approved direction. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 
@@ -109,6 +168,7 @@ Design is a method responsibility, not a new service. Its public implementation 
 | --- | --- | --- |
 | `skills/design/SKILL.md` | Always: scope/authority, owner selection, reconciliation loop, stable references, boundary scan, assessment/verification distinction and handoff | Detailed migration inventory, repository paths for maintainers, exhaustive method manuals |
 | `references/model-authoring.md` | Creating/revising a living model: requirements, decisions, model layout and the complete DES-SR-12 example contract, including parent indexing, validity, invariant preservation and review handoff | Lifecycle mutation and approval |
+| `references/architecture-view-examples.md` | Living-model overview or supporting-view decisions: portable composed/leaf excerpts and semantic counterexamples | Internal model dependencies, a universal component inventory or automated approval |
 | `references/technical-design.md` | Significant structure, interfaces, runtime, deployment, trust or quality choices | A mandatory second architecture file or ADR |
 | `references/system-composition.md` | Multiple affected owners, shared contract or system-wide claim | Whole-repository loading or inferred ownership by folder |
 | `references/legacy-source-reconciliation.md` | Scoped unmigrated-source work: select the project authority, retain its format/IDs, classify the amendment and load the applicable feature or legacy technical procedure below; invocation coexistence or explicit authority migration | Automatic conversion, blanket deletion or historical approval rewriting |
@@ -177,7 +237,7 @@ The marker replaces the ambiguous document identifier `explicit-recording-v1`; i
 
 The function accepts a label and returns a normalized value. For example, `"  green  room  "` becomes `"green  room"`; an all-space string becomes `""`; a non-string input produces an error and no normalized value. The scenarios describe intended observations, not an exhaustive test list or evidence that an implementation passed.
 
-```markdown
+````markdown
 # Label Normalization Design
 
 Model validation contract: model-document-v1
@@ -185,6 +245,23 @@ Model validation contract: model-document-v1
 ## Responsibility
 
 Normalize labels with a pure function. The caller owns storage, authorization and presentation; this model owns only the input-to-output transformation.
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    Caller["Caller"] -->|"label value"| Normalize["Label normalization"]
+    Normalize -->|"trimmed string or input error"| Caller
+```
+
+The Responsibility and Requirements sections own this pure transformation and its input/output relationship. No additional model or service is implied.
+
+| Supporting view | Necessity and reason |
+| --- | --- |
+| Context | Unnecessary: one synchronous caller; the responsibility and requirements fully define the external input/output boundary. |
+| Building Block | Unnecessary: a single pure transformation has no material internal subsystem decomposition. |
+| Runtime | Unnecessary: there is no component interaction, state transition or asynchronous protocol beyond the specified return/error behavior. |
+| Deployment | Unnecessary: this function has no external state or environment dependence; its caller owns placement. |
 
 ## Requirements
 
@@ -206,7 +283,7 @@ Normalize labels with a pure function. The caller owns storage, authorization an
 | Failure/recovery | LAB-SR-02, LAB-SR-03 | Invalid input produces no normalized value or state changes; a following valid call succeeds normally. |
 | Compatibility/migration | - | Not applicable: this example owns no persisted records, versions or migration. |
 | External/environment | LAB-SR-01, LAB-SR-03 | The ASCII-space rule produces the same result regardless of locale and without filesystem or network access. |
-```
+````
 
 Extract the fenced content to the hypothetical model path to check its structure. The fence is illustrative content, so its declaration and tables must not count as additional live declarations in this owning Design. Structural validation checks shape and references; independent assessment judges the requirements and scenarios, and implementation tests establish actual behavior. Changing this relied-on example requires reassessment with its owning Design and exact subject under DES-SR-12/16.
 

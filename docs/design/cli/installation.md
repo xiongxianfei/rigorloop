@@ -40,9 +40,79 @@ flowchart TB
 
 Installation owns acquisition, destination safety and target mutation inside the boundary. [Architecture and interfaces](#architecture-and-interfaces), [destination conflicts and replacement](#destination-conflicts-and-explicit-replacement), and [partial failure and retry](#partial-failure-and-retry) own the detailed rules; [Runtime and deployment](#runtime-and-deployment) owns their execution context. [Packaging](../engineering/packaging.md) owns artifact representation and [CLI](cli.md#command-interface) exposes the command. Existing candidate destinations conflict by default; explicit `--force` permits complete replacement under the contract. Project governance records are neither inspected nor adopted.
 
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Archive trust, user replacement choice and actual target destinations cross the installation boundary. | [Context view](#context-view) |
+| Building Block | Necessary: Acquisition, destination preflight, scoped writes and diagnostics enforce different safety obligations. | [Building Block view](#building-block-view) |
+| Runtime | Necessary: Default conflicts and explicit replacement have different side effects, and partial failure requires honest recovery reporting. | [Runtime view](#runtime-view) |
+| Deployment | Necessary: The CLI process writes target-specific roots; network acquisition and local containment boundaries matter. | [Deployment view](#deployment-view) |
+
+
 ## Context and Scope
 
 A user selects a supported target and trusted network or local archive source. The installer receives package-bundled metadata, the candidate archive and actual filesystem destinations. It returns planned, blocked, completed or partial operation results. Project-root state files are unrelated data: installation neither interprets them nor grants workflow adoption. The executable's record commands have a separate transaction and data contract.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    User["User or CLI caller"] -->|"target and explicit force choice"| Init["Installation"]
+    Packaging["Packaging artifact contract"] -->|"archive and verification metadata"| Init
+    Init -->|"scoped complete-unit writes"| Files["Candidate skill destinations"]
+    Init -->|"actual outcome and recovery limits"| User
+```
+
+Archive trust, user replacement choice and actual target destinations cross the installation boundary. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block View
+
+```mermaid
+flowchart LR
+    Acquire["Acquire and verify archive"] -->|"trusted candidate inventory"| Preflight["Resolve and check all candidate destinations"]
+    Preflight -->|"allowed write scope"| Install["Install or explicitly replace complete units"]
+    Acquire -->|"verification failure"| Result["Diagnostics and actual outcome"]
+    Preflight -->|"conflict or unsafe path"| Result
+    Install -->|"success or partial failure"| Result
+```
+
+Acquisition, destination preflight, scoped writes and diagnostics enforce different safety obligations. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime View
+
+```mermaid
+flowchart TB
+    Verify["Acquire and verify candidate"] --> Paths["Preflight actual destinations"]
+    Paths --> Safe{"All destinations safe?"}
+    Safe -->|"no, even with force"| Unsafe["Reject unsafe scope before writes"]
+    Safe -->|"yes"| Conflict{"Candidate destination already exists?"}
+    Conflict -->|"no"| Write["Write complete candidate units"]
+    Conflict -->|"yes"| Force{"Explicit force?"}
+    Force -->|"no"| Stop["Stop before writes; explain conflict"]
+    Force -->|"yes, safe scope already established"| Write
+    Write --> Outcome{"Completed?"}
+    Outcome -->|"yes"| Report["Report installed units"]
+    Outcome -->|"no"| Recovery["Report partial state and bounded recovery limits"]
+```
+
+Default conflicts and explicit replacement have different side effects, and partial failure requires honest recovery reporting. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment View
+
+```mermaid
+flowchart LR
+    Public["Release archive source"] -->|"verified acquisition"| Process["CLI installation process"]
+    Process -->|"isolated candidate preparation"| Temp["Invocation-owned temporary root"]
+    Temp -->|"preflighted complete units"| Targets["Supported target skill directories"]
+    Project["Project governance records"] -.->|"outside installation read/write scope"| Process
+```
+
+The CLI process writes target-specific roots; network acquisition and local containment boundaries matter. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 

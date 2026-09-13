@@ -68,6 +68,16 @@ Skill owns these six children's composition under [System's parent graph rule](.
 
 Overview outputs are defined by the [behavioral submodels](#behavioral-submodels); [Context and Scope](#context-and-scope) owns user inputs, [Runtime View](#runtime-view) owns invocation behavior, and [Deployment View](#deployment-view) describes the packaged skill boundary. [CLI](../cli/cli.md) supports governed recording, while [Engineering](../engineering/engineering.md) realizes and delivers the published behavior. Individual skill use remains independent of CLI recording.
 
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: User invocation, agent interpretation, governed recording and product delivery are distinct boundaries. | [Context view](#context-view) |
+| Building Block | Necessary: Six behavioral owners share one common capability contract and retain their specialist responsibilities. | [Building Block view](#building-block-diagram) |
+| Runtime | Necessary: Portable invocation and governed recording load different resources and must preserve stage and permission limits. | [Runtime view](#runtime-diagram) |
+| Deployment | Necessary: Canonical content, generated archives and target installations have distinct source and runtime roles. | [Deployment view](#deployment-diagram) |
+
+
 ## Architecture Constraints
 
 The Constitution and approved owning models outrank retained legacy documents. `skills/` remains the only authored skill source; generated candidates are derived and never hand-edited. Operational projection manifests and templates stay at their current paths unless their actual consumers are coherently moved. This Design selects no such relocation.
@@ -75,6 +85,65 @@ The Constitution and approved owning models outrank retained legacy documents. `
 Published text must work from the installed package and available project authority. Internal requirement IDs, source-displacement maps, selector paths, generator details and maintenance mechanisms belong here or in contributor evidence, not in shipped procedure. A project can have its own relevant specs and governance; portability does not deny access to them or substitute RigorLoop policy for them.
 
 Only `rigorloop-records-v3` is supported runtime stored input in the adopted profile. Historical examples, approvals, names and retired recording procedures remain evidence of their original subjects, not a supported execution fallback. This constraint comes from Record Format and CLI, not from a new Skill schema.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    User["User and project authority"] -->|"intent and evidence"| Skills["Published skill guidance"]
+    Skills -->|"scoped procedure"| Agent["Supported agent"]
+    Agent -->|"artifacts, changes and assessments"| User
+    Agent -->|"explicit governed operations when applicable"| CLI["CLI and Records"]
+    Engineering["Engineering"] -->|"validated packaged guidance"| Skills
+```
+
+User invocation, agent interpretation, governed recording and product delivery are distinct boundaries. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block diagram
+
+```mermaid
+flowchart TB
+    Contract["Capability Contract"] -.->|"common invocation and limits"| Capabilities["Published specialist capabilities"]
+    Capabilities -->|"coordination"| Workflow["Workflow"]
+    Capabilities -->|"engineering intent"| Authoring["Authoring"]
+    Capabilities -->|"scoped code and repairs"| Implementation["Implementation"]
+    Capabilities -->|"independent judgments"| Assessment["Assessment"]
+    Capabilities -->|"direction, inquiry and learning"| Support["Project Support"]
+    Authoring -->|"Design method owner"| Design["Design authoring model"]
+```
+
+Six behavioral owners share one common capability contract and retain their specialist responsibilities. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Invoke["Receive scoped skill invocation"] --> Resolve["Resolve project authority and invocation mode"]
+    Resolve --> Valid{"Safe, sufficient basis?"}
+    Valid -->|"no"| Stop["Explain missing authority or resource"]
+    Valid -->|"yes"| Load["Load only triggered complete resources"]
+    Load --> Work["Perform specialist duty within scope"]
+    Work --> Output["Produce artifact, implementation or assessment"]
+    Output --> Record["Record when applicable; hand off under authority"]
+```
+
+Portable invocation and governed recording load different resources and must preserve stage and permission limits. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment diagram
+
+```mermaid
+flowchart LR
+    Source["Canonical skill and packaged resources"] -->|"Packaging transforms"| Archive["Supported target archive"]
+    Archive -->|"CLI Installation or authorized manual installation"| Target["Target skill directory"]
+    Target -->|"agent reads entrypoint and conditional resources"| Agent["User agent process"]
+    Agent -->|"scoped authorized actions"| Project["User project"]
+```
+
+Canonical content, generated archives and target installations have distinct source and runtime roles. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 
