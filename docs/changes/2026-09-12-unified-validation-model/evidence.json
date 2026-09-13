@@ -1268,6 +1268,46 @@
         }
       ],
       "summary": "Corrected actual PR CI passed for authored source 0d65cd674fb2b02128887ff47b56d83541572a79 against main57653f7b791bbfbad12dd0f2657bfb52acd878c8 in the isolated Linux filesystem checkout. The unchanged release coordinator prepared and checked source 2aa2948420f9be17c87a0cc184c722511232eebf, candidate 482b22f23b7c926dc8803e43f1876f365360e5771d008043b03c5468b8fd0985, without publication authority. This is the actual PR wrapper with its required candidate/preflight/selection/complete focused/boundary/broad execution, not a selector-only or diagnostic substitute. Exit0 was observed from the complete outer command.\n\nThe accepted final-legacy-navigation-marker-scope correction restores governed-lifecycle-cli.md and progressive-boundary-first-skill-guidance.md exactly to base57653f7b. Their opening references remain historical provenance; current requirements and navigation resolve to the current models. No validator, marker, schema, grandfathered inventory, production code or public behavior changed in this correction. The exact restored-byte comparison and corrected selected boundary command pass with zero issues. Nine (correcting the initial evidence's count of ten) grandfathered observations received independent final-legacy-design-classification. Original failed PR and M5/prose observations remain unchanged historical evidence, not reclassified as passes.\n\nAll script/skill/template/schema/package implementation bytes are unchanged from the successful M5 C5/C6/C7/C8/C10 basis; the historical two-spec restoration changes the branch's selected applicability, which this new actual PR run proves. Earlier complete sequential and parallel broad runs remain applicable to unchanged runtime inputs. Registered narrative consolidation and current model navigation have their own exact byte/identity and structural proof and independent M5 reliance assessment. Final full-branch Markdown comparison now finds12 files with retained baseline findings and zero introduced findings; required plan/README prose gates pass. This is no whole-file prose pass or general waiver.\n\nLocal environment: Python3.12.3, Node24.14.1, Linux process ownership backend. Hosted CI has not been observed; the configured hosted workflow uses Python3.11 and Node24. Earlier Windows-mounted filesystem timeout limitation remains explicit. No release, merge, remote push, customer-policy activation or final Verify success follows from this evidence alone. Fresh whole-change reviewer must resolve its finding and assess this current result; distinct Verify remains mandatory.\n"
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "support"
+      },
+      "id": "pr188-hosted-timeout",
+      "procedure": "Observe GitHub Actions run 34739214673, job 103675921634 for PR188 head6fb7131d3be1cfd15a5be87ddde7ee94fbcc58a2 through job metadata and complete job log.",
+      "result": "failed",
+      "subjects": [
+        {
+          "identity": "sha256:a4d1559620fc3e6758db07e9f8a7b5f4d1a2b7af2776ca38aa85f17e42c82109",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "identity": "sha256:b0ade111be6b4ec9ab8704a04a91737843ad91af89afff2a86c78a8a0c669fb4",
+          "path": "scripts/test-validation-execution.py"
+        }
+      ],
+      "summary": "Hosted PR validation failed: validation_execution.regression exceeded its300-second leaf timeout; dependent boundary work remained not started and the outer command exited125. Python3.11.16, Node24, worker budget3. Captured unittest output contained eight dots and a failure marker before termination, without its deferred final traceback. The timed-out suite contains actual direct/sequential/reverse-parallel comparisons of all three adopted populations. This observation is retained as failure, not relabeled by later local proof. User requested bounded CI repair on the already-open PR."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "support"
+      },
+      "id": "pr188-ci-repair-local",
+      "procedure": "python scripts/test-validation-execution.py (Python3.11.15, inherited workers3); immediate failure/error diagnostic probe; bash scripts/ci.sh --mode pr --base 57653f7b791bbfbad12dd0f2657bfb52acd878c8 --head 8931fa3af7bbf8cf5cd30a037935d181afc78347 --timeout 600 (Python3.11.15, CPU-count fixture4 yielding workers3, existing Git maintenance settings); git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:2809f99112457772c441edbcb492b53c0689160b64442b31533bedfd016b2e91",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "identity": "sha256:a9bb59b84147d1e51b78eb7927d16e987f2d1ea8a9a2f1827a919211a42869ac",
+          "path": "scripts/test-validation-execution.py"
+        }
+      ],
+      "summary": "Bounded PR CI repair: hosted PR invocation now uses its already-supported explicit600-second leaf override so the complete executor integration command can finish on the hosted runner; public default300, main invocation,20-minute job limit, permissions, triggers, validation selection and required coverage are unchanged. Executor tests stream their original failure/error traceback immediately while preserving result states, all38 tests, normal command arguments and verbosity. No runtime implementation, requirements, architecture, dependencies, model, plan, schema, stage routing or review outcomes changed.\n\nOriginal unchanged full executor suite passed38 locally in184.302s; the isolated actual selector comparison also passed on Python3.11.15 in102.769s. Corrected complete executor suite passed38 in182.590s with inherited workers3 and complete original selector163/lifecycle108/metadata7 populations. A controlled failure/error probe confirmed nonzero outcomes and both tracebacks before the deferred summary. The final runner-class wiring preserves verbosity; the complete actual PR command subsequently passed on exact8931fa3a engineering bytes with the same hosted timeout flag. Original mounted-filesystem duplicate execution was interrupted and is not passing proof.\n\nConstitution/AGENTS and ci-maintenance bounded-pr-ci-repair authority apply: exact failed open PR/head, user-authorized repair/push, complete work, approved reviews and no open material finding. Existing assessments retain their original identities and scope because the approved behavior, proof obligations and assertions are unchanged. This new evidence supports the execution environment/diagnostic correction; it neither retargets old review/Verify subjects nor creates a new closeout claim. Hosted replacement results remain unobserved until explicitly read after push; local success is not hosted success."
     }
   ],
   "schema_version": 3
