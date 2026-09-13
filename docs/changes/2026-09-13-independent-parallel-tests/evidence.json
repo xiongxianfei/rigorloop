@@ -160,6 +160,22 @@
         }
       ],
       "summary": "Four affected model structure/reference checks passed; prose zero errors/warnings; diff check passed. Parent tables map System 3, Skill 6, CLI 4 and Engineering 4 immediate children. Authoring nested view distinguishes its Design model from Proposal/Plan capabilities and external Assessment. System links child-owned views instead of owning their internal diagram. Read/record/install boundaries, independent judgments and separate Release authorization remain explicit. Diagram syntax was inspected as Mermaid source; no rendered-image or runtime validation claimed. Earlier Validation refinement and scoped legacy notices unchanged. This supports independent Design reassessment, not implementation or adoption."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "whole-system-view-author-check",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/system.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/system.md; git diff --check; source walkthrough against unchanged Skill, CLI and Engineering contracts.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:0ac9556a0a724b656f4e7b3696a1152c195ca36cb6d8538c419ba75cbd6d970d",
+          "path": "docs/design/system.md"
+        }
+      ],
+      "summary": "System structural/reference check passed; prose zero errors/warnings; diff check passed. The whole-system graph now traces intended behavior to actual published products while referencing child views for internal detail. Milestone reviews, fresh whole-change review, distinct Verify, Release qualification, candidate-specific publication permission and uncertain-write recovery are preserved. Parent-owned graphs and all runtime files unchanged. Mermaid source inspected; no rendering, runtime test or release execution claimed."
     }
   ],
   "schema_version": 3

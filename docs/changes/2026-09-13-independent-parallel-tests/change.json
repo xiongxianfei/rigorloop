@@ -4,7 +4,7 @@
       "id": "root",
       "role": "plan"
     },
-    "reason": "Independent expanded Design Review approved parent-owned subsystem graphs with no new findings; user graph correction and prior Validation package are ready for Delivery planning.",
+    "reason": "Independent Design Review approved restored whole-system view together with unchanged parent-owned subsystem graphs; no new findings. Corrected package ready for Delivery planning.",
     "stage": "plan",
     "status": "ready"
   },
@@ -33,7 +33,7 @@
         "role": "design"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/material-decisions.json",
-      "reason": "Exact user-authorized graph ownership correction; independent reassessment pending.",
+      "reason": "User-authorized System design correction; independent review pending.",
       "value": "current"
     },
     {
@@ -42,7 +42,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json",
-      "reason": "Exact seven-document package reassessed for explicit recursive parent-graph direction and preserved validation/maintenance semantics; child boundaries and source evidence checked, no unresolved finding.",
+      "reason": "User-directed whole-system view restoration independently assessed against current System and unchanged package interfaces; complete end-to-end and parent-owned graphs coexist with preserved gates, no unresolved findings.",
       "value": "current"
     }
   ],
@@ -53,7 +53,7 @@
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:63390bb44e7ec23cfa70f850066470e07136eceae0bff46d1f5d132e2a82f77a",
+        "identity": "sha256:0ac9556a0a724b656f4e7b3696a1152c195ca36cb6d8538c419ba75cbd6d970d",
         "path": "docs/design/system.md"
       }
     },

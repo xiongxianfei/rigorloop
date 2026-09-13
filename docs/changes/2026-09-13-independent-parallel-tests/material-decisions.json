@@ -1,5 +1,5 @@
 {
-  "body": "System SYS-SR-10 owns the project composition allocation: parent owns immediate-child graph, nested parents own further decomposition, shared relationships belong to nearest shared parent. System graph now shows three main owners; Skill, CLI and Engineering own internal views. Authoring is a named-section parent and has its Design-child view with Proposal/Plan capabilities clearly distinguished. Replaced centralized detailed graph with owner links; parent tables retain navigation. No new model files, global public diagram mandate, runtime or product behavioral changes. Prior exact model identities captured before edits; original composition adoption retained and earlier review remains historical until reassessed.",
+  "body": "Refine SYS-SR-10 and parent graph ownership to permit complementary ownership and end-to-end views, each authored once. Restore System end-to-end graph from approved need through Skill/CLI behavior, reviewed Delivery, implementation, packaged candidate, Validation evidence, independent Code Review/Verify, Release qualification, explicit publication authorization and observed public products. Child-owned graphs remain unchanged; selected descendant references explain cross-model composition without transferring their contracts. This corrects interpretation of the previous graph decision, not the approved three-model or Validation direction.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "decisions": [
     {
@@ -80,6 +80,21 @@
         {
           "identity": "sha256:d1d7b1d79aea37bc4d5629e5ebacca115cd62e68e81fb2e9a019897f2957998a",
           "path": "docs/design/engineering/engineering.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "whole-system-and-subsystem-views",
+      "rationale": "User corrects removal of whole-system design: parent graph ownership must retain the integrated product flow as well as subsystem detail.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:0ac9556a0a724b656f4e7b3696a1152c195ca36cb6d8538c419ba75cbd6d970d",
+          "path": "docs/design/system.md"
         }
       ]
     }

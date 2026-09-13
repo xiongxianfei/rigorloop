@@ -33,7 +33,7 @@ System owns this graph of its immediate children and their shared interfaces. [S
 
 ### Parent graph ownership
 
-For this repository, every model with child models owns one authoritative system design graph of its subsystem. This applies recursively to parents represented by named sections as well as separate documents. Each graph identifies its immediate children, their responsibilities, significant interactions and relevant external boundaries; its parent links to that view. A nested parent owns further decomposition. Leaves need no artificial child graph. Cross-subsystem relationships belong to their nearest shared parent; a local graph may show a labeled external reference without copying the external subsystem's internals. Detailed behavior remains at its child owner.
+For this repository, every model with child models owns the authoritative system design views of its subsystem. This applies recursively to parents represented by named sections as well as separate documents. Each graph identifies its immediate children, their responsibilities, significant interactions and relevant external boundaries; its parent links to that view. A nested parent owns further decomposition. Leaves need no artificial child graph. Cross-subsystem relationships belong to their nearest shared parent; a local graph may show a labeled external reference without copying the external subsystem's internals. Detailed behavior remains at its child owner. Ownership and end-to-end flow are complementary views: a parent retains the integrated flow across its children, including selected descendant responsibilities where needed to explain a shared outcome. Linking to child graphs does not replace that whole-subsystem design. Each view has one authored source.
 
 The Design method supplies authoring conventions; System owns this project's composition allocation under SYS-SR-10. The rule does not introduce a universal diagram requirement into published skills. Inline Mermaid is the single authored source for these views. A relationship change reconciles the owning parent graph and affected child contracts in the same reviewed package.
 
@@ -80,7 +80,7 @@ The reusable proof criteria in Validation are referenced by Skill capabilities; 
 | SYS-SR-07 | The selected migration MUST retire the mapped current method/composition authority after coherent adoption, preserve the mixed architecture's unmigrated responsibilities and historical meaning, and leave named follow-up ownership. No unlisted source is a blanket deletion target. |
 | SYS-SR-08 | The Design and System slice MUST include representative integrated acceptance outcomes and sufficient observation boundaries to distinguish coherent operation from a local-only success. Validation owns proof-quality criteria; Delivery and specialists retain concrete allocation and assessment. |
 | SYS-SR-09 | Interruption, conflicting ownership, stale consumer basis or an incomplete candidate package MUST prevent reliance on the affected composed claim and retain a safe owned correction path. Recovery or rollback MUST preserve historical evidence and unrelated state under existing permissions. |
-| SYS-SR-10 | Every parent model in this repository MUST own the authoritative system design graph of its subsystem, including parents represented by named sections. The graph MUST identify immediate children, their responsibilities, significant relationships and relevant external boundaries, and link to child-owned detail. Further decomposition MUST remain with the nested parent; cross-subsystem composition MUST remain with the nearest shared parent. A graph change MUST remain consistent with affected contracts and receive their scoped assessment. |
+| SYS-SR-10 | Every parent model in this repository MUST own the authoritative system design graph of its subsystem, including parents represented by named sections. The graph MUST identify immediate children, their responsibilities, significant relationships and relevant external boundaries, and link to child-owned detail. Further decomposition MUST remain with the nested parent; cross-subsystem composition MUST remain with the nearest shared parent. System MUST also retain the end-to-end design from intended product behavior through implementation, proof, independent assessment and authorized publication; links to subsystem graphs MUST NOT replace it. A graph change MUST remain consistent with affected contracts and receive their scoped assessment. |
 
 ## Product and environment boundaries
 
@@ -103,7 +103,45 @@ An interface change identifies all actual producers and consumers. Unknown owner
 ## Building quality into the products
 
 
-[Engineering’s subsystem graph](engineering/engineering.md#subsystem-design-graph) owns how Development, Validation, Packaging and Release cooperate to deliver both products. System owns their relationship to the Skill and CLI behavior contracts shown above. Self-use does not prove a candidate correct; independent assessment and publication authority remain explicit at the responsible boundary.
+### End-to-end system design
+
+System owns the complete path from intended behavior to the products users receive. The hierarchy graph above explains responsibility ownership; this graph explains how those responsibilities cooperate to establish product quality. Labels identify the applied model contracts and the work performed under them.
+
+```mermaid
+flowchart TB
+    Need["Approved user need"]
+    Skill["Skill: define published capability behavior"]
+    CLI["CLI: define commands and safe operations"]
+    Delivery["Engineering Development applies Skill Authoring and Assessment:<br/>reconcile Designs, review them and allocate reviewed delivery"]
+    Implement["Engineering Development:<br/>implement skills, CLI and protective tests"]
+    Candidate["Engineering Packaging:<br/>build skill archives and CLI candidate"]
+    Proof["Engineering Validation:<br/>check behavior, artifacts and skill/CLI compatibility"]
+    Assessment["Independent assessors apply Skill Assessment:<br/>Code Review, then distinct final Verify"]
+    Release["Engineering Release:<br/>prepare and qualify the exact release candidate"]
+    Approval["Maintainer authorizes publication of that candidate"]
+    Publish["Engineering Release:<br/>publish and observe public identities and availability"]
+    Products["Published skills and CLI:<br/>useful guidance, safe operations and verified compatibility"]
+    Correction["Skill Workflow routes findings to the affected owner:<br/>correct and reassess the changed basis"]
+    Need --> Skill
+    Need --> CLI
+    Skill -->|"required behavior"| Delivery
+    CLI -->|"required behavior"| Delivery
+    Delivery -->|"reviewed contracts and plan"| Implement
+    Implement -->|"candidate sources"| Candidate
+    Candidate -->|"exact artifacts"| Proof
+    Proof -->|"actual evidence and limitations"| Assessment
+    Assessment -->|"verified engineering basis; reviewed source merged"| Release
+    Release -->|"qualified candidate and concrete publication scope"| Approval
+    Approval -->|"candidate-specific permission"| Publish
+    Publish -->|"observed public result"| Products
+    Proof -.->|"failed or incomplete proof"| Correction
+    Assessment -.->|"findings"| Correction
+    Release -.->|"qualification gap"| Correction
+```
+
+The [Skill](skill/skill.md#subsystem-design-graph), [CLI](cli/cli.md#subsystem-design-graph) and [Engineering](engineering/engineering.md#subsystem-design-graph) graphs explain each subsystem internally. This view references their responsibilities without redefining them. In particular, [Development](engineering/engineering.md#development) uses the published authoring and assessment behaviors, [Validation](engineering/validation.md) supplies observations, and [Release](engineering/release.md) owns qualification and publication. Self-use or a passing check does not establish independent approval.
+
+The flow summarizes required relationships, not a one-pass execution schedule. Implementation and Code Review repeat for bounded milestones; fresh whole-change Code Review precedes final Verify. Release qualifies its own exact candidate and obtains separate authorization. Corrections return to the affected contract, implementation or assessment owner and repeat the affected downstream work. An uncertain or failed public write follows Release recovery and cannot be reported as successful delivery.
 
 Quality has several distinct obligations. Skill and the specialist method owners make procedures useful and complete. CLI and Record Format make operations explicit and preserve state safely. Packaging preserves artifact content/resources; CLI Installation preserves the verified content during target writes. Validation supplies attributable observations, including negative cases and skill/CLI compatibility; independent assessors judge whether those observations establish the intended behavior. Release establishes the public identity and availability of the delivered artifacts. None of these obligations is satisfied by the existence of a model document alone.
 
@@ -201,7 +239,7 @@ Coordinated adoption requires independently reviewed Design and Delivery, implem
 | Input domain | SYS-SR-01, SYS-SR-02, SYS-SR-07 | A reader locates the owner of model authoring, recording and an unmigrated installer contract without treating the inventory as new approval of every historical source. Unknown ownership remains an explicit gap. |
 | State/lifecycle | SYS-SR-03, SYS-SR-05, SYS-SR-06 | Proposal approval, model validation and generated archive success remain distinguishable from Design approval, implementation readiness, publication and customer adoption. |
 | Identity/authority | SYS-SR-02, SYS-SR-06 | A System/component contradiction returns to its governing owner; system prose cannot overrule a component. A model revision cannot inherit the old exact-subject approval. |
-| Composition/path | SYS-SR-03, SYS-SR-04, SYS-SR-05, SYS-SR-08, SYS-SR-10 | The unified authoring path supplies one coherent affected-model package to review and usable local/integrated outcomes to planning, while generated/installed guidance contains design alone. A stale routing, review tuple or old entrypoint is visible despite a passing local skill check. A reader follows System to each parent-owned child graph; a changed interaction cannot remain documented only in a stale ancestor copy. |
+| Composition/path | SYS-SR-03, SYS-SR-04, SYS-SR-05, SYS-SR-08, SYS-SR-10 | The unified authoring path supplies one coherent affected-model package to review and usable local/integrated outcomes to planning, while generated/installed guidance contains design alone. A stale routing, review tuple or old entrypoint is visible despite a passing local skill check. A reader can trace the whole product flow in System and follow each parent-owned graph for internal detail. Links alone cannot substitute for the end-to-end view, and a changed interaction cannot remain documented only in a stale ancestor copy. |
 | Temporal/retry | SYS-SR-04, SYS-SR-06, SYS-SR-09 | Concurrent shared-method and consumer edits trigger explicit applicability assessment before handoff; an interrupted recording or install retry cannot overwrite unrelated work or refresh an old judgment. |
 | Failure/recovery | SYS-SR-05, SYS-SR-09 | Missing required package resources or an obsolete target entry stops the affected path with an owned repair and preserved files/state. Local success elsewhere does not erase that composed failure. |
 | Compatibility/migration | SYS-SR-01, SYS-SR-05, SYS-SR-07 | The selected method/composition clauses resolve to one new owner, mixed architecture retains its named remainder, and historical ADR/review bytes keep their original meaning. Unrelated legacy work can proceed through scoped design authoring without full migration. |
