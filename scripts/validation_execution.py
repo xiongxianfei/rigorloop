@@ -20,7 +20,7 @@ import time
 import shutil
 
 from validation_selection import (CHECK_CATALOG, MODE_CHECK_IDS, BOUNDARY_CHECK_IDS, DEFAULT_ADAPTER_VERSION, catalog_command,
-                                  is_parallel_safe_check, validate_catalog)
+                                  is_parallel_safe_check, validate_catalog, COVERING_CHECK_IDS, COVERAGE_BASES, command_basis)
 
 
 def fail(message, code=4):
@@ -872,6 +872,50 @@ def compose_mode(mode, scratch, *, base='', head='', skip_diff_scoped=False):
     return preflight + [p for p in plans if p not in preflight]
 
 
+def allocate_coverage(plans):
+    """Apply only reviewed, already-required catalog coverage; infer no equivalence."""
+    present = {p.check_id for p in plans}
+    mapping = {key: next((target for target in targets if target in present), key)
+               for key, targets in COVERING_CHECK_IDS.items() if key in present}
+    mapping = {key: target for key, target in mapping.items() if key != target}
+    if not mapping:
+        return plans
+    participants = set(mapping) | set(mapping.values())
+    originals = {}
+    for plan in plans:
+        if plan.check_id not in participants:
+            continue
+        entry = CHECK_CATALOG[plan.check_id]
+        c = entry.constraints
+        expected = COVERAGE_BASES[plan.check_id]
+        if (c is None or (command_basis(entry.command_template, c.unit), c.unit) != expected
+                or c.basis != expected[0] or c.mode != 'bounded' or c.demand != 1
+                or c.shared_writes or not entry.parallel_safe or entry.dependencies
+                or plan.args != shlex.split(entry.command_template)
+                or plan.parallel_safe is not True or type(plan.demand) is not int or plan.demand != 1
+                or plan.case_id is not None or plan.case_receipt is not None or plan.rerun is not None):
+            raise ValueError(f'incompatible or stale coverage basis: {plan.check_id}')
+        previous = originals.setdefault(plan.check_id, plan)
+        if previous.dependencies != plan.dependencies or previous.after != plan.after:
+            raise ValueError(f'conflicting prerequisites for canonical check {plan.check_id}')
+    prerequisites = {}
+    for plan in plans:
+        key = mapping.get(plan.check_id, plan.check_id)
+        fields = prerequisites.setdefault(key, {'dependencies': [], 'after': []})
+        for field in fields:
+            fields[field].extend(mapping.get(value, value) for value in getattr(plan, field))
+    result = []
+    for plan in plans:
+        key = mapping.get(plan.check_id, plan.check_id)
+        template = originals[key] if plan.check_id in mapping else plan
+        fields = prerequisites[key] if key in mapping.values() else {
+            field: [mapping.get(value, value) for value in getattr(plan, field)]
+            for field in ('dependencies', 'after')}
+        result.append(replace(template, reason=plan.reason, phase=plan.phase,
+            **{field: tuple(dict.fromkeys(values)) for field, values in fields.items()}))
+    return result
+
+
 def expand_groups(plans, scratch, *, diagnostic=False):
     """Compose canonical IDs once, then apply the focused/boundary gate."""
     expanded, groups = [], {}
@@ -888,10 +932,12 @@ def expand_groups(plans, scratch, *, diagnostic=False):
             child.after = tuple(dict.fromkeys((*child.after,*plan.after)))
             child.reason = '; '.join(x for x in (plan.reason,child.reason) if x)
             expanded.append(child)
-    retained = {}
     for plan in expanded:
         for field in ('dependencies','after'):
             setattr(plan,field,tuple(dict.fromkeys(d for key in getattr(plan,field) for d in groups.get(key,(key,)))))
+    expanded = allocate_coverage(expanded)
+    retained = {}
+    for plan in expanded:
         if plan.phase not in {'preflight','focused','boundary'}:
             raise ValueError(f'unknown phase: {plan.phase}')
         previous = retained.get(plan.check_id)

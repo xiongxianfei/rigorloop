@@ -400,6 +400,23 @@ for _key, _basis in _NODE_ASSESSMENTS.items():
         constraints=ExecutionConstraints(unit='node-test',mode='bounded',basis=_basis,
             isolation='One native test worker per case, owned fixture roots and complete hooks; fixed product-subject subprocesses are bounded and reaped, not nested test pools.'))
 
+# Reviewed finite coverage allocation; precedence prefers an already-required full scope.
+# These literals bind the assessment independently of later catalog edits.
+COVERING_CHECK_IDS = {
+    'adapters.drift': ('adapters.full_regression', 'adapters.regression'),
+    'adapters.validate': ('adapters.full_regression', 'adapters.regression'),
+    'adapters.regression': ('adapters.full_regression',),
+    'record_retirement.regression': ('rigorloop_cli.test',),
+}
+COVERAGE_BASES = {
+    'adapters.drift': ('275c34ecf90ce1c5c83521550790f3619c25f6296541a8fa54ac19e44743ad81', 'python-unittest'),
+    'adapters.validate': ('d07757ecafbea97e874b5115988448bc388195b73a7935c83f9b512498fe9598', 'python-unittest'),
+    'adapters.regression': ('84133e40f66e4595b786ee6f4116f933421fcf1e8e0387e698d0c7935695e8e2', 'python-unittest'),
+    'adapters.full_regression': ('209833a7673c5c462eead3a8908a0370cba7f4249b013e258d23f89f70ea4066', 'python-unittest'),
+    'record_retirement.regression': ('875171555af9d01e6580134dd9b5a9264a897b81677bb92aff09a735eee73065', 'node-test'),
+    'rigorloop_cli.test': ('92cc1d98945b4cef969b71643189017536f66108f1b0a0f8813b4b9d8d0598e3', 'node-test'),
+}
+
 MODE_CHECK_IDS = {
     mode: tuple(key for key, entry in CHECK_CATALOG.items() if mode in entry.modes)
     for mode in ("broad-smoke", "main")
