@@ -54,6 +54,7 @@ ADAPTER_REGRESSION_COMMAND = (
 )
 
 EXPECTED_CATALOG = {
+    "cli_result_measurement.regression": "python scripts/test-cli-result-measurement.py",
     "validation_execution.regression": "python scripts/test-validation-execution.py",
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
     "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/skill/workflow.md --path docs/design/cli/cli.md --path docs/design/cli/records.md",
@@ -964,9 +965,11 @@ class ValidationSelectionTests(unittest.TestCase):
         # These fixtures provide controlled command bodies, not unittest suites.
         # Keep that distinction explicit in the fixture's trusted catalog.
         with (workspace/'scripts/validation_selection.py').open('a') as catalog:
-            catalog.write("\nfor key in _CASE_ASSESSMENTS:\n"
+            catalog.write("\nfor key in (*_CASE_ASSESSMENTS, *_NODE_ASSESSMENTS):\n"
                           " entry = CHECK_CATALOG[key]\n"
-                          " CHECK_CATALOG[key] = replace(entry,parallel_safe=False,constraints=None)\n")
+                          " CHECK_CATALOG[key] = replace(entry,constraints=replace(entry.constraints,unit='command',basis=command_basis(entry.command_template,'command')))\n"
+                          "for key in COVERAGE_BASES:\n"
+                          " COVERAGE_BASES[key] = (CHECK_CATALOG[key].constraints.basis, 'command')\n")
         return workspace
 
     def make_broad_smoke_workspace(
@@ -1181,7 +1184,7 @@ raise SystemExit({exit_code})
                 result = self.select([path])
                 self.assertEqual(
                     selected_ids(result.to_json_dict()),
-                    {"record_retirement.regression", "change_metadata.regression"},
+                    {"record_retirement.regression", "main.retirement_ledger.regression", "change_metadata.regression"},
                 )
 
     def test_shared_preflight_context_requires_matching_repository_identity(self) -> None:
@@ -1217,7 +1220,7 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertEqual(payload["blocking_results"], [])
         self.assertEqual(
-            {"record_retirement.regression", "selector.regression", "validation_execution.regression"},
+            {"record_retirement.regression", "main.retirement_ledger.regression", "selector.regression", "validation_execution.regression"},
             selected_ids(payload),
         )
         selector_check = next(check for check in payload["selected_checks"] if check["id"] == "selector.regression")
@@ -1293,6 +1296,7 @@ raise SystemExit({exit_code})
         result = self.select(
             [
                 "scripts/validation_selection.py",
+                "scripts/validation_node_adapter.mjs",
                 "scripts/test-select-validation.py",
                 "scripts/validate-broad-smoke-classification.py",
             ]
@@ -1427,17 +1431,41 @@ raise SystemExit({exit_code})
     def test_catalog_records_audited_commands_and_initial_case_population(self) -> None:
         from validation_selection import is_parallel_safe_check
 
-        expected_parallel_safe = {"skills.regression", "adapters.regression"} | {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
+        expected_parallel_safe = {"requirement_fidelity.spec_reads"} | {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
 
         expected_cases = {
-            'artifact_lifecycle.regression','change_metadata.regression','selector.regression',
-            'broad_smoke.artifact_lifecycle.regression','broad_smoke.change_metadata.regression',
-            'broad_smoke.selector.regression','main.artifact_lifecycle.regression',
-            'main.change_metadata.regression',
+            'review_artifacts.regression',
+            'change_record_query.regression',
+            'workflow_automation.code_state_regression',
+            'workflow_automation.engine_regression',
+            'workflow_automation.policy_regression',
+            'workflow_automation.state_regression',
+            'workflow_automation.validator_regression',
+            'cli_result_measurement.regression',
+            'token_cost.regression',
+            'token_cost.report_regression',
+            'governed_lifecycle_cli_wrapper.test',
+            'main.retirement_ledger.regression',
+            'skills.regression',
+            'adapters.regression',
+            'adapters.drift',
+            'adapters.validate',
+            'adapters.full_regression',
+            'release_transaction.regression',
+            'npm_package_publication.test',
+            'boundary_first.reference_regression',
+            'boundary_first.regression',
+            'documentation_prose.regression',
+            'markdown_readability.regression',
+            'guide_system.regression',
+            'artifact_lifecycle.regression','change_metadata.regression','selector.regression','validation_execution.regression',
         }
         self.assertEqual({key for key,entry in CHECK_CATALOG.items()
                           if entry.constraints and entry.constraints.unit=='python-unittest'},expected_cases)
-        expected_parallel_safe |= expected_cases
+        expected_node = {"rigorloop_cli.test", "record_retirement.regression"}
+        self.assertEqual({key for key,entry in CHECK_CATALOG.items()
+                          if entry.constraints and entry.constraints.unit=="node-test"}, expected_node)
+        expected_parallel_safe |= expected_cases | expected_node
 
         self.assertEqual(
             {check_id for check_id in CHECK_CATALOG if is_parallel_safe_check(check_id)},
@@ -2417,6 +2445,18 @@ raise SystemExit({exit_code})
                 "category": "token-cost",
                 "status": "ok",
                 "checks": {"token_cost.regression"},
+            },
+            {
+                "path": 'scripts/measure-cli-result-bytes.py',
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression", "cli_result_measurement.regression"},
+            },
+            {
+                "path": 'scripts/test-cli-result-measurement.py',
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression", "cli_result_measurement.regression"},
             },
             {
                 "path": "scripts/validate-token-cost-report.py",
@@ -3666,13 +3706,13 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
         workspace = self.make_ci_workspace()
         active_dir = workspace / "active"
         self.write_active_counter_script(workspace, "scripts/test-skill-validator.py", "skills-regression")
-        self.write_active_counter_script(workspace, "scripts/validate-skills.py", "skills-validate")
+        self.write_active_counter_script(workspace, "scripts/validate-boundary-first.py", "boundary-validate")
         self.write_active_counter_script(workspace, "scripts/test-adapter-distribution.py", "adapters-regression")
         fixture = self.write_selector_fixture(
             self.minimal_selector_payload(
                 selected_checks=[
                     self.selected_check("skills.regression", "python scripts/test-skill-validator.py"),
-                    self.selected_check("skills.validate", "python scripts/validate-skills.py"),
+                    self.selected_check("boundary_first.validate", "python scripts/validate-boundary-first.py --check"),
                     self.selected_check("adapters.regression", ADAPTER_REGRESSION_COMMAND),
                 ]
             )
@@ -3694,7 +3734,7 @@ with Path(os.environ["ORDER_FILE"]).open("a", encoding="utf-8") as handle:
 
         self.assertEqual(result.returncode, 0, msg=output)
         self.assertEqual(self.read_max_active(active_dir), 1)
-        self.assertIn("skills.validate | passed | ok |", output)
+        self.assertIn("boundary_first.validate | passed | ok |", output)
 
     def test_ci_wrapper_parallel_default_waits_for_started_check_after_failure(self) -> None:
         workspace = self.make_ci_workspace()
@@ -4002,7 +4042,7 @@ print("SECOND_STDOUT")
         self.assertEqual(result.returncode,7,result.stdout+result.stderr)
         self.assertFalse((workspace/"archive-ran").exists())
         self.assertIn("failed prerequisite: broad_smoke.adapters.build_archives",result.stdout)
-        self.assertIn("broad_smoke.validation_execution.regression | passed",result.stdout)
+        self.assertIn("validation_execution.regression | passed",result.stdout)
 
     def test_selected_broad_smoke_is_one_invocation_and_diagnostic_failure_remains(self):
         workspace = self.make_broad_smoke_workspace(failing_child="scripts/test-skill-validator.py",
@@ -4023,7 +4063,7 @@ print("SECOND_STDOUT")
             self.assertEqual(result.returncode,7,result.stdout+result.stderr)
             self.assertEqual(marker.exists(),diagnostic,result.stdout+result.stderr)
             self.assertEqual(invocations.read_text().splitlines(),['called'])
-            self.assertIn('broad_smoke.skills.validate',result.stdout)
+            self.assertIn('skills.validate',result.stdout)
 
     def test_blocked_selection_diagnostic_broad_smoke_cannot_clear_original_blocker(self):
         workspace = self.make_broad_smoke_workspace(child_bodies={"scripts/validate-skills.py":"from pathlib import Path; Path('diagnostic-ran').touch()"})
@@ -4142,7 +4182,7 @@ print("SECOND_STDOUT")
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 7, msg=output)
-        self.assertRegex(output, r"\[FAIL\] broad_smoke.skills.regression / Run skill validator fixtures: exit 7 in \d+(?:\.\d+)?s")
+        self.assertRegex(output, r"\[FAIL\] skills.regression / Run skill validator fixtures: exit 7 in \d+(?:\.\d+)?s")
         self.assertIn("Command:\npython scripts/test-skill-validator.py", output)
         self.assertIn("Captured output:", output)
         stdout_index = output.index("test-skill-validator.py STDOUT marker")
@@ -4153,6 +4193,7 @@ print("SECOND_STDOUT")
         workspace = self.make_broad_smoke_workspace(
             failing_children={
                 "scripts/test-skill-validator.py",
+                "scripts/validate-artifact-lifecycle.py",
                 "scripts/test-adapter-distribution.py",
             }
         )
@@ -4169,13 +4210,14 @@ print("SECOND_STDOUT")
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 7, msg=output)
-        first_failure = output.index("[FAIL] broad_smoke.skills.regression")
-        second_failure = output.index("[FAIL] broad_smoke.adapters.regression")
+        first_failure = output.index("[FAIL] skills.regression")
+        second_failure = output.index("[FAIL] adapters.full_regression")
         self.assertLess(first_failure, second_failure)
         self.assertIn("Execution phase:\n" + ("parallel" if allocated_workers(2)>1 else "sequential"), output)
         self.assertIn("Execution phase:\nsequential", output)
-        self.assertIn("Check ID:\nbroad_smoke.skills.regression", output)
-        self.assertIn("Check ID:\nbroad_smoke.adapters.regression", output)
+        self.assertIn("[FAIL] broad_smoke.artifact_lifecycle.scoped", output)
+        self.assertIn("Check ID:\nskills.regression", output)
+        self.assertIn("Check ID:\nadapters.full_regression", output)
         self.assertIn("Captured output:", output)
         self.assertIn("Re-run:\npython scripts/test-skill-validator.py", output)
 
@@ -4222,7 +4264,7 @@ os.kill(os.getppid(), signal.SIGKILL)
         output = result.stdout + result.stderr
 
         self.assertEqual(result.returncode, 4, msg=output)
-        self.assertIn("[FAIL] broad_smoke.skills.regression / Run skill validator fixtures: exit 4", output)
+        self.assertIn("[FAIL] skills.regression / Run skill validator fixtures: exit 4", output)
         self.assertIn("runner error", output)
         self.assertIn("missing task outcome", output)
         self.assertNotIn("[PASS] broad-smoke", output)
@@ -4297,8 +4339,8 @@ os.kill(os.getppid(), signal.SIGKILL)
             child["check_id"]: child["phase"]
             for child in evidence["parallel"]["child_durations"]
         }
-        self.assertEqual(child_phases["broad_smoke.skills.validate"], "parallel" if allocated_workers(3)>1 else "sequential")
-        self.assertEqual(child_phases["broad_smoke.adapters.regression"], "sequential")
+        self.assertEqual(child_phases["skills.validate"], "parallel" if allocated_workers(3)>1 else "sequential")
+        self.assertEqual(child_phases["adapters.full_regression"], "parallel" if allocated_workers(3)>1 else "sequential")
         self.assertIn("delta", evidence)
 
 

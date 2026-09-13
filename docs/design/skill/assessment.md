@@ -6,7 +6,9 @@ Parent model: [Skill — Assessment](skill.md#assessment).
 
 This child owns published assessment, independence and closeout behavior. Engineering Development selects and runs the required assessments for this repository; it references these rules rather than redefining them.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 Current assessment recording uses v3. [Retirement provenance](#v2-retirement-and-assessment-reliance) preserves historical reliance boundaries without a second operational profile.
 
@@ -23,6 +25,43 @@ The direction comes from [Unify Review and Closeout Policy Ownership](../../prop
 There is no new service, public skill, lifecycle gate, record type, schema version, approval principal, or history ledger. Proposal Review, Design Review, Delivery Review, Code Review, and Verify remain specialized. No command decides whether their conclusions are justified. External execution, release, PR creation, publication, and destructive-action authority remain outside this model.
 
 The [Design model](authoring/design.md#model-document-and-structural-contract) owns the one-file model convention and model validation; Workflow consumes it for coordination. This document combines behavioral requirements, architecture, and decisions without separate specification or ADR siblings. Its identity is `review-closeout`; placement follows the existing model-directory convention, not a new runtime component boundary.
+
+## Architecture Overview
+
+```mermaid
+flowchart TB
+    Subjects["Engineering subjects and evidence"]
+    Methods["Specialist methods and Validation criteria"]
+    Authority["User authority and project governance"]
+    subgraph Assessment["Assessment — independent judgment and closeout"]
+        Scope["Scope and independence<br/>Exact subjects and adequate basis"]
+        Judgment["Assessment outcome<br/>Reasoned judgment and limitations"]
+        Findings["Concern disposition<br/>Actionable findings and correction owners"]
+        Reliance["Reliance and final closeout<br/>Applicability and completion conditions"]
+        Scope -->|"bounded assessment basis"| Judgment
+        Judgment -->|"supported concerns"| Findings
+        Judgment -->|"judgment and limitations"| Reliance
+        Findings -->|"disposition and remaining concerns"| Reliance
+    end
+    Subjects -->|"work to assess and supporting observations"| Scope
+    Authority -->|"decision and action limits"| Scope
+    Methods -.->|"subject-specific adequacy criteria"| Judgment
+    Reliance -->|"conclusions and continuation limits"| Workflow["Workflow coordination"]
+    Judgment -->|"explicit judgment and findings"| Records["Records and CLI"]
+    Reliance -->|"explicit applicability and successful Verify explanation"| Records
+```
+
+Assessment owns the shared policy inside its boundary. [Assessment scopes and consequences](#assessment-scopes-and-consequences) and the [Building Block View](#building-block-view) define judgment and closeout rules; the [Runtime View](#runtime-view) explains their application. [Context and Scope](#context-and-scope) retains specialist method and human authority boundaries, while [Validation](../engineering/validation.md) owns proof criteria. [Workflow](workflow.md) coordinates receiving activities; [Records](../cli/records.md) and [CLI](../cli/cli.md) own representation and persistence. Findings retain stable IDs and current actionable accounts; recording does not establish approval or reliance.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Authors, reviewers, proof producers and routing have separate authority. | [Context view](#context-view) |
+| Building Block | Necessary: Assessment scope, findings, reliance and final closeout cannot be collapsed into a saved status. | [Building Block view](#building-block-diagram) |
+| Runtime | Necessary: Missing authority, missing evidence and correctable defects have different consequences; Verify cannot approve its own fix. | [Runtime view](#runtime-diagram) |
+| Deployment | No separate deployment view: this model owns assessment policy, not execution placement. Skill packages the guidance and CLI persists explicit assessments under their separate contracts. | Existing deployment/context prose and the named external owner. |
+
 
 ## Context and Scope
 
@@ -45,6 +84,54 @@ Standalone advisory assessments retain their explicit scope. They do not require
 Separate four conclusions: a substantive judgment about identified subjects; whether that judgment was durably recorded; whether its basis remains applicable; and whether Workflow may continue under existing authority. None implies the others automatically. Assessment scope must be understandable without reconstructing conversation or Git history.
 
 Use one requirement set here, explicit consumer references, and small stage-specific operational instructions. Published skills must carry usable guidance in their installed package; a link into this repository's Design directory is not an execution dependency for customer projects. Shared packaged guidance is a maintained application of these requirements, not another normative policy owner.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Authors["Authors and implementers"] -->|"exact subjects and proof"| Assessment["Independent assessors"]
+    Criteria["Specialist and Validation criteria"] -->|"assessment obligations"| Assessment
+    Assessment -->|"judgment, findings and reliance limits"| Route["Workflow coordination"]
+    Assessment -->|"explicit assessment account"| CLI["Records and CLI"]
+    Human["Authorized decision owner"] -->|"scope and exceptions"| Assessment
+```
+
+Authors, reviewers, proof producers and routing have separate authority. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block diagram
+
+```mermaid
+flowchart TB
+    Scope["Exact scope and independence"] -->|"required assessment basis"| Judgment["Overall judgment"]
+    Judgment -->|"supported concerns"| Findings["Stable findings and owned disposition"]
+    Judgment -->|"qualified conclusions"| Reliance["Applicability and reliance"]
+    Findings -->|"remaining concerns"| Reliance
+    Whole["Fresh whole-change Code Review"] -->|"required independent basis"| Verify["Distinct final Verify"]
+    Reliance -->|"usable proof and limits"| Verify
+    Verify -->|"success only"| Explanation["Final explanation and completion evidence"]
+```
+
+Assessment scope, findings, reliance and final closeout cannot be collapsed into a saved status. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Scope["Establish exact scope and independence"] --> Authority{"Necessary authority available?"}
+    Authority -->|"no"| Blocked["Blocked; name decision owner"]
+    Authority -->|"yes"| Basis{"Required evidence adequate?"}
+    Basis -->|"no"| Inconclusive["Inconclusive; retain supported findings"]
+    Basis -->|"yes"| Defect{"Required correction?"}
+    Defect -->|"yes"| Changes["Changes requested; name safe correction"]
+    Defect -->|"no"| Approve["Approved within assessed scope"]
+    Changes --> Owner["Correction owner edits; assessor reassesses"]
+```
+
+Missing authority, missing evidence and correctable defects have different consequences; Verify cannot approve its own fix. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 

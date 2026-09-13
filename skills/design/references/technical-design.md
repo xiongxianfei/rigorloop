@@ -2,13 +2,26 @@
 
 Use architecture reasoning inside the owning Design. Cover relevant goals/constraints, context, solution strategy, building blocks, runtime, deployment, cross-cutting concepts, decisions, quality scenarios, risks and glossary. These arc42 concerns improve reasoning; they do not impose a second file or twelve empty headings. State bounded reasons for material non-applicability.
 
+## View selection
+
+Use the Architecture Overview as concise orientation, then evaluate four complementary views:
+
+| View | Question that can make it necessary |
+| --- | --- |
+| Context | Which external actors, systems, inputs, outputs or trust boundaries materially constrain this model? |
+| Building Block | Which internal responsibilities, interfaces or dependencies must be understood to assess its claims? |
+| Runtime | How do those responsibilities cooperate in significant normal, failure, retry or concurrent scenarios? |
+| Deployment | How do actual artifacts or executables map to environments, processes, nodes and resource/trust constraints? |
+
+Record each necessity decision and its reason in concise prose or a table, and draw every necessary view. An overview-only explanation is insufficient when a supporting view is necessary. Keep one source for detailed authority and reference it from the overview; do not fill four empty diagrams or invent deployment nodes merely to complete headings. The author owns this assessment; structural checks cannot decide it.
+
 ## Structure and flows
 
 Choose the lowest detail that explains the responsibility and its relationships. C4 context shows users and external systems; container views show significant executable/data responsibilities and dependencies; component views explain a necessary internal partition; deployment views show mapping to environments and nodes. A container is a runtime/deployment responsibility, not automatically a Docker container. Code-level views are optional. Do not invent services, databases or layers for a documentation or CLI system.
 
 Explain responsibility, inputs/outputs, significant dependencies and trust boundaries. Use runtime scenarios for normal operations, failures, recovery and cross-owner interactions; deployment reasoning covers packaging, installation, distribution, environment assumptions and compatibility when relevant. Cross-cutting concerns include validation, security, privacy, portability, generation, caching and observability as applicable.
 
-Update the lowest affected view and reconcile relevant enclosing relationships. Use focused reviewable text or Mermaid when a visual clarifies them; preserve one source with valid relative links and meaningful labels. A diagram does not replace observable requirements. Prepare related text and diagram changes coherently and check their references before handoff.
+Update the lowest affected view and reconcile relevant enclosing relationships. Draw necessary views in a suitable text-source notation such as Mermaid, with concise explanatory prose; preserve one source with valid relative links and meaningful labels. A diagram does not replace observable requirements. Prepare related text and diagram changes coherently and check their references before handoff.
 
 ## Choices and assessment
 

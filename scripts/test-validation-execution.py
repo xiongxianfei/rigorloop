@@ -29,6 +29,43 @@ class CaseAdapterTests(unittest.TestCase):
         path.write_text('import unittest\n'+body+'\nif __name__ == "__main__": unittest.main()\n')
         return path
 
+    def test_imported_cases_keep_normal_script_imports_selection_and_hooks(self):
+        from validation_execution import discover_cases, case_plans
+        helper = self.root/'fixture_cases.py'
+        helper.write_text('import unittest\nclass ImportedCases(unittest.TestCase):\n'
+            ' def setUp(self): self.value = "ready"\n'
+            ' def test_ready(self): self.assertEqual(self.value,"ready")\n')
+        path = self.fixture('from fixture_cases import ImportedCases')
+        args = [sys.executable,str(path)]
+        direct = subprocess.run(args,capture_output=True,text=True)
+        self.assertEqual(direct.returncode,0,direct.stdout+direct.stderr)
+        ids = discover_cases(args,self.root/'collection',jobs=1,timeout=10)
+        self.assertEqual(ids,['ImportedCases.test_ready'])
+        parent=CheckPlan('imported','fixture',args,None,'focused',True)
+        plans=case_plans(parent,ids,self.root/'cases')
+        result=run_scheduled_checks(plans,jobs=2,timeout_seconds=10,fail_fast=False,scratch=self.root/'run')[0]
+        self.assertEqual(result.exit_code,0,result.stderr_path.read_text())
+        # A class exported only under a different name is not addressable by
+        # the selected normal TestCase.method identity; never silently omit it.
+        path=self.fixture('from fixture_cases import ImportedCases as Alias')
+        with self.assertRaisesRegex(ValueError,'addressable'):
+            discover_cases(args,self.root/'alias',jobs=1,timeout=10)
+
+    def test_selected_methods_classes_and_filter_values_expand_to_one_case(self):
+        from validation_execution import discover_cases, case_plans
+        path=self.fixture('class Example(unittest.TestCase):\n def test_a(self): pass\n def test_b(self): pass')
+        scopes=[['Example.test_a','Example.test_b'],['-k','Example.test_a','Example'],['--verbose','Example']]
+        for index,scope in enumerate(scopes):
+            with self.subTest(scope=scope):
+                root=self.root/str(index)
+                args=[sys.executable,str(path),*scope]
+                ids=discover_cases(args,root/'collect',jobs=2,timeout=5)
+                parent=CheckPlan('selected','fixture',args,None,'focused',True)
+                plans=case_plans(parent,ids,root/'cases')
+                results=run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=root/'run')
+                self.assertEqual([r.exit_code for r in results],[0]*len(ids),
+                    '\n'.join(r.stderr_path.read_text() for r in results))
+
     def test_real_discovery_duplicate_zero_and_loader_error_reject_before_cases(self):
         from validation_execution import discover_cases
         for body in ['class Empty(unittest.TestCase): pass',
@@ -147,9 +184,16 @@ class CaseAdapterTests(unittest.TestCase):
         results = run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=self.root/'run')
         self.assertEqual([r.exit_code for r in results],[0,0])
 
-    def exercise_real_suite(self, name):
+    def test_normal_and_isolated_fixture_preserve_hooks_population_and_parallelism(self):
+        path = self.fixture('class Example(unittest.TestCase):\n'
+            ' def setUp(self):\n  import tempfile\n  self.root=tempfile.TemporaryDirectory()\n  self.addCleanup(self.root.cleanup)\n'
+            ' def test_a(self):\n  from pathlib import Path\n  import time\n  p=Path(self.root.name)/"owned"\n  self.assertFalse(p.exists())\n  p.touch()\n  time.sleep(.1)\n'
+            ' def test_b(self): self.test_a()')
+        self.exercise_fixture(path)
+
+    def exercise_fixture(self, path):
         from validation_execution import discover_cases, case_plans, _case_command
-        args = [sys.executable, str(Path(__file__).resolve().parent/name)]
+        args = [sys.executable, str(path)]
         ids = discover_cases(args,self.root/'discovery',jobs=2,timeout=300)
         baseline = self.root/'baseline.json'
         command = _case_command('observe',baseline,args)
@@ -178,18 +222,10 @@ class CaseAdapterTests(unittest.TestCase):
             intervals = sorted((x['started_at'],x['completed_at']) for x in receipts)
             overlap = any(start < earlier_end for (_,earlier_end),(start,_) in zip(intervals,intervals[1:]))
             available = min(jobs,int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS',str(jobs))))
-            self.assertEqual(overlap,available>1, f'{name}: expected actual case overlap only with multiple workers')
-            print(f'CASE POPULATION {name}: jobs={available} discovered={len(ids)} started={len(started)} completed={len(completed)} overlap={overlap}',flush=True)
-        print('CASE IDS '+json.dumps({'suite':name,'ids':ids}),flush=True)
+            self.assertEqual(overlap,available>1, f'{path.name}: expected actual case overlap only with multiple workers')
+            print(f'CASE POPULATION {path.name}: jobs={available} discovered={len(ids)} started={len(started)} completed={len(completed)} overlap={overlap}',flush=True)
+        print('CASE IDS '+json.dumps({'suite':path.name,'ids':ids}),flush=True)
 
-    def test_real_selector_cases_match_direct_sequential_and_reverse_parallel(self):
-        self.exercise_real_suite('test-select-validation.py')
-
-    def test_real_lifecycle_cases_match_direct_sequential_and_reverse_parallel(self):
-        self.exercise_real_suite('test-artifact-lifecycle-validator.py')
-
-    def test_real_metadata_cases_match_direct_sequential_and_reverse_parallel(self):
-        self.exercise_real_suite('test-change-metadata-validator.py')
 
 
 class ExecutionTests(unittest.TestCase):
@@ -206,6 +242,32 @@ class ExecutionTests(unittest.TestCase):
         return run_scheduled_checks(plans, jobs=kwargs.pop('jobs', 2),
                                     timeout_seconds=kwargs.pop('timeout_seconds', 5),
                                     fail_fast=kwargs.pop('fail_fast', False), scratch=self.root, **kwargs)
+
+    def test_parent_report_destination_is_private_and_nested_reports_are_owned(self):
+        from validation_execution import _write_mode_result
+        parent = self.root/'parent.json'
+        nested = self.root/'nested.json'
+        parent.write_text('parent sentinel')
+        body = ('import os,sys; from pathlib import Path; '
+                f'sys.path.insert(0,{str(Path(__file__).resolve().parent)!r}); '
+                'inherited=os.environ.get("RIGORLOOP_BROAD_SMOKE_RESULT_JSON"); '
+                'Path(inherited).write_text("overwritten") if inherited else None; '
+                'assert os.environ["RIGORLOOP_VALIDATION_WORKERS"] == "1"; '
+                'assert os.environ["OWNED_REPORT_FIXTURE"] == "preserved"; '
+                f'os.environ["RIGORLOOP_BROAD_SMOKE_RESULT_JSON"]={str(nested)!r}; '
+                'from validation_execution import _write_mode_result; '
+                '_write_mode_result([],mode="broad-smoke",jobs=1,elapsed=.1,code=0,skip_diff_scoped=True)')
+        with patch.dict(os.environ, {'RIGORLOOP_BROAD_SMOKE_RESULT_JSON':str(parent),
+                                     'OWNED_REPORT_FIXTURE':'preserved'}):
+            results=self.run_plans([self.plan('child',body)])
+            self.assertEqual([r.exit_code for r in results],[0])
+            self.assertEqual(parent.read_text(),'parent sentinel')
+            self.assertEqual(json.loads(nested.read_text())['parallel']['jobs'],1)
+            _write_mode_result(results,mode='broad-smoke',jobs=2,elapsed=.2,code=0,skip_diff_scoped=True)
+            self.assertEqual(os.environ['RIGORLOOP_BROAD_SMOKE_RESULT_JSON'],str(parent))
+        report=json.loads(parent.read_text())
+        self.assertEqual(report['parallel']['jobs'],2)
+        self.assertEqual([r['check_id'] for r in report['parallel']['child_durations']],['child'])
 
     def test_nested_budget_caps_actual_children_and_unknown_value_rejects_before_launch(self):
         gate = self.root/'active'
@@ -280,9 +342,35 @@ class ExecutionTests(unittest.TestCase):
         gate = self.root / 'gate'
         body = f'import pathlib,time; p=pathlib.Path({str(gate)!r}); assert not p.exists(); p.touch(); time.sleep(.12); p.unlink()'
         plans = [self.plan('a', body), dataclasses.replace(self.plan('serial', body), parallel_safe=False), self.plan('b', body)]
-        results = self.run_plans(plans)
+        from validation_execution import CheckResult
+        clock_reads, launches, completions = [], [], []
+        popen = subprocess.Popen
+
+        def observe_clock():
+            clock_reads.append(time.monotonic())
+            return clock_reads[-1]
+
+        def observe_launch(*args, **kwargs):
+            launches.append(clock_reads[-1])
+            return popen(*args, **kwargs)
+
+        def observe_result(*args, **kwargs):
+            completions.append(clock_reads[-1])
+            return CheckResult(*args, **kwargs)
+
+        # Observe the scheduler clock and real launch boundaries. Process startup
+        # and cleanup may take any duration; queue time must still be excluded.
+        with patch('validation_execution.time') as clock, patch(
+                'validation_execution.subprocess.Popen', side_effect=observe_launch), patch(
+                'validation_execution.CheckResult', side_effect=observe_result):
+            clock.monotonic.side_effect = observe_clock
+            clock.sleep.side_effect = time.sleep
+            results = self.run_plans(plans)
         self.assertEqual([r.exit_code for r in results], [0, 0, 0])
-        self.assertLess(results[2].elapsed_seconds, .3)
+        self.assertEqual(len(launches), 3)
+        self.assertGreater(launches[2], clock_reads[0])
+        self.assertEqual(len(completions), 3)
+        self.assertEqual(results[2].elapsed_seconds, completions[2] - launches[2])
 
     def test_fail_fast_awaits_started_failure_and_marks_every_queued_task(self):
         results = self.run_plans([self.plan('a', 'raise SystemExit(7)'),
@@ -422,10 +510,101 @@ class ExecutionTests(unittest.TestCase):
         self.assertIn('missing stdout', result.exit_reason)
 
 
+class NodeCaseAdapterTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+
+    def fixture(self, body):
+        path = self.root/'suite.test.mjs'
+        path.write_text("import test, {describe, before, beforeEach, afterEach} from 'node:test';\n"
+                        "import assert from 'node:assert/strict';\n"+body)
+        return path
+
+    def collect(self, path):
+        from validation_execution import discover_node_cases
+        return discover_node_cases(['node','--test',str(path)],self.root/'collect',jobs=1,timeout=10)
+
+    def run_cases(self, path, groups):
+        from validation_execution import node_case_plans
+        args=['node','--test',str(path)]
+        parent=CheckPlan('node-suite','native fixture',args,None,'focused',True)
+        plans=node_case_plans(parent,groups,self.root/'cases')
+        return run_scheduled_checks(plans,jobs=2,timeout_seconds=10,fail_fast=False,scratch=self.root/'run')
+
+    def test_native_default_named_dynamic_declarations_and_suite_hooks(self):
+        marker=self.root/'collection-side-effect'
+        path=self.fixture("import {writeFileSync} from 'node:fs';\n"
+            f"let ready=false; beforeEach(()=>{{ready=true;writeFileSync({str(marker)!r}+process.pid,'hook')}});\n"
+            "afterEach(()=>assert.equal(ready,true));\n"
+            f"describe('parent',()=>{{before(()=>writeFileSync({str(marker)!r}+process.pid,'suite hook'));for(const name of ['a.+','b']) test(name,()=>assert.equal(ready,true));}});\n")
+        groups=self.collect(path)
+        self.assertEqual(groups,[{'file':str(path),'ids':['parent a.+','parent b']}])
+        self.assertEqual(list(self.root.glob('collection-side-effect*')),[],'collection must not run bodies or hooks')
+        results=self.run_cases(path,groups)
+        self.assertEqual([r.exit_code for r in results],[0,0],[(r.exit_reason,r.stderr_path.read_text()) for r in results])
+        for r in results:
+            receipt=json.loads(r.plan.case_receipt.read_text())
+            self.assertEqual(receipt['started'],[r.plan.case_id])
+            self.assertEqual(receipt['completed'],[r.plan.case_id])
+            self.assertEqual(subprocess.run(r.plan.rerun,capture_output=True).returncode,0)
+
+    def test_zero_duplicate_ambiguous_and_nested_worker_collection_reject(self):
+        for body in ["", "test('same',()=>{});test('same',()=>{});",
+                     "test('parent leaf',()=>{});describe('parent',()=>test('leaf',()=>{}));",
+                     "test('pool',{concurrency:2},()=>{});", "throw Error('load failed')"]:
+            with self.subTest(body=body), self.assertRaises(ValueError):
+                self.collect(self.fixture(body))
+
+    def test_skipped_todo_assertion_zero_and_dynamic_subcases_cannot_pass(self):
+        for body in ["test('required',{skip:true},()=>{});", "test.todo('required');",
+                     "test('required',()=>assert.fail('actual failure'));",
+                     "test('required',async t=>{await t.test('hidden',()=>{});});"]:
+            with self.subTest(body=body):
+                path=self.fixture(body);groups=self.collect(path)
+                result=self.run_cases(path,groups)[0]
+                self.assertNotEqual(result.exit_code,0,result.stderr_path.read_text())
+        path=self.fixture("test('required',()=>{});");groups=self.collect(path)
+        path.write_text("import {test} from 'node:test';test('different',()=>{});")
+        self.assertNotEqual(self.run_cases(path,groups)[0].exit_code,0)
+
+    def test_native_scope_and_adapter_modes_fail_closed(self):
+        from validation_execution import discover_node_cases, _node_command
+        path=self.fixture("test('required',()=>{});")
+        for args in [['node','--test','--unknown_value',str(path)],['node','--test'],['npm','run','other']]:
+            with self.subTest(args=args),self.assertRaises(ValueError):
+                discover_node_cases(args,self.root/'invalid',jobs=1,timeout=10)
+        result=subprocess.run(_node_command('unknown_value',self.root/'receipt',{'files':[str(path)]}),capture_output=True,text=True)
+        self.assertEqual(result.returncode,4)
+        self.assertIn('unknown Node adapter mode',result.stderr)
+
+
+    def test_package_native_glob_and_rerun_preserve_working_directory(self):
+        from validation_execution import discover_node_cases,node_case_plans
+        package=self.root/'package';(package/'test/nested').mkdir(parents=True)
+        (package/'package.json').write_text(json.dumps({'type':'module','scripts':{'test':'node --test "test/**/*.test.js"'}}))
+        path=package/'test/nested/actual.test.js'
+        path.write_text("import test from 'node:test';import assert from 'node:assert/strict';"
+                        f"test('cwd',()=>assert.equal(process.cwd(),{str(package)!r}));")
+        (package/'test/helper.mjs').write_text("throw Error('helper is not a test entrypoint');")
+        args=['npm','test','--prefix',str(package)]
+        groups=discover_node_cases(args,self.root/'package-collect',jobs=1,timeout=10)
+        self.assertEqual(groups,[{'file':str(path),'ids':['cwd']}])
+        parent=CheckPlan('native-package','fixture',args,None,'focused',True)
+        plans=node_case_plans(parent,groups,self.root/'package-cases')
+        result=run_scheduled_checks(plans,jobs=1,timeout_seconds=10,fail_fast=False,scratch=self.root/'package-run')[0]
+        self.assertEqual(result.exit_code,0,result.stderr_path.read_text())
+        self.assertEqual(subprocess.run(plans[0].rerun,capture_output=True).returncode,0)
+        (package/'package.json').write_text(json.dumps({'scripts':{'test':'node --test'}}))
+        with self.assertRaisesRegex(ValueError,'assessed native glob'):
+            discover_node_cases(args,self.root/'stale',jobs=1,timeout=10)
+
+
 class CatalogTests(unittest.TestCase):
     def test_catalog_is_valid_and_unassessed_commands_are_serial(self):
         validate_catalog()
-        self.assertIsNone(CHECK_CATALOG['review_artifacts.regression'].constraints)
+        self.assertIsNone(CHECK_CATALOG['boundary_first.validate'].constraints)
         self.assertEqual(CHECK_CATALOG['selector.regression'].constraints.unit,'python-unittest')
 
     def test_case_unit_rejects_contradictory_command_before_launch(self):
@@ -436,6 +615,14 @@ class CatalogTests(unittest.TestCase):
                 constraints=dataclasses.replace(entry.constraints,basis=command_basis(command,'python-unittest')))
             with self.assertRaisesRegex(ValueError,'case command'):
                 validate_catalog({entry.id:candidate})
+
+    def test_node_unit_rejects_contradictory_command_before_launch(self):
+        from validation_selection import command_basis
+        for command in ['bash scripts/test.sh','node --test','npm run arbitrary']:
+            entry=dataclasses.replace(CHECK_CATALOG['rigorloop_cli.test'],command_template=command,parallel_safe=True,
+                constraints=ExecutionConstraints(unit='node-test',mode='bounded',isolation='fixture',basis=command_basis(command,'node-test')))
+            with self.assertRaisesRegex(ValueError,'Node case command'):
+                validate_catalog({entry.id:entry})
 
     def test_unknown_value_units_modes_fields_and_stale_basis_reject(self):
         entry = CHECK_CATALOG['skills.regression']
@@ -455,6 +642,146 @@ class CatalogTests(unittest.TestCase):
 
 
 class CompositionTests(unittest.TestCase):
+    def coverage_plan(self, key, **changes):
+        import shlex
+        entry = CHECK_CATALOG[key]
+        return dataclasses.replace(CheckPlan(key, entry.command_template, shlex.split(entry.command_template),
+            key+' reason', 'focused', entry.parallel_safe, entry.dependencies, entry.constraints.demand), **changes)
+
+    def test_authored_coverage_retains_narrow_only_and_required_full_scope(self):
+        from validation_execution import allocate_coverage
+        pairs = [('adapters.full_regression', 'adapters.regression'),
+                 ('adapters.regression', 'adapters.drift'), ('adapters.regression', 'adapters.validate'),
+                 ('rigorloop_cli.test', 'record_retirement.regression')]
+        for full, narrow in pairs:
+            with self.subTest(full=full, narrow=narrow):
+                first = self.coverage_plan(narrow)
+                self.assertEqual(allocate_coverage([first]), [first])
+                plans = allocate_coverage([first, self.coverage_plan(full, phase='boundary')])
+                self.assertEqual({p.check_id for p in plans}, {full})
+                self.assertEqual([p.phase for p in plans], ['focused','boundary'])
+                self.assertTrue(all(p.args == self.coverage_plan(full).args for p in plans))
+        plans = allocate_coverage([self.coverage_plan(k) for k in
+            ('adapters.drift','adapters.regression','adapters.full_regression')])
+        self.assertEqual({p.check_id for p in plans}, {'adapters.full_regression'})
+
+    def test_authored_coverage_rejects_stale_configuration_and_preserves_prerequisites(self):
+        from validation_execution import allocate_coverage
+        full = self.coverage_plan('adapters.full_regression')
+        narrow = self.coverage_plan('adapters.drift')
+        for changes in ({'args':narrow.args+['--different']}, {'demand':2}, {'parallel_safe':False}):
+            with self.subTest(changes=changes), self.assertRaisesRegex(ValueError, 'coverage basis'):
+                allocate_coverage([full,dataclasses.replace(narrow,**changes)])
+        entry = CHECK_CATALOG[narrow.check_id]
+        for changes in ({'dependencies':('skills.validate',)},
+                        {'constraints':dataclasses.replace(entry.constraints,basis='changed')}):
+            with patch.dict(CHECK_CATALOG,{narrow.check_id:dataclasses.replace(entry,**changes)}):
+                with self.assertRaisesRegex(ValueError,'coverage basis'):
+                    allocate_coverage([full,narrow])
+        prep=CheckPlan('prep','fixture',['true'],None,'preflight',True)
+        consumer=CheckPlan('consumer','fixture',['true'],None,'boundary',True,(narrow.check_id,))
+        plans=allocate_coverage([prep,dataclasses.replace(narrow,dependencies=('prep',)),full,consumer])
+        self.assertTrue(all(p.dependencies==('prep',) for p in plans if p.check_id==full.check_id))
+        self.assertEqual(plans[-1].dependencies,(full.check_id,))
+        from validation_execution import expand_groups
+        with tempfile.TemporaryDirectory() as temporary:
+            cyclic=expand_groups([dataclasses.replace(narrow,dependencies=(full.check_id,)),full],Path(temporary))
+        with self.assertRaisesRegex(ValueError, 'dependency cycle'): validate_plans(cyclic,jobs=2)
+        separate=self.coverage_plan('adapters.validate',check_id='fresh-observation')
+        self.assertEqual(allocate_coverage([full,separate]),[full,separate])
+
+    def test_authored_coverage_runs_once_and_failed_focus_blocks_boundary(self):
+        from validation_execution import expand_groups
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            narrow=self.coverage_plan('adapters.drift',dependencies=('prep',))
+            full=self.coverage_plan('adapters.full_regression',phase='boundary')
+            prep=CheckPlan('prep','fixture',[sys.executable,'-c','raise SystemExit(7)'],None,'preflight',True)
+            tail=CheckPlan('tail','fixture',[sys.executable,'-c','pass'],None,'boundary',True)
+            plans=expand_groups([prep,narrow,full,tail],root)
+            self.assertEqual([p.check_id for p in plans],['prep',full.check_id,'tail'])
+            self.assertEqual(plans[1].phase,'focused')
+            self.assertIn(narrow.reason,plans[1].reason)
+            self.assertIn(full.reason,plans[1].reason)
+            marker=root/'ran'
+            plans[1].args=[sys.executable,'-c',f'from pathlib import Path; Path({str(marker)!r}).touch()']
+            results=run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=root/'run')
+            self.assertEqual([r.exit_code for r in results],[7,125,125])
+            self.assertFalse(marker.exists())
+            plans[0].args=[sys.executable,'-c','pass']
+            plans[1].args=[sys.executable,'-c',f'from pathlib import Path; p=Path({str(marker)!r}); p.write_text(p.read_text()+"x" if p.exists() else "x")']
+            results=run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=root/'success')
+            self.assertEqual([r.exit_code for r in results],[0,0,0])
+            self.assertEqual(marker.read_text(),'x')
+
+    def test_canonical_overlap_runs_once_with_reasons_and_failure_gate(self):
+        from validation_execution import expand_groups
+        for diagnostic in (False, True):
+            with self.subTest(diagnostic=diagnostic), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                marker = root/'executions'
+                args = [sys.executable, '-c', f'from pathlib import Path; p=Path({str(marker)!r}); p.write_text(p.read_text()+"x" if p.exists() else "x")']
+                shared = CheckPlan('shared', 'fixture', args, 'focused reason', 'focused', True)
+                failed = CheckPlan('failed', 'fixture', [sys.executable,'-c','raise SystemExit(7)'], None, 'focused', True)
+                tail = CheckPlan('tail', 'fixture', [sys.executable,'-c','pass'], None, 'focused', True)
+                group = CheckPlan('broad_smoke.repo', 'fixture', ['unused'], 'boundary reason', 'boundary', False)
+                with patch('validation_execution.compose_mode', return_value=[dataclasses.replace(shared,reason='catalog reason'),tail]):
+                    plans = expand_groups([shared,failed,group],root,diagnostic=diagnostic)
+                self.assertEqual([p.check_id for p in plans],['shared','failed','tail'])
+                self.assertEqual(plans[0].phase,'focused')
+                for reason in ('focused reason','boundary reason','catalog reason'):
+                    self.assertIn(reason,plans[0].reason)
+                results = run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=root/'run')
+                self.assertEqual(marker.read_text(),'x')
+                self.assertEqual([r.exit_code for r in results],[0,7,0 if diagnostic else 125])
+                import io
+                from contextlib import redirect_stdout
+                from validation_execution import print_summary
+                output = io.StringIO()
+                with redirect_stdout(output):
+                    # The boundary may contain only already-run overlap.
+                    print_summary(results[:2],boundary_required=True)
+                self.assertIn('Boundary scope: unsuccessful',output.getvalue())
+
+    def test_overlap_preserves_preparation_and_distinct_observations(self):
+        from validation_execution import expand_groups
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            prep = CheckPlan('prep','fixture',[sys.executable,'-c','raise SystemExit(9)'],None,'focused',True)
+            shared = CheckPlan('shared','fixture',[sys.executable,'-c','pass'],None,'focused',True,('prep',))
+            separate = dataclasses.replace(shared,check_id='separate')
+            group = CheckPlan('broad_smoke.repo','fixture',['unused'],None,'boundary',False)
+            with patch('validation_execution.compose_mode',return_value=[dataclasses.replace(shared),separate]):
+                plans = expand_groups([prep,shared,group],root)
+            self.assertEqual([p.check_id for p in plans],['prep','shared','separate'])
+            self.assertIn('prep',plans[1].dependencies)
+            results=run_scheduled_checks(plans,jobs=1,timeout_seconds=5,fail_fast=False,scratch=root/'run')
+            self.assertEqual([r.exit_code for r in results],[9,125,125])
+
+    def test_conflicting_same_id_arguments_or_constraints_reject_before_launch(self):
+        from validation_execution import expand_groups
+        first=CheckPlan('same','fixture',[sys.executable,'-c','pass'],None,'focused',True)
+        for changes in ({'args':[sys.executable,'-c','raise SystemExit(7)']},
+                        {'demand':2},{'demand':True},{'parallel_safe':False},{'parallel_safe':1},{'dependencies':('prep',)}):
+            with self.subTest(changes=changes), tempfile.TemporaryDirectory() as temporary:
+                with self.assertRaisesRegex(ValueError,'conflicting.*same'):
+                    expand_groups([first,dataclasses.replace(first,**changes)],Path(temporary))
+
+    def test_boundary_only_and_new_invocation_execute_again(self):
+        from validation_execution import expand_groups
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            marker=root/'count'
+            args=[sys.executable,'-c',f'from pathlib import Path; p=Path({str(marker)!r}); p.write_text(p.read_text()+"x" if p.exists() else "x")']
+            shared=CheckPlan('shared','fixture',args,None,'focused',True)
+            group=CheckPlan('broad_smoke.repo','fixture',['unused'],None,'boundary',False)
+            for index in range(2):
+                with patch('validation_execution.compose_mode',return_value=[dataclasses.replace(shared)]):
+                    plans=expand_groups([group],root)
+                results=run_scheduled_checks(plans,jobs=1,timeout_seconds=5,fail_fast=False,scratch=root/str(index))
+                self.assertEqual([r.exit_code for r in results],[0])
+            self.assertEqual(marker.read_text(),'xx')
+
     def test_catalog_composes_broad_and_main_with_distinct_preserved_package_versions(self):
         from validation_execution import compose_mode
         with tempfile.TemporaryDirectory() as temporary:
@@ -469,8 +796,8 @@ class CompositionTests(unittest.TestCase):
                 self.assertIn(output,check.args)
                 self.assertIn(build.check_id,check.dependencies)
                 self.assertFalse(any(p.args[:2] == ['bash','scripts/ci.sh'] for p in plans))
-            self.assertIn('main.rigorloop_cli.test',{p.check_id for p in plans})
-            self.assertIn('main.workflow_automation.engine_regression',{p.check_id for p in plans})
+            self.assertIn('rigorloop_cli.test',{p.check_id for p in plans})
+            self.assertIn('workflow_automation.engine_regression',{p.check_id for p in plans})
 
     def test_unknown_value_composed_mode_rejects(self):
         from validation_execution import compose_mode

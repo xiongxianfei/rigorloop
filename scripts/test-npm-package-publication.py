@@ -12,6 +12,7 @@ import sys
 import tarfile
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,6 +70,21 @@ def pack_package(destination: Path) -> Path:
 
 
 class NpmPackagePublicationTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix='package-case-')
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        # npm's own files and CLI diagnostics belong to this case, including
+        # real packed installs. No validation result is retained or reused.
+        environment = patch.dict(os.environ, {
+            'npm_config_cache': str(root/'npm'),
+            'npm_config_audit': 'false', 'npm_config_fund': 'false',
+            'npm_config_update_notifier': 'false',
+            'RIGORLOOP_LOG_DIR': str(root/'logs'),
+        })
+        environment.start()
+        self.addCleanup(environment.stop)
+
     def assert_explicit_recording(self, binary: Path, project: Path) -> None:
         package = binary.resolve().parents[2]
         templates = json.loads((package / "dist/templates/rigorloop-records-v3/records.json").read_text())

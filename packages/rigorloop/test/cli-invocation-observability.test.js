@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { rmSync, chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -10,7 +10,11 @@ import { classifyCommand } from "../dist/lib/cli-observability.js";
 import { findInvocationEvents } from "../dist/lib/log-inspection.js";
 import { runObservedCli } from "../dist/lib/cli-observability.js";
 
-function root() { return mkdtempSync(join(tmpdir(), "rigorloop-invocation-")); }
+function root(t) {
+  const directory = mkdtempSync(join(tmpdir(), "rigorloop-invocation-"));
+  t.after(() => rmSync(directory, {recursive:true, force:true}));
+  return directory;
+}
 
 function normalizedSemantic(payload) {
   const copy = structuredClone(payload);
@@ -19,7 +23,7 @@ function normalizedSemantic(payload) {
   return copy;
 }
 
-test("public commands have one closed family", () => {
+test("public commands have one closed family", (t) => {
   assert.equal(classifyCommand(["lifecycle", "status"]).family, "invalid-input");
   assert.equal(classifyCommand(["init"]).family, "repository-setup");
   assert.equal(classifyCommand(["version"]).family, "introspection");
@@ -30,9 +34,9 @@ test("public commands have one closed family", () => {
   assert.equal(classifyCommand(["lifecycle", "private-raw-operation"]).operation, undefined);
 });
 
-test("T06 public command families record deterministic terminal severity and status", () => {
+test("T06 public command families record deterministic terminal severity and status", (t) => {
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const project = root();
+  const project = root(t);
   const cases = [
     { args: ["version"], family: "introspection", exit: 0, severity: "info", status: "success" },
     { args: ["workflow-context", "--change", "example", "--format", "json"], family: "introspection", exit: 2, severity: "warning", status: "blocked" },
@@ -41,7 +45,7 @@ test("T06 public command families record deterministic terminal severity and sta
     { args: ["logs", "path"], family: "log-inspection", exit: 0, severity: "info", status: "success" },
   ];
   for (const [index, item] of cases.entries()) {
-    const directory = join(root(), `logs-${index}`);
+    const directory = join(root(t), `logs-${index}`);
     const child = spawnSync(process.execPath, [cli.pathname, ...item.args], {
       cwd: project, encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: directory },
     });
@@ -55,7 +59,7 @@ test("T06 public command families record deterministic terminal severity and sta
   }
 });
 
-test("T06 controller severity and console thresholds cover success, blocked, and internal outcomes", async () => {
+test("T06 controller severity and console thresholds cover success, blocked, and internal outcomes", async (t) => {
   const cases = [
     { exitCode: 0, level: "info", severity: "info", console: true },
     { exitCode: 2, level: "warning", severity: "warning", console: true },
@@ -66,7 +70,7 @@ test("T06 controller severity and console thresholds cover success, blocked, and
     const events = [];
     const stderr = [];
     const exit = await runObservedCli(["version", "--console-log-level", item.level], async () => ({ exitCode: item.exitCode, render: () => ({ stdout: "", stderr: "" }) }), {
-      cliVersion: "0.4.1", env: { RIGORLOOP_LOG_DIR: root() },
+      cliVersion: "0.4.1", env: { RIGORLOOP_LOG_DIR: root(t) },
       appendEvent: (_directory, encoded) => events.push(JSON.parse(encoded)),
       writeStdout() {}, writeStderr: (value) => stderr.push(value),
     });
@@ -78,7 +82,7 @@ test("T06 controller severity and console thresholds cover success, blocked, and
   const events = [];
   const stderr = [];
   const exit = await runObservedCli(["version"], async () => { throw new Error("private internal detail"); }, {
-    cliVersion: "0.4.1", env: { RIGORLOOP_LOG_DIR: root() },
+    cliVersion: "0.4.1", env: { RIGORLOOP_LOG_DIR: root(t) },
     appendEvent: (_directory, encoded) => events.push(JSON.parse(encoded)),
     writeStdout() {}, writeStderr: (value) => stderr.push(value),
   });
@@ -88,7 +92,7 @@ test("T06 controller severity and console thresholds cover success, blocked, and
   assert.equal(stderr.join("").includes("private internal detail"), false);
 });
 
-test("CLIOBS-M3-R1-F3 semantic terminal class controls severity independently of exit code", async () => {
+test("CLIOBS-M3-R1-F3 semantic terminal class controls severity independently of exit code", async (t) => {
   for (const item of [
     { terminalClass: "expected-rejection", severity: "warning", console: false },
     { terminalClass: "internal-error", severity: "error", console: true },
@@ -102,7 +106,7 @@ test("CLIOBS-M3-R1-F3 semantic terminal class controls severity independently of
       render: () => ({ stdout: "", stderr: "" }),
     }), {
       cliVersion: "0.4.1",
-      env: { RIGORLOOP_LOG_DIR: root() },
+      env: { RIGORLOOP_LOG_DIR: root(t) },
       appendEvent: (_directory, encoded) => events.push(JSON.parse(encoded)),
       writeStdout() {},
       writeStderr: (value) => stderr.push(value),
@@ -113,8 +117,8 @@ test("CLIOBS-M3-R1-F3 semantic terminal class controls severity independently of
   }
 });
 
-test("CLI records correlated events, stays quiet on success, and supports exact lookup", () => {
-  const directory = root();
+test("CLI records correlated events, stays quiet on success, and supports exact lookup", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
   const child = spawnSync(process.execPath, [cli.pathname, "version"], { encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: directory } });
@@ -130,11 +134,11 @@ test("CLI records correlated events, stays quiet on success, and supports exact 
   assert.equal(JSON.parse(lookup.stdout).events[0].invocation_id, lines[0].invocation_id);
 });
 
-test("explicit concise output is compact and disabling file logs is semantic-only", () => {
-  const directory = root();
+test("explicit concise output is compact and disabling file logs is semantic-only", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const project = root();
+  const project = root(t);
   const child = spawnSync(process.execPath, [cli.pathname, "init", "codex", "--dry-run", "--format", "concise-json", "--no-file-log"], { cwd: project, encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: directory } });
   assert.equal(child.status, 0);
   assert.equal(child.stderr, "");
@@ -145,8 +149,8 @@ test("explicit concise output is compact and disabling file logs is semantic-onl
   assert.equal(existsSync(join(directory, "rigorloop.jsonl")), false);
 });
 
-test("file and console thresholds suppress lower-severity success events", () => {
-  const directory = root();
+test("file and console thresholds suppress lower-severity success events", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
   const child = spawnSync(process.execPath, [cli.pathname, "version", "--file-log-level", "error", "--console-log-level", "warning"], { encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: directory } });
@@ -155,9 +159,9 @@ test("file and console thresholds suppress lower-severity success events", () =>
   assert.equal(existsSync(join(directory, "rigorloop.jsonl")), false);
 });
 
-test("an unsafe log override degrades diagnostics without suppressing semantic dispatch", () => {
+test("an unsafe log override degrades diagnostics without suppressing semantic dispatch", (t) => {
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const project = root();
+  const project = root(t);
   const child = spawnSync(process.execPath, [cli.pathname, "init", "codex", "--dry-run", "--format", "concise-json"], {
     encoding: "utf8",
     cwd: project,
@@ -169,9 +173,9 @@ test("an unsafe log override degrades diagnostics without suppressing semantic d
   assert.equal(child.stderr.includes("relative-private-value"), false);
 });
 
-test("explicitly disabled file logging does not validate an unused unsafe override", () => {
+test("explicitly disabled file logging does not validate an unused unsafe override", (t) => {
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const project = root();
+  const project = root(t);
   const child = spawnSync(process.execPath, [cli.pathname, "init", "codex", "--dry-run", "--format", "concise-json", "--no-file-log"], {
     encoding: "utf8",
     cwd: project,
@@ -182,9 +186,9 @@ test("explicitly disabled file logging does not validate an unused unsafe overri
   assert.equal(JSON.parse(child.stdout).observability, "disabled");
 });
 
-test("T07 environment-off and console-off degraded logging preserve semantic output", () => {
+test("T07 environment-off and console-off degraded logging preserve semantic output", (t) => {
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
-  const disabledRoot = root();
+  const disabledRoot = root(t);
   const disabled = spawnSync(process.execPath, [cli.pathname, "version"], {
     encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: disabledRoot, RIGORLOOP_FILE_LOG: "off" },
   });
@@ -200,7 +204,7 @@ test("T07 environment-off and console-off degraded logging preserve semantic out
   assert.equal(degraded.stderr, "");
 });
 
-test("event construction and completion sink failures preserve dispatch and finalize projection", async () => {
+test("event construction and completion sink failures preserve dispatch and finalize projection", async (t) => {
   const stdout = [];
   const stderr = [];
   let dispatched = 0;
@@ -216,7 +220,7 @@ test("event construction and completion sink failures preserve dispatch and fina
     };
   }, {
     cliVersion: "0.4.1",
-    env: { RIGORLOOP_LOG_DIR: root() },
+    env: { RIGORLOOP_LOG_DIR: root(t) },
     now: () => new Date("2026-08-25T00:00:00.000Z"),
     appendEvent() {
       appendCount += 1;
@@ -231,7 +235,7 @@ test("event construction and completion sink failures preserve dispatch and fina
   assert.equal((stderr.join("").match(/RL_LOG_UNAVAILABLE/g) ?? []).length, 1);
 });
 
-test("event construction failure is diagnostic-only", async () => {
+test("event construction failure is diagnostic-only", async (t) => {
   let dispatched = false;
   const events = [];
   const stderr = [];
@@ -241,7 +245,7 @@ test("event construction failure is diagnostic-only", async () => {
     return { exitCode: 0, render: ({ observability }) => { renderedObservability = observability; return { stdout: `${observability}\n`, stderr: "" }; } };
   }, {
     cliVersion: "0.4.1",
-    env: { RIGORLOOP_LOG_DIR: root() },
+    env: { RIGORLOOP_LOG_DIR: root(t) },
     now: () => { throw new Error("clock unavailable"); },
     appendEvent: (_directory, encoded) => events.push(JSON.parse(encoded)),
     writeStdout() {},
@@ -254,13 +258,13 @@ test("event construction failure is diagnostic-only", async () => {
   assert.equal((stderr.join("").match(/RL_LOG_UNAVAILABLE/g) ?? []).length, 1);
 });
 
-test("diagnostic stderr failure never prevents semantic dispatch", async () => {
+test("diagnostic stderr failure never prevents semantic dispatch", async (t) => {
   let dispatched = false;
   const exitCode = await runObservedCli(["version"], async () => {
     dispatched = true;
     return { exitCode: 0, render: () => ({ stdout: "semantic output\n", stderr: "" }) };
   }, {
-    env: { RIGORLOOP_LOG_DIR: root() },
+    env: { RIGORLOOP_LOG_DIR: root(t) },
     appendEvent() { throw new Error("sink unavailable"); },
     writeStdout() {},
     writeStderr() { throw new Error("stderr unavailable"); },
@@ -269,7 +273,7 @@ test("diagnostic stderr failure never prevents semantic dispatch", async () => {
   assert.equal(exitCode, 0);
 });
 
-test("diagnostic writes are non-throwing before and after dispatch and suppressed by off", async () => {
+test("diagnostic writes are non-throwing before and after dispatch and suppressed by off", async (t) => {
   for (const args of [["version"], ["version", "--console-log-level", "off"]]) {
     let dispatched = false;
     let diagnosticWrites = 0;
@@ -277,7 +281,7 @@ test("diagnostic writes are non-throwing before and after dispatch and suppresse
       dispatched = true;
       return { exitCode: 1, render: () => ({ stdout: "", stderr: "" }) };
     }, {
-      env: { RIGORLOOP_LOG_DIR: root() },
+      env: { RIGORLOOP_LOG_DIR: root(t) },
       appendEvent(_directory, _encoded) {},
       writeStdout() {},
       writeStderr() { diagnosticWrites += 1; throw new Error("stderr unavailable"); },
@@ -296,8 +300,8 @@ test("diagnostic writes are non-throwing before and after dispatch and suppresse
   assert.equal(dispatched, false);
 });
 
-test("T03 private failure details are absent from stdout, stderr, retained logs, and lookup", async () => {
-  const directory = root();
+test("T03 private failure details are absent from stdout, stderr, retained logs, and lookup", async (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const marker = "M2_PRIVATE_FAILURE_SENTINEL";
   const stdout = [];
@@ -317,8 +321,8 @@ test("T03 private failure details are absent from stdout, stderr, retained logs,
   for (const surface of [stdout.join(""), stderr.join(""), retained, lookup]) assert.equal(surface.includes(marker), false);
 });
 
-test("concise projections use the controller's semantic exit code", () => {
-  const directory = root();
+test("concise projections use the controller's semantic exit code", (t) => {
+  const directory = root(t);
   const archive = join(directory, "invalid.zip");
   // Missing local archive exercises a deterministic semantic error without
   // assuming candidate metadata is checked into the source package.
@@ -328,7 +332,7 @@ test("concise projections use the controller's semantic exit code", () => {
   assert.equal(JSON.parse(child.stdout).exit_code, child.status);
 });
 
-test("unsafe log inspection fails without exposing or resolving the override", () => {
+test("unsafe log inspection fails without exposing or resolving the override", (t) => {
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
   const child = spawnSync(process.execPath, [cli.pathname, "logs", "path", "--format", "json"], { encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: "private-relative-value" } });
   assert.equal(child.status, 3);
@@ -336,7 +340,7 @@ test("unsafe log inspection fails without exposing or resolving the override", (
   assert.equal(`${child.stdout}${child.stderr}`.includes("private-relative-value"), false);
 });
 
-test("log inspection rejects undocumented common-result projections", () => {
+test("log inspection rejects undocumented common-result projections", (t) => {
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
   for (const args of [["logs", "path"], ["logs", "show", "a1b2c3d4e5f60718"]]) {
     const child = spawnSync(process.execPath, [cli.pathname, ...args, "--format", "detailed-json", "--no-file-log"], { encoding: "utf8" });
@@ -346,15 +350,15 @@ test("log inspection rejects undocumented common-result projections", () => {
   }
 });
 
-test("lookup of an absent log store is read-only", () => {
-  const parent = root();
+test("lookup of an absent log store is read-only", (t) => {
+  const parent = root(t);
   const absent = join(parent, "missing-store");
   assert.equal(findInvocationEvents(absent, "0000000000000000").code, "RL_LOG_NOT_FOUND");
   assert.equal(existsSync(absent), false);
 });
 
-test("lookup returns exact events and only bounded warnings for unrelated corruption", () => {
-  const directory = root();
+test("lookup returns exact events and only bounded warnings for unrelated corruption", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const identity = "a1b2c3d4e5f60718";
   const valid = {
@@ -376,8 +380,8 @@ test("lookup returns exact events and only bounded warnings for unrelated corrup
   assert.deepEqual(result.warnings.map((warning) => warning.code), ["RL_LOG_CORRUPT_ENTRY", "RL_LOG_UNAVAILABLE"]);
 });
 
-test("CLIOBS-M3-R1-F1 lookup rejects matching schema-one objects outside the closed event schema", () => {
-  const directory = root();
+test("CLIOBS-M3-R1-F1 lookup rejects matching schema-one objects outside the closed event schema", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const identity = "a1b2c3d4e5f60718";
   const marker = "M3_LOOKUP_PRIVATE_SENTINEL";
@@ -392,8 +396,8 @@ test("CLIOBS-M3-R1-F1 lookup rejects matching schema-one objects outside the clo
   assert.equal(`${child.stdout}${child.stderr}`.includes(marker), false);
 });
 
-test("CLIOBS-M3-R1-F2 invalid lookup identities are never reflected", () => {
-  const directory = root();
+test("CLIOBS-M3-R1-F2 invalid lookup identities are never reflected", (t) => {
+  const directory = root(t);
   const marker = "M3_INVALID_PRIVATE_SENTINEL";
   const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
   for (const extra of [[], ["--format", "json"]]) {

@@ -6,15 +6,13 @@ Parent model: [Engineering](engineering.md#validation).
 
 This child owns shared proof-quality criteria and this repository’s validation execution. Skill capabilities reference the reusable criteria; the executor, CI allocation and no-cache implementation belong to Engineering. Individual customer skill use does not install or require this repository’s executor.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
-
-Owning change: [unified-validation-model](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
 
 ## Introduction and Goals
 
-Validation owns the shared criteria for useful proof and its maintenance, deterministic check selection, execution and truthful result reporting. The [approved direction](../../proposals/2026-09-12-unified-validation-model.md) combines the former Test responsibility and selected execution contracts. Independent cases enable bounded parallel execution; validation-result caching is retired. Adoption includes actual removal of superseded sources and exclusive machinery, not merely publication of this document.
+Validation owns useful proof, its maintenance, deterministic selection, independent execution and truthful reporting. The [current direction](../../proposals/2026-09-13-independent-parallel-tests.md) refines this owner, removes redundant cases without losing distinct protection, and extends independently runnable cases across the remaining repository-owned automated test inventory. Selection includes each canonical check once per invocation; validation-result caching remains retired.
 
-This document defines the intended unified architecture and preserves the previously adopted TEST-SR criteria. The superseded Test Design is removed during Design reconciliation; no duplicate current model is retained. Implementation, independent assessment and adoption of the new execution behavior are tracked in the owning change and still require reviewed coherent implementation and successful Verify. Historical requirements, decisions, results and approvals retain their identities and original meaning. The source-disposition map defines exact transfers and retained obligations; unlisted responsibilities do not transfer by association.
+The [original adoption](../../changes/2026-09-12-unified-validation-model/change.json) established the unified owner, preserved TEST-SR criteria, retired caching and adopted case execution for three suites. Its exact source-disposition maps below and historical judgments retain their original scope. The current refinement changes check composition and remaining-case adoption as explicitly described here; it does not reopen the original cleanup. New behavior requires reviewed implementation and successful Verify of the current owning change. Authoring and structural validation do not establish adoption.
 
 ## Context and Scope
 
@@ -35,6 +33,51 @@ The proof criteria apply to unit, integration, system, regression, property-base
 The Constitution and adopted owners govern. Authored validation logic stays in repository-owned scripts; hosted workflows remain thin. Existing selector and wrapper entrypoints remain public contributor interfaces, subject only to the explicit compatibility changes below. Runtime record safety, package hashing and dependency-download caching are separate concerns and remain intact.
 
 Use one in-process orchestration implementation with subprocess execution of validators and test cases. Reuse the current selector catalog and scheduler logic; remove competing broad-smoke scheduling and historical metadata readers once their protection is established in the replacement. Isolation is process/fixture isolation, not a security sandbox. Tests run only with the invocation's existing permissions.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Contracts["Product contract owners"] -->|"protected behavior"| Validation["Validation"]
+    Delivery["Delivery allocation"] -->|"required proof scope"| Validation
+    Sources["Candidate sources and artifacts"] -->|"subjects to check"| Validation
+    Validation -->|"actual outcomes and incomplete work"| Assessment["Independent assessment"]
+```
+
+Behavioral obligations, requested proof and assessment remain distinct external inputs/consumers. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block View
+
+```mermaid
+flowchart TB
+    Criteria["TEST-SR proof and maintenance criteria"] -.->|"guides authors and reviewers"| Catalog["validation_selection.py catalog"]
+    Catalog -->|"available checks and routing"| Selector["select-validation.py"]
+    Selector -->|"trusted selection payload"| Executor["validation_execution.py"]
+    Catalog -->|"commands, dependencies and constraints"| Executor
+    Wrapper["ci.sh"] -->|"invocation mode and budget"| Executor
+    Executor -->|"isolated check or case"| Domain["Domain validators and test runners"]
+    Domain -->|"actual outcome and diagnostics"| Executor
+```
+
+Catalog/selection and execution code have distinct trusted responsibilities and domain validators remain separate. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment diagram
+
+```mermaid
+flowchart TB
+    Local["Local shell or CI job"] -->|"one invocation budget"| Executor["Executor process"]
+    Executor -->|"allocated worker share"| Cases["Isolated check/case processes"]
+    Cases -->|"bounded nested share"| Children["Owned subprocess trees"]
+    Executor -->|"per-invocation results and scratch"| Temp["Owned temporary root"]
+    Cases -->|"separate output and receipts"| Temp
+    Executor -->|"timeout or interruption: terminate and reap"| Children
+```
+
+One invocation budget spans supervisor, isolated cases and nested children; temporary ownership and cleanup are material. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 
@@ -72,44 +115,128 @@ Use one in-process orchestration implementation with subprocess execution of val
 | VAL-SR-16 | Coordinated adoption MUST update current governance, model references, skills and executable/package consumers, retire the mapped old authorities and preserve historical record bytes and judgments. Public guidance MUST remain portable and selectively loaded, without internal model IDs, maintenance paths or a new mandatory test ledger. |
 | VAL-SR-17 | Checks MUST use invocation-owned isolated temporary roots and explicit environment/working-directory values. Logs and durable evidence MUST avoid credentials, private environment dumps and sensitive host paths. Cleanup MUST be limited to resources created by that invocation; network or external writes MUST retain separate authorization and declared constraints. |
 | VAL-SR-18 | Performance claims MUST name measured scope, commands, environment, results and limitations; output reduction alone is not runtime improvement. Per-run timings MAY support diagnosis without a historical benchmark dependency or permanent sidecar store. No new failing performance threshold is introduced by this model. |
+| VAL-SR-19 | Selection MUST include each canonical catalog check ID once per invocation and preserve its selecting reasons. Known duplicate entries MUST be consolidated only after their required proof and preparation agree. Different configurations or required observation points MUST retain distinct explicit IDs. Conflicting definitions or resolved arguments for one ID MUST reject; the executor MUST NOT infer equivalence from command strings or reuse results across invocations. |
+| VAL-SR-20 | Focused and boundary composition MUST preserve phase gates and explicit preparation dependencies while avoiding repeated execution of the same canonical ID. Boundary scope MUST remain blocked after a required focused failure, even if an overlapping check passed. Reports MUST contain one actual result and duration per executed check/case, preserve canonical IDs and expose required unstarted work. No additional request/consumer graph or result projection layer is required. |
+| VAL-SR-21 | The current initiative MUST assess all current repository-owned automated test populations, including cases reached by direct, selected, broad-smoke, main and release validation entrypoints. Every retained case MUST be independently runnable and parallel-capable within the shared resource budget. Temporary serial fallback for unknown safety MUST NOT count as completed adoption. Delivery MUST reconcile discovery and actual callers, allocate bounded groups and account for additions or removals before final completion; no unassessed population may silently move to later maintenance. |
+| VAL-SR-22 | Remaining order-coupled or resource-conflicting cases MUST be refined or replaced with equivalent independent proof. Deletion MUST satisfy TEST-SR-07–10 through established retained detection or explicit retirement by the behavior owner. Unknown required protection or an irreducible required external resource blocks affected completion. Resource-limited sequential scheduling, prerequisite ordering and ordered steps inside one isolated scenario do not themselves violate case independence. |
 
 ## Solution Strategy
 
-Follow the many-to-many chain: governing obligation → objective and plausible violation → representative condition and observation boundary → concrete proof → observed evidence → independent assessment. The retained TEST-SR identities carry their existing meaning; model consolidation does not require per-function trace records or numerical coverage targets. VAL-SR-01–18 add execution, independence and this initiative's retirement choices.
+Follow the many-to-many chain: governing obligation → objective and plausible violation → representative condition and observation boundary → concrete proof → observed evidence → independent assessment. The retained TEST-SR identities carry their existing meaning; model consolidation does not require per-function trace records or numerical coverage targets. VAL-SR-01–18 preserve the original execution and retirement contract; VAL-SR-19–22 define the current check-composition and remaining-case refinement.
 
-Reuse the existing `scripts/validation_selection.py` catalog, `scripts/select-validation.py` CLI and `scripts/ci.sh` entrypoint. Extract the embedded selected-check execution code into `scripts/validation_execution.py`, an internal module also used by broad smoke. This replaces duplicated execution implementations; it is not an additional public command, persistent worker or separate validation service. Keep domain validator processes separate from orchestration.
+Reuse the existing `scripts/validation_selection.py` catalog, `scripts/select-validation.py` CLI and `scripts/ci.sh` entrypoint. Use `scripts/validation_execution.py`, the extracted internal module also used by broad smoke. This preserves one execution implementation; it is not an additional public command, persistent worker or separate validation service. Keep domain validator processes separate from orchestration.
 
-## Building Block View
+## Architecture Overview
 
-| Block | Realization and boundary |
-| --- | --- |
-| Obligation and proof criteria | This model supplies criteria; Design and Delivery supply the actual behavior and proof allocation. Existing test-quality and test-maintenance resources apply them. |
-| Selection and catalog | Existing selector maps paths/mode to ordered checks. Extend its catalog with broad-smoke membership/order, dependencies, execution unit and constraint rationale. No independent shell-label lookup or historical change-local classification source remains. |
-| Scheduler | The extracted module validates the complete task graph before launching, runs ready independent work within budget, handles serial barriers/dependencies and aggregates results. `ci.sh` delegates to it. |
-| Case execution | Catalog-declared Python unittest suites support case discovery and isolated case processes through the existing test script entrypoints. Node suites use their native runner with an explicitly allocated concurrency budget. Opaque commands remain single tasks. |
-| Observation | Existing stdout/JSON surfaces report scope and outcomes. Actors record selected proof using current v3 evidence commands; the runner does not save a judgment or workflow transition. |
+### Structural design graph
 
-Catalog execution units are a closed choice of `command`, `python-unittest` and `node-test`; opaque commands are never discovered by guessing from their text. Constraint metadata supplies a nonempty isolation rationale, serial/exclusive designation or bounded worker demand, declared dependency IDs, and a command-basis value matching the current normalized command template and discovery adapter. A changed command/adapter without a reconciled basis rejects; a matching string alone does not prove safety, which still requires assessment. Unknown fields/units and contradictory safe/shared-write claims fail before graph construction. Absence of an isolation assessment explicitly resolves to serial command execution. This extends one current executable catalog, not a permanent per-case registration ledger.
+```mermaid
+flowchart TB
+    Contracts["Product contracts<br/>What must be protected"]
+    Delivery["Delivery allocation<br/>What this change must verify"]
+
+    subgraph Validation["Validation"]
+        Criteria["Proof criteria<br/>Useful tests, independence and maintenance"]
+        Catalog["Check catalog<br/>Canonical IDs, commands and constraints"]
+        Selection["Check selection<br/>Required IDs, scopes and reasons"]
+        Executor["One executor<br/>Dependencies, isolated cases and bounded parallelism"]
+        Results["Results<br/>Actual outcomes, diagnostics and incomplete work"]
+
+        Criteria -.->|"guides authors maintaining checks"| Catalog
+        Catalog -->|"available checks"| Selection
+        Catalog -->|"trusted commands and constraints"| Executor
+        Selection -->|"each required check ID once"| Executor
+        Executor -->|"one result per check or case"| Results
+    end
+
+    Contracts -->|"required behavior"| Criteria
+    Delivery -->|"required verification scope"| Selection
+    Results -->|"evidence and limitations"| Assessment["Independent assessment"]
+```
+
+Validation owns the five responsibilities inside its boundary; they are not separate models or services. Product contracts, Delivery allocation and independent assessment remain external owners. The criteria guide authors maintaining checks; they do not automatically judge test adequacy. `scripts/validation_selection.py` owns the catalog and selection. `scripts/validation_execution.py` owns scheduling, subprocess cleanup and results. `scripts/ci.sh` remains the wrapper. Authors and reviewers apply the TEST-SR criteria; passing checks never supply semantic approval. [Engineering](engineering.md#subsystem-design-graph) owns how Validation supports Development, Packaging and Release.
+
+The [Context and Scope](#context-and-scope) owns product-contract, Delivery and assessor boundaries. [Proof criteria and maintenance](#requirements) define Criteria; [Solution Strategy](#solution-strategy) defines the shared catalog/selection/executor realization, and [Runtime View](#runtime-view) owns execution and result flow. [Deployment View](#deployment-view) owns process and environment constraints. These references supply detail without making the overview another execution contract.
+
+Catalog execution units remain `command`, `python-unittest` and `node-test`. Retain the current command/adapter basis, isolation rationale, dependencies and serial/exclusive/bounded resource constraints. Stale or contradictory metadata and unknown fields/units reject before execution. Missing isolation assessment keeps work conservatively serial until corrected; it does not satisfy the current case-independence completion requirement.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Behavioral obligations, requested proof and assessment remain distinct external inputs/consumers. | [Context view](#context-view) |
+| Building Block | Necessary: Catalog/selection and execution code have distinct trusted responsibilities and domain validators remain separate. | [Building Block view](#building-block-view) |
+| Runtime | Necessary: Focused gates, dependency failure and diagnostic continuation determine which work may start. | [Runtime view](#invocation-flow-graph) |
+| Deployment | Necessary: One invocation budget spans supervisor, isolated cases and nested children; temporary ownership and cleanup are material. | [Deployment view](#deployment-diagram) |
+
 
 ## Runtime View
 
-### Selection, preparation and execution
+### Invocation flow graph
 
-Resolve explicit/local paths or the PR/main range and release context once. Check argument shapes and valid identities before catalog consistency. Preserve deterministic evidence-class matching and actionable `manual-routing-required`/missing-route diagnostics. The selector remains read-only and emits its existing JSON envelope. Preserve its required fields, per-check scopes, status vocabulary and exit meanings: ok=0, blocked=2, fallback=3, error=4. This profile does not execute fallback output; unknown or ambiguous paths block rather than guess a safe proof set. Explicit mode works from paths without inventing a Git-history prerequisite for a standalone check.
+```mermaid
+flowchart TB
+    Select["Select required canonical check IDs"] --> Preflight["Validate inputs, catalog and preflight"]
+    Preflight --> Focused["Run focused checks within the shared budget"]
+    Focused --> Gate{"Focused checks passed?"}
+    Gate -->|"yes"| Boundary["Run remaining required boundary checks"]
+    Gate -->|"no"| Blocked["Leave dependent boundary checks not started"]
+    Boundary --> Report["Report actual results once; aggregate failures"]
+    Blocked --> Report
+    Preflight -.->|"invalid or blocked"| Report
+```
 
-Preflight inspects applicable repository input/merge conflicts, authoritative file presence, generation-input validity and recorded blockers without deciding semantic readiness or invoking historical eligibility. Focused proof precedes triggered boundary proof. A required boundary check is still required after a focused pass; wrapper execution is not itself a universal broad-smoke trigger. Preserve planned-initiative and expressly recorded policy/risk/handoff/main/release triggers and existing scoped owner exceptions. Diagnostic broad smoke after a blocker cannot clear it.
+This is the selected-mode flow. Main and standalone broad-smoke use their declared check sets with the same executor and preparation dependencies. Explicit diagnostic boundary execution may follow a failed focused gate, but preserves the original failure. Cases within each runnable scope execute concurrently when assessed safe; jobs=1 preserves the same coverage. Timeouts, interruption and fail-fast retain the failure/cleanup contract below.
 
-Preserve Release's PR/main `release-coordinator.py check-ci` interception and separately owned release verification. The coordinator's delegated local checks can use the common executor, but no publication path gains a new selector or permission from this model. `main` retains its direct product-check membership; selected PR/local/explicit/release and broad-smoke membership are separate scope inputs to the same executor. Domain command arguments and required/optional classification remain unchanged except the exact cache/classification retirements and catalog reconciliation below.
+### Select each check once
 
-Expand a selected broad-smoke group into leaf tasks rather than recursively starting another CI wrapper and worker pool. Give package build and validation a shared invocation-owned output directory and an explicit build-success dependency. Other independent checks may run alongside that chain. Do not deduplicate different proof scopes merely because their command strings resemble each other; merge only identical catalog identity, resolved arguments, subject and phase within this invocation, with every selecting reason preserved. This is execution-plan normalization, not stored result reuse.
+Preserve existing modes, path/range resolution, deleted/renamed input handling, selecting reasons and selector JSON. Unknown or ambiguous routing blocks with an actionable diagnostic; fallback output is not executed. Selector exit meanings remain ok=0, blocked=2, fallback=3 and error=4. Explicit-path validation needs no invented Git-history prerequisite. Preflight remains read-only and checks applicable conflicts, required inputs and blockers before dependent work.
+
+Preserve mode membership, applicable broad-smoke triggers, scoped exceptions and Release’s `release-coordinator.py check-ci` interception. A focused pass does not waive required boundary proof, and using the wrapper alone creates no universal broad-smoke trigger. Composed broad work expands into the existing executor rather than recursively launching another wrapper or worker pool. Publication policy remains Release-owned.
+
+Use the existing catalog check ID as execution identity. Selection combines required IDs in stable order and retains every selecting reason. The same ID is included once in an invocation; the executor does not discover equivalence between different IDs or command strings. Authors consolidate known duplicate catalog entries after checking their commands, inputs, observation boundaries and prerequisites. Different configurations, artifact destinations or required execution points have distinct, explicit catalog IDs. Conflicting resolved arguments or constraints for one ID fail before launch rather than being silently combined.
+
+Let `F` be the selected focused IDs and `B` the required boundary IDs. Run `F`, then run `B − F` after the focused gate succeeds. Checks in `F ∩ B` already have their actual result; listing them in both scopes does not schedule another execution. Boundary completion requires the focused gate and all required `B` checks to pass. If another focused check fails, boundary scope stays blocked even when an overlapping check passed. Preserve the failed focused result during diagnostic execution of remaining boundary work. No per-request state machine is needed.
+
+For the known duplication, focused and broad-smoke selection both name `validation_execution.regression`. Retire `broad_smoke.validation_execution.regression` as a separate executable catalog entry and update current selectors, diagnostics and tests that expect it; historical evidence keeps its original ID. The repeated check is removed from the composed work, not hidden in reporting. Boundary-only selection still executes it once. A new invocation always executes anew.
+
+Dependencies remain explicit on the retained check plan. A package validator waits for its own successful build. Reusing a check ID across scopes is allowed only when that preparation and observation are the same; a required post-build, post-mutation or independently fresh check receives a distinct ID and dependency. Do not move work earlier merely because its command resembles a focused check. Missing dependencies and cycles reject. This is catalog reconciliation and set composition, not an input-fingerprint, alias-equivalence or evidence-reuse engine.
+
+### Explicit coverage allocation
+
+M7 also reconciles partially overlapping authored scopes. Only these assessed relationships may normalize a request to an already-required covering ID: `adapters.full_regression` covers `adapters.regression`, `adapters.drift` and `adapters.validate`; `adapters.regression` covers `adapters.drift` and `adapters.validate`; `rigorloop_cli.test` covers `record_retirement.regression`. The adapter subsets invoke the same methods and owned fixtures. The native retirement cases use module-relative imports and owned temporary roots; the package-versus-repository working directory adds no separate protection for these cases. No assertion is removed. Narrow-only requests retain their original scope.
+
+Apply this finite authored allocation before ordinary same-ID composition, only when both scopes are already required. Retain the covering canonical ID and command, all selecting reasons and the earliest requested phase. Report its actual cases once. These exact suites have no separately fresh observation or artifact preparation and no catalog prerequisites; invocation preflight remains mandatory. Promoting their already-required covering scope to focused therefore establishes its complete proof before the boundary gate. Check the exact assessed command bases and matching resource/preparation constraints; reject stale or incompatible inputs before launch. Preserve and rebind every dependency and ordering prerequisite, including references from other checks. Reject missing dependencies, self-dependencies and cycles; phase promotion never waives preparation or an unsatisfied focused prerequisite.
+
+This is a fixed catalog allocation, not inferred subset discovery or a general alias mechanism. Do not normalize different versions, candidate destinations, post-build observations or independently fresh checks. The existing focused/boundary gate and failure reporting still apply after allocation. Acceptance covers narrow-only scope, both-requested scope, retained reasons and failed prerequisites, stale/conflicting bases, cycles, focused failure and unaffected release/configuration checks. Each later invocation executes anew.
+
+### Execution and reporting
+
+Retain `CheckPlan` and `CheckResult`. A plan contains the canonical ID, trusted argv, selecting reasons, one scheduled phase, prerequisites and execution constraints. A result contains that check/case ID, actual status, exit reason, elapsed time, captured output and rerun command. For an adopted case suite, select the suite once and expand its normal discovery into independent case plans; preserve complete direct invocation and case IDs. Do not introduce separate proof-request objects, execution families, consumer graphs or a second result schema.
+
+The existing scheduler launches ready work within one budget. Failed preparation leaves dependent checks not started; independent checks follow the existing failure policy. Report each physical check or case once in stable selection/discovery order. Keep focused/boundary scope summaries with a clear blocked or incomplete result; an already-passed overlapping check is not another pass row or another duration. A required unfinished check or failed gate prevents success. Aggregate exit behavior retains the existing stable first failure, routing, signal and timeout conventions.
+
+Keep current text and JSON result shapes, including broad-smoke `parallel.child_durations`. Each row names the retained canonical check/case ID, with its actual command, result, exit and duration once. Its existing `phase` remains the `parallel`/`sequential` scheduling classification, not observed overlap or a new consumer phase. Update readers to expect canonical IDs and unique selected work; retain `cache_status: not-applicable` and unavailable historical baseline fields as compatibility labels. No new canonical-versus-derived report collections are required. Timings describe actual work; summed task durations are not wall-clock duration.
+
+### Necessary permanent tests
+
+Keep focused executor tests for selection completeness, dependencies, bounded concurrency, failure aggregation, timeout/interruption cleanup and honest diagnostics. Keep small real integration cases for normal discovery, case filtering, setup/teardown and isolated subprocess results. Run each product suite through its ordinary required path.
+
+Use full normal/sequential/reversed-parallel comparisons when establishing or changing a suite's isolation and discovery behavior. Record that migration evidence once for the assessed basis; it is not a permanent requirement to replay entire product suites several times inside executor regression. Retain a recurring full comparison only when review identifies a distinct failure it detects that the focused and real integration checks cannot adequately protect. Before removing a comparison, establish retained detection under TEST-SR-08; a smaller fixture or faster pass alone is insufficient.
+
+For VAL-SR-19/20, demonstrate one launch when focused and boundary select the same canonical ID, a complete boundary-only invocation, a blocked boundary after focused failure, conflicting duplicate arguments rejected, distinct post-build checks preserved and truthful unique result rows. Jobs=1 and parallel mode retain the same required case scope. Delivery allocates concrete tests and current reader changes; no runtime improvement is claimed from this Design alone.
 
 ### Independent cases and the worker budget
 
 Python suites are eligible for case execution only after their import, discovery, class/module setup, per-case setup/teardown and subprocess behavior have an assessed isolation basis. Discover through the suite's normal unittest loader and existing custom entrypoint; preserve its filters and hooks. Case IDs are `Class.test_method` relative to the script, with parameterized/subtest observations retained by that case. Collection is read-only apart from an isolated temporary directory; duplicate IDs, loader failures, unexpected zero cases or discovery/worker disagreement fail explicitly. A filtered single-case invocation must execute that case, not fall back to the full suite.
 
-Invoke eligible cases as fresh processes through the same script with the exact case selector. This avoids sharing mutable Python globals across concurrently running cases and preserves standalone reproduction. Class/module fixtures therefore run in each case process; cases requiring a shared mutable fixture must be corrected or explicitly remain a serial suite until independent setup is possible. Immutable prepared inputs may be copied or read concurrently. Tests that intentionally exercise process-global behavior remain valid inside their isolated process. Resource conflicts external to the process still require declared serialization.
+Invoke eligible cases as fresh processes through the same script with the exact case selector. This avoids sharing mutable Python globals across concurrently running cases and preserves standalone reproduction. Class/module fixtures therefore run in each case process; cases requiring a shared mutable fixture must be corrected; serial fallback is temporary during the current migration and cannot satisfy its completion. Immutable prepared inputs may be copied or read concurrently. Tests that intentionally exercise process-global behavior remain valid inside their isolated process. External resource conflicts require declared conservative scheduling until fixtures or resource allocation are refined; required conflicts that cannot be removed block the current affected completion under VAL-SR-22.
 
-The initial case-adoption population is `scripts/test-select-validation.py`, `scripts/test-artifact-lifecycle-validator.py` and `scripts/test-change-metadata-validator.py`, including their surviving cache/classification retirement regressions. Delivery must allocate the case-isolation audit and corrections for these suites. Adoption requires actual concurrent execution of independently runnable cases in this population with single-case and sequential coverage agreement; a metadata-only change or suite-only parallelism does not satisfy VAL-SR-01/07. Other suites retain complete direct invocation and assessed command-level concurrency; unexamined cases carry no case-parallel claim. Their later expansion belongs to Validation maintenance without making this initiative an inventory-wide rewrite.
+The original case adoption covered `scripts/test-select-validation.py`, `scripts/test-artifact-lifecycle-validator.py` and `scripts/test-change-metadata-validator.py`. That bounded historical claim remains valid. The current initiative extends the same independently runnable case contract to all remaining repository-owned automated tests, including executor, release, adapter, CLI, workflow, review and documentation suites. Direct commands remain complete; a suite-level parallel label does not establish case independence. A domain validator with no test cases remains a command task with assessed constraints, not an invented test population.
+
+Delivery reconciles the current executable catalog with actual test discovery, direct script/native runner entrypoints and CI/release callers. Coherent suite groups identify retained proof, duplicate candidates, isolation corrections, discovery adapter, nested demand and completion observations in the existing plan and evidence. Cases outside current catalog membership still require a disposition if reached by repository-owned validation. Changes during implementation update the affected allocation through its owner; final reconciliation must expose additions, missed callers or unexpected disappearance. This is bounded delivery evidence, not a permanent per-test ledger.
+
+For Python, reuse the existing case selector/receipt adapter. For Node, use the native runner's case isolation and selection only where it demonstrably executes the intended case with complete hooks and reporting; refine custom entrypoints that cannot do so. Do not infer equivalence or independence from runner defaults. Validate discovery through each retained normal entrypoint and compare required case scope with isolated, sequential and concurrent execution. These are assessment conditions, not a requirement to replay every full suite three times in every ordinary invocation.
 
 The default worker budget is `max(1, min(4, available_cpu_count - 1))`; inability to determine CPU availability uses one. Explicit `--jobs N` overrides that bound for the invocation; effective launches are still bounded by ready work and declared resource demand. This intentionally caps the old selected-check CPU-minus-one default and promotes assessed independent broad-smoke work to default concurrency under this adoption. `--jobs 1` runs the same required cases/checks sequentially. A heavy task consumes a larger declared share or runs exclusively. A nested runner gets only its allocated share; opaque or recursive test-runner subprocesses are treated as exclusive until their demand is bounded. No multiplication of independent CPU-derived defaults is allowed.
 
@@ -130,6 +257,21 @@ The executor runs in the existing local shell and CI environment using Python, N
 Skill consumers receive portable quality/maintenance guidance through existing selectively packaged resources. Packaging builds candidates outside authored and active skill roots and checks resource parity; Release retains publication authority. Installing a package does not adopt this repository's model or policy. No generated package is authored directly.
 
 ## Crosscutting Concepts
+
+### Current maintenance allocation
+
+For the current independent-parallel-tests initiative only, the affected population is the repository-owned automated inventory and its necessary executor, selector, fixture and reader changes under VAL-SR-19–22. This extends the maintenance allocation to that population without extending the original cache/source deletion map. The following exact amendment to `specs/published-skill-first-repository-simplification.md` takes effect through reviewed coherent implementation and successful Verify of the current owning change; its preserved protection governs the proposed delivery allocation.
+
+| Retained source boundary | Current replacement and preserved meaning |
+| --- | --- |
+| R14; admission/ledger prescriptions in Outputs, Compatibility and migration, Observability and AC7 | TEST-SR-01/07/12 and VAL-SR-21 retain the protected failure, deterministic rationale, simpler owner considered, invocation, repair and retirement rationale in existing plan/evidence groups. No second ledger or per-function record is required. |
+| R17/R18/R20; corresponding State and invariants, Error and boundary behavior, EC4/EC8 and AC8 | TEST-SR-02/04/08–10 and VAL-SR-22 preserve accepted/rejected conditions, distinct failure detection and observation boundaries, unknown-protection stops, established retained proof and explicit behavior-owner retirement. No required negative or regression protection is waived. |
+| R19; old/replacement dual-run prescriptions in Compatibility and migration, Observability and AC8 | TEST-SR-08/12 require sufficient assessed replacement detection before removal, coverage differences, disposition and a recoverable fixture/source/caller slice. Relevant old results may be relied on only under Assessment RC-SR-15. Missing applicable old proof requires direct evidence sufficient to establish the retained violation boundary, not an invented equivalence claim. Delivery allocates representative comparisons where needed; repeated exhaustive replay is not universally required. |
+| R22; measurement prescriptions in Outputs, Observability, Performance expectations and AC10 | VAL-SR-18 requires actual scope, environment, result and limitations for any savings claim. Record actual removals and retained protection; no mandatory savings benchmark or second measurement store is required. |
+| R25; unchanged-contract assertions in Compatibility and migration and corresponding AC8 | Only the original same-identity/phase normalization restriction and three-suite adoption limit are refined by VAL-SR-19–22. All other selection, subprocess, safety, timeout, failure, disclosure and direct-entrypoint obligations remain under their current owners. |
+| Matching test spec T1/T10/T13/T14/T16, requirement/acceptance/proof/milestone maps and command prescriptions, only insofar as they impose the replaced ledger, universal dual-run, measurement or old normalization/adoption rules | Validation's current scenarios and Delivery's reviewed allocation govern this population. Their distinct protective intentions remain as mapped above. Original test IDs, examples, boundary definitions, historical commands and input judgments retain their historical identity and unselected applicability. |
+
+R15/R16's single-owner admission constraints, R21's publication boundary and every unselected clause remain unchanged. Existing historical ledger readers and their fixture protection are still assessed under the same retain/consolidate/replace/remove criteria; a waived new ledger obligation is not permission to delete their data. This notice creates neither a new scheduler nor a release-policy exception.
 
 ### Proof quality, maintenance and evidence
 
@@ -164,15 +306,17 @@ Manual proof records the check/objective, actual result, performer, date, why ma
 | Dimension | Requirement basis | Distinct outcome to demonstrate |
 | --- | --- | --- |
 | Input domain | TEST-SR-01, TEST-SR-03, TEST-SR-06, VAL-SR-03, VAL-SR-04 | Unknown mode/check/constraint and mixed known/unknown paths reject before execution; deleted and renamed paths still select required protection. Properties exercise justified partitions without an exhaustive case inventory. |
-| State/lifecycle | TEST-SR-07, TEST-SR-08, TEST-SR-09, VAL-SR-06, VAL-SR-09 | Unknown protection remains retained; replacement cannot rely on an unproved reduced suite. Failed preflight/prerequisites leave dependent tasks visibly unstarted while independent work follows the declared failure policy. |
+| State/lifecycle | TEST-SR-07, TEST-SR-08, TEST-SR-09, VAL-SR-06, VAL-SR-09, VAL-SR-20 | Unknown protection remains retained; replacement cannot rely on an unproved reduced suite. Failed preflight/prerequisites leave dependent tasks visibly unstarted while independent work follows the declared failure policy. A failed focused gate leaves boundary scope blocked even when an overlapping check passed (VAL-SR-20). |
 | Identity/authority | TEST-SR-02, TEST-SR-11, VAL-SR-04, VAL-SR-15, VAL-SR-16 | A substituted command or stale safety claim fails; a passing run, saved record or installed package cannot approve work or activate the model. |
-| Composition/path | TEST-SR-04, TEST-SR-05, TEST-SR-10, VAL-SR-01, VAL-SR-05, VAL-SR-14 | Single-case, sequential and concurrent execution discover the same required case scope, retain CLI-boundary failures and isolate fixtures. Package validation waits for its own successful build while unrelated proof proceeds. |
-| Temporal/retry | TEST-SR-06, VAL-SR-07, VAL-SR-09, VAL-SR-10, VAL-SR-11 | Completion order does not alter reported order or assertions. Nested execution stays within budget; fail-fast preserves running failures; repeated unchanged commands actually execute rather than read caches. |
+| Composition/path | TEST-SR-04, TEST-SR-05, TEST-SR-10, VAL-SR-01, VAL-SR-05, VAL-SR-14, VAL-SR-19, VAL-SR-20 | Single-case, sequential and concurrent execution discover the same required case scope, retain CLI-boundary failures and isolate fixtures. Package validation waits for its own successful build while unrelated proof proceeds. Focused and boundary selection of one canonical ID launches once; distinct package checks retain their required build dependencies (VAL-SR-19/20). |
+| Temporal/retry | TEST-SR-06, VAL-SR-07, VAL-SR-09, VAL-SR-10, VAL-SR-11, VAL-SR-19 | Completion order does not alter reported order or assertions. Nested execution stays within budget; fail-fast preserves running failures; repeated unchanged commands actually execute rather than read caches. |
 | Failure/recovery | TEST-SR-05, TEST-SR-08, VAL-SR-08, VAL-SR-10, VAL-SR-12 | Missing worker output, invalid output bytes, timeout, child crash and interruption cannot become success. Owned descendants are reaped, diagnostics retained and unrelated files preserved; lost replacement protection requires restoration/correction. |
-| Compatibility/migration | TEST-SR-13, TEST-SR-14, VAL-SR-11, VAL-SR-13, VAL-SR-16 | Retired cache flags and measurement inputs reject without writes; old cache/evidence bytes remain intact. Current consumers resolve Validation after adoption, while historical judgments stay attached to their original subjects and scoped criteria keep their scope. |
-| External/environment | TEST-SR-06, TEST-SR-12, VAL-SR-02, VAL-SR-07, VAL-SR-17, VAL-SR-18 | Shared ports/output roots and unbounded nested runners cannot be silently parallelized. CPU=1 remains complete; denied process/temp resources fail clearly; external permissions and measured-result limits remain explicit. |
+| Compatibility/migration | TEST-SR-13, TEST-SR-14, VAL-SR-11, VAL-SR-13, VAL-SR-16, VAL-SR-21, VAL-SR-22 | Retired cache flags and measurement inputs reject without writes; old cache/evidence bytes remain intact. Current consumers resolve Validation after adoption, while historical judgments stay attached to their original subjects and scoped criteria keep their scope. Duplicate removal retains the distinct negative boundary, and an unassessed direct-only suite blocks inventory completion (VAL-SR-21/22). |
+| External/environment | TEST-SR-06, TEST-SR-12, VAL-SR-02, VAL-SR-07, VAL-SR-17, VAL-SR-18, VAL-SR-21, VAL-SR-22 | Shared ports/output roots and unbounded nested runners cannot be silently parallelized. CPU=1 remains complete; denied process/temp resources fail clearly; external permissions and measured-result limits remain explicit. Concurrent retained cases use different temporary roots and resource identities; an irreducible required shared resource blocks affected completion (VAL-SR-21/22). |
 
-Material combined hazards are concurrent fixture leakage plus a vacuous oracle (TEST-SR-04/05, VAL-SR-01/02), cache removal plus lost selector discovery (TEST-SR-08/10, VAL-SR-03/11/13), nested broad smoke plus worker multiplication/interruption (VAL-SR-05/07/10), and a deleted Test source with an old packaged consumer (VAL-SR-13/16). Observe actual normal command paths and generated consumer resources, not only a scheduler helper or Markdown parser. Delivery allocates concrete proof for these combined hazards and each affected requirement/scenario.
+Current combined hazards include overlapping check sets plus a failed phase gate, a reused ID hiding a distinct package observation, and duplicate-case removal plus discovery loss (VAL-SR-19–22). Observe unique launches, scope completion and retained negative boundaries after consolidation.
+
+Original adoption hazards are concurrent fixture leakage plus a vacuous oracle (TEST-SR-04/05, VAL-SR-01/02), cache removal plus lost selector discovery (TEST-SR-08/10, VAL-SR-03/11/13), nested broad smoke plus worker multiplication/interruption (VAL-SR-05/07/10), and a deleted Test source with an old packaged consumer (VAL-SR-13/16). Observe actual normal command paths and generated consumer resources, not only a scheduler helper or Markdown parser. Delivery allocates concrete proof for these combined hazards and each affected requirement/scenario.
 
 ### Source disposition and decision preservation
 
@@ -244,6 +388,8 @@ Design's source map owns the retirement decisions; Delivery names concrete edits
 | VAL-DEC-03 | Remove the cache and exclusive measurement/hit-evidence machinery. Preserve honest prior-evidence assessment and unrelated identity hashes. | Keeping a disabled subsystem retains maintenance cost. Repeated actual execution can cost more; no speed claim is made without measurement and no cache-expansion programme survives. |
 | VAL-DEC-04 | Extract the existing scheduler once, share a bounded budget and current catalog across selected/broad execution; retain `ci.sh` and domain commands. | Another runner CLI, shell-scraped inventory and historical classification dependency duplicate ownership. Separate nested CPU defaults cause oversubscription. Current 300-second timeout is made explicit; sequential jobs=1 remains the fallback. |
 | VAL-DEC-05 | Remove superseded sources only after necessary meaning, proof and readers are reconciled; use current evidence surfaces without automatic archive copies. | Wholesale deletion loses protection; retaining every historical source defeats clarity. Preserve current reliance basis or cease reliance explicitly, and restore a failed replacement slice coherently. |
+| VAL-DEC-06 | Use canonical catalog IDs and ordered set composition to run selected work once under VAL-SR-19/20; retain one check plan/result and existing scheduler. | This replaces the earlier general request/task equivalence design. Input fingerprints, execution families, consumer eligibility graphs and duplicate report projections add machinery unnecessary for known catalog duplication. Explicit IDs and prerequisites preserve different required observations; no cache is introduced. |
+| VAL-DEC-07 | Complete the remaining automated case inventory through isolation and protection-preserving consolidation under VAL-SR-21/22. | Permanent unassessed serial fallback defeats the selected direction; deleting required difficult cases weakens the product. Bounded groups limit review size, while unresolved required protection blocks completion. |
 
 ## Quality Requirements
 
@@ -253,12 +399,16 @@ Maintainability means one current normative owner and executable catalog, no val
 
 ## Risks and Technical Debt
 
-The current implementation contains opaque commands, custom unittest entrypoints and legacy shared-state assumptions. Delivery must prove case discovery/fixture isolation for the selected three-suite population and command isolation for default parallel work; evidence may require fixture corrections. Other case populations remain explicitly unaudited, not silently declared parallel-safe. Validation maintenance owns their later expansion.
+Remaining opaque suites, custom entrypoints and shared-state assumptions need an assessed disposition under VAL-SR-21/22. The earlier three-suite limit is historical; the current initiative cannot close with an unassessed serial remainder. Required protection that cannot yet be isolated blocks its affected work rather than becoming an exemption. Delivery splits this inventory into reviewable groups without weakening the full completion boundary.
 
-Per-case subprocess startup and repeated class setup can outweigh concurrency savings. Preserve pure in-process unit assertions inside each process and measure before claiming speed. Heavy or unbounded nested work remains exclusive until its budget is controlled. Missing protection or an inseparable owner conflict returns to the responsible Design rather than producing an approved deletion by assumption.
+Per-case subprocess startup and repeated class setup can outweigh concurrency savings. Preserve pure in-process unit assertions inside each process and measure before claiming speed. Heavy work may consume the full available budget; unbounded nested work requires correction before the affected case can be accepted as parallel-capable. Missing protection or an inseparable owner conflict returns to the responsible Design rather than producing an approved deletion by assumption.
 
 Before adoption, recover a failed replacement by restoring its source, catalog, runner and consumer slice together and rerunning affected proof. Jobs=1 bounds scheduling risk but cannot recover removed semantics. After adoption, restoring retired cache support or a displaced policy requires an explicit governing decision; old approvals cannot authorize it. Historical evidence is never removed as rollback.
 
-## Next artifacts
+## Original adoption planning history
 
-Independent Design Review of this model, the reconciled System and consumer Designs, Test-source removal and scoped legacy/governance amendments and their interactions; then Delivery allocation of case independence, common execution, cache removal, source/consumer cleanup and integrated proof. Required implementation reviews, fresh final whole-change Code Review and distinct Verify establish adoption. These are planning intent, not recorded stage status.
+The following records the original initiative’s planning intent and does not reopen its completed work. Independent Design Review of this model, the reconciled System and consumer Designs, Test-source removal and scoped legacy/governance amendments and their interactions; then Delivery allocation of case independence, common execution, cache removal, source/consumer cleanup and integrated proof. Required implementation reviews, fresh final whole-change Code Review and distinct Verify establish adoption. These are planning intent, not recorded stage status.
+
+## Current follow-through
+
+Independent Design Review assesses this refinement with System and Engineering integration and the unchanged Skill Assessment, Packaging, Release and CLI observation boundaries. Delivery allocates canonical check composition, duplicate-case protection, remaining-case isolation and integrated proof in reviewable groups. Actual removals, full inventory reconciliation, resource-budget observations and required independent reviews precede distinct final Verify. A partial optimization cannot close the current scope; no runtime improvement is claimed from Design authoring.

@@ -2,7 +2,9 @@
 
 Model validation contract: model-document-v1
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Introduction and Goals
 
@@ -19,9 +21,115 @@ Inputs are authorized product direction, exact affected contracts, the selected 
 | Packaging | [Packaging](packaging.md) | Reproducible skill archives, CLI package composition and installer metadata. |
 | Release | [Release](release.md) | Candidate qualification, publication authority, observed public identity and recovery. |
 
+## Architecture Overview
+
+### Subsystem design graph
+
+```mermaid
+flowchart TB
+    subgraph Owned["Engineering — build and assure both products"]
+        Development["Development: allocate and implement reviewed work"]
+        Validation["Validation: protective proof and independent execution"]
+        Packaging["Packaging: skill archives and CLI candidate"]
+        Release["Release: qualification, publication and observation"]
+    end
+    Behavior["External: Skill and CLI behavior contracts"]
+    Assessment["External: Skill Assessment contract"]
+    Authorization["External: maintainer publication authorization"]
+    Products["External: published skills and CLI"]
+    Behavior -->|"required behavior"| Development
+    Development -->|"candidate sources"| Packaging
+    Development -->|"candidate checks and proof allocation"| Validation
+    Packaging -->|"exact candidate artifacts"| Validation
+    Validation -->|"observations and limitations"| Development
+    Assessment -->|"independent review and Verify duties"| Development
+    Development -->|"applicable assessed engineering basis"| Release
+    Packaging -->|"exact release artifacts"| Release
+    Release -->|"candidate-specific qualification checks"| Validation
+    Validation -->|"actual qualification results"| Release
+    Authorization -->|"candidate-specific permission"| Release
+    Release -->|"publish and observe"| Products
+```
+
+Engineering owns these four children's composition under [System's parent graph rule](../system.md#parent-graph-ownership); the submodel table links each contract. Development performs repository work using published behaviors and obtains independent assessment under Skill Assessment. Validation reports proof; assessors judge it. Release consumes an applicable engineering basis, qualifies its exact candidate and retains separate publication authority. Feedback edges describe interactions, not permission to bypass milestone reviews, final Code Review or Verify. Internal Validation execution belongs in Validation, and artifact formats remain in Packaging.
+
+[Skill](../skill/skill.md) and [CLI](../cli/cli.md) own behavior inputs; [Assessment](../skill/assessment.md) owns independent judgment policy. [Integrated operation and failure](#integrated-operation-and-failure) owns the end-to-end cooperation and exception paths; [Deployment and maintenance](#deployment-and-maintenance) owns the repository execution context.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Product contracts, assessment policy, maintainer permissions and public products bound engineering work. | [Context view](#context-view) |
+| Building Block | Necessary: Development, Validation, Packaging and Release compose distinct implementation, proof and delivery responsibilities. | [Building Block view](#building-block-view) |
+| Runtime | Necessary: Implementation, independent assessment and publication cannot be treated as one successful command. | [Runtime view](#runtime-view) |
+| Deployment | Necessary: Local/CI execution, candidate roots and protected release jobs have distinct resource and authority boundaries. | [Deployment view](#deployment-view) |
+
+
 ## Architecture Constraints
 
 Canonical skill content remains in `skills/`; executable source remains under `packages/rigorloop/`. Repository scripts implement development validation and package production; hosted CI delegates to them. Shared criteria can be referenced by published capabilities, but repository-specific operations are not a customer prerequisite. Original adoption and historical review identities remain scoped to their actual subjects.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Behavior["Skill and CLI behavior owners"] -->|"required outcomes"| Engineering["Engineering"]
+    Policy["Assessment owner"] -->|"independent review and Verify duties"| Engineering
+    Maintainer["Maintainer"] -->|"candidate-specific publication authority"| Engineering
+    Engineering -->|"qualified and authorized delivery"| Products["Published skills and CLI"]
+```
+
+Product contracts, assessment policy, maintainer permissions and public products bound engineering work. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block View
+
+```mermaid
+flowchart TB
+    Development["Development"] -->|"candidate source"| Packaging["Packaging"]
+    Development -->|"required proof"| Validation["Validation"]
+    Packaging -->|"exact artifact subjects"| Validation
+    Validation -->|"actual outcomes for assessment"| Development
+    Development -->|"applicable reviewed source basis"| Release["Release"]
+    Packaging -->|"candidate artifacts"| Release
+    Release -->|"qualification checks"| Validation
+    Validation -->|"qualification observations"| Release
+```
+
+Development, Validation, Packaging and Release compose distinct implementation, proof and delivery responsibilities. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime View
+
+```mermaid
+flowchart TB
+    Intent["Reviewed Design and Delivery"] --> Implement["Implement one bounded milestone"]
+    Implement --> Proof["Run required proof and independent review"]
+    Proof --> More{"More work or required corrections?"}
+    More -->|"yes"| Implement
+    More -->|"no"| Whole["Fresh whole-change Code Review"]
+    Whole --> Verify["Distinct final Verify"]
+    Verify -->|"successful applicable engineering basis"| Release["Release qualifies exact candidate"]
+    Release --> Authorize["Obtain separate publication authorization"]
+    Authorize --> Publish["Publish and observe actual public outcome"]
+```
+
+Implementation, independent assessment and publication cannot be treated as one successful command. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment View
+
+```mermaid
+flowchart LR
+    Repo["Repository source and reviewed artifacts"] -->|"local or CI work"| Dev["Development and validation processes"]
+    Dev -->|"Packaging generation"| Candidates["Isolated candidate output"]
+    Candidates -->|"qualification inputs"| Protected["Release protected execution"]
+    Approval["Maintainer authorization"] -->|"candidate-specific permission"| Protected
+    Protected -->|"publish and observe"| Public["Public registry and release assets"]
+```
+
+Local/CI execution, candidate roots and protected release jobs have distinct resource and authority boundaries. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 
@@ -48,7 +156,9 @@ The approved proposal and exact affected Designs feed a stable delivery plan and
 
 ## Validation
 
-[Validation](validation.md) is the sole owner of reusable proof criteria and repository check execution. Skill capabilities consume the reusable criteria under their applicability; this repository's plan allocates the concrete tests. All workers, nested invocations and independent cases share the declared budget; deterministic summaries expose missing, skipped, failed and interrupted work. No cache restores prior execution as a current pass.
+[Validation](validation.md) is the sole owner of reusable proof criteria and repository check execution. Its [structural graph](validation.md#structural-design-graph) and [invocation flow](validation.md#invocation-flow-graph) explain the internal check pipeline and canonical check composition. Skill capabilities consume the reusable criteria under their applicability; this repository's plan allocates the concrete tests. All workers, nested invocations and independent cases share the declared budget; deterministic summaries expose missing, skipped, failed and interrupted work. No cache restores prior execution as a current pass.
+
+For the current refinement, Development allocates the complete remaining automated test inventory in bounded groups under [Validation VAL-SR-19–22](validation.md#requirements). Validation owns canonical check selection and which cases can be consolidated; product owners retain the protected behavior. Assessment judges retained protection and actual isolation. Candidate changes, package-build dependencies and Release freshness obligations remain visible, when focused and broad scopes select the same check once. An unassessed serial remainder cannot become a completed delivery claim.
 
 ## Packaging
 
@@ -89,7 +199,7 @@ The development process is a consumer of published capability behavior, not a se
 
 ## Source disposition and follow-through
 
-The [reconciliation evidence (`design-preservation-delta`)](../../changes/2026-09-12-unified-validation-model/evidence.json) identifies exact source identities, retained contracts, Distribution's split and current consumers. The mapped Validation cache/source/script retirement remains required implementation work. Detailed retained specifications remain named authorities for unmigrated obligations. Source changes do not establish reviewed implementation or successful Verify.
+The [reconciliation evidence (`design-preservation-delta`)](../../changes/2026-09-12-unified-validation-model/evidence.json) identifies exact source identities, retained contracts, Distribution's split and current consumers. The mapped Validation cache/source/script retirement is recorded as completed in the [original adoption](../../changes/2026-09-12-unified-validation-model/change.json). It is not implementation work for the current initiative; the current scope is the check composition, test maintenance and remaining case independence defined by Validation. Detailed retained specifications remain named authorities for unmigrated obligations. Source changes do not establish reviewed implementation or successful Verify.
 
 ## Next artifacts
 

@@ -6,7 +6,9 @@ Parent model: [CLI — Records](cli.md#records).
 
 This child owns the stored representation and preservation contract. CLI Command Interface and Persistence implement access to it; Skill Workflow and Assessment supply the meaning of recorded decisions.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 The current stored contract is `rigorloop-records-v3`. [Retirement provenance](#v2-stored-format-retirement) records the support boundary and owning change; historical decisions do not supply an alternate operational profile.
 
@@ -23,6 +25,42 @@ The model ID is `record-format`. Its selected format is **RigorLoop Record Forma
 | How is old data handled? | [Compatibility and adoption](#compatibility-and-adoption) |
 | Who owns adjacent behavior? | [Context and Scope](#context-and-scope) |
 | What must be demonstrated? | [Boundary scenarios](#boundary-scan-and-acceptance-scenarios) |
+
+## Architecture Overview
+
+```mermaid
+flowchart TB
+    Decisions["Workflow and Assessment<br/>Actor-owned decisions and evidence"]
+    Subjects["Engineering subjects<br/>Exact paths and identities"]
+    subgraph Records["Records — stored representation and invariants"]
+        Change["Change registry<br/>Activity, work and blockers"]
+        Entries["Supporting records<br/>Reviews, evidence, decisions and successful Verify"]
+        References["Identity and references<br/>Subjects, registered paths and applicability"]
+        Preservation["Preservation rules<br/>Finding IDs, blocker origin and historical meaning"]
+        Change -->|"registered supporting paths"| Entries
+        Change -->|"subject and record references"| References
+        Entries -->|"exact assessment and evidence basis"| References
+        Preservation -.->|"constrains permitted revisions"| Change
+        Preservation -.->|"constrains permitted revisions"| Entries
+    end
+    Decisions -->|"explicit semantic values"| Change
+    Decisions -->|"judgments, proof and rationale"| Entries
+    Subjects -->|"referenced basis"| References
+    References -->|"representation and reference contract"| CLI["CLI construction and persistence"]
+    Preservation -->|"required invariants on writes"| CLI
+```
+
+Records owns data representation inside the boundary. The [record model](#record-model) retains the detailed record-relationship graph, and the [explicit schema](#explicit-record-schema) owns stored fields and references. [V3 finding identity and correction](#v3-finding-identity-and-correction) distinguishes stable finding IDs/current accounts from immutable blocker origin. [Workflow](../skill/workflow.md) and [Assessment](../skill/assessment.md) supply semantic decisions; [CLI](cli.md#persistence) enforces the stored contract through safe writes. Supporting records are conditional, not prerequisites for every correction. No data block is an additional service or decision owner.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Semantic decisions, exact engineering subjects and persistence are externally owned. | [Context view](#context-view) |
+| Building Block | Necessary: Record types and their references need an authoritative representation graph. | [Building Block view](#record-model) |
+| Runtime | Necessary: Current finding edits, blocker origin and reference preservation differ from workflow judgments and safe-write mechanics. | [Runtime view](#runtime-diagram) |
+| Deployment | No separate deployment view: Records defines stored data and invariants. CLI owns physical storage, concurrency and recovery; v3-only and archival-preservation boundaries remain in the existing deployment/retirement sections. | Existing deployment/context prose and the named external owner. |
+
 
 ## Context and Scope
 
@@ -46,6 +84,37 @@ V3 is the sole operational stored format. Historical v2 records remain archival 
 Use one explicit version per change and its registered records. Review findings retain immutable IDs and explicitly editable current fields; change-level blockers additionally retain immutable origin. Store narrative in explicit fields within the same JSON object, and retain exact subjects and explicit record-level applicability. Structural validation admits incomplete or contradictory workflow claims without endorsing them.
 
 The CLI constructs registry and serialization mechanically from explicit operations. This model owns what must survive those operations, independently of which supported write path performs them.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Actors["Workflow and Assessment actors"] -->|"explicit decisions and proof"| Records["Records representation"]
+    Subjects["Engineering subjects"] -->|"paths and identities"| Records
+    Records -->|"shape, references and invariants"| CLI["CLI construction and persistence"]
+    CLI -->|"stored records and observations"| Readers["Responsible record consumers"]
+```
+
+Semantic decisions, exact engineering subjects and persistence are externally owned. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Decision["Actor supplies explicit edit"] --> Construct["CLI constructs candidate under Records schema"]
+    Construct --> Validate["Validate closed values, references and preservation"]
+    Validate --> Valid{"Valid candidate and current basis?"}
+    Valid -->|"no"| Reject["Reject with diagnostics; no requested write"]
+    Valid -->|"yes"| Save["CLI safely persists candidate"]
+    Save --> Read["Inspect resulting record and scope"]
+    Read --> Assess["Responsible actor judges reliance separately"]
+```
+
+Current finding edits, blocker origin and reference preservation differ from workflow judgments and safe-write mechanics. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 
@@ -72,19 +141,6 @@ These requirements realize Workflow's actor-owned recording and retained-basis o
 
 ### Record model
 
-**RigorLoop Record Format v3** is the selected stored-record design. Its complete record layouts are defined below, with `contract: rigorloop-records-v3` in change.json and `schema_version: 3` in every record. This is a data-format contract: it defines stored fields, relationships and preservation invariants. It does not select a workflow stage or version the CLI command interface.
-
-| Versioned surface | Identifier | Meaning |
-| --- | --- | --- |
-| Selected stored-record design | `rigorloop-records-v3`, stored schema_version 3 | Complete current design, with ID-only Review findings and immutable blocker origin |
-| Retired stored formats | Exact set in Compatibility and adoption | Archival evidence only; no runtime reader or writer |
-| Model-document validation | `Model validation contract: model-document-v1` | Document structure checked by the model validator; not the selected stored-record version |
-| Primary CLI transport | `targeted-recording-v1`, request schema_version 1, result schema_version 2 or 3 | Transient requests and receipts, defined by the CLI model |
-
-Version numbers belong to their own surface. A targeted request with schema_version 1 explicitly selects rigorloop-records-v3; its request version does not change the stored version. The document-validation marker `model-document-v1` versions Markdown structure separately. Its version 1 does not make the selected stored-record format v1. Retirement changes supported stored inputs, not these independent version domains.
-
-The change record is the registry and coordination entry point. It contains activity, work and change-level blockers; it references the proposal, affected models and optional plan. Its registry identifies supporting records, each with an explicitly declared applicability entry. Review findings belong to their containing review. Reviews and evidence name exact engineering subjects; those subject identities do not become automatically current when files change.
-
 ```mermaid
 flowchart TB
     Change["Change: activity, work and blockers"]:::system
@@ -110,7 +166,22 @@ flowchart TB
     classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
 ```
 
-This conceptual view illustrates RF-SR-01/02/03; it is not a second schema. Subjects may also include implementation and other proof inputs admitted by the exact Subject type. Supporting records are conditional, and their arrows do not imply that every record must exist before a correction can be saved.
+**RigorLoop Record Format v3** is the selected stored-record design. Its complete record layouts are defined below, with `contract: rigorloop-records-v3` in change.json and `schema_version: 3` in every record. This is a data-format contract: it defines stored fields, relationships and preservation invariants. It does not select a workflow stage or version the CLI command interface.
+
+| Versioned surface | Identifier | Meaning |
+| --- | --- | --- |
+| Selected stored-record design | `rigorloop-records-v3`, stored schema_version 3 | Complete current design, with ID-only Review findings and immutable blocker origin |
+| Retired stored formats | Exact set in Compatibility and adoption | Archival evidence only; no runtime reader or writer |
+| Model-document validation | `Model validation contract: model-document-v1` | Document structure checked by the model validator; not the selected stored-record version |
+| Primary CLI transport | `targeted-recording-v1`, request schema_version 1, result schema_version 2 or 3 | Transient requests and receipts, defined by the CLI model |
+
+Version numbers belong to their own surface. A targeted request with schema_version 1 explicitly selects rigorloop-records-v3; its request version does not change the stored version. The document-validation marker `model-document-v1` versions Markdown structure separately. Its version 1 does not make the selected stored-record format v1. Retirement changes supported stored inputs, not these independent version domains.
+
+The change record is the registry and coordination entry point. It contains activity, work and change-level blockers; it references the proposal, affected models and optional plan. Its registry identifies supporting records, each with an explicitly declared applicability entry. Review findings belong to their containing review. Reviews and evidence name exact engineering subjects; those subject identities do not become automatically current when files change.
+
+
+
+The [Architecture Overview](#architecture-overview) illustrates RF-SR-01/02/03; it is not a second schema. Subjects may also include implementation and other proof inputs admitted by the exact Subject type. Supporting records are conditional, and their arrows do not imply that every record must exist before a correction can be saved.
 
 | Stored record | Semantic responsibility | Definition in the [v3 JSON Schema](../../../schemas/rigorloop-records-v3.schema.json) |
 | --- | --- | --- |
