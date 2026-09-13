@@ -1056,6 +1056,218 @@
         }
       ],
       "summary": "Actual release-coordinated PR CI failed boundary_first.validate: BFR-MARKER-AUTHORITY on governed-lifecycle-cli original retired change.yaml marker ownership; BFR-NEW-SPEC-MARKER on progressive-boundary-first-skill-guidance pending preactivation source. Both touched only for navigation. Required dependent checks were not started; prior C5/C6 passes do not clear this failure. Ten additional grandfathered spec classifications require semantic review. Whole-change reviewer assesses historical/current source boundaries before correction; no marker addition or gate weakening is authorized by this observation."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "implement"
+      },
+      "id": "validation-final-pr-ci-corrected",
+      "procedure": "bash scripts/ci.sh --mode pr --base 57653f7b791bbfbad12dd0f2657bfb52acd878c8 --head 0d65cd674fb2b02128887ff47b56d83541572a79; exact2file base-byte comparison; corrected current selected boundary command; full-branch prose delta audit; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:ee59ff3a3dc4b0bda8379503a574963e8fafc06169acec433ece8443ad747f4c",
+          "path": "AGENTS.md"
+        },
+        {
+          "identity": "sha256:fe848ca3b53efd50f060157a225157a5003462d1d8bca2b08368a6ab424f0cab",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:22ca3fee3ceae9813e818dff4b74171b58d2aca70ed4a5d68c07f68ff83e7ed8",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "identity": "sha256:9d2573f0c8ca757771d10486fdb7f28fbc94e9beb53b1b41d0f9734e085da268",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:bd3bc8bbe578ec5958e54bb51274ace64ef88c3ae4724ac4c28e9146754efe16",
+          "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-delivery-review.json"
+        },
+        {
+          "identity": "sha256:4992f7f5cbf3e2b8dd2cb8d862c2a662bb0dd0540b29d2e75b0e0293fd551eaf",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:a530e4975362a9cb0ef5fbfb5b8944145288ce6fe78afdc28253cc1763462476",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:b4d942ab3289a61ba8b3f7c3bd3452c7bd75c22218d7e0b9278362f73a33e96d",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:1c1d62ada1d5b45e1dc87db59cedd8ba13d4e90a0c6afe535ae46d5553f7deea",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:944a7c3200764ac7da6607011ccdd1b515b654a976bfbc4a6a0036b5fa430bd2",
+          "path": "docs/follow-ups.md"
+        },
+        {
+          "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        },
+        {
+          "identity": "sha256:62e2945ba15a9559ff8947fb36a5096ed5bd204b0ba22301df92e2962f08d428",
+          "path": "scripts/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:71880764d26a941ec1f614f020f74f30ddfab8ae6fea9006b2a3d7530121c82f",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:b0ade111be6b4ec9ab8704a04a91737843ad91af89afff2a86c78a8a0c669fb4",
+          "path": "scripts/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:cdb5afbdb7164a3dc1c7ed4759bd013b0922c6c900515da540bfc87af05eec05",
+          "path": "skills/bugfix/SKILL.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/bugfix/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/bugfix/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:c008afcc679e337de9c885dbfba583b7cee94d86766ef9bbdce546cabc703ac9",
+          "path": "skills/ci-maintenance/SKILL.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/ci-maintenance/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/ci-maintenance/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:8b62de7d295562d13f438418aaf54b77adf46d20aa5e1749f5651bd4b58f2e63",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/code-review/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/code-review/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:aa47d716979b176f9ba898407e9e9b78aad13df100d90c063a9a51051d66f787",
+          "path": "skills/delivery-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/delivery-review/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/delivery-review/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:4ee566acd6545b677de45540a97999986ce1156c3dbac4e4b25048d746d13bf5",
+          "path": "skills/design-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/design-review/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:f50e7811f0d5231cc4db99c5ba648dc8f6abbb7b9f199feafaaaba4cd0ca1a38",
+          "path": "skills/design/SKILL.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/design/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:a0757bff813a7d7e555071465c7bb3cb19a00b031e95a9c88ae80b5bb11ae7bd",
+          "path": "skills/implement/SKILL.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/implement/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/implement/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:78deb783e840523c8d1d286f2fdf5e9ce78a1df5f0b45b2edad3e8f7a1168531",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/plan/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/plan/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:7c31aa6b71a6b31f978934c696398130eeda4de8325d15ce2f5bd81c161ed057",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/route/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/route/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:5d4d5ff7171c0f5f8dc56ae8e9afe3484f2e73a4f8e33fb766c8323165a704f3",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "skills/verify/references/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "skills/verify/references/test-quality.md"
+        },
+        {
+          "identity": "sha256:b7a602cbcc6a50e16b8876a5c12c3b68b6241b60f0bafdb752c32c1d977c03bd",
+          "path": "specs/change-record-catalog-registration-and-bounded-read-model.md"
+        },
+        {
+          "identity": "sha256:4dff8478a17c5689516f22ad9f29d92311a38e2f73e84c40319f9bf5faab5714",
+          "path": "specs/governed-lifecycle-cli.md"
+        },
+        {
+          "identity": "sha256:983a6cab29dd12ff18866f06a2a818ab9c198dd3a3ccddccc06c8e95516d2dd2",
+          "path": "specs/progressive-boundary-first-skill-guidance.md"
+        },
+        {
+          "identity": "sha256:7c7037e519b4558f8126460892ff33721026e05b2d8f7469b7ba86477ee81b9b",
+          "path": "templates/shared/test-maintenance.md"
+        },
+        {
+          "identity": "sha256:8b0a4b44f27de8c2d24ea21344b75594d5f5c9a247f91d42390068f96d4bf998",
+          "path": "templates/shared/test-quality.md"
+        }
+      ],
+      "summary": "Corrected actual PR CI passed for authored source 0d65cd674fb2b02128887ff47b56d83541572a79 against main57653f7b791bbfbad12dd0f2657bfb52acd878c8 in the isolated Linux filesystem checkout. The unchanged release coordinator prepared and checked source 2aa2948420f9be17c87a0cc184c722511232eebf, candidate 482b22f23b7c926dc8803e43f1876f365360e5771d008043b03c5468b8fd0985, without publication authority. This is the actual PR wrapper with its required candidate/preflight/selection/complete focused/boundary/broad execution, not a selector-only or diagnostic substitute. Exit0 was observed from the complete outer command.\n\nThe accepted final-legacy-navigation-marker-scope correction restores governed-lifecycle-cli.md and progressive-boundary-first-skill-guidance.md exactly to base57653f7b. Their opening references remain historical provenance; current requirements and navigation resolve to the current models. No validator, marker, schema, grandfathered inventory, production code or public behavior changed in this correction. The exact restored-byte comparison and corrected selected boundary command pass with zero issues. Nine (correcting the initial evidence's count of ten) grandfathered observations received independent final-legacy-design-classification. Original failed PR and M5/prose observations remain unchanged historical evidence, not reclassified as passes.\n\nAll script/skill/template/schema/package implementation bytes are unchanged from the successful M5 C5/C6/C7/C8/C10 basis; the historical two-spec restoration changes the branch's selected applicability, which this new actual PR run proves. Earlier complete sequential and parallel broad runs remain applicable to unchanged runtime inputs. Registered narrative consolidation and current model navigation have their own exact byte/identity and structural proof and independent M5 reliance assessment. Final full-branch Markdown comparison now finds12 files with retained baseline findings and zero introduced findings; required plan/README prose gates pass. This is no whole-file prose pass or general waiver.\n\nLocal environment: Python3.12.3, Node24.14.1, Linux process ownership backend. Hosted CI has not been observed; the configured hosted workflow uses Python3.11 and Node24. Earlier Windows-mounted filesystem timeout limitation remains explicit. No release, merge, remote push, customer-policy activation or final Verify success follows from this evidence alone. Fresh whole-change reviewer must resolve its finding and assess this current result; distinct Verify remains mandatory.\n"
     }
   ],
   "schema_version": 3

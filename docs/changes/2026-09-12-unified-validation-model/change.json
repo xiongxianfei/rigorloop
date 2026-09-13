@@ -2,10 +2,10 @@
   "activity": {
     "owner": {
       "id": "root",
-      "role": "implement"
+      "role": "verify"
     },
-    "reason": "Accepted whole-change finding final-legacy-navigation-marker-scope: restore two original historical spec bodies, preserve current model authority and fail-closed marker rules, rerun actual PR CI before final reassessment.",
-    "stage": "implement",
+    "reason": "All seven implementation work entries closed; fresh independent whole-change review approved after corrected actual PR CI and exact legacy classification. Distinct final Verify owns closeout before user-authorized PR.",
+    "stage": "verify",
     "status": "in-progress"
   },
   "applicability": [
@@ -33,7 +33,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json",
-      "reason": "Fresh committed-branch integration failure blocks final readiness until owned correction, applicable independent reassessment and actual PR rerun.",
+      "reason": "Complete corrected PR command against exact authored/current candidate inputs and independently classified historical spec scope. Final review and Verify remain distinct.",
       "value": "current"
     },
     {
@@ -159,7 +159,16 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-final-code-review.json",
-      "reason": "Actual current full-branch PR failure inspected; first cross-milestone integration defect prevents final approval.",
+      "reason": "Fresh complete final diff, current model/delivery authority, direct integration tests, preserved exact historical evidence and corrected actual PR proof independently assessed; all recorded Code findings resolved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/final-legacy-design-classification.json",
+      "reason": "All nine exact changed grandfathered sources independently classified by actual amendment semantics, with two out-of-scope navigation changes independently confirmed restored to original bytes.",
       "value": "current"
     }
   ],
@@ -328,6 +337,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-final-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/final-legacy-design-classification.json"
     }
   ],
   "schema_version": 3,
