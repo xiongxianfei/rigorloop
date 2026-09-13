@@ -25,6 +25,8 @@ Current blockers are not recorded in this index.
 
 ## Current plan references
 
+- [2026-09-13 Independent parallel tests and architecture-view adoption](plans/2026-09-13-independent-parallel-tests.md) — [owning change](changes/2026-09-13-independent-parallel-tests/change.json).
+
 - [2026-09-12 Unified Validation implementation](plans/2026-09-12-unified-validation-implementation.md) — [owning change](changes/2026-09-12-unified-validation-model/change.json).
 
 - [2026-09-12 Design directory organization](plans/2026-09-12-design-directory-layout.md) — [owning change](changes/2026-09-12-unified-validation-model/change.json).

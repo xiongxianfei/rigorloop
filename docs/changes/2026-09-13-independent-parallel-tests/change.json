@@ -2,10 +2,10 @@
   "activity": {
     "owner": {
       "id": "root",
-      "role": "plan"
+      "role": "implement"
     },
-    "reason": "Independent Design Review approved all twelve Architecture Overview refinements; existing detailed contracts preserved. Supporting-view necessity assessments, necessary diagrams and public guidance adoption remain Delivery obligations.",
-    "stage": "plan",
+    "reason": "Exact seven-milestone Delivery plan independently approved and initialized. M1 portable architecture authoring/review guidance is the first implementation scope; remaining milestones and final gates remain required.",
+    "stage": "implement",
     "status": "ready"
   },
   "applicability": [
@@ -43,6 +43,15 @@
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json",
       "reason": "Current all-twelve overview subjects independently assessed against unchanged detailed owners; supporting-view and public-consumer adoption remain explicitly outstanding, with prior findings preserved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json",
+      "reason": "Exact primary plan independently assessed against current approved Design; complete seven-milestone work/proof allocation and explicit native-adapter feasibility checkpoints are adequate without presuming implementation success.",
       "value": "current"
     }
   ],
@@ -135,7 +144,10 @@
       }
     }
   ],
-  "plan": null,
+  "plan": {
+    "identity": "sha256:3d94ffcb20e7a183d8285550aba80f3c95c5b54a08ceab4d6bf3e19f044267e1",
+    "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+  },
   "proposal": {
     "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
     "path": "docs/proposals/2026-09-13-independent-parallel-tests.md"
@@ -156,8 +168,114 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
     }
   ],
   "schema_version": 3,
-  "work": []
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "DES-SR-22",
+        "DES-SR-15",
+        "DES-SR-18",
+        "docs/plans/2026-09-13-independent-parallel-tests.md"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m2",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "requirement_refs": [
+        "DES-SR-22",
+        "SYS-SR-10",
+        "SYS-SR-11",
+        "docs/plans/2026-09-13-independent-parallel-tests.md"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m3",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-19",
+        "VAL-SR-20",
+        "VAL-SR-21",
+        "VAL-SR-22",
+        "docs/plans/2026-09-13-independent-parallel-tests.md"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m4",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-21",
+        "VAL-SR-22",
+        "TEST-SR-08",
+        "docs/plans/2026-09-13-independent-parallel-tests.md"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m5",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-21",
+        "VAL-SR-22",
+        "TEST-SR-08",
+        "docs/plans/2026-09-13-independent-parallel-tests.md"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m6",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-21",
+        "VAL-SR-22",
+        "TEST-SR-08",
+        "docs/plans/2026-09-13-independent-parallel-tests.md"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "m7",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-19",
+        "VAL-SR-20",
+        "VAL-SR-21",
+        "VAL-SR-22",
+        "DES-SR-18",
+        "docs/plans/2026-09-13-independent-parallel-tests.md"
+      ],
+      "status": "pending"
+    }
+  ]
 }

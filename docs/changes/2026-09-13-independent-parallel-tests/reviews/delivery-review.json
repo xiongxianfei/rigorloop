@@ -1,0 +1,169 @@
+{
+  "assessment_scope": "Formal first-pass Delivery Review of the single registered primary plan docs/plans/2026-09-13-independent-parallel-tests.md, upstream approved design-review sha256:e5a7c100b54ae5207b919568097edeb0a01d763da00e1cb95783b79ae21dc863. Read the full seven-milestone plan and checked affected approved Design/legacy allocation, current catalog/Python adapter, test file inventory, npm script and CI/release entrypoints. Judgment covers sequencing and verification allocation together, not completed implementation or assumed native Node case support.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review",
+  "independence_basis": "Root authored the complete plan and author evidence. The separately invoked proposal-reviewer agent inspected the exact plan, current upstream package and actual implementation extension points without authoring or editing any plan, Design or implementation contribution. Prior independent Design review is upstream assessment, not authorship of this delivery allocation.",
+  "judgment": "approved",
+  "limitations": [
+    "No runtime tests, package generation, native Node experiments or final CI were run for this plan review. Native case selection/discovery and resource behavior remain required M6 evidence before promotion, not assumed capability.",
+    "Static entrypoint inventory and source inspection establish plan allocation only; all discovered cases, dynamic additions, retained protection and actual caller completion must be established during implementation. Timing is factual and bounded, with no promised speed target.",
+    "Review recording does not initialize milestones, route work or authorize publication/PR. Model/public-guidance adoption and final completion remain pending their explicitly allocated reviews and proof."
+  ],
+  "rationale": [
+    "Trace and complete scope — pass: M1/TG01 allocates portable DES-SR22 guidance, skeleton, transitive packaged examples and independent semantic exercises; M2/TG02 allocates all twelve model necessity decisions, necessary diagrams, exact example scope and fresh Design Review before reliance. M3/TG03 covers VAL-SR19/20 canonical composition and retained execution invariants; M3–M6/TG03–06 account for TEST01–14 and VAL21/22 populations; M7/TG07 reconciles actual callers and newly discovered scope. Inspection confirms all26 current Python entrypoints and22 Node test files are accounted for. File counts explicitly are not case identities or proof; dynamic loaders, nested cases and alternate direct/main/broad/release callers must be reconciled before closeout.",
+    "Sequencing and bounded recovery — pass: seven sequential reviewed slices separate portable source/package guidance, living-model authoring, shared executor changes, two Python fixture families, native Node adaptation and integration. Shared mechanism proof precedes catalog promotion; no unknown serial remainder may count as complete. M2 explicitly uses Design authorship and renewed Design Review, followed by distinct documentation Code Review. Rollback restores coherent tests/adapter/catalog or guidance/example slices and lost protection, never generated outputs as source or historical cache functionality. A new mechanism/outcome returns to Design; allocation gaps return to plan rather than being silently deferred to Verify.",
+    "Canonical scheduling and negative proof — pass: inspected current duplicate executor catalog entries and Python-only expansion extension point. TG03 requires a single canonical execution, all reasons, distinct configurations/observation points and build dependencies, prelaunch conflicting/unknown-input rejection, focused failure blocking boundary even when overlap passed, diagnostic failure preservation, jobs1 coverage, bounded nested demand, fail-fast, timeout/interrupt cleanup and truthful unfinished outcomes. Current report compatibility and actual caller reconciliation are in the same slice. Protection for three costly production-population comparisons must be established before deletion; small real adapter fixtures retain discovery/filter/hook boundaries rather than mocking the claim.",
+    "Case isolation and feasible evidence — pass: P4/P5 explicitly cover per-case writable roots, archives, ports, environment/Git state, helper subprocesses, complete hooks, unknown/retired input rejection and failure cleanup. M6 recognizes node-test declaration/file concurrency does not implement case isolation; native exact name selection, duplicate/nested-name hazards, complete hooks and zero/missing/skipped/failed outcomes require focused experiments and adapter regressions before adoption. Its direct/native commands supplement, not replace, required single-case and shared-budget observations for all retained cases. Unsupported selection remains incomplete and routes upstream. This is a bounded implementation feasibility checkpoint, not an assertion that untested Node adapter behavior already works.",
+    "Proof cost and retained maintenance authority — pass: normal, isolated single-worker and concurrent/reversed population comparisons establish actual adoption once per assessed family basis; affected later changes require fresh proof. These observations are not permanent triple-production-suite regressions. Consolidations require governing obligation, distinct failure/boundary mapping, counterexample-sensitive replacement detection and independent assessment before relying on reduced tests. Unknown protection is preserved. Existing evidence surfaces carry group-level rationale, not a new mandatory ledger or benchmark. Current legacy maintenance map and R15/R16/R21 authority are retained; completed original source/cache retirement is not reopened.",
+    "Concrete commands and final gates — pass: exact Python file commands, npm/native commands, model file-explicit validators, rendering/semantic inspection, supported archive/install fixtures and synthetic release composition are allocated. Checked actual npm test script, wrappers and hosted caller sites. Selected PR base c815768aacb0a6762c0acd11acf1d21f3c26aac0 is an ancestor of HEAD and the plan requires final committed endpoints and reconciliation if basis changes. M7 checks executed IDs and runs direct-only populations absent from composition; separate required main/broad/PR invocations execute freshly. Release fixture proof is distinguished from unauthorized live publication. Fresh independent complete-diff Code Review after all milestones/corrections precedes distinct final Verify; no milestone review or aggregate test substitutes for it.",
+    "Current applicability — current plan author evidence matches its exact subject. Upstream Design approval remains applicable: the plan allocates its explicit outstanding public-resource and all-model supporting-view duties, preserves simplified Validation/no-cache and the two resolved findings, and introduces no revised behavioral contract. Original proposal and historical Design judgments retain their scopes. Failed implementation evidence, changed contracts/examples or discovered native-runner limitations require their actual owning correction and reassessment; this approval does not refresh any runtime proof. No material first-pass finding identified."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:3d94ffcb20e7a183d8285550aba80f3c95c5b54a08ceab4d6bf3e19f044267e1",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:e5a7c100b54ae5207b919568097edeb0a01d763da00e1cb95783b79ae21dc863",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:06db6983bf5abcbbddef5bf8268e67dcb51b99072f65cfe51ce3f37535a1d939",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:d664d5e7e169108999d8bfce8df6d839a25fb246371b2fd15bef041284a047c3",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:090dd338c069f42b72a5f7a46b82147ce9c8a178ab86aaff6ddd6f155b902fa1",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
+      "path": "docs/proposals/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:f7234887a6dcae08b003ac7f80b1f907383b60bb7bfd8d89fd16b0291334db42",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:02b48688712efec5cd95e0fce7a3f3167908a1d31b2060e65444c5334c7a7515",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:fe848ca3b53efd50f060157a225157a5003462d1d8bca2b08368a6ab424f0cab",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:9f771e1c6d5cd51e9dfce47d9f052889a5af5f8c0fc4e2ce5779ab503bc344a4",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:73a1284be19719f3b335e738e8d699af32be3917c2f343541fdb13926ae009ec",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:fab7e075fa1f7825afbe2a2c87a84422f75d92f4d6a71385db1e44233696974c",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:43451c60bd30ff7c1486e4a46996eebc1b25f059abd40410960c5d3558be0d7f",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:5b08ce71c66a0519d7384f85f1165ad1bec05ea27d2c2f0749aeafff5311027a",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:e6454aa501a7db02051a3e2df6f53ac5013cb285bfb1d786429bb8e587920ec5",
+      "path": "specs/published-skill-first-repository-simplification.test.md"
+    },
+    {
+      "identity": "sha256:d6c090304139a0de9cd4393df8fb45ef90383a97428f5ccdd0507968ecd63bf6",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:e30f6c2782be265396740094d41455f700797d429cbc2d4f1f44ea1dde7b1b85",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:9e78ad44b069abec310ac1af5ebcc2ea48e6cf4c3b61ab250d8d9b650902394b",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:0cff9de8f11b4e5827ca30f426890d8637941fa3f13d9d56e200a2fa1ae57d00",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:6e80988bd142fd39f56602602e43645a73e3d6d9131a7a99b0f442b7d85f648e",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:71880764d26a941ec1f614f020f74f30ddfab8ae6fea9006b2a3d7530121c82f",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:0b634c9bcbdba16bc00fc26e40ca57d529922235d4bd745052280be1358f7379",
+      "path": "docs/changes/2026-09-12-unified-validation-model/change.json"
+    },
+    {
+      "identity": "sha256:08193bd20c4b344679083a6ca7908d562394452642900ffe1f157465c039e768",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:86a37caf0d1145bb66a0c80eb8e9eab2f030687d72c267c57dcbc88369c2262b",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:1cf91a1a8e370a8f199666535fcd303a10c294267d7a0c590ad4b0fac82e2192",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:480307c5371e23ccf8bd46d2d1712e8906d360431f8550091670d8ef103a3aa2",
+      "path": "scripts/model_layout.py"
+    },
+    {
+      "identity": "sha256:a9bb59b84147d1e51b78eb7927d16e987f2d1ea8a9a2f1827a919211a42869ac",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:a10766f6433f56e81574a607b4dcfe370ee2f22ec92a5ab080e438ddce7ccbdb",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:f0e72257e8d8f1fee451d907cb68513e73f9acbd4fc6c0d1efde954cb913d56e",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:0a92748762f3d57dde1b10dab608958a8b9f6dfb779629534beecefdce67a26a",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:2809f99112457772c441edbcb492b53c0689160b64442b31533bedfd016b2e91",
+      "path": ".github/workflows/ci.yml"
+    }
+  ],
+  "summary": "The complete plan adequately sequences architecture guidance and model-view adoption, canonical execution, all remaining test populations and final caller integration. It preserves required protection and independent assessments while replacing redundant recurring full-suite comparisons with focused regression proof and bounded adoption observations.",
+  "target": "delivery"
+}
