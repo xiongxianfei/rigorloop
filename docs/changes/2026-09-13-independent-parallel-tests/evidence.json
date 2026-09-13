@@ -640,6 +640,202 @@
         }
       ],
       "summary": "M1 implements required overview and reasoned/drawn necessary supporting views in portable author/reviewer guidance, skeleton and indexed examples. New archive-resource parity assertion failed before missing example implementation, then full package tests passed. Existing resource catalog now includes example; missing-each and unknown-resource negatives remain. One old readability assertion required retired optional-diagram wording; updated only Design expectation and reran full suite. Selector initially blocked untracked example, passed after staging; selected regressions covered by complete suites. Independent TG-01 package-only semantic evidence recorded separately. Constitution/AGENTS/CLI workflow context are unaffected: they already delegate authoring conventions to Design and recording/permission mechanics did not change. Shared projections and retained legacy aids are unchanged; new content is skill-local, not copied policy. No deployment/publication or deterministic agent-quality claim."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "m2-model-views",
+      "procedure": "python scripts/validate-boundary-first.py --check and python scripts/validate-documentation-prose.py --mode enforce, with each of twelve PROJECT_MODEL_PATHS as --path; inspect four supporting-view decisions/links per model; boundary_first_validation.validate_model_record on extracted complete label-normalization example; git diff --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d083cf4960e85e71c0acac9a4e1ed5d63bfca655366f7d2fc743c15ea2043623",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:adc0b4f16e42bc85b76f77e4527f52bbdae6e00b4d73556d0c2923e220e85c9c",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:957d0dcef9027e9c71aca5797908910384c97eacca7072e432e0874f1dd00033",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:db5911c87634d0c2da1576b0b9ab6703b55b1f4346fae0846ef7833ae5265c2f",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:2437eb114f8453715382f86a5fd10d97d476056f209ada86190ffce1791155c1",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:0084463d8561bb0273bee09d67c70c53897f1f3371724536b0cfb4ea9f4774cc",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:7c8af384bc061f939aecc9e9a9c58161a4743a4136b6437d2726b8b4ed45b3a5",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:d4bfc5ac7a65f38385f5fd575cd0e37bd1e7d0aea23cc06120451d47310fd083",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:941c6522646566b15c31b034447e348e86a4b792d8d02852d123403429c9d465",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:0eac857270902b1c4669084886fb9e9d06fd093c783ef615ed88e03e9744ce8b",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:2af30f6ac92314de586a6edd0d8bc60e68d5db88dc28feda6ef52d7eee9d2b4f",
+          "path": "docs/design/engineering/engineering.md"
+        }
+      ],
+      "summary": "All twelve models now record supporting-view necessity with reasons and diagrams for necessary concerns; four policy/data-method models reference externally owned deployment mechanics with bounded unnecessary dispositions. Existing runtime/record/code graphs reused by reference. Full System hierarchy moved intact to supporting detail while concise overview remains; Validation selected graph unchanged. Embedded complete leaf now has required overview and four dispositions; packaged example resource indexed in Design. No product behavior change or full initiative completion claim; new exact subjects require independent Design Review."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "m2-diagram-rendering",
+      "procedure": "Extract all Mermaid blocks from the twelve current models, including complete embedded example; render each with installed Mermaid CLI and headless Chromium to temporary SVG output.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d083cf4960e85e71c0acac9a4e1ed5d63bfca655366f7d2fc743c15ea2043623",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:adc0b4f16e42bc85b76f77e4527f52bbdae6e00b4d73556d0c2923e220e85c9c",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:957d0dcef9027e9c71aca5797908910384c97eacca7072e432e0874f1dd00033",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:db5911c87634d0c2da1576b0b9ab6703b55b1f4346fae0846ef7833ae5265c2f",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:2437eb114f8453715382f86a5fd10d97d476056f209ada86190ffce1791155c1",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:0084463d8561bb0273bee09d67c70c53897f1f3371724536b0cfb4ea9f4774cc",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:7c8af384bc061f939aecc9e9a9c58161a4743a4136b6437d2726b8b4ed45b3a5",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:d4bfc5ac7a65f38385f5fd575cd0e37bd1e7d0aea23cc06120451d47310fd083",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:941c6522646566b15c31b034447e348e86a4b792d8d02852d123403429c9d465",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:0eac857270902b1c4669084886fb9e9d06fd093c783ef615ed88e03e9744ce8b",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:2af30f6ac92314de586a6edd0d8bc60e68d5db88dc28feda6ef52d7eee9d2b4f",
+          "path": "docs/design/engineering/engineering.md"
+        }
+      ],
+      "summary": "All 59 model/example Mermaid blocks rendered successfully. Outputs are temporary and do not duplicate canonical source. Rendering establishes syntax/graph generation, not semantic approval or runtime proof."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "m2-installation-safety-correction",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/cli/installation.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/cli/installation.md; render corrected Runtime View with Mermaid CLI; git diff --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+          "path": "docs/design/cli/installation.md"
+        }
+      ],
+      "summary": "Recorded finding m2-installation-force-safety-gate corrected with mandatory all-destinations-safe gate. Unsafe paths reject even with force; only after safety does an existing candidate destination require force. No installer behavior changed. Prior full model/link/example and 59-diagram observations remain applicable to unchanged content; this fresh proof covers the only changed diagram and its owning document."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "m2-implementation",
+      "procedure": "Twelve-model structural/prose checks; four view-decision links per model; extracted complete-example validation; all59 model/example Mermaid renders; focused Installation checks/render after correction; fresh independent Design Review; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d083cf4960e85e71c0acac9a4e1ed5d63bfca655366f7d2fc743c15ea2043623",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:adc0b4f16e42bc85b76f77e4527f52bbdae6e00b4d73556d0c2923e220e85c9c",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:957d0dcef9027e9c71aca5797908910384c97eacca7072e432e0874f1dd00033",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:db5911c87634d0c2da1576b0b9ab6703b55b1f4346fae0846ef7833ae5265c2f",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:0084463d8561bb0273bee09d67c70c53897f1f3371724536b0cfb4ea9f4774cc",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:7c8af384bc061f939aecc9e9a9c58161a4743a4136b6437d2726b8b4ed45b3a5",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:d4bfc5ac7a65f38385f5fd575cd0e37bd1e7d0aea23cc06120451d47310fd083",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:941c6522646566b15c31b034447e348e86a4b792d8d02852d123403429c9d465",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:0eac857270902b1c4669084886fb9e9d06fd093c783ef615ed88e03e9744ce8b",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:2af30f6ac92314de586a6edd0d8bc60e68d5db88dc28feda6ef52d7eee9d2b4f",
+          "path": "docs/design/engineering/engineering.md"
+        }
+      ],
+      "summary": "M2 delivers supporting-view assessments and necessary diagrams for all12 models under authoring ownership. Existing detailed graphs remain single authored sources and required hierarchy/Validation views are preserved. First-pass finding about force/safety was corrected before acceptance and independently resolved. Unchanged execution/product contracts retain their owners; no published/runtime changes in this milestone. This is documentation implementation evidence for distinct Code Review, not milestone closure."
     }
   ],
   "schema_version": 3

@@ -83,6 +83,16 @@ flowchart TB
 
 Release owns the transaction responsibilities inside the boundary. [Routine coordination and immutable candidate](#routine-coordination-and-immutable-candidate), the [Building Block View](#building-block-view), [Runtime View](#runtime-view) and [Deployment View](#deployment-view) own qualification, execution and recovery detail. [Packaging](packaging.md) supplies artifacts; [Validation](validation.md) and [Installation](../cli/installation.md) retain check execution and install behavior. [Engineering Development](engineering.md#development) supplies the assessed source basis. Candidate-specific maintainer authorization remains a separate required input; neither an engineering Verify nor candidate qualification grants it. [Authoritative facts and durable evidence](#authoritative-facts-and-durable-evidence) owns the actual release account.
 
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Reviewed source, exact candidate proof, maintainer permission and provider outcomes are separate authority boundaries. | [Context view](#context-view) |
+| Building Block | Necessary: Existing coordinator, candidate, execution and evidence helpers compose the transaction without a new policy service. | [Building Block view](#building-block-diagram) |
+| Runtime | Necessary: Approval, uncertain publication and failed-after-publication paths require explicit ordering and recovery. | [Runtime view](#introduction-and-goals) |
+| Deployment | Necessary: Default-branch preparation, protected execution and external providers have different credentials and mutation authority. | [Deployment view](#deployment-diagram) |
+
+
 ## Context and Scope
 
 Established configuration and reviewed upstream decisions supply the release policy. CLI/CI derives routine inputs, prepares and checks a candidate, and requests its approval. The approved execution publishes and observes the public result automatically. Missing version intent, unsupported configuration or unavailable credentials is an exception with an actionable owner decision, not a routine manual checklist. An engineering change is not a release transaction, and a transaction profile is not an engineering change record.
@@ -103,6 +113,50 @@ The amended direction selects bounded coordination of existing Release mechanism
 Constitution and explicit execution permissions govern. Routine publication starts from reviewed and merged source that introduces no unapproved engineering decision. The bounded, deterministic release-only preparation described below may produce a derived candidate commit; its exact diff is disclosed in the one approval, and no unreviewed product or executable change is admitted. Authentication, provenance, identity, release proof and immutable-publication recovery remain mandatory under their applicable contracts. This model transfers current authority; it does not reactivate old lifecycle writers, first-rollout authoring gates or retrospective benchmarks.
 
 Operational release profiles, generated metadata, templates, fixtures and recovery inputs are not superseded prose. Historical releases and recorded judgments keep their original subjects and meaning. Removing an explanatory source does not remove its tests or waive a real operation's checks. Current rules and necessary evidence remain understandable from the checkout.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Source["Reviewed engineering basis"] -->|"source and release policy"| Release["Release coordination"]
+    Proof["Packaging, Validation and Installation"] -->|"exact artifacts and observations"| Release
+    Maintainer["Maintainer"] -->|"candidate-specific authorization"| Release
+    Release -->|"authorized publication and observation"| Providers["Public release and registry providers"]
+    Providers -->|"observed public state"| Release
+```
+
+Reviewed source, exact candidate proof, maintainer permission and provider outcomes are separate authority boundaries. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block diagram
+
+```mermaid
+flowchart TB
+    Coordinator["release_coordination.py and thin dispatcher"] -->|"profile and selected operation"| Transaction["release_transaction.py helpers"]
+    Coordinator -->|"immutable source and artifact basis"| Candidate["release_candidate.py"]
+    Candidate -->|"qualified, authorized candidate"| Execution["release_execution.py"]
+    Execution -->|"provider outcomes"| Evidence["Release evidence on configured ref"]
+    Transaction -->|"preflight and closeout observations"| Evidence
+    Evidence -->|"observed transaction state"| Coordinator
+```
+
+Existing coordinator, candidate, execution and evidence helpers compose the transaction without a new policy service. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment diagram
+
+```mermaid
+flowchart TB
+    Prepare["Default-branch preparation job"] -->|"immutable candidate and summary"| Executor["Protected environment execution job"]
+    Approval["Candidate-specific maintainer approval"] -->|"required authorization"| Executor
+    Executor -->|"publish exact artifacts"| Providers["Public registry and release assets"]
+    Providers -->|"public observation and smoke"| Executor
+    Executor -->|"actual results"| Evidence["Configured evidence ref"]
+```
+
+Default-branch preparation, protected execution and external providers have different credentials and mutation authority. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 

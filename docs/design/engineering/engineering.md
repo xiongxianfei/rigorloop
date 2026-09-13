@@ -55,9 +55,81 @@ Engineering owns these four children's composition under [System's parent graph 
 
 [Skill](../skill/skill.md) and [CLI](../cli/cli.md) own behavior inputs; [Assessment](../skill/assessment.md) owns independent judgment policy. [Integrated operation and failure](#integrated-operation-and-failure) owns the end-to-end cooperation and exception paths; [Deployment and maintenance](#deployment-and-maintenance) owns the repository execution context.
 
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Product contracts, assessment policy, maintainer permissions and public products bound engineering work. | [Context view](#context-view) |
+| Building Block | Necessary: Development, Validation, Packaging and Release compose distinct implementation, proof and delivery responsibilities. | [Building Block view](#building-block-view) |
+| Runtime | Necessary: Implementation, independent assessment and publication cannot be treated as one successful command. | [Runtime view](#runtime-view) |
+| Deployment | Necessary: Local/CI execution, candidate roots and protected release jobs have distinct resource and authority boundaries. | [Deployment view](#deployment-view) |
+
+
 ## Architecture Constraints
 
 Canonical skill content remains in `skills/`; executable source remains under `packages/rigorloop/`. Repository scripts implement development validation and package production; hosted CI delegates to them. Shared criteria can be referenced by published capabilities, but repository-specific operations are not a customer prerequisite. Original adoption and historical review identities remain scoped to their actual subjects.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Behavior["Skill and CLI behavior owners"] -->|"required outcomes"| Engineering["Engineering"]
+    Policy["Assessment owner"] -->|"independent review and Verify duties"| Engineering
+    Maintainer["Maintainer"] -->|"candidate-specific publication authority"| Engineering
+    Engineering -->|"qualified and authorized delivery"| Products["Published skills and CLI"]
+```
+
+Product contracts, assessment policy, maintainer permissions and public products bound engineering work. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block View
+
+```mermaid
+flowchart TB
+    Development["Development"] -->|"candidate source"| Packaging["Packaging"]
+    Development -->|"required proof"| Validation["Validation"]
+    Packaging -->|"exact artifact subjects"| Validation
+    Validation -->|"actual outcomes for assessment"| Development
+    Development -->|"applicable reviewed source basis"| Release["Release"]
+    Packaging -->|"candidate artifacts"| Release
+    Release -->|"qualification checks"| Validation
+    Validation -->|"qualification observations"| Release
+```
+
+Development, Validation, Packaging and Release compose distinct implementation, proof and delivery responsibilities. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime View
+
+```mermaid
+flowchart TB
+    Intent["Reviewed Design and Delivery"] --> Implement["Implement one bounded milestone"]
+    Implement --> Proof["Run required proof and independent review"]
+    Proof --> More{"More work or required corrections?"}
+    More -->|"yes"| Implement
+    More -->|"no"| Whole["Fresh whole-change Code Review"]
+    Whole --> Verify["Distinct final Verify"]
+    Verify -->|"successful applicable engineering basis"| Release["Release qualifies exact candidate"]
+    Release --> Authorize["Obtain separate publication authorization"]
+    Authorize --> Publish["Publish and observe actual public outcome"]
+```
+
+Implementation, independent assessment and publication cannot be treated as one successful command. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment View
+
+```mermaid
+flowchart LR
+    Repo["Repository source and reviewed artifacts"] -->|"local or CI work"| Dev["Development and validation processes"]
+    Dev -->|"Packaging generation"| Candidates["Isolated candidate output"]
+    Candidates -->|"qualification inputs"| Protected["Release protected execution"]
+    Approval["Maintainer authorization"] -->|"candidate-specific permission"| Protected
+    Protected -->|"publish and observe"| Public["Public registry and release assets"]
+```
+
+Local/CI execution, candidate roots and protected release jobs have distinct resource and authority boundaries. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 

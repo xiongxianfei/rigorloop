@@ -4,7 +4,7 @@
       "id": "proposal-reviewer",
       "role": "review"
     },
-    "reason": "M1 complete implementation/proof handoff; independent Code Review required before milestone closure or M2.",
+    "reason": "M2 exact Design package approved after recorded Installation safety correction. Distinct Code Review of delivered documentation and cross-view effects required.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -42,7 +42,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json",
-      "reason": "Current all-twelve overview subjects independently assessed against unchanged detailed owners; supporting-view and public-consumer adoption remain explicitly outstanding, with prior findings preserved.",
+      "reason": "Exact corrected M2 twelve-model package is coherent; mandatory Installation safety is independently reassessed and fresh affected evidence is applicable.",
       "value": "current"
     },
     {
@@ -53,6 +53,15 @@
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json",
       "reason": "Exact primary plan independently assessed against current approved Design; complete seven-milestone work/proof allocation and explicit native-adapter feasibility checkpoints are adequate without presuming implementation success.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m1.json",
+      "reason": "Complete M1 implementation and test diff independently assessed against current approved Design/Delivery; full applicable author proof and independent portable candidate semantic exercise match current subjects.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -62,84 +71,84 @@
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:06db6983bf5abcbbddef5bf8268e67dcb51b99072f65cfe51ce3f37535a1d939",
+        "identity": "sha256:d083cf4960e85e71c0acac9a4e1ed5d63bfca655366f7d2fc743c15ea2043623",
         "path": "docs/design/system.md"
       }
     },
     {
       "id": "engineering",
       "subject": {
-        "identity": "sha256:d664d5e7e169108999d8bfce8df6d839a25fb246371b2fd15bef041284a047c3",
+        "identity": "sha256:2af30f6ac92314de586a6edd0d8bc60e68d5db88dc28feda6ef52d7eee9d2b4f",
         "path": "docs/design/engineering/engineering.md"
       }
     },
     {
       "id": "validation",
       "subject": {
-        "identity": "sha256:090dd338c069f42b72a5f7a46b82147ce9c8a178ab86aaff6ddd6f155b902fa1",
+        "identity": "sha256:0084463d8561bb0273bee09d67c70c53897f1f3371724536b0cfb4ea9f4774cc",
         "path": "docs/design/engineering/validation.md"
       }
     },
     {
       "id": "skill",
       "subject": {
-        "identity": "sha256:d6c090304139a0de9cd4393df8fb45ef90383a97428f5ccdd0507968ecd63bf6",
+        "identity": "sha256:941c6522646566b15c31b034447e348e86a4b792d8d02852d123403429c9d465",
         "path": "docs/design/skill/skill.md"
       }
     },
     {
       "id": "cli",
       "subject": {
-        "identity": "sha256:43451c60bd30ff7c1486e4a46996eebc1b25f059abd40410960c5d3558be0d7f",
+        "identity": "sha256:0eac857270902b1c4669084886fb9e9d06fd093c783ef615ed88e03e9744ce8b",
         "path": "docs/design/cli/cli.md"
       }
     },
     {
       "id": "design",
       "subject": {
-        "identity": "sha256:e30f6c2782be265396740094d41455f700797d429cbc2d4f1f44ea1dde7b1b85",
+        "identity": "sha256:adc0b4f16e42bc85b76f77e4527f52bbdae6e00b4d73556d0c2923e220e85c9c",
         "path": "docs/design/skill/authoring/design.md"
       }
     },
     {
       "id": "workflow",
       "subject": {
-        "identity": "sha256:9e78ad44b069abec310ac1af5ebcc2ea48e6cf4c3b61ab250d8d9b650902394b",
+        "identity": "sha256:957d0dcef9027e9c71aca5797908910384c97eacca7072e432e0874f1dd00033",
         "path": "docs/design/skill/workflow.md"
       }
     },
     {
       "id": "review-closeout",
       "subject": {
-        "identity": "sha256:9f771e1c6d5cd51e9dfce47d9f052889a5af5f8c0fc4e2ce5779ab503bc344a4",
+        "identity": "sha256:db5911c87634d0c2da1576b0b9ab6703b55b1f4346fae0846ef7833ae5265c2f",
         "path": "docs/design/skill/assessment.md"
       }
     },
     {
       "id": "record-format",
       "subject": {
-        "identity": "sha256:0cff9de8f11b4e5827ca30f426890d8637941fa3f13d9d56e200a2fa1ae57d00",
+        "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
         "path": "docs/design/cli/records.md"
       }
     },
     {
       "id": "installation",
       "subject": {
-        "identity": "sha256:6e80988bd142fd39f56602602e43645a73e3d6d9131a7a99b0f442b7d85f648e",
+        "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
         "path": "docs/design/cli/installation.md"
       }
     },
     {
       "id": "packaging",
       "subject": {
-        "identity": "sha256:73a1284be19719f3b335e738e8d699af32be3917c2f343541fdb13926ae009ec",
+        "identity": "sha256:7c8af384bc061f939aecc9e9a9c58161a4743a4136b6437d2726b8b4ed45b3a5",
         "path": "docs/design/engineering/packaging.md"
       }
     },
     {
       "id": "release",
       "subject": {
-        "identity": "sha256:fab7e075fa1f7825afbe2a2c87a84422f75d92f4d6a71385db1e44233696974c",
+        "identity": "sha256:d4bfc5ac7a65f38385f5fd575cd0e37bd1e7d0aea23cc06120451d47310fd083",
         "path": "docs/design/engineering/release.md"
       }
     }
@@ -172,6 +181,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m1.json"
     }
   ],
   "schema_version": 3,
@@ -188,7 +201,7 @@
         "DES-SR-18",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m2",
@@ -202,7 +215,7 @@
         "SYS-SR-11",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m3",

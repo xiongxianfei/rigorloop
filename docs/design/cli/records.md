@@ -52,6 +52,16 @@ flowchart TB
 
 Records owns data representation inside the boundary. The [record model](#record-model) retains the detailed record-relationship graph, and the [explicit schema](#explicit-record-schema) owns stored fields and references. [V3 finding identity and correction](#v3-finding-identity-and-correction) distinguishes stable finding IDs/current accounts from immutable blocker origin. [Workflow](../skill/workflow.md) and [Assessment](../skill/assessment.md) supply semantic decisions; [CLI](cli.md#persistence) enforces the stored contract through safe writes. Supporting records are conditional, not prerequisites for every correction. No data block is an additional service or decision owner.
 
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Semantic decisions, exact engineering subjects and persistence are externally owned. | [Context view](#context-view) |
+| Building Block | Necessary: Record types and their references need an authoritative representation graph. | [Building Block view](#record-model) |
+| Runtime | Necessary: Current finding edits, blocker origin and reference preservation differ from workflow judgments and safe-write mechanics. | [Runtime view](#runtime-diagram) |
+| Deployment | No separate deployment view: Records defines stored data and invariants. CLI owns physical storage, concurrency and recovery; v3-only and archival-preservation boundaries remain in the existing deployment/retirement sections. | Existing deployment/context prose and the named external owner. |
+
+
 ## Context and Scope
 
 | Concern | Owner | Relationship |
@@ -74,6 +84,37 @@ V3 is the sole operational stored format. Historical v2 records remain archival 
 Use one explicit version per change and its registered records. Review findings retain immutable IDs and explicitly editable current fields; change-level blockers additionally retain immutable origin. Store narrative in explicit fields within the same JSON object, and retain exact subjects and explicit record-level applicability. Structural validation admits incomplete or contradictory workflow claims without endorsing them.
 
 The CLI constructs registry and serialization mechanically from explicit operations. This model owns what must survive those operations, independently of which supported write path performs them.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Actors["Workflow and Assessment actors"] -->|"explicit decisions and proof"| Records["Records representation"]
+    Subjects["Engineering subjects"] -->|"paths and identities"| Records
+    Records -->|"shape, references and invariants"| CLI["CLI construction and persistence"]
+    CLI -->|"stored records and observations"| Readers["Responsible record consumers"]
+```
+
+Semantic decisions, exact engineering subjects and persistence are externally owned. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Decision["Actor supplies explicit edit"] --> Construct["CLI constructs candidate under Records schema"]
+    Construct --> Validate["Validate closed values, references and preservation"]
+    Validate --> Valid{"Valid candidate and current basis?"}
+    Valid -->|"no"| Reject["Reject with diagnostics; no requested write"]
+    Valid -->|"yes"| Save["CLI safely persists candidate"]
+    Save --> Read["Inspect resulting record and scope"]
+    Read --> Assess["Responsible actor judges reliance separately"]
+```
+
+Current finding edits, blocker origin and reference preservation differ from workflow judgments and safe-write mechanics. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 

@@ -63,6 +63,16 @@ The [primary command contract](#primary-public-command-contract) and targeted re
 
 [Lossless construction](#lossless-candidate-construction-and-shared-engine), [batch and retry](#batch-composition-no-op-and-retry) and [save safety](#save-safety-and-recovery-boundary) own explicit edits, neighbor preservation, conflicts and interruption. The same guarantees apply to targeted and advanced record writes. Installation uses its own filesystem safety contract, not the record-store transaction or project eligibility engine.
 
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Actor requests, stored project records, remote archives and target writes have distinct contracts. | [Context view](#context-view) |
+| Building Block | Necessary: The existing code-module graph owns parser, construction, validation and storage relationships. | [Building Block view](#building-block-view) |
+| Runtime | Necessary: Reads, mutations and installation have different validation, side-effect and recovery boundaries. | [Runtime view](#runtime-diagram) |
+| Deployment | Necessary: The executable process uses local filesystem transactions and optional archive acquisition; installation and record roots remain separate. | [Deployment view](#deployment-diagram) |
+
+
 ## Introduction and Goals
 
 The recording subsystem reads records, reports observations, validates explicit updates and persists them safely. The user or agent supplies status and decisions. The CLI never chooses a stage or turns another edit into a workflow decision.
@@ -133,6 +143,55 @@ The existing record-store foundation is the shared persistence boundary. Targete
 Separate structural validation from workflow diagnosis and separate both from persistence. A targeted adapter constructs complete candidate bytes from explicitly named edits against one coherent snapshot. Advanced `record-store record` instead accepts exact complete bytes. Both feed one structural validator, identity checker and recoverable publisher; neither invokes advance-stage, settle-review or reopen-owner semantics. The CLI may generate content hashes, storage revisions and transaction bookkeeping, but all substantive status values come from submitted records.
 
 An old reviewed-subject hash is a legitimate reference to what was reviewed, not a foreign key that must equal today's file hash. Observed drift must be visible without making it impossible to save the correction that addresses it.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Actor["User or skill-guided agent"] -->|"explicit command"| CLI["CLI"]
+    CLI -->|"scoped observations and diagnostics"| Actor
+    CLI -->|"explicit record reads/writes"| Records["Project record files"]
+    Archives["Published archives and metadata"] -->|"verified installation input"| CLI
+    CLI -->|"scoped skill installation"| Targets["Target skill directories"]
+```
+
+Actor requests, stored project records, remote archives and target writes have distinct contracts. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Request["Parse command and explicit input"] --> Kind{"Command family?"}
+    Kind -->|"read"| Inspect["Return selected observations and scope"]
+    Kind -->|"record mutation"| Candidate["Construct candidate; validate contract and basis"]
+    Candidate --> Valid{"Valid and current?"}
+    Valid -->|"yes"| Save["Persist with conflict and recovery safeguards"]
+    Valid -->|"no"| Reject["Reject without requested write"]
+    Kind -->|"installation"| Install["Apply Installation archive/destination contract"]
+    Save --> Result["Report actual result and limitations"]
+    Install --> Result
+    Inspect --> Result
+    Reject --> Result
+```
+
+Reads, mutations and installation have different validation, side-effect and recovery boundaries. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment diagram
+
+```mermaid
+flowchart LR
+    Package["Installed npm package"] -->|"CLI executable"| Process["Node process"]
+    Process -->|"record transactions and recovery"| Records["Selected project record root"]
+    Network["Archive source"] -->|"verified acquisition"| Process
+    Process -->|"Installation-only target writes"| Targets["Target skill roots"]
+    Process -->|"owned scratch"| Temp["Temporary preparation files"]
+```
+
+The executable process uses local filesystem transactions and optional archive acquisition; installation and record roots remain separate. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 
