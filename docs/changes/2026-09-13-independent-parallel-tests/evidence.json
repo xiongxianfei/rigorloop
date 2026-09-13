@@ -192,6 +192,42 @@
         }
       ],
       "summary": "Structure/reference and prose checks passed, zero prose errors/warnings; diff check passed. Restored original 3main/14submodel structural overview and separate products. Whole-system flow and all parent-owned interaction graphs retained. Clarified ownership versus orientation and linked complementary views. Mermaid source checked; no rendered-image, runtime, CI or publication result claimed."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "validation-detail-author-check",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/engineering/validation.md --path docs/design/engineering/engineering.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/engineering/validation.md --path docs/design/engineering/engineering.md; git diff --check; inspected current CheckPlan/CheckResult, catalog constraints and broad-smoke report composition as realization basis.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:63dfb76d5d869f0fd438567ae6b2aa63c2699b2936b5885ab2eabb8a53d0f161",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:af317d9c87fbb2aff782f784ec787f6864002206ab58859ba46d06100a4e8468",
+          "path": "docs/design/engineering/engineering.md"
+        }
+      ],
+      "summary": "Both selected models passed structural/reference and prose validation, zero errors/warnings; diff check passed. Walkthrough covers shared focused/boundary result with independently blocked consumer, unknown/conflicting equivalence, matching/different artifact producers, observed input drift, partial case overlap, interruption and distinct request/physical counts. The structural/flow Mermaid sources are internal realization views; no renderer or executable test was run. Delivery must reconcile actual report consumers and allocate negative/integrated tests. Existing System/Skill/CLI graphs, broader independence/maintenance scope and legacy maps unchanged; no runtime performance/adoption claim."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "validation-report-correction-check",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/engineering/validation.md --path docs/design/engineering/engineering.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/engineering/validation.md --path docs/design/engineering/engineering.md; git diff --check; compare report semantics with _write_mode_result and test-select-validation child_durations reader.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:40220c27099e171e5523a7fa557594e002314d9b7ef37c098b2ab4fa70d62d53",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ],
+      "summary": "Both models pass structural/reference and prose checks; zero prose errors/warnings, diff check clean. Corrected representative identity and legacy concurrency phase contract, canonical-versus-derived collections, launch phase and concrete ordering/jobs examples. Added projection equality and count/phase acceptance conditions. Actual code/tests unchanged; no runtime or compatibility pass claimed. Reviewer owns finding disposition and new exact package judgment."
     }
   ],
   "schema_version": 3

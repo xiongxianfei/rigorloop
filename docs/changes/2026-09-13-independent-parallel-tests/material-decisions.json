@@ -1,5 +1,5 @@
 {
-  "body": "Restored original structural Mermaid from d5f32523, matching user example: Skill6/CLI4/Engineering4 and separate published skills/CLI. Clarified containment and nonsemantic invisible layout edges. SYS-SR-10 and ownership text distinguish descendant summaries from ownership of detailed internal interactions. Existing whole-system end-to-end graph and parent-owned graphs unchanged. This supersedes the overly narrow immediate-child-only interpretation without new models or behavior.",
+  "body": "Canonical executions supply physical outcomes; child_durations is a derived projection referencing execution_id. Representative check_id is earliest selected/discovered consumer preserving expanded case identity. Legacy phase retains parallel/sequential classification; request phase stays preflight/focused/boundary and execution launch_phase identifies first eligible launching consumer. Aliases cannot grant eligibility; counts/timings derive once and projection mismatches fail. Concrete selected/broad and jobs/order examples support reader reconciliation.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "decisions": [
     {
@@ -110,6 +110,40 @@
         {
           "identity": "sha256:d3b803efeb1018551c55f0aac92ec8e37c95e085a452de00e18bde7ae1bc61bc",
           "path": "docs/design/system.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "validation-execution-detail",
+      "rationale": "User requests the detailed design, including Validation-owned structural and invocation-flow graphs, in the existing Validation model.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:63dfb76d5d869f0fd438567ae6b2aa63c2699b2936b5885ab2eabb8a53d0f161",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:af317d9c87fbb2aff782f784ec787f6864002206ab58859ba46d06100a4e8468",
+          "path": "docs/design/engineering/engineering.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "shared-result-report-projection",
+      "rationale": "Correct independent Design finding shared-report-projection-contract against actual legacy report producer and consumer.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:40220c27099e171e5523a7fa557594e002314d9b7ef37c098b2ab4fa70d62d53",
+          "path": "docs/design/engineering/validation.md"
         }
       ]
     }

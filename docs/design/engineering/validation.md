@@ -83,17 +83,76 @@ Reuse the existing `scripts/validation_selection.py` catalog, `scripts/select-va
 
 ## Building Block View
 
+### Structural design graph
+
+```mermaid
+flowchart TB
+    Contracts["External: product contracts and Delivery allocation"]
+    subgraph Validation["Validation"]
+        Criteria["Proof criteria: derivation, protection and maintenance"]
+        Catalog["Catalog: executable definitions, equivalence and isolation"]
+        Selection["Selection: required checks, scopes and reasons"]
+        Planner["Execution planning: requests, shared tasks and dependencies"]
+        Scheduler["Scheduler: readiness, shared budget and failure policy"]
+        Workers["Workers: isolated check and case execution"]
+        Reporting["Reporting: actual results and request satisfaction"]
+        Criteria -->|"guides authors maintaining checks"| Catalog
+        Catalog -->|"available checks and routing definitions"| Selection
+        Selection -->|"proof requests"| Planner
+        Catalog -->|"trusted commands and assessed constraints"| Planner
+        Planner -->|"validated task and request graphs"| Scheduler
+        Scheduler -->|"bounded launches"| Workers
+        Workers -->|"actual execution outcomes"| Scheduler
+        Scheduler -->|"results, eligibility and limitations"| Reporting
+    end
+    Contracts -->|"required proof scope"| Selection
+    Contracts -->|"obligations to protect"| Criteria
+    Reporting -->|"evidence for judgment"| Assessment["External: independent assessment"]
+```
+
+Validation owns this structure and the flow below. These blocks are internal responsibilities, not new models, public commands or independent services. Criteria guide authors and assessors; the executor does not derive semantic adequacy from them. Execution planning establishes assessed equivalence, the scheduler controls physical launches and request eligibility, and reporting supplies evidence without approval. [Engineering](engineering.md#subsystem-design-graph) owns Validation's relationship to Development, Packaging and Release.
+
 | Block | Realization and boundary |
 | --- | --- |
 | Obligation and proof criteria | This model supplies criteria; Design and Delivery supply the actual behavior and proof allocation. Existing test-quality and test-maintenance resources apply them. |
 | Selection and catalog | Existing selector maps paths/mode to ordered checks. Extend its catalog with broad-smoke membership/order, dependencies, execution unit and constraint rationale. No independent shell-label lookup or historical change-local classification source remains. |
-| Scheduler | The extracted module validates the complete task graph before launching, runs ready independent work within budget, handles serial barriers/dependencies and aggregates results. `ci.sh` delegates to it. |
+| Execution planning | The existing executor expands requests, resolves assessed equivalence, creates shared physical tasks and validates preparation and consumer graphs. |
+| Scheduler | The same executor runs eligible prepared work within budget, maintains request and gate outcomes, handles serial barriers/dependencies and aggregates results. `ci.sh` delegates to it. |
 | Case execution | Catalog-declared Python unittest suites support case discovery and isolated case processes through the existing test script entrypoints. Node suites use their native runner with an explicitly allocated concurrency budget. Opaque commands remain single tasks. |
 | Observation | Existing stdout/JSON surfaces report scope and outcomes. Actors record selected proof using current v3 evidence commands; the runner does not save a judgment or workflow transition. |
 
 Catalog execution units are a closed choice of `command`, `python-unittest` and `node-test`; opaque commands are never discovered by guessing from their text. Constraint metadata supplies a nonempty isolation rationale, serial/exclusive designation or bounded worker demand, declared dependency IDs, and a command-basis value matching the current normalized command template and discovery adapter. A changed command/adapter without a reconciled basis rejects; a matching string alone does not prove safety, which still requires assessment. Unknown fields/units and contradictory safe/shared-write claims fail before graph construction. Absence of an isolation assessment explicitly resolves to serial command execution. This extends one current executable catalog, not a permanent per-case registration ledger.
 
 ## Runtime View
+
+### Invocation flow graph
+
+```mermaid
+flowchart TB
+    Start["Validation invocation"] --> Inputs["Validate mode, inputs and catalog"]
+    Inputs --> Select["Select required proof requests and cheap preflight blockers"]
+    Select --> Expand["Expand groups and discover eligible cases"]
+    Expand --> Resolve["Resolve execution basis, preparation and eligibility"]
+    Resolve --> Share["Normalize equivalent leaf work; retain every request"]
+    Share --> Check["Validate task and request graphs"]
+    Check --> Schedule["Schedule eligible prepared tasks within budget"]
+    Schedule --> Run["Execute isolated tasks"]
+    Run --> Collect["Capture outcomes and diagnostics; clean up owned resources"]
+    Collect --> Update["Update request satisfaction and dependent readiness"]
+    Update --> More{"Ready or running work remains?"}
+    More -->|"yes: launch ready work or await running tasks"| Schedule
+    More -->|"no"| Report["Finalize blocked requests; report each execution once"]
+    Report --> Finish["Return truthful aggregate outcome"]
+    Inputs -.->|"invalid input or catalog"| Reject["Report error; no test tasks launched"]
+    Select -.->|"routing or preflight blocker"| Reject
+    Expand -.->|"discovery failure"| Reject
+    Resolve -.->|"invalid basis"| Reject
+    Check -.->|"missing prerequisite or cycle"| Reject
+    Run -.->|"invocation interruption"| Cleanup["Stop launches, terminate owned children, preserve results"]
+    Cleanup --> Report
+```
+
+This is the normal selected invocation. Explicit diagnostic execution after a blocker follows its declared scope, retains the original unsuccessful result and does not waive preparation. Discovery is bounded subprocess work, not proof of a test pass. Preflight, focused and boundary gates are enforced before their dependent launches or request satisfaction. Ordinary task failure updates the graph and allows independent required work to continue; fail-fast stops queued launches while retaining started-task outcomes. Reports expose unfinished work even if no task remains runnable.
 
 ### Selection, preparation and execution
 
@@ -116,6 +175,79 @@ For example, focused `validation_execution.regression` and `broad_smoke.validati
 A package validator after a build cannot share a pre-build source check or a check of another package destination/version. Different filters, environment, candidate bytes or a required post-mutation observation also remain distinct. Selection must retain boundary coverage even when its physical execution is shared. A subsequent invocation always executes anew.
 
 Reports preserve existing request identities and fields, adding an explicit link to the actual execution where sharing occurs. Display actual status, command/case, duration and rerun information once per execution and retain consumer eligibility and limitations. Report request totals separately from physical task totals; attribute a duration once, exposing cross-phase sharing rather than summing it twice. Never synthesize another pass or elapsed measurement for an unexecuted consumer.
+
+#### Request, task and result structures
+
+Within `scripts/validation_execution.py`, separate the current `CheckPlan` selection/phase responsibilities from physical execution. The following are internal structures; they are not new workflow records or public CLI commands. Existing catalog and executor modules remain their implementation owners.
+
+| Structure | Fields and invariant |
+| --- | --- |
+| `ProofRequest` | `request_id`, originating `check_id`, optional `case_id`, `phase`, ordered selecting `reasons`, required `scope`, `requires_success`, `after_completion` and `execution_id`. The request identifies selected proof and when it is eligible to consume an execution. IDs are unique; a suite group aggregates its discovered leaf requests rather than claiming an additional execution. |
+| `ExecutionBasis` | Assessed `execution_family`, execution unit/adapter basis, resolved argv and case selector, working directory, relevant environment/tool basis, source/input subjects, artifact bindings, observation boundary, freshness boundary, timeout and resource/isolation constraints. Equality means the complete declared basis agrees; unknown information never compares equal for sharing. |
+| `ExecutionTask` | `execution_id`, basis, preparation prerequisites, ordered consumer request IDs, allocated worker demand and owned capture/receipt paths. At most one physical launch occurs for a normalized task in one attempt. Task-owned temporary capture paths are allocated after grouping. |
+| `ExecutionResult` | `execution_id`, actual status, exit reason/code, elapsed duration, captured stdout/stderr and rerun argv. Preserve the existing execution outcome distinctions, including timeout, signal, runner error and not started. Results never contain an approval judgment. |
+| `RequestResult` | `request_id`, `execution_id`, request state and unmet-prerequisite/limitation explanation. State is one of `pending`, `satisfied`, `failed`, `not-started`; pending is internal only and cannot remain in a complete final report. Unknown states reject explicitly. |
+
+Assign execution IDs in stable first-request/discovery order within the invocation. They are reporting references, not persistent identities or cache keys. Duplicate request IDs and missing execution references fail before launch. A full suite requested twice expands to equivalent leaf requests before grouping; overlapping suite filters share only their identical discovered cases, preserving all distinct remaining cases and each suite's completeness claim.
+
+#### Catalog and execution basis
+
+Add an optional `execution_family` to the existing `CheckCatalogEntry`. Absence uses the check's own ID, so unassessed aliases do not share automatically. Reusing a family across aliases requires a reviewed common command template, adapter and observation contract with a rationale for equivalence. Parameter values such as version or selected paths remain resolved inputs, not part of a blanket equivalence claim. An incompatible family definition is a catalog error. Different valid resolved scopes within one family remain distinct tasks.
+
+Resolve the basis from the trusted catalog and actual invocation, never from caller-supplied command strings. Match argv as an ordered token sequence; do not compare shell display strings or sort arguments. Preserve distinctions between absent and empty environment values. Environment/tool dependencies must be explicit enough to establish equal behavior; credentials and sensitive values must not appear in reports. A missing declaration that prevents reliable comparison disables sharing with a visible reason. Parallel safety and execution equivalence are separate assessments: safe concurrent checks are not necessarily equivalent.
+
+Source/input subjects identify the relevant files and their content for the claim, including applicable additions, deletions and generated inputs; a commit ID alone is insufficient for a dirty checkout. Existing scoped input resolution and in-memory identities may be reused without creating a historical fingerprint store. An incomplete dependency surface disables sharing. Compare execution-affecting timeout, resource and isolation constraints exactly; do not choose a looser timeout or stronger permission to make requests match. Request labels, selecting reasons and phases are excluded from basis equality.
+
+For existing artifacts, bind the actual candidate identity and location. For an artifact not yet built, planning may bind the same producer task, its declared output location and candidate configuration. Both consumers must wait for that successful producer, and execution must bind and validate the actual output before use. Different producers, output destinations, versions or required post-mutation observations stay distinct. Equal file bytes alone do not establish interchangeable side effects or observation boundaries. Output-producing work is shareable only when all consumers explicitly require that same produced artifact and its single production is adequate under the owner contract.
+
+Treat selected input subjects as stable for an execution and its consumers. Recheck the relevant basis before launch and before satisfying a later consumer. Observed input drift invalidates affected reliance and leaves required proof incomplete; retain the original result as an observation of its actual basis, without silently rerunning until green. Required mutations are modeled through producer/preparation and freshness boundaries rather than ignored as drift. These checks do not promise atomic observation against arbitrary external edits; uncontrolled writers prevent an assessed sharing claim.
+
+#### Normalization and dependency semantics
+
+1. Validate invocation and catalog, resolve scope, and construct all selected requests in deterministic order. Preserve routing blockers and explicit diagnostic scope.
+2. Expand composed groups and collect eligible cases with bounded isolated discovery. Collection is not test success. Run applicable cheap preflight blockers before costly discovery when their scope is already resolvable; no focused test task launches before its required preflight succeeds.
+3. Separate preparation from request eligibility. `requires_success` names request/gate outcomes that must succeed. `after_completion` preserves explicit diagnostic ordering without requiring success. Preparation names successful artifact/input producers needed by the physical execution.
+4. Resolve each leaf basis and group exact equivalents from assessed families. Uncertain comparison retains separate tasks with an explanation. Allocate one task per group and map every leaf request to it; do not delete selected obligations.
+5. Validate preparation and request/gate graphs together for missing identities, cycles and impossible eligibility, before launching test tasks. Do not union every consumer's phase gate into the shared task. A gate that depends on a consumer's own result would otherwise create a false self-dependency.
+6. Schedule a task only when preparation succeeds and at least one consumer is eligible. A task selected only for boundary proof therefore cannot run early. An already completed task may satisfy another consumer only after that consumer's prerequisites and current basis agree.
+
+There is no second scheduler. The existing scheduler maintains task results, request results and phase-gate outcomes in the same event loop. Preparation failure prevents task launch; request gate failure blocks that consumer without cancelling an execution still needed by an eligible independent consumer. A cycle or invalid declaration is an input/plan error, while waiting on running prerequisites is ordinary scheduling. If the queue cannot progress and no task is running, report every unfinished request and the unsatisfied basis; never turn an empty ready queue into success.
+
+#### Request satisfaction and failure propagation
+
+| Condition | Request outcome and physical execution behavior |
+| --- | --- |
+| Required gates or preparation are still running | Request remains pending. The task launches only if its preparation and at least one consumer's eligibility are ready. |
+| Consumer is eligible and the shared execution passes on its current basis | Request becomes satisfied and refers to that result. No additional process, duration or invented pass is recorded. |
+| Another focused request fails after the shared task passes | Its focused consumer remains satisfied; normal boundary consumers become not-started with the failed gate named. |
+| Shared execution fails, times out, crashes or has invalid/missing result data | Eligible consumers fail with the actual execution reason. Consumers blocked by an earlier gate remain not-started; all required incompleteness contributes to an unsuccessful overall result. |
+| Fail-fast, cancellation or interruption prevents a launch | Finalize queued affected consumers as not-started with the policy reason. Preserve started-task outcomes and owned-process cleanup. |
+| Diagnostic boundary work is explicitly enabled after focused failure | Replace only the authorized success gate with completion ordering. Preserve preparation requirements and the original overall failure; a shared failed result remains failed and is not automatically retried. |
+| A required fresh observation or explicit retry is requested | Keep a separate execution/attempt basis. Prior partial or failed observations remain visible; no silent promotion of a previous result. |
+
+With `--jobs 1`, grouping and request coverage are unchanged; only physical concurrency changes. A shared task consumes its worker allocation once. Nested runners receive that allocation, never a new CPU-derived budget. Cancellation of one consumer alone does not terminate work still required by another consumer. Whole-invocation interruption retains the existing process-tree termination and five-second grace contract.
+
+#### Reporting and compatibility
+
+Keep selector JSON and its check IDs, reasons, mode/status and exit meanings unchanged. Execution reports add an `executions` collection keyed by `execution_id` and a `requests` collection linking original request/check/case IDs to their phase, scope, reasons, state and execution reference. These are execution-output fields, not additions to the v3 workflow record schema. Stable request and execution ordering follows selection/discovery, not completion order.
+
+Report duration, output size, actual argv and physical status once in `executions`. Request rows report satisfaction or missing proof and link to diagnostics. Summary counts distinguish selected leaf requests from launched executions; suite groups are not counted as extra launches. Count each launched task's duration only in its `launch_phase` and name later consuming phases as shared; summed task durations remain distinct from elapsed wall time. A blocked consumer never inherits a successful request status merely because its task passed elsewhere.
+
+For the existing broad-smoke result-output opt-in, retain the outer envelope and fields, including `cache_status: not-applicable` and unavailable historical baseline fields. `parallel.child_durations` represents physical tasks once and retains its existing command/duration/result/exit/output fields; additional request mappings carry aliases and eligibility. Fields such as `preservation.child_set_preserved` are established from complete selected request coverage, not equality between request count and launch count. Delivery must reconcile actual text/JSON consumers and their assertions before changing their interpretation; matching old field names alone is not compatibility proof.
+
+`executions` is the canonical collection of physical results. `parallel.child_durations` is a derived compatibility projection of the same results, never another execution collection to aggregate with it. Each child row includes the same `execution_id`. Its existing `check_id` is the originating catalog check ID of the earliest selected/discovered consumer of that task; if case expansion applies, preserve that consumer's existing expanded case-check identity. All other aliases and their exact case identities remain in `requests`. Choosing a representative does not satisfy that consumer or waive its eligibility; request state stays explicit in the request projection.
+
+Keep legacy child `phase` as the concurrency classification `parallel` or `sequential`, using the existing meaning: the task is assessed parallel-safe and the invocation has more than one worker, or otherwise sequential. It is not a measurement of observed overlap. Request `phase` remains the selection phase `preflight`, `focused` or `boundary`. Record `launch_phase` separately on the execution as the phase of the first eligible consumer that caused the launch; it is null for a task never launched. Later consumers do not change it. These vocabularies are distinct and fail closed on unknown values. Existing selector phase fields are not renamed.
+
+For example, equivalent focused `validation_execution.regression` and boundary `broad_smoke.validation_execution.regression` produce one canonical result `exec-01`. If the focused request is selected first and causes launch, the compatibility row names `validation_execution.regression`, links `exec-01`, and the execution's `launch_phase` is `focused`. With jobs=1 the legacy row's `phase` is `sequential`; with jobs>1 and assessed parallel safety it is `parallel`, regardless of whether another task actually overlaps. Both requests retain their own phase and eligibility. Swapping their selection order changes the representative ID deterministically, not execution equivalence; it cannot make an ineligible boundary request launch work early.
+
+Compute counts and duration totals once from the canonical collection; compatibility fields project those values. Validate one-to-one execution references, identical projected command/result/duration/exit/output fields, stable representative IDs and independent request states. A projection mismatch is a reporting failure, not a second opinion that can override a failed execution. Delivery must update the existing child_durations reader in `scripts/test-select-validation.py` and any other discovered consumer to preserve this interpretation and test both jobs=1 and bounded parallel modes.
+
+Aggregate exit behavior preserves routing/preflight errors and existing signal/timeout conventions. Select the first failed required request in stable request order for execution failure, using its actual task exit. Required not-started work keeps the run nonzero even when all launched tasks passed. Diagnostic scope cannot clear the earlier failure. Report rerun commands from the trusted execution basis without secrets. A subsequent invocation creates new tasks and executes again.
+
+#### Representative acceptance for execution sharing
+
+Under VAL-SR-04–10/12/14/17/19/20, demonstrate equivalent focused/boundary requests with one launch, two eligible consumers and one duration; a passing shared task plus another focused failure with a blocked boundary consumer; and a failed shared task consumed diagnostically without a retry. Exercise different argv/filter/environment/timeout/candidate boundaries, unassessed families, conflicting declarations and unknown request states. A producer dependency must bind the correct output before use; changed inputs before later consumption must prevent stale satisfaction. Partial case overlap must preserve the union and each requested scope. Jobs=1, concurrent completion, interruption and fail-fast must preserve request accounting and actual task failures. Also demonstrate stable representative aliases under reordered selection, distinct legacy concurrency and request phase values, and canonical/legacy projection equality without double counting. Delivery allocation maps these outcomes to concrete tests, including the real selected-plus-broad wrapper/report path rather than only normalization helpers.
 
 ### Independent cases and the worker budget
 

@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "Bounded independent reassessment of System-only correction against19591805 within the current seven-document package. Explicit user direction retains the supplied three-main/fourteen-child/two-product structural graph as well as the separately restored end-to-end graph. Unchanged parent graphs, Validation refinement, legacy notices and product/review/release boundaries remain relied-on current package members; no implementation or whole legacy re-audit is claimed.",
+  "assessment_scope": "Independent current seven-document package reassessment with substantive Validation detail and Engineering links, including the corrected Reporting and compatibility contract, internal diagrams, request/task/result structures, prerequisite/eligibility graphs, actual current report reader and unchanged product/Assessment/Release boundaries. Original finding identities and affected first-pass subjects remain in their records. Approval supports authorized Delivery planning only.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "contributors": [
     {
@@ -48,6 +48,39 @@
           "path": "specs/published-skill-first-repository-simplification.test.md"
         }
       ]
+    },
+    {
+      "evidence": "Finding ID: shared-report-projection-contract. Severity: major. Scope: artifact-local. Affected artifact ID: validation. Owning stage: design. Location: Reporting and compatibility, ExecutionResult/RequestResult definitions and representative sharing acceptance. Current scripts/validation_execution.py _write_mode_result emits child_durations check_id and phase=parallel|sequential; scripts/test-select-validation.py around4298 indexes them by the original check ID. The new contract preserves child rows while adding executions/requests but does not specify representative check_id for aliases, explicit legacy concurrency phase versus launch/request phase, or the canonical/non-additive relationship between repeated physical projections. This leaves consumer-visible semantics to implementation rather than an approved compatibility decision.",
+      "id": "shared-report-projection-contract",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Define the deterministic original check/request identity represented by each shared legacy child row and complete alias references; retain or explicitly amend all relevant existing fields, distinguishing concurrency phase from request/launch phase. Define one canonical physical result and exact derived legacy projection with consistent values and counting, including blocked consumers, unstarted tasks and case IDs where applicable. State how unshared reports preserve existing meaning and how actual consumers use mappings without double-counting. Add a representative old/new projection or exact scenario sufficient for Delivery to prove stable IDs, phase meanings, blocked-consumer truth and single physical accounting. No new schema, scheduler or workflow record is necessary. Design author corrects this bounded section before independent reassessment.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "validation-report-correction-check",
+            "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+          }
+        ],
+        "rationale": "Corrected Reporting and compatibility defines canonical results and derived legacy projection, stable representative IDs and all aliases, independent request eligibility, distinct concurrency/request/launch phases, non-additive counting, mismatch rejection and concrete reordered-alias/jobs examples. Current actual consumer is explicitly allocated for reconciliation and acceptance observes real wrapper/report behavior. This supplies the formerly missing Design-owned compatibility semantics; no runtime correctness is inferred."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:63dfb76d5d869f0fd438567ae6b2aa63c2699b2936b5885ab2eabb8a53d0f161",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ]
     }
   ],
   "id": "design-review",
@@ -59,7 +92,8 @@
     "Only scoped new-profile legacy notices are current amendment members; unchanged historical requirement/boundary/example/proof material retains original meaning and prior population applicability. No second ledger, benchmark or historical fixture deletion is inferred.",
     "Recorded proposal approval is preserved byte-for-byte with original subjects; this review explicitly assesses continued direction reliance and supplies the new Design package basis. Reviewer changed only review/finding evidence and applicability; route owns subsequent activity and planning handoff.",
     "Mermaid was assessed as its authoritative inline text source, including labeled relationships and parent coverage; no rendered-image verification or runtime graph enforcement was performed or claimed. No new executable/schema or public skill requirement is selected by this graph correction.",
-    "The restored whole-system graph is a contract/relationship view, not proof that runtime implementation, individual test cleanup, release qualification or publication has occurred. No runtime tests were rerun for this System-only Design correction."
+    "The restored whole-system graph is a contract/relationship view, not proof that runtime implementation, individual test cleanup, release qualification or publication has occurred. No runtime tests were rerun for this System-only Design correction.",
+    "Delivery must implement and prove the real selected-plus-broad request/report path, canonical/legacy projection consistency, complete inventory and isolation/case protection before runtime adoption. This Design review did not run expensive CI or test a proposed implementation. Author model/prose/whitespace evidence was checked against exact current subjects."
   ],
   "rationale": [
     "1. Realization — pass: VAL-SR19/20 distinguish request identity/eligibility from physical execution identity. Canonical family, resolved input/case/configuration/candidate/output identity, observation and preparation establish equivalence; unknown or conflicting claims remain separate or reject. Normalization after scope expansion preserves both consumer graphs and physical prerequisites, rejects cycles and avoids unioning a boundary gate back into its focused execution.",
@@ -80,7 +114,13 @@
     "Current package and prior reliance — unchanged parent/submodel graphs, Validation sharing/isolation, scoped legacy maintenance amendment and their source identities remain applicable. Earlier rationale that a child graph link could replace the System-wide view is superseded by this exact user correction, not silently carried forward. The original proposal still supports refined design and its unchanged test goals; direct user clarification supplies this composition requirement. Current inline graph and acceptance scenario satisfy the expanded SYS-SR10, with author structure/prose/whitespace evidence matched to current System. No new material concern or unresolved finding remains. Return to route for authorized Delivery planning only.",
     "Full structural overview restoration — pass: independently compared the first Mermaid block to d5f32523 and found it exactly identical; the end-to-end block is byte-identical to19591805. System again shows3 main owners,14 immediate submodels and2 distinct published products, including individual Skill use without CLI. Containment and invisible layout links explicitly express ownership/layout rather than execution sequence. Product arrows distinguish behavioral definitions from Engineering realization. Detailed parent graphs and nested Authoring view remain unchanged and linked.",
     "Complementary System/parent ownership — pass: revised SYS-SR10 and Parent graph ownership expressly require both structural overview and integrated product flow, allow descendant summaries for orientation, and leave detailed internal relationships with the nearest owning parent. Each view has one authored source; repeated names are references, not competing behavioral contracts. This clarifies and supersedes any prior interpretation restricting System to immediate-child-only orientation. The updated acceptance scenario requires locating all parents/children, tracing the complete flow and following owner detail. The existing end-to-end graph preserves mandatory independent review/Verify, candidate qualification and separate publication authority without changed runtime behavior.",
-    "Current reliance and disposition — exact System author structure/prose evidence matches; unchanged package contracts remain applicable. The original proposal direction is unchanged and direct user clarification supplies the bounded view requirement. No new material finding arose, and parallel-maintenance-allocation-scope retains its recorded resolution. This current review supports authorized Delivery planning of the complete package; no routing, implementation, adoption or external permission follows from recording."
+    "Current reliance and disposition — exact System author structure/prose evidence matches; unchanged package contracts remain applicable. The original proposal direction is unchanged and direct user clarification supplies the bounded view requirement. No new material finding arose, and parallel-maintenance-allocation-scope retains its recorded resolution. This current review supports authorized Delivery planning of the complete package; no routing, implementation, adoption or external permission follows from recording.",
+    "Detailed realization — pass: current CheckPlan/CheckResult and CheckCatalogEntry provide concrete extension points; separating requests from physical tasks stays within the existing executor event loop. Optional execution_family defaults to own check ID, so unassessed aliases do not share. Basis includes ordered argv, adapter/case scope, working directory, environment/tool/subject/artifact identity, freshness, timeout and resource constraints. Unknown dependency surfaces disable sharing rather than manufacture equality; before-launch and later-consumer drift checks preserve actual observations without silently rerunning.",
+    "Preparation, graphs and failures — pass: physical producer preparation remains separate from consumer success/completion gates. One eligible consumer can launch a shared prepared task without creating a false phase self-cycle; a boundary-only task cannot start early. Pending versus running work, failed prerequisites, blocked later consumers, explicit diagnostic failure consumption, interruption and fail-fast have coherent outcomes. Different producer/output/candidate or required mutation/freshness stays separate. Unknown states and graph identities fail closed. No cached cross-invocation result or second scheduler is introduced.",
+    "Internal diagrams and case scope — pass: structural graph separates semantic criteria applied by authors from catalog/planning/scheduling/worker/report mechanics; reports go to independent assessment. Invocation graph includes invalid inputs, discovery, no-progress failure and interruption; discovery is bounded subprocess work rather than passing test proof. Complete-scope and overlapping-case normalization are subject to full ExecutionBasis equivalence: identical case names alone cannot erase different execution-affecting filters/configuration. Real adapter and wrapper/report proof remains required, not merely normalization helpers.",
+    "Reporting correction — pass: executions is the canonical physical-result collection; child_durations is its derived non-additive compatibility projection with the same execution_id and matching command/result/duration/exit/output. The earliest selected/discovered consumer determines the representative original or expanded case-check ID, while every alias remains in requests with independent eligibility. Legacy phase preserves parallel/sequential concurrency classification rather than claiming observed overlap; request phase remains preflight/focused/boundary and launch_phase separately records the first eligible launching consumer, null if never launched. Unknown vocabularies and projection mismatch fail explicitly.",
+    "Concrete compatibility and integration — pass: focused/broad example demonstrates one result, deterministic representative changes under selection reordering, unchanged execution equivalence and no early launch from an ineligible boundary request. Jobs1 versus assessed parallel jobs retain the old concurrency meaning. Canonical totals are not summed with legacy projection values, and blocked requests cannot inherit a pass. Acceptance now directly requires reordered aliases, distinct phase vocabularies, projection equality and no double counting. The actual scripts/test-select-validation.py reader is named for Delivery reconciliation; all other discovered consumers remain included. This is a substantive interface decision, not a promise that matching field names already prove compatibility.",
+    "Current integrated approval — the revised report contract resolves shared-report-projection-contract while the earlier maintenance-allocation finding remains resolved. Full-basis equivalence, artifact producer binding, preparation versus consumer gates, drift/freshness checks, discovery/overlap preservation and one event loop remain mutually consistent. Validation-owned internal graphs supplement System structural/flow and parent-owned views without new public models, caches, workflow schemas or scheduler services. Prior proposal direction and unchanged package-owner semantics remain applicable; this current exact review supplies new detailed authority, not retargeted historical approval. No runtime implementation, completed test reduction or speed result is claimed."
   ],
   "reviewer": {
     "id": "proposal-reviewer",
@@ -93,11 +133,11 @@
       "path": "docs/design/system.md"
     },
     {
-      "identity": "sha256:d1d7b1d79aea37bc4d5629e5ebacca115cd62e68e81fb2e9a019897f2957998a",
+      "identity": "sha256:af317d9c87fbb2aff782f784ec787f6864002206ab58859ba46d06100a4e8468",
       "path": "docs/design/engineering/engineering.md"
     },
     {
-      "identity": "sha256:99f346d1eafb857c273306c56546742321bb2883330cf4b9cc055fc2dfb6b153",
+      "identity": "sha256:40220c27099e171e5523a7fa557594e002314d9b7ef37c098b2ab4fa70d62d53",
       "path": "docs/design/engineering/validation.md"
     },
     {
@@ -109,7 +149,7 @@
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
     },
     {
-      "identity": "sha256:28d7603f6f02993978f4d5cc42deb23845fa8882727829dc085079a15cc34d2c",
+      "identity": "sha256:3a8528782340b7c65b25de50cd3aa7c03ef8007045f24ca06537a23e1240eb61",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
     },
     {
@@ -159,8 +199,20 @@
     {
       "identity": "sha256:4992f7f5cbf3e2b8dd2cb8d862c2a662bb0dd0540b29d2e75b0e0293fd551eaf",
       "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:71880764d26a941ec1f614f020f74f30ddfab8ae6fea9006b2a3d7530121c82f",
+      "path": "scripts/test-select-validation.py"
     }
   ],
-  "summary": "Current Design package approved with both full System structural overview and end-to-end delivery flow preserved. Parent-owned graphs supplement them with detailed internal interactions. No additional material finding; earlier maintenance finding remains resolved.",
+  "summary": "Current detailed Design package approved after explicit report projection correction: execution sharing, consumer eligibility, basis/freshness and single-count reporting are coherent and implementable within the existing catalog/executor. Both recorded findings are resolved; no new material finding.",
   "target": "design"
 }
