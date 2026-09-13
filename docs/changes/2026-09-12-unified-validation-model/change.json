@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "root",
-      "role": "implement"
+      "id": "proposal-reviewer",
+      "role": "review"
     },
-    "reason": "M4 and exact cleanup-map Design/Delivery independently approved. Execute M5 cleanup and final product integration; user authorized progression through submitted PR.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "M5 complete with actual required proof, exact source/consumer cleanup and registered evidence consolidation. Independent M5 review precedes fresh whole-change review, Verify and user-authorized PR.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -30,10 +30,10 @@
     {
       "actor": {
         "id": "root",
-        "role": "plan"
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json",
-      "reason": "Exact unchanged plan and newly approved source map; authoring adequacy only.",
+      "reason": "Current integrated M5 source/proof basis and explicit unaffected evidence-consolidation scope; historical failed attempts and earlier subjects retain exact meaning. Independent M5/final reviews and Verify still required.",
       "value": "current"
     },
     {
@@ -159,7 +159,7 @@
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:24af7c0c81bdba70b2212a1a437b8dfaa77064e3b54cff2b3a01b0ebfaf7b5eb",
+        "identity": "sha256:1c1d62ada1d5b45e1dc87db59cedd8ba13d4e90a0c6afe535ae46d5553f7deea",
         "path": "docs/design/system.md"
       }
     },
@@ -201,21 +201,21 @@
     {
       "id": "engineering",
       "subject": {
-        "identity": "sha256:8282450f2f859405c017fc98638e53ec7bddc4dad67b394a84f5ee1eae6ca814",
+        "identity": "sha256:a530e4975362a9cb0ef5fbfb5b8944145288ce6fe78afdc28253cc1763462476",
         "path": "docs/design/engineering/engineering.md"
       }
     },
     {
       "id": "installation",
       "subject": {
-        "identity": "sha256:f0c791be2adf0724c532183d6b6742c220a9aff677151bf889bcee69a207cfab",
+        "identity": "sha256:4992f7f5cbf3e2b8dd2cb8d862c2a662bb0dd0540b29d2e75b0e0293fd551eaf",
         "path": "docs/design/cli/installation.md"
       }
     },
     {
       "id": "packaging",
       "subject": {
-        "identity": "sha256:51a166ef0e6dff284a9e1981bb91bae6c1084270eb84c44ad14a005bcd53b523",
+        "identity": "sha256:b4d942ab3289a61ba8b3f7c3bd3452c7bd75c22218d7e0b9278362f73a33e96d",
         "path": "docs/design/engineering/packaging.md"
       }
     },

@@ -21,7 +21,7 @@ Specialist authoring and review responsibilities remain. Each governed change re
 
 ## Selected unified Validation replacement
 
-The [Validation model](../../design/engineering/validation.md#source-disposition-and-decision-preservation), selected by its [owning change](../../changes/2026-09-12-unified-validation-model/change.json), replaces only the exact validation execution/cache descriptions named in its source map at reviewed coherent implementation and successful Verify. This new-profile-only amendment preserves the mixed architecture's other responsibilities and the original historical evidence. The runtime cache, historical broad-smoke classification reader and duplicated scheduling implementation remain implementation cleanup targets; their existence does not require a separate current Test Design. Current product invariants, recording safety, release/publication and package generation keep their declared owners; this is not a whole-file retirement.
+The [Validation](../../design/engineering/validation.md) model, selected by its [owning change](../../changes/2026-09-12-unified-validation-model/change.json), replaces only the exact clauses in its source map through reviewed coherent implementation and successful Verify. The mapped cache and duplicate execution descriptions are removed here; the current catalog and executor implement the selected contract. This bounded transfer preserves the mixed architecture’s unselected responsibilities and historical evidence. Product invariants, recording safety, release/publication and package generation keep their declared owners.
 
 ## Test criteria ownership
 
@@ -231,7 +231,7 @@ Retained additional goals:
 - make dynamic token-friendliness coverage visible across the core delivery workflow without requiring every optional skill benchmark for every release;
 - keep repository script output proportional to actionability: compact on success, specific on failure, and expandable through explicit verbose modes;
 - treat change records as queried catalogs with registered deterministic evidence classes, selector routing, and bounded read paths for common stage-owned questions;
-- reduce repeated validation work only through unchanged-input cache hits that preserve validator behavior and closeout actual-run gates, and make the safe inner-loop cached path easy through a named lifecycle validator helper mode;
+- execute selected validation through the bounded catalog and executor owned by [Validation](../../design/engineering/validation.md), preserving actual-run evidence and independent closeout assessment;
 - define the release process once as a standing contract, then execute routine publishes as operations with durable release evidence;
 - make routine releases profile-driven typed transactions whose generated surfaces, cheap preflight, public evidence closeout, and timing evidence preserve the full release gate while reducing duplicated version state;
 - keep first adoption and package-quality refinement review-based until real package usage proves which checks are worth automating.
@@ -267,16 +267,7 @@ Retained additional goals:
 - Evidence-class registry behavior belongs to the selector architecture. The first slice may centralize registry data when the selector supports it, or keep a selector-owned registry table with fixture-backed regression coverage.
 - Bounded change-record reads belong to a new query-helper script rather than `validate-change-metadata.py`; validation remains proof work, while querying returns scoped metadata slices.
 - Workstream A, evidence registration and selector routing, ships before Workstream B, bounded query helper and stage-skill guidance, so CI-routing risk and skill-behavior risk remain separately reviewable and rollbackable.
-- Validation idempotency starts with the explicit-path lifecycle command family only: direct `validate-artifact-lifecycle.py --mode explicit-paths` and helper `validate-artifact-lifecycle.py --mode explicit-paths-inner-loop`.
-- Direct `--mode explicit-paths` remains the actual-run command for closeout, verify, branch readiness, PR readiness, CI, and other first-slice final gates.
-- `--mode explicit-paths-inner-loop` is a cache-aware inner-loop helper mode. It normalizes to canonical direct `--mode explicit-paths` argv for cache identity, prior passing event matching, and input-surface identity, while formal evidence records both displayed helper argv and canonical cache argv.
-- Cache hits require a previous actual-run pass trace, identical canonical normalized command, identical input-surface hash, identical implementation manifest hash, and identical policy/config manifest hash.
-- Validation cache execution state is untracked, branch-local, worktree-local, and change-local. It is not lifecycle evidence and must not be reused across branches, worktrees, machines, remote/shared caches, or CI jobs.
-- Formal cache-hit evidence lives in `docs/changes/<change-id>/validation-cache-evidence.yaml`, while Workstream A measurement evidence lives in `docs/changes/<change-id>/validation-cache-measurement.yaml`.
-- Helper cache-hit evidence is written or merged only when a safe change root or safe evidence path is supplied or inferable; local ad hoc helper use may print cache status without writing formal evidence.
-- `cache-hit-inner-loop` evidence cannot satisfy stage or milestone closeout. First-slice closeout requires actual-run evidence, with primary rejection owned by `validate-artifact-lifecycle.py` and consistency checks owned by `validate-change-metadata.py`.
-- Helper measurement keeps helper invocations, cache hits, cache misses, disabled evaluations, actual-run fallbacks, actual runs, and closeout actual runs distinct.
-- Workstream B edit-scoped validation remains outside this architecture until Workstream A measurement is reviewed and a separate approved proposal or spec amendment authorizes it.
+- [Validation](../../design/engineering/validation.md) owns selected routing, complete execution, independent cases and bounded resources. Every current validation result comes from actual execution; validation-result caching and its helper/measurement interfaces are retired. Assessment owns evidence applicability and closeout judgments. Future scope changes require their owning approved contract.
 - The CLI package may contain CLI code, small scaffolds, and bundled official adapter metadata for the package's compatible Codex adapter release. It must not contain adapter archives as authored npm source or generated adapter skill bodies as canonical source.
 - `rigorloop init --adapter codex --from-archive <path>` verifies local archives against bundled adapter metadata shipped with the installed CLI package version and does not require a separate user metadata path in the first slice.
 - `rigorloop init` may write durable `rigorloop.lock` only for the approved Codex lockfile-writing surface after archive verification, extraction safety checks, generated-output mutation, installed-tree verification, and lockfile shape validation have succeeded.
@@ -383,7 +374,7 @@ Retained additional goals:
 - Published-skill repository acceptance is deterministic: it does not start Codex, Claude Code, or opencode, send prompts, grade LLM output, or treat transcripts and model selection as product proof.
 - Codex, Claude Code, and opencode receive equivalent generated-package inventory, mapped-resource, declared-transformation, archive, and byte-parity proof.
 - Installer materialization is a conditional filesystem-only proof surface, not a fourth product gate and not a target-runtime behavior test.
-- Existing selector, cache, scheduler, broad-smoke, benchmark, and validator-meta-test contracts remain transitional architecture until their retirement slice records exact contract disposition and replacement coverage.
+- [Validation](../../design/engineering/validation.md) owns this initiative’s selected catalog, executor and broad-smoke contract and exact retirement proof. Unselected benchmark, validator-meta-test and other subsystem obligations retain their existing scope until their owning slice records exact disposition and replacement protection.
 
 ## Context and Scope
 
@@ -395,7 +386,7 @@ Use [Design](../../design/skill/authoring/design.md) for unified behavioral and 
 
 For published skills, use a one-way proof chain: Gate A validates canonical skill and resource integrity; Gate B generates and proves Codex, Claude Code, and opencode package parity; Gate C composes current A and B proof with release-only metadata and archive checks.
 Lifecycle records flow to one bounded governance validation owner, while semantic skill questions flow to formal review.
-No selector, cache, scheduler, benchmark, or target-runtime evidence layer is allowed between canonical skills and publication without an approved, measured exception.
+[Validation](../../design/engineering/validation.md) supplies the approved catalog and bounded executor for the selected initiative. The existing prohibition on additional selector, cache, scheduler, benchmark or target-runtime evidence layers without an approved, measured exception continues outside that exact scope.
 
 For boundary-first guidance, use progressive disclosure without creating a
 second semantic model. All governed skills carry a small compact core and the
@@ -502,9 +493,8 @@ The sink owns only `rigorloop.jsonl`, four numbered archives, and `.rigorloop-lo
 
 The validation and generation container has these important internal responsibilities:
 
-- direct hosted gates and compatibility selection: `scripts/ci.sh` invokes Gate A, Gate B, Gate C regression proof, public-package proof, and lifecycle governance directly for PR and main. `scripts/validation_selection.py` and `scripts/select-validation.py` remain compatibility owners for local, explicit, and release modes until their active contracts receive a separate retirement;
+- validation composition: `scripts/ci.sh` delegates selected local, explicit, PR and release work, broad smoke and main composition to the current catalog and common executor under [Validation](../../design/engineering/validation.md); Release retains coordinator interception and publication authority;
 - evidence registration: the selector owns deterministic evidence-class matching for recurring change-local evidence files, rejects broad or ambiguous patterns through regression coverage, routes registered classes to declared checks, and surfaces stable `manual-routing-required` diagnostics for unregistered deterministic evidence;
-- validation idempotency: cache helpers compute normalized argv, repository-relative explicit paths, input-surface hashes, implementation manifest hashes, and policy/config hashes for the eligible explicit-path lifecycle command family. Direct `--mode explicit-paths` remains actual-run for closeout and final gates, while helper `--mode explicit-paths-inner-loop` supplies inner-loop cache context, normalizes to canonical direct argv for cache identity, and records displayed-versus-canonical argv in formal helper evidence. Unsupported or uncertain manifests disable caching and run the validator;
 - lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`,
   `scripts/validate-change-metadata.py`, and
   `scripts/validate-review-artifacts.py` validate governed artifact-state and
@@ -718,24 +708,7 @@ Legal temporary states are limited to authoring/revision/blocked without `planne
 
 ### Validation flow
 
-1. Hosted PR and main acceptance invokes the stable product and governance owners directly through `scripts/ci.sh`; it does not invoke selector, cache, scheduler, or target-runtime evidence.
-2. Local targeted compatibility remains available through `python scripts/select-validation.py --mode explicit --path ...` and `bash scripts/ci.sh --mode explicit --path ...`.
-3. The selector emits stable check IDs such as `artifact_lifecycle.validate`, `change_metadata.validate`, `change_metadata.regression`, `review_artifacts.validate`, and generated-output checks.
-4. Lifecycle-managed artifacts are checked with `scripts/validate-artifact-lifecycle.py`.
-5. When governed lifecycle state is in scope,
-   `scripts/validate-artifact-lifecycle.py` parses exact artifact, workflow,
-   planned-work, blocker, target, and evidence fields; rejects unknown values
-   before consistency checks; and blocks illegal transitions, mixed writers,
-   stale evidence, or open blockers without scanning arbitrary historical
-   prose.
-6. Change metadata is checked with `scripts/validate-change-metadata.py`.
-7. Review artifact closeout is checked with `scripts/validate-review-artifacts.py` when review files are in scope.
-8. Architecture diagram source files and historical or exceptional change-local architecture evidence route only to existing non-enforcement lifecycle checks; C4 sufficiency, arc42 completeness, ADR need, and package shape remain architecture-review or code-review evidence.
-9. Unclassified paths do not fail open; they require explicit manual routing or a later selector contract update.
-10. Broad smoke remains an explicit legacy compatibility boundary and is not the hosted PR or main publication path.
-11. Normal script and wrapper output is summary-first and failure-focused: passing checks collapse into counts and durations, failed checks expand with actionable details, and full passing detail remains available through `--verbose`.
-12. `--quiet` is a script-local success-silencing mode, not a failure-hiding mode. Successful quiet runs produce no stdout or stderr, while usage errors, validation failures, test failures, and zero-test safety failures may emit bounded actionable diagnostics.
-13. For branches adding deterministic change-local evidence, actual changed-path routing proof is required before verify. Supplemental fixtures and explicit-path validation do not replace routing the branch's own changed paths.
+[Validation](../../design/engineering/validation.md) owns the current routing, catalog, shared execution budget, case discovery, required proof and result interfaces. `scripts/ci.sh` is the entrypoint for local, explicit, PR, main, broad-smoke and release modes; these modes retain their distinct scope. The catalog supplies trusted commands and dependencies to one executor. Leaf validators own deterministic checks; Assessment owns semantic judgments and evidence applicability. Failed selection/preflight cannot be cleared by diagnostic broad smoke. No validation-result cache or historical classification supplies a current pass.
 
 ### Published skill resource-integrity flow
 
@@ -876,20 +849,6 @@ Common content/resource behavior is owned by [Skill](../../design/skill/skill.md
 15. Risks and open questions remain orientation evidence. Any action routes through proposal, plan, learn, review resolution, release evidence, or other workflow-owned follow-up surfaces.
 16. Downstream stages may use current maps for orientation, but inspect source directly when the relevant map is stale, partial, conflicting, missing cited paths, inferred, unknown, security-sensitive, or exact-behavior critical.
 
-### Validation idempotency cache-hit flow
-
-1. A contributor requests inner-loop lifecycle validation through `python scripts/validate-artifact-lifecycle.py --mode explicit-paths-inner-loop ...`, or a contributor, CI wrapper, or final gate requests actual lifecycle validation through direct `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`.
-2. Cache eligibility checks confirm the command surface is part of the first-slice explicit-path lifecycle command family and is not being used for a stage or milestone closeout full-bundle gate.
-3. For helper invocations, the cache helper keeps the displayed helper argv for evidence but normalizes cache identity to the canonical direct `--mode explicit-paths` argv. For direct actual-run invocations, the canonical argv is the direct command.
-4. The cache helper normalizes the command as an ordered argv vector, normalizes `--path` values as repository-relative POSIX paths, rejects unsafe or duplicate explicit paths, and computes the command hash.
-5. The cache helper computes the input-surface hash from every explicit path's content hash or missing-file marker.
-6. The cache helper computes the validator implementation manifest hash from the entrypoint, resolved repository-local imports/helpers, and manifest-generation logic, and computes the policy/config manifest hash from declared lifecycle policy/spec/config files.
-7. If a matching local execution cache entry exists for the same branch, worktree, change ID, canonical command hash, input-surface hash, implementation hash, policy hash, and previous `pass` that traces to an actual run, the helper may emit bounded `[CACHE HIT]` output and write or merge formal cache-hit evidence when a safe change root or safe evidence path is supplied or inferable.
-8. If any cache component is missing, malformed, unsupported, changed, unsafe, non-local, expired, non-passing, or not traceable to an actual run, the validator actually runs and preserves existing pass/fail behavior and exit semantics.
-9. Formal cache-hit evidence in `validation-cache-evidence.yaml` is reviewable proof that a prior pass still applies. Helper-produced evidence records `displayed_command_argv`, `canonical_cache_argv`, `cache-hit-inner-loop`, `scope: inner-loop`, and `closeout_evidence: false`; it is not a new pass.
-10. Closeout validation ignores cache hits as pass evidence. A closeout bundle is satisfied only by compact `schema_version: 2` validation events with `result: pass` and `evidence_kind: actual-run-pass` from the direct actual-run command or another approved actual-run bundle.
-11. Workstream A measurement in `validation-cache-measurement.yaml` records eligible commands, helper invocations, cache hits, misses, disabled evaluations, helper actual-run fallbacks, actual runs, closeout actual runs, time saved, remaining cost, cache-hit rate, and Workstream B recommendation state.
-
 ### Token-cost measurement flow
 
 1. Static skill measurement reads canonical skill files and reports byte size, line count, estimated token count, and largest sections where Markdown headings are available.
@@ -998,7 +957,7 @@ It may be a thin release composition command, but it does not copy canonical-ski
 Installer materialization is outside the normal gate chain unless inspected installer branches perform RigorLoop-owned filesystem logic beyond copying Gate B-proved content.
 When required, smoke runs against a local package in an empty temporary directory, inspects only filesystem results, and ends before Codex, Claude Code, or opencode starts or receives a prompt.
 
-Existing all-target clean-install, live-registry smoke, Codex benchmark, selector, cache, scheduler, and broad-smoke paths remain transitional execution surfaces only while their active contracts and protected failures await slice-owned disposition.
+[Validation](../../design/engineering/validation.md) supplies the selected validation catalog, executor and broad-smoke contract. Unselected all-target clean-install, live-registry smoke, Codex benchmark and other execution surfaces retain their existing applicability and protected-failure disposition requirements.
 No retirement slice may remove them until old-versus-replacement proof and rollback are recorded.
 
 For `code-review`, `SKILL.md`, the boundary reference, the conditional automation reference, and both structural assets deploy as one package revision. Generated targets may not mix old inline procedure with a new reference or vice versa. Every supported target, including a pure-copy install, is materialized into a temporary tree and checked for mapped-resource inventory, relative paths, and raw-byte identity. The proof ends at filesystem identity and never invokes Codex, Claude Code, opencode, or another model runtime.
@@ -1019,7 +978,6 @@ The main execution and publication boundaries are:
   artifacts remain stable intent or stage-owned evidence;
 - legacy automation evidence: retired `workflow.autoprogression` records remain read-only compatibility inputs and historical audit evidence during migration;
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
-- local validation execution cache: untracked branch-local, worktree-local, and change-local state that can speed eligible repeated local validation but is not portable and is not lifecycle evidence;
 - local CLI diagnostic logs: user-scoped JSON Lines under the platform state/log directory or an explicit safe override, bounded to one active file and four archives; they are disposable observability state and never repository, review, lifecycle, CI, or release evidence;
 - local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use;
 - public adapter packages: tracked `dist/adapters/` output during the compatibility window through `v0.1.2`, then generated temporary or release-output packages and release archives for `v0.1.3` and later;
@@ -1054,7 +1012,6 @@ The main execution and publication boundaries are:
 - downstream project lockfile: `rigorloop.lock` written at the target project root only when `rigorloop init <target> --write-state` is requested after verified target installation; schema v3 records `generated.targets`, while legacy schema v1/v2 state remains compatibility input rather than canonical output;
 - downstream runtime adapter roots: `.agents/skills`, `.claude/skills`, `.opencode/skills`, and `.opencode/commands` inside a user project; these are installed generated output, not authored RigorLoop source;
 - durable reports: `docs/reports/`, authored from local measurement evidence and linked from change-local artifacts when produced by a change;
-- validation cache evidence: `docs/changes/<change-id>/validation-cache-evidence.yaml` for formal cache-hit claims and `docs/changes/<change-id>/validation-cache-measurement.yaml` for Workstream A measurement;
 - token-cost benchmark fixtures: `benchmarks/token-cost/`, authored prompt and fixture inputs used to exercise public skills in a downstream-style project;
 - token-cost temporary runs: isolated directories under system temp or `$RUNNER_TEMP`, disposable and not durable release evidence;
 - token-cost release evidence: `docs/reports/token-cost/releases/<version>.md`, `docs/reports/token-cost/releases/<version>.yaml`, and tracked raw or sanitized run summaries under `docs/reports/token-cost/runs/<version>/`;
@@ -1086,17 +1043,7 @@ Terminal or superseded state preserves replacement and closeout evidence.
 
 ### Validation layering
 
-The selector owns routing and stable check IDs. Validation scripts own proof work. Manual review owns C4 diagram sufficiency, arc42 completeness, ADR need, and architecture package shape until a later approved automation contract changes that. Architecture support paths may select lifecycle checks for deterministic CI routing, but that routing is not architecture-package enforcement.
-
-Validation output is part of the proof surface. Default human-readable output should scale with actionability rather than work volume: success output records status, identity, counts, and duration; failure output records responsible checks, names, messages, locations when available, and reliable rerun guidance when available. `--verbose` is the explicit expansion path for full passing detail. `--quiet` suppresses successful script output only and must not hide failure reasons.
-
-For change-record evidence, the selector's routing responsibility includes registered evidence-class matching. `manual-routing-required` is a diagnostic and registration-debt signal for deterministic in-repo evidence, not a durable CI workaround. The query helper belongs beside validation scripts but has a separate role: it reads bounded metadata slices and must not run proof commands.
-
-Validation idempotency is a proof-preserving optimization layer inside validation execution. It may skip work only when the eligible validator's complete input surface, canonical normalized command, implementation manifest, policy/config manifest, and previous actual-run passing result trace are unchanged. It does not change selector routing, selected check IDs, validator semantics, failure detection, exit codes, or closeout requirements.
-
-The helper mode is an adoption surface, not an expansion of cache power. It makes the safe inner-loop path short enough to use, while preserving direct actual-run validation for closeout and final gates. Formal helper evidence records both the user-visible helper command and the canonical direct command used for cache identity so reviewers can see what was invoked and what prior pass was reused.
-
-The local execution cache is an optimization surface, not evidence. Formal cache-hit evidence is change-local YAML that explains why the prior pass still applies. Closeout gates require actual-run evidence and reject cache-only pass claims. Workstream B edit-scoped validation is a separate future architecture decision because it would reduce selected validators based on changed inputs rather than identical input surfaces.
+[Validation](../../design/engineering/validation.md) owns selection, current catalog membership, bounded execution, proof quality and result reporting. Existing leaf validators establish deterministic facts; Assessment judges semantic sufficiency and current evidence applicability. Bounded record queries remain separate from proof execution. Required evidence describes actual commands, subjects and outcomes, with scoped temporary captures and privacy boundaries; it grants no execution or publication permission.
 
 Lifecycle-state consistency is a bounded validation responsibility.
 Validation reads exact `artifact_states`, `workflow_state`, automation-target,
@@ -1441,7 +1388,6 @@ Manual result-quality review is structured release evidence for v2. Required or 
 
 Reports under `docs/reports/` are durable authored evidence for longitudinal comparison. Token-cost reports live under `docs/reports/token-cost/` and summarize measured static skill cost, Codex session cost, tool-output amplification, top cost drivers, conclusions, and next actions. Release token-friendliness reports live under `docs/reports/token-cost/releases/` and compare against the previous public release report when one exists or declare the first report as the baseline. Change-local artifacts should link to these reports rather than duplicating their body.
 
-Validation cache measurement lives under `docs/changes/<change-id>/validation-cache-measurement.yaml` for the implementing change. It records Workstream A cache-hit value, helper adoption, actual-run fallbacks, closeout actual runs, and remaining validation cost. That measurement is the required evidence gate before any future edit-scoped validation or broader cache-eligibility proposal can argue that riskier scope narrowing or expansion is worth pursuing.
 
 ### Review artifact closeout
 
@@ -1475,7 +1421,6 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md`: one-package CLI boundary, bundled metadata for local Codex archive verification, planned lockfile-only behavior, and npm publication block.
 - `docs/adr/ADR-20260516-rigorloop-npm-publication.md`: first public npm publication boundary, trusted-publishing/bootstrap modes, package-content proof, and real install closeout proof.
 - `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md`: change records as registered and queryable catalogs, with evidence-class selector routing and bounded query-helper reads.
-- `docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md`: validation cache hits for unchanged explicit-path lifecycle inputs, with a cache-aware inner-loop helper mode, canonical direct-command cache identity, local-only cache state, formal cache-hit evidence, closeout actual-run gates, and Workstream B measurement gating.
 - `docs/adr/ADR-20260623-published-skill-resource-integrity.md`: mapped skill-local resource integrity, bounded legacy-reference lint, raw-byte parity, packed clean-install proof, and runtime fallback/package-validity separation.
 - `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`: superseded historical activation and rollback-transaction design.
 - `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`: one reviewed release manifest, immutable source-control grandfathering baseline, existing adapter metadata, and read-only package rollback validation.
@@ -1570,8 +1515,7 @@ decisions from ADR-20260728 and ADR-20260729.
 | Lifecycle claim boundary | A user sees `docs/changes/<change-id>/change.yaml` created by `new-change`. | The generated metadata has empty artifact and evidence arrays, `review.status: pending`, and no `explain_change` artifact; file existence does not imply proposal acceptance, review completion, verification, or PR readiness. |
 | Evidence routing determinism | A branch adds `docs/changes/<change-id>/behavior-preservation.md`. | The changed-path selector routes it through a registered evidence class before verify, or emits stable `manual-routing-required` registration debt. |
 | Bounded readability | A stage needs the latest validation result or canonical artifact paths for a change. | `scripts/query-change-record.py` returns the requested slice without requiring full validation history or executing validation commands. |
-| Cache-hit safety | A repeated explicit-path lifecycle validation command is requested after an unrelated edit. | Cache hit occurs only when previous result was `pass` and normalized command, input-surface hash, implementation hash, and policy/config hash all match; otherwise the validator runs. |
-| Inner-loop helper adoption | A contributor repeats lifecycle validation after change-local evidence edits. | `--mode explicit-paths-inner-loop` supplies cache context by default, normalizes to canonical direct `--mode explicit-paths` cache identity, and records displayed helper argv separately from canonical cache argv in formal evidence. |
+| Actual execution | A selected check is requested again after an edit. | The required check executes against current inputs; saved results do not supply a new pass. See [Validation](../../design/engineering/validation.md). |
 | Lifecycle-state consistency | A stage updates one artifact or workflow transition while its linked review, milestone, blocker, or closeout evidence is absent, stale, or contradictory. | Validation reports the exact entry and evidence mismatch and blocks downstream reliance; plans and governed artifacts remain unchanged. |
 | Milestone continuation authority | A reviewed milestone completes while another implementation milestone is planned. | Completion closes and reports eligibility without changing routing; only a later workflow-selected `start-milestone` marks the successor implementing and atomically synchronizes every present authoritative routing projection. |
 | Completion replay freshness | A caller retries completed milestone settlement after review evidence is omitted or an authorizing receipt, canonical review-log occurrence, milestone proof, or packet constituent changes. | Replay reconstructs the normalized completion record and returns `RL_STALE_EVIDENCE` without mutation; identity-equal facts return `already-recorded`, and unrelated review-log appends do not invalidate the canonical occurrence. |
@@ -1592,7 +1536,7 @@ decisions from ADR-20260728 and ADR-20260729.
 | Requirement-fidelity trustworthiness | An applicable automated review implements, validates, teaches, or preserves a normative spec clause. | The review records deterministic applicability, spec-first packet ordering, accepted or reviewer-authored decomposition, property-by-surface verification, validator assertion comparison against the governing spec, compressed-requirement risk, and a structurally valid requirement-fidelity receipt or material finding. |
 | Requirement-compression calibration | A review-quality calibration run measures compression detection. | The run cites a named corpus iteration, seeded defect type, expected finding, observed finding, recall result, and rotation state; Phase B sampling meets the approved floor rates. |
 | Second-review escalation | A sampled or required second reviewer disagrees with a first clean automated review. | Any material finding, blocked result, or inconclusive result prevents automatic continuation and routes to review-resolution, owner decision, or another authorized review without majority voting. |
-| Closeout gate safety | A milestone closeout record cites only `cache-hit-inner-loop` evidence. | Lifecycle or change-metadata validation rejects the closeout because first-slice closeout requires `actual-run-pass`. |
+| Closeout gate safety | A milestone cites prior observations as current proof. | Assessment judges exact subject and procedure applicability; [Validation](../../design/engineering/validation.md) requires honest actual-execution evidence and cannot approve closeout itself. |
 | Local archive verification | A user runs `rigorloop init codex --from-archive <path>`. | The CLI verifies the archive against bundled official metadata for the installed package's compatible target release and blocks with `metadata-unavailable` if metadata is absent. |
 | State determinism | A user reruns `rigorloop init codex --write-state` after a verified install with unchanged generated output. | The CLI computes the same normalized manifest hash and `rigorloop-tree-hash-v1`, preserves supported unrelated entries, and produces byte-identical target-oriented state content for identical state. |
 | Lockfile schema compatibility | A user adds Claude Code or opencode to a project with a valid schema v1 or v2 lockfile. | The CLI verifies existing generated output against recorded hashes before migrating current state to schema v3; drift blocks before unrelated adapter mutation. |
@@ -1612,7 +1556,7 @@ decisions from ADR-20260728 and ADR-20260729.
 
 | Risk or debt | Current handling |
 | --- | --- |
-| Existing contracts still require routing fixtures, runtime benchmarks, clean installs, selectors, caches, or schedulers | The approved simplification spec gives a narrow immediate disposition only for named skill-contract clauses; every other subsystem remains transitional until its slice records exact contract disposition. |
+| Unselected contracts still require routing fixtures, runtime benchmarks, clean installs or other execution surfaces | [Validation](../../design/engineering/validation.md) supplies the exact selected validation replacement; all other subsystems retain their own contract disposition and proof obligations. |
 | Consolidation could move all complexity into one oversized validator | Gate ownership is separated by canonical skill, package, release, and lifecycle-governance invariants; semantic judgment is excluded and internal modules retain one parser owner per invariant. |
 | A retired check may protect an undocumented failure | Retirement pauses on unknown fixtures or contradictory behavior and requires old-versus-replacement proof plus rollback before removal. |
 | Review-owned semantic quality may vary by reviewer | Published-skill review uses one concise checklist for trigger clarity, ownership, prerequisites, procedure, resources, stops, claims, output, and handoff; material concerns use formal findings. |
@@ -1665,12 +1609,10 @@ decisions from ADR-20260728 and ADR-20260729.
 | Warning-only token budgets could be mistaken for CI gates | The first measurement slice treats budget thresholds as report warnings; hard gates require a later accepted proposal and spec. |
 | Optional benchmark failures could be mistaken for passing release coverage | `skill-token-runtime-v2` separates optional warning evidence from claimed optional release coverage; claimed coverage follows required benchmark evidence and result-quality gates. |
 | Shorter validation output could hide changed coverage or failure evidence | Script output optimization is presentation-only. Behavior-preservation evidence must prove selected checks, exit codes, failure detection, and failure evidence remain unchanged, and quiet mode must not hide non-success diagnostics. |
-| Incomplete input surfaces could create stale validation cache hits | First-slice cache eligibility is limited to explicit-path lifecycle validation with deterministic input, implementation, and policy manifests; any unsupported or uncertain surface disables caching and runs the validator. |
-| Helper mode could be mistaken for closeout proof | `explicit-paths-inner-loop` is explicitly inner-loop only, formal helper evidence uses `cache-hit-inner-loop` with `closeout_evidence: false`, and closeout validation rejects helper cache hits as sole proof. |
-| Canonical helper cache identity could hide what command the user ran | Formal helper cache-hit evidence records both `displayed_command_argv` and `canonical_cache_argv`, so reviewers can distinguish the user-facing helper command from the direct command identity used for reuse. |
-| Cache-hit evidence could be mistaken for closeout evidence | `cache-hit-inner-loop` is inner-loop evidence only. Closeout requires `actual-run-pass`, and lifecycle/change-metadata validators reject cache-only closeout claims. |
-| Local cache state could leak machine details or become portable evidence | Local cache state remains untracked and may use local worktree identity only for invalidation. Tracked cache-hit evidence must use repository-relative paths and omit secrets, usernames, hostnames, credentials, machine-local absolute paths, and environment dumps. |
-| Workstream B scope narrowing could be introduced without evidence | Workstream B remains out of scope until Workstream A measurement is recorded, reviewed, and a separate proposal or spec amendment authorizes the riskier behavior. |
+| Execution evidence could hide the actual command | [Validation](../../design/engineering/validation.md) requires actual command identity, scope, outcomes and usable reproduction details. |
+| Prior observations could be mistaken for current closeout evidence | Assessment judges evidence applicability against exact subjects; [Validation](../../design/engineering/validation.md) never turns a saved result into a new execution pass. |
+| Execution captures could expose private machine details | [Validation](../../design/engineering/validation.md) owns scoped temporary captures and cleanup; tracked evidence omits secrets and unnecessary machine-local details. |
+| Validation scope could narrow without an owning decision | [Validation](../../design/engineering/validation.md) preserves selected scope and required failure detection; further scope changes require their governing contract and adequate proof. |
 | Evidence-class patterns could become too broad | Registry validation rejects broad catch-all patterns and ambiguous matches, and selector regression coverage proves registered recurring patterns route only their intended evidence classes. |
 | `manual-routing-required` could become a permanent workaround | Deterministic in-repo evidence treats the diagnostic as registration debt, and verify readiness blocks unless debt is resolved or an owner-approved deferral records path, reason, validation impact, and follow-up. |
 | Bounded query output could hide failures or blockers | Query helper outputs include blockers, unsupported-shape diagnostics, and detail pointers; full forensic reads remain required for disputed evidence, summary inconsistency, unsupported shapes, and whole-record review. |
@@ -1812,9 +1754,6 @@ decisions from ADR-20260728 and ADR-20260729.
 - registration debt: required resolution work created when deterministic in-repo evidence produces `manual-routing-required`.
 - bounded read: a query path that returns the authoritative slice needed for a common change-record question without loading unrelated history.
 - query helper: repository-owned command that returns bounded change-record slices without running validation proof commands.
-- validation cache hit: reuse of a previous passing validator result when the normalized command, input surface, implementation manifest, and policy/config manifest are unchanged.
-- cache-aware inner-loop helper mode: `validate-artifact-lifecycle.py --mode explicit-paths-inner-loop`, the user-facing helper command that supplies approved cache context for repeated inner-loop lifecycle validation.
-- canonical cache argv: the normalized direct `validate-artifact-lifecycle.py --mode explicit-paths` argv used for helper cache identity.
 - lifecycle-state consistency gate: bounded validation of governed
   artifact-state, workflow-state, planned-work, blocker, target, and linked
   evidence fields before downstream reliance.
@@ -1854,12 +1793,6 @@ decisions from ADR-20260728 and ADR-20260729.
 - live-state surface: the bounded `change.yaml` fields that own artifact
   lifecycle, workflow routing, planned work, blockers, next stage, and
   closeout readiness for a governed change.
-- displayed command argv: the normalized helper argv the user invoked, recorded in formal helper cache-hit evidence separately from canonical cache argv.
-- local execution cache: untracked branch-local, worktree-local, change-local cache state used only to avoid repeated local validation execution.
-- formal cache-hit evidence: tracked change-local YAML that records why a previous validator pass still applies and remains inner-loop evidence only.
-- `cache-hit-inner-loop`: evidence kind for unchanged-input reuse; not eligible to satisfy stage or milestone closeout.
-- `actual-run-pass`: evidence kind that the required validator or bundle actually executed and passed; eligible for first-slice closeout when it covers the required bundle.
-- validation cache measurement: change-local YAML evidence that records Workstream A cache hits, misses, disabled evaluations, actual runs, time saved, remaining cost, and Workstream B recommendation state.
 
 ## Next artifacts
 
@@ -1941,7 +1874,7 @@ The published-skill-first validation architecture is authored under its approved
 Reliance on the new gate composition, semantic-review boundary, conditional materialization smoke, or retirement flow requires matching architecture and ADR review settlement.
 
 ADR `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md` records the proposed durable validation and release-composition decision.
-The current selector, cache, scheduler, runtime benchmark, and meta-validation architecture remains transitional until the execution plan sequences exact contract amendments, dual proof, and recoverable retirement slices.
+[Validation](../../design/engineering/validation.md) and its owning change supply the selected catalog/executor, exact source retirement and proof allocation. Unselected runtime benchmark, meta-validation and other subsystem obligations retain their own amendment and recovery requirements.
 
 ADR `docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md`
 records the proposed durable checked-revision snapshot, one-time baseline,
@@ -1961,4 +1894,4 @@ lifecycle state, separate workflow authorization, capability, typed-policy,
 or receipt-state layers. The stage-owned change-local lifecycle decision is an
 accepted current dependency, not the candidate under this review.
 
-ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. ADR `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md` records the durable decision to treat change records as registered and queryable catalogs. ADR `docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md` records the durable decision to add validation cache hits for unchanged explicit-path lifecycle inputs, including the cache-aware inner-loop helper mode, while preserving actual-run closeout gates.  [Skill SKL-DEC-02](../../design/skill/skill.md#architecture-decisions), with [original ADR provenance](../../archive/skill-model/2026-09-08/README.md), preserves mapped-resource identity and runtime-fallback/package-validity distinctions; the existing validation owner governs currently applicable proof. ADR `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md` records the durable proposal-gated authoring autoprogression profile, policy persistence, and review-independence decision. ADR `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md` records the durable separately armed implementation autoprogression profile, phase gating, reviewer-owned correction authority, fresh verify requirement, and stop-before-PR boundary. ADR `docs/adr/ADR-20260625-independent-adversarial-review-gates.md` records the durable automated review-independence gate, neutral-packet evidence model, blind-first phase protocol, risk-tiered escalation, second-review disagreement behavior, and calibration boundary. ADR `docs/adr/ADR-20260626-requirement-fidelity-gate.md` records the durable automated requirement-fidelity gate, deterministic applicability model, spec-canonical packet order, decomposition and property-matrix evidence, validator assertion matrix boundary, and compression-defect calibration. ADR `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md` records the durable bounded review-fix profile, nested review-fix state, driver-owned safe-fix classification, same-review rerun boundary, and architecture-assessment routing. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No new ADR is required for the cache-aware inner-loop helper because it amends the existing validation cache-hit safety decision rather than introducing a separate validation architecture. No additional ADR is required for the evidence-bound `project-map` update because it applies existing generated-output, skill resource-integrity, and living-reference workflow decisions to one published skill and one packaged skeleton asset. No new ADR is required for workflow-state synchronization because the accepted spec amends the existing single-source workflow-state contract and composes through the existing lifecycle-validation architecture instead of adding a new system boundary, storage boundary, parser authority, or service. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
+ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. ADR `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md` records the durable decision to treat change records as registered and queryable catalogs. [Skill SKL-DEC-02](../../design/skill/skill.md#architecture-decisions), with [original ADR provenance](../../archive/skill-model/2026-09-08/README.md), preserves mapped-resource identity and runtime-fallback/package-validity distinctions; the existing validation owner governs currently applicable proof. ADR `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md` records the durable proposal-gated authoring autoprogression profile, policy persistence, and review-independence decision. ADR `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md` records the durable separately armed implementation autoprogression profile, phase gating, reviewer-owned correction authority, fresh verify requirement, and stop-before-PR boundary. ADR `docs/adr/ADR-20260625-independent-adversarial-review-gates.md` records the durable automated review-independence gate, neutral-packet evidence model, blind-first phase protocol, risk-tiered escalation, second-review disagreement behavior, and calibration boundary. ADR `docs/adr/ADR-20260626-requirement-fidelity-gate.md` records the durable automated requirement-fidelity gate, deterministic applicability model, spec-canonical packet order, decomposition and property-matrix evidence, validator assertion matrix boundary, and compression-defect calibration. ADR `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md` records the durable bounded review-fix profile, nested review-fix state, driver-owned safe-fix classification, same-review rerun boundary, and architecture-assessment routing. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No additional ADR is required for the evidence-bound `project-map` update because it applies existing generated-output, skill resource-integrity, and living-reference workflow decisions to one published skill and one packaged skeleton asset. No new ADR is required for workflow-state synchronization because the accepted spec amends the existing single-source workflow-state contract and composes through the existing lifecycle-validation architecture instead of adding a new system boundary, storage boundary, parser authority, or service. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.

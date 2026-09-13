@@ -1,6 +1,6 @@
 # Test maintenance application
 
-Use this guidance for changes to tests or assessment of their maintenance impact under explicitly adopted Test-model criteria. Apply it within the invoked scope. The governing behavior and review policy retain authority; this is not permission to retire behavior, delete tests or waive proof. Historical tests need not be retroactively annotated before unrelated work.
+Use this guidance for changes to tests or assessment of their maintenance impact under explicitly adopted Validation-model test criteria. Apply it within the invoked scope. The governing behavior and review policy retain authority; this is not permission to retire behavior, delete tests or waive proof. Historical tests need not be retroactively annotated before unrelated work.
 
 ## Decide what changes
 

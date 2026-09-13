@@ -36,7 +36,7 @@ Resolve project authority and existing exact targets first. For a new model, the
 5. Define representative realization conditions and observable expected outcomes, including integrated properties that local checks cannot establish. Design owns intent and observation boundaries; Delivery allocates concrete checks, commands, milestones and evidence; implementation supplies fixtures/assertions. Actual results stay in evidence records.
 6. Preserve meaningful decisions and references. Inspect exact completed subjects, including changed relied-on examples and their owners. Hand independent Design Review the reconciled package, relevant interactions, decisions, evidence, assumptions and applicability impacts. The author cannot settle another actor's judgment.
 
-Scenarios are not an exhaustive test whitelist. Additional cases may derive from justified obligations and hazards; absence from scenarios never authorizes deleting a test. Apply the project's existing Test criteria and review policy when adopted.
+Scenarios are not an exhaustive test whitelist. Additional cases may derive from justified obligations and hazards; absence from scenarios never authorizes deleting a test. Apply the project's existing Validation test criteria and review policy when adopted.
 
 ## Boundary scan
 

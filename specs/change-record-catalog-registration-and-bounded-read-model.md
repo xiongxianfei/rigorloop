@@ -11,7 +11,7 @@ approved
 
 Dependency references:
 
-- [Test Layering and Change-Scoped Validation](test-layering-and-change-scoped-validation.md) owns the validation selector and selected-check output contract.
+- [Validation](../docs/design/engineering/validation.md) owns the current validation selector and selected-check output contract; the original source-qualified judgments remain historical.
 - [Compact Change Validation Metadata](compact-change-validation-metadata.md) owns compact validation metadata shape, summary derivation, path variables, and legacy compatibility.
 - [RigorLoop Workflow](rigorloop-workflow.md) owns lifecycle stage order, review status meanings, handoff boundaries, and required formal review recording.
 - [Skill Contract](skill-contract.md) owns published skill structure and generated adapter compatibility boundaries.

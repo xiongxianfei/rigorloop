@@ -63,7 +63,7 @@ Generate the supported inventory into temporary or explicitly selected output; v
 
 ## Source displacement and preservation
 
-The following source-qualified maps preserve the former Distribution consolidation decisions. References to its DIST-SR identifiers resolve to this model for generation/metadata and [Installation](../cli/installation.md) for acquisition/writes according to the [reconciliation map](../../changes/2026-09-12-unified-validation-model/design-reconciliation.md). They are original source dispositions, not a second combined current owner. Historical judgments retain their original subjects.
+The following source-qualified maps preserve the former Distribution consolidation decisions. References to its DIST-SR identifiers resolve to this model for generation/metadata and [Installation](../cli/installation.md) for acquisition/writes according to the [reconciliation evidence (`design-preservation-delta`)](../../changes/2026-09-12-unified-validation-model/evidence.json). They are original source dispositions, not a second combined current owner. Historical judgments retain their original subjects.
 
 
 The five spec families below are selected for full source retirement, each with its matching `.test.md`: `skill-invocation-commands-for-adapters`, `stop-tracking-generated-public-adapter-skill-bodies`, `target-native-init`, `multi-adapter-init-and-proxy-aware-download`, and `rigorloop-cli-lockfile`. This selects ten files, not their operational fixtures, proposals, plans or historical review records. Numbered ranges include lettered subclauses. The disposition below reconciles superseded commands/schema versions before transferring meaning; no old command is restored by its historical ID.

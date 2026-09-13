@@ -11,7 +11,7 @@ argument-hint: [change ID, affected Design package, or authorized legacy amendme
 
 ## Test criteria application
 
-When the project explicitly adopts Test-model criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
+When the project explicitly adopts Validation-model test criteria, use the selectively loaded guidance below for test quality and maintenance. These criteria replace source-local shared test-purpose, case-selection and maintenance criteria for adopted work; retain specialist methods and historical evidence. Actual judgments, evidence applicability and closeout consequences remain with the responsible assessors under the project's review policy.
 
 ## Review and Closeout application
 
@@ -94,7 +94,7 @@ Apply the packaged assessment rule when adopted; approval covers this exact pack
 
 Assess examples alongside their owner and exact identity. Check parse/schema limits and illustrated before/after invariants separately from review applicability. If a relied-on example changed while the parent stayed unchanged, require its new exact subject in selection/handoff; prior parent or example approval is insufficient for current reliance without the required reassessment. Mechanical selection does not decide applicability or create automatic invalidation.
 
-Representative scenarios are not a test whitelist. Apply adopted Test criteria to derived obligations and hazards and existing review policy to actual assessment/current reliance. Preserve required regression protection.
+Representative scenarios are not a test whitelist. Apply adopted Validation test criteria to derived obligations and hazards and existing review policy to actual assessment/current reliance. Preserve required regression protection.
 
 ## Findings and ownership
 

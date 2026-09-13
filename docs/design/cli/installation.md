@@ -121,4 +121,4 @@ The former combined ownership decision is replaced by an explicit package-produc
 
 ## Source transfer and next artifacts
 
-The [reconciliation map](../../changes/2026-09-12-unified-validation-model/design-reconciliation.md) assigns DIST-SR-02/07/08/10–16 and DIST-DEC-03–05 here. Shared package representation and integrated proof remain Packaging-owned; Release retains publication. Independent Design Review assesses this split and exact consumers before Delivery allocates implementation and verification.
+The [reconciliation evidence (`design-preservation-delta`)](../../changes/2026-09-12-unified-validation-model/evidence.json) assigns DIST-SR-02/07/08/10–16 and DIST-DEC-03–05 here. Shared package representation and integrated proof remain Packaging-owned; Release retains publication. Independent Design Review assesses this split and exact consumers before Delivery allocates implementation and verification.
