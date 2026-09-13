@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "Independent Design reassessment of all twelve declared models, their Architecture Overview graphs and responsibility paragraphs, System SYS-SR-11, current owning pointers and retained composition provenance. Includes unchanged current maintenance notices in the two simplification specs and relevant proposal, assessment, representation, packaging, installation and release boundaries. Presentation and repository-local convention only; no implementation, rendering, runtime correctness or branch readiness claim.",
+  "assessment_scope": "Independent bounded reassessment of the replaced first Validation Mermaid graph and its responsibility caption within the previously approved twelve-model package and unchanged scoped legacy dependencies. Compared the graph with TEST-SR01–14, VAL-SR01–22, the unchanged invocation flow and selection/execution/reporting prose. No runtime, schema, public skill or other model changes are assessed as new work.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "contributors": [
     {
@@ -95,7 +95,8 @@
     "Earlier detailed Design and reporting corrections retain their original exact-subject meaning but are superseded as current realization. Current complete review explicitly replaces those mechanics; it does not silently retarget their approval.",
     "Canonical IDs require assessed catalog reconciliation and concrete negative/integration proof during Delivery/implementation. Unknown duplicate protection or incomplete inventory still blocks affected completion.",
     "Current review supports authorized planning only. Independent Delivery Review, implementation/milestone reviews, fresh whole-change review and distinct Verify remain necessary; publication permission remains separate.",
-    "Architecture Overview review assesses source semantics and preserved Mermaid blocks; no graphical rendering or runtime tests were run for this presentation-only amendment. Author model/prose checks support structure and prose, not implementation correctness."
+    "Architecture Overview review assesses source semantics and preserved Mermaid blocks; no graphical rendering or runtime tests were run for this presentation-only amendment. Author model/prose checks support structure and prose, not implementation correctness.",
+    "This correction was reviewed as Mermaid source and contract semantics, without graphical rendering or runtime execution. Historical general-sharing/report machinery remains superseded; its original finding facts are preserved."
   ],
   "rationale": [
     "1. Direction and scope — pass: refine the existing owner, remove justified duplicate cases/execution and make the entire remaining automated inventory independently runnable remain selected. VAL-SR21/22 still forbid final completion with an unassessed serial remainder or discarded unknown protection. User-directed simplification changes realization, not those outcomes. Proposal remains applicable at its original direction level; no new cache, public runner, distributed system or product feature is introduced.",
@@ -115,7 +116,9 @@
     "Twelve-model overview coverage — pass: inspected the complete affected model package and current diff against their existing responsibilities. Each declared model has exactly one H2 Architecture Overview. Independent programmatic comparison confirms every prior Mermaid block remains byte-identical somewhere in its same model, including the full System three-main/fourteen-child/two-product structural overview and complementary end-to-end delivery/publication view. Parent subsection anchors remain; no current reference to the renamed Validation building-block-view anchor was found. Records reuses its existing structural graph and links the representation detail rather than introducing a competing record model.",
     "Semantic ownership — pass: Skill, CLI and Engineering retain detailed immediate-child ownership. Leaf overviews use existing responsibilities and concepts: Workflow coordinates explicit outcomes, Design authors a coherent package before independent assessment, Assessment owns judgment/applicability, Records owns shapes and references, Installation owns safe explicit destination writes, Packaging owns isolated artifacts and metadata, and Release retains qualification plus separately authorized publication and observation. These diagrams do not define services, new child models, extra schemas or automatic approval. Assessment independent final Verify refers to RC-SR-13 distinct evidence/coherence judgment and does not replace RC-SR-11 independent whole-change Code Review. Stable finding IDs/current accounts and immutable blocker origins remain distinct.",
     "Direction and authority — pass: SYS-SR-11 implements the user requested Architecture Overview for every repository model while preserving SYS-SR-10 parent detail and both whole-System views. It expressly remains repository-local and does not change portable Design skill behavior or executable model-validator schema. Updated owning pointers identify this amendment while retained original composition provenance and displacement maps preserve prior adoption boundaries. Candidate qualification/metadata do not authorize publication; Installation neither adopts nor writes project governance.",
-    "Current reliance — renewed approval covers the exact twelve model subjects and unchanged relevant scoped legacy members, not the earlier seven-document changed set alone. Approved proposal direction and feasibility remain applicable to this presentation refinement; original proposal evidence is not retargeted to claim these new graphs were previously reviewed. Current author structural/prose evidence matches the assessed identities. Existing model examples and operational clauses are unchanged and no illustrated data shape, scenario outcome, runtime mechanism or proof obligation changed, so prior bounded example assessment remains applicable without a costly runtime rerun. Earlier maintenance-allocation and report-projection findings remain represented and resolved, with the superseded unimplemented general-sharing mechanism still explicitly outside current delivery obligations. No new material finding; route retains any planning handoff."
+    "Current reliance — renewed approval covers the exact twelve model subjects and unchanged relevant scoped legacy members, not the earlier seven-document changed set alone. Approved proposal direction and feasibility remain applicable to this presentation refinement; original proposal evidence is not retargeted to claim these new graphs were previously reviewed. Current author structural/prose evidence matches the assessed identities. Existing model examples and operational clauses are unchanged and no illustrated data shape, scenario outcome, runtime mechanism or proof obligation changed, so prior bounded example assessment remains applicable without a costly runtime rerun. Earlier maintenance-allocation and report-projection findings remain represented and resolved, with the superseded unimplemented general-sharing mechanism still explicitly outside current delivery obligations. No new material finding; route retains any planning handoff.",
+    "User-directed Validation graph — pass: five internal responsibilities are criteria, catalog, selection, executor and results, rather than invented models or services. Product contracts supply protected behavior; Delivery supplies required verification scope; Assessment consumes evidence and limitations as an external semantic owner. The dashed criteria-to-catalog edge explicitly guides human authors and cannot be read as automated adequacy approval. Direct catalog-to-executor constraints reflect VAL-SR05 and preserve one trusted catalog; selection sends each canonical ID once under VAL-SR19/20, and outcomes remain one per actual check/case. The graph does not assert that all selected work runs or passes; unchanged flow and VAL-SR06/09/12 retain gates, incomplete work and honest failure reporting.",
+    "Current package applicability — the user-requested boundary graph supersedes only the prior linear Validation structural graph; its caption and existing runtime prose agree. The invocation flow, simplified F then B-minus-F composition, isolation and budget requirements, current maintenance map, twelve Architecture Overviews and both whole-System views remain unchanged. Current validation-overview-user-graph author evidence matches its exact subjects. Earlier all-model structure/prose proof remains applicable to unchanged models; current focused author checks cover the replaced graph. Proposal direction, scoped examples and the two resolved findings retain their explicitly bounded meaning. No new material issue or implementation approval follows from this presentation correction."
   ],
   "reviewer": {
     "id": "proposal-reviewer",
@@ -132,7 +135,7 @@
       "path": "docs/design/engineering/engineering.md"
     },
     {
-      "identity": "sha256:92e4c876213cd61a341537c46a1e60f1fd2af65bc43dcd250bc9b13a0edb8419",
+      "identity": "sha256:d67762858fa829ce6960026dacea8e9938f14766cf6963d70b0e657f7e023276",
       "path": "docs/design/engineering/validation.md"
     },
     {
@@ -144,7 +147,7 @@
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
     },
     {
-      "identity": "sha256:5c91fd262ddfcf1cc15388b5482547864938f993fea8210c79c197478a93992c",
+      "identity": "sha256:d1c3c98bb7c7b7a2b72e055006afd1997653119eb80826e8f6a499deed9a657d",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
     },
     {
@@ -212,6 +215,6 @@
       "path": "docs/changes/2026-09-12-unified-validation-model/change.json"
     }
   ],
-  "summary": "Approved the current twelve-model Architecture Overview package. Each overview describes its existing owner and external relationships without inventing submodels, runtime components or authority. Whole-System structural and end-to-end views remain intact; simplified Validation and the two prior resolved findings retain their current disposition.",
+  "summary": "Approved the current twelve-model package after the user-directed Validation structural graph replacement. The explicit Validation boundary and five responsibilities accurately illustrate the unchanged canonical-ID execution and proof criteria contract; prior findings remain resolved.",
   "target": "design"
 }

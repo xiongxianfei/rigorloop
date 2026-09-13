@@ -4,7 +4,7 @@
       "id": "root",
       "role": "plan"
     },
-    "reason": "Independent Design Review approved Architecture Overviews for all twelve declared model documents with no new findings; existing graphs and model boundaries preserved. Ready for Delivery planning.",
+    "reason": "Independent Design Review approved user-supplied Validation architecture overview, preserving execution and assessment authority. Current package ready for Delivery planning.",
     "stage": "plan",
     "status": "ready"
   },
@@ -42,7 +42,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json",
-      "reason": "All twelve current model overviews independently assessed against their existing responsibilities and current user direction; unchanged simplified Validation and scoped legacy obligations retain applicability.",
+      "reason": "User-requested Validation boundary graph independently reconciled with unchanged proof criteria, canonical catalog selection, execution and external assessment owners; current twelve-model package remains coherent.",
       "value": "current"
     }
   ],
@@ -67,7 +67,7 @@
     {
       "id": "validation",
       "subject": {
-        "identity": "sha256:92e4c876213cd61a341537c46a1e60f1fd2af65bc43dcd250bc9b13a0edb8419",
+        "identity": "sha256:d67762858fa829ce6960026dacea8e9938f14766cf6963d70b0e657f7e023276",
         "path": "docs/design/engineering/validation.md"
       }
     },

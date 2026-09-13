@@ -340,6 +340,22 @@
         }
       ],
       "summary": "All twelve model structures/references passed; prose returned zero errors/warnings; diff check passed. Inspected existing scope, realization and responsibility tables for new overviews; graphs express those owners rather than automatic judgments or new services. Existing graph anchors retained by subordinate headings, and Records graph moved once to its overview with schema section link preserved. Final Records prose link clarification does not change graph/content obligations; repeat final doc checks before commit. No runtime tests/rendered diagram or candidate behavior claim. Prior exact document basis captured before authoring; changed registration does not retarget historical adoption approvals. Untracked docs/design.zip preserved."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "validation-overview-user-graph",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/engineering/validation.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/engineering/validation.md; git diff --check; compare graph nodes, labels and edges to user-supplied graph.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d67762858fa829ce6960026dacea8e9938f14766cf6963d70b0e657f7e023276",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ],
+      "summary": "Replaced the simplified linear overview with the exact user-supplied graph, normalizing indentation only. Explicit Validation boundary contains criteria, catalog, selection, executor and results; product contracts, Delivery allocation and independent assessment stay external. Caption explains criteria guide authors rather than automated adequacy judgment. Structural/prose checks passed with zero warnings; diff check clean. Runtime flow, canonical-ID composition, other model graphs and behavior unchanged; no rendering or runtime-test claim."
     }
   ],
   "schema_version": 3
