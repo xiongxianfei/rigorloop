@@ -3279,13 +3279,13 @@ Validation target: Run tests.
                     plans = {p.check_id:p for p in compose_mode('broad-smoke', root/'output')}
             finally:
                 os.chdir(previous)
-            self.assertEqual(plans['broad_smoke.review_artifacts.regression'].args,
+            self.assertEqual(plans['review_artifacts.regression'].args,
                              ['python','scripts/test-review-artifact-validator.py'])
             check = plans['broad_smoke.review_artifacts.changed_roots']
             self.assertEqual(check.args, ['python','scripts/validate-change-metadata.py',
                                          'docs/changes/current/change.json'])
             self.assertEqual(check.phase, 'preflight')
-            self.assertIn(check.check_id, plans['broad_smoke.review_artifacts.regression'].dependencies)
+            self.assertIn(check.check_id, plans['review_artifacts.regression'].dependencies)
 
 
 

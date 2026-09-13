@@ -241,6 +241,11 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "requirement-fidelity",
         parallel_safe=True, label='Governance: review fidelity', modes=('main',),
     ),
+    "cli_result_measurement.regression": CheckCatalogEntry(
+        "cli_result_measurement.regression",
+        "python scripts/test-cli-result-measurement.py",
+        "token-cost",
+    ),
     "token_cost.regression": CheckCatalogEntry(
         "token_cost.regression",
         "python scripts/test-token-cost-measurement.py",
@@ -348,6 +353,19 @@ for _mode_prefix in ('broad_smoke','main'):
 # temporary Git/record fixtures, process-local environment and sequential child
 # validation. Selector wrapper probes obey their allocated nested worker budget.
 _CASE_ASSESSMENTS = {
+    'review_artifacts.regression': '15f322f174104843017f7f15514890465bf0a61b79a0daaac56d1571ec6e0552',
+    'change_record_query.regression': 'dc1076e407240a32cf64cc147d7d81fe79c39d8ae65b3f35b0606b96e96ba443',
+    'workflow_automation.code_state_regression': 'abcb726abc3e20a32d0e46d2afda5a701865cebfac7d65ac1e9b5b6e520afdac',
+    'workflow_automation.engine_regression': '9379c8a2a5b4a209e4adc79d4e967eadd1521f9226329cbbd755107006d1d080',
+    'workflow_automation.policy_regression': 'e8cc2ebdf8e5954ffec92512c3040e219c632ca7290efab6246bb136eb14beb4',
+    'workflow_automation.state_regression': 'ca899736312f2550425abd5d71ae4cd2be449c9affaeffd7ada7dfac05a01d83',
+    'workflow_automation.validator_regression': '4edebc8048e256fdf4ddf3e32525cd0e2488f9b1ffd616fdd283bab98ec321fa',
+    'cli_result_measurement.regression': '1f86e3cf8b10991556deef2bce3a782b208b1114307214b0172a6e59bfe0f60f',
+    'token_cost.regression': 'f532fa1106f66f3101ed9ece85d5cc4e85ad1adbf58add45293df7204d7ece44',
+    'token_cost.report_regression': 'c1dc1ce0e26540aaa85654e65dee962a9ba004d71d8024a7f02f0faa56873ac9',
+    'governed_lifecycle_cli_wrapper.test': '7c0d389cc4f21926207849803f952fa013b844a4d8c232c679bc30e024646f4b',
+    'main.retirement_ledger.regression': 'b44ab7503ecbfc7c4407d9857997364981996d2fa5a03906db4d8d11cea1b523',
+
     'skills.regression': '214972f0018d7ef9e72b7fb32da3cdc8710350aa579a7558c519375187345321',
     'adapters.regression': '84133e40f66e4595b786ee6f4116f933421fcf1e8e0387e698d0c7935695e8e2',
     'adapters.drift': '275c34ecf90ce1c5c83521550790f3619c25f6296541a8fa54ac19e44743ad81',
@@ -1501,6 +1519,9 @@ def _apply_path_selection(
         return
 
     if category == "token-cost":
+        if path in {"scripts/measure-cli-result-bytes.py", "scripts/test-cli-result-measurement.py"}:
+            _add_check(selected, "cli_result_measurement.regression",
+                       "CLI measurement changes require retired-profile and provenance rejection proof.")
         _add_check(
             selected,
             "token_cost.regression",

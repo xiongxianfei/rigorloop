@@ -54,6 +54,7 @@ ADAPTER_REGRESSION_COMMAND = (
 )
 
 EXPECTED_CATALOG = {
+    "cli_result_measurement.regression": "python scripts/test-cli-result-measurement.py",
     "validation_execution.regression": "python scripts/test-validation-execution.py",
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
     "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/skill/workflow.md --path docs/design/cli/cli.md --path docs/design/cli/records.md",
@@ -1430,6 +1431,18 @@ raise SystemExit({exit_code})
         expected_parallel_safe = {"requirement_fidelity.spec_reads"} | {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
 
         expected_cases = {
+            'review_artifacts.regression',
+            'change_record_query.regression',
+            'workflow_automation.code_state_regression',
+            'workflow_automation.engine_regression',
+            'workflow_automation.policy_regression',
+            'workflow_automation.state_regression',
+            'workflow_automation.validator_regression',
+            'cli_result_measurement.regression',
+            'token_cost.regression',
+            'token_cost.report_regression',
+            'governed_lifecycle_cli_wrapper.test',
+            'main.retirement_ledger.regression',
             'skills.regression',
             'adapters.regression',
             'adapters.drift',
@@ -2426,6 +2439,18 @@ raise SystemExit({exit_code})
                 "category": "token-cost",
                 "status": "ok",
                 "checks": {"token_cost.regression"},
+            },
+            {
+                "path": 'scripts/measure-cli-result-bytes.py',
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression", "cli_result_measurement.regression"},
+            },
+            {
+                "path": 'scripts/test-cli-result-measurement.py',
+                "category": "token-cost",
+                "status": "ok",
+                "checks": {"token_cost.regression", "cli_result_measurement.regression"},
             },
             {
                 "path": "scripts/validate-token-cost-report.py",
