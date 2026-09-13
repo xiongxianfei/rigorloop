@@ -11,11 +11,11 @@
   "applicability": [
     {
       "actor": {
-        "id": "proposal-reviewer",
-        "role": "review"
+        "id": "root",
+        "role": "support"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json",
-      "reason": "Exact candidate guidance and examples independently inspected with portable synthetic assumptions; scope is TG-01 semantic/content evidence only, before full milestone review.",
+      "reason": "Current focused test-only repair evidence; exact PR and hosted results remain pending and are not claimed.",
       "value": "current"
     },
     {
