@@ -644,9 +644,6 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
             errors,
         )
 
-    def test_valid_unified_state_passes(self) -> None:
-        self.assertEqual(validate_workflow_automation(valid_automation()), [])
-
     def test_target_completion_must_match_immutable_policy_for_every_public_stage(self) -> None:
         for stage in PUBLIC_TARGET_STAGES:
             with self.subTest(stage=stage.value):
@@ -1415,7 +1412,10 @@ class WorkflowAutomationVocabularyTests(unittest.TestCase):
         )
 
     def test_proposal_review_basis_does_not_require_prior_review(self) -> None:
-        self.assertEqual(validate_workflow_automation(valid_automation()), [])
+        state = valid_automation()
+        basis = state["effective_capabilities"]["capability-proposal-review-001"]["basis"]
+        self.assertNotIn("review_identity", basis)
+        self.assertEqual(validate_workflow_automation(state), [])
 
     def test_later_capability_requires_review_identity(self) -> None:
         state = valid_automation()

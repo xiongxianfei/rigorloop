@@ -1,9 +1,17 @@
 <!-- Template: test-spec-skeleton-v1 -->
+
 <!-- Skill: test-spec -->
+
 <!-- Template status: normative -->
 
 # Published-Skill-First Repository Simplification Test Spec
 
+
+## Independent parallel tests applicability
+
+For the [independent-parallel-tests initiative](../docs/proposals/2026-09-13-independent-parallel-tests.md), [Validation’s current maintenance allocation](../docs/design/engineering/validation.md#current-maintenance-allocation) supplies the exact new-profile-only R14/R17–20/R22/R25 amendment for the current automated test inventory and its necessary executor, selector, fixture and reader changes. Its map also identifies the corresponding unnumbered and test-spec prescriptions. Required distinct failure detection, uncertainty stops, recoverable removal and independent assessment remain intact; the existing plan and evidence carry the allocation.
+
+This amendment takes effect only with reviewed coherent implementation and successful Verify of [the current owning change](../docs/changes/2026-09-13-independent-parallel-tests/change.json). It neither extends previous cache/source deletion maps nor changes R15/R16 admission constraints, R21 publication authority or unselected obligations. Historical requirements, boundary/proof IDs, examples, judgments and earlier scoped amendments retain their exact meaning. No historical command or ledger becomes a new mandatory allocation merely through citation.
 
 ## Necessary-design cleanup applicability
 

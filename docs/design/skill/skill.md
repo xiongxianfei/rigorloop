@@ -6,7 +6,9 @@ Model validation contract: model-document-v1
 
 Skill owns what the published capabilities accept, do and produce, including their applicability, handoffs, failures and claim limits. Common conventions and specialist behavior are composed under one product boundary. The CLI is optional for individual skill use; current governed recording requires its supported interface. Engineering builds, tests and publishes the skills without becoming a competing owner of their behavior.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Context and Scope
 
@@ -23,6 +25,59 @@ Users supply intent, project authority and the evidence needed by the selected c
 
 A child may be a named section here or a separately maintained model document. Detailed contracts are defined once at those locations. Capability IDs and existing resource paths remain stable; hierarchy alone does not rename public invocations. The historical proposal-family pilot improved only its named pair. Its SKL-SR-16–23 applicability and original judgments remain unchanged; the product behavior composition applies to the existing inventory without claiming an inventory-wide implementation audit.
 
+## Architecture Overview
+
+### Subsystem design graph
+
+```mermaid
+flowchart TB
+    subgraph Owned["Skill — published capability behavior"]
+        Contract["Capability Contract: invocation, resources and limits"]
+        Workflow["Workflow: coordination and handoffs"]
+        Authoring["Authoring: proposals, Designs and plans"]
+        Implementation["Implementation: changes, diagnosis and repair"]
+        Assessment["Assessment: independent judgments and closeout"]
+        Support["Project Support: direction, investigation and learning"]
+    end
+    Contract -->|"common contract applied by"| Workflow
+    Contract -->|"common contract applied by"| Authoring
+    Contract -->|"common contract applied by"| Implementation
+    Contract -->|"common contract applied by"| Assessment
+    Contract -->|"common contract applied by"| Support
+    Workflow -->|"coordinates authorized work"| Authoring
+    Workflow -->|"coordinates authorized work"| Implementation
+    Workflow -->|"requests applicable assessment"| Assessment
+    Support -->|"context and findings"| Workflow
+    Authoring -->|"authored subjects"| Assessment
+    Implementation -->|"changes and evidence"| Assessment
+    Assessment -->|"judgments and correction owners"| Workflow
+    User["User intent, project authority and evidence"]
+    CLI["CLI and Records<br/>Governed inspection and recording"]
+    Outputs["Project artifacts, changes and assessments"]
+    Engineering["Engineering<br/>Implementation, packaging and release"]
+    User -->|"scoped invocation and authority"| Contract
+    Workflow -->|"explicit governed coordination"| CLI
+    Authoring -->|"authored artifacts"| Outputs
+    Implementation -->|"changes and evidence"| Outputs
+    Assessment -->|"independent conclusions"| Outputs
+    Support -->|"direction and supporting knowledge"| Outputs
+    Contract -.->|"published content and invocation invariants"| Engineering
+```
+
+Skill owns these six children's composition under [System's parent graph rule](../system.md#parent-graph-ownership). The submodel table above links each node to its contract; [Authoring](#authoring) owns its nested Design-method view. Workflow coordinates governed work, while individual capabilities retain their scoped invocation behavior. CLI and Engineering are external siblings whose shared relationships are owned by System.
+
+Overview outputs are defined by the [behavioral submodels](#behavioral-submodels); [Context and Scope](#context-and-scope) owns user inputs, [Runtime View](#runtime-view) owns invocation behavior, and [Deployment View](#deployment-view) describes the packaged skill boundary. [CLI](../cli/cli.md) supports governed recording, while [Engineering](../engineering/engineering.md) realizes and delivers the published behavior. Individual skill use remains independent of CLI recording.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: User invocation, agent interpretation, governed recording and product delivery are distinct boundaries. | [Context view](#context-view) |
+| Building Block | Necessary: Six behavioral owners share one common capability contract and retain their specialist responsibilities. | [Building Block view](#building-block-diagram) |
+| Runtime | Necessary: Portable invocation and governed recording load different resources and must preserve stage and permission limits. | [Runtime view](#runtime-diagram) |
+| Deployment | Necessary: Canonical content, generated archives and target installations have distinct source and runtime roles. | [Deployment view](#deployment-diagram) |
+
+
 ## Architecture Constraints
 
 The Constitution and approved owning models outrank retained legacy documents. `skills/` remains the only authored skill source; generated candidates are derived and never hand-edited. Operational projection manifests and templates stay at their current paths unless their actual consumers are coherently moved. This Design selects no such relocation.
@@ -30,6 +85,65 @@ The Constitution and approved owning models outrank retained legacy documents. `
 Published text must work from the installed package and available project authority. Internal requirement IDs, source-displacement maps, selector paths, generator details and maintenance mechanisms belong here or in contributor evidence, not in shipped procedure. A project can have its own relevant specs and governance; portability does not deny access to them or substitute RigorLoop policy for them.
 
 Only `rigorloop-records-v3` is supported runtime stored input in the adopted profile. Historical examples, approvals, names and retired recording procedures remain evidence of their original subjects, not a supported execution fallback. This constraint comes from Record Format and CLI, not from a new Skill schema.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    User["User and project authority"] -->|"intent and evidence"| Skills["Published skill guidance"]
+    Skills -->|"scoped procedure"| Agent["Supported agent"]
+    Agent -->|"artifacts, changes and assessments"| User
+    Agent -->|"explicit governed operations when applicable"| CLI["CLI and Records"]
+    Engineering["Engineering"] -->|"validated packaged guidance"| Skills
+```
+
+User invocation, agent interpretation, governed recording and product delivery are distinct boundaries. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block diagram
+
+```mermaid
+flowchart TB
+    Contract["Capability Contract"] -.->|"common invocation and limits"| Capabilities["Published specialist capabilities"]
+    Capabilities -->|"coordination"| Workflow["Workflow"]
+    Capabilities -->|"engineering intent"| Authoring["Authoring"]
+    Capabilities -->|"scoped code and repairs"| Implementation["Implementation"]
+    Capabilities -->|"independent judgments"| Assessment["Assessment"]
+    Capabilities -->|"direction, inquiry and learning"| Support["Project Support"]
+    Authoring -->|"Design method owner"| Design["Design authoring model"]
+```
+
+Six behavioral owners share one common capability contract and retain their specialist responsibilities. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Invoke["Receive scoped skill invocation"] --> Resolve["Resolve project authority and invocation mode"]
+    Resolve --> Valid{"Safe, sufficient basis?"}
+    Valid -->|"no"| Stop["Explain missing authority or resource"]
+    Valid -->|"yes"| Load["Load only triggered complete resources"]
+    Load --> Work["Perform specialist duty within scope"]
+    Work --> Output["Produce artifact, implementation or assessment"]
+    Output --> Record["Record when applicable; hand off under authority"]
+```
+
+Portable invocation and governed recording load different resources and must preserve stage and permission limits. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment diagram
+
+```mermaid
+flowchart LR
+    Source["Canonical skill and packaged resources"] -->|"Packaging transforms"| Archive["Supported target archive"]
+    Archive -->|"CLI Installation or authorized manual installation"| Target["Target skill directory"]
+    Target -->|"agent reads entrypoint and conditional resources"| Agent["User agent process"]
+    Agent -->|"scoped authorized actions"| Project["User project"]
+```
+
+Canonical content, generated archives and target installations have distinct source and runtime roles. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 
@@ -74,6 +188,23 @@ SKL-SR-01–15 define the reusable invocation and resource contract. A capabilit
 The [Workflow child](workflow.md) owns coordination. Manual invocation produces only its scoped result by default. Governed continuation consumes explicit assessments and authoritative project state; it does not manufacture another actor's conclusion. The `route` capability applies this behavior. Every other capability uses its required handoff without acquiring route ownership.
 
 ### Authoring
+
+Authoring owns the following nested subsystem view. Proposal and Plan remain capabilities governed by the retained sources below; Design is its separately maintained child model.
+
+```mermaid
+flowchart LR
+    Proposal["Proposal capability: bounded direction"]
+    Design["Design child model: behavioral and technical authoring"]
+    Plan["Plan capability: delivery and proof allocation"]
+    Review["External: Assessment"]
+    Proposal -->|"direction subject for review"| Review
+    Review -->|"approved direction or authorized correction"| Design
+    Design -->|"affected model package for review"| Review
+    Review -->|"settled Design basis"| Plan
+    Plan -->|"delivery package for review"| Review
+```
+
+The [Design child](authoring/design.md) owns its authoring method; Assessment owns independent judgments, and Workflow coordinates any authorized continuation. This view does not create new Proposal or Plan models or make every individual invocation traverse the full sequence.
 
 | Capability | Required input and action | Output and failure boundary |
 | --- | --- | --- |

@@ -6,7 +6,9 @@ Parent model: [Skill — Authoring](../skill.md#authoring).
 
 This child owns the engineering-design authoring method and model convention. The Authoring submodel also defines proposal and delivery-plan behavior; System owns project composition. Repository execution of these capabilities belongs to Engineering Development.
 
-Owning change: [three-model reconciliation](../../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Introduction and Goals
 
@@ -19,6 +21,42 @@ The direction is [Unified Design Authoring and Bounded Model Consolidation](../.
 The Constitution retains precedence. Product direction belongs to the proposal's decision owner; Workflow owns coordination; Review and Closeout owns shared assessment and applicability policy; Validation owns shared test derivation, protective-value and maintenance criteria; Record Format owns stored representation; CLI owns recording mechanics. Design supplies engineering intent and identifies its assessment basis, not approval, work allocation or execution permission.
 
 The adopted model profile permits this combined living Design. The unified `design` skill supplies technical and behavioral authoring at coordinated adoption. This document does not activate the replacement public skill or amend governance merely by existing. It introduces no lifecycle gate, runtime record schema, model-management service, mandatory prototype, per-test ledger or target-agent correctness claim.
+
+## Architecture Overview
+
+```mermaid
+flowchart TB
+    Direction["Approved direction or authorized correction"]
+    Owners["Product and shared-contract owners"]
+    subgraph Design["Design — coherent engineering contracts"]
+        Ownership["Responsibility selection<br/>Smallest affected owner set"]
+        Reconcile["Behavior and realization<br/>Boundaries, views and interfaces"]
+        Preserve["Decision preservation<br/>Rationale and source reconciliation"]
+        Intent["Acceptance intent<br/>Conditions and observable outcomes"]
+        Package["Design package<br/>Exact subjects, assumptions and references"]
+        Ownership -->|"owned obligations"| Reconcile
+        Reconcile -->|"choices and affected sources"| Preserve
+        Reconcile -->|"claims to demonstrate"| Intent
+        Preserve -->|"decisions and retained constraints"| Package
+        Intent -->|"assessment and verification intent"| Package
+    end
+    Direction -->|"goals and authorized bounds"| Ownership
+    Owners -->|"existing contracts and interactions"| Reconcile
+    Package -->|"subjects and assessment basis"| Review["Independent Design Review"]
+    Package -->|"requirements and outcomes, under review authority"| Delivery["Delivery allocation"]
+```
+
+Design owns the method responsibilities inside the boundary, realized through the [public resource composition](#building-block-view). [Responsibility abstraction](#responsibility-abstraction), [technical reasoning and views](#technical-reasoning-and-decisions), and [decision/reference preservation](#model-document-and-structural-contract) own the detailed authoring rules; the [Runtime View](#runtime-view) owns the reconciliation procedure. [Context and Scope](#context-and-scope) identifies external contract owners. [Assessment](../assessment.md) owns independent review; [Authoring](../skill.md#authoring) owns Delivery planning. Package production does not authorize that downstream work. [System](../../system.md) applies the reusable convention to this project.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Direction, shared-contract owners, review and Delivery are separate decision boundaries. | [Context view](#context-view) |
+| Building Block | Necessary: A compact public entrypoint conditionally loads complete methods and examples; loading boundaries are part of portability. | [Building Block view](#building-block-diagram) |
+| Runtime | Necessary: Reconciliation must distinguish an engineering choice from a material change to approved direction. | [Runtime view](#runtime-diagram) |
+| Deployment | No separate deployment view: Design owns an authoring method, while Skill owns packaged invocation and Packaging/Installation own artifact placement. The retained deployment prose describes compatibility, not a Design-owned runtime service. | Existing deployment/context prose and the named external owner. |
+
 
 ## Context and Scope
 
@@ -46,6 +84,55 @@ Retain a distinct model when it has a clear contract and a meaningful reason to 
 
 A main model may delegate coherent responsibilities to submodels. The parent owns their composition and shared boundary; each child owns its detailed contract once. Logical nesting does not require immediate file relocation, and a child does not become another peer product merely because it has a separate Design. System owns the project's actual decomposition. Assess it with an end-to-end example and a failure that separates neighboring responsibilities, such as correct check execution with inadequate evidence or a justified decision whose persistence conflicts. Keep method requirements here and project-specific relationships in System; do not invent one model per lifecycle activity to fill an apparent diagram gap.
 
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Direction["Direction owner"] -->|"approved goals or scoped correction"| Design["Design author"]
+    Owners["Affected model owners"] -->|"contracts and interactions"| Design
+    Design -->|"exact model/example subjects and rationale"| Review["Independent Design Review"]
+    Design -->|"reviewed requirements and observation intent"| Delivery["Delivery author"]
+```
+
+Direction, shared-contract owners, review and Delivery are separate decision boundaries. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block diagram
+
+```mermaid
+flowchart TB
+    Entry["design entrypoint"] -->|"living-model work"| Model["Model authoring and skeleton"]
+    Entry -->|"overview and view selection"| Examples["Portable architecture-view examples"]
+    Entry -->|"significant realization choices"| Technical["Technical-design method"]
+    Entry -->|"shared owners"| Composition["System composition method"]
+    Entry -->|"retained legacy source"| Legacy["Legacy reconciliation and conditional methods"]
+    Entry -->|"valid governed change"| Records["Governed authoring procedure"]
+    Model -->|"reconciled subject"| Package["Exact Design package"]
+    Technical -->|"realization and views"| Package
+    Composition -->|"owner interactions"| Package
+    Legacy -->|"preserved contracts"| Package
+```
+
+A compact public entrypoint conditionally loads complete methods and examples; loading boundaries are part of portability. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Read["Read direction and affected owners"] --> Reconcile["Reconcile behavior, views and realization"]
+    Reconcile --> Gap{"Changes approved direction?"}
+    Gap -->|"yes"| Owner["Return evidence and alternatives to direction owner"]
+    Gap -->|"no"| Intent["Preserve decisions and acceptance intent"]
+    Intent --> Inspect["Inspect exact models and relied-on examples"]
+    Inspect --> Review["Hand package to independent Design Review"]
+    Review -->|"required correction"| Reconcile
+```
+
+Reconciliation must distinguish an engineering choice from a material change to approved direction. Detailed requirements and scenarios in this model remain authoritative.
+
 ## Requirements
 
 | ID | Required behavior |
@@ -55,6 +142,7 @@ A main model may delegate coherent responsibilities to submodels. The parent own
 | DES-SR-03 | Each changed model MUST define observable required outcomes, applicable invariants, inputs/outputs, boundaries, compatibility and failure/recovery behavior with stable model-local requirement identities. Conditions under which side effects must not occur MUST be explicit where material. |
 | DES-SR-04 | Behavior and technical realization MUST be reconciled. A material feasibility constraint that changes approved product direction MUST return to its decision owner with evidence and alternatives; the author MUST NOT silently weaken the approved goal or present implementation convenience as authority. |
 | DES-SR-05 | A model MUST explain responsibility structure, significant dependencies, runtime or operational flows, applicable deployment/trust boundaries, quality constraints and risks to the depth needed to assess its claims. Irrelevant concerns need a bounded rationale; methods MUST NOT demand fictitious services, components or metrics. |
+| DES-SR-22 | Every model MUST contain an Architecture Overview View with a concise graph orienting readers to its principal responsibilities, externally significant products or interfaces and important relationships. Every material element or relationship MUST resolve to its owning view or model without duplicating detailed authority. Authors MUST evaluate Context, Building Block, Runtime and Deployment views, record each necessity decision with its reason, and draw every necessary view. Supporting views MUST remain consistent with the overview and affected contracts; an overview MUST NOT replace a necessary supporting view. |
 | DES-SR-06 | Important decisions MUST retain stable identity, context, chosen outcome, meaningful alternatives, consequences and still-applicable constraints in the owning model. Normal model work MUST NOT require an additional ADR with duplicate current authority. Historical ADR identities and judgments MUST retain their original meaning. |
 | DES-SR-07 | The system-level Design MUST describe external boundaries, responsibility inventory, significant relationships, end-to-end flows and genuinely system-wide quality/failure obligations. It MUST reference component/shared-contract owners without copying their local rules or overriding governance or component authority. |
 | DES-SR-08 | An interface or shared-assumption change MUST identify affected producers/consumers and required reconciliation or an evidence-backed unaffected disposition. Review scope MUST include relevant interactions and exact changed subjects; it MUST NOT require every repository model for every invocation or rely on a CLI-inferred semantic dependency graph. |
@@ -80,6 +168,7 @@ Design is a method responsibility, not a new service. Its public implementation 
 | --- | --- | --- |
 | `skills/design/SKILL.md` | Always: scope/authority, owner selection, reconciliation loop, stable references, boundary scan, assessment/verification distinction and handoff | Detailed migration inventory, repository paths for maintainers, exhaustive method manuals |
 | `references/model-authoring.md` | Creating/revising a living model: requirements, decisions, model layout and the complete DES-SR-12 example contract, including parent indexing, validity, invariant preservation and review handoff | Lifecycle mutation and approval |
+| `references/architecture-view-examples.md` | Living-model overview or supporting-view decisions: portable composed/leaf excerpts and semantic counterexamples | Internal model dependencies, a universal component inventory or automated approval |
 | `references/technical-design.md` | Significant structure, interfaces, runtime, deployment, trust or quality choices | A mandatory second architecture file or ADR |
 | `references/system-composition.md` | Multiple affected owners, shared contract or system-wide claim | Whole-repository loading or inferred ownership by folder |
 | `references/legacy-source-reconciliation.md` | Scoped unmigrated-source work: select the project authority, retain its format/IDs, classify the amendment and load the applicable feature or legacy technical procedure below; invocation coexistence or explicit authority migration | Automatic conversion, blanket deletion or historical approval rewriting |
@@ -148,7 +237,7 @@ The marker replaces the ambiguous document identifier `explicit-recording-v1`; i
 
 The function accepts a label and returns a normalized value. For example, `"  green  room  "` becomes `"green  room"`; an all-space string becomes `""`; a non-string input produces an error and no normalized value. The scenarios describe intended observations, not an exhaustive test list or evidence that an implementation passed.
 
-```markdown
+````markdown
 # Label Normalization Design
 
 Model validation contract: model-document-v1
@@ -156,6 +245,23 @@ Model validation contract: model-document-v1
 ## Responsibility
 
 Normalize labels with a pure function. The caller owns storage, authorization and presentation; this model owns only the input-to-output transformation.
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    Caller["Caller"] -->|"label value"| Normalize["Label normalization"]
+    Normalize -->|"trimmed string or input error"| Caller
+```
+
+The Responsibility and Requirements sections own this pure transformation and its input/output relationship. No additional model or service is implied.
+
+| Supporting view | Necessity and reason |
+| --- | --- |
+| Context | Unnecessary: one synchronous caller; the responsibility and requirements fully define the external input/output boundary. |
+| Building Block | Unnecessary: a single pure transformation has no material internal subsystem decomposition. |
+| Runtime | Unnecessary: there is no component interaction, state transition or asynchronous protocol beyond the specified return/error behavior. |
+| Deployment | Unnecessary: this function has no external state or environment dependence; its caller owns placement. |
 
 ## Requirements
 
@@ -177,7 +283,7 @@ Normalize labels with a pure function. The caller owns storage, authorization an
 | Failure/recovery | LAB-SR-02, LAB-SR-03 | Invalid input produces no normalized value or state changes; a following valid call succeeds normally. |
 | Compatibility/migration | - | Not applicable: this example owns no persisted records, versions or migration. |
 | External/environment | LAB-SR-01, LAB-SR-03 | The ASCII-space rule produces the same result regardless of locale and without filesystem or network access. |
-```
+````
 
 Extract the fenced content to the hypothetical model path to check its structure. The fence is illustrative content, so its declaration and tables must not count as additional live declarations in this owning Design. Structural validation checks shape and references; independent assessment judges the requirements and scenarios, and implementation tests establish actual behavior. Changing this relied-on example requires reassessment with its owning Design and exact subject under DES-SR-12/16.
 
@@ -201,7 +307,25 @@ These are retained content and assessment obligations, not a new schema, automat
 
 The arc42 concern set remains a useful completeness guide: goals, constraints, external context, strategy, building blocks, runtime, deployment, cross-cutting concepts, decisions, quality, risks and glossary. New model documents need not repeat twelve headings when the same concerns are clearly covered in a smaller structure; retaining a heading is not evidence that its concern was assessed. This first package keeps familiar headings to ease comparison without making them a universal schema.
 
-C4-style context and structural views are conditional on explanatory value. A system context shows the whole system and its external actors; a container view shows actual execution/storage or distribution boundaries, not every policy model as a fake deployed container. Component/deployment detail is added when a coarser view cannot explain a material relationship. Text-source diagrams have one authored source and intent-labeled relationships. Inline Mermaid is permitted for a small model-local view; reused/larger views use one model-owned source file and relative links. Binary exports and external diagrams are never the sole authority. C4 flowcharts retain distinguishable roles and relevant technology labels; color is not the only distinction.
+#### Architecture Overview View and necessary supporting views
+
+Architecture Overview View provides a concise orientation to the architecture as a whole at the owning model's scope. It identifies the principal system responsibilities, externally significant products or interfaces, and the most important relationships required to understand how the project delivers and assures those products.
+
+The view may summarize information owned by Context, Building Block, Runtime and Deployment views. It does not replace those views or create duplicate detailed authority. Every material element or relationship resolves through a local section reference or model link to its owning architectural view or model. Each model requires an Architecture Overview View with a concise graph, including leaf models; a leaf shows actual owned responsibilities without inventing children or services. Existing Architecture Overview headings and anchors remain valid.
+
+During design, evaluate each of the four supporting views below. Record whether it is necessary, why, and where its owned detail is found. Draw every necessary view and explain its material elements and relationships. A short table or prose is sufficient for the evaluation; this is not a new artifact, ID series or document-validation schema. An overview graph alone does not discharge a necessary supporting view. Reuse an existing adequate graph at its owning location by reference, preserving one authored source.
+
+| Supporting view | Evaluate the need to explain | Draw when necessary |
+| --- | --- | --- |
+| Context View | External actors, systems, inputs/outputs, interfaces and authority or trust boundaries | The model boundary and its external relationships |
+| Building Block View | Internal responsibility decomposition, interfaces and static dependencies | Owned blocks and their significant relationships; parents reference child-owned detail |
+| Runtime View | Cooperation over time, significant normal and failure paths, retries, concurrency or recovery | Representative interactions using the same responsibilities as the structural views |
+| Deployment View | Mapping executable or packaged artifacts to environments, processes, nodes and material resource/trust constraints | The actual placement and connections needed to assess the model's claims |
+
+Necessity follows an architectural question or material uncertainty, not model size or a diagram quota. Record a bounded reason for each unnecessary view and revisit that disposition when relevant behavior or boundaries change. A missing necessary view, a material element without an owner, contradictory names or boundaries across views, or duplicated detailed authority is a Design Review correction. Structural validation alone cannot settle necessity or adequacy. C4 notation may express appropriate context or structural detail; arc42 supplies the complementary concerns. Neither requires fictitious deployed policy services. Text-source diagrams use meaningful relationship labels, working relative links and non-color-only distinctions.
+
+This refinement is selected by the current independent-parallel-tests change. Delivery must reconcile the public design procedure, model-authoring and technical-design resources, system-composition guidance, design skeleton and affected Design Review guidance with this convention, replacing the unconditional optional-diagram wording for living models. It must assess the four supporting views for each of the twelve repository models and supply every necessary diagram, including affected illustrative models, without converting retained legacy documents or changing record schemas. Existing overview graphs remain reusable. This authoring revision defines that work; it does not claim the skill package or all model views already implement it. Installation grants no customer-model conversion authority.
+
 
 Model decisions replace mandatory new standalone ADRs for adopted responsibilities. A historical decision may remain applicable, be narrowed or be superseded; its old judgment never applies to a changed model automatically. Repository-level `templates/architecture.md`, `templates/adr.md` and `templates/diagram-styles.mmd` remain contributor source aids. Installed invocations use the named skill-local legacy assets and `legacy-technical-authoring.md`, never repository paths. Delivery reconciles their content and validates packaged completeness under existing asset/source governance. These conditional legacy assets do not establish a second normal authoring contract or require standalone ADRs for living models.
 
@@ -317,7 +441,7 @@ Requirements, rationale and evidence references must not expose secrets, credent
 | Input domain | DES-SR-02, DES-SR-03, DES-SR-11, DES-SR-12, DES-SR-14, DES-SR-19 | A new model, scoped existing model and unmigrated-spec amendment resolve different valid targets. Unknown marker, malformed requirement reference or unresolved owner rejects; an unmarked historical amendment gets its retained semantic classification rather than silent model conversion. An unindexed example, malformed JSON, explanatory extra record keys or a complete record violating an available schema cannot satisfy the example contract. |
 | State/lifecycle | DES-SR-04, DES-SR-13, DES-SR-16, DES-SR-18 | A saved draft or approved proposal does not activate the new skill or replacement authority. An unresolved direction conflict returns to its owner without presenting the weakened behavior as approved. |
 | Identity/authority | DES-SR-06, DES-SR-08, DES-SR-11, DES-SR-12, DES-SR-16, DES-SR-21 | A decision/requirement move preserves its replacement reference, while the review remains attached to its original subject. The author cannot self-approve or change another actor's judgment. An affected example is assessed with its owning model and its exact identity is included when relied upon; an unchanged parent identity does not make an edited example's old assessment current. |
-| Composition/path | DES-SR-07, DES-SR-08, DES-SR-10, DES-SR-15, DES-SR-16 | A shared-authoring-contract change reaches routing, Design Review and planning consumers with one owner and consistent integrated outcome. A locally coherent model whose consumer expects the old contract remains unreconciled. |
+| Composition/path | DES-SR-07, DES-SR-08, DES-SR-10, DES-SR-15, DES-SR-16, DES-SR-22 | A shared-authoring-contract change reaches routing, Design Review and planning consumers with one owner and consistent integrated outcome. A locally coherent model whose consumer expects the old contract remains unreconciled. An overview resolves material elements and relationships to owners; all four supporting views have reasoned necessity decisions and each necessary view has a consistent diagram. An overview-only model with a necessary but absent runtime view fails assessment; a leaf with justified unnecessary deployment detail needs no invented deployment diagram. |
 | Temporal/retry | DES-SR-08, DES-SR-11, DES-SR-13, DES-SR-16 | Concurrent edits to a shared model require current subject inspection and impact/reassessment under Review and Closeout; a failed recording retry cannot replay a stale approval or overwrite a neighbor. |
 | Failure/recovery | DES-SR-04, DES-SR-09, DES-SR-15, DES-SR-17, DES-SR-18 | Missing required packaged guidance stops dependent authoring. A failed guard leaves files/state unchanged; an authorized managed replacement follows TNI-DES-05 rollback/interruption recovery, never an automatic document conversion or lockfile reset. |
 | Compatibility/migration | DES-SR-01, DES-SR-06, DES-SR-13, DES-SR-14, DES-SR-17, DES-SR-20, DES-SR-21 | New packages supply design alone; old/mixed selected-target entrypoints produce a safe actionable rejection of ordinary init, with the eligible managed replacement path defined by TNI-DES-01–06. A small unmigrated-source amendment preserves its owner/format, while selected migrated clauses have exactly one replacement and old approvals remain unchanged. |

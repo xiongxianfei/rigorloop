@@ -710,13 +710,12 @@ class BenchmarkRunnerTests(unittest.TestCase):
         return skill_source
 
     def test_runner_dry_run_installs_public_skills_and_writes_analyzer_summaries(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory() as tmp, tempfile.TemporaryDirectory(
+            dir=ROOT, prefix=".token-case-"
+        ) as output_parent:
             temp_root = Path(tmp) / "temp"
             skill_source = self.write_public_skill_source(tmp)
-            output_dir = ROOT / "docs" / "reports" / "token-cost" / "runs" / "review-check"
-            if output_dir.exists():
-                for path in output_dir.iterdir():
-                    path.unlink()
+            output_dir = Path(output_parent) / "reports"
             result = run_command(
                 str(RUNNER),
                 "--release",
@@ -735,41 +734,35 @@ class BenchmarkRunnerTests(unittest.TestCase):
                 "--dry-run",
             )
 
-            try:
-                self.assertEqual(result.returncode, 0, result.stderr)
-                self.assertIn("dry_run: true", result.stdout)
-                self.assertIn(f"skill_source: {skill_source.as_posix()}/", result.stdout)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("dry_run: true", result.stdout)
+            self.assertIn(f"skill_source: {skill_source.as_posix()}/", result.stdout)
+            self.assertIn(
+                "codex_command: codex exec --json --ephemeral --skip-git-repo-check",
+                result.stdout,
+            )
+            self.assertIn("analyzer_command:", result.stdout)
+            self.assertEqual(
+                sorted(path.name for path in output_dir.glob("*.jsonl")),
+                [f"{benchmark_id}-run1.jsonl" for benchmark_id in sorted(EXPECTED_BENCHMARKS)],
+            )
+            for benchmark_id in EXPECTED_BENCHMARKS:
+                summary = output_dir / f"{benchmark_id}-run1.analysis.yaml"
+                self.assertTrue(summary.exists(), f"missing analyzer summary for {benchmark_id}")
+                summary_text = summary.read_text(encoding="utf-8")
+                self.assertIn("schema_version: 1", summary_text)
                 self.assertIn(
-                    "codex_command: codex exec --json --ephemeral --skip-git-repo-check",
-                    result.stdout,
+                    f"jsonl: {output_dir.relative_to(ROOT)}/{benchmark_id}-run1.jsonl",
+                    summary_text,
                 )
-                self.assertIn("analyzer_command:", result.stdout)
-                self.assertEqual(
-                    sorted(path.name for path in output_dir.glob("*.jsonl")),
-                    [f"{benchmark_id}-run1.jsonl" for benchmark_id in sorted(EXPECTED_BENCHMARKS)],
-                )
-                for benchmark_id in EXPECTED_BENCHMARKS:
-                    summary = output_dir / f"{benchmark_id}-run1.analysis.yaml"
-                    self.assertTrue(summary.exists(), f"missing analyzer summary for {benchmark_id}")
-                    summary_text = summary.read_text(encoding="utf-8")
-                    self.assertIn("schema_version: 1", summary_text)
-                    self.assertIn(
-                        f"jsonl: {output_dir.relative_to(ROOT)}/{benchmark_id}-run1.jsonl",
-                        summary_text,
-                    )
-                    self.assertNotIn(str(ROOT), summary_text)
+                self.assertNotIn(str(ROOT), summary_text)
 
-                temp_runs = list(temp_root.glob("rigorloop-token-bench-v0.1.1-*"))
-                self.assertEqual(len(temp_runs), 1)
-                self.assertTrue(
-                    (temp_runs[0] / ".agents" / "skills" / "proposal" / "SKILL.md").exists()
-                )
-                self.assertFalse((BENCHMARK_FIXTURE / ".agents" / "skills").exists())
-            finally:
-                if output_dir.exists():
-                    for path in output_dir.iterdir():
-                        path.unlink()
-                    output_dir.rmdir()
+            temp_runs = list(temp_root.glob("rigorloop-token-bench-v0.1.1-*"))
+            self.assertEqual(len(temp_runs), 1)
+            self.assertTrue(
+                (temp_runs[0] / ".agents" / "skills" / "proposal" / "SKILL.md").exists()
+            )
+            self.assertFalse((BENCHMARK_FIXTURE / ".agents" / "skills").exists())
 
     def test_runner_rejects_repository_local_codex_skill_source(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

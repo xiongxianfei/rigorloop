@@ -48,8 +48,18 @@ jobs:
       - name: Run change-selected PR checks or full main gates
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            # Complete executor self-tests include three full suite comparisons.
+            # Timeout applies to each leaf check or isolated case.
             bash scripts/ci.sh --mode pr --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.event.pull_request.head.sha }}" --timeout 600
           else
             bash scripts/ci.sh --mode main --base "${{ github.event.before }}" --head "${{ github.sha }}"
           fi
+
+      - name: Verify actual executor overlap
+        # A separate invocation reserves two workers for the tiny overlap fixtures.
+        # Case-isolated execution inside ci.sh gives each of these cases one worker.
+        env:
+          RIGORLOOP_VALIDATION_WORKERS: "2"
+        run: >-
+          python scripts/test-validation-execution.py
+          ExecutionTests.test_parallel_tasks_actually_overlap_with_bounded_workers
+          CaseAdapterTests.test_normal_and_isolated_fixture_preserve_hooks_population_and_parallelism

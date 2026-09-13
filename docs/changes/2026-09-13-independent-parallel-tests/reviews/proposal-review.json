@@ -1,0 +1,85 @@
+{
+  "assessment_scope": "Formal-lifecycle/manual Proposal Review for the exact registered primary proposal of2026-09-13-independent-parallel-tests. Assembly PRR1G-recorded-context-gated; durable_recording_context=true and scope_budget_context=true; vision_exception_context=false and standing_artifact_context=false. This is an isolated reviewer invocation with no armed automated review packet and no activity, work, model or proposal settlement mutation.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review",
+  "independence_basis": "Separate user-authorized reviewer did not author this proposal or its author evidence. Reviewed complete new proposal against original three goals, standing authority, current linked model relationships and bounded current catalog/executor/fixture facts. Earlier merged initiative remains historical; its approval is not reused as approval of this expanded direction.",
+  "judgment": "approved",
+  "limitations": [
+    "Proposal-level feasibility is supported; full remaining-case isolation and actual duplicate protection are not yet established. Design and Delivery must resolve those facts before implementation or removal.",
+    "No runtime tests were rerun for this direction-only review. The hosted page independently confirms successful job duration; detailed command timings are attributable registered author observations, corroborated by current command/helper structure, not a new measurement performed by this reviewer.",
+    "Current owner/source reads replace a materially stale project-map for these bounded facts. No broader project-map refresh or reopening of the prior merged initiative is part of this review.",
+    "This approved/current review permits authorized Design authoring only. It does not approve detailed Design, delivery allocation, test deletions, runtime behavior, final verification, branch readiness or publication. Recording success supplies no additional execution or routing authority."
+  ],
+  "rationale": [
+    "Challenge — pass: current insufficiency is concrete before the solution: repeated expensive executor proof and serial entries whose independence remains unassessed. The linked GitHub Actions page confirms successful run34743370429 and ci job18m54s (overall run18m57s); the registered author evidence records the two339.54s/332.29s exclusive executions. Source confirms both catalog identities invoke the same executor test script and its helper repeats normal, individual sequential and reverse-parallel real populations. These observations justify investigation without proving case redundancy or future savings.",
+    "Goals — pass: all three raw goals remain visible as outcome-level direction: clearer design, removal of redundant protection/execution, and independent parallel-capable retained cases. Truthful failures, complete discovery and diagnostics remain goals. No deletion quota, forced overlapping operation, new model or larger timeout is substituted for success.",
+    "Scope — pass: the initial intent table explicitly classifies design/duplicate removal/parallel refinement as core and affected readers/metadata as same-slice dependencies. All current repository-owned automated validation families are included, not just the initial278 cases or highest-cost examples. Delivery owns a bounded actual inventory and slices; unassessed work cannot vanish into unnamed follow-up. Exclusions preserve product features, historical evidence, no-cache, existing review/release gates and separately authorized live publication.",
+    "Governing principle — pass: each retained case provides distinct required protection and owns its execution state. This is a sound maintenance principle rather than a specific runner architecture. Distinct observation/configuration boundaries can justify apparently similar cases; ordered internal scenario steps and artifact dependencies are compatible with independent cases.",
+    "Direction — pass: separately assess duplicate cases and duplicate scheduling, retain protection before consolidation, refine state ownership/nested demand, and distinguish isolation eligibility from available capacity. Same-invocation equivalent proof can satisfy multiple requesters; changed subjects/configurations or independently required fresh observations remain separate. Every new invocation runs again. This meaning does not introduce cross-invocation cached results.",
+    "Feasibility — pass: exactly one embedded Feasibility section states assessment, current mechanisms, evidence limits, constraints and potential blockers. Existing normal-loader adapters, fresh processes, shared budgets and temporary fixtures are credible starting points. No assertion that all remaining suites are already safe is made. Broad inventory size, setup cost and inseparable resources are acknowledged; an affected unresolved obligation blocks completion rather than authorizing silent deletion or permanent exemption.",
+    "Material impact — pass: broad multi-family work, migration from indefinite serial defaults, setup overhead and boundary-specific regression risk are disclosed. Negative/recovery/real consumer proof must survive. No guaranteed runtime target or test-count reduction is used as approval basis. Potential lack of equivalence or isolation is explicitly an owned downstream decision, not an omitted feasibility issue.",
+    "Vision alignment — aligned: preserving traceable protective obligations, durable evidence and independent judgments while eliminating work without value serves trustworthy and reviewable delivery. The proposal does not optimize speed at the expense of proof or introduce a hosted runtime/platform dependency. No vision revision or standing-artifact exception is necessary.",
+    "Downstream authority — pass: detailed SRs, model realization, case equivalence criteria and completion assessment belong to Design; inventory allocation and proof sequencing belong to Delivery. In particular, current Validation execution normalization distinguishes catalog identity/phase and current adoption is limited to three suites: this proposal selects refinement of those limits rather than pretending current contracts already authorize phase sharing or full adoption. No detailed deletion, API, execution topology or implementation is approved here.",
+    "Requested decision — pass: explicitly approve all three combined goals for detailed Design and independent review only. Proposal approval neither deletes tests nor supplies implementation/adoption/publication authority. Scope-preservation result: all original material goals remain in scope with no hidden narrowing or unspecified deferred population. Specialized scope-budget gate passes; no trigger ambiguity. Recommended proposal edits: none. Return recorded judgment to route; no automatic downstream handoff by this reviewer."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
+      "path": "docs/proposals/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:9e2d76bff364133fe34d7246c8b4dbbdc2a9c838dc89179ea74037be0a6c0501",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:fe848ca3b53efd50f060157a225157a5003462d1d8bca2b08368a6ab424f0cab",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:1c1d62ada1d5b45e1dc87db59cedd8ba13d4e90a0c6afe535ae46d5553f7deea",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:a530e4975362a9cb0ef5fbfb5b8944145288ce6fe78afdc28253cc1763462476",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:a9bb59b84147d1e51b78eb7927d16e987f2d1ea8a9a2f1827a919211a42869ac",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:62e2945ba15a9559ff8947fb36a5096ed5bd204b0ba22301df92e2962f08d428",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:1843d7127b11c99af1956c41c81c7a5f0a3dd201cba61747c81d360b53233e73",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    }
+  ],
+  "summary": "Direction is valuable, bounded and feasible enough for Design: refine the existing Validation design, remove proven duplicate cases and unnecessary repeated execution, and resolve remaining serial automated populations without losing required protection or introducing caching. No material findings. Vision alignment: aligned.",
+  "target": "proposal"
+}

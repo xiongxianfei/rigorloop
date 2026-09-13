@@ -1,0 +1,75 @@
+{
+  "assessment_scope": "Bounded Delivery reassessment of remaining M7 against design-review-m7-allocation (sha256:8631bde8fa1bef38726e648ebb920b6400963b86ed117751d39e90e5a1698376), preserving original full-plan/earlier milestone judgments. No runtime normalization has yet been implemented or approved.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review-m7-allocation",
+  "independence_basis": "Root authored the existing plan and new Design allocation; separate proposal-reviewer inspected both without authoring either or implementing the mechanism. This distinct Delivery assessment follows independent Design approval.",
+  "judgment": "approved",
+  "limitations": [
+    "Bounded plan applicability judgment based on exact Design, existing M7 verification allocation and current caller/source inspection; no normalization tests or final integration results are claimed.",
+    "No author/routing/work mutations by reviewer. Earlier completed milestone proof is retained within its original scope."
+  ],
+  "rationale": [
+    "Traceability — VAL-SR19/20 explicit authored coverage, reasons, phase gates and failed/unique results map directly to M7 catalog/caller reconciliation and TG-07. Stale/conflicting definitions, missing/self/cyclic dependencies, failed prerequisites and untouched fresh/configuration scopes remain within existing M3-derived executor proof and M7 integration obligation; the amendment makes the concrete scenarios explicit without adding a population, owner or milestone.",
+    "Sequencing and intermediate state — completed M1–M6 independent reviews establish the native/Python adapter and fixture basis before remaining composition normalization. The Design amendment now precedes implementation as required. Existing paths remain executable until bounded correction; review must assess changes before final completion. No work reinitialization or changes to completed milestones are warranted.",
+    "Verification adequacy — use existing executor/composition and selector regressions for finite pair allocation, narrow-only preservation, both-requested reasons/results, exact basis incompatibility, dependency rebinding/cycles, failed focused gate and unchanged release/configuration checks. M7 already requires actual main/broad/committed PR commands and every missing direct population, plus release synthetic candidate callers. Their executed IDs must substantiate no duplicated covered case or disappeared protection; helper-only proof cannot discharge actual caller integration.",
+    "Recurring concurrency protection — the existing plan authorizes necessary CI caller corrections and bounded nested demand. A sequential separate invocation of the two existing overlap regressions with an explicit two-worker allocation supplies distinct overlap proof currently serialized inside demand1 executor cases. It must not override a nested active allocation or rerun all48 merely as a proxy. This is an M7 CI proof adjustment within the existing allocation, not a new mechanism requiring plan expansion.",
+    "Compatibility/recovery and authority — finite reviewed pairs retain narrow-only behavior and all reasons/preparation; failures, stale metadata and cycles reject rather than shrink proof. Different versions/destinations/fresh observations and Release authority remain. Restore or correct any lost protection before relying on reduced execution. No cache, new persistent ledger, public service, synthetic release tag or live publication obligation is introduced.",
+    "Final gates and current applicability — prior plan semantics and original review subjects remain preserved. This additional review establishes current M7 reliance on the amended Design only; prior approvals do not certify the new code. M7 implementation proof and independent Code Review must complete, followed by fresh whole-change Code Review and distinct Verify. Authorizations already cover continuation; Route owns the next transition."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:6d1d8b981ce863dea927b4dc6b76455109d188b28bff6ad76542f9226f3b5d13",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:8631bde8fa1bef38726e648ebb920b6400963b86ed117751d39e90e5a1698376",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review-m7-allocation.json"
+    },
+    {
+      "identity": "sha256:5a59a9355f510fea316d1bcad0a2dec2debcecab114966757de577b6ca41a3f0",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:33e34828816eebafc0de6d5804daf58357001cd1986158e633846e71e30266bc",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:eff205ce26fe021b6819da756055d6430edd7a974dc21d28918661999c634e71",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m6.json"
+    },
+    {
+      "identity": "sha256:89b150f484fb9d7df6a9133a8eae16b522ad8dfe6cff30ab636b779a106fc752",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:ce61c2e1dbbf4e540fe93c799dfd1f9e353067733023d8aa4ff2626271cae6b8",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:ba80aa1beb343a4cbede39ebb6f8aeab09480551b6b83b77729e48455bd0ff85",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:2d0c0fbdfef2eab2ece82c3b0eeaa7e5742581846418dc374d120a4b9e7d86f6",
+      "path": ".github/workflows/ci.yml"
+    }
+  ],
+  "summary": "Unchanged M7 Delivery allocation remains adequate for the exact approved finite coverage amendment. No plan rewrite, new milestone or work initialization is needed.",
+  "target": "delivery"
+}

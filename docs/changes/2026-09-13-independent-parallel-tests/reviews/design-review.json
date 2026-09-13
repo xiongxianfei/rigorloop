@@ -1,0 +1,281 @@
+{
+  "assessment_scope": "Current complete M2 Design package reassessment after the sole Installation runtime correction, retaining the independently assessed twelve models and changed embedded example. Assessed explicit unsafe/default-conflict/force branches against the unchanged installation contract and fresh owning-document evidence. Separate delivered-document Code Review and later milestones remain required.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Finding ID: parallel-maintenance-allocation-scope. Severity: major. Scope: cross-artifact. Affected artifact IDs: validation, published-skill-first-repository-simplification, published-skill-first-repository-simplification.test. Owning stage: design. Location: Validation Proof quality/maintenance, Source disposition, VAL-SR21/22; retained spec Unified Validation applicability and R14/R19/R22; retained test-spec Necessary-design cleanup applicability and associated T1/T10/T13/T14. Both old applicability notices limit relaxed ledger/dual-proof/measurement procedures to earlier exact populations. New full-inventory cleanup extends beyond those populations but supplies no new exact maintenance map. An inherited historical exception cannot discharge current applicable clauses.",
+      "id": "parallel-maintenance-allocation-scope",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Add a bounded current new-profile maintenance allocation at Validation and reconcile retained spec/test-spec current applicability to it. Identify current automated test/check/fixture/consumer population, exact affected R14/R17–20/R22 and any R15/R25 implications and corresponding proof/acceptance instructions. Preserve protected failure mapping, unknown-protection stop, established retained detection, recovery and actual measured claims; explicitly state which procedural ledger/mandatory old-run/measurement prescriptions change. Retain unselected clauses, original historical IDs/rows/evidence and separate earlier maps. Do not invent new mandatory inventory ledgers or weaken required freshness. No runtime test removal is authorized by the notice.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "design-correction-check",
+            "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+          }
+        ],
+        "rationale": "Current Validation maintenance allocation names the new inventory, exact legacy clauses and related test/acceptance prescriptions; both retained notices select it explicitly. Protection, uncertainty stops, prior maps, historical blocks/IDs, R15/R16 and R21 remain intact. All five author check subjects match. This resolves the cross-artifact scope conflict without weakening proof or extending original deletion authority."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:9db92e15e3b990c06b346dd8d7985f766dec49d6bbec582f37d10193d60e8ad9",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:6c40df6ee403e25587e7fe6726018eae2d5432a7aaa98cf96c967bcba8f04e0c",
+          "path": "specs/published-skill-first-repository-simplification.md"
+        },
+        {
+          "identity": "sha256:b47aa4fe0e14bd8810afe2ee98cea13eb7b34c08a3dff55f2b347ee73c3f439d",
+          "path": "specs/published-skill-first-repository-simplification.test.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Finding ID: shared-report-projection-contract. Severity: major. Scope: artifact-local. Affected artifact ID: validation. Owning stage: design. Location: Reporting and compatibility, ExecutionResult/RequestResult definitions and representative sharing acceptance. Current scripts/validation_execution.py _write_mode_result emits child_durations check_id and phase=parallel|sequential; scripts/test-select-validation.py around4298 indexes them by the original check ID. The new contract preserves child rows while adding executions/requests but does not specify representative check_id for aliases, explicit legacy concurrency phase versus launch/request phase, or the canonical/non-additive relationship between repeated physical projections. This leaves consumer-visible semantics to implementation rather than an approved compatibility decision.",
+      "id": "shared-report-projection-contract",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Define the deterministic original check/request identity represented by each shared legacy child row and complete alias references; retain or explicitly amend all relevant existing fields, distinguishing concurrency phase from request/launch phase. Define one canonical physical result and exact derived legacy projection with consistent values and counting, including blocked consumers, unstarted tasks and case IDs where applicable. State how unshared reports preserve existing meaning and how actual consumers use mappings without double-counting. Add a representative old/new projection or exact scenario sufficient for Delivery to prove stable IDs, phase meanings, blocked-consumer truth and single physical accounting. No new schema, scheduler or workflow record is necessary. Design author corrects this bounded section before independent reassessment.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "validation-report-correction-check",
+            "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+          },
+          {
+            "id": "simple-validation-author-check",
+            "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+          }
+        ],
+        "rationale": "Corrected Reporting and compatibility defines canonical results and derived legacy projection, stable representative IDs and all aliases, independent request eligibility, distinct concurrency/request/launch phases, non-additive counting, mismatch rejection and concrete reordered-alias/jobs examples. Current actual consumer is explicitly allocated for reconciliation and acceptance observes real wrapper/report behavior. This supplies the formerly missing Design-owned compatibility semantics; no runtime correctness is inferred. Subsequent explicit user-directed simplification supersedes the unimplemented dual-report/request mechanism. Current VAL-SR19/20 and Execution and reporting retain one canonical check/case result surface with ordinary legacy phase meaning and current-reader reconciliation; no alias representative or duplicate projection remains to reconcile. The finding stays resolved with its historical subjects intact, but its earlier mechanism-specific required outcome is not a current implementation obligation."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:63dfb76d5d869f0fd438567ae6b2aa63c2699b2936b5885ab2eabb8a53d0f161",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity major; artifact-local; member Installation docs/design/cli/installation.md, Architectural supporting views / Runtime View, Safe decision node. The new predicate reads “Safe scope and no conflict, or explicit force?” and yes leads to writes. Counterexample: an unsafe symlink or uncontained destination with force=true satisfies the OR branch reading. Existing destination-contract row and Runtime and deployment explicitly require rejection in both modes and say force never bypasses containment, symlink, stale-basis or preservation checks. The diagram therefore ambiguously weakens the unchanged safety contract.",
+      "id": "m2-installation-force-safety-gate",
+      "owner": {
+        "id": "root",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Make safety mandatory regardless of replacement choice. Prefer distinct safe-scope validation followed by destination conflict/explicit-force handling; unsafe scope always stops without writes, while force only permits replacement of a safe existing candidate unit. Preserve partial-failure and retry limits, render/check the affected source and request Design reassessment. No runtime or requirement change is needed.",
+      "resolution": {
+        "actor": {
+          "id": "proposal-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m2-installation-safety-correction",
+            "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+          }
+        ],
+        "rationale": "Independently traced the corrected mandatory safety gate: unsafe scope rejects regardless of force; only safe destinations reach the existence/force choice. Default existing destinations stop, explicit force permits only already-safe scope, and partial-state diagnostics remain. Fresh exact Installation structure/prose/render proof supports the correction; other M2 view assessments remain unchanged."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:2437eb114f8453715382f86a5fd10d97d476056f209ada86190ffce1791155c1",
+          "path": "docs/design/cli/installation.md"
+        }
+      ]
+    }
+  ],
+  "id": "design-review",
+  "independence_basis": "Separate authorized nonauthor reviewer independently assessed the actual simplification of Validation and System/Engineering references against explicit latest user direction and the prior complete seven-document package. Reviewer authored none of the model changes, catalog policy or proof allocation. Current judgment replaces earlier mechanism approval rather than using that historical approval as current authority.",
+  "judgment": "approved",
+  "limitations": [
+    "No runtime tests or costly CI were rerun for this Design-only refinement. Model/prose/whitespace author proof applies to exact current subjects; source feasibility is not implementation proof.",
+    "Earlier detailed Design and reporting corrections retain their original exact-subject meaning but are superseded as current realization. Current complete review explicitly replaces those mechanics; it does not silently retarget their approval.",
+    "Canonical IDs require assessed catalog reconciliation and concrete negative/integration proof during Delivery/implementation. Unknown duplicate protection or incomplete inventory still blocks affected completion.",
+    "Current review supports authorized planning only. Independent Delivery Review, implementation/milestone reviews, fresh whole-change review and distinct Verify remain necessary; publication permission remains separate.",
+    "Architecture Overview review assesses source semantics and preserved Mermaid blocks; no graphical rendering or runtime tests were run for this presentation-only amendment. Author model/prose checks support structure and prose, not implementation correctness.",
+    "This correction was reviewed as Mermaid source and contract semantics, without graphical rendering or runtime execution. Historical general-sharing/report machinery remains superseded; its original finding facts are preserved.",
+    "Current approval permits reliance on the convention for Delivery planning only. Public skill/skeleton/reviewer adoption and all twelve reasoned supporting-view assessments and necessary diagrams remain explicit downstream work, including exact reassessment of any changed illustrative model. No runtime tests, rendered diagram inspection or completed profile adoption claimed.",
+    "Reviewed current Mermaid source semantics and author rendering evidence; no independent screenshot usability assessment or runtime test was performed. This overview-only refinement does not claim DES-SR22 supporting-view completion or public skill implementation."
+  ],
+  "rationale": [
+    "1. Direction and scope — pass: refine the existing owner, remove justified duplicate cases/execution and make the entire remaining automated inventory independently runnable remain selected. VAL-SR21/22 still forbid final completion with an unassessed serial remainder or discarded unknown protection. User-directed simplification changes realization, not those outcomes. Proposal remains applicable at its original direction level; no new cache, public runner, distributed system or product feature is introduced.",
+    "2. Realization — pass: one authoritative catalog supplies canonical IDs; authors consolidate known duplicates after comparing proof, inputs and preparation. Selection uses stable ordered sets and preserves selecting reasons. The specific broad_smoke.validation_execution.regression executable entry is retired in favor of validation_execution.regression with current selectors/readers reconciled and historical IDs preserved. The executor need not infer equivalence between commands, model source fingerprints or create another request/task state machine.",
+    "3. Composition and prerequisites — pass: focused F runs before B minus F, while F intersection B contributes its one actual outcome. Required focused failure keeps boundary scope blocked, even if the overlapping check passed; diagnostic remaining boundary execution retains the original failure. Boundary-only invocation still executes its full set. Explicit preparation dependencies remain, missing dependencies/cycles/conflicting resolved arguments or constraints reject. A required post-build, post-mutation, different candidate/configuration or independent fresh observation receives a distinct explicit ID and dependency; canonicalization cannot move it earlier by argv resemblance.",
+    "4. Results and failure boundaries — pass: existing CheckPlan/CheckResult, scheduler, stable output order, trusted commands and phase summaries remain sufficient. Each executed check/case has one result/duration. Current broad child_durations uses canonical IDs and keeps its legacy parallel/sequential classification, not observed overlap or a new consumer phase. There is no canonical-versus-derived second collection. Failed gates and required unfinished work remain nonzero; existing interruption, timeout, process cleanup, fail-fast and independent failure behavior remain. Current reader updates are allocated rather than declared already compatible.",
+    "5. Protective proof — pass: permanent focused executor tests retain discovery/completeness, dependencies, budgets, failure/timeout/interrupt and diagnostic sensitivity; small real integrations retain loader/filter/hooks/subprocess boundaries and ordinary product suites remain required. Full normal/sequential/reversed comparisons establish or change an assessed suite basis as migration evidence. Removing their recurring replay still requires demonstrated retained detection under TEST-SR08; distinct recurring protection remains when justified. No reduced fixture, faster pass, lower count or optional-only proof is accepted as a substitute.",
+    "6. Ownership and diagrams — pass: simplified Validation structure and flow describe one catalog/selector/executor/result path. Authors and assessors apply semantic criteria; output does not grant approval. System retains both full3-main/14-child/2-product structural view and end-to-end quality flow, while parent/nested graphs retain internal detail. Engineering/System only reconcile current composition links and terminology. Existing records/install boundaries, candidate identity, independent Code Review/Verify and separate Release qualification/publication authorization are unchanged.",
+    "7. Maintenance and historical preservation — pass: the exact current maintenance map and both legacy notices remain. R14/R17–20/R22/R25 selected procedures preserve distinct failure protection, investigation, recovery and true measured claims without a new ledger/universal repeated comparison/benchmark. R15/R16/R21 and earlier populations remain scoped. No historical evidence, source block or ledger data is made a deletion target merely by name. parallel-maintenance-allocation-scope remains resolved on that unchanged correction.",
+    "8. Decision/applicability supersession — explicit: revised VAL-DEC06 replaces the earlier unimplemented ProofRequest/ExecutionBasis/ExecutionTask/RequestResult, execution_family, consumer graph, fingerprint checks and dual report projections with canonical IDs and ordinary set composition. Prior approval of those exact detailed model bytes is historical only and does not require implementing them now. shared-report-projection-contract was correctly resolved for its earlier package; its mechanism-specific required projection is now superseded by one current result surface. Its original finding facts and subject identities remain preserved, with current disposition updated rather than erased.",
+    "9. Feasibility and acceptance — pass: existing CheckPlan/CheckResult/catalog extension points make this a smaller concrete implementation. Acceptance names actual single launch across F/B overlap, complete boundary-only selection, failed focused gate, duplicate-argument rejection, post-build distinctions, unique current result rows and jobs1/parallel scope agreement. Full inventory/discovery/caller reconciliation, case isolation and retained negative/regression proof still require Delivery allocation; Design has not asserted they are implemented. Current three-model author proof subjects match exact bytes.",
+    "10. Handoff — current package has no new material gap or unresolved Design finding. Return approval to route for authorized Delivery planning against this simplified realization and preserved scope. No lifecycle routing, source edits, runtime tests, speed claim, implementation approval or adoption follows from this reviewer save.",
+    "Current ownership correction — pass: integrated skill/CLI compatibility now names Skill, Packaging, CLI and Records; destination conflict belongs to CLI Installation. This reflects the adopted split without changing package proof, default conflict/explicit replacement behavior or publication authority. System remains a consumer of those contracts, not a new local owner.",
+    "Finding and blocker correction — pass: System now references stable finding identity/current actionable account under Records RF-SR13 rather than immutable finding origin. Change-level blocker origin remains immutable and assessor disposition/reliance remains independent. Current Records defines exactly this distinction; no schema, runtime writer or historical record was changed.",
+    "Original completion/current scope — pass: authoritative original2026-09-12 status reports7 completed work entries, completed activity, no blockers and successful adoption/Verify in its recorded reason. Engineering accurately attributes cache/source/script retirement completion to that original record instead of presenting it as current unfinished work. This is a recorded-completion reference, not a newly executed validation or reopening of old implementation. Current canonical composition, maintenance and remaining-case independence still require the current initiative work.",
+    "Current approval applicability — these exact four corrections restore consistency with unchanged owners and do not alter simplified Validation or current user goals. Author two-model structure/prose/whitespace evidence matches current subjects. Existing two findings remain resolved with their earlier subjects and the general-sharing supersession explicit. No new material issue found; return current package to route for authorized planning, with no reviewer routing or implementation mutation.",
+    "Twelve-model overview coverage — pass: inspected the complete affected model package and current diff against their existing responsibilities. Each declared model has exactly one H2 Architecture Overview. Independent programmatic comparison confirms every prior Mermaid block remains byte-identical somewhere in its same model, including the full System three-main/fourteen-child/two-product structural overview and complementary end-to-end delivery/publication view. Parent subsection anchors remain; no current reference to the renamed Validation building-block-view anchor was found. Records reuses its existing structural graph and links the representation detail rather than introducing a competing record model.",
+    "Semantic ownership — pass: Skill, CLI and Engineering retain detailed immediate-child ownership. Leaf overviews use existing responsibilities and concepts: Workflow coordinates explicit outcomes, Design authors a coherent package before independent assessment, Assessment owns judgment/applicability, Records owns shapes and references, Installation owns safe explicit destination writes, Packaging owns isolated artifacts and metadata, and Release retains qualification plus separately authorized publication and observation. These diagrams do not define services, new child models, extra schemas or automatic approval. Assessment independent final Verify refers to RC-SR-13 distinct evidence/coherence judgment and does not replace RC-SR-11 independent whole-change Code Review. Stable finding IDs/current accounts and immutable blocker origins remain distinct.",
+    "Direction and authority — pass: SYS-SR-11 implements the user requested Architecture Overview for every repository model while preserving SYS-SR-10 parent detail and both whole-System views. It expressly remains repository-local and does not change portable Design skill behavior or executable model-validator schema. Updated owning pointers identify this amendment while retained original composition provenance and displacement maps preserve prior adoption boundaries. Candidate qualification/metadata do not authorize publication; Installation neither adopts nor writes project governance.",
+    "Current reliance — renewed approval covers the exact twelve model subjects and unchanged relevant scoped legacy members, not the earlier seven-document changed set alone. Approved proposal direction and feasibility remain applicable to this presentation refinement; original proposal evidence is not retargeted to claim these new graphs were previously reviewed. Current author structural/prose evidence matches the assessed identities. Existing model examples and operational clauses are unchanged and no illustrated data shape, scenario outcome, runtime mechanism or proof obligation changed, so prior bounded example assessment remains applicable without a costly runtime rerun. Earlier maintenance-allocation and report-projection findings remain represented and resolved, with the superseded unimplemented general-sharing mechanism still explicitly outside current delivery obligations. No new material finding; route retains any planning handoff.",
+    "User-directed Validation graph — pass: five internal responsibilities are criteria, catalog, selection, executor and results, rather than invented models or services. Product contracts supply protected behavior; Delivery supplies required verification scope; Assessment consumes evidence and limitations as an external semantic owner. The dashed criteria-to-catalog edge explicitly guides human authors and cannot be read as automated adequacy approval. Direct catalog-to-executor constraints reflect VAL-SR05 and preserve one trusted catalog; selection sends each canonical ID once under VAL-SR19/20, and outcomes remain one per actual check/case. The graph does not assert that all selected work runs or passes; unchanged flow and VAL-SR06/09/12 retain gates, incomplete work and honest failure reporting.",
+    "Current package applicability — the user-requested boundary graph supersedes only the prior linear Validation structural graph; its caption and existing runtime prose agree. The invocation flow, simplified F then B-minus-F composition, isolation and budget requirements, current maintenance map, twelve Architecture Overviews and both whole-System views remain unchanged. Current validation-overview-user-graph author evidence matches its exact subjects. Earlier all-model structure/prose proof remains applicable to unchanged models; current focused author checks cover the replaced graph. Proposal direction, scoped examples and the two resolved findings retain their explicitly bounded meaning. No new material issue or implementation approval follows from this presentation correction.",
+    "Reusable convention ownership — pass: DES-SR-22 owns the required overview and reasoned Context/Building Block/Runtime/Deployment evaluation. System references that owner and retains project-specific parent allocation, all twelve overviews and both whole-System structural/end-to-end views. Each necessary supporting view requires a diagram; each unnecessary view needs its reason and reconsideration trigger. Local or model links resolve material overview elements to detailed owners. Reusing an adequate graph by reference preserves one source rather than duplicating authority. The rule requires real responsibilities and boundaries, not fictional deployment services or a fixed diagram quota.",
+    "Feasibility and acceptance — pass: the four-view table identifies concrete architectural questions, conditional graph contents and distinct boundaries. Missing necessary runtime detail is an explicit failure example; a leaf with justified unnecessary deployment needs no fabricated graph. DES-SR05/07/08/12 continue to require sufficient technical depth, integrated boundaries, affected-consumer reconciliation and exact example assessment. The changed rule defines no model schema, record type or automated semantic adequacy gate. Existing compact model structure remains legal and the overview does not substitute for required behavioral or supporting detail.",
+    "Known consumer mismatch is allocated, not waived — inspected current technical-design guidance, model-authoring resource and skeleton. Technical guidance still makes diagrams conditional on explanatory value and the skeleton lacks an overview, confirming real implementation work. The new adoption paragraph explicitly requires public procedure, authoring/technical/system-composition resources, skeleton and affected reviewer guidance reconciliation, plus evaluation of all twelve repository models and every necessary view including affected illustrative models. Delivery must allocate these obligations and proof before claiming adoption; unresolved consumer mismatches or absent necessary diagrams cannot pass implementation review or final completion merely because this contract is approved. Retained legacy formats and installation permission remain unchanged; text-source integrity and example identity/invariant safeguards are not retired.",
+    "Applicability and direction — direct user refinement now selects a reusable Design method obligation; earlier review statements limiting the overview convention to this repository and excluding public skill changes describe the previous scope and are superseded for future delivery. Earlier graph approvals remain evidence of their original responsibilities and source coherence, not proof that every supporting-view necessity assessment is complete under DES-SR22. Proposal approval still supports the unchanged test-independence and protected-cleanup direction; this explicit user-selected method refinement supplies additional direction and Delivery obligations without retargeting historical proposal evidence. Current author structure/prose evidence matches the two changed model identities. Unchanged runtime behavior, model examples and the two resolved findings retain their bounded earlier meaning; no new runtime or performance claim is made.",
+    "All-model graph semantics — pass: each boundary contains existing owned responsibilities, not invented services or extra child models. System retains three main owners, fourteen children and two products while distinguishing user authority; Skill separates scoped capabilities and optional CLI use; CLI separates representation, persistence and installation; Engineering distinguishes assessed development, actual validation, package artifacts and separately authorized release. Workflow consumes actor outcomes and Assessment conditions without manufacturing approval. Design exposes authored packages to review and Delivery under explicit review authority, with its caption prohibiting downstream authorization by package production.",
+    "Leaf authority and data — pass: Records now distinguishes stored representation and preservation rules from semantic Workflow/Assessment inputs and CLI mechanics; stable finding IDs/current accounts do not become immutable finding origins. Its old detailed relationship graph is preserved verbatim at record-model and linked from the new overview. Installation retains source verification, containment/conflict preflight, explicit force, scoped complete writes and partial-failure diagnostics without project governance adoption. Packaging produces actual artifact facts for separate consumers, not success or publication permission. Release requires both candidate qualification and candidate-specific maintainer authority, retains public observation/recovery and evidence, and does not replace engineering assessment. Assessment distinguishes judgment, concern disposition, reliance and successful Verify explanations from recording mechanics.",
+    "Preservation and detailed ownership — pass: independently compared all twelve model sources with HEAD. Requirement rows and every non-overview Mermaid block remain unchanged; Records old graph survives exactly, and all Validation Mermaid blocks remain byte-identical. System full hierarchical content and end-to-end graph remain, rather than replacing whole-System design with child links. The new captions link responsibility details, operational and deployment context to their existing owners. The diagrams describe composition and information relationships, not unconditional runtime sequencing; retained gates and failure paths remain authoritative.",
+    "Evidence and current applicability — current all-model-overview-refinement author proof matches exact twelve subjects and records passing file-explicit structural/prose checks, 106 resolved overview links and whitespace. Current all-model-overview-rendering evidence also matches exact subjects and reports successful Mermaid CLI/browser generation; inspected the render procedure as real graph extraction/rendering, not a stub. Rendering establishes parse/render feasibility rather than semantic adequacy or visual usability certification. This fresh review supplies semantic assessment. Prior supporting-view convention approval remains applicable, but overview improvements and links do not complete all twelve reasoned necessity evaluations or missing supporting diagrams; those and public resource/skeleton/reviewer adoption remain Delivery obligations. Earlier proposal and resolved findings retain their original meaning; no implementation, cache, selection or runtime behavior was changed.",
+    "M2 view allocation — pass apart from the recorded Installation runtime predicate: all twelve explicitly evaluate four views. Design, Workflow, Assessment and Records give credible reasons for no separately owned deployment diagram because Skill/CLI/Packaging/Installation own those mechanics; retained compatibility and preservation prose stays applicable. Necessary Context/Building Block/Runtime diagrams explain actual contracts, not fictitious services. The other models expose actual process/package/resource placement and separate authority boundaries.",
+    "M2 cross-owner and preserved detail — inspected all added graphs against their existing contracts. System retains its full three-main/fourteen-child/two-product hierarchy as owned supporting structure and retains end-to-end delivery, with overview links rather than deletion. Validation exact graph and existing canonical F/B gates remain. Workflow does not obtain Assessment judgment authority; Records keeps immutable finding identity/current fields distinct from blocker origin and CLI persistence. Release retains candidate-specific authorization separate from qualification and actual public observation. The complete embedded pure-leaf example now includes overview and reasoned four-view dispositions inside a four-backtick fence; its original LAB requirements/scenario partitions and excerpt/complete distinction remain meaningful. New public resource indexing matches the already delivered M1 example.",
+    "M2 failure counterexample — concern: Installation Runtime View branches yes from “Safe scope and no conflict, or explicit force?” into complete-unit writes. For unsafe symlink/containment scope with force=true, the ordinary boolean reading allows yes. Existing destination rules and Runtime and deployment explicitly prohibit force bypassing containment, symlink, stale-basis or preservation checks. Required correction is a mandatory safety gate independent of destination existence and replacement choice; unsafe scope must always reject. This is a Design artifact-local clarity/safety correction, not a changed installer requirement or code defect claim.",
+    "M2 evidence and applicability — current m2-model-views structure/prose, owner-link, extracted complete example and59 Mermaid rendering evidence matches current subjects. These establish format/render feasibility, not semantic permission to take the unsafe branch. Earlier scoped approvals and resolved findings retain their historical meaning; current package approval is withheld only for the explicit new finding, without reopening unrelated runtime work. Correct the owning Installation view, refresh affected evidence and obtain independent reassessment before documentation Code Review.",
+    "Safety finding reassessment — resolved: Runtime now tests All destinations safe? first. Its no branch rejects unsafe scope before writes explicitly even with force. Only yes reaches destination existence; absent safe destinations proceed, existing safe destinations require explicit force, and default conflicts stop. The force yes edge explicitly states safety already established. Counterexample unsafe=true/force=true cannot reach Write. This restores diagram agreement with containment/symlink/stale-basis/preservation constraints without changing their detailed behavior or partial-failure account.",
+    "Current M2 applicability — approve the exact twelve-model package after the bounded correction. Fresh m2-installation-safety-correction evidence matches Installation and supplies structure/prose/render proof for the changed Runtime view. Earlier M2 all-model, link, complete-example and59-diagram proof remains applicable to unchanged subjects/blocks; it is not relabeled as having run the corrected diagram. Earlier two resolved initiative findings remain resolved and the new safety finding retains its first-pass facts and explicit disposition. M1 public guidance is the now-delivered implementation of the approved convention; M2 supplies model supporting-view adoption but does not claim distinct documentation Code Review or whole-initiative completion. Parent/child contracts, Assessment/Records separation and external publication authority remain unchanged."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:d083cf4960e85e71c0acac9a4e1ed5d63bfca655366f7d2fc743c15ea2043623",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:2af30f6ac92314de586a6edd0d8bc60e68d5db88dc28feda6ef52d7eee9d2b4f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:0084463d8561bb0273bee09d67c70c53897f1f3371724536b0cfb4ea9f4774cc",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
+      "path": "docs/proposals/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:f7234887a6dcae08b003ac7f80b1f907383b60bb7bfd8d89fd16b0291334db42",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:a428130a22ac0f459c6eedf6ecfdaff8af0f795771c209747e122ebd62c053f9",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:fe848ca3b53efd50f060157a225157a5003462d1d8bca2b08368a6ab424f0cab",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:db5911c87634d0c2da1576b0b9ab6703b55b1f4346fae0846ef7833ae5265c2f",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:7c8af384bc061f939aecc9e9a9c58161a4743a4136b6437d2726b8b4ed45b3a5",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:d4bfc5ac7a65f38385f5fd575cd0e37bd1e7d0aea23cc06120451d47310fd083",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:0eac857270902b1c4669084886fb9e9d06fd093c783ef615ed88e03e9744ce8b",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:5b08ce71c66a0519d7384f85f1165ad1bec05ea27d2c2f0749aeafff5311027a",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:e6454aa501a7db02051a3e2df6f53ac5013cb285bfb1d786429bb8e587920ec5",
+      "path": "specs/published-skill-first-repository-simplification.test.md"
+    },
+    {
+      "identity": "sha256:941c6522646566b15c31b034447e348e86a4b792d8d02852d123403429c9d465",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:adc0b4f16e42bc85b76f77e4527f52bbdae6e00b4d73556d0c2923e220e85c9c",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:957d0dcef9027e9c71aca5797908910384c97eacca7072e432e0874f1dd00033",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:71880764d26a941ec1f614f020f74f30ddfab8ae6fea9006b2a3d7530121c82f",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:0b634c9bcbdba16bc00fc26e40ca57d529922235d4bd745052280be1358f7379",
+      "path": "docs/changes/2026-09-12-unified-validation-model/change.json"
+    },
+    {
+      "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:a83862ec20aaa6f2c7cfab96dfd427e88ed73960d1d777e7e9eab5a39d33ad1d",
+      "path": "skills/design/assets/design-skeleton.md"
+    }
+  ],
+  "summary": "Approved the corrected M2 twelve-model view package. Installation now makes destination safety mandatory before any conflict/force decision; the previously recorded ambiguity is resolved. Necessary-view assessments, supporting graphs, preserved System detail and the complete embedded Design example remain coherent.",
+  "target": "design"
+}

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { chmodSync, closeSync, existsSync, fstatSync, lstatSync, mkdtempSync, openSync, readFileSync, renameSync, statSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
+import { rmSync, chmodSync, closeSync, existsSync, fstatSync, lstatSync, mkdtempSync, openSync, readFileSync, renameSync, statSync, symlinkSync, unlinkSync, writeFileSync, writeSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -9,7 +9,11 @@ import { buildDiagnosticEvent, createInvocationId, encodedEvent, validateDiagnos
 import { defaultLogDirectory, resolveLogConfig } from "../dist/lib/log-config.js";
 import { appendDiagnosticEvent, LOG_NAMES, MAX_LOG_BYTES } from "../dist/lib/log-sink.js";
 
-function root() { return mkdtempSync(join(tmpdir(), "rigorloop-observability-")); }
+function root(t) {
+  const directory = mkdtempSync(join(tmpdir(), "rigorloop-observability-"));
+  t.after(() => rmSync(directory, {recursive:true, force:true}));
+  return directory;
+}
 
 function jsonLineOfSize(bytes) {
   const empty = `${JSON.stringify({ pad: "" })}\n`;
@@ -18,8 +22,8 @@ function jsonLineOfSize(bytes) {
   return line;
 }
 
-test("logging configuration is strict and CLI flags override environment", () => {
-  const directory = root();
+test("logging configuration is strict and CLI flags override environment", (t) => {
+  const directory = root(t);
   assert.deepEqual(resolveLogConfig(["version", "--file-log-level", "debug", "--console-log-level", "off", "--no-file-log"], {
     env: { RIGORLOOP_LOG_DIR: directory, RIGORLOOP_FILE_LOG_LEVEL: "error" }, home: directory,
   }), { fileLevel: "debug", consoleLevel: "off", fileEnabled: false, directory, args: ["version"], issue: null });
@@ -27,33 +31,33 @@ test("logging configuration is strict and CLI flags override environment", () =>
   assert.equal(resolveLogConfig([], { env: { RIGORLOOP_LOG_DIR: "relative" } }).issue.code, "RL_LOG_UNSAFE_PATH");
 });
 
-test("platform defaults, symlink refusal, permissions, and lock exhaustion are bounded", () => {
+test("platform defaults, symlink refusal, permissions, and lock exhaustion are bounded", (t) => {
   assert.equal(defaultLogDirectory({ platform: "linux", env: { XDG_STATE_HOME: "/state" }, home: "/home/example" }), "/state/rigorloop/logs");
   assert.equal(defaultLogDirectory({ platform: "linux", env: { XDG_STATE_HOME: "relative" }, home: "/home/example" }), "/home/example/.local/state/rigorloop/logs");
   assert.equal(defaultLogDirectory({ platform: "darwin", env: {}, home: "/home/example" }), "/home/example/Library/Logs/RigorLoop");
   assert.equal(defaultLogDirectory({ platform: "win32", env: { LOCALAPPDATA: "C:\\State" }, home: "C:\\Users\\example" }), "C:\\State\\RigorLoop\\Logs");
   assert.equal(defaultLogDirectory({ platform: "win32", env: { LOCALAPPDATA: "relative" }, home: "C:\\Users\\example" }), "C:\\Users\\example\\AppData\\Local\\RigorLoop\\Logs");
 
-  const broad = root();
+  const broad = root(t);
   chmodSync(broad, 0o755);
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   assert.throws(() => appendDiagnosticEvent(broad, event), (error) => error.code === "RL_LOG_UNSAFE_PATH");
   assert.equal(statSync(broad).mode & 0o777, 0o755);
 
-  const parent = root();
-  const target = root();
+  const parent = root(t);
+  const target = root(t);
   const linked = join(parent, "linked");
   symlinkSync(target, linked, "dir");
   assert.throws(() => appendDiagnosticEvent(linked, event), (error) => error.code === "RL_LOG_UNSAFE_PATH");
 
-  const locked = root();
+  const locked = root(t);
   chmodSync(locked, 0o700);
   writeFileSync(join(locked, ".rigorloop-log.lock"), "owned elsewhere", { mode: 0o600 });
   assert.throws(() => appendDiagnosticEvent(locked, event, { wait: false }), (error) => error.code === "RL_LOG_UNAVAILABLE");
   assert.equal(readFileSync(join(locked, ".rigorloop-log.lock"), "utf8"), "owned elsewhere");
 });
 
-test("events are bounded, normalized, and lifecycle-only extensions do not escape", () => {
+test("events are bounded, normalized, and lifecycle-only extensions do not escape", (t) => {
   const id = createInvocationId();
   assert.match(id, /^[0-9a-f]{16}$/);
   const event = buildDiagnosticEvent({ schema_version: 99, event: "invocation-complete", invocation_id: id, severity: "warning", command_family: "lifecycle", command: "lifecycle", cli_version: "0.4.1", sequence: 2, status: "blocked", exit_code: 2, duration_ms: 1, operation: "status", change_id: "change\nunsafe", secret: "do-not-write" });
@@ -80,7 +84,7 @@ test("events are bounded, normalized, and lifecycle-only extensions do not escap
   }), /Invalid diagnostic field codes/);
 });
 
-test("CLIOBS-M3-R1-F1 read-side event validation rejects every non-canonical partition", () => {
+test("CLIOBS-M3-R1-F1 read-side event validation rejects every non-canonical partition", (t) => {
   const valid = buildDiagnosticEvent({
     event: "invocation-complete",
     invocation_id: createInvocationId(),
@@ -106,7 +110,7 @@ test("CLIOBS-M3-R1-F1 read-side event validation rejects every non-canonical par
   ]) assert.throws(() => validateDiagnosticEvent(candidate));
 });
 
-test("T02 event schemas reject unsafe scalar types and incomplete completion facts", () => {
+test("T02 event schemas reject unsafe scalar types and incomplete completion facts", (t) => {
   const base = {
     event: "invocation-complete", invocation_id: createInvocationId(), severity: "warning",
     command_family: "lifecycle", command: "lifecycle", cli_version: "0.4.1", sequence: 2,
@@ -125,7 +129,7 @@ test("T02 event schemas reject unsafe scalar types and incomplete completion fac
   }
 });
 
-test("T02 event kind and sequence are one closed pair", () => {
+test("T02 event kind and sequence are one closed pair", (t) => {
   const base = {
     invocation_id: createInvocationId(), severity: "info", command_family: "introspection",
     command: "version", cli_version: "0.4.1",
@@ -136,7 +140,7 @@ test("T02 event kind and sequence are one closed pair", () => {
   assert.throws(() => buildDiagnosticEvent({ ...base, event: "invocation-complete", sequence: 1, status: "success", exit_code: 0, duration_ms: 1 }), /Invalid diagnostic field sequence/);
 });
 
-test("T02 invocation identity and every lifecycle extension have closed shapes", () => {
+test("T02 invocation identity and every lifecycle extension have closed shapes", (t) => {
   assert.equal(createInvocationId(() => Buffer.from("0011223344556677", "hex")), "0011223344556677");
   assert.throws(() => createInvocationId(() => Buffer.from("short")), /Invalid invocation ID entropy/);
   const base = {
@@ -153,7 +157,7 @@ test("T02 invocation identity and every lifecycle extension have closed shapes",
   }
 });
 
-test("T02 wall-clock failure fails closed and oversized private input yields a bounded safe event", () => {
+test("T02 wall-clock failure fails closed and oversized private input yields a bounded safe event", (t) => {
   const privateMarker = `M2_PRIVATE_SENTINEL_${"x".repeat(20 * 1024)}`;
   const input = {
     event: "invocation-complete", invocation_id: createInvocationId(), severity: "warning",
@@ -168,7 +172,7 @@ test("T02 wall-clock failure fails closed and oversized private input yields a b
   assert.match(event.timestamp, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/);
 });
 
-test("T02 encoded event uses the exact 16 KiB boundary", () => {
+test("T02 encoded event uses the exact 16 KiB boundary", (t) => {
   const now = () => new Date("2026-08-25T00:00:00.000Z");
   const base = {
     event: "invocation-start", invocation_id: createInvocationId(), severity: "info",
@@ -182,7 +186,7 @@ test("T02 encoded event uses the exact 16 KiB boundary", () => {
   assert.equal(JSON.stringify(oversized).includes("M2_PRIVATE_SENTINEL"), false);
 });
 
-test("T03 prohibited caller values are absent from every admitted event surface", () => {
+test("T03 prohibited caller values are absent from every admitted event surface", (t) => {
   const markers = [
     "credential-M2_PRIVATE", "argv-M2_PRIVATE", "request-M2_PRIVATE", "fingerprint-M2_PRIVATE",
     "https://private.example/repo.git", "username-M2_PRIVATE", "hostname-M2_PRIVATE",
@@ -200,7 +204,7 @@ test("T03 prohibited caller values are absent from every admitted event surface"
   for (const marker of markers) assert.equal(serialized.includes(marker), false, marker);
   assert.deepEqual(Object.keys(event), ["event", "invocation_id", "severity", "command_family", "command", "cli_version", "sequence", "status", "exit_code", "duration_ms", "schema_version", "timestamp"]);
 
-  const directory = root();
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const encoded = encodedEvent(event);
   appendDiagnosticEvent(directory, encoded);
@@ -212,8 +216,8 @@ test("T03 prohibited caller values are absent from every admitted event surface"
   assert.doesNotThrow(() => retainedFiles.flatMap((content) => content.trim().split("\n")).forEach(JSON.parse));
 });
 
-test("sink writes complete JSONL and rotates inside its root", () => {
-  const directory = root();
+test("sink writes complete JSONL and rotates inside its root", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const id = createInvocationId();
   const event = buildDiagnosticEvent({ event: "invocation-start", invocation_id: id, severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 });
@@ -224,8 +228,8 @@ test("sink writes complete JSONL and rotates inside its root", () => {
   assert.equal(JSON.parse(readFileSync(join(directory, "rigorloop.jsonl"), "utf8")).invocation_id, id);
 });
 
-test("T04 creates restrictive roots and files and refuses owned symlinks or broad files", () => {
-  const parent = root();
+test("T04 creates restrictive roots and files and refuses owned symlinks or broad files", (t) => {
+  const parent = root(t);
   const absent = join(parent, "absent", "logs");
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   appendDiagnosticEvent(absent, event);
@@ -233,22 +237,22 @@ test("T04 creates restrictive roots and files and refuses owned symlinks or broa
   assert.equal(statSync(join(absent, "rigorloop.jsonl")).mode & 0o777, 0o600);
 
   for (const ownedName of ["rigorloop.jsonl", ".rigorloop-log.lock"]) {
-    const directory = root();
+    const directory = root(t);
     chmodSync(directory, 0o700);
-    const external = join(root(), "external");
+    const external = join(root(t), "external");
     writeFileSync(external, "sentinel", { mode: 0o600 });
     symlinkSync(external, join(directory, ownedName));
     assert.throws(() => appendDiagnosticEvent(directory, event), (error) => error.code === "RL_LOG_UNSAFE_PATH");
     assert.equal(readFileSync(external, "utf8"), "sentinel");
   }
 
-  const broadFileRoot = root();
+  const broadFileRoot = root(t);
   chmodSync(broadFileRoot, 0o700);
   writeFileSync(join(broadFileRoot, "rigorloop.jsonl"), "", { mode: 0o644 });
   assert.throws(() => appendDiagnosticEvent(broadFileRoot, event), (error) => error.code === "RL_LOG_UNSAFE_PATH");
   assert.equal(statSync(join(broadFileRoot, "rigorloop.jsonl")).mode & 0o777, 0o644);
 
-  const componentParent = root();
+  const componentParent = root(t);
   chmodSync(componentParent, 0o700);
   const nonDirectoryComponent = join(componentParent, "not-a-directory");
   writeFileSync(nonDirectoryComponent, "sentinel", { mode: 0o600 });
@@ -258,9 +262,9 @@ test("T04 creates restrictive roots and files and refuses owned symlinks or broa
   assert.equal(existsSync(nestedRoot), false);
 });
 
-test("T05 rotates only above the exact byte boundary and retains four archives", () => {
+test("T05 rotates only above the exact byte boundary and retains four archives", (t) => {
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
-  const exact = root();
+  const exact = root(t);
   chmodSync(exact, 0o700);
   writeFileSync(join(exact, "rigorloop.jsonl"), jsonLineOfSize(MAX_LOG_BYTES - Buffer.byteLength(event)), { mode: 0o600 });
   appendDiagnosticEvent(exact, event);
@@ -268,7 +272,7 @@ test("T05 rotates only above the exact byte boundary and retains four archives",
   assert.equal(existsSync(join(exact, "rigorloop.1.jsonl")), false);
   assert.doesNotThrow(() => readFileSync(join(exact, "rigorloop.jsonl"), "utf8").trim().split("\n").forEach(JSON.parse));
 
-  const above = root();
+  const above = root(t);
   chmodSync(above, 0o700);
   writeFileSync(join(above, "rigorloop.jsonl"), jsonLineOfSize(MAX_LOG_BYTES - Buffer.byteLength(event) + 1), { mode: 0o600 });
   for (let index = 1; index <= 4; index += 1) writeFileSync(join(above, `rigorloop.${index}.jsonl`), `${index}\n`, { mode: 0o600 });
@@ -278,8 +282,8 @@ test("T05 rotates only above the exact byte boundary and retains four archives",
   assert.doesNotThrow(() => JSON.parse(readFileSync(join(above, "rigorloop.jsonl"), "utf8")));
 });
 
-test("T05 validates root, source, and destination immediately before every pathname mutation", () => {
-  const directory = root();
+test("T05 validates root, source, and destination immediately before every pathname mutation", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   writeFileSync(join(directory, "rigorloop.jsonl"), jsonLineOfSize(MAX_LOG_BYTES - Buffer.byteLength(event) + 1), { mode: 0o600 });
@@ -315,8 +319,8 @@ test("T05 validates root, source, and destination immediately before every pathn
   }
 });
 
-test("T05 mutation validation failure prevents unlink and rename", () => {
-  const directory = root();
+test("T05 mutation validation failure prevents unlink and rename", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   writeFileSync(join(directory, "rigorloop.jsonl"), jsonLineOfSize(MAX_LOG_BYTES - Buffer.byteLength(event) + 1), { mode: 0o600 });
@@ -336,10 +340,10 @@ test("T05 mutation validation failure prevents unlink and rename", () => {
   assert.equal(readFileSync(oldest, "utf8"), "sentinel\n");
 });
 
-test("T05 rename and fsync faults preserve only complete retained records", () => {
+test("T05 rename and fsync faults preserve only complete retained records", (t) => {
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   for (const fault of ["fsync", "rename"]) {
-    const directory = root();
+    const directory = root(t);
     chmodSync(directory, 0o700);
     appendDiagnosticEvent(directory, event);
     const before = readFileSync(join(directory, "rigorloop.jsonl"));
@@ -352,8 +356,8 @@ test("T05 rename and fsync faults preserve only complete retained records", () =
   }
 });
 
-test("T05 disk-full write failure preserves the prior active record", () => {
-  const directory = root();
+test("T05 disk-full write failure preserves the prior active record", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   appendDiagnosticEvent(directory, event);
@@ -364,8 +368,8 @@ test("T05 disk-full write failure preserves the prior active record", () => {
   assert.deepEqual(readFileSync(join(directory, "rigorloop.jsonl")), before);
 });
 
-test("T05 close failure degrades after publishing only a complete record", () => {
-  const directory = root();
+test("T05 close failure degrades after publishing only a complete record", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   let injected = false;
@@ -381,7 +385,7 @@ test("T05 close failure degrades after publishing only a complete record", () =>
   assert.doesNotThrow(() => readFileSync(join(directory, "rigorloop.jsonl"), "utf8").trim().split("\n").forEach(JSON.parse));
 });
 
-test("T05 pre-close faults release active and rotation descriptors before returning", () => {
+test("T05 pre-close faults release active and rotation descriptors before returning", (t) => {
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   const scenarios = [
     { name: "active read", rotation: false, faultAt: 1 },
@@ -394,7 +398,7 @@ test("T05 pre-close faults release active and rotation descriptors before return
   ];
 
   for (const scenario of scenarios) {
-    const directory = root();
+    const directory = root(t);
     chmodSync(directory, 0o700);
     if (scenario.rotation) {
       writeFileSync(join(directory, "rigorloop.jsonl"), jsonLineOfSize(MAX_LOG_BYTES - Buffer.byteLength(event) + 1), { mode: 0o600 });
@@ -424,8 +428,8 @@ test("T05 pre-close faults release active and rotation descriptors before return
   }
 });
 
-test("T05 a partial candidate write plus rollback failure preserves complete active JSONL", () => {
-  const directory = root();
+test("T05 a partial candidate write plus rollback failure preserves complete active JSONL", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   appendDiagnosticEvent(directory, event);
@@ -445,8 +449,8 @@ test("T05 a partial candidate write plus rollback failure preserves complete act
   assert.equal(existsSync(join(directory, ".rigorloop-log.lock")), true);
 });
 
-test("T05 acquisition failure closes its descriptor, returns a stable code, and retains the stale lock", () => {
-  const directory = root();
+test("T05 acquisition failure closes its descriptor, returns a stable code, and retains the stale lock", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const lock = join(directory, ".rigorloop-log.lock");
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
@@ -460,8 +464,8 @@ test("T05 acquisition failure closes its descriptor, returns a stable code, and 
   assert.throws(() => appendDiagnosticEvent(directory, event, { wait: false }), (error) => error.code === "RL_LOG_UNAVAILABLE");
 });
 
-test("T05 acquisition cleanup never closes a different file that reuses its descriptor", () => {
-  const directory = root();
+test("T05 acquisition cleanup never closes a different file that reuses its descriptor", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const replacement = join(directory, "replacement.txt");
   writeFileSync(replacement, "replacement\n", { mode: 0o600 });
@@ -487,8 +491,8 @@ test("T05 acquisition cleanup never closes a different file that reuses its desc
   }
 });
 
-test("T05 active-file validation failure closes every opened descriptor", () => {
-  const directory = root();
+test("T05 active-file validation failure closes every opened descriptor", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   appendDiagnosticEvent(directory, event);
@@ -506,8 +510,8 @@ test("T05 active-file validation failure closes every opened descriptor", () => 
   assert.equal(closes, 2);
 });
 
-test("T05 failed publication never performs pathname unlink cleanup", () => {
-  const directory = root();
+test("T05 failed publication never performs pathname unlink cleanup", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const lock = join(directory, ".rigorloop-log.lock");
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
@@ -520,8 +524,8 @@ test("T05 failed publication never performs pathname unlink cleanup", () => {
   assert.equal(existsSync(lock), true);
 });
 
-test("T05 cleanup never removes a replacement unowned lock", () => {
-  const directory = root();
+test("T05 cleanup never removes a replacement unowned lock", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const lock = join(directory, ".rigorloop-log.lock");
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
@@ -537,8 +541,8 @@ test("T05 cleanup never removes a replacement unowned lock", () => {
   assert.equal(readFileSync(lock, "utf8"), "owned elsewhere");
 });
 
-test("T05 lock acquisition has deterministic attempt and deadline bounds", () => {
-  const directory = root();
+test("T05 lock acquisition has deterministic attempt and deadline bounds", (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   writeFileSync(join(directory, ".rigorloop-log.lock"), "owned elsewhere", { mode: 0o600 });
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
@@ -553,8 +557,8 @@ test("T05 lock acquisition has deterministic attempt and deadline bounds", () =>
   assert.equal(readFileSync(join(directory, ".rigorloop-log.lock"), "utf8"), "owned elsewhere");
 });
 
-test("real concurrent writers retain only complete JSONL records", async () => {
-  const directory = root();
+test("real concurrent writers retain only complete JSONL records", async (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const moduleUrl = new URL("../dist/lib/log-sink.js", import.meta.url).href;
   const eventUrl = new URL("../dist/lib/diagnostic-event.js", import.meta.url).href;
@@ -562,16 +566,19 @@ test("real concurrent writers retain only complete JSONL records", async () => {
     const source = `import { appendDiagnosticEvent } from ${JSON.stringify(moduleUrl)}; import { buildDiagnosticEvent, encodedEvent } from ${JSON.stringify(eventUrl)}; const id=${JSON.stringify(index.toString(16).padStart(16, "0"))}; const event=buildDiagnosticEvent({event:"invocation-start",invocation_id:id,severity:"info",command_family:"introspection",command:"version",cli_version:"0.4.1",sequence:1}); appendDiagnosticEvent(${JSON.stringify(directory)}, encodedEvent(event));`;
     const child = spawn(process.execPath, ["--input-type=module", "--eval", source], { stdio: "ignore" });
     child.once("error", rejectChild);
-    child.once("exit", (code) => code === 0 ? resolveChild() : rejectChild(new Error(`writer exited ${code}`)));
+    child.once("close", (code) => code === 0 ? resolveChild() : rejectChild(new Error(`writer exited ${code}`)));
   }));
-  await Promise.all(children);
+  // Settle every owned writer before failure can trigger directory cleanup.
+  for (const result of await Promise.allSettled(children)) {
+    if (result.status === "rejected") throw result.reason;
+  }
   const lines = readFileSync(join(directory, "rigorloop.jsonl"), "utf8").trim().split("\n");
   assert.equal(lines.length, 6);
   assert.doesNotThrow(() => lines.forEach(JSON.parse));
 });
 
-test("T05 concurrent writers crossing rotation retain only complete JSONL", async () => {
-  const directory = root();
+test("T05 concurrent writers crossing rotation retain only complete JSONL", async (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const moduleUrl = new URL("../dist/lib/log-sink.js", import.meta.url).href;
   const eventUrl = new URL("../dist/lib/diagnostic-event.js", import.meta.url).href;
@@ -581,16 +588,19 @@ test("T05 concurrent writers crossing rotation retain only complete JSONL", asyn
     const source = `import { appendDiagnosticEvent } from ${JSON.stringify(moduleUrl)}; import { buildDiagnosticEvent, encodedEvent } from ${JSON.stringify(eventUrl)}; const id=${JSON.stringify((index + 1).toString(16).padStart(16, "0"))}; appendDiagnosticEvent(${JSON.stringify(directory)}, encodedEvent(buildDiagnosticEvent({event:"invocation-start",invocation_id:id,severity:"info",command_family:"introspection",command:"version",cli_version:"0.4.1",sequence:1})));`;
     const child = spawn(process.execPath, ["--input-type=module", "--eval", source], { stdio: "ignore" });
     child.once("error", rejectChild);
-    child.once("exit", (code) => code === 0 ? resolveChild() : rejectChild(new Error(`rotation writer exited ${code}`)));
+    child.once("close", (code) => code === 0 ? resolveChild() : rejectChild(new Error(`rotation writer exited ${code}`)));
   }));
-  await Promise.all(children);
+  // Settle every owned writer before failure can trigger directory cleanup.
+  for (const result of await Promise.allSettled(children)) {
+    if (result.status === "rejected") throw result.reason;
+  }
   const retained = LOG_NAMES.filter((name) => existsSync(join(directory, name))).flatMap((name) => readFileSync(join(directory, name), "utf8").trim().split("\n"));
   assert.equal(retained.length, 7);
   assert.doesNotThrow(() => retained.forEach(JSON.parse));
 });
 
-test("T05 interruption after a start append leaves exactly one complete event", async () => {
-  const directory = root();
+test("T05 interruption after a start append leaves exactly one complete event", async (t) => {
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const moduleUrl = new URL("../dist/lib/log-sink.js", import.meta.url).href;
   const eventUrl = new URL("../dist/lib/diagnostic-event.js", import.meta.url).href;
@@ -606,12 +616,12 @@ test("T05 interruption after a start append leaves exactly one complete event", 
   assert.equal(JSON.parse(retained[0]).event, "invocation-start");
 });
 
-test("T05 logging core has no network, process, database, timer, or surviving handle dependency", () => {
+test("T05 logging core has no network, process, database, timer, or surviving handle dependency", (t) => {
   const sources = ["../dist/lib/diagnostic-event.js", "../dist/lib/log-config.js", "../dist/lib/log-sink.js"]
     .map((path) => readFileSync(new URL(path, import.meta.url), "utf8")).join("\n");
   assert.doesNotMatch(sources, /node:(?:net|http|https|tls|dgram|child_process|cluster|worker_threads)|setInterval|setTimeout|sqlite|postgres|mysql/i);
   const before = new Set(process._getActiveHandles());
-  const directory = root();
+  const directory = root(t);
   chmodSync(directory, 0o700);
   const event = encodedEvent(buildDiagnosticEvent({ event: "invocation-start", invocation_id: createInvocationId(), severity: "info", command_family: "introspection", command: "version", cli_version: "0.4.1", sequence: 1 }));
   appendDiagnosticEvent(directory, event);

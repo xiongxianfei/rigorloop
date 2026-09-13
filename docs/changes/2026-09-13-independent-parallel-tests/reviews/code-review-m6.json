@@ -1,0 +1,176 @@
+{
+  "assessment_scope": "Complete M6 implementation 75af660d..a86e32c4, including internal Node adapter, Python integration, fixture cleanup/name changes, package discovery, catalog routing and exact registered m6-implementation proof. Existing M5 review in the commit range remains earlier independent evidence.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m6",
+  "independence_basis": "Root authored the native adapter, fixtures and evidence. Separate proposal-reviewer independently inspected final code, integration and scope, and ran all five NodeCaseAdapterTests. Reviewer did not edit implementation, plan, models or routing.",
+  "judgment": "approved",
+  "limitations": [
+    "Relied on complete registered author population/caller/timeout evidence and independent source inspection plus five actual native adapter tests; did not redundantly rerun all419 cases. Node behavior is assessed on repository Node24 scope, not arbitrary runtimes or future dynamic subtest APIs.",
+    "M6 approval is not M7 integration, whole-change review, Verify, PR or publication readiness; no source or routing edits by reviewer."
+  ],
+  "rationale": [
+    "1 Contract alignment — pass: existing executor owns all scheduling, budgets, dependencies and results. Internal Node adapter performs native collection and receipts, not a second scheduler or public runner. All 22 files and 419 retained cases have normal/single/reversed evidence; unsupported dynamic nested work fails instead of silently claiming case independence.",
+    "2 Tests — pass: reviewer independently ran all five NodeCaseAdapterTests successfully in3.397s. They exercise actual native default/named imports, declaration loops, suite hooks, anchored escaped selection and rerun, duplicate/ambiguous/zero/load/concurrency rejection, required skip/todo/assertion/disappearance/extra-subcase failure, mode/scope rejection and actual package glob/cwd. Author final executor48 and selector163 pass. These tests retain permanent distinct failure protection without recurring full production population comparisons.",
+    "3 Edge cases and identity — pass: suite-qualified names are collected through native declarations while bodies/hooks are suppressed; collection gives no pass claim. Worker execution uses untouched node:test exact escaped anchored name matching. Native starts/completions, summary counts and success must agree; zero, skipped, todo, duplicate, missing or extra work cannot pass. Direct file scope must match discovered files; stale package test scripts reject. Two ambiguous parameter families are renamed with all four journal mutations and six configuration overrides retained.",
+    "4 Failure/resource handling — pass: Python supervised ownership applies to coordinator, native test child and product subjects. One-off actual Node timeout proof returns124 after3.022s and confirms test/subject PIDs reaped. Four formerly leaking fixture families register TestContext.after cleanup, including transitive helpers. Two log contention tests await allSettled and child close before propagating error and cleaning their unique directory. Existing interrupt/orphan/missing-receipt proof remains applicable to unchanged scheduler mechanics.",
+    "5 Architecture — pass: native run() discovers the actual package glob; no second Python file inventory is introduced. Package cwd is preserved by isolated coordinator chdir and actionable rerun command. Native execution has one test worker per allocated case and parent demand/dependencies survive expansion. Two six-writer tests use fixed finite product-subject actors with bounded single append/log roots, not nested validation pools; their complete contention assertions remain. This explicit bounded assessment supports one case share without inventing a CPU-derived secondary worker pool.",
+    "6 Compatibility — pass: npm test now explicitly targets test/**/*.test.js, preserving all22 real test files and excluding zero-declaration helper modules as standalone cases; those helpers remain imported normally. Node24 is the repository CI/release runtime and actual proof uses24.14.1. New helper is tracked and classified with executor/selector sources. Controlled wrapper fixtures declare their actual command unit, while real package and selected retirement runs supply native integration proof.",
+    "7 Security and authority — pass: fixture changes preserve complete product permission/refusal assertions and use owned temporary roots. No public runtime, provider publication, retired storage interpretation or cache is added. Existing source preflight correctly rejected the initially untracked helper; tracking it resolves that failure without relaxing the guard. No user/global installation or historical record mutation occurs.",
+    "8 Derived/package evidence — pass within scope: actual npm419 passed32.506s; native concurrency1 and2 each passed419 cases. These support package discovery and ordinary commands as well as isolated adapter observations. No generated product output change is claimed. Full CI/release final-caller reconciliation remains M7; local timing differences are not a universal speedup assertion.",
+    "9 Duplicate protection — pass: the removed Node case only launched all17 Python retirement-ledger tests and asserted their exit, adding no distinct product protection. Those tests remain canonical main.retirement_ledger.regression; main membership is preserved and retirement/archive selectors now explicitly select it. Actual retirement wrapper runs retained24 native cases plus17 ledger and7 metadata cases. Selector negative-before/positive-after proof preserves visibility of the replacement. No assertion-bearing native case or distinct mutation is discarded.",
+    "10 Evidence applicability — pass: exact author subject hashes match final source. Programmatic review of registered final22 populations verifies419 unique within-file IDs, all three modes/counts and no failures. Corrected30-case observability and24-case retirement families replace their original observations; unchanged other20 families retain the same adapter/fixture basis. Final catalog promotion does not change native argv or collection semantics, and final48/163 plus actual selected wrapper cover its integration. Earlier420 population and failed discovery/preflight observations remain historical and are not relabeled as final419 proof.",
+    "Milestone handoff — approved M6, no required review-resolution. Current approved Design and Delivery still allocate this native realization and bounded proof; no new ownership or unsupported current population remains. Route may close M6 and select M7. Final caller integration, fresh whole-change Code Review and distinct Verify remain required before branch/PR readiness."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:af2f9cb9746f534ed58a2537d2bb26579a9e79dfa926bcb7ecd91bceb79319d0",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:e17e9af73635f92b089baaa3dd67e6ccd005d4e9b8c1e2c0314c5d5cca60a0b6",
+      "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+    },
+    {
+      "identity": "sha256:460c8fa7b15469b1f9af09690202a0c59f273362e2c95829270f2ff264efe130",
+      "path": "packages/rigorloop/test/cli-observability.test.js"
+    },
+    {
+      "identity": "sha256:733c1789d9484b68f21835f2837c070ebe09492589bdb2fd52a5feb6690992f4",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:14c686d508eec69bb1b4cb0e189924d3e3c93867cca73c5148bc4bbe148de71d",
+      "path": "packages/rigorloop/test/record-retirement.test.js"
+    },
+    {
+      "identity": "sha256:2d618fd4edfd8434adccd7a258f631caaf6878ada4572cddc7a74bdb74622383",
+      "path": "packages/rigorloop/test/record-store-persistence.test.js"
+    },
+    {
+      "identity": "sha256:ebc582905767047d40e174dba4a99fee1ace76c2a412c9d461fb51cb64caf59c",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:056407f7078c31147daaff197a500189a771a0f8825a42cbca8615d1e76820e2",
+      "path": "packages/rigorloop/test/workflow-context.test.js"
+    },
+    {
+      "identity": "sha256:ce61c2e1dbbf4e540fe93c799dfd1f9e353067733023d8aa4ff2626271cae6b8",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:89b150f484fb9d7df6a9133a8eae16b522ad8dfe6cff30ab636b779a106fc752",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:4ff0c3964282dcd004ff906dfdfacb9e5c9c4ef0ede5a2bda9be1e7c71381da4",
+      "path": "scripts/validation_node_adapter.mjs"
+    },
+    {
+      "identity": "sha256:ba80aa1beb343a4cbede39ebb6f8aeab09480551b6b83b77729e48455bd0ff85",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:9ec211d32dc123b8f3624dc895a7cc357c0b75bfe63589283f87e5876602c491",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:88b3c1ade09faca57b8a85f0b56a82c19cf3b8c5f89a9d31c6234b74485494f4",
+      "path": "packages/rigorloop/test/record-store-interactions.test.js"
+    },
+    {
+      "identity": "sha256:6397c7500e1fab938849f54a05551999a0b0f511e4c7d099dedd76b01d100f08",
+      "path": "packages/rigorloop/test/record-store-adoption.test.js"
+    },
+    {
+      "identity": "sha256:25d0a748a129276358a298a004ed0e70deaf7a5de8b578795bde8ce7b97d3fb3",
+      "path": "packages/rigorloop/test/record-store-v3-mutations.test.js"
+    },
+    {
+      "identity": "sha256:d14e93a9cd9496d62877a8d9845308d284f7774a2676b0f8368cf0272d78b072",
+      "path": "packages/rigorloop/test/record-store-cli.test.js"
+    },
+    {
+      "identity": "sha256:6bba4fd98fc77d54f9cd9d51367f55b89544faf01822ab0886568bf40fe42e6b",
+      "path": "packages/rigorloop/test/record-store-format.test.js"
+    },
+    {
+      "identity": "sha256:6ec371f548982e21a5e9ff9e136024a37065239a8384e2f02e60af30c38174bc",
+      "path": "packages/rigorloop/test/record-store-model-examples.test.js"
+    },
+    {
+      "identity": "sha256:10f7b38e69bec2c1b85ce2b3741af215fdf25b7d19c2acc9ae9cbb5b74d18354",
+      "path": "packages/rigorloop/test/record-store-workflow.test.js"
+    },
+    {
+      "identity": "sha256:fd98cbbb84e0c2b44d9f5ec460689c93c63b9184b870761609310f19d8d6286b",
+      "path": "packages/rigorloop/test/record-store-contract.test.js"
+    },
+    {
+      "identity": "sha256:c10cd261d2abfdf68f1b49ca65254c0dea493d2d72d4f0d6ce51bc086e1a4069",
+      "path": "packages/rigorloop/test/record-store-v3-contract.test.js"
+    },
+    {
+      "identity": "sha256:e9b06c9e37dc6a17a3894a1c50b05111e0f10f5f3cf0d54e4c9f1a1a59281e76",
+      "path": "packages/rigorloop/test/record-store-queries.test.js"
+    },
+    {
+      "identity": "sha256:adcd191bb4be6cf5b31e39a9b8780af3a1cfbe960b3175300c6bd5887921c407",
+      "path": "packages/rigorloop/test/record-store-v3-persistence.test.js"
+    },
+    {
+      "identity": "sha256:979dd6fc4e794bd03969b7423af7b2f15545264a26b203dc77572386831bdac6",
+      "path": "packages/rigorloop/test/record-store-v3-adoption.test.js"
+    },
+    {
+      "identity": "sha256:803fee588fbe5604b16b84b9a67ecc74ae7a6bc2d55899591481ad9de8be8fd0",
+      "path": "packages/rigorloop/test/installer-replacement.test.js"
+    },
+    {
+      "identity": "sha256:e8fc32f81d1c0d65e773d059c32fe0010815826354455cef0e85ea6feec694a2",
+      "path": "packages/rigorloop/test/record-store-v3-reads.test.js"
+    },
+    {
+      "identity": "sha256:937598402a28dbfd0d01c3ed989383665ebd74953802130f602375cb5fe49669",
+      "path": "packages/rigorloop/test/record-store-targeted.test.js"
+    },
+    {
+      "identity": "sha256:b0e1816753865cdee8ac3cb2514b7b3bb96584d9098ca0cfc9745463ec80b999",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:78d3cdd311ab6a805b9cdab26deb7e9531c373692d007a06c89ff8aa650c083f",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:5a59a9355f510fea316d1bcad0a2dec2debcecab114966757de577b6ca41a3f0",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:33e34828816eebafc0de6d5804daf58357001cd1986158e633846e71e30266bc",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:0084463d8561bb0273bee09d67c70c53897f1f3371724536b0cfb4ea9f4774cc",
+      "path": "docs/design/engineering/validation.md"
+    }
+  ],
+  "summary": "M6 provides independent native Node case execution for all 419 retained cases across 22 files, preserves distinct assertions, isolates fixtures and removes one duplicate nested runner with explicit canonical coverage. No material finding.",
+  "target": "code"
+}

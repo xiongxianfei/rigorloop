@@ -1,0 +1,112 @@
+{
+  "assessment_scope": "Complete M4 milestone review of ede563d3..051fd0f4, including native imported Python cases, selected-scope narrowing, fixture isolation, catalog promotion, selector fixture alignment and nested-example extraction. Assessed exact m4-implementation evidence and remaining Delivery allocation. This is not P5/Node/final integration or whole-change readiness.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m4",
+  "independence_basis": "Root authored M4 implementation, test and evidence changes. Separate proposal-reviewer inspected the staged/current source and final committed diff and independently ran the two new adapter regressions; reviewer did not edit code, fixtures, catalog, plan or model content. Prior independent plan and milestone assessments are not implementation authorship.",
+  "judgment": "approved",
+  "limitations": [
+    "Used author full population/candidate/selected-wrapper evidence plus independent two-regression execution and source inspection; did not redundantly rerun all831 P4 cases. Original release reverse failure remains preserved with scoped stable-source correction and explicit unaffected-result reliance.",
+    "Milestone approval does not establish P5/custom-loader or Node case support, final caller integration, complete branch CI, PR or publication readiness. No source/routing mutation was performed by the reviewer."
+  ],
+  "rationale": [
+    "1 Contract alignment — pass: twelve explicit catalog scopes cover the nine P4 suite populations, while fidelity retains a bounded command with its exact required review-set/4096/no-broad-read arguments. Different adapter selected13/drift/validate/full scopes and package versions/preparation are preserved. No cases are deleted merely to meet a count target;831 retained cases are accounted for, with proof of normal/individual/reversed observations and no unassessed P4 remainder claimed.",
+    "2 Tests and actual boundaries — pass: two new adapter regressions failed before correction and pass on current code; reviewer independently ran both successfully in1.681s. Imported helper classes preserve real sibling imports, setup and normal CLI selection; an alias-only export rejects as not addressable. Method/class/-k/verbose scopes execute exactly one observed case. Author final executor42 and selector163 suites pass; actual selected adapter13 and real selected skills/design wrapper provide integration outside controlled scheduler stubs.",
+    "3 Identity and scope edge cases — pass: identifier verifies concrete class/method identity against actual test.id and __main__ export before admitting collection or receipts. sys.path inserts the source script directory as normal Python script execution does. case_plans narrows only original positional selectors recognized in discovered IDs/classes, preserving switch/value tokens and the original parser. It does not invent a replacement loader or accept silent extra cases; existing single-case receipt/discovery/skip/failure validation remains in force. Supported nonempty selection paths have direct proof; unsupported future custom formats require their own P5 assessment.",
+    "4 Failure/resource handling — pass: npm publication and actual release integration fixtures own temporary npm storage and CLI diagnostic paths and restore process-local environment using cleanups. This isolates package-manager state rather than introducing validation-result reuse. Tests remain real packed install/build observations; audit/fund/update-notifier suppression does not bypass archive or release proof. Child processes remain within allocated case execution and the unchanged scheduler cleanup contract. Example extraction accepts matching outer fence length, preserving nested Mermaid and invalid-contract assertions.",
+    "5 Architecture and dependencies — pass: existing executor, catalog and native entrypoints remain the single implementation. Case promotion follows observed setup/cleanup and subprocess isolation. Read-only fidelity is not sent through fabricated unittest discovery. The catalog retains literal argv/adapter bases; changed test selection fixture explicitly declares its real command unit while keeping resource constraints. Actual adapter13 execution separately verifies production case expansion, so controlled fixture conversion does not stand in for it.",
+    "6 Compatibility and negative proof — pass: selectors preserve bounded/sequential reporting and failure diagnostics; an actually unassessed lifecycle failure retains the mixed sequential outcome assertion after adapters become parallel-capable. No historical archive, product requirement, public command, case name or negative permission boundary is retired. The embedded complete Design example keeps the existing invalid-contract detection. Earlier M3 canonical composition remains unchanged except the necessary native case support.",
+    "7 Security/privacy — pass: per-case npm/log roots avoid shared user writes and private diagnostics. Release provider effects remain synthetic and no public publish permission is added. Existing candidate source integrity guard remains active; the failed run demonstrates rather than disables its rejection. Documentation/fidelity checks remain read-only except their owned negative fixtures; no cache or broad external side effect is introduced.",
+    "8 Derived/candidate proof — pass within P4: full adapter154 normal/single/reverse observations pass with actual isolated archives; npm7 and release164 normal/single observations preserve packed candidate and installation behavior. Stable final ReleaseCandidateIntegrationTests pair passed concurrently with complete one-case receipts, including the actual build/packed metadata chain. Candidate evidence is synthetic scoped proof, not live publication or current installed-user-state certification.",
+    "9 Scope/protection assessment — pass: all seven engineering source changes serve M4 isolation, native selection or real consumer compatibility. No P4 removal is inferred from AST similarity checks; distinct source/version/archive/destination/authority proof stays retained. Adoption observations remain in registered evidence rather than a new unsupported path or recurring full-suite comparison. Read-only current inspection and actual tests support the stated scope without claiming later populations are covered.",
+    "10 Evidence applicability — pass with explicit retained failure: original release reverse observed163 successes and one guarded source-integrity failure, not164 passes. The failed case interval69779.342427458..69825.504851718 includes an author edit at69825.251. The author identified that edit as positional narrowing in case_plans plus its regression; imported-class support and npm isolation were already present. Full-suite parent args contained only Python/script, so args[2:] was empty: old and new case_plans produce the same worker argv for those163 cases and all164 normal/single outcomes. This is affirmative unaffected-path reasoning, not merely matching counts. Current nonempty selector paths are covered by the final42/163 suites and actual adapter13 proof. Both source-sensitive ReleaseCandidateIntegrationTests were then rerun together on stable sources and passed with overlapping receipt intervals; this scoped proof covers the affected candidate path without relabeling the failed observation or blindly replaying unaffected suites.",
+    "Current milestone handoff — current evidence subjects exactly match final051fd0f4. The final actual selected wrapper passed with boundary0.27s/focused124.35s, and the fidelity command validates its1 log; timings remain local observations rather than a universal benchmark. Approved Design and corrected Delivery still allocate this M4 behavior; no new normative requirement or mechanism needs upstream revision. No required M4 review-resolution remains. Route may close M4 and select M5 under existing authority; M5–M7, fresh complete-change Code Review and distinct Verify remain required."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:315a76a9054a905a86a12f0f5fdc11230f095ae06d59c388a58029cec395031e",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:92eafda1bea6055c23898e49a783b3ea191a787a649a738c842d47aa723600e0",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:e7fc339ec5dcd56d5beb2ca42193fd954f950883fa300700a49a026b047793e5",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:0c67fccd4d0591fb7080081b89388d6c32211c77d6f8ae46ac3c8ee6ae4226ab",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:aa69580c188ce34b4164413390fd0e683f3843b8a7b103d6432d9967ca00f376",
+      "path": "scripts/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:16dd57643d4ecdc8251a12493d20a9614f87336dd25c4cbd1e95fcf81f0225e7",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:ac516ba1a7431177cd6349ec3a89388020c2f5cd5073a61d2eeb1e2887794787",
+      "path": "scripts/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:870128639c755024be0f21fd346acd864c1c8ab817917a0901d78925cd9ea2db",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:5a59a9355f510fea316d1bcad0a2dec2debcecab114966757de577b6ca41a3f0",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:33e34828816eebafc0de6d5804daf58357001cd1986158e633846e71e30266bc",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:0084463d8561bb0273bee09d67c70c53897f1f3371724536b0cfb4ea9f4774cc",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:d4bfc5ac7a65f38385f5fd575cd0e37bd1e7d0aea23cc06120451d47310fd083",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:22be989f1ffbcf569c41c2a0b75d3de98eacc86a8aac31898fdd496ef064e2ab",
+      "path": "scripts/test-fidelity-gate-spec-reads.py"
+    },
+    {
+      "identity": "sha256:56fc61dfc57f543b0f106b079ae339a44da9ed383d90b77cdb928b682e87afb2",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:e5ef120fcb4795fbf0e293bfb2500b17f4275d01f0fc4735af886fc6208e4309",
+      "path": "scripts/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:cefecf13c52e26d0523d779c188b4739ddbb418fcb20fc33e8b7117bc5b85d91",
+      "path": "scripts/test-skill-validator.py"
+    }
+  ],
+  "summary": "M4 safely adopts all nine P4 unittest populations and the bounded fidelity audit, with current case-adapter and resource-isolation proof. The guarded release source-change failure remains recorded and is resolved by scoped stable-source evidence; no material Code Review finding identified.",
+  "target": "code"
+}

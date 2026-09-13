@@ -6,7 +6,9 @@ Parent model: [Skill](skill.md#workflow).
 
 This child owns published coordination and handoff behavior. Engineering Development applies that behavior to this repository without defining a second workflow. Original adoption and retirement sections below preserve their scoped provenance.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 The current recording population is v3. [Retirement coordination](#v2-retirement-coordination) preserves the dependency disposition and owning change; the operational guidance below no longer carries a v2 continuation profile.
 
@@ -34,6 +36,41 @@ Workflow assigns responsible activities and consumes the assessment meanings and
 | What happens when Verify finds a defect after completion? | [Correction walkthrough](#correction-walkthrough-actor-decisions) |
 | What supports independent review and downstream reliance? | [Review and Closeout](assessment.md#requirements), applied through [ownership references](#review-and-closeout-policy-ownership) |
 | What must agree before adoption? | [Targeted-interface allocation](#targeted-interface-adoption-allocation) and [historical compatibility](#adoption-and-historical-compatibility) |
+
+## Architecture Overview
+
+```mermaid
+flowchart TB
+    Authority["User authority and project governance"]
+    Actors["Authors, implementers and assessors"]
+    Assessment["Assessment policy<br/>Independence, reliance and closeout"]
+    CLI["CLI and Records<br/>Inspection and explicit recording"]
+    subgraph Workflow["Workflow — activity coordination"]
+        Basis["Work context<br/>Current activity, work and concerns"]
+        Routing["Owner and activity selection<br/>Scope and correction responsibility"]
+        Handoffs["Handoff coordination<br/>Prerequisites and continuation limits"]
+        Basis -->|"current decision basis"| Routing
+        Routing -->|"selected owner and bounded work"| Handoffs
+    end
+    Authority -->|"authorized scope"| Routing
+    Assessment -.->|"conditions for reliance"| Handoffs
+    CLI -->|"stored observations"| Basis
+    Actors -->|"outcomes, findings and corrections"| Basis
+    Handoffs -->|"authorized activity and scope"| Actors
+    Routing -->|"explicit coordination decisions"| CLI
+```
+
+Workflow owns coordination within the boundary. The [actor and model boundaries](#context-and-scope), [responsibility-specific updates](#responsibility-specific-updates), and [Runtime View](#runtime-view) define context, routing and handoffs. The [record model](#record-model) maps coordination concepts to [Records](../cli/records.md); [CLI](../cli/cli.md) supplies inspection and safe writes. [Assessment](assessment.md) owns judgments and reliance conditions. These external contracts guide actor decisions; neither stored state nor routing manufactures approval.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Coordination consumes external policy and recorded observations without acquiring assessor or CLI authority. | [Context view](#context-view) |
+| Building Block | Necessary: Routing, stage decisions and their stored context have distinct owners despite sharing a workflow. | [Building Block view](#building-block-diagram) |
+| Runtime | Necessary: Corrections, assessments and continuation have different decision owners and must not imply automatic approval. | [Runtime view](#runtime-diagram) |
+| Deployment | No separate deployment view: Workflow supplies coordination policy. Skill owns invocation placement and CLI owns filesystem/process mechanics; actor labels are not authentication. | Existing deployment/context prose and the named external owner. |
+
 
 ## Context and Scope
 
@@ -84,6 +121,53 @@ flowchart LR
 ```
 
 The arrows show evidence and decision flow, not automatic stage transitions. The receiving actor decides whether recorded evidence supports reliance; the CLI's successful save supplies no additional approval.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    User["User and project governance"] -->|"authorized bounds"| Workflow["Workflow coordination"]
+    Assessment["Assessment owner"] -->|"judgments and reliance limits"| Workflow
+    CLI["CLI and Records"] -->|"current observed context"| Workflow
+    Workflow -->|"bounded activity and correction owner"| Actors["Stage actors"]
+    Actors -->|"explicit outcomes"| Workflow
+    Workflow -->|"explicit activity/work decisions"| CLI
+```
+
+Coordination consumes external policy and recorded observations without acquiring assessor or CLI authority. Detailed requirements and scenarios in this model remain authoritative.
+
+### Building Block diagram
+
+```mermaid
+flowchart TB
+    Models["Owning Designs"] -->|"engineering contracts"| Actors["Stage skills and responsible actors"]
+    Plans["Delivery plans"] -->|"stable work and proof allocation"| Actors
+    Actors -->|"decisions, evidence and judgments"| Store["Change-local records; Records owns shape"]
+    Store -->|"current context through CLI"| Route["Route coordination"]
+    Route -->|"selected activity and correction scope"| Actors
+```
+
+Routing, stage decisions and their stored context have distinct owners despite sharing a workflow. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Context["Read current context and required evidence"] --> Decision["Actor selects bounded activity"]
+    Decision --> Work["Responsible stage performs work"]
+    Work --> Evidence["Record actual output and impact"]
+    Evidence --> Review["Independent assessment when required"]
+    Review --> Result{"Required correction or missing basis?"}
+    Result -->|"yes"| Correction["Route to named owner"]
+    Correction --> Context
+    Result -->|"no"| Next["Route selects authorized next activity"]
+```
+
+Corrections, assessments and continuation have different decision owners and must not imply automatic approval. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 

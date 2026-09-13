@@ -4,7 +4,7 @@ No public runner CLI, result cache, lifecycle transition or publication authorit
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 import ctypes
 import codecs
 import json
@@ -20,7 +20,7 @@ import time
 import shutil
 
 from validation_selection import (CHECK_CATALOG, MODE_CHECK_IDS, BOUNDARY_CHECK_IDS, DEFAULT_ADAPTER_VERSION, catalog_command,
-                                  is_parallel_safe_check, validate_catalog)
+                                  is_parallel_safe_check, validate_catalog, COVERING_CHECK_IDS, COVERAGE_BASES, command_basis)
 
 
 def fail(message, code=4):
@@ -387,6 +387,9 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                 paths = (directory/'stdout', directory/'stderr')
                 streams = [p.open('wb') for p in paths]
                 env = os.environ.copy()
+                # Only this invocation's final writer owns its report destination.
+                # Nested checks may explicitly select a new destination of their own.
+                env.pop('RIGORLOOP_BROAD_SMOKE_RESULT_JSON', None)
                 env['RIGORLOOP_VALIDATION_WORKERS'] = str(demand)
                 env['PYTHONDONTWRITEBYTECODE'] = '1'
                 # Native Node tests cannot create an independent CPU-sized pool.
@@ -461,7 +464,7 @@ def command_display(args):
     return shlex.join(args)
 
 
-def print_summary(results):
+def print_summary(results, *, boundary_required=False):
     print('Selected CI check summary:')
     print('check ID | status | exit reason | elapsed')
     for r in results:
@@ -475,6 +478,13 @@ def print_summary(results):
     print('Selected CI phase timing summary:')
     for phase in sorted(totals):
         print(f'{phase} | {totals[phase]:.2f}s')
+    if boundary_required:
+        if any(r.status != 'passed' and r.plan.phase in {'preflight','focused'} for r in results):
+            print('Boundary scope: unsuccessful; prerequisite scope failed, including during diagnostic execution.')
+        elif any(r.status != 'passed' for r in results):
+            print('Boundary scope: unsuccessful; required work failed or is incomplete.')
+        else:
+            print('Boundary scope: passed.')
 
 
 def print_result_output(results, *, verbose):
@@ -524,16 +534,22 @@ def unittest_adapter(mode, destination, command, expected=None):
     destination.parent.mkdir(parents=True, exist_ok=True)
     original = unittest.TextTestRunner.run
     called = False
+    def identifier(test):
+        cls = type(test)
+        name = cls.__name__ + '.' + str(getattr(test,'_testMethodName',''))
+        if (not re.fullmatch(r'[A-Za-z_]\w*\.[A-Za-z_]\w*',name)
+            or '_FailedTest' in test.id() or test.id() != cls.__module__ + '.' + name):
+            raise ValueError('invalid collected case: '+test.id())
+        if getattr(sys.modules['__main__'],cls.__name__,None) is not cls:
+            raise ValueError('case is not addressable through the normal entrypoint: '+test.id())
+        return name
     def identifiers(suite):
         found = []
         for test in suite:
             if isinstance(test, unittest.TestSuite):
                 found.extend(identifiers(test))
             else:
-                name = test.id().removeprefix('__main__.')
-                if not re.fullmatch(r'[A-Za-z_]\w*\.[A-Za-z_]\w*', name) or '_FailedTest' in test.id():
-                    raise ValueError('invalid collected case: '+test.id())
-                found.append(name)
+                found.append(identifier(test))
         return found
     def save(payload):
         temporary = destination.with_suffix('.pending')
@@ -558,10 +574,10 @@ def unittest_adapter(mode, destination, command, expected=None):
         base = runner.resultclass
         class Result(base):
             def startTest(self, test):
-                started.append(test.id().removeprefix('__main__.'))
+                started.append(identifier(test))
                 super().startTest(test)
             def stopTest(self, test):
-                completed.append(test.id().removeprefix('__main__.'))
+                completed.append(identifier(test))
                 super().stopTest(test)
         runner.resultclass = Result
         started_at = time.monotonic()
@@ -574,6 +590,8 @@ def unittest_adapter(mode, destination, command, expected=None):
         return result
     unittest.TextTestRunner.run = run
     sys.argv = command
+    # Match `python path/to/suite.py`: sibling imports belong to that script.
+    sys.path.insert(0,str(Path(command[0]).resolve().parent))
     try:
         runpy.run_path(command[0], run_name='__main__')
     except SystemExit as exc:
@@ -624,8 +642,26 @@ def discover_cases(args, scratch, *, jobs, timeout):
 def case_plans(parent, ids, scratch):
     scratch.mkdir(parents=True, exist_ok=True)
     plans = []
+    # Narrow original native positional selectors, rather than appending a
+    # second selection to an already selected suite. Preserve options/values;
+    # the original entrypoint parser still owns their vocabulary and meaning.
+    targets = set(ids) | {name.split('.')[0] for name in ids}
+    switches = {'-v','--verbose','-q','--quiet','--locals','-f','--failfast',
+                '-c','--catch','-b','--buffer','--'}
+    scoped_args = parent.args[:2]
+    option_value = False
+    for argument in parent.args[2:]:
+        if option_value:
+            scoped_args.append(argument)
+            option_value = False
+        elif argument.startswith('-'):
+            scoped_args.append(argument)
+            option_value = (argument not in switches and '=' not in argument
+                            and not (argument.startswith('-k') and len(argument)>2))
+        elif argument not in targets:
+            scoped_args.append(argument)
     for index, name in enumerate(ids):
-        args = [*parent.args, name]
+        args = [*scoped_args, name]
         receipt = scratch/f'case-{index}.json'
         plans.append(CheckPlan(parent.check_id+'::'+name,command_display(args),
             _case_command('case',receipt,args,name), parent.reason, parent.phase, parent.parallel_safe,
@@ -650,6 +686,77 @@ def _validate_case_receipt(plan):
         raise ValueError('invalid required case receipt: '+str(exc)) from exc
 
 
+def _node_command(mode, receipt, scope, expected=None):
+    return ['node',str(Path(__file__).with_name('validation_node_adapter.mjs')),
+            mode,str(receipt),json.dumps(scope),expected or '']
+
+
+def _node_scope(args):
+    if len(args)>2 and args[:2]==['node','--test'] and all(not x.startswith('-') and Path(x).is_file() for x in args[2:]):
+        return {'files':[str(Path(x).resolve()) for x in args[2:]]}
+    if len(args)==4 and args[:3]==['npm','test','--prefix']:
+        root=Path(args[3]).resolve()
+        package=json.loads((root/'package.json').read_text())
+        command=shlex.split(package.get('scripts',{}).get('test',''))
+        if command!=['node','--test','test/**/*.test.js']:
+            raise ValueError('Node package test entrypoint requires assessed native glob')
+        return {'cwd':str(root),'globPatterns':['test/**/*.test.js']}
+    raise ValueError('unsupported native Node case command')
+
+
+def discover_node_cases(args, scratch, *, jobs, timeout):
+    scope=_node_scope(args)
+    scratch.mkdir(parents=True,exist_ok=True)
+    receipt=scratch/'node-collection.json'
+    receipt.unlink(missing_ok=True)
+    # No collection state from a previous attempt may survive a missing child.
+    shutil.rmtree(str(receipt)+'.declarations',ignore_errors=True)
+    command=_node_command('collect',receipt,scope)
+    plan=CheckPlan('node-collection',command_display(command),command,'native Node collection','focused',True)
+    result=run_scheduled_checks([plan],jobs=jobs,timeout_seconds=timeout,fail_fast=False,scratch=scratch)[0]
+    if result.exit_code:
+        raise ValueError('Node collection failed: '+result.stderr_path.read_text()[:4000])
+    try:
+        data=json.loads(receipt.read_text());groups=data['groups']
+        if set(data)!={'mode','groups'} or data['mode']!='collect' or not isinstance(groups,list) or not groups:
+            raise ValueError('invalid Node collection receipt')
+        files=[]
+        for group in groups:
+            if set(group)!={'file','ids'} or not isinstance(group['file'],str) or not Path(group['file']).is_absolute():
+                raise ValueError('invalid Node file identity')
+            files.append(group['file']);ids=group['ids']
+            if not isinstance(ids,list) or not ids or any(not isinstance(x,str) or not x for x in ids) or len(ids)!=len(set(ids)):
+                raise ValueError('zero or duplicate Node case identity')
+        if len(files)!=len(set(files)):
+            raise ValueError('duplicate Node file identity')
+        if 'files' in scope and set(files)!=set(scope['files']):
+            raise ValueError('Node file discovery disagrees with required files')
+        return groups
+    except (OSError,KeyError,TypeError) as exc:
+        raise ValueError('missing or invalid Node collection receipt') from exc
+
+
+def node_case_plans(parent, groups, scratch):
+    import re
+    scope=_node_scope(parent.args)
+    scratch.mkdir(parents=True,exist_ok=True)
+    plans=[]
+    for group in groups:
+        file=group['file']
+        label=os.path.relpath(file,Path.cwd())
+        for name in group['ids']:
+            native=['node','--test','--test-concurrency=1','--test-name-pattern=^'+re.sub(r'([.*+?^${}()|\[\]\\])',r'\\\1',name)+'$',file]
+            rerun=native
+            if 'cwd' in scope:
+                rerun=['bash','-c','cd '+shlex.quote(scope['cwd'])+' && exec '+shlex.join(native)]
+            receipt=scratch/f'case-{len(plans)}.json'
+            selected={'files':[file],**({'cwd':scope['cwd']} if 'cwd' in scope else {})}
+            plans.append(CheckPlan(parent.check_id+'::'+label+'::'+name,command_display(rerun),
+                _node_command('case',receipt,selected,name),parent.reason,parent.phase,parent.parallel_safe,
+                parent.dependencies,parent.demand,parent.after,receipt,name,rerun))
+    return plans
+
+
 def expand_cases(plans, scratch, *, jobs, timeout):
     """Replace only catalog-adopted suites and rebind all group dependencies."""
     validate_catalog()
@@ -661,6 +768,10 @@ def expand_cases(plans, scratch, *, jobs, timeout):
             owned = scratch/f'suite-{index}'
             ids = discover_cases(plan.args,owned/'collection',jobs=jobs,timeout=timeout)
             groups[plan.check_id] = case_plans(plan,ids,owned/'cases')
+        elif entry and entry.constraints and entry.constraints.unit == 'node-test':
+            owned = scratch/f'suite-{index}'
+            population = discover_node_cases(plan.args,owned/'collection',jobs=jobs,timeout=timeout)
+            groups[plan.check_id] = node_case_plans(plan,population,owned/'cases')
         else:
             groups[plan.check_id] = [plan]
     expanded = [p for group in groups.values() for p in group]
@@ -764,26 +875,95 @@ def compose_mode(mode, scratch, *, base='', head='', skip_diff_scoped=False):
     return preflight + [p for p in plans if p not in preflight]
 
 
-def expand_groups(plans, scratch, *, diagnostic=False):
-    expanded = []
-    aliases = {}
+def allocate_coverage(plans):
+    """Apply only reviewed, already-required catalog coverage; infer no equivalence."""
+    present = {p.check_id for p in plans}
+    mapping = {key: next((target for target in targets if target in present), key)
+               for key, targets in COVERING_CHECK_IDS.items() if key in present}
+    mapping = {key: target for key, target in mapping.items() if key != target}
+    if not mapping:
+        return plans
+    participants = set(mapping) | set(mapping.values())
+    originals = {}
     for plan in plans:
+        if plan.check_id not in participants:
+            continue
+        entry = CHECK_CATALOG[plan.check_id]
+        c = entry.constraints
+        expected = COVERAGE_BASES[plan.check_id]
+        if (c is None or (command_basis(entry.command_template, c.unit), c.unit) != expected
+                or c.basis != expected[0] or c.mode != 'bounded' or c.demand != 1
+                or c.shared_writes or not entry.parallel_safe or entry.dependencies
+                or plan.args != shlex.split(entry.command_template)
+                or plan.parallel_safe is not True or type(plan.demand) is not int or plan.demand != 1
+                or plan.case_id is not None or plan.case_receipt is not None or plan.rerun is not None):
+            raise ValueError(f'incompatible or stale coverage basis: {plan.check_id}')
+        previous = originals.setdefault(plan.check_id, plan)
+        if previous.dependencies != plan.dependencies or previous.after != plan.after:
+            raise ValueError(f'conflicting prerequisites for canonical check {plan.check_id}')
+    prerequisites = {}
+    for plan in plans:
+        key = mapping.get(plan.check_id, plan.check_id)
+        fields = prerequisites.setdefault(key, {'dependencies': [], 'after': []})
+        for field in fields:
+            fields[field].extend(mapping.get(value, value) for value in getattr(plan, field))
+    result = []
+    for plan in plans:
+        key = mapping.get(plan.check_id, plan.check_id)
+        template = originals[key] if plan.check_id in mapping else plan
+        fields = prerequisites[key] if key in mapping.values() else {
+            field: [mapping.get(value, value) for value in getattr(plan, field)]
+            for field in ('dependencies', 'after')}
+        result.append(replace(template, reason=plan.reason, phase=plan.phase,
+            **{field: tuple(dict.fromkeys(values)) for field, values in fields.items()}))
+    return result
+
+
+def expand_groups(plans, scratch, *, diagnostic=False):
+    """Compose canonical IDs once, then apply the focused/boundary gate."""
+    expanded, groups = [], {}
+    for original in plans:
+        plan = replace(original)
         if plan.check_id != 'broad_smoke.repo':
             expanded.append(plan)
             continue
         children = compose_mode('broad-smoke',scratch,skip_diff_scoped=True)
-        aliases[plan.check_id] = tuple(child.check_id for child in children)
-        for child in children:
-            child.phase = plan.phase
-            if diagnostic:
-                child.after = plan.dependencies
-            else:
-                child.dependencies = tuple(dict.fromkeys((*child.dependencies,*plan.dependencies)))
+        groups[plan.check_id] = tuple(child.check_id for child in children)
+        for original_child in children:
+            child = replace(original_child, phase=plan.phase)
+            child.dependencies = tuple(dict.fromkeys((*child.dependencies,*plan.dependencies)))
+            child.after = tuple(dict.fromkeys((*child.after,*plan.after)))
             child.reason = '; '.join(x for x in (plan.reason,child.reason) if x)
-        expanded.extend(children)
+            expanded.append(child)
     for plan in expanded:
-        plan.dependencies = tuple(dict.fromkeys(d for dependency in plan.dependencies for d in aliases.get(dependency,(dependency,))))
-    return expanded
+        for field in ('dependencies','after'):
+            setattr(plan,field,tuple(dict.fromkeys(d for key in getattr(plan,field) for d in groups.get(key,(key,)))))
+    expanded = allocate_coverage(expanded)
+    retained = {}
+    for plan in expanded:
+        if plan.phase not in {'preflight','focused','boundary'}:
+            raise ValueError(f'unknown phase: {plan.phase}')
+        previous = retained.get(plan.check_id)
+        if previous is None:
+            retained[plan.check_id] = plan
+            continue
+        # Same ID is an authored contract, never inferred command equivalence.
+        for field in ('args','parallel_safe','demand','dependencies','after','case_receipt','case_id','rerun'):
+            if type(getattr(previous,field)) is not type(getattr(plan,field)) or getattr(previous,field) != getattr(plan,field):
+                raise ValueError(f'conflicting {field} for canonical check {plan.check_id}')
+        previous.reason = '; '.join(dict.fromkeys(x for x in (previous.reason,plan.reason) if x)) or None
+        previous.phase = min((previous.phase,plan.phase),key=('preflight','focused','boundary').index)
+    result = list(retained.values())
+    preflight = [p.check_id for p in result if p.phase == 'preflight']
+    focused = [p.check_id for p in result if p.phase == 'focused']
+    for plan in result:
+        if plan.phase == 'focused':
+            plan.dependencies = tuple(dict.fromkeys((*plan.dependencies,*preflight)))
+        elif plan.phase == 'boundary':
+            plan.dependencies = tuple(dict.fromkeys((*plan.dependencies,*preflight)))
+            field = 'after' if diagnostic else 'dependencies'
+            setattr(plan,field,tuple(dict.fromkeys((*getattr(plan,field),*focused))))
+    return result
 
 
 def _write_mode_result(results, *, mode, jobs, elapsed, code, skip_diff_scoped):
@@ -1003,15 +1183,6 @@ def selected_main(argv):
             )
         )
 
-    # Phases are dependencies, not labels: cheap failures block boundary work.
-    prior = [p.check_id for p in plans if p.phase == "preflight"]
-    focused = [p.check_id for p in plans if p.phase == "focused"]
-    for plan in plans:
-        if plan.phase == "focused":
-            plan.dependencies = tuple(dict.fromkeys((*plan.dependencies, *prior)))
-        elif plan.phase == "boundary":
-            plan.dependencies = tuple(dict.fromkeys((*plan.dependencies, *prior, *focused)))
-    validate_plans(plans, jobs=jobs)
     for plan in plans:
         if not plan.parallel_safe:
             print(f"Serial: {plan.check_id}: " + (CHECK_CATALOG[plan.check_id].constraints.isolation if CHECK_CATALOG[plan.check_id].constraints else "isolation/nested demand not yet assessed"))
@@ -1022,6 +1193,7 @@ def selected_main(argv):
         if plan.check_id != "broad_smoke.repo":
             print("+ " + command_display(plan.args))
 
+    boundary_required = any(p.phase == "boundary" for p in plans)
     with tempfile.TemporaryDirectory(prefix="rigorloop-validation-") as temporary:
         plans = expand_groups(plans,Path(temporary),diagnostic=diagnostic)
         plans = expand_cases(plans,Path(temporary),jobs=jobs,timeout=timeout_seconds)
@@ -1033,7 +1205,7 @@ def selected_main(argv):
             scratch=Path(temporary),
         )
 
-        print_summary(results)
+        print_summary(results, boundary_required=boundary_required)
         print_result_output(results, verbose=verbose)
 
         failed_results = [result for result in results if result.status != "passed"]

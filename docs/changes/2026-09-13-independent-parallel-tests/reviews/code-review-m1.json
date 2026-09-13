@@ -1,0 +1,128 @@
+{
+  "assessment_scope": "Milestone Code Review of a1a85adf..6a98fe9a under approved primary plan M1/TG-01, upstream design-review and delivery-review. Assessed all ten engineering files, author evidence, selected candidate archives and independent semantic exercise. M2–M7 and fresh whole-change Code Review/Verify remain outstanding; no final branch or publication readiness is asserted.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m1",
+  "independence_basis": "Root authored and committed M1. This separately invoked nonauthor reviewer inspected the complete implementation range and actual packaged content, and previously supplied only independent Design/Delivery judgments and TG-01 semantic evidence. Reviewer did not edit the implementation, its tests, examples, plan or models.",
+  "judgment": "approved",
+  "limitations": [
+    "This non-final milestone approval does not certify all twelve model supporting views, validation execution changes, other case populations, final CI, PR readiness or publication.",
+    "Used current author full-suite evidence plus independent candidate generation/content/semantic inspection; did not independently rerun the full358/154 suites or a hosted target agent. Evidence applicability is limited to these exact proved surfaces."
+  ],
+  "rationale": [
+    "1 Spec alignment — pass: portable design procedure, model-authoring/technical/system-composition guidance and skeleton implement DES-SR22 overview, all four reasoned supporting-view choices and every necessary diagram. Parent/child responsibility and explicit external assessment remain coherent. Design Review criterion requires actual semantic adequacy and changed-example assessment, not graph count or rendering alone. Scope matches M1; no executor or model-view adoption is claimed.",
+    "2 Test coverage — pass: full358 skill-validator cases and154 adapter cases passed on current subjects, with the five UnifiedDesignResourceTests additionally recorded. The catalog adds only the new resource identity; existing missing-each test iterates every declared resource, so the new example is covered, and explicit unknown-resource rejection remains. Added archive assertions read actual ZIP member bytes and compare the new example and skeleton with canonical sources for every supported adapter. Missing resource implementation caused the recorded pre-fix failure. These checks observe packaging behavior rather than generating expected bytes with the same package transform.",
+    "3 Edge cases — pass: independent TG-01 candidate exercise accepts composed and pure-leaf excerpts only within their declared assumptions. It rejects missing necessary runtime, unsupported owner/store, executor approval authority, conflicting publication ownership, duplicated child authority and empty diagram filler. Runtime prerequisite failure remains not-started; abstract deployment non-applicability is explicitly conditional. A leaf is not granted a size exemption. Later changed context requires reassessment.",
+    "4 Error handling — pass: validator DESIGN_RESOURCES additions preserve explicit missing and unknown resource set-difference errors; no vocabulary fallthrough or fallback is added. Published guidance retains upstream stop for material feasibility/authority gaps, complete conditional resources and independent review requirements. Graphs and successful recording cannot imply approval. No new execution exception path exists in this documentation-focused slice.",
+    "5 Architecture boundaries — pass: new guidance belongs to Design method and independently consumed Assessment procedure. Criteria, executable orchestration and semantic acceptance remain distinct in the example; boxes need not become processes or new models. Canonical content remains source, generated archives remain derived and new examples remain illustrations rather than a second contract. The approved M2 owns all repository-model view completion.",
+    "6 Compatibility — pass: only Design loses unconditional optional-diagram wording; the existing readability test now requires its intended required/optional distinction while preserving the former assertion for all other skill consumers. Retained legacy formats and portable/governed recording paths remain unchanged. Parent/model example identity and invariant rules survive. No schemas, record mechanics, historical files or project adoption permissions change.",
+    "7 Security/privacy — pass: synthetic examples contain no private context, secrets or host-specific authority. Public content needs no internal checkout Design or internal requirement IDs. Package production and local installation do not authorize customer governance conversion, release or publication; no network or external-write capability is added.",
+    "8 Derived artifact currency — pass within M1: author full supported adapter suite validates generation/parity and installation/release fixtures. Reviewer independently generated isolated Codex and Claude candidate archives and inspected the seven selected members per target; resource/skeleton bytes match exact canonical subjects and packaged entrypoints carry the changed rules/triggers. Broad archive integrity is supported by author suite, semantic meaning by separate reviewer exercise. Installed user roots and live releases were not modified or certified.",
+    "9 Unrelated changes — pass: complete diff contains seven skill Markdown files, one resource-catalog line, two bounded test changes and targeted change/evidence updates. No scheduler/cache work, historical rewrite or model requirement change is hidden. Constitution/AGENTS/CLI-context unaffected disposition is credible because existing sources delegate authoring to Design and their recording/permission behavior is unchanged.",
+    "10 Validation evidence — pass: m1-implementation subjects exactly match current files; recorded commands report358 skill tests,154 adapter tests,19 canonical skills,5 resource tests, structure/prose and five successful example renders. The reviewer semantic evidence still matches every relied-on source after final commit, so its current candidate-content/negative judgments remain applicable. No blind expensive rerun is needed. Rendering supports syntax, not semantic or deterministic target-agent correctness.",
+    "Upstream reliance and handoff — approved Design and Delivery remain the governing current contracts; M1 is their intended public consumer adoption, not a new normative outcome. Earlier Design review source references to optional public guidance describe the inspected preimplementation baseline and do not invalidate the governing model approval or falsely approve changed code; this exact M1 review assesses the new consumer realization. No required review-resolution finding remains. Route may close only M1 and proceed to M2 under existing authority; M2–M7, required Design reassessments, fresh complete-change Code Review and distinct final Verify still block final closeout."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+      "path": "skills/design/references/system-composition.md"
+    },
+    {
+      "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+      "path": "skills/design/references/architecture-view-examples.md"
+    },
+    {
+      "identity": "sha256:a83862ec20aaa6f2c7cfab96dfd427e88ed73960d1d777e7e9eab5a39d33ad1d",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:14cea6e986a78daf8daa1d76b01291486a340d1a8129c0a0377c92da05e8b61b",
+      "path": "scripts/skill_validation.py"
+    },
+    {
+      "identity": "sha256:cefecf13c52e26d0523d779c188b4739ddbb418fcb20fc33e8b7117bc5b85d91",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:0d92d71e999dcbe10a755ef8988301bff7d0a0fe4dbdc1ec47ab4f69ffb4e509",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:d8c2bd0b9114705ba7295ca1f48194620b65ce2abfe0817cd543dac0d8c838bc",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:e5a7c100b54ae5207b919568097edeb0a01d763da00e1cb95783b79ae21dc863",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:0c3041743692f2f2efbc02e838613edeef187a0fdb220710c751e4742abacf47",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:3d94ffcb20e7a183d8285550aba80f3c95c5b54a08ceab4d6bf3e19f044267e1",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:e30f6c2782be265396740094d41455f700797d429cbc2d4f1f44ea1dde7b1b85",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:06db6983bf5abcbbddef5bf8268e67dcb51b99072f65cfe51ce3f37535a1d939",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:d6c090304139a0de9cd4393df8fb45ef90383a97428f5ccdd0507968ecd63bf6",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:9f771e1c6d5cd51e9dfce47d9f052889a5af5f8c0fc4e2ce5779ab503bc344a4",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:73a1284be19719f3b335e738e8d699af32be3917c2f343541fdb13926ae009ec",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:090dd338c069f42b72a5f7a46b82147ce9c8a178ab86aaff6ddd6f155b902fa1",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:fe848ca3b53efd50f060157a225157a5003462d1d8bca2b08368a6ab424f0cab",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:ee59ff3a3dc4b0bda8379503a574963e8fafc06169acec433ece8443ad747f4c",
+      "path": "AGENTS.md"
+    }
+  ],
+  "summary": "M1 correctly implements portable required-overview and necessary-view guidance, worked excerpts and reviewer criteria, with closed resource registration and supported archive proof. No material first-pass finding; this approval is confined to the completed M1 slice.",
+  "target": "code"
+}

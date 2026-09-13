@@ -8,7 +8,9 @@ The CLI operates on `rigorloop-records-v3`. The current definitions below integr
 
 CLI owns the observable behavior of the `rigorloop` executable: commands, requests, responses, side effects and failure/recovery contracts. Individual skills can be used without it. Current governed recording uses it for inspection and safe updates; `init` is one explicitly chosen method of installing skills. Record operations do not make engineering judgments, and installation does not interpret engineering state.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 | Submodel | Contract location | Boundary |
 | --- | --- | --- |
@@ -16,6 +18,38 @@ Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-val
 | Records | [Records](#records) and [Record Format](records.md) | Durable data structure, meaning-preserving representation and supported stored versions. |
 | Persistence | [Persistence](#persistence) and the existing construction/save/recovery sections | Lossless candidate construction, concurrency, atomicity and safe recovery. |
 | Installation | [Installation](installation.md) | Verified package acquisition and explicit target filesystem changes; never workflow-state adoption. |
+
+## Architecture Overview
+
+### Subsystem design graph
+
+```mermaid
+flowchart TB
+    subgraph Owned["CLI — executable behavior"]
+        Interface["Command Interface: requests, results and dispatch"]
+        Records["Records: stored representation and invariants"]
+        Persistence["Persistence: reads, safe writes and recovery"]
+        Installation["Installation: trusted packages and destination writes"]
+    end
+    Actor["External: user or skill-guided agent"]
+    Packages["External: Engineering Packaging"]
+    State["External: project records"]
+    Destinations["External: installed skill destinations"]
+    Actor -->|"explicit request"| Interface
+    Interface -->|"record operation"| Persistence
+    Records -->|"representation and preservation contract"| Persistence
+    Persistence -->|"scoped result or conflict"| Interface
+    Persistence -->|"inspect or explicitly update"| State
+    Interface -->|"installation request"| Installation
+    Packages -->|"archive and metadata contract"| Installation
+    Installation -->|"verified, explicitly scoped writes"| Destinations
+    Installation -->|"installation result"| Interface
+    Interface -->|"result and limitations"| Actor
+```
+
+CLI owns the composition of its four children under [System's parent graph rule](../system.md#parent-graph-ownership); the submodel table links their detailed contracts. External nodes mark consumed interfaces, not CLI-owned subsystems. Records defines representation; Persistence enforces it through the shared recording engine. Installation has its own filesystem safety contract and does not write project workflow records. A successful operation does not establish an engineering judgment.
+
+The [Context and Scope](#context-and-scope) and [Runtime View](#runtime-view) own external requests and command interactions; [Deployment View](#deployment-view) owns execution placement. Command results report actual observations and limitations to the requesting user or skill-guided actor.
 
 ### Command interface
 
@@ -28,6 +62,16 @@ The [primary command contract](#primary-public-command-contract) and targeted re
 ### Persistence
 
 [Lossless construction](#lossless-candidate-construction-and-shared-engine), [batch and retry](#batch-composition-no-op-and-retry) and [save safety](#save-safety-and-recovery-boundary) own explicit edits, neighbor preservation, conflicts and interruption. The same guarantees apply to targeted and advanced record writes. Installation uses its own filesystem safety contract, not the record-store transaction or project eligibility engine.
+
+### Supporting-view decisions
+
+| View | Necessity and reason | Owning detail |
+| --- | --- | --- |
+| Context | Necessary: Actor requests, stored project records, remote archives and target writes have distinct contracts. | [Context view](#context-view) |
+| Building Block | Necessary: The existing code-module graph owns parser, construction, validation and storage relationships. | [Building Block view](#building-block-view) |
+| Runtime | Necessary: Reads, mutations and installation have different validation, side-effect and recovery boundaries. | [Runtime view](#runtime-diagram) |
+| Deployment | Necessary: The executable process uses local filesystem transactions and optional archive acquisition; installation and record roots remain separate. | [Deployment view](#deployment-diagram) |
+
 
 ## Introduction and Goals
 
@@ -99,6 +143,55 @@ The existing record-store foundation is the shared persistence boundary. Targete
 Separate structural validation from workflow diagnosis and separate both from persistence. A targeted adapter constructs complete candidate bytes from explicitly named edits against one coherent snapshot. Advanced `record-store record` instead accepts exact complete bytes. Both feed one structural validator, identity checker and recoverable publisher; neither invokes advance-stage, settle-review or reopen-owner semantics. The CLI may generate content hashes, storage revisions and transaction bookkeeping, but all substantive status values come from submitted records.
 
 An old reviewed-subject hash is a legitimate reference to what was reviewed, not a foreign key that must equal today's file hash. Observed drift must be visible without making it impossible to save the correction that addresses it.
+
+## Architectural supporting views
+
+These views elaborate the overview at the owning model boundary. Existing detailed contracts, scenario tables and external owners retain their authority.
+
+### Context View
+
+```mermaid
+flowchart LR
+    Actor["User or skill-guided agent"] -->|"explicit command"| CLI["CLI"]
+    CLI -->|"scoped observations and diagnostics"| Actor
+    CLI -->|"explicit record reads/writes"| Records["Project record files"]
+    Archives["Published archives and metadata"] -->|"verified installation input"| CLI
+    CLI -->|"scoped skill installation"| Targets["Target skill directories"]
+```
+
+Actor requests, stored project records, remote archives and target writes have distinct contracts. Detailed requirements and scenarios in this model remain authoritative.
+
+### Runtime diagram
+
+```mermaid
+flowchart TB
+    Request["Parse command and explicit input"] --> Kind{"Command family?"}
+    Kind -->|"read"| Inspect["Return selected observations and scope"]
+    Kind -->|"record mutation"| Candidate["Construct candidate; validate contract and basis"]
+    Candidate --> Valid{"Valid and current?"}
+    Valid -->|"yes"| Save["Persist with conflict and recovery safeguards"]
+    Valid -->|"no"| Reject["Reject without requested write"]
+    Kind -->|"installation"| Install["Apply Installation archive/destination contract"]
+    Save --> Result["Report actual result and limitations"]
+    Install --> Result
+    Inspect --> Result
+    Reject --> Result
+```
+
+Reads, mutations and installation have different validation, side-effect and recovery boundaries. Detailed requirements and scenarios in this model remain authoritative.
+
+### Deployment diagram
+
+```mermaid
+flowchart LR
+    Package["Installed npm package"] -->|"CLI executable"| Process["Node process"]
+    Process -->|"record transactions and recovery"| Records["Selected project record root"]
+    Network["Archive source"] -->|"verified acquisition"| Process
+    Process -->|"Installation-only target writes"| Targets["Target skill roots"]
+    Process -->|"owned scratch"| Temp["Temporary preparation files"]
+```
+
+The executable process uses local filesystem transactions and optional archive acquisition; installation and record roots remain separate. Detailed requirements and scenarios in this model remain authoritative.
 
 ## Requirements
 

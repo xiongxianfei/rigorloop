@@ -1,0 +1,408 @@
+{
+  "assessment_scope": "Distinct final Verify after fresh independent whole-change Code Review836fa520. Assesses the complete c815768a-to-a0deb393 engineering change, current approved Proposal/twelve-model Design plus finite coverage amendment, approved Delivery and M7 reassessment, all implementation/negative/semantic proof, current findings/state and attributable evidence-only suffix through8928a931. No release, publication, merge or customer governance adoption is included.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "changes": [
+    "Published design/design-review guidance now requires an Architecture Overview for every model, explicit necessity decisions for Context/Building Block/Runtime/Deployment views, parent-owned subsystem composition and portable worked examples. All twelve repository models apply that method while System retains whole-system composition and delivery/assurance relationships.",
+    "Validation uses one bounded executor, canonical check IDs and a finite reviewed allocation for already-required overlapping scopes. Python unittest and native Node cases run independently with their real hooks and complete receipts; shared fixtures, temporary outputs and child lifetimes are isolated. Unsupported/incomplete work fails clearly; no result cache or second scheduler is added.",
+    "Redundant full-suite runner comparisons and duplicate acceptance/wrapper cases were removed with retained negative and replacement proof. Named parameter variants and historical evidence remain. CI retains a small explicit two-worker overlap check, and parent validation report destinations are protected from nested test writers."
+  ],
+  "evidence_refs": [
+    {
+      "id": "m1-portable-view-semantic-exercise",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m1-implementation",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m2-diagram-rendering",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m2-implementation",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m3-implementation",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m3-evidence-surface-correction",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m4-implementation",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m5-implementation",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m6-implementation",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m7-report-ownership-failure",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "m7-implementation",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "id": "final-record-integrity",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    }
+  ],
+  "limitations": [
+    "Hosted CI is unobserved at this Verify; local passes are not a claim of hosted success. PR submission is authorized separately by the user; merge/release/publication are outside scope.",
+    "Native adapter observations use Node24.14.1 and current CI targets Node24. The executor's existing safe descendant ownership requires Linux/proc; this change makes no new cross-platform executor claim.",
+    "Package-only semantic examples and rendered diagrams protect the published authoring method; they do not guarantee arbitrary customer architectures or target-agent output quality.",
+    "Isolation has real subprocess and repeated-fixture costs. Default-budget and explicit two-worker timings are scoped observations, with no universal speedup claim or validation-result reuse."
+  ],
+  "outcome": "success",
+  "rationale": [
+    "Authority and lifecycle: accepted Proposal direction is unchanged. Current Design Review plus the reviewed M7 allocation own the exact delivered requirements; current Delivery and its bounded reassessment allocate all seven groups and final gates. All seven work entries are completed, all four recorded findings are resolved and no change blocker remains. The separate fresh whole-change Code Review covers the full diff and cross-milestone interactions, and is approved/current. Current model, plan and proposal links match actual bytes.",
+    "Architecture and public capability proof: M1 candidate-packaged semantic assessment and M2 rendering/owner review apply to unchanged final guidance, examples and diagram blocks. The three main models and their submodels have meaningful overviews and supporting-view decisions without duplicate detailed authority. Records retains stable finding IDs/current accounts versus immutable blocker origins; Installation safety remains mandatory. Full current adapter/package proof protects resource inventory, supported archive and clean-install parity.",
+    "Complete case allocation: current discovery contains1482 Python cases across25 unittest entrypoints and419 native Node cases across22 files. Main, broad and seven direct-only family runs jointly account for all1901 cases; the fidelity audit remains an actual bounded command. Every executed adopted family in the final composed runs matches the current full discovered identity set, not merely its count. Original normal/individual/reversed adoption evidence remains valid for unchanged fixtures and case semantics; four new M7 cases received fresh normal/individual/reversed proof.",
+    "Protection and integration: final main/broad/committed-range PR runs passed with1510/955/1828 unique results, respectively. Exact scope allocation removes physical adapter/retirement overlap while preserving reasons, prerequisites, narrow-only behavior, phase gates and distinct release/candidate observations. Current direct executor/native/skill proof and all seven direct-only populations are complete. The separate actual two-worker CI fixture protects overlap without reinstating whole-suite comparisons. Required failure, unknown vocabulary, missing/extra receipts, stale basis, timeout, interruption, descendant cleanup and preflight boundaries remain protected.",
+    "Failure disposition: m7-report-ownership-failure remains failed evidence of the original904d15df defect. It does not support success. The correction prevents inheritance of the parent destination, preserves unrelated environment/worker allocation and allows explicitly owned nested reports. Failing-before/passing-after sentinel proof, current whole-gate reruns and the complete-first-parent-report monitor discharge that defect. Earlier preserved source-sensitive and record-placement failures have assessed current corrections; no failure was relabeled or hidden.",
+    "Evidence applicability: final engineering source is unchanged from tested a0deb393. Later commits contain attributable current review, implementation evidence and routing only; final metadata/whitespace/link checks passed. Current full review explicitly assesses historical scope versus current reliance. Old subject-drift observations do not stand in for this judgment or imply that old code was retested. Current final proof supersedes affected old observations; unchanged diagrams, public resources, native fixtures and direct-only cases have affirmative content/procedure preservation.",
+    "Impact: affected surfaces are public skill instructions/resources, living architecture, repository validation and tests, CI and current change governance. Inspection of the complete diff confirms no public CLI runtime/API/storage implementation or dependency lock change, no historical-record conversion, no release permission change and no generated package hand-edit. Existing pending-publication CI preparation still validates its isolated candidate and checked source; synthetic package/release cases prove current composition without a fabricated live release.",
+    "Branch basis and residual scope: remote main still equalsc815768a; proposal/independent-parallel-tests is the exact intended branch with no competing remote head or PR. Scoped timings describe observed local work, including concurrent author load and fixture/process startup, not a universal speed target. Local readiness is supported; hosted CI and PR opening are separate downstream observations under the user's explicit authorization.",
+    "Completion observation: the unchanged CLI observation scanner flags completed activity alongside any saved failed check, without interpreting correction scope or later proof. Its inconsistent-claim observation here refers to the preserved904d15df report-ownership failure already dispositioned above. Records RF-SR-05 separates stored observations from adequacy; current corrected proof and independent final review establish adequacy. This explains the readback observation and does not relabel failed evidence, introduce a new engineering finding or renew the verification basis."
+  ],
+  "review_refs": [
+    {
+      "id": "code-review-final",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-final.json"
+    },
+    {
+      "id": "code-review-m1",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m1.json"
+    },
+    {
+      "id": "code-review-m2",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m2.json"
+    },
+    {
+      "id": "code-review-m3",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m3.json"
+    },
+    {
+      "id": "code-review-m4",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m4.json"
+    },
+    {
+      "id": "code-review-m5",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m5.json"
+    },
+    {
+      "id": "code-review-m6",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m6.json"
+    },
+    {
+      "id": "code-review-m7",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m7.json"
+    },
+    {
+      "id": "delivery-review-m7-allocation",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review-m7-allocation.json"
+    },
+    {
+      "id": "delivery-review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "id": "design-review-m7-allocation",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review-m7-allocation.json"
+    },
+    {
+      "id": "design-review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "id": "proposal-review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:2d0c0fbdfef2eab2ece82c3b0eeaa7e5742581846418dc374d120a4b9e7d86f6",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "identity": "sha256:44642a943b6907d9336f0a97147bec1ab814ab6cb11088d65c9c0207421baf57",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:941cbdd67552401045d7280917dadf0dd3730f5a18cde3a69ad7a6999e2ef092",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/change.json"
+    },
+    {
+      "identity": "sha256:5ab875522b852a49c563be7c1edd2c448ea4cb0adfeea046dffe1350fc91c17c",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:455774f6ba2748753c870115e0f231affc3602b96c4aaecc476b229cca06e96d",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/material-decisions.json"
+    },
+    {
+      "identity": "sha256:836fa520c873a6b768efe7e22698db2779292753d39eb377381ca0621a3b70d6",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-final.json"
+    },
+    {
+      "identity": "sha256:b68ae4ba61f822781ac124b2c41857f7f7e6f235fd545320b021bc25be5a3a96",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m1.json"
+    },
+    {
+      "identity": "sha256:5337969839f12d1e783a4fa8df9484d9d366f089ee44dfbebf0e0dd3da94c381",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m2.json"
+    },
+    {
+      "identity": "sha256:5b274160398117a9ca85eb97d9cf4abe3b77c3e2b1e87716e17d157f787e25f2",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m3.json"
+    },
+    {
+      "identity": "sha256:8f4be068260ee3e6a670d6e7e9088688e74dab89739679c0ec462435f21a8c59",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m4.json"
+    },
+    {
+      "identity": "sha256:d2f8fc5059b20413853fee3724c1f38a45b4e4f8214595a65dcfe259241ad017",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m5.json"
+    },
+    {
+      "identity": "sha256:eff205ce26fe021b6819da756055d6430edd7a974dc21d28918661999c634e71",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m6.json"
+    },
+    {
+      "identity": "sha256:aae474f0373087196a4e3618a6679d774842d490f3c0f0aba3ff378fbf8904c1",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m7.json"
+    },
+    {
+      "identity": "sha256:53c9c784c8da335191fe16fd64db7eba716ff547fe93a086fe167355fb04af33",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review-m7-allocation.json"
+    },
+    {
+      "identity": "sha256:33e34828816eebafc0de6d5804daf58357001cd1986158e633846e71e30266bc",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:8631bde8fa1bef38726e648ebb920b6400963b86ed117751d39e90e5a1698376",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review-m7-allocation.json"
+    },
+    {
+      "identity": "sha256:5a59a9355f510fea316d1bcad0a2dec2debcecab114966757de577b6ca41a3f0",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:f7234887a6dcae08b003ac7f80b1f907383b60bb7bfd8d89fd16b0291334db42",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
+    },
+    {
+      "identity": "sha256:0eac857270902b1c4669084886fb9e9d06fd093c783ef615ed88e03e9744ce8b",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:2af30f6ac92314de586a6edd0d8bc60e68d5db88dc28feda6ef52d7eee9d2b4f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:7c8af384bc061f939aecc9e9a9c58161a4743a4136b6437d2726b8b4ed45b3a5",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:d4bfc5ac7a65f38385f5fd575cd0e37bd1e7d0aea23cc06120451d47310fd083",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:6d1d8b981ce863dea927b4dc6b76455109d188b28bff6ad76542f9226f3b5d13",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:db5911c87634d0c2da1576b0b9ab6703b55b1f4346fae0846ef7833ae5265c2f",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:adc0b4f16e42bc85b76f77e4527f52bbdae6e00b4d73556d0c2923e220e85c9c",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:941c6522646566b15c31b034447e348e86a4b792d8d02852d123403429c9d465",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:957d0dcef9027e9c71aca5797908910384c97eacca7072e432e0874f1dd00033",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:d083cf4960e85e71c0acac9a4e1ed5d63bfca655366f7d2fc743c15ea2043623",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:23733fd9bf4c5ea22b002ea8a5ec00b65d6b5c1305174e3c84043708a001b153",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
+      "path": "docs/proposals/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:af2f9cb9746f534ed58a2537d2bb26579a9e79dfa926bcb7ecd91bceb79319d0",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:e17e9af73635f92b089baaa3dd67e6ccd005d4e9b8c1e2c0314c5d5cca60a0b6",
+      "path": "packages/rigorloop/test/cli-invocation-observability.test.js"
+    },
+    {
+      "identity": "sha256:460c8fa7b15469b1f9af09690202a0c59f273362e2c95829270f2ff264efe130",
+      "path": "packages/rigorloop/test/cli-observability.test.js"
+    },
+    {
+      "identity": "sha256:733c1789d9484b68f21835f2837c070ebe09492589bdb2fd52a5feb6690992f4",
+      "path": "packages/rigorloop/test/cli.test.js"
+    },
+    {
+      "identity": "sha256:14c686d508eec69bb1b4cb0e189924d3e3c93867cca73c5148bc4bbe148de71d",
+      "path": "packages/rigorloop/test/record-retirement.test.js"
+    },
+    {
+      "identity": "sha256:2d618fd4edfd8434adccd7a258f631caaf6878ada4572cddc7a74bdb74622383",
+      "path": "packages/rigorloop/test/record-store-persistence.test.js"
+    },
+    {
+      "identity": "sha256:ebc582905767047d40e174dba4a99fee1ace76c2a412c9d461fb51cb64caf59c",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:056407f7078c31147daaff197a500189a771a0f8825a42cbca8615d1e76820e2",
+      "path": "packages/rigorloop/test/workflow-context.test.js"
+    },
+    {
+      "identity": "sha256:16dd57643d4ecdc8251a12493d20a9614f87336dd25c4cbd1e95fcf81f0225e7",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:14cea6e986a78daf8daa1d76b01291486a340d1a8129c0a0377c92da05e8b61b",
+      "path": "scripts/skill_validation.py"
+    },
+    {
+      "identity": "sha256:56fc61dfc57f543b0f106b079ae339a44da9ed383d90b77cdb928b682e87afb2",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:ac516ba1a7431177cd6349ec3a89388020c2f5cd5073a61d2eeb1e2887794787",
+      "path": "scripts/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:aa69580c188ce34b4164413390fd0e683f3843b8a7b103d6432d9967ca00f376",
+      "path": "scripts/test-npm-package-publication.py"
+    },
+    {
+      "identity": "sha256:b0e1816753865cdee8ac3cb2514b7b3bb96584d9098ca0cfc9745463ec80b999",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:5e2696378c8941da47d3415047e1eac3d357175269c8afe9c2bc5d683975f83c",
+      "path": "scripts/test-review-artifact-validator.py"
+    },
+    {
+      "identity": "sha256:8f109ff25f99431780fb1e04b3bbf1ebdc6a5be9c246d5422df69ff150827e72",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:cefecf13c52e26d0523d779c188b4739ddbb418fcb20fc33e8b7117bc5b85d91",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:b753e59c537716d61fe89c1b895cbc437e3df42553507b4aa5027e9c1857caaf",
+      "path": "scripts/test-token-cost-measurement.py"
+    },
+    {
+      "identity": "sha256:add6bb1e2d177ce6de604cb1f1dc82e2e64b035e246b6db16837a2c12f8c2842",
+      "path": "scripts/test-validate-workflow-automation.py"
+    },
+    {
+      "identity": "sha256:eafd8979f154fe6d263e269d41188198346812735693a6b039bfd48ff1a42aa0",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:4526cb906d90fc87be8293294102e93757fa416234ccb090a7ebf5fd1039196d",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:4ff0c3964282dcd004ff906dfdfacb9e5c9c4ef0ede5a2bda9be1e7c71381da4",
+      "path": "scripts/validation_node_adapter.mjs"
+    },
+    {
+      "identity": "sha256:f04dfaccfab8a6566197d69655d07c456ec64eecaddc7f78320ec0ad93783c6b",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:f9ee51047c3a8c0cced45a9238d17f7341a7661563863b0380173883ece0fe18",
+      "path": "skills/design-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:2298926b2f3844831548f4f10c9d58d408eaf32e4505a270e2c0bd643eef3fa4",
+      "path": "skills/design/SKILL.md"
+    },
+    {
+      "identity": "sha256:a83862ec20aaa6f2c7cfab96dfd427e88ed73960d1d777e7e9eab5a39d33ad1d",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:5ff3bd5cec3b6ad239ea1fa8676a2fb3cfae1a3ee8fb22876a96112de065727e",
+      "path": "skills/design/references/architecture-view-examples.md"
+    },
+    {
+      "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:bbff5f36ced2f5e0ddc648a78278e378d81990b0266e0a7172b28d524a4da3cb",
+      "path": "skills/design/references/system-composition.md"
+    },
+    {
+      "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:5b08ce71c66a0519d7384f85f1165ad1bec05ea27d2c2f0749aeafff5311027a",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:e6454aa501a7db02051a3e2df6f53ac5013cb285bfb1d786429bb8e587920ec5",
+      "path": "specs/published-skill-first-repository-simplification.test.md"
+    }
+  ],
+  "summary": "Branch-ready: the complete seven-milestone architecture and independent-validation change is verified for the authorized PR handoff.",
+  "verification_basis": {
+    "base_branch": "main",
+    "base_revision": "c815768aacb0a6762c0acd11acf1d21f3c26aac0",
+    "head_branch": "proposal/independent-parallel-tests",
+    "merge_base_revision": "c815768aacb0a6762c0acd11acf1d21f3c26aac0",
+    "remote_identity": "git@github.com:xiongxianfei/rigorloop.git",
+    "repository_identity": "github.com/xiongxianfei/rigorloop",
+    "verified_subject_revision": "a0deb393118638551814a8ca9c4b9023df27bdad"
+  },
+  "verifier": {
+    "id": "root",
+    "role": "verify"
+  }
+}

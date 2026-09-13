@@ -1799,8 +1799,8 @@ class ModelRecordTests(unittest.TestCase):
 
     def test_model_design_example_and_parent_validate_without_counting_fenced_marker(self):
         parent = (ROOT / "docs/design/skill/authoring/design.md").read_text()
-        examples = re.findall(r"```markdown\n([\s\S]*?)\n```", parent)
-        example, = [text for text in examples if text.startswith("# Label Normalization Design")]
+        examples = re.findall(r"^(`{3,})markdown\n([\s\S]*?)^\1[ \t]*$", parent, re.MULTILINE)
+        example, = [text.rstrip("\n") for _,text in examples if text.startswith("# Label Normalization Design")]
         self.assertEqual(validate_model_record(parent, "docs/design/skill/authoring/design.md"), ())
         self.assertEqual(validate_model_record(example, "docs/design/label-normalization/label-normalization.md"), ())
         invalid = example.replace("Model validation contract: model-document-v1",
