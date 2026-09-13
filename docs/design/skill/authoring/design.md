@@ -25,24 +25,28 @@ The adopted model profile permits this combined living Design. The unified `desi
 ## Architecture Overview
 
 ```mermaid
-flowchart LR
-    Direction["External: approved direction or authorized correction"]
-    Ownership["Responsibility and affected-owner selection"]
-    Reconcile["Behavior, technical realization and interfaces"]
-    Preserve["Decisions, references and scoped source reconciliation"]
-    Intent["Acceptance intent and observation boundaries"]
-    Package["Coherent affected Design package"]
-    Review["External: independent Design Review"]
-    Direction --> Ownership
-    Ownership --> Reconcile
-    Reconcile --> Preserve
-    Reconcile --> Intent
-    Preserve --> Package
-    Intent --> Package
-    Package --> Review
+flowchart TB
+    Direction["Approved direction or authorized correction"]
+    Owners["Product and shared-contract owners"]
+    subgraph Design["Design — coherent engineering contracts"]
+        Ownership["Responsibility selection<br/>Smallest affected owner set"]
+        Reconcile["Behavior and realization<br/>Boundaries, views and interfaces"]
+        Preserve["Decision preservation<br/>Rationale and source reconciliation"]
+        Intent["Acceptance intent<br/>Conditions and observable outcomes"]
+        Package["Design package<br/>Exact subjects, assumptions and references"]
+        Ownership -->|"owned obligations"| Reconcile
+        Reconcile -->|"choices and affected sources"| Preserve
+        Reconcile -->|"claims to demonstrate"| Intent
+        Preserve -->|"decisions and retained constraints"| Package
+        Intent -->|"assessment and verification intent"| Package
+    end
+    Direction -->|"goals and authorized bounds"| Ownership
+    Owners -->|"existing contracts and interactions"| Reconcile
+    Package -->|"subjects and assessment basis"| Review["Independent Design Review"]
+    Package -->|"requirements and outcomes, under review authority"| Delivery["Delivery allocation"]
 ```
 
-Design owns the authoring method and reconciled engineering contracts. The graph shows method responsibilities, not deployed components or mandatory separate artifacts. Design owns the Architecture Overview View convention below; System applies it to this repository’s model composition; Delivery owns concrete work and proof allocation. The author cannot supply independent approval.
+Design owns the method responsibilities inside the boundary, realized through the [public resource composition](#building-block-view). [Responsibility abstraction](#responsibility-abstraction), [technical reasoning and views](#technical-reasoning-and-decisions), and [decision/reference preservation](#model-document-and-structural-contract) own the detailed authoring rules; the [Runtime View](#runtime-view) owns the reconciliation procedure. [Context and Scope](#context-and-scope) identifies external contract owners. [Assessment](../assessment.md) owns independent review; [Authoring](../skill.md#authoring) owns Delivery planning. Package production does not authorize that downstream work. [System](../../system.md) applies the reusable convention to this project.
 
 ## Context and Scope
 

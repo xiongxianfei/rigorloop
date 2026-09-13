@@ -30,30 +30,27 @@ The model ID is `record-format`. Its selected format is **RigorLoop Record Forma
 
 ```mermaid
 flowchart TB
-    Change["Change: activity, work and blockers"]:::system
-    Subjects["Proposal, models and optional plan"]:::external
-    Registry["Registered paths and explicit applicability"]:::container
-    Review["Reviews and their findings"]:::container
-    Evidence["Evidence checks"]:::container
-    Decisions["Material decisions"]:::container
-    Verify["Successful Verify report"]:::container
-    Change -->|"references"| Subjects
-    Change -->|"contains"| Registry
-    Registry --> Review
-    Registry --> Evidence
-    Registry --> Decisions
-    Registry --> Verify
-    Review -->|"reviewed subjects"| Subjects
-    Evidence -->|"evaluated subjects"| Subjects
-    Verify -->|"supporting references"| Review
-    Verify -->|"supporting references"| Evidence
-    classDef person fill:#08427b,stroke:#073b6f,color:#fff
-    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
-    classDef external fill:#999,stroke:#666,color:#fff
-    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
+    Decisions["Workflow and Assessment<br/>Actor-owned decisions and evidence"]
+    Subjects["Engineering subjects<br/>Exact paths and identities"]
+    subgraph Records["Records — stored representation and invariants"]
+        Change["Change registry<br/>Activity, work and blockers"]
+        Entries["Supporting records<br/>Reviews, evidence, decisions and successful Verify"]
+        References["Identity and references<br/>Subjects, registered paths and applicability"]
+        Preservation["Preservation rules<br/>Finding IDs, blocker origin and historical meaning"]
+        Change -->|"registered supporting paths"| Entries
+        Change -->|"subject and record references"| References
+        Entries -->|"exact assessment and evidence basis"| References
+        Preservation -.->|"constrains permitted revisions"| Change
+        Preservation -.->|"constrains permitted revisions"| Entries
+    end
+    Decisions -->|"explicit semantic values"| Change
+    Decisions -->|"judgments, proof and rationale"| Entries
+    Subjects -->|"referenced basis"| References
+    References -->|"representation and reference contract"| CLI["CLI construction and persistence"]
+    Preservation -->|"required invariants on writes"| CLI
 ```
 
-Records owns the stored change registry, supporting record types and their identity/reference invariants. Supporting records are conditional; the graph does not require all of them to exist before a correction can be saved. Workflow and Assessment own semantic decisions, while CLI owns transport, byte preservation and recoverable writes. The [record model](#record-model) below defines the exact stored representation, including stable Review finding IDs and immutable change-level blocker origin.
+Records owns data representation inside the boundary. The [record model](#record-model) retains the detailed record-relationship graph, and the [explicit schema](#explicit-record-schema) owns stored fields and references. [V3 finding identity and correction](#v3-finding-identity-and-correction) distinguishes stable finding IDs/current accounts from immutable blocker origin. [Workflow](../skill/workflow.md) and [Assessment](../skill/assessment.md) supply semantic decisions; [CLI](cli.md#persistence) enforces the stored contract through safe writes. Supporting records are conditional, not prerequisites for every correction. No data block is an additional service or decision owner.
 
 ## Context and Scope
 
@@ -102,6 +99,31 @@ These requirements realize Workflow's actor-owned recording and retained-basis o
 ## Building Block View
 
 ### Record model
+
+```mermaid
+flowchart TB
+    Change["Change: activity, work and blockers"]:::system
+    Subjects["Proposal, models and optional plan"]:::external
+    Registry["Registered paths and explicit applicability"]:::container
+    Review["Reviews and their findings"]:::container
+    Evidence["Evidence checks"]:::container
+    Decisions["Material decisions"]:::container
+    Verify["Successful Verify report"]:::container
+    Change -->|"references"| Subjects
+    Change -->|"contains"| Registry
+    Registry --> Review
+    Registry --> Evidence
+    Registry --> Decisions
+    Registry --> Verify
+    Review -->|"reviewed subjects"| Subjects
+    Evidence -->|"evaluated subjects"| Subjects
+    Verify -->|"supporting references"| Review
+    Verify -->|"supporting references"| Evidence
+    classDef person fill:#08427b,stroke:#073b6f,color:#fff
+    classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+    classDef external fill:#999,stroke:#666,color:#fff
+    classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
+```
 
 **RigorLoop Record Format v3** is the selected stored-record design. Its complete record layouts are defined below, with `contract: rigorloop-records-v3` in change.json and `schema_version: 3` in every record. This is a data-format contract: it defines stored fields, relationships and preservation invariants. It does not select a workflow stage or version the CLI command interface.
 

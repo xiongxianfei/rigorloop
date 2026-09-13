@@ -4,7 +4,7 @@
       "id": "root",
       "role": "plan"
     },
-    "reason": "Independent Design Review approved required overview and assessed necessary supporting views. Delivery must allocate public guidance/skeleton/reviewer alignment and all twelve model view assessments and necessary diagrams; no implementation completion claimed.",
+    "reason": "Independent Design Review approved all twelve Architecture Overview refinements; existing detailed contracts preserved. Supporting-view necessity assessments, necessary diagrams and public guidance adoption remain Delivery obligations.",
     "stage": "plan",
     "status": "ready"
   },
@@ -42,7 +42,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json",
-      "reason": "Design-owned convention and System application are coherent; consumer and all-model view adoption are explicitly outstanding Delivery work, and prior repository-only convention scope is superseded by direct user refinement.",
+      "reason": "Current all-twelve overview subjects independently assessed against unchanged detailed owners; supporting-view and public-consumer adoption remain explicitly outstanding, with prior findings preserved.",
       "value": "current"
     }
   ],
@@ -53,84 +53,84 @@
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:71eb10db083cbd0e416ddfc32384a925d52b07013f3072f9ca9e46691fc33ecc",
+        "identity": "sha256:06db6983bf5abcbbddef5bf8268e67dcb51b99072f65cfe51ce3f37535a1d939",
         "path": "docs/design/system.md"
       }
     },
     {
       "id": "engineering",
       "subject": {
-        "identity": "sha256:363be478139806226f0222a45742fb9b9097ee58fdd375ca598cd09c3ecf6d50",
+        "identity": "sha256:d664d5e7e169108999d8bfce8df6d839a25fb246371b2fd15bef041284a047c3",
         "path": "docs/design/engineering/engineering.md"
       }
     },
     {
       "id": "validation",
       "subject": {
-        "identity": "sha256:d67762858fa829ce6960026dacea8e9938f14766cf6963d70b0e657f7e023276",
+        "identity": "sha256:090dd338c069f42b72a5f7a46b82147ce9c8a178ab86aaff6ddd6f155b902fa1",
         "path": "docs/design/engineering/validation.md"
       }
     },
     {
       "id": "skill",
       "subject": {
-        "identity": "sha256:33e931c4d6fc8acea36d6a90616f8776cf2937f1f581f40f343fac51486c36f7",
+        "identity": "sha256:d6c090304139a0de9cd4393df8fb45ef90383a97428f5ccdd0507968ecd63bf6",
         "path": "docs/design/skill/skill.md"
       }
     },
     {
       "id": "cli",
       "subject": {
-        "identity": "sha256:5035463f52ab6176f618db8124f71f67a2a26278f5d9e074e90ffa03a01999cd",
+        "identity": "sha256:43451c60bd30ff7c1486e4a46996eebc1b25f059abd40410960c5d3558be0d7f",
         "path": "docs/design/cli/cli.md"
       }
     },
     {
       "id": "design",
       "subject": {
-        "identity": "sha256:b37c3a79de553235a602ae624a4840fa1a30ede351bc490d8635b7a33edd6050",
+        "identity": "sha256:e30f6c2782be265396740094d41455f700797d429cbc2d4f1f44ea1dde7b1b85",
         "path": "docs/design/skill/authoring/design.md"
       }
     },
     {
       "id": "workflow",
       "subject": {
-        "identity": "sha256:d1a01f651abac55ccd3ca73d8e3d573fce35e817744c96a0dbba7738f1bd6294",
+        "identity": "sha256:9e78ad44b069abec310ac1af5ebcc2ea48e6cf4c3b61ab250d8d9b650902394b",
         "path": "docs/design/skill/workflow.md"
       }
     },
     {
       "id": "review-closeout",
       "subject": {
-        "identity": "sha256:9117cdcf0ba9c4e18f6f5cc62a01e4576ca3be8c32d12e1a3938a1565d178250",
+        "identity": "sha256:9f771e1c6d5cd51e9dfce47d9f052889a5af5f8c0fc4e2ce5779ab503bc344a4",
         "path": "docs/design/skill/assessment.md"
       }
     },
     {
       "id": "record-format",
       "subject": {
-        "identity": "sha256:2443e33e4966e6ba89f1b1c95d2ffed3c93140adde4459ee7de86c4bac7bc05e",
+        "identity": "sha256:0cff9de8f11b4e5827ca30f426890d8637941fa3f13d9d56e200a2fa1ae57d00",
         "path": "docs/design/cli/records.md"
       }
     },
     {
       "id": "installation",
       "subject": {
-        "identity": "sha256:c8507957f8a39389c82d73f913dd4dde5464ae4e3e2fb2ab935730a9bb5c8a54",
+        "identity": "sha256:6e80988bd142fd39f56602602e43645a73e3d6d9131a7a99b0f442b7d85f648e",
         "path": "docs/design/cli/installation.md"
       }
     },
     {
       "id": "packaging",
       "subject": {
-        "identity": "sha256:53132c6a3e00513cc675fba9ad8abf59a69595fe3ceb543286cdd4db585628b6",
+        "identity": "sha256:73a1284be19719f3b335e738e8d699af32be3917c2f343541fdb13926ae009ec",
         "path": "docs/design/engineering/packaging.md"
       }
     },
     {
       "id": "release",
       "subject": {
-        "identity": "sha256:f6f7b22d3b663f744e2a92764e20ca7b9fa6a636fef586a3ad8f800e93776cb2",
+        "identity": "sha256:fab7e075fa1f7825afbe2a2c87a84422f75d92f4d6a71385db1e44233696974c",
         "path": "docs/design/engineering/release.md"
       }
     }

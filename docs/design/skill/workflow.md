@@ -40,22 +40,27 @@ Workflow assigns responsible activities and consumes the assessment meanings and
 ## Architecture Overview
 
 ```mermaid
-flowchart LR
-    Authority["External: user authority and project governance"]
-    Routing["Activity selection and correction routing"]
-    Handoffs["Stage handoffs and continuation boundaries"]
-    State["Current work and blocker coordination"]
-    Skills["External: authors, implementers and assessors"]
-    CLI["External: CLI and Records"]
-    Authority -->|"bounds decisions"| Routing
-    State -->|"current work basis"| Routing
-    Routing -->|"selected owner and scope"| Handoffs
-    Handoffs -->|"authorized activity"| Skills
-    Skills -->|"explicit outcomes and findings"| State
-    State -->|"inspect and record through"| CLI
+flowchart TB
+    Authority["User authority and project governance"]
+    Actors["Authors, implementers and assessors"]
+    Assessment["Assessment policy<br/>Independence, reliance and closeout"]
+    CLI["CLI and Records<br/>Inspection and explicit recording"]
+    subgraph Workflow["Workflow — activity coordination"]
+        Basis["Work context<br/>Current activity, work and concerns"]
+        Routing["Owner and activity selection<br/>Scope and correction responsibility"]
+        Handoffs["Handoff coordination<br/>Prerequisites and continuation limits"]
+        Basis -->|"current decision basis"| Routing
+        Routing -->|"selected owner and bounded work"| Handoffs
+    end
+    Authority -->|"authorized scope"| Routing
+    Assessment -.->|"conditions for reliance"| Handoffs
+    CLI -->|"stored observations"| Basis
+    Actors -->|"outcomes, findings and corrections"| Basis
+    Handoffs -->|"authorized activity and scope"| Actors
+    Routing -->|"explicit coordination decisions"| CLI
 ```
 
-Workflow owns coordination among activities and their declared state. Actors make decisions; CLI and Records supply inspection, representation and safe writes. Assessment retains judgment and reliance. These boxes are coordination responsibilities, not additional services or an automatic approval engine.
+Workflow owns coordination within the boundary. The [actor and model boundaries](#context-and-scope), [responsibility-specific updates](#responsibility-specific-updates), and [Runtime View](#runtime-view) define context, routing and handoffs. The [record model](#record-model) maps coordination concepts to [Records](../cli/records.md); [CLI](../cli/cli.md) supplies inspection and safe writes. [Assessment](assessment.md) owns judgments and reliance conditions. These external contracts guide actor decisions; neither stored state nor routing manufactures approval.
 
 ## Context and Scope
 

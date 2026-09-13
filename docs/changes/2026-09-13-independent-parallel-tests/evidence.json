@@ -376,6 +376,126 @@
         }
       ],
       "summary": "User-selected required overview and reasoned necessity assessment with diagrams for all necessary supporting views recorded in DES-SR-22; System references the method owner. Public skill/skeleton/review guidance and twelve-model supporting-view assessment explicitly allocated to Delivery, not claimed implemented. Structural and prose checks passed; no Mermaid rendering or runtime proof claimed."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "all-model-overview-refinement",
+      "procedure": "python scripts/validate-boundary-first.py --check and python scripts/validate-documentation-prose.py --mode enforce, each with --path for all twelve PROJECT_MODEL_PATHS; local overview link/heading inspection; git diff --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:06db6983bf5abcbbddef5bf8268e67dcb51b99072f65cfe51ce3f37535a1d939",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:e30f6c2782be265396740094d41455f700797d429cbc2d4f1f44ea1dde7b1b85",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:9e78ad44b069abec310ac1af5ebcc2ea48e6cf4c3b61ab250d8d9b650902394b",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:9f771e1c6d5cd51e9dfce47d9f052889a5af5f8c0fc4e2ce5779ab503bc344a4",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:0cff9de8f11b4e5827ca30f426890d8637941fa3f13d9d56e200a2fa1ae57d00",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:6e80988bd142fd39f56602602e43645a73e3d6d9131a7a99b0f442b7d85f648e",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:090dd338c069f42b72a5f7a46b82147ce9c8a178ab86aaff6ddd6f155b902fa1",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:73a1284be19719f3b335e738e8d699af32be3917c2f343541fdb13926ae009ec",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:fab7e075fa1f7825afbe2a2c87a84422f75d92f4d6a71385db1e44233696974c",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:d6c090304139a0de9cd4393df8fb45ef90383a97428f5ccdd0507968ecd63bf6",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:43451c60bd30ff7c1486e4a46996eebc1b25f059abd40410960c5d3558be0d7f",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:d664d5e7e169108999d8bfce8df6d839a25fb246371b2fd15bef041284a047c3",
+          "path": "docs/design/engineering/engineering.md"
+        }
+      ],
+      "summary": "All twelve overview sources refined or linked to detail using Validation responsibility-boundary pattern; Validation graph unchanged, full System hierarchy/end-to-end retained, Records detailed graph relocated without duplication. Structure/prose pass for all twelve; 106 local overview links resolve. Initial directory-path attempts were rejected by file-only validators; corrected explicit file arguments passed. No runtime, full supporting-view adoption or public skill implementation claim."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "all-model-overview-rendering",
+      "procedure": "Extract each Architecture Overview Mermaid source; invoke cached @mermaid-js/mermaid-cli with headless Chromium and render each to a temporary SVG (twelve outputs); git diff --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:06db6983bf5abcbbddef5bf8268e67dcb51b99072f65cfe51ce3f37535a1d939",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:e30f6c2782be265396740094d41455f700797d429cbc2d4f1f44ea1dde7b1b85",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:9e78ad44b069abec310ac1af5ebcc2ea48e6cf4c3b61ab250d8d9b650902394b",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:9f771e1c6d5cd51e9dfce47d9f052889a5af5f8c0fc4e2ce5779ab503bc344a4",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:0cff9de8f11b4e5827ca30f426890d8637941fa3f13d9d56e200a2fa1ae57d00",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:6e80988bd142fd39f56602602e43645a73e3d6d9131a7a99b0f442b7d85f648e",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:090dd338c069f42b72a5f7a46b82147ce9c8a178ab86aaff6ddd6f155b902fa1",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:73a1284be19719f3b335e738e8d699af32be3917c2f343541fdb13926ae009ec",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:fab7e075fa1f7825afbe2a2c87a84422f75d92f4d6a71385db1e44233696974c",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:d6c090304139a0de9cd4393df8fb45ef90383a97428f5ccdd0507968ecd63bf6",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:43451c60bd30ff7c1486e4a46996eebc1b25f059abd40410960c5d3558be0d7f",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:d664d5e7e169108999d8bfce8df6d839a25fb246371b2fd15bef041284a047c3",
+          "path": "docs/design/engineering/engineering.md"
+        }
+      ],
+      "summary": "All twelve overview graphs rendered successfully. Temporary artifacts remain outside the repository. Rendering proves accepted Mermaid syntax and graph generation, not semantic adequacy, full supporting-view adoption or runtime behavior."
     }
   ],
   "schema_version": 3

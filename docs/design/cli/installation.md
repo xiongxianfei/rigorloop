@@ -17,24 +17,28 @@ This child receives the installation portion of the former Distribution model wi
 ## Architecture Overview
 
 ```mermaid
-flowchart LR
-    Request["External: explicit installation request"]
-    Package["External: Packaging archive and trusted metadata"]
-    Verify["Acquisition and archive verification"]
-    Destinations["Candidate destinations and conflict checks"]
-    Install["Complete-unit installation or explicit replacement"]
-    Files["External: installed skill files"]
-    Result["Operation result and recovery limitations"]
-    Request --> Verify
-    Package --> Verify
-    Verify -->|"verified candidate"| Destinations
-    Destinations -->|"safe allowed writes"| Install
-    Destinations -->|"conflict or unsafe path"| Result
-    Install --> Files
-    Install --> Result
+flowchart TB
+    Request["User or CLI command<br/>Target and explicit replacement choice"]
+    Package["Packaging<br/>Archive and metadata contract"]
+    subgraph Installation["Installation — trusted, bounded target writes"]
+        Acquire["Candidate acquisition<br/>Source and archive verification"]
+        Destinations["Destination preflight<br/>Containment, conflicts and allowed scope"]
+        Writes["Installation and replacement<br/>Complete candidate units"]
+        Result["Operation result<br/>Diagnostics and recovery limitations"]
+        Acquire -->|"verified candidate inventory"| Destinations
+        Destinations -->|"safe, authorized candidate destinations"| Writes
+        Acquire -->|"verification failure"| Result
+        Destinations -->|"conflict or unsafe destination"| Result
+        Writes -->|"actual outcome or partial failure"| Result
+    end
+    Request -->|"requested target and options"| Acquire
+    Request -->|"explicit force choice"| Destinations
+    Package -->|"candidate bytes and metadata"| Acquire
+    Writes -->|"verified, scoped filesystem changes"| Files["Installed skill destinations"]
+    Result -->|"outcome and actionable limitations"| Request
 ```
 
-Installation owns archive trust enforcement and explicitly scoped target writes. Packaging owns artifact representation; record commands own separate persistence machinery. Default conflicts preserve existing candidate destinations, and explicit `--force` follows the complete-replacement contract. Project governance state is neither inspected nor adopted.
+Installation owns acquisition, destination safety and target mutation inside the boundary. [Architecture and interfaces](#architecture-and-interfaces), [destination conflicts and replacement](#destination-conflicts-and-explicit-replacement), and [partial failure and retry](#partial-failure-and-retry) own the detailed rules; [Runtime and deployment](#runtime-and-deployment) owns their execution context. [Packaging](../engineering/packaging.md) owns artifact representation and [CLI](cli.md#command-interface) exposes the command. Existing candidate destinations conflict by default; explicit `--force` permits complete replacement under the contract. Project governance records are neither inspected nor adopted.
 
 ## Context and Scope
 

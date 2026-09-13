@@ -29,23 +29,29 @@ The [Design model](authoring/design.md#model-document-and-structural-contract) o
 ## Architecture Overview
 
 ```mermaid
-flowchart LR
-    Subjects["External: exact subjects and evidence"]
-    Scope["Assessment scope and independence"]
-    Methods["Specialist assessment criteria"]
-    Judgment["Judgment and actionable findings"]
-    Reliance["Applicability and closeout conditions"]
-    Workflow["External: Workflow coordination"]
-    Records["External: Records and CLI"]
-    Subjects --> Scope
-    Scope -->|"bounded assessment"| Methods
-    Methods -->|"reasoned outcome"| Judgment
-    Judgment -->|"basis to assess"| Reliance
-    Reliance -->|"conclusions for continuation"| Workflow
-    Judgment -->|"explicit recording when governed"| Records
+flowchart TB
+    Subjects["Engineering subjects and evidence"]
+    Methods["Specialist methods and Validation criteria"]
+    Authority["User authority and project governance"]
+    subgraph Assessment["Assessment — independent judgment and closeout"]
+        Scope["Scope and independence<br/>Exact subjects and adequate basis"]
+        Judgment["Assessment outcome<br/>Reasoned judgment and limitations"]
+        Findings["Concern disposition<br/>Actionable findings and correction owners"]
+        Reliance["Reliance and final closeout<br/>Applicability and completion conditions"]
+        Scope -->|"bounded assessment basis"| Judgment
+        Judgment -->|"supported concerns"| Findings
+        Judgment -->|"judgment and limitations"| Reliance
+        Findings -->|"disposition and remaining concerns"| Reliance
+    end
+    Subjects -->|"work to assess and supporting observations"| Scope
+    Authority -->|"decision and action limits"| Scope
+    Methods -.->|"subject-specific adequacy criteria"| Judgment
+    Reliance -->|"conclusions and continuation limits"| Workflow["Workflow coordination"]
+    Judgment -->|"explicit judgment and findings"| Records["Records and CLI"]
+    Reliance -->|"explicit applicability and successful Verify explanation"| Records
 ```
 
-Assessment owns how responsible specialists judge work and evidence, including independent final Verify. Workflow selects activities, while Records and CLI represent and persist decisions. Findings retain their IDs and current actionable accounts under Records; recording, applicability and approval remain distinct.
+Assessment owns the shared policy inside its boundary. [Assessment scopes and consequences](#assessment-scopes-and-consequences) and the [Building Block View](#building-block-view) define judgment and closeout rules; the [Runtime View](#runtime-view) explains their application. [Context and Scope](#context-and-scope) retains specialist method and human authority boundaries, while [Validation](../engineering/validation.md) owns proof criteria. [Workflow](workflow.md) coordinates receiving activities; [Records](../cli/records.md) and [CLI](../cli/cli.md) own representation and persistence. Findings retain stable IDs and current actionable accounts; recording does not establish approval or reliance.
 
 ## Context and Scope
 

@@ -15,24 +15,29 @@ Packaging owns deterministic generation of supported skill archives, CLI candida
 ## Architecture Overview
 
 ```mermaid
-flowchart LR
-    Skills["External: canonical skills and mapped resources"]
-    CLI["External: CLI package sources"]
-    Descriptors["Supported target descriptors and transforms"]
-    Generation["Isolated package generation"]
-    Artifacts["Skill archives and CLI npm candidate"]
-    Metadata["Inventory, checksums and trusted metadata"]
-    Consumers["External: Validation, Installation and Release"]
-    Skills --> Generation
-    CLI --> Generation
-    Descriptors --> Generation
-    Generation --> Artifacts
-    Artifacts --> Metadata
-    Artifacts --> Consumers
-    Metadata --> Consumers
+flowchart TB
+    Skills["Skill sources and content contract"]
+    CLI["CLI package sources and executable contract"]
+    subgraph Packaging["Packaging — reproducible product candidates"]
+        Descriptors["Target representation<br/>Supported layouts and transforms"]
+        Generation["Isolated generation<br/>Canonical sources to candidates"]
+        Artifacts["Candidate artifacts<br/>Skill archives and CLI npm package"]
+        Metadata["Artifact metadata<br/>Inventory, identities and checksums"]
+        Descriptors -->|"target rules and transforms"| Generation
+        Generation -->|"generated candidate bytes"| Artifacts
+        Artifacts -->|"actual artifact facts"| Metadata
+    end
+    Skills -->|"authored skills and mapped resources"| Generation
+    CLI -->|"package inputs"| Generation
+    Artifacts -->|"candidate to check"| Validation["Validation"]
+    Metadata -->|"candidate identity and inventory"| Validation
+    Artifacts -->|"archive to acquire"| Installation["CLI Installation"]
+    Metadata -->|"archive verification data"| Installation
+    Artifacts -->|"exact candidate to qualify and publish"| Release["Release"]
+    Metadata -->|"artifact identity and provenance"| Release
 ```
 
-Packaging owns canonical-to-artifact generation and the shared artifact/metadata representation. Generated outputs stay outside canonical and active installation roots. Consumers check, install or publish under their own contracts; generated metadata records actual facts and does not manufacture successful validation or publication authority.
+Packaging owns candidate generation and representation inside the boundary. The [Building Block View](#building-block-view) and [stable representations](#stable-representations) own transforms, artifacts and metadata; [Runtime and deployment](#runtime-and-deployment) owns isolated generation. [Skill](../skill/skill.md) and [CLI](../cli/cli.md) retain product behavior. [Validation](validation.md), [Installation](../cli/installation.md) and [Release](release.md) respectively check, install and publish under their own contracts. Candidate metadata records facts; generation neither fabricates successful checks nor grants publication authority.
 
 ## Context and Scope
 
