@@ -2,7 +2,9 @@
 
 Model validation contract: model-document-v1
 
-Owning change: [three-model reconciliation](../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Abstract
 
@@ -151,6 +153,8 @@ Quality has several distinct obligations. Skill and the specialist method owners
 The correction node returns work to its actual owner rather than treating every failure as an implementation bug. A contract gap changes the affected Design and its downstream basis; a defective implementation returns to implementation. Required milestone reviews and fresh whole-change Code Review precede distinct final Verify. The graph summarizes those repeated activities, not a replacement stage order or a permission to skip reviews. A verified engineering basis also does not authorize publication: Release prepares and checks the release candidate and obtains the separately required authorization.
 
 Existing build/check entrypoints include `scripts/build-adapters.py`, `scripts/validate-adapters.py`, CLI tests under `packages/rigorloop/test/`, `scripts/select-validation.py`, `scripts/ci.sh` and `scripts/release-verify.sh`. Delivery and Release select their exact applicable composition under the owning contracts. Concrete integration outcomes below distinguish a product whose separate parts pass checks from skills and a CLI that work together.
+
+The current [independent-parallel-test refinement](engineering/validation.md#one-execution-with-several-proof-requests) keeps these three main models. Validation owns case independence, protective consolidation and execution equivalence; Development allocates and implements that contract, and Assessment judges retained protection. Packaging and Release still define candidate and freshness boundaries. Sharing a physical execution cannot erase an unsatisfied product, phase or release obligation. New adoption belongs to the current owning change; the original source maps below remain scoped historical adoption decisions.
 
 ## Integrated acceptance
 
