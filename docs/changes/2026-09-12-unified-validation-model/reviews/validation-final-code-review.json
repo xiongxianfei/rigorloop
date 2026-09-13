@@ -1,0 +1,113 @@
+{
+  "assessment_scope": "First-pass integrated Code Review of57653f7b..68302b8f hierarchy/directory/M1–M5 and current PR behavior. Recorded subjects select the first demonstrated cross-milestone defect and its governing/implementation basis; complete final assessment and exact final whole-change subject set remain pending correction and successful current actual PR proof.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Full-branch actual PR wrapper selects both legacy specs because branch edits only rebase historical navigation. Boundary validator reports BFR-MARKER-AUTHORITY for governed-lifecycle-cli.md and BFR-NEW-SPEC-MARKER for progressive-boundary-first-skill-guidance.md. Current marker rejection is required, and neither legacy owner migration nor whole feature-format adoption belongs to this change. Earlier broad proof did not exercise this selected spec set.",
+      "id": "final-legacy-navigation-marker-scope",
+      "owner": {
+        "id": "root",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Restore the complete two original spec bodies from57653f7b, preserving historical link/amendment provenance while current model consumers retain current authority. Explicitly assess the10 grandfathered observations as historical/new-profile by exact diff. Rerun actual PR selection/wrapper on corrected current branch and renew fresh whole-change review. Do not weaken marker validation, edit grandfather snapshot, invent standalone authority or decode retired stores. Root implement owns the bounded restoration; Design assessor owns semantic classification. Any required substantive legacy change returns to Design before implementation.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:fbfe6c62dfeadfdb5cd9a272ed9cead2beec4a57f32a5cdc2871e6234216983b",
+          "path": "specs/governed-lifecycle-cli.md"
+        },
+        {
+          "identity": "sha256:28d8fd58f1354560508572aefddb4c4eff6d70c39b809559cc4e7dc2c0e96abc",
+          "path": "specs/progressive-boundary-first-skill-guidance.md"
+        },
+        {
+          "identity": "sha256:b68084a3e8be4ec1daa6976bf1f0ad7c3e0d1cf97058db60080f25489175caa3",
+          "path": "scripts/boundary_first_validation.py"
+        }
+      ]
+    }
+  ],
+  "id": "validation-final-code-review",
+  "independence_basis": "Separate user-authorized nonauthor reviewer begins fresh whole-change review of full57653f7b..68302b8f scope, inspecting actual new PR failure and relevant original/current contract diffs. Prior milestone reviews inform scope but are not used as a substitute for this integrated judgment. Reviewer has not authored implementation or correction.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "Changes-requested is supported by actual integrated failure; full final review is deliberately not approved while correction and10 semantic classifications remain outstanding.",
+    "No source, marker, grandfather baseline, validator/schema, review body or routing state changed by reviewer. No broader historical-contract migration or unrelated cleanup is authorized by this finding."
+  ],
+  "rationale": [
+    "Integrated contract/compatibility — concern: directory/source cleanup rebased links inside two legacy spec bodies, pulling those files into current boundary checks without adopting their historical marker authority or pending feature grammar. The changes are exactly one opening-link paragraph in governed-lifecycle-cli and one amendment-list link in progressive-boundary-first-skill-guidance; no feature behavior is intentionally changed.",
+    "Actual validation/error handling — block: /tmp/validation-final-pr-ci.log shows boundary_first.validate failing BFR-MARKER-AUTHORITY for governed-lifecycle-cli (retired change.yaml marker authority) and BFR-NEW-SPEC-MARKER for progressive-boundary-first-skill-guidance (unmarked, outside historical grandfather snapshot). Correctly rejected structural conditions cannot be waived by earlier successful broad/M5 proof.",
+    "Owning boundary/recovery — concern with bounded safe correction: restore both entire original spec bodies from57653f7b and treat those original link/amendment references as historical provenance. Current model and contributor surfaces retain current ownership/navigation. This returns the two documents to their preexisting unmodified scope, not a marker migration, legacy-record adapter, whitelist or unknown-value bypass. If substantive legacy modification were required instead, Design would have to own that separate adoption decision.",
+    "Historical classification — remaining required assessment: the same actual output contains10 grandfathered review-required observations. Design retains a semantic historical/new-profile classification duty for exact edits; zero structural exit alone is not such a judgment. Each must be classified against actual full-branch diff before final reliance.",
+    "Test/proof adequacy — concern: M5 exact scope commands,286-task broad runs and product suites remain truthful passed evidence, but this newly exercised branch PR path exposes an additional required boundary. After correction run the real same PR selector/wrapper, retain failed attempt, and reassess current engineering basis; do not relabel the failed run.",
+    "Other whole-change dimensions — pending: full integrated architecture/ownership, cases/resource cleanup, source and record preservation, published skill semantics, derived product currency and external boundaries will receive fresh final assessment on corrected exact subjects. No clean final conclusion or automatic Verify follows from this first-pass finding record."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:fbfe6c62dfeadfdb5cd9a272ed9cead2beec4a57f32a5cdc2871e6234216983b",
+      "path": "specs/governed-lifecycle-cli.md"
+    },
+    {
+      "identity": "sha256:28d8fd58f1354560508572aefddb4c4eff6d70c39b809559cc4e7dc2c0e96abc",
+      "path": "specs/progressive-boundary-first-skill-guidance.md"
+    },
+    {
+      "identity": "sha256:b68084a3e8be4ec1daa6976bf1f0ad7c3e0d1cf97058db60080f25489175caa3",
+      "path": "scripts/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:f0e72257e8d8f1fee451d907cb68513e73f9acbd4fc6c0d1efde954cb913d56e",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:0b8d25d6f4555a27f15a0d8f39e10161ca932fc1c76470433e465cec8e4acb92",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+      "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+    },
+    {
+      "identity": "sha256:a4fc58acb090f759137a16dbcbb6f1aaea8d3ca3c38adf968750fc7500b676d1",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m5-code-review.json"
+    },
+    {
+      "identity": "sha256:e110dc65fec990cf31228d20e7e2fa25b74fbc35c74413bbbb4bd2a2fdbe9884",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-map-design-review.json"
+    },
+    {
+      "identity": "sha256:bd3bc8bbe578ec5958e54bb51274ace64ef88c3ae4724ac4c28e9146754efe16",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-delivery-review.json"
+    }
+  ],
+  "summary": "Fresh whole-change review finds actual PR validation blocked by two navigation-only edits to legacy spec bodies whose marker/adoption authority is outside this initiative; final readiness is not established.",
+  "target": "code"
+}

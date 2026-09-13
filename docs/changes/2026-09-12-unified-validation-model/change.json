@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "proposal-reviewer",
-      "role": "review"
+      "id": "root",
+      "role": "implement"
     },
-    "reason": "All directory and M1–M5 implementation milestones independently approved and completed. Require fresh independent whole-change Code Review before distinct Verify; user authorized progression through submitted PR.",
-    "stage": "code-review",
+    "reason": "Accepted whole-change finding final-legacy-navigation-marker-scope: restore two original historical spec bodies, preserve current model authority and fail-closed marker rules, rerun actual PR CI before final reassessment.",
+    "stage": "implement",
     "status": "in-progress"
   },
   "applicability": [
@@ -33,7 +33,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json",
-      "reason": "Current integrated M5 source/proof basis and explicit unaffected evidence-consolidation scope; historical failed attempts and earlier subjects retain exact meaning. Independent M5/final reviews and Verify still required.",
+      "reason": "Fresh committed-branch integration failure blocks final readiness until owned correction, applicable independent reassessment and actual PR rerun.",
       "value": "current"
     },
     {
@@ -151,6 +151,15 @@
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m5-code-review.json",
       "reason": "Complete M5 diff, exact deletion map, current registered evidence and unchanged semantic owner relationships independently assessed; all preserved content and tested source identities corroborated.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-final-code-review.json",
+      "reason": "Actual current full-branch PR failure inspected; first cross-milestone integration defect prevents final approval.",
       "value": "current"
     }
   ],
@@ -315,6 +324,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m5-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-final-code-review.json"
     }
   ],
   "schema_version": 3,
