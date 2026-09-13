@@ -86,7 +86,7 @@ test("TG-02 observed v3 basis drift after publication restores before bytes",t=>
  assert.equal(result.status,"conflict");sameBytes(root,before);assert.equal(readFileSync(join(root,"basis"),"utf8"),"after");
 });
 
-for(const mutate of [j=>j.version=1,j=>j.version=99,j=>j.phase="unknown_value",j=>{const x=JSON.parse(j.candidate[manifest].content);x.blockers[0].origin.rationale="tampered";j.candidate[manifest].content=encode(x);j.candidate[manifest].identity=digest(j.candidate[manifest].content);}]) test("TG-02 unknown_value or rewritten-origin recovery journal fails closed",t=>{
+for(const [label,mutate] of [["retired-version",j=>j.version=1],["unknown-version",j=>j.version=99],["unknown-phase",j=>j.phase="unknown_value"],["rewritten-origin",j=>{const x=JSON.parse(j.candidate[manifest].content);x.blockers[0].origin.rationale="tampered";j.candidate[manifest].content=encode(x);j.candidate[manifest].identity=digest(j.candidate[manifest].content);}]]) test(`TG-02 recovery journal fails closed: ${label}`,t=>{
  const root=setup(t),before=create(root),r=update(root);edit(r,evidence,x=>x.checks[0].summary="candidate");
  const stopped=run(root,"record",r,{fault:p=>p==="after-preparation"?"crash":undefined});
  const path=join(root,".rigorloop/record-store/example/journal.json"),j=JSON.parse(readFileSync(path));mutate(j);writeFileSync(path,encode(j));stopped.transaction.recovery_identity=digest(readFileSync(path));
