@@ -485,5 +485,23 @@ class CompositionTests(unittest.TestCase):
         self.assertNotIn('==>',result.stdout)
 
 
+class ImmediateFailureResult(unittest.TextTestResult):
+    # The outer CI timeout may terminate this integration suite before unittest
+    # prints its final summary. Preserve the original traceback as it happens.
+    def addFailure(self, test, err):
+        super().addFailure(test, err)
+        self.stream.write(self.failures[-1][1])
+        self.stream.flush()
+
+    def addError(self, test, err):
+        super().addError(test, err)
+        self.stream.write(self.errors[-1][1])
+        self.stream.flush()
+
+
+class ImmediateFailureRunner(unittest.TextTestRunner):
+    resultclass = ImmediateFailureResult
+
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(testRunner=ImmediateFailureRunner)

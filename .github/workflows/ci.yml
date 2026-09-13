@@ -48,7 +48,8 @@ jobs:
       - name: Run change-selected PR checks or full main gates
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            bash scripts/ci.sh --mode pr --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.event.pull_request.head.sha }}"
+            # Complete executor self-tests include three full suite comparisons.
+            bash scripts/ci.sh --mode pr --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.event.pull_request.head.sha }}" --timeout 600
           else
             bash scripts/ci.sh --mode main --base "${{ github.event.before }}" --head "${{ github.sha }}"
           fi
