@@ -4,7 +4,7 @@
       "id": "root",
       "role": "implement"
     },
-    "reason": "User authorized progression through submitted PR. M4 independently approved with required correction closed; begin reviewed plan validation-m5. Final whole-change review and Verify remain mandatory.",
+    "reason": "M4 and exact cleanup-map Design/Delivery independently approved. Execute M5 cleanup and final product integration; user authorized progression through submitted PR.",
     "stage": "implement",
     "status": "in-progress"
   },
@@ -30,10 +30,10 @@
     {
       "actor": {
         "id": "root",
-        "role": "implement"
+        "role": "plan"
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json",
-      "reason": "Exact current case/catalog/executor subjects and real complete populations with scoped environment limits; final adoption requires remaining M5 and distinct reviews/Verify.",
+      "reason": "Exact unchanged plan and newly approved source map; authoring adequacy only.",
       "value": "current"
     },
     {
@@ -124,6 +124,24 @@
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m4-code-review.json",
       "reason": "Exact current M4 code and required complete actual population/broad proof independently assessed; no unresolved material finding.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-map-design-review.json",
+      "reason": "Exact corrected supplemental map and retained owner interactions independently assessed; named source omission resolved without new behavior or scope beyond selected cleanup.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-delivery-review.json",
+      "reason": "Exact unchanged plan adequately allocates the independently approved supplemental map, its preserved obligations and final proof without a new work sequence.",
       "value": "current"
     }
   ],
@@ -276,6 +294,14 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m4-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-map-design-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-delivery-review.json"
     }
   ],
   "schema_version": 3,

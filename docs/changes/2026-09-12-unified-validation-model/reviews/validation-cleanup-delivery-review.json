@@ -1,0 +1,69 @@
+{
+  "assessment_scope": "Targeted reassessment of unchanged plan docs/plans/2026-09-12-unified-validation-implementation.md against validation-cleanup-map-design-review. Includes source-disposition refinement, M5 sequencing, TG-ADOPT/CACHE/COMPOSE/FINAL, current reader and product proof, recovery and retained final gates. Original Delivery and M1–M4 judgments retain their exact historical subjects; no whole-initiative reapproval or implementation completion claimed.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "validation-cleanup-delivery-review",
+  "independence_basis": "Separate authorized nonauthor reviewer independently compared the unchanged root-authored execution plan and new plan-owned adequacy evidence with the approved supplemental Design map. Reviewer authored neither plan, Design amendment nor implementation; prior Design/Code assessments are independent upstream evidence.",
+  "judgment": "approved",
+  "limitations": [
+    "This is Delivery reliance for the precise supplemental map, not M5 implementation correctness or final readiness. Actual deletions, live reader fixes, product proof and final gates remain outstanding.",
+    "Do not expand the exact map to unrelated mixed architecture clauses or treat archived Git-derived baseline names as live-file existence requirements. Newly discovered protected behavior requires owner assessment before removal.",
+    "Reviewer recorded review only. Route remains responsible for activity and milestone transitions; no work entry was initialized, replaced or updated."
+  ],
+  "rationale": [
+    "Scope/SR allocation — pass: supplemental map only enumerates existing VAL-SR11/13 retirement and selected applicability clauses while preserving VAL-SR12/15/17 and Assessment protections. M5 already allocates exact mixed-architecture sections, current navigation/governance, source/reader reconciliation and actual product integration. No new behavior, public command, requirement, scenario or implementation work item requires a new milestone.",
+    "Safe sequencing/intermediate state — pass: original M5 depends on closed M4 review and explicit retained/retired protection before source deletion. Independent M4 is approved; M1–M4 existing runtime evidence supports the already-implemented replacement behavior. Current supplemental Design approval precedes this Delivery reliance. Unknown readers or absent replacement protection block the affected removal, so mapping alone does not authorize blind source deletion.",
+    "Traceability/normal and negative proof — pass: cache goal/constraint/measurement/quality/risk/glossary retirement maps to TG-CACHE actual execution and retired-input rejection plus TG-ADOPT exact consumer/source dispositions. Hosted-mode and transitional applicability changes map to TG-COMPOSE actual selected PR/main composition, dependencies, diagnostic non-clearing and Release check-ci interception. Preserved truthful evidence, command identity and privacy remain mapped to current owners rather than legacy storage names.",
+    "Consumer and product integration — pass: TG-ADOPT requires actual reader searches, current owners/links, canonical projection and generated resource parity. C7 model/resource/skill checks, C8 actual CLI regression and C10 archives/npm package tests cover final canonical/public product coherence. Unselected query-helper, token-cost, release and measured-exception clauses remain exact comparison boundaries; archival paths are not automatically safe-to-delete or active-proof requirements.",
+    "Verification adequacy — pass: M5 requires C1–C8/C10 and conditional C9 with existing mandatory negatives; explicit twelve-model boundary checks and final current-basis C5/C6 remain required. TG-FINAL and final review checkpoint explicitly include hierarchy/directory plus all implementation and cross-milestone interactions, fresh independent whole-change Code Review, then distinct Verify. Existing evidence reuse requires an explicit unaffected-basis assessment; no reduced-suite pass substitutes for current source/consumer proof.",
+    "Recovery/concurrency/security/authority — pass: restore the exact source/consumer/package slice from Git when protection fails, without reviving hidden cache fallback. Preserve historical records, original source-qualified IDs, generated-output ownership, user files and separately authorized publication/installation boundaries. This documentary map refinement changes no case isolation/budget behavior; runtime guarantees remain under approved Validation and milestone proof.",
+    "Current evidence/decision — pass: unchanged plan identity remains sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93. All four plan-owned adequacy evidence subjects independently match current bytes, including approved cleanup-map Design review. Exact selected scope is sufficient for M5 delivery reliance with no supported unresolved finding; no plan-body mutation or work initialization required."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:472475e6631b7ea6af4ae6fe1f750808d839524a0f3ffebfe056a2575dca2b54",
+      "path": "docs/changes/2026-09-12-unified-validation-model/validation-cleanup-delivery-evidence.md"
+    },
+    {
+      "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+      "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+    },
+    {
+      "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:e110dc65fec990cf31228d20e7e2fa25b74fbc35c74413bbbb4bd2a2fdbe9884",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-map-design-review.json"
+    },
+    {
+      "identity": "sha256:9aa81165db0ec7c717f8c910d5428d44c00fd878c6f3661a0f4794b01c21c32b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-delivery-review.json"
+    },
+    {
+      "identity": "sha256:7dfc777b6d92c3079119bf11e8e4ab6749894f5d036aaf9c908cd6983120f36b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m4-code-review.json"
+    },
+    {
+      "identity": "sha256:a206c5cf7e99d3bd0ad208575b3ebb68cd265454dcd5cde0eca0f2ecd5304a71",
+      "path": "docs/architecture/system/architecture.md"
+    },
+    {
+      "identity": "sha256:a72e22fa5fb544841b95e61758eed4af8628b2a4b27aed11afafd092221947e7",
+      "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+    }
+  ],
+  "summary": "Bounded Delivery reliance approved: existing M5 and verification allocation adequately cover the approved supplemental exact cleanup map without plan-body changes or work reinitialization.",
+  "target": "delivery"
+}

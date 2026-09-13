@@ -788,6 +788,62 @@
         }
       ],
       "summary": "All278selectedcases (163selector/108lifecycle/7metadata) agree across normal,individualjobs1 and reversedjobs2 with observedoverlap. Bothactualbroad modes pass286tasks includingcurrentcompleteexecutor. No cases removed; opaque suites conservative; no resultcache."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "validation-cleanup-map-authorship",
+      "procedure": "Inspect source-qualified cache-only current consumers, refine the exact mixed-architecture displacement map, and run the named model-boundary and whitespace checks.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:6b2aa336f6e71988d145380de69bcfcca8d0af132f26adb1248309d3c3e82d2f",
+          "path": "docs/changes/2026-09-12-unified-validation-model/validation-cleanup-map-evidence.md"
+        },
+        {
+          "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:a206c5cf7e99d3bd0ad208575b3ebb68cd265454dcd5cde0eca0f2ecd5304a71",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        }
+      ],
+      "summary": "Exactadditionalcache-onlyclauses enumeratedbeforeM5 removal; existingbehavior/requirements andunselectedowners preserved. Structuralchecks pass; independentDesign andDelivery reassessmentrequired."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "plan"
+      },
+      "id": "validation-cleanup-delivery-authorship",
+      "procedure": "Assess unchanged M5 allocation, TG-ADOPT/CACHE/COMPOSE/FINAL, required commands and recovery against the exact approved supplemental source map.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:472475e6631b7ea6af4ae6fe1f750808d839524a0f3ffebfe056a2575dca2b54",
+          "path": "docs/changes/2026-09-12-unified-validation-model/validation-cleanup-delivery-evidence.md"
+        },
+        {
+          "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        },
+        {
+          "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:e110dc65fec990cf31228d20e7e2fa25b74fbc35c74413bbbb4bd2a2fdbe9884",
+          "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-cleanup-map-design-review.json"
+        }
+      ],
+      "summary": "Existing plan remains adequate; no runtime, milestone, command or recovery change. Independent Delivery reliance review remains required."
     }
   ],
   "schema_version": 3
