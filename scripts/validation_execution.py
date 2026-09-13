@@ -39,6 +39,9 @@ class CheckPlan:
     dependencies: tuple[str, ...] = ()
     demand: int = 1
     after: tuple[str, ...] = ()
+    case_receipt: Path | None = None
+    case_id: str | None = None
+    rerun: list[str] | None = None
 
 
 @dataclass
@@ -59,6 +62,10 @@ def validate_plans(plans, *, jobs):
     if any(not isinstance(x,str) or not x for x in ids) or len(set(ids)) != len(ids):
         raise ValueError('duplicate or invalid task identity')
     for p in plans:
+        if (p.case_receipt is None) != (p.case_id is None):
+            raise ValueError(f'incomplete case identity: {p.check_id}')
+        if p.case_receipt is not None and (not isinstance(p.case_receipt,Path) or not isinstance(p.case_id,str) or not p.case_id):
+            raise ValueError(f'invalid case identity: {p.check_id}')
         if p.phase not in {'preflight', 'focused', 'boundary'}:
             raise ValueError(f'unknown phase: {p.phase}')
         if type(p.parallel_safe) is not bool or type(p.demand) is not int or p.demand < 1:
@@ -296,6 +303,11 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                             raise ValueError('malformed task outcome')
                     except (ValueError, OSError, TypeError):
                         observed = {'returncode':4,'launch_error':'invalid task outcome'}
+                if observed and observed['returncode'] == 0:
+                    try:
+                        _validate_case_receipt(task['plan'])
+                    except ValueError as exc:
+                        observed = {'returncode':4,'launch_error':str(exc)}
                 returncode = observed['returncode'] if observed else (4 if supervisor_code is not None else None)
                 if fail_fast and observed and observed['returncode'] != 0:
                     stopped = True
@@ -387,6 +399,8 @@ def run_scheduled_checks(plans, *, jobs, timeout_seconds, fail_fast, scratch):
                     args.insert(args.index('--test')+1, f'--test-concurrency={demand}')
                 plan.args = args
                 started = time.monotonic()
+                if plan.case_receipt is not None:
+                    plan.case_receipt.unlink(missing_ok=True)
                 try:
                     if args[0] in {'python','bash'} and len(args)>1 and args[1].startswith('scripts/') and not Path(args[1]).exists():
                         raise FileNotFoundError(2, 'script missing', args[1])
@@ -470,7 +484,7 @@ def print_result_output(results, *, verbose):
             continue
         print(f'==> {r.plan.check_id} ({r.status})')
         print('Command: ' + command_display(r.plan.args))
-        print('Re-run: ' + command_display(r.plan.args))
+        print('Re-run: ' + command_display(r.plan.rerun or r.plan.args))
         captured = False
         for label, path in [('stdout',r.stdout_path), ('stderr',r.stderr_path)]:
             if path is None:
@@ -493,6 +507,168 @@ def print_result_output(results, *, verbose):
 
         if not captured:
             print('(no captured output)')
+
+
+def unittest_adapter(mode, destination, command, expected=None):
+    """Run the original script/main, intercepting only its outer unittest runner.
+
+    Collection uses the normal entrypoint, including load_tests and custom name
+    hooks. Each execution is a fresh process; nested test runners are untouched.
+    """
+    import runpy
+    import unittest
+    import re
+    if mode not in {'collect','case','observe'}:
+        raise ValueError('unknown unittest adapter mode')
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    original = unittest.TextTestRunner.run
+    called = False
+    def identifiers(suite):
+        found = []
+        for test in suite:
+            if isinstance(test, unittest.TestSuite):
+                found.extend(identifiers(test))
+            else:
+                name = test.id().removeprefix('__main__.')
+                if not re.fullmatch(r'[A-Za-z_]\w*\.[A-Za-z_]\w*', name) or '_FailedTest' in test.id():
+                    raise ValueError('invalid collected case: '+test.id())
+                found.append(name)
+        return found
+    def save(payload):
+        temporary = destination.with_suffix('.pending')
+        temporary.write_text(json.dumps(payload)+'\n')
+        temporary.replace(destination)
+    def run(runner, suite):
+        nonlocal called
+        called = True
+        # Tests may themselves run unittest; those runs are not this receipt.
+        unittest.TextTestRunner.run = original
+        ids = identifiers(suite)
+        if not ids or len(ids) != len(set(ids)):
+            raise ValueError('zero or duplicate discovered cases')
+        if mode == 'collect':
+            save({'mode':'collect','ids':ids})
+            result = unittest.TestResult()
+            result.testsRun = len(ids)
+            return result
+        if mode == 'case' and ids != [expected]:
+            raise ValueError('worker discovery disagrees with required case')
+        started, completed = [], []
+        base = runner.resultclass
+        class Result(base):
+            def startTest(self, test):
+                started.append(test.id().removeprefix('__main__.'))
+                super().startTest(test)
+            def stopTest(self, test):
+                completed.append(test.id().removeprefix('__main__.'))
+                super().stopTest(test)
+        runner.resultclass = Result
+        started_at = time.monotonic()
+        result = original(runner, suite)
+        completed_at = time.monotonic()
+        save({'mode':mode,'discovered':ids,'started':started,'completed':completed,
+              'started_at':started_at,'completed_at':completed_at,
+              'tests_run':result.testsRun,'skipped':[t.id() for t,_ in result.skipped],
+              'successful':result.wasSuccessful() and not result.expectedFailures and not result.skipped})
+        return result
+    unittest.TextTestRunner.run = run
+    sys.argv = command
+    try:
+        runpy.run_path(command[0], run_name='__main__')
+    except SystemExit as exc:
+        if exc.code not in (None,0):
+            raise
+    finally:
+        unittest.TextTestRunner.run = original
+    if not called:
+        raise ValueError('entrypoint did not run its normal unittest loader')
+    if mode != 'collect':
+        payload = json.loads(destination.read_text())
+        if not payload['successful'] or payload['started'] != payload['discovered'] or payload['completed'] != payload['discovered'] or payload['tests_run'] != len(payload['discovered']):
+            raise ValueError('required case receipt is incomplete, skipped or failed')
+
+
+def _case_command(mode, receipt, args, expected=None):
+    bootstrap = ('import sys; sys.path.insert(0,sys.argv[1]); '
+                 'from validation_execution import unittest_adapter\n'
+                 'try: unittest_adapter(sys.argv[2],sys.argv[3],sys.argv[5:],sys.argv[4] or None)\n'
+                 'except (ValueError,OSError,TypeError,KeyError) as exc:\n'
+                 ' print(str(exc),file=sys.stderr); raise SystemExit(4)')
+    return [args[0], '-B', '-c', bootstrap, str(Path(__file__).resolve().parent),
+            mode, str(receipt), expected or '', *args[1:]]
+
+
+def discover_cases(args, scratch, *, jobs, timeout):
+    """Isolated normal-loader collection; collection is never passing test proof."""
+    scratch.mkdir(parents=True, exist_ok=True)
+    receipt = scratch/'collection.json'
+    receipt.unlink(missing_ok=True)
+    command = _case_command('collect',receipt,args)
+    plan = CheckPlan('collection',command_display(command),command,'normal loader collection','focused',True)
+    result = run_scheduled_checks([plan],jobs=jobs,timeout_seconds=timeout,fail_fast=False,scratch=scratch)[0]
+    if result.exit_code:
+        with result.stderr_path.open(encoding='utf-8',errors='replace') as stream:
+            detail = stream.read(4000)
+        raise ValueError(f'case collection failed: {result.exit_reason}\n{detail}')
+    try:
+        payload = json.loads(receipt.read_text())
+        ids = payload['ids']
+        if set(payload) != {'mode','ids'} or payload['mode'] != 'collect' or not isinstance(ids,list) or not ids or any(not isinstance(x,str) or not x for x in ids) or len(ids)!=len(set(ids)):
+            raise ValueError('invalid collection receipt')
+        return ids
+    except (OSError, KeyError, TypeError) as exc:
+        raise ValueError('missing or invalid collection receipt') from exc
+
+
+def case_plans(parent, ids, scratch):
+    scratch.mkdir(parents=True, exist_ok=True)
+    plans = []
+    for index, name in enumerate(ids):
+        args = [*parent.args, name]
+        receipt = scratch/f'case-{index}.json'
+        plans.append(CheckPlan(parent.check_id+'::'+name,command_display(args),
+            _case_command('case',receipt,args,name), parent.reason, parent.phase, parent.parallel_safe,
+            parent.dependencies, parent.demand, parent.after, receipt, name, args))
+    return plans
+
+
+def _validate_case_receipt(plan):
+    if plan.case_receipt is None:
+        return
+    try:
+        data = json.loads(plan.case_receipt.read_text())
+        if (set(data) != {'mode','discovered','started','completed','tests_run','skipped','successful','started_at','completed_at'}
+            or data['mode'] != 'case' or data['successful'] is not True
+            or type(data['tests_run']) is not int or data['tests_run'] != 1
+            or type(data['started_at']) not in (int,float) or type(data['completed_at']) not in (int,float)
+            or not 0 < data['started_at'] <= data['completed_at']
+            or data['skipped'] != []
+            or any(data[k] != [plan.case_id] for k in ('discovered','started','completed'))):
+            raise ValueError('missing, skipped or disagreeing required case receipt')
+    except (OSError, TypeError, KeyError, ValueError) as exc:
+        raise ValueError('invalid required case receipt: '+str(exc)) from exc
+
+
+def expand_cases(plans, scratch, *, jobs, timeout):
+    """Replace only catalog-adopted suites and rebind all group dependencies."""
+    validate_catalog()
+    validate_plans(plans,jobs=jobs)
+    groups = {}
+    for index, plan in enumerate(plans):
+        entry = CHECK_CATALOG.get(plan.check_id)
+        if entry and entry.constraints and entry.constraints.unit == 'python-unittest':
+            owned = scratch/f'suite-{index}'
+            ids = discover_cases(plan.args,owned/'collection',jobs=jobs,timeout=timeout)
+            groups[plan.check_id] = case_plans(plan,ids,owned/'cases')
+        else:
+            groups[plan.check_id] = [plan]
+    expanded = [p for group in groups.values() for p in group]
+    for plan in expanded:
+        plan.dependencies = tuple(p.check_id for old in plan.dependencies for p in groups[old])
+        plan.after = tuple(p.check_id for old in plan.after for p in groups[old])
+    validate_plans(expanded,jobs=jobs)
+    return expanded
 
 
 def _git(*args, optional=False):
@@ -648,6 +824,7 @@ def composed_main(argv):
             print('[PASS] direct gate graph selected without execution')
             return
         started = time.monotonic()
+        plans = expand_cases(plans,scratch,jobs=jobs,timeout=timeout)
         results = run_scheduled_checks(plans,jobs=jobs,timeout_seconds=timeout,fail_fast=fast,scratch=scratch)
         for result in results:
             if result.exit_code or verbose:
@@ -658,7 +835,7 @@ def composed_main(argv):
                     print('Command:\n'+command_display(result.plan.args))
                     print('Execution phase:\n'+('parallel' if result.plan.parallel_safe and jobs>1 else 'sequential'))
                     print('Captured output:')
-                    print('Re-run:\n'+command_display(result.plan.args))
+                    print('Re-run:\n'+command_display(result.plan.rerun or result.plan.args))
                 else:
                     print(f'==> {label} (passed)')
                 print_result_output([result],verbose=True)
@@ -847,6 +1024,7 @@ def selected_main(argv):
 
     with tempfile.TemporaryDirectory(prefix="rigorloop-validation-") as temporary:
         plans = expand_groups(plans,Path(temporary),diagnostic=diagnostic)
+        plans = expand_cases(plans,Path(temporary),jobs=jobs,timeout=timeout_seconds)
         results = run_scheduled_checks(
             plans,
             jobs=jobs,

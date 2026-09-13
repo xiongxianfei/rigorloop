@@ -736,6 +736,58 @@
         }
       ],
       "summary": "Broad/main composition shares the trusted catalog and executor; historical classification reader retired. C1 163, C4 26 (also26underjobs1), C9 164, and both actual twelve-leaf broad modes pass. Corrected actual consumer and nested-budget failures; filesystem timeout limit explicitly retained."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "implement"
+      },
+      "id": "validation-m4-execution",
+      "procedure": "Run the complete normal-entrypoint and actual individual sequential/reversed-parallel case comparisons, negative receipt/discovery/resource proof, direct three-suite commands and actual broad jobs1/jobs2 commands recorded in validation-m4-evidence.md.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:a404a722981986cfdc7a56aa486e16bca763fcb422a203098c27b71d658916f7",
+          "path": "docs/changes/2026-09-12-unified-validation-model/validation-m4-evidence.md"
+        },
+        {
+          "identity": "sha256:0c77ac8f2bac4ba5cfefa119401954d285ed4828d33e125bf5206f34e733ec68",
+          "path": "docs/changes/2026-09-12-unified-validation-model/validation-m4-case-populations.json"
+        },
+        {
+          "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        },
+        {
+          "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:b0ade111be6b4ec9ab8704a04a91737843ad91af89afff2a86c78a8a0c669fb4",
+          "path": "scripts/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:15d960b886b1dc97a9299e1e43813538f895521bb5ebd56acb445dd45ab1d54f",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:2da1cb956074e8a3e28a35692a1b3d67ec80dae337ff5bb07078f0284bd5c28f",
+          "path": "scripts/test-artifact-lifecycle-validator.py"
+        },
+        {
+          "identity": "sha256:1c584c2b30e46afba61f06502da74a11801b394333061e052cf1ebcd20e2c01e",
+          "path": "scripts/test-change-metadata-validator.py"
+        }
+      ],
+      "summary": "All278selectedcases (163selector/108lifecycle/7metadata) agree across normal,individualjobs1 and reversedjobs2 with observedoverlap. Bothactualbroad modes pass286tasks includingcurrentcompleteexecutor. No cases removed; opaque suites conservative; no resultcache."
     }
   ],
   "schema_version": 3

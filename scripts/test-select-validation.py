@@ -961,6 +961,12 @@ class ValidationSelectionTests(unittest.TestCase):
         shutil.copy2(ROOT / "scripts" / "validation_execution.py", workspace / "scripts" / "validation_execution.py")
         shutil.copy2(ROOT / "scripts" / "record_store_classification.py", workspace / "scripts" / "record_store_classification.py")
         shutil.copy2(ROOT / "scripts" / "model_layout.py", workspace / "scripts" / "model_layout.py")
+        # These fixtures provide controlled command bodies, not unittest suites.
+        # Keep that distinction explicit in the fixture's trusted catalog.
+        with (workspace/'scripts/validation_selection.py').open('a') as catalog:
+            catalog.write("\nfor key in _CASE_ASSESSMENTS:\n"
+                          " entry = CHECK_CATALOG[key]\n"
+                          " CHECK_CATALOG[key] = replace(entry,parallel_safe=False,constraints=None)\n")
         return workspace
 
     def make_broad_smoke_workspace(
@@ -1418,10 +1424,20 @@ raise SystemExit({exit_code})
             }.issubset(selected_ids(payload))
         )
 
-    def test_catalog_records_initial_parallel_safe_allowlist(self) -> None:
+    def test_catalog_records_audited_commands_and_initial_case_population(self) -> None:
         from validation_selection import is_parallel_safe_check
 
         expected_parallel_safe = {"skills.regression", "adapters.regression"} | {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
+
+        expected_cases = {
+            'artifact_lifecycle.regression','change_metadata.regression','selector.regression',
+            'broad_smoke.artifact_lifecycle.regression','broad_smoke.change_metadata.regression',
+            'broad_smoke.selector.regression','main.artifact_lifecycle.regression',
+            'main.change_metadata.regression',
+        }
+        self.assertEqual({key for key,entry in CHECK_CATALOG.items()
+                          if entry.constraints and entry.constraints.unit=='python-unittest'},expected_cases)
+        expected_parallel_safe |= expected_cases
 
         self.assertEqual(
             {check_id for check_id in CHECK_CATALOG if is_parallel_safe_check(check_id)},

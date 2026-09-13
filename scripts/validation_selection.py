@@ -462,6 +462,25 @@ for _mode_prefix in ('broad_smoke','main'):
     _key = _mode_prefix + '.adapters.build_archives'
     CHECK_CATALOG[_key] = replace(CHECK_CATALOG[_key],dependencies=(_mode_prefix+'.skills.validate',))
 
+# Audited initial case population: normal loaders, fresh process per case, owned
+# temporary Git/record fixtures, process-local environment and sequential child
+# validation. Selector wrapper probes obey their allocated nested worker budget.
+_CASE_ASSESSMENTS = {
+    'artifact_lifecycle.regression': '0d3bf319c63835687a034b94f2003918fddbb599b456a8894d98fa5784f262bf',
+    'change_metadata.regression': 'ff7f4d79be49f9635e51521fbf36df43f6276a04e55863c56163746e49726586',
+    'selector.regression': 'ce40ab4944eed966a2dba006e9d2545614eef23e6e6767e9f9ed2bee294158f2',
+    'broad_smoke.change_metadata.regression': 'ff7f4d79be49f9635e51521fbf36df43f6276a04e55863c56163746e49726586',
+    'broad_smoke.artifact_lifecycle.regression': '0d3bf319c63835687a034b94f2003918fddbb599b456a8894d98fa5784f262bf',
+    'broad_smoke.selector.regression': 'ce40ab4944eed966a2dba006e9d2545614eef23e6e6767e9f9ed2bee294158f2',
+    'main.change_metadata.regression': 'ff7f4d79be49f9635e51521fbf36df43f6276a04e55863c56163746e49726586',
+    'main.artifact_lifecycle.regression': '0d3bf319c63835687a034b94f2003918fddbb599b456a8894d98fa5784f262bf',
+}
+for _key, _basis in _CASE_ASSESSMENTS.items():
+    CHECK_CATALOG[_key] = replace(CHECK_CATALOG[_key], parallel_safe=True,
+        constraints=ExecutionConstraints(unit='python-unittest', mode='bounded',
+            isolation='Fresh normal-loader case process; owned temporary fixtures; immutable source inputs; nested workers consume the case allocation.',
+            basis=_basis))
+
 MODE_CHECK_IDS = {
     mode: tuple(key for key, entry in CHECK_CATALOG.items() if mode in entry.modes)
     for mode in ("broad-smoke", "main")
@@ -492,6 +511,10 @@ def validate_catalog(catalog=None) -> None:
             raise ValueError(f"unknown constraint fields: {key}")
         if c.unit not in {"command", "python-unittest", "node-test"}:
             raise ValueError(f"unknown execution unit: {key}")
+        if c.unit == "python-unittest":
+            argv = shlex.split(entry.command_template)
+            if len(argv)<2 or not re.fullmatch(r'python(?:3(?:\.\d+)?)?',Path(argv[0]).name) or not argv[1].endswith('.py'):
+                raise ValueError(f"contradictory case command: {key}")
         if c.mode not in {"serial", "exclusive", "bounded"}:
             raise ValueError(f"unknown execution mode: {key}")
         if type(c.demand) is not int or c.demand < 1 or type(c.shared_writes) is not bool:

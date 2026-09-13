@@ -4,7 +4,7 @@
       "id": "root",
       "role": "implement"
     },
-    "reason": "User authorized progression through submitted PR. M3 independently approved with required correction closed; begin reviewed plan validation-m4. Final whole-change review and Verify remain mandatory.",
+    "reason": "User authorized progression through submitted PR. M4 independently approved with required correction closed; begin reviewed plan validation-m5. Final whole-change review and Verify remain mandatory.",
     "stage": "implement",
     "status": "in-progress"
   },
@@ -33,7 +33,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json",
-      "reason": "Exact M3 composition and correction subjects with current complete integration evidence; M4/M5 and final assessments remain mandatory.",
+      "reason": "Exact current case/catalog/executor subjects and real complete populations with scoped environment limits; final adoption requires remaining M5 and distinct reviews/Verify.",
       "value": "current"
     },
     {
@@ -115,6 +115,15 @@
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m3-code-review.json",
       "reason": "Exact final M3 code and required integration evidence independently inspected; all recorded subject identities current and no supported unresolved finding.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m4-code-review.json",
+      "reason": "Exact current M4 code and required complete actual population/broad proof independently assessed; no unresolved material finding.",
       "value": "current"
     }
   ],
@@ -263,6 +272,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m3-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m4-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -355,7 +368,7 @@
         "VAL-SR-14",
         "VAL-SR-17"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "validation-m5",
@@ -371,7 +384,7 @@
         "ENG-SR-07",
         "ENG-SR-12"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }
