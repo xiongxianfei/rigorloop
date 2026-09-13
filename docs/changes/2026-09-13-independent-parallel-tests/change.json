@@ -4,7 +4,7 @@
       "id": "root",
       "role": "plan"
     },
-    "reason": "Independent corrected Design Review approved/current and its single finding resolved; exact five-document package is ready for Delivery planning. No implementation work or automation run is initialized.",
+    "reason": "Independent expanded Design Review approved parent-owned subsystem graphs with no new findings; user graph correction and prior Validation package are ready for Delivery planning.",
     "stage": "plan",
     "status": "ready"
   },
@@ -33,7 +33,7 @@
         "role": "design"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/material-decisions.json",
-      "reason": "Exact author correction, pending independent finding disposition.",
+      "reason": "Exact user-authorized graph ownership correction; independent reassessment pending.",
       "value": "current"
     },
     {
@@ -42,7 +42,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json",
-      "reason": "Complete corrected five-document package, inline scenarios, exact legacy clauses and unchanged shared-owner interfaces independently reassessed; recorded finding resolved and original proposal direction remains applicable.",
+      "reason": "Exact seven-document package reassessed for explicit recursive parent-graph direction and preserved validation/maintenance semantics; child boundaries and source evidence checked, no unresolved finding.",
       "value": "current"
     }
   ],
@@ -53,14 +53,14 @@
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:83063498c53be82b8733a653530ad213d615c8061b47c31920f1b8e073e6f6a9",
+        "identity": "sha256:63390bb44e7ec23cfa70f850066470e07136eceae0bff46d1f5d132e2a82f77a",
         "path": "docs/design/system.md"
       }
     },
     {
       "id": "engineering",
       "subject": {
-        "identity": "sha256:a01a90593910ff8e00437d8de3d73b5418bee9e698c85f1990916f7276752e83",
+        "identity": "sha256:d1d7b1d79aea37bc4d5629e5ebacca115cd62e68e81fb2e9a019897f2957998a",
         "path": "docs/design/engineering/engineering.md"
       }
     },
@@ -69,6 +69,20 @@
       "subject": {
         "identity": "sha256:99f346d1eafb857c273306c56546742321bb2883330cf4b9cc055fc2dfb6b153",
         "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:f372d16d6f80052bff75abd49ef4966a1c94b8582f867557f1241c8d081cc2bb",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:9c79e6510a573649535bc99703084f883b20c3394b2686fb1133271c5d052959",
+        "path": "docs/design/cli/cli.md"
       }
     }
   ],

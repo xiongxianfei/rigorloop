@@ -6,7 +6,9 @@ Model validation contract: model-document-v1
 
 Skill owns what the published capabilities accept, do and produce, including their applicability, handoffs, failures and claim limits. Common conventions and specialist behavior are composed under one product boundary. The CLI is optional for individual skill use; current governed recording requires its supported interface. Engineering builds, tests and publishes the skills without becoming a competing owner of their behavior.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Context and Scope
 
@@ -22,6 +24,32 @@ Users supply intent, project authority and the evidence needed by the selected c
 | Project Support | [Project support](#project-support) | Establish project direction, investigate uncertainty, orient contributors, capture learning and perform authorized external handoff. |
 
 A child may be a named section here or a separately maintained model document. Detailed contracts are defined once at those locations. Capability IDs and existing resource paths remain stable; hierarchy alone does not rename public invocations. The historical proposal-family pilot improved only its named pair. Its SKL-SR-16–23 applicability and original judgments remain unchanged; the product behavior composition applies to the existing inventory without claiming an inventory-wide implementation audit.
+
+## Subsystem design graph
+
+```mermaid
+flowchart TB
+    Contract["Capability Contract: invocation, resources and limits"]
+    Workflow["Workflow: coordination and handoffs"]
+    Authoring["Authoring: proposals, Designs and plans"]
+    Implementation["Implementation: changes, diagnosis and repair"]
+    Assessment["Assessment: independent judgments and closeout"]
+    Support["Project Support: direction, investigation and learning"]
+    Contract -->|"common contract applied by"| Workflow
+    Contract -->|"common contract applied by"| Authoring
+    Contract -->|"common contract applied by"| Implementation
+    Contract -->|"common contract applied by"| Assessment
+    Contract -->|"common contract applied by"| Support
+    Workflow -->|"coordinates authorized work"| Authoring
+    Workflow -->|"coordinates authorized work"| Implementation
+    Workflow -->|"requests applicable assessment"| Assessment
+    Support -->|"context and findings"| Workflow
+    Authoring -->|"authored subjects"| Assessment
+    Implementation -->|"changes and evidence"| Assessment
+    Assessment -->|"judgments and correction owners"| Workflow
+```
+
+Skill owns these six children's composition under [System's parent graph rule](../system.md#parent-graph-ownership). The submodel table above links each node to its contract; [Authoring](#authoring) owns its nested Design-method view. Workflow coordinates governed work, while individual capabilities retain their scoped invocation behavior. CLI and Engineering are external siblings whose shared relationships are owned by System.
 
 ## Architecture Constraints
 
@@ -74,6 +102,23 @@ SKL-SR-01–15 define the reusable invocation and resource contract. A capabilit
 The [Workflow child](workflow.md) owns coordination. Manual invocation produces only its scoped result by default. Governed continuation consumes explicit assessments and authoritative project state; it does not manufacture another actor's conclusion. The `route` capability applies this behavior. Every other capability uses its required handoff without acquiring route ownership.
 
 ### Authoring
+
+Authoring owns the following nested subsystem view. Proposal and Plan remain capabilities governed by the retained sources below; Design is its separately maintained child model.
+
+```mermaid
+flowchart LR
+    Proposal["Proposal capability: bounded direction"]
+    Design["Design child model: behavioral and technical authoring"]
+    Plan["Plan capability: delivery and proof allocation"]
+    Review["External: Assessment"]
+    Proposal -->|"direction subject for review"| Review
+    Review -->|"approved direction or authorized correction"| Design
+    Design -->|"affected model package for review"| Review
+    Review -->|"settled Design basis"| Plan
+    Plan -->|"delivery package for review"| Review
+```
+
+The [Design child](authoring/design.md) owns its authoring method; Assessment owns independent judgments, and Workflow coordinates any authorized continuation. This view does not create new Proposal or Plan models or make every individual invocation traverse the full sequence.
 
 | Capability | Required input and action | Output and failure boundary |
 | --- | --- | --- |

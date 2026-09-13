@@ -132,6 +132,34 @@
         }
       ],
       "summary": "Current complete v3 record-set validator passed, including registered reviews. Independent Design Review approved the corrected five-document package and resolved its first-pass finding; proposal direction reliance affirmed by reviewer. Activity now plan/ready; no plan, implementation work or automation run initialized. An exploratory invocation of legacy validate-review-artifacts.py --mode structure rejected stored change roots as unsupported; it is not the v3 validation path and supplies no current review assessment. The supported validate-change-metadata.py delegates to validate-record-store.mjs and passed. This is authoring/handoff evidence, not final implementation Verify."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "parent-graph-author-check",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/system.md --path docs/design/skill/skill.md --path docs/design/cli/cli.md --path docs/design/engineering/engineering.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/system.md --path docs/design/skill/skill.md --path docs/design/cli/cli.md --path docs/design/engineering/engineering.md; git diff --check; semantic walkthrough of parent inventories, graph nodes, labeled edges and nearest shared owner.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:63390bb44e7ec23cfa70f850066470e07136eceae0bff46d1f5d132e2a82f77a",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:f372d16d6f80052bff75abd49ef4966a1c94b8582f867557f1241c8d081cc2bb",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:9c79e6510a573649535bc99703084f883b20c3394b2686fb1133271c5d052959",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:d1d7b1d79aea37bc4d5629e5ebacca115cd62e68e81fb2e9a019897f2957998a",
+          "path": "docs/design/engineering/engineering.md"
+        }
+      ],
+      "summary": "Four affected model structure/reference checks passed; prose zero errors/warnings; diff check passed. Parent tables map System 3, Skill 6, CLI 4 and Engineering 4 immediate children. Authoring nested view distinguishes its Design model from Proposal/Plan capabilities and external Assessment. System links child-owned views instead of owning their internal diagram. Read/record/install boundaries, independent judgments and separate Release authorization remain explicit. Diagram syntax was inspected as Mermaid source; no rendered-image or runtime validation claimed. Earlier Validation refinement and scoped legacy notices unchanged. This supports independent Design reassessment, not implementation or adoption."
     }
   ],
   "schema_version": 3

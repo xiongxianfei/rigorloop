@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "Formal isolated Design Review of the complete affected system, engineering and validation models plus exact new-profile-only amendments in published-skill-first-repository-simplification.md and its test spec. Upstream proposal-review f7234887a6dcae08b003ac7f80b1f907383b60bb7bfd8d89fd16b0291334db42 remains direction authority. Unchanged Assessment/Packaging/Release/CLI dependencies are selected for affected interfaces. Inline scenarios are included in model subjects; historical example/boundary/proof blocks are retained, not approved as new behavior or migrated.",
+  "assessment_scope": "Independent reassessment of current System, Skill, CLI, Engineering and Validation plus the two scoped legacy simplification notices. Added user direction explicitly requires every repository parent to own its subsystem graph. Four-model graph diff againstd5f32523 is reviewed with complete prior package and relevant unchanged child/Assessment/Packaging/Release/Records/Installation contracts. Same design-review retains original finding and correction; current exact subjects supersede its earlier assessment basis without retargeting proposal evidence or historical model judgments.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "contributors": [
     {
@@ -51,13 +51,14 @@
     }
   ],
   "id": "design-review",
-  "independence_basis": "Separate authorized nonauthor reviewer inspected the three complete changed models and actual diff, approved proposal, inline scenarios and scoped retained Assessment/Packaging/Release/CLI and legacy maintenance contracts. Reviewer did not author the package, its source map or correction.",
+  "independence_basis": "Separate authorized nonauthor reviewer inspected actual current four-model graph changes and their relationship to the previously assessed five-document package, parent inventory, child contracts, acceptance intent and exact author evidence. Reviewer authored no graph, model, source notice or implementation; root is the sole Design contributor. Prior independent package assessment informs unchanged detail, while this turn independently judges the newly broadened composition contract and its interactions.",
   "judgment": "approved",
   "limitations": [
-    "Design approval establishes the five-document contract and affected shared-owner coherence, not completed case isolation or proven test redundancy. Delivery must reconcile actual current inventory and allocate retained-protection, graph, resource, discovery and product-consumer proof before implementation.",
-    "No runtime tests or expensive CI rerun were performed for this documentation-only assessment. Author structure/prose/whitespace proof applies to exact current five-document subjects; semantic judgment is independent of those checks.",
+    "Design approval establishes the seven-document contract and affected shared-owner coherence, not completed case isolation or proven test redundancy. Delivery must reconcile actual current inventory and allocate retained-protection, graph, resource, discovery and product-consumer proof before implementation.",
+    "No runtime tests or expensive CI rerun were performed for this documentation-only assessment. Author structure/prose/whitespace proof applies to exact current seven-document subjects; semantic judgment is independent of those checks.",
     "Only scoped new-profile legacy notices are current amendment members; unchanged historical requirement/boundary/example/proof material retains original meaning and prior population applicability. No second ledger, benchmark or historical fixture deletion is inferred.",
-    "Recorded proposal approval is preserved byte-for-byte with original subjects; this review explicitly assesses continued direction reliance and supplies the new Design package basis. Reviewer changed only review/finding evidence and applicability; route owns subsequent activity and planning handoff."
+    "Recorded proposal approval is preserved byte-for-byte with original subjects; this review explicitly assesses continued direction reliance and supplies the new Design package basis. Reviewer changed only review/finding evidence and applicability; route owns subsequent activity and planning handoff.",
+    "Mermaid was assessed as its authoritative inline text source, including labeled relationships and parent coverage; no rendered-image verification or runtime graph enforcement was performed or claimed. No new executable/schema or public skill requirement is selected by this graph correction."
   ],
   "rationale": [
     "1. Realization — pass: VAL-SR19/20 distinguish request identity/eligibility from physical execution identity. Canonical family, resolved input/case/configuration/candidate/output identity, observation and preparation establish equivalence; unknown or conflicting claims remain separate or reject. Normalization after scope expansion preserves both consumer graphs and physical prerequisites, rejects cycles and avoids unioning a boundary gate back into its focused execution.",
@@ -69,7 +70,11 @@
     "7. Acceptance/feasibility — pass: local and integrated scenarios cover shared aliases with failed phase gate, same argv with changed candidate, missing discovery, lost distinct negative protection, isolated temporary identities, budget1 and irreducible resources. Python hooks/receipts and conditional native Node selection are grounded in existing mechanisms without asserting every suite is already safe. Real loader/hook/receipt integration must remain when exhaustive comparisons change. These are sufficient inputs to Delivery rather than mandatory triple full-suite replay per invocation.",
     "8. Migration and legacy classification — pass after correction: exact spec/test-spec diffs add only the current scoped applicability notice and blank lines separating existing header comments. Original R/T/AC/PRF/BND/INT rows, examples, command histories and input judgments are unchanged. These edits are explicitly new-profile-only for the named current inventory; they neither modify historical boundary serialization nor migrate the whole legacy contract. Current map discharges only the selected procedures, not their distinct protection. Historical ledger fixture data is not a deletion target by filename. Both older population maps remain separate. All five-document author structure/prose checks are passed evidence and their subjects independently match current bytes.",
     "Proposal reliance — explicitly current for its original direction scope: the proposal body and its approved user goals are unchanged; current source feasibility still uses the same executor/catalog mechanisms. Expected downstream Design evolution of model subjects does not change the previously assessed initial direction or retarget its evidence. As the same independent proposal assessor, I affirm its approved challenge, goals, scope, no-cache/freshness limits and Design feasibility remain applicable. This exact new Design assessment supplies current package coherence; the old proposal review is not misrepresented as approval of changed model details.",
-    "Finding disposition and handoff — parallel-maintenance-allocation-scope is resolved by the explicit current owner map and two bounded notices. First-pass finding facts and subjects remain represented. No additional material issue found on the corrected whole package and interactions. Return approved package to route for authorized Delivery planning; no runtime implementation, test deletion, model adoption, Verify or external action is approved by this review."
+    "Finding disposition and handoff — parallel-maintenance-allocation-scope is resolved by the explicit current owner map and two bounded notices. First-pass finding facts and subjects remain represented. No additional material issue found on the corrected whole package and interactions. Return approved package to route for authorized Delivery planning; no runtime implementation, test deletion, model adoption, Verify or external action is approved by this review.",
+    "Recursive graph ownership — pass: SYS-SR10 and Parent graph ownership explicitly apply to separate documents and named-section parents. System owns3 immediate main models; Skill owns6 children, CLI4 and Engineering4. Skill Authoring owns its Design-child graph and distinguishes Proposal/Plan capabilities from child models. Other named capability sections and implementation blocks are not silently declared new models; leaves need no artificial child graph. Parent tables and graph links resolve to child-owned detail. The rule is repository-local and does not impose a new published-skill diagram mandate or alter portable Design conventions.",
+    "Graph semantic edges — pass: System shows shared Skill/CLI/Engineering interfaces and links internal compositions rather than duplicating them. Skill distinguishes common contract application, coordination, authored/evidenced subjects and independent judgments; standalone capability boundaries remain. CLI routes explicit record operations through Persistence under Records representation, returns scoped results/conflicts, and keeps Installation writes separate from project records. Engineering receives product behavior, builds exact candidates, obtains validation observations and independent Assessment duties, and gives Release an applicable engineering basis. Release qualification feeds validation and still consumes separate candidate-specific authorization before publication. Feedback and external references do not grant approval, invent child ownership or bypass mandatory gates.",
+    "Seven-document coherence and examples — pass: the centralized detailed quality graph is replaced by the Engineering-owned view and link while surrounding failure/Code Review/Verify/publication protections remain. Authoring review edges preserve approval before downstream reliance without making every individual invocation follow the full lifecycle. New inline Mermaid sources illustrate existing contracts plus explicit parent ownership; no payload schema/CLI procedure changes or historical example edits occurred. The Validation sharing/isolation requirements and two legacy maintenance notices are byte-unchanged from the approved correction. Four affected author structure/prose checks have matching exact subjects; diagrams were semantically inspected as source, with no renderer or runtime pass claim.",
+    "Current applicability and handoff — the approved proposal still supports refining the design while preserving independent cases, proof-sensitive deduplication and no cache. The explicit subsequent user direction supplies authority for local parent graphs; it does not change product behavior or relax original scope. The prior resolved maintenance finding stays represented. This current expanded package is suitable for authorized Delivery planning, including SYS-SR10 graph/child coherence and existing VAL-SR19–22 obligations. No implementation or final adoption follows merely from this save."
   ],
   "reviewer": {
     "id": "proposal-reviewer",
@@ -78,11 +83,11 @@
   "schema_version": 3,
   "subjects": [
     {
-      "identity": "sha256:83063498c53be82b8733a653530ad213d615c8061b47c31920f1b8e073e6f6a9",
+      "identity": "sha256:63390bb44e7ec23cfa70f850066470e07136eceae0bff46d1f5d132e2a82f77a",
       "path": "docs/design/system.md"
     },
     {
-      "identity": "sha256:a01a90593910ff8e00437d8de3d73b5418bee9e698c85f1990916f7276752e83",
+      "identity": "sha256:d1d7b1d79aea37bc4d5629e5ebacca115cd62e68e81fb2e9a019897f2957998a",
       "path": "docs/design/engineering/engineering.md"
     },
     {
@@ -98,7 +103,7 @@
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
     },
     {
-      "identity": "sha256:1df36b276ed3a74d10e77e5f65564b3253b28db5472f3f0af758c9c2d12d0cb0",
+      "identity": "sha256:15926850bd1becd50f509fdbdac6e8994b54a5284d1691784f590e7a6feb98ba",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
     },
     {
@@ -118,7 +123,7 @@
       "path": "docs/design/engineering/release.md"
     },
     {
-      "identity": "sha256:fe211297da8533a8620535abee9b8d47fd512da99ac7e9f7fd08878606ff340b",
+      "identity": "sha256:9c79e6510a573649535bc99703084f883b20c3394b2686fb1133271c5d052959",
       "path": "docs/design/cli/cli.md"
     },
     {
@@ -128,8 +133,28 @@
     {
       "identity": "sha256:e6454aa501a7db02051a3e2df6f53ac5013cb285bfb1d786429bb8e587920ec5",
       "path": "specs/published-skill-first-repository-simplification.test.md"
+    },
+    {
+      "identity": "sha256:f372d16d6f80052bff75abd49ef4966a1c94b8582f867557f1241c8d081cc2bb",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:0b8d25d6f4555a27f15a0d8f39e10161ca932fc1c76470433e465cec8e4acb92",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:b129f1558234aea5d7abe643dee09422cf4b748aaab860fd84c45e3356b01ec7",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:9d63c43239c192cf09613d7ed26c881830f77abb174dd142f2e262fcd5bcabfd",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:4992f7f5cbf3e2b8dd2cb8d862c2a662bb0dd0540b29d2e75b0e0293fd551eaf",
+      "path": "docs/design/cli/installation.md"
     }
   ],
-  "summary": "Exact five-document Design package approved after correction: coherent cross-phase execution sharing and complete remaining-case independence retain protection, freshness and honest consumer eligibility; the current maintenance map explicitly reconciles both retained legacy notices. No unresolved finding remains.",
+  "summary": "Current seven-document Design package approved: parent-owned subsystem graphs satisfy the explicit recursive composition direction, while execution sharing, full case independence and corrected scoped maintenance allocation remain coherent. Prior maintenance finding remains resolved; no additional material finding.",
   "target": "design"
 }

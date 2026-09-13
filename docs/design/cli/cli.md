@@ -8,7 +8,9 @@ The CLI operates on `rigorloop-records-v3`. The current definitions below integr
 
 CLI owns the observable behavior of the `rigorloop` executable: commands, requests, responses, side effects and failure/recovery contracts. Individual skills can be used without it. Current governed recording uses it for inspection and safe updates; `init` is one explicitly chosen method of installing skills. Record operations do not make engineering judgments, and installation does not interpret engineering state.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 | Submodel | Contract location | Boundary |
 | --- | --- | --- |
@@ -16,6 +18,32 @@ Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-val
 | Records | [Records](#records) and [Record Format](records.md) | Durable data structure, meaning-preserving representation and supported stored versions. |
 | Persistence | [Persistence](#persistence) and the existing construction/save/recovery sections | Lossless candidate construction, concurrency, atomicity and safe recovery. |
 | Installation | [Installation](installation.md) | Verified package acquisition and explicit target filesystem changes; never workflow-state adoption. |
+
+## Subsystem design graph
+
+```mermaid
+flowchart LR
+    Actor["External: user or skill-guided agent"]
+    Interface["Command Interface: requests, results and dispatch"]
+    Records["Records: stored representation and invariants"]
+    Persistence["Persistence: reads, safe writes and recovery"]
+    Installation["Installation: trusted packages and destination writes"]
+    Packages["External: Engineering Packaging"]
+    State["External: project records"]
+    Destinations["External: installed skill destinations"]
+    Actor -->|"explicit request"| Interface
+    Interface -->|"record operation"| Persistence
+    Records -->|"representation and preservation contract"| Persistence
+    Persistence -->|"scoped result or conflict"| Interface
+    Persistence -->|"inspect or explicitly update"| State
+    Interface -->|"installation request"| Installation
+    Packages -->|"archive and metadata contract"| Installation
+    Installation -->|"verified, explicitly scoped writes"| Destinations
+    Installation -->|"installation result"| Interface
+    Interface -->|"result and limitations"| Actor
+```
+
+CLI owns the composition of its four children under [System's parent graph rule](../system.md#parent-graph-ownership); the submodel table links their detailed contracts. External nodes mark consumed interfaces, not CLI-owned subsystems. Records defines representation; Persistence enforces it through the shared recording engine. Installation has its own filesystem safety contract and does not write project workflow records. A successful operation does not establish an engineering judgment.
 
 ### Command interface
 
