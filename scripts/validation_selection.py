@@ -281,15 +281,11 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
 }
 
-# These two complete command scopes use per-test temporary trees, read immutable
-# source fixtures, restore process-local environment, have no external services,
-# and invoke children sequentially. Other old allowlist entries remain serial
-# until a current isolation assessment covers their nested resource demand.
+# Read-only command assessments; test suites have case assessments below.
 # Literal bases deliberately do not update when a template or adapter changes.
 _COMMAND_ASSESSMENTS = {
+    'requirement_fidelity.spec_reads': ('f03814e2fe4dfe4a8db86f790c2323678ef45ae52b3bc63c1df331bb333846c7', 'Reads representative review logs; no mutable fixtures, services or nested workers.'),
     'skills.validate': ('a8c706629176acda626a4dff2c77ba5805f21058a767fa755c8567315234555f', 'Canonical skill validation reads sources without writes, services or nested workers.'),
-    'skills.regression': ('9c4ffbab147aa1e13f1edd27bbcd224b21254b9c73c37d76bbfd9c94ce27a6e7', 'Skill validator fixtures use owned temporary trees; subprocess validators run sequentially; no shared writes or services.'),
-    'adapters.regression': ('4ac8b3234ec905ec97dc1603d847b04af163c206509fad625765c4e3ecb6fe72', 'Selected adapter cases build and validate owned temporary outputs; read canonical resources; sequential subprocesses, no active-root writes or services.'),
 }
 for _id, _entry in tuple(CHECK_CATALOG.items()):
     _assessment = _COMMAND_ASSESSMENTS.get(_id)
@@ -352,6 +348,19 @@ for _mode_prefix in ('broad_smoke','main'):
 # temporary Git/record fixtures, process-local environment and sequential child
 # validation. Selector wrapper probes obey their allocated nested worker budget.
 _CASE_ASSESSMENTS = {
+    'skills.regression': '214972f0018d7ef9e72b7fb32da3cdc8710350aa579a7558c519375187345321',
+    'adapters.regression': '84133e40f66e4595b786ee6f4116f933421fcf1e8e0387e698d0c7935695e8e2',
+    'adapters.drift': '275c34ecf90ce1c5c83521550790f3619c25f6296541a8fa54ac19e44743ad81',
+    'adapters.validate': 'd07757ecafbea97e874b5115988448bc388195b73a7935c83f9b512498fe9598',
+    'adapters.full_regression': '209833a7673c5c462eead3a8908a0370cba7f4249b013e258d23f89f70ea4066',
+    'release_transaction.regression': '89ca801fa0c10fd719cbaab255328928da9255bf62624115e8bf45cd2ce2ab99',
+    'npm_package_publication.test': '68ebb1485567c19db79740f04c6d9bac59b2744e2755a269b3458a7d91f98242',
+    'boundary_first.reference_regression': '1d50caed4240047b1acd2361ab674f0e1fec0fd23dd04b257af71f124f85da8e',
+    'boundary_first.regression': '95b679dae32eceb121b48523e938e24ddf28d88f7b47805473ca7ad7f1305ca3',
+    'documentation_prose.regression': '31fe30f2526338f2f91a469eb85c443c427bc3e18af873362394bddb387d4b86',
+    'markdown_readability.regression': '5d3b894fcc2eaa8232f9365e3aa5f2648cd4f6641c23269f802657d783d01b4f',
+    'guide_system.regression': 'cf9e16dbcb4b1bdfed9abaf04190ed46d2ea71cdf5a3ec1bfd46eb39531811eb',
+
     'validation_execution.regression': '092d25fa433d7af08ebe938dbd3837a8914bb7ad871dc4d4bf2a01f470014e79',
     'artifact_lifecycle.regression': '0d3bf319c63835687a034b94f2003918fddbb599b456a8894d98fa5784f262bf',
     'change_metadata.regression': 'ff7f4d79be49f9635e51521fbf36df43f6276a04e55863c56163746e49726586',

@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "Bounded independent Delivery reliance reassessment of the unchanged primary plan against current approved M2 Design subjects and completed M1 review. Retains the complete first-pass seven-milestone allocation assessment; examines whether planned supporting-view realization or its mandatory-force-safety clarification requires new allocation. Does not replace separate M2 Code Review or initialize/update work.",
+  "assessment_scope": "Bounded independent Delivery reassessment of the current primary plan correction committed ede563d3 versus f54f173c, against current approved Design and completed M1–M3 review evidence. Read the complete audit script and inspected its catalog command, narrowed plan diff and author execution/prose evidence. Retains earlier full-plan assessment with the explicit audit-versus-case distinction; no work initialization or runtime implementation review is performed here.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "contributors": [
     {
@@ -12,9 +12,8 @@
   "independence_basis": "Root authored the complete plan and author evidence. The separately invoked proposal-reviewer agent inspected the exact plan, current upstream package and actual implementation extension points without authoring or editing any plan, Design or implementation contribution. Prior independent Design review is upstream assessment, not authorship of this delivery allocation.",
   "judgment": "approved",
   "limitations": [
-    "No runtime tests, package generation, native Node experiments or final CI were run for this plan review. Native case selection/discovery and resource behavior remain required M6 evidence before promotion, not assumed capability.",
-    "Static entrypoint inventory and source inspection establish plan allocation only; all discovered cases, dynamic additions, retained protection and actual caller completion must be established during implementation. Timing is factual and bounded, with no promised speed target.",
-    "Review recording does not initialize milestones, route work or authorize publication/PR. Model/public-guidance adoption and final completion remain pending their explicitly allocated reviews and proof."
+    "This bounded plan review uses inspected audit code/catalog and author actual command/prose evidence; it does not execute or certify P4 unittest populations, future native Node support or final CI.",
+    "Approval renews the current remaining allocation only. Required M4–M7 implementation/reviews and final whole-change Code Review/Verify remain; reviewer has not changed routing or work state."
   ],
   "rationale": [
     "Trace and complete scope — pass: M1/TG01 allocates portable DES-SR22 guidance, skeleton, transitive packaged examples and independent semantic exercises; M2/TG02 allocates all twelve model necessity decisions, necessary diagrams, exact example scope and fresh Design Review before reliance. M3/TG03 covers VAL-SR19/20 canonical composition and retained execution invariants; M3–M6/TG03–06 account for TEST01–14 and VAL21/22 populations; M7/TG07 reconciles actual callers and newly discovered scope. Inspection confirms all26 current Python entrypoints and22 Node test files are accounted for. File counts explicitly are not case identities or proof; dynamic loaders, nested cases and alternate direct/main/broad/release callers must be reconciled before closeout.",
@@ -24,7 +23,10 @@
     "Proof cost and retained maintenance authority — pass: normal, isolated single-worker and concurrent/reversed population comparisons establish actual adoption once per assessed family basis; affected later changes require fresh proof. These observations are not permanent triple-production-suite regressions. Consolidations require governing obligation, distinct failure/boundary mapping, counterexample-sensitive replacement detection and independent assessment before relying on reduced tests. Unknown protection is preserved. Existing evidence surfaces carry group-level rationale, not a new mandatory ledger or benchmark. Current legacy maintenance map and R15/R16/R21 authority are retained; completed original source/cache retirement is not reopened.",
     "Concrete commands and final gates — pass: exact Python file commands, npm/native commands, model file-explicit validators, rendering/semantic inspection, supported archive/install fixtures and synthetic release composition are allocated. Checked actual npm test script, wrappers and hosted caller sites. Selected PR base c815768aacb0a6762c0acd11acf1d21f3c26aac0 is an ancestor of HEAD and the plan requires final committed endpoints and reconciliation if basis changes. M7 checks executed IDs and runs direct-only populations absent from composition; separate required main/broad/PR invocations execute freshly. Release fixture proof is distinguished from unauthorized live publication. Fresh independent complete-diff Code Review after all milestones/corrections precedes distinct final Verify; no milestone review or aggregate test substitutes for it.",
     "Current applicability — current plan author evidence matches its exact subject. Upstream Design approval remains applicable: the plan allocates its explicit outstanding public-resource and all-model supporting-view duties, preserves simplified Validation/no-cache and the two resolved findings, and introduces no revised behavioral contract. Original proposal and historical Design judgments retain their scopes. Failed implementation evidence, changed contracts/examples or discovered native-runner limitations require their actual owning correction and reassessment; this approval does not refresh any runtime proof. No material first-pass finding identified.",
-    "M2 current-basis reassessment — pass: plan M2 explicitly allocates all twelve view decisions, necessary diagrams, retained System hierarchy/Validation overview, complete illustrative model, rendering/structure/semantic proof and refreshed independent Design Review. Actual corrected package fulfills those planned Design duties and changes no requirement row or product behavior. The Installation gate correction clarifies existing mandatory safety, not a new mechanism or proof target requiring plan amendment. M1 public guidance is independently Code-reviewed as its intended prerequisite. M3–M7 allocation remains current, including exact canonical scheduling, all-case adoption, native Node experiments and final caller proof. Current models and delivered public resources replace preimplementation references for this renewed applicability; original first-pass feasibility statements retain their original scope, not claims of completed later work."
+    "M2 current-basis reassessment — pass: plan M2 explicitly allocates all twelve view decisions, necessary diagrams, retained System hierarchy/Validation overview, complete illustrative model, rendering/structure/semantic proof and refreshed independent Design Review. Actual corrected package fulfills those planned Design duties and changes no requirement row or product behavior. The Installation gate correction clarifies existing mandatory safety, not a new mechanism or proof target requiring plan amendment. M1 public guidance is independently Code-reviewed as its intended prerequisite. M3–M7 allocation remains current, including exact canonical scheduling, all-case adoption, native Node experiments and final caller proof. Current models and delivered public resources replace preimplementation references for this renewed applicability; original first-pass feasibility statements retain their original scope, not claims of completed later work.",
+    "P4 fidelity allocation correction — pass: actual script main requires --review-set and --max-bytes-per-clause and optionally enforces --assert-no-broad-reads; it enumerates every spec-read-log.json in the selected directory and validates records, not unittest cases. The plan now uses the exact existing requirement_fidelity.spec_reads command with representative-reviews,4096 and broad-read rejection. Missing/empty/invalid log sets and excessive/broad reads remain unsuccessful under the unchanged checker. Classifying it as a bounded read-only command preserves real proof while avoiding invalid bare invocation and phantom test discovery.",
+    "Independence and retained protection — pass: inspected full audit source performs only local reads and has no mutable fixtures, service, subprocess or worker pool. Plan still requires exact inputs, command/outcome and independence rationale; it neither drops the log population nor promotes an unassessed suite. Normal/individual/reversed adoption observations apply to the nine actual P4 unittest populations, while the audit retains its correct execution boundary and failure sensitivity. No new blanket serial exception, cache, scope reduction or extra public runner is introduced.",
+    "Current Delivery applicability — author p4-audit-allocation-correction evidence matches exact plan and records the corrected command passing its1 selected log plus prose enforcement. No governing model requirement, milestone ID, dependency/order or completed M1–M3 intent changed. The current code-review-m3 approval establishes the delivered canonical executor basis referenced by remaining allocations; this renewal does not mechanically refresh historical runtime claims. M4–M7 still require their full isolation/protection/integration evidence and independent reviews, followed by whole-change Code Review and distinct Verify. The previously identified future-M4 command gap is now addressed; no material Delivery finding remains."
   ],
   "reviewer": {
     "id": "proposal-reviewer",
@@ -33,7 +35,7 @@
   "schema_version": 3,
   "subjects": [
     {
-      "identity": "sha256:3d94ffcb20e7a183d8285550aba80f3c95c5b54a08ceab4d6bf3e19f044267e1",
+      "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
       "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
     },
     {
@@ -61,7 +63,7 @@
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
     },
     {
-      "identity": "sha256:c5064fef1a169a59b81e5820a7ff6a382fb64220e48ab29fd7ebc521e8b221f8",
+      "identity": "sha256:3cb5381bb637da84f700ef5ebb590e8bac56e7d0d31b16b14f92b77f8de11d5b",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
     },
     {
@@ -113,15 +115,15 @@
       "path": "docs/design/cli/installation.md"
     },
     {
-      "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+      "identity": "sha256:70fbeaf2c58254f36d5b20c632f43df639040527f73cccd45bc9d3eabac1c968",
       "path": "scripts/validation_execution.py"
     },
     {
-      "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+      "identity": "sha256:d6a9821abfe6b6863a3ae335ca5cbcd0d45f1e36d30c9eb9293b671b2a363933",
       "path": "scripts/validation_selection.py"
     },
     {
-      "identity": "sha256:71880764d26a941ec1f614f020f74f30ddfab8ae6fea9006b2a3d7530121c82f",
+      "identity": "sha256:7ff4277ed8aa58c3d7298f0e3e346b68368e490a94163a0fb558db049dd68c9f",
       "path": "scripts/test-select-validation.py"
     },
     {
@@ -145,7 +147,7 @@
       "path": "scripts/model_layout.py"
     },
     {
-      "identity": "sha256:a9bb59b84147d1e51b78eb7927d16e987f2d1ea8a9a2f1827a919211a42869ac",
+      "identity": "sha256:a725c90405cdc7512b92560dd01120ebc81c4701dbd76fefcb7b569f3fd3d2d8",
       "path": "scripts/test-validation-execution.py"
     },
     {
@@ -167,8 +169,16 @@
     {
       "identity": "sha256:b68ae4ba61f822781ac124b2c41857f7f7e6f235fd545320b021bc25be5a3a96",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m1.json"
+    },
+    {
+      "identity": "sha256:22be989f1ffbcf569c41c2a0b75d3de98eacc86a8aac31898fdd496ef064e2ab",
+      "path": "scripts/test-fidelity-gate-spec-reads.py"
+    },
+    {
+      "identity": "sha256:5b274160398117a9ca85eb97d9cf4abe3b77c3e2b1e87716e17d157f787e25f2",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m3.json"
     }
   ],
-  "summary": "Unchanged Delivery plan remains adequate after planned M1 public guidance and corrected M2 supporting-view realization. No new behavior, requirement or native execution mechanism changes the seven-milestone allocation or remaining verification duties.",
+  "summary": "Approved the corrected remaining Delivery allocation: P4 retains nine unittest suites plus the existing read-only fidelity audit, with its exact required catalog arguments and independent command proof. No entrypoint, input log or protected failure is removed, and the seven-milestone sequence remains unchanged.",
   "target": "delivery"
 }

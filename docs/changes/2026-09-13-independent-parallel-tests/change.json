@@ -4,9 +4,9 @@
       "id": "proposal-reviewer",
       "role": "review"
     },
-    "reason": "Exact plan corrected only future P4 audit invocation/classification; request Delivery Review before opening M4.",
-    "stage": "delivery-review",
-    "status": "ready"
+    "reason": "M4 complete with all P4 population observations, stable-source release correction and actual selected CI passing; independent review requested.",
+    "stage": "code-review",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -51,7 +51,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json",
-      "reason": "Unchanged plan explicitly anticipated M1/M2 guidance and necessary views; corrected approved current Design introduces no new behavioral or verification-allocation gap.",
+      "reason": "Corrected audit argv and bounded-command classification independently match actual read-only entrypoint; remaining plan scope/protection and sequence remain adequate.",
       "value": "current"
     },
     {
@@ -270,7 +270,7 @@
         "TEST-SR-08",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m5",

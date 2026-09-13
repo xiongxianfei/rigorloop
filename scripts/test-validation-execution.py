@@ -29,6 +29,43 @@ class CaseAdapterTests(unittest.TestCase):
         path.write_text('import unittest\n'+body+'\nif __name__ == "__main__": unittest.main()\n')
         return path
 
+    def test_imported_cases_keep_normal_script_imports_selection_and_hooks(self):
+        from validation_execution import discover_cases, case_plans
+        helper = self.root/'fixture_cases.py'
+        helper.write_text('import unittest\nclass ImportedCases(unittest.TestCase):\n'
+            ' def setUp(self): self.value = "ready"\n'
+            ' def test_ready(self): self.assertEqual(self.value,"ready")\n')
+        path = self.fixture('from fixture_cases import ImportedCases')
+        args = [sys.executable,str(path)]
+        direct = subprocess.run(args,capture_output=True,text=True)
+        self.assertEqual(direct.returncode,0,direct.stdout+direct.stderr)
+        ids = discover_cases(args,self.root/'collection',jobs=1,timeout=10)
+        self.assertEqual(ids,['ImportedCases.test_ready'])
+        parent=CheckPlan('imported','fixture',args,None,'focused',True)
+        plans=case_plans(parent,ids,self.root/'cases')
+        result=run_scheduled_checks(plans,jobs=2,timeout_seconds=10,fail_fast=False,scratch=self.root/'run')[0]
+        self.assertEqual(result.exit_code,0,result.stderr_path.read_text())
+        # A class exported only under a different name is not addressable by
+        # the selected normal TestCase.method identity; never silently omit it.
+        path=self.fixture('from fixture_cases import ImportedCases as Alias')
+        with self.assertRaisesRegex(ValueError,'addressable'):
+            discover_cases(args,self.root/'alias',jobs=1,timeout=10)
+
+    def test_selected_methods_classes_and_filter_values_expand_to_one_case(self):
+        from validation_execution import discover_cases, case_plans
+        path=self.fixture('class Example(unittest.TestCase):\n def test_a(self): pass\n def test_b(self): pass')
+        scopes=[['Example.test_a','Example.test_b'],['-k','Example.test_a','Example'],['--verbose','Example']]
+        for index,scope in enumerate(scopes):
+            with self.subTest(scope=scope):
+                root=self.root/str(index)
+                args=[sys.executable,str(path),*scope]
+                ids=discover_cases(args,root/'collect',jobs=2,timeout=5)
+                parent=CheckPlan('selected','fixture',args,None,'focused',True)
+                plans=case_plans(parent,ids,root/'cases')
+                results=run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=root/'run')
+                self.assertEqual([r.exit_code for r in results],[0]*len(ids),
+                    '\n'.join(r.stderr_path.read_text() for r in results))
+
     def test_real_discovery_duplicate_zero_and_loader_error_reject_before_cases(self):
         from validation_execution import discover_cases
         for body in ['class Empty(unittest.TestCase): pass',

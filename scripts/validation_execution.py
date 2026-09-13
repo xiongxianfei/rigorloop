@@ -531,16 +531,22 @@ def unittest_adapter(mode, destination, command, expected=None):
     destination.parent.mkdir(parents=True, exist_ok=True)
     original = unittest.TextTestRunner.run
     called = False
+    def identifier(test):
+        cls = type(test)
+        name = cls.__name__ + '.' + str(getattr(test,'_testMethodName',''))
+        if (not re.fullmatch(r'[A-Za-z_]\w*\.[A-Za-z_]\w*',name)
+            or '_FailedTest' in test.id() or test.id() != cls.__module__ + '.' + name):
+            raise ValueError('invalid collected case: '+test.id())
+        if getattr(sys.modules['__main__'],cls.__name__,None) is not cls:
+            raise ValueError('case is not addressable through the normal entrypoint: '+test.id())
+        return name
     def identifiers(suite):
         found = []
         for test in suite:
             if isinstance(test, unittest.TestSuite):
                 found.extend(identifiers(test))
             else:
-                name = test.id().removeprefix('__main__.')
-                if not re.fullmatch(r'[A-Za-z_]\w*\.[A-Za-z_]\w*', name) or '_FailedTest' in test.id():
-                    raise ValueError('invalid collected case: '+test.id())
-                found.append(name)
+                found.append(identifier(test))
         return found
     def save(payload):
         temporary = destination.with_suffix('.pending')
@@ -565,10 +571,10 @@ def unittest_adapter(mode, destination, command, expected=None):
         base = runner.resultclass
         class Result(base):
             def startTest(self, test):
-                started.append(test.id().removeprefix('__main__.'))
+                started.append(identifier(test))
                 super().startTest(test)
             def stopTest(self, test):
-                completed.append(test.id().removeprefix('__main__.'))
+                completed.append(identifier(test))
                 super().stopTest(test)
         runner.resultclass = Result
         started_at = time.monotonic()
@@ -581,6 +587,8 @@ def unittest_adapter(mode, destination, command, expected=None):
         return result
     unittest.TextTestRunner.run = run
     sys.argv = command
+    # Match `python path/to/suite.py`: sibling imports belong to that script.
+    sys.path.insert(0,str(Path(command[0]).resolve().parent))
     try:
         runpy.run_path(command[0], run_name='__main__')
     except SystemExit as exc:
@@ -631,8 +639,26 @@ def discover_cases(args, scratch, *, jobs, timeout):
 def case_plans(parent, ids, scratch):
     scratch.mkdir(parents=True, exist_ok=True)
     plans = []
+    # Narrow original native positional selectors, rather than appending a
+    # second selection to an already selected suite. Preserve options/values;
+    # the original entrypoint parser still owns their vocabulary and meaning.
+    targets = set(ids) | {name.split('.')[0] for name in ids}
+    switches = {'-v','--verbose','-q','--quiet','--locals','-f','--failfast',
+                '-c','--catch','-b','--buffer','--'}
+    scoped_args = parent.args[:2]
+    option_value = False
+    for argument in parent.args[2:]:
+        if option_value:
+            scoped_args.append(argument)
+            option_value = False
+        elif argument.startswith('-'):
+            scoped_args.append(argument)
+            option_value = (argument not in switches and '=' not in argument
+                            and not (argument.startswith('-k') and len(argument)>2))
+        elif argument not in targets:
+            scoped_args.append(argument)
     for index, name in enumerate(ids):
-        args = [*parent.args, name]
+        args = [*scoped_args, name]
         receipt = scratch/f'case-{index}.json'
         plans.append(CheckPlan(parent.check_id+'::'+name,command_display(args),
             _case_command('case',receipt,args,name), parent.reason, parent.phase, parent.parallel_safe,
