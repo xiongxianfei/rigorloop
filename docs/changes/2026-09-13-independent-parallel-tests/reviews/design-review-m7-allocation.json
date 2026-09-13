@@ -1,0 +1,148 @@
+{
+  "assessment_scope": "Targeted Design reassessment of Validation Explicit coverage allocation (three new paragraphs), against prior approved twelve-model package, unchanged governing requirements, actual catalog scopes and M7 allocation. Prior Design Review and findings retain their original subjects and dispositions; this review supplies current amendment applicability rather than rewriting history.",
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-m7-allocation",
+  "independence_basis": "Root authored the three-paragraph Validation amendment. Separate proposal-reviewer inspected its exact scope and current caller/preparation evidence without editing any Design or implementation. Earlier independent assessments are not authorship.",
+  "judgment": "approved",
+  "limitations": [
+    "Targeted Design assessment uses current source/caller inspection and prior unchanged owner/example assessments; no implementation or runtime pass is inferred for the newly specified normalization.",
+    "Delivery reliance still needs its distinct bounded reassessment. M7 implementation, Code Review, whole-change review and Verify remain. No source or routing edits performed."
+  ],
+  "rationale": [
+    "Behavior and realization — the amendment explicitly authorizes only adapters.full_regression over its selected subsets, adapters.regression over drift/validate, and rigorloop_cli.test over retirement. Both scopes must already be required; no extra broad check is introduced for narrow-only work. Normalization occurs before existing same-ID composition and retains the covering canonical command/results, all reasons and earliest valid phase. It is an explicit catalog allocation, not inferred argv/discovery equivalence or cross-invocation result reuse.",
+    "Feasibility and proof agreement — actual adapter subset commands name the same fixture methods as their covering scopes; no separate version/artifact observation is present in these pairs. Native retirement cases use module-relative imports and owned temporary roots, so package/root cwd does not add a distinct protection. The model requires exact assessed command bases and matching resource/preparation constraints; stale or contradictory metadata rejects before launch. Future changes cannot silently inherit present equivalence.",
+    "Temporal and failure boundaries — every dependency and ordering prerequisite is preserved and rebound, including external references. Missing/self/cyclic dependencies reject. Phase promotion cannot waive a focused or preparation prerequisite. These suites have no separately fresh observation, and actual catalog inspection confirms all six suite entries currently have no catalog prerequisites; invocation preflight remains mandatory. Build-command prerequisites belong to separate unchanged entries. Focused failure continues to block boundary completion even if shared proof passed; different versions/destinations/post-build/fresh observations remain distinct.",
+    "Ownership and package coherence — Validation owns catalog composition and result semantics; Engineering continues integration, Skill content, CLI recording/installation and Release qualification/publication retain their owners. No new model, public skill, authority graph, request state machine or result projection is introduced. Existing Architecture Overview and supporting views still accurately show selection feeding the same executor/results. Three paragraphs add detail at that owned boundary; no separate payload example is changed or needed.",
+    "Decision and historical preservation — finite pairs, purpose, limitations and rejection consequences are explicit. Existing VAL-SR19/20 goals remain, while this named exception adds the conditional cross-ID normalization previously absent from the simplified realization. Historical approvals of the earlier narrower mechanism and resolved findings retain their facts. No original source displacement map, maintenance allocation, requirement identity or adoption claim changes.",
+    "Acceptance adequacy — concrete narrow-only, both-requested, reason retention, failed preparation, stale/conflicting basis, cycles, focused failure and untouched release/configuration checks allow direct focused negative proof. Existing no-cache/new-invocation behavior and truthful actual result rows remain mandatory. Structural/prose author checks corroborate document form but are not semantic approval.",
+    "Delivery interface — unchanged M7 explicitly allocates remaining catalog/CI caller reconciliation, missing/failed composition and preserved release preparation, plus main/broad/PR and direct population checks. Its intent appears sufficient for this bounded mechanism, with no milestone/order/work initialization change. Because the relied-on Design now changes executable composition, obtain a bounded independent Delivery applicability reassessment on this exact amendment before coding; no full plan rewrite is indicated."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:d083cf4960e85e71c0acac9a4e1ed5d63bfca655366f7d2fc743c15ea2043623",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:2af30f6ac92314de586a6edd0d8bc60e68d5db88dc28feda6ef52d7eee9d2b4f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:6d1d8b981ce863dea927b4dc6b76455109d188b28bff6ad76542f9226f3b5d13",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
+      "path": "docs/proposals/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:78d3cdd311ab6a805b9cdab26deb7e9531c373692d007a06c89ff8aa650c083f",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    },
+    {
+      "identity": "sha256:fe848ca3b53efd50f060157a225157a5003462d1d8bca2b08368a6ab424f0cab",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:db5911c87634d0c2da1576b0b9ab6703b55b1f4346fae0846ef7833ae5265c2f",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:7c8af384bc061f939aecc9e9a9c58161a4743a4136b6437d2726b8b4ed45b3a5",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:d4bfc5ac7a65f38385f5fd575cd0e37bd1e7d0aea23cc06120451d47310fd083",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:0eac857270902b1c4669084886fb9e9d06fd093c783ef615ed88e03e9744ce8b",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:5b08ce71c66a0519d7384f85f1165ad1bec05ea27d2c2f0749aeafff5311027a",
+      "path": "specs/published-skill-first-repository-simplification.md"
+    },
+    {
+      "identity": "sha256:e6454aa501a7db02051a3e2df6f53ac5013cb285bfb1d786429bb8e587920ec5",
+      "path": "specs/published-skill-first-repository-simplification.test.md"
+    },
+    {
+      "identity": "sha256:941c6522646566b15c31b034447e348e86a4b792d8d02852d123403429c9d465",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:adc0b4f16e42bc85b76f77e4527f52bbdae6e00b4d73556d0c2923e220e85c9c",
+      "path": "docs/design/skill/authoring/design.md"
+    },
+    {
+      "identity": "sha256:957d0dcef9027e9c71aca5797908910384c97eacca7072e432e0874f1dd00033",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:ce61c2e1dbbf4e540fe93c799dfd1f9e353067733023d8aa4ff2626271cae6b8",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:89b150f484fb9d7df6a9133a8eae16b522ad8dfe6cff30ab636b779a106fc752",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:9ec211d32dc123b8f3624dc895a7cc357c0b75bfe63589283f87e5876602c491",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:0b634c9bcbdba16bc00fc26e40ca57d529922235d4bd745052280be1358f7379",
+      "path": "docs/changes/2026-09-12-unified-validation-model/change.json"
+    },
+    {
+      "identity": "sha256:6a556136cb73c4b7eb40393a5d5c97ffe6c14f75188a73200e466676bf0a8841",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:45453043b926cf24f91756b8a46f51e2164926a15657ce1ab57a37e7f3be9f2f",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:a83862ec20aaa6f2c7cfab96dfd427e88ed73960d1d777e7e9eab5a39d33ad1d",
+      "path": "skills/design/assets/design-skeleton.md"
+    },
+    {
+      "identity": "sha256:5a59a9355f510fea316d1bcad0a2dec2debcecab114966757de577b6ca41a3f0",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:33e34828816eebafc0de6d5804daf58357001cd1986158e633846e71e30266bc",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review.json"
+    },
+    {
+      "identity": "sha256:1af26b4d8ffe93fe850097641f66ca18e553dee0a6b211d2e41e7d816eed9d46",
+      "path": "docs/plans/2026-09-13-independent-parallel-tests.md"
+    },
+    {
+      "identity": "sha256:14c686d508eec69bb1b4cb0e189924d3e3c93867cca73c5148bc4bbe148de71d",
+      "path": "packages/rigorloop/test/record-retirement.test.js"
+    }
+  ],
+  "summary": "Approved the bounded explicit coverage allocation amendment and its current package interactions. The finite assessed pairs normalize only scopes already required, preserve narrow-only calls and all prerequisites, and retain the existing execution/reporting owners.",
+  "target": "design"
+}

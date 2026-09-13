@@ -590,6 +590,78 @@ class CatalogTests(unittest.TestCase):
 
 
 class CompositionTests(unittest.TestCase):
+    def coverage_plan(self, key, **changes):
+        import shlex
+        entry = CHECK_CATALOG[key]
+        return dataclasses.replace(CheckPlan(key, entry.command_template, shlex.split(entry.command_template),
+            key+' reason', 'focused', entry.parallel_safe, entry.dependencies, entry.constraints.demand), **changes)
+
+    def test_authored_coverage_retains_narrow_only_and_required_full_scope(self):
+        from validation_execution import allocate_coverage
+        pairs = [('adapters.full_regression', 'adapters.regression'),
+                 ('adapters.regression', 'adapters.drift'), ('adapters.regression', 'adapters.validate'),
+                 ('rigorloop_cli.test', 'record_retirement.regression')]
+        for full, narrow in pairs:
+            with self.subTest(full=full, narrow=narrow):
+                first = self.coverage_plan(narrow)
+                self.assertEqual(allocate_coverage([first]), [first])
+                plans = allocate_coverage([first, self.coverage_plan(full, phase='boundary')])
+                self.assertEqual({p.check_id for p in plans}, {full})
+                self.assertEqual([p.phase for p in plans], ['focused','boundary'])
+                self.assertTrue(all(p.args == self.coverage_plan(full).args for p in plans))
+        plans = allocate_coverage([self.coverage_plan(k) for k in
+            ('adapters.drift','adapters.regression','adapters.full_regression')])
+        self.assertEqual({p.check_id for p in plans}, {'adapters.full_regression'})
+
+    def test_authored_coverage_rejects_stale_configuration_and_preserves_prerequisites(self):
+        from validation_execution import allocate_coverage
+        full = self.coverage_plan('adapters.full_regression')
+        narrow = self.coverage_plan('adapters.drift')
+        for changes in ({'args':narrow.args+['--different']}, {'demand':2}, {'parallel_safe':False}):
+            with self.subTest(changes=changes), self.assertRaisesRegex(ValueError, 'coverage basis'):
+                allocate_coverage([full,dataclasses.replace(narrow,**changes)])
+        entry = CHECK_CATALOG[narrow.check_id]
+        for changes in ({'dependencies':('skills.validate',)},
+                        {'constraints':dataclasses.replace(entry.constraints,basis='changed')}):
+            with patch.dict(CHECK_CATALOG,{narrow.check_id:dataclasses.replace(entry,**changes)}):
+                with self.assertRaisesRegex(ValueError,'coverage basis'):
+                    allocate_coverage([full,narrow])
+        prep=CheckPlan('prep','fixture',['true'],None,'preflight',True)
+        consumer=CheckPlan('consumer','fixture',['true'],None,'boundary',True,(narrow.check_id,))
+        plans=allocate_coverage([prep,dataclasses.replace(narrow,dependencies=('prep',)),full,consumer])
+        self.assertTrue(all(p.dependencies==('prep',) for p in plans if p.check_id==full.check_id))
+        self.assertEqual(plans[-1].dependencies,(full.check_id,))
+        from validation_execution import expand_groups
+        with tempfile.TemporaryDirectory() as temporary:
+            cyclic=expand_groups([dataclasses.replace(narrow,dependencies=(full.check_id,)),full],Path(temporary))
+        with self.assertRaisesRegex(ValueError, 'dependency cycle'): validate_plans(cyclic,jobs=2)
+        separate=self.coverage_plan('adapters.validate',check_id='fresh-observation')
+        self.assertEqual(allocate_coverage([full,separate]),[full,separate])
+
+    def test_authored_coverage_runs_once_and_failed_focus_blocks_boundary(self):
+        from validation_execution import expand_groups
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            narrow=self.coverage_plan('adapters.drift',dependencies=('prep',))
+            full=self.coverage_plan('adapters.full_regression',phase='boundary')
+            prep=CheckPlan('prep','fixture',[sys.executable,'-c','raise SystemExit(7)'],None,'preflight',True)
+            tail=CheckPlan('tail','fixture',[sys.executable,'-c','pass'],None,'boundary',True)
+            plans=expand_groups([prep,narrow,full,tail],root)
+            self.assertEqual([p.check_id for p in plans],['prep',full.check_id,'tail'])
+            self.assertEqual(plans[1].phase,'focused')
+            self.assertIn(narrow.reason,plans[1].reason)
+            self.assertIn(full.reason,plans[1].reason)
+            marker=root/'ran'
+            plans[1].args=[sys.executable,'-c',f'from pathlib import Path; Path({str(marker)!r}).touch()']
+            results=run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=root/'run')
+            self.assertEqual([r.exit_code for r in results],[7,125,125])
+            self.assertFalse(marker.exists())
+            plans[0].args=[sys.executable,'-c','pass']
+            plans[1].args=[sys.executable,'-c',f'from pathlib import Path; p=Path({str(marker)!r}); p.write_text(p.read_text()+"x" if p.exists() else "x")']
+            results=run_scheduled_checks(plans,jobs=2,timeout_seconds=5,fail_fast=False,scratch=root/'success')
+            self.assertEqual([r.exit_code for r in results],[0,0,0])
+            self.assertEqual(marker.read_text(),'x')
+
     def test_canonical_overlap_runs_once_with_reasons_and_failure_gate(self):
         from validation_execution import expand_groups
         for diagnostic in (False, True):

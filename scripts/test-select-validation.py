@@ -967,7 +967,9 @@ class ValidationSelectionTests(unittest.TestCase):
         with (workspace/'scripts/validation_selection.py').open('a') as catalog:
             catalog.write("\nfor key in (*_CASE_ASSESSMENTS, *_NODE_ASSESSMENTS):\n"
                           " entry = CHECK_CATALOG[key]\n"
-                          " CHECK_CATALOG[key] = replace(entry,constraints=replace(entry.constraints,unit='command',basis=command_basis(entry.command_template,'command')))\n")
+                          " CHECK_CATALOG[key] = replace(entry,constraints=replace(entry.constraints,unit='command',basis=command_basis(entry.command_template,'command')))\n"
+                          "for key in COVERAGE_BASES:\n"
+                          " COVERAGE_BASES[key] = (CHECK_CATALOG[key].constraints.basis, 'command')\n")
         return workspace
 
     def make_broad_smoke_workspace(

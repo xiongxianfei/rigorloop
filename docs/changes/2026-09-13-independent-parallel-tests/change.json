@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "proposal-reviewer",
-      "role": "review"
+      "id": "root",
+      "role": "implement"
     },
-    "reason": "M6 complete with native419-case proof, cleaned fixtures, canonical retirement preservation, final npm/native/executor/selector and actual wrapper results; independent review requested.",
-    "stage": "code-review",
+    "reason": "Narrow M7 coverage allocation independently approved by Design and Delivery; implement existing M7 scope.",
+    "stage": "implement",
     "status": "in-progress"
   },
   "applicability": [
@@ -97,6 +97,33 @@
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m5.json",
       "reason": "Exact final M5 code and complete twelve-population evidence independently assessed; no outstanding milestone finding or new upstream requirement.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m6.json",
+      "reason": "Exact final M6 native implementation and complete22-file/419-case proof independently assessed; no outstanding finding or new upstream requirement.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review-m7-allocation.json",
+      "reason": "Exact finite coverage amendment and unchanged package boundaries independently assessed; previous narrower Design judgments preserved.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review-m7-allocation.json",
+      "reason": "Unchanged M7/TG07 explicitly allocates catalog/caller integration and negative/final proof required by the approved finite coverage amendment.",
       "value": "current"
     }
   ],
@@ -237,6 +264,18 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m5.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/code-review-m6.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review-m7-allocation.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/delivery-review-m7-allocation.json"
     }
   ],
   "schema_version": 3,
@@ -324,7 +363,7 @@
         "TEST-SR-08",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m7",
@@ -340,7 +379,7 @@
         "DES-SR-18",
         "docs/plans/2026-09-13-independent-parallel-tests.md"
       ],
-      "status": "pending"
+      "status": "in-progress"
     }
   ]
 }
