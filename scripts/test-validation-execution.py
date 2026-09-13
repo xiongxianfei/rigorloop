@@ -33,6 +33,19 @@ class ExecutionTests(unittest.TestCase):
                                     timeout_seconds=kwargs.pop('timeout_seconds', 5),
                                     fail_fast=kwargs.pop('fail_fast', False), scratch=self.root, **kwargs)
 
+    def test_nested_budget_caps_actual_children_and_unknown_value_rejects_before_launch(self):
+        gate = self.root/'active'
+        body = (f'import os,pathlib,time; p=pathlib.Path({str(gate)!r}); '
+                'assert os.environ["RIGORLOOP_VALIDATION_WORKERS"] == "1"; '
+                'p.mkdir(); time.sleep(.1); p.rmdir()')
+        with patch.dict(os.environ, {'RIGORLOOP_VALIDATION_WORKERS':'1'}):
+            results = self.run_plans([self.plan('a',body),self.plan('b',body)],jobs=8)
+        self.assertEqual([r.exit_code for r in results],[0,0])
+        for value in ['0','-1','unknown_value','']:
+            with patch.dict(os.environ, {'RIGORLOOP_VALIDATION_WORKERS':value}), self.assertRaises(ValueError):
+                self.run_plans([self.plan('forbidden',f'open({str(gate)!r},"w").close()')])
+            self.assertFalse(gate.exists())
+
     def test_complete_graph_rejects_before_any_launch(self):
         marker = self.root / 'launched'
         first = self.plan('first', f'open({str(marker)!r}, "w").close()')
@@ -83,10 +96,10 @@ class ExecutionTests(unittest.TestCase):
         gate = self.root / 'gate'
         gate.mkdir()
         body = ('import pathlib,time; p=pathlib.Path(%r); (p/%r).touch(); '
-                'deadline=time.monotonic()+2\nwhile len(list(p.iterdir()))<2:\n'
+                'deadline=time.monotonic()+2\nwhile %r and len(list(p.iterdir()))<2:\n'
                 ' if time.monotonic()>deadline: raise SystemExit(8)\n time.sleep(.01)')
-        results = self.run_plans([self.plan('a', body % (str(gate), 'a')),
-                                  self.plan('b', body % (str(gate), 'b'))])
+        results = self.run_plans([self.plan('a', body % (str(gate), 'a', int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS','2'))>1)),
+                                  self.plan('b', body % (str(gate), 'b', int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS','2'))>1))])
         self.assertEqual([r.exit_code for r in results], [0, 0])
 
     def test_serial_barrier_and_queue_time_excluded(self):
@@ -101,7 +114,7 @@ class ExecutionTests(unittest.TestCase):
         results = self.run_plans([self.plan('a', 'raise SystemExit(7)'),
             self.plan('b', 'import time; time.sleep(.1); raise SystemExit(9)'),
             self.plan('queued')], fail_fast=True)
-        self.assertEqual([r.exit_code for r in results], [7, 9, 125])
+        self.assertEqual([r.exit_code for r in results], [7, 9 if int(os.environ.get("RIGORLOOP_VALIDATION_WORKERS","2"))>1 else 125, 125])
         self.assertIn('fail-fast', results[2].exit_reason)
 
     def test_timeout_terminates_descendant_that_ignores_term_and_retry_is_fresh(self):
@@ -124,7 +137,7 @@ class ExecutionTests(unittest.TestCase):
         results = self.run_plans([self.plan('failed',body),
             self.plan('peer','import time; time.sleep(.5)'),
             self.plan('queued',f'open({str(marker)!r},"w").close()')],timeout_seconds=10,fail_fast=True)
-        self.assertEqual([r.exit_code for r in results],[7,0,125])
+        self.assertEqual([r.exit_code for r in results],[7,0 if int(os.environ.get("RIGORLOOP_VALIDATION_WORKERS","2"))>1 else 125,125])
         self.assertFalse(marker.exists())
 
     def test_timeout_reaps_descendant_in_new_session(self):

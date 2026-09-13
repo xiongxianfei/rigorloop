@@ -1,0 +1,108 @@
+{
+  "assessment_scope": "Independent complete validation-m3 Code Review against2326baf2, including075905f8 plus final working corrections. Relies on validation-delivery-review, unchanged Design semantics with directory-design-review relocation applicability, and approved M2. Includes full mode composition/dependencies/diagnostics, required consumer repairs, budget correction, archive navigation and removal protection. No M4/M5 or final initiative approval.",
+  "change_id": "2026-09-12-unified-validation-model",
+  "contributors": [
+    {
+      "id": "root",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "validation-m3-code-review",
+  "independence_basis": "User-authorized separate nonauthor reviewer inspected root-authored M3 code, tests and final evidence; ran independent focused tests and compared the actual proof checkout bytes. Reviewer provided bounded review recommendations but did not edit implementation, tests, Design or plan. Prior design/delivery review participation was assessment, not authorship.",
+  "judgment": "approved",
+  "limitations": [
+    "The initial authored Windows-mounted workspace broad run hit unchanged adapter timeout300 plus then-corrected consumer/budget failures. Final complete broad proof is on identical source in Linux filesystem; this does not claim Windows-mounted broad success or performance improvement.",
+    "Earlier C9 source-fingerprint drift and stale consumer failures were real failed attempts; corrected frozen C9 passed. Their earlier outcomes are retained rather than relabeled.",
+    "M3 retains opaque whole suites apart from bounded command assessments. Actual independent cases in the three selected suites are M4, remaining source/published consumer cleanup is M5. Fresh final whole-change Code Review and distinct Verify remain mandatory; no PR readiness or final closeout judgment here."
+  ],
+  "rationale": [
+    "Spec alignment — pass: MODE_CHECK_IDS and catalog composition preserve twenty-seven direct-main leaves, broad conditional current-root scope, original package versions/args and selected boundary triggers. Broad has twelve conditional leaves including current executor/selector protection; required original leaves are retained. Normal focused failure blocks dependent boundary work; explicit diagnostic execution retains the original nonzero result.",
+    "Test coverage — pass: independently ran three actual wrapper tests for failed build preventing archive validation while independent work continues, one-invocation selected broad flattening, and blocked-selector diagnostics retaining status2. All3 passed in2.55s. Independently ran the inherited-budget actual-child/unknown-value test and both replaced adapter/review composition consumer tests; all3 passed. Replacements assert literal commands, same owned output, dependency and actual Git path/root scope rather than parsing Bash source.",
+    "Edge cases — pass: build-success and canonical-input dependencies prevent invalid artifact consumption; diagnostic after edges wait for completed focused work without suppressing explicit diagnostics on failure. Shared graph retains serial barriers and M2 cleanup/outcome guarantees. Budget fixtures now distinguish legitimate jobs1 sequential/not-started behavior from jobs2 observed overlap; no cases skipped. Module entry independently clamps requested jobs to inherited allocation and rejects malformed parent values before any launch.",
+    "Error handling — pass: selected and composed paths use the same stable required-failure aggregation, separate streams, timeout/signal/unavailable/not-started outcomes and descendant supervision. Unknown composed membership and retired classification environment override reject. Current record roots become preflight dependencies; input blockers and diagnostic failures cannot become success. Full jobs1/jobs2 execution directly corroborates nested checks rather than merely trusting graph shape.",
+    "Architecture boundaries — pass: thin ci.sh retains contributor parsing and unchanged Release check-ci interception before PR/main; current catalog owns membership/argv/constraints and internal module owns execution. Broad group expands into leaves in the same invocation budget instead of invoking another independent wrapper scheduler. Invocation-owned package output is shared only through declared success dependencies. No public runner, cache, publication or governance mutation added.",
+    "Compatibility — pass: original archive commands retain broadv0.1.3/mainv0.1.5; generated adapter/runtime paths remain excluded from dirty authored lifecycle scope. Current-root consumer uses validate-change-metadata.py, not retired review reader. Result-output opt-in retains child labels/cache_status:not-applicable and current timings, with null historical comparison fields and explicit limitation. Five Skill archive README links are current navigation repairs only; archived source identities remain protected.",
+    "Security/privacy — pass for scope: subprocess arguments derive from trusted catalog with explicitly resolved scope; task scratch and artifacts stay owned. No live release or external mutation performed. Nested worker allocations are enforced at shell and internal entrypoints. Existing Linux process-ownership constraints remain explicit and no security sandbox claim is made.",
+    "Derived artifact currency — pass for scope: actual C9 release transaction suite passed164 tests in143.284s including candidate generation/packed metadata/no-publication consumers after frozen corrections. Stale source-location assertions were replaced with actual behavioral consumers. The Skill archive identity/link test passes after navigation rebasing; no generated adapter source was hand-edited. M5 public consumer consolidation remains separately allocated.",
+    "Unrelated changes — pass: complete diff against2326baf2 contains composition/readers/tests plus required navigation and nested budget repairs. June classification and baseline history remains byte-preserved; removed checker and exclusive historical-schema/Bash-scraping assertions are replaced by current closed catalog, metadata, graph and real wrapper proof. Historical ledger projection explicitly excludes current-only mode IDs rather than modifying old ledger bytes.",
+    "Validation evidence — pass for bounded M3: durable validation-m3-execution result passed and all12 engineering/evidence subjects independently match current SHA256 bytes. C1 jobs1 all163; C4 normal/jobs1 all26; C9 all164; ledger17. Actual C5 jobs1 passed12 leaves89.87s and C6 jobs2 passed12 leaves84.12s without stub, diagnostic skip or classification override. Independently compared all changed script/navigation bytes against /tmp/rigorloop-validation-proof-CxJQoU and found no differences. git diff --check passed. Root owns next milestone routing; reviewer changes evidence only."
+  ],
+  "reviewer": {
+    "id": "proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:480017aae84b4cf45b2ef4dc9e99b4f9a5812e7279cf8ca4c4987ab4def1e441",
+      "path": "docs/changes/2026-09-12-unified-validation-model/validation-m3-evidence.md"
+    },
+    {
+      "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+      "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+    },
+    {
+      "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:f0e72257e8d8f1fee451d907cb68513e73f9acbd4fc6c0d1efde954cb913d56e",
+      "path": "scripts/ci.sh"
+    },
+    {
+      "identity": "sha256:552c360f870bcaf2c6599a5c47208e67108951af370898e5ba735e3e585b11bd",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:ba6851cac4bc35e513065d2a5db6e36d02c252d7ee1a89011be1704972be4697",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:cd6c7726b720e484a64e0fd85f49e36956650f1674380b32836a7744d359c0de",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:393ce2799871726ceb79655b1c5e6d629a94a77a39c7405162b21bc709e4f2fa",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:6226b2125be6a8eeadaa07d0d0e49fb2996a57a5fe7771cb0c91b789558400f3",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:89e8b6eda9cd97c3d82052c137da2538658fe4c9818fff5d69e3440f4bef9f97",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:5aba7b586ca36a9b1a24c0ed7292c4682a72ae726ce46430be93b8831653d772",
+      "path": "scripts/test-review-artifact-validator.py"
+    },
+    {
+      "identity": "sha256:c4438b0c652541332ee5f01e9431ed9cebf64460dda0c39d84eef47774003836",
+      "path": "docs/archive/skill-model/2026-09-08/README.md"
+    },
+    {
+      "identity": "sha256:bf74ec662512908f92333aecf3aaf7d3d50186bf83c4457323ee64fc5a0a1e7f",
+      "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json"
+    },
+    {
+      "identity": "sha256:9aa81165db0ec7c717f8c910d5428d44c00fd878c6f3661a0f4794b01c21c32b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-delivery-review.json"
+    },
+    {
+      "identity": "sha256:e99a8181db06e56d4317d968cfd3e3f3d5f4e8a9d43e10c6f1ebdaadbf9816b5",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m2-code-review.json"
+    },
+    {
+      "identity": "sha256:b80af37047c4a3cff87b729f592826984d731263e69d3d1accc359984d6644a2",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/design-review.json"
+    },
+    {
+      "identity": "sha256:ffaa1680e66f0d4f008bbbb9ca5fdbeefb5f7e764b0440716cd3416930b2b20b",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/directory-design-review.json"
+    }
+  ],
+  "summary": "M3 complete bounded composition slice approved with no unresolved findings: broad/main/selected share the catalog and executor, historical runtime readers are retired, and real one/two-worker broad evidence passes on exact matching Linux source.",
+  "target": "code"
+}

@@ -676,6 +676,66 @@
         }
       ],
       "summary": "Common selected executor and trusted constraints implemented. Executor22, selector168, final output3 and ledger17 pass. All four review counterexamples corrected with permanent regressions. Linux descendant ownership and platform limit explicit; broad/main and case adoption remain later milestones."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "implement"
+      },
+      "id": "validation-m3-execution",
+      "procedure": "Run the current composition, actual nested-budget/process, selector, current consumer, release candidate and complete jobs1/jobs2 broad checks recorded in validation-m3-evidence.md.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:480017aae84b4cf45b2ef4dc9e99b4f9a5812e7279cf8ca4c4987ab4def1e441",
+          "path": "docs/changes/2026-09-12-unified-validation-model/validation-m3-evidence.md"
+        },
+        {
+          "identity": "sha256:de92c536e23ef4b6fb9a341254a4d30c3efbba9a1b051b951c2fb3ffc71eee93",
+          "path": "docs/plans/2026-09-12-unified-validation-implementation.md"
+        },
+        {
+          "identity": "sha256:ba29527544dd16a8b3dab1fc5d5eadb02befbfe30fb24adbca95568e20e24a37",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:f0e72257e8d8f1fee451d907cb68513e73f9acbd4fc6c0d1efde954cb913d56e",
+          "path": "scripts/ci.sh"
+        },
+        {
+          "identity": "sha256:552c360f870bcaf2c6599a5c47208e67108951af370898e5ba735e3e585b11bd",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:ba6851cac4bc35e513065d2a5db6e36d02c252d7ee1a89011be1704972be4697",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:cd6c7726b720e484a64e0fd85f49e36956650f1674380b32836a7744d359c0de",
+          "path": "scripts/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:393ce2799871726ceb79655b1c5e6d629a94a77a39c7405162b21bc709e4f2fa",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:6226b2125be6a8eeadaa07d0d0e49fb2996a57a5fe7771cb0c91b789558400f3",
+          "path": "scripts/test-retirement-ledger.py"
+        },
+        {
+          "identity": "sha256:89e8b6eda9cd97c3d82052c137da2538658fe4c9818fff5d69e3440f4bef9f97",
+          "path": "scripts/test-adapter-distribution.py"
+        },
+        {
+          "identity": "sha256:5aba7b586ca36a9b1a24c0ed7292c4682a72ae726ce46430be93b8831653d772",
+          "path": "scripts/test-review-artifact-validator.py"
+        },
+        {
+          "identity": "sha256:c4438b0c652541332ee5f01e9431ed9cebf64460dda0c39d84eef47774003836",
+          "path": "docs/archive/skill-model/2026-09-08/README.md"
+        }
+      ],
+      "summary": "Broad/main composition shares the trusted catalog and executor; historical classification reader retired. C1 163, C4 26 (also26underjobs1), C9 164, and both actual twelve-leaf broad modes pass. Corrected actual consumer and nested-budget failures; filesystem timeout limit explicitly retained."
     }
   ],
   "schema_version": 3

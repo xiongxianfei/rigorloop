@@ -4,7 +4,7 @@
       "id": "root",
       "role": "implement"
     },
-    "reason": "User authorized progression through submitted PR. M1 independently approved with required correction closed; begin reviewed plan validation-m2. Final whole-change review and Verify remain mandatory.",
+    "reason": "User authorized progression through submitted PR. M3 independently approved with required correction closed; begin reviewed plan validation-m4. Final whole-change review and Verify remain mandatory.",
     "stage": "implement",
     "status": "in-progress"
   },
@@ -33,7 +33,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/evidence.json",
-      "reason": "Exact selected executor/catalog/wrapper engineering subjects and actual corrected proof; no downstream readiness inferred.",
+      "reason": "Exact M3 composition and correction subjects with current complete integration evidence; M4/M5 and final assessments remain mandatory.",
       "value": "current"
     },
     {
@@ -106,6 +106,15 @@
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m2-code-review.json",
       "reason": "Exact final M2 code, direct corrected edge proofs and durable author evidence independently assessed; historical reviews retained with their bounded scope.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m3-code-review.json",
+      "reason": "Exact final M3 code and required integration evidence independently inspected; all recorded subject identities current and no supported unresolved finding.",
       "value": "current"
     }
   ],
@@ -250,6 +259,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m2-code-review.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-12-unified-validation-model/reviews/validation-m3-code-review.json"
     }
   ],
   "schema_version": 3,
@@ -308,7 +321,7 @@
         "VAL-SR-09",
         "VAL-SR-10"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "validation-m3",
@@ -325,7 +338,7 @@
         "VAL-SR-13",
         "VAL-SR-15"
       ],
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "validation-m4",
@@ -342,7 +355,7 @@
         "VAL-SR-14",
         "VAL-SR-17"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "validation-m5",
