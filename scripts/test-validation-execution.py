@@ -461,7 +461,7 @@ class ExecutionTests(unittest.TestCase):
 class CatalogTests(unittest.TestCase):
     def test_catalog_is_valid_and_unassessed_commands_are_serial(self):
         validate_catalog()
-        self.assertIsNone(CHECK_CATALOG['review_artifacts.regression'].constraints)
+        self.assertIsNone(CHECK_CATALOG['boundary_first.validate'].constraints)
         self.assertEqual(CHECK_CATALOG['selector.regression'].constraints.unit,'python-unittest')
 
     def test_case_unit_rejects_contradictory_command_before_launch(self):
