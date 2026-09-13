@@ -6,7 +6,9 @@ Parent model: [Skill — Assessment](skill.md#assessment).
 
 This child owns published assessment, independence and closeout behavior. Engineering Development selects and runs the required assessments for this repository; it references these rules rather than redefining them.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 Current assessment recording uses v3. [Retirement provenance](#v2-retirement-and-assessment-reliance) preserves historical reliance boundaries without a second operational profile.
 
@@ -23,6 +25,27 @@ The direction comes from [Unify Review and Closeout Policy Ownership](../../prop
 There is no new service, public skill, lifecycle gate, record type, schema version, approval principal, or history ledger. Proposal Review, Design Review, Delivery Review, Code Review, and Verify remain specialized. No command decides whether their conclusions are justified. External execution, release, PR creation, publication, and destructive-action authority remain outside this model.
 
 The [Design model](authoring/design.md#model-document-and-structural-contract) owns the one-file model convention and model validation; Workflow consumes it for coordination. This document combines behavioral requirements, architecture, and decisions without separate specification or ADR siblings. Its identity is `review-closeout`; placement follows the existing model-directory convention, not a new runtime component boundary.
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    Subjects["External: exact subjects and evidence"]
+    Scope["Assessment scope and independence"]
+    Methods["Specialist assessment criteria"]
+    Judgment["Judgment and actionable findings"]
+    Reliance["Applicability and closeout conditions"]
+    Workflow["External: Workflow coordination"]
+    Records["External: Records and CLI"]
+    Subjects --> Scope
+    Scope -->|"bounded assessment"| Methods
+    Methods -->|"reasoned outcome"| Judgment
+    Judgment -->|"basis to assess"| Reliance
+    Reliance -->|"conclusions for continuation"| Workflow
+    Judgment -->|"explicit recording when governed"| Records
+```
+
+Assessment owns how responsible specialists judge work and evidence, including independent final Verify. Workflow selects activities, while Records and CLI represent and persist decisions. Findings retain their IDs and current actionable accounts under Records; recording, applicability and approval remain distinct.
 
 ## Context and Scope
 

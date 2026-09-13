@@ -1,5 +1,5 @@
 {
-  "body": "Revised VAL-SR-19/20 and VAL-DEC-06: canonical catalog IDs, stable set composition F then B minus F, one existing CheckPlan/CheckResult and scheduler. Known duplicate broad executor catalog entry converges on validation_execution.regression; actual current readers updated downstream. Different configurations/preparation/fresh observations retain explicit IDs. Removed execution families, input-fingerprint comparisons, proof-request/consumer state machines and canonical-versus-legacy result collections. Keep existing report shapes and one physical result row, phase gates and preparation safety. Full-suite normal/sequential/reversed comparisons are migration proof, recurring only for a distinct documented protective contribution. Earlier detailed mechanism/report decisions are superseded for implementation by this current owner decision; original review identities remain historical. No runtime work or deletion performed.",
+  "body": "System SYS-SR-11 defines this repository presentation convention. All twelve PROJECT_MODEL_PATHS documents contain one Architecture Overview with a graph and responsibility/boundary explanation. Reuse System structural overview, Skill/CLI/Engineering parent graphs, Validation structural view and Records record graph; retain their prior anchors. Add compact views for Workflow, Assessment, Design, Installation, Packaging and Release using existing model responsibilities. Preserve end-to-end and operational flow graphs, public behavior, exact record format, publication authority and scoped prior adoption. No new submodels/services or runtime schema enforcement, no new universal published skill requirement.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "decisions": [
     {
@@ -167,6 +167,65 @@
         {
           "identity": "sha256:c5e7c15118f28636e1b5b05b3cd70881e2e0d812cfe2da695ce50cd0a3c68b77",
           "path": "docs/design/system.md"
+        }
+      ]
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "model-architecture-overviews",
+      "rationale": "User requires Architecture Overview in each model, extending prior parent-graph direction to every declared model document.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:c315997742ee9d2ab42eed05d24c76b7353f553c647c2f635c19fadd935c4e0a",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:ed714285d779ad62d1eac4292c955cda5e3864bbaafdf005e7920acebd46f7e0",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:d1a01f651abac55ccd3ca73d8e3d573fce35e817744c96a0dbba7738f1bd6294",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:9117cdcf0ba9c4e18f6f5cc62a01e4576ca3be8c32d12e1a3938a1565d178250",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:2443e33e4966e6ba89f1b1c95d2ffed3c93140adde4459ee7de86c4bac7bc05e",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:c8507957f8a39389c82d73f913dd4dde5464ae4e3e2fb2ab935730a9bb5c8a54",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:92e4c876213cd61a341537c46a1e60f1fd2af65bc43dcd250bc9b13a0edb8419",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:53132c6a3e00513cc675fba9ad8abf59a69595fe3ceb543286cdd4db585628b6",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:f6f7b22d3b663f744e2a92764e20ca7b9fa6a636fef586a3ad8f800e93776cb2",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:33e931c4d6fc8acea36d6a90616f8776cf2937f1f581f40f343fac51486c36f7",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:5035463f52ab6176f618db8124f71f67a2a26278f5d9e074e90ffa03a01999cd",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:363be478139806226f0222a45742fb9b9097ee58fdd375ca598cd09c3ecf6d50",
+          "path": "docs/design/engineering/engineering.md"
         }
       ]
     }

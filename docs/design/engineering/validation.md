@@ -81,7 +81,7 @@ Follow the many-to-many chain: governing obligation → objective and plausible 
 
 Reuse the existing `scripts/validation_selection.py` catalog, `scripts/select-validation.py` CLI and `scripts/ci.sh` entrypoint. Use `scripts/validation_execution.py`, the extracted internal module also used by broad smoke. This preserves one execution implementation; it is not an additional public command, persistent worker or separate validation service. Keep domain validator processes separate from orchestration.
 
-## Building Block View
+## Architecture Overview
 
 ### Structural design graph
 

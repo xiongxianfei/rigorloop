@@ -6,7 +6,9 @@ Parent model: [Engineering](engineering.md#release).
 
 This child owns publication of the skills and CLI: candidate qualification, authorization, public observations and recovery. It consumes Packaging and CLI Installation contracts and applies Skill Assessment behavior.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Introduction and Goals
 
@@ -48,6 +50,28 @@ The [Distribution direction](../../proposals/2026-09-10-distribution-model-and-o
 [Packaging](packaging.md) owns generation and package representation; [CLI Installation](../cli/installation.md) owns trusted acquisition and safe destination writes. REL-SR-08/09/13/19/21–24 consume its supported-target inventory and real packed/public installation proof. After adoption, current smoke exercises install-only delivery for both targets; positive managed-state/upgrade smoke requirements are superseded. Retain proof that every default conflict, including identical/empty existing units, stops the entire install after archive verification and before installed-file mutation. Packed-CLI proof includes complete `--force` replacement with obsolete-file removal, preservation of unrelated skills/state, and safety rejection in both modes. State paths do not select behavior; negative coverage still includes `--write-state`. Default conflict semantics and explicit force replacement form part of the compatibility change under REL-SR-02. Historical evidence readers do not require installer state parsing or marker guards. Current candidate derivation, artifact inventory, bundled metadata, schema/profile validation, public smoke and reports must change coherently; stale three-target inputs reject rather than silently dropping OpenCode. A previously approved candidate with a materially changed target/artifact population requires fresh candidate preparation and authorization under REL-SR-23. No existing approval publishes the new population.
 
 Retire current calls to the standalone `build-skills.py` mirror check only after its required content/resource protection is present in the retained canonical/package checks. Keep the full release verifier and observed public evidence. Historical recorded-source validation continues against the original source where old production commands are required; it does not require retaining an active current OpenCode generator or forging historical checks. Packaging and Installation proof does not reclassify public failures, remove timing diagnostics or relax remaining release safeguards. This amendment grants no publication or remote configuration authority.
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    Basis["External: reviewed source and release policy"]
+    Coordination["Release coordination and transaction profile"]
+    Candidate["Exact candidate preparation and qualification"]
+    Proof["External: Packaging, Validation and Installation proof"]
+    Permission["External: candidate-specific maintainer authorization"]
+    Execution["Publication, public observation and recovery"]
+    Evidence["Release evidence and actual outcome"]
+    Basis --> Coordination
+    Coordination --> Candidate
+    Proof --> Candidate
+    Candidate -->|"qualified candidate"| Execution
+    Permission -->|"required publication authority"| Execution
+    Execution --> Evidence
+    Evidence -->|"observed transaction state"| Coordination
+```
+
+Release owns qualification, publication and truthful public outcomes through its existing coordinator and transaction helpers. Packaging and Validation remain separate proof owners; successful engineering Verify is not publication permission. The operation-flow graph above explains ordering and exception paths; this overview identifies the responsibilities and external boundaries.
 
 ## Context and Scope
 

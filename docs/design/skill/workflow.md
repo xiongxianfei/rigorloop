@@ -6,7 +6,9 @@ Parent model: [Skill](skill.md#workflow).
 
 This child owns published coordination and handoff behavior. Engineering Development applies that behavior to this repository without defining a second workflow. Original adoption and retirement sections below preserve their scoped provenance.
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 The current recording population is v3. [Retirement coordination](#v2-retirement-coordination) preserves the dependency disposition and owning change; the operational guidance below no longer carries a v2 continuation profile.
 
@@ -34,6 +36,26 @@ Workflow assigns responsible activities and consumes the assessment meanings and
 | What happens when Verify finds a defect after completion? | [Correction walkthrough](#correction-walkthrough-actor-decisions) |
 | What supports independent review and downstream reliance? | [Review and Closeout](assessment.md#requirements), applied through [ownership references](#review-and-closeout-policy-ownership) |
 | What must agree before adoption? | [Targeted-interface allocation](#targeted-interface-adoption-allocation) and [historical compatibility](#adoption-and-historical-compatibility) |
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    Authority["External: user authority and project governance"]
+    Routing["Activity selection and correction routing"]
+    Handoffs["Stage handoffs and continuation boundaries"]
+    State["Current work and blocker coordination"]
+    Skills["External: authors, implementers and assessors"]
+    CLI["External: CLI and Records"]
+    Authority -->|"bounds decisions"| Routing
+    State -->|"current work basis"| Routing
+    Routing -->|"selected owner and scope"| Handoffs
+    Handoffs -->|"authorized activity"| Skills
+    Skills -->|"explicit outcomes and findings"| State
+    State -->|"inspect and record through"| CLI
+```
+
+Workflow owns coordination among activities and their declared state. Actors make decisions; CLI and Records supply inspection, representation and safe writes. Assessment retains judgment and reliance. These boxes are coordination responsibilities, not additional services or an automatic approval engine.
 
 ## Context and Scope
 

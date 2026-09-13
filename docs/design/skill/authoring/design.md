@@ -6,7 +6,9 @@ Parent model: [Skill — Authoring](../skill.md#authoring).
 
 This child owns the engineering-design authoring method and model convention. The Authoring submodel also defines proposal and delivery-plan behavior; System owns project composition. Repository execution of these capabilities belongs to Engineering Development.
 
-Owning change: [three-model reconciliation](../../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Introduction and Goals
 
@@ -19,6 +21,28 @@ The direction is [Unified Design Authoring and Bounded Model Consolidation](../.
 The Constitution retains precedence. Product direction belongs to the proposal's decision owner; Workflow owns coordination; Review and Closeout owns shared assessment and applicability policy; Validation owns shared test derivation, protective-value and maintenance criteria; Record Format owns stored representation; CLI owns recording mechanics. Design supplies engineering intent and identifies its assessment basis, not approval, work allocation or execution permission.
 
 The adopted model profile permits this combined living Design. The unified `design` skill supplies technical and behavioral authoring at coordinated adoption. This document does not activate the replacement public skill or amend governance merely by existing. It introduces no lifecycle gate, runtime record schema, model-management service, mandatory prototype, per-test ledger or target-agent correctness claim.
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    Direction["External: approved direction or authorized correction"]
+    Ownership["Responsibility and affected-owner selection"]
+    Reconcile["Behavior, technical realization and interfaces"]
+    Preserve["Decisions, references and scoped source reconciliation"]
+    Intent["Acceptance intent and observation boundaries"]
+    Package["Coherent affected Design package"]
+    Review["External: independent Design Review"]
+    Direction --> Ownership
+    Ownership --> Reconcile
+    Reconcile --> Preserve
+    Reconcile --> Intent
+    Preserve --> Package
+    Intent --> Package
+    Package --> Review
+```
+
+Design owns the authoring method and reconciled engineering contracts. The graph shows method responsibilities, not deployed components or mandatory separate artifacts. System owns this repository’s model composition and Architecture Overview convention; Delivery owns concrete work and proof allocation. The author cannot supply independent approval.
 
 ## Context and Scope
 

@@ -4,13 +4,37 @@ Model validation contract: model-document-v1
 
 Parent model: [CLI](cli.md#product-responsibility-and-submodels).
 
-Owning change: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+
+Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
 
 ## Introduction and Goals
 
 Installation owns the observable `init codex` and `init claude` behavior: trusted package acquisition, destination preflight, explicit replacement, results and bounded recovery. Choosing this installation method requires the CLI; individual skill use does not. Package production and its shared metadata/hash representation belong to [Engineering Packaging](../engineering/packaging.md#stable-representations).
 
 This child receives the installation portion of the former Distribution model without weakening integrity, default conflicts, explicit force scope or state preservation. The hierarchy changes ownership, not public permission. Original source maps and compatibility decisions remain attributable through [Packaging's retained source map](../engineering/packaging.md#source-displacement-and-preservation).
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    Request["External: explicit installation request"]
+    Package["External: Packaging archive and trusted metadata"]
+    Verify["Acquisition and archive verification"]
+    Destinations["Candidate destinations and conflict checks"]
+    Install["Complete-unit installation or explicit replacement"]
+    Files["External: installed skill files"]
+    Result["Operation result and recovery limitations"]
+    Request --> Verify
+    Package --> Verify
+    Verify -->|"verified candidate"| Destinations
+    Destinations -->|"safe allowed writes"| Install
+    Destinations -->|"conflict or unsafe path"| Result
+    Install --> Files
+    Install --> Result
+```
+
+Installation owns archive trust enforcement and explicitly scoped target writes. Packaging owns artifact representation; record commands own separate persistence machinery. Default conflicts preserve existing candidate destinations, and explicit `--force` follows the complete-replacement contract. Project governance state is neither inspected nor adopted.
 
 ## Context and Scope
 

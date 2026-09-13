@@ -25,7 +25,9 @@ Users supply intent, project authority and the evidence needed by the selected c
 
 A child may be a named section here or a separately maintained model document. Detailed contracts are defined once at those locations. Capability IDs and existing resource paths remain stable; hierarchy alone does not rename public invocations. The historical proposal-family pilot improved only its named pair. Its SKL-SR-16–23 applicability and original judgments remain unchanged; the product behavior composition applies to the existing inventory without claiming an inventory-wide implementation audit.
 
-## Subsystem design graph
+## Architecture Overview
+
+### Subsystem design graph
 
 ```mermaid
 flowchart TB
