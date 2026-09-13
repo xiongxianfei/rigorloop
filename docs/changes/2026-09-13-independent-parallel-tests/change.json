@@ -1,0 +1,39 @@
+{
+  "activity": {
+    "owner": {
+      "id": "root",
+      "role": "proposal"
+    },
+    "reason": "User requested a new branch and proposal for design refinement, duplicate-test removal and remaining serial-case refinement. Draft is prepared for independent Proposal Review; this isolated authoring request does not authorize downstream implementation or record review approval.",
+    "stage": "proposal",
+    "status": "ready"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "root",
+        "role": "proposal"
+      },
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json",
+      "reason": "Exact new proposal and inspected merged-main basis; author checks only, without approval or implementation claims.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "contract": "rigorloop-records-v3",
+  "models": [],
+  "plan": null,
+  "proposal": {
+    "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
+    "path": "docs/proposals/2026-09-13-independent-parallel-tests.md"
+  },
+  "records": [
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": []
+}

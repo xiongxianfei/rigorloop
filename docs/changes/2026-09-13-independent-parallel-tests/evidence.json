@@ -1,0 +1,62 @@
+{
+  "change_id": "2026-09-13-independent-parallel-tests",
+  "checks": [
+    {
+      "actor": {
+        "id": "root",
+        "role": "proposal"
+      },
+      "id": "proposal-author-check",
+      "procedure": "Read merged-main source and governing owners; inspect actual catalog and executor population comparisons; consume observed GitHub CI run34743370429/job103686742376 on heade58ffcb40b910d3e4831c3777136b24952320ac9; run workflow-context --json; check proposal headings, all three intent mappings and local links; python scripts/validate-documentation-prose.py --mode enforce --path docs/proposals/2026-09-13-independent-parallel-tests.md; python scripts/validate-change-metadata.py docs/changes/2026-09-13-independent-parallel-tests/change.json; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:84a8f565c33c3d738eb17f5d3b17df977e8a97cb73f3246f78289bc3cb2c8baf",
+          "path": "docs/proposals/2026-09-13-independent-parallel-tests.md"
+        },
+        {
+          "identity": "sha256:9e2d76bff364133fe34d7246c8b4dbbdc2a9c838dc89179ea74037be0a6c0501",
+          "path": "VISION.md"
+        },
+        {
+          "identity": "sha256:fe848ca3b53efd50f060157a225157a5003462d1d8bca2b08368a6ab424f0cab",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:1c1d62ada1d5b45e1dc87db59cedd8ba13d4e90a0c6afe535ae46d5553f7deea",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:a530e4975362a9cb0ef5fbfb5b8944145288ce6fe78afdc28253cc1763462476",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:413099ee1a4719c69bc1653ef47912a522737f74c3a64071c22cb764539060fe",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:352107b43338587a0efcacb6dad4b20ace97dffdaaf30e03a1b5b0ccd66daf1a",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:d52c18e2a83f2371e0cbdf7eef4bd025e4f72b6e25ffdb92d9b82500e5ca6d96",
+          "path": "scripts/validation_execution.py"
+        },
+        {
+          "identity": "sha256:a9bb59b84147d1e51b78eb7927d16e987f2d1ea8a9a2f1827a919211a42869ac",
+          "path": "scripts/test-validation-execution.py"
+        },
+        {
+          "identity": "sha256:62e2945ba15a9559ff8947fb36a5096ed5bd204b0ba22301df92e2962f08d428",
+          "path": "scripts/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:2809f99112457772c441edbcb492b53c0689160b64442b31533bedfd016b2e91",
+          "path": ".github/workflows/ci.yml"
+        }
+      ],
+      "summary": "Created the explicitly requested proposal on proposal/independent-parallel-tests from merged mainc815768aacb0a6762c0acd11acf1d21f3c26aac0. Assembly PA1G-governed-gated, operation create-primary-proposal; initial-intent and scope-budget predicates apply to all three user goals. No standing-artifact or vision exception is needed. Proposal structure/local links/intent checks and documentation prose pass with zero errors/warnings; initial v3 metadata is valid. No implementation or tests changed, and no runtime tests were run for this proposal-only task.\n\nObserved baseline: hosted CI took18m54s; validation_execution.regression339.54s and broad_smoke.validation_execution.regression332.29s executed the same test script as exclusive commands. The helper executes direct, individual sequential and reversed parallel populations for selector163, lifecycle108 and metadata7. Their671.83s combined duration identifies repeated execution, not proof that any two distinct tests are redundant. Current serial catalog entries commonly have absent constraints; inspected temporary fixtures make refinement credible but do not establish full-suite isolation.\n\nPreserved all three requested goals: refine existing System/Engineering/Validation relationships without introducing another Test model; remove genuinely duplicate cases and unnecessary repeated execution while preserving distinct proof and freshness; assess and refine the entire remaining current automated serial population in bounded delivery slices, not only the largest examples. Ordered steps and resource-budget scheduling remain compatible with independent scenarios. Unsafe or unassessed cases require refinement or assessed replacement; unknown protection cannot authorize deletion or final completion. No result cache, distributed CI or historical evidence deletion is proposed.\n\nNo-map rationale: docs/project-map.md still describes v2 storage and pre-consolidation execution in material passages, contradicting the adopted v3/current model and executor sources. It was inspected for orientation but not relied on for those facts; the exact current governing models, catalog, execution/test sources and CLI discovery supply the bounded basis. Refreshing unrelated map debt is outside this proposal-only request. Existing completed changes, review judgments, model bodies and primary plan remain untouched. This evidence is author checking and feasibility support only; independent Proposal Review and later Design/Delivery remain unperformed."
+    }
+  ],
+  "schema_version": 3
+}
