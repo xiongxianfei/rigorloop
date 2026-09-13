@@ -252,6 +252,34 @@
         }
       ],
       "summary": "All three selected model checks passed; prose zero errors/warnings; diff check clean. Scope preserves System structural/end-to-end views and parent graphs, simplifying Validation internal structure/flow. Retained selector modes/exits/triggers and release interception, catalog safety constraints, independent-case full-inventory scope, subprocess cleanup, required negative/regression protection and historical source maps. Removed general request/alias/fingerprint/projection mechanism; canonical-ID conflicts reject and different observation points stay distinct. No performance, runtime implementation or test-removal claim. Untracked docs/design.zip is outside this work."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "current-owner-summary-correction",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/system.md --path docs/design/engineering/engineering.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/system.md --path docs/design/engineering/engineering.md; git diff --check; read Records V3 finding identity and correction and original adoption activity/work.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:6f7f3e691d71c0b26b1637f82f46598d46c55b10a01ce86bf4fbabf508eafaf8",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:fce68bd4cf82bf6b40e258990fa0325879495f6607f6fe3608c7cb30f6f649ed",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:9d63c43239c192cf09613d7ed26c881830f77abb174dd142f2e262fcd5bcabfd",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:0b634c9bcbdba16bc00fc26e40ca57d529922235d4bd745052280be1358f7379",
+          "path": "docs/changes/2026-09-12-unified-validation-model/change.json"
+        }
+      ],
+      "summary": "Corrected exactly three System summaries and one Engineering historical-scope statement. Generated skill/CLI acceptance now names Skill, Packaging, CLI and Records; destination conflict/replacement belongs to CLI Installation. Review findings retain stable IDs/current actionable accounts, blockers immutable origin, assessor disposition/reliance; Records unchanged. Original change records completed activity, all seven completed work entries and no blockers; Engineering now attributes completed cache/source/script cleanup to that adoption and excludes recommissioning it in current scope. This reads historical completion evidence, not a new runtime re-verification. Both models pass structure/reference and prose checks, zero prose errors/warnings; diff check passes. No diagrams, validation mechanism, product behavior, historical records or untracked archive changed."
     }
   ],
   "schema_version": 3

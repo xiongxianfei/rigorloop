@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "Current seven-document Design package after the user explicitly requested simple, concise design: three current model edits, unchanged parent/System graphs, unchanged full-inventory isolation goal and exact legacy maintenance notices, with retained Assessment/Packaging/Release/CLI interfaces. Assesses canonical composition and permanent-versus-migration proof, not implementation or measured performance. Earlier detailed request/task/fingerprint/projection design is superseded for current reliance.",
+  "assessment_scope": "Independent narrow reassessment of four user-identified System/Engineering statements within the current seven-document Design package. Checked corrected ownership against Packaging/CLI Installation/Records and original adoption completion through authoritative status. No diagram, runtime, record representation or current Validation mechanism changed; no broad legacy inventory or original implementation was rerun.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "contributors": [
     {
@@ -106,7 +106,11 @@
     "7. Maintenance and historical preservation — pass: the exact current maintenance map and both legacy notices remain. R14/R17–20/R22/R25 selected procedures preserve distinct failure protection, investigation, recovery and true measured claims without a new ledger/universal repeated comparison/benchmark. R15/R16/R21 and earlier populations remain scoped. No historical evidence, source block or ledger data is made a deletion target merely by name. parallel-maintenance-allocation-scope remains resolved on that unchanged correction.",
     "8. Decision/applicability supersession — explicit: revised VAL-DEC06 replaces the earlier unimplemented ProofRequest/ExecutionBasis/ExecutionTask/RequestResult, execution_family, consumer graph, fingerprint checks and dual report projections with canonical IDs and ordinary set composition. Prior approval of those exact detailed model bytes is historical only and does not require implementing them now. shared-report-projection-contract was correctly resolved for its earlier package; its mechanism-specific required projection is now superseded by one current result surface. Its original finding facts and subject identities remain preserved, with current disposition updated rather than erased.",
     "9. Feasibility and acceptance — pass: existing CheckPlan/CheckResult/catalog extension points make this a smaller concrete implementation. Acceptance names actual single launch across F/B overlap, complete boundary-only selection, failed focused gate, duplicate-argument rejection, post-build distinctions, unique current result rows and jobs1/parallel scope agreement. Full inventory/discovery/caller reconciliation, case isolation and retained negative/regression proof still require Delivery allocation; Design has not asserted they are implemented. Current three-model author proof subjects match exact bytes.",
-    "10. Handoff — current package has no new material gap or unresolved Design finding. Return approval to route for authorized Delivery planning against this simplified realization and preserved scope. No lifecycle routing, source edits, runtime tests, speed claim, implementation approval or adoption follows from this reviewer save."
+    "10. Handoff — current package has no new material gap or unresolved Design finding. Return approval to route for authorized Delivery planning against this simplified realization and preserved scope. No lifecycle routing, source edits, runtime tests, speed claim, implementation approval or adoption follows from this reviewer save.",
+    "Current ownership correction — pass: integrated skill/CLI compatibility now names Skill, Packaging, CLI and Records; destination conflict belongs to CLI Installation. This reflects the adopted split without changing package proof, default conflict/explicit replacement behavior or publication authority. System remains a consumer of those contracts, not a new local owner.",
+    "Finding and blocker correction — pass: System now references stable finding identity/current actionable account under Records RF-SR13 rather than immutable finding origin. Change-level blocker origin remains immutable and assessor disposition/reliance remains independent. Current Records defines exactly this distinction; no schema, runtime writer or historical record was changed.",
+    "Original completion/current scope — pass: authoritative original2026-09-12 status reports7 completed work entries, completed activity, no blockers and successful adoption/Verify in its recorded reason. Engineering accurately attributes cache/source/script retirement completion to that original record instead of presenting it as current unfinished work. This is a recorded-completion reference, not a newly executed validation or reopening of old implementation. Current canonical composition, maintenance and remaining-case independence still require the current initiative work.",
+    "Current approval applicability — these exact four corrections restore consistency with unchanged owners and do not alter simplified Validation or current user goals. Author two-model structure/prose/whitespace evidence matches current subjects. Existing two findings remain resolved with their earlier subjects and the general-sharing supersession explicit. No new material issue found; return current package to route for authorized planning, with no reviewer routing or implementation mutation."
   ],
   "reviewer": {
     "id": "proposal-reviewer",
@@ -115,11 +119,11 @@
   "schema_version": 3,
   "subjects": [
     {
-      "identity": "sha256:c5e7c15118f28636e1b5b05b3cd70881e2e0d812cfe2da695ce50cd0a3c68b77",
+      "identity": "sha256:6f7f3e691d71c0b26b1637f82f46598d46c55b10a01ce86bf4fbabf508eafaf8",
       "path": "docs/design/system.md"
     },
     {
-      "identity": "sha256:66727d985fdc580a74afeae5a8d0c4c16fd437968c2107876c2dc77226c99240",
+      "identity": "sha256:fce68bd4cf82bf6b40e258990fa0325879495f6607f6fe3608c7cb30f6f649ed",
       "path": "docs/design/engineering/engineering.md"
     },
     {
@@ -135,7 +139,7 @@
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
     },
     {
-      "identity": "sha256:95b742a31d8b59265adbb280d0c0fedc181cdfd3b09efd9b0757c9d094379335",
+      "identity": "sha256:e384dbe6223ba4958f55a75cea4af44fe3c05b7b5d9810e19f7bfbab0e0d976d",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
     },
     {
@@ -197,8 +201,12 @@
     {
       "identity": "sha256:71880764d26a941ec1f614f020f74f30ddfab8ae6fea9006b2a3d7530121c82f",
       "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:0b634c9bcbdba16bc00fc26e40ca57d529922235d4bd745052280be1358f7379",
+      "path": "docs/changes/2026-09-12-unified-validation-model/change.json"
     }
   ],
-  "summary": "Simplified current Design approved: canonical catalog IDs, focused-then-remaining-boundary composition, existing check plans/results and required protection replace the unimplemented general sharing machinery. All original goals remain; historical findings are preserved with explicit current dispositions.",
+  "summary": "Current Design package remains approved after four bounded consistency corrections: product/package/install owners, current finding versus blocker semantics, and recorded original retirement completion now agree with their owners. Simplified Validation scope and prior finding dispositions remain unchanged.",
   "target": "design"
 }
