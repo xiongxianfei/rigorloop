@@ -195,10 +195,10 @@ Under SYS-SR-04/05/06/08/09, Delivery allocates proof at the actual generated-pa
 
 | Representative condition | Observable result and responsible boundary |
 | --- | --- |
-| A generated governed skill and candidate CLI are used together | The packaged resources resolve, documented commands accept their documented shapes, and scoped reads expose the expected records. Skill, Distribution, CLI and Record Format agree. |
+| A generated governed skill and candidate CLI are used together | The packaged resources resolve, documented commands accept their documented shapes, and scoped reads expose the expected records. Skill, Packaging, CLI and Records agree. |
 | A skill's instruction assumes a retired command or incompatible response | Product compatibility assessment identifies the mismatch; a package-content-only pass cannot establish readiness. Correction belongs to the instruction owner or CLI contract owner according to the intended behavior. |
 | Two actors record against the same prior basis | CLI reports the conflict without overwriting the other update. The skill procedure obtains a fresh basis and the actor reassesses the decision; a blind retry does not manufacture approval. |
-| Skill installation encounters an existing conflicting destination | Distribution's default conflict behavior preserves it; explicit complete replacement follows its contract. Engineering records remain outside installer mutation. |
+| Skill installation encounters an existing conflicting destination | CLI Installation's default conflict behavior preserves it; explicit complete replacement follows its contract. Engineering records remain outside installer mutation. |
 | Checks pass but required independent assessment is missing or rejects the change | Validation results remain factual evidence. Workflow and Review and Closeout prevent an unsupported closeout claim. |
 | A candidate passes locally but public artifact identity or availability differs | Release reports the actual public outcome and applies its recovery contract; local validation cannot substitute for publication observation. |
 
@@ -206,7 +206,7 @@ This is a project-specific design allocation, not a claim that the generated art
 
 ## Failure, concurrency and recovery
 
-A validation failure returns to the responsible implementation or contract owner. An independent finding keeps its origin and is disposed by the responsible assessor. Concurrent or interrupted record writes retain the Records/Persistence invariants; restoration of storage does not restore semantic approval. A partial installation or publication retains its operation-specific safety and truthful result contract. No recovery path may delete historical engineering evidence or unrelated user files as routine cleanup.
+A validation failure returns to the responsible implementation or contract owner. Review findings retain stable identities and current actionable accounts under [Records](cli/records.md#v3-finding-identity-and-correction). Change-level blockers retain immutable origin. The responsible assessor owns disposition and reliance. Concurrent or interrupted record writes retain the Records/Persistence invariants; restoration of storage does not restore semantic approval. A partial installation or publication retains its operation-specific safety and truthful result contract. No recovery path may delete historical engineering evidence or unrelated user files as routine cleanup.
 
 ## Adoption and source reconciliation
 

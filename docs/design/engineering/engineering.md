@@ -121,7 +121,7 @@ The development process is a consumer of published capability behavior, not a se
 
 ## Source disposition and follow-through
 
-The [reconciliation evidence (`design-preservation-delta`)](../../changes/2026-09-12-unified-validation-model/evidence.json) identifies exact source identities, retained contracts, Distribution's split and current consumers. The mapped Validation cache/source/script retirement remains required implementation work. Detailed retained specifications remain named authorities for unmigrated obligations. Source changes do not establish reviewed implementation or successful Verify.
+The [reconciliation evidence (`design-preservation-delta`)](../../changes/2026-09-12-unified-validation-model/evidence.json) identifies exact source identities, retained contracts, Distribution's split and current consumers. The mapped Validation cache/source/script retirement is recorded as completed in the [original adoption](../../changes/2026-09-12-unified-validation-model/change.json). It is not implementation work for the current initiative; the current scope is the check composition, test maintenance and remaining case independence defined by Validation. Detailed retained specifications remain named authorities for unmigrated obligations. Source changes do not establish reviewed implementation or successful Verify.
 
 ## Next artifacts
 
