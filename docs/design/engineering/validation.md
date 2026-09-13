@@ -86,15 +86,30 @@ Reuse the existing `scripts/validation_selection.py` catalog, `scripts/select-va
 ### Structural design graph
 
 ```mermaid
-flowchart LR
-    Contracts["Product contracts and proof criteria"] --> Catalog["One catalog: checks, commands and constraints"]
-    Catalog --> Selection["Selection: required check IDs and reasons"]
-    Selection --> Executor["One executor: dependencies, isolated cases and shared budget"]
-    Executor --> Results["One result per check or case"]
-    Results --> Assessment["Independent assessment"]
+flowchart TB
+    Contracts["Product contracts<br/>What must be protected"]
+    Delivery["Delivery allocation<br/>What this change must verify"]
+
+    subgraph Validation["Validation"]
+        Criteria["Proof criteria<br/>Useful tests, independence and maintenance"]
+        Catalog["Check catalog<br/>Canonical IDs, commands and constraints"]
+        Selection["Check selection<br/>Required IDs, scopes and reasons"]
+        Executor["One executor<br/>Dependencies, isolated cases and bounded parallelism"]
+        Results["Results<br/>Actual outcomes, diagnostics and incomplete work"]
+
+        Criteria -.->|"guides authors maintaining checks"| Catalog
+        Catalog -->|"available checks"| Selection
+        Catalog -->|"trusted commands and constraints"| Executor
+        Selection -->|"each required check ID once"| Executor
+        Executor -->|"one result per check or case"| Results
+    end
+
+    Contracts -->|"required behavior"| Criteria
+    Delivery -->|"required verification scope"| Selection
+    Results -->|"evidence and limitations"| Assessment["Independent assessment"]
 ```
 
-Validation owns these internal responsibilities; they are not separate models or services. `scripts/validation_selection.py` owns the catalog and selection. `scripts/validation_execution.py` owns scheduling, subprocess cleanup and results. `scripts/ci.sh` remains the wrapper. Authors and reviewers apply the TEST-SR criteria; passing checks never supply semantic approval. [Engineering](engineering.md#subsystem-design-graph) owns how Validation supports Development, Packaging and Release.
+Validation owns the five responsibilities inside its boundary; they are not separate models or services. Product contracts, Delivery allocation and independent assessment remain external owners. The criteria guide authors maintaining checks; they do not automatically judge test adequacy. `scripts/validation_selection.py` owns the catalog and selection. `scripts/validation_execution.py` owns scheduling, subprocess cleanup and results. `scripts/ci.sh` remains the wrapper. Authors and reviewers apply the TEST-SR criteria; passing checks never supply semantic approval. [Engineering](engineering.md#subsystem-design-graph) owns how Validation supports Development, Packaging and Release.
 
 Catalog execution units remain `command`, `python-unittest` and `node-test`. Retain the current command/adapter basis, isolation rationale, dependencies and serial/exclusive/bounded resource constraints. Stale or contradictory metadata and unknown fields/units reject before execution. Missing isolation assessment keeps work conservatively serial until corrected; it does not satisfy the current case-independence completion requirement.
 
