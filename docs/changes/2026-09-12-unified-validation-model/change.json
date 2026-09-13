@@ -2,11 +2,11 @@
   "activity": {
     "owner": {
       "id": "root",
-      "role": "verify"
+      "role": "route"
     },
-    "reason": "All seven implementation work entries closed; fresh independent whole-change review approved after corrected actual PR CI and exact legacy classification. Distinct final Verify owns closeout before user-authorized PR.",
-    "stage": "verify",
-    "status": "in-progress"
+    "reason": "All seven work entries complete, required independent reviews approved and final Verify successful on exact current subjects. The approved mapped hierarchy and Validation transfer is adopted for this repository. User-authorized PR submission follows as a separate external operation; no release, merge or customer governance activation is authorized.",
+    "stage": "support",
+    "status": "completed"
   },
   "applicability": [
     {
@@ -169,6 +169,15 @@
       },
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/final-legacy-design-classification.json",
       "reason": "All nine exact changed grandfathered sources independently classified by actual amendment semantics, with two out-of-scope navigation changes independently confirmed restored to original bytes.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-12-unified-validation-model/verify-report.json",
+      "reason": "Distinct final assessment of exact current subjects, independently approved whole change, complete applicable proof and corrected current registry. No remaining required work or unresolved finding.",
       "value": "current"
     }
   ],
@@ -341,6 +350,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-12-unified-validation-model/reviews/final-legacy-design-classification.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-12-unified-validation-model/verify-report.json"
     }
   ],
   "schema_version": 3,
