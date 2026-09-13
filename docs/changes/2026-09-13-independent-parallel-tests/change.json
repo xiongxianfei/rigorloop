@@ -4,7 +4,7 @@
       "id": "root",
       "role": "plan"
     },
-    "reason": "Independent Design Review approved user-supplied Validation architecture overview, preserving execution and assessment authority. Current package ready for Delivery planning.",
+    "reason": "Independent Design Review approved required overview and assessed necessary supporting views. Delivery must allocate public guidance/skeleton/reviewer alignment and all twelve model view assessments and necessary diagrams; no implementation completion claimed.",
     "stage": "plan",
     "status": "ready"
   },
@@ -42,7 +42,7 @@
         "role": "review"
       },
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/design-review.json",
-      "reason": "User-requested Validation boundary graph independently reconciled with unchanged proof criteria, canonical catalog selection, execution and external assessment owners; current twelve-model package remains coherent.",
+      "reason": "Design-owned convention and System application are coherent; consumer and all-model view adoption are explicitly outstanding Delivery work, and prior repository-only convention scope is superseded by direct user refinement.",
       "value": "current"
     }
   ],
@@ -53,7 +53,7 @@
     {
       "id": "system",
       "subject": {
-        "identity": "sha256:c315997742ee9d2ab42eed05d24c76b7353f553c647c2f635c19fadd935c4e0a",
+        "identity": "sha256:71eb10db083cbd0e416ddfc32384a925d52b07013f3072f9ca9e46691fc33ecc",
         "path": "docs/design/system.md"
       }
     },
@@ -88,7 +88,7 @@
     {
       "id": "design",
       "subject": {
-        "identity": "sha256:ed714285d779ad62d1eac4292c955cda5e3864bbaafdf005e7920acebd46f7e0",
+        "identity": "sha256:b37c3a79de553235a602ae624a4840fa1a30ede351bc490d8635b7a33edd6050",
         "path": "docs/design/skill/authoring/design.md"
       }
     },

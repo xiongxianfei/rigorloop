@@ -1,5 +1,5 @@
 {
-  "assessment_scope": "Independent bounded reassessment of the replaced first Validation Mermaid graph and its responsibility caption within the previously approved twelve-model package and unchanged scoped legacy dependencies. Compared the graph with TEST-SR01–14, VAL-SR01–22, the unchanged invocation flow and selection/execution/reporting prose. No runtime, schema, public skill or other model changes are assessed as new work.",
+  "assessment_scope": "Independent reassessment of current Design and System changes within the current twelve-model package and scoped legacy dependencies. Assessed DES-SR-22, view necessity/ownership rules, representative acceptance contrasts, current published authoring resources and skeleton, and explicit Delivery adoption scope. Unchanged model runtime contracts and current Validation composition remain applicable; this is not an all-model supporting-view completeness or implemented skill-package judgment.",
   "change_id": "2026-09-13-independent-parallel-tests",
   "contributors": [
     {
@@ -96,7 +96,8 @@
     "Canonical IDs require assessed catalog reconciliation and concrete negative/integration proof during Delivery/implementation. Unknown duplicate protection or incomplete inventory still blocks affected completion.",
     "Current review supports authorized planning only. Independent Delivery Review, implementation/milestone reviews, fresh whole-change review and distinct Verify remain necessary; publication permission remains separate.",
     "Architecture Overview review assesses source semantics and preserved Mermaid blocks; no graphical rendering or runtime tests were run for this presentation-only amendment. Author model/prose checks support structure and prose, not implementation correctness.",
-    "This correction was reviewed as Mermaid source and contract semantics, without graphical rendering or runtime execution. Historical general-sharing/report machinery remains superseded; its original finding facts are preserved."
+    "This correction was reviewed as Mermaid source and contract semantics, without graphical rendering or runtime execution. Historical general-sharing/report machinery remains superseded; its original finding facts are preserved.",
+    "Current approval permits reliance on the convention for Delivery planning only. Public skill/skeleton/reviewer adoption and all twelve reasoned supporting-view assessments and necessary diagrams remain explicit downstream work, including exact reassessment of any changed illustrative model. No runtime tests, rendered diagram inspection or completed profile adoption claimed."
   ],
   "rationale": [
     "1. Direction and scope — pass: refine the existing owner, remove justified duplicate cases/execution and make the entire remaining automated inventory independently runnable remain selected. VAL-SR21/22 still forbid final completion with an unassessed serial remainder or discarded unknown protection. User-directed simplification changes realization, not those outcomes. Proposal remains applicable at its original direction level; no new cache, public runner, distributed system or product feature is introduced.",
@@ -118,7 +119,11 @@
     "Direction and authority — pass: SYS-SR-11 implements the user requested Architecture Overview for every repository model while preserving SYS-SR-10 parent detail and both whole-System views. It expressly remains repository-local and does not change portable Design skill behavior or executable model-validator schema. Updated owning pointers identify this amendment while retained original composition provenance and displacement maps preserve prior adoption boundaries. Candidate qualification/metadata do not authorize publication; Installation neither adopts nor writes project governance.",
     "Current reliance — renewed approval covers the exact twelve model subjects and unchanged relevant scoped legacy members, not the earlier seven-document changed set alone. Approved proposal direction and feasibility remain applicable to this presentation refinement; original proposal evidence is not retargeted to claim these new graphs were previously reviewed. Current author structural/prose evidence matches the assessed identities. Existing model examples and operational clauses are unchanged and no illustrated data shape, scenario outcome, runtime mechanism or proof obligation changed, so prior bounded example assessment remains applicable without a costly runtime rerun. Earlier maintenance-allocation and report-projection findings remain represented and resolved, with the superseded unimplemented general-sharing mechanism still explicitly outside current delivery obligations. No new material finding; route retains any planning handoff.",
     "User-directed Validation graph — pass: five internal responsibilities are criteria, catalog, selection, executor and results, rather than invented models or services. Product contracts supply protected behavior; Delivery supplies required verification scope; Assessment consumes evidence and limitations as an external semantic owner. The dashed criteria-to-catalog edge explicitly guides human authors and cannot be read as automated adequacy approval. Direct catalog-to-executor constraints reflect VAL-SR05 and preserve one trusted catalog; selection sends each canonical ID once under VAL-SR19/20, and outcomes remain one per actual check/case. The graph does not assert that all selected work runs or passes; unchanged flow and VAL-SR06/09/12 retain gates, incomplete work and honest failure reporting.",
-    "Current package applicability — the user-requested boundary graph supersedes only the prior linear Validation structural graph; its caption and existing runtime prose agree. The invocation flow, simplified F then B-minus-F composition, isolation and budget requirements, current maintenance map, twelve Architecture Overviews and both whole-System views remain unchanged. Current validation-overview-user-graph author evidence matches its exact subjects. Earlier all-model structure/prose proof remains applicable to unchanged models; current focused author checks cover the replaced graph. Proposal direction, scoped examples and the two resolved findings retain their explicitly bounded meaning. No new material issue or implementation approval follows from this presentation correction."
+    "Current package applicability — the user-requested boundary graph supersedes only the prior linear Validation structural graph; its caption and existing runtime prose agree. The invocation flow, simplified F then B-minus-F composition, isolation and budget requirements, current maintenance map, twelve Architecture Overviews and both whole-System views remain unchanged. Current validation-overview-user-graph author evidence matches its exact subjects. Earlier all-model structure/prose proof remains applicable to unchanged models; current focused author checks cover the replaced graph. Proposal direction, scoped examples and the two resolved findings retain their explicitly bounded meaning. No new material issue or implementation approval follows from this presentation correction.",
+    "Reusable convention ownership — pass: DES-SR-22 owns the required overview and reasoned Context/Building Block/Runtime/Deployment evaluation. System references that owner and retains project-specific parent allocation, all twelve overviews and both whole-System structural/end-to-end views. Each necessary supporting view requires a diagram; each unnecessary view needs its reason and reconsideration trigger. Local or model links resolve material overview elements to detailed owners. Reusing an adequate graph by reference preserves one source rather than duplicating authority. The rule requires real responsibilities and boundaries, not fictional deployment services or a fixed diagram quota.",
+    "Feasibility and acceptance — pass: the four-view table identifies concrete architectural questions, conditional graph contents and distinct boundaries. Missing necessary runtime detail is an explicit failure example; a leaf with justified unnecessary deployment needs no fabricated graph. DES-SR05/07/08/12 continue to require sufficient technical depth, integrated boundaries, affected-consumer reconciliation and exact example assessment. The changed rule defines no model schema, record type or automated semantic adequacy gate. Existing compact model structure remains legal and the overview does not substitute for required behavioral or supporting detail.",
+    "Known consumer mismatch is allocated, not waived — inspected current technical-design guidance, model-authoring resource and skeleton. Technical guidance still makes diagrams conditional on explanatory value and the skeleton lacks an overview, confirming real implementation work. The new adoption paragraph explicitly requires public procedure, authoring/technical/system-composition resources, skeleton and affected reviewer guidance reconciliation, plus evaluation of all twelve repository models and every necessary view including affected illustrative models. Delivery must allocate these obligations and proof before claiming adoption; unresolved consumer mismatches or absent necessary diagrams cannot pass implementation review or final completion merely because this contract is approved. Retained legacy formats and installation permission remain unchanged; text-source integrity and example identity/invariant safeguards are not retired.",
+    "Applicability and direction — direct user refinement now selects a reusable Design method obligation; earlier review statements limiting the overview convention to this repository and excluding public skill changes describe the previous scope and are superseded for future delivery. Earlier graph approvals remain evidence of their original responsibilities and source coherence, not proof that every supporting-view necessity assessment is complete under DES-SR22. Proposal approval still supports the unchanged test-independence and protected-cleanup direction; this explicit user-selected method refinement supplies additional direction and Delivery obligations without retargeting historical proposal evidence. Current author structure/prose evidence matches the two changed model identities. Unchanged runtime behavior, model examples and the two resolved findings retain their bounded earlier meaning; no new runtime or performance claim is made."
   ],
   "reviewer": {
     "id": "proposal-reviewer",
@@ -127,7 +132,7 @@
   "schema_version": 3,
   "subjects": [
     {
-      "identity": "sha256:c315997742ee9d2ab42eed05d24c76b7353f553c647c2f635c19fadd935c4e0a",
+      "identity": "sha256:71eb10db083cbd0e416ddfc32384a925d52b07013f3072f9ca9e46691fc33ecc",
       "path": "docs/design/system.md"
     },
     {
@@ -147,7 +152,7 @@
       "path": "docs/changes/2026-09-13-independent-parallel-tests/reviews/proposal-review.json"
     },
     {
-      "identity": "sha256:d1c3c98bb7c7b7a2b72e055006afd1997653119eb80826e8f6a499deed9a657d",
+      "identity": "sha256:2434211ac7cc9dac0e8e2c6f184a1a5059c9e67f64e5388a87ff088037531dfe",
       "path": "docs/changes/2026-09-13-independent-parallel-tests/evidence.json"
     },
     {
@@ -183,7 +188,7 @@
       "path": "docs/design/skill/skill.md"
     },
     {
-      "identity": "sha256:ed714285d779ad62d1eac4292c955cda5e3864bbaafdf005e7920acebd46f7e0",
+      "identity": "sha256:b37c3a79de553235a602ae624a4840fa1a30ede351bc490d8635b7a33edd6050",
       "path": "docs/design/skill/authoring/design.md"
     },
     {
@@ -213,8 +218,20 @@
     {
       "identity": "sha256:0b634c9bcbdba16bc00fc26e40ca57d529922235d4bd745052280be1358f7379",
       "path": "docs/changes/2026-09-12-unified-validation-model/change.json"
+    },
+    {
+      "identity": "sha256:08193bd20c4b344679083a6ca7908d562394452642900ffe1f157465c039e768",
+      "path": "skills/design/references/model-authoring.md"
+    },
+    {
+      "identity": "sha256:86a37caf0d1145bb66a0c80eb8e9eab2f030687d72c267c57dcbc88369c2262b",
+      "path": "skills/design/references/technical-design.md"
+    },
+    {
+      "identity": "sha256:1cf91a1a8e370a8f199666535fcd303a10c294267d7a0c590ad4b0fac82e2192",
+      "path": "skills/design/assets/design-skeleton.md"
     }
   ],
-  "summary": "Approved the current twelve-model package after the user-directed Validation structural graph replacement. The explicit Validation boundary and five responsibilities accurately illustrate the unchanged canonical-ID execution and proof criteria contract; prior findings remain resolved.",
+  "summary": "Approved the Design-owned Architecture Overview and necessary-supporting-view convention, with System consuming DES-SR-22. Approval is of the current engineering contract and explicit Delivery reconciliation obligations; public guidance, illustrative models and all twelve supporting-view assessments are not claimed implemented or conformant.",
   "target": "design"
 }

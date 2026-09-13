@@ -356,6 +356,26 @@
         }
       ],
       "summary": "Replaced the simplified linear overview with the exact user-supplied graph, normalizing indentation only. Explicit Validation boundary contains criteria, catalog, selection, executor and results; product contracts, Delivery allocation and independent assessment stay external. Caption explains criteria guide authors rather than automated adequacy judgment. Structural/prose checks passed with zero warnings; diff check clean. Runtime flow, canonical-ID composition, other model graphs and behavior unchanged; no rendering or runtime-test claim."
+    },
+    {
+      "actor": {
+        "id": "root",
+        "role": "design"
+      },
+      "id": "architecture-view-convention",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/skill/authoring/design.md --path docs/design/system.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/authoring/design.md --path docs/design/system.md; git diff --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:b37c3a79de553235a602ae624a4840fa1a30ede351bc490d8635b7a33edd6050",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:71eb10db083cbd0e416ddfc32384a925d52b07013f3072f9ca9e46691fc33ecc",
+          "path": "docs/design/system.md"
+        }
+      ],
+      "summary": "User-selected required overview and reasoned necessity assessment with diagrams for all necessary supporting views recorded in DES-SR-22; System references the method owner. Public skill/skeleton/review guidance and twelve-model supporting-view assessment explicitly allocated to Delivery, not claimed implemented. Structural and prose checks passed; no Mermaid rendering or runtime proof claimed."
     }
   ],
   "schema_version": 3
