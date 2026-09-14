@@ -4,9 +4,9 @@
       "id": "codex-full-specs-implement",
       "role": "implement"
     },
-    "reason": "Route: independently approved Design and Delivery packages complete the authorized preparation task. Six approved implementation work entries initialized once; M1 is next. No implementation, source/test deletion, completed case audit, final Verify or PR readiness is claimed.",
+    "reason": "Route: user authorizes all six approved milestones through mandatory reviews, corrections, whole-change Code Review, final Verify, push and PR submission. Begin M1; no release/publication or merge authority inferred.",
     "stage": "implement",
-    "status": "pending"
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -20,11 +20,11 @@
     },
     {
       "actor": {
-        "id": "codex-specs-plan-author",
-        "role": "plan"
+        "id": "codex-full-specs-implement",
+        "role": "implement"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Exact reviewed authoring package and actual preparation checks; no implementation verification claim.",
+      "reason": "Exact corrected implementation subjects and post-correction evidence.",
       "value": "current"
     },
     {
@@ -61,6 +61,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-full-specs.json",
       "reason": "Independent complete primary-plan sequencing/proof judgment against exact current approved Design and Proposal. No implementation/readiness or downstream authorization claim.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m1-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m1-first.json",
+      "reason": "Current implementation behavior directly reproduced at public command boundary before production correction.",
       "value": "current"
     }
   ],
@@ -185,6 +194,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-full-specs.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m1-first.json"
     }
   ],
   "schema_version": 3,
@@ -201,7 +214,7 @@
         "VAL-SR-28",
         "DIST-SR-24"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m2",

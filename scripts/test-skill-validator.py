@@ -7125,7 +7125,7 @@ class UnifiedDesignResourceTests(unittest.TestCase):
     def test_legacy_boundary_projection_keeps_complete_format(self):
         root = ROOT / "skills/design/references"
         for name in ("boundary-first-method-v1.md", "boundary-first-feature-authoring-v1.md"):
-            self.assertEqual((root / name).read_bytes(), (ROOT / "specs/references" / name).read_bytes())
+            self.assertEqual((root / name).read_bytes(), (ROOT / "templates/shared" / name).read_bytes())
         body = (root / "boundary-first-feature-authoring-v1.md").read_text()
         headings = ("## Boundary model", "## Boundary definitions", "## Selected interactions", "## Example ownership")
         positions = [body.index(h) for h in headings]

@@ -5203,6 +5203,10 @@ raise SystemExit(3)
         paths = (
             "specs/boundary-first-activation.yaml",
             "specs/boundary-first-resources.yaml",
+            "scripts/boundary-first-resources.yaml",
+            "templates/shared/boundary-first-method-v1.md",
+            "templates/shared/boundary-first-feature-authoring-v1.md",
+            "templates/shared/boundary-first-proof-v1.md",
             "specs/feature.md",
             "specs/feature.test.md",
             "skills/design/references/boundary-first-method-v1.md",
@@ -5243,6 +5247,10 @@ raise SystemExit(3)
                 )
                 if path in {
                     "specs/boundary-first-resources.yaml",
+                    "scripts/boundary-first-resources.yaml",
+                    "templates/shared/boundary-first-method-v1.md",
+                    "templates/shared/boundary-first-feature-authoring-v1.md",
+                    "templates/shared/boundary-first-proof-v1.md",
                     "skills/design/references/boundary-first-method-v1.md",
                     "scripts/boundary_first_reference.py",
                     "scripts/project-boundary-first-reference.py",

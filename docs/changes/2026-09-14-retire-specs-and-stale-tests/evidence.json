@@ -144,6 +144,102 @@
         }
       ],
       "summary": "Plan/index prose errors=0 warnings=0; six ordered milestones and required sections present, local links and literal scripts exist. Local selection status ok with nine selected checks, no unknown paths, blockers or registration debt; this is preflight/selection, not execution of those checks. Independent Delivery Review approved the exact package with no findings. Six work entries initialized from its exact approved plan; implementation remains pending."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m1-test-inventory",
+      "procedure": "Capture baseline membership and inspect M1 test/helper removal, retained detection and independent correction.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:e05b08f1db7b29d8beb9d0ddb5be5220bf0fde08e29a23c1798c37ee88a46ff7",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/test-baseline.json"
+        },
+        {
+          "identity": "sha256:3ba1a5997f446cb451ae9e4d6c20b0db4b42b2e7968a8d813fefc3b723212cca",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-test-maintenance.json"
+        }
+      ],
+      "summary": "M1 case-group audit updated after proof-path correction; remaining repository families are not yet audited."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m1-implementation-checks",
+      "procedure": "Run exact M1 focused commands and local selected CI; after independent finding, rerun complete affected boundary and projection suites plus default model check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:e05b08f1db7b29d8beb9d0ddb5be5220bf0fde08e29a23c1798c37ee88a46ff7",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/test-baseline.json"
+        },
+        {
+          "identity": "sha256:3ba1a5997f446cb451ae9e4d6c20b0db4b42b2e7968a8d813fefc3b723212cca",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-test-maintenance.json"
+        },
+        {
+          "identity": "sha256:791703c41574271b2d9292d4442e165fb0005f11fc7de269738699ecd6397bf6",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-validation.json"
+        },
+        {
+          "identity": "sha256:e3fe5c83e2054c2af231afb3311127c5c51d5c7f899256f30022dc9a6e53bf89",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-implementation.md"
+        },
+        {
+          "identity": "sha256:d7806a57f7cf4d4b6329da679d8b1e96189908833d8fa8337d5be45ae9a8cb18",
+          "path": "scripts/boundary-first-resources.yaml"
+        },
+        {
+          "identity": "sha256:4b4d412c2a24b59f071ef4813e8dd6c6dcaeb4eb5422cd0533cf20c8811120ef",
+          "path": "scripts/boundary_first_reference.py"
+        },
+        {
+          "identity": "sha256:51069598d69a8fd286c933ac3794746c90d2f6e5381d7889e06b512c01832267",
+          "path": "scripts/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:42b24b738e4512fd807149d0c9b7dfdad436884659a63f71f4ed15d463c5cc67",
+          "path": "scripts/test-boundary-first-reference.py"
+        },
+        {
+          "identity": "sha256:7f8711a914201dbff5e9eb25cc906781462a7f0dc8e83457c91a2757b55d86bb",
+          "path": "scripts/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:957b19b2bf2c8de4aecf82f0f593ceed26564e24642dd06b2b3c1b31c14d797f",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:94299996aa213bf5fab826b85e99d31fd1206056561e09c8a89e99855ba9dbf3",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:25f6cf0efda7c3f41ce34183c273900cb76e4aff2fc88183ed430c83b9c6172f",
+          "path": "scripts/validate-boundary-first.py"
+        },
+        {
+          "identity": "sha256:264a4c4c9b6098821d879108135a63041e865119f2c8703af635eaa5616bfc58",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+          "path": "templates/shared/boundary-first-feature-authoring-v1.md"
+        },
+        {
+          "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+          "path": "templates/shared/boundary-first-method-v1.md"
+        },
+        {
+          "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+          "path": "templates/shared/boundary-first-proof-v1.md"
+        }
+      ],
+      "summary": "M1 implementation and required checks passed as detailed in m1-validation.json; independent correction reassessment remains required."
     }
   ],
   "schema_version": 3

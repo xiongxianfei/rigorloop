@@ -1,0 +1,91 @@
+{
+  "milestone": "m1",
+  "basis": "2de10dff",
+  "requirements": [
+    "SYS-SR-13",
+    "DES-SR-23",
+    "VAL-SR-28",
+    "DIST-SR-24"
+  ],
+  "baseline": "test-baseline.json",
+  "removed_test_methods": [
+    "test_active_inventory_retires_test_spec_consumers_without_rewriting_history",
+    "test_repository_and_no_history_active_snapshots_are_independent",
+    "test_checked_revision_snapshot_tuples_fail_closed",
+    "test_grandfathered_derivation_is_explicit_sorted_and_read_only",
+    "test_grandfathered_derivation_ignores_replacement_refs_and_disables_lazy_fetch",
+    "test_grandfathered_derivation_rejects_ambient_git_authority_and_trace_output",
+    "test_custom_activation_experiment_is_absent_and_cli_rejects_candidate_mode",
+    "test_active_cli_reports_snapshot_and_release_intent_without_public_claim",
+    "test_repository_active_activation_record_passes",
+    "test_unknown_activation_state_fails_before_consistency",
+    "test_activation_cli_suppresses_private_root_for_missing_and_malformed_records",
+    "test_unknown_activation_contract_and_consumer_fail_closed",
+    "test_unknown_activation_field_fails_closed",
+    "test_manifest_path_and_hash_must_match_projection_authority",
+    "test_activation_preserves_manifest_error_identity",
+    "test_activation_preserves_missing_manifest_identity",
+    "test_activation_does_not_disclose_untrusted_manifest_scalar",
+    "test_activation_does_not_disclose_resource_version_scalar",
+    "test_activation_preserves_missing_family_source_identity",
+    "test_activation_preserves_family_source_symlink_identity",
+    "test_active_rollback_release_matches_current_adapter_metadata",
+    "test_rollback_metadata_rejects_incomplete_or_mixed_matrices_without_mutation",
+    "test_historical_rollback_does_not_read_current_distribution_manifest",
+    "test_rollback_authoritative_paths_fail_closed_without_mutation",
+    "test_active_validation_cli_emits_authoritative_rollback_selection",
+    "test_grandfathered_inventory_requires_raw_utf8_order_and_uniqueness",
+    "test_mixed_projection_bytes_fail_even_with_recomputed_inventory",
+    "test_changed_bootstrap_proof_model_is_exempt_from_adoption_marker",
+    "test_pending_marker_gate_applies_to_changed_test_spec",
+    "test_fixed_authoritative_inputs_reject_external_symlinks",
+    "test_review_required_survives_rollback_validation_failure"
+  ],
+  "retired_helpers": [
+    "copy_activation_surfaces",
+    "copy_rollback_surfaces",
+    "initialize_checked_revision_active_fixture",
+    "recording_run"
+  ],
+  "disposition": [
+    {
+      "group": "Activation snapshot, grandfathered inventory, Git history derivation and fixed rollback release",
+      "decision": "remove",
+      "reason": "Retired repository activation no longer supplies document-validation authority. Its state vocabulary, rollout matrices, history plumbing and exclusive helper-generated inputs have no current consumer."
+    },
+    {
+      "group": "Activation forwarding of manifest, source, topology and privacy errors",
+      "decision": "remove duplicate wrapper cases; retain direct boundary-first-reference cases",
+      "reason": "The wrapper no longer loads a projection manifest. The actual projection boundary retains closed manifest/version/consumer/source identities, symlink/containment and private scalar diagnostics, complete-set writes and rollback on failed projection writes."
+    },
+    {
+      "group": "Portable feature and proof grammar, model tables, unknown values, marker placement, malformed and partial records, companion-file containment, missing proof and orphan proof",
+      "decision": "retain/refine all current structural cases",
+      "reason": "Explicitly selected customer grammar remains usable without repository activation. New public command cases prove full model discovery, empty/missing model rejection, explicit customer proof, owned example syntax and private failure diagnostics."
+    },
+    {
+      "group": "Unmarked adoption classification",
+      "decision": "refine",
+      "reason": "Design Review observation now applies to explicitly selected unmarked features without guessing new/grandfathered status. Mixed structural errors and unknown diagnostic codes remain failures."
+    },
+    {
+      "group": "Projection resource tests",
+      "decision": "retain all 28 tests with relocated setup",
+      "reason": "Only canonical source/manifest paths change; portable source bytes and installed resource destinations remain identical. Shared compact scan belongs to its separate existing projection owner."
+    },
+    {
+      "group": "Selector resource routing",
+      "decision": "extend existing parameterized routing case",
+      "reason": "New manifest and all three canonical resources trigger structural and projection regression checks. Old names remain deletion-diff classification inputs only."
+    }
+  ],
+  "removed_fixture": "scripts/fixtures/boundary-first/activation/unknown-state.yaml",
+  "resource_raw_sha256": {
+    "templates/shared/boundary-first-feature-authoring-v1.md": "7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+    "templates/shared/boundary-first-method-v1.md": "89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+    "templates/shared/boundary-first-proof-v1.md": "ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d"
+  },
+  "proof_first": "Initial default-model and explicit-customer tests failed on BFR-ACTIVATION-MISSING. Independent m1-unmarked-proof-false-pass was reproduced by a new failing public-command test, then corrected. All 61 structural and 28 projection tests pass after correction.",
+  "limits": "This is M1 evidence, not the whole-repository audit or review/Verify approval. Complete record schemas and example interactions remain protected by package model-example suites.",
+  "review_correction": "Explicit unmarked proof now reports feature adoption review; claimed partial/unknown proof records also fail because their governing feature record is absent."
+}

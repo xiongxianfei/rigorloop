@@ -1,0 +1,64 @@
+{
+  "milestone": "m1",
+  "commands": [
+    {
+      "command": "python scripts/project-boundary-first-reference.py --check",
+      "exit_code": 0,
+      "result": "11 projections, portable source bytes unchanged; manifest relocated"
+    },
+    {
+      "command": "python scripts/validate-boundary-first.py --check",
+      "exit_code": 0,
+      "result": "12 owning models plus applicable JSON/model-document examples; actual scope and syntax-only limits reported"
+    },
+    {
+      "command": "python scripts/test-boundary-first-reference.py",
+      "exit_code": 0,
+      "result": "28 passed after final correction"
+    },
+    {
+      "command": "python scripts/test-boundary-first-validation.py",
+      "exit_code": 0,
+      "result": "61 passed after final correction"
+    },
+    {
+      "command": "python scripts/test-select-validation.py",
+      "exit_code": 0,
+      "result": "176 passed"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode local",
+      "exit_code": 0,
+      "result": "Selected CI checks passed; 693 passed rows"
+    },
+    {
+      "command": "node scripts/validate-record-store.mjs docs/changes/2026-09-14-retire-specs-and-stale-tests/change.json",
+      "exit_code": 0,
+      "result": "Structure and references valid; no readiness judgment"
+    },
+    {
+      "command": "git diff --check HEAD",
+      "exit_code": 0,
+      "result": "No whitespace errors"
+    }
+  ],
+  "correction_supplement": "Selected CI started on initial M1. The later independent proof-path finding changed only boundary validation and its regression. Complete boundary (61) and projection (28) suites and default model validation were rerun afterward; other selected check inputs unchanged except recording and test formatting. No final readiness or whole-change success claimed.",
+  "logs": [
+    {
+      "local_path": "/tmp/m1-ci.log",
+      "raw_sha256": "fdeefa5db2d3439749abbf50cca77c7387ee73288c9106fec25ab5e532f5ecfd"
+    },
+    {
+      "local_path": "/tmp/m1-boundary-tests.log",
+      "raw_sha256": "beeab2b8ff1a0d0a3ba147e38351d7ac5811069961dd8363907e9148d6af7c15"
+    },
+    {
+      "local_path": "/tmp/m1-reference-tests.log",
+      "raw_sha256": "34634e2f555b0b0cb17cbe3fa7f202dbf1b9f16b09fdb1de96b21dd63093d5ed"
+    },
+    {
+      "local_path": "/tmp/m1-selector-tests.log",
+      "raw_sha256": "98a3725a0c8b3b9c9f0229f6e384f3b0097884104fa0f830dec9883e0f506623"
+    }
+  ]
+}
