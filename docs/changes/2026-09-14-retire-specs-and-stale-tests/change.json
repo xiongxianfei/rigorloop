@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-independent-m3",
-      "role": "review"
+      "id": "codex-full-specs-implement",
+      "role": "implement"
     },
-    "reason": "Route: required M3 validation passed; complete corrected milestone is ready for independent Code Review.",
-    "stage": "code-review",
+    "reason": "Route: corrected M3 independently approved and finding resolved; continue authorized M4 governance engine and fixture cleanup.",
+    "stage": "implement",
     "status": "in-progress"
   },
   "applicability": [
@@ -106,6 +106,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m3-preliminary.json",
       "reason": "Current preliminary finding, no final approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cli-release-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m3-corrected.json",
+      "reason": "Corrected complete M3 approved; route may close M3 and continue M4 under existing authority.",
       "value": "current"
     }
   ],
@@ -250,6 +259,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m3-preliminary.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m3-corrected.json"
     }
   ],
   "schema_version": 3,
@@ -296,7 +309,7 @@
         "DIST-SR-24",
         "REL-SR-26"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m4",
@@ -309,7 +322,7 @@
         "VAL-SR-27",
         "ENG-SR-15"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m5",

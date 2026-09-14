@@ -1,0 +1,108 @@
+{
+  "assessment_scope": "Complete M3 CLI/package/release source-consumer slice, test/helper/fixture retirement, current qualification, catalog correction and M1/M2 interactions. This is milestone Code Review, not final six-milestone whole-change review.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-full-specs-implement",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-m3-corrected",
+  "independence_basis": "Separate nonauthor reviewer independently inspected M3 diff and corrections, reproduced receipt deletion before correction and independently ran corrected qualification tests. No implementation, tests or plan authored by reviewer; earlier source-gap analysis was read-only.",
+  "judgment": "approved",
+  "limitations": [
+    "M4, M5 and M6 remain pending; M3 approval grants neither final Verify nor branch/PR/publication readiness.",
+    "No live public release was performed; actual candidate integration uses safe external substitutes under existing tests.",
+    "New public-command-output.json prior_sha256 is SHA256(empty) in membership evidence although path was absent; reviewer explicitly interprets it as newly added based on frozen git diff, not as proof a prior empty file existed. Other current identities and raw logs were checked."
+  ],
+  "rationale": [
+    "Contract alignment: pass. CLI-SR-29/30, DIST-SR-23/24 and REL-SR-26 retain distinct generic/recording/discovery semantics, actual package/install trust and current source/profile/candidate qualification. Retired named-release recipes do not supply current permission. Approved reconciled Design and Delivery packages define this slice.",
+    "Correctness/failure handling: pass after correction. Historical tag mismatch and invalid profile reject before old readers or output mutation; explicit commit and CI candidate checks preserve exact source basis. Full prepared admission now precedes receipt deletion; admitted reruns invalidate prior proof before actual checks. Current output/version derives from source package rather than an obsolete supported-version list.",
+    "Testing/maintenance: pass. Exact removed helper/test membership distinguishes historical recipe and unused fixture rows from retained archive parity, mapped-resource hash, security/path, metadata trust, npm content, packed installation, public transaction and diagnostic protection. All three actually executed public output rows survive; current init/v3 behavior remains independently tested. Added unknown-profile regression rejects before metadata reads.",
+    "Integration and selection: pass. Build check generates and validates actual requested-version archives while checking tracked support consistency under its declared version. Catalog replaced the deleted historical test with current candidate metadata and unknown-profile cases; command assessments and coverage bases agree. M1 boundary resource and M2 specialist changes remain covered by actual selected CI.",
+    "Validation evidence: reviewer verified all eight recorded raw log hashes and outcomes: Node 419, adapter 95 baseline plus added profile proof in corrected integrations, npm 7, corrected release 161, selector 176, v1.0.0 archive build and actual selected CI. Independently executed PYTHONPATH=scripts python -m unittest release_candidate_tests.CurrentSourceQualificationTests: six pass.",
+    "Documentation/scope/maintainability: pass. Stage evidence states actual removals, retained duties, initial failure and correction. No runtime publication, customer-state mutation, unrelated refactor or new validator architecture is introduced. Reduced test count alone is not treated as proof."
+  ],
+  "reviewer": {
+    "id": "codex-cli-release-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:29143443c9f5013dce0b156ae7e4002abb526aa6081e3a4e79bbc053bab57fda",
+      "path": "packages/rigorloop/test/fixtures/observability/public-command-output.json"
+    },
+    {
+      "identity": "sha256:a35c7582b433b505e719336c61d7e16227b6d05362a6f9fbe5f22c81214c469e",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:9f03ef86891dff9160895fbcb6dd646863a3d640b9d6244119c7a6fbaaa0bd04",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:15b50a4dae6065d35fb1a65d362fa8e1fe585d637da985d37d6e18ff0734c94b",
+      "path": "scripts/build-adapters.py"
+    },
+    {
+      "identity": "sha256:9ae5b7b27f5ac7d91aa22236da6a7eebd4f085216aaac2c23dc553ec0a0dbdc9",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:f91c5197e67c82893a33e883f1cf313ad55a3a18ab61d423eb3fdf0221b6525c",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:69c6782d04ef20c07c1f688bae38df7e0049fe21c13bfdb00771bb08416e28b5",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:ec82660fca8e5f4d7dc9befa2a3bd7fa78204e64878c9d80697fa523b6ec92ee",
+      "path": "scripts/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:af85b480eefd3284a3d4ced451694f459c92e1080495dd840aae899774016f48",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:475a0f259b70109a5786af0473f4a96baa0047578f9a522d01ef1979e13d9289",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:93d1f811580d662d25e45cf6403a6b1f7454ca776e1e51a241b4442bc2a17703",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:88ec93a42cb25e040afffdea8462424d54c797d1147fea4b3d28cb430d444ad2",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:30110347de1ebc23fd6406963b6cc3d0e22e632fd5e1e7ef040298ba9e1f5a92",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:445fcce43479c00e703dd0ec37df10d072017eff1843acc68bad5c7ca1165a26",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:0e43993111c296569457816df3785a1f007d87d3eee67785d4b2bc309d34d6ba",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:63d2be82b3c04f56dc1fa3fa2b62b2ea0285664624f6421e0461b91c6a98de0f",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-validation.json"
+    },
+    {
+      "identity": "sha256:58388f9568184aacfa84034708171224fef52c75df530337da8250f766b77fd2",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-implementation.md"
+    }
+  ],
+  "summary": "Corrected M3 approved at adeb0c74..a8b082c6; receipt finding resolved.",
+  "target": "code"
+}

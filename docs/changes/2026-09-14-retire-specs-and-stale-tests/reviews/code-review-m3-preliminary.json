@@ -20,8 +20,20 @@
         "role": "review"
       },
       "required_outcome": "Admit complete immutable candidate/source/profile basis before deleting existing verification receipt. Missing or mismatched preparation must preserve output bytes. After admission, invalidate stale proof before actual checks. Add missing/mismatched preparation preservation regressions and retain admitted-failed-check invalidation. Implementation correction; no Design decision needed.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "codex-cli-release-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m3-validation",
+            "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+          }
+        ],
+        "rationale": "Corrected frozen a8b082c6 admits complete source/profile/preparation before receipt invalidation, then invalidates before actual checks. Independently ran all six CurrentSourceQualificationTests successfully; missing and mismatched preparation preserve exact prior receipt bytes. Corrected full release suite passed 161 and selected CI passed, with raw log hashes verified by reviewer."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:cb2d2be916e93ac5ac26e55375b4294f6a2187f714bbb55bf5b12e5cc52af346",
