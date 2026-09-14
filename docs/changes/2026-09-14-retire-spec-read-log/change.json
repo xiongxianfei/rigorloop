@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-spec-read-implementer",
-      "role": "implement"
+      "id": "codex-spec-read-verifier",
+      "role": "verify"
     },
-    "reason": "Route: exact Design and Delivery packages approved; M1 initialized once from approved plan and selected for implementation with tests first.",
-    "stage": "implement",
+    "reason": "Route: M1 completed after fresh independent whole-change approval and full actual proof; no required findings. Distinct final Verify owns final assessment and exact Git handoff.",
+    "stage": "verify",
     "status": "in-progress"
   },
   "applicability": [
@@ -52,6 +52,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-spec-read-log/evidence.json",
       "reason": "Exact tested M1 source and approved delivery; complete integrated proof observed with no source mutation during run.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-spec-read-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/code-review-spec-read-final-whole-change.json",
+      "reason": "Fresh final complete-diff assessment against exact approved Design/Delivery and actual current proof; no unresolved required finding or changed engineering basis.",
       "value": "current"
     }
   ],
@@ -102,6 +111,10 @@
     {
       "kind": "evidence",
       "path": "docs/changes/2026-09-14-retire-spec-read-log/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/code-review-spec-read-final-whole-change.json"
     }
   ],
   "schema_version": 3,
@@ -119,7 +132,7 @@
         "ENG-SR-13",
         "ENG-SR-14"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }
