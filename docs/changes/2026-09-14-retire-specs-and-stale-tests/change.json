@@ -4,7 +4,7 @@
       "id": "codex-full-specs-implement",
       "role": "implement"
     },
-    "reason": "Route: user authorizes all six approved milestones through mandatory reviews, corrections, whole-change Code Review, final Verify, push and PR submission. Begin M1; no release/publication or merge authority inferred.",
+    "reason": "Route: independent corrected M1 review approved and finding resolved. Continue authorized M2 specialist/workflow cleanup through final PR.",
     "stage": "implement",
     "status": "in-progress"
   },
@@ -70,6 +70,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m1-first.json",
       "reason": "Current implementation behavior directly reproduced at public command boundary before production correction.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m1-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m1-corrected.json",
+      "reason": "Frozen corrected M1 and actual focused/integrated evidence independently assessed; required finding resolved and unchanged governing package remains applicable.",
       "value": "current"
     }
   ],
@@ -198,6 +207,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m1-first.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m1-corrected.json"
     }
   ],
   "schema_version": 3,
@@ -214,7 +227,7 @@
         "VAL-SR-28",
         "DIST-SR-24"
       ],
-      "status": "in-progress"
+      "status": "completed"
     },
     {
       "id": "m2",
@@ -229,7 +242,7 @@
         "RC-SR-22",
         "RC-SR-23"
       ],
-      "status": "pending"
+      "status": "in-progress"
     },
     {
       "id": "m3",

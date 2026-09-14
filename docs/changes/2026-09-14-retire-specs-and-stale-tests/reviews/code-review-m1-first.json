@@ -20,8 +20,15 @@
         "role": "review"
       },
       "required_outcome": "Preserve unmarked adoption as an explicit Design Review observation for either selected feature or proof; malformed/unknown/partial feature or proof structure must remain a failure without assuming adoption. Add public-command regression for plain unmarked companion, unknown proof marker/version and malformed/partial proof before fixing the short-circuit; rerun focused structural and applicable integrated checks, then independent reassessment.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "independent-m1-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Frozen e1088e01 corrects plain unmarked proof to review-required and claimed/unknown/partial proof to failed with adoption observation preserved. Public-entrypoint regression covers plain text, unknown feature marker, unknown proof version, partial Proof map and valid proof without adopted governing feature. Independent focused unmarked run passed3tests; author complete affected61structural/28projection reruns passed after correction."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:0b3fd0eacc8cfd77da0fe7742a0027f5910f06e0357036ee38787ee075f94332",
