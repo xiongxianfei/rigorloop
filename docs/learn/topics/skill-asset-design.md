@@ -6,7 +6,7 @@
 
 - Source session: `docs/learn/sessions/2026-05-20-spec-family-asset-formalism.md`
 - Primary classification: `durable-lesson`
-- Secondary routes: `7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:specs/spec-family-assets-progressive-disclosure.md`; `docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md`; `scripts/skill_validation.py`
+- Secondary routes: `39b7c5cb1f03aa761d2f2493d3474ce985e59d6f:specs/spec-family-assets-progressive-disclosure.md`; `docs/plans/2026-05-20-spec-family-assets-progressive-disclosure.md`; `scripts/skill_validation.py`
 
 Packaged skill assets should be substantial copy-and-fill structures, not ceremony around tiny row formats.
 

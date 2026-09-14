@@ -4,7 +4,7 @@
       "id": "independent-full-specs-final-model-reviewer",
       "role": "review"
     },
-    "reason": "Route: final M6 current-owner/provenance/governance package ready for exact-basis Design reassessment and unchanged Delivery reliance assessment before deletion.",
+    "reason": "Route: recorded M6 provenance/owner findings corrected; final exact package and historical example disposition ready for independent reassessment and separate unchanged Delivery reliance.",
     "stage": "design-review",
     "status": "ready"
   },
@@ -143,6 +143,15 @@
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m5.json",
       "reason": "Complete corrected M5 reviewed; route may close milestone and continue M6 under existing authority.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m6-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-first.json",
+      "reason": "Exact frozen source-disposition mismatch independently inspected before correction.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -166,7 +175,7 @@
     {
       "id": "cli",
       "subject": {
-        "identity": "sha256:d5732348725e6dfaefec6a423ca51d1a66f674b884917e39a8e073ba56d6c168",
+        "identity": "sha256:eef25314c2f34d4cceca2b8e2a12675fd9773da34fa949fd92cb224ed6a456e7",
         "path": "docs/design/cli/cli.md"
       }
     },
@@ -201,7 +210,7 @@
     {
       "id": "records",
       "subject": {
-        "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+        "identity": "sha256:c088b648eb0a8308c8cae1deb7f5be562cf5fb81ceed2552d5256851ca69acf7",
         "path": "docs/design/cli/records.md"
       }
     },
@@ -302,6 +311,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m5.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-first.json"
     }
   ],
   "schema_version": 3,

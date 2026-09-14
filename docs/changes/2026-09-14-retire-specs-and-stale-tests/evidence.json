@@ -431,11 +431,11 @@
         "role": "design"
       },
       "id": "m6-design-reconciliation",
-      "procedure": "Verify exact111 remaining spec bytes against baseline; map27 coupled architecture/ADR sources, reconcile model historical provenance/current governance and run12-model structure check.",
+      "procedure": "Explicit27-file coupled owner map; verify37 changed current commit/path pairs and148 selected source hashes from retained Git;12-model structure and25 touched prose files pass.",
       "result": "passed",
       "subjects": [
         {
-          "identity": "sha256:417264e528358a41faecf5c0601bb5f4a5c2cc46e17f6149acd32a478bc2d8bd",
+          "identity": "sha256:903933825ce63a6685c52efe920b4df1fdd9fe6f5fe90b9a097dcb241e0179b7",
           "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
         },
         {
@@ -447,7 +447,7 @@
           "path": "docs/design/skill/skill.md"
         },
         {
-          "identity": "sha256:d5732348725e6dfaefec6a423ca51d1a66f674b884917e39a8e073ba56d6c168",
+          "identity": "sha256:eef25314c2f34d4cceca2b8e2a12675fd9773da34fa949fd92cb224ed6a456e7",
           "path": "docs/design/cli/cli.md"
         },
         {
@@ -467,7 +467,7 @@
           "path": "docs/design/skill/assessment.md"
         },
         {
-          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "identity": "sha256:c088b648eb0a8308c8cae1deb7f5be562cf5fb81ceed2552d5256851ca69acf7",
           "path": "docs/design/cli/records.md"
         },
         {
@@ -487,7 +487,7 @@
           "path": "docs/design/engineering/release.md"
         }
       ],
-      "summary": "Requirements/views/examples and Delivery allocation unchanged. Current model/governance basis requires independent refreshed assessment; source deletion and final integration remain outstanding."
+      "summary": "Corrected observability owner and unrecoverable learn source.10 historical positive v2 examples additionally dispositioned, current examples/negative proof retained. Requirement IDs/behavior/Delivery allocation unchanged; independent reassessment required before deletion."
     }
   ],
   "schema_version": 3

@@ -1,0 +1,110 @@
+{
+  "assessment_scope": "Early required source-map correction assessment of frozen M6 authority/provenance package1237a250 relative to3eefc51c. The final complete model-package and unchanged Delivery reliance reviews remain pending.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-specs-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: minor required correction. Location: m6-design-reconciliation.json sources_to_remove row for docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md. Finding scope: artifact-local; affected artifact: m6-design-reconciliation; owning stage: design. Actual ADR Decision/Alternatives/Consequences specify one invocation controller, allowlisted diagnostic events, bounded synchronous local sink, no semantic failure propagation, result projections and compatibility/adoption metrics. The row instead says portable boundary grammar/resources survive and activation/rollback retires under DES-SR-23/VAL-SR-28/DIST-SR-24, which does not describe this source.",
+      "id": "m6-observability-adr-disposition",
+      "owner": {
+        "id": "codex-specs-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "independent-m6-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Correct the exact row to CLI-SR-29/30 retained logging/projection/privacy/compatibility decisions and explicit VAL-SR-25 retirement of historical metric/default-switch gates. Inspect other coupled ADR rows for equivalent name-based misclassification; preserve source hash and original ADR bytes. Safe resolution is evidence-only correction because current owning CLI contract already supplies the important meaning. Final exact Design and Delivery reassessment follows; no source deletion before approval.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:417264e528358a41faecf5c0601bb5f4a5c2cc46e17f6149acd32a478bc2d8bd",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+        },
+        {
+          "identity": "sha256:5e98900b19ff15a759dd59923c80d6a052281d345eec477d1814d82953a5a19e",
+          "path": "docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md"
+        },
+        {
+          "identity": "sha256:d5732348725e6dfaefec6a423ca51d1a66f674b884917e39a8e073ba56d6c168",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ]
+    },
+    {
+      "evidence": "Severity: minor required correction. Location: docs/learn/topics/skill-asset-design.md Secondary routes. Finding scope: artifact-local; affected artifact: curated-skill-asset-guidance; owning stage: design. New citation7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e:specs/spec-family-assets-progressive-disclosure.md is not recoverable: git cat-file -e returns path does not exist. It was removed in earlier cleanup; original source is recoverable at39b7c5cb1f03aa761d2f2493d3474ce985e59d6f. Independent scan of37 explicit commit/path pairs in changed current guidance found this one invalid pair.",
+      "id": "m6-unrecoverable-learn-provenance",
+      "owner": {
+        "id": "codex-specs-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "independent-m6-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Replace the citation with a verified retained commit/path and preserve the original historical session and earlier removal/patch evidence. Safe correction: use39b7c5cb1f03aa761d2f2493d3474ce985e59d6f for the original source, validate the corrected pair and all current changed provenance, and retain current Skill owner guidance unchanged. No new behavior or Delivery allocation needed.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:a51752e91cb159cd5782c92cd43cf606e141df1e421ac5fec95f73e665d29028",
+          "path": "docs/learn/topics/skill-asset-design.md"
+        },
+        {
+          "identity": "sha256:24af26bb7ce0a17c07afcab73c4f8119a127a338be90d9c0910ead925561f642",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:417264e528358a41faecf5c0601bb5f4a5c2cc46e17f6149acd32a478bc2d8bd",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+        }
+      ]
+    }
+  ],
+  "id": "design-review-m6-first",
+  "independence_basis": "Independent delegated reviewer authored no M6 model, source disposition or governance edit; read actual source ADR against its proposed removal row and receiving CLI owner.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This is a bounded early finding record, not final Design approval, Delivery approval or implementation correctness. Original138 pending sources remain present."
+  ],
+  "rationale": [
+    "The exact source ADR owns invocation controller, local diagnostic logging, synchronous sink/lock and privacy boundaries, result projections and historical output-adoption measurement. Its removal row instead names DES-SR-23/VAL-SR-28/DIST-SR-24 portable methods and historical activation/rollback.",
+    "CLI-SR-29/30 already preserve important diagnostic/projection behavior and VAL-SR-25 retires measurements. The row must point to these actual owners and distinguish retained decisions/alternatives from obsolete adoption measurements, rather than treating a filename containing boundary as a method-resource contract.",
+    "No observed requirement change or missing CLI capability is asserted by this finding. It concerns required truthful source preservation before deletion; broader package review is not yet approved."
+  ],
+  "reviewer": {
+    "id": "independent-m6-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:417264e528358a41faecf5c0601bb5f4a5c2cc46e17f6149acd32a478bc2d8bd",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+    },
+    {
+      "identity": "sha256:5e98900b19ff15a759dd59923c80d6a052281d345eec477d1814d82953a5a19e",
+      "path": "docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md"
+    },
+    {
+      "identity": "sha256:d5732348725e6dfaefec6a423ca51d1a66f674b884917e39a8e073ba56d6c168",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+      "path": "docs/design/engineering/validation.md"
+    }
+  ],
+  "summary": "M6 source disposition assigns the local CLI observability ADR to unrelated boundary-method activation retirement.",
+  "target": "design"
+}
