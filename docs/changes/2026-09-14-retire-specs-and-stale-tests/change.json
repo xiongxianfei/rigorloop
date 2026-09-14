@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-full-specs-implement",
-      "role": "implement"
+      "id": "independent-full-specs-m4-reviewer",
+      "role": "review"
     },
-    "reason": "Route: corrected M3 independently approved and finding resolved; continue authorized M4 governance engine and fixture cleanup.",
-    "stage": "implement",
-    "status": "in-progress"
+    "reason": "Route: M4 required proof passed; independent corrected milestone assessment and finding disposition required.",
+    "stage": "code-review",
+    "status": "ready"
   },
   "applicability": [
     {
@@ -24,7 +24,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Approved M3 implementation complete for review.",
+      "reason": "Exact M4 implementation and corrected proof inspected.",
       "value": "current"
     },
     {
@@ -115,6 +115,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m3-corrected.json",
       "reason": "Corrected complete M3 approved; route may close M3 and continue M4 under existing authority.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m4-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m4-first.json",
+      "reason": "Current exact-snapshot false success reproduced before production correction.",
       "value": "current"
     }
   ],
@@ -263,6 +272,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m3-corrected.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m4-first.json"
     }
   ],
   "schema_version": 3,

@@ -1,0 +1,90 @@
+{
+  "milestone": "m4",
+  "baseline_commit": "350b3c19",
+  "commands": [
+    {
+      "command": "python scripts/test-select-validation.py",
+      "exit_code": 0,
+      "result": "176 tests passed"
+    },
+    {
+      "command": "npm test --prefix packages/rigorloop",
+      "exit_code": 0,
+      "result": "419 tests passed"
+    },
+    {
+      "command": "python scripts/test-skill-validator.py",
+      "exit_code": 0,
+      "result": "296 tests passed"
+    },
+    {
+      "command": "python scripts/test-change-metadata-validator.py",
+      "exit_code": 0,
+      "result": "7 tests passed"
+    },
+    {
+      "command": "python scripts/test-governed-lifecycle-cli-validator.py",
+      "exit_code": 0,
+      "result": "6 tests passed"
+    },
+    {
+      "command": "python scripts/test-release-transaction.py",
+      "exit_code": 0,
+      "result": "176 tests passed"
+    },
+    {
+      "command": "python scripts/test-validation-execution.py",
+      "exit_code": 0,
+      "result": "52 tests passed"
+    },
+    {
+      "command": "bash scripts/ci.sh --mode local --broad-smoke",
+      "exit_code": 0,
+      "result": "All selected and broad checks passed"
+    }
+  ],
+  "logs": [
+    {
+      "path": "/tmp/full-specs-m4-selector-final.log",
+      "sha256": "e3a1293a5d8eaabb89ef777d7467abd04b6933d631599e79ac66768247ac54a3",
+      "bytes": 53
+    },
+    {
+      "path": "/tmp/full-specs-m4-npm.log",
+      "sha256": "f932fe70b4231b3e9153ecb43586c00d391f0c4dea38e0b765c66475736d0e96",
+      "bytes": 38758
+    },
+    {
+      "path": "/tmp/full-specs-m4-skills.log",
+      "sha256": "35247f0537c65027ed94be26add94337e1f0db02d00f1d4148162bd5612c74cf",
+      "bytes": 49941
+    },
+    {
+      "path": "/tmp/full-specs-m4-metadata.log",
+      "sha256": "8579a8ccd2957a5cd59d0d23bda80b61c75e2bedcaf95b0ec3e4a71253be5594",
+      "bytes": 57
+    },
+    {
+      "path": "/tmp/full-specs-m4-snapshot-complete.log",
+      "sha256": "b2d9129146ef90c40abac821434a5748177afb5c5216b25cb7f20c0d9f5e6676",
+      "bytes": 104
+    },
+    {
+      "path": "/tmp/full-specs-m4-release.log",
+      "sha256": "63d9f3acc34784e1ba93f23c552dc529bbc4942a0c811f845784916dd9a1e929",
+      "bytes": 1506
+    },
+    {
+      "path": "/tmp/full-specs-m4-execution.log",
+      "sha256": "f74c86b8f1d49b7e3700b74a83cfe15d739303dd8af7388ee46ef1a4e67605dc",
+      "bytes": 892
+    },
+    {
+      "path": "/tmp/full-specs-m4-ci-final.log",
+      "sha256": "dfbb5e1cb85ab552f23c36cf7b573b0db9ce2879889b264d78142027d7e9d880",
+      "bytes": 364056
+    }
+  ],
+  "corrections": "Exact Git object/root regressions reproduced failures before correction; initial broad CI exposed an obsolete executor catalog assertion, corrected to assert current record checks. Full final CI passed.",
+  "limitations": "Milestone implementation proof; independent approval and M5/M6/final review/Verify remain required."
+}

@@ -1,0 +1,81 @@
+{
+  "assessment_scope": "M4 first-pass exact snapshot identity finding; full milestone tests, source maintenance and final frozen assessment remain pending.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-m4-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Major: snapshot_report and child classifier/record validator inherit ordinary Git object substitution. Owned real-Git repro replaces malformed-store child commit with clean empty-store ancestor; same requested immutable SHA changes failure to passed/validated0 without changing requested identity.",
+      "id": "m4-snapshot-git-identity",
+      "owner": {
+        "id": "codex-m4-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "independent-m4-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Bind all snapshot enumeration/classification/blob reads to literal requested Git objects, consistently disabling replace refs through wrapper and child validators. Reject/neutralize ambient Git repository redirection and prevent automatic lazy network fetch or trace side effects where they defeat exact-root/read-only proof. Add actual Git replacement/ambient-env regression with unchanged repository and malformed snapshot still failing, retain clean snapshot versus dirty-worktree distinction, and rerun affected boundary/selector tests before independent reassessment.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:11873732f4893d44b6152b9b0bd93db1198c7dec97dfb27bbd2ebe326cc62e1e",
+          "path": "scripts/validate-governed-lifecycle-cli.py"
+        },
+        {
+          "identity": "sha256:e5d7369dab3717577c965318d049fc088c1b88693b6ba8399ef99c90c361cd99",
+          "path": "scripts/classify-record-store.mjs"
+        },
+        {
+          "identity": "sha256:3dddfd47ac871592927496e9465f3293d6a153ee91b9eecee108ff1fbd5b269e",
+          "path": "scripts/validate-record-store.mjs"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-m4-first",
+  "independence_basis": "Separate nonauthor reviewer inspected M4 snapshot path and reproduced replacement-ref bypass in an invocation-owned real Git repository; no reviewed implementation authored.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "No final M4 approval or full validation result claimed; selector suite still being reconciled."
+  ],
+  "rationale": [
+    "Public snapshot wrapper promises immutable commit validation but all Git reads honor replacement refs. Exact SHA syntax and rev-parse equality do not bind the actual tree/blob bytes under Git replacement.",
+    "Actual Git reproduction: clean commit with no stores; child commit with malformed docs/changes/bad/change.json. Validation of badSHA fails initially, then git replace badSHA cleanSHA makes the identical badSHA return passed with validated0 and original badSHA reported.",
+    "Current replacement proof must preserve unknown/malformed current record detection and read-only exact-source identity; deleted historical Git-hardening tests do not authorize this current bypass. Release checklist AST transfer inspected separately and retained functions are unchanged."
+  ],
+  "reviewer": {
+    "id": "independent-m4-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:11873732f4893d44b6152b9b0bd93db1198c7dec97dfb27bbd2ebe326cc62e1e",
+      "path": "scripts/validate-governed-lifecycle-cli.py"
+    },
+    {
+      "identity": "sha256:e5d7369dab3717577c965318d049fc088c1b88693b6ba8399ef99c90c361cd99",
+      "path": "scripts/classify-record-store.mjs"
+    },
+    {
+      "identity": "sha256:3dddfd47ac871592927496e9465f3293d6a153ee91b9eecee108ff1fbd5b269e",
+      "path": "scripts/validate-record-store.mjs"
+    },
+    {
+      "identity": "sha256:90e00cf969ff8f6c7cfb59f6e31e323ff5642f31189e55cee7e5240b96e1e86d",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    }
+  ],
+  "summary": "Exact-revision current-record validation can report success for different Git replacement content.",
+  "target": "code"
+}

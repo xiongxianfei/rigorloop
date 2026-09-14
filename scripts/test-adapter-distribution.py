@@ -2848,9 +2848,8 @@ class AdapterDistributionTests(unittest.TestCase):
                               str(root/'output/adapters-broad-smoke'),'--version','v0.1.3'])
             self.assertIn('broad_smoke.adapters.build_archives',
                           plans['broad_smoke.adapters.validate_archives']['deps'])
-            self.assertEqual(plans['broad_smoke.artifact_lifecycle.scoped']['args'],
-                             ['python','scripts/validate-artifact-lifecycle.py','--mode',
-                              'explicit-paths','--path','README.md'])
+            self.assertEqual(plans['current_records.validate']['args'],
+                             ['python','scripts/validate-governed-lifecycle-cli.py'])
 
 
 

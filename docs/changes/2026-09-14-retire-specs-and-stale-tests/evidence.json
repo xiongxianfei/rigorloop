@@ -344,6 +344,46 @@
         }
       ],
       "summary": "Required focused and selected CI commands passed after receipt and catalog corrections. Complete M3 handed to independent Code Review."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m4-test-maintenance",
+      "procedure": "AST member, fixture and caller audit against 350b3c19; review correction and selector/executor reconciliation.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:4e8b9f4be2834e49977ff7d0c218ee36e43a7dfab5ea04f7973ceed1d40eb01e",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-test-maintenance.json"
+        }
+      ],
+      "summary": "109 retired files accounted for, including 46 lifecycle, 41 review and 3 metadata fixtures; release helper protection transferred. Full validation recorded separately."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m4-validation",
+      "procedure": "Run focused and required M4 validation commands, correct findings/failures, then run final local plus broad CI. Exact logs/results in m4-validation.json.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:46d6a1a5c6323ac33fd4d6b59cf1d4a21e91874abe2976e0a5ff86f42894c5be",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-validation.json"
+        },
+        {
+          "identity": "sha256:134e6b898d6850157c968a61223251b8bc7144babfa7f484df8a4b6b2914dc0b",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-implementation.md"
+        },
+        {
+          "identity": "sha256:4e8b9f4be2834e49977ff7d0c218ee36e43a7dfab5ea04f7973ceed1d40eb01e",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-test-maintenance.json"
+        }
+      ],
+      "summary": "109 retired sources/fixtures reconciled; current release checklist and snapshot/discovery checks pass, including 176 selector, 419 Node, 176 release and 52 executor tests."
     }
   ],
   "schema_version": 3
