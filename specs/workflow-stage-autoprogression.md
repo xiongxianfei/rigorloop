@@ -829,7 +829,7 @@ These questions do not block spec-review for this amendment.
 
 ## Follow-on artifacts
 
-- `docs/architecture/2026-04-21-workflow-stage-autoprogression.md`
+- [historical `docs/architecture/2026-04-21-workflow-stage-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/architecture/2026-04-21-workflow-stage-autoprogression.md)
 - `proposal`: [Single Workflow Lane, Explain-Change Before Verify, and Public Skill Surface Boundary](../docs/proposals/2026-05-08-single-workflow-lane-explain-before-verify.md)
 - `spec-review`: approved in [spec-review-r5](../docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/spec-review-r5.md)
 - `plan`: [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md)

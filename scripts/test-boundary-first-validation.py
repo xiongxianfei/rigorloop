@@ -195,40 +195,6 @@ def valid_proof() -> str:
     )
 
 
-class RetiredMethodSourceTests(unittest.TestCase):
-    def fixture(self):
-        temp = tempfile.TemporaryDirectory()
-        self.addCleanup(temp.cleanup)
-        root = Path(temp.name)
-        for rel in ("specs/architecture-package-method.md", "specs/architecture-package-method.test.md", "docs/design/skill/authoring/design.md", "docs/design/system.md"):
-            target = root / rel
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(ROOT / rel, target)
-        return root
-
-    def test_retired_method_preservation_replaces_new_feature_format(self):
-        root = self.fixture()
-        for path in ("specs/architecture-package-method.md", "specs/architecture-package-method.test.md"):
-            self.assertEqual(validate_changed_spec(root, path), ())
-
-    def test_retired_method_unknown_value_or_changed_body_cannot_escape_validation(self):
-        for suffix in ("\nunknown_value\n", "\nboundary_contract: unknown_value\n"):
-            root = self.fixture()
-            path = root / "specs/architecture-package-method.md"
-            path.write_text(path.read_text() + suffix)
-            self.assertTrue(any(i.code == "BFR-RETIRED-METHOD-CHANGED" for i in validate_changed_spec(root, "specs/architecture-package-method.test.md")))
-
-    def test_retired_method_missing_notice_partner_or_owner_blocks(self):
-        for rel in ("specs/architecture-package-method.md", "specs/architecture-package-method.test.md", "docs/design/skill/authoring/design.md", "docs/design/system.md"):
-            root = self.fixture()
-            (root / rel).unlink()
-            self.assertTrue(validate_changed_spec(root, "specs/architecture-package-method.md"))
-        root = self.fixture()
-        path = root / "specs/architecture-package-method.md"
-        path.write_text(path.read_text().replace("## Historical method authority", "## unknown_value"))
-        self.assertTrue(validate_changed_spec(root, "specs/architecture-package-method.md"))
-
-
 class BoundaryFirstStructuralTests(unittest.TestCase):
     def test_durable_minimal_semantic_omission_and_gap_fixtures(self) -> None:
         minimal = (FIXTURES / "feature-records" / "minimal.md").read_text(
@@ -1782,7 +1748,7 @@ class ModelRecordTests(unittest.TestCase):
         return validate_changed_spec(self.root, relative)
 
     def test_model_current_files_validate_without_activation_or_change_record(self):
-        for relative in ['docs/design/system.md', 'docs/design/skill/authoring/design.md', 'docs/design/skill/workflow.md', 'docs/design/skill/assessment.md', 'docs/design/cli/records.md', 'docs/design/cli/installation.md', 'docs/design/engineering/validation.md', 'docs/design/engineering/packaging.md', 'docs/design/engineering/release.md', 'docs/design/skill/skill.md', 'docs/design/cli/cli.md', 'docs/design/engineering/engineering.md']:
+        for relative in ['docs/design/system.md', 'docs/design/skill/design.md', 'docs/design/skill/workflow.md', 'docs/design/skill/assessment.md', 'docs/design/cli/records.md', 'docs/design/cli/installation.md', 'docs/design/engineering/validation.md', 'docs/design/engineering/packaging.md', 'docs/design/engineering/release.md', 'docs/design/skill/skill.md', 'docs/design/cli/cli.md', 'docs/design/engineering/engineering.md']:
             with self.subTest(relative=relative):
                 (self.root / relative).parent.mkdir(parents=True, exist_ok=True)
                 (self.root / relative).write_bytes((ROOT / relative).read_bytes())
@@ -1798,10 +1764,10 @@ class ModelRecordTests(unittest.TestCase):
             self.assertIn("model-document-v1", issues[0].message)
 
     def test_model_design_example_and_parent_validate_without_counting_fenced_marker(self):
-        parent = (ROOT / "docs/design/skill/authoring/design.md").read_text()
+        parent = (ROOT / "docs/design/skill/design.md").read_text()
         examples = re.findall(r"^(`{3,})markdown\n([\s\S]*?)^\1[ \t]*$", parent, re.MULTILINE)
         example, = [text.rstrip("\n") for _,text in examples if text.startswith("# Label Normalization Design")]
-        self.assertEqual(validate_model_record(parent, "docs/design/skill/authoring/design.md"), ())
+        self.assertEqual(validate_model_record(parent, "docs/design/skill/design.md"), ())
         self.assertEqual(validate_model_record(example, "docs/design/label-normalization/label-normalization.md"), ())
         invalid = example.replace("Model validation contract: model-document-v1",
                                   "Model validation contract: unknown_value", 1)
@@ -1815,7 +1781,8 @@ class ModelRecordTests(unittest.TestCase):
     def test_model_mismatched_directory_examples_and_extra_nesting_reject(self):
         for relative in ("docs/design/cli/workflow.md", "docs/design/skill/examples/workflow/sample.md",
                          "docs/design/workflow/nested/workflow.md", "docs/design/skill/unknown_value.md",
-                         "docs/design/skill/authoring/unknown_value.md", "docs/design/cli/examples/records/records.md"):
+                         "docs/design/skill/authoring/unknown_value.md", "docs/design/skill/authoring/design.md",
+                         "docs/design/cli/examples/records/records.md"):
             path = self.root / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(self.text)

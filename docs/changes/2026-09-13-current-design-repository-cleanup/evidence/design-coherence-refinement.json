@@ -1,0 +1,80 @@
+{
+  "operation": "refine-current-design-coherence",
+  "updated_paths": [
+    "docs/design/system.md",
+    "docs/design/skill/skill.md",
+    "docs/design/skill/design.md",
+    "docs/design/skill/workflow.md",
+    "docs/design/skill/assessment.md"
+  ],
+  "subjects": [
+    {
+      "path": "docs/design/system.md",
+      "prior_identity": "sha256:a3030d59d9b47c085f8c514091dc233f9f0dec4a1829668212c99ff530cbb098",
+      "current_identity": "sha256:c6ad836340194950a2a15f86729c568b5f74c86ff09299d9d8e35f226ff66274",
+      "prior_words": 6444,
+      "current_words": 6649
+    },
+    {
+      "path": "docs/design/skill/skill.md",
+      "prior_identity": "sha256:c93c119de205e02dfd2edc53d01663741cbef2b710956abf2b477c5d685e5094",
+      "current_identity": "sha256:b9a607c786f5aa60d7285f88a8af467b950cb10e073ad310d4d0accf0eeb74e6",
+      "prior_words": 11073,
+      "current_words": 10953
+    },
+    {
+      "path": "docs/design/skill/design.md",
+      "prior_identity": "sha256:611d4dd816d13b48f91d9f10059f7ca8325aae09b278e635c07c7919d08f1d56",
+      "current_identity": "sha256:a881de22bac75fb530374cf569baeea0b88a2e1beda26156c2be4d2e9735a8f8",
+      "prior_words": 10751,
+      "current_words": 9667
+    },
+    {
+      "path": "docs/design/skill/workflow.md",
+      "prior_identity": "sha256:1837892bf66fb387cc1cfd05dd46821ee1cbc6d8b02a7e249b770a37d6d65ce2",
+      "current_identity": "sha256:512df840fd2154ca9c8279cd7a74e1f47f1d83915accd55a93ed64bd28efb592",
+      "prior_words": 10195,
+      "current_words": 10010
+    },
+    {
+      "path": "docs/design/skill/assessment.md",
+      "prior_identity": "sha256:d645e03218519b23897a6388b74928b53fe04dd9f34d94162e84adf80b32b558",
+      "current_identity": "sha256:3957bb9a4545aa187fc662410b6afb4b120991d5149ee0c5d53f4f64f5023139",
+      "prior_words": 10676,
+      "current_words": 10271
+    }
+  ],
+  "unchanged_interface_owners": [
+    "docs/design/cli/cli.md",
+    "docs/design/cli/records.md",
+    "docs/design/cli/installation.md",
+    "docs/design/engineering/validation.md"
+  ],
+  "important_knowledge": "System defines product handoffs and four cross-owner work/failure walkthroughs. Skill delegates requirement refinement, proof criteria and judgment instead of repeating them. Design uses current Installation authority, reconciles compatibility scenarios and marks the superseded DES-DEC-04 state-write choice historical. Workflow owns coordination and navigation without obsolete authoring actors. Assessment consolidates formal recording, independent reassessment and historical-reliance explanations.",
+  "retired_material": "Removed duplicated owner prose, obsolete state-writing installation instructions, obsolete original-path retention mandates and past-tense adoption ceremony presented as current steps. Source-transfer inventories remain after current behavior/scenarios/decisions, preserving all existing heading anchors and requirement rows. No document, skill, executable, schema, template or external state is removed or changed by this refinement.",
+  "historical_preservation": "All existing requirement rows are byte-identical within each model, and all prior headings remain present. Source-qualified transfer maps and historical judgment records preserve their scopes and identities; DES-DEC-04 explicitly records supersession rather than erasing the original choice. Prior model identities are recorded above. Earlier reviews do not approve these changed subjects.",
+  "walkthrough_observations": [
+    {
+      "case": "Small scoped change",
+      "observation": "Scope can remain small without waiving whole-change review before governed final Verify."
+    },
+    {
+      "case": "Multiple milestones",
+      "observation": "Workflow consumes milestone judgments; integrated proof and final assessment remain separately required."
+    },
+    {
+      "case": "Review defect",
+      "observation": "Finding is recorded before correction; responsibility returns to Design, Plan or Implementation according to the faulty subject; assessor owns renewed reliance."
+    },
+    {
+      "case": "Interrupted or conflicting recording",
+      "observation": "CLI owns conflict/recovery, actor rereads current basis, and Assessment owns applicability; save success alone never renews approval."
+    }
+  ],
+  "limits": "These are author walkthroughs and current-contract reconciliation, not independent assessment or runtime execution evidence. Independent Design Review, any required Delivery allocation/consumer implementation, whole-change Code Review and final Verify remain outstanding for the wider cleanup.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for System, Skill, Design, Workflow and Assessment; python scripts/validate-documentation-prose.py --mode enforce with --path for all five models and source-disposition; git diff --check; git diff --cached --check; author comparison of prior requirement rows, heading anchors and new local link destinations.",
+    "summary": "Final skill suite passed 354 tests and boundary/model suite passed 87 tests after reordering. Model structure/reference checks passed; prose passed with zero errors/warnings. All existing requirement rows are unchanged, all prior heading anchors remain and new local link destinations exist. Net reduction is 1,589 whitespace-delimited words across five models. Current Installation destination/force/state policy was checked against its owning requirements. No full CI, runtime installation, independent review or final Verify claimed."
+  }
+}

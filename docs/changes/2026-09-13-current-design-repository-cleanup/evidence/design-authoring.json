@@ -1,0 +1,48 @@
+{
+  "operation": "revise-design",
+  "prior_subjects": [
+    {
+      "path": "docs/design/system.md",
+      "identity": "sha256:d083cf4960e85e71c0acac9a4e1ed5d63bfca655366f7d2fc743c15ea2043623"
+    },
+    {
+      "path": "docs/design/engineering/engineering.md",
+      "identity": "sha256:2af30f6ac92314de586a6edd0d8bc60e68d5db88dc28feda6ef52d7eee9d2b4f"
+    },
+    {
+      "path": "docs/design/engineering/validation.md",
+      "identity": "sha256:6d1d8b981ce863dea927b4dc6b76455109d188b28bff6ad76542f9226f3b5d13"
+    },
+    {
+      "path": "docs/design/engineering/packaging.md",
+      "identity": "sha256:7c8af384bc061f939aecc9e9a9c58161a4743a4136b6437d2726b8b4ed45b3a5"
+    },
+    {
+      "path": "docs/design/engineering/release.md",
+      "identity": "sha256:d4bfc5ac7a65f38385f5fd575cd0e37bd1e7d0aea23cc06120451d47310fd083"
+    }
+  ],
+  "completed_subjects": [
+    {
+      "path": "docs/design/system.md",
+      "identity": "sha256:4d174d5e1375fd63f8010c57cd409d0982674c8b56369c26d4f72126b8c9c330"
+    },
+    {
+      "path": "docs/design/engineering/engineering.md",
+      "identity": "sha256:d2d708ebfde5172045d657884f9fdc210849928650e104dc91940580573f6d54"
+    },
+    {
+      "path": "docs/design/engineering/validation.md",
+      "identity": "sha256:d6a2ae7cf2c2ca1d57269f383b2c1716c27af55624625f6a0154738cc698d0c5"
+    },
+    {
+      "path": "docs/design/engineering/packaging.md",
+      "identity": "sha256:0d00ba4c773e61762c1e5cf9a02f03185816439313b1593e7ff08b4099167827"
+    },
+    {
+      "path": "docs/design/engineering/release.md",
+      "identity": "sha256:2fce1950f9219fd286427ddbbdbdff849c99f036e7a9b5e316f3388d9397caa4"
+    }
+  ],
+  "limits": "Design authorship only; retained source reconciliation and implementation validation are not complete. No Design approval or deletion authority claimed."
+}

@@ -1,0 +1,96 @@
+{
+  "operation": "retire-test-spec-stage-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/test-spec-review-gate.md",
+      "identity": "sha256:f28b8861fcbbdafa5a0dda945d5504c3b60b21a3dffe17945a9ebc8ee2a5d26c",
+      "historical_identity": "sha256:f28b8861fcbbdafa5a0dda945d5504c3b60b21a3dffe17945a9ebc8ee2a5d26c"
+    },
+    {
+      "path": "specs/test-spec-review-gate.test.md",
+      "identity": "sha256:561b05fe6a7ef92ed268dbfc441a8ce489ad9b488f73c16cac69d15a208a7998",
+      "historical_identity": "sha256:3ee654bb0a94334017700f923a19408a04c36f4bb9fcbec01cf9ee68a069a3ad"
+    },
+    {
+      "path": "specs/test-spec-skill-simplification.md",
+      "identity": "sha256:cebad864b7d276c1dbedb3cfded676b3d37216dd92266e7aee222704bfd53541",
+      "historical_identity": "sha256:cebad864b7d276c1dbedb3cfded676b3d37216dd92266e7aee222704bfd53541"
+    },
+    {
+      "path": "specs/test-spec-skill-simplification.test.md",
+      "identity": "sha256:ec0d726e24761d79598465e07ef68e700ebbbdb57b88303068451d026bc73090",
+      "historical_identity": "sha256:ec0d726e24761d79598465e07ef68e700ebbbdb57b88303068451d026bc73090"
+    },
+    {
+      "path": "specs/test-spec-review-skill-simplification.md",
+      "identity": "sha256:e5d0740e108e60e32c9369a66775cf863a31c0dc2e6ad57e3c0ead2c7d501d3a",
+      "historical_identity": "sha256:e5d0740e108e60e32c9369a66775cf863a31c0dc2e6ad57e3c0ead2c7d501d3a"
+    },
+    {
+      "path": "specs/test-spec-review-skill-simplification.test.md",
+      "identity": "sha256:2d74ce6bdd8fc25fd98c14831f8c583439506a69dfa6449786dc679e5b991fb0",
+      "historical_identity": "sha256:2d74ce6bdd8fc25fd98c14831f8c583439506a69dfa6449786dc679e5b991fb0"
+    },
+    {
+      "path": "specs/test-spec-readiness-and-skill-workflow-alignment.md",
+      "identity": "sha256:a67be85f53e2a6ff32851e0461282f62c41688ce3b7c99afcd7830e7bb2ee2dd",
+      "historical_identity": "sha256:a67be85f53e2a6ff32851e0461282f62c41688ce3b7c99afcd7830e7bb2ee2dd"
+    },
+    {
+      "path": "specs/test-spec-readiness-and-skill-workflow-alignment.test.md",
+      "identity": "sha256:5ae13b52cfb7b55cbf9dd36f4e1003fb2276fdfea7a03c591fa973a2f8dbad0f",
+      "historical_identity": "sha256:5ae13b52cfb7b55cbf9dd36f4e1003fb2276fdfea7a03c591fa973a2f8dbad0f"
+    },
+    {
+      "path": "specs/test-spec-proof-contract-upgrade.md",
+      "identity": "sha256:9c5f1577a512bb701cc4998eac0be4dac7a1e5f6a744ba2be2d171362a8599c5",
+      "historical_identity": "sha256:9c5f1577a512bb701cc4998eac0be4dac7a1e5f6a744ba2be2d171362a8599c5"
+    },
+    {
+      "path": "specs/test-spec-proof-contract-upgrade.test.md",
+      "identity": "sha256:94a4fedde1727ff639ab76ba7538efc00de2e8dbc6f654741191728db94db6b5",
+      "historical_identity": "sha256:94a4fedde1727ff639ab76ba7538efc00de2e8dbc6f654741191728db94db6b5"
+    },
+    {
+      "path": "specs/retire-standalone-test-spec-stage.md",
+      "identity": "sha256:e05c78bc2ce875d18d173fe3ae63caf72e37372663a335019c4794198aad7db4",
+      "historical_identity": "sha256:e05c78bc2ce875d18d173fe3ae63caf72e37372663a335019c4794198aad7db4"
+    },
+    {
+      "path": "specs/retire-standalone-test-spec-stage.test.md",
+      "identity": "sha256:4924c73977b907a8348ea7d1d78914d8dfb14c7365262bcc4bdfaeca52c53fd7",
+      "historical_identity": "sha256:4924c73977b907a8348ea7d1d78914d8dfb14c7365262bcc4bdfaeca52c53fd7"
+    },
+    {
+      "path": "docs/architecture/2026-08-31-retire-standalone-test-spec-stage.md",
+      "identity": "sha256:98023a64b3248bd4095a25242dd830b7f71bff280f050127a1390f623175129c",
+      "historical_identity": "sha256:98023a64b3248bd4095a25242dd830b7f71bff280f050127a1390f623175129c"
+    },
+    {
+      "path": "docs/adr/ADR-20260831-verification-ownership-without-test-spec-stage.md",
+      "identity": "sha256:fb9409e89524101cc54cb0af1ab9d7a22b6472a7a2cabe556ac9aaf3a91e795e",
+      "historical_identity": "sha256:fb9409e89524101cc54cb0af1ab9d7a22b6472a7a2cabe556ac9aaf3a91e795e"
+    }
+  ],
+  "preserved_uncommitted_adjustments": [
+    {
+      "path": "specs/test-spec-review-gate.test.md",
+      "patch_from_historical_revision": "diff --git a/specs/test-spec-review-gate.test.md b/specs/test-spec-review-gate.test.md\nindex 9230566d..19cfdac1 100644\n--- a/specs/test-spec-review-gate.test.md\n+++ b/specs/test-spec-review-gate.test.md\n@@ -22,8 +22,8 @@ This alignment requires `test-spec-review` before M1 relies on it.\n \n - Spec: [Test-Spec-Review Gate](test-spec-review-gate.md), approved.\n - Proposal: [Independent Test-Spec-Review Gate for Proof-Map Adequacy](../docs/proposals/2026-06-25-independent-test-spec-review-gate.md), accepted.\n-- Architecture: [Independent Test-Spec-Review Gate Architecture](../docs/architecture/2026-06-25-independent-test-spec-review-gate.md), approved.\n-- ADR: [ADR-20260625 Independent Test-Spec-Review Gate](../docs/adr/ADR-20260625-independent-test-spec-review-gate.md), accepted.\n+- Architecture: [Independent Test-Spec-Review Gate Architecture](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/architecture/2026-06-25-independent-test-spec-review-gate.md), approved.\n+- ADR: [ADR-20260625 Independent Test-Spec-Review Gate](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260625-independent-test-spec-review-gate.md), accepted.\n - Plan: [Independent Test-Spec-Review Gate Plan](../docs/plans/2026-06-25-independent-test-spec-review-gate.md), active after clean `plan-review-r2`.\n - Spec-review: [spec-review-r1](../docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/spec-review-r1.md), approved.\n - Architecture-review: [architecture-review-r1](../docs/changes/2026-06-25-independent-test-spec-review-gate/reviews/architecture-review-r1.md), approved.\n",
+      "reason": "Previously authored revision-pinned links; no technical text changes."
+    }
+  ],
+  "updated_paths": [
+    "docs/design/skill/skill.md",
+    "scripts/test-skill-validator.py"
+  ],
+  "important_knowledge": "Skill Authoring retains safe engineering sequence, milestone and integrated proof allocation, traceability, executable-command prerequisites/timing/permissions and conditional guidance. Design already owns observable outcomes, Assessment owns independent Delivery Review/Verify, Validation owns meaningful negative proof. Old stage names, historical field schemas, package inventory, rollout/readiness mechanics and duplicate wording retire.",
+  "retained_dependencies": "Activation grandfathering entries are historical names, not document readers. Selector test paths name unchanged historical change records. Prior test-spec/review/plan records preserve their original bytes. Removed R26 helper and two constants had no callers; no executed tests removed.",
+  "historical_reference_preserved": "The stage-owned legacy displacement table remains unchanged: its retired stored-record marker cannot support a current amendment. Current authority and replacement meaning are recorded in Skill Authoring and this cleanup evidence; no historical table or review is retargeted.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for Skill and all 12 deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce for Skill and source-disposition; git diff --check.",
+    "summary": "356 skill-validator tests and 87 boundary/model tests passed. Final model/deletion validation passed with structure-and-references-only scope; prose passed with zero errors/warnings. An attempted reference amendment to the retained stage-owned spec was rejected by its retired stored-record marker; that link-only amendment was restored to HEAD bytes, leaving it outside the final changed scope. No independent review, full CI or final Verify claimed."
+  },
+  "deleted_lines": 4701
+}

@@ -1,0 +1,97 @@
+{
+  "assessment_scope": "Bounded Design/consumer boundary inspection of Records RF-SR-02 and Subject versus EntryRef separation, Validation selection responsibilities, actual current-record selection branch and unknown-path regression. This records the supported correction before changes; final accumulated Design and Code Review remain separate.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity high; cross-artifact; affected owners Validation and Records/CLI boundary plus validation selector consumer. scripts/validation_selection.py _apply_path_selection around 1213-1242 emits unregistered-recording-path for every non-record-kind path in a current root, including source-disposition.md and evidence/* explicitly named as Subject in registered evidence.json. Records RF-SR-02 and Explicit record schema distinguish Subject from authoritative EntryRef; extra files do not become records by discovery. Existing scripts/test-select-validation.py unknown_value.md regression must remain.",
+      "id": "referenced-subject-path-selection",
+      "owner": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "codex-cleanup-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Clarify the narrow Validation selection application and reconcile its implementation: admit only exact contained non-reserved engineering Subject paths named through validated current manifest/registered records; select full store validation and relevant changed-subject checks without authority promotion. Keep unknown/unreferenced support paths, malformed/mixed records, unsafe/symlink paths and unregistered reserved record files blocking. Preserve schema/EntryRef/record membership, historical subjects and current drift observations. Safe path: Design owner clarifies this consumer rule and acceptance cases; Delivery allocates focused positive and negative selector protection before implementation and independent review.",
+      "resolution": {
+        "actor": {
+          "id": "codex-cleanup-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [],
+        "rationale": "Withdraw duplicate report only: independently recorded code-review-cleanup-consolidation-first / cleanup-supporting-evidence-selection is the canonical open correction covering this same selector defect. Saves crossed during parallel reviews. This disposition does not establish a fix, implementation correctness or package approval; Design must still assess the bounded Validation clarification and the code reviewer owns correction acceptance."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:50d69a7b48d15922959978c52941fac7d3737179fe560dda34b26c4b6ee9fdec",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:85e1cc7b94123e496e74ae9ce2796464a61683e0f47ea85f842afd901bea130d",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:c930940c5d722b0e87c9cdb12f727a3fc43e666099880bb82cb43cb90d5c1a23",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence.json"
+        }
+      ]
+    }
+  ],
+  "id": "design-review-support-subject-boundary",
+  "independence_basis": "Independent delegated reviewer /root/design_refinement_review authored no reviewed models, selector implementation or tests.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This is not approval of a generic support-folder exemption, permissive recursive path search, record-schema change or relocation of evidence.",
+    "No implementation, tests or final readiness assessment was performed. Existing subject drift remains observable and cannot establish current evidence applicability."
+  ],
+  "rationale": [
+    "RF-SR-02 requires registry membership for authoritative records, not every file physically under a change root. Records explicitly keeps engineering subjects in place and says extra files must not become authority through discovery.",
+    "The current selector derives a record kind solely from path; any non-reserved file under a v3 root receives unregistered-recording-path even when a valid registered evidence check names it as a Subject. Current cleanup uses such files for source dispositions and provenance, so whole selection cannot validate the otherwise structurally valid supporting evidence.",
+    "A bounded current selection rule can distinguish exact named engineering Subjects from reserved record paths without adding a stored kind, altering historical identities or promoting extra files to records. Unknown files and malformed or unsafe authority must still reject."
+  ],
+  "reviewer": {
+    "id": "codex-cleanup-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:50d69a7b48d15922959978c52941fac7d3737179fe560dda34b26c4b6ee9fdec",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:85e1cc7b94123e496e74ae9ce2796464a61683e0f47ea85f842afd901bea130d",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:c930940c5d722b0e87c9cdb12f727a3fc43e666099880bb82cb43cb90d5c1a23",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence.json"
+    }
+  ],
+  "summary": "Validation selection confuses referenced engineering support subjects with authoritative record files.",
+  "target": "design"
+}

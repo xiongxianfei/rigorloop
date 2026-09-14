@@ -2,9 +2,11 @@
 
 Model validation contract: model-document-v1
 
-Owning change: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json).
+Owning change: [current-design repository cleanup](../../changes/2026-09-13-current-design-repository-cleanup/change.json).
 
 Original composition adoption: [three-model reconciliation](../../changes/2026-09-12-unified-validation-model/change.json).
+
+Prior refinement: [independent parallel tests](../../changes/2026-09-13-independent-parallel-tests/change.json); its selected behavior and evidence retain their own scope.
 
 ## Introduction and Goals
 
@@ -147,6 +149,8 @@ Local/CI execution, candidate roots and protected release jobs have distinct res
 | ENG-SR-10 | Source retirement MUST preserve stable requirements, decisions, useful negative/regression proof and historical record identities, reconcile actual readers and remove superseded sources and exclusive machinery. Unknown live consumers MUST block their affected removal. |
 | ENG-SR-11 | Repository engineering procedures MUST remain contributor/governance content. Published skills MUST NOT require this repository’s executor, paths or internal record identities for ordinary customer use. |
 | ENG-SR-12 | The three-model transfer MUST include coherent Skill/CLI instructions, recording and package consumers, and the selected no-cache/source cleanup before adoption. Design authoring MUST NOT claim implementation, final Verify or customer activation. |
+| ENG-SR-13 | Development MUST reconcile the exact retirement set, baseline identities, surviving obligations, current consumers and justified retention in change-local evidence. Current claims and open work MUST remain self-contained. Historical-only sources MAY be deleted after recoverability and current-reliance closure; a tracked citation, successful old review or retired filename alone MUST NOT decide current applicability. |
+| ENG-SR-14 | Cleanup MUST remove selected superseded sources and exclusive readers together, preserve uncommitted and unrelated files, and re-evaluate any changed source or newly discovered consumer before its removal. Retained fixtures MUST prove current behavior independently of archived production records. Final closeout MUST account for every selected family and actual residual exceptions; an inventory-only result is insufficient. |
 
 ## Development
 
@@ -172,7 +176,7 @@ For the current refinement, Development allocates the complete remaining automat
 
 A Skill or CLI requirement change identifies both affected consumers before implementation. After the reviewed work is implemented, generated skill resources and documented requests are checked against the actual CLI candidate. Negative cases demonstrate missing resources, unknown input, stale revisions, unsafe installation destinations and mismatched artifact identity where applicable. A passing checker with an unmet requirement remains inadequate evidence; independent assessment returns the work to its owner.
 
-If the development CLI cannot safely persist a decision, stop that write and preserve the actual outcome. Do not use the candidate's success label to manufacture a review or bypass conflict recovery. A failed validation/package/release operation reports partial work and limits under its own contract. Existing governing records, installed customer files and unrelated source changes are not cleanup targets.
+If the development CLI cannot safely persist a decision, stop that write and preserve the actual outcome. Do not use the candidate's success label to manufacture a review or bypass conflict recovery. A failed validation/package/release operation reports partial work and limits under its own contract. Active governing records, installed customer files and unrelated source changes are not cleanup targets. Completed historical records follow the current retirement contract below.
 
 ## Deployment and maintenance
 
@@ -187,9 +191,9 @@ Development tools operate in the repository under its existing permissions. Pack
 | Input domain | ENG-SR-02, ENG-SR-05 | An authorized Skill or CLI change has a named product contract and bounded proof; missing authority is surfaced before dependent implementation. |
 | State/lifecycle | ENG-SR-02, ENG-SR-04 | Progress through milestones retains required reviews; a local pass or non-final review cannot close the whole change. |
 | Identity/authority | ENG-SR-03, ENG-SR-08 | The development tool basis and candidate identities remain distinguishable; independent assessment and publication authority are not inferred from self-use. |
-| Composition/path | ENG-SR-01, ENG-SR-07 | Generated skills and the packed CLI agree on resources, commands and records; a helper-only pass cannot hide incompatible products. |
+| Composition/path | ENG-SR-01, ENG-SR-07, ENG-SR-13, ENG-SR-14 | Generated skills and the packed CLI agree on resources, commands and records; a helper-only pass cannot hide incompatible products. Removing an archive input and its exclusive reader leaves current CLI, package and evidence consumers self-contained. |
 | Temporal/retry | ENG-SR-05, ENG-SR-09 | Concurrent cases share one budget; changed subjects trigger affected proof and reassessment rather than cached success. |
-| Failure/recovery | ENG-SR-09, ENG-SR-10 | Failed or interrupted operations preserve actual partial state and route correction without deleting unrelated sources or historical records. |
+| Failure/recovery | ENG-SR-09, ENG-SR-10, ENG-SR-14 | Failed or interrupted operations preserve actual partial state and route correction without deleting unrelated sources or historical records. Changed bytes, a new reader or missing historical revision stops the affected deletion; restore the coherent source/consumer slice. |
 | Compatibility/migration | ENG-SR-10, ENG-SR-12 | Every retired source has a resolved consumer/meaning disposition; the hierarchy does not silently revive retired runtime formats or remove required proof. |
 | External/environment | ENG-SR-08, ENG-SR-11 | Customer individual skills work without this repository executor; public release claims require real Release observations and authorization. |
 
@@ -204,3 +208,31 @@ The [reconciliation evidence (`design-preservation-delta`)](../../changes/2026-0
 ## Next artifacts
 
 Independent Design Review of System, Skill, CLI, Engineering and the affected child/legacy contracts, followed by Delivery allocation. Required candidate tests, reviews and distinct final Verify establish coherent implementation; publication retains separate authority.
+
+## Repository retirement
+
+The change-local source disposition includes audited whole-source mappings and named retained specialist contracts. In particular, the June 29 release-transaction root remains available because its literal-audit baseline is a live Release input; removing historical evidence must not turn an absent safety input into a skipped check.
+
+Development applies the Constitution's current-tree retention policy. A source is current when it still defines an applicable obligation, supplies operational input, or supports an actual current assessment or unfinished work. Completed record directories and superseded documentation are historical when none of those needs remains; absence from CLI discovery alone is not sufficient evidence of that distinction.
+
+The change-local source disposition records baseline file identities and a recoverable commit, exact selected removals, current receiving owners and necessary consumer corrections. Before a removal is relied upon, the author reconciles numbered and unnumbered requirements, decisions, exceptions and unique proof intent. Existing complete source maps may be reused within their actual scope. Unmapped responsibilities remain expressly retained; a transfer candidate is not deletion permission. The broad cleanup does not silently expand an earlier narrow model adoption.
+
+Current-reliance closure includes runtime imports and path construction, resource manifests, catalog routes, package/release preparation, current registry subjects and evidence references, and current navigation. Distinguish a historical provenance citation from evidence used to justify a current claim. Convert provenance to a commit and path; preserve or replace the full necessary basis of a live claim under Assessment. A current CLI operation never retrieves deleted history to manufacture its required input. Historical record bytes and judgments are not rewritten to fix links.
+
+For reusable regression scenarios, materialize owned fixtures from current contracts, including meaningful legacy rejection where supported, rather than importing a completed production change pack. A copied historical directory with renamed paths is not a justified replacement fixture. Discovery still excludes unrelated archives and rejects malformed current stores. No legacy operational reader, format migration or automated garbage collector is added.
+
+```mermaid
+flowchart LR
+    Inputs["Selected source and current consumers"] --> Classify["Development: reconcile purpose and authority"]
+    Classify -->|"live meaning or proof"| Owners["Current owning Design and concrete proof"]
+    Classify -->|"historical only, recoverable"| Retire["Reviewed source and reader removal"]
+    Owners -->|"current reliance preserved"| Retire
+    Retire --> Check["Validation and independent assessment"]
+    Check -->|"gap or concurrent change"| Classify
+```
+
+This retirement procedure refines Development's existing implementation/proof loop; current source, isolated candidate output and historical Git storage are the existing deployment boundaries. A shallow checkout without the needed historical revision cannot establish recoverability and blocks that deletion until the source is available. A changed file or surprise reader invalidates its prior disposition. Recovery restores the affected source, reader, catalog and fixture slice together; it neither rewrites history nor removes unrelated data. A successful build alone cannot establish semantic preservation or current-evidence adequacy.
+
+### Token-cost feature retirement
+
+Retire the inconclusive token-cost measurement/reporting experiment under [Validation VAL-SR-25](validation.md#token-cost-feature-retirement), including exclusive tools, checks, fixtures and report duties. Skill owns concise evidence-sufficient operation; Packaging and Release reconcile qualification consumers. Preserve actual shared utilities and independently useful proof, not infrastructure solely to maintain a retired feature. This is a selected repository capability removal requiring coherent implementation and verification, not a claim that the current executable tree has already been cleaned.

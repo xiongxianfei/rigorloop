@@ -46,8 +46,8 @@ And it points to the owning skill for each artifact type.
 ### Example E2: exact review shape stays in the formal review spec
 
 Given the artifact map lists formal review records under `docs/changes/<change-id>/reviews/<stage>-r<n>.md`
-When an agent needs the required clean receipt fields or review-log indexing rules
-Then the agent uses `specs/formal-review-recording.md`
+When an agent needs current review recording policy or stored fields
+Then the agent uses [Assessment](../docs/design/skill/assessment.md) and [Records](../docs/design/cli/records.md)
 And the artifact map is not treated as the complete review-record schema.
 
 ### Example E3: customized project location outranks a portable default
@@ -391,7 +391,7 @@ EC10. Canonical skills change: generated public skill and adapter output is chec
 - Lifecycle validation uses isolated temporary fixtures for plan-shaped cases.
 - Formal review tests use temporary repositories or test fixtures.
 - Synthetic validator cases live under `tests/fixtures/` and production-path special cases are removed.
-- Formal review receipt/root shape remains governed by `specs/formal-review-recording.md`.
+- Current review recording policy belongs to [Assessment](../docs/design/skill/assessment.md), and stored representation belongs to [Records](../docs/design/cli/records.md). Historical receipt/root shapes remain available in [historical `specs/formal-review-recording.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/formal-review-recording.md).
 - No public skill hardcodes RigorLoop-only internal validator paths when project-local guide wording is sufficient.
 
 ## Open questions

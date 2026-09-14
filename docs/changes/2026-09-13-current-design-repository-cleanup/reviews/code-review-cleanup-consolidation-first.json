@@ -1,0 +1,103 @@
+{
+  "assessment_scope": "Early finding from fresh whole-change HEAD-to-working-tree review, recorded before correction. Source/test/runtime/consumer integrity and complete deletion scope are being independently assessed. This records the substantiated integrated validation blocker, not whole-change approval or completed checklist coverage. Consolidation Design/Delivery and final proof remain pending.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-cleanup-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [
+    {
+      "evidence": "Severity: major. Location: scripts/validation_selection.py:1205-1243 and new cleanup supporting evidence/source files. Actual local selection /tmp/cleanup-local-selection.json blocks 40 paths with unregistered-recording-path. For a current v3 manifest, kind is assigned only reserved registry/review names; all supporting files have kind=None and are rejected irrespective of their role as exact review/evidence subjects. The new package therefore cannot satisfy required local validation.",
+      "id": "cleanup-supporting-evidence-selection",
+      "owner": {
+        "id": "codex-cleanup-implementer",
+        "role": "implement"
+      },
+      "reporter": {
+        "id": "codex-cleanup-code-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Resolve the supporting-subject versus authoritative-record boundary under current Design and reviewed delivery allocation. Safe path: obtain explicit bounded placement/routing decision, implement only that decision with direct positive and negative selector/wrapper proof, preserve every original review identity and historical root byte, and rerun complete local selection. Do not register arbitrary files as fictitious authority records or weaken unknown/unregistered reserved-record rejection. Decision owner: owning Design author/reviewer for any changed validation contract; implementation owner then corrects the package or selector as approved.",
+      "resolution": {
+        "actor": {
+          "id": "codex-cleanup-code-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "integration-final-validation",
+            "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence.json"
+          }
+        ],
+        "rationale": "Independently reassessed final correction: the existing validator uses one inspected files map, runs complete stored-format set/reference validation, then extracts exact Subject paths from that returned parsed Map. Selector admits only safe explicitly referenced nonreserved paths, preserves reserved registration/unknown/mixed/malformed rejection and reuses only per invocation. Seven direct tests cover changed/deleted support, record preservation, stale membership, mixed unknowns, invalid schema, dangling EntryRefs, reserved paths, escaping links and strict validator options. Independent dangling-reference reproduction now blocks. All 1639 complete selected+broad execution rows passed on unchanged final engineering subjects. Original finding evidence and reviewed identities are preserved."
+      },
+      "state": "resolved",
+      "subjects": [
+        {
+          "identity": "sha256:50d69a7b48d15922959978c52941fac7d3737179fe560dda34b26c4b6ee9fdec",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:f4cd3fb5bd5d47f32a269fb216a9980819a4a636d63c6b254f2df3d793e4af53",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e17e6b10c70902b2ed0affc769c8734e4815b02e9593c043a952ae37b58ac80a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-source-removal.json"
+        },
+        {
+          "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+          "path": "CONSTITUTION.md"
+        }
+      ]
+    }
+  ],
+  "id": "code-review-cleanup-consolidation-first",
+  "independence_basis": "Separate delegated reviewer /root/token_retirement_design_review has not authored or corrected source, tests, models, plans or evidence package. Earlier assessments were review-only.",
+  "judgment": "changes-requested",
+  "limitations": [
+    "This is an early required-finding assessment during whole-change review; not final approval, Verify, hosted CI or PR readiness.",
+    "The selector behavior predates cleanup; its interaction with the newly introduced cleanup evidence tree is the integration defect. Design/plan owner must choose exact supporting-artifact placement or bounded routing correction before implementation."
+  ],
+  "rationale": [
+    "Validation evidence and compatibility: concern. /tmp/cleanup-local-selection.json reports blocked selection for 40 supporting evidence/source paths; source inspection confirms kind=None forces unregistered-recording-path for every such file inside a current v3 root. Thus correct registered records plus independently referenced supporting subjects cannot be committed as this package without failing its required entrypoint.",
+    "Architecture and spec alignment: concern requiring owner reconciliation. Supporting evidence is not automatically one of the reserved authoritative registries. The correction must preserve historical review subjects and the fail-closed record namespace rather than fabricating record kinds, rewriting old judgments or bypassing complete-set validation.",
+    "Tests, edges, errors and security: focused correction must prove accepted intended supporting material as well as rejected malformed/reserved/unregistered authoritative records, unsafe paths and unrelated files. Existing slice successes do not prove this composed route.",
+    "Derived currency and unrelated scope: no product or generated edits made by this reviewer. Remaining ten-item whole-change checklist and exact final evidence will be completed after approved correction and consolidation gates; no missing proof is presented as success."
+  ],
+  "reviewer": {
+    "id": "codex-cleanup-code-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:50d69a7b48d15922959978c52941fac7d3737179fe560dda34b26c4b6ee9fdec",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:f4cd3fb5bd5d47f32a269fb216a9980819a4a636d63c6b254f2df3d793e4af53",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+    },
+    {
+      "identity": "sha256:e17e6b10c70902b2ed0affc769c8734e4815b02e9593c043a952ae37b58ac80a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-source-removal.json"
+    },
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+      "path": "CONSTITUTION.md"
+    }
+  ],
+  "summary": "The accumulated cleanup evidence package cannot pass actual local selection: supporting evidence inside its current v3 root is treated as an unregistered authority record.",
+  "target": "code"
+}

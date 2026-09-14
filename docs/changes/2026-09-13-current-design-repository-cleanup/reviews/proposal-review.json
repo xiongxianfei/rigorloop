@@ -1,0 +1,76 @@
+{
+  "assessment_scope": "Formal Proposal Review of repository-wide current-design cleanup after owner-authorized vision clarification. Assesses challenge, goals, scope, principle, direction, feasibility, impact, vision fit, downstream authority and requested decision. Recording mode formal-lifecycle; automation mode manual; assembly PRR1G-recorded-context-gated.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review",
+  "independence_basis": "Separate delegated reviewer agent /root/proposal_reviewer did not author or edit the proposal, VISION, positioning rationale or governance changes. Parent codex-author authored the reviewed contribution; reviewer independently inspected final subjects and recorded this first-pass assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "Direction-level assessment only; no exhaustive retirement dependency graph, file-level deletion approval, proof adequacy, implementation or final Verify judgment is claimed.",
+    "Parent reported focused prose, README-marker, readability and diff checks; this assessment independently inspected content and consumer evidence rather than treating those checks as semantic approval.",
+    "Manual formal review records its assessment and returns control to the parent; no automatic downstream stage or activity transition is performed."
+  ],
+  "rationale": [
+    "Challenge, goals, governing principle and direction: pass. The proposal identifies competing historical/current sources and dependent checks, requires real removals with preserved current meaning, and avoids a new archival or validation platform.",
+    "Scope and scope preservation: pass. The original document families and unnecessary check scripts remain visible; current consumer reconciliation is an explicit same-slice dependency and completed historical evidence a separate implementation slice. Every selected family needs disposition, with justified current retention; no hidden follow-up or deletion quota narrows the request.",
+    "Feasibility: pass. Exactly one embedded assessment distinguishes known consumer evidence from unresolved per-file safety. Tracked-file counts independently match 5 archive, 54 ADR/architecture, 107 report, 102 top-level test-spec and 3 reference files. Inspected boundary_first_reference.py and release_execution.py confirm active reference/report consumers. The project map contains obsolete v2 wording, so direct sources provide the bounded implementation basis.",
+    "Material impact and vision alignment: pass; vision outcome aligned. Current VISION and positioning distinguish reconstructable current reliance from recoverable retired history. The user requested this clarification before proceeding. Git-only historical retention and shallow-checkout limitations are disclosed without imposing Git on customer projects or discarding current review/release evidence.",
+    "Downstream authority and requested decision: pass. Design owns exact transfers, compatibility and removal exceptions; Delivery owns sequencing and proof allocation. Independent final review and Verify remain required. The existing parallel-test initiative retains its direction and actual adoption state. Proposal approval does not approve deletion, implementation, adoption or external action.",
+    "Specialized gates: scope_budget_context true and satisfied by explicit treatments and boundaries; vision_exception_context false because the owner-authorized current VISION is aligned; standing_artifact_context false because Constitution and VISION are present. No trigger ambiguity, material findings, blockers or required proposal edits."
+  ],
+  "reviewer": {
+    "id": "codex-cleanup-proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+      "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:910f935ae2a7d3f47291731696eb33d09c7144630137f35433d5536ca6b003ea",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:513338d86364c03ef030d567abf590332353a1edfe5fe6ae7a247e9b46781081",
+      "path": "docs/vision/strategic-positioning.md"
+    },
+    {
+      "identity": "sha256:5f5db3ff3a683bdde65ef194e06f4bba6833cdc247c9769ec56625a62eb0aac5",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/vision-authoring.json"
+    },
+    {
+      "identity": "sha256:d083cf4960e85e71c0acac9a4e1ed5d63bfca655366f7d2fc743c15ea2043623",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:6d1d8b981ce863dea927b4dc6b76455109d188b28bff6ad76542f9226f3b5d13",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:7c8af384bc061f939aecc9e9a9c58161a4743a4136b6437d2726b8b4ed45b3a5",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:93b0c51a0df49eea189720aa85426505d6255a6a7aff88c404ff391d4aebc7f1",
+      "path": "scripts/boundary_first_reference.py"
+    },
+    {
+      "identity": "sha256:c388d0e9424a51f38482ebc3ec11f529c64393a65203c5ba7f2fae31902d9ab5",
+      "path": "scripts/release_execution.py"
+    }
+  ],
+  "summary": "The cleanup direction is valuable, bounded and feasible enough for detailed Design; current reliance remains self-contained while retired history may use Git.",
+  "target": "proposal"
+}

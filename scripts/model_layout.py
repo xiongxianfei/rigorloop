@@ -3,7 +3,7 @@
 # Explicit repository layout owned by System. Portable model paths remain valid.
 PROJECT_MODEL_PATHS = {
     "system": "docs/design/system.md",
-    "design": "docs/design/skill/authoring/design.md",
+    "design": "docs/design/skill/design.md",
     "workflow": "docs/design/skill/workflow.md",
     "review-closeout": "docs/design/skill/assessment.md",
     "record-format": "docs/design/cli/records.md",
@@ -14,4 +14,9 @@ PROJECT_MODEL_PATHS = {
     "skill": "docs/design/skill/skill.md",
     "cli": "docs/design/cli/cli.md",
     "engineering": "docs/design/engineering/engineering.md"
+}
+
+# Selection aliases for absent retired paths only, never accepted model locations.
+RETIRED_MODEL_PATHS = {
+    "docs/design/skill/authoring/design.md": "design",
 }

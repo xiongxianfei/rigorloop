@@ -1,0 +1,57 @@
+{
+  "assessment_scope": "Complete current primary plan docs/plans/2026-09-14-cleanup-integration-and-commit.md, INTEGRATE-1 and TG-INTEGRATED, against approved design-review-cleanup-delivered-package and delivered-scope. Prospective integration and closeout only; no reconstruction of earlier gate history.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review-cleanup-integration",
+  "independence_basis": "Independent delegated reviewer authored neither the integration plan nor its engineering inputs. Design review was independently performed; this separate judgment assesses sequencing and verification allocation, not implementation.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval establishes plan adequacy, not that implementation, tests, final Code Review, Verify, backup recovery or commit checks have succeeded. Canonical code-review-cleanup-consolidation-first / cleanup-supporting-evidence-selection remains open until independently resolved.",
+    "No adoption of remaining VAL-SR-23, DIST-SR-21/22, REL-SR-25 or unrelated historical source/fixture cleanup. Material scope, Design, plan or verification changes require reassessment."
+  ],
+  "rationale": [
+    "The milestone freezes additional cleanup, names actual accumulated diff including required untracked evidence, preserves prior plans as history and excludes deferred adoption. Fresh Design and Delivery gates precede the material selector correction; final whole-change Code Review follows all corrections and distinct Verify follows that review.",
+    "TG-INTEGRATED covers the concrete selector failure and adversarial boundaries: explicit support add/change/delete, unknown/mixed paths, unregistered reserved paths, malformed stores and escaping links, with current proof retained and no historical record mutation. Tests must exercise current v3 safety; historical rejection means retained existing proof, not revival of retired v2 protocol tests.",
+    "Complete selected validation plus broad smoke cover cross-batch consumer interactions; combined local --broad-smoke execution is explicitly allowed with existing deduplication and actual check population retained. Release transaction proof is required unless already covered, followed by record/diff/provenance, README/index and post-commit byte checks. Failures require owner corrections and reruns, not weakened gates.",
+    "One coherent checkpoint is justified by shared model/selector/evidence dependencies; the plan rejects broken intermediate commits or fabricated records. Complete pre-integration backup plus Git recovery, preserving unrelated work and source stability during release checks, gives a bounded recovery path. Local PR material is permitted; no push, publication or external handoff is inferred."
+  ],
+  "reviewer": {
+    "id": "codex-cleanup-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:2e4496fcfc8485a5ea0f0cf57f62b89a5d41f68d5389402ec0b7731c553ac457",
+      "path": "docs/plans/2026-09-14-cleanup-integration-and-commit.md"
+    },
+    {
+      "identity": "sha256:7d97cbf53f54767016af5cd770a3da6640cf035a5e3ab93e23a1766b3019a67a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/delivered-scope.md"
+    },
+    {
+      "identity": "sha256:1190b6dcb1fcc32f7a5af2587a581dce9f5c2baad5c1fa87437c23f5c1289a12",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:a130a53c2e4c5752ff06c9931813d98385ca52d9ce4122c84ee949bb05849e4b",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+      "path": "docs/design/skill/skill.md"
+    }
+  ],
+  "summary": "The registered consolidation plan safely allocates the remaining correction and complete delivered-package verification before a coherent local checkpoint.",
+  "target": "delivery"
+}

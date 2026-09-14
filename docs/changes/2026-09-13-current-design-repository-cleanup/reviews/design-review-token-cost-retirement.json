@@ -1,0 +1,64 @@
+{
+  "assessment_scope": "Formal scoped Design Review, round 1, of VAL-SR-25, VAL-DEC-08, Validation token-cost feature retirement and associated acceptance/displacement clauses; Engineering token-cost retirement; Packaging and Release token-cost qualification removal; Skill evidence/proportional-effort token paragraph; and their source/consumer interactions. Full five model members were read for context. Upstream direction is proposal-review-design-basis plus the directly authorized full-retirement decision design-token-cost-feature-retirement. This is one bounded affected package, not approval of the accumulated whole-repository cleanup or unrelated pending model changes.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-token-cost-retirement",
+  "independence_basis": "Separate delegated agent /root/token_retirement_design_review independently inspected the authored package and actual consumers. The parent/design author supplied the models; this reviewer did not edit any reviewed model or implement the retirement.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval covers only the selected token-cost retirement responsibilities and their interactions; unrelated source retirement, local-mirror changes, historical replay withdrawal, scheduling adoption and broader model conformance are not approved by this review.",
+    "The exact implementation inventory and commands remain Delivery work. In particular, include record-store-interactions.mjs tokenization, record-store-tokenize.py and its documentation/selector consumers while retaining independent interaction and CLI output protection.",
+    "This review did not execute implementation tests, modify model members, approve a delivery plan, establish implementation correctness, complete the cleanup, perform final Verify, or authorize publication. Historical Proposal Review subjects are not retargeted; only its unchanged cleanup direction is relied on, supplemented by the recorded explicit user retirement decision."
+  ],
+  "rationale": [
+    "The explicitly authorized direction retires the inconclusive feature entirely rather than retaining optional measurement or introducing a replacement metric. VAL-SR-25 and VAL-DEC-08 preserve that decision, rationale, rejected alternative and consequences; the Skill, Engineering, Packaging and Release sections consistently delegate to this owner. Current evidence sufficiency, conditional loading, scope fidelity and truthful runtime observations remain intact.",
+    "The design distinguishes token counting/session/report-schema functionality, whose dedicated tests may retire, from independently useful source safety, CLI result shape/omissions/truncation/output bounds, privacy and candidate integrity. Its required retained proof has observable negative boundaries rather than a test-count or historical-report-existence oracle. Inspection confirms the CLI byte wrapper already refuses execution; its frozen baseline is not current CLI correctness proof.",
+    "Actual adapter_distribution.py dynamically loads the token-report parser for benchmark qualification and appends the version-specific token_cost_report requirement; release-verify.sh likewise invokes the report validator for v0.1.1. The selected producer/consumer slice explicitly removes these imports, branches, metadata expectations and callers while preserving source/profile/version/artifact identity, side-effect boundaries and malformed candidate rejection. No fake pass or historical approval reinterpretation is permitted.",
+    "Actual selectors route token tools, report paths, fixtures and CLI measurement checks. The design requires deleted paths still reach affected retained protection without launching removed IDs and preserves closed-vocabulary rejection. Actual shared helpers must be evaluated by retained callers, not filename; the record-store-interactions tokenization branch/helper is an additional concrete allocation item under this complete feature-retirement scope while interaction semantics remain supported.",
+    "The existing responsibility graphs and necessary context/building-block/runtime/deployment views remain adequate: retirement removes qualification and measurement dependencies from existing catalog, package and release boundaries rather than introducing a component or changing public-write authority. Representative acceptance requires a valid candidate without reports, invalid candidate rejection, retained output/source-safety boundaries and no benchmark-driven agent execution or report writes through retained entrypoints.",
+    "Compatibility and recovery are explicit: no compatibility stub reports successful measurement; retired report obligations and M4 duties are superseded; historical judgments keep original bytes and identities; live reliance and uncommitted content are reconciled before deletion; failed removal restores its coherent producer/consumer/fixture slice. Delivery must name concrete edits and checks, with reviewed implementation and successful Verify before adoption."
+  ],
+  "reviewer": {
+    "id": "codex-token-retirement-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:77b780c85ee32aaffecc8c0772dd9bc2abf1b13a1b4f1e804d16397046d81a58",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+      "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+    },
+    {
+      "identity": "sha256:de9ff70a0a54df8b205abb5b9bb90c83f08b94bca6fbfa13613b841a8a48ee42",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-design.json"
+    }
+  ],
+  "summary": "The bounded token-cost feature retirement Design is coherent and sufficient for its scoped Delivery allocation.",
+  "target": "design"
+}

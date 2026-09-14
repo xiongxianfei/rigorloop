@@ -1,0 +1,55 @@
+{
+  "operation": "retire-spec-and-architecture-skill-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/spec-skill-simplification.md",
+      "identity": "sha256:b571940a15c2dead65bd5629f59556d29c7d8c3994f68d07b8646289cb76e531"
+    },
+    {
+      "path": "specs/spec-skill-simplification.test.md",
+      "identity": "sha256:a44084c9944ab06856822a4caf1ff2c0109a45496bd9feaa18bc06c23c9babdb"
+    },
+    {
+      "path": "specs/spec-review-skill-simplification.md",
+      "identity": "sha256:25522d5f55d9b24c65d5e20a9348e997ddc4964bf25f12d904b36ba9b91a9b4f"
+    },
+    {
+      "path": "specs/spec-review-skill-simplification.test.md",
+      "identity": "sha256:b12ccf914370bfe6c6fb65439b3dbbb94c54089bf96cb86f2bcc14b33c55f3fa"
+    },
+    {
+      "path": "specs/architecture-skill-simplification.md",
+      "identity": "sha256:4325ef95349e53edd2074b4d6bb5cc1b62dd1430a95de3c0da95a052ff3882fb"
+    },
+    {
+      "path": "specs/architecture-skill-simplification.test.md",
+      "identity": "sha256:414570565734eb0433eef28833f8518adfb47e8b2edfd0b8e49b8d5062b48fe6"
+    },
+    {
+      "path": "specs/architecture-review-skill-simplification.md",
+      "identity": "sha256:4a199a52ab2347ca4db98616cb46bd384d25c804aaca28139fef56abb972f578"
+    },
+    {
+      "path": "specs/architecture-review-skill-simplification.test.md",
+      "identity": "sha256:b73a29e1a959b8705135770a94aa50e1218e83b6ee613f19778062d1fdc64aeb"
+    }
+  ],
+  "deleted_lines": 3020,
+  "prior_model_identities": {
+    "docs/design/skill/design.md": "sha256:54a26ddcba87de9f23b5e50670893d3f09f2c0d697f8d58073fc507a179c0c68"
+  },
+  "updated_paths": [
+    "docs/design/skill/design.md",
+    "specs/spec-family-assets-progressive-disclosure.md"
+  ],
+  "important_knowledge": "Design retains reconciled behavioral/technical authoring, exact targets, safe governed identity, portable isolation, truthful interruption and conflict handling, resource integrity and conditional legacy methods. Assessment retains independent exact-subject judgments, finding completeness, durable recording and applicability; Workflow and CLI/Records retain routing and current save/recovery ownership. Skill and Validation retain resource and negative-proof requirements.",
+  "retired_material": "Retired spec/spec-review/architecture/architecture-review package inventories, loaded-profile enums, old receipt and stage-owned transaction/manifest shapes, frozen wording, rollout ledgers and token-reduction acceptance targets are historical. Their replacement does not introduce a second authoring or settlement protocol. No executable tests or historical fixture files are removed.",
+  "historical_preservation": "All originals match retained Git bytes. Historical change records, rule/literal ledgers, proof documents and their current executable tests remain unchanged. Current reference updates use exact Git provenance; legacy stored-marker documents retain their historical references.",
+  "unchanged_historical_reference_sources": [],
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for Design, the retained progressive-disclosure spec and all eight deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/design.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "354 skill tests and 87 boundary/model tests passed. Structural/deletion checks passed with independent Design Review classification required for the retained historical amendment; its current-owner clarification was structurally rechecked. Prose passed with zero errors/warnings and diff checks passed. No executable tests, ledgers or historical fixtures removed. No full CI, independent review or final Verify claimed."
+  }
+}

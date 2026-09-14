@@ -1,0 +1,64 @@
+{
+  "assessment_scope": "Formal Design Review round 1 for the ledger-only portion of VAL-SR-23 and Validation Historical check retirement, plus System Necessary-design consumer row and current cleanup composition. Selected removal: scripts/retirement_ledger.py, scripts/test-retirement-ledger.py, docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json and exclusive catalog/routes/assertions. Complete System and Validation model context considered; Validation full content already inspected in prior review and unchanged context reused. Upstream approved direction: proposal-review-design-basis and direct user-authorized next ledger cleanup batch. Excludes the spec-read-log portion of VAL-SR-23, all broader cleanup/model adoption and token implementation already separately assessed.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-retirement-ledger",
+  "independence_basis": "Independent delegated reviewer /root/token_retirement_design_review did not author or edit the reviewed System/Validation models or legacy ledger implementation. Prior token-review activity supplied assessments only and explicitly excluded ledger retirement.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval is only the ledger removal responsibility and its current consumers; spec-read-log retirement and wider accumulated cleanup remain excluded.",
+    "No files were removed, models edited, implementation tests executed or Delivery approved by this assessment. Exact source recoverability, consumer amendments, retained proof and final review/Verify must be established during delivery.",
+    "The prior System acceptance sentence about an unchanged usable ledger is original adoption history, expressly superseded for this exact ledger by the current row, cleanup composition and VAL-SR-23. No current retention or duplicate proof duty is inferred from it."
+  ],
+  "rationale": [
+    "The governing decision explicitly removes the frozen ledger, reader, test, main.retirement_ledger.regression, fingerprint, routes and exclusive assertions. It retires the private schema, mandatory inventoried/dual-proof transition and historical inventory as maintained behavior; it prohibits recreating those duties in a replacement ledger or synthetic pass. System explicitly supersedes its prior source-tree retention exception and delegates current retirement policy to Validation.",
+    "Inspection confirms retirement_ledger.py is a private JSON/schema/invariant module whose actual executable consumer is test-retirement-ledger.py. The suite reads the August 10 fixture and imposes its fixed check IDs, R26 clause set, dual-proof sequence and admission budget. Token-era IDs in that fixture remain historical meaning, not current catalog identity. Retiring the whole obsolete obligation is more coherent than repeatedly updating the frozen inventory.",
+    "Two tests touch current state: current_retirement_catalog_disposition_is_explicit and every_top_level_proof_script_is_inventoried. Their historical membership/inventory oracle is retired, but genuine current discovery/selection/catalog safety remains required by TEST-SR-07–10/12 and VAL-SR-03–05/13. Delivery must preserve actual record_retirement.regression, metadata regression, unknown-vocabulary rejection, and complete current selector/executor checks rather than remove the checks reached alongside the ledger.",
+    "Current validation_selection.py routes compact-record, selector-preservation and ledger paths through the ledger check. The Design requires coherent catalog/fingerprint/caller removal and retained deleted-path protection without missing-command dispatch. Existing selector unknown-value tests and current record-retirement/metadata protection provide feasible retained boundaries; their actual allocation belongs to Delivery.",
+    "The retained published-skill-first test-spec contains historical ledger command and T1/T10/T13/T14 prescriptions. A concise ledger-only applicability notice linking VAL-SR-23 is a necessary consumer reconciliation, preserving historical IDs/tables and independent non-ledger proof. This does not authorize broader spec retirement, spec-read-log deletion or reinterpretation of past review judgments.",
+    "Existing System and Validation graphs and necessary supporting views remain accurate: one obsolete check/fixture edge leaves the current catalog/executor flow, without a new component, format, customer migration or permission. Acceptance requires absent selected files and check, retained nonempty current consumer selection, explicit unknown rejection and preserved record/metadata failures. Git recoverability, uncommitted-byte preservation and coherent source/consumer restoration remain required by current cleanup policy."
+  ],
+  "reviewer": {
+    "id": "codex-ledger-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+      "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+    },
+    {
+      "identity": "sha256:37902ca1cc262248e8af711b50cb30f84de165c652991cabb858d223a80b52d1",
+      "path": "scripts/retirement_ledger.py"
+    },
+    {
+      "identity": "sha256:b0e1816753865cdee8ac3cb2514b7b3bb96584d9098ca0cfc9745463ec80b999",
+      "path": "scripts/test-retirement-ledger.py"
+    },
+    {
+      "identity": "sha256:c721d93f4fbf5f48a2f5dda25d4f2bbe4c2260f35a60f3b73367c5b72105a135",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:a2f081462cb2710a8ade8cfe0e4b8ab673467811faf26837d4e8979ec4be8e89",
+      "path": "scripts/test-select-validation.py"
+    }
+  ],
+  "summary": "The scoped historical retirement-ledger removal is coherent and sufficient for bounded Delivery allocation.",
+  "target": "design"
+}

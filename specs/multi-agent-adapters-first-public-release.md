@@ -489,14 +489,14 @@ None.
 
 ## Next artifacts
 
-- `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md`
+- [historical `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/architecture/2026-04-24-multi-agent-adapter-distribution.md)
 - `docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
 - `specs/multi-agent-adapters-first-public-release.test.md`
 - Change-local artifacts under `docs/changes/<change-id>/` during implementation.
 
 ## Follow-on artifacts
 
-- `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md`
+- [historical `docs/architecture/2026-04-24-multi-agent-adapter-distribution.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/architecture/2026-04-24-multi-agent-adapter-distribution.md)
 - `docs/adr/ADR-20260424-generated-adapter-packages.md`
 - `docs/plans/2026-04-24-multi-agent-adapters-first-public-release.md`
 - `specs/multi-agent-adapters-first-public-release.test.md`

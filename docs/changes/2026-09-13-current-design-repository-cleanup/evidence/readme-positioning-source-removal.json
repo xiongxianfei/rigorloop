@@ -1,0 +1,30 @@
+{
+  "operation": "retire-old-readme-positioning-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/readme-user-value-positioning.md",
+      "identity": "sha256:b0df253af77c5b73224b3074264be0bd95396b1e0fd8633a81825947586c6d77",
+      "historical_identity": "sha256:b0df253af77c5b73224b3074264be0bd95396b1e0fd8633a81825947586c6d77",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/readme-user-value-positioning.test.md",
+      "identity": "sha256:72ac157f0ceb9fb814c9850edeefacca3ccf9205147fc44a17829f896cc11509",
+      "historical_identity": "sha256:72ac157f0ceb9fb814c9850edeefacca3ccf9205147fc44a17829f896cc11509",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 569,
+  "updated_paths": [
+    "specs/public-discovery-and-developer-adoption-surface.md"
+  ],
+  "important_knowledge": "VISION.md owns current identity, audience and value positioning; Constitution and the retained vision-skill contracts govern README derivation. The discovery spec preserves clear value and fit, truthful supported claims and usable next steps while deferring positioning and introductory structure to current vision authority. Repository/npm metadata and discovery obligations remain independently applicable.",
+  "retired_material": "Old Git-first starter-kit positioning, exact introductory section-order prescriptions, retired workflow-guide links and the completed README rewrite proof allocation retire. No README content, generated vision block, repository metadata or npm package field is changed by this removal.",
+  "historical_preservation": "Both originals match retained Git bytes. Current discovery guidance points to VISION.md; historical positioning examples and original judgments retain their provenance without governing present identity. No executable test or historical record is removed.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/validate-readme.py --vision-markers; python scripts/test-skill-validator.py VisionSkillProgressiveDisclosureTests; python scripts/validate-boundary-first.py --check --path specs/readme-user-value-positioning.md --path specs/readme-user-value-positioning.test.md --path specs/public-discovery-and-developer-adoption-surface.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "README structure and vision marker validation passed; all six focused vision tests passed. Structural deletion and discovery amendment validation passed with independent Design Review classification still required. Prose passed with zero errors/warnings and diff checks passed. No README, external metadata, executable test or historical record changed. No full CI, independent review or final Verify claimed."
+  }
+}

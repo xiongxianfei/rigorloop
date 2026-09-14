@@ -1,0 +1,32 @@
+{
+  "operation": "retire-reviewed-plan-initialization-adr",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md",
+      "identity": "sha256:e7768da3d9543d0c1f29ac3109775109bd8b7967d157c426277e662bc5bebb6b",
+      "historical_identity": "sha256:e7768da3d9543d0c1f29ac3109775109bd8b7967d157c426277e662bc5bebb6b",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 69,
+  "updated_paths": [
+    "docs/design/skill/skill.md",
+    "docs/architecture/system/architecture.md"
+  ],
+  "prior_model_identities": {
+    "docs/design/skill/skill.md": "sha256:cf9adf08d54a601263daf0fd36b980e8eda7026b6e51e5caaa2aec20940888c4"
+  },
+  "important_knowledge": "SKL-DEC-06 preserves the rationale for review-before-initialization, plan-owned derivation and no replacement of existing work, including rejected alternatives and progress-loss consequences. Delivery allocation already defines the current behavior.",
+  "retired_material": "Historical planned_work storage, no-hash restriction, temporary lifecycle states, two-phase settlement retry and completed rollout tasks remain superseded by current Records, CLI, Workflow and Assessment. No executable behavior changes.",
+  "historical_preservation": "The ADR matches retained Git bytes. The architecture citation now names that exact Git revision; historical records and judgments remain unchanged.",
+  "source_disposition": {
+    "Context, Decision ordering and ownership, Alternatives initialize-before-review/reviewer-initialization/workflow-derivation/replace-work": "Skill SKL-DEC-06 and Delivery allocation preserve rationale and current constraints",
+    "Decision identity/no-hash/temporary states, Add a content hash alternative, legacy migration": "Current Records/CLI/Workflow supersede retired representation and protocol; original decision remains in Git",
+    "Consequences and Follow-up": "Current Skill, Assessment and Engineering preserve ownership, exact-basis recovery and coherent validation; completed stage/rollout tasks historical"
+  },
+  "validation": {
+    "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; validate-documentation-prose.py validate_path before/after citation comparison; git diff --check; git diff --cached --check",
+    "summary": "Model structural/reference validation and focused prose/diff checks passed. Full legacy architecture prose validation found 263 pre-existing errors and 115 warnings; exact before/after citation comparison confirmed identical findings. Initial boundary invocation incorrectly included unsupported architecture/ADR paths and rejected; corrected model-only invocation passed. No executable tests rerun for decision-rationale and citation-only changes. Independent review and wider cleanup Verify remain outstanding."
+  }
+}

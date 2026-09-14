@@ -35,7 +35,8 @@ function snapshotFiles(root, changeId, revision) {
 
 try {
   const snapshot = process.argv.length === 5 && process.argv[3] === "--revision";
-  if (process.argv.length !== 3 && !snapshot) throw new Error();
+  const subjects = process.argv.length === 4 && process.argv[3] === "--subjects";
+  if (process.argv.length !== 3 && !snapshot && !subjects) throw new Error();
   const path = resolve(process.argv[2]), changeDirectory = dirname(path);
   const changes = dirname(changeDirectory), docs = dirname(changes);
   if (basename(path) !== "change.json" || basename(changes) !== "changes" || basename(docs) !== "docs") throw new Error();
@@ -47,8 +48,21 @@ try {
     if (result.status !== "inspected" || result.revision === null || !result.files.some(file=>file.path===`docs/changes/${changeId}/${basename(path)}`)) throw new Error();
     files = Object.fromEntries(result.snapshot.records.map(record => [record.path, record.content]));
   }
-  formatFor(files[`docs/changes/${changeId}/change.json`]).set(changeId, files);
-  process.stdout.write("Explicit recording structure and references valid; no readiness judgment.\n");
+  const parsed = formatFor(files[`docs/changes/${changeId}/change.json`]).set(changeId, files);
+  if (subjects) {
+    const paths = new Set();
+    const collect = value => {
+      if (Array.isArray(value)) value.forEach(collect);
+      else if (value && typeof value === "object") {
+        if (Object.keys(value).length === 2 && typeof value.path === "string" && typeof value.identity === "string") paths.add(value.path);
+        else Object.values(value).forEach(collect);
+      }
+    };
+    // Use the same parsed snapshot that passed all cross-record references.
+    // Subjects remain engineering inputs, never newly registered records.
+    for (const value of parsed.values()) collect(value);
+    process.stdout.write(JSON.stringify({schema_version: 1, subject_paths: [...paths].sort()}) + "\n");
+  } else process.stdout.write("Explicit recording structure and references valid; no readiness judgment.\n");
 } catch {
   process.stderr.write("Invalid or unavailable explicit recording set.\n");
   process.exitCode = 1;

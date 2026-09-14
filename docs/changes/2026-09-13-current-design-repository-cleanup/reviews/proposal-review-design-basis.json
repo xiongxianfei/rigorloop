@@ -1,0 +1,81 @@
+{
+  "assessment_scope": "Fresh formal Proposal Review applicability reassessment after downstream Design authoring changed three previously recorded basis subjects. Reassesses the complete unchanged proposal and whether the new five-model draft, source disposition and inventory alter its challenge, goals, scope, principle, feasibility or disclosed impacts. Does not perform Design Review. Recording formal-lifecycle/manual; assembly PRR1G-recorded-context-gated.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review-design-basis",
+  "independence_basis": "Separate delegated reviewer agent /root/proposal_reviewer did not author or edit the proposal, VISION, positioning rationale or governance changes. Parent codex-author authored the reviewed contribution; reviewer independently inspected final subjects and recorded this first-pass assessment.",
+  "judgment": "approved",
+  "limitations": [
+    "This is not Design Review: clause-transfer completeness, detailed compatibility rules, entire inventory disposition and implementation/proof adequacy are not approved.",
+    "No completion claim or waiver for held-unmapped sources follows from direction approval; the broad original goals remain required unless the owner explicitly changes scope.",
+    "No production removal, candidate generation, implementation tests, activity advancement or external action was performed by this assessment."
+  ],
+  "rationale": [
+    "All proposal dimensions remain satisfied. The complete proposal, VISION, Constitution and positioning retain their originally reviewed identities. The current-versus-retired distinction remains aligned, with no new vision exception or missing standing authority.",
+    "New source maps implement the existing direction: current owner transfers, meaningful retained protection, retired historical readers, isolated generated package metadata and explicit retirement of historical release replay. Compatibility effects of build defaults and replay belong to the anticipated consumer reconciliation; exact behavior and adequacy remain for Design Review.",
+    "Scope preservation remains satisfied at proposal level. The inventory names all selected families and states its held/mixed/unmapped sources and currently operational exceptions. The draft explicitly denies repository-wide consolidation completion and requires further source reconciliation before a plan can claim the entire cleanup. These are limits on present Design completeness, not approval to silently defer or drop original goals.",
+    "The retained June 29 release-literal baseline root protects a discovered current operational consumer. This is consistent with preserving required behavior and current reliance before deletion; historical location alone neither compels retention forever nor permits disabling the audit.",
+    "Feasibility remains credible: supported current generation, validation and v3 storage owners exist, while source-level safety depends on explicit disposition and later proof. The frozen inventory and source map are authoring evidence, not proof that removals or replacement safety have succeeded.",
+    "The first review remains unchanged at its historical subjects. This reassessment preserves its judgment and identity instead of retargeting those hashes; the earlier record receives stale applicability because its recorded model basis changed. This new assessment supports only continued direction-level reliance on the unchanged proposal.",
+    "Active scope-budget gate remains satisfied; vision-exception and standing-artifact predicates remain false. No proposal-level material finding or required correction was identified. Independent Design Review, Delivery allocation, actual cleanup, final Code Review and Verify remain outstanding."
+  ],
+  "reviewer": {
+    "id": "codex-cleanup-proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+      "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:910f935ae2a7d3f47291731696eb33d09c7144630137f35433d5536ca6b003ea",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:513338d86364c03ef030d567abf590332353a1edfe5fe6ae7a247e9b46781081",
+      "path": "docs/vision/strategic-positioning.md"
+    },
+    {
+      "identity": "sha256:4d174d5e1375fd63f8010c57cd409d0982674c8b56369c26d4f72126b8c9c330",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:d2d708ebfde5172045d657884f9fdc210849928650e104dc91940580573f6d54",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:d6a2ae7cf2c2ca1d57269f383b2c1716c27af55624625f6a0154738cc698d0c5",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:0d00ba4c773e61762c1e5cf9a02f03185816439313b1593e7ff08b4099167827",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:2fce1950f9219fd286427ddbbdbdff849c99f036e7a9b5e316f3388d9397caa4",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:61ac0320135310c9f114ff3abb95ee6cd0d139e69720b2915f075e5b42751c6f",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+    },
+    {
+      "identity": "sha256:92656d3301103c3772741e34ec84ac642b22abafebf704097886f65d342f4aa1",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+    }
+  ],
+  "summary": "The unchanged cleanup proposal remains approved at direction level after reassessment of the current draft Design basis and explicit retained-source limitations.",
+  "target": "proposal"
+}

@@ -1,0 +1,1666 @@
+{
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "checks": [
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "design-authoring-checks",
+      "procedure": "python scripts/validate-boundary-first.py --check with --path for all five changed models; python scripts/validate-documentation-prose.py --mode enforce with --path for the five models and source-disposition.md; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:4d174d5e1375fd63f8010c57cd409d0982674c8b56369c26d4f72126b8c9c330",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:d2d708ebfde5172045d657884f9fdc210849928650e104dc91940580573f6d54",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:d6a2ae7cf2c2ca1d57269f383b2c1716c27af55624625f6a0154738cc698d0c5",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:0d00ba4c773e61762c1e5cf9a02f03185816439313b1593e7ff08b4099167827",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:2fce1950f9219fd286427ddbbdbdff849c99f036e7a9b5e316f3388d9397caa4",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:61ac0320135310c9f114ff3abb95ee6cd0d139e69720b2915f075e5b42751c6f",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:92656d3301103c3772741e34ec84ac642b22abafebf704097886f65d342f4aa1",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        },
+        {
+          "identity": "sha256:5111b5d0b6499a5e29aed8864ba32357c7b6ff0d8070feb25c4bb8f6d8956ebf",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-authoring.json"
+        },
+        {
+          "identity": "sha256:02b744c73ed63dd049d7655d90a3dbea01943346847fb3951f4f55b54e63a464",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-feedback.md"
+        },
+        {
+          "identity": "sha256:2d0c6129f3fe89a2399f9203d4df9b8ce612ccb291f31099f39ae7589c6bf565",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/historical-consumer-references.tsv"
+        }
+      ],
+      "summary": "Structural/reference validation passed; documentation prose passed with 0 errors and 0 warnings across six files; diff whitespace passed. Read-only source audits informed exact mappings and the live Release baseline exception. These checks do not establish behavioral correctness, independent Design approval, or final Verify."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "design-source-removal-checks",
+      "procedure": "Selected CI for exact 19 paths, followed by focused lifecycle rerun after heading correction; model structure, prose/baseline comparison, and git diff --check. Exact commands and limits are in evidence/design-source-removal.json.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:7e97107b41b2fcd95ce551fc40d0299010f27ec551d96e1dc828122ea2086ef1",
+          "path": "docs/architecture/2026-08-25-workflow-routed-upstream-corrections.md"
+        },
+        {
+          "identity": "sha256:9b27ca3f5fd0893d73209389a8e016a207266dca55ea2dba32b7f8145b87562e",
+          "path": "docs/architecture/2026-09-02-refocus-workflow-into-route.md"
+        },
+        {
+          "identity": "sha256:f895cf7cc948b6ad0d39dbf19a2f0e236d1db7b90db15a84bc9b034fdd7af2d9",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:8fbf8613248f7b09435c2869c14cd3c5d5ae0d105279079ca5624c738b716140",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:18c903f997c69904d594bdb34c20b33d79c313a94d7a81a7bb18d2967ef29ed0",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:c2b47f090f0760b648618c1226f02a00a2cd29117b33a60a344155b89068c27d",
+          "path": "specs/change-record-catalog-registration-and-bounded-read-model.md"
+        },
+        {
+          "identity": "sha256:561b05fe6a7ef92ed268dbfc441a8ce489ad9b488f73c16cac69d15a208a7998",
+          "path": "specs/test-spec-review-gate.test.md"
+        },
+        {
+          "identity": "sha256:e17e6b10c70902b2ed0affc769c8734e4815b02e9593c043a952ae37b58ac80a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-source-removal.json"
+        },
+        {
+          "identity": "sha256:073eea0f6cdbdb0b7b86fd7ea4776fa7194661f4afff0d3b12060a77118886bb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        }
+      ],
+      "summary": "All selected checks except lifecycle passed on the first run. The lifecycle failure was corrected by heading-only changes, and its exact five-path rerun passed. Broader legacy prose enforcement remains failing with pre-existing 271 errors/120 warnings; it is not claimed clean. No full-suite rerun after the heading correction or final Verify is claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-implementer",
+        "role": "implement"
+      },
+      "id": "second-removal-checks",
+      "procedure": "bash scripts/ci.sh --mode explicit with the exact second-batch deletion, reference, owner and tooling paths; focused reruns of the five corrected governance tests, boundary validation on the final changed spec set, and CompositionTests.test_catalog_composes_broad_and_main_with_distinct_preserved_package_versions. Additional checks: python scripts/test-boundary-first-validation.py (87 tests), SkillOwnerTransferTests, model structural/prose validation and git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:17a1599995db6eb2cfe670c34dadb262726dd894bad7d64817a6bea5ff22bc7b",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:1afa0d0b6e6af54cf55846213388704cb5ca6bc2adc98e0f0a365a9cb2e9b4fb",
+          "path": "docs/design/skill/authoring/design.md"
+        },
+        {
+          "identity": "sha256:6f56203de9fd1069b63af444beab592193e981ba0d7d26b1b164847230657c04",
+          "path": "docs/project-map.md"
+        },
+        {
+          "identity": "sha256:0b3e88a0addaafe734fcaab5ea75f18148a2bb399d636609d4727d7fbc0fadb1",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:e2c33bf8d4ed3ea3d52973f05143fbf6f27ccbc79ad429845f293d2293808bcb",
+          "path": "specs/skill-contract.md"
+        },
+        {
+          "identity": "sha256:2ef0710939cba8911a0f70f4f12f7967f0ea59b9d10715e6e9e8d2877ee9622f",
+          "path": "specs/skill-contract.test.md"
+        },
+        {
+          "identity": "sha256:a25acd0869f7a84e8f91df6bd93c0f12ad1687b38b56469e2e90f588ab3f0a55",
+          "path": "specs/spec-family-readability-pass.md"
+        },
+        {
+          "identity": "sha256:d745b016f153f3e67253dad53ecb7a76aa7d6ef8af13ffc75773e1d2edc1ef92",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:773c60248a16b80a772881677aca12855f16c45ad694fdda668fe566cb5e5633",
+          "path": "scripts/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:9557c21e2ff669ca339191a23018087da6bf876ed448f8b909334b92deef0cab",
+          "path": "scripts/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:a9b5d3eb987a2254abe79be77afd288603c28b013b89b45b4379fa413820fd38",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:55cc0c2ba8ca1444b92e9ef8779d8b9afb1d5edb4b398725b41b97f52d74a18c",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:65b233b352afc70a943956c02c128737ce8b1f4cdaccfdd2b4096abfe46bd4d7",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:ef62cfa3157c8c3dde754360cdb783aa145985c764a614ba98f95cfb266b646e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/second-removal.json"
+        },
+        {
+          "identity": "sha256:f4b95bca519fd4a08bccc0ec886001e935528ff798368ba1d12e49a46c65c83c",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        }
+      ],
+      "summary": "Initial selected CI reported seven failed check entries: five stale governance assertions, boundary validation triggered by two historical proof-link edits, and an untracked-proposal preflight. Five assertions were reconciled to current owners/delegation and passed their exact rerun; the two historical proof documents were restored unchanged, and the final spec scope passed structural validation with expected Design Review classification. Staging the user-authored proposal satisfied preflight and the exact composition rerun passed. Other selected checks passed in the original run. No complete CI rerun after corrections, independent Code/Design Review, or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "model-layout-checks",
+      "procedure": "python scripts/test-boundary-first-validation.py; python scripts/test-select-validation.py with the five layout/move/unsafe-path cases; python scripts/select-validation.py --mode explicit for old and new paths, followed by its selected model.validate command; python scripts/validate-boundary-first.py --check and validate-documentation-prose.py --mode enforce for System/Design; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:57e07abbbfba797e03fae38e7b9e3913318cca5eb8594b13e90e73f188e58817",
+          "path": "README.md"
+        },
+        {
+          "identity": "sha256:3e800688b824960a03c775ca4f70ea5fb76f23b1a14889be27359145b3999804",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:6e0ed191293e04ab3fbeaca5e30123337f6a3d4d837d45b9a766d4b1eeb6f279",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:0593cff133872da4be6ea4de3b505ca0edf921f093b125830625cf2365bf2bc8",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:303106e605e08e04c910255aab25c2db135ec4dedfdcfaaa8e56bc1eef0b8acf",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:a3030d59d9b47c085f8c514091dc233f9f0dec4a1829668212c99ff530cbb098",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:ad7edc3483919f5b73473e4702702951f0c9030f419ce5a7ccb55381b9b058c4",
+          "path": "docs/project-map.md"
+        },
+        {
+          "identity": "sha256:6eba75ab34c648405338b49ef9b889aa35fe7cbbe33db1db4b41502be641a7be",
+          "path": "specs/README.md"
+        },
+        {
+          "identity": "sha256:899a66c9ad84f87a8c790b5d0aee3049eec3e31fb03ada9509a471d9c1eb6da0",
+          "path": "specs/boundary-first-proof-model.md"
+        },
+        {
+          "identity": "sha256:1eeb28ff5f0806001da06b7f0c60e1019f176a9845cff6cf0a6763d1d89d8be2",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:ddc498247a909e445301e29f613f08afa08baf12178a0d744dce5e671a11c1b7",
+          "path": "specs/skill-contract.md"
+        },
+        {
+          "identity": "sha256:469b4366b6858c05224a549e38e21344ea74df08cd89a0c742c33b12e46a5782",
+          "path": "specs/workflow-skill-artifact-location-map.md"
+        },
+        {
+          "identity": "sha256:54a26ddcba87de9f23b5e50670893d3f09f2c0d697f8d58073fc507a179c0c68",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:2791ad5611bcd3dd3645b53be87134ead82dc935ab296d88d56dfc002540f87b",
+          "path": "scripts/model_layout.py"
+        },
+        {
+          "identity": "sha256:b44e305e98ef41b7ed820898b93c5efeab27f574c1273142290a7ddc7441c480",
+          "path": "scripts/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:bbcb74939a3645703c0586a4e079eb53eec4481442cb8b6be5d3765378521be7",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:b9c55240ce1ba4732a11e79c2ace68bc4f6332295bc94b6bbd67350e1d2d91e2",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:5e076a1981e60123fbd6159f603c52a31b9ad17fbecd4f6d6b0dd3448e92c96d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/model-layout-refinement.json"
+        }
+      ],
+      "summary": "87 boundary/model tests and five focused selector tests passed. The new deleted-path regression failed before the routing correction, then passed. Recreated old files remain directly validated; symlink and dangling-symlink inputs block. Exact model selection passed with new Design path and current CLI/Records/Workflow owners. Structural and prose checks passed, and all relative links in the moved document resolve. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "test-stage-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for Skill and all 12 deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce for Skill and source-disposition; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:c93c119de205e02dfd2edc53d01663741cbef2b710956abf2b477c5d685e5094",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:e381bf1332596bc0a002f5281b9bb22dd21deda3501c9a037eb0e95a7ae751a3",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:8d9477e307726f90e20aa781967369a3adb28aab5344c15ce928eded40d5196b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/test-stage-removal.json"
+        },
+        {
+          "identity": "sha256:5c3bf25ce57910d965cc32cc839551dcb647c80384ee92cfd35fd92e09da32c0",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:0fd7eaa3344ee3a9881917af0ccaaa3b7e86c6b7b934a84749686e6ec799913b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "356 skill-validator tests and 87 boundary/model tests passed. Final model/deletion validation passed with structure-and-references-only scope; prose passed with zero errors/warnings. An attempted reference amendment to the retained stage-owned spec was rejected by its retired stored-record marker; that link-only amendment was restored to HEAD bytes, leaving it outside the final changed scope. No independent review, full CI or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "final-verification-source-removal-checks",
+      "procedure": "python scripts/validate-boundary-first.py --check with --path for Assessment and the five deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce for Assessment and source-disposition; python scripts/test-skill-validator.py ExplainChangeSkillRetirementTests ReviewCloseoutResourceTests FinalVerificationPackageParityM4Tests; python scripts/test-boundary-first-validation.py ModelRecordTests; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:958e56f823e2e2167f11b7ef577c4d8e41b56d92e727ffaf814e86912d689657",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:06e4c005ed77756b83ae9fd542673465d4b5029c9f58a5434aac6726acd84d3a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/final-verification-source-removal.json"
+        },
+        {
+          "identity": "sha256:83644693dc300cf03854b6bb34bd1cf91c00616110afe51981297809abbffb9d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:74becba128c3aac1d4570a250f5bf0c94ec0bc3422408cb26ae0172609cf1e97",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "All checks passed: six explanation/assessment/package regression tests, 12 model tests, structural deletion validation and prose validation with zero errors/warnings. No tests or runtime behavior removed. No full CI, independent review or final Verify claimed. Existing overview/scenario ownership is unchanged; the prose clarifies RC-SR-01/03/04/05/13/15/20."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "review-handoff-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for both affected models, both reference-only amended legacy specs and six deleted spec/proof documents; python scripts/validate-documentation-prose.py --mode enforce for both models and source-disposition; git diff --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:96f95d576d09c2835a825b15afc240a13611c68bcb87690f184b917b6c1891c1",
+          "path": "specs/review-independence-and-criticality.md"
+        },
+        {
+          "identity": "sha256:61d6be4776a1c109a841129d9c3b6cbf0a7bc51281b29efeedc3afbe44e9b130",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:e5cfb491131c5af97075fff40339feacf1c16ce1c114dcd46bba30f4ee580a1e",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:fcd5f694268a768b74ca50f76d20e1e9626f1664486992f8a9e044c5c64a1a5f",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:557a564c2336a8e3e6883237a5003024d887b653cde7be76aee031ec099d235a",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:b09e755d04e904d171c3304b16a39931a73f6970956efafbcf3ffe2b482143a3",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-handoff-source-removal.json"
+        },
+        {
+          "identity": "sha256:ade619902294101486628d25635d52e211898ca97a7c63b91c23cb5a0d499bf2",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e6989411b16db2822ce1a90741c5f4ca8b00f8cb120fb0302bf1957e47dd55b9",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "Final full skill-validator run passed 354 tests; boundary/model suite passed 87 tests. Structural/deletion checks passed with expected Design Review classification for reference-only legacy amendments; prose passed with zero errors/warnings. Initial skill run found one additional historical proof-heading assertion reading a deleted source; it was removed as part of the same source-retirement scope before the passing full rerun. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "review-recording-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/test-review-artifact-validator.py; python scripts/validate-boundary-first.py --check with --path for both models, three reference-only amended specs and four deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce for both models and source-disposition; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:04a890c8404e4e6c3ee0c30d432ba85da115ee8fe738567eb289fbfe62b8bf65",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:75c20ee6cda4fdf90e229bbfd67f017591edecd1faa5c371174d45c11fc73fe6",
+          "path": "specs/project-artifact-location-guide-and-examples-surface.md"
+        },
+        {
+          "identity": "sha256:a7f8cb62fa5fd17bc4d1abf436fd6c5297cb4bdf6ac313bd8e07d1ac590569bc",
+          "path": "specs/review-finding-resolution-contract.md"
+        },
+        {
+          "identity": "sha256:f7ca7b1a2a65366321588344766a95b1eaf2b451c3b202a79ff2eac142e2d5ba",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:9370f35cbcc86169a5fd5110828c2065e09d16c5f2340bdb7e87ebb8f0a527f1",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:d645e03218519b23897a6388b74928b53fe04dd9f34d94162e84adf80b32b558",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:a316cbb36825beb19ebaa2e037766e4fb3cd457bc1988b191ab939082b8b3b21",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:77b30dc2ead4fbf2a20cc96842dbaa12894d448fc281a6e2be6f084e317e717b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-recording-source-removal.json"
+        },
+        {
+          "identity": "sha256:b2f6ceb7f2c471597f93600cc754d27bd5c8637838206749d91c25d288985b45",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:95924de946b0421079ca06a0342c1ac60c223a6a78900c9699f30898e7c9d88e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill tests, 87 boundary/model tests and 109 review-artifact tests passed. Prose passed with zero errors/warnings; diff checks passed. Structural checks passed with independent Design Review classification still required. Initial structural invocation incorrectly included architecture paths and found two legacy stored-marker specs; architecture was excluded from this spec/model-only command and the two historical specs were restored byte-for-byte before the passing rerun. No tests removed, full CI or independent review/Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "april-architecture-source-removal-checks",
+      "procedure": "python scripts/select-validation.py --mode explicit with --path for all eight deletions; python scripts/validate-boundary-first.py --check with --path for three citation-only updated specs and deleted normalization test spec; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:52a4afbf5a3c17b4094d738c4bfa323d3c9cc77ea292e7ebaf8401174cd7d570",
+          "path": "specs/docs-changes-usage-policy.md"
+        },
+        {
+          "identity": "sha256:e80f0ed0d42d757d5d9769dd661dec1a842036e56c61c5231bdd846e7ff95747",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:e981f0aaa6d9f3f2e9dfdfeabe4cd6dbb776e11b160518a1a82a89630c294da5",
+          "path": "specs/workflow-stage-autoprogression.md"
+        },
+        {
+          "identity": "sha256:b9042ba81364ec039c699048b0da78e096a89e42ab03d8e38ab006846b9191cb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/april-architecture-source-removal.json"
+        },
+        {
+          "identity": "sha256:4bf701b9871e300f2e54cdc989aad5ec1a25fe18ca0c7ccee463179bdbc698da",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:82b250e0da631ee8701f7e2760ab7cddf2c9068445b8edfefd4a64191c3f2051",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "Selection passed without unclassified paths or registration debt and selected boundary validation plus lifecycle regression. Lifecycle suite passed 108 tests; boundary/model suite passed 87 tests. Structural reference/deletion validation passed with independent Design Review classification still required. Prose passed with zero errors/warnings; diff checks passed. All deleted originals verified byte-identical to retained Git history. No executable tests were removed. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "retired-authoring-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for Design, the retained progressive-disclosure spec and all eight deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/design.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:a5d5292798576a50da84203038bcc7d59e0cbb593e7b084691f3c5dc4e11cb36",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:d8bb2742459df4ec209745d3e9461a5e5573514ac4e6464cf3ee27f72f6b3654",
+          "path": "specs/spec-family-assets-progressive-disclosure.md"
+        },
+        {
+          "identity": "sha256:48c4e3ab635ccfafcd6a19789d0a4f3f1107211478225145b330abd6892ad467",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retired-authoring-source-removal.json"
+        },
+        {
+          "identity": "sha256:d2b923bf871e44f0080c94747c52bcda98b109c65866836c61259c5e136a2e1b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:62e758c19df9e06ab2d4b102680690d819623c5f1c89da45477b41339ffd4085",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill tests and 87 boundary/model tests passed. Structural/deletion checks passed with independent Design Review classification required for the retained historical amendment; its current-owner clarification was structurally rechecked. Prose passed with zero errors/warnings and diff checks passed. No executable tests, ledgers or historical fixtures removed. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "spec-family-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/validate-boundary-first.py --check with --path for all four deleted documents and specs/review-skill-family-consistency-parser-owned-finding-shape.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:71bb7cd701609c194d79baad5a45e6445998fb227bd609fbf74ec3894e22ec71",
+          "path": "specs/review-skill-family-consistency-parser-owned-finding-shape.md"
+        },
+        {
+          "identity": "sha256:547119e60e05df51fa301c6bc8265f0d7bc668928b12b6d9b6b9c78c07dc627d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/spec-family-source-removal.json"
+        },
+        {
+          "identity": "sha256:3f30c81047c11e690724594bc23622849073767d771218eea568c5f7e48c78cc",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:37f071d62835e1c2a4468afbd37a662aa0cd9d9fcb3e81f20d3b02fc8c8f3e42",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "All 354 skill tests passed, including baseline fixture and asset/parser protections. Structural deletion/reference validation passed with independent Design Review classification still required for the citation-only amended legacy spec. Prose passed with zero errors/warnings and diff checks passed. Both modified sources preserve full unified patches from the retained Git originals and exact original/current hashes. No tests removed; no full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "routing-review-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/validate-boundary-first.py --check with --path for the four deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:42e96475b6248552418a43adcd7206d5f0641e42950c348566d8c774cc040c79",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:24830c87edbbe83d9ad0905fd14a4bde0550e747244c179be8387ba4f3689f9c",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/routing-review-source-removal.json"
+        },
+        {
+          "identity": "sha256:84b5171ee8b3662d8fbef3dd27cc286461ca8eb16d5ef325833fd7c5229a9845",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:fd65b553ea191a216360e939b1eef26af327a940d21f030fad6d1477aabb24a7",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill tests passed. Structural deletion validation passed. Prose passed with zero errors/warnings and diff checks passed. All deleted originals match retained Git bytes; current architecture provenance links now identify the historical package and current owners. No executable test, fixture, plan-initialization, route/context or bounded-automation contract removed. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "workflow-guide-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/validate-boundary-first.py --check with --path for all four deleted documents; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check; rg dependency scan across current models, scripts, packages, skills, schemas and CI.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:60df38c68eac1c3047a02214054504254e8fb81d9e5e778021cf1e94a9cb016a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/workflow-guide-source-removal.json"
+        },
+        {
+          "identity": "sha256:e79fab5f82cb9b705aed9b21a90d2fde59d0554cd1635b70949772047e03bbb9",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:4ab1feec32a0ff8de290516bcb77a09971460c305e95acae57779c2dc44bdab9",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "All 354 skill tests passed. Structural deletion checks passed; prose passed with zero errors/warnings and diff checks passed. Dependency scan found no references in current models or executable/CI surfaces. Historical lifecycle displacement-table rows remain unchanged under later explicit guide retirement. Original hashes and the one modified source patch are preserved. No executable tests removed; no full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "review-assets-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-review-artifact-validator.py; python scripts/validate-boundary-first.py --check --path specs/review-skill-family-consistency-parser-owned-finding-shape.md --path specs/review-skill-family-consistency-parser-owned-finding-shape.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:8852532026b2fa690a7a6fab4b0d58e6f615bec47669fc3d0ae9db0a3e94f9fa",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-assets-source-removal.json"
+        },
+        {
+          "identity": "sha256:0c18fce13b164f48c8599f8cdf1d4ccc3d677954b97d212a26981ba4ff4403ee",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:1f1854ddb2acb398c64c5d41cff305f8495079d585ec7ee6eb5e3c1f198ea2dc",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill tests and 109 review-parser tests passed. Structural deletion checks passed, prose passed with zero errors/warnings, and diff checks passed. The one uncommitted citation patch and exact original/current hashes are preserved. No current references required amendments. Executable tests and fixtures remain unchanged; no full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "change-pack-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/validate-boundary-first.py --check with --path for all four deleted documents; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:423670320e1552ae2eeea488e5ddaac4c08e1d4584881526acc3333e8fc1da8d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/change-pack-source-removal.json"
+        },
+        {
+          "identity": "sha256:d5ab33e859bdbd006ac467768aef6607d55fae9e2156933fd3ccb6a11cc1d41e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:4feff3c7c5d5c9de3b2e60ec2a0cee0605373cdbb6c9af6d2640caa50565d2fc",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill tests and 108 lifecycle tests passed. Structural deletion checks passed; prose passed with zero errors/warnings and diff checks passed. No remaining current model/spec references required amendments. The modified usage-policy citation patch and original/current hashes are preserved; no historical record or executable test changed. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "lifecycle-navigation-source-removal-checks",
+      "procedure": "python scripts/test-select-validation.py ValidationSelectionTests.test_review_lifecycle_and_release_paths_select_scoped_validators; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for Workflow and all four deleted documents; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/workflow.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:1837892bf66fb387cc1cfd05dd46821ee1cbc6d8b02a7e249b770a37d6d65ce2",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:4da8f28db7be7b8a5cd104f3dbfaf140d7c6e98b11db4b408dba90ae20c3a64d",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:80fc4fe220b6655ee5b519c00934e1adc35cb4ed8dec3e283de60e272557c6db",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/lifecycle-navigation-source-removal.json"
+        },
+        {
+          "identity": "sha256:f43445ff6cb16bfbbfd80801ba0440ab52be9281a4eb553cc3eba71580a32410",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e9b1e438e4b7ace218a2644660dd547e6766f5656343f7bc20d0a7ec765b6d17",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "The updated selector regression passed with unchanged routing assertions; 108 lifecycle and 87 boundary/model tests passed. Structural deletion/model checks passed, prose passed with zero errors/warnings, and diff checks passed. All originals match retained Git bytes; no executable test removed. Historical lifecycle displacement rows retain their original basis while current owner reconciliation is recorded here. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "superseded-automation-adr-removal-checks",
+      "procedure": "python scripts/test-validate-workflow-automation.py; python scripts/select-validation.py --mode explicit with --path for all three deleted ADRs; python scripts/test-artifact-lifecycle-validator.py; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:6086a22a8db61cdb3b2d7d24d4731faa1eb7e817c2fc77b0dc2c14b8b55258f9",
+          "path": "docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md"
+        },
+        {
+          "identity": "sha256:bf7fd72a3e6865a5c93d5f500f051cfdac2d18336ea66ff56ae7ee73c7b303f3",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:d07d6f14f0b21db1cb16b6c5fe9caee9c3df73d3f074bb78bff8567459ea3c02",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/superseded-automation-adr-removal.json"
+        },
+        {
+          "identity": "sha256:d28ea62907c23605267384a8926e209ccd31ce1a9c2a7c65408ee8703c691783",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:b4d3441f8f966a57b2da7b310ed980fa0484a7c6a2c583382200f7002825c623",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "67 automation-validator tests and 108 lifecycle tests passed. Deletion selection passed and selected the executed lifecycle suite. Prose passed with zero errors/warnings and diff checks passed. Current replacement-ADR and architecture provenance citations pin the exact retained Git revision. Originals match Git bytes. No executable test, live automation contract or historical record removed. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "transition-release-source-removal-checks",
+      "procedure": "python scripts/test-release-transaction.py HistoricalReleaseReaderTests ReleaseProfileTests LiteralAuditBaselineTests; python scripts/validate-boundary-first.py --check --path specs/publish-next-release-with-single-authored-skill-source.md --path specs/publish-next-release-with-single-authored-skill-source.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:7d9266e683a84968ab8fd1ded4222e9bd0e7855dabd025b55e8927709b62a1f4",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:f7cfe84d4ee9ec70d0c8f897c95010db2da755ff6f771de1d14b07560963201c",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/transition-release-source-removal.json"
+        },
+        {
+          "identity": "sha256:fd07fb3cb965b35ca6a34378a43d63585c2722efbf71c52f58ec5bc6aa4a3b11",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:d703a54e50a799ef820b18b75fc91bcf5b4beb5120315190b850f187848186a8",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "21 focused release tests passed, covering historical reader, release profiles and literal audit baseline. Structural deletion checks passed; prose passed with zero errors/warnings and diff checks passed. The architecture citation pins recoverable Git provenance. Original document bytes match Git; release evidence, inputs and validation behavior remain unchanged. No release execution, full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "readme-positioning-source-removal-checks",
+      "procedure": "python scripts/validate-readme.py --vision-markers; python scripts/test-skill-validator.py VisionSkillProgressiveDisclosureTests; python scripts/validate-boundary-first.py --check --path specs/readme-user-value-positioning.md --path specs/readme-user-value-positioning.test.md --path specs/public-discovery-and-developer-adoption-surface.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:59d47abe60bc3f68ffe1648699f51aa7ca1d50d089e12615353f51e1730bee50",
+          "path": "specs/public-discovery-and-developer-adoption-surface.md"
+        },
+        {
+          "identity": "sha256:e7316ae902a0a3f2b6857fd8c5b2abdbd5cc152a917cca5d3baea6f8944e7fd5",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/readme-positioning-source-removal.json"
+        },
+        {
+          "identity": "sha256:aa1c331d0f8f44b85d94489e5d3c6a36e4a667c0e4f49c415bfe32586951411e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a90c1426b1f8ea87a273c9b84a2033789e79a44d720afbc8276692c369e3cff0",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "README structure and vision marker validation passed; all six focused vision tests passed. Structural deletion and discovery amendment validation passed with independent Design Review classification still required. Prose passed with zero errors/warnings and diff checks passed. No README, external metadata, executable test or historical record changed. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "requirement-delivery-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/validate-boundary-first.py --check --path docs/design/skill/design.md --path specs/lightweight-requirement-delivery-model.md --path specs/lightweight-requirement-delivery-model.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/design.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:611d4dd816d13b48f91d9f10059f7ca8325aae09b278e635c07c7919d08f1d56",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:8bda8992970249e603589fc89e6636fdc79f26b93b257bd0cf3abdf810e8cda6",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/requirement-delivery-source-removal.json"
+        },
+        {
+          "identity": "sha256:7841858bfc488860cebefdbe46743127918825d4ff29139dce1526c2ea4cad78",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:cc85326e8c3fa16739ae810e4db7a119b49137d5065e91b86978fae6618600a7",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill tests, including shared requirement-model and packaged-copy parity, 87 boundary/model tests and 108 lifecycle tests passed. Structural deletion/model checks passed, prose passed with zero errors/warnings and diff checks passed. All originals match retained Git bytes; shared resources, packaged copies, executable tests and historical records remain unchanged. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "design-coherence-refinement-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for System, Skill, Design, Workflow and Assessment; python scripts/validate-documentation-prose.py --mode enforce with --path for all five models and source-disposition; git diff --check; git diff --cached --check; author comparison of prior requirement rows, heading anchors and new local link destinations.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:c6ad836340194950a2a15f86729c568b5f74c86ff09299d9d8e35f226ff66274",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:b9a607c786f5aa60d7285f88a8af467b950cb10e073ad310d4d0accf0eeb74e6",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:a881de22bac75fb530374cf569baeea0b88a2e1beda26156c2be4d2e9735a8f8",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:512df840fd2154ca9c8279cd7a74e1f47f1d83915accd55a93ed64bd28efb592",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:3957bb9a4545aa187fc662410b6afb4b120991d5149ee0c5d53f4f64f5023139",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:8fbf8613248f7b09435c2869c14cd3c5d5ae0d105279079ca5624c738b716140",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:47f878a9d343a531d459abd5d4648a6389842dee771007c94ce672493ffaaab1",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:d6a2ae7cf2c2ca1d57269f383b2c1716c27af55624625f6a0154738cc698d0c5",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:d4cebe77532c09a06acc49e9e63b858babfe669768b11f755afb6dfaf002f2c0",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-coherence-refinement.json"
+        },
+        {
+          "identity": "sha256:e6333893ea79bcd8949b7e951693669a09499dcf56b0b02bd5fd79c1c4932f3b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        }
+      ],
+      "summary": "Final skill suite passed 354 tests and boundary/model suite passed 87 tests after reordering. Model structure/reference checks passed; prose passed with zero errors/warnings. All existing requirement rows are unchanged, all prior heading anchors remain and new local link destinations exist. Net reduction is 1,589 whitespace-delimited words across five models. Current Installation destination/force/state policy was checked against its owning requirements. No full CI, runtime installation, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "proposal-contract-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for Skill, Assessment and both deleted specification documents; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/design/skill/assessment.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:4abc98fab3cd55075a9a3667afa5b8071fe4ad5504753aa7f0a82fdaa01e8465",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:9dab291de136b856319c3aa5559a4ec42936f408f8f62bad54d50ef5dea7dd7f",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:77a3923061c3ff337b4c589436419ec1492cca65ba42e89d31aafaf68a9ed8cd",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:78e278bee028f1997c0bfcb79720b633c527644e0339b0b43abd4489eaec5731",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-contract-source-removal.json"
+        },
+        {
+          "identity": "sha256:6396f3b74a544cc3c937c113203b8dcee8120cec0089ba2e35ae2a82de2d16e5",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:81f76d9560849c4245e17d0fd90f74a66965ff76a236b68ab814bc31f4e3eab3",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill tests, 108 lifecycle tests and 87 boundary/model tests passed. The existing vision-authority test retains its assertions against Assessment. Structural model/deletion checks passed, prose passed with zero errors/warnings and diff checks passed. Proposal templates and validation implementation are unchanged. All originals match retained Git bytes; no executable test or historical judgment removed. No full CI, independent review or final Verify claimed."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "proposal-assets-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md --path specs/proposal-family-assets-progressive-disclosure.md --path specs/proposal-family-assets-progressive-disclosure.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:fdb0bb9c5ebbbc971b76cc8aec48a6baa7239f8f3a362af2408bf435378d996f",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:c2e484ba93795f6f64f3f959f8340b42ef69d67a7b334268a03bc9a115536f3a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-assets-source-removal.json"
+        },
+        {
+          "identity": "sha256:015e2bce89c3bb14256da62ba0836793fb85a0f33c3d4c8081a418263bc7066a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a149492339592f8885faff003fe74a6972177ac41439f0f08293b2db1a1f35ea",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "Passed 354 skill tests and 87 boundary/model tests; structural/reference and prose validation passed, with clean diff checks. Independent review and wider cleanup Verify remain outstanding."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "proposal-procedures-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md --path docs/design/skill/assessment.md --path specs/proposal-skill-simplification.md --path specs/proposal-skill-simplification.test.md --path specs/proposal-review-skill-simplification.md --path specs/proposal-review-skill-simplification.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/design/skill/assessment.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check; rg dependency scan for both retired basenames excluding historical evidence",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:e336816d6ecde4c2569a7d97b7febd20f4452792bc5205f997d64a3bfb60fe0d",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:eb57be1905901b267ea191b71ee1d1f385ab47e84975189b4d06728d2e73b627",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:db8c1824038a2bbd579277d4f1e52c2a2b8d2d7837ba0708ce9983d9938fcb62",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-procedures-source-removal.json"
+        },
+        {
+          "identity": "sha256:8c7f36801142cfcd4b2167c340c6f9b6cf414d6845f77048a6e24b93bb5b066d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:636f4b379fae678caba9351dd323e81658bb5ea8e27bbddf8a5e4d6f969a7380",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill tests and 87 boundary/model tests passed. Structural/reference validation passed; prose validation reported zero errors and warnings. Diff checks passed and the current-consumer reference scan found no remaining references. Skills, executable tests, assets and fixtures unchanged in this batch. Independent review and wider cleanup Verify remain outstanding."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "plan-procedure-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md --path specs/plan-skill-simplification.md --path specs/plan-skill-simplification.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check; rg reference scan of docs/design, scripts, skills, packages and specs",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:cf9adf08d54a601263daf0fd36b980e8eda7026b6e51e5caaa2aec20940888c4",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:21ca18a8d34ab3bd78e1ecf2cbddbdac94c44ef4cab6fc1a1615fd2043af4a82",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/plan-procedure-source-removal.json"
+        },
+        {
+          "identity": "sha256:d5beb7ceaab16f0912949b00966ea22834e0ec455cf0f38d324e402418a6917e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:e55a9cadbdee5645e0f3cfa1579674e7fdfb0a41d66e355094fbf734f6366079",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "Passed 354 skill tests and 87 boundary/model tests. Structural/reference validation passed, prose reported zero errors/warnings, and diff checks passed. Remaining test reference targets the preserved historical change fixture directory, not either removed document. No actual skills, tests or fixtures changed. Independent review and wider cleanup Verify remain outstanding."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "plan-initialization-adr-removal-checks",
+      "procedure": "python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; validate-documentation-prose.py validate_path before/after citation comparison; git diff --check; git diff --cached --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:5175f7ab197d4fa2202f932e21717fd089e0f994b7d5d469f53224098c0aa3fe",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:cfca2c3ba45efc625439bebf36f23bf3a272cf4c10f39218b90ebaac8fe84686",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:2caec6d8b9d9c1f67e2b5721fa5bf1a5827e634f0ed691963afc4764b27cd8c4",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/plan-initialization-adr-removal.json"
+        },
+        {
+          "identity": "sha256:8a270fb282a84c4b7acef5136c0b530b0aabd50b1a43ac470e4655576c86c347",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:2f540993552db3a1b876f3b5f68dcb3a672a31b946ab1e71651d5a9c976ba7aa",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "Model structural/reference validation and focused prose/diff checks passed. Full legacy architecture prose validation found 263 pre-existing errors and 115 warnings; exact before/after citation comparison confirmed identical findings. Initial boundary invocation incorrectly included unsupported architecture/ADR paths and rejected; corrected model-only invocation passed. No executable tests rerun for decision-rationale and citation-only changes. Independent review and wider cleanup Verify remain outstanding."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "cost-bounded-rigor-source-removal-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md --path docs/design/engineering/validation.md --path specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md --path specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md --path specs/cost-bounded-rigor-m2-selected-skill-reminders.md --path specs/cost-bounded-rigor-m3-validation-budget-guidance.md --path specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/design/engineering/validation.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check; rg retired-basename scan of scripts/packages/skills/current models/architecture/ADRs",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:33c710c83d6382cf819ed5494ba0474cdd5460ccb5244913e47392d6461b1344",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:a412f1ab5bcde6329c8b53dd5aaed56fdbd8e867e30f716db1e87fa8b566db12",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:848363083a4404dc8ba6047e8bb1ba62cdb6b2b624169db99d65827da7269137",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/cost-bounded-rigor-source-removal.json"
+        },
+        {
+          "identity": "sha256:57210b10fedc4c3e4a469cb87620743c6ef55d8aeed926b4c6de3a3ee79efb92",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a66c5fe3f4d87ca21e3c33ca5c74f13d74790d978389666843ad194e532dfd13",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill tests and 87 boundary/model tests passed. Structural/reference and prose checks passed with zero prose errors/warnings; diff checks passed. No remaining source references in executable or current model surfaces. Historical grandfathering inventory and lifecycle transfer tables are preserved. No skill, selector, test, fixture, package or M4 report changes. Independent review and wider cleanup Verify remain outstanding."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "round-one-design-refinement-checks",
+      "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check on four model paths; python scripts/validate-documentation-prose.py --mode enforce on four model paths; requirement-row, existing-heading and relative-file-link audit; git diff --check; git diff --cached --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:3e71da64f37a7ef9e911290e328985e6c60d6e94c1d53e61e50aeaf1a16023ea",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:a130a53c2e4c5752ff06c9931813d98385ca52d9ce4122c84ee949bb05849e4b",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:67e497d52664c5864f6eb3c9570c408e758d49bf91901dd20a6ce4e8a917aeeb",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:dff76cea395980b6709c961489ec97a8f339255ff410c31bf50a197baf49160f",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/round-one-design-refinement.json"
+        },
+        {
+          "identity": "sha256:af08c24ce229d322b9c6c82d3cd76ff77e94997bf31d275e3de0c45904fd9ecf",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a66c5fe3f4d87ca21e3c33ca5c74f13d74790d978389666843ad194e532dfd13",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "354 skill and 87 boundary/model tests passed before two final non-executable wording corrections. All requirement rows and heading anchors preserved; relative file links resolve. Final structure/prose/diff checks recorded after corrections. Whole-cleanup independent review, implementation alignment and final Verify remain outstanding."
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "id": "token-cost-retirement-design-checks",
+      "procedure": "python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check on five affected models; python scripts/validate-documentation-prose.py --mode enforce on five affected models and source-disposition.md; relative model file-link audit; git diff --check; git diff --cached --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:77b780c85ee32aaffecc8c0772dd9bc2abf1b13a1b4f1e804d16397046d81a58",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:de9ff70a0a54df8b205abb5b9bb90c83f08b94bca6fbfa13613b841a8a48ee42",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-design.json"
+        },
+        {
+          "identity": "sha256:f4cd3fb5bd5d47f32a269fb216a9980819a4a636d63c6b254f2df3d793e4af53",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:a66c5fe3f4d87ca21e3c33ca5c74f13d74790d978389666843ad194e532dfd13",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        }
+      ],
+      "summary": "87 boundary/model tests passed; structural/reference validation passed; prose errors=0 warnings=0; relative model file links resolve and diff checks passed. No executable behavior changed, so token benchmark/runtime or qualification suites were not executed. Independent Design Review, delivery allocation, implementation, whole-change review and final Verify remain outstanding."
+    },
+    {
+      "actor": {
+        "id": "codex-token-implementer",
+        "role": "implement"
+      },
+      "id": "token-cost-retirement-implementation",
+      "procedure": "Execute commands and assess retained proof recorded in evidence/token-cost-retirement-implementation.json; independently reviewed correction preserves semantic interactions.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:6608603ab4c78538a7d0dbe3b1a012b11b1ee0df297065473b8302209e35e1d6",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-implementation.json"
+        },
+        {
+          "identity": "sha256:d2674782249841c60a1a5b9b9b4bc95305561bb386166aeb20e309f2b04575eb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-retirement-removed-files.json"
+        },
+        {
+          "identity": "sha256:67080688039df765608224c76f2b075eb4c7c07bfb78ec203f18753236315f55",
+          "path": "README.md"
+        },
+        {
+          "identity": "sha256:55ec1632457bcd42a35f04cbce9f2e15e60aa37c24d83a34d6a3af75ab7a7ecf",
+          "path": "docs/project-map.md"
+        },
+        {
+          "identity": "sha256:20e6a6cf9f33a9893ba9378c241ff2ca1ad3394f45bcb7609eb3231fcce2d2d9",
+          "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md"
+        },
+        {
+          "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+          "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+        },
+        {
+          "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+          "path": "packages/rigorloop/test/record-store-interactions.test.js"
+        },
+        {
+          "identity": "sha256:9115b8211e2e67ac8f807985a1d5fd31106f50452a22987b1cbec94145bb5739",
+          "path": "scripts/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:686e723c6cc0b02fc18b47bdd7e53689e53923990e6c31894d586f51ee362709",
+          "path": "scripts/release-verify.sh"
+        },
+        {
+          "identity": "sha256:c61a6fb2a952937c3af3dee46d22b86883fc769c3428bb826a0beef585d1e156",
+          "path": "scripts/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:73d1b9123a49be3d760938ed7584d14bb71abddd6f2ed0e88b221d962c69f9ef",
+          "path": "scripts/test-adapter-distribution.py"
+        },
+        {
+          "identity": "sha256:a2f081462cb2710a8ade8cfe0e4b8ab673467811faf26837d4e8979ec4be8e89",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:7023c1b2c211d0988cf10b26bf0051bcd67c5546b99f3e87b84a3187539ce94e",
+          "path": "scripts/validate-release.py"
+        },
+        {
+          "identity": "sha256:c721d93f4fbf5f48a2f5dda25d4f2bbe4c2260f35a60f3b73367c5b72105a135",
+          "path": "scripts/validation_selection.py"
+        }
+      ],
+      "summary": "TOKEN-1 implemented: 147 exclusive files removed with recoverable identities; retained qualification, selector, CLI and semantic proof passed. Initial failures and corrections documented. Wider cleanup not assessed."
+    },
+    {
+      "actor": {
+        "id": "codex-token-scoped-verifier",
+        "role": "verify"
+      },
+      "id": "token-cost-retirement-scoped-verify",
+      "procedure": "Apply verify VP0 scoped assessment to exact Design/Delivery/implementation/final Code Review chain; check hashes, finding resolution, removed file absence, live references, recorded actual tests, diff and record-store validity. See evidence/token-cost-retirement-scoped-verify.json.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:dd2f02a0c7ab877cf4e7bcb84f41f81f6b4d8e5ac7677bcfc7a814050bdf5a78",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-scoped-verify.json"
+        },
+        {
+          "identity": "sha256:731c5df90df3f0f6abce12e208316ef5e6ca73a19e2af6c2d3f680a287959582",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-token-retirement-final.json"
+        },
+        {
+          "identity": "sha256:6608603ab4c78538a7d0dbe3b1a012b11b1ee0df297065473b8302209e35e1d6",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-implementation.json"
+        }
+      ],
+      "summary": "TOKEN-1 scoped verification passed with retained source/candidate and CLI protection. Independent correction resolved. No whole-cleanup final Verify or branch-readiness claim."
+    },
+    {
+      "actor": {
+        "id": "codex-ledger-implementer",
+        "role": "implement"
+      },
+      "id": "retirement-ledger-implementation",
+      "procedure": "Execute exact validation commands and review scoped source/removal disposition in evidence/retirement-ledger-implementation.json.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:f42425389ed68c49504e22213bfbcabaf8a52240fd206f1cb938f9ae478bea4e",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:85e1cc7b94123e496e74ae9ce2796464a61683e0f47ea85f842afd901bea130d",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:50d69a7b48d15922959978c52941fac7d3737179fe560dda34b26c4b6ee9fdec",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:7e60bd59598ec008605c19ef92e0657bb7c84a72bfe39416d11a4e8d89817133",
+          "path": "specs/published-skill-first-repository-simplification.test.md"
+        },
+        {
+          "identity": "sha256:b0ec61a98af3b4b35ed53eecb23ab72a7397d73ca8700013765bb9d8e16195bb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-implementation.json"
+        },
+        {
+          "identity": "sha256:b18f857cfd3d925f69980ad41071bd3ec3e880fffb77a63438277ca7a74a824a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-provenance.json"
+        }
+      ],
+      "summary": "LEDGER-1 implemented;3exclusive sources removed;165selector,52executor and31wrapper cases pass. Red/green observes removal of old scheduling. No wider cleanup claim."
+    },
+    {
+      "actor": {
+        "id": "codex-ledger-scoped-verifier",
+        "role": "verify"
+      },
+      "id": "retirement-ledger-scoped-verify",
+      "procedure": "Apply verify VP0 scoped assessment to LEDGER-1 Design/Delivery/implementation/review chain, current hashes, retired-file absence, live references and actual validation. Detailed assessment in evidence/retirement-ledger-scoped-verify.json.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d70cd62a8abb08ee050ada00a153fe90370ba952a475c9ae9d19fe06a0502ea5",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-scoped-verify.json"
+        },
+        {
+          "identity": "sha256:6869316069ab884435ed97aae144b36e2b51b171f6907aaa1456eb5c6a192e53",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-retirement-ledger-final.json"
+        },
+        {
+          "identity": "sha256:b0ec61a98af3b4b35ed53eecb23ab72a7397d73ca8700013765bb9d8e16195bb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-implementation.json"
+        }
+      ],
+      "summary": "LEDGER-1 scoped Verify passed after independent complete-slice Code Review; three exclusive removals preserve current proof. Wider cleanup and spec-read-log remain open."
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-author",
+        "role": "design"
+      },
+      "id": "integration-scope-authoring",
+      "procedure": "Inspect cumulative batch evidence and exact final scope, approved correction finding, integration allocation and owning Validation/Records boundary. Author the bounded supporting-subject selection clarification and v3 current-owner correction.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:b9042ba81364ec039c699048b0da78e096a89e42ab03d8e38ab006846b9191cb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/april-architecture-source-removal.json"
+        },
+        {
+          "identity": "sha256:423670320e1552ae2eeea488e5ddaac4c08e1d4584881526acc3333e8fc1da8d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/change-pack-source-removal.json"
+        },
+        {
+          "identity": "sha256:848363083a4404dc8ba6047e8bb1ba62cdb6b2b624169db99d65827da7269137",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/cost-bounded-rigor-source-removal.json"
+        },
+        {
+          "identity": "sha256:5111b5d0b6499a5e29aed8864ba32357c7b6ff0d8070feb25c4bb8f6d8956ebf",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-authoring.json"
+        },
+        {
+          "identity": "sha256:d4cebe77532c09a06acc49e9e63b858babfe669768b11f755afb6dfaf002f2c0",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-coherence-refinement.json"
+        },
+        {
+          "identity": "sha256:02b744c73ed63dd049d7655d90a3dbea01943346847fb3951f4f55b54e63a464",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-feedback.md"
+        },
+        {
+          "identity": "sha256:e17e6b10c70902b2ed0affc769c8734e4815b02e9593c043a952ae37b58ac80a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/design-source-removal.json"
+        },
+        {
+          "identity": "sha256:06e4c005ed77756b83ae9fd542673465d4b5029c9f58a5434aac6726acd84d3a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/final-verification-source-removal.json"
+        },
+        {
+          "identity": "sha256:2d0c6129f3fe89a2399f9203d4df9b8ce612ccb291f31099f39ae7589c6bf565",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/historical-consumer-references.tsv"
+        },
+        {
+          "identity": "sha256:80fc4fe220b6655ee5b519c00934e1adc35cb4ed8dec3e283de60e272557c6db",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/lifecycle-navigation-source-removal.json"
+        },
+        {
+          "identity": "sha256:5e076a1981e60123fbd6159f603c52a31b9ad17fbecd4f6d6b0dd3448e92c96d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/model-layout-refinement.json"
+        },
+        {
+          "identity": "sha256:2caec6d8b9d9c1f67e2b5721fa5bf1a5827e634f0ed691963afc4764b27cd8c4",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/plan-initialization-adr-removal.json"
+        },
+        {
+          "identity": "sha256:21ca18a8d34ab3bd78e1ecf2cbddbdac94c44ef4cab6fc1a1615fd2043af4a82",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/plan-procedure-source-removal.json"
+        },
+        {
+          "identity": "sha256:c2e484ba93795f6f64f3f959f8340b42ef69d67a7b334268a03bc9a115536f3a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-assets-source-removal.json"
+        },
+        {
+          "identity": "sha256:78e278bee028f1997c0bfcb79720b633c527644e0339b0b43abd4489eaec5731",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-contract-source-removal.json"
+        },
+        {
+          "identity": "sha256:db8c1824038a2bbd579277d4f1e52c2a2b8d2d7837ba0708ce9983d9938fcb62",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/proposal-procedures-source-removal.json"
+        },
+        {
+          "identity": "sha256:e7316ae902a0a3f2b6857fd8c5b2abdbd5cc152a917cca5d3baea6f8944e7fd5",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/readme-positioning-source-removal.json"
+        },
+        {
+          "identity": "sha256:8bda8992970249e603589fc89e6636fdc79f26b93b257bd0cf3abdf810e8cda6",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/requirement-delivery-source-removal.json"
+        },
+        {
+          "identity": "sha256:48c4e3ab635ccfafcd6a19789d0a4f3f1107211478225145b330abd6892ad467",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retired-authoring-source-removal.json"
+        },
+        {
+          "identity": "sha256:b0ec61a98af3b4b35ed53eecb23ab72a7397d73ca8700013765bb9d8e16195bb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-implementation.json"
+        },
+        {
+          "identity": "sha256:b18f857cfd3d925f69980ad41071bd3ec3e880fffb77a63438277ca7a74a824a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-provenance.json"
+        },
+        {
+          "identity": "sha256:d70cd62a8abb08ee050ada00a153fe90370ba952a475c9ae9d19fe06a0502ea5",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-scoped-verify.json"
+        },
+        {
+          "identity": "sha256:8852532026b2fa690a7a6fab4b0d58e6f615bec47669fc3d0ae9db0a3e94f9fa",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-assets-source-removal.json"
+        },
+        {
+          "identity": "sha256:b09e755d04e904d171c3304b16a39931a73f6970956efafbcf3ffe2b482143a3",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-handoff-source-removal.json"
+        },
+        {
+          "identity": "sha256:77b30dc2ead4fbf2a20cc96842dbaa12894d448fc281a6e2be6f084e317e717b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/review-recording-source-removal.json"
+        },
+        {
+          "identity": "sha256:dff76cea395980b6709c961489ec97a8f339255ff410c31bf50a197baf49160f",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/round-one-design-refinement.json"
+        },
+        {
+          "identity": "sha256:24830c87edbbe83d9ad0905fd14a4bde0550e747244c179be8387ba4f3689f9c",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/routing-review-source-removal.json"
+        },
+        {
+          "identity": "sha256:ef62cfa3157c8c3dde754360cdb783aa145985c764a614ba98f95cfb266b646e",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/second-removal.json"
+        },
+        {
+          "identity": "sha256:547119e60e05df51fa301c6bc8265f0d7bc668928b12b6d9b6b9c78c07dc627d",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/spec-family-source-removal.json"
+        },
+        {
+          "identity": "sha256:d07d6f14f0b21db1cb16b6c5fe9caee9c3df73d3f074bb78bff8567459ea3c02",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/superseded-automation-adr-removal.json"
+        },
+        {
+          "identity": "sha256:8d9477e307726f90e20aa781967369a3adb28aab5344c15ce928eded40d5196b",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/test-stage-removal.json"
+        },
+        {
+          "identity": "sha256:de9ff70a0a54df8b205abb5b9bb90c83f08b94bca6fbfa13613b841a8a48ee42",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-design.json"
+        },
+        {
+          "identity": "sha256:6608603ab4c78538a7d0dbe3b1a012b11b1ee0df297065473b8302209e35e1d6",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-implementation.json"
+        },
+        {
+          "identity": "sha256:dd2f02a0c7ab877cf4e7bcb84f41f81f6b4d8e5ac7677bcfc7a814050bdf5a78",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-cost-retirement-scoped-verify.json"
+        },
+        {
+          "identity": "sha256:d2674782249841c60a1a5b9b9b4bc95305561bb386166aeb20e309f2b04575eb",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/token-retirement-removed-files.json"
+        },
+        {
+          "identity": "sha256:f7cfe84d4ee9ec70d0c8f897c95010db2da755ff6f771de1d14b07560963201c",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/transition-release-source-removal.json"
+        },
+        {
+          "identity": "sha256:5f5db3ff3a683bdde65ef194e06f4bba6833cdc247c9769ec56625a62eb0aac5",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/vision-authoring.json"
+        },
+        {
+          "identity": "sha256:60df38c68eac1c3047a02214054504254e8fb81d9e5e778021cf1e94a9cb016a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/workflow-guide-source-removal.json"
+        },
+        {
+          "identity": "sha256:a66c5fe3f4d87ca21e3c33ca5c74f13d74790d978389666843ad194e532dfd13",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-inventory.tsv"
+        },
+        {
+          "identity": "sha256:f4cd3fb5bd5d47f32a269fb216a9980819a4a636d63c6b254f2df3d793e4af53",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md"
+        },
+        {
+          "identity": "sha256:7d97cbf53f54767016af5cd770a3da6640cf035a5e3ab93e23a1766b3019a67a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/delivered-scope.md"
+        },
+        {
+          "identity": "sha256:3d377335ab99e8a2f63b73244c32cf27f5e11bbdbe9ee3ddb706a20375898d3b",
+          "path": "docs/plans/2026-09-14-cleanup-integration-and-commit.md"
+        },
+        {
+          "identity": "sha256:a81343438938d624bce7cb74f5191fd985e54b2ea279de779ead4ec3ecaa2bcc",
+          "path": "specs/skill-contract.md"
+        },
+        {
+          "identity": "sha256:1190b6dcb1fcc32f7a5af2587a581dce9f5c2baad5c1fa87437c23f5c1289a12",
+          "path": "docs/design/engineering/validation.md"
+        }
+      ],
+      "summary": "Current delivered scope separates completed source/token/ledger work from deferred spec-read-log, adapter-support and historical-replay changes. Exact support subjects named without registry promotion; independent Design/Delivery assessment remains required."
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-integrator",
+        "role": "implement"
+      },
+      "id": "integration-final-validation",
+      "procedure": "bash scripts/ci.sh --mode local --broad-smoke --jobs 4; python scripts/test-select-validation.py -k supporting_subject; git diff HEAD --check; independent Git source/patch recovery audit.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:5342ade5f2a7035e050f6c8ab4cba871f2e7065b6bec9f163ae0eb03df438276",
+          "path": "AGENTS.md"
+        },
+        {
+          "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+          "path": "CONSTITUTION.md"
+        },
+        {
+          "identity": "sha256:67080688039df765608224c76f2b075eb4c7c07bfb78ec203f18753236315f55",
+          "path": "README.md"
+        },
+        {
+          "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+          "path": "VISION.md"
+        },
+        {
+          "identity": "sha256:6086a22a8db61cdb3b2d7d24d4731faa1eb7e817c2fc77b0dc2c14b8b55258f9",
+          "path": "docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md"
+        },
+        {
+          "identity": "sha256:7e97107b41b2fcd95ce551fc40d0299010f27ec551d96e1dc828122ea2086ef1",
+          "path": "docs/architecture/2026-08-25-workflow-routed-upstream-corrections.md"
+        },
+        {
+          "identity": "sha256:9b27ca3f5fd0893d73209389a8e016a207266dca55ea2dba32b7f8145b87562e",
+          "path": "docs/architecture/2026-09-02-refocus-workflow-into-route.md"
+        },
+        {
+          "identity": "sha256:cfca2c3ba45efc625439bebf36f23bf3a272cf4c10f39218b90ebaac8fe84686",
+          "path": "docs/architecture/system/architecture.md"
+        },
+        {
+          "identity": "sha256:8fbf8613248f7b09435c2869c14cd3c5d5ae0d105279079ca5624c738b716140",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:77b780c85ee32aaffecc8c0772dd9bc2abf1b13a1b4f1e804d16397046d81a58",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:6c91f69b868f0bdd1406d09c69e01771dab51e56ba799e2ed90b826ae1e08be0",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:a130a53c2e4c5752ff06c9931813d98385ca52d9ce4122c84ee949bb05849e4b",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:a881de22bac75fb530374cf569baeea0b88a2e1beda26156c2be4d2e9735a8f8",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:512df840fd2154ca9c8279cd7a74e1f47f1d83915accd55a93ed64bd28efb592",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:18589c891b4f02d52264d073e8b46f48d3c59d958daf635b52ae81d17857a727",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:bc18799fad9b41dbd20afad5a3d11a7fbbb397d7d6df508d68b9b4046fd93be2",
+          "path": "docs/plans/2026-09-13-token-cost-retirement.md"
+        },
+        {
+          "identity": "sha256:bf99b838b17f4fbe4042c3131dd0859033d0e1b40782c26c3acb8e32542d3984",
+          "path": "docs/plans/2026-09-14-cleanup-integration-and-commit.md"
+        },
+        {
+          "identity": "sha256:b066c6dfb5644cd3c9f0f8c8818110b6c8bfbcb4abde76ccddce045c74a346fe",
+          "path": "docs/plans/2026-09-14-retirement-ledger-removal.md"
+        },
+        {
+          "identity": "sha256:55ec1632457bcd42a35f04cbce9f2e15e60aa37c24d83a34d6a3af75ab7a7ecf",
+          "path": "docs/project-map.md"
+        },
+        {
+          "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+          "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+        },
+        {
+          "identity": "sha256:513338d86364c03ef030d567abf590332353a1edfe5fe6ae7a247e9b46781081",
+          "path": "docs/vision/strategic-positioning.md"
+        },
+        {
+          "identity": "sha256:20e6a6cf9f33a9893ba9378c241ff2ca1ad3394f45bcb7609eb3231fcce2d2d9",
+          "path": "packages/rigorloop/test/fixtures/recording-interactions/README.md"
+        },
+        {
+          "identity": "sha256:da8df34c3fb5bc423b65c19beaa45d25e634b23ab731937c29259a85e0fca420",
+          "path": "packages/rigorloop/test/helpers/record-store-interactions.mjs"
+        },
+        {
+          "identity": "sha256:e1e5ee271c32a7fb2349a797bbc70fab6dfae3ab6524dd76218950b42ed6e850",
+          "path": "packages/rigorloop/test/record-store-interactions.test.js"
+        },
+        {
+          "identity": "sha256:9115b8211e2e67ac8f807985a1d5fd31106f50452a22987b1cbec94145bb5739",
+          "path": "scripts/adapter_distribution.py"
+        },
+        {
+          "identity": "sha256:773c60248a16b80a772881677aca12855f16c45ad694fdda668fe566cb5e5633",
+          "path": "scripts/boundary_first_validation.py"
+        },
+        {
+          "identity": "sha256:2791ad5611bcd3dd3645b53be87134ead82dc935ab296d88d56dfc002540f87b",
+          "path": "scripts/model_layout.py"
+        },
+        {
+          "identity": "sha256:686e723c6cc0b02fc18b47bdd7e53689e53923990e6c31894d586f51ee362709",
+          "path": "scripts/release-verify.sh"
+        },
+        {
+          "identity": "sha256:c61a6fb2a952937c3af3dee46d22b86883fc769c3428bb826a0beef585d1e156",
+          "path": "scripts/release_candidate_tests.py"
+        },
+        {
+          "identity": "sha256:73d1b9123a49be3d760938ed7584d14bb71abddd6f2ed0e88b221d962c69f9ef",
+          "path": "scripts/test-adapter-distribution.py"
+        },
+        {
+          "identity": "sha256:b44e305e98ef41b7ed820898b93c5efeab27f574c1273142290a7ddc7441c480",
+          "path": "scripts/test-boundary-first-validation.py"
+        },
+        {
+          "identity": "sha256:f84625b84b1c141ea49e1aef247427929dead374b9a2a1db7bedb02a024cea87",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:77a3923061c3ff337b4c589436419ec1492cca65ba42e89d31aafaf68a9ed8cd",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:3dddfd47ac871592927496e9465f3293d6a153ee91b9eecee108ff1fbd5b269e",
+          "path": "scripts/validate-record-store.mjs"
+        },
+        {
+          "identity": "sha256:7023c1b2c211d0988cf10b26bf0051bcd67c5546b99f3e87b84a3187539ce94e",
+          "path": "scripts/validate-release.py"
+        },
+        {
+          "identity": "sha256:eb94e9ac71cbde3d8ba8bfdcf3c80c2fd5da0be2720db742e8853332675f6d72",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:6eba75ab34c648405338b49ef9b889aa35fe7cbbe33db1db4b41502be641a7be",
+          "path": "specs/README.md"
+        },
+        {
+          "identity": "sha256:899a66c9ad84f87a8c790b5d0aee3049eec3e31fb03ada9509a471d9c1eb6da0",
+          "path": "specs/boundary-first-proof-model.md"
+        },
+        {
+          "identity": "sha256:c2b47f090f0760b648618c1226f02a00a2cd29117b33a60a344155b89068c27d",
+          "path": "specs/change-record-catalog-registration-and-bounded-read-model.md"
+        },
+        {
+          "identity": "sha256:e80f0ed0d42d757d5d9769dd661dec1a842036e56c61c5231bdd846e7ff95747",
+          "path": "specs/multi-agent-adapters-first-public-release.md"
+        },
+        {
+          "identity": "sha256:75c20ee6cda4fdf90e229bbfd67f017591edecd1faa5c371174d45c11fc73fe6",
+          "path": "specs/project-artifact-location-guide-and-examples-surface.md"
+        },
+        {
+          "identity": "sha256:59d47abe60bc3f68ffe1648699f51aa7ca1d50d089e12615353f51e1730bee50",
+          "path": "specs/public-discovery-and-developer-adoption-surface.md"
+        },
+        {
+          "identity": "sha256:7e60bd59598ec008605c19ef92e0657bb7c84a72bfe39416d11a4e8d89817133",
+          "path": "specs/published-skill-first-repository-simplification.test.md"
+        },
+        {
+          "identity": "sha256:a7f8cb62fa5fd17bc4d1abf436fd6c5297cb4bdf6ac313bd8e07d1ac590569bc",
+          "path": "specs/review-finding-resolution-contract.md"
+        },
+        {
+          "identity": "sha256:96f95d576d09c2835a825b15afc240a13611c68bcb87690f184b917b6c1891c1",
+          "path": "specs/review-independence-and-criticality.md"
+        },
+        {
+          "identity": "sha256:f7ca7b1a2a65366321588344766a95b1eaf2b451c3b202a79ff2eac142e2d5ba",
+          "path": "specs/rigorloop-workflow.md"
+        },
+        {
+          "identity": "sha256:a81343438938d624bce7cb74f5191fd985e54b2ea279de779ead4ec3ecaa2bcc",
+          "path": "specs/skill-contract.md"
+        },
+        {
+          "identity": "sha256:2ef0710939cba8911a0f70f4f12f7967f0ea59b9d10715e6e9e8d2877ee9622f",
+          "path": "specs/skill-contract.test.md"
+        },
+        {
+          "identity": "sha256:e981f0aaa6d9f3f2e9dfdfeabe4cd6dbb776e11b160518a1a82a89630c294da5",
+          "path": "specs/workflow-stage-autoprogression.md"
+        },
+        {
+          "identity": "sha256:f180b33635cf1dbeaca3b27e05f8b6b05886035e3e8b8c50bb751b232e6046c8",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/integration-validation.json"
+        },
+        {
+          "identity": "sha256:7d97cbf53f54767016af5cd770a3da6640cf035a5e3ab93e23a1766b3019a67a",
+          "path": "docs/changes/2026-09-13-current-design-repository-cleanup/delivered-scope.md"
+        }
+      ],
+      "summary": "1639 selected/broad execution rows passed with exit 0, including release regression and all seven support-subject corrections. Complete delivered source identities and truthful prior failures/interruption recorded in integration-validation.json; external CI and deferred cleanup excluded."
+    }
+  ],
+  "schema_version": 3
+}

@@ -1,0 +1,54 @@
+{
+  "operation": "retire-review-gate-and-milestone-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/consolidated-review-gates.md",
+      "identity": "sha256:d5384105747d81133eb9f49e560b0598d37f4d0ab3b358626c4485f65f9c2d2d"
+    },
+    {
+      "path": "specs/consolidated-review-gates.test.md",
+      "identity": "sha256:8e5e50e25465009834277835ebc38de984012775ea3e95ba8c3f565349ab1eae"
+    },
+    {
+      "path": "specs/milestone-aware-review-handoff.md",
+      "identity": "sha256:17e3ae475ec9ec501e125bb8420ab49a3cd2fffe8aed017e3b6996af71dc8b57"
+    },
+    {
+      "path": "specs/milestone-aware-review-handoff.test.md",
+      "identity": "sha256:9425537bc841b9b482fcf8b6241e789a0f5848f2ec731ac327ea984e2458cd82"
+    },
+    {
+      "path": "specs/code-review-independence-under-autoprogression.md",
+      "identity": "sha256:5b2716ba3ef1459f8ba230aef5bfff6ad7cb52c655d0fafd24ddc06cd02cd6fe"
+    },
+    {
+      "path": "specs/code-review-independence-under-autoprogression.test.md",
+      "identity": "sha256:839dcbe3eb4353df4ba2380130961a53f771d542c69cb43bb7742368b12604c5"
+    },
+    {
+      "path": "docs/adr/ADR-20260828-consolidated-review-package-topology.md",
+      "identity": "sha256:ef4df7ce82c8563b38eb68ef016ae69e30148172bf924746ca0e1b920826c9a6"
+    }
+  ],
+  "prior_model_identities": {
+    "docs/design/skill/workflow.md": "sha256:303106e605e08e04c910255aab25c2db135ec4dedfdcfaaa8e56bc1eef0b8acf",
+    "docs/design/skill/assessment.md": "sha256:958e56f823e2e2167f11b7ef577c4d8e41b56d92e727ffaf814e86912d689657"
+  },
+  "updated_paths": [
+    "specs/review-independence-and-criticality.md",
+    "specs/rigorloop-workflow.md",
+    "docs/design/skill/workflow.md",
+    "docs/design/skill/assessment.md",
+    "scripts/test-skill-validator.py"
+  ],
+  "important_knowledge": "Workflow preserves non-final milestone progression, attached correction/review dependencies, current record reliance, legitimate scope revision and isolated-invocation limits. Assessment preserves independent first-pass recording before fixes, justified clean outcomes and independent reassessment. Its existing scopes own distinct Proposal/Design/Delivery reviews and final Code Review before Verify. Specialist criticality/automation policy stays with its existing owners.",
+  "retired_material": "Old review-package topology, milestone enums, plan-body mutations, rollout instructions, legacy stage names and duplicate prose. Two tests asserting historical milestone-state wording and old proof-document headings, plus their two exclusive source-path constants, retire. Existing live skill handoff/independence regressions and retained source checks remain.",
+  "historical_preservation": "Activation inventories, earlier proof documents, review records and retired-format displacement tables keep original bytes/identities. Current source citations use exact Git provenance; no runtime fetch or historical test fixture migration is introduced.",
+  "deleted_lines": 2507,
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for both affected models, both reference-only amended legacy specs and six deleted spec/proof documents; python scripts/validate-documentation-prose.py --mode enforce for both models and source-disposition; git diff --check.",
+    "summary": "Final full skill-validator run passed 354 tests; boundary/model suite passed 87 tests. Structural/deletion checks passed with expected Design Review classification for reference-only legacy amendments; prose passed with zero errors/warnings. Initial skill run found one additional historical proof-heading assertion reading a deleted source; it was removed as part of the same source-retirement scope before the passing full rerun. No full CI, independent review or final Verify claimed."
+  }
+}

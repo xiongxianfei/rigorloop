@@ -1,0 +1,46 @@
+{
+  "operation": "retire-artifact-status-and-plan-index-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/plan-index-lifecycle-ownership.md",
+      "identity": "sha256:e2ea42ddafafbbc0bcdb4f12eafa42bfb2a1edd2788869ff17bb59ed41336b77",
+      "historical_identity": "sha256:e2ea42ddafafbbc0bcdb4f12eafa42bfb2a1edd2788869ff17bb59ed41336b77",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/plan-index-lifecycle-ownership.test.md",
+      "identity": "sha256:b147604476485b0c2fa93da4edaf8fcf46aa2abcbd0d87ea2e6383c0c505992b",
+      "historical_identity": "sha256:b147604476485b0c2fa93da4edaf8fcf46aa2abcbd0d87ea2e6383c0c505992b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/artifact-status-lifecycle-ownership.md",
+      "identity": "sha256:51dcff3840da41e28fce558c42577aaefd136f1a93b41d508f6096b6f42478ea",
+      "historical_identity": "sha256:51dcff3840da41e28fce558c42577aaefd136f1a93b41d508f6096b6f42478ea",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/artifact-status-lifecycle-ownership.test.md",
+      "identity": "sha256:d63acac4aa8b0b02d17905e18b8d602e3b2ec109d25255fe8bb88876e5ffdb99",
+      "historical_identity": "sha256:d63acac4aa8b0b02d17905e18b8d602e3b2ec109d25255fe8bb88876e5ffdb99",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 1867,
+  "updated_paths": [
+    "docs/design/skill/workflow.md",
+    "scripts/test-select-validation.py"
+  ],
+  "prior_model_identities": {
+    "docs/design/skill/workflow.md": "sha256:9370f35cbcc86169a5fd5110828c2065e09d16c5f2340bdb7e87ebb8f0a527f1"
+  },
+  "important_knowledge": "Workflow preserves stable plan navigation, the ten-entry recent-history bound, historical intent, archive reachability and explicit replacement evidence. Assessment retains current-evidence reliance and stale-required-input blockers versus unrelated debt. Records owns mutable lifecycle representation. The selector fixture uses a surviving test specification and retains its original routing assertions.",
+  "retired_material": "Artifact-local status fields and old enums, plan-index/body synchronization transactions, migration conservation tables and initial rollout instructions retire. Existing lifecycle validators and substantive negative/regression tests remain unchanged; no executable test is removed.",
+  "historical_preservation": "All four originals match retained Git bytes. Historical plans, judgment records, lifecycle displacement tables and proof documents retain their original identities and references. Current citations use exact Git provenance. Existing retained legacy documents retain their declared applicability; no new historical runtime support is introduced.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-select-validation.py ValidationSelectionTests.test_review_lifecycle_and_release_paths_select_scoped_validators; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check with --path for Workflow and all four deleted documents; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/workflow.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "The updated selector regression passed with unchanged routing assertions; 108 lifecycle and 87 boundary/model tests passed. Structural deletion/model checks passed, prose passed with zero errors/warnings, and diff checks passed. All originals match retained Git bytes; no executable test removed. Historical lifecycle displacement rows retain their original basis while current owner reconciliation is recorded here. No full CI, independent review or final Verify claimed."
+  }
+}

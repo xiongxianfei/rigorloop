@@ -1,0 +1,412 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-cleanup-router",
+      "role": "route"
+    },
+    "reason": "Route: distinct final Verify succeeds for the complete delivered package after all in-scope work and fresh independent whole-change review. Deferred cleanup remains explicit in delivered-scope; local commit preparation proceeds under user authorization, without external handoff.",
+    "stage": "verify",
+    "status": "completed"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "codex-cleanup-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/proposal-review.json",
+      "reason": "Three recorded model basis subjects changed during downstream Design authoring. Original review bytes, subjects and approved judgment preserved; current direction reliance is supplied by proposal-review-design-basis.",
+      "value": "stale"
+    },
+    {
+      "actor": {
+        "id": "codex-design-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/material-decisions.json",
+      "reason": "Direct user-authorized design refinement for future token-cost feature retirement; final owner, reference, test and evidence subjects inspected.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/proposal-review-design-basis.json",
+      "reason": "Independent reassessment confirms the unchanged proposal direction on the exact current draft basis, without approving Design completeness or detailed behavior.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-integrator",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence.json",
+      "reason": "Exact current final engineering bytes assessed against successful combined selected/broad execution; independent final review and Verify are separate.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-token-retirement-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-token-cost-retirement.json",
+      "reason": "Independent assessment of exact current five-model token-cost retirement package and unchanged cleanup direction with explicit owner retirement decision. Applies to this bounded Design scope only; no whole-cleanup approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-token-retirement-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-token-cost-retirement.json",
+      "reason": "Independent assessment of exact registered token-retirement plan and unchanged scoped approved Design; no unrelated cleanup or completion authority.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-token-retirement-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-token-retirement-round-1.json",
+      "reason": "Exact current helper defect independently inspected; applies to this correction assessment, not final whole-slice approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-token-retirement-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-token-retirement-final.json",
+      "reason": "Fresh independent whole-TOKEN-1 assessment of final exact implementation and current scoped approved Design/Delivery, after explicitly resolved correction; wider cleanup and Verify remain outside approval.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-ledger-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-retirement-ledger.json",
+      "reason": "Independent exact scoped assessment of ledger-only VAL-SR-23/System retirement and actual consumers. No token, spec-read-log or whole-cleanup approval inferred.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-ledger-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-retirement-ledger.json",
+      "reason": "Independent exact registered ledger-only plan and unchanged scoped Design assessed; no broader VAL-SR-23 or cleanup completion authority.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-ledger-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-retirement-ledger-final.json",
+      "reason": "Fresh independent complete LEDGER-1 delta assessed against unchanged scoped Design/Delivery with current exact implementation proof. No whole-cleanup or Verify claim.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-current-owner-boundary.json",
+      "reason": "Exact inspected current-owner notice contradicts the adopted v3 interface; correction required without changing historical requirement bytes.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-support-subject-boundary.json",
+      "reason": "Exact inspected Records/Validation interface and current selector contradict for named engineering subjects; bounded correction required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-cleanup-consolidation-first.json",
+      "reason": "Exact integrated evidence/selector incompatibility inspected before correction; final whole-change approval remains pending.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-cleanup-delivered-package.json",
+      "reason": "Exact current affected package is coherent within delivered-scope; this approval supports prospective integration planning and the bounded correction only.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-cleanup-integration.json",
+      "reason": "Exact registered primary integration plan has adequate sequencing, test allocation and recovery for the approved delivered Design scope.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-cleanup-support-correction.json",
+      "reason": "Independent concrete malformed-set reproduction against the exact current selector correction before author edits.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-cleanup-delivered-package-complete-set.json",
+      "reason": "Renewed exact technical basis: actual complete-set validator and same-snapshot bounded Subject output; unchanged delivered scope and quality obligations.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-cleanup-integration-complete-set.json",
+      "reason": "Renewed exact technical basis: actual complete-set validator and same-snapshot bounded Subject output; unchanged delivered scope and quality obligations.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-cleanup-delivered-package-final.json",
+      "reason": "Fresh independent final whole-delivered-change review after both integration corrections, exact current Design/Delivery and all 1639 actual selected/broad passed execution rows. Earlier scoped assessments remain on their original subjects; distinct final Verify remains required.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cleanup-verifier",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/verify-report.json",
+      "reason": "Distinct final assessment of exact current delivered Subjects, fresh independent whole-change review and resolved findings, complete integrated proof and current lifecycle; deferred work explicitly excluded.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+        "path": "docs/design/system.md"
+      }
+    },
+    {
+      "id": "engineering",
+      "subject": {
+        "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+        "path": "docs/design/engineering/engineering.md"
+      }
+    },
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:6c91f69b868f0bdd1406d09c69e01771dab51e56ba799e2ed90b826ae1e08be0",
+        "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "packaging",
+      "subject": {
+        "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+        "path": "docs/design/engineering/packaging.md"
+      }
+    },
+    {
+      "id": "release",
+      "subject": {
+        "identity": "sha256:77b780c85ee32aaffecc8c0772dd9bc2abf1b13a1b4f1e804d16397046d81a58",
+        "path": "docs/design/engineering/release.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:8fbf8613248f7b09435c2869c14cd3c5d5ae0d105279079ca5624c738b716140",
+        "path": "docs/design/cli/cli.md"
+      }
+    },
+    {
+      "id": "workflow",
+      "subject": {
+        "identity": "sha256:512df840fd2154ca9c8279cd7a74e1f47f1d83915accd55a93ed64bd28efb592",
+        "path": "docs/design/skill/workflow.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "design",
+      "subject": {
+        "identity": "sha256:a881de22bac75fb530374cf569baeea0b88a2e1beda26156c2be4d2e9735a8f8",
+        "path": "docs/design/skill/design.md"
+      }
+    },
+    {
+      "id": "review-closeout",
+      "subject": {
+        "identity": "sha256:a130a53c2e4c5752ff06c9931813d98385ca52d9ce4122c84ee949bb05849e4b",
+        "path": "docs/design/skill/assessment.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:bf99b838b17f4fbe4042c3131dd0859033d0e1b40782c26c3acb8e32542d3984",
+    "path": "docs/plans/2026-09-14-cleanup-integration-and-commit.md"
+  },
+  "proposal": {
+    "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+    "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/proposal-review.json"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/material-decisions.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/proposal-review-design-basis.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-token-cost-retirement.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-token-cost-retirement.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-token-retirement-round-1.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-token-retirement-final.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-retirement-ledger.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-retirement-ledger.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-retirement-ledger-final.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-current-owner-boundary.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-support-subject-boundary.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-cleanup-consolidation-first.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-cleanup-delivered-package.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-cleanup-integration.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-cleanup-support-correction.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-cleanup-delivered-package-complete-set.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-cleanup-integration-complete-set.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-cleanup-delivered-package-final.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/verify-report.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "token-1",
+      "owner": {
+        "id": "codex-token-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-25"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "ledger-1",
+      "owner": {
+        "id": "codex-ledger-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-23"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "integrate-1",
+      "owner": {
+        "id": "codex-cleanup-integrator",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "ENG-SR-13",
+        "ENG-SR-14",
+        "VAL-SR-03",
+        "VAL-SR-04",
+        "VAL-SR-25",
+        "VAL-SR-23"
+      ],
+      "status": "completed"
+    }
+  ]
+}

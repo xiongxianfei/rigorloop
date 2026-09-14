@@ -1,0 +1,48 @@
+{
+  "operation": "retire-formal-recording-and-status-settlement-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/formal-review-recording.md",
+      "identity": "sha256:276a087b22d9e1a5dd9e7ccb395f825ee890f35dfacc1b401f622125ab05d8cf"
+    },
+    {
+      "path": "specs/formal-review-recording.test.md",
+      "identity": "sha256:52a99b3bf197ab86fb3ad9a2f5ee6ad2e27686dc363ce0021b1ea595b79193a1"
+    },
+    {
+      "path": "specs/downstream-status-settlement-before-reliance.md",
+      "identity": "sha256:0f2a69e38a79933600ea4ca0be6475de562d45ac8a7793363ddf3ac49849cb8e"
+    },
+    {
+      "path": "specs/downstream-status-settlement-before-reliance.test.md",
+      "identity": "sha256:8117b17edd77a52777f7845b2f65e6731b10e4c5df6f047c44e7232e2328f708"
+    },
+    {
+      "path": "docs/architecture/2026-04-24-review-finding-resolution-contract.md",
+      "identity": "sha256:5ad0355ce5251517b81eda0f7aa3f89c4ff7940f06c3b7e38465283eb9d169a3"
+    }
+  ],
+  "deleted_lines": 2847,
+  "prior_model_identities": {
+    "docs/design/skill/workflow.md": "sha256:e5cfb491131c5af97075fff40339feacf1c16ce1c114dcd46bba30f4ee580a1e",
+    "docs/design/skill/assessment.md": "sha256:fcd5f694268a768b74ca50f76d20e1e9626f1664486992f8a9e044c5c64a1a5f"
+  },
+  "updated_paths": [
+    "docs/architecture/system/architecture.md",
+    "specs/project-artifact-location-guide-and-examples-surface.md",
+    "specs/review-finding-resolution-contract.md",
+    "specs/rigorloop-workflow.md",
+    "docs/design/skill/workflow.md",
+    "docs/design/skill/assessment.md",
+    "scripts/test-skill-validator.py"
+  ],
+  "important_knowledge": "Assessment RC-SR-04/05/08/10 preserves durable formal review outcomes, clean and isolated recording, first-pass findings before fixes, truthful late reconstruction, explicit recording failures, independent reassessment and evidence before reliance. Workflow preserves responsible actor ownership and upstream correction routing. Records and CLI own current shapes and persistence.",
+  "retired_material": "Historical Markdown receipt/log/resolution schemas, artifact-local status writes, downstream authority to settle upstream status, retired stage lists, rollout instructions and duplicate prose retire. The architecture was already an archived snapshot. The unused formal-review-spec constant is removed; no executable tests are removed.",
+  "historical_preservation": "Original records and proof documents keep their bytes and historical citations. The review-artifact validator fixture contains a synthetic evidence citation but never reads that source; keep its parser regression. The separate review-finding-resolution spec remains a live automation input. Current source citations pin the recoverable Git revision. The two specialist simplification specs retain original citations because their stored legacy markers prohibit current amendments; they are historical source references, not executable file reads.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/test-review-artifact-validator.py; python scripts/validate-boundary-first.py --check with --path for both models, three reference-only amended specs and four deleted spec/proof files; python scripts/validate-documentation-prose.py --mode enforce for both models and source-disposition; git diff --check; git diff --cached --check.",
+    "summary": "354 skill tests, 87 boundary/model tests and 109 review-artifact tests passed. Prose passed with zero errors/warnings; diff checks passed. Structural checks passed with independent Design Review classification still required. Initial structural invocation incorrectly included architecture paths and found two legacy stored-marker specs; architecture was excluded from this spec/model-only command and the two historical specs were restored byte-for-byte before the passing rerun. No tests removed, full CI or independent review/Verify claimed."
+  }
+}

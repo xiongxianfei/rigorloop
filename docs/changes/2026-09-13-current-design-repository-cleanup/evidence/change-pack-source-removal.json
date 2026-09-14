@@ -1,0 +1,40 @@
+{
+  "operation": "retire-legacy-change-pack-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/docs-changes-usage-policy.md",
+      "identity": "sha256:52a4afbf5a3c17b4094d738c4bfa323d3c9cc77ea292e7ebaf8401174cd7d570",
+      "historical_identity": "sha256:a1c7b0334bfc1ab93823400c407570182d6ab1d05f380ebac1cf32bc52922e1e",
+      "uncommitted_patch": "--- 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f:specs/docs-changes-usage-policy.md\n+++ specs/docs-changes-usage-policy.md\n@@ -237,14 +237,14 @@\n \n ## Follow-on artifacts\n \n-- `docs/architecture/2026-04-21-docs-changes-usage-policy.md`\n+- [historical `docs/architecture/2026-04-21-docs-changes-usage-policy.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/architecture/2026-04-21-docs-changes-usage-policy.md)\n - `specs/docs-changes-usage-policy.test.md`\n \n ## Readiness\n \n This spec is approved.\n \n-Architecture work is now tracked in `docs/architecture/2026-04-21-docs-changes-usage-policy.md`.\n+Historical architecture work is recorded in [historical `docs/architecture/2026-04-21-docs-changes-usage-policy.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/architecture/2026-04-21-docs-changes-usage-policy.md).\n \n Test-spec work is now tracked in `specs/docs-changes-usage-policy.test.md`.\n \n"
+    },
+    {
+      "path": "specs/docs-changes-usage-policy.test.md",
+      "identity": "sha256:0ce181ded41e538d478bcfdcb690227938d50e9b6c78ce0f9461dbce33ba5436",
+      "historical_identity": "sha256:0ce181ded41e538d478bcfdcb690227938d50e9b6c78ce0f9461dbce33ba5436",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/docs-changes-skill-enforcement.md",
+      "identity": "sha256:9e4447f43aa582c6a3d402ffd2eecc47ee63a1875f030a29f2fcd2d03fdbec4e",
+      "historical_identity": "sha256:9e4447f43aa582c6a3d402ffd2eecc47ee63a1875f030a29f2fcd2d03fdbec4e",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/docs-changes-skill-enforcement.test.md",
+      "identity": "sha256:7852e32cea1971f23b8e3660090a9d96fe19589c43cdc2bea8b2d471e88e29a0",
+      "historical_identity": "sha256:7852e32cea1971f23b8e3660090a9d96fe19589c43cdc2bea8b2d471e88e29a0",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 1024,
+  "updated_paths": [],
+  "important_knowledge": "Constitution requires durable validation evidence for non-trivial work and governed closeout reconciliation. Workflow owns responsible coordination, Assessment owns review and success-only final explanation, and Records/CLI own current registration and persistence. Current fixture placement, packaging and validation owners remain unchanged. No additional model prose is needed.",
+  "retired_material": "The old change.yaml baseline pack and artifact-map schema, fast-lane exemptions, standalone Explain Change stage and historical skill-enforcement rollout retire. Current evidence and required-record checks are not waived; no parser, validator or executable test is removed.",
+  "historical_preservation": "Git retains all originals. The modified usage-policy spec also retains its complete uncommitted citation patch and original/current hashes. Historical change records, plans, review judgments and test evidence keep their original bytes and meaning; current records do not need to fetch retired specifications.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/validate-boundary-first.py --check with --path for all four deleted documents; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "354 skill tests and 108 lifecycle tests passed. Structural deletion checks passed; prose passed with zero errors/warnings and diff checks passed. No remaining current model/spec references required amendments. The modified usage-policy citation patch and original/current hashes are preserved; no historical record or executable test changed. No full CI, independent review or final Verify claimed."
+  }
+}

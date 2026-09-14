@@ -1,0 +1,83 @@
+{
+  "assessment_scope": "Fresh final whole-LEDGER-1 Code Review of /tmp/ledger-retirement-slice.diff relative to /tmp/ledger-retirement-before: three ledger source/test/data removals, catalog/fingerprint/routes and selector assertions, exact scoped test-spec notice and navigation. Governing approvals are design-review-retirement-ledger and delivery-review-retirement-ledger. Includes interaction with prior token-check retirement; excludes remaining spec-read-log retirement, unrelated accumulated cleanup and branch-wide readiness.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-ledger-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-retirement-ledger-final",
+  "independence_basis": "Independent delegated reviewer /root/token_retirement_design_review did not author, edit or correct the implementation or tests. Parent implementation actor supplied the slice. This reviewer independently read the complete pre-slice delta, inspected actual consumers, verified removed identities and examined current proof; prior Design/Delivery activity was assessment only.",
+  "judgment": "approved",
+  "limitations": [
+    "No hosted CI, commit, push, PR, public installation or publication was observed or authorized. Local proof does not establish branch or release readiness.",
+    "Approval covers only LEDGER-1. The remaining VAL-SR-23 spec-read-log portion and accumulated repository cleanup remain open.",
+    "Design review recorded pre-implementation scripts as feasibility subjects; their intentional deletion/change is the assessed transformation, not a retargeted approval. Removed baselines are recoverable and current governing models/plan retain their reviewed identities.",
+    "Temporary snapshot/diff aid this exact assessment; durable implementation/provenance records preserve current subjects, removed identities, actual results and limitations."
+  ],
+  "rationale": [
+    "Spec alignment — pass: only the ledger portion of VAL-SR-23 is implemented. The private ledger module, sole dedicated test and August 10 frozen fixture are removed together with main.retirement_ledger.regression, its fingerprint and scheduler routes. No replacement ledger, synthetic pass or archived runtime reader is introduced. The separate spec-read-log and product/runtime/package sources remain unchanged.",
+    "Test coverage — pass: the old frozen check inventory, private schema and mandatory dual-proof transitions retire with their expressly retired behavior. Current catalog/mode consistency and unknown-value rejection remain in the existing selector/executor suites. Added tests assert that the retired ID is absent and catalog_command rejects it, and that a deleted historical ledger path selects actual retained record-retirement proof.",
+    "Edge cases and error handling — pass: existing compact/deleted-script routing retains record_retirement.regression and change_metadata.regression, while archival ledger routing retains record rejection without calling the deleted test. Selector-preservation requests still select record-retirement, selector and executor proof. The new historical-path test failed first on unwanted ledger scheduling and passed after correction; actual wrapper execution proves 31 retained metadata/record cases rather than merely matching command text.",
+    "Architecture and compatibility — pass: this removes one obsolete library/check/fixture edge from the existing catalog/executor architecture. No shared runtime validator is removed. The retained test-spec notice precisely supersedes ledger-only command/inventory/schema/transition prescriptions and preserves other requirements, IDs and historical judgments. System and Validation governing subjects and the approved delivery plan remain unchanged.",
+    "Security/privacy and recovery — pass: no new external operation, permission or log collection is introduced. The three removed source bytes were independently checked against both the captured pre-slice files and retained Git commit 39b7c5cb1f03aa761d2f2493d3474ce985e59d6f; all hashes match, all three files are absent and no uncommitted patch is missing. Restoration can recover the coherent producer/consumer slice without reverting unrelated work.",
+    "Derived currency and scope — pass: no canonical published skill, package/runtime or release source changes occur. Remaining executable references to ledger paths classify deletion or explicitly assert rejected catalog identity; no importer or scheduler remains. Previous token retirement remains intact, without restoring token IDs to satisfy the old ledger. Navigation is bounded to the approved plan.",
+    "Validation evidence — pass: inspected final logs show 165 selector tests, 52 executor tests and 31 real-wrapper record-retirement/metadata cases passed. Durable implementation evidence records test-first failure, corrected success, actual commands, zero prose errors/warnings, valid record store and clean diff checks. The retained negative boundaries run normally; there is no zero-test or skipped-check success claim.",
+    "Final scope and handoff — pass for Code Review: the complete ledger delta and its cross-consumer/token-cleanup interactions have no required correction identified. This is a fresh whole-slice assessment after implementation, not reuse of the earlier token approval. Distinct scoped Verify is next; only the broader cleanup owner can later obtain its own whole-change review and final Verify."
+  ],
+  "reviewer": {
+    "id": "codex-ledger-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:f42425389ed68c49504e22213bfbcabaf8a52240fd206f1cb938f9ae478bea4e",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:85e1cc7b94123e496e74ae9ce2796464a61683e0f47ea85f842afd901bea130d",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:50d69a7b48d15922959978c52941fac7d3737179fe560dda34b26c4b6ee9fdec",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:7e60bd59598ec008605c19ef92e0657bb7c84a72bfe39416d11a4e8d89817133",
+      "path": "specs/published-skill-first-repository-simplification.test.md"
+    },
+    {
+      "identity": "sha256:b0ec61a98af3b4b35ed53eecb23ab72a7397d73ca8700013765bb9d8e16195bb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-implementation.json"
+    },
+    {
+      "identity": "sha256:b18f857cfd3d925f69980ad41071bd3ec3e880fffb77a63438277ca7a74a824a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-provenance.json"
+    },
+    {
+      "identity": "sha256:b066c6dfb5644cd3c9f0f8c8818110b6c8bfbcb4abde76ccddce045c74a346fe",
+      "path": "docs/plans/2026-09-14-retirement-ledger-removal.md"
+    },
+    {
+      "identity": "sha256:ab9e03e3908af46bc2a98a908a5ca54893e9c0b235ab003c8bfa2d1e47c29e23",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-retirement-ledger.json"
+    },
+    {
+      "identity": "sha256:e41ac947b491dabafdaaf051a0244cef95dce52cfdcad2e2df60ec84f9d54d35",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-retirement-ledger.json"
+    },
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+      "path": "docs/design/system.md"
+    }
+  ],
+  "summary": "The complete LEDGER-1 retirement delta is approved with current selector/record/metadata protection intact and no material findings.",
+  "target": "code"
+}

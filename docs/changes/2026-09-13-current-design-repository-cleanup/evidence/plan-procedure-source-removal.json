@@ -1,0 +1,43 @@
+{
+  "operation": "consolidate-plan-procedure",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/plan-skill-simplification.md",
+      "identity": "sha256:b4e95d396f1e7e54aa12267e33389700457226487a52ed4cdd1022f391936414",
+      "historical_identity": "sha256:b4e95d396f1e7e54aa12267e33389700457226487a52ed4cdd1022f391936414",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/plan-skill-simplification.test.md",
+      "identity": "sha256:004ce59bbe036c559e64eb20437db9e820df21bf06066c43d39e71276730dfed",
+      "historical_identity": "sha256:004ce59bbe036c559e64eb20437db9e820df21bf06066c43d39e71276730dfed",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 653,
+  "updated_paths": [
+    "docs/design/skill/skill.md"
+  ],
+  "prior_model_identities": {
+    "docs/design/skill/skill.md": "sha256:e336816d6ecde4c2569a7d97b7febd20f4452792bc5205f997d64a3bfb60fe0d"
+  },
+  "important_knowledge": "Skill Delivery allocation preserves plan structure, portable/governed boundaries, closed operations, conditional resources, exact approved-plan initialization, rejection of existing work and safe revision. Current Workflow, Assessment, Records and CLI retain coordination, review and persistence ownership. Actual skills, structural assets, executable tests and historical fixtures remain unchanged.",
+  "retired_material": "Completed simplification measurements and rollout requirements retire. The old planned_work projection, no-content-hash restriction, legacy format reader and plan-review two-phase settlement protocol are superseded by current v3 owners. The approved-plan initialization exception survives through current work add operations.",
+  "historical_preservation": "Both sources match retained Git originals. Historical records, the reviewed-plan initialization ADR and the change-local fixtures consumed by test-skill-validator.py retain their original bytes and meanings. Source identities and replacement mappings are recorded without retargeting approvals.",
+  "source_disposition": {
+    "PSIM-R001-R005": "Skill Delivery allocation and existing asset/resource rules; original three assets preserved, later triggered resources retain their current owners",
+    "PSIM-R006-R010": "Skill Delivery allocation: exact operations, current authority, target checks and approved Delivery Review basis",
+    "PSIM-R011-R020": "Current Records/CLI identities and persistence, Assessment review, Workflow coordination; Skill preserves exact approved initialization and no replacement of work. Old temporary states, no-hash constraint and settlement retry retire",
+    "PSIM-R021-R024": "Skill Delivery allocation stable intent, milestone fields, change-local work authority and authorized replan",
+    "PSIM-R025-R028": "Skill preserves historical stable intent and no reverse state synchronization; no restoration of retired record readers or migration protocol",
+    "PSIM-R029-R032": "Completed simplification ledgers/measurements historical; current Validation and independent assessment retain semantic preservation and regression quality",
+    "PSIM-R033": "Engineering Packaging and Validation retain mapped resource parity and coherent versions",
+    "PSIM-R034-R035": "Completed ADR/architecture authoring historical; current Design/Workflow/Records own rationale and mutable state",
+    "test spec T1-T13, examples, boundaries and unnumbered obligations": "Preserve current target, authority, initialization, loading, stable-content and package failure outcomes in Skill and existing executable proof. Obsolete lifecycle-state and one-time extraction checks are historical. No tests or live fixtures deleted."
+  },
+  "validation": {
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-boundary-first.py --check --path docs/design/skill/skill.md --path specs/plan-skill-simplification.md --path specs/plan-skill-simplification.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/skill.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check; rg reference scan of docs/design, scripts, skills, packages and specs",
+    "summary": "Passed 354 skill tests and 87 boundary/model tests. Structural/reference validation passed, prose reported zero errors/warnings, and diff checks passed. Remaining test reference targets the preserved historical change fixture directory, not either removed document. No actual skills, tests or fixtures changed. Independent review and wider cleanup Verify remain outstanding."
+  }
+}

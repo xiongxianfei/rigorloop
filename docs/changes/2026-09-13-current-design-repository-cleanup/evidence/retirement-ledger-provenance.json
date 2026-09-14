@@ -1,0 +1,24 @@
+{
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "subjects": [
+    {
+      "path": "scripts/retirement_ledger.py",
+      "identity": "sha256:37902ca1cc262248e8af711b50cb30f84de165c652991cabb858d223a80b52d1",
+      "historical_identity": "sha256:37902ca1cc262248e8af711b50cb30f84de165c652991cabb858d223a80b52d1",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "scripts/test-retirement-ledger.py",
+      "identity": "sha256:b0e1816753865cdee8ac3cb2514b7b3bb96584d9098ca0cfc9745463ec80b999",
+      "historical_identity": "sha256:b0e1816753865cdee8ac3cb2514b7b3bb96584d9098ca0cfc9745463ec80b999",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json",
+      "identity": "sha256:b68eb8bdc1d4e54df60d7dfac9e959c90b9453d5f913fcfbddc1408216c0a70a",
+      "historical_identity": "sha256:b68eb8bdc1d4e54df60d7dfac9e959c90b9453d5f913fcfbddc1408216c0a70a",
+      "uncommitted_patch": ""
+    }
+  ],
+  "scope": "Exact pre-removal bytes for authorized VAL-SR-23 ledger slice; does not rewrite original historical judgments."
+}

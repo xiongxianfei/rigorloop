@@ -1,0 +1,37 @@
+{
+  "operation": "retire-three-superseded-automation-adrs",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md",
+      "identity": "sha256:09e79a9bc2777380462fd803788268ceed145d1bc9e19b818de6ea6da86ec3ee",
+      "historical_identity": "sha256:09e79a9bc2777380462fd803788268ceed145d1bc9e19b818de6ea6da86ec3ee",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md",
+      "identity": "sha256:90e034080ac06143f97c2b2160e5921541fdd2ebadeef642b3f6fc0b8b21e37b",
+      "historical_identity": "sha256:90e034080ac06143f97c2b2160e5921541fdd2ebadeef642b3f6fc0b8b21e37b",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md",
+      "identity": "sha256:9fe1c2cf68ebe6006662c20edab32375b9c42c4af111343bf0c5d698b326cfc2",
+      "historical_identity": "sha256:9fe1c2cf68ebe6006662c20edab32375b9c42c4af111343bf0c5d698b326cfc2",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 296,
+  "updated_paths": [
+    "docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md",
+    "docs/architecture/system/architecture.md"
+  ],
+  "important_knowledge": "All three ADRs explicitly name ADR-20260721-single-bounded-review-fix-workflow-automation.md as their replacement. That retained decision and the live automation specifications preserve bounded authorization, independent review, owned corrections, retry and external-action boundaries. Workflow and Assessment keep current coordination and reliance ownership. No new model text or behavior change is required.",
+  "retired_material": "The separately armed authoring-through-plan-review and implementation-through-verify profile decisions and the initial proposal-only bounded-review-fix decision are superseded historical alternatives. Their original schemas and rollout procedures do not regain current authority. No automation implementation, validator, test or replacement decision is removed.",
+  "historical_preservation": "All three originals match retained Git bytes. Current provenance citations use the exact Git revision; historical plans, reviews, test specifications and change records retain their original identities and references. The replacement ADR and live automation specifications remain available locally.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-validate-workflow-automation.py; python scripts/select-validation.py --mode explicit with --path for all three deleted ADRs; python scripts/test-artifact-lifecycle-validator.py; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "67 automation-validator tests and 108 lifecycle tests passed. Deletion selection passed and selected the executed lifecycle suite. Prose passed with zero errors/warnings and diff checks passed. Current replacement-ADR and architecture provenance citations pin the exact retained Git revision. Originals match Git bytes. No executable test, live automation contract or historical record removed. No full CI, independent review or final Verify claimed."
+  }
+}

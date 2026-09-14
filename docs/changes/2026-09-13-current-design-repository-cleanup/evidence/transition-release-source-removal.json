@@ -1,0 +1,30 @@
+{
+  "operation": "retire-v0-1-1-transition-release-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/publish-next-release-with-single-authored-skill-source.md",
+      "identity": "sha256:e935bf435bb9ea53cb0c3221c45837bd638aa9be3808be83a77652551a3b5504",
+      "historical_identity": "sha256:e935bf435bb9ea53cb0c3221c45837bd638aa9be3808be83a77652551a3b5504",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/publish-next-release-with-single-authored-skill-source.test.md",
+      "identity": "sha256:be871eca16792e81ce8a2bc525a0dd023f47a6272bf869fa17d7d25a70b43ee6",
+      "historical_identity": "sha256:be871eca16792e81ce8a2bc525a0dd023f47a6272bf869fa17d7d25a70b43ee6",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 696,
+  "updated_paths": [
+    "docs/architecture/system/architecture.md"
+  ],
+  "important_knowledge": "Packaging and Release retain authored-source, generated-candidate and release-evidence responsibilities. The retained single-authored-source and measurement contracts preserve their independently applicable source-selection semantics. The completed v0.1.1 compatibility window remains historical release context, not a requirement for current tracked adapter packages.",
+  "retired_material": "The v0.1.1 transition-release specification and proof allocation retire: old tracked public adapter installation, no-required-archive policy and completed rollout instructions are historical. This source-only removal does not implement the separately drafted historical-release replay retirement or alter validation behavior.",
+  "historical_preservation": "Both originals match retained Git bytes. Release notes, metadata, measurement inputs, release-validation code and fixtures remain unchanged. Current citations pin exact recoverable provenance; historical plans and reviewed evidence retain their original bytes and meaning.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-release-transaction.py HistoricalReleaseReaderTests ReleaseProfileTests LiteralAuditBaselineTests; python scripts/validate-boundary-first.py --check --path specs/publish-next-release-with-single-authored-skill-source.md --path specs/publish-next-release-with-single-authored-skill-source.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "21 focused release tests passed, covering historical reader, release profiles and literal audit baseline. Structural deletion checks passed; prose passed with zero errors/warnings and diff checks passed. The architecture citation pins recoverable Git provenance. Original document bytes match Git; release evidence, inputs and validation behavior remain unchanged. No release execution, full CI, independent review or final Verify claimed."
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "assessment_scope": "Formal Delivery Review round 1 of the exact registered primary plan docs/plans/2026-09-13-token-cost-retirement.md, TOKEN-1 and TG-TOKEN/TG-TOKEN-INTEGRATED, under design-review-token-cost-retirement. Plan identity and all five approved model identities were inspected and matched before recording. Approval applies only to the token-cost implementation slice; the wider repository cleanup remains outside this delivery package.",
+  "change_id": "2026-09-13-current-design-repository-cleanup",
+  "contributors": [
+    {
+      "id": "codex-token-retirement-planner",
+      "role": "plan"
+    }
+  ],
+  "findings": [],
+  "id": "delivery-review-token-cost-retirement",
+  "independence_basis": "Separate delegated reviewer /root/token_retirement_design_review did not author or edit the plan. The parent authored the plan; this reviewer read its complete sequence and proof allocation independently. Earlier Design Review was assessment only and did not author the approved models.",
+  "judgment": "approved",
+  "limitations": [
+    "This approves the one token-cost slice for authorized implementation, not implementation correctness, complete-cleanup readiness, final Verify, public release or external actions.",
+    "Actual source removal identities, test disposition, command results and absence of retained token callers must be established during implementation. A discovered consumer outside the mapped behavior returns to its owner rather than being silently discarded.",
+    "No implementation tests were run by this Delivery assessment. The selected repository wrapper command is resolved from actual affected scope during execution; required named suites and protected negative boundaries remain mandatory."
+  ],
+  "rationale": [
+    "VAL-SR-25 maps to one coherent TOKEN-1 milestone spanning tools, fixtures/reports, selector IDs and routes, adapter report imports, release wrapper gating and current guidance. Joining these boundaries avoids an accepted intermediate state with missing producers and live callers. Shared helpers remain only for demonstrated retained consumers; source identities and uncommitted patches are captured before retirement.",
+    "The allocation preserves source-safety and result-contract obligations separately from intentionally retired token counting, benchmark execution and report-schema behavior. TG-TOKEN requires retaining invalid-source/candidate rejection and a valid candidate without reports, and the plan establishes useful assertions before removing incidental report setup. Actual inspected adapter tests expose ignored-untracked success and tracked/unignored runtime rejection at the qualification boundary.",
+    "The plan explicitly includes record-store-tokenize.py and the record-store-interactions token measurement branch. The retained interaction test imports runInteraction and compares semantics, checkpoints and subjects; npm test invokes normal test discovery. Removing the measurement branch therefore has a clear protected retained boundary rather than authorizing deletion of the whole interaction helper.",
+    "TG-TOKEN and integrated proof cover deleted-path routing without removed IDs, truthful results without synthetic passes, source/package failures, and absence of agent/report side effects through retained entrypoints. Exact selector, adapter, release transaction, skill and native CLI suite commands, wrapper syntax, selected repository validation and diff checks provide realistic evidence. Repository scope is inspected before wrapper execution so accidental selection loss cannot count as successful cleanup.",
+    "Recovery restores producer/consumer/fixture changes together from the captured slice or retained Git identity without reverting accumulated user work. No benchmark execution, publication, new telemetry or unrelated feature retirement is permitted. Historical records retain original identity and judgments, and live documentation/fixture consumers are reconciled.",
+    "The plan separately names independent final review of the complete token-retirement delta after all TOKEN-1 corrections, followed by distinct scoped Verify. That checkpoint cannot close or approve the wider accumulated cleanup; the full cleanup retains its own whole-change review and Verify requirements."
+  ],
+  "reviewer": {
+    "id": "codex-token-retirement-delivery-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:bc18799fad9b41dbd20afad5a3d11a7fbbb397d7d6df508d68b9b4046fd93be2",
+      "path": "docs/plans/2026-09-13-token-cost-retirement.md"
+    },
+    {
+      "identity": "sha256:97aab5954605c64cffc5134843683527c596662a9f22f5b29167a976ebd8d5bb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-token-cost-retirement.json"
+    },
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:77b780c85ee32aaffecc8c0772dd9bc2abf1b13a1b4f1e804d16397046d81a58",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+      "path": "docs/design/skill/skill.md"
+    }
+  ],
+  "summary": "The bounded token-cost retirement plan safely joins producer and consumer removal and allocates adequate retained protection and scoped closeout.",
+  "target": "delivery"
+}

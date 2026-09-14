@@ -1,0 +1,40 @@
+{
+  "operation": "refine-model-layout",
+  "prior_subjects": {
+    "docs/design/skill/authoring/design.md": "sha256:1afa0d0b6e6af54cf55846213388704cb5ca6bc2adc98e0f0a365a9cb2e9b4fb",
+    "docs/design/system.md": "sha256:4d174d5e1375fd63f8010c57cd409d0982674c8b56369c26d4f72126b8c9c330"
+  },
+  "move": {
+    "from": "docs/design/skill/authoring/design.md",
+    "to": "docs/design/skill/design.md",
+    "model_id": "design"
+  },
+  "changed_paths": [
+    "CONSTITUTION.md",
+    "README.md",
+    "docs/architecture/system/architecture.md",
+    "docs/design/skill/assessment.md",
+    "docs/design/skill/skill.md",
+    "docs/design/skill/workflow.md",
+    "docs/design/system.md",
+    "docs/project-map.md",
+    "specs/README.md",
+    "specs/boundary-first-proof-model.md",
+    "specs/rigorloop-workflow.md",
+    "specs/skill-contract.md",
+    "specs/workflow-skill-artifact-location-map.md",
+    "docs/design/skill/design.md",
+    "scripts/model_layout.py",
+    "scripts/test-boundary-first-validation.py",
+    "scripts/validation_selection.py",
+    "scripts/test-select-validation.py"
+  ],
+  "rule": "Single child document beside parent; child directory only for multiple cohesive documents/resources. Sections for short responsibilities, no speculative grouping folders.",
+  "historical_records": "Previous reviewed paths and identities remain unchanged; current cleanup registry will select new subjects.",
+  "scope": "Repository layout and authoring guidance, current links and exact validator/test mapping; portable default and published skill package unchanged.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-boundary-first-validation.py; python scripts/test-select-validation.py with the five layout/move/unsafe-path cases; python scripts/select-validation.py --mode explicit for old and new paths, followed by its selected model.validate command; python scripts/validate-boundary-first.py --check and validate-documentation-prose.py --mode enforce for System/Design; git diff --check.",
+    "summary": "87 boundary/model tests and five focused selector tests passed. The new deleted-path regression failed before the routing correction, then passed. Recreated old files remain directly validated; symlink and dangling-symlink inputs block. Exact model selection passed with new Design path and current CLI/Records/Workflow owners. Structural and prose checks passed, and all relative links in the moved document resolve. No full CI, independent review or final Verify claimed."
+  }
+}

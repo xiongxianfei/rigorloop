@@ -5,7 +5,7 @@ Current product composition and three-parent ownership are defined by [System](.
 
 ## Bounded Design and System replacement
 
-[System](../../design/system.md#exact-mixed-architecture-migration-boundary) identifies the exact selected composition sections transferred here; [Design](../../design/skill/authoring/design.md#selected-replacement-map) owns the reconciled authoring method and decision mapping. This coordinated replacement covers only those selected paragraphs, bullets, tables and method decisions. Unselected Level 2, installation, distribution, validation and other responsibilities below retain their existing owners and amendments. Historical diagrams and approvals remain historical evidence; this mixed file is not wholly superseded.
+[System](../../design/system.md#exact-mixed-architecture-migration-boundary) identifies the exact selected composition sections transferred here; [Design](../../design/skill/design.md#selected-replacement-map) owns the reconciled authoring method and decision mapping. This coordinated replacement covers only those selected paragraphs, bullets, tables and method decisions. Unselected Level 2, installation, distribution, validation and other responsibilities below retain their existing owners and amendments. Historical diagrams and approvals remain historical evidence; this mixed file is not wholly superseded.
 
 [Release](../../design/engineering/release.md) contains the selected current release contract and exact source-disposition map. Its owning change records coordinated adoption through successful final Verify; the retained adapter and publication histories below preserve their original boundaries.
 
@@ -47,11 +47,11 @@ For explicitly adopted model work, [Review and Closeout](../../design/skill/asse
 
 - Proposal: `docs/proposals/2026-04-28-architecture-skills-c4-arc42-adr.md`
 - Proposal refinement: `docs/proposals/2026-04-29-c4-arc42-package-quality.md`
-- Spec: `specs/architecture-package-method.md`
-- Test spec: `specs/architecture-package-method.test.md`
+- Spec: [historical `specs/architecture-package-method.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/architecture-package-method.md)
+- Test spec: [historical `specs/architecture-package-method.test.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/architecture-package-method.test.md)
 - Legacy normalization plan: `docs/plans/2026-04-28-legacy-architecture-lifecycle-normalization.md`
-- Method ADR: `docs/adr/ADR-20260428-architecture-package-method.md`
-- Method amendment ADR: `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`
+- Method ADR: [historical `docs/adr/ADR-20260428-architecture-package-method.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260428-architecture-package-method.md)
+- Method amendment ADR: [historical `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260509-architecture-skill-surface-simplification.md)
 - Change-local architecture delta: `docs/changes/2026-04-28-architecture-skills-c4-arc42-adr/architecture.md`
 - Package-quality architecture delta: `docs/changes/2026-04-29-c4-arc42-package-quality/architecture.md`
 - Legacy normalization delta: `docs/changes/2026-04-29-legacy-architecture-lifecycle-normalization/architecture.md`
@@ -68,7 +68,7 @@ For explicitly adopted model work, [Review and Closeout](../../design/skill/asse
 - Single Authored Skill Source spec: `specs/single-authored-skill-source-generated-output.md`
 - Generated output migration ADR: `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md`
 - Publish Next Release transition proposal: `docs/proposals/2026-05-12-publish-next-release-with-single-authored-skill-source.md`
-- Publish Next Release transition spec: `specs/publish-next-release-with-single-authored-skill-source.md`
+- Publish Next Release transition spec: [historical `specs/publish-next-release-with-single-authored-skill-source.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/publish-next-release-with-single-authored-skill-source.md)
 - Publish Next Release transition change metadata: `docs/changes/2026-05-12-publish-next-release-with-single-authored-skill-source/change.yaml`
 - Public Adapter Artifact Migration proposal: `docs/proposals/2026-05-13-public-adapter-artifact-migration-examples-concise-skill-release.md`
 - Public Adapter Artifact Migration spec: `specs/public-adapter-artifact-migration-examples-concise-skill-release.md`
@@ -80,7 +80,7 @@ For explicitly adopted model work, [Review and Closeout](../../design/skill/asse
 - RigorLoop CLI Package and Codex Init ADR: `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md`
 - RigorLoop CLI Package and Codex Init change metadata: `docs/changes/2026-05-15-rigorloop-scaffolding-cli-and-machine-readable-workflow/change.yaml`
 - RigorLoop CLI Lockfile change metadata: `docs/changes/2026-05-15-rigorloop-cli-lockfile/change.yaml`
-- RigorLoop CLI New Change spec: `specs/rigorloop-cli-new-change.md`
+- RigorLoop CLI New Change spec: [historical `specs/rigorloop-cli-new-change.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/rigorloop-cli-new-change.md)
 - RigorLoop CLI New Change change metadata: `docs/changes/2026-05-16-rigorloop-cli-new-change/change.yaml`
 - RigorLoop npm Publication proposal: `docs/proposals/2026-05-16-first-public-npm-release.md`
 - RigorLoop npm Publication spec: `specs/rigorloop-npm-publication.md`
@@ -107,7 +107,7 @@ For explicitly adopted model work, [Review and Closeout](../../design/skill/asse
 - Published Skill Resource Integrity proposal: `docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md`
 - Published Skill Resource Integrity spec amendment: `specs/skill-contract.md` R46-R55
 - Published Skill Resource Integrity spec-review: `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/spec-review-r1.md`
-- Published Skill Resource Integrity ADR: `docs/adr/ADR-20260623-published-skill-resource-integrity.md`
+- Published Skill Resource Integrity ADR: [historical `docs/adr/ADR-20260623-published-skill-resource-integrity.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260623-published-skill-resource-integrity.md)
 - Portable Boundary-First Capability proposal: `docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md`
 - Boundary-First Proof Model spec: `specs/boundary-first-proof-model.md`
 - Portable Boundary Reference Projection and Activation ADR: `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`
@@ -139,12 +139,12 @@ For explicitly adopted model work, [Review and Closeout](../../design/skill/asse
 - Proposal-Gated Authoring Autoprogression proposal: `docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md`
 - Proposal-Gated Authoring Autoprogression spec amendments: `specs/workflow-stage-autoprogression.md`, `specs/rigorloop-workflow.md`
 - Proposal-Gated Authoring Autoprogression spec-review: `docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/reviews/spec-review-r2.md`
-- Proposal-Gated Authoring Autoprogression ADR: `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`
+- Proposal-Gated Authoring Autoprogression ADR: [historical `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md)
 - Proposal-Gated Authoring Autoprogression change metadata: `docs/changes/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review/change.yaml`
 - Implementation Autoprogression proposal: `docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md`
 - Implementation Autoprogression spec amendments: `specs/workflow-stage-autoprogression.md`, `specs/rigorloop-workflow.md`, `specs/review-finding-resolution-contract.md`
 - Implementation Autoprogression spec-review: `docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/spec-review-r1.md`
-- Implementation Autoprogression ADR: `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`
+- Implementation Autoprogression ADR: [historical `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md)
 - Implementation Autoprogression change metadata: `docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/change.yaml`
 - Independent Adversarial Review Gates proposal: `docs/proposals/2026-06-25-independent-adversarial-review-gates-for-automated-workflows.md`
 - Review Independence and Criticality spec: `specs/review-independence-and-criticality.md`
@@ -161,7 +161,7 @@ For explicitly adopted model work, [Review and Closeout](../../design/skill/asse
 - Bounded Review-Fix Autoprogression proposal: `docs/proposals/2026-06-30-bounded-review-fix-autoprogression-in-chat.md`
 - Bounded Review-Fix Autoprogression spec: `specs/review-fix-autoprogression.md`
 - Bounded Review-Fix Autoprogression spec-review: `docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/reviews/spec-review-r2.md`
-- Bounded Review-Fix Autoprogression ADR: `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`
+- Bounded Review-Fix Autoprogression ADR: [historical `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md)
 - Bounded Review-Fix Autoprogression change metadata: `docs/changes/2026-06-30-bounded-review-fix-autoprogression-in-chat/change.yaml`
 - Single Bounded Review-Fix Workflow Automation proposal: `docs/proposals/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism.md`
 - Single Bounded Review-Fix Workflow Automation spec: `specs/single-bounded-review-fix-workflow-automation.md`
@@ -174,33 +174,33 @@ For explicitly adopted model work, [Review and Closeout](../../design/skill/asse
 - Stage-Owned Lifecycle Artifacts ADR: `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md`
 - Stage-Owned Lifecycle Artifacts change metadata: `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
-- Formal Review Recording spec: `specs/formal-review-recording.md`
+- Formal Review Recording spec: [historical `specs/formal-review-recording.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/formal-review-recording.md)
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
 - C4 system context diagram: `diagrams/context.mmd`
 - C4 container diagram: `diagrams/container.mmd`
 - Published-Skill-First Repository Simplification proposal: `docs/proposals/2026-08-10-published-skill-first-repository-simplification.md`
 - Published-Skill-First Repository Simplification spec: `specs/published-skill-first-repository-simplification.md`
 - Validation responsibility and source dispositions: [System](../../design/system.md#necessary-design-consolidation-map); local contracts remain at their named owners.
-- Necessary-source retention and scoped proof: [Design](../../design/skill/authoring/design.md#necessary-design-retention) and [Validation](../../design/engineering/validation.md#proof-quality-maintenance-and-evidence).
+- Necessary-source retention and scoped proof: [Design](../../design/skill/design.md#necessary-design-retention) and [Validation](../../design/engineering/validation.md#proof-quality-maintenance-and-evidence).
 - Code-Review Skill Simplification proposal: `docs/proposals/2026-08-10-code-review-skill-simplification.md`
 - Code-Review Skill Simplification spec: `specs/code-review-skill-simplification.md`
 - Code-Review Skill Simplification change metadata: `docs/changes/2026-08-10-code-review-skill-simplification/change.yaml`
 - Workflow Skill Simplification proposal: `docs/proposals/2026-08-11-workflow-skill-simplification.md`
-- Workflow Skill Simplification spec: `specs/workflow-skill-simplification.md`
+- Workflow Skill Simplification spec: [historical `specs/workflow-skill-simplification.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/workflow-skill-simplification.md)
 - Workflow Skill Simplification change metadata: `docs/changes/2026-08-11-workflow-skill-simplification/change.yaml`
 
 - Governed Lifecycle CLI proposal: `docs/proposals/2026-08-24-governed-lifecycle-cli.md`
-- Governed Lifecycle CLI spec: `specs/governed-lifecycle-cli.md`
-- Governed Lifecycle CLI ADR: `docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md`
+- Governed Lifecycle CLI spec: [historical `specs/governed-lifecycle-cli.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/governed-lifecycle-cli.md)
+- Governed Lifecycle CLI ADR: [historical `docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md)
 - Governed Lifecycle CLI change metadata: `docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml`
 - Compact Current-State proposal: `docs/proposals/2026-09-03-compact-current-state-change-record.md`
-- Compact Current-State specification: `specs/compact-current-state-change-record.md`
-- Compact Current-State architecture: `docs/architecture/2026-09-03-compact-current-state-change-record.md`
-- Compact Current-State transaction ADR: `docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md`
+- Compact Current-State specification: [historical `specs/compact-current-state-change-record.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/compact-current-state-change-record.md)
+- Compact Current-State architecture: [historical `docs/architecture/2026-09-03-compact-current-state-change-record.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/architecture/2026-09-03-compact-current-state-change-record.md)
+- Compact Current-State transaction ADR: [historical `docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md)
 
 ## Introduction and Goals
 
-Current external boundaries, system responsibilities and composition goals are owned by [System](../../design/system.md). [Design](../../design/skill/authoring/design.md) owns the smallest justified living-model set, structural/runtime reasoning and embedded decision preservation.
+Current external boundaries, system responsibilities and composition goals are owned by [System](../../design/system.md). [Design](../../design/skill/design.md) owns the smallest justified living-model set, structural/runtime reasoning and embedded decision preservation.
 
 Retained additional goals:
 
@@ -246,7 +246,7 @@ Retained additional goals:
 
 ## Architecture Constraints
 
-- [Design](../../design/skill/authoring/design.md) owns model layout, technical reasoning, decisions and scoped legacy authoring; [Workflow](../../design/skill/workflow.md) coordinates the handoff. Contributor scaffolds remain under `templates/`; required portable legacy aids are packaged inside `design`. Historical deltas cannot compete with a migrated current owner.
+- [Design](../../design/skill/design.md) owns model layout, technical reasoning, decisions and scoped legacy authoring; [Workflow](../../design/skill/workflow.md) coordinates the handoff. Contributor scaffolds remain under `templates/`; required portable legacy aids are packaged inside `design`. Historical deltas cannot compete with a migrated current owner.
 - `CONSTITUTION.md` is the highest-priority repository governance artifact below external runtime instructions.
 - `specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md`
   owns governed artifact-state placement, transition authority, workflow
@@ -382,7 +382,7 @@ Retained additional goals:
 
 ## Solution Strategy
 
-Use [Design](../../design/skill/authoring/design.md) for unified behavioral and technical authoring, scoped model selection, decision rationale, affected-consumer reconciliation and independent review. [System](../../design/system.md) owns the assembled responsibility view and integrated obligations. Retained local contracts below continue under their declared owners; the living models do not silently migrate them.
+Use [Design](../../design/skill/design.md) for unified behavioral and technical authoring, scoped model selection, decision rationale, affected-consumer reconciliation and independent review. [System](../../design/system.md) owns the assembled responsibility view and integrated obligations. Retained local contracts below continue under their declared owners; the living models do not silently migrate them.
 
 For published skills, use a one-way proof chain: Gate A validates canonical skill and resource integrity; Gate B generates and proves Codex, Claude Code, and opencode package parity; Gate C composes current A and B proof with release-only metadata and archive checks.
 Lifecycle records flow to one bounded governance validation owner, while semantic skill questions flow to formal review.
@@ -604,7 +604,7 @@ Deterministic compatibility validators reject unknown values before consistency 
 
 ### Design authoring flow
 
-Follow [Design Runtime View](../../design/skill/authoring/design.md#runtime-view) for the reconciled engineering contract and exact review handoff. [System](../../design/system.md#integrated-authoring-change) explains the composition with planning, implementation and verification.
+Follow [Design Runtime View](../../design/skill/design.md#runtime-view) for the reconciled engineering contract and exact review handoff. [System](../../design/system.md#integrated-authoring-change) explains the composition with planning, implementation and verification.
 
 ### Workflow and review flow
 
@@ -1026,7 +1026,7 @@ Rollback before public CLI publication removes or disables the package candidate
 
 ### Source of truth
 
-[Design](../../design/skill/authoring/design.md) owns living-model conventions and their validation mapping. [System](../../design/system.md) owns system composition; [Workflow](../../design/skill/workflow.md) coordinates actors and [CLI](../../design/cli/cli.md) owns recording mechanics under [Record Format](../../design/cli/records.md). Unmigrated details retain their declared source contracts; historical package/ADR evidence grants no second current owner.
+[Design](../../design/skill/design.md) owns living-model conventions and their validation mapping. [System](../../design/system.md) owns system composition; [Workflow](../../design/skill/workflow.md) coordinates actors and [CLI](../../design/cli/cli.md) owns recording mechanics under [Record Format](../../design/cli/records.md). Unmigrated details retain their declared source contracts; historical package/ADR evidence grants no second current owner.
 
 ### Smallest sufficient Design scope
 
@@ -1111,7 +1111,7 @@ After initialization and settlement, changes to milestone ID, order, kind, compl
 
 ### Published skill resource integrity
 
-[Skill](../../design/skill/skill.md) owns the common resource contract, including complete maps, raw-byte identity, explicit transformations, precise lint/enforcement populations and the distinction between runtime fallback and package validity. SKL-DEC-02 preserves the resource-integrity decision; [archive navigation](../../archive/skill-model/2026-09-08/README.md) preserves original ADR bytes and related history. Existing validation, distribution and installation owners consume this contract and retain their separate proof and execution authority.
+[Skill](../../design/skill/skill.md) owns the common resource contract, including complete maps, raw-byte identity, explicit transformations, precise lint/enforcement populations and the distinction between runtime fallback and package validity. SKL-DEC-02 preserves the resource-integrity decision; [archive navigation](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/archive/skill-model/2026-09-08/README.md) preserves original ADR bytes and related history. Existing validation, distribution and installation owners consume this contract and retain their separate proof and execution authority.
 
 ### Code-review package composition
 
@@ -1245,7 +1245,7 @@ whole-record review.
 
 ### Diagram source policy
 
-[Design technical reasoning](../../design/skill/authoring/design.md#technical-reasoning-and-decisions) owns current text-source diagram selection and placement. Existing diagrams retain their historical identities and explanatory context; they do not impose a second current architecture layout.
+[Design technical reasoning](../../design/skill/design.md#technical-reasoning-and-decisions) owns current text-source diagram selection and placement. Existing diagrams retain their historical identities and explanatory context; they do not impose a second current architecture layout.
 
 ### Generated output
 
@@ -1408,30 +1408,30 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - [Distribution decisions](../../design/engineering/packaging.md#architecture-decisions) preserve the five retired ADRs’ mapped rationale and current support boundary.
 - [ADR-20260825: Local CLI Observability and Result Projection Boundary](../../adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md) establishes one invocation controller, allowlist event model, bounded synchronous local sink, shared result projection, and compatibility-gated concise-default decision.
 
-- [ADR-20260824: Governed Lifecycle CLI Transaction Boundary](../../adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) establishes one lifecycle interpreter, versioned identity and operation contracts, guarded single-record replacement and recovery, validator convergence, skill-mechanics migration, and phased enforcement.
+- [ADR-20260824: Governed Lifecycle CLI Transaction Boundary](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) historically established one lifecycle interpreter, versioned identity and operation contracts, guarded single-record replacement and recovery, validator convergence, skill-mechanics migration, and phased enforcement.
 
 - [ADR-20260818: Ordered Final-Review Stage-Evidence Tail](../../adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md) defines the exact `S -> R -> E` pre-verify revision protocol, path-and-field ownership, Git-derived identities, and interrupted-tail recovery.
 
-- [ADR-20260813: Reviewed Plan Initialization and Settlement](../../adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md) amended initialization timing while preserving the then-current single-state, stage-write, and no-hash boundaries; ADR-20260824 later revises hash and direct-write mechanics only for activated supported CLI operations.
+- [ADR-20260813: Reviewed Plan Initialization and Settlement](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md) amended initialization timing while preserving the then-current single-state, stage-write, and no-hash boundaries; ADR-20260824 later revises hash and direct-write mechanics only for activated supported CLI operations.
 
-- `docs/adr/ADR-20260428-architecture-package-method.md`: historical C4/arc42/ADR method; current reasoning and decision ownership is [Design](../../design/skill/authoring/design.md#material-decision-preservation).
-- `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: historical surface-simplification decision; [Design](../../design/skill/authoring/design.md#material-decision-preservation) preserves its meaning and owns current model selection and scoped legacy treatment.
+- [historical `docs/adr/ADR-20260428-architecture-package-method.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260428-architecture-package-method.md): historical C4/arc42/ADR method; current reasoning and decision ownership is [Design](../../design/skill/design.md#material-decision-preservation).
+- [historical `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260509-architecture-skill-surface-simplification.md): historical surface-simplification decision; [Design](../../design/skill/design.md#material-decision-preservation) preserves its meaning and owns current model selection and scoped legacy treatment.
 - `docs/adr/ADR-20260419-repository-source-layout.md`: repository source layout and canonical-source/generated-output separation.
 - `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md`: staged migration from tracked generated skill mirrors to untracked local mirrors and generated release artifacts.
 - `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md`: one-package CLI boundary, bundled metadata for local Codex archive verification, planned lockfile-only behavior, and npm publication block.
 - `docs/adr/ADR-20260516-rigorloop-npm-publication.md`: first public npm publication boundary, trusted-publishing/bootstrap modes, package-content proof, and real install closeout proof.
 - `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md`: change records as registered and queryable catalogs, with evidence-class selector routing and bounded query-helper reads.
-- `docs/adr/ADR-20260623-published-skill-resource-integrity.md`: mapped skill-local resource integrity, bounded legacy-reference lint, raw-byte parity, packed clean-install proof, and runtime fallback/package-validity separation.
+- [historical `docs/adr/ADR-20260623-published-skill-resource-integrity.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260623-published-skill-resource-integrity.md): mapped skill-local resource integrity, bounded legacy-reference lint, raw-byte parity, packed clean-install proof, and runtime fallback/package-validity separation.
 - `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`: superseded historical activation and rollback-transaction design.
 - `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`: one reviewed release manifest, immutable source-control grandfathering baseline, existing adapter metadata, and read-only package rollback validation.
 - `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`: compatibility-stable compact core, two owner-scoped family resources, declarative projection manifest, inline checked compact scan, representative loading evidence, path-owned selector routing, and one atomic rollback bundle. It revises only the resource-composition part of ADR-20260728.
 - `docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md`: superseded historical candidate and custom atomic-publication decision.
 - `docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md`: active checked-revision snapshot validation, one-time explicit baseline derivation, automatic concise skill behavior, exact custom-path retirement, and reuse of the routine `v0.4.0` release workflow.
-- `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`: superseded historical profile decision whose gate and review-independence rationale is retained through the unified mechanism.
-- `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`: superseded historical profile decision whose risk separation, reviewer-owned correction, fresh verify, and stop-before-PR rules remain retained.
+- [historical `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md): superseded historical profile decision whose gate and review-independence rationale is retained through the unified mechanism.
+- [historical `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md): superseded historical profile decision whose risk separation, reviewer-owned correction, fresh verify, and stop-before-PR rules remain retained.
 - `docs/adr/ADR-20260625-independent-adversarial-review-gates.md`: orchestrator-owned neutral review manifests, fresh-context enforcement, blind-first evidence staging, risk-tiered escalation, clean-review sufficiency receipts, second-review disagreement handling, and calibration for workflow-managed automated reviews.
 - `docs/adr/ADR-20260626-requirement-fidelity-gate.md`: deterministic requirement-fidelity applicability, spec-canonical packet ordering, requirement-property decomposition, multi-surface property matrices, spec-derived validator assertion matrices, and compression-defect calibration for applicable automated reviews.
-- `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`: superseded historical proposal-side profile decision whose nested writer is retired by the active stage-owned contract.
+- [historical `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md): superseded historical proposal-side profile decision whose nested writer is retired by the active stage-owned contract.
 - `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`: superseded historical consolidation decision whose one-target, review-independence, recovery, migration, and stop-before-PR constraints are retained without its capability and plan-owned-state layers.
 - `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md`: active stage-owned lifecycle decision placing mutable artifact and workflow state in `change.yaml`, assigning peer transition ownership, keeping one target as sufficient repository-local consent, and removing capability, selector, hash, and write-interception layers.
 
@@ -1439,7 +1439,7 @@ No additional ADR is required for the 2026-04-29 package-quality refinement beca
 
 No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision.
 
-No additional ADR is required for the 2026-05-12 record-every-formal-review amendment because it refines the existing review artifact and workflow evidence architecture under the approved formal review recording spec. The durable rule is carried by `specs/formal-review-recording.md`, and this canonical package records the affected runtime and crosscutting architecture.
+No additional ADR is required for the 2026-05-12 record-every-formal-review amendment because it refines the existing review artifact and workflow evidence architecture under the approved formal review recording spec. The historical rule was carried by [historical `specs/formal-review-recording.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/formal-review-recording.md); current recording policy belongs to [Assessment](../../design/skill/assessment.md) and stored representation to [Records](../../design/cli/records.md).
 
 No additional ADR is required for the `v0.1.1` single-authored-source transition release because ADR-20260512 already records the durable generated-output and adapter release artifact migration. This package revision records the release-specific validation and packaging architecture for the transition window.
 
@@ -1449,7 +1449,7 @@ No additional ADR is required for the evidence-bound `project-map` update becaus
 
 No additional ADR is required for project-map skill simplification because it applies the existing mapped-resource package and progressive-disclosure architecture to the current project-map capability. It changes no runtime, persistence owner, deployment topology, generated-output model, or independently governed policy surface; the amended `specs/project-map.md` and this canonical update carry the clarified operation, assembly, and transaction boundaries.
 
-No additional ADR is required for workflow skill simplification because it applies the existing mapped-resource skill-package model to the current workflow component without changing the durable package model, `change.yaml` persistence, lifecycle ownership, runtime boundary, or deployment topology. The approved behavior is carried by `specs/workflow-skill-simplification.md` and this canonical package update.
+No additional ADR is required for workflow skill simplification because it applies the existing mapped-resource skill-package model to the current workflow component without changing the durable package model, `change.yaml` persistence, lifecycle ownership, runtime boundary, or deployment topology. The historical package behavior was recorded in [Workflow Skill Simplification](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/workflow-skill-simplification.md). Current coordination belongs to [Workflow](../../design/skill/workflow.md); the retained [Route contract](../../../specs/refocus-workflow-into-route.md) owns its remaining CLI-context obligations.
 
 No additional ADR is required for the milestone completion/start correction because ADR-20260824 already establishes workflow routing ownership, closed semantic CLI operations, exact evidence identities, deterministic replay, and single-record atomic mutation. This canonical update makes that existing decision operationally precise by separating completion from workflow-selected start and by defining the normalized milestone completion-evidence record; it introduces no new service, persistence owner, external authority, or deployment boundary.
 
@@ -1811,8 +1811,8 @@ decisions from ADR-20260728 and ADR-20260729.
 - Architecture-review for the 2026-05-08 workflow-governance direct canonical package update: approved in `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md` with no material findings.
 - Plan-review for the 2026-04-29 package-quality refinement: approved on 2026-04-29 after PR-F1 corrected M5 sequencing.
 - Plan-review for the 2026-05-08 workflow-governance execution plan: approved in `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/plan-review-r2.md` with no material findings.
-- Test spec update: `specs/architecture-package-method.test.md` active on 2026-04-29 for R76-R118 and AC14-AC20.
-- Historical architecture skill surface simplification (current replacement: [Design decision preservation](../../design/skill/authoring/design.md#material-decision-preservation)): proposal accepted and spec amendment approved on 2026-05-09; canonical architecture and ADR update approved in this package revision.
+- Test spec update: [historical `specs/architecture-package-method.test.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/architecture-package-method.test.md) active on 2026-04-29 for R76-R118 and AC14-AC20.
+- Historical architecture skill surface simplification (current replacement: [Design decision preservation](../../design/skill/design.md#material-decision-preservation)): proposal accepted and spec amendment approved on 2026-05-09; canonical architecture and ADR update approved in this package revision.
 - Architecture-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/architecture-review-r1.md` with no material findings.
 - Plan-review for the 2026-05-09 architecture skill surface simplification: approved in `docs/changes/2026-05-09-simplify-architecture-skill-surfaces/reviews/plan-review-r2.md` after PR-F1 corrected milestone review sequencing.
 - Token-cost measurement baseline and proposal scope preservation: accepted proposal and approved spec add repository-local measurement scripts, token-cost baseline reports under `docs/reports/token-cost/`, and proposal/proposal-review scope-preservation guidance.
@@ -1894,4 +1894,4 @@ lifecycle state, separate workflow authorization, capability, typed-policy,
 or receipt-state layers. The stage-owned change-local lifecycle decision is an
 accepted current dependency, not the candidate under this review.
 
-ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. ADR `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md` records the durable decision to treat change records as registered and queryable catalogs. [Skill SKL-DEC-02](../../design/skill/skill.md#architecture-decisions), with [original ADR provenance](../../archive/skill-model/2026-09-08/README.md), preserves mapped-resource identity and runtime-fallback/package-validity distinctions; the existing validation owner governs currently applicable proof. ADR `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md` records the durable proposal-gated authoring autoprogression profile, policy persistence, and review-independence decision. ADR `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md` records the durable separately armed implementation autoprogression profile, phase gating, reviewer-owned correction authority, fresh verify requirement, and stop-before-PR boundary. ADR `docs/adr/ADR-20260625-independent-adversarial-review-gates.md` records the durable automated review-independence gate, neutral-packet evidence model, blind-first phase protocol, risk-tiered escalation, second-review disagreement behavior, and calibration boundary. ADR `docs/adr/ADR-20260626-requirement-fidelity-gate.md` records the durable automated requirement-fidelity gate, deterministic applicability model, spec-canonical packet order, decomposition and property-matrix evidence, validator assertion matrix boundary, and compression-defect calibration. ADR `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md` records the durable bounded review-fix profile, nested review-fix state, driver-owned safe-fix classification, same-review rerun boundary, and architecture-assessment routing. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No additional ADR is required for the evidence-bound `project-map` update because it applies existing generated-output, skill resource-integrity, and living-reference workflow decisions to one published skill and one packaged skeleton asset. No new ADR is required for workflow-state synchronization because the accepted spec amends the existing single-source workflow-state contract and composes through the existing lifecycle-validation architecture instead of adding a new system boundary, storage boundary, parser authority, or service. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.
+ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. ADR `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md` records the durable decision to treat change records as registered and queryable catalogs. [Skill SKL-DEC-02](../../design/skill/skill.md#architecture-decisions), with [original ADR provenance](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/archive/skill-model/2026-09-08/README.md), preserves mapped-resource identity and runtime-fallback/package-validity distinctions; the existing validation owner governs currently applicable proof. ADR [historical `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md) records the durable proposal-gated authoring autoprogression profile, policy persistence, and review-independence decision. ADR [historical `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md) records the durable separately armed implementation autoprogression profile, phase gating, reviewer-owned correction authority, fresh verify requirement, and stop-before-PR boundary. ADR `docs/adr/ADR-20260625-independent-adversarial-review-gates.md` records the durable automated review-independence gate, neutral-packet evidence model, blind-first phase protocol, risk-tiered escalation, second-review disagreement behavior, and calibration boundary. ADR `docs/adr/ADR-20260626-requirement-fidelity-gate.md` records the durable automated requirement-fidelity gate, deterministic applicability model, spec-canonical packet order, decomposition and property-matrix evidence, validator assertion matrix boundary, and compression-defect calibration. ADR [historical `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md) records the durable bounded review-fix profile, nested review-fix state, driver-owned safe-fix classification, same-review rerun boundary, and architecture-assessment routing. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No additional ADR is required for the evidence-bound `project-map` update because it applies existing generated-output, skill resource-integrity, and living-reference workflow decisions to one published skill and one packaged skeleton asset. No new ADR is required for workflow-state synchronization because the accepted spec amends the existing single-source workflow-state contract and composes through the existing lifecycle-validation architecture instead of adding a new system boundary, storage boundary, parser authority, or service. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.

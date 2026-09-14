@@ -1,0 +1,82 @@
+{
+  "operation": "design-source-removal",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "docs/adr/ADR-20260625-independent-test-spec-review-gate.md",
+      "identity": "sha256:87bfd16350347ad451324a7063d3dd41ac308c29b803f75f6b2f1f04dd1fcaeb"
+    },
+    {
+      "path": "docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md",
+      "identity": "sha256:b3336045d1a03ea5e42b4514b5e12046f8129083c6e5050f76ae2a2564759532"
+    },
+    {
+      "path": "docs/adr/ADR-20260903-compact-current-state-transaction-boundary.md",
+      "identity": "sha256:21a14c77e78109b70214f28fec5bd976892213b0cb77324fc83566247664c715"
+    },
+    {
+      "path": "docs/architecture/2026-06-25-independent-test-spec-review-gate.md",
+      "identity": "sha256:a18bf881e621e2d027b7f61b5a659809d3ad4a93639d9354085a906f41975045"
+    },
+    {
+      "path": "docs/architecture/2026-09-03-compact-current-state-change-record.md",
+      "identity": "sha256:a317d1ff3a24c08198efed1c3f3c72f25db4705aaa45434dfa19780583d95979"
+    },
+    {
+      "path": "specs/compact-change-validation-metadata.md",
+      "identity": "sha256:a4628adbfd3cfc61955d3944477041519a1849c665d0edec5f1a99e942a380c6"
+    },
+    {
+      "path": "specs/compact-change-validation-metadata.test.md",
+      "identity": "sha256:3192ef3faab97156c5828d0801240cb0b6f150bcb48700ab18465a2739954723"
+    },
+    {
+      "path": "specs/compact-current-state-change-record.md",
+      "identity": "sha256:b2540e2b2fe619ab6d06764ba3a2baf8991a8fc61d47155339e9b900529c0791"
+    },
+    {
+      "path": "specs/governed-lifecycle-cli.md",
+      "identity": "sha256:4dff8478a17c5689516f22ad9f29d92311a38e2f73e84c40319f9bf5faab5714"
+    },
+    {
+      "path": "specs/governed-lifecycle-cli.test.md",
+      "identity": "sha256:84e93b72a2416d8ede18c83916b6a9e93f90798602e02ecd482f8c4e9bcae0ba"
+    },
+    {
+      "path": "specs/rigorloop-cli-new-change.md",
+      "identity": "sha256:8fbcde1c67e00b855b6837583300a326362d6a44eaae73caab3135f136a3f572"
+    },
+    {
+      "path": "specs/rigorloop-cli-new-change.test.md",
+      "identity": "sha256:f1db700cb6b976f0c361193d86105a799ab5ec7a05a8d363ccd82fd729241dcd"
+    }
+  ],
+  "updated_documentation": [
+    "docs/architecture/2026-08-25-workflow-routed-upstream-corrections.md",
+    "docs/architecture/2026-09-02-refocus-workflow-into-route.md",
+    "docs/architecture/system/architecture.md",
+    "docs/design/cli/cli.md",
+    "docs/design/skill/workflow.md",
+    "specs/change-record-catalog-registration-and-bounded-read-model.md",
+    "specs/test-spec-review-gate.test.md"
+  ],
+  "preserved_historical_surfaces": [
+    "docs/changes",
+    "docs/plans",
+    "docs/proposals",
+    "docs/reports",
+    "docs/learn",
+    "docs/releases",
+    "docs/archive"
+  ],
+  "activation_inventory": "Historical grandfathered names remain; validator checks vocabulary/order, not source existence.",
+  "assessment_limit": "Source mapping and user-authorized Design diff; no new independent Design approval or final Verify claimed.",
+  "validation": {
+    "selected_ci": "bash scripts/ci.sh --mode explicit with --path for all 12 removals and seven amended documents: all selected checks passed except artifact_lifecycle.validate, which reported three existing heading-name mismatches.",
+    "correction": "Renamed Summary, Context and scope, and Solution strategy to required architecture heading names in the touched August 25 architecture; removed the redundant intervening Proposed architecture heading. No technical text changed.",
+    "focused_rerun": "python scripts/validate-artifact-lifecycle.py --mode explicit-paths with --path for all five selected legacy documents: passed.",
+    "structure": "python scripts/validate-boundary-first.py --check --path docs/design/cli/cli.md --path docs/design/skill/workflow.md: passed.",
+    "prose": "Prose enforcement passed for CLI, Workflow and source disposition. Broader enforcement across seven amended legacy/current documents reported 271 errors and 120 warnings; exact output comparison before the heading correction confirmed all findings identical to HEAD. Existing prose debt remains outside this deletion slice.",
+    "whitespace": "git diff --check: passed."
+  }
+}

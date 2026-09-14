@@ -19,9 +19,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "adapters"
-TOKEN_COST_VALID_FIXTURE = (
-    ROOT / "tests" / "fixtures" / "token-cost" / "reports" / "valid-final-pass" / "v0.1.1.yaml"
-)
+
 VALIDATE_RELEASE = ROOT / "scripts" / "validate-release.py"
 sys.path.insert(0, str(ROOT / "scripts"))
 
@@ -39,12 +37,10 @@ from adapter_distribution import (  # noqa: E402
     adapter_archive_name,
     build_adapter_archives,
     build_staged_v3_adapter_archives,
-    build_required_benchmark_context,
     collect_adapter_drift,
     collect_adapter_drift_entries,
     collect_skill_reports,
     evaluate_skill,
-    generated_adapter_skill_owner,
     expected_adapter_files,
     format_adapter_drift_normal,
     format_adapter_drift_verbose,
@@ -304,8 +300,6 @@ class AdapterDistributionTests(unittest.TestCase):
             "placeholder_release_check": "pass",
             "security": "pass",
         }
-        if version == "v0.1.1":
-            validation["token_cost_report"] = "pass"
         validation.update(validation_overrides or {})
 
         lines = [
@@ -903,159 +897,6 @@ adapter_install_smoke:
         metadata_path.write_text("\n".join(lines), encoding="utf-8")
         return metadata_path
 
-    def write_minimal_v2_token_report(
-        self,
-        token_cost_root: Path,
-        *,
-        run_ids: tuple[str, ...] = ("proposal-short",),
-    ) -> None:
-        token_cost_root.mkdir(parents=True, exist_ok=True)
-        markdown = token_cost_root / "v0.1.1.md"
-        metadata = token_cost_root / "v0.1.1.yaml"
-        markdown.write_text(
-            "# Token-Friendliness Report\n\nMetadata: v0.1.1.yaml\n",
-            encoding="utf-8",
-        )
-        run_blocks: list[str] = []
-        for run_id in run_ids:
-            prompt = f"benchmarks/token-cost/prompts/{run_id}.md"
-            fixture = "benchmarks/token-cost/fixtures/minimal-public-project"
-            if run_id == "architecture-review":
-                fixture = "benchmarks/token-cost/fixtures/minimal-public-project-architecture-review"
-            run_blocks.append(
-                f"""
-    - id: {run_id}
-      prompt: {prompt}
-      fixture: {fixture}
-      result: pass
-      evidence:
-        raw_jsonl_tracked: true
-        jsonl: tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.jsonl
-        analysis: tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1/proposal-short-run1.analysis.yaml
-        sanitized_summary: ""
-        raw_omission_reason: ""
-      result_quality:
-        status: pass
-        reviewed_by: maintainer
-        review_surface: {markdown}
-        reviewed_at: "2026-05-11"
-        criteria:
-          - id: output_shape
-            expectation: Output followed the requested shape.
-            result: pass
-            notes: ""
-        notes: Manual review accepted this benchmark.
-        blockers: []
-"""
-            )
-        metadata.write_text(
-            f"""schema_version: 1
-
-report:
-  release: v0.1.1
-  report_date: 2026-05-11
-  repository: xiongxianfei/rigorloop
-  commit: abc123
-  report_markdown: {markdown}
-
-benchmark_suite:
-  id: skill-token-runtime-v2
-  previous_suite_id: skill-token-runtime-v1
-  baseline_for_suite: true
-  manifest: benchmarks/token-cost/manifest.yaml
-  prompt_count: 10
-  fixture: benchmarks/token-cost/fixtures/minimal-public-project
-  runs_per_prompt: 1
-
-benchmark_coverage:
-  suite_id: skill-token-runtime-v2
-  required_core_status: pass
-  required_core:
-    - proposal-short
-  transition_carryover_status: pass
-  transition_carryover_required: []
-  changed_skill_benchmark_status: pass
-  optional_extended:
-    - architecture-review
-  optional_run: []
-  missing_required: []
-  missing_optional: []
-
-environment:
-  primary_tool: codex
-  codex_available: true
-  codex_version: fixture
-  model: fixture-model
-  os: fixture-os
-  runner: maintainer-local
-
-runner:
-  command: python scripts/run-token-cost-benchmarks.py --release v0.1.1 --suite benchmarks/token-cost/manifest.yaml --tool codex
-  tool: codex
-  suite: benchmarks/token-cost/manifest.yaml
-  fixture: benchmarks/token-cost/fixtures/minimal-public-project
-  skill_source: dist/adapters/codex/.agents/skills/
-  output_dir: tests/fixtures/token-cost/reports/valid-final-pass/runs/v0.1.1
-  temp_policy: system-temp
-  install_public_skills: true
-
-static_skill_size:
-  status: pass
-  command: python scripts/measure-skill-tokens.py
-  skills_measured: 1
-  total_estimated_tokens: 100
-  max_skill:
-    path: skills/proposal/SKILL.md
-    estimated_tokens: 100
-  warnings: []
-
-dynamic_runtime:
-  status: pass
-  tool: codex
-  command_pattern: codex exec --json --ephemeral ...
-  incomplete: null
-  runs:{''.join(run_blocks)}
-
-summary:
-  median_input_tokens: 100
-  median_cached_input_tokens: 50
-  median_output_tokens: 10
-  median_reasoning_output_tokens: 5
-  max_single_tool_output_estimated_tokens: 20
-  full_file_read_count: 0
-  broad_search_count: 0
-  generated_output_read_count: 0
-
-portability:
-  status: pass
-  public_skill_internal_path_leaks: 0
-  generated_output_internals_in_public_skills: 0
-  local_examples_in_public_skills: 0
-  notes: []
-
-comparison:
-  baseline: true
-  previous_release: null
-  previous_report: null
-  comparable: false
-  deltas: null
-  rationale: First skill-token-runtime-v2 report.
-
-waiver:
-  required: false
-  status: none
-  reason: ""
-  approved_by: ""
-  approval_surface: ""
-  evidence: ""
-
-release_gate:
-  result: pass
-  blockers: []
-  warnings: []
-""",
-            encoding="utf-8",
-        )
 
     def test_adapter_model_matches_required_paths(self) -> None:
         self.assertEqual(SUPPORTED_ADAPTERS, ("codex", "claude"))
@@ -3900,7 +3741,7 @@ release_gate:
         self.assertEqual(_validate_opencode_command_alias_smoke("v0.1.1", metadata, manifest), [])
 
 
-    def test_v0_1_1_release_validation_requires_token_cost_report(self) -> None:
+    def test_release_validation_does_not_request_token_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             release_root = root / "docs" / "releases"
@@ -3917,386 +3758,40 @@ release_gate:
             errors = validate_release_output(
                 "v0.1.1",
                 release_root=release_root,
-                token_cost_report_root=root / "docs" / "reports" / "token-cost" / "releases",
-                changed_paths=(),
             )
 
-            self.assertTrue(
-                any("missing token-cost report metadata" in error for error in errors),
-                errors,
-            )
+            self.assertFalse(any("token" in error.lower() for error in errors), errors)
 
-    def test_v0_1_1_release_validation_blocks_invalid_token_cost_report(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            skills_root = ROOT / "skills"
-            output_root = root / "dist" / "adapters"
-            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
-            release_root = root / "docs" / "releases"
-            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
-            token_cost_root.mkdir(parents=True)
-            invalid_metadata = TOKEN_COST_VALID_FIXTURE.read_text(encoding="utf-8").replace(
-                "  report_markdown: tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.md\n",
-                "",
-                1,
-            )
-            (token_cost_root / "v0.1.1.yaml").write_text(invalid_metadata, encoding="utf-8")
-            self.write_release_artifacts(
-                root,
-                version="v0.1.1",
-                release_type="final",
-                manifest_version="0.1.1",
-                smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=(),
-                notes_extra=self.v0_1_1_notes_extra(),
-            )
 
-            errors = validate_release_output(
-                "v0.1.1",
-                skills_root=skills_root,
-                output_root=output_root,
-                release_root=release_root,
-                token_cost_report_root=token_cost_root,
-            )
 
-            self.assertTrue(
-                any("token-cost report validation failed" in error for error in errors),
-                errors,
-            )
-            self.assertTrue(
-                any("report.report_markdown" in error for error in errors),
-                errors,
-            )
 
-    def test_required_benchmark_context_requires_changed_skill_benchmark(self) -> None:
-        context = build_required_benchmark_context(
-            "v0.1.1",
-            release_stage="final",
-            commit="abc123",
-            changed_paths=("skills/architecture-review/SKILL.md",),
-        )
 
-        required = context["required_benchmarks"]
-        self.assertEqual(
-            required["core"],
-            [
-                "workflow-route",
-                "proposal-short",
-                "plan-handoff",
-                "implement-handoff",
-                "code-review-small",
-                "explain-change-summary",
-                "verify-final-pack",
-                "pr-handoff",
-            ],
-        )
-        self.assertEqual(
-            required["transition_carryover"],
-            ["architecture-no-impact", "learn-no-durable-lesson"],
-        )
-        self.assertEqual(
-            required["required_due_to_changes"],
-            [
-                {
-                    "benchmark": "architecture-review",
-                    "skill": "architecture-review",
-                    "reason": "public-skill-changed",
-                    "changed_surfaces": {
-                        "canonical": ["skills/architecture-review/SKILL.md"],
-                        "generated": [],
-                    },
-                }
-            ],
-        )
 
-    def test_required_benchmark_context_traces_generated_adapter_paths(self) -> None:
-        context = build_required_benchmark_context(
-            "v0.1.1",
-            release_stage="final",
-            commit="abc123",
-            changed_paths=(
-                "skills/architecture-review/SKILL.md",
-                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
-                "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
-            ),
-        )
 
-        changed = context["required_benchmarks"]["required_due_to_changes"][0]
-        self.assertEqual(changed["skill"], "architecture-review")
-        self.assertEqual(
-            changed["changed_surfaces"]["generated"],
-            [
-                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
-                "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
-            ],
-        )
-        self.assertEqual(
-            generated_adapter_skill_owner(
-                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md"
-            ),
-            "architecture-review",
-        )
 
-    def test_generated_only_adapter_change_traces_to_required_dynamic_benchmark(self) -> None:
-        context = build_required_benchmark_context(
-            "v0.1.1",
-            release_stage="final",
-            commit="abc123",
-            changed_paths=(
-                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
-            ),
-        )
-
-        self.assertEqual(
-            context["required_benchmarks"]["required_due_to_changes"],
-            [
-                {
-                    "benchmark": "architecture-review",
-                    "skill": "architecture-review",
-                    "reason": "generated-public-skill-changed",
-                    "changed_surfaces": {
-                        "canonical": [],
-                        "generated": [
-                            "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md"
-                        ],
-                    },
-                }
-            ],
-        )
-        self.assertEqual(
-            context["required_benchmarks"]["generated_trace"],
-            [
-                {
-                    "generated_path": "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
-                    "owning_skill": "skills/architecture-review/SKILL.md",
-                    "benchmark": "architecture-review",
-                    "canonical_changed": False,
-                    "action": "adapter-drift-or-regeneration-evidence",
-                }
-            ],
-        )
-
-    def test_changed_public_skill_without_benchmark_records_warning_follow_up(self) -> None:
-        context = build_required_benchmark_context(
-            "v0.1.1",
-            release_stage="final",
-            commit="abc123",
-            changed_paths=("skills/spec-review/SKILL.md",),
-        )
-
-        self.assertEqual(context["required_benchmarks"]["required_due_to_changes"], [])
-        self.assertEqual(
-            context["required_benchmarks"]["missing_benchmarks"],
-            [
-                {
-                    "skill": "spec-review",
-                    "reason": "public-skill-changed",
-                    "follow_up": "add token-cost benchmark fixture for spec-review",
-                }
-            ],
-        )
-
-    def test_release_validation_passes_required_context_to_token_cost_validation(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            skills_root = ROOT / "skills"
-            output_root = root / "dist" / "adapters"
-            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
-            release_root = root / "docs" / "releases"
-            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
-            self.write_minimal_v2_token_report(token_cost_root)
-            self.write_release_artifacts(
-                root,
-                version="v0.1.1",
-                release_type="final",
-                manifest_version="0.1.1",
-                smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=(),
-                notes_extra=self.v0_1_1_notes_extra(),
-            )
-
-            errors = validate_release_output(
-                "v0.1.1",
-                skills_root=skills_root,
-                output_root=output_root,
-                release_root=release_root,
-                token_cost_report_root=token_cost_root,
-                changed_paths=("skills/architecture-review/SKILL.md",),
-            )
-
-            self.assertTrue(
-                any("token-cost report validation failed" in error for error in errors),
-                errors,
-            )
-            self.assertTrue(
-                any("dynamic_runtime.runs: missing required benchmark architecture-review" in error for error in errors),
-                errors,
-            )
-
-    def test_v2_final_release_validation_requires_changed_surface_input(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            release_root = root / "docs" / "releases"
-            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
-            self.write_minimal_v2_token_report(token_cost_root)
-            self.write_release_artifacts(
-                root,
-                version="v0.1.1",
-                release_type="final",
-                manifest_version="0.1.1",
-                smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=(),
-                notes_extra=self.v0_1_1_notes_extra(),
-            )
-
-            errors = validate_release_output(
-                "v0.1.1",
-                release_root=release_root,
-                token_cost_report_root=token_cost_root,
-            )
-
-            self.assertTrue(
-                any("release validation requires changed-surface input" in error for error in errors),
-                errors,
-            )
-
-    def test_validate_release_cli_passes_changed_surface_inputs(self) -> None:
+    def test_validate_release_cli_preserves_candidate_inputs_and_failure(self) -> None:
         module = load_validate_release_module()
-        with tempfile.NamedTemporaryFile("w", encoding="utf-8") as handle:
-            handle.write(
-                "\n".join(
-                    [
-                        "# comment",
-                        "skills/architecture-review/SKILL.md",
-                        "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
-                        "skills/architecture-review/SKILL.md",
-                        "",
-                    ]
-                )
-            )
-            handle.flush()
-            captured: dict[str, object] = {}
-
-            def fake_validate_release_output(
-                version: str,
-                *,
-                changed_paths=(),
-                release_output_dir=None,
-                release_commit=None,
-                npm_tarball_root=None,
-            ):
-                captured["version"] = version
-                captured["changed_paths"] = changed_paths
-                captured["release_output_dir"] = release_output_dir
-                captured["release_commit"] = release_commit
-                captured["npm_tarball_root"] = npm_tarball_root
-                return [
-                    "token-cost report validation failed: dynamic_runtime.runs: "
-                    "missing required benchmark architecture-review"
-                ]
-
-            with patch.object(module, "validate_release_output", fake_validate_release_output):
-                result = module.main(
-                    [
-                        "--version",
-                        "v0.1.1",
-                        "--changed-path",
-                        "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
-                        "--changed-paths-file",
-                        handle.name,
-                        "--release-output-dir",
-                        "release-output",
-                        "--release-commit",
-                        "0123456789abcdef0123456789abcdef01234567",
-                    ]
-                )
-
+        captured = {}
+        def validate(version, **kwargs):
+            captured.update(version=version, **kwargs)
+            return ["release candidate identity mismatch"]
+        with patch.object(module, "validate_release_output", validate):
+            result = module.main(["--version", "v0.1.1", "--release-output-dir", "release-output",
+                                  "--release-commit", "0123456789abcdef0123456789abcdef01234567"])
         self.assertEqual(result, 1)
         self.assertEqual(captured["version"], "v0.1.1")
-        self.assertEqual(
-            captured["changed_paths"],
-            (
-                "dist/adapters/claude/.claude/skills/architecture-review/SKILL.md",
-                "skills/architecture-review/SKILL.md",
-                "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
-            ),
-        )
-        self.assertEqual(Path("release-output"), captured["release_output_dir"])
-        self.assertEqual("0123456789abcdef0123456789abcdef01234567", captured["release_commit"])
+        self.assertEqual(captured["release_output_dir"], Path("release-output"))
+        self.assertEqual(captured["release_commit"], "0123456789abcdef0123456789abcdef01234567")
         self.assertIsNone(captured["npm_tarball_root"])
 
-    def test_generated_adapter_changed_path_requires_missing_benchmark_through_release_validation(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            release_root = root / "docs" / "releases"
-            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
-            self.write_minimal_v2_token_report(token_cost_root)
-            self.write_release_artifacts(
-                root,
-                version="v0.1.1",
-                release_type="final",
-                manifest_version="0.1.1",
-                smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=(),
-                notes_extra=self.v0_1_1_notes_extra(),
-            )
+    def test_validate_release_rejects_retired_benchmark_path_options(self) -> None:
+        module = load_validate_release_module()
+        for option in ("--changed-path", "--changed-paths-file"):
+            with self.subTest(option=option), self.assertRaises(SystemExit) as stopped:
+                module.build_parser().parse_args(["--version", "v0.1.1", option, "unused"])
+            self.assertEqual(stopped.exception.code, 2)
 
-            errors = validate_release_output(
-                "v0.1.1",
-                release_root=release_root,
-                token_cost_report_root=token_cost_root,
-                changed_paths=(
-                    "dist/adapters/codex/.agents/skills/architecture-review/SKILL.md",
-                ),
-            )
 
-            self.assertTrue(
-                any("dynamic_runtime.runs: missing required benchmark architecture-review" in error for error in errors),
-                errors,
-            )
-
-    def test_changed_skill_with_complete_v2_metadata_passes_release_validation(self) -> None:
-        required_runs = (
-            "workflow-route",
-            "proposal-short",
-            "plan-handoff",
-            "implement-handoff",
-            "code-review-small",
-            "explain-change-summary",
-            "verify-final-pack",
-            "pr-handoff",
-            "architecture-no-impact",
-            "learn-no-durable-lesson",
-            "architecture-review",
-        )
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            skills_root = ROOT / "skills"
-            output_root = root / "dist" / "adapters"
-            sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
-            release_root = root / "docs" / "releases"
-            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
-            self.write_minimal_v2_token_report(token_cost_root, run_ids=required_runs)
-            self.write_release_artifacts(
-                root,
-                version="v0.1.1",
-                release_type="final",
-                manifest_version="0.1.1",
-                smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=(),
-                notes_extra=self.v0_1_1_notes_extra(),
-            )
-
-            errors = validate_release_output(
-                "v0.1.1",
-                skills_root=skills_root,
-                output_root=output_root,
-                release_root=release_root,
-                token_cost_report_root=token_cost_root,
-                changed_paths=("skills/architecture-review/SKILL.md",),
-            )
-
-            self.assertEqual(errors, [])
 
     def test_historical_release_validation_does_not_require_token_cost_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -4325,7 +3820,6 @@ release_gate:
                 skills_root=skills_root,
                 output_root=output_root,
                 release_root=release_root,
-                token_cost_report_root=root / "missing-token-cost-reports",
             )
 
             self.assertEqual(errors, [])
@@ -4386,8 +3880,6 @@ release_gate:
                     str(ROOT / "scripts" / "validate-release.py"),
                     "--version",
                     "v0.1.1",
-                    "--changed-paths-file",
-                    changed_paths.name,
                 ],
                 capture_output=True,
                 text=True,
@@ -4404,22 +3896,6 @@ release_gate:
             output_root = root / "dist" / "adapters"
             sync_adapter_output("0.1.1", skills_root=skills_root, output_root=output_root)
             release_root = root / "docs" / "releases"
-            token_cost_root = root / "docs" / "reports" / "token-cost" / "releases"
-            self.write_minimal_v2_token_report(
-                token_cost_root,
-                run_ids=(
-                    "workflow-route",
-                    "proposal-short",
-                    "plan-handoff",
-                    "implement-handoff",
-                    "code-review-small",
-                    "explain-change-summary",
-                    "verify-final-pack",
-                    "pr-handoff",
-                    "architecture-no-impact",
-                    "learn-no-durable-lesson",
-                ),
-            )
             self.write_release_artifacts(
                 root,
                 version="v0.1.1",
@@ -4435,8 +3911,6 @@ release_gate:
                 skills_root=skills_root,
                 output_root=output_root,
                 release_root=release_root,
-                token_cost_report_root=token_cost_root,
-                changed_paths=(),
                 tracked_files=(),
                 codex_skills_ignored=True,
             )
@@ -4461,8 +3935,6 @@ release_gate:
                 skills_root=ROOT / "skills",
                 output_root=ROOT / "dist" / "adapters",
                 release_root=release_root,
-                token_cost_report_root=ROOT / "docs" / "reports" / "token-cost" / "releases",
-                changed_paths=(),
                 tracked_files=(".codex/skills/proposal/SKILL.md",),
                 codex_skills_ignored=True,
             )
@@ -4487,8 +3959,6 @@ release_gate:
                 skills_root=ROOT / "skills",
                 output_root=ROOT / "dist" / "adapters",
                 release_root=release_root,
-                token_cost_report_root=ROOT / "docs" / "reports" / "token-cost" / "releases",
-                changed_paths=(),
                 tracked_files=(),
                 codex_skills_ignored=False,
             )
@@ -4549,8 +4019,8 @@ release_gate:
         self.assertIn("python scripts/validate-adapters.py --version 0.1.1", result.stdout)
         self.assertIn("python scripts/validate-release.py --version v0.1.1", result.stdout)
         self.assertNotIn("python scripts/build-skills.py --check", result.stdout)
-        self.assertIn(
-            "python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml",
+        self.assertNotIn(
+            "python scripts/validate-token-cost-report.py",
             result.stdout,
         )
 
@@ -5314,18 +4784,12 @@ release_gate:
 
 
     def test_root_guidance_points_to_adapter_install_contract_surface(self) -> None:
-        docs = {
-            "CONSTITUTION.md": (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8"),
-            "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
-        }
-
-        for path, text in docs.items():
-            with self.subTest(path=path):
-                self.assertIn("dist/adapters/README.md", text)
-                self.assertIn("release archives", text.lower())
-                self.assertIn("skills/", text)
-                self.assertNotIn("remain tracked generated installable output during the compatibility window", text)
-                self.assertNotIn("install or copy public Codex adapter output from `dist/adapters/codex/.agents/skills/`", text)
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
+        self.assertIn("dist/adapters/README.md", agents)
+        self.assertIn("docs/design/engineering/packaging.md", agents)
+        self.assertIn("docs/design/system.md", constitution)
+        self.assertTrue((ROOT / "dist/adapters/README.md").is_file())
 
     def test_v0_1_2_release_notes_document_archive_introduction_contract(self) -> None:
         text = (ROOT / "docs" / "releases" / "v0.1.2" / "release-notes.md").read_text(
@@ -5801,8 +5265,6 @@ release_gate:
     def test_contributor_docs_keep_codex_runtime_local_and_untracked(self) -> None:
         docs = {
             "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
-            "AGENTS.md": (ROOT / "AGENTS.md").read_text(encoding="utf-8"),
-            "CONSTITUTION.md": (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8"),
         }
 
         for path, text in docs.items():

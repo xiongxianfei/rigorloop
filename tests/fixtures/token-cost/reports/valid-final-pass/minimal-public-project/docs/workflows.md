@@ -1,3 +1,0 @@
-# Workflows
-
-Minimal fixture workflow.

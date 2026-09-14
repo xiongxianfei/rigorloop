@@ -1,0 +1,52 @@
+{
+  "operation": "retire-archived-april-architecture",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "docs/architecture/2026-04-19-rigorloop-first-release-repository-architecture.md",
+      "identity": "sha256:e1ef2ead9fd8eeb5e8b9f887cc467077bd5e9898d48b1f488f8249ee89ece90a"
+    },
+    {
+      "path": "docs/architecture/2026-04-20-artifact-status-lifecycle-ownership.md",
+      "identity": "sha256:6064f63e4f78c038f6c025e1fb9867f70d9ce5801dce5be3b076f96fc8af3d16"
+    },
+    {
+      "path": "docs/architecture/2026-04-21-docs-changes-usage-policy.md",
+      "identity": "sha256:12620a94422e3f2f484dc0788d83095ba0676eade98941e3c865669e32071a70"
+    },
+    {
+      "path": "docs/architecture/2026-04-21-workflow-stage-autoprogression.md",
+      "identity": "sha256:b248a48b7ff5946ed701901e7511c787de9a4ba17d08fc8613d1423787c9dfc7"
+    },
+    {
+      "path": "docs/architecture/2026-04-24-multi-agent-adapter-distribution.md",
+      "identity": "sha256:868bbb867865bc2b384344bec189e56b8f4ad8f3d1952db76971ec6bfc645353"
+    },
+    {
+      "path": "docs/architecture/2026-04-24-skill-invocation-commands-for-adapters.md",
+      "identity": "sha256:8564fbfaaeffa8246e4fa5e47a351445847f78db5924a80fe2a84b4a0e695657"
+    },
+    {
+      "path": "docs/architecture/2026-04-25-test-layering-and-change-scoped-validation.md",
+      "identity": "sha256:126c845664d82d0343a0237f0f91b068c484607dd6202516293a4394eefd4963"
+    },
+    {
+      "path": "specs/legacy-architecture-lifecycle-normalization.test.md",
+      "identity": "sha256:6c6e22eb85faf84360422090501f0bd30c28217698b0b5be2ed3711b330b3755"
+    }
+  ],
+  "deleted_lines": 2974,
+  "updated_paths": [
+    "specs/docs-changes-usage-policy.md",
+    "specs/multi-agent-adapters-first-public-release.md",
+    "specs/workflow-stage-autoprogression.md"
+  ],
+  "important_knowledge": "All seven architecture snapshots already declare themselves archived and identify the April 29 consolidation into docs/architecture/system/architecture.md. Current System, Skill/Workflow/Assessment, CLI/Records/Installation and Engineering/Validation/Packaging/Release remain the responsibility owners; retained specialist contracts remain unchanged. No new model text or authority transfer is needed.",
+  "retired_material": "Archived first-release structure, former artifact-local lifecycle storage, historical change-pack shapes, workflow lanes, old adapter/OpenCode command-alias machinery and the completed architecture normalization proof plan leave the current tree. No executable test or validation script is removed.",
+  "historical_preservation": "All eight deleted originals match the retained Git revision exactly. Current follow-on citations in three retained specs pin that revision. Historical plans, plan-archive, test specifications, review records and evidence retain their original bytes and citation meanings. Scans found no direct source readers in scripts, packages, skills, schemas or CI.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/select-validation.py --mode explicit with --path for all eight deletions; python scripts/validate-boundary-first.py --check with --path for three citation-only updated specs and deleted normalization test spec; python scripts/test-artifact-lifecycle-validator.py; python scripts/test-boundary-first-validation.py; python scripts/validate-documentation-prose.py --mode enforce --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "Selection passed without unclassified paths or registration debt and selected boundary validation plus lifecycle regression. Lifecycle suite passed 108 tests; boundary/model suite passed 87 tests. Structural reference/deletion validation passed with independent Design Review classification still required. Prose passed with zero errors/warnings; diff checks passed. All deleted originals verified byte-identical to retained Git history. No executable tests were removed. No full CI, independent review or final Verify claimed."
+  }
+}

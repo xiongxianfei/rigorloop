@@ -1,0 +1,72 @@
+{
+  "skill": "verify",
+  "outcome": "scoped-verification",
+  "execution_mode": "isolated",
+  "profile": "VP0-scoped",
+  "verdict": "passed",
+  "scope": "LEDGER-1: ledger portion of VAL-SR-23 only",
+  "subjects": [
+    {
+      "identity": "sha256:f42425389ed68c49504e22213bfbcabaf8a52240fd206f1cb938f9ae478bea4e",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:85e1cc7b94123e496e74ae9ce2796464a61683e0f47ea85f842afd901bea130d",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:50d69a7b48d15922959978c52941fac7d3737179fe560dda34b26c4b6ee9fdec",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:7e60bd59598ec008605c19ef92e0657bb7c84a72bfe39416d11a4e8d89817133",
+      "path": "specs/published-skill-first-repository-simplification.test.md"
+    },
+    {
+      "identity": "sha256:b0ec61a98af3b4b35ed53eecb23ab72a7397d73ca8700013765bb9d8e16195bb",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-implementation.json"
+    },
+    {
+      "identity": "sha256:b18f857cfd3d925f69980ad41071bd3ec3e880fffb77a63438277ca7a74a824a",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-provenance.json"
+    },
+    {
+      "identity": "sha256:b066c6dfb5644cd3c9f0f8c8818110b6c8bfbcb4abde76ccddce045c74a346fe",
+      "path": "docs/plans/2026-09-14-retirement-ledger-removal.md"
+    },
+    {
+      "identity": "sha256:ab9e03e3908af46bc2a98a908a5ca54893e9c0b235ab003c8bfa2d1e47c29e23",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/design-review-retirement-ledger.json"
+    },
+    {
+      "identity": "sha256:e41ac947b491dabafdaaf051a0244cef95dce52cfdcad2e2df60ec84f9d54d35",
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/delivery-review-retirement-ledger.json"
+    },
+    {
+      "identity": "sha256:b799f7cf38fbaaf9f3946b5e1d05a0b1fc9116a0467d1ce6a24d5dd82c614d52",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+      "path": "docs/design/system.md"
+    },
+    {
+      "path": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-retirement-ledger-final.json",
+      "identity": "sha256:6869316069ab884435ed97aae144b36e2b51b171f6907aaa1456eb5c6a192e53"
+    }
+  ],
+  "assessment": [
+    "User-selected ledger cleanup maps to existing System/Validation disposition and approved Design/Delivery package; current owners and plan remain unchanged. Pre-implementation feasibility subjects are intentionally removed/reconciled with exact recovery provenance, not retargeted old approvals.",
+    "All three exclusive sources are absent and recoverable at recorded Git revision. Retained script references only classify deleted paths and reject removed catalog identity; no importer, scheduler or synthetic success remains.",
+    "Current selector/catalog/rejection, executor discovery/composition and real record-retirement/metadata boundaries retain direct proof:165selector,52executor and31wrapper cases. Recorded test-first failure demonstrates the unwanted historical check was detected before removal.",
+    "Independent final whole-slice Code Review approves exact current subjects without findings. Hash checks confirm final reviewed evidence and engineering subjects unchanged.",
+    "Prose, record-store and diff checks passed. No generated package or public runtime source is changed, so broader package/runtime reruns are unnecessary for this slice."
+  ],
+  "evidence": "docs/changes/2026-09-13-current-design-repository-cleanup/evidence/retirement-ledger-implementation.json",
+  "review": "docs/changes/2026-09-13-current-design-repository-cleanup/reviews/code-review-retirement-ledger-final.json",
+  "limitations": [
+    "Local scoped evidence only; no full-cleanup final Verify, branch readiness, hosted CI, commit, push, PR or publication.",
+    "The representative spec-read-log check and other cleanup work remain outside this slice."
+  ],
+  "next": "Route may mark ledger-1 completed and retain wider cleanup as open."
+}

@@ -1,0 +1,39 @@
+{
+  "operation": "retire-requirement-delivery-design-documents",
+  "historical_revision": "39b7c5cb1f03aa761d2f2493d3474ce985e59d6f",
+  "removed_subjects": [
+    {
+      "path": "specs/lightweight-requirement-delivery-model.md",
+      "identity": "sha256:6bc2d07d0a026201d52060ab9966ad850cf37b1d0f61203a8fc4512aa44d71a6",
+      "historical_identity": "sha256:6bc2d07d0a026201d52060ab9966ad850cf37b1d0f61203a8fc4512aa44d71a6",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "specs/lightweight-requirement-delivery-model.test.md",
+      "identity": "sha256:5616ca914618d9bbde256f80acf61447a19cd62fe8f0dda4a488bffe614bdeb2",
+      "historical_identity": "sha256:5616ca914618d9bbde256f80acf61447a19cd62fe8f0dda4a488bffe614bdeb2",
+      "uncommitted_patch": ""
+    },
+    {
+      "path": "docs/architecture/2026-08-30-lightweight-requirement-delivery-model.md",
+      "identity": "sha256:4107cbd508dc3832cb1fa94b6e4fe224989a1173177174e436b07f840e562488",
+      "historical_identity": "sha256:4107cbd508dc3832cb1fa94b6e4fe224989a1173177174e436b07f840e562488",
+      "uncommitted_patch": ""
+    }
+  ],
+  "deleted_lines": 702,
+  "updated_paths": [
+    "docs/design/skill/design.md"
+  ],
+  "prior_model_identities": {
+    "docs/design/skill/design.md": "sha256:a5d5292798576a50da84203038bcc7d59e0cbb593e7b084691f3c5dc4e11cb36"
+  },
+  "important_knowledge": "Design preserves the RR/IR/SR/AR conceptual chain, stable requirement identity and realization, distinct optional work decomposition, many-to-many allocation, justified work scope/dependencies and backward evidence traceability. Skill retains authoring/delivery behavior; Assessment retains gate authority. No new artifact or lifecycle layer is introduced.",
+  "retired_material": "The old separate spec/architecture delivery package, rollout allocations, mandatory retired-stage assumptions and introduction-only restrictions retire. The shared requirement-to-delivery resource and all packaged copies retain their bytes, applicability and validation; no executable test is removed.",
+  "historical_preservation": "All three originals match retained Git bytes. Historical plans, reviews and proof records preserve original subjects and meanings. Current citations use exact Git provenance. No current operation needs to reconstruct the retired documents.",
+  "validation": {
+    "result": "passed",
+    "procedure": "python scripts/test-skill-validator.py; python scripts/test-boundary-first-validation.py; python scripts/test-artifact-lifecycle-validator.py; python scripts/validate-boundary-first.py --check --path docs/design/skill/design.md --path specs/lightweight-requirement-delivery-model.md --path specs/lightweight-requirement-delivery-model.test.md; python scripts/validate-documentation-prose.py --mode enforce --path docs/design/skill/design.md --path docs/changes/2026-09-13-current-design-repository-cleanup/source-disposition.md; git diff --check; git diff --cached --check.",
+    "summary": "354 skill tests, including shared requirement-model and packaged-copy parity, 87 boundary/model tests and 108 lifecycle tests passed. Structural deletion/model checks passed, prose passed with zero errors/warnings and diff checks passed. All originals match retained Git bytes; shared resources, packaged copies, executable tests and historical records remain unchanged. No full CI, independent review or final Verify claimed."
+  }
+}

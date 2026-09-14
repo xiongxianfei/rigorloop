@@ -370,7 +370,6 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - Do not hand-edit generated public adapter packages. Use `dist/adapters/README.md` for public adapter installation.
 - `skills/` is the only authored skill source. `.codex/skills/` is ignored local Codex runtime state; keep it untracked when copying installed Codex adapter skills there for local runtime use, and edit canonical skills under `skills/`.
 - `dist/adapters/README.md` and `dist/adapters/manifest.yaml` are the tracked adapter support surface.
-- Public-surface token-cost benchmarks must identify generated public adapter output or release archive output, not repository-local `.codex/skills/`.
 - Execution plans use the packaged `skills/plan/assets/plan-skeleton.md` scaffold.
 
 ## Validation Commands
@@ -418,4 +417,4 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 
 This repository currently ships with the MIT license.
 
-The unified authoring candidate replaces `spec` and `architecture` with `design`. Existing retired entries require [separate inspection and reconciliation](packages/rigorloop/README.md#upgrading-retired-authoring-skills); installation does not manage project state or automatically migrate those entries. The selected [Design](docs/design/skill/authoring/design.md) and [System](docs/design/system.md) own the bounded method/composition migration. The three main models are [Skill](docs/design/skill/skill.md), [CLI](docs/design/cli/cli.md) and [Engineering](docs/design/engineering/engineering.md). Engineering [Packaging](docs/design/engineering/packaging.md) owns artifact production; CLI [Installation](docs/design/cli/installation.md) owns trusted acquisition and destination writes. Other document consolidation remains [explicit follow-up work](docs/follow-ups.md).
+The unified authoring candidate replaces `spec` and `architecture` with `design`. Existing retired entries require [separate inspection and reconciliation](packages/rigorloop/README.md#upgrading-retired-authoring-skills); installation does not manage project state or automatically migrate those entries. The selected [Design](docs/design/skill/design.md) and [System](docs/design/system.md) own the bounded method/composition migration. The three main models are [Skill](docs/design/skill/skill.md), [CLI](docs/design/cli/cli.md) and [Engineering](docs/design/engineering/engineering.md). Engineering [Packaging](docs/design/engineering/packaging.md) owns artifact production; CLI [Installation](docs/design/cli/installation.md) owns trusted acquisition and destination writes. Other document consolidation remains [explicit follow-up work](docs/follow-ups.md).

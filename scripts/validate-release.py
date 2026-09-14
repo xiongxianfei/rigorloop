@@ -31,42 +31,6 @@ from release_transaction import (
 GATE_NAME = "Gate C (release integrity)"
 
 
-def read_changed_paths_file(path: Path) -> list[str]:
-    changed_paths: list[str] = []
-    seen: set[str] = set()
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
-        value = raw_line.strip()
-        if not value or value.startswith("#"):
-            continue
-        normalized = value.replace("\\", "/")
-        if normalized in seen:
-            continue
-        seen.add(normalized)
-        changed_paths.append(normalized)
-    return changed_paths
-
-
-def merge_changed_paths(
-    inline_paths: list[str],
-    file_path: str | None,
-) -> tuple[str, ...]:
-    changed_paths: list[str] = []
-    seen: set[str] = set()
-    for value in inline_paths:
-        normalized = value.strip().replace("\\", "/")
-        if not normalized or normalized in seen:
-            continue
-        seen.add(normalized)
-        changed_paths.append(normalized)
-    if file_path:
-        for normalized in read_changed_paths_file(Path(file_path)):
-            if normalized in seen:
-                continue
-            seen.add(normalized)
-            changed_paths.append(normalized)
-    return tuple(changed_paths)
-
-
 def current_git_commit() -> str:
     return subprocess.check_output(
         ["git", "rev-parse", "HEAD"],
@@ -310,16 +274,6 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
-        "--changed-path",
-        action="append",
-        default=[],
-        help="Repo-relative changed path to use for release changed-surface analysis.",
-    )
-    parser.add_argument(
-        "--changed-paths-file",
-        help="Line-based file of repo-relative changed paths for release changed-surface analysis.",
-    )
-    parser.add_argument(
         "--release-output-dir",
         help="Directory containing generated release adapter archives for archive metadata validation.",
     )
@@ -342,23 +296,19 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.prepared_candidate:
-        if len(args.version) != 1 or args.recorded_source_auto or args.changed_path or args.changed_paths_file or args.release_output_dir or args.release_commit or args.npm_tarball_root:
+        if len(args.version) != 1 or args.recorded_source_auto or args.release_output_dir or args.release_commit or args.npm_tarball_root:
             parser.error("prepared-candidate requires one version and no historical-mode options")
         return verify_prepared_release(args.version[0], Path(args.prepared_candidate).resolve())
     if args.recorded_source_auto and (
-        args.changed_path
-        or args.changed_paths_file
-        or args.release_output_dir
+        args.release_output_dir
         or args.release_commit
         or args.npm_tarball_root
     ):
         parser.error(
-            "--recorded-source-auto cannot be combined with changed-path, "
+            "--recorded-source-auto cannot be combined with "
             "release-output, release-commit, or npm-tarball options"
         )
 
-    changed_paths = merge_changed_paths(args.changed_path, args.changed_paths_file)
-    changed_paths_arg = changed_paths if args.changed_path or args.changed_paths_file else ()
     release_output_dir = Path(args.release_output_dir) if args.release_output_dir else None
     npm_tarball_root = Path(args.npm_tarball_root) if args.npm_tarball_root else None
     for version in args.version:
@@ -388,7 +338,6 @@ def main(argv: list[str] | None = None) -> int:
         release_commit = args.release_commit or current_git_commit()
         errors = validate_release_output(
             version,
-            changed_paths=changed_paths_arg,
             release_output_dir=release_output_dir,
             release_commit=release_commit,
             npm_tarball_root=npm_tarball_root,
