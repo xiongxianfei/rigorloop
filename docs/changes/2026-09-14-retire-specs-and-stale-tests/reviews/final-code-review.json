@@ -1,0 +1,427 @@
+{
+  "assessment_scope": "Fresh final WHOLE-change Code Review covering M1-M6 together, the entire delivered engineering diff from main 7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e to db616507, source retirement, current Design/governance reconciliation, all test populations and final selection/execution integration. Distinct final Verify remains required.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-full-specs-implement",
+      "role": "implement"
+    },
+    {
+      "id": "codex-m4-implementer",
+      "role": "implement"
+    }
+  ],
+  "findings": [],
+  "id": "final-code-review",
+  "independence_basis": "Fresh whole-change assessment by a separate nonauthor reviewer after all six milestones. Independently inspected complete final 7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e..db616507 diff, current governing package and full-population maintenance evidence, cross-milestone code and tests, exact validation logs and final evidence suffix; prior milestone judgments inform context but do not substitute for this integrated assessment. Reviewer authored no implementation or approved Design.",
+  "judgment": "approved",
+  "limitations": [
+    "This approval is the required final Code Review, not Verify, branch/PR readiness, hosted CI success, publication or merge approval.",
+    "Historical approvals keep their original basis. Planned source absence and the inspected evidence-only suffix are specifically assessed here and do not authorize arbitrary future engineering drift."
+  ],
+  "rationale": [
+    "Direction, Design and Delivery: pass. All six work items are complete and all ten prior findings resolved. Current Design design-review-m6-reconciled and Delivery delivery-review-m6-current-basis match every surviving reviewed subject. Their ten absent positive historical examples are explicitly approved removals, not missing active authority. Original full-specs Design supplies the transfer requirements; changed supporting models are covered by the fresh M6 package rather than retargeted historical approvals.",
+    "Complete cleanup and recovery: pass. No tracked specs, architecture or ADR source tree remains. All 116 baseline specs are accounted through M1/M2 and final 111 removals. Independently checked all 148 final removals against their recorded recoverable Git hashes, all 257 unchanged M5 population files against their audit hashes, and the three changed population deltas against their current purposes. M4 all 109 removed-source identities were independently verified. Complete grouped case/fixture dispositions include inline/generated domains and explicit retained exceptions, rather than treating every old test as obsolete.",
+    "Current owner coherence: pass. Important source requirements, decisions and acceptance now belong to the twelve current models. System composition, customer-selected portable contracts, specialist public vocabularies/authority/result fields, Review and Closeout, current v3 representation, installation trust and release qualification remain distinct. Repository historical activation and token/word/ledger instrumentation are explicitly retired; neither installing skills nor deleting repository files changes customer adoption.",
+    "M1/M2 interaction: pass. Three portable boundary method/authoring/proof resources are independently byte-identical to baseline after relocation; mapped projection and default current-model/example checks remain current. Explicit malformed/unknown feature/proof records retain structural rejection and unmarked adoption routes to Design Review. Shared scans, six actual consumers, guide owners and current-only plan index agree with the new source locations and authority. Meaningful public result/authority and resource-safety proof remains after incidental measurement and wording cases retire.",
+    "M3/M4/M5 release interaction: pass. Historical Git replay recipes and metadata-dependent fixtures are removed; explicit current source/profile and bound prepared-candidate qualification retain current archive/package/install and security proof. Prior receipt is unchanged on rejected admission and invalidated only after valid admission before checks. Release checklist live dependency transfers to its own helper with original parsing/gate/deferral protection and explicit candidate/path negatives. Actual candidate fixture mirrors all current test data and absent source trees, so cloning a prior commit cannot silently restore a dependency. CurrentSourceQualificationTests independently passed all six cases during final review.",
+    "Current records and snapshot trust: pass. Retired YAML/lifecycle/Markdown-review/automatic-workflow engines have no live execution responsibility. V3 structural/reference, finding, parser, discovery and recovery proof remains separate from retired semantic eligibility. Exact snapshot wrapper and both direct readers reject malformed/symlink stores and bind literal Git objects to the declared root with no replacement, ambient redirection, trace or lazy-fetch effects. Independently reran all six current snapshot/discovery tests successfully.",
+    "M6 selection and execution integration: pass. Actual local/staged/range discovery includes deletions and both rename endpoints; unknown deletion/source remains blocking in mixed sets. Proven absent sources retain current owner checks without requiring absent bytes. Distinct current_records.snapshot and current_records.validate identities preserve exact committed PR proof and broad worktree discovery without weakening canonical argument/conflict or failure guards. Independently reran real-Git six-partition selector case and real selector/broad-composer regression successfully.",
+    "Validation and evidence applicability: pass. All twelve final command log hashes match. Final evidence includes 177 selector, 53 executor, 419 Node, twelve models, canonical build/guides/prose, actual candidate qualification, full local plus broad execution and complete PR-range CI with 398 selected Git paths. Tested source is 025596df1dc1f00d37e40bec29fb64e7d0eee6d4; independently verified its suffix through db616507 changes only current change/evidence registry, m6-validation and M6 review evidence. No engineering difference invalidates the tested source. Structural success is not used as semantic approval, and local execution is not described as hosted CI.",
+    "History, permissions and documentation: pass. Historical production change records and learn sessions are byte-unchanged from baseline. Current provenance names recoverable commit/path identities; no historical judgment is rewritten to current subjects. Current governance, model/example navigation, map, package/contributor guidance and curated learning are reconciled. No live publication, external mutation or expansion of customer permissions occurs. Git diff --check passes.",
+    "Final Code Review handoff: approved with no new material findings or required correction. All six milestones are covered together by this review. Mutable change/evidence registries and later workflow bookkeeping are excluded from enduring engineering subjects; specific relied-on immutable evidence and owning reviews are included. Route may proceed to separate final Verify, which owns readiness and final explanation before the authorized PR handoff."
+  ],
+  "reviewer": {
+    "id": "independent-full-specs-whole-change-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:e4c02cb101a8f78b467a8a2c3dbf517934e56d30fc8b8085cb5c3b5a5fc87f1e",
+      "path": ".github/pull_request_template.md"
+    },
+    {
+      "identity": "sha256:a15d4f3889629c69f946269da05e32f00161148a07f7de62f01038ced3e28cb9",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:24af26bb7ce0a17c07afcab73c4f8119a127a338be90d9c0910ead925561f642",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:15f16953bd26df0240c53334daa4c34cc6351aaa35ab315066d11b2e32d796d0",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:cf22c185ddf48adf59cf29997aa6da2b3b505ccdf44fbf4a8a4e7553e98511d4",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:eef25314c2f34d4cceca2b8e2a12675fd9773da34fa949fd92cb224ed6a456e7",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:dec79163d59fb9e8a8b935cab6fc7763185d0f33b284c5764df03b7c9e6796b7",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:520f9a576c30b1401906b2151f17b168e70a9abf3c939da41b4d270cada0a6d0",
+      "path": "docs/design/cli/examples/records/README.md"
+    },
+    {
+      "identity": "sha256:25682f7b9cef0c0a85f4123a36792a281cb78d4270805df9b70a6c0164f4c224",
+      "path": "docs/design/cli/examples/records/v3-complete-store/README.md"
+    },
+    {
+      "identity": "sha256:c088b648eb0a8308c8cae1deb7f5be562cf5fb81ceed2552d5256851ca69acf7",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:6dfe2436431bc52be7b3715e9249559bb7a893b08f6211e0a43b1a936b6096fd",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:4e64ece2c8b1147778fa31becc2ecb1d08469b7610cf53d29ecf40b49865441e",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:ae3b59ec189fd66962ddb3f50a4c0e48422fc9a1086aae641c54dd1481fd715b",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:d787cece629dd7eed0a12c53366a5d41aa52f59d5c1250881550b5eebe04ff0a",
+      "path": "docs/design/skill/design.md"
+    },
+    {
+      "identity": "sha256:ad80a8e44a1f3c2bcc5c79fa06e5b0ba6e62b248e66a8105a458f3505f68145e",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:ca2ba146c7cd45409b8b37a22d2baece26efed668f3ddad9309f495056ee1623",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:d6c35b64cc3ea5ff9b170124fda92c4d16658974859266b50b5852273d10d63d",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:55f9f7bc65630722cd7973e90f93cfdb199d7dbe70ee0c3d39f969c25bbe9e7a",
+      "path": "docs/learn/README.md"
+    },
+    {
+      "identity": "sha256:e8617d1c3fe6dbf0b5ed2ea0f41f4e6f4ba912212f9d7ffa42ac40febccff74f",
+      "path": "docs/learn/topics/evidence-preserving-compaction.md"
+    },
+    {
+      "identity": "sha256:01b5f895bba1207c78e90c4967448542b5d5b65e576f97448ba9b62c2d15d31d",
+      "path": "docs/learn/topics/plan-lifecycle-closeout.md"
+    },
+    {
+      "identity": "sha256:e9d9547ca8a70ad449c404ae334e4817215f6a66ec7964751092aff9fe397324",
+      "path": "docs/learn/topics/review-artifact-recording.md"
+    },
+    {
+      "identity": "sha256:52ba683dc8c43854a9be59e77b95a44675aa44c165429182ff97a766914d8b98",
+      "path": "docs/learn/topics/script-output-optimization.md"
+    },
+    {
+      "identity": "sha256:a88658adc87817e5c06bad6b82277a9e8311e4f7feff862f644878ffc5186904",
+      "path": "docs/learn/topics/skill-asset-design.md"
+    },
+    {
+      "identity": "sha256:3226cfa1ca6c5c9ea7aeae99eb60700ab08804dc285fe5d18cfdabfde261452e",
+      "path": "docs/learn/topics/workflow-stage-order.md"
+    },
+    {
+      "identity": "sha256:febca9be58096191340755b31381e082183f0a49c6e1f0efa0b6ff3529adcc7d",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:8fc2ed428aece2aec213fbd9686f07ec1c01491ad550c37f325b91af33c010ce",
+      "path": "docs/project-map.md"
+    },
+    {
+      "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+      "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:4a3b6014c52b5c567917f8dad01c1dc49779104f3a02bee28c8fefbdeae9b73e",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:29143443c9f5013dce0b156ae7e4002abb526aa6081e3a4e79bbc053bab57fda",
+      "path": "packages/rigorloop/test/fixtures/observability/public-command-output.json"
+    },
+    {
+      "identity": "sha256:a35c7582b433b505e719336c61d7e16227b6d05362a6f9fbe5f22c81214c469e",
+      "path": "packages/rigorloop/test/result-renderer.test.js"
+    },
+    {
+      "identity": "sha256:9f03ef86891dff9160895fbcb6dd646863a3d640b9d6244119c7a6fbaaa0bd04",
+      "path": "scripts/adapter_distribution.py"
+    },
+    {
+      "identity": "sha256:d7806a57f7cf4d4b6329da679d8b1e96189908833d8fa8337d5be45ae9a8cb18",
+      "path": "scripts/boundary-first-resources.yaml"
+    },
+    {
+      "identity": "sha256:4b4d412c2a24b59f071ef4813e8dd6c6dcaeb4eb5422cd0533cf20c8811120ef",
+      "path": "scripts/boundary_first_reference.py"
+    },
+    {
+      "identity": "sha256:51069598d69a8fd286c933ac3794746c90d2f6e5381d7889e06b512c01832267",
+      "path": "scripts/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:15b50a4dae6065d35fb1a65d362fa8e1fe585d637da985d37d6e18ff0734c94b",
+      "path": "scripts/build-adapters.py"
+    },
+    {
+      "identity": "sha256:5c6f2a0f59a3cf959794a7f5c171ee083b42413a4323cdd51e03e69d61d62a9c",
+      "path": "scripts/classify-record-store.mjs"
+    },
+    {
+      "identity": "sha256:8c6bedfcc75f7a3c1df262c7a720d0b0d3326901c76f98b055aa7ee8e0a9e3ce",
+      "path": "scripts/record_snapshot_git.mjs"
+    },
+    {
+      "identity": "sha256:9ae5b7b27f5ac7d91aa22236da6a7eebd4f085216aaac2c23dc553ec0a0dbdc9",
+      "path": "scripts/release-verify.sh"
+    },
+    {
+      "identity": "sha256:b332586a3b72717e63743365937b4e852af25cc1d35a5aceac09919923700ee2",
+      "path": "scripts/release_candidate_tests.py"
+    },
+    {
+      "identity": "sha256:406863863b71f4b64955aee84e0142c47d92dc9ac54ffa40d2925200810631bf",
+      "path": "scripts/release_evidence.py"
+    },
+    {
+      "identity": "sha256:08a2ad916d7780538347d60aaa94c3412b6387c35e1bdb5196df4ed556a1899a",
+      "path": "scripts/release_evidence_tests.py"
+    },
+    {
+      "identity": "sha256:097993dd4b9561a4a419e66bb757e128b615fc38949d196bb4ab5437089719f3",
+      "path": "scripts/release_transaction.py"
+    },
+    {
+      "identity": "sha256:96442c954d15c68bf1f22d4650fb5f3d6bd0d9bbeba3cb7a3037346712256454",
+      "path": "scripts/skill_validation.py"
+    },
+    {
+      "identity": "sha256:c86259d3dc825303f5307f2d75048364e665177f27e7817c52f5b9ed94802ac9",
+      "path": "scripts/test-adapter-distribution.py"
+    },
+    {
+      "identity": "sha256:42b24b738e4512fd807149d0c9b7dfdad436884659a63f71f4ed15d463c5cc67",
+      "path": "scripts/test-boundary-first-reference.py"
+    },
+    {
+      "identity": "sha256:7f8711a914201dbff5e9eb25cc906781462a7f0dc8e83457c91a2757b55d86bb",
+      "path": "scripts/test-boundary-first-validation.py"
+    },
+    {
+      "identity": "sha256:7abcc4df0a0423ea6f0cdb1d422c53022d5aae197a3df22688f44f9ab53cdcce",
+      "path": "scripts/test-change-metadata-validator.py"
+    },
+    {
+      "identity": "sha256:4fa39865be902fc3d0765000944f3ce641a7bd085558c68e439108e2ea34afc2",
+      "path": "scripts/test-governed-lifecycle-cli-validator.py"
+    },
+    {
+      "identity": "sha256:f5a7941ed35cad94592cc85a1082e78f612c1739bb8d41f31a2ee9aa2c21aa08",
+      "path": "scripts/test-guide-system-validator.py"
+    },
+    {
+      "identity": "sha256:6737ec7dedec8aebebb4ce938660e8d195054bc5921ec84743ecd1a958d3a4b2",
+      "path": "scripts/test-release-transaction.py"
+    },
+    {
+      "identity": "sha256:82e820633a664af832a325e3f5f3bcfccc4229696b9f3cdae5aafcaa3b23e138",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:a91a45ca90e098a5fd8f2301111cc3a9ddf5e05f0012344aee9806c6e8ac4cc9",
+      "path": "scripts/test-skill-validator.py"
+    },
+    {
+      "identity": "sha256:ee6c432abbe128a78cc3f48f4175790ab83a6a2253f32dbf5290e6ae68ea71b7",
+      "path": "scripts/test-validation-execution.py"
+    },
+    {
+      "identity": "sha256:25f6cf0efda7c3f41ce34183c273900cb76e4aff2fc88183ed430c83b9c6172f",
+      "path": "scripts/validate-boundary-first.py"
+    },
+    {
+      "identity": "sha256:e91b9cb250f6a09b9678bc0fd7b7e6bb96820e14826420c568e79beb75165d34",
+      "path": "scripts/validate-governed-lifecycle-cli.py"
+    },
+    {
+      "identity": "sha256:f933f576b5d827b54065fc2fe84481e985974169f40091b52f0f17aee8807e5b",
+      "path": "scripts/validate-guide-system.py"
+    },
+    {
+      "identity": "sha256:1e81116e49068c1fe471b3c91beb2ec9b3dd3face484ef6aef46bd233792fea6",
+      "path": "scripts/validate-record-store.mjs"
+    },
+    {
+      "identity": "sha256:475a0f259b70109a5786af0473f4a96baa0047578f9a522d01ef1979e13d9289",
+      "path": "scripts/validate-release.py"
+    },
+    {
+      "identity": "sha256:76b1fa9cee04586fa87ad37d04c72d749861c1d6206c39f6ad7e489d88101ac8",
+      "path": "scripts/validation_execution.py"
+    },
+    {
+      "identity": "sha256:686e24be4a47ddf34be53eaad4126a002eae773f9312c05bda8ce4cda2df8fea",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+      "path": "skills/bugfix/SKILL.md"
+    },
+    {
+      "identity": "sha256:30c094ea81e1b6cb875fd75430ee7b2721e3bdf93830c9953f2381d7c8d5cb23",
+      "path": "skills/code-review/SKILL.md"
+    },
+    {
+      "identity": "sha256:2888de55cc39d5a96d60e86b0f70821de86e4b2a41fd9218e0ad7748cd64e5dc",
+      "path": "skills/implement/SKILL.md"
+    },
+    {
+      "identity": "sha256:31022b5d36e3f9846c37900e3c94e23614156e9aae9eece0c778add4207b9a62",
+      "path": "skills/plan/SKILL.md"
+    },
+    {
+      "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+      "path": "skills/route/SKILL.md"
+    },
+    {
+      "identity": "sha256:71e429d296885eb46f7c7e1903e6cc05b60c79d35e331a3a56d2b945fbaf2ef4",
+      "path": "skills/verify/SKILL.md"
+    },
+    {
+      "identity": "sha256:c18ccff73157195652ddad80e59446e1cfb1031e981712b9121413d47875b69f",
+      "path": "templates/shared/boundary-first-compact-scan.md"
+    },
+    {
+      "identity": "sha256:7179b4f48e6ba5a1503237f58875f0dc5fe8cdc2c7e77f277c6debee714387b8",
+      "path": "templates/shared/boundary-first-feature-authoring-v1.md"
+    },
+    {
+      "identity": "sha256:89337cf5da8462ad2afa0c50e04fb7233beea7ce030a049fa3a1695fc57ea2d0",
+      "path": "templates/shared/boundary-first-method-v1.md"
+    },
+    {
+      "identity": "sha256:ec8e8239c642bf340c4c8aba2105ae9783bced35230bb5bf6501b7b931e6cc4d",
+      "path": "templates/shared/boundary-first-proof-v1.md"
+    },
+    {
+      "identity": "sha256:1be200cd2da2582d71a0f081e45ab2ec359aad1ef992f58050ee9b12effa9820",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/missing-asset/canonical/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:5f77556e23b38f9b0fb7c89e6e46103d3b847a5d8808699c26ae4faddc8e0432",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/missing-asset/canonical/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:611728df9c54ff5cd44aed821c7bc4753bc5662f85ac7d8149eef2980cec404d",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/missing-asset/generated/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:1be200cd2da2582d71a0f081e45ab2ec359aad1ef992f58050ee9b12effa9820",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/canonical/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:5f77556e23b38f9b0fb7c89e6e46103d3b847a5d8808699c26ae4faddc8e0432",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/canonical/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:611728df9c54ff5cd44aed821c7bc4753bc5662f85ac7d8149eef2980cec404d",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/generated/proposal/SKILL.md"
+    },
+    {
+      "identity": "sha256:5f77556e23b38f9b0fb7c89e6e46103d3b847a5d8808699c26ae4faddc8e0432",
+      "path": "tests/fixtures/skills/published-design/generated-output-presence/valid/generated/proposal/assets/proposal-skeleton.md"
+    },
+    {
+      "identity": "sha256:d8126750ee6870203771a6101212ea25565214b9978791acde26f9deb203b27a",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-reconciled.json"
+    },
+    {
+      "identity": "sha256:c63715aec6eb39dd86d6da0969547bb0369dc1ee0f1e53af2ae8ac97ac72d19c",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-m6-current-basis.json"
+    },
+    {
+      "identity": "sha256:6d5736e2a2b01f76c09a027dd32498ed5e4454a3ab31c139643aba5d0ce9222c",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json"
+    },
+    {
+      "identity": "sha256:22284c41fdb311c1bb7dbaded1d2ea5c7d53e063d5f40a79a593d6e9e5738045",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+    },
+    {
+      "identity": "sha256:e503f56ebb4a1be5383fd3e0ec3e1b4ccac5bba8ef8c04a9e8640d8f12e8c9a0",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-inventory.tsv"
+    },
+    {
+      "identity": "sha256:e05b08f1db7b29d8beb9d0ddb5be5220bf0fde08e29a23c1798c37ee88a46ff7",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/test-baseline.json"
+    },
+    {
+      "identity": "sha256:3ba1a5997f446cb451ae9e4d6c20b0db4b42b2e7968a8d813fefc3b723212cca",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m1-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:6fd14ac0fba4016d338ee2df329f4eba0a8e53a5a52b7d28df67ecdd76c72755",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:0e43993111c296569457816df3785a1f007d87d3eee67785d4b2bc309d34d6ba",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m3-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:4e8b9f4be2834e49977ff7d0c218ee36e43a7dfab5ea04f7973ceed1d40eb01e",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m4-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:149262038e392538f8c0d6d82f246cbc9a611ac0d0e792134202504d401fb44e",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m5-test-maintenance.json"
+    },
+    {
+      "identity": "sha256:64a2e81e5ba9fd71b714b9a793e657bcb1ecea8dabf98ac9c226deacfd3937da",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-source-removal.json"
+    },
+    {
+      "identity": "sha256:903933825ce63a6685c52efe920b4df1fdd9fe6f5fe90b9a097dcb241e0179b7",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+    },
+    {
+      "identity": "sha256:6d2197a709240d6749b63e90c17fd4fc8e06cda4835559c81435cdb1cfc06bee",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-validation.json"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    }
+  ],
+  "summary": "Whole-change Code Review approves the complete repository specs and stale-validation cleanup with current behavior, trust boundaries and meaningful proof preserved.",
+  "target": "code"
+}

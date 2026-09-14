@@ -1,12 +1,12 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-full-specs-whole-change-reviewer",
-      "role": "review"
+      "id": "codex-full-specs-verify",
+      "role": "verify"
     },
-    "reason": "Route: all six implementation milestones independently approved and completed, required findings resolved. Fresh independent whole-change Code Review of the complete delivered diff and cross-milestone interactions is required before distinct Verify and authorized PR submission.",
-    "stage": "code-review",
-    "status": "ready"
+    "reason": "Route: six milestones closed and fresh independent whole-change Code Review approved for the complete final diff and interactions, with no open findings. Distinct final Verify now assesses current proof, source retirement, branch identity and authorized PR handoff.",
+    "stage": "verify",
+    "status": "in-progress"
   },
   "applicability": [
     {
@@ -178,6 +178,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m6.json",
       "reason": "Independent complete M6 reassessment on frozen final source/evidence after corrected local and actual PR-range proof.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-full-specs-whole-change-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/final-code-review.json",
+      "reason": "Complete final engineering diff and cross-milestone interactions freshly and independently assessed; exact current Design/Delivery and integration evidence apply, with no unresolved material finding.",
       "value": "current"
     }
   ],
@@ -354,6 +363,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m6.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/final-code-review.json"
     }
   ],
   "schema_version": 3,
