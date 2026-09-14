@@ -1,0 +1,81 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-specs-design-author",
+      "role": "design"
+    },
+    "reason": "Route: independent Proposal Review approved complete repository-wide direction and feasibility with no findings. Proposal task is complete; exact Design contracts, dependency reconciliation and later Delivery allocation remain pending. No exact deletion or implementation approval is inferred.",
+    "stage": "design",
+    "status": "pending"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "independent-full-specs-proposal-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/proposal-review-full-specs-and-stale-tests.json",
+      "reason": "Complete current proposal independently assessed against selected full-scope user intent, standing authority and verified bounded feasibility; no material finding remains.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-specs-proposal-author",
+        "role": "proposal"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
+      "reason": "Exact proposal structure, current references and authoring checks; direction approval belongs to the independent recorded review.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "system",
+      "subject": {
+        "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+        "path": "docs/design/system.md"
+      }
+    },
+    {
+      "id": "skill",
+      "subject": {
+        "identity": "sha256:0368e2fc6233a97f413a73f0d9fab4ca22b25b0b4f55a19a937380e1f0529a18",
+        "path": "docs/design/skill/skill.md"
+      }
+    },
+    {
+      "id": "cli",
+      "subject": {
+        "identity": "sha256:8fbf8613248f7b09435c2869c14cd3c5d5ae0d105279079ca5624c738b716140",
+        "path": "docs/design/cli/cli.md"
+      }
+    },
+    {
+      "id": "engineering",
+      "subject": {
+        "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+        "path": "docs/design/engineering/engineering.md"
+      }
+    }
+  ],
+  "plan": null,
+  "proposal": {
+    "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+    "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+  },
+  "records": [
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/proposal-review-full-specs-and-stale-tests.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": []
+}

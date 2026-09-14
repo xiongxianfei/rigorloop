@@ -1,0 +1,72 @@
+{
+  "assessment_scope": "Formal-lifecycle/manual Proposal Review only. PRR1G-recorded-context-gated: scope_budget_context true; vision_exception_context and standing_artifact_context false. No Design, Delivery, implementation or exact-deletion approval.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-specs-proposal-author",
+      "role": "proposal"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review-full-specs-and-stale-tests",
+  "independence_basis": "Separate nonauthor reviewer read the complete proposal and current authority, checked claimed inventory directly at pinned baseline, and inspected cited live consumers. This reviewer did not author or edit the proposal.",
+  "judgment": "approved",
+  "limitations": [
+    "No candidate is deemed stale solely by directory, filename, age or these inventory counts; actual complete-case discovery and protection assessment remain downstream work.",
+    "Approval neither removes any source nor declares the entire repository migrated. Any completion-preventing exclusion requires an explicit scope-change decision.",
+    "This bounded task stops after Proposal Review; no automatic Design handoff, implementation, publication or merge authority is supplied."
+  ],
+  "rationale": [
+    "Challenge and goals: pass. Mixed current authority and obsolete enforcement create a concrete maintenance problem; complete specs removal, important knowledge retention, current negative protection and comprehensive population assessment are explicit outcomes.",
+    "Scope preservation and scope budget: pass. All116 specs including54 test documents and2 YAML resources are covered; no difficult family silently moves to a follow-up. Tests, inline/generated fixtures and entrypoints across the repository remain in scope for disposition, while useful current tests and historical rejection inputs remain protected. Same-slice consumer/architecture dependencies and unrelated behavior/publication exclusions are explicit. No silent deferral or hidden scope change is permitted.",
+    "Governing principle and direction: pass. Current owners retain important surviving knowledge with explicit retirement for discarded obligations; no wholesale archive copying, new metric, fabricated pass, permanent ledger or platform redesign is proposed.",
+    "Feasibility: pass. Independently reproduced pinned-baseline counts116/54/2,235 fixture files,21 Python test scripts and22 CLI test files. Proposal accurately disclaims these as full case inventory. Inspected real boundary activation/proof-model and resource-manifest/reference consumers plus CLI generic spec placement. These establish coordination needs, not an immediate deletion assumption; unknown protection, unowned behavior and recovery gaps block affected removal until resolved.",
+    "Material impact and vision alignment: pass; vision alignment aligned. Current authority/evidence remain understandable without history, retired content remains recoverable, and broad cross-family regression risk is disclosed. Repository-local consolidation expressly does not prohibit customer specs or retire independently supported capabilities.",
+    "Downstream authority and requested decision: pass. Detailed owner transfers, compatibility choices and exact removals remain Design responsibilities; coherent milestone sequencing, full discovery inventory and concrete proof remain Delivery responsibilities. Approval addresses direction sufficiency only."
+  ],
+  "reviewer": {
+    "id": "independent-full-specs-proposal-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+      "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:69ca7173c8f58490e2f979afe60ae564eade4632c5d20750a1419c0fa98dbb62",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:6c91f69b868f0bdd1406d09c69e01771dab51e56ba799e2ed90b826ae1e08be0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:091f661ebaf23e61a19291046ccff89dc8c98c4aca3a9e29009acf76e7e2a3f4",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:93b0c51a0df49eea189720aa85426505d6255a6a7aff88c404ff391d4aebc7f1",
+      "path": "scripts/boundary_first_reference.py"
+    },
+    {
+      "identity": "sha256:773c60248a16b80a772881677aca12855f16c45ad694fdda668fe566cb5e5633",
+      "path": "scripts/boundary_first_validation.py"
+    },
+    {
+      "identity": "sha256:69fed2db6cdcd10109d9a74b92e025700725a1448bd67d13e73da1a345d49072",
+      "path": "packages/rigorloop/dist/lib/workflow-context.js"
+    }
+  ],
+  "summary": "Complete specs-tree retirement and repository-wide stale-test/fixture assessment are sufficiently bounded, valuable and feasible to enter Design.",
+  "target": "proposal"
+}

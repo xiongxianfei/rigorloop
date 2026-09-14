@@ -1,0 +1,22 @@
+{
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "checks": [
+    {
+      "actor": {
+        "id": "codex-specs-proposal-author",
+        "role": "proposal"
+      },
+      "id": "proposal-author-checks",
+      "procedure": "python scripts/validate-documentation-prose.py --mode enforce --path docs/proposals/2026-09-14-retire-specs-and-stale-tests.md; node scripts/validate-record-store.mjs docs/changes/2026-09-14-retire-specs-and-stale-tests/change.json; Python assertions for exact proposal headings and existing relative-link targets.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+          "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+        }
+      ],
+      "summary": "Prose validation:0errors/0warnings. Complete record set valid. Exactly seven required sections plus the allowed material-impact section in order; all current local links resolve. Baseline counts and live dependency examples checked; independent Proposal Review approved direction and feasibility. No implementation, test-retirement or whole-cleanup verification is claimed."
+    }
+  ],
+  "schema_version": 3
+}
