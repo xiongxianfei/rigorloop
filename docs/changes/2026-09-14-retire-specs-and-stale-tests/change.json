@@ -1,10 +1,10 @@
 {
   "activity": {
     "owner": {
-      "id": "independent-full-specs-m6-reviewer",
+      "id": "independent-full-specs-whole-change-reviewer",
       "role": "review"
     },
-    "reason": "Route: M6 complete source and test reconciliation, corrected selector/composer integration, current local+broad and exact committed PR-range proof passed. Independent complete M6 review required before milestone closeout and fresh whole-change review.",
+    "reason": "Route: all six implementation milestones independently approved and completed, required findings resolved. Fresh independent whole-change Code Review of the complete delivered diff and cross-milestone interactions is required before distinct Verify and authorized PR submission.",
     "stage": "code-review",
     "status": "ready"
   },
@@ -169,6 +169,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-m6-current-basis.json",
       "reason": "Complete unchanged plan independently reassessed against fresh exact M6 Design; sequencing and proof allocation cover the final discovered dependency and example scope.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-cli-release-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m6.json",
+      "reason": "Independent complete M6 reassessment on frozen final source/evidence after corrected local and actual PR-range proof.",
       "value": "current"
     }
   ],
@@ -341,6 +350,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-m6-current-basis.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m6.json"
     }
   ],
   "schema_version": 3,
@@ -425,7 +438,7 @@
         "ENG-SR-15",
         "VAL-SR-27"
       ],
-      "status": "in-progress"
+      "status": "completed"
     }
   ]
 }
