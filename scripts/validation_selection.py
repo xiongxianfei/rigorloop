@@ -235,12 +235,6 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "selector",
         parallel_safe=True, label='Run selector and wrapper fixtures', modes=('broad-smoke',),
     ),
-    "requirement_fidelity.spec_reads": CheckCatalogEntry(
-        "requirement_fidelity.spec_reads",
-        "python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads",
-        "requirement-fidelity",
-        parallel_safe=True, label='Governance: review fidelity', modes=('main',),
-    ),
     "broad_smoke.repo": CheckCatalogEntry(
         "broad_smoke.repo",
         "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
@@ -267,7 +261,6 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
 # Read-only command assessments; test suites have case assessments below.
 # Literal bases deliberately do not update when a template or adapter changes.
 _COMMAND_ASSESSMENTS = {
-    'requirement_fidelity.spec_reads': ('f03814e2fe4dfe4a8db86f790c2323678ef45ae52b3bc63c1df331bb333846c7', 'Reads representative review logs; no mutable fixtures, services or nested workers.'),
     'skills.validate': ('a8c706629176acda626a4dff2c77ba5805f21058a767fa755c8567315234555f', 'Canonical skill validation reads sources without writes, services or nested workers.'),
 }
 for _id, _entry in tuple(CHECK_CATALOG.items()):
@@ -1087,15 +1080,33 @@ def _authoritative_path_is_tracked(
     return candidate.is_file() and relative in tracked_paths
 
 
+RETIRED_SPEC_READ_PATHS = frozenset({
+    "scripts/test-fidelity-gate-spec-reads.py",
+    "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
+})
+
+
+def _retired_spec_read_deletions(repo_root: Path, *revisions: str) -> list[str]:
+    # Keep general discovery unchanged; this retirement's exact deleted inputs
+    # must still select the current protective suites in local and PR flows.
+    return [path for path in _git_lines(
+        repo_root, "diff", "--name-only", "--diff-filter=D", *revisions,
+        "--", *sorted(RETIRED_SPEC_READ_PATHS),
+    ) if path in RETIRED_SPEC_READ_PATHS]
+
+
 def _git_local_changed_paths(repo_root: Path) -> list[str]:
     tracked = _git_lines(repo_root, "diff", "--name-only", "--diff-filter=ACMRT", "HEAD", "--", ".")
     staged = _git_lines(repo_root, "diff", "--cached", "--name-only", "--diff-filter=ACMRT", "--", ".")
     untracked = _git_lines(repo_root, "ls-files", "--others", "--exclude-standard")
-    return _dedupe([*tracked, *staged, *untracked])
+    return _dedupe([*tracked, *staged, *untracked,
+                    *_retired_spec_read_deletions(repo_root, "HEAD"),
+                    *_retired_spec_read_deletions(repo_root, "--cached")])
 
 
 def _git_range_changed_paths(repo_root: Path, base: str, head: str) -> list[str]:
-    return _git_lines(repo_root, "diff", "--name-only", "--diff-filter=ACMRT", base, head, "--", ".")
+    return _dedupe([*_git_lines(repo_root, "diff", "--name-only", "--diff-filter=ACMRT", base, head, "--", "."),
+                    *_retired_spec_read_deletions(repo_root, base, head)])
 
 
 def _resolve_changed_sections(
@@ -1480,12 +1491,14 @@ def _apply_path_selection(
         )
         return
 
-    if category == "requirement-fidelity-spec-read":
-        _add_check(
-            selected,
-            "requirement_fidelity.spec_reads",
-            "Changed requirement-fidelity spec-read proof requires bounded-read validation.",
-        )
+    if category == "retired-spec-read":
+        target = repo_root / path
+        if target.exists() or target.is_symlink():
+            blocking_results.append({"code": "retired-spec-read-input", "path": path,
+                                     "message": "Retired spec-read instrumentation must not be recreated without a current contract and catalog entry."})
+        for check_id in ("selector.regression", "skills.regression", "review_artifacts.regression"):
+            _add_check(selected, check_id,
+                       "Retired fixed-log paths retain current selector and requirement-fidelity protection.")
         return
 
     if category == "retired-examples":
@@ -2014,8 +2027,8 @@ def _path_category(path: str) -> str | None:
         return "review-artifact-fixtures"
     if path == "tests/fixtures/change-metadata" or path.startswith("tests/fixtures/change-metadata/"):
         return "change-metadata-fixtures"
-    if path.startswith("tests/fixtures/requirement-fidelity-gate/representative-reviews/"):
-        return "requirement-fidelity-spec-read"
+    if path in RETIRED_SPEC_READ_PATHS:
+        return "retired-spec-read"
     if path.startswith("tests/fixtures/documentation-prose/"):
         return "validator-documentation-prose"
     if path.startswith("tests/fixtures/adapters/"):
@@ -2057,8 +2070,6 @@ def _path_category(path: str) -> str | None:
         "scripts/test-markdown-readability-validator.py",
     }:
         return "markdown-readability-validator"
-    if path == "scripts/test-fidelity-gate-spec-reads.py":
-        return "requirement-fidelity-spec-read"
     if path in {"scripts/validate-guide-system.py", "scripts/test-guide-system-validator.py"}:
         return "guide-system-validator"
     if path == "scripts/ci.sh":

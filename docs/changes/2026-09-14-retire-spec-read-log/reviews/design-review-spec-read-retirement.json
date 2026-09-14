@@ -1,0 +1,57 @@
+{
+  "assessment_scope": "Exact unchanged owning models, scoped retained feature/test-spec interaction and spec-read-retirement-scope decision; approval supports plan authorship.",
+  "change_id": "2026-09-14-retire-spec-read-log",
+  "contributors": [
+    {
+      "id": "codex-spec-read-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-spec-read-retirement",
+  "independence_basis": "Separate nonauthor reviewer inspected the exact current sources and consumers. No proposal, Design, test-spec or implementation authorship by this reviewer.",
+  "judgment": "approved",
+  "limitations": [
+    "No implementation, test execution or adoption completion is claimed. Delivery must allocate actual negative and integrated selection proof; historical test-spec commands outside this narrow amendment retain only their separately declared applicability."
+  ],
+  "rationale": [
+    "Behavior and technical realization: pass. VAL-SR-23 explicitly retires script, catalog ID and sole fixture. Existing selector/executor remains owner; no replacement metric, alias or synthetic pass is introduced.",
+    "Preservation: pass. Complete relevant clause assessment, justified bounded/full reads, omission/compression and unknown-vocabulary proof survive. Test-spec PERF identity receives explicit retirement and all frozen instrumentation obligations are removed without changing historical record bytes.",
+    "Ownership and compatibility: pass. Validation owns retirement and selection; Engineering owns coordinated source/consumer disposition; retained feature obligations remain scoped. This is new-profile-only approved supersession, not forced migration of unrelated legacy requirements.",
+    "Boundaries and representative acceptance: pass. Exact deleted inputs route to current protection; unknown siblings, recreated inputs and unsafe paths do not receive broad exemptions. Main/PR/explicit routing and actual negative proof must be allocated by Delivery.",
+    "Architecture and decisions: pass. Unchanged Engineering/Validation overview and supporting views already explain catalog, selector, execution and assessment ownership; narrow removal requires no new model or graph. Recoverable commit plus repository-relative paths are recorded; excluded cleanup remains explicit."
+  ],
+  "reviewer": {
+    "id": "independent-spec-read-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+      "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+    },
+    {
+      "identity": "sha256:6c91f69b868f0bdd1406d09c69e01771dab51e56ba799e2ed90b826ae1e08be0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:9c93828823bb91f2856d79f61ffe12752b9e3e8cfa2509754999bcbdbe7dfd70",
+      "path": "specs/requirement-fidelity-gate.md"
+    },
+    {
+      "identity": "sha256:ce9828d00bd5b9c644f1501a34c097d76ced2c0c4f966700816348fa560fe953",
+      "path": "specs/requirement-fidelity-gate.test.md"
+    },
+    {
+      "identity": "sha256:a76600761216bd13b9f282a68396fbd4c191e71225b788c45799769c11f357a2",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/material-decisions.json"
+    }
+  ],
+  "summary": "Scoped fixed-log retirement is coherent with current Validation and retained fidelity obligations.",
+  "target": "design"
+}

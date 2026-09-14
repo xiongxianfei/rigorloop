@@ -1,0 +1,70 @@
+{
+  "change_id": "2026-09-14-retire-spec-read-log",
+  "checks": [
+    {
+      "actor": {
+        "id": "codex-spec-read-implementer",
+        "role": "implement"
+      },
+      "id": "m1-focused-proof",
+      "procedure": "python scripts/test-select-validation.py -k spec_read; python scripts/test-select-validation.py; python scripts/validate-documentation-prose.py --mode enforce --path docs/plans/2026-09-14-retire-spec-read-log.md; python scripts/validate-boundary-first.py --check --path specs/requirement-fidelity-gate.test.md; git diff HEAD --check",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d777a4d594cce389bf972bfa369f4896b3991a5e63d345870d1475d043350224",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:b6ff913a4d6fbb8c7dd68b301e6350e4a6c669932ba67e6dbd96eaae85ff2c2e",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:ce9828d00bd5b9c644f1501a34c097d76ced2c0c4f966700816348fa560fe953",
+          "path": "specs/requirement-fidelity-gate.test.md"
+        },
+        {
+          "identity": "sha256:8783d4c70480af92690af1dfcd022a9959a145d6d7542f1915c41d41a0f4feb1",
+          "path": "docs/plans/2026-09-14-retire-spec-read-log.md"
+        }
+      ],
+      "summary": "Five focused tests and full176 selector tests passed (105.21s), prose0errors/warnings and boundary structure passed. Initial retirement regressions failed against old registration/broad-prefix behavior; actual deletion tests additionally exposed generic ACMRT discovery omission. Scoped correction adds only exact two-path D discovery in local HEAD/index and PR ranges; all five then pass. Reviewer assessed correction within approved intent. No general deletion policy changes. Deletion bytes independently matched baseline: [{\"path\": \"scripts/test-fidelity-gate-spec-reads.py\", \"revision\": \"020e4d2c76129ac89b488cf9436d0e6efb453f5a\", \"identity\": \"sha256:22be989f1ffbcf569c41c2a0b75d3de98eacc86a8aac31898fdd496ef064e2ab\"}, {\"path\": \"tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json\", \"revision\": \"020e4d2c76129ac89b488cf9436d0e6efb453f5a\", \"identity\": \"sha256:219dd5a3d4535225d51b5788d06ed1741c3a05e1b1a36348136e6e1b436ca973\"}]. Public skill, review/CLI validators, schema, release and package sources remain unchanged. Required selected/broad integration and final review remain outstanding."
+    },
+    {
+      "actor": {
+        "id": "codex-spec-read-implementer",
+        "role": "implement"
+      },
+      "id": "m1-integrated-proof",
+      "procedure": "bash scripts/ci.sh --mode local --broad-smoke --jobs 4; npm test --prefix packages/rigorloop; git diff HEAD --check; exact Git deletion recovery and source/consumer audit.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:936495b0b937a1cc0a5b4b856195801e15b390b4e6ba8f5437ce1116c468573a",
+          "path": "docs/plan.md"
+        },
+        {
+          "identity": "sha256:8783d4c70480af92690af1dfcd022a9959a145d6d7542f1915c41d41a0f4feb1",
+          "path": "docs/plans/2026-09-14-retire-spec-read-log.md"
+        },
+        {
+          "identity": "sha256:b6ff913a4d6fbb8c7dd68b301e6350e4a6c669932ba67e6dbd96eaae85ff2c2e",
+          "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:d777a4d594cce389bf972bfa369f4896b3991a5e63d345870d1475d043350224",
+          "path": "scripts/validation_selection.py"
+        },
+        {
+          "identity": "sha256:ce9828d00bd5b9c644f1501a34c097d76ced2c0c4f966700816348fa560fe953",
+          "path": "specs/requirement-fidelity-gate.test.md"
+        },
+        {
+          "identity": "sha256:47446366bd4406ae151f6e9f1ed216861c656cd80c09eec5049fea00320c4d15",
+          "path": "docs/changes/2026-09-14-retire-spec-read-log/integration-proof.json"
+        }
+      ],
+      "summary": "Complete selected/broad execution passed all 960 rows with exit0. Five focused retirement tests and all176 selector tests and419 CLI tests also pass. integration-proof.json binds exact current engineering, grouped actual execution population, prior red results and removed source identities. Final independent review and Verify are separate; no broader cleanup or hosted CI claim."
+    }
+  ],
+  "schema_version": 3
+}

@@ -1,0 +1,48 @@
+{
+  "assessment_scope": "Formal lifecycle/manual applicability reassessment of unchanged proposal for this named narrower delivery, not broad cleanup completion.",
+  "change_id": "2026-09-14-retire-spec-read-log",
+  "contributors": [
+    {
+      "id": "codex-spec-read-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "proposal-review-spec-read-applicability",
+  "independence_basis": "Separate nonauthor reviewer inspected the exact current sources and consumers. No proposal, Design, test-spec or implementation authorship by this reviewer.",
+  "judgment": "approved",
+  "limitations": [
+    "Approval covers the selected batch only; original inventory counts are historical feasibility context, not a current inventory claim. External integration requires separate user authority."
+  ],
+  "rationale": [
+    "Challenge, goals, governing principle, direction and decision sufficiency: pass. Remove obsolete fixed instrumentation while keeping current protective proof and recoverable history.",
+    "Scope preservation: pass. User explicitly selected this previously deferred batch; ledger retirement already delivered, adapter support and replay remain excluded rather than silently completed. No new product direction.",
+    "Feasibility and material impact: pass. Actual checker only validates committed claims; sole fixture and catalog/selector consumers are identifiable and Git baseline contains both files. Current operation need not retrieve history.",
+    "Vision alignment: aligned. Current evidence remains self-contained; retired material is recoverable. Downstream authority remains with exact Design, Delivery and assessment gates."
+  ],
+  "reviewer": {
+    "id": "independent-spec-read-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+      "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:a76600761216bd13b9f282a68396fbd4c191e71225b788c45799769c11f357a2",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/material-decisions.json"
+    }
+  ],
+  "summary": "Existing cleanup direction applies to the explicitly selected spec-read-log retirement batch.",
+  "target": "proposal"
+}

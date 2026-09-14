@@ -1,0 +1,125 @@
+{
+  "activity": {
+    "owner": {
+      "id": "codex-spec-read-implementer",
+      "role": "implement"
+    },
+    "reason": "Route: exact Design and Delivery packages approved; M1 initialized once from approved plan and selected for implementation with tests first.",
+    "stage": "implement",
+    "status": "in-progress"
+  },
+  "applicability": [
+    {
+      "actor": {
+        "id": "codex-spec-read-author",
+        "role": "design"
+      },
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/material-decisions.json",
+      "reason": "Exact selected current source and scoped amendment inspected; no review or implementation approval claimed.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-spec-read-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/proposal-review-spec-read-applicability.json",
+      "reason": "Exact selected batch reassessed against current direction, authority and subjects; historical approvals are not retargeted.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-spec-read-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/design-review-spec-read-retirement.json",
+      "reason": "Exact selected batch reassessed against current direction, authority and subjects; historical approvals are not retargeted.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-spec-read-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/delivery-review-spec-read-retirement.json",
+      "reason": "Exact primary plan and current approved Design package assessed without authorship; all relied-on Design subjects match.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-spec-read-implementer",
+        "role": "implement"
+      },
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/evidence.json",
+      "reason": "Exact tested M1 source and approved delivery; complete integrated proof observed with no source mutation during run.",
+      "value": "current"
+    }
+  ],
+  "blockers": [],
+  "change_id": "2026-09-14-retire-spec-read-log",
+  "contract": "rigorloop-records-v3",
+  "models": [
+    {
+      "id": "validation",
+      "subject": {
+        "identity": "sha256:6c91f69b868f0bdd1406d09c69e01771dab51e56ba799e2ed90b826ae1e08be0",
+        "path": "docs/design/engineering/validation.md"
+      }
+    },
+    {
+      "id": "engineering",
+      "subject": {
+        "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+        "path": "docs/design/engineering/engineering.md"
+      }
+    }
+  ],
+  "plan": {
+    "identity": "sha256:8783d4c70480af92690af1dfcd022a9959a145d6d7542f1915c41d41a0f4feb1",
+    "path": "docs/plans/2026-09-14-retire-spec-read-log.md"
+  },
+  "proposal": {
+    "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+    "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+  },
+  "records": [
+    {
+      "kind": "decisions",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/material-decisions.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/proposal-review-spec-read-applicability.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/design-review-spec-read-retirement.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/delivery-review-spec-read-retirement.json"
+    },
+    {
+      "kind": "evidence",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/evidence.json"
+    }
+  ],
+  "schema_version": 3,
+  "work": [
+    {
+      "id": "m1",
+      "owner": {
+        "id": "codex-spec-read-implementer",
+        "role": "implement"
+      },
+      "requirement_refs": [
+        "VAL-SR-23",
+        "VAL-SR-03",
+        "VAL-SR-04",
+        "ENG-SR-13",
+        "ENG-SR-14"
+      ],
+      "status": "in-progress"
+    }
+  ]
+}

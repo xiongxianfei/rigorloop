@@ -1,0 +1,93 @@
+{
+  "baseline": "020e4d2c76129ac89b488cf9436d0e6efb453f5a",
+  "scope": "M1 VAL-SR-23 fixed-log retirement only",
+  "engineering_subjects": [
+    {
+      "path": "docs/plan.md",
+      "identity": "sha256:936495b0b937a1cc0a5b4b856195801e15b390b4e6ba8f5437ce1116c468573a"
+    },
+    {
+      "path": "docs/plans/2026-09-14-retire-spec-read-log.md",
+      "identity": "sha256:8783d4c70480af92690af1dfcd022a9959a145d6d7542f1915c41d41a0f4feb1"
+    },
+    {
+      "path": "scripts/test-select-validation.py",
+      "identity": "sha256:b6ff913a4d6fbb8c7dd68b301e6350e4a6c669932ba67e6dbd96eaae85ff2c2e"
+    },
+    {
+      "path": "scripts/validation_selection.py",
+      "identity": "sha256:d777a4d594cce389bf972bfa369f4896b3991a5e63d345870d1475d043350224"
+    },
+    {
+      "path": "specs/requirement-fidelity-gate.test.md",
+      "identity": "sha256:ce9828d00bd5b9c644f1501a34c097d76ced2c0c4f966700816348fa560fe953"
+    }
+  ],
+  "removed_sources": [
+    {
+      "path": "scripts/test-fidelity-gate-spec-reads.py",
+      "revision": "020e4d2c76129ac89b488cf9436d0e6efb453f5a",
+      "identity": "sha256:22be989f1ffbcf569c41c2a0b75d3de98eacc86a8aac31898fdd496ef064e2ab"
+    },
+    {
+      "path": "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
+      "revision": "020e4d2c76129ac89b488cf9436d0e6efb453f5a",
+      "identity": "sha256:219dd5a3d4535225d51b5788d06ed1741c3a05e1b1a36348136e6e1b436ca973"
+    }
+  ],
+  "commands": [
+    {
+      "command": "python scripts/test-select-validation.py -k spec_read",
+      "result": "passed",
+      "tests": 5
+    },
+    {
+      "command": "python scripts/test-select-validation.py",
+      "result": "passed",
+      "tests": 176
+    },
+    {
+      "command": "bash scripts/ci.sh --mode local --broad-smoke --jobs 4",
+      "result": "passed",
+      "execution_rows": 960,
+      "groups": {
+        "boundary_first.validate": 1,
+        "skills.regression": 354,
+        "review_artifacts.regression": 109,
+        "artifact_lifecycle.validate": 1,
+        "change_metadata.regression": 7,
+        "change_metadata.validate": 1,
+        "guide_system.validate": 1,
+        "selector.regression": 176,
+        "skills.validate": 1,
+        "artifact_lifecycle.regression": 108,
+        "validation_execution.regression": 52,
+        "adapters.full_regression": 146,
+        "broad_smoke.adapters.build_archives": 1,
+        "broad_smoke.adapters.validate_archives": 1,
+        "broad_smoke.artifact_lifecycle.scoped": 1
+      }
+    },
+    {
+      "command": "npm test --prefix packages/rigorloop",
+      "result": "passed",
+      "tests": 419
+    },
+    {
+      "command": "git diff HEAD --check",
+      "result": "passed"
+    }
+  ],
+  "integrated_log_sha256": "7efc79d5cab7c899b8d5a4005d0e4859035a982d423b51b1e9ffeed3c522f158",
+  "prior_results": [
+    "Initial retirement tests failed on the old catalog and broad-prefix behavior.",
+    "Actual deletion tests exposed existing general ACMRT discovery omitting D inputs; local and PR tests failed until exact two-path D union was implemented.",
+    "Final focused five tests and all176 selector tests pass; no retired check or replacement metric is scheduled."
+  ],
+  "preservation": "Substantive clause/property/surface fidelity, justified bounded/full reads and omission/compression guidance remain. Current skill, review/CLI, schema, package and release implementations are unchanged. Retained skill/review proof and real adapter archive build/validation ran in the integrated suite; the419-test CLI suite passed separately because this diff did not automatically select it. Historical record roots are unchanged; removed bytes match the pinned baseline exactly.",
+  "scope_limits": [
+    "General deleted-path discovery remains unchanged outside these two retired inputs.",
+    "Other cleanup, adapter support and historical replay remain deferred.",
+    "Local validation only; final Code Review and distinct Verify remain required."
+  ]
+}
