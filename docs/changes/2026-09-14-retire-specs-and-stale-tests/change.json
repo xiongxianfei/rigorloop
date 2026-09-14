@@ -4,9 +4,9 @@
       "id": "codex-full-specs-verify",
       "role": "verify"
     },
-    "reason": "Route: six milestones closed and fresh independent whole-change Code Review approved for the complete final diff and interactions, with no open findings. Distinct final Verify now assesses current proof, source retirement, branch identity and authorized PR handoff.",
+    "reason": "Route: distinct successful final Verify recorded and read back after all six milestones, ten resolved findings and fresh whole-change approval. Governed cleanup is complete; proceed to separately user-authorized branch push and PR submission. No merge or release authority.",
     "stage": "verify",
-    "status": "in-progress"
+    "status": "completed"
   },
   "applicability": [
     {
@@ -20,11 +20,11 @@
     },
     {
       "actor": {
-        "id": "codex-full-specs-implement",
-        "role": "implement"
+        "id": "codex-full-specs-verify",
+        "role": "verify"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Refreshed actual M6 proof subjects and completed current runs support renewed evidence applicability; earlier checks retain their exact scoped meanings. No review or final readiness is claimed.",
+      "reason": "Exact current governing and whole-review basis independently assessed for final Verify; actual required proof and evidence-only changes inspected.",
       "value": "current"
     },
     {
@@ -187,6 +187,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/final-code-review.json",
       "reason": "Complete final engineering diff and cross-milestone interactions freshly and independently assessed; exact current Design/Delivery and integration evidence apply, with no unresolved material finding.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-verify",
+        "role": "verify"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/verify-report.json",
+      "reason": "Distinct successful final Verify of exact current scope, fresh independent whole-change assessment and current actual proof; complete immutable Git/PR basis recorded.",
       "value": "current"
     }
   ],
@@ -367,6 +376,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/final-code-review.json"
+    },
+    {
+      "kind": "verify",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/verify-report.json"
     }
   ],
   "schema_version": 3,

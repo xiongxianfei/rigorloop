@@ -536,6 +536,86 @@
         }
       ],
       "summary": "148 selected source/example removals plus retired token guidance; complete current source/protection reconciliation and meaningful negative proof. Actual committed PR range and local broad validation passed."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-verify",
+        "role": "verify"
+      },
+      "id": "final-verification",
+      "procedure": "Fresh node scripts/validate-record-store.mjs docs/changes/2026-09-14-retire-specs-and-stale-tests/change.json; git diff --check; python scripts/validate-boundary-first.py --check; python scripts/build-adapters.py --check all passed. Directly verified96 current final-review Subject hashes, sixcompleted milestones, tenexplicit resolved findings, absent tracked/worktree source trees, twelveactual command log hashes and exact base/head/remote. Reused current completed local+broad and exactPR-range execution at025596df; inspected subsequent diff contains only attributable current verification/review/routing evidence, no engineering changes. No hostedCI claim.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:d6c35b64cc3ea5ff9b170124fda92c4d16658974859266b50b5852273d10d63d",
+          "path": "docs/design/system.md"
+        },
+        {
+          "identity": "sha256:ad80a8e44a1f3c2bcc5c79fa06e5b0ba6e62b248e66a8105a458f3505f68145e",
+          "path": "docs/design/skill/skill.md"
+        },
+        {
+          "identity": "sha256:eef25314c2f34d4cceca2b8e2a12675fd9773da34fa949fd92cb224ed6a456e7",
+          "path": "docs/design/cli/cli.md"
+        },
+        {
+          "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:ca2ba146c7cd45409b8b37a22d2baece26efed668f3ddad9309f495056ee1623",
+          "path": "docs/design/skill/workflow.md"
+        },
+        {
+          "identity": "sha256:d787cece629dd7eed0a12c53366a5d41aa52f59d5c1250881550b5eebe04ff0a",
+          "path": "docs/design/skill/design.md"
+        },
+        {
+          "identity": "sha256:ae3b59ec189fd66962ddb3f50a4c0e48422fc9a1086aae641c54dd1481fd715b",
+          "path": "docs/design/skill/assessment.md"
+        },
+        {
+          "identity": "sha256:c088b648eb0a8308c8cae1deb7f5be562cf5fb81ceed2552d5256851ca69acf7",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+          "path": "docs/design/cli/installation.md"
+        },
+        {
+          "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:6dfe2436431bc52be7b3715e9249559bb7a893b08f6211e0a43b1a936b6096fd",
+          "path": "docs/design/engineering/packaging.md"
+        },
+        {
+          "identity": "sha256:4e64ece2c8b1147778fa31becc2ecb1d08469b7610cf53d29ecf40b49865441e",
+          "path": "docs/design/engineering/release.md"
+        },
+        {
+          "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+          "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+        },
+        {
+          "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+          "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+        },
+        {
+          "identity": "sha256:b93aed4385ba272f7ac24b912ab1c38c2e68b05c793f0f8f53ff5eec0b9a4e5a",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/final-code-review.json"
+        },
+        {
+          "identity": "sha256:6d2197a709240d6749b63e90c17fd4fc8e06cda4835559c81435cdb1cfc06bee",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-validation.json"
+        },
+        {
+          "identity": "sha256:64a2e81e5ba9fd71b714b9a793e657bcb1ecea8dabf98ac9c226deacfd3937da",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-source-removal.json"
+        }
+      ],
+      "summary": "Distinct final Verify confirms complete M1–M6 delivery and current obligation/proof coherence; no open findings, missing current owners, unknown source/test family or required correction remains."
     }
   ],
   "schema_version": 3

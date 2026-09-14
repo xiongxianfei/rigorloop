@@ -1,0 +1,185 @@
+{
+  "assessment_scope": "Distinct final workflow Verify of the complete M1–M6 initiative and Git/PR handoff, after fresh independent whole-change Code Review. Exact final engineering and evidence basis is b88c8c752b4ae04dc1f23d38ae5dd59272f2704f against main 7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e. All required source, test, fixture, current-owner, review, selection, packaging and candidate obligations are included.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "changes": [
+    "Removed the complete repository specs tree and selected coupled architecture/ADR sources after current-owner reconciliation, with exact recoverable provenance.",
+    "Retained byte-identical portable boundary resources in maintained shared locations and removed historical activation machinery.",
+    "Retired token-cost/word/rollout instrumentation, legacy lifecycle/review engines, stale cases and exclusive/orphaned fixtures while preserving meaningful current negative and regression proof.",
+    "Replaced historical release reconstruction and production-fixture dependencies with current-source qualification and owned current candidate/report fixtures.",
+    "Reconciled governance, current Designs, examples, contributor/package guidance, curated learning and project map.",
+    "Made actual deletion/rename selection complete and preserved independent committed-snapshot and worktree-discovery execution."
+  ],
+  "evidence_refs": [
+    {
+      "id": "m1-implementation-checks",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+    },
+    {
+      "id": "m2-implementation-checks",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+    },
+    {
+      "id": "m3-validation",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+    },
+    {
+      "id": "m4-validation",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+    },
+    {
+      "id": "m5-validation",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+    },
+    {
+      "id": "m6-implementation",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+    },
+    {
+      "id": "final-verification",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+    }
+  ],
+  "limitations": [
+    "Hosted CI has not yet been observed for a submitted PR; all stated CI success is local actual execution.",
+    "Retired activation, legacy eligibility engines and historical release reconstruction are intentionally unsupported. Recovery must restore a coherent source/consumer/proof slice from Git; current operation has no historical-fetch fallback.",
+    "This assessment authorizes no merge, live release, npm publication, account change or customer-governance adoption. External PR submission uses the user’s separate explicit authority."
+  ],
+  "outcome": "success",
+  "rationale": [
+    "User scope and Proposal remain aligned: all116 baseline specs are removed or relocated to maintained operational homes, current owners preserve important knowledge only, and the whole test/fixture population has meaningful retention/refinement/retirement disposition. Proposal text and VISION are unchanged; final supporting governance/model reconciliation stays within that approved complete direction and is independently covered by the current Design package.",
+    "Current Design and Delivery match the final work: all12 registered model hashes are current, the approved plan is unchanged, allsix milestones are closed, and the fresh whole-change reviewer assessed96 exact surviving Subjects and cross-milestone interactions. Planned-absent historical source/example Subjects are recoverable provenance, not missing active authority or a rewritten prior approval. The earlier replaced Design/Delivery judgments remain historical; current M6 reviews own present reliance.",
+    "SYS-SR-13 and ENG-SR-15 are fulfilled by self-contained current owners, complete116-source disposition, final148 source/example removals and separately retired token guidance. Important behavior, decisions, acceptance and portable resources remain with their current owners. Current links/imports/manifests/generators/packages no longer fetch old specs; historical production stores and learn sessions retain original bytes.",
+    "DES-SR-23, VAL-SR-25–28, DIST-SR-23/24, SKL-SR-28/29, WF-SR-19 and RC-SR-22/23 are supported by current boundary/resource/skill proof, full test and generated-fixture audits, independently assessed retirement rationale and required negative cases. The final population accounts for257 unchanged M5 files andthree concrete test deltas; no family is silently deferred. Counts alone are not the basis: retained failure detection, current readers and explicit retired obligations are documented and reviewed.",
+    "CLI-SR-29/30 and REL-SR-26 retain current v3 parser/reference/discovery and candidate/package/install boundaries. Literal Git snapshot identity, no ambient redirect/replacement/lazy-fetch writes, rejected-candidate receipt preservation and valid-admission invalidation are directly tested. Actual candidate qualification and fullPR CI run against bound prepared source/artifacts; synthetic providers do not claim live publication.",
+    "VAL-SR-27 integration is directly proved: actual local/staged/committed deletion and both rename endpoints are classified, mixed unknown sources/deletions remain blocking, and all398 original source-range paths exactly match Git. Distinct snapshot and worktree checks preserve both obligations and strict argument/failure guards. Fresh177selector/53executor/419Node results, model/build/guides/prose, actualcandidate, complete local+broad and PRrange runs pass.",
+    "Allten material findings have explicit reporter dispositions; no unresolved owner decision remains. Fresh whole-change Code Review is independent of authorship and distinct from this Verify. Earlier milestone evidence supplies its exact scoped history, while current complete M6 proof establishes assembled behavior after later source/test changes; no stale historical pass substitutes for current required execution.",
+    "Runtime dependency graph, public CLI implementation, package version, live account configuration and customer adoption are unchanged. Build/validation/governance/documentation impacts are explicitly assessed with current proof. Source025596df through the verified head differs only in inspected current evidence/review/routing records, so no changed engineering basis defeats the completed integration results. Fresh current-state checks and immutable remote/base/branch identity support branch readiness; PR remains separately authorized."
+  ],
+  "review_refs": [
+    {
+      "id": "proposal-review-full-specs-current-basis",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/proposal-review-full-specs-current-basis.json"
+    },
+    {
+      "id": "design-review-m6-reconciled",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-reconciled.json"
+    },
+    {
+      "id": "delivery-review-m6-current-basis",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-m6-current-basis.json"
+    },
+    {
+      "id": "code-review-m1-corrected",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m1-corrected.json"
+    },
+    {
+      "id": "code-review-m2-corrected",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m2-corrected.json"
+    },
+    {
+      "id": "code-review-m3-corrected",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m3-corrected.json"
+    },
+    {
+      "id": "code-review-m4-corrected",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m4-corrected.json"
+    },
+    {
+      "id": "code-review-m5",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m5.json"
+    },
+    {
+      "id": "code-review-m6",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m6.json"
+    },
+    {
+      "id": "final-code-review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/final-code-review.json"
+    }
+  ],
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:d6c35b64cc3ea5ff9b170124fda92c4d16658974859266b50b5852273d10d63d",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:ad80a8e44a1f3c2bcc5c79fa06e5b0ba6e62b248e66a8105a458f3505f68145e",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:eef25314c2f34d4cceca2b8e2a12675fd9773da34fa949fd92cb224ed6a456e7",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:ca2ba146c7cd45409b8b37a22d2baece26efed668f3ddad9309f495056ee1623",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:d787cece629dd7eed0a12c53366a5d41aa52f59d5c1250881550b5eebe04ff0a",
+      "path": "docs/design/skill/design.md"
+    },
+    {
+      "identity": "sha256:ae3b59ec189fd66962ddb3f50a4c0e48422fc9a1086aae641c54dd1481fd715b",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:c088b648eb0a8308c8cae1deb7f5be562cf5fb81ceed2552d5256851ca69acf7",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:6dfe2436431bc52be7b3715e9249559bb7a893b08f6211e0a43b1a936b6096fd",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:4e64ece2c8b1147778fa31becc2ecb1d08469b7610cf53d29ecf40b49865441e",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+      "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:3e99392f5974d61f13f6c3bf8f5b616dbb5c6ca3a997f83a36e89ca43a7dd8e3",
+      "path": "docs/plans/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:b93aed4385ba272f7ac24b912ab1c38c2e68b05c793f0f8f53ff5eec0b9a4e5a",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/final-code-review.json"
+    },
+    {
+      "identity": "sha256:6d2197a709240d6749b63e90c17fd4fc8e06cda4835559c81435cdb1cfc06bee",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-validation.json"
+    },
+    {
+      "identity": "sha256:64a2e81e5ba9fd71b714b9a793e657bcb1ecea8dabf98ac9c226deacfd3937da",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-source-removal.json"
+    }
+  ],
+  "summary": "The complete repository specs and stale-validation cleanup is verified for the authorized PR handoff. Current Designs, useful protection and operational trust boundaries stand without retired sources.",
+  "verification_basis": {
+    "base_branch": "main",
+    "base_revision": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "head_branch": "cleanup/retire-specs-and-stale-tests",
+    "merge_base_revision": "7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e",
+    "remote_identity": "git@github.com:xiongxianfei/rigorloop.git",
+    "repository_identity": "https://github.com/xiongxianfei/rigorloop",
+    "verified_subject_revision": "b88c8c752b4ae04dc1f23d38ae5dd59272f2704f"
+  },
+  "verifier": {
+    "id": "codex-full-specs-verify",
+    "role": "verify"
+  }
+}
