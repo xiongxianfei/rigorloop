@@ -54,7 +54,6 @@ ADAPTER_REGRESSION_COMMAND = (
 )
 
 EXPECTED_CATALOG = {
-    "cli_result_measurement.regression": "python scripts/test-cli-result-measurement.py",
     "validation_execution.regression": "python scripts/test-validation-execution.py",
     "record_store.schema": "node scripts/build-record-store-schema.mjs --check",
     "model.validate": "python scripts/validate-boundary-first.py --check --path docs/design/skill/workflow.md --path docs/design/cli/cli.md --path docs/design/cli/records.md",
@@ -96,9 +95,6 @@ EXPECTED_CATALOG = {
         "--review-set tests/fixtures/requirement-fidelity-gate/representative-reviews "
         "--max-bytes-per-clause 4096 --assert-no-broad-reads"
     ),
-    "token_cost.regression": "python scripts/test-token-cost-measurement.py",
-    "token_cost.report_regression": "python scripts/test-token-cost-report-validation.py",
-    "token_cost.report_validate": "python scripts/validate-token-cost-report.py <report-yaml>...",
     "broad_smoke.repo": "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
     "rigorloop_cli.test": "npm test --prefix packages/rigorloop",
     "governed_lifecycle_cli_wrapper.test": "python scripts/test-governed-lifecycle-cli-validator.py",
@@ -580,6 +576,94 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertIn("docs/changes/example/change.json", checks["artifact_lifecycle.validate"]["command"])
         self.assertNotIn("docs/changes/example/change.yaml", checks["artifact_lifecycle.validate"]["command"])
 
+    def supporting_subject_repo(self, path="docs/changes/example/evidence/notes.md"):
+        repo, _ = self.recording_repo()
+        evidence = repo / "docs/changes/example/evidence.json"
+        value = json.loads(evidence.read_text())
+        value["checks"][0]["subjects"].append({"path": path, "identity": "sha256:" + "a" * 64})
+        evidence.write_text(json.dumps(value) + "\n")
+        subject = repo / path
+        subject.parent.mkdir(parents=True, exist_ok=True)
+        subject.write_text("# Supporting observation\n")
+        return repo, path, evidence
+
+    def test_supporting_subject_selection_preserves_records_for_changed_and_deleted_files(self):
+        repo, path, _ = self.supporting_subject_repo()
+        records = {p: p.read_bytes() for p in (repo / "docs/changes/example").glob("*.json")}
+        for deleted in (False, True):
+            if deleted:
+                (repo / path).unlink()
+            result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+            self.assertEqual(result.status, "ok", result.blocking_results)
+            self.assertIn("change_metadata.validate", selected_ids(result.to_json_dict()))
+            if deleted:
+                self.assertNotIn("documentation_prose.enforce", selected_ids(result.to_json_dict()))
+            else:
+                self.assertIn("documentation_prose.enforce", selected_ids(result.to_json_dict()))
+            self.assertEqual(records, {p: p.read_bytes() for p in records})
+
+    def test_supporting_subject_selection_rejects_mixed_unknown_and_reinspects_each_invocation(self):
+        repo, path, evidence = self.supporting_subject_repo()
+        unknown = "docs/changes/example/unknown_value.md"
+        result = select_validation(SelectionRequest(mode="explicit", paths=(path, unknown), repo_root=repo))
+        self.assertEqual(result.status, "blocked")
+        self.assertTrue(any(b["path"] == unknown for b in result.blocking_results))
+        value = json.loads(evidence.read_text())
+        value["checks"][0]["subjects"] = [s for s in value["checks"][0]["subjects"] if s["path"] != path]
+        evidence.write_text(json.dumps(value) + "\n")
+        result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+        self.assertEqual(result.status, "blocked")
+        self.assertTrue(any(b["code"] == "unregistered-recording-path" for b in result.blocking_results))
+
+    def test_supporting_subject_selection_rejects_malformed_registered_store(self):
+        repo, path, evidence = self.supporting_subject_repo()
+        value = json.loads(evidence.read_text())
+        value["schema_version"] = "unknown_value"
+        evidence.write_text(json.dumps(value) + "\n")
+        result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+        self.assertEqual(result.status, "blocked")
+        self.assertTrue(any(b["code"] == "invalid-supporting-subject-store" for b in result.blocking_results))
+
+    def test_supporting_subject_selection_rejects_dangling_registered_entry_reference(self):
+        repo, path, _ = self.supporting_subject_repo()
+        decisions = repo / "docs/changes/example/material-decisions.json"
+        value = json.loads(decisions.read_text())
+        value["decisions"][0]["source_refs"] = [{"path": "docs/changes/example/evidence.json", "id": "unknown-check"}]
+        decisions.write_text(json.dumps(value) + "\n")
+        result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+        self.assertEqual(result.status, "blocked")
+        self.assertTrue(any(b["code"] == "invalid-supporting-subject-store" for b in result.blocking_results))
+
+    def test_supporting_subject_validator_rejects_unknown_value_and_mixed_options(self):
+        repo, path, _ = self.supporting_subject_repo()
+        command = ["node", str(ROOT / "scripts/validate-record-store.mjs"), str(repo / "docs/changes/example/change.json")]
+        normal = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(normal.returncode, 0, normal.stderr)
+        subjects = subprocess.run(command + ["--subjects"], capture_output=True, text=True)
+        self.assertEqual(subjects.returncode, 0, subjects.stderr)
+        self.assertIn(path, json.loads(subjects.stdout)["subject_paths"])
+        for options in (["--unknown-value"], ["--subjects", "--revision", "HEAD"]):
+            result = subprocess.run(command + options, capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(result.stdout, "")
+
+    def test_supporting_subject_selection_cannot_promote_unregistered_reserved_record(self):
+        repo, path, _ = self.supporting_subject_repo("docs/changes/example/reviews/unregistered.json")
+        result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+        self.assertEqual(result.status, "blocked")
+        self.assertTrue(any(b["code"] == "unregistered-recording-path" for b in result.blocking_results))
+
+    def test_supporting_subject_selection_rejects_escaping_symlink(self):
+        repo, path, _ = self.supporting_subject_repo()
+        (repo / path).unlink()
+        with tempfile.TemporaryDirectory() as outside:
+            target = Path(outside) / "notes.md"
+            target.write_text("outside\n")
+            (repo / path).symlink_to(target)
+            result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=repo))
+            self.assertEqual(result.status, "blocked")
+            self.assertTrue(any(b["code"] == "outside-repository-path" for b in result.blocking_results))
+
     def test_er_m5_001_real_recording_paths_select_complete_set_validation(self):
         repo, paths = self.recording_repo()
         for path in paths:
@@ -617,7 +701,7 @@ class ValidationSelectionTests(unittest.TestCase):
         self.assertEqual(result.status, "blocked")
         self.assertTrue(any(block["code"] == "unsupported-change-contract" for block in result.blocking_results))
 
-    def test_skill_source_archive_selects_integrity_without_current_lifecycle(self):
+    def test_retired_skill_archive_paths_select_current_protection_without_reading_sources(self):
         from validation_selection import SKILL_SOURCE_ARCHIVE_PATHS
         for path in SKILL_SOURCE_ARCHIVE_PATHS:
             result = select_validation(SelectionRequest(mode="explicit", paths=(path,), repo_root=ROOT, preflight_context=self.root_preflight_context))
@@ -706,6 +790,7 @@ class ValidationSelectionTests(unittest.TestCase):
     def test_model_selection_deleted_layout_paths_and_examples_select_current_owner(self):
         for old, current in (
             ("docs/design/system/system.md", "docs/design/system.md"),
+            ("docs/design/skill/authoring/design.md", "docs/design/skill/design.md"),
             ("docs/design/workflow/workflow.md", "docs/design/skill/workflow.md"),
             ("docs/design/record-format/examples/v3-complete-store/change.json", "docs/design/cli/records.md"),
             ("docs/design/workflow/examples/correction-cycle.mmd", "docs/design/skill/workflow.md"),
@@ -715,6 +800,28 @@ class ValidationSelectionTests(unittest.TestCase):
                 command = shlex.split(next(c["command"] for c in result.selected_checks if c["id"] == "model.validate"))
                 self.assertIn(current, command)
                 self.assertNotIn(old, command)
+
+    def test_moved_design_selection_does_not_hide_present_or_symlink_source(self):
+        old = "docs/design/skill/authoring/design.md"
+        for kind in ("file", "symlink", "dangling"):
+            with self.subTest(kind=kind):
+                repo = self.make_git_repo()
+                source = repo / old
+                source.parent.mkdir(parents=True)
+                if kind == "file":
+                    source.write_text("# Invalid old model\n")
+                else:
+                    target = repo / "target.md"
+                    if kind == "symlink":
+                        target.write_text("# Target\n")
+                    source.symlink_to(target)
+                subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+                selected = select_validation(SelectionRequest(mode="explicit", paths=(old,), repo_root=repo))
+                if kind != "file":
+                    self.assertEqual(selected.status, "blocked", selected.to_json_dict())
+                    continue
+                command = shlex.split(next(c["command"] for c in selected.selected_checks if c["id"] == "model.validate"))
+                self.assertIn(old, command)
 
     def test_model_selection_validates_present_historical_flat_input(self):
         repo = self.make_git_repo()
@@ -1184,8 +1291,13 @@ raise SystemExit({exit_code})
                 result = self.select([path])
                 self.assertEqual(
                     selected_ids(result.to_json_dict()),
-                    {"record_retirement.regression", "main.retirement_ledger.regression", "change_metadata.regression"},
+                    {"record_retirement.regression", "change_metadata.regression"},
                 )
+
+    def test_deleted_historical_ledger_selects_current_rejection_proof(self) -> None:
+        result = self.select(["docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json"])
+        self.assertEqual(result.status, "ok", result.blocking_results)
+        self.assertEqual(selected_ids(result.to_json_dict()), {"record_retirement.regression"})
 
     def test_shared_preflight_context_requires_matching_repository_identity(self) -> None:
         other_root = Path(tempfile.mkdtemp(prefix="validation-selection-preflight-mismatch-"))
@@ -1220,7 +1332,7 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertEqual(payload["blocking_results"], [])
         self.assertEqual(
-            {"record_retirement.regression", "main.retirement_ledger.regression", "selector.regression", "validation_execution.regression"},
+            {"record_retirement.regression", "selector.regression", "validation_execution.regression"},
             selected_ids(payload),
         )
         selector_check = next(check for check in payload["selected_checks"] if check["id"] == "selector.regression")
@@ -1308,6 +1420,9 @@ raise SystemExit({exit_code})
         self.assertIn("selector.regression", selected_ids(payload))
 
     def test_catalog_matches_v1_contract(self) -> None:
+        self.assertNotIn("main.retirement_ledger.regression", CHECK_CATALOG)
+        with self.assertRaisesRegex(ValueError, "unknown check ID"):
+            catalog_command("main.retirement_ledger.regression")
         self.assertEqual(set(CHECK_CATALOG), set(EXPECTED_CATALOG) | {key for ids in MODE_CHECK_IDS.values() for key in ids})
         for check_id, command in EXPECTED_CATALOG.items():
             with self.subTest(check_id=check_id):
@@ -1441,11 +1556,7 @@ raise SystemExit({exit_code})
             'workflow_automation.policy_regression',
             'workflow_automation.state_regression',
             'workflow_automation.validator_regression',
-            'cli_result_measurement.regression',
-            'token_cost.regression',
-            'token_cost.report_regression',
             'governed_lifecycle_cli_wrapper.test',
-            'main.retirement_ledger.regression',
             'skills.regression',
             'adapters.regression',
             'adapters.drift',
@@ -1945,7 +2056,7 @@ raise SystemExit({exit_code})
         result = self.select(
             [
                 "docs/changes/2026-04-25-example/review-resolution.md",
-                "specs/artifact-status-lifecycle-ownership.test.md",
+                "specs/rigorloop-workflow.test.md",
                 "docs/releases/v0.1.1/release.yaml",
             ]
         )
@@ -2424,81 +2535,81 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "scripts/measure-skill-tokens.py",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "scripts/analyze-codex-jsonl.py",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "scripts/test-token-cost-measurement.py",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "scripts/run-token-cost-benchmarks.py",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": 'scripts/measure-cli-result-bytes.py',
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression", "cli_result_measurement.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": 'scripts/test-cli-result-measurement.py',
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression", "cli_result_measurement.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "scripts/validate-token-cost-report.py",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression", "token_cost.report_regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "scripts/test-token-cost-report-validation.py",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression", "token_cost.report_regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "benchmarks/token-cost/manifest.yaml",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "benchmarks/token-cost/prompts/proposal-short.md",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "benchmarks/token-cost/fixtures/minimal-public-project/AGENTS.md",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "docs/reports/token-cost/2026-05-10-baseline.md",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "docs/reports/token-cost/releases/v0.1.1.yaml",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression", "token_cost.report_validate"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "docs/reports/adapter-artifacts/releases/v0.1.2.yaml",
@@ -2508,9 +2619,9 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "docs/reports/token-cost/runs/v0.1.1/proposal-short-run1.analysis.yaml",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "packages/rigorloop/package.json",
@@ -2538,21 +2649,21 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "scripts/measure-cli-result-bytes.py",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "tests/fixtures/token-cost/sample-codex-session.jsonl",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
             {
                 "path": "tests/fixtures/token-cost/reports/valid-final-pass/v0.1.1.yaml",
-                "category": "token-cost",
+                "category": "retired-token-cost",
                 "status": "ok",
-                "checks": {"token_cost.regression", "token_cost.report_regression"},
+                "checks": {"selector.regression", "adapters.regression", "release_transaction.regression"},
             },
         ]
 

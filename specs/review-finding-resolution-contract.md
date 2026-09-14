@@ -697,7 +697,7 @@ Outputs:
 
 ## Follow-on artifacts
 
-- `docs/architecture/2026-04-24-review-finding-resolution-contract.md`
+- [historical `docs/architecture/2026-04-24-review-finding-resolution-contract.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/architecture/2026-04-24-review-finding-resolution-contract.md)
 - `docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r1.md`
 - `docs/changes/2026-04-24-review-finding-resolution-contract/reviews/architecture-review-r2.md`
 - `docs/changes/2026-04-24-review-finding-resolution-contract/reviews/spec-review-r1.md`

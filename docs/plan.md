@@ -15,6 +15,10 @@ Index policy:
 
 ## Active
 
+- [Cleanup integration and local commit](plans/2026-09-14-cleanup-integration-and-commit.md) — [owning change](changes/2026-09-13-current-design-repository-cleanup/change.json).
+
+- [Historical retirement-ledger removal](plans/2026-09-14-retirement-ledger-removal.md) — [owning change](changes/2026-09-13-current-design-repository-cleanup/change.json).
+
 Compatibility heading only.
 Current lifecycle state is not recorded in this index.
 
@@ -24,6 +28,8 @@ Compatibility heading only.
 Current blockers are not recorded in this index.
 
 ## Current plan references
+
+- [2026-09-13 Token-cost feature retirement](plans/2026-09-13-token-cost-retirement.md) — [owning cleanup change](changes/2026-09-13-current-design-repository-cleanup/change.json).
 
 - [2026-09-13 Independent parallel tests and architecture-view adoption](plans/2026-09-13-independent-parallel-tests.md) — [owning change](changes/2026-09-13-independent-parallel-tests/change.json).
 

@@ -7,6 +7,10 @@
 # Published-Skill-First Repository Simplification Test Spec
 
 
+## Retirement-ledger cleanup applicability
+
+For the [repository-cleanup ledger slice](../docs/changes/2026-09-13-current-design-repository-cleanup/change.json), [Validation VAL-SR-23](../docs/design/engineering/validation.md#historical-check-retirement) supersedes this document's ledger-specific command, inventory, private-schema and dual-proof-transition prescriptions. The historical IDs and tables below retain their original meaning; commands naming `test-retirement-ledger.py` and ledger-only automation are not current checks. Current catalog coverage, unknown-value rejection, requirement fidelity and protection-preserving maintenance remain required. The separate representative spec-read-log check is outside this slice.
+
 ## Independent parallel tests applicability
 
 For the [independent-parallel-tests initiative](../docs/proposals/2026-09-13-independent-parallel-tests.md), [Validation’s current maintenance allocation](../docs/design/engineering/validation.md#current-maintenance-allocation) supplies the exact new-profile-only R14/R17–20/R22/R25 amendment for the current automated test inventory and its necessary executor, selector, fixture and reader changes. Its map also identifies the corresponding unnumbered and test-spec prescriptions. Required distinct failure detection, uncertainty stops, recoverable removal and independent assessment remain intact; the existing plan and evidence carry the allocation.

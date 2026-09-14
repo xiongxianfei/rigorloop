@@ -11,7 +11,7 @@
 - Plan: pending
 - ADR: `docs/adr/ADR-20260825-workflow-routed-correction-and-artifact-ownership.md`
 
-## Summary
+## Introduction and Goals
 
 This design extends the local governed lifecycle engine with three workflow-authorized operations: start one exact upstream correction route, return from that route after a current approving review, and withdraw one provably duplicate architecture or ADR registration. It also prevents new cross-change artifact-path collisions and scopes settlement blockers to the exact registered review occurrence.
 
@@ -29,15 +29,13 @@ This architecture covers specification requirements R1-R32, including the public
 - Unknown stored and request vocabularies fail before consistency checks.
 - Old clients must reject state they cannot preserve.
 
-## Proposed architecture
-
-### Context and scope
+## Context and Scope
 
 Workflow selects a correction destination from durable findings and requests the route. The lifecycle CLI validates the supplied decision against the current snapshot and canonical workflow order. The destination authoring and review skills then use their existing artifact-revision, review-recording, and settlement operations. Workflow requests return only after the engine proves the exact revised identity and review occurrence. CI consumes the same read model.
 
 Cross-change ownership discovery is local and read-only. It scans supported `docs/changes/*/change.yaml` records, never Git history, generated packages, or external state.
 
-### Solution strategy
+## Solution Strategy
 
 ### Stored schema
 
@@ -127,7 +125,7 @@ The capability ships inside the existing Node `@xiongxianfei/rigorloop` package 
 ## Architecture Decisions
 
 - [ADR-20260825 Workflow-Routed Correction and Artifact Ownership](../adr/ADR-20260825-workflow-routed-correction-and-artifact-ownership.md) - adopt schema version 2, one active correction snapshot, read-time ownership indexing, exact review-occurrence settlement, and guarded duplicate withdrawal.
-- [ADR-20260824 Governed Lifecycle CLI Transaction Boundary](../adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) - retained transaction, interpreter, and semantic-operation boundary amended by the new workflow-requested operations.
+- [ADR-20260824 Governed Lifecycle CLI Transaction Boundary](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) - retained transaction, interpreter, and semantic-operation boundary amended by the new workflow-requested operations.
 
 ## Quality Requirements
 

@@ -70,9 +70,9 @@ Migration is dual-read and single-write. Legacy records remain readable; support
 
 This ADR supersedes:
 
-- `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`;
-- `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`;
-- `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`.
+- [historical `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md);
+- [historical `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md);
+- [historical `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md).
 
 Their safety constraints remain historical rationale and are preserved where the unified specification rebinds them to stage policies, authorization classes, capabilities, or run state.
 

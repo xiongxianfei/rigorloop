@@ -12,7 +12,7 @@ approved
 Dependency references:
 
 - [Validation](../docs/design/engineering/validation.md) owns the current validation selector and selected-check output contract; the original source-qualified judgments remain historical.
-- [Compact Change Validation Metadata](compact-change-validation-metadata.md) owns compact validation metadata shape, summary derivation, path variables, and legacy compatibility.
+- [Records](../docs/design/cli/records.md) and [CLI](../docs/design/cli/cli.md) own current storage and executable mechanics. The former compact validation metadata format, derived summaries and path-variable compatibility are retired; their [original contract](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/specs/compact-change-validation-metadata.md) remains historical provenance.
 - [RigorLoop Workflow](rigorloop-workflow.md) owns lifecycle stage order, review status meanings, handoff boundaries, and required formal review recording.
 - [Skill Contract](skill-contract.md) owns published skill structure and generated adapter compatibility boundaries.
 

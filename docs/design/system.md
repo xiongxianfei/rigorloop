@@ -2,9 +2,11 @@
 
 Model validation contract: model-document-v1
 
-Owning change: [independent parallel tests](../changes/2026-09-13-independent-parallel-tests/change.json).
+Owning change: [current-design repository cleanup](../changes/2026-09-13-current-design-repository-cleanup/change.json).
 
 Original composition adoption: [three-model reconciliation](../changes/2026-09-12-unified-validation-model/change.json).
+
+Prior refinement: [independent parallel tests](../changes/2026-09-13-independent-parallel-tests/change.json); its selected behavior and evidence retain their own scope.
 
 ## Abstract
 
@@ -38,19 +40,15 @@ The [end-to-end system design](#end-to-end-system-design) below explains how the
 
 ### Architecture overview convention
 
-Every model in this repository applies [Design's Architecture Overview View and supporting-view convention](skill/authoring/design.md#architecture-overview-view-and-necessary-supporting-views), DES-SR-22. The overview orients readers to principal responsibilities, externally significant products or interfaces, and delivery/assurance relationships. Each material element or relationship resolves to its owning view or model. Authors evaluate Context, Building Block, Runtime and Deployment views with reasons and draw each necessary view; the overview does not replace them. Existing overview headings and anchors remain valid. System owns the actual project composition and parent allocation below; Design owns the reusable method.
+[Design DES-SR-22](skill/design.md#architecture-overview-view-and-necessary-supporting-views) owns the overview and supporting-view method. System applies it to this product's composition; each parent applies it to its subsystem. A diagram summarizes its owning contract rather than introducing another policy source.
 
 ### Parent graph ownership
 
-For this repository, every model with child models owns the authoritative system design views of its subsystem. This applies recursively to parents represented by named sections as well as separate documents. The views explain child responsibilities, significant interactions and relevant external boundaries, with links to child-owned detail. A structural overview may summarize descendants for orientation; detailed internal relationships and behavior stay with the parent and child that own them. Cross-subsystem relationships belong to their nearest shared parent. Leaves need no artificial child graph.
-
-System retains both the whole-system structural overview and the end-to-end product flow. Parent-owned interaction graphs supplement those views. Each view has one authored source, and shared names and boundaries remain consistent across views. This preserves a complete system design without maintaining competing definitions of subsystem behavior.
-
-The Design method supplies authoring conventions; System owns this project's composition allocation under SYS-SR-10. The selected Design refinement defines the reusable overview and necessary-view obligation; coordinated skill guidance adoption belongs to Delivery. Inline Mermaid is the single authored source for these views. A relationship change reconciles the owning parent graph and affected child contracts in the same reviewed package.
+Each parent owns the integration of its named children; each child owns its detailed behavior. Cross-subsystem relationships belong to their nearest shared parent. System's overview and end-to-end flow link to those contracts, while parent-owned graphs explain internal interactions. Keep shared names and boundaries consistent and revise both ends of a changed relationship. Leaves need no artificial child graph. SYS-SR-10 owns this allocation; Design owns the reusable method.
 
 ### Repository directory layout
 
-This repository explicitly selects `docs/design/system.md` as its composition root. Main owners are `skill/skill.md`, `cli/cli.md` and `engineering/engineering.md` under `docs/design/`. Skill owns `workflow.md`, `assessment.md` and `authoring/design.md`; CLI owns `records.md` and `installation.md`; Engineering owns `validation.md`, `packaging.md` and `release.md`. Smaller logical children remain named sections in their parent. This project-specific layout does not change the portable Design skill default.
+This repository explicitly selects `docs/design/system.md` as its composition root. Main owners are `skill/skill.md`, `cli/cli.md` and `engineering/engineering.md` under `docs/design/`. Skill owns `workflow.md`, `assessment.md` and `design.md`; CLI owns `records.md` and `installation.md`; Engineering owns `validation.md`, `packaging.md` and `release.md`. A main model owns a directory and its same-named main document. A child with one document stays beside that main document. Create a child subfolder only when it has several cohesive documents or supporting resources with a clear owner; place its main document at `<child>/<child>.md`. Short responsibilities remain sections. Do not add a folder solely for a logical category or anticipated growth. These explicitly selected project paths take precedence over the portable Design skill default.
 
 CLI examples remain under `cli/examples/`; Records examples have the distinct `cli/examples/records/` namespace. Workflow examples live under `skill/examples/workflow/`. Each namespace has one owning model and selection must validate that owner. Historical record subjects and example payload identities retain their original meaning; current registries and navigation follow the new paths without rewriting prior approval.
 
@@ -62,7 +60,7 @@ The [directory plan](../plans/2026-09-12-design-directory-layout.md) allocates t
 | --- | --- | --- |
 | Skill | [Capability Contract](skill/skill.md#capability-contract) | Common invocation, resources, outputs, portability, failures and limits. |
 | Skill | [Workflow](skill/workflow.md) | Published activity coordination, handoffs and correction. |
-| Skill | [Authoring](skill/skill.md#authoring), including the [Design method](skill/authoring/design.md) | Proposal, design and delivery-plan behavior. |
+| Skill | [Authoring](skill/skill.md#authoring), including the [Design method](skill/design.md) | Proposal, design and delivery-plan behavior. |
 | Skill | [Implementation](skill/skill.md#implementation) | Scoped implementation, bugfix and CI-maintenance behavior. |
 | Skill | [Assessment](skill/assessment.md) | Independent review, findings, evidence applicability and closeout behavior. |
 | Skill | [Project Support](skill/skill.md#project-support) | Vision, governance, discovery, research, orientation, learning and authorized PR handoff. |
@@ -192,6 +190,7 @@ Published skills, the executable and repository CI occupy different environments
 | SYS-SR-09 | Interruption, conflicting ownership, stale consumer basis or an incomplete candidate package MUST prevent reliance on the affected composed claim and retain a safe owned correction path. Recovery or rollback MUST preserve historical evidence and unrelated state under existing permissions. |
 | SYS-SR-10 | Every parent model in this repository MUST own the authoritative system design graph of its subsystem, including parents represented by named sections. The graph MUST identify immediate children, their responsibilities, significant relationships and relevant external boundaries, and link to child-owned detail. Detailed internal decomposition MUST remain with the nested parent; a structural overview MAY summarize descendants without taking ownership of their behavior. Cross-subsystem composition MUST remain with the nearest shared parent. System MUST retain both the full structural overview and the end-to-end design from intended product behavior through implementation, proof, independent assessment and authorized publication; links to subsystem graphs MUST NOT replace it. A graph change MUST remain consistent with affected contracts and receive their scoped assessment. |
 | SYS-SR-11 | Each repository model MUST apply Design DES-SR-22 for its Architecture Overview View and evaluation of necessary Context, Building Block, Runtime and Deployment views. Parent overviews MUST identify their child models; leaf overviews MUST use actual owned concepts or responsibilities without inventing submodels or services. Views MUST preserve one detailed owner, consistent relationships and working links. |
+| SYS-SR-12 | Repository cleanup MUST use the current responsibility inventory and the Constitution retention policy. Current navigation MUST identify current owners; historical provenance MAY resolve by recorded commit and path. Displaced clauses retain their meaning through explicit owner mappings, and unmapped current responsibilities MUST remain named retained contracts rather than be silently retired by directory deletion. |
 
 ## Product and environment boundaries
 
@@ -210,6 +209,18 @@ Skills can produce a portable scoped artifact or assessment without recording wo
 | Engineering candidates → public products | Packaging for artifacts; Release for public transaction | Candidate and published identities agree; local passes cannot substitute for public observations or authorization. |
 
 An interface change identifies all actual producers and consumers. Unknown ownership is resolved before affected reliance. Local checks, matching hashes and a model inventory do not certify whole-product behavior. Shared methods stay at their named owner; neither Engineering nor System copies them as a competing policy.
+
+### Engineering handoff boundaries
+
+| Handoff | Producer supplies | Receiving owner decides |
+| --- | --- | --- |
+| Intent → direction | User need, project authority, constraints and proposal | Proposal Review assesses direction and feasibility. |
+| Direction → Design | Approved direction or authorized correction | Design reconciles behavior, realization and acceptance intent; Design Review judges the exact affected package. |
+| Design → delivery | Stable requirements, technical boundaries and local/integrated outcomes | Plan allocates work, checks and recovery; Delivery Review judges sequencing and proof adequacy. |
+| Delivery → implementation | Reviewed allocation and authorized scope | Implementation produces the work and evidence; Code Review judges the actual contribution. |
+| Reviewed work → closeout | Complete delivered change, current judgments, proof and concern dispositions | Verify judges final coherence and records the success-only explanation. Workflow records completion separately. |
+
+Workflow coordinates these handoffs under Assessment's reliance rules. Records represents each actor's explicit decision; CLI persists it safely. Neither recording nor System's composition view supplies approval. Individual scoped invocations use their applicable boundaries without requiring an unrelated full lifecycle.
 
 ## Building quality into the products
 
@@ -282,6 +293,48 @@ This is a project-specific design allocation, not a claim that the generated art
 
 A validation failure returns to the responsible implementation or contract owner. Review findings retain stable identities and current actionable accounts under [Records](cli/records.md#v3-finding-identity-and-correction). Change-level blockers retain immutable origin. The responsible assessor owns disposition and reliance. Concurrent or interrupted record writes retain the Records/Persistence invariants; restoration of storage does not restore semantic approval. A partial installation or publication retains its operation-specific safety and truthful result contract. No recovery path may delete historical engineering evidence or unrelated user files as routine cleanup.
 
+## Boundary conditions
+
+### Boundary scan and acceptance scenarios
+
+| Dimension | Requirement basis | Distinct outcome to demonstrate |
+| --- | --- | --- |
+| Input domain | SYS-SR-01, SYS-SR-02, SYS-SR-07 | A reader locates the owner of model authoring, recording and an unmigrated installer contract without treating the inventory as new approval of every historical source. Unknown ownership remains an explicit gap. |
+| State/lifecycle | SYS-SR-03, SYS-SR-05, SYS-SR-06 | Proposal approval, model validation and generated archive success remain distinguishable from Design approval, implementation readiness, publication and customer adoption. |
+| Identity/authority | SYS-SR-02, SYS-SR-06 | A System/component contradiction returns to its governing owner; system prose cannot overrule a component. A model revision cannot inherit the old exact-subject approval. |
+| Composition/path | SYS-SR-03, SYS-SR-04, SYS-SR-05, SYS-SR-08, SYS-SR-10, SYS-SR-11 | The unified authoring path supplies one coherent affected-model package to review and usable local/integrated outcomes to planning, while generated/installed guidance contains design alone. A stale routing, review tuple or old entrypoint is visible despite a passing local skill check. A reader can locate all three main models and their submodels in System’s structural overview, trace the whole product flow, and follow each parent-owned graph for internal detail. Links alone cannot substitute for the end-to-end view, and a changed interaction cannot remain documented only in a stale ancestor copy. |
+| Temporal/retry | SYS-SR-04, SYS-SR-06, SYS-SR-09 | Concurrent shared-method and consumer edits trigger explicit applicability assessment before handoff; an interrupted recording or install retry cannot overwrite unrelated work or refresh an old judgment. |
+| Failure/recovery | SYS-SR-05, SYS-SR-09 | Missing required package resources or an obsolete target entry stops the affected path with an owned repair and preserved files/state. Local success elsewhere does not erase that composed failure. |
+| Compatibility/migration | SYS-SR-01, SYS-SR-05, SYS-SR-07, SYS-SR-12 | The selected method/composition clauses resolve to one new owner, mixed architecture retains its named remainder, and historical ADR/review bytes keep their original meaning. Unrelated legacy work can proceed through scoped design authoring without full migration. A removed historical source resolves through current meaning or explicit historical provenance; an unmapped current obligation prevents its removal. |
+| External/environment | SYS-SR-03, SYS-SR-05, SYS-SR-06, SYS-SR-08 | A new reader or clean target installation can use the declared artifact/package boundaries without internal Design checkout, old chat or a PR; no target-agent correctness or release authorization is inferred. |
+
+The representative integrated outcomes are the actual authoring-method change above, a scoped unmigrated installer amendment, and interrupted package/record reconciliation. Material combined hazards are a new producer plus an old consumer, a replacement ownership map plus a still-current duplicate, and an unchanged filename plus changed assessment basis. SYS-SR-02/04/05/06/07/09 own their outcomes. Delivery must observe the composed boundary rather than substitute isolated parsing or helper-only proof.
+
+### Representative work and failure paths
+
+These walkthroughs apply SYS-SR-02–06/09; they do not create additional stages or test inventories.
+
+| Situation | Cross-owner path and observable outcome |
+| --- | --- |
+| Small scoped change | Design changes only the affected owner, with proportional delivery allocation where required. Review and proof address that scope; a small governed change still reaches whole-change Code Review before final Verify. |
+| Multiple implementation milestones | Plan exposes dependencies and integrated proof. Workflow advances after each applicable milestone review, then selects final whole-change review and Verify. A clean local milestone cannot stand in for cross-milestone proof. |
+| Review finds a defect | Assessment records the finding before fixes. Workflow returns it to its subject owner; changed requirements return to Design, allocation gaps to Plan, implementation defects to Implementation. The responsible assessor judges correction and renewed reliance. |
+| Recording is interrupted or another actor edits | CLI reports conflict or recovery needs. The actor inspects the actual subjects and records before retry; Assessment judges whether earlier evidence still applies. Safe persistence cannot manufacture renewed approval or authorize an external action. |
+
+## Architecture Decisions
+
+
+| ID | Context and decision | Alternatives and consequences |
+| --- | --- | --- |
+| SYS-DEC-01 | The large architecture mixes current system relationships with detailed old contracts. Establish a bounded System owner for composition and retain declared local/unmigrated owners. | Rewriting the whole architecture delays the selected capability; using only component models hides integrated obligations. A bounded view requires explicit residual ownership and later consolidation. |
+| SYS-DEC-02 | Shared authoring affects semantic and packaged consumers. Assess the end-to-end path using owner references and integrated outcomes. | Treating a generated package or a valid model as sufficient misses stale routing/review/installation consumers. Delivery must allocate real composed proof without inventing a new readiness service. |
+| SYS-DEC-04 | Consolidate the validation-related duplicate source descriptions into existing owners, retaining necessary operational remainders. Preserve the original validation ADR's distinction between deterministic product proof, semantic assessment and external agent behavior, and its recoverable bounded-retirement reasoning. | Keeping all machinery perpetuates competing ownership; moving it elsewhere only relocates complexity. Codex-only or all-target runtime certification adds nondeterministic model/version/transcript obligations without proving package parity. Deleting all checks loses undocumented protection. Retain equivalent supported-target package proof, composed release checks and owned rollback; target-runtime defects remain legitimate issues without becoming routine certification. No new Validation model or automatic archive is needed for these responsibilities. |
+| SYS-DEC-03 | Preserve historical system/ADR context and distinguish previous normalization from this consolidation. | Deleting the mixed file or rewriting historical approvals loses decision meaning. Current navigation becomes clearer while the remaining format diversity is explicit technical debt. |
+
+No separate ADR is created for this model-profile draft. These decisions concern the selected system responsibility; source-method decisions remain owned by Design's preservation map.
+
+The hierarchy replaces the former flat peer inventory. Skill owns published behavior, CLI owns executable behavior, and Engineering owns this repository's realization. Named child sections avoid a file for every small capability while separately maintained complex contracts remain individually reviewable. Packaging and Installation split the former Distribution ownership because producing artifacts and mutating customer files have different authority and failure boundaries.
+
 ## Adoption and source reconciliation
 
 The [approved hierarchy proposal](../proposals/2026-09-12-skill-cli-engineering-model-hierarchy.md) extends the [unified Validation proposal](../proposals/2026-09-12-unified-validation-model.md), preserving no-cache, independent-case, bounded-concurrency and actual cleanup goals. The [reconciliation evidence (`design-preservation-delta`)](../changes/2026-09-12-unified-validation-model/evidence.json) assigns each source and records the exact prior basis. Original source IDs and judgments retain their historical meaning. Detailed source/consumer migration must be reviewed and implemented before runtime adoption is claimed; this Design is not a release or customer-activation record.
@@ -316,9 +369,9 @@ This map selects exact edits for Delivery, not completed removals. At coherent a
 
 | Selected source / exact boundary | Necessary meaning and destination | Adoption disposition |
 | --- | --- | --- |
-| `specs/published-skill-first-repository-simplification.md`: R14, R17–20 and R22 as applied to this selected cleanup; corresponding ledger, dual-proof and metrics instructions in Outputs, State and invariants, Error and boundary behavior, Compatibility and migration, Observability, Performance expectations and AC7/AC8/AC10 | Test's complete retained-contract table under TEST-SR-14 preserves protected failures, applicability, fixture distinctions, owned retirement, retained detection, uncertainty stops and recovery. It explicitly replaces compulsory second-ledger, repeated old-proof and measurement procedures for this slice. | Add one exact scoped amendment naming Test and its population; do not duplicate the replacement rules in the spec. Retain original R definitions for unselected work, subject to the already-adopted Workflow stored-format amendment. A reader can distinguish the populations without reconstructing archived prose. |
+| `specs/published-skill-first-repository-simplification.md`: R14, R17–20 and R22 as applied to this selected cleanup; corresponding ledger, dual-proof and metrics instructions in Outputs, State and invariants, Error and boundary behavior, Compatibility and migration, Observability, Performance expectations and AC7/AC8/AC10 | Validation's complete retained-contract table under TEST-SR-14 preserves protected failures, applicability, fixture distinctions, owned retirement, retained detection, uncertainty stops and recovery. It explicitly replaces compulsory second-ledger, repeated old-proof and measurement procedures for this slice. | Add one exact scoped amendment naming Validation and its population; do not duplicate the replacement rules in the spec. Retain original R definitions for unselected work, subject to the already-adopted Workflow stored-format amendment. A reader can distinguish the populations without reconstructing archived prose. |
 | Same spec: all other clauses, R1–13, R15/16, R21 and R23–29, including their applicable later amendments and related examples, boundaries and acceptance intent | Existing operational contract remains: canonical/package/release proof, deterministic-versus-semantic boundary, local filesystem proof, admission limits, CI composition and target support. Skill already owns common content invariants; current v3 recording uses CLI/Record Format under the stored-format supersession, not a restored lifecycle parser. | Retain as an explicitly mixed source. R26's exact historical-proof supersessions and R27/R29's remaining integrity and claim restrictions stay readable. This slice does not extract Distribution, Installation, Release, selection/cache, measurement or automation contracts merely to delete this file. |
-| `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`: entire document | Its product-chain, target support, release composition, semantic boundary, local-materialization and admission decisions are already precise in retained spec R1–13/R15/16/R21/R24–29. Retirement meaning follows Test for this slice and the retained source/Workflow for other populations. Necessary alternatives and consequences are preserved in SYS-DEC-04 below. | Remove after these destinations and current consumers are adopted. No original-path stub or archive copy. Its original review remains about its historical identity, not these replacement models. |
+| `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`: entire document | Its product-chain, target support, release composition, semantic boundary, local-materialization and admission decisions are already precise in retained spec R1–13/R15/16/R21/R24–29. Retirement meaning follows Validation for this slice and the retained source/Workflow for other populations. Necessary alternatives and consequences are preserved in SYS-DEC-04 below. | Remove after these destinations and current consumers are adopted. No original-path stub or archive copy. Its original review remains about its historical identity, not these replacement models. |
 | `docs/architecture/system/architecture.md`: complete subsections “Level 2 White-Box: Published-Skill Validation”, “Published-skill product-gate and retirement flow” and “Published-skill-first validation boundary” | Product/recording/semantic composition resolves to the responsibility inventory and interaction owners here; local invariants remain at Skill, CLI/Record Format and the retained operational spec. Validation preserves TEST-SR-14 for this cleanup's retirement criteria. | Remove these three redundant descriptions and their repeated ledger procedure. Retain the distinct Validation and Generation Scripts, Validation flow and Validation layering subsections with their current stored-format qualifications and separate selector/cache/output contracts. |
 | Same architecture: the validation ADR and `component-published-skill-validation.mmd` navigation entries, inline diagram reference in Validation and Generation Scripts, and validation ADR summary in Architecture Decisions | Current navigation resolves to this composition map and the actual local owners, with no repeated normative summary. | Reconcile current references. The final historical follow-on sentence citing the original ADR records its original proposed decision and is not retargeted to a new assessed subject. An incidental historical citation does not restore current reliance. |
 | `docs/architecture/system/diagrams/component-published-skill-validation.mmd`: entire diagram | Canonical→package→release dependency, separate semantic/record validation, and external target-runtime boundary are already expressed here and in retained R1–13. The old YAML/Markdown lifecycle label is not a supported current representation. | Remove with its current embedding/navigation; no new duplicate diagram is needed for this tabular composition. Preserve unrelated diagrams. |
@@ -332,7 +385,7 @@ There is no selected redundant copy of these two removal targets in `docs/archiv
 | --- | --- |
 | System Skill inventory and FU-012 | Correct the completed common Skill ownership from its original final review/Verify basis; no repeat of the pilot. Route updates FU-012's receiving direction to this consolidation and the named local owners, preserving any remaining validation work explicitly. FU-013/014 and FU-015–018 remain separate. |
 | Source and navigation readers | Reconcile the exact current ADR/diagram references and scoped spec/test-spec notices above. Check current readers against destination sections and retained exceptions; historical citations remain historical and grant no current approval. |
-| `scripts/test-retirement-ledger.py`, `scripts/retirement_ledger.py` and the earlier `retirement-ledger.json` | Retain unchanged: the regression suite reads the historical ledger as an operational fixture. TEST-SR-14 removes a new ledger obligation for this slice, not that consumer or its data. A ledger basename is not a deletion criterion. |
+| `scripts/test-retirement-ledger.py`, `scripts/retirement_ledger.py` and the earlier `retirement-ledger.json` | Original adoption retained this fixture and its reader. The current cleanup explicitly retires that historical-only reader and ledger under Validation VAL-SR-23; preserve their original bytes in Git, not a continuing source-tree exception. |
 | `scripts/ci.sh`, validation selectors and check identifiers | Keep execution and public interface behavior unchanged. Gate A/B/C remain compatible command/result aliases; ordinary Design prose uses skill/package/release checks. No universal alias rewrite or CI redesign is selected. |
 | Canonical skill resources, adapter builders and candidate metadata | No authored skill/resource change is selected. Confirm source/reader dependencies during allocation. If a necessary correction changes packaged inputs, trace archive bytes to current candidate metadata and dependent assertions; regenerate through existing builders and run directly dependent checks, or record an inspected unaffected disposition. Preserve historical releases and publication boundaries. |
 | Design/Delivery/review/Verify | Assess the exact three changed models, this source map and retained source amendments. Allocate changed structural/reference checks and semantic preservation; add executable or package proof only for an affected boundary. RC-SR-15 owns reuse, and explicit current freshness rules still apply. |
@@ -341,37 +394,12 @@ For SYS-SR-02/04/06/07/08, demonstrate a removed ADR/diagram with complete curre
 
 Coordinated adoption requires independently reviewed Design and Delivery, implemented source/consumer dispositions, milestone assessments, fresh whole-change Code Review and distinct successful Verify. A partial removal leaves its exact owner and need explicit; it cannot count as completed removal. Restore a failed source/consumer slice together if necessary, with current applicability assessed; no historical evidence is rewritten. No external installation, release or publication follows from these checks.
 
-## Boundary conditions
-
-### Boundary scan and acceptance scenarios
-
-| Dimension | Requirement basis | Distinct outcome to demonstrate |
-| --- | --- | --- |
-| Input domain | SYS-SR-01, SYS-SR-02, SYS-SR-07 | A reader locates the owner of model authoring, recording and an unmigrated installer contract without treating the inventory as new approval of every historical source. Unknown ownership remains an explicit gap. |
-| State/lifecycle | SYS-SR-03, SYS-SR-05, SYS-SR-06 | Proposal approval, model validation and generated archive success remain distinguishable from Design approval, implementation readiness, publication and customer adoption. |
-| Identity/authority | SYS-SR-02, SYS-SR-06 | A System/component contradiction returns to its governing owner; system prose cannot overrule a component. A model revision cannot inherit the old exact-subject approval. |
-| Composition/path | SYS-SR-03, SYS-SR-04, SYS-SR-05, SYS-SR-08, SYS-SR-10, SYS-SR-11 | The unified authoring path supplies one coherent affected-model package to review and usable local/integrated outcomes to planning, while generated/installed guidance contains design alone. A stale routing, review tuple or old entrypoint is visible despite a passing local skill check. A reader can locate all three main models and their submodels in System’s structural overview, trace the whole product flow, and follow each parent-owned graph for internal detail. Links alone cannot substitute for the end-to-end view, and a changed interaction cannot remain documented only in a stale ancestor copy. |
-| Temporal/retry | SYS-SR-04, SYS-SR-06, SYS-SR-09 | Concurrent shared-method and consumer edits trigger explicit applicability assessment before handoff; an interrupted recording or install retry cannot overwrite unrelated work or refresh an old judgment. |
-| Failure/recovery | SYS-SR-05, SYS-SR-09 | Missing required package resources or an obsolete target entry stops the affected path with an owned repair and preserved files/state. Local success elsewhere does not erase that composed failure. |
-| Compatibility/migration | SYS-SR-01, SYS-SR-05, SYS-SR-07 | The selected method/composition clauses resolve to one new owner, mixed architecture retains its named remainder, and historical ADR/review bytes keep their original meaning. Unrelated legacy work can proceed through scoped design authoring without full migration. |
-| External/environment | SYS-SR-03, SYS-SR-05, SYS-SR-06, SYS-SR-08 | A new reader or clean target installation can use the declared artifact/package boundaries without internal Design checkout, old chat or a PR; no target-agent correctness or release authorization is inferred. |
-
-The representative integrated outcomes are the actual authoring-method change above, a scoped unmigrated installer amendment, and interrupted package/record reconciliation. Material combined hazards are a new producer plus an old consumer, a replacement ownership map plus a still-current duplicate, and an unchanged filename plus changed assessment basis. SYS-SR-02/04/05/06/07/09 own their outcomes. Delivery must observe the composed boundary rather than substitute isolated parsing or helper-only proof.
-
-## Architecture Decisions
-
-
-| ID | Context and decision | Alternatives and consequences |
-| --- | --- | --- |
-| SYS-DEC-01 | The large architecture mixes current system relationships with detailed old contracts. Establish a bounded System owner for composition and retain declared local/unmigrated owners. | Rewriting the whole architecture delays the selected capability; using only component models hides integrated obligations. A bounded view requires explicit residual ownership and later consolidation. |
-| SYS-DEC-02 | Shared authoring affects semantic and packaged consumers. Assess the end-to-end path using owner references and integrated outcomes. | Treating a generated package or a valid model as sufficient misses stale routing/review/installation consumers. Delivery must allocate real composed proof without inventing a new readiness service. |
-| SYS-DEC-04 | Consolidate the validation-related duplicate source descriptions into existing owners, retaining necessary operational remainders. Preserve the original validation ADR's distinction between deterministic product proof, semantic assessment and external agent behavior, and its recoverable bounded-retirement reasoning. | Keeping all machinery perpetuates competing ownership; moving it elsewhere only relocates complexity. Codex-only or all-target runtime certification adds nondeterministic model/version/transcript obligations without proving package parity. Deleting all checks loses undocumented protection. Retain equivalent supported-target package proof, composed release checks and owned rollback; target-runtime defects remain legitimate issues without becoming routine certification. No new Validation model or automatic archive is needed for these responsibilities. |
-| SYS-DEC-03 | Preserve historical system/ADR context and distinguish previous normalization from this consolidation. | Deleting the mixed file or rewriting historical approvals loses decision meaning. Current navigation becomes clearer while the remaining format diversity is explicit technical debt. |
-
-No separate ADR is created for this model-profile draft. These decisions concern the selected system responsibility; source-method decisions remain owned by Design's preservation map.
-
-The hierarchy replaces the former flat peer inventory. Skill owns published behavior, CLI owns executable behavior, and Engineering owns this repository's realization. Named child sections avoid a file for every small capability while separately maintained complex contracts remain individually reviewable. Packaging and Installation split the former Distribution ownership because producing artifacts and mutating customer files have different authority and failure boundaries.
-
 ## Next artifacts
 
 Independent Design Review of the reconciled parents, children, retained legacy contracts and examples; Delivery then allocates implementation, source/consumer cleanup and proof. Required Code Reviews and distinct Verify establish the implemented result. Publication requires the Release-owned authorization.
+
+## Current repository cleanup composition
+
+[Engineering Development](engineering/engineering.md#repository-retirement) owns the bounded source disposition and current-reliance closure. [Validation](engineering/validation.md#historical-check-retirement) owns removal of obsolete checks while preserving required detection. [Packaging](engineering/packaging.md#generated-only-adapter-support) owns generated-only adapter metadata and [Release](engineering/release.md#current-qualification-and-retired-release-history) owns the end of historical release replay in current tooling. Skill, CLI Records and Installation retain their product contracts; no portable method, stored-record format or install permission is retired by this repository cleanup.
+
+The existing hierarchy and product-flow graphs remain accurate: this is a source/consumer reconciliation within their existing edges, with no new model or runtime component. The change-local [source disposition](../changes/2026-09-13-current-design-repository-cleanup/source-disposition.md) records selected removals and retained exceptions. It is bounded change evidence, not a second policy owner. Earlier source maps remain historical adoption explanations; this section and the current owners supersede their historical-only original-path retention requirements.

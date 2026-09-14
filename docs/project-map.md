@@ -1,10 +1,10 @@
 # RigorLoop Project Map
 
-Current design-authoring and composition navigation: [Design](design/skill/authoring/design.md) owns unified authoring, model conventions and validation mapping; [System](design/system.md) owns the bounded composition view. Canonical `skills/design/` replaces the two old authors; remaining specs, Level 2 architecture and ADR responsibilities retain their declared contracts. Historical inventories below do not establish the current public author list.
+Current design-authoring and composition navigation: [Design](design/skill/design.md) owns unified authoring, model conventions and validation mapping; [System](design/system.md) owns the bounded composition view. Canonical `skills/design/` replaces the two old authors; remaining specs, Level 2 architecture and ADR responsibilities retain their declared contracts. Historical inventories below do not establish the current public author list.
 
 ## Skill owner navigation
 
-[Skill](design/skill/skill.md) is the selected common owner under its reviewed implementation/Verify adoption boundary. [Retained Skill Contract](../specs/skill-contract.md) contains the bounded plan/boundary-method remainder; [archive navigation](archive/skill-model/2026-09-08/README.md) preserves originals and source-resolved history. The improvement pilot is only proposal/proposal-review; existing follow-ups own remaining adoption. This navigation does not own workflow stage order or grant adoption through model/package availability.
+[Skill](design/skill/skill.md) is the selected common owner under its reviewed implementation/Verify adoption boundary. [Retained Skill Contract](../specs/skill-contract.md) contains the bounded plan/boundary-method remainder; [archive navigation](https://github.com/xiongxianfei/rigorloop/blob/39b7c5cb1f03aa761d2f2493d3474ce985e59d6f/docs/archive/skill-model/2026-09-08/README.md) preserves originals and source-resolved history. The improvement pilot is only proposal/proposal-review; existing follow-ups own remaining adoption. This navigation does not own workflow stage order or grant adoption through model/package availability.
 
 ## Purpose and Scope
 
@@ -20,7 +20,7 @@ Observed basis: direct inspection of `README.md`, `CONSTITUTION.md`, `AGENTS.md`
 
 - Last updated: 2026-09-04
 - Observed basis: current repository tree plus the compact current-state preactivation candidate, route and CLI workflow-context cutover, and optional Explore/Research artifact roots.
-- Covered areas: repository layout, governance and workflow surfaces, lifecycle and optional discovery artifacts, canonical skills, validation and generation scripts, adapter support, release evidence, token-cost evidence, tests, CI, and known architecture-orientation risks.
+- Covered areas: repository layout, governance and workflow surfaces, lifecycle and optional discovery artifacts, canonical skills, validation and generation scripts, adapter support, release evidence, tests, CI, and known architecture-orientation risks.
 - Known gaps: this map summarizes the canonical architecture package but does not duplicate it; narrow changes still need the governing spec, active plan, matching test spec, and touched files.
 - Refresh trigger: refresh or bypass this map with a no-map rationale when the relied-on area is absent, contradicted by current repository paths, or materially affected by recent changes.
 
@@ -35,8 +35,8 @@ Observed major containers:
 - Canonical skills: stage and support skills under `skills/<skill>/SKILL.md`.
 - Validation and generation scripts: Python and shell tooling under `scripts/`.
 - Adapter support surface: tracked install guidance and manifest under `dist/adapters/`; generated adapter bodies are release output for `v0.1.3` and later.
-- Release and measurement evidence: `docs/releases/`, `docs/reports/adapter-artifacts/`, `docs/reports/token-cost/`, and `benchmarks/token-cost/`.
-- Fixtures and regression tests: `tests/fixtures/`, `benchmarks/token-cost/fixtures/`, and `scripts/test-*.py`.
+- Release evidence: `docs/releases/`, `docs/reports/adapter-artifacts/`.
+- Fixtures and regression tests: `tests/fixtures/`, and `scripts/test-*.py`.
 
 ```mermaid
 flowchart LR
@@ -45,7 +45,7 @@ flowchart LR
   Contributor --> Lifecycle[docs/ and specs/ lifecycle artifacts]
   Lifecycle --> Skills[skills/*/SKILL.md]
   Skills --> Scripts[scripts validators and generators]
-  Scripts --> Evidence[validation, release, adapter, and token-cost evidence]
+  Scripts --> Evidence[validation, release, and adapter evidence]
   Scripts --> Adapters[dist/adapters metadata and generated release archives]
   Evidence --> Reviewer[Human reviewer / PR]
 ```
@@ -72,14 +72,13 @@ flowchart LR
 | `docs/learn/` | Learn sessions and durable topic notes. |
 | `docs/follow-ups.md` | Optional unowned cross-change follow-up surface when routing rules require it. |
 | `docs/releases/<version>/` | Authored release metadata and release notes. |
-| `docs/reports/` | Adapter artifact metadata, token-cost release reports, run evidence, and optimization reports. |
+| `docs/reports/` | Adapter artifact metadata and retained run evidence. |
 | `skills/` | Only authored skill source, including the public `route` skill. |
 | `.codex/skills/` | Ignored local runtime state; not an authored source. |
-| `scripts/` | Repository-owned validators, selectors, generators, release checks, benchmark tooling, and tests. |
+| `scripts/` | Repository-owned validators, selectors, generators, release checks and tests. |
 | `scripts/adapter_templates/` | Thin adapter entrypoint templates for Codex, Claude Code, and opencode. |
 | `schemas/` | JSON schemas for change metadata and skill metadata. |
 | `dist/adapters/` | Tracked adapter install README and support manifest; no generated skill bodies for `v0.1.3` and later. |
-| `benchmarks/token-cost/` | Token-cost benchmark manifest, prompts, and clean downstream fixtures. |
 | `.github/workflows/` | Thin GitHub Actions wrappers for CI and release. |
 | `tests/fixtures/` | Fixture trees used by Python regression tests. |
 | `templates/` | Authored templates for architecture, ADRs, diagrams, review-resolution, and shared skill policy blocks. |
@@ -91,7 +90,7 @@ RigorLoop has no long-running server, request router, database worker, or deploy
 1. Contributors and agents read governing artifacts using the source-of-truth order in `CONSTITUTION.md`.
 2. Non-trivial changes move through the workflow chain documented in `specs/rigorloop-workflow.md`; route consumes CLI context for deterministic project facts.
 3. Canonical stage skills under `skills/` guide individual lifecycle actions.
-4. Repository-owned scripts validate artifacts, select checks, generate adapter output, measure token cost, and verify release evidence.
+4. Repository-owned scripts validate artifacts, select checks, generate adapter output, and verify release evidence.
 5. GitHub Actions call repository scripts instead of duplicating validation logic.
 
 Important command entry points:
@@ -101,9 +100,7 @@ Important command entry points:
 - `python scripts/validate-skills.py` and `python scripts/test-skill-validator.py`: canonical skill validation and regression checks.
 - `python scripts/build-skills.py --check`: validates generated local Codex mirror output from `skills/` using temporary output by default.
 - `python scripts/build-adapters.py`: generates or checks public adapter output and release archives.
-- `bash scripts/release-verify.sh <tag>`: release gate that runs skill, adapter, token-cost, release metadata, and security checks for supported release tags.
-- `python scripts/run-token-cost-benchmarks.py`: token-cost runtime benchmark runner for prompt fixtures.
-- `python scripts/analyze-codex-jsonl.py`: analyzer for Codex JSONL session evidence.
+- `bash scripts/release-verify.sh <tag>`: release gate that runs skill, adapter, release metadata, and security checks for supported release tags.
 
 ## Data Flow
 
@@ -119,9 +116,8 @@ The repository data model is artifact-based:
 - Skill metadata and bodies: frontmatter plus Markdown in `skills/*/SKILL.md`, validated against `schemas/skill.schema.json` by `scripts/skill_validation.py`.
 - Adapter metadata: `dist/adapters/manifest.yaml` records portable skill support and opencode command aliases; adapter artifact metadata is under `docs/reports/adapter-artifacts/releases/`.
 - Release metadata: `docs/releases/<version>/release.yaml` and tracked `release-notes.md`.
-- Token-cost data: benchmark manifests, prompts, JSONL run evidence, analyzer summaries, and release report YAML/Markdown under `benchmarks/token-cost/` and `docs/reports/token-cost/`.
 
-Serialization boundaries are intentionally simple: Markdown, YAML-like repository files parsed by local scripts, JSON Schema files, JSON output from the validation selector, JSONL benchmark/session evidence, and ZIP archives generated for adapter release assets.
+Serialization boundaries are intentionally simple: Markdown, YAML-like repository files parsed by local scripts, JSON Schema files, JSON output from the validation selector, and ZIP archives generated for adapter release assets.
 
 ```mermaid
 flowchart TD
@@ -135,7 +131,6 @@ flowchart TD
   Changes --> CI[scripts/ci.sh direct PR/main gates]
   Changes --> SelectValidation[scripts/select-validation.py local/explicit/release compatibility]
   SelectValidation --> CI
-  Benchmarks[benchmarks/token-cost] --> TokenReports[docs/reports/token-cost]
   ReleaseMetadata[docs/releases/*] --> ReleaseVerify[scripts/release-verify.sh]
 ```
 
@@ -146,7 +141,6 @@ Observed external boundaries:
 - Git and GitHub: pull requests, push/tag workflows, GitHub Releases, and `gh release create` in `.github/workflows/release.yml`.
 - Python 3.11 in hosted CI: `.github/workflows/ci.yml` installs Python 3.11 and runs `scripts/ci.sh`.
 - Agent runtimes: Codex, Claude Code, and opencode adapter packages are generated from canonical skills and adapter templates.
-- Codex CLI/runtime evidence: token-cost benchmarks can execute Codex prompts and analyze JSONL output.
 - Shell tools: validation scripts use Git, Bash, Python standard library, and archive tooling through local scripts.
 
 No database, network service API, hosted telemetry service, package registry dependency, or application framework is present in the inspected repository. There is no `pyproject.toml`, `package.json`, requirements file, Makefile, or setup file at the repository root.
@@ -161,9 +155,8 @@ Regression tests are Python `unittest`-style scripts under `scripts/test-*.py`:
 - Artifact lifecycle validation: `scripts/test-artifact-lifecycle-validator.py` plus `tests/fixtures/artifact-lifecycle/`.
 - Review artifact validation: `scripts/test-review-artifact-validator.py` plus `tests/fixtures/review-artifacts/`.
 - Change metadata validation: `scripts/test-change-metadata-validator.py` plus `tests/fixtures/change-metadata/`.
-- Token-cost measurement and report validation: `scripts/test-token-cost-measurement.py`, `scripts/test-token-cost-report-validation.py`, and fixtures under `tests/fixtures/token-cost/`.
 
-Test specs live beside feature specs as `specs/<feature>.test.md`; the repository currently has many historical and active specs under `specs/`. Benchmark fixtures for public-skill token cost live under `benchmarks/token-cost/fixtures/`.
+Test specs live beside feature specs as `specs/<feature>.test.md`; the repository currently has many historical and active specs under `specs/`.
 
 No application unit/integration/e2e test tree exists because there is no deployed application. Smoke-style proof is repository validation and release smoke evidence rather than browser or service smoke tests.
 
@@ -173,7 +166,7 @@ CI is thin by design:
 
 - `.github/workflows/ci.yml` runs on pull requests and pushes to `main`, installs Python 3.11, and delegates to `bash scripts/ci.sh --mode pr` or `--mode main`.
 - `scripts/ci.sh` defaults to broad smoke for legacy compatibility. PR and main use a direct deterministic gate graph; local, explicit, and release retain selector compatibility.
-- `scripts/validation_selection.py` owns stable check IDs such as `skills.validate`, `artifact_lifecycle.validate`, `review_artifacts.validate`, `change_metadata.validate`, `release.validate`, `token_cost.report_validate`, and `broad_smoke.repo`.
+- `scripts/validation_selection.py` owns stable check IDs such as `skills.validate`, `artifact_lifecycle.validate`, `review_artifacts.validate`, `change_metadata.validate`, `release.validate`, and `broad_smoke.repo`.
 - `.github/workflows/release.yml` runs on `v*` tags, delegates release readiness to `scripts/release-verify.sh`, then creates a GitHub release from tracked release notes and files under `release-output/`.
 
 Common local verification commands:
@@ -196,7 +189,6 @@ Release-oriented commands:
 bash scripts/release-verify.sh <tag>
 python scripts/build-adapters.py --version <tag> --output-dir <release-output-dir>
 python scripts/validate-release.py --version <tag> --release-output-dir <release-output-dir>
-python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/<tag>.yaml
 ```
 
 ## Architecture Rules Observed
@@ -220,7 +212,7 @@ python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/<t
 - Architecture orientation index: do not add another broad architecture summary by default. Add a thin index, preferably `docs/architecture/system/README.md` or a short top section in `docs/architecture/system/architecture.md`, only if contributors repeatedly need faster lookup.
 - Project-map freshness: this map uses minimal metadata and contradiction-based refresh triggers. Calendar thresholds, mandatory periodic refresh, a formal project-map review stage, and a full project-map lifecycle state machine remain deferred.
 - Selector coverage: `docs/project-map.md` and `docs/project-map/**.md` are intended to route as `living-reference/project-map`, not as active lifecycle artifacts.
-- Release evidence: keep release evidence in existing roots. `docs/releases/<version>/` owns release metadata and notes, `docs/reports/adapter-artifacts/releases/<version>.yaml` owns generated archive metadata and checksums, and `docs/reports/token-cost/` plus `benchmarks/token-cost/` own token-cost evidence.
+- Release evidence: keep release evidence in existing roots. `docs/releases/<version>/` owns release metadata and notes, `docs/reports/adapter-artifacts/releases/<version>.yaml` owns generated archive metadata and checksums.
 
 ## Risk Areas
 
@@ -228,7 +220,6 @@ python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/<t
 - Current plan and handoff state is centralized in change metadata. Reviewers still compare it with stable plan intent and stage-owned evidence, but plans and indexes are not writable state projections.
 - Adapter release behavior has moved across compatibility windows (`v0.1.1`, `v0.1.2`, `v0.1.3`). Current rules are documented, but older plans and historical artifacts may describe prior tracked adapter package behavior.
 - Some validators use lightweight custom parsers for Markdown or YAML-like files. This keeps dependencies low but raises maintenance risk when artifact shapes grow.
-- Token-cost benchmark evidence depends on external Codex runtime behavior when dynamic benchmarks are run. The repository records local evidence and validates report shape, but hosted or tool-version variance can still affect results.
 - The canonical architecture package is broad and historical. It is useful for orientation, but narrow changes should still read the current governing spec, plan, and touched files instead of relying only on architecture prose.
 - `docs/project-map.md` was absent before this map. Future users must refresh or bypass this map with a no-map rationale if it becomes stale, contradicted, or missing the relied-on area.
 
