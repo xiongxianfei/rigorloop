@@ -69,6 +69,35 @@
           "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
         }
       ]
+    },
+    {
+      "evidence": "Severity: minor required correction. Location: docs/design/cli/examples/records/v3-complete-store/README.md:17. Finding scope: artifact-local; affected artifact: current-v3-complete-store-example; owning stage: design. Current retained v3 collection README still links ../v2-review-reassessment/before.json and after.json, both included among the ten proposed historical-example deletions. The top CLI and Records indexes were reconciled, but this relied-on current example would retain broken local historical navigation after deletion. Independent exact-name search confirms the remaining current consumer.",
+      "id": "m6-retained-example-historical-links",
+      "owner": {
+        "id": "codex-specs-design-author",
+        "role": "design"
+      },
+      "reporter": {
+        "id": "independent-m6-design-reviewer",
+        "role": "review"
+      },
+      "required_outcome": "Reconcile the retained complete-store README with the historical-example retirement: preserve current v3 relationships and limitations, and remove or replace the historical before/after links with truthful recoverable provenance. Include the changed retained example README in the exact renewed Design package and check every current model/example consumer of the ten retired paths. Safe correction is documentation/provenance only; no new runtime behavior or Delivery allocation is required.",
+      "resolution": null,
+      "state": "open",
+      "subjects": [
+        {
+          "identity": "sha256:f91e6afaeb796d51896d54894f4c4f293307a55601030fb382808df4ddc82782",
+          "path": "docs/design/cli/examples/records/v3-complete-store/README.md"
+        },
+        {
+          "identity": "sha256:c088b648eb0a8308c8cae1deb7f5be562cf5fb81ceed2552d5256851ca69acf7",
+          "path": "docs/design/cli/records.md"
+        },
+        {
+          "identity": "sha256:903933825ce63a6685c52efe920b4df1fdd9fe6f5fe90b9a097dcb241e0179b7",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+        }
+      ]
     }
   ],
   "id": "design-review-m6-first",
