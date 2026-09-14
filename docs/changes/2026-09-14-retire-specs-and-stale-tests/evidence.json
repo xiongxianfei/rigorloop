@@ -240,6 +240,74 @@
         }
       ],
       "summary": "M1 implementation and required checks passed as detailed in m1-validation.json; independent correction reassessment remains required."
+    },
+    {
+      "actor": {
+        "id": "codex-full-specs-implement",
+        "role": "implement"
+      },
+      "id": "m2-implementation-checks",
+      "procedure": "Inspect exact M2 cases/helpers and retained protection; run canonical skill, skill regression, guide regression, projection and local CI checks; rerun complete affected guide checks after independent correction.",
+      "result": "passed",
+      "subjects": [
+        {
+          "identity": "sha256:6decd4e4be579f273a2051ba005a6cb4830e7e2a0323f3444e77b9e43bba34bb",
+          "path": "scripts/skill_validation.py"
+        },
+        {
+          "identity": "sha256:f5a7941ed35cad94592cc85a1082e78f612c1739bb8d41f31a2ee9aa2c21aa08",
+          "path": "scripts/test-guide-system-validator.py"
+        },
+        {
+          "identity": "sha256:692053196f7fa4950a78ae72bf2bd13278af64ae79c4693ad708122089cc8136",
+          "path": "scripts/test-skill-validator.py"
+        },
+        {
+          "identity": "sha256:f933f576b5d827b54065fc2fe84481e985974169f40091b52f0f17aee8807e5b",
+          "path": "scripts/validate-guide-system.py"
+        },
+        {
+          "identity": "sha256:170ea2df25ee71ab3e27f26ab8290758d7a575bb1747d5b89c7eb45de7394dfc",
+          "path": "skills/bugfix/SKILL.md"
+        },
+        {
+          "identity": "sha256:30c094ea81e1b6cb875fd75430ee7b2721e3bdf93830c9953f2381d7c8d5cb23",
+          "path": "skills/code-review/SKILL.md"
+        },
+        {
+          "identity": "sha256:2888de55cc39d5a96d60e86b0f70821de86e4b2a41fd9218e0ad7748cd64e5dc",
+          "path": "skills/implement/SKILL.md"
+        },
+        {
+          "identity": "sha256:31022b5d36e3f9846c37900e3c94e23614156e9aae9eece0c778add4207b9a62",
+          "path": "skills/plan/SKILL.md"
+        },
+        {
+          "identity": "sha256:7ef76959ad5415890fffedead1af6fba55a39c849a8f9531329e855acd418143",
+          "path": "skills/route/SKILL.md"
+        },
+        {
+          "identity": "sha256:71e429d296885eb46f7c7e1903e6cc05b60c79d35e331a3a56d2b945fbaf2ef4",
+          "path": "skills/verify/SKILL.md"
+        },
+        {
+          "identity": "sha256:c18ccff73157195652ddad80e59446e1cfb1031e981712b9121413d47875b69f",
+          "path": "templates/shared/boundary-first-compact-scan.md"
+        },
+        {
+          "identity": "sha256:6fd14ac0fba4016d338ee2df329f4eba0a8e53a5a52b7d28df67ecdd76c72755",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-test-maintenance.json"
+        },
+        {
+          "identity": "sha256:6b9c35a4daa1ea4c998708a827cb6e88e9283f035936680ab9b3cc459ea8434b",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-validation.json"
+        },
+        {
+          "identity": "sha256:509dbed62dfcc7e76c0bf6b9f73fdd1f98fd2e92c256c0d63557615273e39273",
+          "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m2-implementation.md"
+        }
+      ],
+      "summary": "Current M2 implementation checks passed; independent correction reassessment still required."
     }
   ],
   "schema_version": 3

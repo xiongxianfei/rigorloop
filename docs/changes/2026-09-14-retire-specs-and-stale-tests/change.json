@@ -1,11 +1,11 @@
 {
   "activity": {
     "owner": {
-      "id": "codex-full-specs-implement",
-      "role": "implement"
+      "id": "spec-read-retirement-review",
+      "role": "review"
     },
-    "reason": "Route: independent corrected M1 review approved and finding resolved. Continue authorized M2 specialist/workflow cleanup through final PR.",
-    "stage": "implement",
+    "reason": "Route: corrected M2 with passing focused and selected evidence ready for independent Code Review reassessment.",
+    "stage": "code-review",
     "status": "in-progress"
   },
   "applicability": [
@@ -24,7 +24,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Exact corrected implementation subjects and post-correction evidence.",
+      "reason": "Current corrected M2 subjects and actual validation.",
       "value": "current"
     },
     {
@@ -79,6 +79,15 @@
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m1-corrected.json",
       "reason": "Frozen corrected M1 and actual focused/integrated evidence independently assessed; required finding resolved and unchanged governing package remains applicable.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m2-code-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m2-first.json",
+      "reason": "Exact current guide-validator failure directly reproduced before production correction.",
       "value": "current"
     }
   ],
@@ -211,6 +220,10 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m1-corrected.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/code-review-m2-first.json"
     }
   ],
   "schema_version": 3,
