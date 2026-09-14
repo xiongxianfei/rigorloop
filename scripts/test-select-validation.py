@@ -90,11 +90,6 @@ EXPECTED_CATALOG = {
     "documentation_prose.audit": "python scripts/validate-documentation-prose.py --mode audit --path <path>...",
     "documentation_prose.regression": "python scripts/test-documentation-prose-validator.py",
     "selector.regression": "python scripts/test-select-validation.py",
-    "requirement_fidelity.spec_reads": (
-        "python scripts/test-fidelity-gate-spec-reads.py "
-        "--review-set tests/fixtures/requirement-fidelity-gate/representative-reviews "
-        "--max-bytes-per-clause 4096 --assert-no-broad-reads"
-    ),
     "broad_smoke.repo": "bash scripts/ci.sh --mode broad-smoke --skip-diff-scoped",
     "rigorloop_cli.test": "npm test --prefix packages/rigorloop",
     "governed_lifecycle_cli_wrapper.test": "python scripts/test-governed-lifecycle-cli-validator.py",
@@ -1546,7 +1541,7 @@ raise SystemExit({exit_code})
     def test_catalog_records_audited_commands_and_initial_case_population(self) -> None:
         from validation_selection import is_parallel_safe_check
 
-        expected_parallel_safe = {"requirement_fidelity.spec_reads"} | {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
+        expected_parallel_safe = {key for ids in MODE_CHECK_IDS.values() for key in ids if key.endswith(("skills.validate", "skills.regression", "adapters.build_archives", "adapters.validate_archives"))}
 
         expected_cases = {
             'review_artifacts.regression',
@@ -2523,15 +2518,15 @@ raise SystemExit({exit_code})
             },
             {
                 "path": "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
-                "category": "requirement-fidelity-spec-read",
+                "category": "retired-spec-read",
                 "status": "ok",
-                "checks": {"requirement_fidelity.spec_reads"},
+                "checks": {"selector.regression", "skills.regression", "review_artifacts.regression"},
             },
             {
                 "path": "scripts/test-fidelity-gate-spec-reads.py",
-                "category": "requirement-fidelity-spec-read",
+                "category": "retired-spec-read",
                 "status": "ok",
-                "checks": {"requirement_fidelity.spec_reads"},
+                "checks": {"selector.regression", "skills.regression", "review_artifacts.regression"},
             },
             {
                 "path": "scripts/measure-skill-tokens.py",
@@ -3302,7 +3297,7 @@ raise SystemExit({exit_code})
         )
         self.assertFalse(payload["blocking_results"])
 
-    def test_pr_mode_routes_requirement_fidelity_spec_read_proof_paths(self) -> None:
+    def test_pr_mode_routes_spec_read_retirement_deletions(self) -> None:
         repo = self.make_git_repo()
         base = self.git_output(repo, "rev-parse", "HEAD")
         script = repo / "scripts" / "test-fidelity-gate-spec-reads.py"
@@ -3327,10 +3322,15 @@ raise SystemExit({exit_code})
             capture_output=True,
             text=True,
         )
+        base = self.git_output(repo, "rev-parse", "HEAD")
+        script.unlink()
+        fixture.unlink()
+        subprocess.run(["git", "add", "-u"], cwd=repo, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "retire fixed read log"], cwd=repo, check=True, capture_output=True)
         head = self.git_output(repo, "rev-parse", "HEAD")
 
         result = run_selector("--mode", "pr", "--base", base, "--head", head, cwd=repo)
-        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(result.returncode, 0, msg=result.stderr + result.stdout)
         payload = parse_stdout(result)
 
         self.assertEqual(payload["status"], "ok")
@@ -3342,19 +3342,77 @@ raise SystemExit({exit_code})
             ],
         )
         self.assertIn(
-            {"path": "scripts/test-fidelity-gate-spec-reads.py", "category": "requirement-fidelity-spec-read"},
+            {"path": "scripts/test-fidelity-gate-spec-reads.py", "category": "retired-spec-read"},
             payload["classified_paths"],
         )
         self.assertIn(
             {
                 "path": "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json",
-                "category": "requirement-fidelity-spec-read",
+                "category": "retired-spec-read",
             },
             payload["classified_paths"],
         )
-        self.assertIn("requirement_fidelity.spec_reads", selected_ids(payload))
+        self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
+        self.assertTrue({"selector.regression", "skills.regression", "review_artifacts.regression"}.issubset(selected_ids(payload)))
         self.assertEqual(payload["unclassified_paths"], [])
         self.assertFalse(payload["blocking_results"])
+
+    def test_spec_read_retirement_local_unstaged_and_staged_deletions(self) -> None:
+        paths = ["scripts/test-fidelity-gate-spec-reads.py",
+                 "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json"]
+        repo = self.make_git_repo()
+        for path in paths:
+            target = repo / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("retired fixture\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "baseline instrumentation"], cwd=repo, check=True, capture_output=True)
+        for path in paths:
+            (repo / path).unlink()
+        for staged in (False, True):
+            with self.subTest(staged=staged):
+                if staged:
+                    subprocess.run(["git", "add", "-u"], cwd=repo, check=True, capture_output=True)
+                payload = parse_stdout(run_selector("--mode", "local", cwd=repo))
+                self.assertEqual(payload["status"], "ok")
+                self.assertEqual(set(payload["changed_paths"]), set(paths))
+                self.assertTrue({"selector.regression", "skills.regression", "review_artifacts.regression"}.issubset(selected_ids(payload)))
+                self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
+
+    def test_spec_read_retirement_removes_catalog_and_mode_entry(self) -> None:
+        self.assertNotIn("requirement_fidelity.spec_reads", CHECK_CATALOG)
+        for ids in MODE_CHECK_IDS.values():
+            self.assertNotIn("requirement_fidelity.spec_reads", ids)
+
+    def test_spec_read_retirement_recreated_file_and_symlink_block(self) -> None:
+        paths = ["scripts/test-fidelity-gate-spec-reads.py",
+                 "tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json"]
+        for path in paths:
+            for kind in ("file", "symlink"):
+                with self.subTest(path=path, kind=kind):
+                    repo = self.make_git_repo()
+                    target = repo / path
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    if kind == "file":
+                        target.write_text("recreated obsolete input\n", encoding="utf-8")
+                    else:
+                        target.symlink_to(repo / "missing-target")
+                    result = run_selector("--mode", "explicit", "--path", path, cwd=repo)
+                    payload = parse_stdout(result)
+                    self.assertEqual(payload["status"], "blocked")
+                    self.assertTrue(payload["blocking_results"])
+                    self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
+                    self.assertTrue(target.exists() or target.is_symlink())
+
+    def test_spec_read_retirement_unknown_sibling_and_mixed_paths_block(self) -> None:
+        repo = self.make_git_repo()
+        unknown = "tests/fixtures/requirement-fidelity-gate/representative-reviews/new-review/spec-read-log.json"
+        for paths in ([unknown], ["scripts/test-fidelity-gate-spec-reads.py", unknown]):
+            args = [value for path in paths for value in ("--path", path)]
+            payload = parse_stdout(run_selector("--mode", "explicit", *args, cwd=repo))
+            self.assertEqual(payload["status"], "blocked")
+            self.assertIn(unknown, payload["unclassified_paths"])
+            self.assertNotIn("requirement_fidelity.spec_reads", selected_ids(payload))
 
     def test_pr_mode_routes_readme_without_unclassified_block(self) -> None:
         repo = self.make_git_repo()

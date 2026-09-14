@@ -1,5 +1,9 @@
 # Requirement-Fidelity Gate Test Spec
 
+## Spec-read instrumentation retirement
+
+For the [spec-read-log retirement](../docs/changes/2026-09-14-retire-spec-read-log/change.json), [Validation VAL-SR-23](../docs/design/engineering/validation.md#historical-check-retirement) supersedes only the fixed-log instrumentation below. The substantive requirement-fidelity contract, complete relevant clause assessment, justified bounded or full reads, and omission/compression negative proof remain required. Other historical requirements and judgments retain their original scope; this amendment does not migrate the remaining legacy contract.
+
 ## Status
 
 - active
@@ -79,12 +83,12 @@ Every manual proof case MUST contain:
 | Observability | `T1`-`T8`, `T13` | integration | Applicability, decomposition, matrix, validator comparison, compressed-risk, finding IDs, and calibration evidence are visible. |
 | Security and privacy | `T6`, `T13`, `MP-RFG-001` | integration, manual | Security/privacy compression is material, records avoid secrets and private chain-of-thought, and private corpus custody is audited. |
 | Accessibility and UX | `T11`, `MP-RFG-003` | manual, contract | Contributor-facing output remains scan-first and inspectable without hidden reasoning. |
-| Performance expectations | `T1`, `T13`, `T-RFG-PERF-001` | smoke, integration | Applicability starts from affected paths and bounded excerpts; no broad full-spec read is required for unrelated changes. |
+| Performance expectations | `T1`, `T13` | smoke, integration | Applicability starts from affected paths and bounded excerpts; no broad full-spec read is required for unrelated changes. |
 | `RFG-T017`-`RFG-T021` | `T8` | integration | Sampling and rotation planned checks are represented directly. |
 | `RFG-T022` | `T10` | unit | Undefined soft-normative wording in `MUST` requirements is rejected unless defined, quantified, or non-normative. |
 | `RFG-022` | `T10` | unit | Manual proof sections that omit required schema fields fail the test-spec validator. |
 | `RFG-023` | `T10` | unit | Every requirement in the coverage map references at least one automated or structured manual proof. |
-| `RFG-024` | `T-RFG-PERF-001` | integration | Bounded spec-read instrumentation is exercised at least once per implementation milestone touching the gate's reviewer surface. |
+| `RFG-024` | Relevant clause assessment | review | Select bounded or full reads sufficient for the actual contract; frozen-log instrumentation is retired under VAL-SR-23. |
 
 ## Example coverage map
 
@@ -116,7 +120,7 @@ Every manual proof case MUST contain:
 | --- | --- | --- |
 | `M1` Requirement-fidelity review contract and guidance | `T1`-`T6`, `T9`, `T11`, `T14`, `MP-RFG-003` | Skill and workflow guidance, AND semantics, receipt shape, compression findings, no finding quota, manual opt-in, scan-first public skill proof. |
 | `M2` Applicability, receipt, and autoprogression validators | `T1`-`T6`, `T9`, `T10`, `T13`, `T14`, `T-RFG-GATE-001` | Review artifact, lifecycle, change metadata, closed vocabulary, gating, and historical compatibility fixtures. |
-| `M3` Spec-derived validator matrix pilot | `T7`, `T10`, `T12`, `T14`, `T-RFG-PERF-001` | R26 property/surface constants, missing-property negative proof, skill guidance, generated-output proof, bounded spec-read instrumentation. |
+| `M3` Spec-derived validator matrix pilot | `T7`, `T10`, `T12`, `T14` | R26 property/surface constants, missing-property negative proof, skill guidance, generated-output proof; fixed-log instrumentation retired under VAL-SR-23. |
 | `M4` Compression calibration corpus and sampling records | `T8`, `T10`, `T13`, `T14`, `MP-RFG-001`, `MP-RFG-002` | Seed types, rotating iterations, sampling floors, audit outcomes, selector routing, soft-normative meta-test, custody and receipt-quality audit. |
 | `M5` Generated guidance, behavior preservation, and lifecycle closeout | `T9`, `T12`, `T13`, `T14` | Generated skills/adapters, behavior-preservation matrix, selected CI, lifecycle state synchronization. |
 
@@ -329,21 +333,9 @@ Every manual proof case MUST contain:
 - Failure proves: The implementation can pass local tests while workflow evidence, plan state, or review gates drift.
 - Automation location: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...`; `python scripts/validate-change-metadata.py ...`; `python scripts/validate-review-artifacts.py --mode structure ...`; `git diff --check -- <changed paths>`.
 
-### T-RFG-PERF-001. Bounded spec-read behavior
+### T-RFG-PERF-001. Retired fixed-log instrumentation
 
-- Covers: performance expectations, `RFG-024`, M3 implementation-internal performance contract
-- Level: integration
-- Surface: implementation spec-read instrumentation
-- Fixture/setup: Representative review fixtures under `tests/fixtures/requirement-fidelity-gate/representative-reviews/`.
-- Command: `python scripts/test-fidelity-gate-spec-reads.py --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews --max-bytes-per-clause 4096 --assert-no-broad-reads`
-- Steps:
-  - Instrument the gate's spec-reader path to record cited spec clause IDs and byte counts during representative review fixture runs.
-  - Run the command above against the representative review set.
-  - Assert total bytes read for each cited spec clause are no more than the clause bounds: default 4096 bytes per clause unless the clause itself is larger.
-  - Assert no full spec-file read is observed in any review fixture.
-- Expected result: The implementation proves bounded spec-read behavior without relying on broad manual inspection.
-- Failure proves: The gate can satisfy review evidence only by broad-reading full specs or excessive unrelated context.
-- Owning milestone: M3.
+VAL-SR-23 retires the committed spec-read log and its checker. The checker trusted claimed byte counts and full-file flags without observing actual reads, aggregating repeated reads or measuring clause length. It did not prove the original performance claim. No replacement metric, synthetic pass or per-milestone log is required. Complete relevant clause assessment and justified bounded or full reads remain required under the current owning contracts. The stable ID records this exact retirement; historical evidence keeps its original meaning.
 
 ### T-RFG-GATE-001. No implementation activity before test-spec-review
 
@@ -421,7 +413,6 @@ Cadence: every change that modifies a public skill teaching the gate.
 - Artifact lifecycle fixtures under `tests/fixtures/artifact-lifecycle/` for AND-semantics autoprogression, historical review compatibility, direct/manual review behavior, final holistic code-review, and plan/index synchronization.
 - Change metadata fixtures under `tests/fixtures/change-metadata/` only when fidelity evidence or sampling records are represented in compact change metadata.
 - Skill fixtures under `tests/fixtures/skills/` for R26 missing-property negative cases or equivalent fixture support in `scripts/test-skill-validator.py`.
-- Requirement-fidelity representative review fixtures under `tests/fixtures/requirement-fidelity-gate/representative-reviews/` for bounded spec-read instrumentation.
 - Calibration corpus configuration under `docs/calibration/corpus-config.yaml`, plus private rotation custody evidence artifacts under `docs/calibration/`.
 - Public examples may document defect classes, but protected rotating corpus iterations should not be limited to static public examples.
 
@@ -455,7 +446,7 @@ Cadence: every change that modifies a public skill teaching the gate.
 
 - Applicability computation should operate from changed paths, trigger constants, review stage, and bounded evidence.
 - Receipt and calibration validation should be cheap enough to run in targeted review-artifact, lifecycle, or skill validation.
-- `T-RFG-PERF-001` proves the implementation does not require broad full-spec reads for changes unrelated to normative contracts.
+- Relevant clause assessment must justify sufficient bounded or full reads; the retired T-RFG-PERF-001 log is not proof of reader behavior.
 
 ## Manual QA checklist
 
@@ -463,7 +454,7 @@ Cadence: every change that modifies a public skill teaching the gate.
 - Execute `MP-RFG-002` for sampled receipt-prose quality.
 - Execute `MP-RFG-003` for public skill scan-first usability when public skill guidance changes.
 - Confirm behavior-preservation evidence is specific to independent gates, manual review scope, historical reviews, generated output, and no finding quota.
-- Confirm `T-RFG-PERF-001` and `T-RFG-GATE-001` are implemented as automated tests, not downgraded to manual proof cases.
+- T-RFG-PERF-001 instrumentation is retired under VAL-SR-23. Retained T-RFG-GATE-001 obligations keep their separately declared applicability.
 
 ## What not to test and why
 
