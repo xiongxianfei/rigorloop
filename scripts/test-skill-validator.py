@@ -386,7 +386,7 @@ def assert_boundary_id_covered(test_case: unittest.TestCase, body: str, boundary
 class SkillValidatorFixtureTests(unittest.TestCase):
     maxDiff = None
 
-    def write_spec_family_asset_fixture(
+    def write_asset_fixture(
         self,
         root: Path,
         skill_name: str,
@@ -432,7 +432,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             asset_path.write_text(textwrap.dedent(content), encoding="utf-8")
         return skill_dir
 
-    def spec_family_asset_text(
+    def asset_text(
         self,
         *,
         template: str,
@@ -463,7 +463,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         body: str = "| <field> | <value> |\n",
         include_metadata: bool = True,
     ) -> str:
-        return self.spec_family_asset_text(
+        return self.asset_text(
             template=template,
             skill=skill,
             status=status,
@@ -480,7 +480,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         body: str = "| <field> | <value> |\n",
         include_metadata: bool = True,
     ) -> str:
-        return self.spec_family_asset_text(
+        return self.asset_text(
             template=template,
             skill=skill,
             status=status,
@@ -1375,141 +1375,61 @@ Use the inputs somehow and produce a useful result.
             "ci-maintenance must flag bounded PR repair eligibility",
         )
 
-    def test_spec_family_asset_valid_fixture_passes(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec",
-                {
-                    "assets/spec-skeleton.md": self.spec_family_asset_text(
-                        template="spec-skeleton-v1", skill="spec", body="## Status\n\n<status>\n"
-                    ),
-                },
-            )
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Result\n\n"
-                            "- Review status: <review status>\n"
-                            "- Recording status: <recording status>\n"
-                        ),
-                    ),
-                    "assets/material-finding.md": self.spec_family_asset_text(
-                        template="spec-review-material-finding-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Finding <finding id>\n\n"
-                            "- Finding ID: <finding id>\n"
-                            "- Severity: <severity>\n"
-                            "- Location: <location>\n"
-                            "- Evidence: <evidence>\n"
-                            "- Required outcome: <required outcome>\n"
-                            "- Safe resolution path: <safe resolution path>\n"
-                            "- needs-decision rationale: <needs-decision rationale>\n"
-                        ),
-                    ),
-                },
-                resource_entries=textwrap.dedent(
-                    """\
-                    - COPY `assets/material-finding.md` when recording each material finding.
-                      Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path.
-                      Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
-                      Do not emit unfilled placeholders.
-                    - COPY `assets/review-result-skeleton.md` when recording the review result.
-                      Fill: review result fields.
-                      Do not emit unfilled placeholders.
-                    """
-                ),
-            )
-            self.write_spec_family_asset_fixture(
-                root,
-                "test-spec",
-                {
-                    "assets/test-spec-skeleton.md": self.spec_family_asset_text(
-                        template="test-spec-skeleton-v1",
-                        skill="test-spec",
-                        body="## Status\n\n<status>\n",
-                    ),
-                    "assets/test-case.md": self.spec_family_asset_text(
-                        template="test-spec-test-case-v1", skill="test-spec"
-                    ),
-                    "assets/coverage-map-row.md": self.spec_family_asset_text(
-                        template="test-spec-coverage-map-row-v1", skill="test-spec"
-                    ),
-                    "assets/validation-command-row.md": self.spec_family_asset_text(
-                        template="test-spec-validation-command-row-v1",
-                        skill="test-spec",
-                    ),
-                    "assets/milestone-proof-row.md": self.spec_family_asset_text(
-                        template="test-spec-milestone-proof-row-v1",
-                        skill="test-spec",
-                    ),
-                },
-            )
 
-            result = run_validator(root)
-            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-
-    def test_spec_family_generated_asset_presence_passes_for_complete_output(self) -> None:
+    def test_current_generated_asset_presence_passes_for_complete_output(self) -> None:
         fixture = FIXTURES / "published-design/generated-output-presence/valid"
         errors = skill_validation.validate_generated_asset_presence(
-            skill_name="spec",
-            canonical_skill_dir=fixture / "canonical/spec",
-            generated_skill_dir=fixture / "generated/spec",
+            skill_name="proposal",
+            canonical_skill_dir=fixture / "canonical/proposal",
+            generated_skill_dir=fixture / "generated/proposal",
             surface_label="generated skill mirror",
         )
 
         self.assertEqual(errors, [])
 
-    def test_spec_family_generated_asset_presence_fails_for_missing_generated_asset(self) -> None:
+    def test_current_generated_asset_presence_fails_for_missing_generated_asset(self) -> None:
         fixture = FIXTURES / "published-design/generated-output-presence/missing-asset"
         errors = skill_validation.validate_generated_asset_presence(
-            skill_name="spec",
-            canonical_skill_dir=fixture / "canonical/spec",
-            generated_skill_dir=fixture / "generated/spec",
+            skill_name="proposal",
+            canonical_skill_dir=fixture / "canonical/proposal",
+            generated_skill_dir=fixture / "generated/proposal",
             surface_label="generated skill mirror",
         )
 
         self.assertEqual(
             errors,
             [
-                "Generated output for skill 'spec' is missing mapped asset "
-                "'assets/spec-skeleton.md' in generated skill mirror"
+                "Generated output for skill 'proposal' is missing mapped asset "
+                "'assets/proposal-skeleton.md' in generated skill mirror"
             ],
         )
 
-    def test_spec_family_generated_asset_presence_names_adapter_surface(self) -> None:
+    def test_current_generated_asset_presence_names_adapter_surface(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            canonical_skill_dir = self.write_spec_family_asset_fixture(
+            canonical_skill_dir = self.write_asset_fixture(
                 root / "canonical",
-                "spec-review",
+                "code-review",
                 {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
+                    "assets/review-result-skeleton.md": self.asset_text(
+                        template="code-review-result-skeleton-v1",
+                        skill="code-review",
                         body="## Result\n\n- Review status: <review status>\n",
                     ),
-                    "assets/material-finding.md": self.spec_family_asset_text(
-                        template="spec-review-material-finding-v1",
-                        skill="spec-review",
+                    "assets/material-finding.md": self.asset_text(
+                        template="code-review-material-finding-v1",
+                        skill="code-review",
                         body="## Finding <finding id>\n\n- Finding ID: <finding id>\n- Severity: <severity>\n",
                     ),
                 },
             )
-            generated_skill_dir = root / "generated-adapter" / "spec-review"
+            generated_skill_dir = root / "generated-adapter" / "code-review"
             generated_asset = generated_skill_dir / "assets/review-result-skeleton.md"
             generated_asset.parent.mkdir(parents=True, exist_ok=True)
             generated_asset.write_text("generated result skeleton", encoding="utf-8")
 
             errors = skill_validation.validate_generated_asset_presence(
-                skill_name="spec-review",
+                skill_name="code-review",
                 canonical_skill_dir=canonical_skill_dir,
                 generated_skill_dir=generated_skill_dir,
                 surface_label="generated adapter output",
@@ -1518,190 +1438,22 @@ Use the inputs somehow and produce a useful result.
             self.assertEqual(
                 errors,
                 [
-                    "Generated output for skill 'spec-review' is missing mapped asset "
+                    "Generated output for skill 'code-review' is missing mapped asset "
                     "'assets/material-finding.md' in generated adapter output"
                 ],
             )
 
-    def test_spec_family_asset_rejects_unapproved_asset_paths(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1", skill="spec-review"
-                    ),
-                    "assets/material-finding.md": self.spec_family_asset_text(
-                        template="spec-review-material-finding-v1", skill="spec-review"
-                    ),
-                    "assets/review-dimension-row.md": self.spec_family_asset_text(
-                        template="spec-review-dimension-row-v1", skill="spec-review"
-                    ),
-                },
-            )
-
-            result = run_validator(root)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("spec-family asset rollout must ship exactly approved assets", result.stdout + result.stderr)
-
-    def test_spec_family_asset_resource_map_requires_copy_and_fields(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec",
-                {
-                    "assets/spec-skeleton.md": self.spec_family_asset_text(
-                        template="spec-skeleton-v1", skill="spec"
-                    ),
-                },
-                resource_entries=textwrap.dedent(
-                    """\
-                    - READ `assets/spec-skeleton.md` when creating a spec.
-                      Do not emit unfilled placeholders.
-                    """
-                ),
-            )
-
-            result = run_validator(root)
-            output = result.stdout + result.stderr
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must use literal COPY", output)
-            self.assertIn("Resource map entry for 'assets/spec-skeleton.md' must name fields or structures to fill", output)
 
 
-    def test_spec_family_asset_metadata_status_and_placeholder_required(self) -> None:
-        cases = [
-            (
-                "missing metadata",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    include_metadata=False,
-                ),
-                "asset metadata missing required field 'Template'",
-            ),
-            (
-                "invalid status",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    status="example",
-                ),
-                "spec-family asset 'assets/spec-skeleton.md' Template status must be one of normative, optional",
-            ),
-            (
-                "missing placeholder",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    body="## Status\n\nStatus field.\n",
-                ),
-                "asset 'assets/spec-skeleton.md' must include a visible placeholder",
-            ),
-            (
-                "filler prose",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    body="your text here\n",
-                ),
-                "asset 'assets/spec-skeleton.md' must not use filler placeholder text",
-            ),
-            (
-                "root dependency",
-                self.spec_family_asset_text(
-                    template="spec-skeleton-v1",
-                    skill="spec",
-                    body="Run scripts/internal-check.py before filling <field>.\n",
-                ),
-                "asset 'assets/spec-skeleton.md' must not require repository-root dependency",
-            ),
-        ]
 
-        for name, asset_text, expected in cases:
-            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
-                self.write_spec_family_asset_fixture(
-                    root,
-                    "spec",
-                    {
-                        "assets/spec-skeleton.md": asset_text,
-                    },
-                )
 
-                result = run_validator(root)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertIn(expected, result.stdout + result.stderr)
 
-    def test_spec_review_asset_review_policy_prose_fails(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
-                        body="This asset MUST define severity policy for reviewers.\n<field>\n",
-                    ),
-                    "assets/material-finding.md": self.spec_family_asset_text(
-                        template="spec-review-material-finding-v1", skill="spec-review"
-                    ),
-                },
-            )
-
-            result = run_validator(root)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn(
-                "spec-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
-                result.stdout + result.stderr,
-            )
-
-    def test_spec_review_asset_review_policy_field_label_fails(self) -> None:
-        for forbidden_label in (
-            "Severity policy",
-            "Recording-status rules",
-            "Review dimension",
-            "Security",
-            "Privacy",
-            "Observability",
-            "Sufficiency",
-            "Safe-resolution decision",
-        ):
-            with self.subTest(forbidden_label=forbidden_label):
-                with tempfile.TemporaryDirectory() as temporary:
-                    root = Path(temporary)
-                    self.write_spec_family_asset_fixture(
-                        root,
-                        "spec-review",
-                        {
-                            "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                                template="spec-review-result-skeleton-v1",
-                                skill="spec-review",
-                                body=f"- {forbidden_label}: <policy>\n",
-                            ),
-                            "assets/material-finding.md": self.spec_family_asset_text(
-                                template="spec-review-material-finding-v1", skill="spec-review"
-                            ),
-                        },
-                    )
-
-                    result = run_validator(root)
-                    self.assertNotEqual(result.returncode, 0)
-                    self.assertIn(
-                        "spec-review asset 'assets/review-result-skeleton.md' must not contain review-policy labels or guidance",
-                        result.stdout + result.stderr,
-                    )
 
 
     def test_proposal_family_asset_valid_fixture_passes(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal",
                 {
@@ -1717,7 +1469,7 @@ Use the inputs somehow and produce a useful result.
                     ),
                 },
             )
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal-review",
                 {
@@ -1776,7 +1528,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_review_result_skeleton_preserves_baseline_result_block(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal-review",
                 {
@@ -1834,7 +1586,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_family_asset_rejects_unapproved_asset_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal",
                 {
@@ -1857,7 +1609,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_family_asset_resource_map_requires_copy_and_fields(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal",
                 {
@@ -1937,7 +1689,7 @@ Use the inputs somehow and produce a useful result.
         for name, asset_text, expected in cases:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
-                self.write_spec_family_asset_fixture(
+                self.write_asset_fixture(
                     root,
                     "proposal",
                     {
@@ -1964,7 +1716,7 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(forbidden_label=forbidden_label):
                 with tempfile.TemporaryDirectory() as temporary:
                     root = Path(temporary)
-                    self.write_spec_family_asset_fixture(
+                    self.write_asset_fixture(
                         root,
                         "proposal-review",
                         {
@@ -1997,7 +1749,7 @@ Use the inputs somehow and produce a useful result.
         ):
             with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
-                self.write_spec_family_asset_fixture(
+                self.write_asset_fixture(
                     root,
                     "proposal-review",
                     {
@@ -2025,7 +1777,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_review_asset_policy_prose_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "proposal-review",
                 {
@@ -2052,7 +1804,7 @@ Use the inputs somehow and produce a useful result.
     def test_proposal_family_generated_asset_presence_names_adapter_surface(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            canonical_skill_dir = self.write_spec_family_asset_fixture(
+            canonical_skill_dir = self.write_asset_fixture(
                 root / "canonical",
                 "proposal-review",
                 {
@@ -2091,7 +1843,7 @@ Use the inputs somehow and produce a useful result.
     def test_review_family_asset_resource_map_requires_finding_id_confirmation(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "code-review",
                 {
@@ -2204,287 +1956,23 @@ Use the inputs somehow and produce a useful result.
         self.assertNotIn("clean-with-notes", result_skeleton)
 
 
-    def test_spec_review_canonical_contract_rejects_test_spec_immediate_stage(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            skill_dir = self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Result\n\n"
-                            "- Review status: <approved | changes-requested | blocked | inconclusive>\n"
-                            "- Immediate next stage: <architecture | plan | test-spec>\n"
-                            "- Eventual test-spec readiness: <ready | conditionally-ready | not-ready>\n"
-                            "- Stop condition: <none or stop condition>\n"
-                        ),
-                    ),
-                    "assets/material-finding.md": self.review_family_asset_text(
-                        template="spec-review-material-finding-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Finding <finding id>\n\n"
-                            "- Finding ID: <finding id>\n"
-                            "- Severity: <severity>\n"
-                            "- Location: <location>\n"
-                            "- Evidence: <evidence>\n"
-                            "- Required outcome: <required outcome>\n"
-                            "- Safe resolution path: <safe resolution path>\n"
-                            "- needs-decision rationale: <needs-decision rationale>\n"
-                        ),
-                    ),
-                },
-            )
-
-            errors = skill_validation.validate_spec_review_canonical_contract(
-                skill_dir / "SKILL.md"
-            )
-
-        self.assertIn(
-            "spec-review result skeleton Immediate next stage enum must exclude test-spec",
-            "\n".join(errors),
-        )
-
-    def test_spec_review_canonical_contract_rejects_duplicate_material_field_list(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            skill_dir = self.write_spec_family_asset_fixture(
-                root,
-                "spec-review",
-                {
-                    "assets/review-result-skeleton.md": self.spec_family_asset_text(
-                        template="spec-review-result-skeleton-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Result\n\n"
-                            "- Review status: <approved | changes-requested | blocked | inconclusive>\n"
-                            "- Immediate next stage: <spec revision | review-resolution | architecture | plan | none>\n"
-                            "- Eventual test-spec readiness: <ready | conditionally-ready | not-ready>\n"
-                            "- Stop condition: <none or stop condition>\n"
-                        ),
-                    ),
-                    "assets/material-finding.md": self.review_family_asset_text(
-                        template="spec-review-material-finding-v1",
-                        skill="spec-review",
-                        body=(
-                            "## Finding <finding id>\n\n"
-                            "- Finding ID: <finding id>\n"
-                            "- Severity: <severity>\n"
-                            "- Location: <location>\n"
-                            "- Evidence: <evidence>\n"
-                            "- Required outcome: <required outcome>\n"
-                            "- Safe resolution path: <safe resolution path>\n"
-                            "- needs-decision rationale: <needs-decision rationale>\n"
-                        ),
-                    ),
-                },
-            )
-            skill_path = skill_dir / "SKILL.md"
-            skill_path.write_text(
-                skill_path.read_text(encoding="utf-8")
-                + textwrap.dedent(
-                    """
-
-                    ## Isolation and Recording
-
-                    Material findings must include:
-
-                    - Finding ID
-                    - Severity
-                    - Location
-                    - Evidence
-                    - Required outcome
-                    - Safe resolution path
-                    """
-                ),
-                encoding="utf-8",
-            )
-
-            errors = skill_validation.validate_spec_review_canonical_contract(skill_path)
-
-        self.assertIn(
-            "spec-review SKILL.md must not re-enumerate the complete material-finding field list outside the Resource map",
-            "\n".join(errors),
-        )
 
 
-    def assertSpecReviewResultPasses(self, result_text: str) -> None:
-        errors = skill_validation.validate_spec_review_result_fields(
-            textwrap.dedent(result_text)
-        )
-        self.assertEqual(errors, [])
 
-    def assertSpecReviewResultFails(self, result_text: str, expected_text: str) -> None:
-        errors = skill_validation.validate_spec_review_result_fields(
-            textwrap.dedent(result_text)
-        )
-        self.assertTrue(errors, "expected controlled spec-review result fixture to fail")
-        self.assertIn(expected_text, "\n".join(errors))
 
-    def test_spec_review_result_fixture_accepts_allowed_immediate_next_stage_values(self) -> None:
-        fixtures = {
-            "spec revision": (
-                "Review status: changes-requested\n"
-                "Immediate next stage: spec revision\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: none\n"
-            ),
-            "review-resolution": (
-                "Review status: blocked\n"
-                "Immediate next stage: review-resolution\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: material findings require disposition\n"
-            ),
-            "architecture": (
-                "Review status: approved\n"
-                "Immediate next stage: architecture\n"
-                "Eventual test-spec readiness: conditionally-ready\n"
-                "Readiness condition: architecture must be completed before test-spec authoring\n"
-                "Stop condition: none\n"
-            ),
-            "plan": (
-                "Review status: approved\n"
-                "Immediate next stage: plan\n"
-                "Eventual test-spec readiness: ready\n"
-                "Stop condition: none\n"
-            ),
-            "none": (
-                "Review status: inconclusive\n"
-                "Immediate next stage: none\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: missing reviewer input\n"
-            ),
-        }
 
-        for stage, fixture in fixtures.items():
-            with self.subTest(stage=stage):
-                self.assertSpecReviewResultPasses(fixture)
 
-    def test_spec_review_result_fixture_rejects_test_spec_as_immediate_next_stage(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: approved
-            Immediate next stage: test-spec
-            Eventual test-spec readiness: ready
-            Stop condition: none
-            """,
-            "Immediate next stage must not be test-spec",
-        )
 
-    def test_spec_review_result_fixture_rejects_pseudo_routing_values(self) -> None:
-        for stage in ("blocker handling", "missing-context resolution", "ready for test-spec"):
-            with self.subTest(stage=stage):
-                self.assertSpecReviewResultFails(
-                    f"""
-                    Review status: blocked
-                    Immediate next stage: {stage}
-                    Eventual test-spec readiness: not-ready
-                    Stop condition: blocker
-                    """,
-                    "Immediate next stage is not an allowed value",
-                )
 
-    def test_spec_review_result_fixture_rejects_approved_not_ready(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: approved
-            Immediate next stage: plan
-            Eventual test-spec readiness: not-ready
-            Stop condition: none
-            """,
-            "approved requires Eventual test-spec readiness ready or conditionally-ready",
-        )
 
-    def test_spec_review_result_fixture_rejects_not_assessed_readiness(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: inconclusive
-            Immediate next stage: none
-            Eventual test-spec readiness: not-assessed
-            Stop condition: missing reviewer input
-            """,
-            "Eventual test-spec readiness must not be not-assessed",
-        )
 
-    def test_spec_review_result_fixture_rejects_status_to_routing_contradictions(self) -> None:
-        invalid = {
-            "approved spec revision": (
-                "Review status: approved\n"
-                "Immediate next stage: spec revision\n"
-                "Eventual test-spec readiness: ready\n"
-                "Stop condition: none\n",
-                "approved requires Immediate next stage architecture or plan",
-            ),
-            "approved review-resolution": (
-                "Review status: approved\n"
-                "Immediate next stage: review-resolution\n"
-                "Eventual test-spec readiness: ready\n"
-                "Stop condition: none\n",
-                "approved requires Immediate next stage architecture or plan",
-            ),
-            "approved none": (
-                "Review status: approved\n"
-                "Immediate next stage: none\n"
-                "Eventual test-spec readiness: ready\n"
-                "Stop condition: none\n",
-                "approved requires Immediate next stage architecture or plan",
-            ),
-            "changes-requested plan": (
-                "Review status: changes-requested\n"
-                "Immediate next stage: plan\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: none\n",
-                "changes-requested requires Immediate next stage spec revision or review-resolution",
-            ),
-            "blocked architecture": (
-                "Review status: blocked\n"
-                "Immediate next stage: architecture\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: blocker\n",
-                "blocked requires Immediate next stage review-resolution or none",
-            ),
-            "inconclusive plan": (
-                "Review status: inconclusive\n"
-                "Immediate next stage: plan\n"
-                "Eventual test-spec readiness: not-ready\n"
-                "Stop condition: missing input\n",
-                "inconclusive requires Immediate next stage none",
-            ),
-        }
 
-        for name, (fixture, expected) in invalid.items():
-            with self.subTest(name=name):
-                self.assertSpecReviewResultFails(fixture, expected)
 
-    def test_spec_review_result_fixture_requires_stop_condition_for_inconclusive(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: inconclusive
-            Immediate next stage: none
-            Eventual test-spec readiness: not-ready
-            Stop condition: none
-            """,
-            "inconclusive requires a concrete Stop condition",
-        )
-
-    def test_spec_review_result_fixture_requires_condition_for_conditionally_ready(self) -> None:
-        self.assertSpecReviewResultFails(
-            """
-            Review status: approved
-            Immediate next stage: architecture
-            Eventual test-spec readiness: conditionally-ready
-            Stop condition: none
-            """,
-            "conditionally-ready requires a named condition",
-        )
 
     def test_review_family_material_finding_requires_parser_owned_labels(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "code-review",
                 {
@@ -2535,13 +2023,12 @@ Use the inputs somehow and produce a useful result.
             )
             for skill_name, finding_body in (
                 ("code-review", common_finding),
-                ("proposal-review", common_finding),
-                ("spec-review", changed_finding),
+                ("proposal-review", changed_finding),
             ):
                 result_body = "- Review status: <review status>\n"
                 if skill_name == "proposal-review":
                     result_body = "## Result\n\n- Skill: proposal-review\n- Review status: <review status>\n"
-                self.write_spec_family_asset_fixture(
+                self.write_asset_fixture(
                     root,
                     skill_name,
                     {
@@ -2568,7 +2055,7 @@ Use the inputs somehow and produce a useful result.
     def test_review_family_asset_policy_field_labels_fail(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self.write_spec_family_asset_fixture(
+            self.write_asset_fixture(
                 root,
                 "code-review",
                 {
@@ -4220,7 +3707,7 @@ and result format.
                 """
             )
 
-        for skill_name in ("proposal-review", "spec-review"):
+        for skill_name in ("proposal-review",):
             with self.subTest(skill=skill_name):
                 self.assertEqual(
                     skill_validation.validate_installed_skill_artifact_placement_contract(
@@ -4269,11 +3756,6 @@ and result format.
                 "spec-review",
                 "skills/proposal-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type spec-review records",
             ),
-            (
-                "spec-review",
-                "proposal-review",
-                "skills/spec-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type proposal-review records",
-            ),
         )
 
         for skill_name, record_type_name, expected_error in cases:
@@ -4293,8 +3775,8 @@ and result format.
         self,
     ) -> None:
         errors = skill_validation.validate_installed_skill_artifact_placement_contract(
-            Path("skills/spec-review/SKILL.md"),
-            "spec-review",
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
             textwrap.dedent(
                 """\
                 # Spec review
@@ -4302,7 +3784,7 @@ and result format.
                 ## Artifact placement
 
                 Formal review records go under:
-                `docs/changes/<change-id>/reviews/spec-review-r<n>.md`
+                `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`
 
                 Record the review-log entry in:
                 `docs/changes/<change-id>/review-log.md`
@@ -4321,7 +3803,7 @@ and result format.
         )
 
         self.assertIn(
-            "skills/spec-review/SKILL.md: installed-skill placement contract must state the stage-owned record type spec-review record(s)",
+            "skills/proposal-review/SKILL.md: installed-skill placement contract must state the stage-owned record type proposal-review record(s)",
             errors,
         )
 
@@ -4332,13 +3814,13 @@ and result format.
             """\
             # Spec review
 
-            Mentioning spec-review records outside the placement block does not
+            Mentioning proposal-review records outside the placement block does not
             satisfy the placement contract.
 
             ## Artifact placement
 
-            Formal proposal-review records go under:
-            `docs/changes/<change-id>/reviews/spec-review-r<n>.md`
+            Formal spec-review records go under:
+            `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`
 
             Record the review-log entry in:
             `docs/changes/<change-id>/review-log.md`
@@ -4356,13 +3838,13 @@ and result format.
         )
 
         errors = skill_validation.validate_installed_skill_artifact_placement_contract(
-            Path("skills/spec-review/SKILL.md"),
-            "spec-review",
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
             body,
         )
 
         self.assertIn(
-            "skills/spec-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type proposal-review records",
+            "skills/proposal-review/SKILL.md: installed-skill placement contract names the wrong stage-owned record type spec-review records",
             errors,
         )
 
@@ -4396,15 +3878,15 @@ and result format.
         self,
     ) -> None:
         errors = skill_validation.validate_installed_skill_artifact_placement_contract(
-            Path("skills/spec-review/SKILL.md"),
-            "spec-review",
+            Path("skills/proposal-review/SKILL.md"),
+            "proposal-review",
             textwrap.dedent(
                 """\
                 # Spec review
 
                 ## Artifact placement
 
-                Formal spec-review records go under `docs/changes/<change-id>/reviews/spec-review-r<n>.md`.
+                Formal proposal-review records go under `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`.
                 Record the review-log entry in `docs/changes/<change-id>/review-log.md`.
                 Use `docs/changes/<change-id>/review-resolution.md` only when material findings require it.
                 Isolated advisory reviews do not create lifecycle artifacts unless explicitly asked.
@@ -4413,7 +3895,7 @@ and result format.
         )
 
         self.assertIn(
-            "skills/spec-review/SKILL.md: installed-skill placement contract must state create-or-request change-pack behavior before claiming Recording status: recorded",
+            "skills/proposal-review/SKILL.md: installed-skill placement contract must state create-or-request change-pack behavior before claiming Recording status: recorded",
             errors,
         )
 
