@@ -152,6 +152,24 @@
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-first.json",
       "reason": "Exact frozen source-disposition mismatch independently inspected before correction.",
       "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-m6-design-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-reconciled.json",
+      "reason": "Fresh independent complete M6 reconciliation judgment after all three recorded corrections; exact current owner/guidance/example and disposition basis inspected.",
+      "value": "current"
+    },
+    {
+      "actor": {
+        "id": "independent-full-specs-delivery-reviewer",
+        "role": "review"
+      },
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-m6-current-basis.json",
+      "reason": "Complete unchanged plan independently reassessed against fresh exact M6 Design; sequencing and proof allocation cover the final discovered dependency and example scope.",
+      "value": "current"
     }
   ],
   "blockers": [],
@@ -315,6 +333,14 @@
     {
       "kind": "review",
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-first.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-m6-reconciled.json"
+    },
+    {
+      "kind": "review",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/delivery-review-m6-current-basis.json"
     }
   ],
   "schema_version": 3,

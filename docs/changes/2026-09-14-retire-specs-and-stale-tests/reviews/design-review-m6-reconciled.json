@@ -1,0 +1,231 @@
+{
+  "assessment_scope": "Fresh exact M6 Design reconciliation assessment of frozen c03b2205 relative to3eefc51c, within the approved complete specs/stale-validation direction. Includes affected current owners, governance/current guidance, source disposition and148 pending source/example identities, changed retained example navigation and relevant unchanged owner interactions. Original full-specs Design assessment supplies historical transfer context, not automatic approval of revised subjects.",
+  "change_id": "2026-09-14-retire-specs-and-stale-tests",
+  "contributors": [
+    {
+      "id": "codex-specs-design-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "design-review-m6-reconciled",
+  "independence_basis": "Delegated independent reviewer authored no model, governance, guidance, disposition or example contribution. Independently read current owning contracts and affected example/guidance package, assessed source/receiver mappings against actual sources and original approved direction, and recorded three required corrections before author fixes.",
+  "judgment": "approved",
+  "limitations": [
+    "This is Design package approval for Delivery reliance, not implementation approval or evidence that148 pending source deletions and full test/fixture reconciliation are complete.",
+    "M6 must still deliver current dependency/project-map reconciliation, final source/protection inventory, actual local and committed-range selection plus integrated checks. Fresh independent whole-change Code Review and distinct final Verify remain mandatory; this judgment grants no branch, PR, release or customer-adoption readiness."
+  ],
+  "rationale": [
+    "Current behavior and ownership remain coherent. System composes Skill, CLI and Engineering; Design owns authoring and customer feature resources, Assessment owns review/reliance, Workflow coordinates, Records owns v3 representation, and Installation/Packaging/Release retain independent trust and qualification contracts. Independent comparison found no changed SR rows in the M6 delta; existing architecture overviews and necessary supporting views remain aligned.",
+    "Historical-table qualification is explicit and bounded to this repository’s complete retirement. Prior selective retention, amendment, activation and retired-engine instructions do not survive as current dependencies. Important behavior, decisions, alternatives and acceptance remain in existing owners; source-qualified identities and old judgments retain original meaning. Constitution preserves independent reviews, final Code Review/Verify, proof, permission and current-reliance safeguards while removing duplicate legacy authority layers.",
+    "Source disposition now identifies meaningful receiving owners for all27 coupled architecture/ADR files, including actual CLI observability rather than boundary-method activation.111 remaining baseline specs plus10 historical v2 illustrations have recorded recoverable identities; independently checked all148 pending sources against Git and current bytes. Prior five baseline source removals/relocations remain in their separately reviewed implementation evidence. Current operation does not require retrieving historical sources.",
+    "Ten positive historical v2 illustrations are explicitly non-operational and have no current executable readers. Their represented work/review concepts are already current v3 obligations; old body/origin/version acceptance is retired. Current v3 examples, negative v2-store responses, mixed-store rejection, unknown-command and internal observation schema2 remain distinct. Corrected retained collection and indexes use recoverable provenance, preserving synthetic-example limitations and current local links.",
+    "Current maintainer and curated learning guidance resolves present owners and actual command families without reactivating old state/ledger/measurement procedures. Token-measurement topic retirement follows existing VAL-SR-25 and preserves historical sessions. No new runtime compatibility, customer adoption, release permission or measurement programme is introduced.",
+    "All three required findings were independently reassessed and explicitly resolved. Model/prose author checks support structure only; semantic assessment rests on current contracts, source meaning, dependencies and declared example invariants. No required Design correction or unresolved direction remains in this package."
+  ],
+  "reviewer": {
+    "id": "independent-m6-design-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:d6c35b64cc3ea5ff9b170124fda92c4d16658974859266b50b5852273d10d63d",
+      "path": "docs/design/system.md"
+    },
+    {
+      "identity": "sha256:ad80a8e44a1f3c2bcc5c79fa06e5b0ba6e62b248e66a8105a458f3505f68145e",
+      "path": "docs/design/skill/skill.md"
+    },
+    {
+      "identity": "sha256:ca2ba146c7cd45409b8b37a22d2baece26efed668f3ddad9309f495056ee1623",
+      "path": "docs/design/skill/workflow.md"
+    },
+    {
+      "identity": "sha256:d787cece629dd7eed0a12c53366a5d41aa52f59d5c1250881550b5eebe04ff0a",
+      "path": "docs/design/skill/design.md"
+    },
+    {
+      "identity": "sha256:ae3b59ec189fd66962ddb3f50a4c0e48422fc9a1086aae641c54dd1481fd715b",
+      "path": "docs/design/skill/assessment.md"
+    },
+    {
+      "identity": "sha256:eef25314c2f34d4cceca2b8e2a12675fd9773da34fa949fd92cb224ed6a456e7",
+      "path": "docs/design/cli/cli.md"
+    },
+    {
+      "identity": "sha256:c088b648eb0a8308c8cae1deb7f5be562cf5fb81ceed2552d5256851ca69acf7",
+      "path": "docs/design/cli/records.md"
+    },
+    {
+      "identity": "sha256:756a282dbfe5f363eb4eb39986e0f68cf607501bfb9de2a98d96de66b0819578",
+      "path": "docs/design/cli/installation.md"
+    },
+    {
+      "identity": "sha256:5cc2d2850fbc4147b1bd123a1f36c3f88baa49d4b698985bee00a6975ed03b4b",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:a8e0b1f979c2eb004e0a370a944895df81b29d093543b1a3913d26efb6c61607",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:6dfe2436431bc52be7b3715e9249559bb7a893b08f6211e0a43b1a936b6096fd",
+      "path": "docs/design/engineering/packaging.md"
+    },
+    {
+      "identity": "sha256:4e64ece2c8b1147778fa31becc2ecb1d08469b7610cf53d29ecf40b49865441e",
+      "path": "docs/design/engineering/release.md"
+    },
+    {
+      "identity": "sha256:2a42da7884e3aeff0020f814fcb36b98f88ad80fc385a8f52a2b5ddaf4aa0ca9",
+      "path": "docs/design/skill/examples/workflow/correction-cycle.mmd"
+    },
+    {
+      "identity": "sha256:9c72b798118812582b3189718f9da989340d805a8f880ca898bd0438146de55b",
+      "path": "docs/design/cli/examples/v3-complete-assessment-recording/README.md"
+    },
+    {
+      "identity": "sha256:f4bd6a92c07d69f06efc9336eb678e241888d20541fbaf2bd115e1153543a469",
+      "path": "docs/design/cli/examples/v3-assessment-update-errors/README.md"
+    },
+    {
+      "identity": "sha256:4598cfe6e111925f02bb7da60167587512c28ae78b497cf215fba2a22b983508",
+      "path": "docs/design/cli/examples/records/v3-verify-without-evidence/README.md"
+    },
+    {
+      "identity": "sha256:e4c02cb101a8f78b467a8a2c3dbf517934e56d30fc8b8085cb5c3b5a5fc87f1e",
+      "path": ".github/pull_request_template.md"
+    },
+    {
+      "identity": "sha256:a15d4f3889629c69f946269da05e32f00161148a07f7de62f01038ced3e28cb9",
+      "path": "AGENTS.md"
+    },
+    {
+      "identity": "sha256:24af26bb7ce0a17c07afcab73c4f8119a127a338be90d9c0910ead925561f642",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:15f16953bd26df0240c53334daa4c34cc6351aaa35ab315066d11b2e32d796d0",
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "identity": "sha256:cf22c185ddf48adf59cf29997aa6da2b3b505ccdf44fbf4a8a4e7553e98511d4",
+      "path": "README.md"
+    },
+    {
+      "identity": "sha256:dec79163d59fb9e8a8b935cab6fc7763185d0f33b284c5764df03b7c9e6796b7",
+      "path": "docs/design/cli/examples/README.md"
+    },
+    {
+      "identity": "sha256:520f9a576c30b1401906b2151f17b168e70a9abf3c939da41b4d270cada0a6d0",
+      "path": "docs/design/cli/examples/records/README.md"
+    },
+    {
+      "identity": "sha256:55f9f7bc65630722cd7973e90f93cfdb199d7dbe70ee0c3d39f969c25bbe9e7a",
+      "path": "docs/learn/README.md"
+    },
+    {
+      "identity": "sha256:e8617d1c3fe6dbf0b5ed2ea0f41f4e6f4ba912212f9d7ffa42ac40febccff74f",
+      "path": "docs/learn/topics/evidence-preserving-compaction.md"
+    },
+    {
+      "identity": "sha256:01b5f895bba1207c78e90c4967448542b5d5b65e576f97448ba9b62c2d15d31d",
+      "path": "docs/learn/topics/plan-lifecycle-closeout.md"
+    },
+    {
+      "identity": "sha256:e9d9547ca8a70ad449c404ae334e4817215f6a66ec7964751092aff9fe397324",
+      "path": "docs/learn/topics/review-artifact-recording.md"
+    },
+    {
+      "identity": "sha256:52ba683dc8c43854a9be59e77b95a44675aa44c165429182ff97a766914d8b98",
+      "path": "docs/learn/topics/script-output-optimization.md"
+    },
+    {
+      "identity": "sha256:a88658adc87817e5c06bad6b82277a9e8311e4f7feff862f644878ffc5186904",
+      "path": "docs/learn/topics/skill-asset-design.md"
+    },
+    {
+      "identity": "sha256:3226cfa1ca6c5c9ea7aeae99eb60700ab08804dc285fe5d18cfdabfde261452e",
+      "path": "docs/learn/topics/workflow-stage-order.md"
+    },
+    {
+      "identity": "sha256:4a3b6014c52b5c567917f8dad01c1dc49779104f3a02bee28c8fefbdeae9b73e",
+      "path": "packages/rigorloop/README.md"
+    },
+    {
+      "identity": "sha256:6c879a76afc9d6317951ba1dc883b9a5c220ba80df0cdb3b2f94e60363794207",
+      "path": "packages/rigorloop/package.json"
+    },
+    {
+      "identity": "sha256:a2e1774f250b89aea4b3c862e7e5fae2acb78cc6486cb51cb05f9ec136337bd5",
+      "path": "docs/design/cli/examples/v2-work-status-update/README.md"
+    },
+    {
+      "identity": "sha256:f35f7b4c6fc54f3bbe5164b1d75ef2b786f7898a8d64199f0d15dab2c2b3018e",
+      "path": "docs/design/cli/examples/v2-work-status-update/request.json"
+    },
+    {
+      "identity": "sha256:75c8d51fdb5756ad71879f183ca6c08b807b7eba3f8e4648e0adbb682a77ab96",
+      "path": "docs/design/cli/examples/v2-work-status-update/response.json"
+    },
+    {
+      "identity": "sha256:20b6576be594afa31b410c5258d4d453521c6af6bc63925ceabf2e0814d1a1ef",
+      "path": "docs/design/cli/examples/records/v2-minimal-change/README.md"
+    },
+    {
+      "identity": "sha256:523ee35620d9deb9b393ecb59c414bd25e240be81a28dc76f347d412e0201cb6",
+      "path": "docs/design/cli/examples/records/v2-minimal-change/change.json"
+    },
+    {
+      "identity": "sha256:d479e679aad0c6437864c14a57898ecb83f296d9863f73a18962426f11a8cc23",
+      "path": "docs/design/cli/examples/records/v2-review-without-subjects/README.md"
+    },
+    {
+      "identity": "sha256:2a3d109d1be88ae0fa2b72fa8e14b34b781fb7e65ac07b93a7b7baa4eb6ea735",
+      "path": "docs/design/cli/examples/records/v2-review-without-subjects/review.json"
+    },
+    {
+      "identity": "sha256:cda984a4940320d34d75cb38d4de1e56ffa0e6ea5f90b12edf452efc49355463",
+      "path": "docs/design/cli/examples/records/v2-review-reassessment/README.md"
+    },
+    {
+      "identity": "sha256:c13ffa7fe8d4189f2f30f7bb5c603c50c0e8d4d783dc394013d7db81883f32e0",
+      "path": "docs/design/cli/examples/records/v2-review-reassessment/after.json"
+    },
+    {
+      "identity": "sha256:df39c9d8cb532e8fa48f3590e3558a4308bdfd815aab09b68866247be35d2f1d",
+      "path": "docs/design/cli/examples/records/v2-review-reassessment/before.json"
+    },
+    {
+      "identity": "sha256:903933825ce63a6685c52efe920b4df1fdd9fe6f5fe90b9a097dcb241e0179b7",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-design-reconciliation.json"
+    },
+    {
+      "identity": "sha256:22284c41fdb311c1bb7dbaded1d2ea5c7d53e063d5f40a79a593d6e9e5738045",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md"
+    },
+    {
+      "identity": "sha256:e503f56ebb4a1be5383fd3e0ec3e1b4ccac5bba8ef8c04a9e8640d8f12e8c9a0",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/source-inventory.tsv"
+    },
+    {
+      "identity": "sha256:36e72bf8ec654015a645287640266dc592b2260f877c5a96e788a80f803e2845",
+      "path": "docs/proposals/2026-09-14-retire-specs-and-stale-tests.md"
+    },
+    {
+      "identity": "sha256:21cfcdf9bea6de3fdb07b8a53dc099a98f48cdc4aa195ef518723a1f96bd3816",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/proposal-review-full-specs-current-basis.json"
+    },
+    {
+      "identity": "sha256:6d5736e2a2b01f76c09a027dd32498ed5e4454a3ab31c139643aba5d0ce9222c",
+      "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/reviews/design-review-full-specs-reconciled.json"
+    },
+    {
+      "identity": "sha256:25682f7b9cef0c0a85f4123a36792a281cb78d4270805df9b70a6c0164f4c224",
+      "path": "docs/design/cli/examples/records/v3-complete-store/README.md"
+    }
+  ],
+  "summary": "Final M6 authority, source provenance and example disposition package coherently preserves current contracts while retiring the selected historical material.",
+  "target": "design"
+}

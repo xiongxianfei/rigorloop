@@ -20,8 +20,20 @@
         "role": "review"
       },
       "required_outcome": "Correct the exact row to CLI-SR-29/30 retained logging/projection/privacy/compatibility decisions and explicit VAL-SR-25 retirement of historical metric/default-switch gates. Inspect other coupled ADR rows for equivalent name-based misclassification; preserve source hash and original ADR bytes. Safe resolution is evidence-only correction because current owning CLI contract already supplies the important meaning. Final exact Design and Delivery reassessment follows; no source deletion before approval.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "independent-m6-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-design-reconciliation",
+            "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+          }
+        ],
+        "rationale": "Reassessed corrected explicit27-file map at frozen c03b2205. Actual observability ADR now maps invocation, bounded logging/privacy and result projection to CLI-SR-14–20/29/30, and retires named-release measurements only. Other coupled rows identify their actual Skill/Workflow/Assessment, portable-resource, CLI and packaging/release owners. All148 selected current/Git bytes independently match recorded SHA256 values; source bytes remain unchanged."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:417264e528358a41faecf5c0601bb5f4a5c2cc46e17f6149acd32a478bc2d8bd",
@@ -53,8 +65,20 @@
         "role": "review"
       },
       "required_outcome": "Replace the citation with a verified retained commit/path and preserve the original historical session and earlier removal/patch evidence. Safe correction: use39b7c5cb1f03aa761d2f2493d3474ce985e59d6f for the original source, validate the corrected pair and all current changed provenance, and retain current Skill owner guidance unchanged. No new behavior or Delivery allocation needed.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "independent-m6-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-design-reconciliation",
+            "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+          }
+        ],
+        "rationale": "Corrected current skill-asset citation selects39b7c5cb1f03aa761d2f2493d3474ce985e59d6f:specs/spec-family-assets-progressive-disclosure.md, the verified recoverable source. Current Skill guidance and historical session remain intact. The author checked all changed provenance pairs; independent Git/source checks found no remaining mismatched selected source identity."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:a51752e91cb159cd5782c92cd43cf606e141df1e421ac5fec95f73e665d29028",
@@ -82,8 +106,20 @@
         "role": "review"
       },
       "required_outcome": "Reconcile the retained complete-store README with the historical-example retirement: preserve current v3 relationships and limitations, and remove or replace the historical before/after links with truthful recoverable provenance. Include the changed retained example README in the exact renewed Design package and check every current model/example consumer of the ten retired paths. Safe correction is documentation/provenance only; no new runtime behavior or Delivery allocation is required.",
-      "resolution": null,
-      "state": "open",
+      "resolution": {
+        "actor": {
+          "id": "independent-m6-design-reviewer",
+          "role": "review"
+        },
+        "evidence_refs": [
+          {
+            "id": "m6-design-reconciliation",
+            "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json"
+          }
+        ],
+        "rationale": "Reassessed complete retained v3 collection README at c03b2205: both before/after v2 links now explicitly identify recoverable baseline7ad33e1b1827c84dfa4e9fbbfc8b52a204b5139e Git paths. Current v3 collection, virtual references, synthetic-identity and non-readiness limitations remain unchanged. Exact retired-example name search finds no remaining local operational/example dependency; independently retained v2-error/schema2 examples remain current."
+      },
+      "state": "resolved",
       "subjects": [
         {
           "identity": "sha256:f91e6afaeb796d51896d54894f4c4f293307a55601030fb382808df4ddc82782",
