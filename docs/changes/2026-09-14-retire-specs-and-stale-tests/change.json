@@ -24,7 +24,7 @@
         "role": "implement"
       },
       "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/evidence.json",
-      "reason": "Exact M6 implementation/source/proof subjects inspected; current execution evidence recorded without claiming review or final readiness.",
+      "reason": "Refreshed actual M6 proof subjects and completed current runs support renewed evidence applicability; earlier checks retain their exact scoped meanings. No review or final readiness is claimed.",
       "value": "current"
     },
     {

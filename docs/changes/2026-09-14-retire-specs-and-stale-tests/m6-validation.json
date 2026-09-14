@@ -7,21 +7,21 @@
       "exit_code": 0,
       "result": "All current actual changes classified; no dropped source deletion.",
       "log": "/tmp/full-specs-m6-local-final.json",
-      "log_sha256": "cb25e3b7e24cfe983295ae383458244af2ebfb74f97fd2ddd8b2bfa356d57f76"
+      "log_sha256": "e769d245073cbf6a737fe776b3b0605536c100330b0aaca87955f572326498a9"
     },
     {
       "command": "python scripts/test-select-validation.py",
       "exit_code": 0,
       "result": "177 tests passed; six actual Git stage/trust partitions in added regression.",
       "log": "/tmp/full-specs-m6-selector-final.log",
-      "log_sha256": "9adde916f13d02a374b32b8be54e6fdba08dfc2743a110c4a4e663094b61f5e3"
+      "log_sha256": "f5125511ff4f96e38781b86d32886ebf37f627c8c4a9db17ce7e6c4a0179ca78"
     },
     {
       "command": "python scripts/test-validation-execution.py",
       "exit_code": 0,
-      "result": "52 tests passed.",
-      "log": "/tmp/full-specs-m6-execution.log",
-      "log_sha256": "08c5b97b5d9b1de086924f8a6acead9afde4b734caa0d8f3f68feba0a064f283"
+      "result": "53 tests passed.",
+      "log": "/tmp/full-specs-m6-execution-final.log",
+      "log_sha256": "64d8063a2d7165da99767dfbe21f15c5a4817e2c93d441d3536645228821a776"
     },
     {
       "command": "python scripts/validate-boundary-first.py --check",
@@ -70,16 +70,17 @@
       "exit_code": 0,
       "result": "Complete selected plus required broad run passed.",
       "log": "/tmp/full-specs-m6-ci-local.log",
-      "log_sha256": "ba9d543dd166c7fb032cd2d751528305993a4327c06a2750de498c66cb7cc7c8"
+      "log_sha256": "da2af4f0c7365e84e29e4175f4b049e049d8ec2cf489b2cfd1c6f65c055c4e1e"
     }
   ],
   "corrections": [
     "Initial real Git regression failed all six stage/trust partitions: general discovery omitted deleted paths and rename sources. Corrected with deletion-inclusive no-rename discovery; staged missing index entry now proves original HEAD source.",
+    "New snapshot check also required one explicit expected-catalog row; 11 catalog/output cases and all177selector tests passed after that update.",
     "Initial full selector:175pass/2fail due deleted repository spec fixture/word row. Customer fixture now isolated, stale literal row retired, all177passed. PRtemplate route also proved failing before classifying its current contributor purpose.",
     "Map ownership sentence omitted exact current guide boundary; restored explicit Workflow/CLI/route ownership and guide/prose checks passed.",
     "Initial combined local+broad run failed only the existing optional-discovery map orientation case; restored current Explore/Research links and optional owner handoff. Focused case, guide/prose and complete combined rerun passed; original failure log retained at /tmp/full-specs-m6-ci-local-initial.log."
   ],
   "limitations": [
-    "Local runs are not hostedCI. Model/prose/record structure success is not independent semantic approval. Historical proof stays scoped to its exact earlier subject. Final review and distinctVerify remain separate."
+    "Earlier local+broad pass at45aa80e3 is preserved in /tmp/full-specs-m6-ci-local-before-pr-correction.log; refreshed local+broad execution covers the snapshot/discovery correction. PR-range initial run at45aa80e3 failed before execution on conflicting current_records.validate arguments; separate snapshot/discovery canonicalIDs and actual composition regression correct the integration. Original failure log /tmp/full-specs-m6-ci-pr-initial.log. Local runs are not hostedCI. Model/prose/record structure success is not independent semantic approval. Historical proof stays scoped to its exact earlier subject. Final review and distinctVerify remain separate."
   ]
 }

@@ -499,19 +499,19 @@
       "result": "passed",
       "subjects": [
         {
-          "identity": "sha256:354031d4d2b78832532bbe4fa3d28c9ee2536cbeacff304e242957428ad5ecbf",
+          "identity": "sha256:64a2e81e5ba9fd71b714b9a793e657bcb1ecea8dabf98ac9c226deacfd3937da",
           "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-source-removal.json"
         },
         {
-          "identity": "sha256:267a0433a708a383353fe963bf78080b163cc3337b08417f18486dc1bdf6626c",
+          "identity": "sha256:c274e6acc359b6e6a658c329422d5403d34d34c4811c75894b026da26f48ac20",
           "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-validation.json"
         },
         {
-          "identity": "sha256:68cc9ca9614502380db7950fa1516a2a1ef91236dfec454796189f9bf5ac2b25",
+          "identity": "sha256:9558c2bc385d26e5627a50b353882a006c7757a6e73a1499c6e1cf753bfe3d1f",
           "path": "docs/changes/2026-09-14-retire-specs-and-stale-tests/m6-implementation.md"
         },
         {
-          "identity": "sha256:2a6bcfe20b9c8796101168b49c64be8fa114cbe0587e5f0292f843a2727c8b72",
+          "identity": "sha256:686e24be4a47ddf34be53eaad4126a002eae773f9312c05bda8ce4cda2df8fea",
           "path": "scripts/validation_selection.py"
         },
         {
@@ -519,8 +519,12 @@
           "path": "scripts/validation_execution.py"
         },
         {
-          "identity": "sha256:084f2de3e824b7287c28450e62a84beabb25091d221d0b79493c3d016d5473fd",
+          "identity": "sha256:82e820633a664af832a325e3f5f3bcfccc4229696b9f3cdae5aafcaa3b23e138",
           "path": "scripts/test-select-validation.py"
+        },
+        {
+          "identity": "sha256:ee6c432abbe128a78cc3f48f4175790ab83a6a2253f32dbf5290e6ae68ea71b7",
+          "path": "scripts/test-validation-execution.py"
         },
         {
           "identity": "sha256:b332586a3b72717e63743365937b4e852af25cc1d35a5aceac09919923700ee2",

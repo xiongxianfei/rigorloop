@@ -1012,7 +1012,6 @@
       "scripts/test-query-change-record.py",
       "scripts/test-release-transaction.py",
       "scripts/test-skill-validator.py",
-      "scripts/test-validation-execution.py",
       "tests/fixtures/adapters/agents-openai/SKILL.md",
       "tests/fixtures/adapters/codex-dollar-skill/SKILL.md",
       "tests/fixtures/adapters/codex-install-only/SKILL.md",
@@ -1197,7 +1196,7 @@
       {
         "path": "scripts/test-select-validation.py",
         "prior_sha256": "c70024f6c747941802e22ddd63f162ceb003dae93995d016998e440511f87bcb",
-        "sha256": "084f2de3e824b7287c28450e62a84beabb25091d221d0b79493c3d016d5473fd",
+        "sha256": "82e820633a664af832a325e3f5f3bcfccc4229696b9f3cdae5aafcaa3b23e138",
         "test_members": [
           "test_output_contract_default_success_is_single_summary_line",
           "test_output_contract_default_failure_expands_failures_only",
@@ -1377,6 +1376,66 @@
           "test_boundary_first_surfaces_select_boundary_validation",
           "test_output_contract_red_tests_are_unmasked_and_separate"
         ]
+      },
+      {
+        "path": "scripts/test-validation-execution.py",
+        "prior_sha256": "a77995f782214a991634c6a8ce4c50c0fb20e32ed59ad81e4b8a22838b4dcb0c",
+        "sha256": "ee6c432abbe128a78cc3f48f4175790ab83a6a2253f32dbf5290e6ae68ea71b7",
+        "test_members": [
+          "test_imported_cases_keep_normal_script_imports_selection_and_hooks",
+          "test_selected_methods_classes_and_filter_values_expand_to_one_case",
+          "test_real_discovery_duplicate_zero_and_loader_error_reject_before_cases",
+          "test_actual_worker_rejects_skipped_missing_and_disagreeing_receipts",
+          "test_missing_or_unknown_value_receipt_cannot_reuse_a_previous_pass",
+          "test_unknown_adapter_mode_rejects_before_script_execution",
+          "test_expansion_keeps_all_case_dependencies_and_failed_case_blocks_consumer",
+          "test_normal_custom_patterns_and_dynamic_fixture_discovery_are_preserved",
+          "test_real_wrapper_expands_selected_metadata_into_actual_cases",
+          "test_case_expansion_preserves_declared_serial_resource_constraint",
+          "test_normal_and_isolated_fixture_preserve_hooks_population_and_parallelism",
+          "test_parent_report_destination_is_private_and_nested_reports_are_owned",
+          "test_nested_budget_caps_actual_children_and_unknown_value_rejects_before_launch",
+          "test_complete_graph_rejects_before_any_launch",
+          "test_selector_cannot_relabel_boundary_phase",
+          "test_unknown_value_phase_and_resource_constraints_reject",
+          "test_reverse_completion_keeps_order_and_separate_streams",
+          "test_independent_failure_continues_and_dependency_failure_prevents_launch",
+          "test_parallel_tasks_actually_overlap_with_bounded_workers",
+          "test_serial_barrier_and_queue_time_excluded",
+          "test_fail_fast_awaits_started_failure_and_marks_every_queued_task",
+          "test_timeout_terminates_descendant_that_ignores_term_and_retry_is_fresh",
+          "test_failed_parent_stops_queue_during_descendant_cleanup",
+          "test_timeout_reaps_descendant_in_new_session",
+          "test_observed_outcome_survives_cleanup_past_execution_timeout",
+          "test_fast_orphan_with_replaced_environment_is_reaped_without_touching_unrelated_child",
+          "test_malformed_empty_selection_and_unknown_value_labels_reject",
+          "test_signal_and_unavailable_command_are_distinct",
+          "test_unsupported_platform_rejects_before_launch",
+          "test_budget_and_timeout_overrides_reject_invalid_values",
+          "test_interrupt_reaps_started_processes_and_retains_unfinished_results",
+          "test_invalid_success_output_cannot_hide_decoding_failure",
+          "test_missing_capture_is_runner_failure",
+          "test_native_default_named_dynamic_declarations_and_suite_hooks",
+          "test_zero_duplicate_ambiguous_and_nested_worker_collection_reject",
+          "test_skipped_todo_assertion_zero_and_dynamic_subcases_cannot_pass",
+          "test_native_scope_and_adapter_modes_fail_closed",
+          "test_package_native_glob_and_rerun_preserve_working_directory",
+          "test_catalog_is_valid_and_unassessed_commands_are_serial",
+          "test_case_unit_rejects_contradictory_command_before_launch",
+          "test_node_unit_rejects_contradictory_command_before_launch",
+          "test_unknown_value_units_modes_fields_and_stale_basis_reject",
+          "test_authored_coverage_retains_narrow_only_and_required_full_scope",
+          "test_authored_coverage_rejects_stale_configuration_and_preserves_prerequisites",
+          "test_authored_coverage_runs_once_and_failed_focus_blocks_boundary",
+          "test_canonical_overlap_runs_once_with_reasons_and_failure_gate",
+          "test_overlap_preserves_preparation_and_distinct_observations",
+          "test_conflicting_same_id_arguments_or_constraints_reject_before_launch",
+          "test_boundary_only_and_new_invocation_execute_again",
+          "test_pr_snapshot_and_broad_discovery_compose_as_distinct_checks",
+          "test_catalog_composes_broad_and_main_with_distinct_preserved_package_versions",
+          "test_unknown_value_composed_mode_rejects",
+          "test_retired_classification_override_rejects_before_work"
+        ]
       }
     ],
     "dispositions": [
@@ -1385,11 +1444,12 @@
       "Selector: replace mixed skill/spec dependence on deleted repository input with an isolated explicitly selected customer contract; preserve independent check/path scoping.",
       "Selector: retire only the specs/rigorloop-workflow.md literal-word row from multi-consumer layering test. Current published skill rows and actual selection/composition/failure/overlap tests remain. No new model wording fingerprint replaces it.",
       "Candidate: existing real build/qualification/packed CLI/installation chain mirrors absence of retired source trees before owned fixture commit, in addition to existing complete current script/skill/test/fixture copies. Proves pre-commit deletion is not silently undone by cloning HEAD.",
-      "Historical model examples: ten positive v2 illustrations have no current executable readers and explicitly retired acceptance. Current v3, v2-store rejection and independent schema2 observations remain. Exact source identities and prior owner review are retained in M6 reconciliation."
+      "Historical model examples: ten positive v2 illustrations have no current executable readers and explicitly retired acceptance. Current v3, v2-store rejection and independent schema2 observations remain. Exact source identities and prior owner review are retained in M6 reconciliation.",
+      "PR/broad integration: separate current_records.snapshot exact-commit validation from current_records.validate worktree discovery. Real Git selector plus real broad composer regression failed before distinct IDs, then preserves both commands; existing exact-revision execution, child failure and substituted-revision rejection cases now bind the snapshot ID. No canonical conflict guard or required check is weakened."
     ]
   },
   "implementation": {
-    "selector": "General Git discovery now includes D and disables rename folding; both endpoints classify, unknown paths still block. Broad composer also includes deletions/both rename endpoints. Removed exact-spec-read discovery special case; exact retired-input safety classification remains.",
+    "selector": "General Git discovery now includes D and disables rename folding; both endpoints classify, unknown paths still block. Broad composer also includes deletions/both rename endpoints. Removed exact-spec-read discovery special case; exact retired-input safety classification remains. PR snapshots have a distinct canonical ID so broad worktree discovery remains independently executable.",
     "current_authority": "Reviewed current Design/governance/provenance reconciliation plus source removal; package/guide/learn navigation and current project map use current owners. Current local Markdown link scan found no links into removed source trees. Historical record links intentionally unchanged.",
     "preserved_boundaries": "No change to portable feature/proof grammar, public CLI behavior, negative retired-store rejection, current record schema, installation/release trust or candidate side-effect boundaries."
   },
