@@ -310,15 +310,6 @@ class ExecutionTests(unittest.TestCase):
             with self.subTest(changes=changes), self.assertRaises(ValueError):
                 validate_plans([dataclasses.replace(self.plan('a'), **changes)], jobs=2)
 
-    def test_reverse_completion_keeps_order_and_separate_streams(self):
-        results = self.run_plans([self.plan('slow', 'import time; time.sleep(.15); print("one")'),
-                                  self.plan('fast', 'import sys; print("two", file=sys.stderr)')])
-        self.assertEqual([r.plan.check_id for r in results], ['slow', 'fast'])
-        self.assertEqual([r.exit_code for r in results], [0, 0])
-        self.assertEqual(results[0].stdout_path.read_text(), 'one\n')
-        self.assertEqual(results[1].stderr_path.read_text(), 'two\n')
-        self.assertLess(results[1].elapsed_seconds, results[0].elapsed_seconds)
-
     def test_independent_failure_continues_and_dependency_failure_prevents_launch(self):
         marker = self.root / 'forbidden'
         results = self.run_plans([self.plan('failed', 'raise SystemExit(7)'),
@@ -329,14 +320,46 @@ class ExecutionTests(unittest.TestCase):
         self.assertFalse(marker.exists())
 
     def test_parallel_tasks_actually_overlap_with_bounded_workers(self):
+        from validation_execution import CheckResult
         gate = self.root / 'gate'
         gate.mkdir()
-        body = ('import pathlib,time; p=pathlib.Path(%r); (p/%r).touch(); '
-                'deadline=time.monotonic()+2\nwhile %r and len(list(p.iterdir()))<2:\n'
-                ' if time.monotonic()>deadline: raise SystemExit(8)\n time.sleep(.01)')
-        results = self.run_plans([self.plan('a', body % (str(gate), 'a', int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS','2'))>1)),
-                                  self.plan('b', body % (str(gate), 'b', int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS','2'))>1))])
+        parallel = int(os.environ.get('RIGORLOOP_VALIDATION_WORKERS', '2')) > 1
+        observed = []
+        body = """import pathlib, sys, time
+p = pathlib.Path({gate!r})
+name = {name!r}
+(p / name).touch()
+deadline = time.monotonic() + 10
+while {parallel!r} and (not (p / 'a').exists() or not (p / 'b').exists()
+                       or (name == 'a' and not (p / 'b-observed').exists())):
+    if time.monotonic() > deadline:
+        raise SystemExit(8)
+    time.sleep(.01)
+print(name + '-stdout')
+print(name + '-stderr', file=sys.stderr)
+"""
+
+        def observe_result(*args, **kwargs):
+            result = CheckResult(*args, **kwargs)
+            observed.append(result.plan.check_id)
+            if result.plan.check_id == 'b':
+                (gate / 'b-observed').touch()
+            return result
+
+        # Both children rendezvous; a can finish only after the real scheduler
+        # records b. The deadline bounds a broken handshake, not relative speed.
+        with patch('validation_execution.CheckResult', side_effect=observe_result):
+            results = self.run_plans([
+                self.plan(name, body.format(gate=str(gate), name=name, parallel=parallel))
+                for name in ('a', 'b')
+            ], timeout_seconds=15)
+        self.assertEqual(observed, ['b', 'a'] if parallel else ['a', 'b'])
+        self.assertEqual([r.plan.check_id for r in results], ['a', 'b'])
         self.assertEqual([r.exit_code for r in results], [0, 0])
+        for result in results:
+            name = result.plan.check_id
+            self.assertEqual(result.stdout_path.read_text(), name + '-stdout\n')
+            self.assertEqual(result.stderr_path.read_text(), name + '-stderr\n')
 
     def test_serial_barrier_and_queue_time_excluded(self):
         gate = self.root / 'gate'
