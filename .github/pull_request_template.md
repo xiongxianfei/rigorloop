@@ -13,7 +13,7 @@ Explain the user or maintainer problem.
 ## Verification
 
 - [ ] I listed the commands I actually ran or I stated a no-test rationale
-- [ ] I updated the docs/specs/tests/artifacts required by the current contract
+- [ ] I updated the Designs/docs/tests/artifacts required by the current contract
 
 Commands run or no-test rationale:
 ```text
@@ -27,11 +27,10 @@ paste commands here
 ## RigorLoop artifacts
 
 - Proposal:
-- Spec:
-- Test spec:
-- Architecture / ADR:
-- Explain change:
-- Change metadata:
+- Owning Designs:
+- Execution plan and verification allocation:
+- Final review and Verify evidence:
+- Owning change:
 
 ## Risks and follow-ups
 

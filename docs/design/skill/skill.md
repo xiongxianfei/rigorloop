@@ -2,6 +2,8 @@
 
 Model validation contract: model-document-v1
 
+For this repository’s [complete source retirement](../../changes/2026-09-14-retire-specs-and-stale-tests/source-disposition.md), current responsibilities are self-contained in the owning Designs. Earlier source-transfer tables below preserve the scope and reasoning of their original initiatives; their instructions to retain or amend legacy specs, architecture, activation state or retired engines are historical and are superseded by this complete retirement. Source-qualified IDs and original judgments keep their original meaning; provenance is not a runtime input or current approval. Customer feature contracts and explicit portable resources remain supported under their own project authority.
+
 ## Introduction and Goals
 
 Skill owns what the published capabilities accept, do and produce, including their applicability, handoffs, failures and claim limits. Common conventions and specialist behavior are composed under one product boundary. The CLI is optional for individual skill use; current governed recording requires its supported interface. Engineering builds, tests and publishes the skills without becoming a competing owner of their behavior.
@@ -546,7 +548,7 @@ The [Proposal-family assets](#proposal-family-assets) section owns asset names, 
 
 ### Retirement and historical provenance
 
-Current behavior and acceptance obligations stay with their named owners. [Constitution](../../../CONSTITUTION.md#repository-cleanup-and-historical-retention) owns this repository's source-retention policy; [cleanup evidence](../../changes/2026-09-13-current-design-repository-cleanup/source-disposition.md) records exact removals and operational exceptions. Resource manifests, shared templates, schemas and fixtures remain live inputs wherever consumed. The retained [Skill Contract](../../../specs/skill-contract.md) owns its declared plan/boundary remainder. Historical reviews retain their original subjects and do not approve revised common contracts.
+Current behavior and acceptance obligations stay with their named owners. [Constitution](../../../CONSTITUTION.md#repository-cleanup-and-historical-retention) owns this repository's source-retention policy; [cleanup evidence](../../changes/2026-09-13-current-design-repository-cleanup/source-disposition.md) records exact removals and operational exceptions. Resource manifests, shared templates, schemas and fixtures remain live inputs wherever consumed. The current Design and Workflow owners cover the former plan/boundary remainder; portable feature/proof resources remain explicit current inputs. Historical reviews retain their original subjects and do not approve revised common contracts.
 
 ### Consumer dispositions and remaining adoption
 
