@@ -1,0 +1,38 @@
+{
+  "body": "Remove only scripts/test-fidelity-gate-spec-reads.py and tests/fixtures/requirement-fidelity-gate/representative-reviews/r26-matrix-pilot/spec-read-log.json, with catalog, qualification and callers. Both recover at commit 020e4d2c76129ac89b488cf9436d0e6efb453f5a and identical repository-relative paths. Exact retired-path selection must retain current selector and fidelity protection; unknown siblings, recreated inputs and unsafe links must not gain a broad exemption. Preserve complete relevant clause assessment, justified bounded/full reads, current omission/compression/closed-vocabulary proof and all historical record bytes. Adapter support, replay and unrelated cleanup are excluded. Independent Proposal applicability and Design assessment remain required.",
+  "change_id": "2026-09-14-retire-spec-read-log",
+  "decisions": [
+    {
+      "actor": {
+        "id": "codex-spec-read-author",
+        "role": "design"
+      },
+      "id": "spec-read-retirement-scope",
+      "rationale": "User selected the remaining VAL-SR-23 frozen-log retirement. Existing cleanup proposal and Validation direction apply unchanged; no new product direction or model is needed. Scoped test-spec amendment is new-profile-only supersession of instrumentation with unchanged historical remainder, not a retained feature behavior expansion.",
+      "source_refs": [],
+      "subjects": [
+        {
+          "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+          "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+        },
+        {
+          "identity": "sha256:6c91f69b868f0bdd1406d09c69e01771dab51e56ba799e2ed90b826ae1e08be0",
+          "path": "docs/design/engineering/validation.md"
+        },
+        {
+          "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+          "path": "docs/design/engineering/engineering.md"
+        },
+        {
+          "identity": "sha256:9c93828823bb91f2856d79f61ffe12752b9e3e8cfa2509754999bcbdbe7dfd70",
+          "path": "specs/requirement-fidelity-gate.md"
+        },
+        {
+          "identity": "sha256:ce9828d00bd5b9c644f1501a34c097d76ced2c0c4f966700816348fa560fe953",
+          "path": "specs/requirement-fidelity-gate.test.md"
+        }
+      ]
+    }
+  ],
+  "schema_version": 3
+}

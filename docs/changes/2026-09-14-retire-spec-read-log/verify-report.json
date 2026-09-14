@@ -1,0 +1,135 @@
+{
+  "assessment_scope": "Workflow-final-verification in governed-final mode, including exact Git handoff, for the single M1 of2026-09-14-retire-spec-read-log. Complete baseline020e4d2c-to-current delivered diff, scoped legacy supersession, exact two-path discovery/selection and current protective proof. Broader cleanup and external merge/publication are excluded.",
+  "change_id": "2026-09-14-retire-spec-read-log",
+  "changes": [
+    "Removed the fixed-log checker and sole representative fixture, with exact Git recovery identities. Removed its catalog entry, parallel qualification and executable callers.",
+    "Retained T-RFG-PERF-001 as an explicit retirement disposition and removed its obsolete command, fixture, milestone and performance-proof prescriptions. Substantive clause assessment and justified bounded/full reads retain their current owners.",
+    "Replaced the old broad fixture-prefix rule with exact two-path retired-input handling. Local HEAD/index and PR Git deletions select current selector, skill and review protection; recreated files, symlinks and unknown/mixed sibling inputs still block."
+  ],
+  "evidence_refs": [
+    {
+      "id": "m1-focused-proof",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/evidence.json"
+    },
+    {
+      "id": "m1-integrated-proof",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/evidence.json"
+    }
+  ],
+  "limitations": [
+    "Local validation only; hosted CI has not yet run for this branch.",
+    "This does not change generic deleted-file discovery or implement new reader instrumentation. Broader cleanup, adapter support and historical replay remain deferred.",
+    "Historical records retain their original meaning; this work does not migrate customer governance, merge a PR or publish a release."
+  ],
+  "outcome": "success",
+  "rationale": [
+    "Current accepted scoped Proposal evidence, six-subject Design package and two-subject Delivery package remain unchanged. Fresh independent final whole-change Code Review assesses the complete implemented diff and proof; all in-scope work is complete and no required finding remains unresolved. Source/profile supersession is explicit; unrelated legacy contracts and historical judgments are unchanged.",
+    "All required proof passed on the final engineering bytes: five focused retirement tests,176 full selector tests,960 selected/broad execution rows and419 separately executed CLI tests. The selected/broad run includes354 skill,109 review-artifact,108 lifecycle,176 selector,52 executor,146 adapter and7 metadata cases plus applicable current structural and actual archive checks. CLI was deliberately run separately because this narrower diff did not automatically select it. Actual results and log identity are retained in integration-proof.json.",
+    "Initial red tests exposed retired catalog/broad-prefix behavior; actual deletion tests additionally proved generic ACMRT discovery omitted deleted inputs. The approved narrow correction unions only the exact two D paths. Local unstaged/staged, committed PR, recreation, symlink, unknown sibling/mixed input and mode-inventory tests pass; general deletion discovery is unchanged. No replacement metric or synthetic pass was introduced.",
+    "The removed script/fixture hashes match recoverable baseline Git bytes. No production readers remain beyond intentional retired-path selection, negative assertions and provenance. Current skill/review/CLI/schema/package/release source bytes are unchanged; concrete existing fidelity guidance and negative contract tests remain in their original owners and ran as applicable. Frozen claims are not represented as proof of real reader behavior.",
+    "Current complete-set validation and git diff HEAD --check pass. Governing artifacts, independent final review and implementation evidence are committed; exact engineering hashes match tested bytes and the branch is clean. Remote main still matches the verified baseline. Subsequent Verify/Route recording is an attributable evidence suffix only; PR must reread head/base and suffix content before push."
+  ],
+  "review_refs": [
+    {
+      "id": "proposal-review-spec-read-applicability",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/proposal-review-spec-read-applicability.json"
+    },
+    {
+      "id": "design-review-spec-read-retirement",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/design-review-spec-read-retirement.json"
+    },
+    {
+      "id": "delivery-review-spec-read-retirement",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/delivery-review-spec-read-retirement.json"
+    },
+    {
+      "id": "code-review-spec-read-final-whole-change",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/code-review-spec-read-final-whole-change.json"
+    }
+  ],
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:84399ade9590876a52e7bd1922621f915debb84834f44bfd12d4770452bdb596",
+      "path": "docs/proposals/2026-09-13-current-design-repository-cleanup.md"
+    },
+    {
+      "identity": "sha256:3dae6703651fed191fe384a14224254b7791267014a89662d8872c812493e146",
+      "path": "VISION.md"
+    },
+    {
+      "identity": "sha256:1cc497c48a7de83c64997c5b3b0640ef8ae63afd77e5860416b028ab5025bdb9",
+      "path": "CONSTITUTION.md"
+    },
+    {
+      "identity": "sha256:a76600761216bd13b9f282a68396fbd4c191e71225b788c45799769c11f357a2",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/material-decisions.json"
+    },
+    {
+      "identity": "sha256:c43b381ea9de11c4bc093c3ee9037ce6fa7e0111a0d2b1eefebed109a1c4d933",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/proposal-review-spec-read-applicability.json"
+    },
+    {
+      "identity": "sha256:6c91f69b868f0bdd1406d09c69e01771dab51e56ba799e2ed90b826ae1e08be0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:9c93828823bb91f2856d79f61ffe12752b9e3e8cfa2509754999bcbdbe7dfd70",
+      "path": "specs/requirement-fidelity-gate.md"
+    },
+    {
+      "identity": "sha256:ce9828d00bd5b9c644f1501a34c097d76ced2c0c4f966700816348fa560fe953",
+      "path": "specs/requirement-fidelity-gate.test.md"
+    },
+    {
+      "identity": "sha256:ab267b66d1f12e27ea33540779fdba9f7ff6968493b2e31ff9abb6ac242f7fd5",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/design-review-spec-read-retirement.json"
+    },
+    {
+      "identity": "sha256:8783d4c70480af92690af1dfcd022a9959a145d6d7542f1915c41d41a0f4feb1",
+      "path": "docs/plans/2026-09-14-retire-spec-read-log.md"
+    },
+    {
+      "identity": "sha256:2bf1ed7a8e5eea6521ae9a80aaa6718f4866e061e40697bea9bf63417fdc4cf4",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/delivery-review-spec-read-retirement.json"
+    },
+    {
+      "identity": "sha256:936495b0b937a1cc0a5b4b856195801e15b390b4e6ba8f5437ce1116c468573a",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:b6ff913a4d6fbb8c7dd68b301e6350e4a6c669932ba67e6dbd96eaae85ff2c2e",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:d777a4d594cce389bf972bfa369f4896b3991a5e63d345870d1475d043350224",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:47446366bd4406ae151f6e9f1ed216861c656cd80c09eec5049fea00320c4d15",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/integration-proof.json"
+    },
+    {
+      "identity": "sha256:52f78607f427dbc70ee22f5b7566acfb8ad48b00a11a31959861e3eaa11c0ebd",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/code-review-spec-read-final-whole-change.json"
+    }
+  ],
+  "summary": "Branch-ready: the selected VAL-SR-23 fixed spec-read-log retirement is complete, independently reviewed and verified. The obsolete checker, sole fixture, catalog/qualification entry and current frozen-log obligations are retired together; substantive requirement-fidelity protection remains. This adopts only the selected spec-read-log portion for this repository.",
+  "verification_basis": {
+    "base_branch": "main",
+    "base_revision": "020e4d2c76129ac89b488cf9436d0e6efb453f5a",
+    "head_branch": "cleanup/retire-spec-read-log",
+    "merge_base_revision": "020e4d2c76129ac89b488cf9436d0e6efb453f5a",
+    "remote_identity": "git@github.com:xiongxianfei/rigorloop.git",
+    "repository_identity": "https://github.com/xiongxianfei/rigorloop",
+    "verified_subject_revision": "b0bd6b6f4d2f769f0f69cbbf06f36327ec710e7f"
+  },
+  "verifier": {
+    "id": "codex-spec-read-verifier",
+    "role": "verify"
+  }
+}

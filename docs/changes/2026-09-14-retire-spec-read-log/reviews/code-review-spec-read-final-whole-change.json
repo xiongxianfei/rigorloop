@@ -1,0 +1,88 @@
+{
+  "assessment_scope": "Fresh final whole-change Code Review of entire delivered change, including scoped test-spec amendment, plan navigation, selector/catalog implementation, tests, both deletions, preservation evidence and cross-surface interactions; distinct from final Verify.",
+  "change_id": "2026-09-14-retire-spec-read-log",
+  "contributors": [
+    {
+      "id": "codex-spec-read-implementer",
+      "role": "implement"
+    },
+    {
+      "id": "codex-spec-read-author",
+      "role": "design"
+    }
+  ],
+  "findings": [],
+  "id": "code-review-spec-read-final-whole-change",
+  "independence_basis": "Separate nonauthor reviewer freshly inspected complete baseline020e4d2c to implementationb440b7ba diff and subsequent routing-only change, exact current engineering subjects, recorded proof, actual execution logs, deletion bytes and unchanged approved Design/Delivery bases. Reviewer authored only independent assessments, not reviewed implementation or tests.",
+  "judgment": "approved",
+  "limitations": [
+    "No final Verify, branch/PR readiness, hosted CI success, merge or release approval is supplied by this Code Review.",
+    "Generic deleted-path discovery beyond the two approved retired inputs remains baseline behavior; unrelated cleanup and adapter support/replay remain deferred."
+  ],
+  "rationale": [
+    "Spec alignment and scope: pass. VAL-SR-23 removal is exact; retired PERF identity remains explicit and substantive requirement fidelity survives. No adapter-support, replay or other cleanup enters diff.",
+    "Test coverage and validation evidence: pass. Inspected five focused cases and actual integrated log matching recorded SHA256: committed PR deletion, local unstaged/staged deletion, catalog/mode absence, recreated-file/dangling-link rejection, unknown/mixed siblings. Full176 selector tests,960 selected/broad execution rows and419 separate CLI tests passed; review negatives directly reject absent decomposition, invalid packet order and unknown vocabulary. Counts describe execution, not equivalence.",
+    "Edge cases and error handling: pass. Exact immutable two-path set bounds D-discovery and classifier; cached/HEAD/range discovery retain protection for deletions. Existing normalization and recreated-input check prevent unsafe/reintroduced instrumentation from gaining a passing exemption; unknown fixture siblings remain blocked. General unrelated deletion discovery intentionally stays unchanged.",
+    "Architecture and compatibility: pass. Existing catalog/selector/executor responsibilities remain; no runtime alias, synthetic success, new metric or reader is introduced. The historical instrumentation had no actual reader observation and is explicitly retired, so its byte-count validations require no replacement.",
+    "Security/privacy and recovery: pass. No network/credential/publication logic changed; owned temporary Git fixtures exercise public selection boundary. Independently recomputed both removed file hashes from pinned020e4d2c Git objects and confirmed current absence. Existing historical change roots are untouched.",
+    "Derived artifact currency: pass within selected scope. No authored skill, CLI, schema or package source changed; integrated adapter regression/build/archive validation and separate CLI proof support retained interactions. No hosted CI or release claim is inferred.",
+    "Evidence and closeout: pass. All five engineering hashes and every approved Design/Delivery subject match current bytes. Current change.json difference is routing-only; mutable record registry/evidence bookkeeping is excluded from enduring engineering subject basis, not exempted from integrity checks. M1 has no required resolution or remaining implementation milestone; Route can settle M1 and hand off to distinct Verify."
+  ],
+  "reviewer": {
+    "id": "independent-spec-read-reviewer",
+    "role": "review"
+  },
+  "schema_version": 3,
+  "subjects": [
+    {
+      "identity": "sha256:936495b0b937a1cc0a5b4b856195801e15b390b4e6ba8f5437ce1116c468573a",
+      "path": "docs/plan.md"
+    },
+    {
+      "identity": "sha256:8783d4c70480af92690af1dfcd022a9959a145d6d7542f1915c41d41a0f4feb1",
+      "path": "docs/plans/2026-09-14-retire-spec-read-log.md"
+    },
+    {
+      "identity": "sha256:b6ff913a4d6fbb8c7dd68b301e6350e4a6c669932ba67e6dbd96eaae85ff2c2e",
+      "path": "scripts/test-select-validation.py"
+    },
+    {
+      "identity": "sha256:d777a4d594cce389bf972bfa369f4896b3991a5e63d345870d1475d043350224",
+      "path": "scripts/validation_selection.py"
+    },
+    {
+      "identity": "sha256:ce9828d00bd5b9c644f1501a34c097d76ced2c0c4f966700816348fa560fe953",
+      "path": "specs/requirement-fidelity-gate.test.md"
+    },
+    {
+      "identity": "sha256:47446366bd4406ae151f6e9f1ed216861c656cd80c09eec5049fea00320c4d15",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/integration-proof.json"
+    },
+    {
+      "identity": "sha256:a76600761216bd13b9f282a68396fbd4c191e71225b788c45799769c11f357a2",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/material-decisions.json"
+    },
+    {
+      "identity": "sha256:ab267b66d1f12e27ea33540779fdba9f7ff6968493b2e31ff9abb6ac242f7fd5",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/design-review-spec-read-retirement.json"
+    },
+    {
+      "identity": "sha256:2bf1ed7a8e5eea6521ae9a80aaa6718f4866e061e40697bea9bf63417fdc4cf4",
+      "path": "docs/changes/2026-09-14-retire-spec-read-log/reviews/delivery-review-spec-read-retirement.json"
+    },
+    {
+      "identity": "sha256:6c91f69b868f0bdd1406d09c69e01771dab51e56ba799e2ed90b826ae1e08be0",
+      "path": "docs/design/engineering/validation.md"
+    },
+    {
+      "identity": "sha256:f45e6a357a78e630496f4e636d5343daeb3197f8a61010060585c7f65d8bc61f",
+      "path": "docs/design/engineering/engineering.md"
+    },
+    {
+      "identity": "sha256:9c93828823bb91f2856d79f61ffe12752b9e3e8cfa2509754999bcbdbe7dfd70",
+      "path": "specs/requirement-fidelity-gate.md"
+    }
+  ],
+  "summary": "The complete M1 retirement satisfies approved scope with coherent consumers and retained negative protection; no required correction found.",
+  "target": "code"
+}
